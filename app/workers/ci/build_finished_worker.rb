@@ -57,15 +57,7 @@ module Ci
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/267112 for more
       # details.
       #
-      archive_trace_worker_class(build).perform_in(ARCHIVE_TRACES_IN, build.id)
-    end
-
-    def archive_trace_worker_class(build)
-      if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project)
-        Ci::ArchiveTraceWorker
-      else
-        ::ArchiveTraceWorker
-      end
+      Ci::ArchiveTraceWorker.perform_in(ARCHIVE_TRACES_IN, build.id)
     end
   end
 end

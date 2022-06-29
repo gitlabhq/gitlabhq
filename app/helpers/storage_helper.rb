@@ -27,7 +27,7 @@ module StorageHelper
   def storage_enforcement_banner_info(namespace)
     root_ancestor = namespace.root_ancestor
 
-    return unless can?(current_user, :admin_namespace, root_ancestor)
+    return unless can?(current_user, :maintain_namespace, root_ancestor)
     return if root_ancestor.paid?
     return unless future_enforcement_date?(root_ancestor)
     return if user_dismissed_storage_enforcement_banner?(root_ancestor)

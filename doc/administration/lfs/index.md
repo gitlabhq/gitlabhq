@@ -184,7 +184,11 @@ Verify `objectstg` below (where `store=2`) has count of all LFS objects:
 
 ```shell
 gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM lfs_objects;
+```
 
+**Example Output**
+
+```shell
 total | filesystem | objectstg
 ------+------------+-----------
  2409 |          0 |      2409

@@ -44,7 +44,7 @@ third parties.
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-The key needs to be readable by the GitLab system user (`git` by default).
+The key must be readable by the GitLab system user (`git` by default).
 
 **For installations from source:**
 
@@ -67,7 +67,7 @@ The key needs to be readable by the GitLab system user (`git` by default).
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-The key needs to be readable by the GitLab system user (`git` by default).
+The key must be readable by the GitLab system user (`git` by default).
 
 ### How to convert S/MIME PKCS #12 format to PEM encoding
 

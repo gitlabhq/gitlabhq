@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Dedicated
 
 NOTE:
-GitLab Dedicated is currently in limited availability. Please [contact us](#contact-us) if you are interested.
+GitLab Dedicated is currently in limited availability. [Contact us](#contact-us) if you are interested.
 
 GitLab Dedicated is a fully isolated, single-tenant SaaS service that is:
 
@@ -18,7 +18,7 @@ GitLab Dedicated enables you to offload the operational overhead of managing the
 
 ## Available features
 
-- Authentication: Support for instance-level [SAML OmniAuth](../../integration/saml.md) functionality. GitLab Dedicated acts as the service provider, and you will need to provide the necessary [configuration](../../integration/saml.md#general-setup) in order for GitLab to communicate with your IdP. This will be provided during onboarding. SAML [request signing](../../integration/saml.md#request-signing-optional) is supported.
+- Authentication: Support for instance-level [SAML OmniAuth](../../integration/saml.md) functionality. GitLab Dedicated acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#general-setup) in order for GitLab to communicate with your IdP. This is provided during onboarding. SAML [request signing](../../integration/saml.md#request-signing-optional) is supported.
 - Networking:
   - Public connectivity
   - Optional. Private connectivity via [AWS PrivateLink](https://aws.amazon.com/privatelink/).

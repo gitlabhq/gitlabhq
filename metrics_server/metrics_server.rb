@@ -56,6 +56,11 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
         env['GME_LOG_LEVEL'] = 'quiet'
       end
 
+      if settings['tls_enabled']
+        env['GME_CERT_FILE'] = settings['tls_cert_path']
+        env['GME_CERT_KEY'] = settings['tls_key_path']
+      end
+
       Process.spawn(env, cmd, err: $stderr, out: $stdout, pgroup: true).tap do |pid|
         Process.detach(pid)
       end

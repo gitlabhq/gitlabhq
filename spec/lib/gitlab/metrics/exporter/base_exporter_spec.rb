@@ -19,6 +19,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
       allow(settings).to receive(:enabled).and_return(true)
       allow(settings).to receive(:port).and_return(0)
       allow(settings).to receive(:address).and_return('127.0.0.1')
+      allow(settings).to receive(:[]).with('tls_enabled').and_return(false)
     end
 
     after do
@@ -86,6 +87,29 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
               expect(WEBrick::Log).to receive(:new).with(File::NULL).and_call_original
 
               exporter
+            end
+          end
+
+          context 'with TLS enabled' do
+            let(:test_cert) { Rails.root.join('spec/fixtures/x509_certificate.crt').to_s }
+            let(:test_key) { Rails.root.join('spec/fixtures/x509_certificate_pk.key').to_s }
+
+            before do
+              allow(settings).to receive(:[]).with('tls_enabled').and_return(true)
+              allow(settings).to receive(:[]).with('tls_cert_path').and_return(test_cert)
+              allow(settings).to receive(:[]).with('tls_key_path').and_return(test_key)
+            end
+
+            it 'injects the necessary OpenSSL config for WEBrick' do
+              expect(::WEBrick::HTTPServer).to receive(:new).with(
+                a_hash_including(
+                  SSLEnable: true,
+                  SSLCertificate: an_instance_of(OpenSSL::X509::Certificate),
+                  SSLPrivateKey: an_instance_of(OpenSSL::PKey::RSA),
+                  SSLStartImmediately: true
+                ))
+
+              exporter.start
             end
           end
         end
@@ -159,6 +183,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
       allow(settings).to receive(:enabled).and_return(true)
       allow(settings).to receive(:port).and_return(0)
       allow(settings).to receive(:address).and_return('127.0.0.1')
+      allow(settings).to receive(:[]).with('tls_enabled').and_return(false)
 
       stub_const('Gitlab::Metrics::Exporter::MetricsMiddleware', fake_collector)
 

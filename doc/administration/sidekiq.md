@@ -191,6 +191,24 @@ To configure the metrics server:
    sudo gitlab-ctl reconfigure
    ```
 
+### Enable HTTPS
+
+To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
+
+1. Edit `/etc/gitlab/gitlab.rb` to add (or find and uncomment) the following lines:
+
+   ```ruby
+   sidekiq['exporter_tls_enabled'] = true
+   sidekiq['exporter_tls_cert_path'] = "/path/to/certificate.pem"
+   sidekiq['exporter_tls_key_path'] = "/path/to/private-key.pem"
+   ```
+
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
+
+When TLS is enabled, the same `port` and `address` will be used as described above.
+The metrics server cannot serve both HTTP and HTTPS at the same time.
+
 ## Configure health checks
 
 If you use health check probes to observe Sidekiq, enable the Sidekiq health check server.

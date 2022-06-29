@@ -327,11 +327,7 @@ module Ci
         build.run_after_commit do
           build.run_status_commit_hooks!
 
-          if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project)
-            Ci::BuildFinishedWorker.perform_async(id)
-          else
-            ::BuildFinishedWorker.perform_async(id)
-          end
+          Ci::BuildFinishedWorker.perform_async(id)
         end
       end
 

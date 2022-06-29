@@ -12,7 +12,7 @@ GitLab by default supports the [Gravatar](https://gravatar.com) avatar service.
 Libravatar is another service that delivers your avatar (profile picture) to
 other websites. The Libravatar API is
 [heavily based on gravatar](https://wiki.libravatar.org/api/), so you can
-easily switch to the Libravatar avatar service or even your own Libravatar
+switch to the Libravatar avatar service or even your own Libravatar
 server.
 
 ## Configuration
@@ -45,7 +45,7 @@ the URL is different in the configuration, but you must provide the same
 placeholders so GitLab can parse the URL correctly.
 
 For example, you host a service on `http://libravatar.example.com` and the
-`plain_url` you need to supply in `gitlab.yml` is
+`plain_url` you must supply in `gitlab.yml` is
 
 `http://libravatar.example.com/avatar/%{hash}?s=%{size}&d=identicon`
 

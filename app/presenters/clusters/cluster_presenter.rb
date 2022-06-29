@@ -52,16 +52,6 @@ module Clusters
       end
     end
 
-    def gitlab_managed_apps_logs_path
-      return unless logs_project && can_read_cluster?
-
-      if cluster.elastic_stack_adapter&.available?
-        elasticsearch_project_logs_path(logs_project, cluster_id: cluster.id, format: :json)
-      else
-        k8s_project_logs_path(logs_project, cluster_id: cluster.id, format: :json)
-      end
-    end
-
     def read_only_kubernetes_platform_fields?
       !cluster.provided_by_user?
     end

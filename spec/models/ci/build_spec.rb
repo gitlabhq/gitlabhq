@@ -43,30 +43,10 @@ RSpec.describe Ci::Build do
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
   shared_examples 'calling proper BuildFinishedWorker' do
-    context 'when ci_build_finished_worker_namespace_changed feature flag enabled' do
-      before do
-        stub_feature_flags(ci_build_finished_worker_namespace_changed: build.project)
-      end
+    it 'calls Ci::BuildFinishedWorker' do
+      expect(Ci::BuildFinishedWorker).to receive(:perform_async)
 
-      it 'calls Ci::BuildFinishedWorker' do
-        expect(Ci::BuildFinishedWorker).to receive(:perform_async)
-        expect(::BuildFinishedWorker).not_to receive(:perform_async)
-
-        subject
-      end
-    end
-
-    context 'when ci_build_finished_worker_namespace_changed feature flag disabled' do
-      before do
-        stub_feature_flags(ci_build_finished_worker_namespace_changed: false)
-      end
-
-      it 'calls ::BuildFinishedWorker' do
-        expect(::BuildFinishedWorker).to receive(:perform_async)
-        expect(Ci::BuildFinishedWorker).not_to receive(:perform_async)
-
-        subject
-      end
+      subject
     end
   end
 

@@ -179,6 +179,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_deploy_token
     enable :create_jira_connect_subscription
     enable :maintainer_access
+    enable :maintain_namespace
   end
 
   rule { owner }.policy do

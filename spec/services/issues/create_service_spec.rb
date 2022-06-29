@@ -489,6 +489,23 @@ RSpec.describe Issues::CreateService do
           end
         end
       end
+
+      context 'with alert bot author' do
+        let_it_be(:user) { User.alert_bot }
+        let_it_be(:label) { create(:label, project: project) }
+
+        let(:opts) do
+          {
+            title: 'Title',
+            description: %(/label #{label.to_reference(format: :name)}")
+          }
+        end
+
+        it 'can apply labels' do
+          expect(issue).to be_persisted
+          expect(issue.labels).to eq([label])
+        end
+      end
     end
 
     context 'resolving discussions' do

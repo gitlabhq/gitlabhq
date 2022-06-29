@@ -1,5 +1,4 @@
 import MockAdapter from 'axios-mock-adapter';
-import $ from 'jquery';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import '~/lib/utils/common_utils';
@@ -54,22 +53,28 @@ describe('Todos', () => {
       let metakeyEvent;
 
       beforeEach(() => {
-        metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
+        metakeyEvent = new MouseEvent('click', { ctrlKey: true });
         windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => {});
       });
 
       it('opens the todo url in another tab', () => {
         const todoLink = todoItem.dataset.url;
 
-        $('.todos-list .todo').trigger(metakeyEvent);
+        document.querySelectorAll('.todos-list .todo').forEach((el) => {
+          el.dispatchEvent(metakeyEvent);
+        });
 
         expect(visitUrl).not.toHaveBeenCalled();
         expect(windowOpenSpy).toHaveBeenCalledWith(todoLink, '_blank');
       });
 
       it('run native funcionality when avatar is clicked', () => {
-        $('.todos-list a').on('click', (e) => e.preventDefault());
-        $('.todos-list img').trigger(metakeyEvent);
+        document.querySelectorAll('.todos-list a').forEach((el) => {
+          el.addEventListener('click', (e) => e.preventDefault());
+        });
+        document.querySelectorAll('.todos-list img').forEach((el) => {
+          el.dispatchEvent(metakeyEvent);
+        });
 
         expect(visitUrl).not.toHaveBeenCalled();
         expect(windowOpenSpy).not.toHaveBeenCalled();
@@ -88,7 +93,7 @@ describe('Todos', () => {
           .onDelete(path)
           .replyOnce(200, { count: TEST_COUNT_BIG, done_count: TEST_DONE_COUNT_BIG });
         onToggleSpy = jest.fn();
-        $(document).on('todo:toggle', onToggleSpy);
+        document.addEventListener('todo:toggle', onToggleSpy);
 
         // Act
         el.click();
@@ -98,7 +103,13 @@ describe('Todos', () => {
       });
 
       it('dispatches todo:toggle', () => {
-        expect(onToggleSpy).toHaveBeenCalledWith(expect.anything(), TEST_COUNT_BIG);
+        expect(onToggleSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            detail: {
+              count: TEST_COUNT_BIG,
+            },
+          }),
+        );
       });
 
       it('updates pending text', () => {

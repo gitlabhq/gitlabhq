@@ -4,6 +4,9 @@ module Ci
   class Trigger < Ci::ApplicationRecord
     include Presentable
     include Limitable
+    include IgnorableColumns
+
+    ignore_column :ref, remove_with: '15.4', remove_after: '2022-08-22'
 
     self.limit_name = 'pipeline_triggers'
     self.limit_scope = :project

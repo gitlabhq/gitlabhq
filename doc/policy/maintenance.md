@@ -43,12 +43,12 @@ The following table describes the version types and their release cadence:
 ## Upgrade recommendations
 
 We encourage everyone to run the [latest stable release](https://about.gitlab.com/releases/categories/releases/)
-to ensure that you can easily upgrade to the most secure and feature-rich GitLab experience.
-To make sure you can easily run the most recent stable release, we are working
+to ensure that you can upgrade to the most secure and feature-rich GitLab experience.
+To make sure you can run the most recent stable release, we are working
 hard to keep the update process simple and reliable.
 
 If you are unable to follow our monthly release cycle, there are a couple of
-cases you need to consider. Follow the
+cases you must consider. Follow the
 [upgrade paths guide](../update/index.md#upgrade-paths) to safely upgrade
 between versions.
 
@@ -106,7 +106,7 @@ Backporting to more than one stable release is normally reserved for [security r
 In some cases, however, we may need to backport *a bug fix* to more than one stable
 release, depending on the severity of the bug.
 
-The decision on whether backporting a change will be performed is done at the discretion of the
+The decision on whether backporting a change is performed is done at the discretion of the
 [current release managers](https://about.gitlab.com/community/release-managers/), similar to what is
 described in the [managing bugs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/PROCESS.md#managing-bugs) process,
 based on *all* of the following:
@@ -124,7 +124,7 @@ For instance, if we release `13.2.1` with a fix for a severe bug introduced in
 `13.0.0`, we could backport the fix to a new `13.0.x`, and `13.1.x` patch release.
 
 Note that [severity](../development/contributing/issue_workflow.md#severity-labels) 3 and lower
-requests will be automatically turned down.
+requests are automatically turned down.
 
 To request backporting to more than one stable release for consideration, raise an issue in the
 [release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.

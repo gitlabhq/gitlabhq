@@ -3,8 +3,9 @@
 require 'airborne'
 
 module QA
-  RSpec.describe 'Package', only: { subdomain: %i[staging pre] }, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/360466', type: :investigating } do
+  RSpec.describe 'Package', only: { subdomain: %i[staging pre] } do
     include Support::API
+    include Support::Helpers::MaskToken
 
     describe 'Container Registry' do
       let(:api_client) { Runtime::API::Client.new(:gitlab) }
@@ -17,6 +18,12 @@ module QA
         end
       end
 
+      let!(:project_access_token) do
+        QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
+          pat.project = project
+        end
+      end
+
       let(:registry) do
         Resource::RegistryRepository.init do |repository|
           repository.name = project.path_with_namespace
@@ -25,45 +32,47 @@ module QA
         end
       end
 
+      let(:masked_token) do
+        use_ci_variable(name: 'PAT', value: project_access_token.token, project: project)
+      end
+
       let(:gitlab_ci_yaml) do
         <<~YAML
-          stages:
-          - build
-          - test
-
-          build:
-            image: docker:19.03.12
-            stage: build
-            services:
-              - docker:19.03.12-dind
-            variables:
-              IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-              DOCKER_HOST: tcp://docker:2376
-              DOCKER_TLS_CERTDIR: "/certs"
-              DOCKER_TLS_VERIFY: 1
-              DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
-            before_script:
-              - until docker info; do sleep 1; done
-            script:
-              - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-              - docker build -t $IMAGE_TAG .
-              - docker push $IMAGE_TAG
-              - docker pull $IMAGE_TAG
-
-          test:
-            image: dwdraju/alpine-curl-jq:latest
-            stage: test
-            variables:
-              MEDIA_TYPE: 'application/vnd.docker.distribution.manifest.v2+json'
-            before_script:
-              - token=$(curl -u "$CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD" "https://$CI_SERVER_HOST/jwt/auth?service=container_registry&scope=repository:$CI_PROJECT_PATH:pull,push,delete" | jq -r '.token')
-            script:
-              - 'digest=$(curl -L -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/manifests/master" | jq -r ".layers[0].digest")'
-              - 'curl -L -X DELETE -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/blobs/$digest"'
-              - 'curl -L --head -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/blobs/$digest"'
-              - 'digest=$(curl -L -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/manifests/master" | jq -r ".config.digest")'
-              - 'curl -L -X DELETE -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/manifests/$digest"'
-              - 'curl -L --head -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/manifests/$digest"'
+        stages:
+        - build
+        - test
+        
+        build:
+          image: docker:19.03.12
+          stage: build
+          services:
+            - docker:19.03.12-dind
+          variables:
+            IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+            DOCKER_HOST: tcp://docker:2376
+            DOCKER_TLS_CERTDIR: "/certs"
+            DOCKER_TLS_VERIFY: 1
+            DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+          before_script:
+            - until docker info; do sleep 1; done
+          script:
+            - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+            - docker build -t $IMAGE_TAG .
+            - docker push $IMAGE_TAG
+            - docker pull $IMAGE_TAG
+        
+        test:
+          image: dwdraju/alpine-curl-jq:latest
+          stage: test
+          script:
+            - 'id=$(curl --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories" | jq ".[0].id")'
+            - echo $id
+            - 'tag_count=$(curl --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories/$id/tags" | jq ". | length")'
+            - if [ $tag_count -ne 1 ]; then exit 1; fi;
+            - 'status_code=$(curl --request DELETE --head --output /dev/null --write-out "%{http_code}\n" --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories/$id/tags/master")'
+            - if [ $status_code -ne 200 ]; then exit 1; fi;
+            - 'status_code=$(curl --head --output /dev/null --write-out "%{http_code}\n" --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories/$id/tags/master")'
+            - if [ $status_code -ne 404 ]; then exit 1; fi; 
         YAML
       end
 
@@ -71,7 +80,7 @@ module QA
         registry&.remove_via_api!
       end
 
-      it 'pushes, pulls image to the registry and deletes image blob, manifest and tag', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348001' do
+      it 'pushes, pulls image to the registry and deletes tag', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348001' do
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.api_client = api_client
@@ -89,14 +98,6 @@ module QA
         Support::Retrier.retry_until(max_duration: 300, sleep_interval: 5) do
           latest_pipeline_succeed?
         end
-
-        expect(job_log).to have_content '404 Not Found'
-
-        expect(registry).to have_tag('master')
-
-        registry.delete_tag
-
-        expect(registry).not_to have_tag('master')
       end
 
       private
@@ -108,20 +109,6 @@ module QA
       def latest_pipeline_succeed?
         latest_pipeline = project.pipelines.first
         latest_pipeline[:status] == 'success'
-      end
-
-      def job_log
-        pipeline = project.pipelines.first
-        pipeline_id = pipeline[:id]
-
-        jobs = get Runtime::API::Request.new(api_client, "/projects/#{project.id}/pipelines/#{pipeline_id}/jobs").url
-        test_job = parse_body(jobs).first
-        test_job_id = test_job[:id]
-
-        log = get Runtime::API::Request.new(api_client, "/projects/#{project.id}/jobs/#{test_job_id}/trace").url
-        QA::Runtime::Logger.debug(" \n\n ------- Test job log: ------- \n\n #{log} \n -------")
-
-        log
       end
     end
   end

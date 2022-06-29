@@ -111,7 +111,7 @@ the leaked key without forcing all users to change their 2FA details.
 
 To rotate the two-factor authentication encryption key:
 
-1. Look up the old key. This is in the `config/secrets.yml` file, but **make sure you're working
+1. Look up the old key in the `config/secrets.yml` file, but **make sure you're working
    with the production section**. The line you're interested in looks like this:
 
    ```yaml

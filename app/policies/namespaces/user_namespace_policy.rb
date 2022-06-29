@@ -11,6 +11,7 @@ module Namespaces
       enable :owner_access
       enable :create_projects
       enable :admin_namespace
+      enable :maintain_namespace
       enable :read_namespace
       enable :read_statistics
       enable :create_jira_connect_subscription

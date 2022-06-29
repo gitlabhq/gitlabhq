@@ -971,6 +971,9 @@ Settings.monitoring.sidekiq_exporter['enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['log_enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'
 Settings.monitoring.sidekiq_exporter['port'] ||= 8082
+Settings.monitoring.sidekiq_exporter['tls_enabled'] ||= false
+Settings.monitoring.sidekiq_exporter['tls_cert_path'] ||= nil
+Settings.monitoring.sidekiq_exporter['tls_key_path'] ||= nil
 
 Settings.monitoring['sidekiq_health_checks'] ||= Settingslogic.new({})
 Settings.monitoring.sidekiq_health_checks['enabled'] ||= false
@@ -981,6 +984,9 @@ Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.web_exporter['enabled'] ||= false
 Settings.monitoring.web_exporter['address'] ||= 'localhost'
 Settings.monitoring.web_exporter['port'] ||= 8083
+Settings.monitoring.web_exporter['tls_enabled'] ||= false
+Settings.monitoring.web_exporter['tls_cert_path'] ||= nil
+Settings.monitoring.web_exporter['tls_key_path'] ||= nil
 
 #
 # Prometheus settings

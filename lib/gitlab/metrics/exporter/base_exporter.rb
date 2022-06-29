@@ -38,10 +38,28 @@ module Gitlab
             [logger, WEBrick::AccessLog::COMBINED_LOG_FORMAT]
           ]
 
-          @server = ::WEBrick::HTTPServer.new(
-            Port: settings.port, BindAddress: settings.address,
-            Logger: logger, AccessLog: access_log
-          )
+          server_config = {
+            Port: settings.port,
+            BindAddress: settings.address,
+            Logger: logger,
+            AccessLog: access_log
+          }
+
+          if settings['tls_enabled']
+            # This monkey-patches WEBrick::GenericServer, so never require this unless TLS is enabled.
+            require 'webrick/ssl'
+
+            server_config.merge!({
+              SSLEnable: true,
+              SSLCertificate: OpenSSL::X509::Certificate.new(File.binread(settings['tls_cert_path'])),
+              SSLPrivateKey: OpenSSL::PKey.read(File.binread(settings['tls_key_path'])),
+              # SSLStartImmediately is true by default according to the docs, but when WEBrick creates the
+              # SSLServer internally, the switch was always nil for some reason. Setting this explicitly fixes this.
+              SSLStartImmediately: true
+            })
+          end
+
+          @server = ::WEBrick::HTTPServer.new(server_config)
           server.mount '/', Rack::Handler::WEBrick, rack_app
 
           true

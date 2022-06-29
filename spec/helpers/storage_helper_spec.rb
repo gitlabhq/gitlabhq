@@ -57,8 +57,8 @@ RSpec.describe StorageHelper do
     let_it_be(:paid_group) { create(:group) }
 
     before do
-      allow(helper).to receive(:can?).with(current_user, :admin_namespace, free_group).and_return(true)
-      allow(helper).to receive(:can?).with(current_user, :admin_namespace, paid_group).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :maintain_namespace, free_group).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :maintain_namespace, paid_group).and_return(true)
       allow(helper).to receive(:current_user) { current_user }
       allow(paid_group).to receive(:paid?).and_return(true)
 
@@ -84,7 +84,7 @@ RSpec.describe StorageHelper do
         end
 
         it 'returns nil when current_user do not have access usage quotas page' do
-          allow(helper).to receive(:can?).with(current_user, :admin_namespace, free_group).and_return(false)
+          allow(helper).to receive(:can?).with(current_user, :maintain_namespace, free_group).and_return(false)
 
           expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
         end

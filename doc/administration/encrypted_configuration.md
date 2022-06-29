@@ -14,12 +14,12 @@ GitLab can read settings for certain features from encrypted settings files. The
 - [LDAP `bind_dn` and `password`](auth/ldap/index.md#use-encrypted-credentials).
 - [SMTP `user_name` and `password`](raketasks/smtp.md#secrets).
 
-In order to enable the encrypted configuration settings, a new base key needs to be generated for
+To enable the encrypted configuration settings, a new base key must be generated for
 `encrypted_settings_key_base`. The secret can be generated in the following ways:
 
 **Omnibus Installation**
 
-Starting with 13.7 the new secret is automatically generated for you, but you need to ensure your
+Starting with 13.7 the new secret is automatically generated for you, but you must ensure your
 `/etc/gitlab/gitlab-secrets.json` contains the same values on all nodes.
 
 **GitLab Cloud Native Helm Chart**

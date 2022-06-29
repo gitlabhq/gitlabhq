@@ -48,4 +48,4 @@ Read how to [use the GitLab Runner Helm Chart](https://docs.gitlab.com/runner/in
 
 ## Runner Cache
 
-Since the EKS Quick Start provides for EFS provisioning, the best approach is to use EFS for runner caching. Eventually we will publish information on using an S3 bucket for runner caching here.
+Because the EKS Quick Start provides for EFS provisioning, the best approach is to use EFS for runner caching. Eventually we will publish information on using an S3 bucket for runner caching here.

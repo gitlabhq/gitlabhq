@@ -32,7 +32,7 @@ Characteristics of beta features:
 - Features and functions are not likely to change.
 - Data loss is not likely.
 
-Your Support Contract provides **commercially-reasonable effort** support for Beta features, with the expectation that issues will require extra time and assistance from development to troubleshoot.
+Your Support Contract provides **commercially-reasonable effort** support for Beta features, with the expectation that issues require extra time and assistance from development to troubleshoot.
 
 ## Limited Availability (LA)
 

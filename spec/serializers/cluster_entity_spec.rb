@@ -55,34 +55,5 @@ RSpec.describe ClusterEntity do
         expect(helm[:status]).to eq(:not_installable)
       end
     end
-
-    context 'enable_advanced_logs_querying' do
-      let(:cluster) { create(:cluster, :project) }
-      let(:user) { create(:user) }
-
-      subject { described_class.new(cluster, request: request).as_json }
-
-      context 'elastic stack is not installed on cluster' do
-        it 'returns false' do
-          expect(subject[:enable_advanced_logs_querying]).to be false
-        end
-      end
-
-      context 'elastic stack is enabled on cluster' do
-        it 'returns true' do
-          create(:clusters_integrations_elastic_stack, cluster: cluster)
-
-          expect(subject[:enable_advanced_logs_querying]).to be true
-        end
-      end
-
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(monitor_logging: false)
-        end
-
-        specify { is_expected.not_to include(:enable_advanced_logs_querying) }
-      end
-    end
   end
 end

@@ -11496,7 +11496,8 @@ CREATE TABLE approval_project_rules (
     severity_levels text[] DEFAULT '{}'::text[] NOT NULL,
     report_type smallint,
     vulnerability_states text[] DEFAULT '{newly_detected}'::text[] NOT NULL,
-    orchestration_policy_idx smallint
+    orchestration_policy_idx smallint,
+    applies_to_all_protected_branches boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE approval_project_rules_groups (

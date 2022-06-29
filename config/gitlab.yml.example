@@ -1266,24 +1266,29 @@ production: &base
     ip_whitelist:
       - 127.0.0.0/8
 
-    # Sidekiq exporter is webserver built in to Sidekiq to expose Prometheus metrics
+    # Sidekiq exporter is a dedicated Prometheus metrics server optionally running alongside Sidekiq.
     sidekiq_exporter:
     #  enabled: true
     #  log_enabled: false
     #  address: localhost
     #  port: 8082
+    #  tls_enabled: false
+    #  tls_cert_path: /path/to/cert.pem
+    #  tls_key_path: /path/to/key.pem
 
     sidekiq_health_checks:
     #  enabled: true
     #  address: localhost
     #  port: 8092
 
-    # Web exporter is a dedicated Rack server running alongside Puma to expose Prometheus metrics
-    # It runs alongside the `/metrics` endpoints to ease the publish of metrics
+    # Web exporter is a dedicated Prometheus metrics server optionally running alongside Puma.
     web_exporter:
     #  enabled: true
     #  address: localhost
     #  port: 8083
+    #  tls_enabled: false
+    #  tls_cert_path: /path/to/cert.pem
+    #  tls_key_path: /path/to/key.pem
 
   ## Prometheus settings
   # Do not modify these settings here. They should be modified in /etc/gitlab/gitlab.rb

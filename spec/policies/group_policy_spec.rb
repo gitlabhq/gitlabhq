@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GroupPolicy do
   include_context 'GroupPolicy context'
+  using RSpec::Parameterized::TableSyntax
 
   context 'public group with no user' do
     let(:group) { create(:group, :public, :crm_enabled) }
@@ -1228,5 +1229,31 @@ RSpec.describe GroupPolicy do
     it { is_expected.to be_disallowed(:read_crm_organization) }
     it { is_expected.to be_disallowed(:admin_crm_contact) }
     it { is_expected.to be_disallowed(:admin_crm_organization) }
+  end
+
+  describe 'maintain_namespace' do
+    context 'with non-admin roles' do
+      where(:role, :allowed) do
+        :guest      | false
+        :reporter   | false
+        :developer  | false
+        :maintainer | true
+        :owner      | true
+      end
+
+      with_them do
+        let(:current_user) { public_send(role) }
+
+        it do
+          expect(subject.allowed?(:maintain_namespace)).to eq allowed
+        end
+      end
+    end
+
+    context 'as an admin', :enable_admin_mode do
+      let(:current_user) { admin }
+
+      it { is_expected.to be_allowed(:maintain_namespace) }
+    end
   end
 end

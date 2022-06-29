@@ -6,6 +6,7 @@ RSpec.describe Pages::PageDeletedEvent do
   where(:data, :valid) do
     [
       [{ project_id: 1, namespace_id: 2 }, true],
+      [{ project_id: 1, namespace_id: 2, root_namespace_id: 3 }, true],
       [{ project_id: 1 }, false],
       [{ namespace_id: 1 }, false],
       [{ project_id: 'foo', namespace_id: 2 }, false],
