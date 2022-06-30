@@ -260,6 +260,25 @@ RSpec.shared_examples 'mentions in notes' do |mentionable_type|
       expect(mentionable.referenced_projects(user)).to eq [mentionable.project].compact # epic.project is nil, and we want empty []
       expect(mentionable.referenced_groups(user)).to eq [group]
     end
+
+    if [:epic, :issue].include?(mentionable_type)
+      context 'and note is confidential' do
+        let_it_be(:guest) { create(:user) }
+
+        let(:note_desc) { "#{guest.to_reference} and #{user2.to_reference} and #{user.to_reference}" }
+
+        before do
+          note.resource_parent.add_reporter(user2)
+          note.resource_parent.add_guest(guest)
+          # Bypass :confidential update model validation for testing purposes
+          note.update_attribute(:confidential, true)
+        end
+
+        it 'returns only mentioned users that has permissions' do
+          expect(note.mentioned_users).to contain_exactly(user, user2)
+        end
+      end
+    end
   end
 end
 
@@ -291,6 +310,26 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
         expect(mentionable.referenced_users).to match_array([mentioned_user])
         expect(mentionable.referenced_projects(user)).to match_array([mentionable.project].compact) # epic.project is nil, and we want empty []
         expect(mentionable.referenced_groups(user)).to match_array([group])
+      end
+    end
+
+    if [:epic, :issue].include?(mentionable_type)
+      context 'and note is confidential' do
+        let_it_be(:guest) { create(:user) }
+
+        let(:note_desc) { "#{guest.to_reference} and #{mentioned_user.to_reference}" }
+
+        before do
+          note.resource_parent.add_reporter(mentioned_user)
+          note.resource_parent.add_guest(guest)
+          # Bypass :confidential update model validation for testing purposes
+          note.update_attribute(:confidential, true)
+          note.store_mentions!
+        end
+
+        it 'stores only mentioned users that has permissions' do
+          expect(mentionable.referenced_users).to contain_exactly(mentioned_user)
+        end
       end
     end
 

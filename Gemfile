@@ -44,7 +44,7 @@ gem 'omniauth-dingtalk-oauth2', '~> 1.0'
 gem 'omniauth-alicloud', '~> 1.0.1'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.4'
-gem 'omniauth-gitlab', '~> 1.0.2'
+gem 'omniauth-gitlab', '~> 4.0.0', path: 'vendor/gems/omniauth-gitlab' # See vendor/gems/omniauth-gitlab/README.md
 gem 'omniauth-google-oauth2', '~> 0.6.0'
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
@@ -407,7 +407,7 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 3.4.1', require: false
+  gem 'gitlab-dangerfiles', '~> 3.4.2', require: false
 end
 
 group :development, :test, :coverage do

@@ -68,7 +68,7 @@
       = render 'users/deletion_guidance', user: current_user
 
       -# Delete button here
-      %button#delete-account-button.gl-button.btn.btn-danger.disabled{ data: { qa_selector: 'delete_account_button' } }
+      = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { id: 'delete-account-button', disabled: true, data: { qa_selector: 'delete_account_button' }}) do
         = s_('Profiles|Delete account')
 
       #delete-account-modal{ data: { action_url: user_registration_path,

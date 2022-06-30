@@ -30,7 +30,7 @@ export default () => {
       deleteAccountModal,
     },
     mounted() {
-      deleteAccountButton.classList.remove('disabled');
+      deleteAccountButton.disabled = false;
       deleteAccountButton.addEventListener('click', () => {
         this.$root.$emit(BV_SHOW_MODAL, 'delete-account-modal', '#delete-account-button');
       });

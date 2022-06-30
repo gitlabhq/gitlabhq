@@ -744,25 +744,11 @@ RSpec.describe Issue do
   end
 
   describe '#participants' do
-    context 'using a public project' do
-      let_it_be(:public_project) { create(:project, :public) }
-      let_it_be(:issue) { create(:issue, project: public_project) }
+    it_behaves_like 'issuable participants' do
+      let_it_be(:issuable_parent) { create(:project, :public) }
+      let_it_be_with_refind(:issuable) { create(:issue, project: issuable_parent) }
 
-      let!(:note1) do
-        create(:note_on_issue, noteable: issue, project: public_project, note: 'a')
-      end
-
-      let!(:note2) do
-        create(:note_on_issue, noteable: issue, project: public_project, note: 'b')
-      end
-
-      it 'includes the issue author' do
-        expect(issue.participants).to include(issue.author)
-      end
-
-      it 'includes the authors of the notes' do
-        expect(issue.participants).to include(note1.author, note2.author)
-      end
+      let(:params) { { noteable: issuable, project: issuable_parent } }
     end
 
     context 'using a private project' do

@@ -451,7 +451,7 @@ The `identifiers` array describes the detected vulnerability. An identifier obje
 `value` fields are used to tell if two identifiers are the same. The user interface uses the
 object's `name` and `url` fields to display the identifier.
 
-It is recommended to reuse the identifiers the GitLab scanners already define:
+We recommend that you use the identifiers the GitLab scanners already define:
 
 | Identifier | Type | Example value |
 |------------|------|---------------|

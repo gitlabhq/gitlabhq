@@ -4,6 +4,14 @@ variables:
 .dast-auto-deploy:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:${DAST_AUTO_DEPLOY_IMAGE_VERSION}"
 
+.common_rules: &common_rules
+  - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
+    when: never
+  - if: $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
+    when: never
+  - if: $DAST_WEBSITE  # we don't need to create a review app if a URL is already given
+    when: never
+
 dast_environment_deploy:
   extends: .dast-auto-deploy
   stage: review
@@ -23,12 +31,7 @@ dast_environment_deploy:
   artifacts:
     paths: [environment_url.txt]
   rules:
-    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
-      when: never
-    - if: $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
-      when: never
-    - if: $DAST_WEBSITE  # we don't need to create a review app if a URL is already given
-      when: never
+    - *common_rules
     - if: $CI_COMMIT_BRANCH &&
           ($CI_KUBERNETES_ACTIVE || $KUBECONFIG) &&
           $GITLAB_FEATURES =~ /\bdast\b/
@@ -47,13 +50,53 @@ stop_dast_environment:
     action: stop
   needs: ["dast"]
   rules:
-    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
-      when: never
-    - if: $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
-      when: never
-    - if: $DAST_WEBSITE  # we don't need to create a review app if a URL is already given
-      when: never
+    - *common_rules
     - if: $CI_COMMIT_BRANCH &&
           ($CI_KUBERNETES_ACTIVE || $KUBECONFIG) &&
           $GITLAB_FEATURES =~ /\bdast\b/
+      when: always
+
+.ecs_image:
+  image: 'registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest'
+
+.ecs_rules: &ecs_rules
+  - if: $AUTO_DEVOPS_PLATFORM_TARGET != "ECS"
+    when: never
+  - if: $CI_KUBERNETES_ACTIVE || $KUBECONFIG
+    when: never
+
+dast_ecs_environment_deploy:
+  extends: .ecs_image
+  stage: review
+  script:
+    - ecs update-task-definition
+    - echo "http://$(ecs get-task-hostname)" > environment_url.txt
+  environment:
+    name: dast-default
+    on_stop: stop_dast_ecs_environment
+  artifacts:
+    paths:
+      - environment_url.txt
+  rules:
+    - *common_rules
+    - *ecs_rules
+    - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bdast\b/
+
+stop_dast_ecs_environment:
+  extends: .ecs_image
+  stage: cleanup
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - ecs stop-task
+  allow_failure: true
+  environment:
+    name: dast-default
+    action: stop
+  needs:
+    - dast
+  rules:
+    - *common_rules
+    - *ecs_rules
+    - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bdast\b/
       when: always

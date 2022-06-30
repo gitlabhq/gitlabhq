@@ -23,7 +23,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/controllers/projects/blob_controller_spec.rb'
     - 'spec/controllers/projects/graphs_controller_spec.rb'
     - 'spec/controllers/projects/registry/repositories_controller_spec.rb'
-    - 'spec/features/incidents/incident_details_spec.rb'
     - 'spec/features/issues/spam_akismet_issue_creation_spec.rb'
     - 'spec/features/merge_request/user_sees_closing_issues_message_spec.rb'
     - 'spec/features/projects/commit/cherry_pick_spec.rb'

@@ -248,9 +248,13 @@ set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
 
 ## Set up Review Apps
 
-In order to use [Review Apps](../../../development/testing_guide/review_apps.md) with ECS, you should create another
-[service](#create-an-ecs-service) and specify its name using the `CI_AWS_ECS_SERVICE` variable scoped to `review/*`.
-Since this service is shared by all review apps, there is a limitation that only one Review App can be deployed at a time.
+To use [Review Apps](../../../development/testing_guide/review_apps.md) with ECS:
+
+1. Set up a new [service](#create-an-ecs-service).
+1. Use the `CI_AWS_ECS_SERVICE` variable to set the name.
+1. Set the environment scope to `review/*`. 
+
+Only one Review App at a time can be deployed because this service is shared by all review apps.
 
 ## Set up Security Testing
 
@@ -273,6 +277,20 @@ and add the following to your `.gitlab-ci.yml` file:
 ```yaml
 include:
   - template: Security/DAST.gitlab-ci.yml
+```
+
+To use DAST on the default branch:
+
+1. Set up a new [service](#create-an-ecs-service). This service will be used to deploy a temporary
+DAST environment. 
+1. Use the `CI_AWS_ECS_SERVICE` variable to set the name.
+1. Set the scope to the `dast-default` environment. 
+1. Add the following to your `.gitlab-ci.yml` file:
+
+```yaml
+include:
+  - template: Security/DAST.gitlab-ci.yml
+  - template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
 ```
 
 For more details and configuration options, see the [DAST documentation](../../../user/application_security/dast/index.md).

@@ -665,6 +665,25 @@ class Note < ApplicationRecord
     )
   end
 
+  def mentioned_users(current_user = nil)
+    users = super
+
+    return users unless confidential?
+
+    Ability.users_that_can_read_internal_notes(users, resource_parent)
+  end
+
+  def mentioned_filtered_user_ids_for(references)
+    return super unless confidential?
+
+    user_ids = references.mentioned_user_ids.presence
+
+    return [] if user_ids.blank?
+
+    users = User.where(id: user_ids)
+    Ability.users_that_can_read_internal_notes(users, resource_parent).pluck(:id)
+  end
+
   private
 
   def system_note_viewable_by?(user)

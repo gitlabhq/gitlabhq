@@ -9,7 +9,6 @@ module Sidebars
           return false unless context.project.feature_available?(:operations, context.current_user)
 
           add_item(metrics_dashboard_menu_item)
-          add_item(logs_menu_item)
           add_item(error_tracking_menu_item)
           add_item(alert_management_menu_item)
           add_item(incidents_menu_item)
@@ -53,21 +52,6 @@ module Sidebars
             active_routes: { path: 'metrics_dashboard#show' },
             container_html_options: { class: 'shortcuts-metrics' },
             item_id: :metrics
-          )
-        end
-
-        def logs_menu_item
-          if !Feature.enabled?(:monitor_logging, context.project) ||
-            !can?(context.current_user, :read_environment, context.project) ||
-            !can?(context.current_user, :read_pod_logs, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :logs)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Logs'),
-            link: project_logs_path(context.project),
-            active_routes: { path: 'logs#index' },
-            item_id: :logs
           )
         end
 

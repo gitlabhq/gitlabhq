@@ -30,7 +30,7 @@ export default class MeshObject extends Mesh {
     }
   }
 
-  changeMaterial(type) {
-    this.material = materials[type];
+  changeMaterial(materialKey) {
+    this.material = materials[materialKey];
   }
 }

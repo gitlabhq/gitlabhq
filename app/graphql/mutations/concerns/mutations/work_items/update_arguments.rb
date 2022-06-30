@@ -18,6 +18,9 @@ module Mutations
         argument :description_widget, ::Types::WorkItems::Widgets::DescriptionInputType,
                  required: false,
                  description: 'Input for description widget.'
+        argument :weight_widget, ::Types::WorkItems::Widgets::WeightInputType,
+                 required: false,
+                 description: 'Input for weight widget.'
       end
     end
   end

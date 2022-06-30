@@ -1501,6 +1501,12 @@
       changes: ["vendor/gems/ipynbdiff/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
+.vendor:rules:omniauth-gitlab:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/omniauth-gitlab/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
 ##################
 # Releases rules #
 ##################

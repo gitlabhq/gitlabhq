@@ -92,7 +92,13 @@ module Participable
   end
 
   def raw_participants(current_user = nil, verify_access: false)
-    ext = Gitlab::ReferenceExtractor.new(project, current_user)
+    extractor = Gitlab::ReferenceExtractor.new(project, current_user)
+
+    # Used to extract references from confidential notes.
+    # Referenced users that cannot read confidential notes are
+    # later removed from participants array.
+    internal_notes_extractor = Gitlab::ReferenceExtractor.new(project, current_user)
+
     participants = Set.new
     process = [self]
 
@@ -107,6 +113,8 @@ module Participable
 
         source.class.participant_attrs.each do |attr|
           if attr.respond_to?(:call)
+            ext = use_internal_notes_extractor_for?(source) ? internal_notes_extractor : extractor
+
             source.instance_exec(current_user, ext, &attr)
           else
             process << source.__send__(attr) # rubocop:disable GitlabSecurity/PublicSend
@@ -121,7 +129,18 @@ module Participable
       end
     end
 
-    participants.merge(ext.users)
+    participants.merge(users_that_can_read_internal_notes(internal_notes_extractor))
+    participants.merge(extractor.users)
+  end
+
+  def use_internal_notes_extractor_for?(source)
+    source.is_a?(Note) && source.confidential?
+  end
+
+  def users_that_can_read_internal_notes(extractor)
+    return [] unless self.is_a?(Noteable) && self.try(:resource_parent)
+
+    Ability.users_that_can_read_internal_notes(extractor.users, self.resource_parent)
   end
 
   def source_visible_to_user?(source, user)

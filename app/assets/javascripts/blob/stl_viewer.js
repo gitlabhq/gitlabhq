@@ -5,15 +5,15 @@ export default () => {
 
   [].slice.call(document.querySelectorAll('.js-material-changer')).forEach((el) => {
     el.addEventListener('click', (e) => {
-      const { target } = e;
+      const { currentTarget } = e;
 
       e.preventDefault();
 
       document.querySelector('.js-material-changer.selected').classList.remove('selected');
-      target.classList.add('selected');
-      target.blur();
+      currentTarget.classList.add('selected');
+      currentTarget.blur();
 
-      viewer.changeObjectMaterials(target.dataset.type);
+      viewer.changeObjectMaterials(currentTarget.dataset.material);
     });
   });
 };

@@ -17,6 +17,7 @@ exports[`Alert integration settings form default state should match the default 
       <gl-form-checkbox-stub
         checked="true"
         data-qa-selector="create_issue_checkbox"
+        id="2"
       >
         <span>
           Create an incident. Incidents are created for each alert triggered.
@@ -87,7 +88,9 @@ exports[`Alert integration settings form default state should match the default 
       labeldescription=""
       optionaltext="(optional)"
     >
-      <gl-form-checkbox-stub>
+      <gl-form-checkbox-stub
+        id="3"
+      >
         <span>
           Send a single email notification to Owners and Maintainers for new alerts.
         </span>
@@ -101,6 +104,7 @@ exports[`Alert integration settings form default state should match the default 
     >
       <gl-form-checkbox-stub
         checked="true"
+        id="4"
       >
         <span>
           Automatically close associated incident when a recovery alert notification resolves an alert

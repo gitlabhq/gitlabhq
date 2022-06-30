@@ -147,6 +147,34 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  shared_examples 'participating by confidential note notification' do
+    context 'when user is mentioned on confidential note' do
+      let_it_be(:guest_1) { create(:user) }
+      let_it_be(:guest_2) { create(:user) }
+      let_it_be(:reporter) { create(:user) }
+
+      before do
+        issuable.resource_parent.add_guest(guest_1)
+        issuable.resource_parent.add_guest(guest_2)
+        issuable.resource_parent.add_reporter(reporter)
+      end
+
+      it 'only emails authorized users' do
+        confidential_note_text = "#{guest_1.to_reference} and #{guest_2.to_reference} and #{reporter.to_reference}"
+        note_text = "Mentions #{guest_2.to_reference}"
+        create(:note_on_issue, noteable: issuable, project_id: project.id, note: confidential_note_text, confidential: true)
+        create(:note_on_issue, noteable: issuable, project_id: project.id, note: note_text)
+        reset_delivered_emails!
+
+        notification_trigger
+
+        should_not_email(guest_1)
+        should_email(guest_2)
+        should_email(reporter)
+      end
+    end
+  end
+
   shared_examples 'participating by assignee notification' do
     it 'emails the participant' do
       issuable.assignees << participant
@@ -735,6 +763,20 @@ RSpec.describe NotificationService, :mailer do
         it_behaves_like 'project emails are disabled' do
           let(:notification_target)  { note }
           let(:notification_trigger) { notification.new_note(note) }
+        end
+
+        context 'when note is confidential' do
+          let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@all mentioned', confidential: true) }
+          let(:guest) { create(:user) }
+
+          it 'does not notify users that cannot read note' do
+            project.add_guest(guest)
+            reset_delivered_emails!
+
+            notification.new_note(note)
+
+            should_not_email(guest)
+          end
         end
       end
     end
@@ -1376,6 +1418,11 @@ RSpec.describe NotificationService, :mailer do
         let(:notification_trigger) { notification.reassigned_issue(issue, @u_disabled, [assignee]) }
       end
 
+      it_behaves_like 'participating by confidential note notification' do
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.reassigned_issue(issue, @u_disabled, [assignee]) }
+      end
+
       it_behaves_like 'project emails are disabled' do
         let(:notification_target)  { issue }
         let(:notification_trigger) { notification.reassigned_issue(issue, @u_disabled, [assignee]) }
@@ -1492,6 +1539,11 @@ RSpec.describe NotificationService, :mailer do
 
         it_behaves_like 'project emails are disabled' do
           let(:notification_target)  { issue }
+          let(:notification_trigger) { notification.removed_milestone_issue(issue, issue.author) }
+        end
+
+        it_behaves_like 'participating by confidential note notification' do
+          let(:issuable) { issue }
           let(:notification_trigger) { notification.removed_milestone_issue(issue, issue.author) }
         end
       end
@@ -1616,6 +1668,11 @@ RSpec.describe NotificationService, :mailer do
         let(:notification_trigger) { notification.close_issue(issue, @u_disabled) }
       end
 
+      it_behaves_like 'participating by confidential note notification' do
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.close_issue(issue, @u_disabled) }
+      end
+
       it 'adds "subscribed" reason to subscriber emails' do
         user_1 = create(:user)
         issue.subscribe(user_1)
@@ -1658,6 +1715,11 @@ RSpec.describe NotificationService, :mailer do
         let(:notification_trigger) { notification.reopen_issue(issue, @u_disabled) }
       end
 
+      it_behaves_like 'participating by confidential note notification' do
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.reopen_issue(issue, @u_disabled) }
+      end
+
       it_behaves_like 'project emails are disabled' do
         let(:notification_target)  { issue }
         let(:notification_trigger) { notification.reopen_issue(issue, @u_disabled) }
@@ -1689,6 +1751,11 @@ RSpec.describe NotificationService, :mailer do
         let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
       end
 
+      it_behaves_like 'participating by confidential note notification' do
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
+      end
+
       it_behaves_like 'project emails are disabled' do
         let(:notification_target)  { issue }
         let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
@@ -1716,6 +1783,11 @@ RSpec.describe NotificationService, :mailer do
 
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_cloned(issue, new_issue, @u_disabled) }
+      end
+
+      it_behaves_like 'participating by confidential note notification' do
         let(:issuable) { issue }
         let(:notification_trigger) { notification.issue_cloned(issue, new_issue, @u_disabled) }
       end
@@ -1761,6 +1833,11 @@ RSpec.describe NotificationService, :mailer do
 
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_due(issue) }
+      end
+
+      it_behaves_like 'participating by confidential note notification' do
         let(:issuable) { issue }
         let(:notification_trigger) { notification.issue_due(issue) }
       end

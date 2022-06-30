@@ -5655,6 +5655,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
 | <a id="mutationworkitemupdatetitle"></a>`title` | [`String`](#string) | Title of the work item. |
+| <a id="mutationworkitemupdateweightwidget"></a>`weightWidget` | [`WorkItemWidgetWeightInput`](#workitemwidgetweightinput) | Input for weight widget. |
 
 #### Fields
 
@@ -18518,6 +18519,17 @@ Represents a hierarchy widget.
 | <a id="workitemwidgethierarchyparent"></a>`parent` | [`WorkItem`](#workitem) | Parent work item. |
 | <a id="workitemwidgethierarchytype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetWeight`
+
+Represents a weight widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetweighttype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+| <a id="workitemwidgetweightweight"></a>`weight` | [`Int`](#int) | Weight of the work item. |
+
 ## Enumeration types
 
 Also called _Enums_, enumeration types are a special kind of scalar that
@@ -20372,6 +20384,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypeassignees"></a>`ASSIGNEES` | Assignees widget. |
 | <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
 | <a id="workitemwidgettypehierarchy"></a>`HIERARCHY` | Hierarchy widget. |
+| <a id="workitemwidgettypeweight"></a>`WEIGHT` | Weight widget. |
 
 ## Scalar types
 
@@ -21593,6 +21606,7 @@ Implementations:
 - [`WorkItemWidgetAssignees`](#workitemwidgetassignees)
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
 - [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy)
+- [`WorkItemWidgetWeight`](#workitemwidgetweight)
 
 ##### Fields
 
@@ -22082,6 +22096,7 @@ A time-frame defined as a closed inclusive range of two dates.
 | <a id="workitemupdatedtaskinputid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemupdatedtaskinputstateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
 | <a id="workitemupdatedtaskinputtitle"></a>`title` | [`String`](#string) | Title of the work item. |
+| <a id="workitemupdatedtaskinputweightwidget"></a>`weightWidget` | [`WorkItemWidgetWeightInput`](#workitemwidgetweightinput) | Input for weight widget. |
 
 ### `WorkItemWidgetDescriptionInput`
 
@@ -22090,3 +22105,11 @@ A time-frame defined as a closed inclusive range of two dates.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdescriptioninputdescription"></a>`description` | [`String!`](#string) | Description of the work item. |
+
+### `WorkItemWidgetWeightInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetweightinputweight"></a>`weight` | [`Int!`](#int) | Weight of the work item. |

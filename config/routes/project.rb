@@ -238,13 +238,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :logs, only: [:index] do
-          collection do
-            get :k8s
-            get :elasticsearch
-          end
-        end
-
         resources :starrers, only: [:index]
         resources :forks, only: [:index, :new, :create]
         resources :group_links, only: [:update, :destroy], constraints: { id: /\d+|:id/ }
