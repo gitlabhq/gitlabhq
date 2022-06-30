@@ -53,7 +53,7 @@
     },
     "user": {
       "allOf": [
-        { "$ref": "member_user.json" }
+        { "$ref": "member_user_default.json" }
       ]
     },
     "state": { "type": "integer" },

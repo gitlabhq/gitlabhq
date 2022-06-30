@@ -86,6 +86,65 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator do
         include_examples 'logs raised exception and terminates validator process group'
       end
     end
+
+    context 'archive path validation' do
+      let(:filesize) { nil }
+
+      before do
+        expect(Gitlab::Import::Logger)
+          .to receive(:info)
+          .with(
+            import_upload_archive_path: filepath,
+            import_upload_archive_size: filesize,
+            message: error_message
+          )
+      end
+
+      context 'when archive path is traversed' do
+        let(:filepath) { '/foo/../bar' }
+        let(:error_message) { 'Invalid path' }
+
+        it 'returns false' do
+          expect(subject.valid?).to eq(false)
+        end
+      end
+
+      context 'when archive path is not a string' do
+        let(:filepath) { 123 }
+        let(:error_message) { 'Archive path is not a string' }
+
+        it 'returns false' do
+          expect(subject.valid?).to eq(false)
+        end
+      end
+
+      context 'which archive path is a symlink' do
+        let(:filepath) { File.join(Dir.tmpdir, 'symlink') }
+        let(:error_message) { 'Archive path is a symlink' }
+
+        before do
+          FileUtils.ln_s(filepath, filepath, force: true)
+        end
+
+        it 'returns false' do
+          expect(subject.valid?).to eq(false)
+        end
+      end
+
+      context 'when archive path is not a file' do
+        let(:filepath) { Dir.mktmpdir }
+        let(:filesize) { File.size(filepath) }
+        let(:error_message) { 'Archive path is not a file' }
+
+        after do
+          FileUtils.rm_rf(filepath)
+        end
+
+        it 'returns false' do
+          expect(subject.valid?).to eq(false)
+        end
+      end
+    end
   end
 
   def create_compressed_file

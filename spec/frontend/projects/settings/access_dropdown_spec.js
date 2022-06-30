@@ -159,4 +159,21 @@ describe('AccessDropdown', () => {
       expect(template).not.toContain(user.name);
     });
   });
+
+  describe('deployKeyRowHtml', () => {
+    const deployKey = {
+      id: 1,
+      title: 'title <script>alert(document.domain)</script>',
+      fullname: 'fullname <script>alert(document.domain)</script>',
+      avatar_url: '',
+      username: '',
+    };
+
+    it('escapes deploy key title and fullname', () => {
+      const template = dropdown.deployKeyRowHtml(deployKey);
+
+      expect(template).not.toContain(deployKey.title);
+      expect(template).not.toContain(deployKey.fullname);
+    });
+  });
 });

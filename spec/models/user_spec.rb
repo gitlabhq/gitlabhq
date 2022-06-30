@@ -4057,6 +4057,41 @@ RSpec.describe User do
     end
   end
 
+  describe '#authorized_project_mirrors' do
+    it 'returns project mirrors where the user has access equal to or above the given level' do
+      guest_project = create(:project)
+      reporter_project = create(:project)
+      maintainer_project = create(:project)
+
+      guest_group = create(:group)
+      reporter_group = create(:group)
+      maintainer_group = create(:group)
+
+      _guest_group_project = create(:project, group: guest_group)
+      reporter_group_project = create(:project, group: reporter_group)
+      maintainer_group_project = create(:project, group: maintainer_group)
+
+      user = create(:user)
+
+      guest_project.add_guest(user)
+      reporter_project.add_reporter(user)
+      maintainer_project.add_maintainer(user)
+
+      guest_group.add_guest(user)
+      reporter_group.add_reporter(user)
+      maintainer_group.add_maintainer(user)
+
+      project_mirrors = user.authorized_project_mirrors(Gitlab::Access::REPORTER)
+
+      expect(project_mirrors.pluck(:project_id)).to contain_exactly(
+        reporter_group_project.id,
+        maintainer_group_project.id,
+        reporter_project.id,
+        maintainer_project.id
+      )
+    end
+  end
+
   shared_context '#ci_owned_runners' do
     let(:user) { create(:user) }
 

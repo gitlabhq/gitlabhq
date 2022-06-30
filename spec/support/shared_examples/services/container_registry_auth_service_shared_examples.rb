@@ -142,9 +142,9 @@ RSpec.shared_examples 'logs an auth warning' do |requested_actions|
       requested_project_path: project.full_path,
       requested_actions: requested_actions,
       authorized_actions: [],
-      user_id: current_user.id,
-      username: current_user.username
-    }
+      user_id: current_user&.id,
+      username: current_user&.username
+    }.compact
   end
 
   it do

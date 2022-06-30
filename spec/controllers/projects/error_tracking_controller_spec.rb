@@ -307,6 +307,18 @@ RSpec.describe Projects::ErrorTrackingController do
     end
 
     describe 'format json' do
+      context 'when user is a reporter' do
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'returns 404 error' do
+          update_issue
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
       context 'when update result is successful' do
         before do
           allow(issue_update_service).to receive(:execute)
