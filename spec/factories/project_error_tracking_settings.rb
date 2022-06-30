@@ -9,6 +9,7 @@ FactoryBot.define do
     project_name { 'Sentry Project' }
     organization_name { 'Sentry Org' }
     integrated { false }
+    sentry_project_id { 10 }
 
     trait :disabled do
       enabled { false }

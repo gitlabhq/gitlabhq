@@ -19156,7 +19156,8 @@ CREATE TABLE project_error_tracking_settings (
     encrypted_token_iv character varying,
     project_name character varying,
     organization_name character varying,
-    integrated boolean DEFAULT true NOT NULL
+    integrated boolean DEFAULT true NOT NULL,
+    sentry_project_id bigint
 );
 
 CREATE TABLE project_export_jobs (
@@ -26543,6 +26544,8 @@ CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON e
 CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_merge_requests USING btree (environment_id, merge_request_id);
 
 CREATE INDEX idx_geo_con_rep_updated_events_on_container_repository_id ON geo_container_repository_updated_events USING btree (container_repository_id);
+
+CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id) WHERE ((package_type = 3) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
 

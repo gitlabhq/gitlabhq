@@ -483,6 +483,29 @@ RSpec.describe API::Labels do
       let(:request) { api("/projects/#{project.id}/labels", user) }
       let(:params) { { name: valid_label_title_1 } }
     end
+
+    context 'with group label' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_label) { create(:group_label, title: valid_group_label_title_1, group: group) }
+
+      before do
+        project.update!(group: group)
+      end
+
+      it 'returns 401 if user does not have access' do
+        delete api("/projects/#{project.id}/labels/#{group_label.id}", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      it 'returns 204 if user has access' do
+        group.add_developer(user)
+
+        delete api("/projects/#{project.id}/labels/#{group_label.id}", user)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
   end
 
   describe 'PUT /projects/:id/labels' do
@@ -536,6 +559,44 @@ RSpec.describe API::Labels do
           }
 
       expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    context 'with group label' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_label) { create(:group_label, title: valid_group_label_title_1, group: group) }
+
+      before do
+        project.update!(group: group)
+      end
+
+      it 'allows updating of group label priority' do
+        put api("/projects/#{project.id}/labels/#{group_label.id}", user), params: { priority: 5 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['priority']).to eq(5)
+      end
+
+      it 'returns 401 when updating other fields' do
+        put api("/projects/#{project.id}/labels/#{group_label.id}", user), params: {
+          priority: 5,
+          new_name: 'new label name'
+        }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      it 'returns 200 when user has access to the group label' do
+        group.add_developer(user)
+
+        put api("/projects/#{project.id}/labels/#{group_label.id}", user), params: {
+          priority: 5,
+          new_name: 'new label name'
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['priority']).to eq(5)
+        expect(json_response['name']).to eq('new label name')
+      end
     end
   end
 

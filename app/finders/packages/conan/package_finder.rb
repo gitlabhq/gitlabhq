@@ -25,7 +25,7 @@ module Packages
       end
 
       def projects_visible_to_current_user
-        ::Project.public_or_visible_to_user(current_user)
+        ::Project.public_or_visible_to_user(current_user, ::Gitlab::Access::REPORTER)
       end
     end
   end

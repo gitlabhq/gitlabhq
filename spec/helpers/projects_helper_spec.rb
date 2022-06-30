@@ -52,6 +52,7 @@ RSpec.describe ProjectsHelper do
       context 'api_url present' do
         let(:json) do
           {
+            sentry_project_id: error_tracking_setting.sentry_project_id,
             name: error_tracking_setting.project_name,
             organization_name: error_tracking_setting.organization_name,
             organization_slug: error_tracking_setting.organization_slug,

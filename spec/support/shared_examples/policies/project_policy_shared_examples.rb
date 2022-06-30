@@ -345,16 +345,7 @@ RSpec.shared_examples 'project policies as admin without admin mode' do
 end
 
 RSpec.shared_examples 'package access with repository disabled' do
-  context 'when repository is disabled' do
-    before do
-      project.project_feature.update!(
-        # Disable merge_requests and builds as well, since merge_requests and
-        # builds cannot have higher visibility than repository.
-        merge_requests_access_level: ProjectFeature::DISABLED,
-        builds_access_level: ProjectFeature::DISABLED,
-        repository_access_level: ProjectFeature::DISABLED)
-    end
+  include_context 'repository disabled via project features'
 
-    it { is_expected.to be_allowed(:read_package) }
-  end
+  it { is_expected.to be_allowed(:read_package) }
 end

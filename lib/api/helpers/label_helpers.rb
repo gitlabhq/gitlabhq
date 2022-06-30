@@ -82,8 +82,14 @@ module API
         params.delete(:label_id)
         params.delete(:name)
 
-        label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
-        render_validation_error!(label) unless label.valid?
+        update_params = declared_params(include_missing: false)
+
+        if update_params.present?
+          authorize! :admin_label, label
+
+          label = ::Labels::UpdateService.new(update_params).execute(label)
+          render_validation_error!(label) unless label.valid?
+        end
 
         if parent.is_a?(Project) && update_priority
           if priority.nil?
@@ -97,9 +103,9 @@ module API
       end
 
       def delete_label(parent)
-        authorize! :admin_label, parent
-
         label = find_label(parent, params_id_or_title, include_ancestor_groups: false)
+
+        authorize! :admin_label, label
 
         destroy_conditionally!(label)
       end

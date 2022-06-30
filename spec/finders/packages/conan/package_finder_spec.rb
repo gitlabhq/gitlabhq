@@ -2,22 +2,53 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::Conan::PackageFinder do
+  using RSpec::Parameterized::TableSyntax
+
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:private_project) { create(:project, :private) }
+
+  let_it_be(:conan_package) { create(:conan_package, project: project) }
+  let_it_be(:conan_package2) { create(:conan_package, project: project) }
+  let_it_be(:errored_package) { create(:conan_package, :error, project: project) }
+  let_it_be(:private_package) { create(:conan_package, project: private_project) }
 
   describe '#execute' do
-    let!(:conan_package) { create(:conan_package, project: project) }
-    let!(:conan_package2) { create(:conan_package, project: project) }
+    let(:query) { "#{conan_package.name.split('/').first[0, 3]}%" }
+    let(:finder) { described_class.new(user, query: query) }
 
-    subject { described_class.new(user, query: query).execute }
+    subject { finder.execute }
 
-    context 'packages that are not installable' do
-      let!(:conan_package3) { create(:conan_package, :error, project: project) }
-      let!(:non_visible_project) { create(:project, :private) }
-      let!(:non_visible_conan_package) { create(:conan_package, project: non_visible_project) }
-      let(:query) { "#{conan_package.name.split('/').first[0, 3]}%" }
+    where(:visibility, :role, :packages_visible) do
+      :private  | :maintainer | true
+      :private  | :developer  | true
+      :private  | :reporter   | true
+      :private  | :guest      | false
+      :private  | :anonymous  | false
 
-      it { is_expected.to eq [conan_package, conan_package2] }
+      :internal | :maintainer | true
+      :internal | :developer  | true
+      :internal | :reporter   | true
+      :internal | :guest      | true
+      :internal | :anonymous  | false
+
+      :public   | :maintainer | true
+      :public   | :developer  | true
+      :public   | :reporter   | true
+      :public   | :guest      | true
+      :public   | :anonymous  | true
+    end
+
+    with_them do
+      let(:expected_packages) { packages_visible ? [conan_package, conan_package2] : [] }
+      let(:user) { role == :anonymous ? nil : super() }
+
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel.string_options[visibility.to_s])
+        project.add_user(user, role) unless role == :anonymous
+      end
+
+      it { is_expected.to eq(expected_packages) }
     end
   end
 end

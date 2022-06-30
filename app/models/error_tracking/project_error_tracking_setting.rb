@@ -125,17 +125,22 @@ module ErrorTracking
 
     def issue_details(opts = {})
       with_reactive_cache('issue_details', opts.stringify_keys) do |result|
+        ensure_issue_belongs_to_project!(result[:issue].project_id)
         result
       end
     end
 
     def issue_latest_event(opts = {})
       with_reactive_cache('issue_latest_event', opts.stringify_keys) do |result|
+        ensure_issue_belongs_to_project!(result[:latest_event].project_id)
         result
       end
     end
 
     def update_issue(opts = {})
+      issue_to_be_updated = sentry_client.issue_details(issue_id: opts[:issue_id])
+      ensure_issue_belongs_to_project!(issue_to_be_updated.project_id)
+
       handle_exceptions do
         { updated: sentry_client.update_issue(opts) }
       end
@@ -176,6 +181,25 @@ module ErrorTracking
     end
 
     private
+
+    def ensure_issue_belongs_to_project!(project_id_from_api)
+      raise 'The Sentry issue appers to be outside of the configured Sentry project' if Integer(project_id_from_api) != ensure_sentry_project_id!
+    end
+
+    def ensure_sentry_project_id!
+      return sentry_project_id if sentry_project_id.present?
+
+      raise("Couldn't find project: #{organization_name} / #{project_name} on Sentry") if sentry_project.nil?
+
+      update!(sentry_project_id: sentry_project.id)
+      sentry_project_id
+    end
+
+    def sentry_project
+      strong_memoize(:sentry_project) do
+        sentry_client.projects.find { |project| project.name == project_name && project.organization_name == organization_name }
+      end
+    end
 
     def add_gitlab_issue_details(issue)
       issue.gitlab_commit = match_gitlab_commit(issue.first_release_version)

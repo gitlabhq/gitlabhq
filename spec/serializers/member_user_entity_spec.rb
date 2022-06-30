@@ -11,7 +11,7 @@ RSpec.describe MemberUserEntity do
   let(:entity_hash) { entity.as_json }
 
   it 'matches json schema' do
-    expect(entity.to_json).to match_schema('entities/member_user')
+    expect(entity.to_json).to match_schema('entities/member_user_default')
   end
 
   it 'correctly exposes `avatar_url`' do
@@ -27,10 +27,8 @@ RSpec.describe MemberUserEntity do
     expect(entity_hash[:blocked]).to be(true)
   end
 
-  it 'correctly exposes `two_factor_enabled`' do
-    allow(user).to receive(:two_factor_enabled?).and_return(true)
-
-    expect(entity_hash[:two_factor_enabled]).to be(true)
+  it 'does not expose `two_factor_enabled` by default' do
+    expect(entity_hash[:two_factor_enabled]).to be(nil)
   end
 
   it 'correctly exposes `status.emoji`' do
@@ -43,5 +41,67 @@ RSpec.describe MemberUserEntity do
 
   it 'correctly exposes `last_activity_on`' do
     expect(entity_hash[:last_activity_on]).to be(user.last_activity_on)
+  end
+
+  context 'when options includes a source' do
+    let(:current_user) { create(:user) }
+    let(:options) { { current_user: current_user, source: source } }
+    let(:entity) { described_class.new(user, options) }
+
+    shared_examples 'correctly exposes user two_factor_enabled' do
+      context 'when the current_user has a role lower than minimum manage member role' do
+        before do
+          source.add_user(current_user, Gitlab::Access::DEVELOPER)
+        end
+
+        it 'does not expose user two_factor_enabled' do
+          expect(entity_hash[:two_factor_enabled]).to be(nil)
+        end
+
+        it 'matches json schema' do
+          expect(entity.to_json).to match_schema('entities/member_user_default')
+        end
+      end
+
+      context 'when the current user has a minimum manage member role or higher' do
+        before do
+          source.add_user(current_user, minimum_manage_member_role)
+        end
+
+        it 'matches json schema' do
+          expect(entity.to_json).to match_schema('entities/member_user_for_admin_member')
+        end
+
+        it 'exposes user two_factor_enabled' do
+          expect(entity_hash[:two_factor_enabled]).to be(false)
+        end
+      end
+
+      context 'when the current user is self' do
+        let(:current_user) { user }
+
+        it 'exposes user two_factor_enabled' do
+          expect(entity_hash[:two_factor_enabled]).to be(false)
+        end
+
+        it 'matches json schema' do
+          expect(entity.to_json).to match_schema('entities/member_user_for_admin_member')
+        end
+      end
+    end
+
+    context 'when the source is a group' do
+      let(:source) { create(:group) }
+      let(:minimum_manage_member_role) { Gitlab::Access::OWNER }
+
+      it_behaves_like 'correctly exposes user two_factor_enabled'
+    end
+
+    context 'when the source is a project' do
+      let(:source) { create(:project) }
+      let(:minimum_manage_member_role) { Gitlab::Access::MAINTAINER }
+
+      it_behaves_like 'correctly exposes user two_factor_enabled'
+    end
   end
 end

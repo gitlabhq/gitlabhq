@@ -138,7 +138,7 @@
               = milestone.merge_requests.merged.count
 
     - if project
-      - recent_releases, total_count, more_count = recent_releases_with_counts(milestone)
+      - recent_releases, total_count, more_count = recent_releases_with_counts(milestone, current_user)
       .block.releases
         .sidebar-collapsed-icon.has-tooltip{ title: milestone_releases_tooltip_text(milestone), data: { container: 'body', placement: 'left', boundary: 'viewport' } }
           %strong
