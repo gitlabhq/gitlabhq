@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Projects::ProjectMembersHelper
-  def project_members_app_data_json(project, members:, group_links:, invited:, access_requests:)
+  def project_members_app_data_json(project, members:, invited:, access_requests:, include_relations:, search:)
     {
       user: project_members_list_data(project, members, { param_name: :page, params: { search_groups: nil } }),
-      group: project_group_links_list_data(project, group_links),
+      group: project_group_links_list_data(project, include_relations, search),
       invite: project_members_list_data(project, invited.nil? ? [] : invited),
       access_request: project_members_list_data(project, access_requests.nil? ? [] : access_requests),
       source_id: project.id,
@@ -57,10 +57,29 @@ module Projects::ProjectMembersHelper
     }
   end
 
-  def project_group_links_list_data(project, group_links)
+  def project_group_links_list_data(project, include_relations, search)
+    members = []
+
+    if include_relations.include?(:direct)
+      project_group_links = project.project_group_links
+      project_group_links = project_group_links.search(search) if search
+      members += project_group_links_serialized(project, project_group_links)
+    end
+
+    if include_relations.include?(:inherited)
+      group_group_links = project.group_group_links.distinct_on_shared_with_group_id_with_group_access
+      group_group_links = group_group_links.search(search) if search
+      members += group_group_links_serialized(project, group_group_links)
+    end
+
+    if project_group_links.present? && group_group_links.present?
+      members = members.sort_by { |m| -m.dig(:access_level, :integer_value).to_i }
+                       .uniq { |m| m.dig(:shared_with_group, :id) }
+    end
+
     {
-      members: project_group_links_serialized(project, group_links),
-      pagination: members_pagination_data(group_links),
+      members: members,
+      pagination: members_pagination_data(members),
       member_path: project_group_link_path(project, ':id')
     }
   end

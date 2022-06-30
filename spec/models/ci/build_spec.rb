@@ -2073,6 +2073,13 @@ RSpec.describe Ci::Build do
       expect(build.tags.first.name).to eq('tag')
     end
 
+    it 'strips tags' do
+      build.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+
+      build.save!
+      expect(build.tags.map(&:name)).to match_array(%w[taga tagb tagc])
+    end
+
     context 'with BulkInsertableTags.with_bulk_insert_tags' do
       it 'does not save_tags' do
         Ci::BulkInsertableTags.with_bulk_insert_tags do

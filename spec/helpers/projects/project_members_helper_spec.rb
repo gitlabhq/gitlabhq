@@ -14,7 +14,6 @@ RSpec.describe Projects::ProjectMembersHelper do
 
   describe 'project members' do
     let_it_be(:members) { create_list(:project_member, 2, project: project) }
-    let_it_be(:group_links) { create_list(:project_group_link, 1, project: project) }
     let_it_be(:invited) { create_list(:project_member, 2, :invited, project: project) }
     let_it_be(:access_requests) { create_list(:project_member, 2, :access_request, project: project) }
 
@@ -26,9 +25,10 @@ RSpec.describe Projects::ProjectMembersHelper do
           helper.project_members_app_data_json(
             project,
             members: present_members(members_collection),
-            group_links: group_links,
             invited: present_members(invited),
-            access_requests: present_members(access_requests)
+            access_requests: present_members(access_requests),
+            include_relations: [:inherited, :direct],
+            search: nil
           )
         )
       end
@@ -82,6 +82,70 @@ RSpec.describe Projects::ProjectMembersHelper do
           }.as_json
 
           expect(subject['user']['pagination']).to match(expected)
+        end
+      end
+
+      context 'group links' do
+        let_it_be(:shared_with_group) { create(:group) }
+        let_it_be(:group_link) { create(:project_group_link, project: project, group: shared_with_group) }
+
+        before do
+          allow(helper).to receive(:project_group_link_path).with(project, ':id').and_return('/foo-group/foo-project/-/group_links/:id')
+        end
+
+        it 'sets `group.members` property that matches json schema' do
+          expect(subject['group']['members'].to_json).to match_schema('group_link/project_group_links')
+        end
+
+        it 'sets `member_path` property' do
+          expect(subject['group']['member_path']).to eq('/foo-group/foo-project/-/group_links/:id')
+        end
+
+        context 'inherited' do
+          let_it_be(:shared_with_group_1) { create(:group) }
+          let_it_be(:shared_with_group_2) { create(:group) }
+          let_it_be(:shared_with_group_3) { create(:group) }
+          let_it_be(:shared_with_group_4) { create(:group) }
+          let_it_be(:shared_with_group_5) { create(:group) }
+          let_it_be(:top_group) { create(:group) }
+          let_it_be(:sub_group) { create(:group, parent: top_group) }
+          let_it_be(:project) { create(:project, group: sub_group) }
+          let_it_be(:group_link_1) { create(:group_group_link, shared_group: top_group, shared_with_group: shared_with_group_1, group_access: Gitlab::Access::GUEST) }
+          let_it_be(:group_link_2) { create(:group_group_link, shared_group: top_group, shared_with_group: shared_with_group_4, group_access: Gitlab::Access::GUEST) }
+          let_it_be(:group_link_3) { create(:group_group_link, shared_group: top_group, shared_with_group: shared_with_group_5, group_access: Gitlab::Access::DEVELOPER) }
+          let_it_be(:group_link_4) { create(:group_group_link, shared_group: sub_group, shared_with_group: shared_with_group_2, group_access: Gitlab::Access::DEVELOPER) }
+          let_it_be(:group_link_5) { create(:group_group_link, shared_group: sub_group, shared_with_group: shared_with_group_4, group_access: Gitlab::Access::DEVELOPER) }
+          let_it_be(:group_link_6) { create(:group_group_link, shared_group: sub_group, shared_with_group: shared_with_group_5, group_access: Gitlab::Access::GUEST) }
+          let_it_be(:group_link_7) { create(:project_group_link, project: project, group: shared_with_group_1, group_access: Gitlab::Access::DEVELOPER) }
+          let_it_be(:group_link_8) { create(:project_group_link, project: project, group: shared_with_group_2, group_access: Gitlab::Access::GUEST) }
+          let_it_be(:group_link_9) { create(:project_group_link, project: project, group: shared_with_group_3, group_access: Gitlab::Access::REPORTER) }
+
+          subject do
+            Gitlab::Json.parse(
+              helper.project_members_app_data_json(
+                project,
+                members: present_members(members_collection),
+                invited: present_members(invited),
+                access_requests: present_members(access_requests),
+                include_relations: include_relations,
+                search: nil
+              )
+            )
+          end
+
+          using RSpec::Parameterized::TableSyntax
+
+          where(:include_relations, :result) do
+            [:inherited, :direct] | lazy { [group_link_7, group_link_4, group_link_9, group_link_5, group_link_3].map(&:id) }
+            [:inherited]          | lazy { [group_link_1, group_link_4, group_link_5, group_link_3].map(&:id) }
+            [:direct]             | lazy { [group_link_7, group_link_8, group_link_9].map(&:id) }
+          end
+
+          with_them do
+            it 'returns correct group links' do
+              expect(subject['group']['members'].map { |link| link['id'] }).to match_array(result)
+            end
+          end
         end
       end
     end

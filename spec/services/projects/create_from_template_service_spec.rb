@@ -49,7 +49,7 @@ RSpec.describe Projects::CreateFromTemplateService do
     end
 
     it 'is not scheduled' do
-      expect(project.import_scheduled?).to be_nil
+      expect(project.import_scheduled?).to be(false)
     end
 
     it 'repository is empty' do

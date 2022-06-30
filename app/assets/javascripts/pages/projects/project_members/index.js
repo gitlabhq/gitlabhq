@@ -38,7 +38,7 @@ initMembersApp(document.querySelector('.js-project-members-list-app'), {
     },
   },
   [MEMBER_TYPES.group]: {
-    tableFields: SHARED_FIELDS.concat('granted'),
+    tableFields: SHARED_FIELDS.concat(['source', 'granted']),
     tableAttrs: {
       table: { 'data-qa-selector': 'groups_list' },
       tr: { 'data-qa-selector': 'group_row' },
@@ -46,7 +46,7 @@ initMembersApp(document.querySelector('.js-project-members-list-app'), {
     requestFormatter: groupLinkRequestFormatter,
     filteredSearchBar: {
       show: true,
-      tokens: [],
+      tokens: ['groups_with_inherited_permissions'],
       searchParam: 'search_groups',
       placeholder: s__('Members|Search groups'),
       recentSearchesStorageKey: 'project_group_links',

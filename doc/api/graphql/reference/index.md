@@ -778,6 +778,27 @@ Input type: `AuditEventsStreamingHeadersDestroyInput`
 | <a id="mutationauditeventsstreamingheadersdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsstreamingheadersdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.auditEventsStreamingHeadersUpdate`
+
+Input type: `AuditEventsStreamingHeadersUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreamingheadersupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreamingheadersupdateheaderid"></a>`headerId` | [`AuditEventsStreamingHeaderID!`](#auditeventsstreamingheaderid) | Header to update. |
+| <a id="mutationauditeventsstreamingheadersupdatekey"></a>`key` | [`String!`](#string) | Header key. |
+| <a id="mutationauditeventsstreamingheadersupdatevalue"></a>`value` | [`String!`](#string) | Header value. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreamingheadersupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreamingheadersupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsstreamingheadersupdateheader"></a>`header` | [`AuditEventStreamingHeader`](#auditeventstreamingheader) | Updates header. |
+
 ### `Mutation.awardEmojiAdd`
 
 Input type: `AwardEmojiAddInput`

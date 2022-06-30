@@ -39,7 +39,8 @@
 
     .js-project-members-list-app{ data: { members_data: project_members_app_data_json(@project,
                                                                                       members: @project_members,
-                                                                                      group_links: @group_links,
                                                                                       invited: @invited_members,
-                                                                                      access_requests: @requesters) } }
+                                                                                      access_requests: @requesters,
+                                                                                      include_relations: @include_relations,
+                                                                                      search: params[:search_groups]) } }
       = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

@@ -8390,6 +8390,27 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#group_group_links' do
+    context 'with group project' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      it 'returns group links of group' do
+        expect(group).to receive_message_chain(:shared_with_group_links, :of_ancestors_and_self)
+
+        project.group_group_links
+      end
+    end
+
+    context 'with personal project' do
+      let_it_be(:project) { create(:project) }
+
+      it 'returns none' do
+        expect(project.group_group_links).to eq(GroupGroupLink.none)
+      end
+    end
+  end
+
   describe '#security_training_available?' do
     subject { build(:project) }
 

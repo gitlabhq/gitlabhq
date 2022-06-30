@@ -197,7 +197,7 @@ RSpec.describe API::PypiPackages do
     let(:url) { "/projects/#{project.id}/packages/pypi" }
     let(:headers) { {} }
     let(:requires_python) { '>=3.7' }
-    let(:base_params) { { requires_python: requires_python, version: '1.0.0', name: 'sample-project', sha256_digest: '1' * 64 } }
+    let(:base_params) { { requires_python: requires_python, version: '1.0.0', name: 'sample-project', sha256_digest: '1' * 64, md5_digest: '1' * 32 } }
     let(:params) { base_params.merge(content: temp_file(file_name)) }
     let(:send_rewritten_field) { true }
     let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
@@ -253,6 +253,19 @@ RSpec.describe API::PypiPackages do
         let(:headers) { user_headers.merge(workhorse_headers) }
 
         it_behaves_like 'PyPI package creation', :developer, :created, true
+      end
+
+      context 'without md5_digest' do
+        let(:token) { personal_access_token.token }
+        let(:user_headers) { basic_auth_header(user.username, token) }
+        let(:headers) { user_headers.merge(workhorse_headers) }
+        let(:params) { base_params.merge(content: temp_file(file_name)) }
+
+        before do
+          params.delete(:md5_digest)
+        end
+
+        it_behaves_like 'PyPI package creation', :developer, :created, true, false
       end
     end
 

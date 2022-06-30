@@ -220,10 +220,11 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       expect(policy.directives['base-uri']).to be_nil
     end
 
-    it 'returns default values for directives not defined by the user' do
+    it 'returns default values for directives not defined by the user or with <default_value> and disables directives set to false' do
       # Explicitly disabling script_src and setting report_uri
       csp_config[:directives] = {
         script_src: false,
+        style_src: '<default_value>',
         report_uri: 'https://example.org'
       }
 

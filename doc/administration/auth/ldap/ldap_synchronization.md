@@ -42,11 +42,6 @@ The process also updates the following user information:
 - SSH public keys (if `sync_ssh_keys` is set)
 - Kerberos identity (if Kerberos is enabled)
 
-The LDAP sync process:
-
-- Updates existing users.
-- Creates new users on first sign in.
-
 ### Adjust LDAP user sync schedule
 
 By default, GitLab runs a worker once per day at 01:30 a.m. server time to

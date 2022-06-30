@@ -1190,6 +1190,13 @@ RSpec.describe Ci::Runner do
       expect(runner.tags.first.name).to eq('tag')
     end
 
+    it 'strips tags' do
+      runner.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+
+      runner.save!
+      expect(runner.tags.map(&:name)).to match_array(%w[taga tagb tagc])
+    end
+
     context 'with BulkInsertableTags.with_bulk_insert_tags' do
       it 'does not save_tags' do
         Ci::BulkInsertableTags.with_bulk_insert_tags do

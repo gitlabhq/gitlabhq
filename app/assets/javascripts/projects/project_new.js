@@ -276,28 +276,33 @@ const bindEvents = () => {
   );
 
   let isProjectImportUrlDirty = false;
-  $projectImportUrl.addEventListener('blur', () => {
-    isProjectImportUrlDirty = true;
-    debouncedUpdateUrlPathWarningVisibility();
-  });
-  $projectImportUrl.addEventListener('keyup', () => {
-    deriveProjectPathFromUrl($projectImportUrl);
-  });
+
+  if ($projectImportUrl) {
+    $projectImportUrl.addEventListener('blur', () => {
+      isProjectImportUrlDirty = true;
+      debouncedUpdateUrlPathWarningVisibility();
+    });
+    $projectImportUrl.addEventListener('keyup', () => {
+      deriveProjectPathFromUrl($projectImportUrl);
+    });
+  }
 
   [$projectImportUrl, $projectImportUrlUser, $projectImportUrlPassword].forEach(($f) => {
-    if ($f?.on) {
-      $f.on('input', () => {
-        if (isProjectImportUrlDirty) {
-          debouncedUpdateUrlPathWarningVisibility();
-        }
-      });
-    } else {
-      $f.addEventListener('input', () => {
+    if (!$f) return false;
+
+    if ($f.on) {
+      return $f.on('input', () => {
         if (isProjectImportUrlDirty) {
           debouncedUpdateUrlPathWarningVisibility();
         }
       });
     }
+
+    return $f.addEventListener('input', () => {
+      if (isProjectImportUrlDirty) {
+        debouncedUpdateUrlPathWarningVisibility();
+      }
+    });
   });
 
   $projectImportForm.on('submit', async (e) => {

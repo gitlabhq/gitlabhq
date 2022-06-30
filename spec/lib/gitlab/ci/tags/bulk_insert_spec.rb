@@ -71,6 +71,13 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert do
         expect(Ci::Build.tagged_with('tag3')).to include(other_job)
       end
 
+      it 'strips tags' do
+        job.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+
+        service.insert!
+        expect(job.tags.map(&:name)).to match_array(%w[taga tagb tagc])
+      end
+
       context 'when batching inserts for tags' do
         before do
           stub_const("#{described_class}::TAGS_BATCH_SIZE", 2)

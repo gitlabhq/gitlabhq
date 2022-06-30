@@ -41,7 +41,6 @@ module Glfm
 
       h1_regex = /\A# / # new logic compared to original Python code
       h2_regex = /\A## / # new logic compared to original Python code
-      h3_regex = /\A### / # new logic compared to original Python code
       header_regex = /\A#+ / # Added beginning of line anchor to original Python code
 
       spec_txt_lines.each do |line|
@@ -103,19 +102,12 @@ module Glfm
           # reset the headers array if we found a new H1
           headers = [] if line =~ h1_regex
 
-          if headers.length == 2 && line =~ h2_regex
-            # pop the last entry from the headers array if we are in an H2 and found a new H2
-            headers.pop
-          elsif headers.length == 3 && line =~ h3_regex
-            # pop the last entry from the headers array if we are in an H3 and found a new H3
-            headers.pop
-          elsif headers.length == 3 && line =~ h2_regex
-            # pop the last two entries from the headers array if we are in an H3 and found a new H2
-            headers.pop(2)
-          end
+          # headers should be size 2 or less [<H1_headertext>, <H2_headertext>]
+          # pop the last entry from the headers array if we are in an H2 and found a new H2
+          headers.pop if headers.length == 2 && line =~ h2_regex
 
           # push the new header text to the headers array
-          headers << headertext # New logic compared to original Python code
+          headers << headertext if line =~ h1_regex || line =~ h2_regex
         else
           # Else if we are in regular text...
 

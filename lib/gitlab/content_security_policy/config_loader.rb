@@ -7,6 +7,8 @@ module Gitlab
                       form_action frame_ancestors frame_src img_src manifest_src
                       media_src object_src report_uri script_src style_src worker_src).freeze
 
+      DEFAULT_FALLBACK_VALUE = '<default_value>'
+
       def self.default_enabled
         Rails.env.development? || Rails.env.test?
       end
@@ -62,8 +64,10 @@ module Gitlab
       end
 
       def initialize(csp_directives)
+        # Using <default_value> falls back to the default values.
+        directives = csp_directives.reject { |_, value| value == DEFAULT_FALLBACK_VALUE }
         @merged_csp_directives =
-          HashWithIndifferentAccess.new(csp_directives)
+          HashWithIndifferentAccess.new(directives)
                                    .reverse_merge(::Gitlab::ContentSecurityPolicy::ConfigLoader.default_directives)
       end
 

@@ -393,7 +393,7 @@ is updated in a major version GitLab release.
 
 ### Add metrics
 
-Every CI/CD template must also have metrics defined to track their use.
+Every CI/CD template must also have metrics defined to track their use. The CI/CD template monthly usage report can be found in [Sisense (GitLab team members only)](https://app.periscopedata.com/app/gitlab/785953/Pipeline-Authoring-Dashboard?widget=14910475&udv=0).
 
 To add a metric definition for a new template:
 

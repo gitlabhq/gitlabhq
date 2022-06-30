@@ -441,33 +441,29 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :prometheus_integration, update_only: true
   accepts_nested_attributes_for :alerting_setting, update_only: true
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
-    :merge_requests_enabled?, :forking_enabled?, :issues_enabled?,
-    :pages_enabled?, :analytics_enabled?, :snippets_enabled?, :public_pages?, :private_pages?,
-    :merge_requests_access_level, :forking_access_level, :issues_access_level,
-    :wiki_access_level, :snippets_access_level, :builds_access_level,
-    :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level,
-    :operations_enabled?, :operations_access_level, :security_and_compliance_access_level,
-    :container_registry_access_level, :container_registry_enabled?,
-    to: :project_feature, allow_nil: true
-  alias_method :container_registry_enabled, :container_registry_enabled?
-  delegate :show_default_award_emojis, :show_default_award_emojis=, :show_default_award_emojis?,
-    :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=, :enforce_auth_checks_on_uploads?,
-    :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=, :warn_about_potentially_unwanted_characters?,
-    to: :project_setting, allow_nil: true
-  delegate :scheduled?, :started?, :in_progress?, :failed?, :finished?,
-    prefix: :import, to: :import_state, allow_nil: true
+  delegate :merge_requests_access_level, :forking_access_level, :issues_access_level,
+           :wiki_access_level, :snippets_access_level, :builds_access_level,
+           :repository_access_level, :package_registry_access_level, :pages_access_level,
+           :metrics_dashboard_access_level, :analytics_access_level,
+           :operations_access_level, :security_and_compliance_access_level,
+           :container_registry_access_level,
+           to: :project_feature, allow_nil: true
+
+  delegate :show_default_award_emojis, :show_default_award_emojis=,
+           :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=,
+           :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=,
+           to: :project_setting, allow_nil: true
+
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :project_setting
   delegate :squash_option, :squash_option=, to: :project_setting
   delegate :mr_default_target_self, :mr_default_target_self=, to: :project_setting
   delegate :previous_default_branch, :previous_default_branch=, to: :project_setting
-  delegate :no_import?, to: :import_state, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role, to: :team
   delegate :group_runners_enabled, :group_runners_enabled=, to: :ci_cd_settings, allow_nil: true
-  delegate :root_ancestor, :certificate_based_clusters_enabled?, to: :namespace, allow_nil: true
+  delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
   delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :dashboard_timezone, to: :metrics_setting, allow_nil: true, prefix: true
@@ -483,7 +479,6 @@ class Project < ApplicationRecord
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
     :allow_merge_on_skipped_pipeline=, :has_confluence?, :has_shimo?,
     to: :project_setting
-  delegate :active?, to: :prometheus_integration, allow_nil: true, prefix: true
   delegate :merge_commit_template, :merge_commit_template=, to: :project_setting, allow_nil: true
   delegate :squash_commit_template, :squash_commit_template=, to: :project_setting, allow_nil: true
 
@@ -916,6 +911,14 @@ class Project < ApplicationRecord
     association(:namespace).loaded?
   end
 
+  def certificate_based_clusters_enabled?
+    !!namespace&.certificate_based_clusters_enabled?
+  end
+
+  def prometheus_integration_active?
+    !!prometheus_integration&.active?
+  end
+
   def personal_namespace_holder?(user)
     return false unless personal?
     return false unless user
@@ -930,6 +933,42 @@ class Project < ApplicationRecord
 
   def project_setting
     super.presence || build_project_setting
+  end
+
+  def show_default_award_emojis?
+    !!project_setting&.show_default_award_emojis?
+  end
+
+  def enforce_auth_checks_on_uploads?
+    !!project_setting&.enforce_auth_checks_on_uploads?
+  end
+
+  def warn_about_potentially_unwanted_characters?
+    !!project_setting&.warn_about_potentially_unwanted_characters?
+  end
+
+  def no_import?
+    !!import_state&.no_import?
+  end
+
+  def import_scheduled?
+    !!import_state&.scheduled?
+  end
+
+  def import_started?
+    !!import_state&.started?
+  end
+
+  def import_in_progress?
+    !!import_state&.in_progress?
+  end
+
+  def import_failed?
+    !!import_state&.failed?
+  end
+
+  def import_finished?
+    !!import_state&.finished?
   end
 
   def all_pipelines
@@ -1838,6 +1877,59 @@ class Project < ApplicationRecord
       latest_successful_pipeline_for_default_branch
     end
   end
+
+  def feature_available?(feature, user = nil)
+    !!project_feature&.feature_available?(feature, user)
+  end
+
+  def builds_enabled?
+    !!project_feature&.builds_enabled?
+  end
+
+  def wiki_enabled?
+    !!project_feature&.wiki_enabled?
+  end
+
+  def merge_requests_enabled?
+    !!project_feature&.merge_requests_enabled?
+  end
+
+  def forking_enabled?
+    !!project_feature&.forking_enabled?
+  end
+
+  def issues_enabled?
+    !!project_feature&.issues_enabled?
+  end
+
+  def pages_enabled?
+    !!project_feature&.pages_enabled?
+  end
+
+  def analytics_enabled?
+    !!project_feature&.analytics_enabled?
+  end
+
+  def snippets_enabled?
+    !!project_feature&.snippets_enabled?
+  end
+
+  def public_pages?
+    !!project_feature&.public_pages?
+  end
+
+  def private_pages?
+    !!project_feature&.private_pages?
+  end
+
+  def operations_enabled?
+    !!project_feature&.operations_enabled?
+  end
+
+  def container_registry_enabled?
+    !!project_feature&.container_registry_enabled?
+  end
+  alias_method :container_registry_enabled, :container_registry_enabled?
 
   def enable_ci
     project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
@@ -2900,6 +2992,10 @@ class Project < ApplicationRecord
 
   def refreshing_build_artifacts_size?
     build_artifacts_size_refresh&.started?
+  end
+
+  def group_group_links
+    group&.shared_with_group_links&.of_ancestors_and_self || GroupGroupLink.none
   end
 
   def security_training_available?

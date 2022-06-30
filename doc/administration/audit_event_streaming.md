@@ -169,6 +169,20 @@ mutation {
 
 The header is created if the returned `errors` object is empty.
 
+### Update with the API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361964) in GitLab 15.2.
+
+Group owners can update a HTTP header using the GraphQL `auditEventsStreamingHeadersCreate` mutation.
+
+```graphql
+mutation {
+  auditEventsStreamingHeadersUpdate(input: { headerId: "gid://gitlab/AuditEvents::Streaming::Header/24255", key: "new-foo", value: "new-bar" }) {
+    errors
+  }
+}
+```
+
 ### Delete with the API
 
 Group owners can remove a HTTP header using the GraphQL `auditEventsStreamingHeadersDestroy` mutation. You can retrieve the header ID

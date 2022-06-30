@@ -79,7 +79,10 @@ module QA
 
           def delete_issue
             click_element(:issue_actions_ellipsis_dropdown)
-            click_element(:delete_issue_button, Page::Modal::DeleteIssue)
+
+            click_element(:delete_issue_button,
+                          Page::Modal::DeleteIssue,
+                          wait: Support::Repeater::DEFAULT_MAX_WAIT_TIME)
 
             Page::Modal::DeleteIssue.perform(&:confirm_delete_issue)
 

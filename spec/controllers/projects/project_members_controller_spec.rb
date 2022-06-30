@@ -68,27 +68,6 @@ RSpec.describe Projects::ProjectMembersController do
       end
     end
 
-    context 'group links' do
-      let_it_be(:project_group_link) { create(:project_group_link, project: project, group: group) }
-
-      it 'lists group links' do
-        get :index, params: { namespace_id: project.namespace, project_id: project }
-
-        expect(assigns(:group_links).map(&:id)).to contain_exactly(project_group_link.id)
-      end
-
-      context 'when `search_groups` param is present' do
-        let(:group_2) { create(:group, :public, name: 'group_2') }
-        let!(:project_group_link_2) { create(:project_group_link, project: project, group: group_2) }
-
-        it 'lists group links that match search' do
-          get :index, params: { namespace_id: project.namespace, project_id: project, search_groups: 'group_2' }
-
-          expect(assigns(:group_links).map(&:id)).to contain_exactly(project_group_link_2.id)
-        end
-      end
-    end
-
     context 'invited members' do
       let_it_be(:invited_member) { create(:project_member, :invited, project: project) }
 

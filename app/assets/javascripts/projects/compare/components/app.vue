@@ -121,27 +121,21 @@ export default {
         @selectRevision="onSelectRevision"
       />
     </div>
-    <div class="gl-mt-6">
+    <div class="gl-display-flex gl-mt-6 gl-gap-3">
       <gl-button category="primary" variant="confirm" @click="onSubmit">
         {{ s__('CompareRevisions|Compare') }}
       </gl-button>
-      <gl-button data-testid="swapRevisionsButton" class="btn btn-default" @click="onSwapRevision">
+      <gl-button data-testid="swapRevisionsButton" @click="onSwapRevision">
         {{ s__('CompareRevisions|Swap revisions') }}
       </gl-button>
       <gl-button
         v-if="projectMergeRequestPath"
         :href="projectMergeRequestPath"
         data-testid="projectMrButton"
-        class="btn btn-default gl-button"
       >
         {{ s__('CompareRevisions|View open merge request') }}
       </gl-button>
-      <gl-button
-        v-else-if="createMrPath"
-        :href="createMrPath"
-        data-testid="createMrButton"
-        class="btn btn-default gl-button"
-      >
+      <gl-button v-else-if="createMrPath" :href="createMrPath" data-testid="createMrButton">
         {{ s__('CompareRevisions|Create merge request') }}
       </gl-button>
     </div>

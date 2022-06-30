@@ -20,6 +20,8 @@ module Gitlab
 
     config.view_component.preview_route = "/-/view_component/previews"
 
+    config.active_support.hash_digest_class = ::OpenSSL::Digest::SHA256
+
     # This section contains configuration from Rails upgrades to override the new defaults so that we
     # keep existing behavior.
     #
@@ -38,7 +40,6 @@ module Gitlab
     # Rails 5.2
     config.action_dispatch.use_authenticated_cookie_encryption = false
     config.active_support.use_authenticated_message_encryption = false
-    config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
     config.action_controller.default_protect_from_forgery = false
     config.action_view.form_with_generates_ids = false
 

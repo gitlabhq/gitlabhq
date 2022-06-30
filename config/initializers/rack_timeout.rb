@@ -8,7 +8,8 @@
 # and it's used only as the last resort. In such case this termination is
 # logged and we should fix the potential timeout issue in the code itself.
 
-if Gitlab::Runtime.puma? && !Rails.env.test?
+if Gitlab::Runtime.puma? && !Rails.env.test? &&
+    Gitlab::Utils.to_boolean(ENV['GITLAB_RAILS_RACK_TIMEOUT_ENABLE'], default: true)
   Rack::Timeout::Logger.level = Logger::ERROR
 
   Gitlab::Application.configure do |config|
