@@ -1,4 +1,4 @@
-export const projectKeys = ['name', 'organizationName', 'organizationSlug', 'slug'];
+export const projectKeys = ['id', 'name', 'organizationName', 'organizationSlug', 'slug'];
 
 export const transformFrontendSettings = ({
   apiHost,
@@ -9,6 +9,7 @@ export const transformFrontendSettings = ({
 }) => {
   const project = selectedProject
     ? {
+        sentry_project_id: selectedProject.id,
         slug: selectedProject.slug,
         name: selectedProject.name,
         organization_name: selectedProject.organizationName,

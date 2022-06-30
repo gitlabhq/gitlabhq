@@ -463,6 +463,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - If you run external PostgreSQL, particularly AWS RDS,
   [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
   to avoid the database crashing.
+- Unauthenticated requests to the [`ciConfig` GraphQL field](../api/graphql/reference/index.md#queryciconfig) are no longer supported.
+  Before you upgrade to GitLab 15.1, add an [access token](../api/index.md#authentication) to your requests.
+  The user creating the token must have [permission](../user/permissions.md) to create pipelines in the project.
 
 ### 15.0.0
 

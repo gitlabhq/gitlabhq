@@ -215,15 +215,13 @@ module Auth
     def deploy_token_can_pull?(requested_project)
       has_authentication_ability?(:read_container_image) &&
         deploy_token.present? &&
-        deploy_token.has_access_to?(requested_project) &&
-        deploy_token.read_registry?
+        can?(deploy_token, :read_container_image, requested_project)
     end
 
     def deploy_token_can_push?(requested_project)
       has_authentication_ability?(:create_container_image) &&
         deploy_token.present? &&
-        deploy_token.has_access_to?(requested_project) &&
-        deploy_token.write_registry?
+        can?(deploy_token, :create_container_image, requested_project)
     end
 
     ##

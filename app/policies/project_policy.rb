@@ -59,7 +59,13 @@ class ProjectPolicy < BasePolicy
 
   desc "Container registry is disabled"
   condition(:container_registry_disabled, scope: :subject) do
-    !access_allowed_to?(:container_registry)
+    if user.is_a?(DeployToken)
+      (!user.read_registry? && !user.write_registry?) ||
+      user.revoked? ||
+      !project.container_registry_enabled?
+    else
+      !access_allowed_to?(:container_registry)
+    end
   end
 
   desc "Container registry is enabled for everyone with access to the project"
@@ -86,6 +92,16 @@ class ProjectPolicy < BasePolicy
   desc "Deploy key with write access"
   condition(:push_code_deploy_key) do
     user.is_a?(DeployKey) && user.can_push_to?(project)
+  end
+
+  desc "Deploy token with read_container_image scope"
+  condition(:read_container_image_deploy_token) do
+    user.is_a?(DeployToken) && user.has_access_to?(project) && user.read_registry?
+  end
+
+  desc "Deploy token with create_container_image scope"
+  condition(:create_container_image_deploy_token) do
+    user.is_a?(DeployToken) && user.has_access_to?(project) && user.write_registry?
   end
 
   desc "Deploy token with read_package_registry scope"
@@ -308,7 +324,6 @@ class ProjectPolicy < BasePolicy
     enable :read_deployment
     enable :read_merge_request
     enable :read_sentry_issue
-    enable :update_sentry_issue
     enable :read_prometheus
     enable :read_metrics_dashboard_annotation
     enable :metrics_dashboard
@@ -423,6 +438,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_feature_flags_user_lists
     enable :update_escalation_status
     enable :read_secure_files
+    enable :update_sentry_issue
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -695,6 +711,14 @@ class ProjectPolicy < BasePolicy
 
   rule { push_code_deploy_key }.policy do
     enable :push_code
+  end
+
+  rule { read_container_image_deploy_token }.policy do
+    enable :read_container_image
+  end
+
+  rule { create_container_image_deploy_token }.policy do
+    enable :create_container_image
   end
 
   rule { read_package_registry_deploy_token }.policy do

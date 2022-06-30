@@ -303,7 +303,7 @@ RSpec.describe Issues::CreateService do
 
         context 'user is reporter or above' do
           before do
-            project.add_reporter(user)
+            project.add_developer(user)
           end
 
           it 'assigns the sentry error' do

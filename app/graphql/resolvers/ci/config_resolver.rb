@@ -12,7 +12,7 @@ module Resolvers
         Should not be requested more than once per request.
       MD
 
-      authorize :read_pipeline
+      authorize :create_pipeline
 
       argument :project_path, GraphQL::Types::ID,
                required: true,

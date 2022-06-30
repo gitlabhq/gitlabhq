@@ -5,18 +5,67 @@ require 'spec_helper'
 RSpec.describe Ci::RunnerJobsFinder do
   let(:project) { create(:project) }
   let(:runner) { create(:ci_runner, :instance) }
+  let(:user) { create(:user) }
+  let(:params) { {} }
 
-  subject { described_class.new(runner, params).execute }
+  subject { described_class.new(runner, user, params).execute }
+
+  before do
+    project.add_developer(user)
+  end
 
   describe '#execute' do
     context 'when params is empty' do
-      let(:params) { {} }
       let!(:job) { create(:ci_build, runner: runner, project: project) }
       let!(:job1) { create(:ci_build, project: project) }
 
       it 'returns all jobs assigned to Runner' do
         is_expected.to match_array(job)
         is_expected.not_to match_array(job1)
+      end
+    end
+
+    context 'when the user has guest access' do
+      it 'does not returns jobs the user does not have permission to see' do
+        another_project = create(:project)
+        job = create(:ci_build, runner: runner, project: another_project)
+
+        another_project.add_guest(user)
+
+        is_expected.not_to match_array(job)
+      end
+    end
+
+    context 'when the user has permission to read all resources' do
+      let(:user) { create(:user, :admin) }
+
+      it 'returns all the jobs assigned to a runner' do
+        jobs = create_list(:ci_build, 5, runner: runner, project: project)
+
+        is_expected.to match_array(jobs)
+      end
+    end
+
+    context 'when the user has different access levels in different projects' do
+      it 'returns only the jobs the user has permission to see' do
+        guest_project = create(:project)
+        reporter_project = create(:project)
+
+        _guest_jobs = create_list(:ci_build, 2, runner: runner, project: guest_project)
+        reporter_jobs = create_list(:ci_build, 3, runner: runner, project: reporter_project)
+
+        guest_project.add_guest(user)
+        reporter_project.add_reporter(user)
+
+        is_expected.to match_array(reporter_jobs)
+      end
+    end
+
+    context 'when the user has reporter access level or greater' do
+      it 'returns jobs assigned to the Runner that the user has accesss to' do
+        jobs = create_list(:ci_build, 3, runner: runner, project: project)
+
+        is_expected.to match_array(jobs)
       end
     end
 

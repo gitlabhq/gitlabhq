@@ -25,18 +25,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline do
     let(:project_data) do
       {
         'visibility' => 'private',
-        'created_at' => 10.days.ago,
-        'archived' => false,
-        'shared_runners_enabled' => true,
-        'container_registry_enabled' => true,
-        'only_allow_merge_if_pipeline_succeeds' => true,
-        'only_allow_merge_if_all_discussions_are_resolved' => true,
-        'request_access_enabled' => true,
-        'printing_merge_request_link_enabled' => true,
-        'remove_source_branch_after_merge' => true,
-        'autoclose_referenced_issues' => true,
-        'suggestion_commit_message' => 'message',
-        'wiki_enabled' => true
+        'created_at' => '2016-08-12T09:41:03'
       }
     end
 
@@ -58,17 +47,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline do
 
       expect(imported_project).not_to be_nil
       expect(imported_project.group).to eq(group)
-      expect(imported_project.suggestion_commit_message).to eq('message')
-      expect(imported_project.archived?).to eq(project_data['archived'])
-      expect(imported_project.shared_runners_enabled?).to eq(project_data['shared_runners_enabled'])
-      expect(imported_project.container_registry_enabled?).to eq(project_data['container_registry_enabled'])
-      expect(imported_project.only_allow_merge_if_pipeline_succeeds?).to eq(project_data['only_allow_merge_if_pipeline_succeeds'])
-      expect(imported_project.only_allow_merge_if_all_discussions_are_resolved?).to eq(project_data['only_allow_merge_if_all_discussions_are_resolved'])
-      expect(imported_project.request_access_enabled?).to eq(project_data['request_access_enabled'])
-      expect(imported_project.printing_merge_request_link_enabled?).to eq(project_data['printing_merge_request_link_enabled'])
-      expect(imported_project.remove_source_branch_after_merge?).to eq(project_data['remove_source_branch_after_merge'])
-      expect(imported_project.autoclose_referenced_issues?).to eq(project_data['autoclose_referenced_issues'])
-      expect(imported_project.wiki_enabled?).to eq(project_data['wiki_enabled'])
+      expect(imported_project.visibility).to eq(project_data['visibility'])
+      expect(imported_project.created_at).to eq(project_data['created_at'])
     end
   end
 

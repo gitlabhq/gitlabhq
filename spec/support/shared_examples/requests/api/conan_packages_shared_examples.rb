@@ -19,33 +19,66 @@ RSpec.shared_examples 'conan ping endpoint' do
 end
 
 RSpec.shared_examples 'conan search endpoint' do
-  before do
-    project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
-
-    # Do not pass the HTTP_AUTHORIZATION header,
-    # in order to test that this public project's packages
-    # are visible to anonymous search.
-    get api(url), params: params
-  end
+  using RSpec::Parameterized::TableSyntax
 
   subject { json_response['results'] }
 
-  context 'returns packages with a matching name' do
-    let(:params) { { q: package.conan_recipe } }
+  context 'with a public project' do
+    before do
+      project.update!(visibility: 'public')
 
-    it { is_expected.to contain_exactly(package.conan_recipe) }
+      # Do not pass the HTTP_AUTHORIZATION header,
+      # in order to test that this public project's packages
+      # are visible to anonymous search.
+      get api(url), params: params
+    end
+
+    context 'returns packages with a matching name' do
+      let(:params) { { q: package.conan_recipe } }
+
+      it { is_expected.to contain_exactly(package.conan_recipe) }
+    end
+
+    context 'returns packages using a * wildcard' do
+      let(:params) { { q: "#{package.name[0, 3]}*" } }
+
+      it { is_expected.to contain_exactly(package.conan_recipe) }
+    end
+
+    context 'does not return non-matching packages' do
+      let(:params) { { q: "foo" } }
+
+      it { is_expected.to be_blank }
+    end
   end
 
-  context 'returns packages using a * wildcard' do
+  context 'with a private project' do
     let(:params) { { q: "#{package.name[0, 3]}*" } }
 
-    it { is_expected.to contain_exactly(package.conan_recipe) }
-  end
+    where(:role, :packages_visible) do
+      :maintainer | true
+      :developer  | true
+      :reporter   | true
+      :guest      | false
+      :anonymous  | false
+    end
 
-  context 'does not return non-matching packages' do
-    let(:params) { { q: "foo" } }
+    with_them do
+      before do
+        project.update!(visibility: 'private')
+        project.team.truncate
+        user.project_authorizations.delete_all
+        project.add_user(user, role) unless role == :anonymous
 
-    it { is_expected.to be_blank }
+        get api(url), params: params, headers: headers
+      end
+
+      if params[:packages_visible]
+        it { is_expected.to contain_exactly(package.conan_recipe) }
+      else
+        it { is_expected.to be_blank }
+      end
+    end
   end
 end
 
