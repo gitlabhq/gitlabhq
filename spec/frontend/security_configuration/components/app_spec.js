@@ -42,12 +42,36 @@ describe('App component', () => {
   let wrapper;
   let userCalloutDismissSpy;
 
-  const createComponent = ({ shouldShowCallout = true, ...propsData }) => {
+  const securityFeaturesMock = [
+    {
+      name: SAST_NAME,
+      shortName: SAST_SHORT_NAME,
+      description: SAST_DESCRIPTION,
+      helpPath: SAST_HELP_PATH,
+      configurationHelpPath: SAST_CONFIG_HELP_PATH,
+      type: REPORT_TYPE_SAST,
+      available: true,
+    },
+  ];
+
+  const complianceFeaturesMock = [
+    {
+      name: LICENSE_COMPLIANCE_NAME,
+      description: LICENSE_COMPLIANCE_DESCRIPTION,
+      helpPath: LICENSE_COMPLIANCE_HELP_PATH,
+      type: REPORT_TYPE_LICENSE_COMPLIANCE,
+      configurationHelpPath: LICENSE_COMPLIANCE_HELP_PATH,
+    },
+  ];
+
+  const createComponent = ({ shouldShowCallout = true, ...propsData } = {}) => {
     userCalloutDismissSpy = jest.fn();
 
     wrapper = extendedWrapper(
       mount(SecurityConfigurationApp, {
         propsData: {
+          augmentedSecurityFeatures: securityFeaturesMock,
+          augmentedComplianceFeatures: complianceFeaturesMock,
           securityTrainingEnabled: true,
           ...propsData,
         },
@@ -108,38 +132,13 @@ describe('App component', () => {
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
   const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');
 
-  const securityFeaturesMock = [
-    {
-      name: SAST_NAME,
-      shortName: SAST_SHORT_NAME,
-      description: SAST_DESCRIPTION,
-      helpPath: SAST_HELP_PATH,
-      configurationHelpPath: SAST_CONFIG_HELP_PATH,
-      type: REPORT_TYPE_SAST,
-      available: true,
-    },
-  ];
-
-  const complianceFeaturesMock = [
-    {
-      name: LICENSE_COMPLIANCE_NAME,
-      description: LICENSE_COMPLIANCE_DESCRIPTION,
-      helpPath: LICENSE_COMPLIANCE_HELP_PATH,
-      type: REPORT_TYPE_LICENSE_COMPLIANCE,
-      configurationHelpPath: LICENSE_COMPLIANCE_HELP_PATH,
-    },
-  ];
-
   afterEach(() => {
     wrapper.destroy();
   });
 
   describe('basic structure', () => {
-    beforeEach(async () => {
-      createComponent({
-        augmentedSecurityFeatures: securityFeaturesMock,
-        augmentedComplianceFeatures: complianceFeaturesMock,
-      });
+    beforeEach(() => {
+      createComponent();
     });
 
     it('renders main-heading with correct text', () => {
@@ -199,10 +198,7 @@ describe('App component', () => {
 
   describe('Manage via MR Error Alert', () => {
     beforeEach(() => {
-      createComponent({
-        augmentedSecurityFeatures: securityFeaturesMock,
-        augmentedComplianceFeatures: complianceFeaturesMock,
-      });
+      createComponent();
     });
 
     describe('on initial load', () => {
@@ -238,8 +234,6 @@ describe('App component', () => {
     describe('given the right props', () => {
       beforeEach(() => {
         createComponent({
-          augmentedSecurityFeatures: securityFeaturesMock,
-          augmentedComplianceFeatures: complianceFeaturesMock,
           autoDevopsEnabled: false,
           gitlabCiPresent: false,
           canEnableAutoDevops: true,
@@ -261,10 +255,7 @@ describe('App component', () => {
 
     describe('given the wrong props', () => {
       beforeEach(() => {
-        createComponent({
-          augmentedSecurityFeatures: securityFeaturesMock,
-          augmentedComplianceFeatures: complianceFeaturesMock,
-        });
+        createComponent();
       });
       it('should not show AutoDevopsAlert', () => {
         expect(findAutoDevopsAlert().exists()).toBe(false);
@@ -289,8 +280,6 @@ describe('App component', () => {
         }
 
         createComponent({
-          augmentedSecurityFeatures: securityFeaturesMock,
-          augmentedComplianceFeatures: complianceFeaturesMock,
           autoDevopsEnabled,
         });
       });
@@ -348,7 +337,6 @@ describe('App component', () => {
     describe('given at least one unavailable feature', () => {
       beforeEach(() => {
         createComponent({
-          augmentedSecurityFeatures: securityFeaturesMock,
           augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(false)),
         });
       });
@@ -369,7 +357,6 @@ describe('App component', () => {
     describe('given at least one unavailable feature, but banner is already dismissed', () => {
       beforeEach(() => {
         createComponent({
-          augmentedSecurityFeatures: securityFeaturesMock,
           augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(false)),
           shouldShowCallout: false,
         });
@@ -397,8 +384,6 @@ describe('App component', () => {
   describe('when given latestPipelinePath props', () => {
     beforeEach(() => {
       createComponent({
-        augmentedSecurityFeatures: securityFeaturesMock,
-        augmentedComplianceFeatures: complianceFeaturesMock,
         latestPipelinePath: 'test/path',
       });
     });
@@ -425,8 +410,6 @@ describe('App component', () => {
   describe('given gitlabCiPresent & gitlabCiHistoryPath props', () => {
     beforeEach(() => {
       createComponent({
-        augmentedSecurityFeatures: securityFeaturesMock,
-        augmentedComplianceFeatures: complianceFeaturesMock,
         gitlabCiPresent: true,
         gitlabCiHistoryPath,
       });
@@ -446,8 +429,6 @@ describe('App component', () => {
 
     beforeEach(async () => {
       createComponent({
-        augmentedSecurityFeatures: securityFeaturesMock,
-        augmentedComplianceFeatures: complianceFeaturesMock,
         ...props,
       });
     });

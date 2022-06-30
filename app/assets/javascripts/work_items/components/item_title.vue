@@ -1,5 +1,4 @@
 <script>
-import { escape } from 'lodash';
 import { __ } from '~/locale';
 
 export default {
@@ -21,15 +20,11 @@ export default {
     },
   },
   methods: {
-    getSanitizedTitle(inputEl) {
-      const { innerText } = inputEl;
-      return escape(innerText);
-    },
     handleBlur({ target }) {
-      this.$emit('title-changed', this.getSanitizedTitle(target));
+      this.$emit('title-changed', target.innerText);
     },
     handleInput({ target }) {
-      this.$emit('title-input', this.getSanitizedTitle(target));
+      this.$emit('title-input', target.innerText);
     },
     handleSubmit() {
       this.$refs.titleEl.blur();

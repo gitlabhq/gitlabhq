@@ -19502,6 +19502,47 @@ CREATE TABLE project_pages_metadata (
     onboarding_complete boolean DEFAULT false NOT NULL
 );
 
+CREATE TABLE project_relation_export_uploads (
+    id bigint NOT NULL,
+    project_relation_export_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    export_file text NOT NULL,
+    CONSTRAINT check_d8ee243e9e CHECK ((char_length(export_file) <= 255))
+);
+
+CREATE SEQUENCE project_relation_export_uploads_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_relation_export_uploads_id_seq OWNED BY project_relation_export_uploads.id;
+
+CREATE TABLE project_relation_exports (
+    id bigint NOT NULL,
+    project_export_job_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relation text NOT NULL,
+    jid text,
+    export_error text,
+    CONSTRAINT check_15e644d856 CHECK ((char_length(jid) <= 255)),
+    CONSTRAINT check_4b5880b795 CHECK ((char_length(relation) <= 255)),
+    CONSTRAINT check_dbd1cf73d0 CHECK ((char_length(export_error) <= 300))
+);
+
+CREATE SEQUENCE project_relation_exports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_relation_exports_id_seq OWNED BY project_relation_exports.id;
+
 CREATE TABLE project_repositories (
     id bigint NOT NULL,
     shard_id integer NOT NULL,
@@ -23317,6 +23358,10 @@ ALTER TABLE ONLY project_incident_management_settings ALTER COLUMN project_id SE
 
 ALTER TABLE ONLY project_mirror_data ALTER COLUMN id SET DEFAULT nextval('project_mirror_data_id_seq'::regclass);
 
+ALTER TABLE ONLY project_relation_export_uploads ALTER COLUMN id SET DEFAULT nextval('project_relation_export_uploads_id_seq'::regclass);
+
+ALTER TABLE ONLY project_relation_exports ALTER COLUMN id SET DEFAULT nextval('project_relation_exports_id_seq'::regclass);
+
 ALTER TABLE ONLY project_repositories ALTER COLUMN id SET DEFAULT nextval('project_repositories_id_seq'::regclass);
 
 ALTER TABLE ONLY project_repository_states ALTER COLUMN id SET DEFAULT nextval('project_repository_states_id_seq'::regclass);
@@ -25454,6 +25499,12 @@ ALTER TABLE ONLY project_mirror_data
 
 ALTER TABLE ONLY project_pages_metadata
     ADD CONSTRAINT project_pages_metadata_pkey PRIMARY KEY (project_id);
+
+ALTER TABLE ONLY project_relation_export_uploads
+    ADD CONSTRAINT project_relation_export_uploads_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY project_relation_exports
+    ADD CONSTRAINT project_relation_exports_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_repositories
     ADD CONSTRAINT project_repositories_pkey PRIMARY KEY (id);
@@ -29082,6 +29133,8 @@ CREATE INDEX index_project_deploy_tokens_on_deploy_token_id ON project_deploy_to
 
 CREATE UNIQUE INDEX index_project_deploy_tokens_on_project_id_and_deploy_token_id ON project_deploy_tokens USING btree (project_id, deploy_token_id);
 
+CREATE UNIQUE INDEX index_project_export_job_relation ON project_relation_exports USING btree (project_export_job_id, relation);
+
 CREATE UNIQUE INDEX index_project_export_jobs_on_jid ON project_export_jobs USING btree (jid);
 
 CREATE INDEX index_project_export_jobs_on_project_id_and_jid ON project_export_jobs USING btree (project_id, jid);
@@ -29119,6 +29172,10 @@ CREATE INDEX index_project_mirror_data_on_status ON project_mirror_data USING bt
 CREATE INDEX index_project_pages_metadata_on_pages_deployment_id ON project_pages_metadata USING btree (pages_deployment_id);
 
 CREATE INDEX index_project_pages_metadata_on_project_id_and_deployed_is_true ON project_pages_metadata USING btree (project_id) WHERE (deployed = true);
+
+CREATE INDEX index_project_relation_export_upload_id ON project_relation_export_uploads USING btree (project_relation_export_id);
+
+CREATE INDEX index_project_relation_exports_on_project_export_job_id ON project_relation_exports USING btree (project_export_job_id);
 
 CREATE UNIQUE INDEX index_project_repositories_on_disk_path ON project_repositories USING btree (disk_path);
 
@@ -33016,6 +33073,9 @@ ALTER TABLE ONLY design_management_versions
 ALTER TABLE ONLY approval_merge_request_rules_approved_approvers
     ADD CONSTRAINT fk_rails_6577725edb FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY project_relation_export_uploads
+    ADD CONSTRAINT fk_rails_660ada90c9 FOREIGN KEY (project_relation_export_id) REFERENCES project_relation_exports(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY operations_feature_flags_clients
     ADD CONSTRAINT fk_rails_6650ed902c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -33825,6 +33885,9 @@ ALTER TABLE ONLY ci_daily_build_group_report_results
 
 ALTER TABLE ONLY packages_debian_group_architectures
     ADD CONSTRAINT fk_rails_ef667d1b03 FOREIGN KEY (distribution_id) REFERENCES packages_debian_group_distributions(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_relation_exports
+    ADD CONSTRAINT fk_rails_ef89b354fc FOREIGN KEY (project_export_job_id) REFERENCES project_export_jobs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY label_priorities
     ADD CONSTRAINT fk_rails_ef916d14fa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

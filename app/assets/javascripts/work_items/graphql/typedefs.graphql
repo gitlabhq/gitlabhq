@@ -21,9 +21,10 @@ extend type WorkItem {
   mockWidgets: [LocalWorkItemWidget]
 }
 
-type LocalWorkItemAssigneesInput {
+input LocalUpdateWorkItemInput {
   id: WorkItemID!
   assignees: [UserCore!]
+  weight: Int
 }
 
 type LocalWorkItemPayload {
@@ -32,5 +33,5 @@ type LocalWorkItemPayload {
 }
 
 extend type Mutation {
-  localUpdateWorkItem(input: LocalWorkItemAssigneesInput!): LocalWorkItemPayload
+  localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
 }

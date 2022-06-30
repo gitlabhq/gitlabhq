@@ -142,7 +142,14 @@ export default {
           :work-item-id="workItem.id"
           :assignees="workItemAssignees.nodes"
         />
-        <work-item-weight v-if="workItemWeight" :weight="workItemWeight.weight" />
+        <work-item-weight
+          v-if="workItemWeight"
+          class="gl-mb-5"
+          :can-update="canUpdate"
+          :weight="workItemWeight.weight"
+          :work-item-id="workItem.id"
+          :work-item-type="workItemType"
+        />
       </template>
       <work-item-description
         v-if="hasDescriptionWidget"

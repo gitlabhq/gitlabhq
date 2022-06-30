@@ -425,6 +425,8 @@ project_incident_management_settings: :gitlab_main
 project_metrics_settings: :gitlab_main
 project_mirror_data: :gitlab_main
 project_pages_metadata: :gitlab_main
+project_relation_export_uploads: :gitlab_main
+project_relation_exports: :gitlab_main
 project_repositories: :gitlab_main
 project_repository_states: :gitlab_main
 project_repository_storage_moves: :gitlab_main

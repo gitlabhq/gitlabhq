@@ -70,10 +70,10 @@ describe('AgentTable', () => {
     });
 
     it.each`
-      status               | iconName               | lineNumber
-      ${'Never connected'} | ${'status-neutral'}    | ${0}
-      ${'Connected'}       | ${'status-success'}    | ${1}
-      ${'Not connected'}   | ${'severity-critical'} | ${2}
+      status               | iconName            | lineNumber
+      ${'Never connected'} | ${'status-neutral'} | ${0}
+      ${'Connected'}       | ${'status-success'} | ${1}
+      ${'Not connected'}   | ${'status-alert'}   | ${2}
     `(
       'displays agent connection status as "$status" at line $lineNumber',
       ({ status, iconName, lineNumber }) => {

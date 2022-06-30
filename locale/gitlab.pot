@@ -708,6 +708,9 @@ msgstr ""
 msgid "%{labelStart}Crash Address:%{labelEnd} %{crash_address}"
 msgstr ""
 
+msgid "%{labelStart}Crash State:%{labelEnd} %{crash_state}"
+msgstr ""
+
 msgid "%{labelStart}Crash State:%{labelEnd} %{stacktrace_snippet}"
 msgstr ""
 
@@ -8252,6 +8255,123 @@ msgstr ""
 msgid "Cloud Storage"
 msgstr ""
 
+msgid "CloudSeed|All"
+msgstr ""
+
+msgid "CloudSeed|AlloyDB for Postgres"
+msgstr ""
+
+msgid "CloudSeed|Available database services through which instances may be created"
+msgstr ""
+
+msgid "CloudSeed|Cancel"
+msgstr ""
+
+msgid "CloudSeed|Cloud Firestore"
+msgstr ""
+
+msgid "CloudSeed|Cloud SQL for MySQL"
+msgstr ""
+
+msgid "CloudSeed|Cloud SQL for Postgres"
+msgstr ""
+
+msgid "CloudSeed|Cloud SQL for SQL Server"
+msgstr ""
+
+msgid "CloudSeed|CloudSQL Instance"
+msgstr ""
+
+msgid "CloudSeed|Create cluster"
+msgstr ""
+
+msgid "CloudSeed|Create database"
+msgstr ""
+
+msgid "CloudSeed|Create instance"
+msgstr ""
+
+msgid "CloudSeed|Database instance is generated within the selected Google Cloud project"
+msgstr ""
+
+msgid "CloudSeed|Database instances associated with this project"
+msgstr ""
+
+msgid "CloudSeed|Database version"
+msgstr ""
+
+msgid "CloudSeed|Description"
+msgstr ""
+
+msgid "CloudSeed|Determines memory and virtual cores available to your instance"
+msgstr ""
+
+msgid "CloudSeed|Enhance security by storing database variables in secret managers - learn more about %{docLinkStart}secret management with GitLab%{docLinkEnd}"
+msgstr ""
+
+msgid "CloudSeed|Environment"
+msgstr ""
+
+msgid "CloudSeed|Flexible, scalable NoSQL cloud database for client- and server-side development"
+msgstr ""
+
+msgid "CloudSeed|Fully managed PostgreSQL-compatible service for high-demand workloads"
+msgstr ""
+
+msgid "CloudSeed|Fully managed relational database service for MySQL"
+msgstr ""
+
+msgid "CloudSeed|Fully managed relational database service for PostgreSQL"
+msgstr ""
+
+msgid "CloudSeed|Fully managed relational database service for SQL Server"
+msgstr ""
+
+msgid "CloudSeed|Generated database instance is linked to the selected branch or tag"
+msgstr ""
+
+msgid "CloudSeed|Google Cloud Project"
+msgstr ""
+
+msgid "CloudSeed|Google Cloud project"
+msgstr ""
+
+msgid "CloudSeed|I accept Google Cloud pricing and responsibilities involved with managing database instances"
+msgstr ""
+
+msgid "CloudSeed|Instances"
+msgstr ""
+
+msgid "CloudSeed|Learn more about pricing for %{cloudsqlPricingStart}Cloud SQL%{cloudsqlPricingEnd}, %{alloydbPricingStart}Alloy DB%{alloydbPricingEnd}, %{memorystorePricingStart}Memorystore%{memorystorePricingEnd} and %{firestorePricingStart}Firestore%{firestorePricingEnd}."
+msgstr ""
+
+msgid "CloudSeed|Machine type"
+msgstr ""
+
+msgid "CloudSeed|Memorystore for Redis"
+msgstr ""
+
+msgid "CloudSeed|No instances"
+msgstr ""
+
+msgid "CloudSeed|Refs"
+msgstr ""
+
+msgid "CloudSeed|Scalable, secure, and highly available in-memory service for Redis"
+msgstr ""
+
+msgid "CloudSeed|Service"
+msgstr ""
+
+msgid "CloudSeed|Services"
+msgstr ""
+
+msgid "CloudSeed|There are no instances to display."
+msgstr ""
+
+msgid "CloudSeed|Version"
+msgstr ""
+
 msgid "Cluster"
 msgstr ""
 
@@ -8259,9 +8379,6 @@ msgid "Cluster Health"
 msgstr ""
 
 msgid "Cluster cache cleared."
-msgstr ""
-
-msgid "Cluster does not exist"
 msgstr ""
 
 msgid "Cluster is required for Stages::ClusterEndpointInserter"
@@ -9697,9 +9814,6 @@ msgid "Container Registry"
 msgstr ""
 
 msgid "Container Scanning"
-msgstr ""
-
-msgid "Container does not exist"
 msgstr ""
 
 msgid "Container must be a project or a group."
@@ -13915,9 +14029,6 @@ msgstr ""
 msgid "Elasticsearch reindexing was not started: %{errors}"
 msgstr ""
 
-msgid "Elasticsearch returned status code: %{status_code}"
-msgstr ""
-
 msgid "Elasticsearch zero-downtime reindexing"
 msgstr ""
 
@@ -14372,9 +14483,6 @@ msgid "Enterprise"
 msgstr ""
 
 msgid "Environment"
-msgstr ""
-
-msgid "Environment does not have deployments"
 msgstr ""
 
 msgid "Environment is required for Stages::MetricEndpointInserter"
@@ -16889,9 +16997,6 @@ msgstr ""
 msgid "Geo|Primary"
 msgstr ""
 
-msgid "Geo|Primary node"
-msgstr ""
-
 msgid "Geo|Primary site"
 msgstr ""
 
@@ -16989,9 +17094,6 @@ msgid "Geo|Review replication status, and resynchronize and reverify items with 
 msgstr ""
 
 msgid "Geo|Secondary"
-msgstr ""
-
-msgid "Geo|Secondary node"
 msgstr ""
 
 msgid "Geo|Secondary site"
@@ -20928,15 +21030,6 @@ msgstr ""
 msgid "Invalid URL: %{url}"
 msgstr ""
 
-msgid "Invalid container_name"
-msgstr ""
-
-msgid "Invalid cursor parameter"
-msgstr ""
-
-msgid "Invalid cursor value provided"
-msgstr ""
-
 msgid "Invalid date"
 msgstr ""
 
@@ -20979,9 +21072,6 @@ msgstr ""
 msgid "Invalid pin code."
 msgstr ""
 
-msgid "Invalid pod_name"
-msgstr ""
-
 msgid "Invalid policy type"
 msgstr ""
 
@@ -20994,13 +21084,7 @@ msgstr ""
 msgid "Invalid rule"
 msgstr ""
 
-msgid "Invalid search parameter"
-msgstr ""
-
 msgid "Invalid server response"
-msgstr ""
-
-msgid "Invalid start or end time format"
 msgstr ""
 
 msgid "Invalid status"
@@ -22363,9 +22447,6 @@ msgid "Kroki"
 msgstr ""
 
 msgid "Kubernetes"
-msgstr ""
-
-msgid "Kubernetes API returned status code: %{error_code}"
 msgstr ""
 
 msgid "Kubernetes Cluster"
@@ -25251,9 +25332,6 @@ msgstr ""
 msgid "Namespace ID:"
 msgstr ""
 
-msgid "Namespace is empty"
-msgstr ""
-
 msgid "Namespace:"
 msgstr ""
 
@@ -25726,9 +25804,6 @@ msgstr ""
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
-msgid "No containers available"
-msgstr ""
-
 msgid "No contributions"
 msgstr ""
 
@@ -25862,9 +25937,6 @@ msgid "No parent group"
 msgstr ""
 
 msgid "No plan"
-msgstr ""
-
-msgid "No pods available"
 msgstr ""
 
 msgid "No policy matches this license"
@@ -28873,12 +28945,6 @@ msgid "Please wait while we connect to your repository. Refresh at will."
 msgstr ""
 
 msgid "Please wait while we import the repository for you. Refresh at will."
-msgstr ""
-
-msgid "Pod does not exist"
-msgstr ""
-
-msgid "Pod not found"
 msgstr ""
 
 msgid "Pods in use"
@@ -40769,9 +40835,6 @@ msgstr ""
 msgid "Unable to collect memory info"
 msgstr ""
 
-msgid "Unable to connect to Elasticsearch"
-msgstr ""
-
 msgid "Unable to connect to Prometheus server"
 msgstr ""
 
@@ -40779,9 +40842,6 @@ msgid "Unable to connect to server: %{error}"
 msgstr ""
 
 msgid "Unable to connect to the Jira instance. Please check your Jira integration configuration."
-msgstr ""
-
-msgid "Unable to convert Kubernetes logs encoding to UTF-8"
 msgstr ""
 
 msgid "Unable to create link to vulnerability"
@@ -40920,9 +40980,6 @@ msgid "Unknown"
 msgstr ""
 
 msgid "Unknown Error"
-msgstr ""
-
-msgid "Unknown cache key"
 msgstr ""
 
 msgid "Unknown encryption strategy: %{encrypted_strategy}!"
@@ -45280,12 +45337,6 @@ msgstr ""
 msgid "container registry images"
 msgstr ""
 
-msgid "container_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"
-msgstr ""
-
-msgid "container_name cannot be larger than %{max_length} chars"
-msgstr ""
-
 msgid "contains URLs that exceed the 1024 character limit (%{urls})"
 msgstr ""
 
@@ -46274,12 +46325,6 @@ msgid "pipelineEditorWalkthrough|Use the %{boldStart}commit changes%{boldEnd} bu
 msgstr ""
 
 msgid "pipelineEditorWalkthrough|You can use the file tree to view your pipeline configuration files. %{linkStart}Learn more%{linkEnd}"
-msgstr ""
-
-msgid "pod_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"
-msgstr ""
-
-msgid "pod_name cannot be larger than %{max_length} chars"
 msgstr ""
 
 msgid "point"

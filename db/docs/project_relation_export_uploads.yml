@@ -1,0 +1,9 @@
+---
+table_name: project_relation_export_uploads
+classes:
+- Projects::ImportExport::RelationExportUpload
+feature_categories:
+- importers
+description: Used to store relation export files location
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90624
+milestone: '15.2'

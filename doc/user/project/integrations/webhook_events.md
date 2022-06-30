@@ -824,6 +824,11 @@ The available values for `object_attributes.action` in the payload are:
 - `unapproval`
 - `merge`
 
+The field `object_attributes.oldrev` is only available when there are actual code changes, like:
+
+- New code is pushed.
+- A [suggestion](../merge_requests/reviews/suggestions.md) is applied.
+
 Request header:
 
 ```plaintext
