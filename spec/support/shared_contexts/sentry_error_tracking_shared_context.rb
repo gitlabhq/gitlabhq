@@ -16,6 +16,6 @@ RSpec.shared_context 'sentry error tracking context' do
   before do
     allow(project).to receive(:error_tracking_setting).at_least(:once).and_return(error_tracking_setting)
 
-    project.add_reporter(user)
+    project.add_developer(user)
   end
 end

@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     buttonText() {
-      if (!this.hasSelectedColor()) {
+      if (!this.hasSelectedColor) {
         return this.dropdownButtonText;
       }
 
@@ -103,7 +103,7 @@ export default {
         :color="localSelectedColor.color"
         :title="localSelectedColor.title"
       />
-      <span v-else>{{ buttonText }}</span>
+      <span v-else data-testid="fallback-button-text">{{ buttonText }}</span>
     </template>
     <template #header>
       <dropdown-header

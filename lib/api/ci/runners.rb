@@ -128,7 +128,7 @@ module API
           runner = get_runner(params[:id])
           authenticate_list_runners_jobs!(runner)
 
-          jobs = ::Ci::RunnerJobsFinder.new(runner, params).execute
+          jobs = ::Ci::RunnerJobsFinder.new(runner, current_user, params).execute
 
           present paginate(jobs), with: Entities::Ci::JobBasicWithProject
         end

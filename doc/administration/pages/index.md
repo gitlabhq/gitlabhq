@@ -269,6 +269,9 @@ control over how the Pages daemon runs and serves content in your environment.
 | `max_uri_length`                        | The maximum length of URIs accepted by GitLab Pages. Set to 0 for unlimited length. [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/659) in GitLab 14.5.
 | `metrics_address`                       | The address to listen on for metrics requests. |
 | `redirect_http`                         | Redirect pages from HTTP to HTTPS, true/false. |
+| `redirects_max_config_size`             | The maximum size of the _redirects file, in bytes (default: 65536). |
+| `redirects_max_path_segments`           | The maximum number of path segments allowed in _redirects rules URLs (default: 25). |
+| `redirects_max_rule_count`              | The maximum number of rules allowed in _redirects (default: 1000). |
 | `sentry_dsn`                            | The address for sending Sentry crash reporting to. |
 | `sentry_enabled`                        | Enable reporting and logging with Sentry, true/false. |
 | `sentry_environment`                    | The environment for Sentry crash reporting. |
@@ -575,6 +578,19 @@ HTTP Strict Transport Security (HSTS) can be enabled through the `gitlab_pages['
 
 ```ruby
 gitlab_pages['headers'] = ['Strict-Transport-Security: max-age=63072000']
+```
+
+### Pages project redirects limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/778) in GitLab 15.2.
+
+GitLab Pages comes with a set of default limits for the [`_redirects` file](../../user/project/pages/redirects.md)
+to minimize the impact on performance. You can configure these limits if you'd like to increase or decrease the limits.
+
+```ruby
+gitlab_pages['redirects_max_config_size'] = 131072
+gitlab_pages['redirects_max_path_segments'] = 50
+gitlab_pages['redirects_max_rule_count'] = 2000
 ```
 
 ## Activate verbose logging for daemon

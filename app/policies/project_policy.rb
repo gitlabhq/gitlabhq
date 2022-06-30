@@ -325,7 +325,6 @@ class ProjectPolicy < BasePolicy
     enable :read_deployment
     enable :read_merge_request
     enable :read_sentry_issue
-    enable :update_sentry_issue
     enable :read_prometheus
     enable :read_metrics_dashboard_annotation
     enable :metrics_dashboard
@@ -440,6 +439,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_feature_flags_user_lists
     enable :update_escalation_status
     enable :read_secure_files
+    enable :update_sentry_issue
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do

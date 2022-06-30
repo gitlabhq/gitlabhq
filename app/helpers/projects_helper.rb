@@ -300,6 +300,7 @@ module ProjectsHelper
         setting.organization_slug.blank?
 
     {
+      sentry_project_id: setting.sentry_project_id,
       name: setting.project_name,
       organization_name: setting.organization_name,
       organization_slug: setting.organization_slug,

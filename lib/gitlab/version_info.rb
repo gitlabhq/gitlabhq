@@ -6,20 +6,27 @@ module Gitlab
 
     attr_reader :major, :minor, :patch
 
-    def self.parse(str)
-      if str && m = str.match(/(\d+)\.(\d+)\.(\d+)/)
-        VersionInfo.new(m[1].to_i, m[2].to_i, m[3].to_i)
+    VERSION_REGEX = /(\d+)\.(\d+)\.(\d+)/.freeze
+
+    def self.parse(str, parse_suffix: false)
+      if str.is_a?(self.class)
+        str
+      elsif str && m = str.match(VERSION_REGEX)
+        VersionInfo.new(m[1].to_i, m[2].to_i, m[3].to_i, parse_suffix ? m.post_match : nil)
       else
         VersionInfo.new
       end
     end
 
-    def initialize(major = 0, minor = 0, patch = 0)
+    def initialize(major = 0, minor = 0, patch = 0, suffix = nil)
       @major = major
       @minor = minor
       @patch = patch
+      @suffix_s = suffix.to_s
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     def <=>(other)
       return unless other.is_a? VersionInfo
       return unless valid? && other.valid?
@@ -36,17 +43,29 @@ module Gitlab
         1
       elsif @patch < other.patch
         -1
+      elsif @suffix_s.empty? && other.suffix.present?
+        1
+      elsif other.suffix.empty? && @suffix_s.present?
+        -1
       else
-        0
+        suffix <=> other.suffix
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/PerceivedComplexity
 
     def to_s
       if valid?
-        "%d.%d.%d" % [@major, @minor, @patch]
+        "%d.%d.%d%s" % [@major, @minor, @patch, @suffix_s]
       else
-        "Unknown"
+        'Unknown'
       end
+    end
+
+    def suffix
+      @suffix ||= @suffix_s.strip.gsub('-', '.pre.').scan(/\d+|[a-z]+/i).map do |s|
+        /^\d+$/ =~ s ? s.to_i : s
+      end.freeze
     end
 
     def valid?

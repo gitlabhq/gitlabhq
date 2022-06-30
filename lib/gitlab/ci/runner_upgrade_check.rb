@@ -13,7 +13,7 @@ module Gitlab
       }.freeze
 
       def check_runner_upgrade_status(runner_version)
-        runner_version = ::Gitlab::VersionInfo.parse(runner_version) unless runner_version.is_a?(::Gitlab::VersionInfo)
+        runner_version = ::Gitlab::VersionInfo.parse(runner_version, parse_suffix: true)
 
         return :invalid unless runner_version.valid?
 

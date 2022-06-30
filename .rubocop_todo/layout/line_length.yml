@@ -1957,7 +1957,6 @@ Layout/LineLength:
     - 'ee/spec/features/groups/iterations/user_edits_iteration_spec.rb'
     - 'ee/spec/features/groups/iterations/user_views_iteration_cadence_spec.rb'
     - 'ee/spec/features/groups/iterations/user_views_iteration_spec.rb'
-    - 'ee/spec/features/groups/members/manage_groups_spec.rb'
     - 'ee/spec/features/groups/members/manage_members_spec.rb'
     - 'ee/spec/features/groups/members/override_ldap_memberships_spec.rb'
     - 'ee/spec/features/groups/saml_providers_spec.rb'

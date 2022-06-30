@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.1.1 (2022-06-30)
+
+### Security (16 changes)
+
+- [Fix group IP restrictions not enforced for container registry requests](gitlab-org/security/gitlab@0c9628791bf383734ec8f32e1d0040ca2fd62178) ([merge request](gitlab-org/security/gitlab!2550))
+- [Gitlab Runner version upgrade](gitlab-org/security/gitlab@b7e06c1e812fdf0a2fab4aca07cdea33ff22b41c) ([merge request](gitlab-org/security/gitlab!2564))
+- [Update ProjectAttributesTransformer to use fixed number of attributes](gitlab-org/security/gitlab@fae2720ffd7ec5ce3eb88e3b68b2879f4f664cf4) ([merge request](gitlab-org/security/gitlab!2547))
+- [Escape deploy key title to prevent XSS](gitlab-org/security/gitlab@071c3fa4ae63d03117a3c02752711d29f6f620b1) ([merge request](gitlab-org/security/gitlab!2492))
+- [Sanitize ZenTao breadcrumb links](gitlab-org/security/gitlab@5b16b65cfe57a946f25842b7818dafe6c8a934ea) ([merge request](gitlab-org/security/gitlab!2555))
+- [Fix permissions in the project labels API](gitlab-org/security/gitlab@b3ff7ee5a64382ff9ee34bc3fc44acd0117f86d9) ([merge request](gitlab-org/security/gitlab!2532))
+- [Security fix sentry issue leaks and access level check](gitlab-org/security/gitlab@a0ad79588f170e1c58206e42d8b550d75e874a4d) ([merge request](gitlab-org/security/gitlab!2531))
+- [Check permissions before exposing user two factor enabled](gitlab-org/security/gitlab@3b7c699ffcca64721c0876da12435c148f8e83a7) ([merge request](gitlab-org/security/gitlab!2530))
+- [Filter milestone release by user access](gitlab-org/security/gitlab@dc79edc16c7422279235d2ad8a4807644840fc4c) ([merge request](gitlab-org/security/gitlab!2535))
+- [Fix the required access level in the Conan packages finder](gitlab-org/security/gitlab@5221ca59f09361f90798348851fa12c91e5d9e35) ([merge request](gitlab-org/security/gitlab!2513))
+- [Allow inviting only groups with subset of allowed domains to groups](gitlab-org/security/gitlab@03dfb153355d0465ea25a6d73db895c975fc32df) ([merge request](gitlab-org/security/gitlab!2538))
+- [Fix open redirect vulnerability](gitlab-org/security/gitlab@eb52b11c7b29319d16e21feec97bafbdf0f3c3e5) ([merge request](gitlab-org/security/gitlab!2542))
+- [Adds a filter based on user access to Runner jobs endpoint](gitlab-org/security/gitlab@a35c6aa42c35da96bf1df263b4a3aa1fe38af75d) ([merge request](gitlab-org/security/gitlab!2508))
+- [Prevent runners from picking IP restricted jobs](gitlab-org/security/gitlab@9d6f0da89f6d2e8f3c7fbccea0d22fc6b17e0305) ([merge request](gitlab-org/security/gitlab!2505))
+- [Restrict CI lint access to pipeline creators](gitlab-org/security/gitlab@bf15e9ceddf4b30105103defa50dd4a9094ac246) ([merge request](gitlab-org/security/gitlab!2516))
+- [Catch endless headers when reading HTTP responses](gitlab-org/security/gitlab@d9a6ca9aa36cfd6dd916be2d4f1e8e25329ecc73) ([merge request](gitlab-org/security/gitlab!2527))
+
 ## 15.1.0 (2022-06-21)
 
 ### Added (147 changes)
@@ -963,6 +984,28 @@ entry.
 - [Fix JH skipped subscription portal spec](gitlab-org/gitlab@0e7e7cb4a62d004989c47fafe6fe1f9ffd90da44) by @chaomao ([merge request](gitlab-org/gitlab!87213))
 - [Add not null constraint to requirements.issue_id validate:false](gitlab-org/gitlab@5ccac890b13c53c5761ccb8e5cb7ca202e0656c3) ([merge request](gitlab-org/gitlab!86590))
 
+## 15.0.4 (2022-06-30)
+
+### Security (17 changes)
+
+- [Fix group IP restrictions not enforced for container registry requests](gitlab-org/security/gitlab@7dea5867ea5e115a3a91576fec91de8e7f2a9915) ([merge request](gitlab-org/security/gitlab!2551))
+- [Update rack gem to version 2.2.3.1](gitlab-org/security/gitlab@c0df8beef0297e9b99b954fcdcbf07cee3f0e9d6) ([merge request](gitlab-org/security/gitlab!2553))
+- [Gitlab Runner version upgrade](gitlab-org/security/gitlab@012ff20c80754ff9ac38b82894346a51aa0a9b4c) ([merge request](gitlab-org/security/gitlab!2566))
+- [Update ProjectAttributesTransformer to use fixed number of attributes](gitlab-org/security/gitlab@619d77865f3e61f3cfb6ca92011ded44f6baf0ad) ([merge request](gitlab-org/security/gitlab!2548))
+- [Escape deploy key title to prevent XSS](gitlab-org/security/gitlab@7b1a458df5c553d6fa99b4fec0d677c9e924ad86) ([merge request](gitlab-org/security/gitlab!2493))
+- [Sanitize ZenTao breadcrumb links](gitlab-org/security/gitlab@adb8b2829e3d6b69ea32a7524c6f772be1debf82) ([merge request](gitlab-org/security/gitlab!2556))
+- [Fix permissions in the project labels API](gitlab-org/security/gitlab@4fd766e90ea6e8899897d7b7d9551b2edb5dce9a) ([merge request](gitlab-org/security/gitlab!2533))
+- [Security fix sentry issue leaks and access level check](gitlab-org/security/gitlab@d43b2c600a5fc31592eb8f07a4fcfdf3141911f7) ([merge request](gitlab-org/security/gitlab!2500))
+- [Check permissions before exposing user two factor enabled](gitlab-org/security/gitlab@aac30c9f3228efd643d3fc204ee49f740f1ebc81) ([merge request](gitlab-org/security/gitlab!2524))
+- [Filter milestone release by user access](gitlab-org/security/gitlab@aa1b76b8eb2966463c8a10869e00f3320bf4ea1a) ([merge request](gitlab-org/security/gitlab!2536))
+- [Fix the required access level in the Conan packages finder](gitlab-org/security/gitlab@fa090cd9d2adab46c6c3f2a70b351a61847b5c6c) ([merge request](gitlab-org/security/gitlab!2482))
+- [Allow inviting only groups with subset of allowed domains to groups](gitlab-org/security/gitlab@981be1afc7c6bf8f699ced1ae930b201699e29e3) ([merge request](gitlab-org/security/gitlab!2511))
+- [Fix open redirect vulnerability](gitlab-org/security/gitlab@fa9cf0a41f338e285701db231316897d362ce306) ([merge request](gitlab-org/security/gitlab!2541))
+- [Adds a filter based on user access to Runner jobs endpoint](gitlab-org/security/gitlab@8be3da271d2a6ff3285846c50a5ce4dd584419ff) ([merge request](gitlab-org/security/gitlab!2496))
+- [Prevent runners from picking IP restricted jobs](gitlab-org/security/gitlab@dcc830d14cc0ee616dc3ad263d66bd42f92b56a2) ([merge request](gitlab-org/security/gitlab!2504))
+- [Restrict CI lint access to pipeline creators](gitlab-org/security/gitlab@42425cd68755c53ed33952111be9803ce3b37515) ([merge request](gitlab-org/security/gitlab!2514))
+- [Catch endless headers when reading HTTP responses](gitlab-org/security/gitlab@d2ce0a236204b97a853bc35332d49d7427f38fbc) ([merge request](gitlab-org/security/gitlab!2528))
+
 ## 15.0.3 (2022-06-16)
 
 ### Fixed (2 changes)
@@ -1736,6 +1779,28 @@ entry.
 - [Clean up selection summary](gitlab-org/gitlab@67c7251488279e660ccd2c63aebf6719f4751709) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85349)) **GitLab Enterprise Edition**
 - [Move methods to build email unsubscribe link to helper](gitlab-org/gitlab@ae4391a84d14d51ca5b5f2ffaada96e3b37a1d51) ([merge request](gitlab-org/gitlab!84696)) **GitLab Enterprise Edition**
 - [Deprecate `push_rules_supersede_code_owners` feature flag](gitlab-org/gitlab@9ee99872b66a69c5a2d1c1c9863d960832a1d91f) ([merge request](gitlab-org/gitlab!85390))
+
+## 14.10.5 (2022-06-30)
+
+### Security (17 changes)
+
+- [Fix group IP restrictions not enforced for container registry requests](gitlab-org/security/gitlab@b146ad7b8c6fba9d3c5bea365ff8afd49949dcb0) ([merge request](gitlab-org/security/gitlab!2552))
+- [Update rack gem to version 2.2.3.1](gitlab-org/security/gitlab@09ebb50ceee5a2226c1f70fa1d6c25391d51dda6) ([merge request](gitlab-org/security/gitlab!2554))
+- [Gitlab Runner version upgrade](gitlab-org/security/gitlab@c91bfdb4f96e70e377a84b99c4edaa2fdecb8e16) ([merge request](gitlab-org/security/gitlab!2567))
+- [Update ProjectAttributesTransformer to use fixed number of attributes](gitlab-org/security/gitlab@6f892fb2a4b84473c3796533551f915c16cf77d9) ([merge request](gitlab-org/security/gitlab!2549))
+- [Escape deploy key title to prevent XSS](gitlab-org/security/gitlab@153a7c447e03a509b7f06ac7381f4f9db414c9ea) ([merge request](gitlab-org/security/gitlab!2494))
+- [Sanitize ZenTao breadcrumb links](gitlab-org/security/gitlab@530c7be82ae90138898ff99008d994b1c85d8cf1) ([merge request](gitlab-org/security/gitlab!2557))
+- [Fix permissions in the project labels API](gitlab-org/security/gitlab@f2c71f64c258bef9f56f4892d11a4dbf20d668e6) ([merge request](gitlab-org/security/gitlab!2534))
+- [Security fix sentry issue leaks and access level check](gitlab-org/security/gitlab@c644d94f58e30e1a9d87521b039a347412f0fead) ([merge request](gitlab-org/security/gitlab!2501))
+- [Check permissions before exposing user two factor enabled](gitlab-org/security/gitlab@8a623e8a4fdbd3421ac3ae0e37e156b7d3b04970) ([merge request](gitlab-org/security/gitlab!2525))
+- [Filter milestone release by user access](gitlab-org/security/gitlab@d7d6431a52808107a71f15d29e856eef2cb313e5) ([merge request](gitlab-org/security/gitlab!2537))
+- [Fix the required access level in the Conan packages finder](gitlab-org/security/gitlab@756fb242c4d6acf6cfd95fa39f37410eaf009747) ([merge request](gitlab-org/security/gitlab!2485))
+- [Allow inviting only groups with subset of allowed domains to groups](gitlab-org/security/gitlab@ca50492a32a2e367b0bc75dae0f91dc52d23b2ed) ([merge request](gitlab-org/security/gitlab!2512))
+- [Fix open redirect vulnerability](gitlab-org/security/gitlab@1450068a44d67af3cbe09fedcc4b1e9b4ea2e586) ([merge request](gitlab-org/security/gitlab!2540))
+- [Adds a filter based on user access to Runner jobs endpoint](gitlab-org/security/gitlab@dafaf3e50e8b1a18ff362cbb60e9482c9d60fc33) ([merge request](gitlab-org/security/gitlab!2497))
+- [Prevent runners from picking IP restricted jobs](gitlab-org/security/gitlab@0fad0cdde00b68c2a0f19ffa2681b438fcad4097) ([merge request](gitlab-org/security/gitlab!2503))
+- [Restrict CI lint access to pipeline creators](gitlab-org/security/gitlab@c5b79e969f10e3604eff16a9edef716e700cd201) ([merge request](gitlab-org/security/gitlab!2515))
+- [Catch endless headers when reading HTTP responses](gitlab-org/security/gitlab@65379002bd7a0259c425455c937b110bd96096dc) ([merge request](gitlab-org/security/gitlab!2529))
 
 ## 14.10.4 (2022-06-01)
 

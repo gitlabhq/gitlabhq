@@ -11324,6 +11324,11 @@ CREATE TABLE application_settings (
     phone_verification_code_enabled boolean DEFAULT false NOT NULL,
     max_number_of_repository_downloads smallint DEFAULT 0 NOT NULL,
     max_number_of_repository_downloads_within_time_period integer DEFAULT 0 NOT NULL,
+    feishu_integration_enabled boolean DEFAULT false NOT NULL,
+    encrypted_feishu_app_key bytea,
+    encrypted_feishu_app_key_iv bytea,
+    encrypted_feishu_app_secret bytea,
+    encrypted_feishu_app_secret_iv bytea,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -11385,6 +11390,16 @@ COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_secret IS 'JiHu-sp
 COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_secret_iv IS 'JiHu-specific column';
 
 COMMENT ON COLUMN application_settings.phone_verification_code_enabled IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.feishu_integration_enabled IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_feishu_app_key IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_feishu_app_key_iv IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_feishu_app_secret IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_feishu_app_secret_iv IS 'JiHu-specific column';
 
 CREATE SEQUENCE application_settings_id_seq
     START WITH 1
@@ -19341,7 +19356,8 @@ CREATE TABLE project_error_tracking_settings (
     encrypted_token_iv character varying,
     project_name character varying,
     organization_name character varying,
-    integrated boolean DEFAULT true NOT NULL
+    integrated boolean DEFAULT true NOT NULL,
+    sentry_project_id bigint
 );
 
 CREATE TABLE project_export_jobs (
@@ -26972,6 +26988,8 @@ CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_me
 CREATE UNIQUE INDEX idx_external_audit_event_destination_id_key_uniq ON audit_events_streaming_headers USING btree (key, external_audit_event_destination_id);
 
 CREATE INDEX idx_geo_con_rep_updated_events_on_container_repository_id ON geo_container_repository_updated_events USING btree (container_repository_id);
+
+CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id) WHERE ((package_type = 3) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
 

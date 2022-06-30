@@ -21,7 +21,7 @@ module Gitlab
             hash[waiter.key] = waiter.jobs_remaining
           end
 
-          AdvanceStageWorker.perform_async(project.id, waiters, :notes)
+          AdvanceStageWorker.perform_async(project.id, waiters, :issue_events)
         end
 
         # The importers to run in this stage. Issues can't be imported earlier

@@ -21342,6 +21342,9 @@ msgstr ""
 msgid "Invited"
 msgstr ""
 
+msgid "Invited group allowed email domains must contain a subset of the allowed email domains of the root ancestor group. Go to the group's 'Settings &gt; General' page and check 'Restrict membership by email domain'."
+msgstr ""
+
 msgid "IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}"
 msgstr ""
 

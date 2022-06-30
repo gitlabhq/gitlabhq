@@ -1,56 +1,29 @@
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { GlDropdown } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { DROPDOWN_VARIANT } from '~/vue_shared/components/color_select_dropdown/constants';
 import DropdownContents from '~/vue_shared/components/color_select_dropdown/dropdown_contents.vue';
 import DropdownContentsColorView from '~/vue_shared/components/color_select_dropdown/dropdown_contents_color_view.vue';
+import DropdownHeader from '~/vue_shared/components/color_select_dropdown/dropdown_header.vue';
 
 import { color } from './mock_data';
-
-const showDropdown = jest.fn();
-const focusInput = jest.fn();
 
 const defaultProps = {
   dropdownTitle: '',
   selectedColor: color,
-  dropdownButtonText: '',
+  dropdownButtonText: 'Pick a color',
   variant: '',
   isVisible: false,
-};
-
-const GlDropdownStub = {
-  template: `
-    <div>
-      <slot name="header"></slot>
-      <slot></slot>
-    </div>
-  `,
-  methods: {
-    show: showDropdown,
-    hide: jest.fn(),
-  },
-};
-
-const DropdownHeaderStub = {
-  template: `
-    <div>Hello, I am a header</div>
-  `,
-  methods: {
-    focusInput,
-  },
 };
 
 describe('DropdownContent', () => {
   let wrapper;
 
   const createComponent = ({ propsData = {} } = {}) => {
-    wrapper = shallowMount(DropdownContents, {
+    wrapper = mountExtended(DropdownContents, {
       propsData: {
         ...defaultProps,
         ...propsData,
-      },
-      stubs: {
-        GlDropdown: GlDropdownStub,
-        DropdownHeader: DropdownHeaderStub,
       },
     });
   };
@@ -60,16 +33,17 @@ describe('DropdownContent', () => {
   });
 
   const findColorView = () => wrapper.findComponent(DropdownContentsColorView);
-  const findDropdownHeader = () => wrapper.findComponent(DropdownHeaderStub);
-  const findDropdown = () => wrapper.findComponent(GlDropdownStub);
+  const findDropdownHeader = () => wrapper.findComponent(DropdownHeader);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
 
   it('calls dropdown `show` method on `isVisible` prop change', async () => {
     createComponent();
+    const spy = jest.spyOn(wrapper.vm.$refs.dropdown, 'show');
     await wrapper.setProps({
       isVisible: true,
     });
 
-    expect(showDropdown).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('does not emit `setColor` event on dropdown hide if color did not change', () => {
@@ -109,5 +83,13 @@ describe('DropdownContent', () => {
     createComponent();
 
     expect(findDropdownHeader().exists()).toBe(true);
+  });
+
+  it('handles no selected color', () => {
+    createComponent({ propsData: { selectedColor: {} } });
+
+    expect(wrapper.findByTestId('fallback-button-text').text()).toEqual(
+      defaultProps.dropdownButtonText,
+    );
   });
 });

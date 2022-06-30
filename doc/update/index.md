@@ -480,6 +480,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   1. Ensure all GitLab web nodes are running GitLab 15.1.Z.
   1. [Enable the `active_support_hash_digest_sha256` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to switch `ActiveSupport::Digest` to use SHA256:
   1. Only then, continue to upgrade to later versions of GitLab.
+- Unauthenticated requests to the [`ciConfig` GraphQL field](../api/graphql/reference/index.md#queryciconfig) are no longer supported.
+  Before you upgrade to GitLab 15.1, add an [access token](../api/index.md#authentication) to your requests.
+  The user creating the token must have [permission](../user/permissions.md) to create pipelines in the project.
 
 ### 15.0.0
 

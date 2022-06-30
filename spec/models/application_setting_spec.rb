@@ -1065,6 +1065,14 @@ RSpec.describe ApplicationSetting do
       it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_compression_threshold_bytes).only_integer.is_greater_than_or_equal_to(0) }
       it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_limit_bytes).only_integer.is_greater_than_or_equal_to(0) }
     end
+
+    context 'prometheus settings' do
+      it 'validates metrics_method_call_threshold' do
+        allow(subject).to receive(:prometheus_metrics_enabled).and_return(true)
+
+        is_expected.to validate_numericality_of(:metrics_method_call_threshold).is_greater_than_or_equal_to(0)
+      end
+    end
   end
 
   context 'restrict creating duplicates' do

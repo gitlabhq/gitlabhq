@@ -2361,4 +2361,25 @@ RSpec.describe ProjectPolicy do
       it { is_expected.to be_disallowed(:register_project_runners) }
     end
   end
+
+  describe 'update_sentry_issue' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:role, :allowed) do
+      :owner      | true
+      :maintainer | true
+      :developer  | true
+      :reporter   | false
+      :guest      | false
+    end
+
+    let(:project) { public_project }
+    let(:current_user) { public_send(role) }
+
+    with_them do
+      it do
+        expect(subject.can?(:update_sentry_issue)).to be(allowed)
+      end
+    end
+  end
 end

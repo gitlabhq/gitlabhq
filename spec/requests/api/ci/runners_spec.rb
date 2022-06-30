@@ -804,6 +804,23 @@ RSpec.describe API::Ci::Runners do
             expect(json_response).to be_an(Array)
             expect(json_response.length).to eq(2)
           end
+
+          context 'when user does not have authorization to see all jobs' do
+            it 'shows only jobs it has permission to see' do
+              create(:ci_build, :running, runner: two_projects_runner, project: project)
+              create(:ci_build, :running, runner: two_projects_runner, project: project2)
+
+              project.add_guest(user2)
+              project2.add_maintainer(user2)
+              get api("/runners/#{two_projects_runner.id}/jobs", user2)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to include_pagination_headers
+
+              expect(json_response).to be_an(Array)
+              expect(json_response.length).to eq(1)
+            end
+          end
         end
 
         context 'when valid status is provided' do

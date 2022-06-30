@@ -171,6 +171,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :kroki_formats, json_schema: { filename: 'application_setting_kroki_formats' }
 
+  validates :metrics_method_call_threshold,
+           numericality: { greater_than_or_equal_to: 0 },
+           presence: true,
+           if: :prometheus_metrics_enabled
+
   validates :plantuml_url,
             presence: true,
             if: :plantuml_enabled

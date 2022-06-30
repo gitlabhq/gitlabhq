@@ -21,7 +21,9 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
     end
 
     context 'with available_runner_releases configured up to 14.1.1' do
-      let(:available_runner_releases) { %w[13.9.0 13.9.1 13.9.2 13.10.0 13.10.1 14.0.0 14.0.1 14.0.2 14.1.0 14.1.1] }
+      let(:available_runner_releases) do
+        %w[13.9.0 13.9.1 13.9.2 13.10.0 13.10.1 14.0.0 14.0.1 14.0.2-rc1 14.0.2 14.1.0 14.1.1]
+      end
 
       context 'with nil runner_version' do
         let(:runner_version) { nil }
@@ -62,10 +64,11 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
             'v14.1.0/1.1.0'                | :recommended   # suffixes are correctly handled
             'v14.1.0'                      | :recommended   # recommended since even though the GitLab instance is still on 14.0.x, there is a patch release (14.1.1) available which might contain security fixes
             'v14.0.1'                      | :recommended   # recommended upgrade since 14.0.2 is available
+            'v14.0.2-rc1'                  | :recommended   # recommended upgrade since 14.0.2 is available and we'll move out of a release candidate
             'v14.0.2'                      | :not_available # not available since 14.0.2 is the latest 14.0.x release available within the instance's major.minor version
             'v13.10.1'                     | :available     # available upgrade: 14.1.1
-            'v13.10.1~beta.1574.gf6ea9389' | :available     # suffixes are correctly handled
-            'v13.10.1/1.1.0'               | :available     # suffixes are correctly handled
+            'v13.10.1~beta.1574.gf6ea9389' | :recommended   # suffixes are correctly handled, official 13.10.1 is available
+            'v13.10.1/1.1.0'               | :recommended   # suffixes are correctly handled, official 13.10.1 is available
             'v13.10.0'                     | :recommended   # recommended upgrade since 13.10.1 is available
             'v13.9.2'                      | :recommended   # recommended upgrade since backports are no longer released for this version
             'v13.9.0'                      | :recommended   # recommended upgrade since backports are no longer released for this version

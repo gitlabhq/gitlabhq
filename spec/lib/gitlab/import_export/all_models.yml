@@ -420,6 +420,8 @@ project:
 - zentao_integration
 # dingtalk_integration JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417
 - dingtalk_integration
+# dingtalk_integration JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/640
+- feishu_integration
 - redmine_integration
 - youtrack_integration
 - custom_issue_tracker_integration

@@ -38,7 +38,8 @@ module Gitlab
             trace_size_exceeded: 'log size limit exceeded',
             builds_disabled: 'project builds are disabled',
             environment_creation_failure: 'environment creation failure',
-            deployment_rejected: 'deployment rejected'
+            deployment_rejected: 'deployment rejected',
+            ip_restriction_failure: 'IP address restriction failure'
           }.freeze
 
           private_constant :REASONS

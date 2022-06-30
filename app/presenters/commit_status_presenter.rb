@@ -33,7 +33,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     trace_size_exceeded: 'The job log size limit was reached',
     builds_disabled: 'The CI/CD is disabled for this project',
     environment_creation_failure: 'This job could not be executed because it would create an environment with an invalid parameter.',
-    deployment_rejected: 'This deployment job was rejected.'
+    deployment_rejected: 'This deployment job was rejected.',
+    ip_restriction_failure: "This job could not be executed because group IP address restrictions are enabled, and the runner's IP address is not in the allowed range."
   }.freeze
 
   TROUBLESHOOTING_DOC = {
