@@ -31,6 +31,7 @@ module StorageHelper
     return if root_ancestor.paid?
     return unless future_enforcement_date?(root_ancestor)
     return if user_dismissed_storage_enforcement_banner?(root_ancestor)
+    return unless ::Feature.enabled?(:namespace_storage_limit_show_preenforcement_banner, root_ancestor)
 
     {
       text: html_escape_once(s_("UsageQuota|From %{storage_enforcement_date} storage limits will apply to this namespace. " \

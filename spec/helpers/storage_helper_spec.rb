@@ -89,6 +89,12 @@ RSpec.describe StorageHelper do
           expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
         end
 
+        it 'returns nil when namespace_storage_limit_show_preenforcement_banner FF is disabled' do
+          stub_feature_flags(namespace_storage_limit_show_preenforcement_banner: false)
+
+          expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
+        end
+
         context 'when current_user can access the usage quotas page' do
           it 'returns a hash' do
             expect(helper.storage_enforcement_banner_info(free_group)).to eql({

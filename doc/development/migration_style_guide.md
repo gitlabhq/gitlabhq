@@ -90,6 +90,14 @@ Keep in mind that all durations should be measured against GitLab.com.
 | Post-deployment migrations | `<= 10 minutes` | A valid exception are schema changes, since they must not happen in background migrations. |
 | Background migrations | `> 10 minutes` | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](query_performance.md#timing-guidelines-for-queries) with cold caches. |
 
+## Decide which database to target
+
+GitLab connects to two different Postgres databases: `main` and `ci`. This split can affect migrations
+as they may run on either or both of these databases.
+
+Read [Migrations for Multiple databases](database/migrations_for_multiple_databases.md) to understand if or how
+a migration you add should account for this.
+
 ## Create a regular schema migration
 
 To create a migration you can use the following Rails generator:

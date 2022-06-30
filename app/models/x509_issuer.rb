@@ -4,7 +4,7 @@ class X509Issuer < ApplicationRecord
   has_many :x509_certificates, inverse_of: 'x509_issuer'
 
   # rfc 5280 - 4.2.1.1  Authority Key Identifier
-  validates :subject_key_identifier, presence: true, format: { with: /\A(\h{2}:){19}\h{2}\z/ }
+  validates :subject_key_identifier, presence: true, format: { with: Gitlab::Regex.x509_subject_key_identifier_regex }
   # rfc 5280 - 4.1.2.4  Issuer
   validates :subject, presence: true
   # rfc 5280 - 4.2.1.13  CRL Distribution Points

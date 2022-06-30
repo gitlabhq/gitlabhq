@@ -256,13 +256,26 @@ Since this service is shared by all review apps, there is a limitation that only
 
 ### Configure SAST
 
-Using [SAST](../../../user/application_security/sast/index.md) with ECS requires no extra configuration. For more
-details about how to configure SAST, see the SAST [documentation](../../../user/application_security/sast/index.md).
+To use [SAST](../../../user/application_security/sast/index.md) with ECS, add the following to your `.gitlab-ci.yml` file:
+
+```yaml
+include:
+   - template: Security/SAST.gitlab-ci.yml
+```
+
+For more details and configuration options, see the [SAST documentation](../../../user/application_security/sast/index.md#configuration).
 
 ### Configure DAST
 
 To use [DAST](../../../user/application_security/dast/index.md) on non-default branches, [set up review apps](#set-up-review-apps)
-and then follow the steps outlined in the DAST [documentation](../../../user/application_security/dast/index.md).
+and add the following to your `.gitlab-ci.yml` file:
+
+```yaml
+include:
+  - template: Security/DAST.gitlab-ci.yml
+```
+
+For more details and configuration options, see the [DAST documentation](../../../user/application_security/dast/index.md).
 
 ## Further reading
 

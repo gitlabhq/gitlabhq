@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Feature
+module Feature
   class Gitaly
     PREFIX = "gitaly_"
 

@@ -486,6 +486,10 @@ module Gitlab
     def sep_by_1(separator, part)
       %r(#{part} (#{separator} #{part})*)x
     end
+
+    def x509_subject_key_identifier_regex
+      @x509_subject_key_identifier_regex ||= /\A(?:\h{2}:)*\h{2}\z/.freeze
+    end
   end
 end
 

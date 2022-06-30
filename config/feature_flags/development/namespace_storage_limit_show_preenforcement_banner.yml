@@ -1,0 +1,8 @@
+---
+name: namespace_storage_limit_show_preenforcement_banner
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362340
+milestone: '15.2'
+type: development
+group: group::utilization
+default_enabled: false
