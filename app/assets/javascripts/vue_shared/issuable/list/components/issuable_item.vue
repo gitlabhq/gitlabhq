@@ -87,13 +87,13 @@ export default {
       return getTimeago().format(this.issuable.createdAt);
     },
     timestamp() {
-      if (this.issuable.state === 'closed') {
+      if (this.issuable.state === 'closed' && this.issuable.closedAt) {
         return this.issuable.closedAt;
       }
       return this.issuable.updatedAt;
     },
     formattedTimestamp() {
-      if (this.issuable.state === 'closed') {
+      if (this.issuable.state === 'closed' && this.issuable.closedAt) {
         return sprintf(__('closed %{timeago}'), {
           timeago: getTimeago().format(this.issuable.closedAt),
         });

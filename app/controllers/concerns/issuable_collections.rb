@@ -24,12 +24,9 @@ module IssuableCollections
     show_alert_if_search_is_disabled
 
     @issuables = issuables_collection
+    set_pagination
 
-    unless pagination_disabled?
-      set_pagination
-
-      return if redirect_out_of_range(@issuables, @total_pages)
-    end
+    return if redirect_out_of_range(@issuables, @total_pages)
 
     if params[:label_name].present? && @project
       labels_params = { project_id: @project.id, title: params[:label_name] }
@@ -58,10 +55,6 @@ module IssuableCollections
     @total_pages        = page_count_for_relation(@issuables, row_count)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
-
-  def pagination_disabled?
-    false
-  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def issuables_collection

@@ -67,7 +67,7 @@
 
       .float-right.issuable-timestamp.d-none.d-sm-inline-block
         %span
-          - if issue.closed?
+          - if issue.closed? && issue.closed_at
             = _('closed %{timeago}').html_safe % { timeago: time_ago_with_tooltip(issue.closed_at, placement: 'bottom') }
           - else
             = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(issue.updated_at, placement: 'bottom') }

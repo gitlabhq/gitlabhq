@@ -153,35 +153,52 @@ describe('IssuableItem', () => {
     });
 
     describe('timestamp', () => {
-      it('returns string containing date and time based on `issuable.updatedAt` when the issue is open', () => {
+      it('returns timestamp based on `issuable.updatedAt` when the issue is open', () => {
         wrapper = createComponent();
 
         expect(findTimestampWrapper().attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
       });
 
-      it('returns string containing timeago string based on `issuable.closedAt` when the issue is closed', () => {
+      it('returns timestamp based on `issuable.closedAt` when the issue is closed', () => {
         wrapper = createComponent({
           issuable: { ...mockIssuable, closedAt: '2020-06-18T11:30:00Z', state: 'closed' },
         });
 
         expect(findTimestampWrapper().attributes('title')).toBe('Jun 18, 2020 11:30am UTC');
       });
+
+      it('returns timestamp based on `issuable.updatedAt` when the issue is closed but `issuable.closedAt` is undefined', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, closedAt: undefined, state: 'closed' },
+        });
+
+        expect(findTimestampWrapper().attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
+      });
     });
 
     describe('formattedTimestamp', () => {
-      it('returns string containing timeago string based on `issuable.updatedAt` when the issue is open', () => {
+      it('returns timeago string based on `issuable.updatedAt` when the issue is open', () => {
         wrapper = createComponent();
 
         expect(findTimestampWrapper().text()).toContain('updated');
         expect(findTimestampWrapper().text()).toContain('ago');
       });
 
-      it('returns string containing timeago string based on `issuable.closedAt` when the issue is closed', () => {
+      it('returns timeago string based on `issuable.closedAt` when the issue is closed', () => {
         wrapper = createComponent({
           issuable: { ...mockIssuable, closedAt: '2020-06-18T11:30:00Z', state: 'closed' },
         });
 
         expect(findTimestampWrapper().text()).toContain('closed');
+        expect(findTimestampWrapper().text()).toContain('ago');
+      });
+
+      it('returns timeago string based on `issuable.updatedAt` when the issue is closed but `issuable.closedAt` is undefined', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, closedAt: undefined, state: 'closed' },
+        });
+
+        expect(findTimestampWrapper().text()).toContain('updated');
         expect(findTimestampWrapper().text()).toContain('ago');
       });
     });
