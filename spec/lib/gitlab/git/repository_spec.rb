@@ -525,7 +525,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
     it 'does not error when dereferenced_target is nil' do
       blob_id = repository.blob_at('master', 'README.md').id
-      repository_rugged.tags.create("refs/tags/blob-tag", blob_id)
+      repository.add_tag("refs/tags/blob-tag", user: user, target: blob_id)
 
       expect { subject }.not_to raise_error
     end

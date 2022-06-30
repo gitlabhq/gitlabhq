@@ -34,3 +34,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::Clusters::AgentsResolver.prepend_mod_with('Resolvers::Clusters::AgentsResolver')

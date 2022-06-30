@@ -12,7 +12,7 @@ RSpec.describe Ci::Runner do
   end
 
   describe 'groups association' do
-    # Due to other assoctions such as projects this whole spec is allowed to
+    # Due to other associations such as projects this whole spec is allowed to
     # generate cross-database queries. So we have this temporary spec to
     # validate that at least groups association does not generate cross-DB
     # queries.
@@ -1062,18 +1062,6 @@ RSpec.describe Ci::Runner do
           end
         end
       end
-
-      context 'with updated version' do
-        before do
-          runner.version = '1.2.3'
-        end
-
-        it 'updates version components with new version' do
-          heartbeat
-
-          expect(runner.reload.read_attribute(:semver)).to eq '15.0.1'
-        end
-      end
     end
 
     def expect_redis_update
@@ -1088,7 +1076,6 @@ RSpec.describe Ci::Runner do
         .and change { runner.reload.read_attribute(:architecture) }
         .and change { runner.reload.read_attribute(:config) }
         .and change { runner.reload.read_attribute(:executor_type) }
-        .and change { runner.reload.read_attribute(:semver) }
     end
   end
 
@@ -1730,44 +1717,6 @@ RSpec.describe Ci::Runner do
         let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
         it_behaves_like 'expiring token', interval: 1.day
-      end
-    end
-  end
-
-  describe '.save' do
-    context 'with initial value' do
-      let(:runner) { create(:ci_runner, version: 'v1.2.3') }
-
-      it 'updates semver column' do
-        expect(runner.semver).to eq '1.2.3'
-      end
-    end
-
-    context 'with no initial version value' do
-      let(:runner) { build(:ci_runner) }
-
-      context 'with version change' do
-        subject(:update_version) { runner.update!(version: new_version) }
-
-        context 'to invalid version' do
-          let(:new_version) { 'invalid version' }
-
-          it 'updates semver column to nil' do
-            update_version
-
-            expect(runner.reload.semver).to be_nil
-          end
-        end
-
-        context 'to v14.10.1' do
-          let(:new_version) { 'v14.10.1' }
-
-          it 'updates semver column' do
-            update_version
-
-            expect(runner.reload.semver).to eq '14.10.1'
-          end
-        end
       end
     end
   end

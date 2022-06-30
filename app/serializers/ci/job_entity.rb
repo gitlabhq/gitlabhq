@@ -42,6 +42,7 @@ module Ci
     expose :scheduled_at, if: -> (*) { scheduled? }
     expose :created_at
     expose :queued_at
+    expose :queued_duration
     expose :updated_at
     expose :detailed_status, as: :status, with: DetailedStatusEntity
     expose :callout_message, if: -> (*) { failed? && !job.script_failure? }

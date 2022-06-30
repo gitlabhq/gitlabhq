@@ -125,11 +125,11 @@ RSpec.describe Repository do
       let(:latest_tag) { 'v0.0.0' }
 
       before do
-        rugged_repo(repository).tags.create(latest_tag, repository.commit.id)
+        repository.add_tag(user, latest_tag, repository.commit.id)
       end
 
       after do
-        rugged_repo(repository).tags.delete(latest_tag)
+        repository.rm_tag(user, latest_tag)
       end
 
       context 'desc' do
@@ -150,16 +150,13 @@ RSpec.describe Repository do
         subject { repository.tags_sorted_by('updated_asc').map(&:name) & (tags_to_compare + [annotated_tag_name]) }
 
         before do
-          options = { message: 'test tag message\n',
-                      tagger: { name: 'John Smith', email: 'john@gmail.com' } }
-
-          rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', **options)
+          repository.add_tag(user, annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', 'test tag message\n')
         end
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
 
         after do
-          rugged_repo(repository).tags.delete(annotated_tag_name)
+          repository.rm_tag(user, annotated_tag_name)
         end
       end
     end

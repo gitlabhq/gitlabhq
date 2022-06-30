@@ -546,6 +546,6 @@ gem 'ipaddress', '~> 0.8.3'
 
 gem 'parslet', '~> 1.8'
 
-gem 'ipynbdiff', '0.4.7'
+gem 'ipynbdiff', path: 'vendor/gems/ipynbdiff'
 
 gem 'ed25519', '~> 1.3.0'

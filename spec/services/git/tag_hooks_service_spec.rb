@@ -138,7 +138,7 @@ RSpec.describe Git::TagHooksService, :service do
 
       before do
         # Create the lightweight tag
-        rugged_repo(project.repository).tags.create(tag_name, newrev)
+        project.repository.write_ref("refs/tags/#{tag_name}", newrev)
 
         # Clear tag list cache
         project.repository.expire_tags_cache

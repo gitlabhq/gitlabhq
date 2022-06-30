@@ -13,8 +13,7 @@ module Clusters
     def execute
       return ::Clusters::Agent.none unless can_read_cluster_agents?
 
-      agents = object.cluster_agents
-      agents = agents.with_name(params[:name]) if params[:name].present?
+      agents = filter_clusters(object.cluster_agents)
 
       agents.ordered_by_name
     end
@@ -23,8 +22,16 @@ module Clusters
 
     attr_reader :object, :current_user, :params
 
+    def filter_clusters(agents)
+      agents = agents.with_name(params[:name]) if params[:name].present?
+
+      agents
+    end
+
     def can_read_cluster_agents?
       current_user&.can?(:read_cluster, object)
     end
   end
 end
+
+Clusters::AgentsFinder.prepend_mod_with('Clusters::AgentsFinder')
