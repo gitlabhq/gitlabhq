@@ -72,9 +72,12 @@ export default {
     },
   },
   computed: {
+    isMergeRequest() {
+      return this.issuableType === IssuableType.MergeRequest;
+    },
     cannotMerge() {
       const canMerge = this.user.mergeRequestInteraction?.canMerge || this.user.can_merge;
-      return this.issuableType === IssuableType.MergeRequest && !canMerge;
+      return this.isMergeRequest && !canMerge;
     },
     tooltipTitle() {
       const { name = '', availability = '' } = this.user;
@@ -86,6 +89,10 @@ export default {
       });
     },
     tooltipOption() {
+      if (this.isMergeRequest) {
+        return null;
+      }
+
       return {
         container: 'body',
         placement: this.tooltipPlacement,
@@ -96,6 +103,10 @@ export default {
       return this.user.web_url || this.user.webUrl;
     },
     assigneeId() {
+      if (this.isMergeRequest) {
+        return null;
+      }
+
       return isGid(this.user.id) ? getIdFromGraphQLId(this.user.id) : this.user.id;
     },
   },
@@ -105,6 +116,7 @@ export default {
 <template>
   <!-- must be `d-inline-block` or parent flex-basis causes width issues -->
   <gl-link
+    v-gl-tooltip="tooltipOption"
     :href="assigneeUrl"
     :title="tooltipTitle"
     :data-user-id="assigneeId"

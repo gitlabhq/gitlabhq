@@ -120,6 +120,7 @@ describe('AssigneeAvatarLink component', () => {
   it('passes the correct user id for REST API', () => {
     createComponent({
       tooltipHasName: true,
+      issuableType: 'issue',
       user: userDataMock(),
     });
 
@@ -131,9 +132,22 @@ describe('AssigneeAvatarLink component', () => {
 
     createComponent({
       tooltipHasName: true,
+      issuableType: 'issue',
       user: { ...userDataMock(), id: convertToGraphQLId(TYPE_USER, userId) },
     });
 
     expect(findUserLink().attributes('data-user-id')).toBe(String(userId));
+  });
+
+  it.each`
+    issuableType       | userId
+    ${'merge_request'} | ${undefined}
+    ${'issue'}         | ${'1'}
+  `('it sets data-user-id as $userId for $issuableType', ({ issuableType, userId }) => {
+    createComponent({
+      issuableType,
+    });
+
+    expect(findUserLink().attributes('data-user-id')).toBe(userId);
   });
 });

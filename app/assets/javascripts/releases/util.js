@@ -11,9 +11,12 @@ const convertScalarProperties = (graphQLRelease) =>
     'tagPath',
     'description',
     'descriptionHtml',
-    'releasedAt',
     'upcomingRelease',
   ]);
+
+const convertDateProperties = ({ releasedAt }) => ({
+  releasedAt: new Date(releasedAt),
+});
 
 const convertAssets = (graphQLRelease) => {
   let sources = [];
@@ -88,6 +91,7 @@ const convertMilestones = (graphQLRelease) => ({
  */
 export const convertGraphQLRelease = (graphQLRelease) => ({
   ...convertScalarProperties(graphQLRelease),
+  ...convertDateProperties(graphQLRelease),
   ...convertAssets(graphQLRelease),
   ...convertEvidences(graphQLRelease),
   ...convertLinks(graphQLRelease),

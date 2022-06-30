@@ -138,6 +138,7 @@ export const releaseUpdateMutatationVariables = (state, getters) => {
       projectPath: state.projectPath,
       tagName: state.release.tagName,
       name,
+      releasedAt: state.release.releasedAt,
       description: state.includeTagNotes
         ? getters.formattedReleaseNotes
         : state.release.description,

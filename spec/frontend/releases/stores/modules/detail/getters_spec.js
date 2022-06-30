@@ -302,6 +302,7 @@ describe('Release edit/new getters', () => {
           name: 'release.name',
           description: 'release.description',
           milestones: ['release.milestone[0].title'],
+          releasedAt: new Date(2022, 5, 30),
         },
       },
       {
@@ -310,6 +311,7 @@ describe('Release edit/new getters', () => {
         name: 'release.name',
         description: 'release.description',
         milestones: ['release.milestone[0].title'],
+        releasedAt: new Date(2022, 5, 30),
       },
     ],
     [

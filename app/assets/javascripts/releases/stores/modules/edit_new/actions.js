@@ -246,3 +246,7 @@ export const fetchTagNotes = ({ commit, state }, tagName) => {
 export const updateIncludeTagNotes = ({ commit }, includeTagNotes) => {
   commit(types.UPDATE_INCLUDE_TAG_NOTES, includeTagNotes);
 };
+
+export const updateReleasedAt = ({ commit }, releasedAt) => {
+  commit(types.UPDATE_RELEASED_AT, releasedAt);
+};

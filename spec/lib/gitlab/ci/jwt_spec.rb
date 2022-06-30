@@ -121,8 +121,8 @@ RSpec.describe Gitlab::Ci::Jwt do
   describe '.for_build' do
     shared_examples 'generating JWT for build' do
       context 'when signing key is present' do
-        let(:rsa_key) { OpenSSL::PKey::RSA.generate(1024) }
-        let(:rsa_key_data) { rsa_key.to_s }
+        let_it_be(:rsa_key) { OpenSSL::PKey::RSA.generate(3072) }
+        let_it_be(:rsa_key_data) { rsa_key.to_s }
 
         it 'generates JWT with key id' do
           _payload, headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })

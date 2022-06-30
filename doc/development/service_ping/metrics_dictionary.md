@@ -207,7 +207,7 @@ description: GitLab instance unique identifier
 product_category: collection
 product_section: growth
 product_stage: growth
-product_group: group::product intelligence
+product_group: product_intelligence
 value_type: string
 status: active
 milestone: 9.1

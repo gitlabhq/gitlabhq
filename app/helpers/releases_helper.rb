@@ -81,7 +81,8 @@ module ReleasesHelper
       release_assets_docs_path: releases_help_page_path(anchor: 'release-assets'),
       manage_milestones_path: project_milestones_path(@project),
       new_milestone_path: new_project_milestone_path(@project),
-      edit_release_docs_path: releases_help_page_path(anchor: 'edit-a-release')
+      edit_release_docs_path: releases_help_page_path(anchor: 'edit-a-release'),
+      upcoming_release_docs_path: releases_help_page_path(anchor: 'upcoming-releases')
     }
   end
 end

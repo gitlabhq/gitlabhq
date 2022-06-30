@@ -148,7 +148,7 @@ RSpec.describe Projects::Settings::IntegrationsController do
         expect(response).to be_successful
         expect(json_response).to eq(
           'error' => true,
-          'message' => 'Connection failed. Please check your settings.',
+          'message' => 'Connection failed. Check your integration settings.',
           'service_response' => '',
           'test_failed' => true
         )
@@ -163,7 +163,7 @@ RSpec.describe Projects::Settings::IntegrationsController do
           expect(response).to be_successful
           expect(json_response).to eq(
             'error' => true,
-            'message' => 'Connection failed. Please check your settings.',
+            'message' => 'Connection failed. Check your integration settings.',
             'service_response' => "URL 'http://127.0.0.1' is blocked: Requests to localhost are not allowed",
             'test_failed' => true
           )
@@ -177,7 +177,7 @@ RSpec.describe Projects::Settings::IntegrationsController do
           expect(response).to be_successful
           expect(json_response).to eq(
             'error' => true,
-            'message' => 'Connection failed. Please check your settings.',
+            'message' => 'Connection failed. Check your integration settings.',
             'service_response' => 'Connection refused',
             'test_failed' => true
           )

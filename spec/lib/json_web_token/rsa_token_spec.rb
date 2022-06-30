@@ -41,7 +41,7 @@ RSpec.describe JSONWebToken::RSAToken do
     end
 
     context 'for invalid key to raise an exception' do
-      let(:new_key) { OpenSSL::PKey::RSA.generate(512) }
+      let(:new_key) { OpenSSL::PKey::RSA.generate(3072) }
 
       subject { JWT.decode(rsa_encoded, new_key, true, { algorithm: 'RS256' }) }
 

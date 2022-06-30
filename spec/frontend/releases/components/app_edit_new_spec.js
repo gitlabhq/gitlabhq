@@ -1,21 +1,23 @@
-import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { merge } from 'lodash';
 import Vuex from 'vuex';
 import { nextTick } from 'vue';
-import { GlFormCheckbox } from '@gitlab/ui';
-import originalRelease from 'test_fixtures/api/releases/release.json';
+import { GlDatepicker, GlFormCheckbox } from '@gitlab/ui';
+import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
+import { convertOneReleaseGraphQLResponse } from '~/releases/util';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
-import * as commonUtils from '~/lib/utils/common_utils';
 import ReleaseEditNewApp from '~/releases/components/app_edit_new.vue';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
+const originalRelease = originalOneReleaseForEditingQueryResponse.data.project.release;
 const originalMilestones = originalRelease.milestones;
 const releasesPagePath = 'path/to/releases/page';
+const upcomingReleaseDocsPath = 'path/to/upcoming/release/docs';
 
 describe('Release edit/new component', () => {
   let wrapper;
@@ -33,6 +35,7 @@ describe('Release edit/new component', () => {
       projectId: '8',
       groupId: '42',
       groupMilestonesAvailable: true,
+      upcomingReleaseDocsPath,
     };
 
     actions = {
@@ -68,7 +71,7 @@ describe('Release edit/new component', () => {
       ),
     );
 
-    wrapper = mount(ReleaseEditNewApp, {
+    wrapper = mountExtended(ReleaseEditNewApp, {
       store,
       provide: {
         glFeatures: featureFlags,
@@ -88,7 +91,7 @@ describe('Release edit/new component', () => {
 
     mock.onGet('/api/v4/projects/8/milestones').reply(200, originalMilestones);
 
-    release = commonUtils.convertObjectPropsToCamelCase(originalRelease, { deep: true });
+    release = convertOneReleaseGraphQLResponse(originalOneReleaseForEditingQueryResponse).data;
   });
 
   afterEach(() => {
@@ -126,6 +129,18 @@ describe('Release edit/new component', () => {
 
     it('renders the correct release title in the "Release title" field', () => {
       expect(wrapper.find('#release-title').element.value).toBe(release.name);
+    });
+
+    it('renders the released at date in the "Released at" datepicker', () => {
+      expect(wrapper.findComponent(GlDatepicker).props('value')).toBe(release.releasedAt);
+    });
+
+    it('links to the documentation on upcoming releases in the "Released at" description', () => {
+      const link = wrapper.findByRole('link', { name: 'Upcoming Release' });
+
+      expect(link.exists()).toBe(true);
+
+      expect(link.attributes('href')).toBe(upcomingReleaseDocsPath);
     });
 
     it('renders the release notes in the "Release notes" textarea', () => {

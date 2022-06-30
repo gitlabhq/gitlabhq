@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'container registry auth service context' do
+  let_it_be(:rsa_key) { OpenSSL::PKey::RSA.generate(3072) }
+
   let(:current_project) { nil }
   let(:current_user) { nil }
   let(:current_params) { {} }
-  let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
   let(:payload) { JWT.decode(subject[:token], rsa_key, true, { algorithm: 'RS256' }).first }
 
   let(:authentication_abilities) do

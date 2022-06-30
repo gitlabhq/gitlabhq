@@ -42,9 +42,9 @@ export default {
       default: null,
     },
     releasedAt: {
-      type: String,
+      type: Date,
       required: false,
-      default: '',
+      default: null,
     },
   },
   computed: {

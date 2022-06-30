@@ -104,12 +104,6 @@ module QA
         false
       end
 
-      def api_delete
-        super
-
-        QA::Runtime::Logger.debug("Deleted user '#{username}'")
-      end
-
       def api_delete_path
         "/users/#{id}?hard_delete=#{hard_delete_on_api_removal}"
       rescue NoValueError

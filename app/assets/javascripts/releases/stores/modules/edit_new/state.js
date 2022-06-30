@@ -10,6 +10,7 @@ export default ({
   newMilestonePath,
   releasesPagePath,
   editReleaseDocsPath,
+  upcomingReleaseDocsPath,
 
   tagName = null,
   defaultBranch = null,
@@ -25,6 +26,7 @@ export default ({
   newMilestonePath,
   releasesPagePath,
   editReleaseDocsPath,
+  upcomingReleaseDocsPath,
 
   /**
    * The name of the tag associated with the release, provided by the backend.

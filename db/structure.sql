@@ -29909,6 +29909,8 @@ COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-
 
 CREATE UNIQUE INDEX index_vuln_historical_statistics_on_project_id_and_date ON vulnerability_historical_statistics USING btree (project_id, date);
 
+CREATE INDEX index_vuln_reads_on_casted_cluster_agent_id_where_it_is_null ON vulnerability_reads USING btree (casted_cluster_agent_id) WHERE (casted_cluster_agent_id IS NOT NULL);
+
 CREATE INDEX index_vuln_reads_on_project_id_state_severity_and_vuln_id ON vulnerability_reads USING btree (project_id, state, severity, vulnerability_id DESC);
 
 CREATE INDEX index_vulnerabilites_common_finder_query ON vulnerabilities USING btree (project_id, state, report_type, severity, id);

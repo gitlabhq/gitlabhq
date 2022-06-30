@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlFormCheckbox, GlFormInput, GlFormGroup, GlLink, GlSprintf } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDatepicker,
+  GlFormCheckbox,
+  GlFormInput,
+  GlFormGroup,
+  GlLink,
+  GlSprintf,
+} from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { isSameOriginUrl, getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -16,6 +24,7 @@ export default {
     GlFormInput,
     GlFormGroup,
     GlButton,
+    GlDatepicker,
     GlLink,
     GlSprintf,
     MarkdownField,
@@ -31,6 +40,7 @@ export default {
       'markdownDocsPath',
       'markdownPreviewPath',
       'editReleaseDocsPath',
+      'upcomingReleaseDocsPath',
       'releasesPagePath',
       'release',
       'newMilestonePath',
@@ -76,6 +86,14 @@ export default {
         this.updateIncludeTagNotes(includeTagNotes);
       },
     },
+    releasedAt: {
+      get() {
+        return this.release.releasedAt;
+      },
+      set(date) {
+        this.updateReleasedAt(date);
+      },
+    },
     cancelPath() {
       const backUrl = getParameterByName(BACK_URL_PARAM);
 
@@ -118,6 +136,7 @@ export default {
       'updateReleaseNotes',
       'updateReleaseMilestones',
       'updateIncludeTagNotes',
+      'updateReleasedAt',
     ]),
     submitForm() {
       if (!this.isFormSubmissionDisabled) {
@@ -165,6 +184,22 @@ export default {
             :extra-links="milestoneComboboxExtraLinks"
           />
         </div>
+      </gl-form-group>
+      <gl-form-group :label="__('Release date')" label-for="release-released-at">
+        <template #label-description>
+          <gl-sprintf
+            :message="
+              __(
+                'The date when the release is ready. A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}.',
+              )
+            "
+          >
+            <template #link="{ content }">
+              <gl-link :href="upcomingReleaseDocsPath">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
+        <gl-datepicker id="release-released-at" v-model="releasedAt" :default-date="releasedAt" />
       </gl-form-group>
       <gl-form-group data-testid="release-notes">
         <label for="release-notes">{{ __('Release notes') }}</label>

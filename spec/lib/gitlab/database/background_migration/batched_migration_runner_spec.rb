@@ -380,6 +380,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
       end
 
       context 'when migration fails to complete' do
+        let(:error_message) do
+          "Batched migration #{batched_migration.job_class_name} could not be completed and a manual action is required."\
+          "Check the admin panel at (`/admin/background_migrations`) for more details."
+        end
+
         it 'raises an error' do
           batched_migration.batched_jobs.with_status(:failed).update_all(attempts: Gitlab::Database::BackgroundMigration::BatchedJob::MAX_ATTEMPTS)
 
@@ -390,7 +395,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
               column_name,
               job_arguments
             )
-          end.to raise_error described_class::FailedToFinalize
+          end.to raise_error(described_class::FailedToFinalize, error_message)
         end
       end
     end

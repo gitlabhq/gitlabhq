@@ -34,7 +34,7 @@ Example response:
     by month
   product_section: enablement
   product_stage: enablement
-  product_group: group::global search
+  product_group: global_search
   product_category: global_search
   value_type: number
   status: active

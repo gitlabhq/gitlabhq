@@ -30,6 +30,7 @@ describe('Release edit/new mutations', () => {
         description: '',
         milestones: [],
         groupMilestones: [],
+        releasedAt: new Date(),
         assets: {
           links: [],
         },
@@ -79,6 +80,16 @@ describe('Release edit/new mutations', () => {
       mutations[types.UPDATE_RELEASE_TAG_NAME](state, newTag);
 
       expect(state.release.tagName).toBe(newTag);
+    });
+  });
+
+  describe(`${types.UPDATE_RELEASED_AT}`, () => {
+    it("updates the release's released at date", () => {
+      state.release = release;
+      const newDate = new Date();
+      mutations[types.UPDATE_RELEASED_AT](state, newDate);
+
+      expect(state.release.releasedAt).toBe(newDate);
     });
   });
 

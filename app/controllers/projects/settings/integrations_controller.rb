@@ -89,7 +89,7 @@ module Projects
         unless result[:success]
           return {
             error: true,
-            message: s_('Integrations|Connection failed. Please check your settings.'),
+            message: s_('Integrations|Connection failed. Check your integration settings.'),
             service_response: result[:message].to_s,
             test_failed: true
           }
@@ -99,7 +99,7 @@ module Projects
       rescue *Gitlab::HTTP::HTTP_ERRORS => e
         {
           error: true,
-          message: s_('Integrations|Connection failed. Please check your settings.'),
+          message: s_('Integrations|Connection failed. Check your integration settings.'),
           service_response: e.message,
           test_failed: true
         }

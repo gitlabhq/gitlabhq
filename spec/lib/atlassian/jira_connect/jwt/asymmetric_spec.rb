@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric do
   describe '#valid?' do
+    let_it_be(:private_key) { OpenSSL::PKey::RSA.generate 3072 }
+
     subject(:asymmetric_jwt) { described_class.new(jwt, verification_claims) }
 
     let(:verification_claims) { jwt_claims }
@@ -12,7 +14,6 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric do
     let(:client_key) { '1234' }
     let(:public_key_id) { '123e4567-e89b-12d3-a456-426614174000' }
     let(:jwt_headers) { { kid: public_key_id } }
-    let(:private_key) { OpenSSL::PKey::RSA.generate 2048 }
     let(:jwt) { JWT.encode(jwt_claims, private_key, 'RS256', jwt_headers) }
     let(:public_key) { private_key.public_key }
     let(:install_keys_url) { "https://connect-install-keys.atlassian.com/#{public_key_id}" }

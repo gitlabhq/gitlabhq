@@ -14,6 +14,7 @@ export default {
       description: '',
       milestones: [],
       groupMilestones: [],
+      releasedAt: new Date(),
       assets: {
         links: [],
       },
@@ -112,5 +113,8 @@ export default {
   },
   [types.UPDATE_INCLUDE_TAG_NOTES](state, includeTagNotes) {
     state.includeTagNotes = includeTagNotes;
+  },
+  [types.UPDATE_RELEASED_AT](state, releasedAt) {
+    state.release.releasedAt = releasedAt;
   },
 };

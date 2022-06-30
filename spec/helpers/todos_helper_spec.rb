@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe TodosHelper do
   let_it_be(:user) { create(:user) }
   let_it_be(:author) { create(:user) }
-  let_it_be(:issue) { create(:issue, title: 'Issue 1') }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:issue) { create(:issue, title: 'Issue 1', project: project) }
   let_it_be(:design) { create(:design, issue: issue) }
   let_it_be(:note) do
     create(:note,
@@ -16,7 +17,7 @@ RSpec.describe TodosHelper do
   let_it_be(:design_todo) do
     create(:todo, :mentioned,
            user: user,
-           project: issue.project,
+           project: project,
            target: design,
            author: author,
            note: note)
@@ -25,6 +26,15 @@ RSpec.describe TodosHelper do
   let_it_be(:alert_todo) do
     alert = create(:alert_management_alert, iid: 1001)
     create(:todo, target: alert)
+  end
+
+  let_it_be(:task_todo) do
+    task = create(:work_item, :task, project: project)
+    create(:todo, target: task, target_type: task.class.name, project: project)
+  end
+
+  let_it_be(:issue_todo) do
+    create(:todo, target: issue)
   end
 
   describe '#todos_count_format' do
@@ -113,27 +123,52 @@ RSpec.describe TodosHelper do
         )
       end
     end
+
+    context 'when given a task' do
+      let(:todo) { task_todo }
+
+      it 'responds with an appropriate path' do
+        path = helper.todo_target_path(todo)
+
+        expect(path).to eq("/#{todo.project.full_path}/-/work_items/#{todo.target.id}")
+      end
+    end
   end
 
   describe '#todo_target_type_name' do
+    subject { helper.todo_target_type_name(todo) }
+
     context 'when given a design todo' do
       let(:todo) { design_todo }
 
-      it 'responds with an appropriate target type name' do
-        name = helper.todo_target_type_name(todo)
-
-        expect(name).to eq('design')
-      end
+      it { is_expected.to eq('design') }
     end
 
     context 'when given an alert todo' do
       let(:todo) { alert_todo }
 
-      it 'responds with an appropriate target type name' do
-        name = helper.todo_target_type_name(todo)
+      it { is_expected.to eq('alert') }
+    end
 
-        expect(name).to eq('alert')
+    context 'when given a task todo' do
+      let(:todo) { task_todo }
+
+      it { is_expected.to eq('task') }
+    end
+
+    context 'when given an issue todo' do
+      let(:todo) { issue_todo }
+
+      it { is_expected.to eq('issue') }
+    end
+
+    context 'when given a merge request todo' do
+      let(:todo) do
+        merge_request = create(:merge_request, source_project: project)
+        create(:todo, target: merge_request)
       end
+
+      it { is_expected.to eq('merge request') }
     end
   end
 

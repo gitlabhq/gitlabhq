@@ -76,7 +76,10 @@ module Gitlab
 
             run_migration_while(migration, :finalizing)
 
-            raise FailedToFinalize unless migration.finished?
+            error_message = "Batched migration #{migration.job_class_name} could not be completed and a manual action is required."\
+                            "Check the admin panel at (`/admin/background_migrations`) for more details."
+
+            raise FailedToFinalize, error_message unless migration.finished?
           end
         end
 

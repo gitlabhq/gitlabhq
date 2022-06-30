@@ -11951,10 +11951,10 @@ svg-tags@^1.0.0:
   resolved "https://registry.yarnpkg.com/svg-tags/-/svg-tags-1.0.0.tgz#58f71cee3bd519b59d4b2a843b6c7de64ac04764"
   integrity sha1-WPcc7jvVGbWdSyqEO2x95krAR2Q=
 
-swagger-ui-dist@4.8.0:
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.8.0.tgz#5f39a038a02ffbd5defb8e1921a9ac1620d779ae"
-  integrity sha512-jdcO4XcbwkAtrwvHp90Usjx3d4JZMjaiS02CxBFfuSxr6G8DBXPcK471+N6BcBkwZK7VTgpUBFAyyarsAvKYFQ==
+swagger-ui-dist@4.12.0:
+  version "4.12.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.12.0.tgz#986d90f05e81fb9db3ca40372278a5d8ce71db3a"
+  integrity sha512-B0Iy2ueXtbByE6OOyHTi3lFQkpPi/L7kFOKFeKTr44za7dJIELa9kzaca6GkndCgpK1QTjArnoXG+aUy0XQp1w==
 
 symbol-observable@^1.0.4:
   version "1.2.0"

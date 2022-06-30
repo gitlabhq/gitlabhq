@@ -168,6 +168,15 @@ describe('Release edit/new actions', () => {
       });
     });
 
+    describe('updateReleasedAt', () => {
+      it(`commits ${types.UPDATE_RELEASED_AT} with the updated date`, () => {
+        const newDate = new Date();
+        return testAction(actions.updateReleasedAt, newDate, state, [
+          { type: types.UPDATE_RELEASED_AT, payload: newDate },
+        ]);
+      });
+    });
+
     describe('updateCreateFrom', () => {
       it(`commits ${types.UPDATE_CREATE_FROM} with the updated ref`, () => {
         const newRef = 'my-feature-branch';

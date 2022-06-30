@@ -18137,7 +18137,7 @@ msgstr ""
 msgid "GroupActivityMetrics|Issues created"
 msgstr ""
 
-msgid "GroupActivityMetrics|Last 90 days"
+msgid "GroupActivityMetrics|Last 30 days"
 msgstr ""
 
 msgid "GroupActivityMetrics|Members added"
@@ -20766,7 +20766,7 @@ msgstr ""
 msgid "Integrations|Connection details"
 msgstr ""
 
-msgid "Integrations|Connection failed. Please check your settings."
+msgid "Integrations|Connection failed. Check your integration settings."
 msgstr ""
 
 msgid "Integrations|Connection successful."
@@ -31795,6 +31795,9 @@ msgstr ""
 msgid "Release assets documentation"
 msgstr ""
 
+msgid "Release date"
+msgstr ""
+
 msgid "Release does not have the same project as the milestone"
 msgstr ""
 
@@ -38395,6 +38398,9 @@ msgid "The data in this pipeline is too old to be rendered as a graph. Please ch
 msgstr ""
 
 msgid "The data source is connected, but there is no data to display. %{documentationLink}"
+msgstr ""
+
+msgid "The date when the release is ready. A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}."
 msgstr ""
 
 msgid "The default CI/CD configuration file and path for new projects."

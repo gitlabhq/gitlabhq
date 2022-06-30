@@ -68,10 +68,9 @@ export default {
 <template>
   <!-- must be `d-inline-block` or parent flex-basis causes width issues -->
   <gl-link
+    v-gl-tooltip="tooltipOption"
     :href="reviewerUrl"
     :title="tooltipTitle"
-    :data-user-id="user.id"
-    data-placement="left"
     class="gl-display-inline-block js-user-link"
   >
     <!-- use d-flex so that slot can be appropriately styled -->
