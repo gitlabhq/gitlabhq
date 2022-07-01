@@ -3,9 +3,9 @@
 
 .diff-content
   - if diff_file.has_renderable?
-    %div{ id: "#raw-diff-#{file_hash}", data: { file_hash: file_hash, diff_toggle_entity: 'toHide' } }
+    .hidden{ id: "#raw-diff-#{file_hash}", data: { file_hash: file_hash, diff_toggle_entity: 'rawViewer' } }
       = render 'projects/diffs/viewer', viewer: diff_file.viewer
-    %div{ id: "#rendered-diff-#{file_hash}", data: { file_hash: file_hash, diff_toggle_entity: 'toShow' } }
+    %div{ id: "#rendered-diff-#{file_hash}", data: { file_hash: file_hash, diff_toggle_entity: 'renderedViewer' } }
       = render 'projects/diffs/viewer', viewer: diff_file.rendered.viewer
   - else
     = render 'projects/diffs/viewer', viewer: diff_file.viewer

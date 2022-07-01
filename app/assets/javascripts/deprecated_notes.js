@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-properties, camelcase,
+/* eslint-disable camelcase,
 no-unused-expressions, default-case,
 consistent-return, no-param-reassign,
 no-shadow, no-useless-escape,
@@ -357,7 +357,7 @@ export default class Notes {
     if (shouldReset == null) {
       shouldReset = true;
     }
-    const nthInterval = this.basePollingInterval * Math.pow(2, this.maxPollingSteps - 1);
+    const nthInterval = this.basePollingInterval * 2 ** (this.maxPollingSteps - 1);
     if (shouldReset) {
       this.pollingInterval = this.basePollingInterval;
     } else if (this.pollingInterval < nthInterval) {

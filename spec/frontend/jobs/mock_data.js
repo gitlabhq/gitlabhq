@@ -930,7 +930,7 @@ export default {
   created_at: threeWeeksAgo.toISOString(),
   updated_at: threeWeeksAgo.toISOString(),
   finished_at: threeWeeksAgo.toISOString(),
-  queued: 9.54,
+  queued_duration: 9.54,
   status: {
     icon: 'status_success',
     text: 'passed',

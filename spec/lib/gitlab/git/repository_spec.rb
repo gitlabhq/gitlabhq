@@ -676,7 +676,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
       after do
         # Erase our commits so other tests get the original repo
-        repository_rugged.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
+        repository.write_ref("refs/heads/master", SeedRepo::LastCommit::ID)
       end
 
       context "where 'follow' == true" do
@@ -2294,7 +2294,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
         after do
           # Erase our commits so other tests get the original repo
-          repository_rugged.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
+          repository.write_ref('refs/heads/master', SeedRepo::LastCommit::ID)
         end
 
         it 'does not include the renamed file in the sparse checkout' do
@@ -2343,7 +2343,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
   def create_remote_branch(remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
-    repository_rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
+    repository.write_ref("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
   end
 
   def refs(dir)

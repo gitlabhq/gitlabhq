@@ -33,6 +33,7 @@ export default class SidebarService {
       SidebarService.singleton = this;
     }
 
+    // eslint-disable-next-line no-constructor-return
     return SidebarService.singleton;
   }
 

@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::GenerateCoverageReportsService do
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:service) { described_class.new(project) }
-  let(:project) { create(:project, :repository) }
 
   describe '#execute' do
     subject { service.execute(base_pipeline, head_pipeline) }
@@ -49,6 +50,57 @@ RSpec.describe Ci::GenerateCoverageReportsService do
       it 'returns status and error message' do
         expect(subject[:status]).to eq(:error)
         expect(subject[:status_reason]).to include('An error occurred while fetching coverage reports.')
+      end
+    end
+  end
+
+  describe '#latest?' do
+    subject { service.latest?(base_pipeline, head_pipeline, data) }
+
+    let!(:base_pipeline) { nil }
+    let!(:head_pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project) }
+    let!(:child_pipeline) { create(:ci_pipeline, child_of: head_pipeline) }
+    let!(:key) { service.send(:key, base_pipeline, head_pipeline) }
+
+    let(:data) { { key: key } }
+
+    context 'when cache key is latest' do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when head pipeline has been updated' do
+      before do
+        head_pipeline.update_column(:updated_at, 1.minute.from_now)
+      end
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when cache key is empty' do
+      let(:data) { { key: nil } }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when the pipeline has a child that is updated' do
+      before do
+        child_pipeline.update_column(:updated_at, 1.minute.from_now)
+      end
+
+      it { is_expected.to be_falsy }
+
+      context 'when feature flag ci_child_pipeline_coverage_reports is disabled' do
+        let!(:key) do
+          # `let!` is executed before `before` block. If the feature flag
+          # is stubbed in `before`, the first call to `#key` uses the
+          # default feature flag value (enabled).
+          # The feature flag needs to be stubbed before the first call to `#key`
+          # so that the first and second key are calculated using the same method.
+          stub_feature_flags(ci_child_pipeline_coverage_reports: false)
+          service.send(:key, base_pipeline, head_pipeline)
+        end
+
+        it { is_expected.to be_truthy }
       end
     end
   end

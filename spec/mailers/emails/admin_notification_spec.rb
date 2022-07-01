@@ -18,12 +18,14 @@ RSpec.describe Emails::AdminNotification do
 
     let(:max_project_downloads) { 5 }
     let(:time_period) { 600 }
+    let(:group) { nil }
 
     subject do
       Notify.user_auto_banned_email(
         admin.id, user.id,
         max_project_downloads: max_project_downloads,
-        within_seconds: time_period
+        within_seconds: time_period,
+        group: group
       )
     end
 
@@ -45,6 +47,10 @@ RSpec.describe Emails::AdminNotification do
       is_expected.to have_body_text user.name
     end
 
+    it 'includes the scope of the ban' do
+      is_expected.to have_body_text "banned from your GitLab instance"
+    end
+
     it 'includes the reason' do
       is_expected.to have_body_text "due to them downloading more than 5 project repositories within 10 minutes"
     end
@@ -59,6 +65,14 @@ RSpec.describe Emails::AdminNotification do
 
     it 'includes the email reason' do
       is_expected.to have_body_text "You're receiving this email because of your account on localhost"
+    end
+
+    context 'when scoped to a group' do
+      let(:group) { create(:group) }
+
+      it 'includes the scope of the ban' do
+        is_expected.to have_body_text "banned from your group (#{group.name})"
+      end
     end
   end
 end

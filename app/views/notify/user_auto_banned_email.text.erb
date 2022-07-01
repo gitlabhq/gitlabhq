@@ -1,6 +1,6 @@
 <%= _("We've detected some unusual activity") %>
 
-<%= _('We want to let you know %{username} has been banned from your GitLab instance due to them downloading more than %{max_project_downloads} project repositories within %{within_minutes} minutes.') % { username: sanitize_name(@user.name), max_project_downloads: @max_project_downloads, within_minutes: @within_minutes } %>
+<%= _('We want to let you know %{username} has been banned from %{scope} due to them downloading more than %{max_project_downloads} project repositories within %{within_minutes} minutes.') % { username: sanitize_name(@user.name), max_project_downloads: @max_project_downloads, within_minutes: @within_minutes, scope: @ban_scope } %>
 
 <%= _('If this is a mistake, you can unban them: %{url}.') % { url: admin_users_url(filter: 'banned') } %>
 

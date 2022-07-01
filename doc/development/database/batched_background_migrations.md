@@ -355,7 +355,7 @@ You can view failures in two ways:
 
 - Via GitLab logs:
   1. After running a batched background migration, if any jobs fail,
-     view the logs in [Kibana](https://log.gprd.gitlab.net/goto/5f06a57f768c6025e1c65aefb4075694).
+     view the logs in [Kibana](https://log.gprd.gitlab.net/goto/4cb43f40-f861-11ec-b86b-d963a1a6788e).
      View the production Sidekiq log and filter for:
 
      - `json.new_state: failed`

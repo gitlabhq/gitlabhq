@@ -353,6 +353,20 @@ module ObjectStorage
       }
     end
 
+    def store_path(*args)
+      if self.object_store == Store::REMOTE
+        # We allow administrators to create "sub buckets" by setting a prefix.
+        # This makes it possible to deploy GitLab with only one object storage
+        # bucket. Because the prefix is configuration data we do not want to
+        # store it in the uploads table via RecordsUploads. That means that the
+        # prefix cannot be part of store_dir. This is why we chose to implement
+        # the prefix support here in store_path.
+        File.join([self.class.object_store_options.bucket_prefix, super].compact)
+      else
+        super
+      end
+    end
+
     # Returns all the possible paths for an upload.
     # the `upload.path` is a lookup parameter, and it may change
     # depending on the `store` param.

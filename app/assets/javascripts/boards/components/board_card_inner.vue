@@ -254,7 +254,7 @@ export default {
       <div
         class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
-        <gl-loading-icon v-if="item.isLoading" size="lg" class="mt-3" />
+        <gl-loading-icon v-if="item.isLoading" size="lg" class="gl-mt-5" />
         <span
           v-if="item.referencePath"
           class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3"

@@ -5277,6 +5277,9 @@ msgstr ""
 msgid "AuditLogs|User Events"
 msgstr ""
 
+msgid "AuditStreams|A header with this name already exists."
+msgstr ""
+
 msgid "AuditStreams|Active"
 msgstr ""
 
@@ -5301,6 +5304,9 @@ msgstr ""
 msgid "AuditStreams|Cancel editing"
 msgstr ""
 
+msgid "AuditStreams|Custom HTTP headers"
+msgstr ""
+
 msgid "AuditStreams|Delete %{link}"
 msgstr ""
 
@@ -5308,6 +5314,12 @@ msgid "AuditStreams|Destination URL"
 msgstr ""
 
 msgid "AuditStreams|Destinations receive all audit event data"
+msgstr ""
+
+msgid "AuditStreams|Header"
+msgstr ""
+
+msgid "AuditStreams|Maximum of %{number} HTTP headers has been reached."
 msgstr ""
 
 msgid "AuditStreams|Setup streaming for audit events"
@@ -5323,6 +5335,9 @@ msgid "AuditStreams|This could include sensitive information. Make sure you trus
 msgstr ""
 
 msgid "AuditStreams|This is great for keeping everything one place."
+msgstr ""
+
+msgid "AuditStreams|Value"
 msgstr ""
 
 msgid "Aug"
@@ -15659,6 +15674,11 @@ msgstr ""
 
 msgid "Failed Jobs"
 msgstr ""
+
+msgid "Failed job"
+msgid_plural "Failed jobs"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Failed on"
 msgstr ""
@@ -42970,7 +42990,7 @@ msgstr ""
 msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr ""
 
-msgid "We want to let you know %{username} has been banned from your GitLab instance due to them downloading more than %{max_project_downloads} project repositories within %{within_minutes} minutes."
+msgid "We want to let you know %{username} has been banned from %{scope} due to them downloading more than %{max_project_downloads} project repositories within %{within_minutes} minutes."
 msgstr ""
 
 msgid "We will notify %{inviter} that you declined their invitation to join GitLab. You will stop receiving reminders."
@@ -46714,6 +46734,12 @@ msgid "with expiry remaining unchanged at %{old_expiry}"
 msgstr ""
 
 msgid "yaml invalid"
+msgstr ""
+
+msgid "your GitLab instance"
+msgstr ""
+
+msgid "your group (%{group_name})"
 msgstr ""
 
 msgid "your settings"

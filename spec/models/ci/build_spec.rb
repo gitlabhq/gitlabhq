@@ -2598,7 +2598,7 @@ RSpec.describe Ci::Build do
 
     context 'when token is empty' do
       before do
-        build.update_columns(token: nil, token_encrypted: nil)
+        build.update_columns(token_encrypted: nil)
       end
 
       it { is_expected.to be_nil}

@@ -8,8 +8,11 @@ class CommitStatus < Ci::ApplicationRecord
   include EnumWithNil
   include BulkInsertableAssociations
   include TaggableQueries
+  include IgnorableColumns
 
   self.table_name = 'ci_builds'
+
+  ignore_column :token, remove_with: '15.4', remove_after: '2022-08-22'
 
   belongs_to :user
   belongs_to :project

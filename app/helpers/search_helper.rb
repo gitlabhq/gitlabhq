@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module SearchHelper
+  # params which should persist when a new tab is selected
   SEARCH_GENERIC_PARAMS = [
     :search,
     :scope,
@@ -129,7 +130,7 @@ module SearchHelper
   end
 
   def search_service
-    @search_service ||= ::SearchService.new(current_user, params.merge(confidential: Gitlab::Utils.to_boolean(params[:confidential])))
+    @search_service ||= ::SearchService.new(current_user, sanitized_search_params)
   end
 
   def search_sort_options
@@ -480,6 +481,13 @@ module SearchHelper
 
   def feature_flag_tab_enabled?(flag)
     @group || Feature.enabled?(flag, current_user, type: :ops)
+  end
+
+  def sanitized_search_params
+    sanitized_params = params.dup
+    sanitized_params[:confidential] = Gitlab::Utils.to_boolean(sanitized_params[:confidential]) if sanitized_params.key?(:confidential)
+
+    sanitized_params
   end
 end
 

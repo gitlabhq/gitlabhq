@@ -225,7 +225,11 @@ module API
     def find_project_issue(iid, project_id = nil)
       project = project_id ? find_project!(project_id) : user_project
 
-      ::IssuesFinder.new(current_user, project_id: project.id).find_by!(iid: iid)
+      ::IssuesFinder.new(
+        current_user,
+        project_id: project.id,
+        issue_types: WorkItems::Type.allowed_types_for_issues
+      ).find_by!(iid: iid)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

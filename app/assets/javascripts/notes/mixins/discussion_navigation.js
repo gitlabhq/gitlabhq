@@ -41,8 +41,6 @@ function updateUrlWithNoteId(noteId) {
 
     // Unmask the note's ID
     note?.setAttribute('id', `note_${noteId}`);
-  } else if (noteId) {
-    updateHistory(newHistoryEntry);
   }
 }
 

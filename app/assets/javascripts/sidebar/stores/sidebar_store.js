@@ -4,6 +4,7 @@ export default class SidebarStore {
       this.initSingleton(options);
     }
 
+    // eslint-disable-next-line no-constructor-return
     return SidebarStore.singleton;
   }
 

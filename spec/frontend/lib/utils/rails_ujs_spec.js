@@ -8,7 +8,7 @@ beforeAll(async () => {
   // that jQuery isn't available *before* we import @rails/ujs.
   delete global.jQuery;
 
-  const { initRails } = await import('~/lib/utils/rails_ujs.js');
+  const { initRails } = await import('~/lib/utils/rails_ujs');
   initRails();
 });
 

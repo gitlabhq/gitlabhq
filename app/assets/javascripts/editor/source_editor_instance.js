@@ -90,6 +90,7 @@ export default class EditorInstance {
 
     this.dispatchExtAction = EditorInstance.useUnuse.bind(instProxy, extensionsStore);
 
+    // eslint-disable-next-line no-constructor-return
     return instProxy;
   }
 

@@ -259,7 +259,7 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
           tree: old_commit.tree,
           parents: [old_commit]
         )
-        rugged.references.create("refs/heads/#{SecureRandom.hex(6)}", new_commit_sha)
+        repository.write_ref("refs/heads/#{SecureRandom.hex(6)}", new_commit_sha)
       end
 
       def packs(resource)

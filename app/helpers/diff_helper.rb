@@ -33,6 +33,7 @@ module DiffHelper
     if action_name == 'diff_for_path'
       options[:expanded] = true
       options[:paths] = params.values_at(:old_path, :new_path)
+      options[:use_extra_viewer_as_main] = false
     end
 
     options

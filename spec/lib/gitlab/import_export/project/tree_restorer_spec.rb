@@ -441,7 +441,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           end
 
           it 'has a new CI build token' do
-            expect(Ci::Build.where(token: 'abcd')).to be_empty
+            expect(Ci::Build.find_by_token('abcd')).to be_nil
           end
         end
 
@@ -568,20 +568,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
 
         context 'when there is an existing build with build token' do
           before do
-            create(:ci_build, token: 'abcd')
-          end
-
-          it_behaves_like 'restores project successfully',
-            issues: 1,
-            labels: 2,
-            label_with_priorities: 'A project label',
-            milestones: 1,
-            first_issue_labels: 1
-        end
-
-        context 'when there is an existing build with build token' do
-          before do
-            create(:ci_build, token: 'abcd')
+            create(:ci_build).tap do |job|
+              job.set_token('abcd')
+              job.save!
+            end
           end
 
           it_behaves_like 'restores project successfully',

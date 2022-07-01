@@ -56,7 +56,7 @@ the following sections and tables provide an alternative.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `name` | `string` |  | Name of the policy. |
+| `name` | `string` |  | Name of the policy. Maximum of 255 characters.|
 | `description` (optional) | `string` |  | Description of the policy. |
 | `enabled` | `boolean` | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules` | `array` of rules |  | List of rules that the policy applies. |

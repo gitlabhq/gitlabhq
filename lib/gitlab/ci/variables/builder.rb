@@ -52,7 +52,7 @@ module Gitlab
             # https://gitlab.com/groups/gitlab-org/configure/-/epics/8
             # Until then, we need to make both the old and the new KUBECONFIG contexts available
             collection.concat(deployment_variables(environment: environment, job: job))
-            template = ::Ci::GenerateKubeconfigService.new(pipeline, token: job.token).execute
+            template = ::Ci::GenerateKubeconfigService.new(pipeline, token: job.try(:token)).execute
             kubeconfig_yaml = collection['KUBECONFIG']&.value
             template.merge_yaml(kubeconfig_yaml) if kubeconfig_yaml.present?
 

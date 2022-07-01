@@ -205,8 +205,12 @@ class NotifyPreview < ActionMailer::Preview
     Notify.inactive_project_deletion_warning_email(project, user, '2022-04-22').message
   end
 
-  def user_auto_banned_email
+  def user_auto_banned_instance_email
     ::Notify.user_auto_banned_email(user.id, user.id, max_project_downloads: 5, within_seconds: 600).message
+  end
+
+  def user_auto_banned_namespace_email
+    ::Notify.user_auto_banned_email(user.id, user.id, max_project_downloads: 5, within_seconds: 600, group: group).message
   end
 
   private
@@ -237,6 +241,10 @@ class NotifyPreview < ActionMailer::Preview
 
   def user
     @user ||= User.last
+  end
+
+  def group
+    @group ||= Group.last
   end
 
   def member

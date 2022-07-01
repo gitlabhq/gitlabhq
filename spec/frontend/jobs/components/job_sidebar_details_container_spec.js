@@ -42,7 +42,7 @@ describe('Job Sidebar Details Container', () => {
       expect(wrapper.html()).toBe('');
     });
 
-    it.each(['duration', 'erased_at', 'finished_at', 'queued', 'runner', 'coverage'])(
+    it.each(['duration', 'erased_at', 'finished_at', 'queued_at', 'runner', 'coverage'])(
       'should not render %s details when missing',
       async (detail) => {
         await store.dispatch('receiveJobSuccess', { [detail]: undefined });
@@ -59,7 +59,7 @@ describe('Job Sidebar Details Container', () => {
       ['duration', 'Elapsed time: 6 seconds'],
       ['erased_at', 'Erased: 3 weeks ago'],
       ['finished_at', 'Finished: 3 weeks ago'],
-      ['queued', 'Queued: 9 seconds'],
+      ['queued_duration', 'Queued: 9 seconds'],
       ['runner', 'Runner: #1 (ABCDEFGH) local ci runner'],
       ['coverage', 'Coverage: 20%'],
     ])('uses %s to render job-%s', async (detail, value) => {

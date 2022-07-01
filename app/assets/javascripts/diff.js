@@ -101,6 +101,7 @@ export default class Diff {
       const clickTarget = $('.js-file-title, .click-to-expand', diffFile);
       diffFile.data('singleFileDiff').toggleDiff(clickTarget, () => {
         this.highlightSelectedLine();
+        this.prepareRenderedDiff();
         if (cb) cb();
       });
     } else if (cb) {
@@ -156,20 +157,22 @@ export default class Diff {
   }
 
   prepareRenderedDiff() {
-    const $elements = $('[data-diff-toggle-entity]');
-
-    if ($elements.length === 0) return;
-
+    const allElements = this.elementsForRenderedDiff();
     const diff = this;
 
-    const elements = $elements.toArray().map(this.formatElementToObject).reduce(merge);
+    for (const [fileHash, fileElements] of Object.entries(allElements)) {
+      // eslint-disable no-param-reassign
+      fileElements.rawButton.onclick = () => {
+        diff.showRawViewer(fileHash, diff.elementsForRenderedDiff()[fileHash]);
+      };
 
-    Object.values(elements).forEach((e) => {
-      e.toShowBtn.onclick = () => diff.showOneHideAnother('rendered', e); // eslint-disable-line no-param-reassign
-      e.toHideBtn.onclick = () => diff.showOneHideAnother('raw', e); // eslint-disable-line no-param-reassign
+      fileElements.renderedButton.onclick = () => {
+        diff.showRenderedViewer(fileHash, diff.elementsForRenderedDiff()[fileHash]);
+      };
+      // eslint-enable no-param-reassign
 
-      diff.showOneHideAnother('rendered', e);
-    });
+      diff.showRenderedViewer(fileHash, fileElements);
+    }
   }
 
   formatElementToObject = (element) => {
@@ -179,18 +182,33 @@ export default class Diff {
     return { [key]: { [name]: element } };
   };
 
-  showOneHideAnother = (mode, elements) => {
-    let { toShowBtn, toHideBtn, toShow, toHide } = elements;
+  elementsForRenderedDiff = () => {
+    const $elements = $('[data-diff-toggle-entity]');
 
-    if (mode === 'raw') {
-      [toShowBtn, toHideBtn] = [toHideBtn, toShowBtn];
-      [toShow, toHide] = [toHide, toShow];
-    }
+    if ($elements.length === 0) return {};
 
-    toShowBtn.classList.add('selected');
-    toHideBtn.classList.remove('selected');
+    const diff = this;
 
-    toHide.classList.add('hidden');
-    toShow.classList.remove('hidden');
+    return $elements.toArray().map(diff.formatElementToObject).reduce(merge);
+  };
+
+  showRawViewer = (fileHash, elements) => {
+    if (elements === undefined) return;
+
+    elements.rawButton.classList.add('selected');
+    elements.renderedButton.classList.remove('selected');
+
+    elements.renderedViewer.classList.add('hidden');
+    elements.rawViewer.classList.remove('hidden');
+  };
+
+  showRenderedViewer = (fileHash, elements) => {
+    if (elements === undefined) return;
+
+    elements.rawButton.classList.remove('selected');
+    elements.rawViewer.classList.add('hidden');
+
+    elements.renderedButton.classList.add('selected');
+    elements.renderedViewer.classList.remove('hidden');
   };
 }

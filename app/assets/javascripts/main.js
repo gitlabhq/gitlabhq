@@ -53,7 +53,7 @@ window.gl = window.gl || {};
 
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon?.test_env) {
-  import(/* webpackMode: "eager" */ './test_utils/');
+  import(/* webpackMode: "eager" */ './test_utils');
 }
 
 document.addEventListener('beforeunload', () => {

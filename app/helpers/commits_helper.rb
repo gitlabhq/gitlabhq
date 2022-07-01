@@ -184,7 +184,7 @@ module CommitsHelper
 
   def diff_mode_swap_button(mode, file_hash)
     icon = mode == 'raw' ? 'doc-code' : 'doc-text'
-    entity = mode == 'raw' ? 'toHideBtn' : 'toShowBtn'
+    entity = mode == 'raw' ? 'rawButton' : 'renderedButton'
     title = "Display #{mode} diff"
 
     link_to("##{mode}-diff-#{file_hash}",

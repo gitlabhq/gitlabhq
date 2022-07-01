@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
 
     after do
       # Erase the new commit so other tests get the original repo
-      rugged_repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
+      repository.write_ref("refs/heads/master", SeedRepo::LastCommit::ID)
     end
   end
 

@@ -14,8 +14,7 @@ const createRelativeRequire = (filename) => {
   const rel = path.relative(__dirname, path.dirname(filename));
   const base = path.resolve(__dirname, rel);
 
-  // reason: Dynamic require should be fine here since the code is dynamically evaluated anyways.
-  // eslint-disable-next-line import/no-dynamic-require, global-require
+  // eslint-disable-next-line global-require
   return (pathArg) => require(transformRequirePath(base, pathArg));
 };
 

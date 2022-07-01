@@ -169,28 +169,27 @@ export default class CreateMergeRequestDropdown {
   }
 
   createMergeRequest() {
-    return new Promise(() => {
-      this.isCreatingMergeRequest = true;
-      return this.createBranch(false)
-        .then(() => api.trackRedisHllUserEvent('i_code_review_user_create_mr_from_issue'))
-        .then(() => {
-          let path = canCreateConfidentialMergeRequest()
-            ? this.createMrPath.replace(
-                this.projectPath,
-                confidentialMergeRequestState.selectedProject.pathWithNamespace,
-              )
-            : this.createMrPath;
-          path = mergeUrlParams(
-            {
-              'merge_request[target_branch]': this.refInput.value,
-              'merge_request[source_branch]': this.branchInput.value,
-            },
-            path,
-          );
+    this.isCreatingMergeRequest = true;
 
-          window.location.href = path;
-        });
-    });
+    return this.createBranch(false)
+      .then(() => api.trackRedisHllUserEvent('i_code_review_user_create_mr_from_issue'))
+      .then(() => {
+        let path = canCreateConfidentialMergeRequest()
+          ? this.createMrPath.replace(
+              this.projectPath,
+              confidentialMergeRequestState.selectedProject.pathWithNamespace,
+            )
+          : this.createMrPath;
+        path = mergeUrlParams(
+          {
+            'merge_request[target_branch]': this.refInput.value,
+            'merge_request[source_branch]': this.branchInput.value,
+          },
+          path,
+        );
+
+        window.location.href = path;
+      });
   }
 
   disable() {

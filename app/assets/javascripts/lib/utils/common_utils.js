@@ -591,8 +591,7 @@ export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
  * @param {Number} precision
  */
 export const roundOffFloat = (number, precision = 0) => {
-  // eslint-disable-next-line no-restricted-properties
-  const multiplier = Math.pow(10, precision);
+  const multiplier = 10 ** precision;
   return Math.round(number * multiplier) / multiplier;
 };
 
@@ -622,8 +621,7 @@ export const roundToNearestHalf = (num) => Math.round(num * 2).toFixed() / 2;
  * @param {Number} precision
  */
 export const roundDownFloat = (number, precision = 0) => {
-  // eslint-disable-next-line no-restricted-properties
-  const multiplier = Math.pow(10, precision);
+  const multiplier = 10 ** precision;
   return Math.floor(number * multiplier) / multiplier;
 };
 

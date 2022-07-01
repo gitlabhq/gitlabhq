@@ -26,7 +26,9 @@ class ObjectStoreSettings
   def self.legacy_parse(object_store, object_store_type)
     object_store ||= Settingslogic.new({})
     object_store['enabled'] = false if object_store['enabled'].nil?
-    object_store['remote_directory'] ||= nil
+    object_store['remote_directory'], object_store['bucket_prefix'] = split_bucket_prefix(
+      object_store['remote_directory']
+    )
 
     if support_legacy_background_upload?(object_store_type)
       object_store['direct_upload'] = false
@@ -46,6 +48,22 @@ class ObjectStoreSettings
 
   def self.support_legacy_background_upload?(object_store_type)
     ENV[LEGACY_BACKGROUND_UPLOADS_ENV].to_s.split(',').map(&:strip).include?(object_store_type)
+  end
+
+  def self.split_bucket_prefix(bucket)
+    return [nil, nil] unless bucket.present?
+
+    # Strictly speaking, object storage keys are not Unix paths and
+    # characters like '/' and '.' have no special meaning. But in practice,
+    # we do treat them like paths, and somewhere along the line something or
+    # somebody may turn '//' into '/' or try to resolve '/..'. To guard
+    # against this we reject "bad" combinations of '/' and '.'.
+    [%r{\A\.*/}, %r{/\.*/}, %r{/\.*\z}].each do |re|
+      raise 'invalid bucket' if re.match(bucket)
+    end
+
+    bucket, prefix = bucket.split('/', 2)
+    [bucket, prefix]
   end
 
   def initialize(settings)
@@ -156,7 +174,9 @@ class ObjectStoreSettings
       next if allowed_storage_specific_settings?(store_type, section.to_h)
 
       # Map bucket (external name) -> remote_directory (internal representation)
-      target_config['remote_directory'] = target_config.delete('bucket')
+      target_config['remote_directory'], target_config['bucket_prefix'] = self.class.split_bucket_prefix(
+        target_config.delete('bucket')
+      )
       target_config['consolidated_settings'] = true
       section['object_store'] = target_config
       # Settingslogic internally stores data as a Hash, but it also

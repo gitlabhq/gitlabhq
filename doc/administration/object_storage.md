@@ -573,6 +573,15 @@ This ensures there are no collisions across the various types of data GitLab sto
 There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)
 in the future.
 
+With Omnibus and source installations it is possible to split a single
+real bucket into multiple virtual buckets. If your object storage
+bucket is called `my-gitlab-objects` you can configure uploads to go
+into `my-gitlab-objects/uploads`, artifacts into
+`my-gitlab-objects/artifacts`, etc. The application will act as if
+these are separate buckets. Note that use of bucket prefixes [may not
+work correctly with Helm
+backups](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3376).
+
 Helm-based installs require separate buckets to
 [handle backup restorations](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy).
 
