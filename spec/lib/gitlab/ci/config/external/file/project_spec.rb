@@ -177,6 +177,22 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
         expect(project_file.error_message).to include("Project `xxxxxxxxxxxxxxxxxxxxxxx` not found or access denied!")
       end
     end
+
+    context 'when a project contained in an array is used with a masked variable' do
+      let(:variables) do
+        Gitlab::Ci::Variables::Collection.new([
+          { key: 'VAR1', value: 'a_secret_variable_value', masked: true }
+        ])
+      end
+
+      let(:params) do
+        { project: ['a_secret_variable_value'], file: '/file.yml' }
+      end
+
+      it 'does not raise an error' do
+        expect { valid? }.not_to raise_error
+      end
+    end
   end
 
   describe '#expand_context' do

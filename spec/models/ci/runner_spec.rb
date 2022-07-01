@@ -35,6 +35,46 @@ RSpec.describe Ci::Runner do
     end
   end
 
+  describe 'acts_as_taggable' do
+    let(:tag_name) { 'tag123' }
+
+    context 'on save' do
+      let_it_be_with_reload(:runner) { create(:ci_runner) }
+
+      before do
+        runner.tag_list = [tag_name]
+      end
+
+      context 'tag does not exist' do
+        it 'creates a tag' do
+          expect { runner.save! }.to change(ActsAsTaggableOn::Tag, :count).by(1)
+        end
+
+        it 'creates an association to the tag' do
+          runner.save!
+
+          expect(described_class.tagged_with(tag_name)).to include(runner)
+        end
+      end
+
+      context 'tag already exists' do
+        before do
+          ActsAsTaggableOn::Tag.create!(name: tag_name)
+        end
+
+        it 'does not create a tag' do
+          expect { runner.save! }.not_to change(ActsAsTaggableOn::Tag, :count)
+        end
+
+        it 'creates an association to the tag' do
+          runner.save!
+
+          expect(described_class.tagged_with(tag_name)).to include(runner)
+        end
+      end
+    end
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }

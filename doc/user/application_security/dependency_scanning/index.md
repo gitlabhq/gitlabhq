@@ -397,11 +397,10 @@ To support the following package managers, the GitLab analyzers proceed in two s
           If your project <i>does not use</i> a <code>gradlew</code> file, then the analyzer automatically switches to one of the
           pre-installed Gradle versions, based on the version of Java specified by the
           <a href="#configuring-specific-analyzers-used-by-dependency-scanning"><code>DS_JAVA_VERSION</code></a> variable.
+          By default, the analyzer uses Java 17 and Gradle 7.3.3.
         </p>
-        <p>You can view the
-          <a href="https://docs.gradle.org/current/userguide/compatibility.html#java">Gradle Java compatibility matrix</a> to see which version
-          of Gradle is selected for each Java version. Note that we only support switching to one of these pre-installed Gradle versions
-          for Java versions 13 to 17.
+        <p>
+          For Java versions <code>8</code> and <code>11</code>, Gradle <code>6.7.1</code> is automatically selected, and for Java versions <code>13</code> to <code>17</code>, Gradle <code>7.3.3</code> is automatically selected.
         </p>
       </li>
       <li>

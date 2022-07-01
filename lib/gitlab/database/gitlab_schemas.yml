@@ -108,6 +108,7 @@ ci_resource_groups: :gitlab_ci
 ci_resources: :gitlab_ci
 ci_runner_namespaces: :gitlab_ci
 ci_runner_projects: :gitlab_ci
+ci_runner_versions: :gitlab_ci
 ci_runners: :gitlab_ci
 ci_running_builds: :gitlab_ci
 ci_sources_pipelines: :gitlab_ci

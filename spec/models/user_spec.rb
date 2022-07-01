@@ -1109,6 +1109,20 @@ RSpec.describe User do
           .to contain_exactly(user1, user2)
       end
     end
+
+    describe '.order_recent_last_activity' do
+      it 'sorts users by activity and id to make the ordes deterministic' do
+        expect(described_class.order_recent_last_activity.to_sql).to include(
+          'ORDER BY "users"."last_activity_on" DESC NULLS LAST, "users"."id" ASC')
+      end
+    end
+
+    describe '.order_oldest_last_activity' do
+      it 'sorts users by activity and id to make the ordes deterministic' do
+        expect(described_class.order_oldest_last_activity.to_sql).to include(
+          'ORDER BY "users"."last_activity_on" ASC NULLS FIRST, "users"."id" DESC')
+      end
+    end
   end
 
   context 'strip attributes' do
@@ -3518,49 +3532,45 @@ RSpec.describe User do
   end
 
   describe '#sort_by_attribute' do
-    before do
-      described_class.delete_all
-      @user = create :user, created_at: Date.today, current_sign_in_at: Date.today, name: 'Alpha'
-      @user1 = create :user, created_at: Date.today - 1, current_sign_in_at: Date.today - 1, name: 'Omega'
-      @user2 = create :user, created_at: Date.today - 2, name: 'Beta'
-    end
+    let_it_be(:user) { create :user, created_at: Date.today, current_sign_in_at: Date.today, username: 'user0' }
+    let_it_be(:user1) { create :user, created_at: Date.today - 1, last_activity_on: Date.today - 1, current_sign_in_at: Date.today - 1, username: 'user1' }
+    let_it_be(:user2) { create :user, created_at: Date.today - 2, username: 'user2' }
+    let_it_be(:user3) { create :user, created_at: Date.today - 3, last_activity_on: Date.today, username: "user3" }
 
     context 'when sort by recent_sign_in' do
       let(:users) { described_class.sort_by_attribute('recent_sign_in') }
 
-      it 'sorts users by recent sign-in time' do
-        expect(users.first).to eq(@user)
-        expect(users.second).to eq(@user1)
-      end
-
-      it 'pushes users who never signed in to the end' do
-        expect(users.third).to eq(@user2)
+      it 'sorts users by recent sign-in time with user that never signed in at the end' do
+        expect(users).to eq([user, user1, user2, user3])
       end
     end
 
     context 'when sort by oldest_sign_in' do
       let(:users) { described_class.sort_by_attribute('oldest_sign_in') }
 
-      it 'sorts users by the oldest sign-in time' do
-        expect(users.first).to eq(@user1)
-        expect(users.second).to eq(@user)
-      end
-
-      it 'pushes users who never signed in to the end' do
-        expect(users.third).to eq(@user2)
+      it 'sorts users by the oldest sign-in time with users that never signed in at the end' do
+        expect(users).to eq([user1, user, user2, user3])
       end
     end
 
     it 'sorts users in descending order by their creation time' do
-      expect(described_class.sort_by_attribute('created_desc').first).to eq(@user)
+      expect(described_class.sort_by_attribute('created_desc')).to eq([user, user1, user2, user3])
     end
 
     it 'sorts users in ascending order by their creation time' do
-      expect(described_class.sort_by_attribute('created_asc').first).to eq(@user2)
+      expect(described_class.sort_by_attribute('created_asc')).to eq([user3, user2, user1, user])
     end
 
     it 'sorts users by id in descending order when nil is passed' do
-      expect(described_class.sort_by_attribute(nil).first).to eq(@user2)
+      expect(described_class.sort_by_attribute(nil)).to eq([user3, user2, user1, user])
+    end
+
+    it 'sorts user by latest activity descending, nulls last ordered by ascending id' do
+      expect(described_class.sort_by_attribute('last_activity_on_desc')).to eq([user3, user1, user, user2])
+    end
+
+    it 'sorts user by latest activity ascending, nulls first ordered by descending id' do
+      expect(described_class.sort_by_attribute('last_activity_on_asc')).to eq([user2, user, user1, user3])
     end
   end
 

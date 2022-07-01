@@ -827,6 +827,10 @@ RSpec.describe Projects::PipelinesController do
       {
         chart_param: 'lead-time',
         event: 'p_analytics_ci_cd_lead_time'
+      },
+      {
+        chart_param: 'time-to-restore-service',
+        event: 'p_analytics_ci_cd_time_to_restore_service'
       }
     ].each do |tab|
       it_behaves_like 'tracking unique visits', :charts do

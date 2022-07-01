@@ -13080,6 +13080,12 @@ CREATE SEQUENCE ci_runner_projects_id_seq
 
 ALTER SEQUENCE ci_runner_projects_id_seq OWNED BY ci_runner_projects.id;
 
+CREATE TABLE ci_runner_versions (
+    version text NOT NULL,
+    status smallint,
+    CONSTRAINT check_b5a3714594 CHECK ((char_length(version) <= 2048))
+);
+
 CREATE TABLE ci_runners (
     id integer NOT NULL,
     token character varying,
@@ -24577,6 +24583,9 @@ ALTER TABLE ONLY ci_runner_namespaces
 ALTER TABLE ONLY ci_runner_projects
     ADD CONSTRAINT ci_runner_projects_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ci_runner_versions
+    ADD CONSTRAINT ci_runner_versions_pkey PRIMARY KEY (version);
+
 ALTER TABLE ONLY ci_runners
     ADD CONSTRAINT ci_runners_pkey PRIMARY KEY (id);
 
@@ -27633,6 +27642,10 @@ CREATE UNIQUE INDEX index_ci_runner_namespaces_on_runner_id_and_namespace_id ON 
 
 CREATE INDEX index_ci_runner_projects_on_project_id ON ci_runner_projects USING btree (project_id);
 
+CREATE INDEX index_ci_runner_versions_on_status ON ci_runner_versions USING btree (status);
+
+CREATE INDEX index_ci_runner_versions_on_version ON ci_runner_versions USING btree (version);
+
 CREATE INDEX index_ci_runners_on_active ON ci_runners USING btree (active, id);
 
 CREATE INDEX index_ci_runners_on_contacted_at_and_id_desc ON ci_runners USING btree (contacted_at, id DESC);
@@ -27662,6 +27675,8 @@ CREATE INDEX index_ci_runners_on_token_encrypted ON ci_runners USING btree (toke
 CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ci_runners USING btree (token_expires_at, id DESC);
 
 CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ci_runners USING btree (token_expires_at DESC, id DESC);
+
+CREATE INDEX index_ci_runners_on_version ON ci_runners USING btree (version);
 
 CREATE UNIQUE INDEX index_ci_running_builds_on_build_id ON ci_running_builds USING btree (build_id);
 

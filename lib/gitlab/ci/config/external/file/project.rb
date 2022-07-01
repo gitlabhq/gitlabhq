@@ -13,7 +13,7 @@ module Gitlab
 
             def initialize(params, context)
               @location = params[:file]
-              @project_name = params[:project]
+              @project_name = get_project_name(params[:project])
               @ref_name = params[:ref] || 'HEAD'
 
               super
@@ -120,6 +120,16 @@ module Gitlab
                 context.mask_variables_from(
                   Gitlab::Routing.url_helpers.project_raw_url(project, ::File.join(sha, location))
                 )
+              end
+            end
+
+            # TODO: To be removed after we deprecate usage of array in `project` keyword.
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/365975
+            def get_project_name(project_name)
+              if project_name.is_a?(Array)
+                project_name.first
+              else
+                project_name
               end
             end
           end

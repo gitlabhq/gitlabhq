@@ -1063,23 +1063,23 @@ For Omnibus GitLab installations, Mattermost logs are in these locations:
 
 ## Workhorse Logs
 
-For Omnibus GitLab installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/`.
+For Omnibus GitLab installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/current`.
 
 ## PostgreSQL Logs
 
-For Omnibus GitLab installations, PostgreSQL logs are in `/var/log/gitlab/postgresql/`.
+For Omnibus GitLab installations, PostgreSQL logs are in `/var/log/gitlab/postgresql/current`.
 
 ## Prometheus Logs
 
-For Omnibus GitLab installations, Prometheus logs are in `/var/log/gitlab/prometheus/`.
+For Omnibus GitLab installations, Prometheus logs are in `/var/log/gitlab/prometheus/current`.
 
 ## Redis Logs
 
-For Omnibus GitLab installations, Redis logs are in `/var/log/gitlab/redis/`.
+For Omnibus GitLab installations, Redis logs are in `/var/log/gitlab/redis/current`.
 
 ## Alertmanager Logs
 
-For Omnibus GitLab installations, Alertmanager logs are in `/var/log/gitlab/alertmanager/`.
+For Omnibus GitLab installations, Alertmanager logs are in `/var/log/gitlab/alertmanager/current`.
 
 <!-- vale gitlab.Spelling = NO -->
 
@@ -1091,11 +1091,11 @@ For Omnibus GitLab installations, crond logs are in `/var/log/gitlab/crond/`.
 
 ## Grafana Logs
 
-For Omnibus GitLab installations, Grafana logs are in `/var/log/gitlab/grafana/`.
+For Omnibus GitLab installations, Grafana logs are in `/var/log/gitlab/grafana/current`.
 
 ## LogRotate Logs
 
-For Omnibus GitLab installations, `logrotate` logs are in `/var/log/gitlab/logrotate/`.
+For Omnibus GitLab installations, `logrotate` logs are in `/var/log/gitlab/logrotate/current`.
 
 ## GitLab Monitor Logs
 
@@ -1103,12 +1103,12 @@ For Omnibus GitLab installations, GitLab Monitor logs are in `/var/log/gitlab/gi
 
 ## GitLab Exporter
 
-For Omnibus GitLab installations, GitLab Exporter logs are in `/var/log/gitlab/gitlab-exporter/`.
+For Omnibus GitLab installations, GitLab Exporter logs are in `/var/log/gitlab/gitlab-exporter/current`.
 
 ## GitLab agent server
 
 For Omnibus GitLab installations, GitLab agent server logs are
-in `/var/log/gitlab/gitlab-kas/`.
+in `/var/log/gitlab/gitlab-kas/current`.
 
 ## Praefect Logs
 

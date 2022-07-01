@@ -411,6 +411,56 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
   // => When x == 2: 'Last 2 days'
   ```
 
+- In Vue:
+
+  One of [the recommended ways to organize translated strings for Vue files](#vue-files) is to extract them into a `constants.js` file.
+  That can be difficult to do when there are pluralized strings because the `count` variable won't be known inside the constants file.
+  To overcome this, we recommend creating a function which takes a `count` argument:
+
+  ```javascript
+  // .../feature/constants.js
+  import { n__ } from '~/locale';
+
+  export const I18N = {
+    // Strings that are only singular don't need to be a function
+    someDaysRemain: __('Some days remain'),
+    daysRemaining(count) { return n__('%d day remaining', '%d days remaining', count); },
+  };
+  ```
+
+  Then within a Vue component the function can be used to retrieve the correct pluralization form of the string:
+
+  ```javascript
+  // .../feature/components/days_remaining.vue
+  import { sprintf } from '~/locale';
+  import { I18N } from '../constants';
+
+  <script>
+    export default {
+      props: {
+        days: {
+          type: Number,
+          required: true,
+        },
+      },
+      i18n: I18N,
+    };
+  </script>
+
+  <template>
+    <div>
+      <span>
+        A singular string:
+        {{ $options.i18n.someDaysRemain }}
+      </span>
+      <span>
+        A plural string:
+        {{ $options.i18n.daysRemaining(days) }}
+      </span>
+    </div>
+  </template>
+  ```
+
 The `n_` and `n__` methods should only be used to fetch pluralized translations of the same
 string, not to control the logic of showing different strings for different
 quantities. Some languages have different quantities of target plural forms.

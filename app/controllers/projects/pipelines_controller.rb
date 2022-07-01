@@ -38,6 +38,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   track_redis_hll_event :charts, name: 'p_analytics_ci_cd_pipelines', if: -> { should_track_ci_cd_pipelines? }
   track_redis_hll_event :charts, name: 'p_analytics_ci_cd_deployment_frequency', if: -> { should_track_ci_cd_deployment_frequency? }
   track_redis_hll_event :charts, name: 'p_analytics_ci_cd_lead_time', if: -> { should_track_ci_cd_lead_time? }
+  track_redis_hll_event :charts, name: 'p_analytics_ci_cd_time_to_restore_service', if: -> { should_track_ci_cd_time_to_restore_service? }
 
   wrap_parameters Ci::Pipeline
 
@@ -360,6 +361,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def should_track_ci_cd_lead_time?
     params[:chart] == 'lead-time'
+  end
+
+  def should_track_ci_cd_time_to_restore_service?
+    params[:chart] == 'time-to-restore-service'
   end
 end
 

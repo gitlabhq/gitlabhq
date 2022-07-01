@@ -7734,6 +7734,12 @@ msgstr ""
 msgid "Checkout|Group"
 msgstr ""
 
+msgid "Checkout|Must be %{minimumNumberOfUsers} (your seats in use) or more."
+msgstr ""
+
+msgid "Checkout|Must be %{minimumNumberOfUsers} (your seats in use, plus all over limit members) or more. To buy fewer seats, remove members from the group."
+msgstr ""
+
 msgid "Checkout|Name of company or organization using GitLab"
 msgstr ""
 
@@ -7783,9 +7789,6 @@ msgid "Checkout|Success: subscription"
 msgstr ""
 
 msgid "Checkout|Tax"
-msgstr ""
-
-msgid "Checkout|This number must be %{minimumNumberOfUsers} (your seats in use) or more."
 msgstr ""
 
 msgid "Checkout|Total"

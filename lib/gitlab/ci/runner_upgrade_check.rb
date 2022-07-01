@@ -5,13 +5,6 @@ module Gitlab
     class RunnerUpgradeCheck
       include Singleton
 
-      STATUSES = {
-        invalid: 'Runner version is not valid.',
-        not_available: 'Upgrade is not available for the runner.',
-        available: 'Upgrade is available for the runner.',
-        recommended: 'Upgrade is available and recommended for the runner.'
-      }.freeze
-
       def check_runner_upgrade_status(runner_version)
         runner_version = ::Gitlab::VersionInfo.parse(runner_version, parse_suffix: true)
 
