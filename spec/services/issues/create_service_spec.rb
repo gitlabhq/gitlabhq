@@ -135,6 +135,14 @@ RSpec.describe Issues::CreateService do
             issue
           end
 
+          it 'calls IncidentManagement::TimelineEvents::CreateService.create_incident' do
+            expect(IncidentManagement::TimelineEvents::CreateService)
+              .to receive(:create_incident)
+              .with(a_kind_of(Issue), reporter)
+
+            issue
+          end
+
           context 'when invalid' do
             before do
               opts.merge!(title: '')

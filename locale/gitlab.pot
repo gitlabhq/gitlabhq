@@ -19347,13 +19347,64 @@ msgstr ""
 msgid "IdentityVerification|Before you create your group, we need you to verify your identity with a valid payment method. You will not be charged during this step. If we ever need to charge you, we will let you know."
 msgstr ""
 
+msgid "IdentityVerification|Before you sign in, we need to verify your identity. Enter the following code on the sign-in page."
+msgstr ""
+
 msgid "IdentityVerification|Create a project"
+msgstr ""
+
+msgid "IdentityVerification|For added security, you'll need to verify your identity. We've sent a verification code to %{email}"
+msgstr ""
+
+msgid "IdentityVerification|Help us protect your account"
+msgstr ""
+
+msgid "IdentityVerification|If you have not recently tried to sign into GitLab, we recommend %{password_link_start}changing your password%{link_end} and %{two_fa_link_start}setting up Two-Factor Authentication%{link_end} to keep your account safe. Your verification code expires after %{expires_in_minutes} minutes."
+msgstr ""
+
+msgid "IdentityVerification|If you have not recently tried to sign into GitLab, we recommend changing your password (%{password_link}) and setting up Two-Factor Authentication (%{two_fa_link}) to keep your account safe."
+msgstr ""
+
+msgid "IdentityVerification|If you've lost access to the email associated to this account or having trouble with the code, %{link_start}here are some other steps you can take.%{link_end}"
+msgstr ""
+
+msgid "IdentityVerification|Maximum login attempts exceeded. Wait %{interval} and try again."
+msgstr ""
+
+msgid "IdentityVerification|Please enter a valid code"
+msgstr ""
+
+msgid "IdentityVerification|Resend code"
+msgstr ""
+
+msgid "IdentityVerification|The code has expired. Resend a new code and try again."
+msgstr ""
+
+msgid "IdentityVerification|The code is incorrect. Enter it again, or resend a new code."
+msgstr ""
+
+msgid "IdentityVerification|Verification code"
+msgstr ""
+
+msgid "IdentityVerification|Verification successful"
+msgstr ""
+
+msgid "IdentityVerification|Verify code"
 msgstr ""
 
 msgid "IdentityVerification|Verify your identity"
 msgstr ""
 
 msgid "IdentityVerification|You can always verify your account at a later time to create a group."
+msgstr ""
+
+msgid "IdentityVerification|You've reached the maximum amount of tries. Wait %{interval} or resend a new code and try again."
+msgstr ""
+
+msgid "IdentityVerification|Your account has been successfully verified. You'll be redirected to your account in just a moment or %{redirect_url_start}click here%{redirect_url_end} to refresh."
+msgstr ""
+
+msgid "IdentityVerification|Your verification code expires after %{expires_in_minutes} minutes."
 msgstr ""
 
 msgid "If any indexed field exceeds this limit, it is truncated to this number of characters. The rest of the content is neither indexed nor searchable. This does not apply to repository and wiki indexing. For unlimited characters, set this to 0."
@@ -23446,9 +23497,6 @@ msgid "Logo will be removed. Are you sure?"
 msgstr ""
 
 msgid "Logs"
-msgstr ""
-
-msgid "Logs|To see the logs, deploy your code to an environment."
 msgstr ""
 
 msgid "Looks like you've reached your %{free_limit} member limit for %{strong_start}%{namespace_name}%{strong_end}"

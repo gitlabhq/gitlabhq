@@ -122,13 +122,28 @@ RSpec.describe Issues::CloseService do
           expect(new_note.author).to eq(user)
         end
 
+        it 'adds a timeline event', :aggregate_failures do
+          expect(IncidentManagement::TimelineEvents::CreateService)
+            .to receive(:resolve_incident)
+            .with(issue, user)
+            .and_call_original
+
+          expect { service.execute(issue) }.to change { issue.incident_management_timeline_events.count }.by(1)
+        end
+
         context 'when the escalation status did not change to resolved' do
           let(:escalation_status) { instance_double('IncidentManagement::IssuableEscalationStatus', resolve: false) }
 
-          it 'does not create a system note' do
+          before do
             allow(issue).to receive(:incident_management_issuable_escalation_status).and_return(escalation_status)
+          end
 
+          it 'does not create a system note' do
             expect { service.execute(issue) }.not_to change { issue.notes.count }
+          end
+
+          it 'does not create a timeline event' do
+            expect { service.execute(issue) }.not_to change { issue.incident_management_timeline_events.count }
           end
         end
       end

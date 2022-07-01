@@ -55,6 +55,7 @@ describe IpynbDiff::Transformer do
       'handles backslash correctly' | 'backslash_as_last_char' | {}
       'multiline png output' | 'multiline_png_output' | {}
       'hides images when option passed' | 'hide_images' | { hide_images: true }
+      '\n within source lines' | 'source_with_linebreak' | { hide_images: true }
     end
 
     with_them do

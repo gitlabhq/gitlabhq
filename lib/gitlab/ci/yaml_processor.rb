@@ -16,6 +16,14 @@ module Gitlab
       end
 
       def execute
+        Gitlab::Ci::YamlProcessor::FeatureFlags.with_actor(project) do
+          parse_config
+        end
+      end
+
+      private
+
+      def parse_config
         if @config_content.blank?
           return Result.new(errors: ['Please provide content of .gitlab-ci.yml'])
         end
@@ -35,7 +43,9 @@ module Gitlab
         Result.new(ci_config: @ci_config, errors: [e.message], warnings: @ci_config&.warnings)
       end
 
-      private
+      def project
+        @opts[:project]
+      end
 
       def run_logical_validations!
         @stages = @ci_config.stages

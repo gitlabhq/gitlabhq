@@ -13,7 +13,7 @@ the [reference architectures](index.md#reference-architectures).
 
 ### S3 API compatibility issues
 
-Not all S3 providers [are fully compatible](../../raketasks/backup_restore.md#other-s3-providers)
+Not all S3 providers [are fully compatible](../../raketasks/backup_gitlab.md#other-s3-providers)
 with the Fog library that GitLab uses. Symptoms include:
 
 ```plaintext

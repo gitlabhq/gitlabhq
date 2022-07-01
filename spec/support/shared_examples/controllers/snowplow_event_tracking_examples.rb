@@ -10,7 +10,6 @@
 
 shared_examples 'Snowplow event tracking' do
   let(:label) { nil }
-  let(:project) { nil }
 
   it 'is not emitted if FF is disabled' do
     stub_feature_flags(feature_flag_name => false)

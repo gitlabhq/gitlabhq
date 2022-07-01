@@ -189,9 +189,9 @@ should be used. Git repositories are accessed, managed, and stored on GitLab ser
 can result from directly accessing and copying Gitaly's files using tools like `rsync`.
 
 - From GitLab 13.3, backup performance can be improved by
-  [processing multiple repositories concurrently](../../raketasks/backup_restore.md#back-up-git-repositories-concurrently).
+  [processing multiple repositories concurrently](../../raketasks/backup_gitlab.md#back-up-git-repositories-concurrently).
 - Backups can be created of just the repositories using the
-  [skip feature](../../raketasks/backup_restore.md#excluding-specific-directories-from-the-backup).
+  [skip feature](../../raketasks/backup_gitlab.md#excluding-specific-directories-from-the-backup).
 
 No other method works for Gitaly Cluster targets.
 

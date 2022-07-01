@@ -79,5 +79,5 @@ Steps:
    sudo gitlab-ctl reconfigure
    ```
 
-1. [Restore GitLab](../../raketasks/backup_restore.md#restore-for-omnibus-gitlab-installations)
+1. [Restore GitLab](../../raketasks/restore_gitlab.md#restore-for-omnibus-gitlab-installations)
    to complete the downgrade.

@@ -392,14 +392,25 @@ RSpec.describe API::Commits do
         end
       end
 
-      context 'when using warden' do
-        it 'increments usage counters', :clean_gitlab_redis_sessions do
+      context 'when using warden', :snowplow, :clean_gitlab_redis_sessions do
+        before do
           stub_session('warden.user.user.key' => [[user.id], user.encrypted_password[0, 29]])
+        end
 
+        subject { post api(url), params: valid_c_params }
+
+        it 'increments usage counters' do
           expect(::Gitlab::UsageDataCounters::WebIdeCounter).to receive(:increment_commits_count)
           expect(::Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_web_ide_edit_action)
 
-          post api(url), params: valid_c_params
+          subject
+        end
+
+        it_behaves_like 'Snowplow event tracking' do
+          let(:namespace) { project.namespace }
+          let(:category) { 'ide_edit' }
+          let(:action) { 'g_edit_by_web_ide' }
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         end
       end
 

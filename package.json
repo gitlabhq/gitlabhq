@@ -9,7 +9,7 @@
     "file-coverage": "scripts/frontend/file_test_coverage.js",
     "lint-docs": "scripts/lint-doc.sh",
     "internal:eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives --ext .js,.vue,.graphql",
-    "internal:stylelint": "stylelint -q '{ee/,}app/assets/stylesheets/**/*.{css,scss}'",
+    "internal:stylelint": "stylelint -q --rd '{ee/,}app/assets/stylesheets/**/*.{css,scss}'",
     "prejest": "yarn check-dependencies",
     "jest": "jest --config jest.config.js",
     "jest-debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
@@ -41,7 +41,6 @@
     "storybook:install": "yarn --cwd ./storybook install",
     "storybook:build": "yarn --cwd ./storybook build",
     "storybook:start": "./scripts/frontend/start_storybook.sh",
-    "stylelint-create-utility-map": "node scripts/frontend/stylelint/stylelint_utility_map.js",
     "webpack": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.config.js",
     "webpack-vendor": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.vendor.config.js",
     "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.js"

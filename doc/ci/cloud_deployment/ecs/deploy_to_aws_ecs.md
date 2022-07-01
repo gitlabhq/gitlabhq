@@ -252,7 +252,7 @@ To use [Review Apps](../../../development/testing_guide/review_apps.md) with ECS
 
 1. Set up a new [service](#create-an-ecs-service).
 1. Use the `CI_AWS_ECS_SERVICE` variable to set the name.
-1. Set the environment scope to `review/*`. 
+1. Set the environment scope to `review/*`.
 
 Only one Review App at a time can be deployed because this service is shared by all review apps.
 
@@ -282,9 +282,9 @@ include:
 To use DAST on the default branch:
 
 1. Set up a new [service](#create-an-ecs-service). This service will be used to deploy a temporary
-DAST environment. 
+DAST environment.
 1. Use the `CI_AWS_ECS_SERVICE` variable to set the name.
-1. Set the scope to the `dast-default` environment. 
+1. Set the scope to the `dast-default` environment.
 1. Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml

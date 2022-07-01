@@ -23,6 +23,7 @@ class Notify < ApplicationMailer
   include Emails::ServiceDesk
   include Emails::InProductMarketing
   include Emails::AdminNotification
+  include Emails::IdentityVerification
 
   helper TimeboxesHelper
   helper MergeRequestsHelper

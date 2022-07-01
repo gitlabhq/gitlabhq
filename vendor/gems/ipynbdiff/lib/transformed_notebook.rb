@@ -6,7 +6,7 @@ module IpynbDiff
     attr_reader :blocks
 
     def as_text
-      @blocks.map { |b| b[:content] }.join("\n")
+      @blocks.map { |b| b[:content].gsub(/\n/, '\\n') }.join("\n")
     end
 
     private

@@ -276,6 +276,14 @@ module EmailsHelper
     end
   end
 
+  def link_start(url)
+    '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: url }
+  end
+
+  def link_end
+    '</a>'.html_safe
+  end
+
   def contact_your_administrator_text
     _('Please contact your administrator with any questions.')
   end

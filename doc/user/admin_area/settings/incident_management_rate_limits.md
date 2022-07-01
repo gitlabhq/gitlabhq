@@ -12,9 +12,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can limit the number of inbound alerts for [incidents](../../../operations/incident_management/incidents.md)
 that can be created in a period of time. The inbound [incident management](../../../operations/incident_management/index.md)
 alert limit can help prevent overloading your incident responders by reducing the
-number of alerts or duplicate issues. 
+number of alerts or duplicate issues.
 
-As an example, if you set a limit of `10` requests every `60` seconds, 
+As an example, if you set a limit of `10` requests every `60` seconds,
 and `11` requests are sent to an [alert integration endpoint](../../../operations/incident_management/integrations.md) within one minute,
 the eleventh request is blocked. Access to the endpoint is allowed again after one minute.
 

@@ -7,12 +7,5 @@
      "app/assets/stylesheets/lazy_bundles/select2.scss",
      "app/assets/stylesheets/highlight/themes/*.scss",
      "app/assets/stylesheets/lazy_bundles/cropper.css"
-   ],
-   "plugins":[
-      "./scripts/frontend/stylelint/stylelint_duplicate_selectors.js",
-      "./scripts/frontend/stylelint/stylelint_utility_classes.js",
-   ],
-   "rules":{
-      "stylelint-gitlab/utility-classes":[true,{ "severity": "warning" }],
-   }
+   ]
 }

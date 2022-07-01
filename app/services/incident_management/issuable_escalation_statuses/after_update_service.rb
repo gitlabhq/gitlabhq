@@ -24,6 +24,7 @@ module IncidentManagement
       def after_update
         sync_status_to_alert
         add_status_system_note
+        add_timeline_event
       end
 
       def sync_status_to_alert
@@ -42,6 +43,13 @@ module IncidentManagement
         return unless escalation_status.status_previously_changed?
 
         SystemNoteService.change_incident_status(issuable, current_user, params[:status_change_reason])
+      end
+
+      def add_timeline_event
+        return unless escalation_status.status_previously_changed?
+
+        IncidentManagement::TimelineEvents::CreateService
+          .change_incident_status(issuable, current_user, escalation_status)
       end
     end
   end

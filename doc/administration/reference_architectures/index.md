@@ -401,7 +401,7 @@ have more actual perceived uptime for your users.
 This solution is appropriate for many teams that have the default GitLab installation.
 With automatic backups of the GitLab repositories, configuration, and the database,
 this can be an optimal solution if you don't have strict requirements.
-[Automated backups](../../raketasks/backup_restore.md#configuring-cron-to-make-daily-backups)
+[Automated backups](../../raketasks/backup_gitlab.md#configuring-cron-to-make-daily-backups)
 is the least complex to setup. This provides a point-in-time recovery of a predetermined schedule.
 
 ### Traffic load balancer **(PREMIUM SELF)**

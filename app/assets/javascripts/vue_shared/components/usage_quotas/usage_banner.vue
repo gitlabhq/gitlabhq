@@ -1,7 +1,6 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { s__ } from '~/locale';
 
 export default {
   name: 'UsageBanner',
@@ -14,13 +13,6 @@ export default {
       required: false,
       default: false,
     },
-  },
-  i18n: {
-    dependencyProxy: s__('UsageQuota|Dependency proxy'),
-    storageUsed: s__('UsageQuota|Storage used'),
-    dependencyProxyMessage: s__(
-      'UsageQuota|Local proxy used for frequently-accessed upstream Docker images. %{linkStart}More information%{linkEnd}',
-    ),
   },
   storageUsageQuotaHelpPage: helpPagePath('user/usage_quotas'),
 };

@@ -258,12 +258,13 @@ RSpec.describe SearchController do
       end
 
       it_behaves_like 'Snowplow event tracking' do
+        subject { get :show, params: { group_id: namespace.id, scope: 'blobs', search: 'term' } }
+
+        let(:project) { nil }
         let(:category) { described_class.to_s }
         let(:action) { 'i_search_total' }
         let(:namespace) { create(:group) }
         let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
-
-        subject { get :show, params: { group_id: namespace.id, scope: 'blobs', search: 'term' } }
       end
 
       context 'on restricted projects' do

@@ -33,6 +33,8 @@ RSpec.describe Issues::ReopenService do
     context 'when user is authorized to reopen issue' do
       let(:user) { create(:user) }
 
+      subject(:execute) { described_class.new(project: project, current_user: user).execute(issue) }
+
       before do
         project.add_maintainer(user)
       end
@@ -41,14 +43,12 @@ RSpec.describe Issues::ReopenService do
         issue.assignees << user
         expect_any_instance_of(User).to receive(:invalidate_issue_cache_counts)
 
-        described_class.new(project: project, current_user: user).execute(issue)
+        execute
       end
 
       it 'refreshes the number of opened issues' do
-        service = described_class.new(project: project, current_user: user)
-
         expect do
-          service.execute(issue)
+          execute
 
           BatchLoader::Executor.clear_current
         end.to change { project.open_issues_count }.from(0).to(1)
@@ -61,16 +61,27 @@ RSpec.describe Issues::ReopenService do
           expect(service).to receive(:delete_cache).and_call_original
         end
 
-        described_class.new(project: project, current_user: user).execute(issue)
+        execute
+      end
+
+      it 'does not create timeline event' do
+        expect { execute }.not_to change { issue.incident_management_timeline_events.count }
       end
 
       context 'issue is incident type' do
         let(:issue) { create(:incident, :closed, project: project) }
         let(:current_user) { user }
 
-        subject { described_class.new(project: project, current_user: user).execute(issue) }
-
         it_behaves_like 'an incident management tracked event', :incident_management_incident_reopened
+
+        it 'creates a timeline event' do
+          expect(IncidentManagement::TimelineEvents::CreateService)
+            .to receive(:reopen_incident)
+            .with(issue, current_user)
+            .and_call_original
+
+          expect { execute }.to change { issue.incident_management_timeline_events.count }.by(1)
+        end
       end
 
       context 'when issue is not confidential' do
@@ -78,18 +89,18 @@ RSpec.describe Issues::ReopenService do
           expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
           expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
 
-          described_class.new(project: project, current_user: user).execute(issue)
+          execute
         end
       end
 
       context 'when issue is confidential' do
-        it 'executes confidential issue hooks' do
-          issue = create(:issue, :confidential, :closed, project: project)
+        let(:issue) { create(:issue, :confidential, :closed, project: project) }
 
+        it 'executes confidential issue hooks' do
           expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
           expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
-          described_class.new(project: project, current_user: user).execute(issue)
+          execute
         end
       end
     end

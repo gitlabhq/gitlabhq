@@ -1,0 +1,8 @@
+---
+name: require_email_verification
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86352
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364835
+milestone: "15.2"
+type: development
+group: group::anti-abuse
+default_enabled: false

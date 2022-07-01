@@ -57,6 +57,7 @@ module Issues
       handle_add_related_issue(issue)
       resolve_discussions_with_issue(issue)
       create_escalation_status(issue)
+      create_timeline_event(issue)
       try_to_associate_contacts(issue)
 
       super
@@ -90,6 +91,12 @@ module Issues
 
     def create_escalation_status(issue)
       ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
+    end
+
+    def create_timeline_event(issue)
+      return unless issue.incident?
+
+      IncidentManagement::TimelineEvents::CreateService.create_incident(issue, current_user)
     end
 
     def user_agent_detail_service

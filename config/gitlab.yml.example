@@ -661,12 +661,6 @@ production: &base
 
   gitlab_ci:
     # Default project notifications settings:
-    #
-    # Send emails only on broken builds (default: true)
-    # all_broken_builds: true
-    #
-    # Add pusher to recipients list (default: false)
-    # add_pusher: true
 
     # The location where build traces are stored (default: builds/). Relative paths are relative to Rails.root
     # builds_path: builds/

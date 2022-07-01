@@ -36,8 +36,20 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::AfterUpdateServic
     end
   end
 
+  shared_examples 'adds a status change timeline event' do
+    specify do
+      expect(IncidentManagement::TimelineEvents::CreateService)
+        .to receive(:change_incident_status)
+        .with(issue, current_user, escalation_status)
+        .and_call_original
+
+      expect { result }.to change { issue.reload.incident_management_timeline_events.count }.by(1)
+    end
+  end
+
   context 'with status attributes' do
     it_behaves_like 'adds a status change system note'
+    it_behaves_like 'adds a status change timeline event'
 
     it 'updates the alert with the new alert status' do
       expect(::AlertManagement::Alerts::UpdateService).to receive(:new).once.and_call_original
@@ -54,6 +66,7 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::AfterUpdateServic
 
       it_behaves_like 'does not attempt to update the alert'
       it_behaves_like 'adds a status change system note'
+      it_behaves_like 'adds a status change timeline event'
     end
 
     context 'when new status matches the current status' do
@@ -62,6 +75,7 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::AfterUpdateServic
       it_behaves_like 'does not attempt to update the alert'
 
       specify { expect { result }.not_to change { issue.reload.notes.count } }
+      specify { expect { result }.not_to change { issue.reload.incident_management_timeline_events.count } }
     end
   end
 end

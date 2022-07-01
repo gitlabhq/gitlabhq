@@ -60,8 +60,8 @@ Alternatively, you can [back up](../../../raketasks/backup_restore.md#back-up-gi
 the container registry on the primary site and restore it onto the secondary
 site:
 
-1. On your primary site, back up only the registry and [exclude specific directories
-from the backup](../../../raketasks/backup_restore.md#excluding-specific-directories-from-the-backup):
+1. On your primary site, back up only the registry and
+   [exclude specific directories from the backup](../../../raketasks/backup_gitlab.md#excluding-specific-directories-from-the-backup):
 
    ```shell
    # Create a backup in the /var/opt/gitlab/backups folder

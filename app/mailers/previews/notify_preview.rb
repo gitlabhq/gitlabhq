@@ -213,6 +213,10 @@ class NotifyPreview < ActionMailer::Preview
     ::Notify.user_auto_banned_email(user.id, user.id, max_project_downloads: 5, within_seconds: 600, group: group).message
   end
 
+  def verification_instructions_email
+    Notify.verification_instructions_email(user.id, token: '123456', expires_in: 60).message
+  end
+
   private
 
   def project

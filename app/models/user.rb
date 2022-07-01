@@ -88,6 +88,7 @@ class User < ApplicationRecord
   # and should be added after Devise modules are initialized.
   include AsyncDeviseEmail
   include ForcedEmailConfirmation
+  include RequireEmailVerification
 
   MINIMUM_INACTIVE_DAYS = 90
   MINIMUM_DAYS_CREATED = 7
@@ -1899,7 +1900,7 @@ class User < ApplicationRecord
   end
 
   # override, from Devise
-  def lock_access!
+  def lock_access!(opts = {})
     Gitlab::AppLogger.info("Account Locked: username=#{username}")
     super
   end

@@ -59,6 +59,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'
       run: scripts/lint-docs-metadata.sh {files}
+    docs-trailing_spaces: # Not enforced in CI/CD pipelines, but reduces the amount of required cleanup: https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md#remote-tasks
+      tags: documentation style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: 'doc/*.md'
+      run: yarn markdownlint:no-trailing-spaces {files}
     docs-deprecations:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -67,5 +72,5 @@ pre-push:
     docs-removals:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: 'data/removals/**/*.yml'
+      glob: 'data/removals/*.yml'
       run: echo "Changes to removals files detected. Checking removals..\n"; bundle exec rake gitlab:docs:check_removals

@@ -66,7 +66,7 @@ The table shows a list of related workflow items for the selected stage. Based o
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in GitLab 13.12.
 
 The **Overview** dashboard in value stream analytics shows key metrics and DORA metrics of group performance. Based on the filter you select,
-the dashboard automatically aggregates DORA metrics and displays the current status of the value stream.
+the dashboard automatically aggregates DORA metrics and displays the current status of the value stream. Select a DORA metric to view its chart.
 
 To view deployment metrics, you must have a
 [production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).

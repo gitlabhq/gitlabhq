@@ -37,6 +37,7 @@ module Gitlab
           users_get_by_id:              { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
           username_exists:              { threshold: 20, interval: 1.minute },
           user_sign_up:                 { threshold: 20, interval: 1.minute },
+          user_sign_in:                 { threshold: 5, interval: 10.minutes },
           profile_resend_email_confirmation:  { threshold: 5, interval: 1.minute },
           profile_update_username:            { threshold: 10, interval: 1.minute },
           update_environment_canary_ingress:  { threshold: 1, interval: 1.minute },
@@ -46,7 +47,9 @@ module Gitlab
           gitlab_shell_operation:       { threshold: 600, interval: 1.minute },
           pipelines_create:             { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute },
           temporary_email_failure:      { threshold: 50, interval: 1.day },
-          project_testing_integration:  { threshold: 5, interval: 1.minute }
+          project_testing_integration:  { threshold: 5, interval: 1.minute },
+          email_verification:           { threshold: 10, interval: 10.minutes },
+          email_verification_code_send: { threshold: 10, interval: 1.hour }
         }.freeze
       end
 

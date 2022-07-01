@@ -12,7 +12,7 @@ module QA
         view 'app/views/projects/mattermosts/new.html.haml'
 
         def sign_in_using_oauth
-          click_link class: 'btn btn-custom-login gitlab'
+          click_link 'gitlab'
 
           if page.has_content?('Authorize GitLab Mattermost to use your account?')
             click_button 'Authorize'

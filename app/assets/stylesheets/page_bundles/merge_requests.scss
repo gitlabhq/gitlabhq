@@ -46,9 +46,7 @@ $tabs-holder-z-index: 250;
   position: -webkit-sticky;
   position: sticky;
   // Unitless zero values are not allowed in calculations
-  // stylelint-disable-next-line length-zero-no-unit
   top: calc(#{$top-pos} + var(--system-header-height, 0px) + var(--performance-bar-height, 0px));
-  // stylelint-disable-next-line length-zero-no-unit
   max-height: calc(100vh - #{$top-pos} - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
 
   .drag-handle {

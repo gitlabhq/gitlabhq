@@ -76,7 +76,7 @@ because it does not require a shared folder.
 
 Consolidated object storage configuration can't be used for backups or
 Mattermost. See the [full table for a complete list](#storage-specific-configuration).
-However, backups can be configured with [server side encryption](../raketasks/backup_restore.md#s3-encrypted-buckets) separately.
+However, backups can be configured with [server side encryption](../raketasks/backup_gitlab.md#s3-encrypted-buckets) separately.
 
 Enabling consolidated object storage enables object storage for all object
 types. If not all buckets are specified, `sudo gitlab-ctl reconfigure` may fail with the error like:
@@ -528,7 +528,7 @@ supported by consolidated configuration form, refer to the following guides:
 
 | Object storage type | Supported by consolidated configuration? |
 |---------------------|------------------------------------------|
-| [Backups](../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
+| [Backups](../raketasks/backup_gitlab.md#uploading-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
 | [Job artifacts](job_artifacts.md#using-object-storage) including archived job logs | **{check-circle}** Yes |
 | [LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage) | **{check-circle}** Yes |
 | [Uploads](uploads.md#using-object-storage) | **{check-circle}** Yes |
@@ -587,7 +587,7 @@ Helm-based installs require separate buckets to
 
 ### S3 API compatibility issues
 
-Not all S3 providers [are fully compatible](../raketasks/backup_restore.md#other-s3-providers)
+Not all S3 providers [are fully compatible](../raketasks/backup_gitlab.md#other-s3-providers)
 with the Fog library that GitLab uses. Symptoms include an error in `production.log`:
 
 ```plaintext

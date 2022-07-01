@@ -249,7 +249,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       )
     end
 
-    it 'includes imports usage data' do
+    it 'includes imports usage data', :clean_gitlab_redis_cache do
       for_defined_days_back do
         user = create(:user)
 
@@ -1152,35 +1152,36 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     let(:user2) { build(:user, id: 2) }
     let(:user3) { build(:user, id: 3) }
     let(:user4) { build(:user, id: 4) }
+    let(:project) { build(:project) }
 
     before do
       counter = Gitlab::UsageDataCounters::TrackUniqueEvents
-      project = Event::TARGET_TYPES[:project]
+      project_type = Event::TARGET_TYPES[:project]
       wiki = Event::TARGET_TYPES[:wiki]
       design = Event::TARGET_TYPES[:design]
 
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 2)
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 3)
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 1)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 1)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 2)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 3)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 4, time: time - 3.days)
       counter.track_event(event_action: :created, event_target: wiki, author_id: 3)
       counter.track_event(event_action: :created, event_target: design, author_id: 3)
       counter.track_event(event_action: :created, event_target: design, author_id: 4)
 
       counter = Gitlab::UsageDataCounters::EditorUniqueCounter
 
-      counter.track_web_ide_edit_action(author: user1)
-      counter.track_web_ide_edit_action(author: user1)
-      counter.track_sfe_edit_action(author: user1)
-      counter.track_snippet_editor_edit_action(author: user1)
-      counter.track_snippet_editor_edit_action(author: user1, time: time - 3.days)
+      counter.track_web_ide_edit_action(author: user1, project: project)
+      counter.track_web_ide_edit_action(author: user1, project: project)
+      counter.track_sfe_edit_action(author: user1, project: project)
+      counter.track_snippet_editor_edit_action(author: user1, project: project)
+      counter.track_snippet_editor_edit_action(author: user1, time: time - 3.days, project: project)
 
-      counter.track_web_ide_edit_action(author: user2)
-      counter.track_sfe_edit_action(author: user2)
+      counter.track_web_ide_edit_action(author: user2, project: project)
+      counter.track_sfe_edit_action(author: user2, project: project)
 
-      counter.track_web_ide_edit_action(author: user3, time: time - 3.days)
-      counter.track_snippet_editor_edit_action(author: user3)
+      counter.track_web_ide_edit_action(author: user3, time: time - 3.days, project: project)
+      counter.track_snippet_editor_edit_action(author: user3, project: project)
     end
 
     it 'returns the distinct count of user actions within the specified time period' do

@@ -50,4 +50,51 @@ RSpec.describe SessionsHelper do
       expect(helper.unconfirmed_email?).to be_falsey
     end
   end
+
+  describe '#send_rate_limited?' do
+    let_it_be(:user) { build(:user) }
+
+    subject { helper.send_rate_limited?(user) }
+
+    before do
+      allow(::Gitlab::ApplicationRateLimiter)
+        .to receive(:peek)
+        .with(:email_verification_code_send, scope: user)
+        .and_return(rate_limited)
+    end
+
+    context 'when rate limited' do
+      let(:rate_limited) { true }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when not rate limited' do
+      let(:rate_limited) { false }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#obfuscated_email' do
+    subject { helper.obfuscated_email(email) }
+
+    context 'when an email address is normal length' do
+      let(:email) { 'alex@gitlab.com' }
+
+      it { is_expected.to eq('al**@g*****.com') }
+    end
+
+    context 'when an email address contains multiple top level domains' do
+      let(:email) { 'alex@gl.co.uk' }
+
+      it { is_expected.to eq('al**@g****.uk') }
+    end
+
+    context 'when an email address is very short' do
+      let(:email) { 'a@b' }
+
+      it { is_expected.to eq('a@b') }
+    end
+  end
 end

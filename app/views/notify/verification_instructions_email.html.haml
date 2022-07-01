@@ -1,0 +1,12 @@
+%div{ style: 'text-align:center;color:#1F1F1F;line-height:1.25em;max-width:400px;margin:0 auto;' }
+  %h3
+    = s_('IdentityVerification|Help us protect your account')
+  %p{ style: 'font-size:0.9em' }
+    = s_('IdentityVerification|Before you sign in, we need to verify your identity. Enter the following code on the sign-in page.')
+  %div{ style: 'margin:26px 0;width:207px;height:53px;background-color:#F0F0F0;line-height:53px;font-weight:700;font-size:1.5em;color:#303030;' }
+    = @token
+  %p{ style: 'font-size:0.75em' }
+    = s_('IdentityVerification|If you have not recently tried to sign into GitLab, we recommend %{password_link_start}changing your password%{link_end} and %{two_fa_link_start}setting up Two-Factor Authentication%{link_end} to keep your account safe. Your verification code expires after %{expires_in_minutes} minutes.').html_safe % { link_end: link_end,
+      password_link_start: link_start(@password_link),
+      two_fa_link_start: link_start(@two_fa_link),
+      expires_in_minutes: @expires_in_minutes }

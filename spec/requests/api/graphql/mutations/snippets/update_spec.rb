@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Updating a Snippet' do
   include GraphqlHelpers
+  include SessionHelpers
 
   let_it_be(:original_content) { 'Initial content' }
   let_it_be(:original_description) { 'Initial description' }
@@ -162,7 +163,7 @@ RSpec.describe 'Updating a Snippet' do
       end
     end
 
-    context 'when the author is a member of the project' do
+    context 'when the author is a member of the project', :snowplow do
       before do
         project.add_developer(current_user)
       end
@@ -184,6 +185,20 @@ RSpec.describe 'Updating a Snippet' do
 
       it_behaves_like 'has spam protection' do
         let(:mutation_class) { ::Mutations::Snippets::Update }
+      end
+
+      context 'when not sessionless', :clean_gitlab_redis_sessions do
+        before do
+          stub_session('warden.user.user.key' => [[current_user.id], current_user.encrypted_password[0, 29]])
+        end
+
+        it_behaves_like 'Snowplow event tracking' do
+          let(:user) { current_user }
+          let(:namespace) { project.namespace }
+          let(:category) { 'ide_edit' }
+          let(:action) { 'g_edit_by_snippet_ide' }
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        end
       end
     end
 

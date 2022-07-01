@@ -421,7 +421,7 @@ You can always find supported and deprecated schema versions in the [source code
 
    This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9
    and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85400) in GitLab 15.0.
-   
+
    <!--- end_remove -->
 
 ## Interact with findings and vulnerabilities

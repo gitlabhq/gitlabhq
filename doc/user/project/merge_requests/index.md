@@ -251,53 +251,6 @@ This feature works only when a merge request is merged. Selecting **Remove sourc
 after merging does not retarget open merge requests. This improvement is
 [proposed as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
 
-## Request attention to a merge request
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343528) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `mr_attention_requests`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `mr_attention_requests`.
-On GitLab.com, this feature is dependent on the enablement status of the feature flag. Refer to the [enablement issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343528) for details.
-
-To tell a merge request's assignee or reviewer that their attention is
-needed on a merge request, you can request their attention. If an assignee or a
-reviewer has their attention requested on a merge request, the **Attention request**
-icon (**{attention}**) is displayed as a solid icon (**{attention-solid}**) on
-the merge request list page:
-
-![Attention request icon](img/attention_request_list_v14_10.png)
-
-To view a list of merge requests that need your attention:
-
-1. On the top bar, select **Merge requests** (**{merge-request}**).
-1. Select **Attention requests**.
-
-To request attention from another user, use the `/attention @user`
-[quick action](../quick_actions.md) or:
-
-1. Go to the merge request.
-1. On the right sidebar, identify the user you want to request attention from.
-1. Next to the user's name, select **Request attention** (**{attention}**), and the appearance
-   of the icon changes:
-
-   ![Attention request toggle](img/attention_request_sidebar_v14_10.png)
-
-### Remove an attention request
-
-If your attention was requested as an assignee or reviewer, it's removed when you:
-
-- Manually remove the attention request by selecting **Remove attention request** (**{attention-solid}**).
-- Approve the merge request.
-- Add a new user as an assignee or reviewer.
-- Request the attention of a different assignee or reviewer.
-- Remove yourself (or are removed by someone else) as an assignee or reviewer.
-- Merge or close the merge request.
-
-If you are both the assignee and a reviewer on a merge request, you receive
-only one attention request, which is synced across both duties. If the
-attention request is removed from you, either as an assignee or a reviewer,
-it is removed from both your duties.
-
 ## Merge request workflows
 
 For a software developer working in a team:

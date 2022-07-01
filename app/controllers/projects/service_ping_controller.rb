@@ -17,7 +17,8 @@ class Projects::ServicePingController < Projects::ApplicationController
     return render_404 unless Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?
 
     Gitlab::UsageDataCounters::WebIdeCounter.increment_previews_success_count
-    Gitlab::UsageDataCounters::EditorUniqueCounter.track_live_preview_edit_action(author: current_user)
+    Gitlab::UsageDataCounters::EditorUniqueCounter.track_live_preview_edit_action(author: current_user,
+                                                                                  project: project)
 
     head(200)
   end

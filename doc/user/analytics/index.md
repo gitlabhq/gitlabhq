@@ -76,6 +76,8 @@ Deployment frequency displays in several charts:
 - [Project-level value stream analytics](value_stream_analytics.md)
 - [CI/CD analytics](ci_cd_analytics.md)
 
+To retrieve metrics for deployment frequency, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
+
 ### Lead time for changes
 
 Lead time for changes measures the time to deliver a feature once it has been developed,
@@ -86,6 +88,8 @@ Lead time for changes displays in several charts:
 - [Group-level value stream analytics](../group/value_stream_analytics/index.md)
 - [Project-level value stream analytics](value_stream_analytics.md)
 - [CI/CD analytics](ci_cd_analytics.md)
+
+To retrieve metrics for lead time for changes, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
 
 ### Time to restore service
 
@@ -126,7 +130,7 @@ To retrieve metrics for change failure rate, use the [GraphQL](../../api/graphql
 | `deployment_frequency`    | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.12 and later                                |                                                |
 | `lead_time_for_changes`   | Project           | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.11 and later                                | Unit in seconds. Aggregation method is median. |
 | `lead_time_for_changes`   | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 14.0 and later                                 | Unit in seconds. Aggregation method is median. |
-| `time_to_restore_service` | Project and group | [GitLab 14.9 and later](../../api/dora/metrics.md)  | Not supported                                         |                                                |
+| `time_to_restore_service` | Project and group | [GitLab 14.9 and later](../../api/dora/metrics.md)  | GitLab 15.1 and later                                 | Unit in days. Aggregation method is median.    |
 | `change_failure_rate`     | Project and group | [GitLab 14.10 and later](../../api/dora/metrics.md) | Not supported                                         |                                                |
 
 ## Definitions
