@@ -38935,6 +38935,12 @@ msgstr ""
 msgid "There was a problem communicating with your device."
 msgstr ""
 
+msgid "There was a problem fetching CRM contacts."
+msgstr ""
+
+msgid "There was a problem fetching CRM organizations."
+msgstr ""
+
 msgid "There was a problem fetching branches."
 msgstr ""
 

@@ -1,0 +1,6 @@
+fragment ContactFragment on CustomerRelationsContact {
+  id
+  firstName
+  lastName
+  email
+}

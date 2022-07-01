@@ -1,0 +1,28 @@
+#import "./crm_organization.fragment.graphql"
+
+query searchCrmOrganizations(
+  $isProject: Boolean = false
+  $fullPath: ID!
+  $searchString: String
+  $searchIds: [CustomerRelationsOrganizationID!]
+) {
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
+    organizations(search: $searchString, ids: $searchIds) {
+      nodes {
+        ...OrganizationFragment
+      }
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
+    id
+    group {
+      id
+      organizations(search: $searchString, ids: $searchIds) {
+        nodes {
+          ...OrganizationFragment
+        }
+      }
+    }
+  }
+}

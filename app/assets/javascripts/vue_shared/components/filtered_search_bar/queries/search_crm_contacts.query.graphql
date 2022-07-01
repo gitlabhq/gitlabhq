@@ -1,0 +1,28 @@
+#import "./crm_contact.fragment.graphql"
+
+query searchCrmContacts(
+  $isProject: Boolean = false
+  $fullPath: ID!
+  $searchString: String
+  $searchIds: [CustomerRelationsContactID!]
+) {
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
+    contacts(search: $searchString, ids: $searchIds) {
+      nodes {
+        ...ContactFragment
+      }
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
+    id
+    group {
+      id
+      contacts(search: $searchString, ids: $searchIds) {
+        nodes {
+          ...ContactFragment
+        }
+      }
+    }
+  }
+}

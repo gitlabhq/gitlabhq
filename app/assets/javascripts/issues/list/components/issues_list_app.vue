@@ -98,6 +98,10 @@ const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const ReleaseToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/release_token.vue');
+const CrmContactToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue');
+const CrmOrganizationToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue');
 
 export default {
   i18n,
@@ -383,7 +387,11 @@ export default {
           type: TOKEN_TYPE_CONTACT,
           title: TOKEN_TITLE_CONTACT,
           icon: 'user',
-          token: GlFilteredSearchToken,
+          token: CrmContactToken,
+          fullPath: this.fullPath,
+          isProject: this.isProject,
+          defaultContacts: DEFAULT_NONE_ANY,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-crm-contacts`,
           operators: OPERATOR_IS_ONLY,
           unique: true,
         });
@@ -394,7 +402,11 @@ export default {
           type: TOKEN_TYPE_ORGANIZATION,
           title: TOKEN_TITLE_ORGANIZATION,
           icon: 'users',
-          token: GlFilteredSearchToken,
+          token: CrmOrganizationToken,
+          fullPath: this.fullPath,
+          isProject: this.isProject,
+          defaultOrganizations: DEFAULT_NONE_ANY,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-crm-organizations`,
           operators: OPERATOR_IS_ONLY,
           unique: true,
         });

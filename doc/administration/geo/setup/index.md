@@ -12,6 +12,9 @@ These instructions assume you have a working instance of GitLab. They guide you 
 1. Making your existing instance the **primary** site.
 1. Adding **secondary** sites.
 
+You must use a [GitLab Premium](https://about.gitlab.com/pricing/) license or higher,
+but you only need one license for all the sites.
+
 WARNING:
 The steps below should be followed in the order they appear. **Make sure the GitLab version is the same on all sites.**
 
