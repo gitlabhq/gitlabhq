@@ -12,7 +12,6 @@ import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
-import Division from '../extensions/division';
 import Diagram from '../extensions/diagram';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
@@ -24,6 +23,7 @@ import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
 import HorizontalRule from '../extensions/horizontal_rule';
 import HTMLMarks from '../extensions/html_marks';
+import HTMLNodes from '../extensions/html_nodes';
 import Image from '../extensions/image';
 import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
@@ -123,16 +123,6 @@ const defaultSerializerConfig = {
     [BulletList.name]: preserveUnchanged(renderBulletList),
     [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
     [Diagram.name]: renderCodeBlock,
-    [Division.name]: (state, node) => {
-      if (node.attrs.className?.includes('js-markdown-code')) {
-        state.renderInline(node);
-      } else {
-        const newNode = node;
-        delete newNode.attrs.className;
-
-        renderHTMLNode('div')(state, newNode);
-      }
-    },
     [DescriptionList.name]: renderHTMLNode('dl', true),
     [DescriptionItem.name]: (state, node, parent, index) => {
       if (index === 1) state.ensureNewLine();
@@ -180,6 +170,12 @@ const defaultSerializerConfig = {
     [HardBreak.name]: preserveUnchanged(renderHardBreak),
     [Heading.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.heading),
     [HorizontalRule.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.horizontal_rule),
+    ...HTMLNodes.reduce((serializers, htmlNode) => {
+      return {
+        ...serializers,
+        [htmlNode.name]: (state, node) => renderHTMLNode(htmlNode.options.tagName)(state, node),
+      };
+    }, {}),
     [Image.name]: preserveUnchanged(renderImage),
     [ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
     [OrderedList.name]: preserveUnchanged(renderOrderedList),

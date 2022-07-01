@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import micromatch from 'micromatch';
 import { s__, sprintf } from '~/locale';
 import FileTree from '~/vue_shared/components/file_tree.vue';
 import DiffFileRow from './diff_file_row.vue';
@@ -28,14 +29,24 @@ export default {
     ...mapState('diffs', ['tree', 'renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds']),
     ...mapGetters('diffs', ['allBlobs']),
     filteredTreeList() {
-      const search = this.search.toLowerCase().trim();
+      let search = this.search.toLowerCase().trim();
 
       if (search === '') {
         return this.renderTreeList ? this.tree : this.allBlobs;
       }
 
+      const searchSplit = search.split(',').filter((t) => t);
+
+      if (searchSplit.length > 1) {
+        search = `(${searchSplit.map((s) => s.replace(/(^ +| +$)/g, '')).join('|')})`;
+      } else {
+        [search] = searchSplit;
+      }
+
       return this.allBlobs.reduce((acc, folder) => {
-        const tree = folder.tree.filter((f) => f.path.toLowerCase().indexOf(search) >= 0);
+        const tree = folder.tree.filter((f) =>
+          micromatch.contains(f.path, search, { nocase: true }),
+        );
 
         if (tree.length) {
           return acc.concat({
@@ -54,7 +65,7 @@ export default {
       this.search = '';
     },
   },
-  searchPlaceholder: sprintf(s__('MergeRequest|Search files (%{modifier_key}P)'), {
+  searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{modifier_key}P)'), {
     modifier_key: /Mac/i.test(navigator.userAgent) ? '⌘' : 'Ctrl+',
   }),
   DiffFileRow,
@@ -74,6 +85,7 @@ export default {
           type="search"
           name="diff-tree-search"
           class="form-control"
+          data-testid="diff-tree-search"
         />
         <button
           v-show="search"

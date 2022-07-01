@@ -7,7 +7,6 @@ import DescriptionItem from '~/content_editor/extensions/description_item';
 import DescriptionList from '~/content_editor/extensions/description_list';
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
-import Division from '~/content_editor/extensions/division';
 import Emoji from '~/content_editor/extensions/emoji';
 import Figure from '~/content_editor/extensions/figure';
 import FigureCaption from '~/content_editor/extensions/figure_caption';
@@ -16,6 +15,8 @@ import FootnoteReference from '~/content_editor/extensions/footnote_reference';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
+import HTMLMarks from '~/content_editor/extensions/html_marks';
+import HTMLNodes from '~/content_editor/extensions/html_nodes';
 import Image from '~/content_editor/extensions/image';
 import InlineDiff from '~/content_editor/extensions/inline_diff';
 import Italic from '~/content_editor/extensions/italic';
@@ -48,7 +49,6 @@ const tiptapEditor = createTestEditor({
     DescriptionList,
     Details,
     DetailsContent,
-    Division,
     Emoji,
     FootnoteDefinition,
     FootnoteReference,
@@ -57,6 +57,8 @@ const tiptapEditor = createTestEditor({
     HardBreak,
     Heading,
     HorizontalRule,
+    ...HTMLMarks,
+    ...HTMLNodes,
     Image,
     InlineDiff,
     Italic,
@@ -84,7 +86,7 @@ const {
     codeBlock,
     details,
     detailsContent,
-    division,
+    div,
     descriptionItem,
     descriptionList,
     emoji,
@@ -120,7 +122,13 @@ const {
     codeBlock: { nodeType: CodeBlockHighlight.name },
     details: { nodeType: Details.name },
     detailsContent: { nodeType: DetailsContent.name },
-    division: { nodeType: Division.name },
+    ...HTMLNodes.reduce(
+      (builders, htmlNode) => ({
+        ...builders,
+        [htmlNode.name]: { nodeType: htmlNode.name },
+      }),
+      {},
+    ),
     descriptionItem: { nodeType: DescriptionItem.name },
     descriptionList: { nodeType: DescriptionList.name },
     emoji: { markType: Emoji.name },
@@ -725,8 +733,8 @@ _inception_
   it('correctly renders div', () => {
     expect(
       serialize(
-        division(paragraph('just a paragraph in a div')),
-        division(paragraph('just some ', bold('styled'), ' ', italic('content'), ' in a div')),
+        div(paragraph('just a paragraph in a div')),
+        div(paragraph('just some ', bold('styled'), ' ', italic('content'), ' in a div')),
       ),
     ).toBe(
       '<div>just a paragraph in a div</div>\n<div>\n\njust some **styled** _content_ in a div\n\n</div>',

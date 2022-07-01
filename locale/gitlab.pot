@@ -24505,7 +24505,7 @@ msgstr ""
 msgid "MergeRequest|No files found"
 msgstr ""
 
-msgid "MergeRequest|Search files (%{modifier_key}P)"
+msgid "MergeRequest|Search (e.g. *.vue) (%{modifier_key}P)"
 msgstr ""
 
 msgid "Merged"

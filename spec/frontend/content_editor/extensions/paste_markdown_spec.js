@@ -14,7 +14,7 @@ import {
 import waitForPromises from 'helpers/wait_for_promises';
 import { createTestEditor, createDocBuilder, waitUntilNextDocTransaction } from '../test_utils';
 
-const CODE_BLOCK_HTML = '<pre lang="javascript">var a = 2;</pre>';
+const CODE_BLOCK_HTML = '<pre class="js-syntax-highlight" lang="javascript">var a = 2;</pre>';
 const DIAGRAM_HTML =
   '<img data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,WzxmcmFtZT5EZWNvcmF0b3IgcGF0dGVybl0=">';
 const FRONTMATTER_HTML = '<pre lang="yaml" data-lang-params="frontmatter">key: value</pre>';

@@ -42,10 +42,13 @@ export default CodeBlockLowlight.extend({
   },
   parseHTML() {
     return [
-      ...(this.parent?.() || []),
       {
         tag: 'div.markdown-code-block',
         skip: true,
+      },
+      {
+        tag: 'pre.js-syntax-highlight',
+        preserveWhitespace: 'full',
       },
     ];
   },

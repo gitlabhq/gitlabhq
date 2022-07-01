@@ -393,3 +393,21 @@ The following command combines the intent of [Update GraphQL documentation and s
 ```shell
 bundle exec rake gitlab:graphql:update_all
 ```
+
+## Update OpenAPI client for Error Tracking feature
+
+NOTE:
+This Rake task needs `docker` to be installed.
+
+To update generated code for OpenAPI client located in
+`vendor/gems/error_tracking_open_api` run the following commands:
+
+```shell
+# Run rake task
+bundle exec rake gems:error_tracking_open_api:generate
+
+# Review and test the changes
+
+# Commit the changes
+git commit -m 'Update ErrorTrackingOpenAPI from OpenAPI definition' vendor/gems/error_tracking_open_api
+```

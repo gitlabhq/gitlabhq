@@ -10,7 +10,6 @@ import DescriptionItem from '~/content_editor/extensions/description_item';
 import DescriptionList from '~/content_editor/extensions/description_list';
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
-import Division from '~/content_editor/extensions/division';
 import Emoji from '~/content_editor/extensions/emoji';
 import Figure from '~/content_editor/extensions/figure';
 import FigureCaption from '~/content_editor/extensions/figure_caption';
@@ -20,6 +19,7 @@ import FootnotesSection from '~/content_editor/extensions/footnotes_section';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
+import HTMLNodes from '~/content_editor/extensions/html_nodes';
 import Image from '~/content_editor/extensions/image';
 import InlineDiff from '~/content_editor/extensions/inline_diff';
 import Italic from '~/content_editor/extensions/italic';
@@ -47,7 +47,6 @@ const tiptapEditor = createTestEditor({
     DescriptionList,
     Details,
     DetailsContent,
-    Division,
     Emoji,
     FootnoteDefinition,
     FootnoteReference,
@@ -57,6 +56,7 @@ const tiptapEditor = createTestEditor({
     HardBreak,
     Heading,
     HorizontalRule,
+    ...HTMLNodes,
     Image,
     InlineDiff,
     Italic,
