@@ -680,4 +680,28 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       end
     end
   end
+
+  describe '#attribute_names' do
+    let(:expected_attribute_names) { %w(id name) }
+    let(:order) do
+      Gitlab::Pagination::Keyset::Order.build([
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: Project.arel_table['id'].desc,
+          nullable: :not_nullable,
+          distinct: true
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'name',
+          order_expression: Project.arel_table['name'].desc,
+          nullable: :not_nullable,
+          distinct: true
+        )
+      ])
+    end
+
+    subject { order.attribute_names }
+
+    it { is_expected.to match_array(expected_attribute_names) }
+  end
 end

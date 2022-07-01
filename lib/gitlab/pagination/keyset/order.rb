@@ -107,6 +107,10 @@ module Gitlab
           end
         end
 
+        def attribute_names
+          column_definitions.map(&:attribute_name)
+        end
+
         # This methods builds the conditions for the keyset pagination
         #
         # Example:
