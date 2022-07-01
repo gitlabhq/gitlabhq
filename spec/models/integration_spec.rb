@@ -799,11 +799,17 @@ RSpec.describe Integration do
 
     shared_examples '#api_field_names' do
       it 'filters out secret fields' do
-        safe_fields = %w[some_safe_field safe_field url trojan_gift]
+        safe_fields = %w[some_safe_field safe_field url trojan_gift api_only_field]
 
         expect(fake_integration.new).to have_attributes(
           api_field_names: match_array(safe_fields)
         )
+      end
+    end
+
+    shared_examples '#form_fields' do
+      it 'filters out API only fields' do
+        expect(fake_integration.new.form_fields.pluck(:name)).not_to include('api_only_field')
       end
     end
 
@@ -824,7 +830,8 @@ RSpec.describe Integration do
               { name: 'safe_field' },
               { name: 'url' },
               { name: 'trojan_horse', type: 'password' },
-              { name: 'trojan_gift', type: 'text' }
+              { name: 'trojan_gift', type: 'text' },
+              { name: 'api_only_field', api_only: true }
             ].shuffle
           end
         end
@@ -832,6 +839,7 @@ RSpec.describe Integration do
 
       it_behaves_like '#fields'
       it_behaves_like '#api_field_names'
+      it_behaves_like '#form_fields'
     end
 
     context 'when the class uses the field DSL' do
@@ -850,11 +858,13 @@ RSpec.describe Integration do
           field :url
           field :trojan_horse, type: 'password'
           field :trojan_gift, type: 'text'
+          field :api_only_field, api_only: true
         end
       end
 
       it_behaves_like '#fields'
       it_behaves_like '#api_field_names'
+      it_behaves_like '#form_fields'
     end
   end
 

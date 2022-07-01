@@ -4,6 +4,7 @@ module LearnGitlabHelper
   IMAGE_PATH_PLAN = "learn_gitlab/section_plan.svg"
   IMAGE_PATH_DEPLOY = "learn_gitlab/section_deploy.svg"
   IMAGE_PATH_WORKSPACE = "learn_gitlab/section_workspace.svg"
+  LICENSE_SCANNING_RUN_URL = 'https://docs.gitlab.com/ee/user/compliance/license_compliance/index.html'
 
   def learn_gitlab_enabled?(project)
     return false unless current_user
@@ -64,12 +65,29 @@ module LearnGitlabHelper
       git_write: project_path(project),
       merge_request_created: project_merge_requests_path(project),
       user_added: project_members_url(project),
-      security_scan_enabled: project_security_configuration_path(project)
+      **deploy_section_action_urls(project)
     )
   end
 
   def action_issue_urls
     LearnGitlab::Onboarding::ACTION_ISSUE_IDS.transform_values { |id| project_issue_url(learn_gitlab_project, id) }
+  end
+
+  def deploy_section_action_urls(project)
+    experiment(:security_actions_continuous_onboarding,
+      namespace: project.namespace,
+      user: current_user,
+      sticky_to: current_user
+    ) do |e|
+      e.control { { security_scan_enabled: project_security_configuration_path(project) } }
+      e.candidate do
+        {
+          license_scanning_run: LICENSE_SCANNING_RUN_URL,
+          secure_dependency_scanning_run: project_security_configuration_path(project, anchor: 'dependency-scanning'),
+          secure_dast_run: project_security_configuration_path(project, anchor: 'dast')
+        }
+      end
+    end.run
   end
 
   def learn_gitlab_project

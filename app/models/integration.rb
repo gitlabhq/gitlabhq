@@ -505,8 +505,8 @@ class Integration < ApplicationRecord
     fields.reject { _1[:type] == 'password' }.pluck(:name)
   end
 
-  def global_fields
-    fields
+  def form_fields
+    fields.reject { _1[:api_only] == true }
   end
 
   def configurable_events

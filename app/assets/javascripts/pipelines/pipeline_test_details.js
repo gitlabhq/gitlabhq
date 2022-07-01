@@ -1,9 +1,10 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Translate from '~/vue_shared/translate';
 import TestReports from './components/test_reports/test_reports.vue';
-import createTestReportsStore from './stores/test_reports';
 
+Vue.use(Vuex);
 Vue.use(Translate);
 
 export const createTestDetails = (selector) => {
@@ -16,11 +17,6 @@ export const createTestDetails = (selector) => {
     suiteEndpoint,
     artifactsExpiredImagePath,
   } = el?.dataset || {};
-  const testReportsStore = createTestReportsStore({
-    blobPath,
-    summaryEndpoint,
-    suiteEndpoint,
-  });
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -32,8 +28,11 @@ export const createTestDetails = (selector) => {
       emptyStateImagePath,
       artifactsExpiredImagePath,
       hasTestReport: parseBoolean(hasTestReport),
+      blobPath,
+      summaryEndpoint,
+      suiteEndpoint,
     },
-    store: testReportsStore,
+    store: new Vuex.Store(),
     render(createElement) {
       return createElement('test-reports');
     },

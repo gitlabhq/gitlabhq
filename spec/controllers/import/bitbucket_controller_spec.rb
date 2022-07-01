@@ -65,7 +65,7 @@ RSpec.describe Import::BitbucketController do
           .with(hash_including(
                   'grant_type' => 'authorization_code',
                   'code' => code,
-                  redirect_uri: users_import_bitbucket_callback_url),
+                  'redirect_uri' => users_import_bitbucket_callback_url),
                 {})
           .and_return(access_token)
         stub_omniauth_provider('bitbucket')

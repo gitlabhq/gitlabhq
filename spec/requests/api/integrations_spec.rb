@@ -363,6 +363,31 @@ RSpec.describe API::Integrations do
       end
     end
 
+    describe 'Jira integration' do
+      let(:integration_name) { 'jira' }
+      let(:params) do
+        { url: 'https://jira.example.com', username: 'username', password: 'password' }
+      end
+
+      before do
+        project.create_jira_integration(active: true, properties: params)
+      end
+
+      it 'returns the jira_issue_transition_id for get request' do
+        get api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['properties']).to include('jira_issue_transition_id' => nil)
+      end
+
+      it 'returns the jira_issue_transition_id for put request' do
+        put api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user), params: params.merge(jira_issue_transition_id: '1')
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['properties']['jira_issue_transition_id']).to eq('1')
+      end
+    end
+
     describe 'Pipelines Email Integration' do
       let(:integration_name) { 'pipelines-email' }
 

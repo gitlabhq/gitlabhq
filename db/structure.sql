@@ -30172,13 +30172,13 @@ CREATE INDEX partial_index_deployments_for_legacy_successful_deployments ON depl
 
 CREATE INDEX partial_index_deployments_for_project_id_and_tag ON deployments USING btree (project_id) WHERE (tag IS TRUE);
 
-CREATE INDEX partial_index_resource_owner_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, created_at) WHERE (revoked_at IS NULL);
-
 CREATE INDEX partial_index_slack_integrations_with_bot_user_id ON slack_integrations USING btree (id) WHERE (bot_user_id IS NOT NULL);
 
 CREATE UNIQUE INDEX partial_index_sop_configs_on_namespace_id ON security_orchestration_policy_configurations USING btree (namespace_id) WHERE (namespace_id IS NOT NULL);
 
 CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestration_policy_configurations USING btree (project_id) WHERE (project_id IS NOT NULL);
+
+CREATE INDEX partial_index_user_id_app_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, application_id, created_at) WHERE (revoked_at IS NULL);
 
 CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_and_note_id_index ON snippet_user_mentions USING btree (snippet_id, note_id);
 

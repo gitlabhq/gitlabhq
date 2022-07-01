@@ -29,10 +29,6 @@ module Ci
       return_exit_code: -> (build) { build.exit_codes_defined? }
     }.freeze
 
-    DEFAULT_RETRIES = {
-      scheduler_failure: 2
-    }.freeze
-
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
 

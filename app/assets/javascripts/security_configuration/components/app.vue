@@ -206,6 +206,7 @@ export default {
           <template #features>
             <feature-card
               v-for="feature in augmentedSecurityFeatures"
+              :id="feature.anchor"
               :key="feature.type"
               data-testid="security-testing-card"
               :feature="feature"

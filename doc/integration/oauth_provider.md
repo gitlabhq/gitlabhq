@@ -86,7 +86,7 @@ To create an application for your GitLab instance:
 When creating application in the **Admin Area** , you can mark it as _trusted_.
 The user authorization step is automatically skipped for this application.
 
-## Expiring access tokens
+## Access token expiration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21745) in GitLab 14.3, with the ability to opt out.
 > - Ability to opt-out of expiring access token [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0.
@@ -97,12 +97,7 @@ in GitLab 14.3 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/34084
 existing integrations must be updated to support access token refresh.
 
 Access tokens expire in two hours which means that integrations that use them must support generating new access
-tokens at least every two hours. Existing:
-
-- Applications can have expiring access tokens:
-  1. Edit the application.
-  1. Select **Expire access tokens**.
-- Tokens must be [revoked](../api/oauth2.md#revoke-a-token) or they don't expire.
+tokens at least every two hours.
 
 When applications are deleted, all grants and tokens associated with the application are also deleted.
 

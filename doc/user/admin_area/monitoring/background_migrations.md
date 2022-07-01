@@ -28,6 +28,9 @@ You can [check the status of existing migrations](../../../update/index.md#batch
 
 ## Enable or disable batched background migrations
 
+WARNING:
+If you disable this feature flag, GitLab upgrades may fail.
+
 Batched background migrations are under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)

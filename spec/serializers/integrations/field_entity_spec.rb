@@ -114,6 +114,6 @@ RSpec.describe Integrations::FieldEntity do
   end
 
   def integration_field(name)
-    integration.global_fields.find { |f| f[:name] == name }
+    integration.form_fields.find { |f| f[:name] == name }
   end
 end

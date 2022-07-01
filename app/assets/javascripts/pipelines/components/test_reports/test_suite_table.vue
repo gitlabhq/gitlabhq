@@ -51,14 +51,18 @@ export default {
     },
   },
   computed: {
-    ...mapState(['pageInfo']),
-    ...mapGetters(['getSuiteTests', 'getSuiteTestCount', 'getSuiteArtifactsExpired']),
+    ...mapState('testReports', ['pageInfo']),
+    ...mapGetters('testReports', [
+      'getSuiteTests',
+      'getSuiteTestCount',
+      'getSuiteArtifactsExpired',
+    ]),
     hasSuites() {
       return this.getSuiteTests.length > 0;
     },
   },
   methods: {
-    ...mapActions(['setPage']),
+    ...mapActions('testReports', ['setPage']),
   },
   wrapSymbols: ['::', '#', '.', '_', '-', '/', '\\'],
   i18n,

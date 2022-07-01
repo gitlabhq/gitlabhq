@@ -22824,9 +22824,6 @@ msgstr ""
 msgid "Learn GitLab - Ultimate trial"
 msgstr ""
 
-msgid "Learn GitLab|Trial only"
-msgstr ""
-
 msgid "Learn More"
 msgstr ""
 
@@ -22902,19 +22899,19 @@ msgstr ""
 msgid "LearnGitLab|Add code owners"
 msgstr ""
 
-msgid "LearnGitLab|Add merge request approval"
+msgid "LearnGitLab|Analyze your application for vulnerabilities with DAST"
 msgstr ""
 
 msgid "LearnGitLab|Complete these tasks first so you can enjoy GitLab's features to their fullest:"
+msgstr ""
+
+msgid "LearnGitLab|Create a repository"
 msgstr ""
 
 msgid "LearnGitLab|Create a workflow for your new workspace, and learn how GitLab features work together:"
 msgstr ""
 
 msgid "LearnGitLab|Create an issue"
-msgstr ""
-
-msgid "LearnGitLab|Create or import a repository"
 msgstr ""
 
 msgid "LearnGitLab|Create or import your first repository into your new project."
@@ -22959,22 +22956,25 @@ msgstr ""
 msgid "LearnGitLab|Save time by automating your integration and deployment tasks."
 msgstr ""
 
+msgid "LearnGitLab|Scan dependencies for licenses"
+msgstr ""
+
+msgid "LearnGitLab|Scan dependencies for vulnerabilities"
+msgstr ""
+
 msgid "LearnGitLab|Scan your code to uncover vulnerabilities before deploying."
 msgstr ""
 
 msgid "LearnGitLab|Set up CI/CD"
 msgstr ""
 
+msgid "LearnGitLab|Set up your first project's CI/CD"
+msgstr ""
+
 msgid "LearnGitLab|Set up your workspace"
 msgstr ""
 
-msgid "LearnGitLab|Set-up CI/CD"
-msgstr ""
-
-msgid "LearnGitLab|Start a free Ultimate trial"
-msgstr ""
-
-msgid "LearnGitLab|Submit a merge request"
+msgid "LearnGitLab|Start a free trial of GitLab Ultimate"
 msgstr ""
 
 msgid "LearnGitLab|Submit a merge request (MR)"
@@ -22992,6 +22992,9 @@ msgstr ""
 msgid "LearnGitLab|Your team is growing! You've successfully invited new team members to the %{projectName} project."
 msgstr ""
 
+msgid "LearnGitlab|- Included in trial"
+msgstr ""
+
 msgid "LearnGitlab|Contact your administrator to start a free Ultimate trial."
 msgstr ""
 
@@ -22999,9 +23002,6 @@ msgid "LearnGitlab|Creating your onboarding experience..."
 msgstr ""
 
 msgid "LearnGitlab|Ok, let's go"
-msgstr ""
-
-msgid "LearnGitlab|Trial only"
 msgstr ""
 
 msgid "LearnGitlab|View administrator list"

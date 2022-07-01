@@ -37,7 +37,7 @@ To view value stream analytics for your group:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
-1. To view metrics for each stage, above the **Filter results** text box, select a stage.
+1. To view metrics for a particular stage, select a stage below the **Filter results** text box.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
    1. Select a parameter.

@@ -20,13 +20,23 @@ describe('Test reports summary table', () => {
 
   const createComponent = (reports = null) => {
     store = new Vuex.Store({
-      state: {
-        testReports: reports || testReports,
+      modules: {
+        testReports: {
+          namespaced: true,
+          state: {
+            testReports: reports || testReports,
+          },
+          getters,
+        },
       },
-      getters,
     });
 
     wrapper = mount(SummaryTable, {
+      provide: {
+        blobPath: '/blob/path',
+        summaryEndpoint: '/summary.json',
+        suiteEndpoint: '/suite.json',
+      },
       propsData: defaultProps,
       store,
     });

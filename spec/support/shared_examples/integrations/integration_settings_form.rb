@@ -20,6 +20,11 @@ RSpec.shared_examples 'integration settings form' do
                             "#{integration.title} field #{field_name} not present"
           end
 
+          api_only_fields = integration.fields.select { _1[:api_only] }
+          api_only_fields.each do |field|
+            expect(page).not_to have_field("service[#{field.name}]", wait: 0)
+          end
+
           sections = integration.sections
           events = parse_json(trigger_events_for_integration(integration))
 

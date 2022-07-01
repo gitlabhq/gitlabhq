@@ -71,11 +71,12 @@ module Integrations
           non_empty_password_help: -> { s_('JiraService|Leave blank to use your current password or API token.') },
           help: -> { s_('JiraService|Use a password for server version and an API token for cloud version.') }
 
+    field :jira_issue_transition_id, api_only: true
+
     # TODO: we can probably just delegate as part of
     # https://gitlab.com/gitlab-org/gitlab/issues/29404
     # These fields are API only, so no field definition is required.
     data_field :jira_issue_transition_automatic
-    data_field :jira_issue_transition_id
     data_field :project_key
     data_field :issues_enabled
     data_field :vulnerabilities_enabled

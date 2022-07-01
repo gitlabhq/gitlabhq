@@ -45,10 +45,12 @@ RSpec.describe 'Profile > Applications' do
     let(:anonymous_token) { create(:oauth_access_token, resource_owner: user) }
 
     context 'with multiple access token types and multiple owners' do
+      let!(:token2) { create(:oauth_access_token, application: application, resource_owner: user) }
       let!(:other_user_token) { create(:oauth_access_token, application: application, resource_owner: other_user) }
 
       before do
         token.update_column(:created_at, created_at)
+        token2.update_column(:created_at, created_at - 1.day)
         anonymous_token.update_columns(application_id: nil, created_at: 1.day.ago)
       end
 

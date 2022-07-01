@@ -53,7 +53,9 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
 
   def set_index_vars
     @applications = current_user.oauth_applications.load
-    @authorized_tokens = current_user.oauth_authorized_tokens.preload(:application).order(created_at: :desc).load # rubocop: disable CodeReuse/ActiveRecord
+    @authorized_tokens = current_user.oauth_authorized_tokens
+                                     .latest_per_application
+                                     .preload_application
 
     # Don't overwrite a value possibly set by `create`
     @application ||= Doorkeeper::Application.new

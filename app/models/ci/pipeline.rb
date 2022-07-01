@@ -27,8 +27,6 @@ module Ci
     DEFAULT_CONFIG_PATH = CONFIG_EXTENSION
     CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
 
-    BridgeStatusError = Class.new(StandardError)
-
     paginates_per 15
 
     sha_attribute :source_sha

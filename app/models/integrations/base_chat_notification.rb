@@ -139,8 +139,8 @@ module Integrations
       supported_events.map { |event| event_channel_name(event) }
     end
 
-    def global_fields
-      fields.reject { |field| field[:name].end_with?('channel') }
+    def form_fields
+      super.reject { |field| field[:name].end_with?('channel') }
     end
 
     def default_channel_placeholder

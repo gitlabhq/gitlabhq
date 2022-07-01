@@ -38,14 +38,16 @@ export default {
       actionsData: this.actions,
     };
   },
-  maxValue: Object.keys(ACTION_LABELS).length,
   actionSections: Object.keys(ACTION_SECTIONS),
   computed: {
+    maxValue() {
+      return Object.keys(this.actionsData).length;
+    },
     progressValue() {
       return Object.values(this.actionsData).filter((a) => a.completed).length;
     },
     progressPercentage() {
-      return Math.round((this.progressValue / this.$options.maxValue) * 100);
+      return Math.round((this.progressValue / this.maxValue) * 100);
     },
   },
   mounted() {
@@ -125,7 +127,7 @@ export default {
           <template #percentSymbol>%</template>
         </gl-sprintf>
       </p>
-      <gl-progress-bar :value="progressValue" :max="$options.maxValue" />
+      <gl-progress-bar :value="progressValue" :max="maxValue" />
     </div>
     <div class="row">
       <div

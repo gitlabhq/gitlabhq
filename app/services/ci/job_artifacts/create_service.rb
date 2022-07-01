@@ -5,8 +5,6 @@ module Ci
     class CreateService < ::BaseService
       include Gitlab::Utils::UsageData
 
-      ArtifactsExistError = Class.new(StandardError)
-
       LSIF_ARTIFACT_TYPE = 'lsif'
       METRICS_REPORT_UPLOAD_EVENT_NAME = 'i_testing_metrics_report_artifact_uploaders'
 
@@ -72,10 +70,6 @@ module Ci
 
       def max_size(type)
         Ci::JobArtifact.max_artifact_size(type: type, project: project)
-      end
-
-      def forbidden_type_error(type)
-        error("#{type} artifacts are forbidden", :forbidden)
       end
 
       def too_large_error

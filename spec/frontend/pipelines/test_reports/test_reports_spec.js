@@ -31,18 +31,30 @@ describe('Test reports app', () => {
 
   const createComponent = ({ state = {} } = {}) => {
     store = new Vuex.Store({
-      state: {
-        isLoading: false,
-        selectedSuiteIndex: null,
-        testReports,
-        ...state,
+      modules: {
+        testReports: {
+          namespaced: true,
+          state: {
+            isLoading: false,
+            selectedSuiteIndex: null,
+            testReports,
+            ...state,
+          },
+          actions: actionSpies,
+          getters,
+        },
       },
-      actions: actionSpies,
-      getters,
     });
+
+    jest.spyOn(store, 'registerModule').mockReturnValue(null);
 
     wrapper = extendedWrapper(
       shallowMount(TestReports, {
+        provide: {
+          blobPath: '/blob/path',
+          summaryEndpoint: '/summary.json',
+          suiteEndpoint: '/suite.json',
+        },
         store,
       }),
     );

@@ -382,10 +382,17 @@ module QA
       #
       # @return [Regex]
       def created_by_pattern
-        @created_by_pattern ||= /\n\n \*By gitlab-migration on \S+ \(imported from GitLab\)\*/
+        @created_by_pattern ||= /\n\n \*By #{importer_username_pattern} on \S+ \(imported from GitLab\)\*/
       end
 
-      # Remove added prefixes and legacy diff format from comments
+      # Username of importer user for removal from comments and descriptions
+      #
+      # @return [String]
+      def importer_username_pattern
+        @importer_username_pattern ||= ENV['QA_LARGE_IMPORT_USER_PATTERN'] || "(gitlab-migration|GitLab QA Bot)"
+      end
+
+      # Remove added prefixes from comments
       #
       # @param [String] body
       # @return [String]

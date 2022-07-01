@@ -164,7 +164,7 @@ RSpec.describe Integrations::Jira do
     subject(:fields) { integration.fields }
 
     it 'returns custom fields' do
-      expect(fields.pluck(:name)).to eq(%w[url api_url username password])
+      expect(fields.pluck(:name)).to eq(%w[url api_url username password jira_issue_transition_id])
     end
   end
 

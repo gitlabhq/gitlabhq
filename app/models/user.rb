@@ -1626,7 +1626,7 @@ class User < ApplicationRecord
   end
 
   def oauth_authorized_tokens
-    Doorkeeper::AccessToken.where(resource_owner_id: id, revoked_at: nil)
+    OauthAccessToken.where(resource_owner_id: id, revoked_at: nil)
   end
 
   # Returns the projects a user contributed to in the last year.
