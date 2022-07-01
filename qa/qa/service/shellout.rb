@@ -14,7 +14,7 @@ module QA
       def shell(command, stdin_data: nil, fail_on_exception: true, stream_progress: true, mask_secrets: []) # rubocop:disable Metrics/CyclomaticComplexity
         cmd_string = Array(command).join(' ')
 
-        QA::Runtime::Logger.info("Executing: `#{cmd_string.cyan}`")
+        QA::Runtime::Logger.info("Executing: `#{mask_secrets_on_string(cmd_string, mask_secrets).cyan}`")
 
         Open3.popen2e(*command) do |stdin, out, wait|
           stdin.puts(stdin_data) if stdin_data

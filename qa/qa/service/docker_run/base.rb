@@ -6,9 +6,32 @@ module QA
       class Base
         include Service::Shellout
 
+        def self.authenticated_registries
+          @authenticated_registries ||= {}
+        end
+
         def initialize
           @network = Runtime::Scenario.attributes[:network] || 'test'
           @runner_network = Runtime::Scenario.attributes[:runner_network] || @network
+        end
+
+        # Authenticate against a container registry
+        # If authentication is successful, will cache registry
+        #
+        # @param registry [String] registry to authenticate against
+        # @param user [String]
+        # @param password [String]
+        # @param force [Boolean] force authentication if already authenticated
+        # @return [Void]
+        def login(registry, user:, password:, force: false)
+          return if self.class.authenticated_registries[registry] && !force
+
+          shell(
+            %(docker login --username "#{user}" --password "#{password}" #{registry}),
+            mask_secrets: [password]
+          )
+
+          self.class.authenticated_registries[registry] = true
         end
 
         def logs

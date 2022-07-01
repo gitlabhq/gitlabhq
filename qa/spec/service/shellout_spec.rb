@@ -13,6 +13,12 @@ module QA
         allow(Open3).to receive(:popen2e).and_yield(stdin, stdout, wait_thread)
       end
 
+      it 'masks secrets when logging the command itself' do
+        expect(Runtime::Logger).to receive(:info).with('Executing: `docker login -u **** -p ****`')
+        expect(wait_thread).to receive(:value).twice.and_return(non_errored_wait)
+        subject.shell('docker login -u user -p secret', mask_secrets: %w[secret user])
+      end
+
       it 'masks command secrets on CommandError' do
         expect(wait_thread).to receive(:value).twice.and_return(errored_wait)
 

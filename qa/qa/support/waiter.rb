@@ -13,7 +13,8 @@ module QA
         sleep_interval: 0.1,
         raise_on_failure: true,
         retry_on_exception: false,
-        log: true
+        log: true,
+        message: nil
       )
         result = nil
         repeat_until(
@@ -22,7 +23,8 @@ module QA
           sleep_interval: sleep_interval,
           raise_on_failure: raise_on_failure,
           retry_on_exception: retry_on_exception,
-          log: log
+          log: log,
+          message: message
         ) do
           result = yield
         end

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Tagging with issue for a transient invite group modal search bug, but does not require quarantine at this time
-  RSpec.describe 'Manage', :transient, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/349379' do
+  RSpec.describe 'Manage' do
     describe 'Invite group' do
       shared_examples 'invites group to project' do
         it 'verifies group is added and members can access project with correct access level' do
@@ -13,7 +12,7 @@ module QA
             expect(project_members).to have_group(group.path)
           end
 
-          Flow::Login.sign_in(as: @user)
+          Flow::Login.sign_in(as: user)
 
           Page::Dashboard::Projects.perform do |projects|
             projects.filter_by_name(project.name)
@@ -29,13 +28,11 @@ module QA
         end
       end
 
-      before(:context) do
-        @user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-      end
+      let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
 
       before do
         Flow::Login.sign_in
-        group.add_member(@user, Resource::Members::AccessLevel::MAINTAINER)
+        group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
         project.visit!
       end
 
@@ -74,11 +71,6 @@ module QA
         end
 
         it_behaves_like 'invites group to project'
-      end
-
-      after do
-        project&.remove_via_api!
-        group&.remove_via_api!
       end
     end
   end

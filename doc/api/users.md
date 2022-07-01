@@ -105,7 +105,7 @@ parameter `without_project_bots=true`.
 GET /users?without_project_bots=true
 ```
 
-### For administrators
+### For administrators **(FREE SELF)**
 
 > The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
@@ -314,7 +314,7 @@ Parameters:
 }
 ```
 
-### For administrator
+### For administrators **(FREE SELF)**
 
 > The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
@@ -623,7 +623,7 @@ GET /user
 
 Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit` parameters.
 
-### For administrators
+### For administrators **(FREE SELF)**
 
 > The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 

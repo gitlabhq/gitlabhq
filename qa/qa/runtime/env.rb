@@ -461,6 +461,25 @@ module QA
         enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
       end
 
+      # ENV variables for authenticating against a private container registry
+      # These need to be set if using the
+      # Service::DockerRun::Mixins::ThirdPartyDocker module
+      def third_party_docker_registry
+        ENV['QA_THIRD_PARTY_DOCKER_REGISTRY']
+      end
+
+      def third_party_docker_repository
+        ENV['QA_THIRD_PARTY_DOCKER_REPOSITORY']
+      end
+
+      def third_party_docker_user
+        ENV['QA_THIRD_PARTY_DOCKER_USER']
+      end
+
+      def third_party_docker_password
+        ENV['QA_THIRD_PARTY_DOCKER_PASSWORD']
+      end
+
       def max_capybara_wait_time
         ENV.fetch('MAX_CAPYBARA_WAIT_TIME', 10).to_i
       end

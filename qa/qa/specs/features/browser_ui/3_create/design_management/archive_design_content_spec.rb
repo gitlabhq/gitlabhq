@@ -13,7 +13,7 @@ module QA
       end
 
       let(:third_design) do
-        Resource::Design.fabricate! do |design|
+        Resource::Design.fabricate_via_browser_ui! do |design|
           design.issue = second_design.issue
           design.filename = 'testfile.png'
         end
