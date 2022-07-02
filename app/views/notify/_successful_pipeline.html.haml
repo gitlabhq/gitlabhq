@@ -45,12 +45,12 @@
                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
                     %img{ height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-commit-gray.gif'), style: "display:block;", width: "13", alt: "" }/
                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
-                    %a{ href: commit_url(@pipeline), style: "color:#3777b0;text-decoration:none;" }
-                      = @pipeline.short_sha
+                    - commit_link = content_tag(:a, @pipeline.short_sha, href: commit_url(@pipeline), style: "color:#3777b0;text-decoration:none;").html_safe
                     - if @merge_request
-                      in
-                      %a{ href: merge_request_url(@merge_request), style: "color:#3777b0;text-decoration:none;" }
-                        = @merge_request.to_reference
+                      - mr_link = content_tag(:a, @merge_request.to_reference, href: merge_request_url(@merge_request), style: "color:#3777b0;text-decoration:none;").html_safe
+                      = s_('Notify|%{commit_link} in %{mr_link}').html_safe % { commit_link: commit_link, mr_link: mr_link }
+                    - else
+                      = commit_link
             .commit{ style: "color:#5c5c5c;font-weight:300;" }
               = @pipeline.git_commit_message.truncate(50)
         - commit = @pipeline.commit
@@ -94,25 +94,22 @@
     %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;margin:0 auto;" }
       %tbody
         %tr
-          %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;font-weight:500;line-height:1.4;vertical-align:baseline;" }
-            Pipeline
-            %a{ href: pipeline_url(@pipeline), style: "color:#3777b0;text-decoration:none;" }
-              = "\##{@pipeline.id}"
-            triggered by
+          - common_style = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;"
+          - pipeline_link = content_tag(:a, "\##{@pipeline.id}", href: pipeline_url(@pipeline), style: "color:#3777b0;text-decoration:none;").html_safe
+          %td{ style: "#{common_style} font-weight:500;vertical-align:baseline;" }
+            = s_('Notify|Pipeline %{pipeline_link} triggered by').html_safe % { pipeline_link: pipeline_link }
           - if @pipeline.user
-            %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;padding-left:5px", width: "24" }
+            %td{ style: "#{common_style} font-weight:500;vertical-align:middle;padding-right:5px;padding-left:5px", width: "24" }
               %img.avatar{ height: "24", src: avatar_icon_for_user(@pipeline.user, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "" }/
-            %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;font-weight:500;line-height:1.4;vertical-align:baseline;" }
+            %td{ style: "#{common_style} vertical-align:baseline;" }
               %a.muted{ href: user_url(@pipeline.user), style: "color:#333333;text-decoration:none;" }
                 = @pipeline.user.name
           - else
             %td{ style: "font-family:'Menlo','Liberation Mono','Consolas','DejaVu Sans Mono','Ubuntu Mono','Courier New','andale mono','lucida console',monospace;font-size:14px;line-height:1.4;vertical-align:baseline;padding:0 5px;" }
-              API
+              = _('API')
+
 %tr
   %td{ colspan: 2, style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#333333;font-size:15px;font-weight:300;line-height:1.4;padding:15px 5px;text-align:center;" }
     - job_count = @pipeline.total_size
     - stage_count = @pipeline.stages_count
-    successfully completed
-    #{job_count} #{'job'.pluralize(job_count)}
-    in
-    #{stage_count} #{'stage'.pluralize(stage_count)}.
+    = s_('Notify|successfully completed %{jobs} in %{stages}.').html_safe % { jobs: n_('%d job', '%d jobs', job_count) % job_count, stages: n_('%d stage', '%d stages', stage_count) % stage_count }

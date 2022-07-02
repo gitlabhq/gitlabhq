@@ -288,6 +288,11 @@ msgid_plural "%d issues successfully imported with the label"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d job"
+msgid_plural "%d jobs"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d layer"
 msgid_plural "%d layers"
 msgstr[0] ""
@@ -370,6 +375,11 @@ msgstr[1] ""
 
 msgid "%d second"
 msgid_plural "%d seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d stage"
+msgid_plural "%d stages"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -26386,6 +26396,9 @@ msgstr ""
 msgid "Notify|%{author_link}'s issue %{issue_reference_link} is due soon."
 msgstr ""
 
+msgid "Notify|%{commit_link} in %{mr_link}"
+msgstr ""
+
 msgid "Notify|Assignee changed from %{fromNames} to %{toNames}"
 msgstr ""
 
@@ -26422,6 +26435,9 @@ msgstr ""
 msgid "Notify|New issue: %{project_issue_url}"
 msgstr ""
 
+msgid "Notify|Pipeline %{pipeline_link} triggered by"
+msgstr ""
+
 msgid "Notify|This issue is due on: %{issue_due_date}"
 msgstr ""
 
@@ -26429,6 +26445,9 @@ msgid "Notify|Unless you verify your domain by %{time_start}%{time}%{time_end} i
 msgstr ""
 
 msgid "Notify|You don't have access to the project."
+msgstr ""
+
+msgid "Notify|successfully completed %{jobs} in %{stages}."
 msgstr ""
 
 msgid "Nov"
