@@ -289,6 +289,10 @@ RSpec.configure do |config|
       stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
       stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
 
+      # It's disabled in specs because we don't support certain features which
+      # cause spec failures.
+      stub_feature_flags(use_click_house_database_for_error_tracking: false)
+
       enable_rugged = example.metadata[:enable_rugged].present?
 
       # Disable Rugged features by default

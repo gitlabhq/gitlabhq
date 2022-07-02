@@ -15,7 +15,12 @@ module Gitlab
       #
       # @return [self]
       def self.build(project)
-        strategy = ActiveRecordStrategy.new(project)
+        strategy =
+          if Feature.enabled?(:use_click_house_database_for_error_tracking, project)
+            OpenApiStrategy.new(project)
+          else
+            ActiveRecordStrategy.new(project)
+          end
 
         new(strategy)
       end
@@ -72,14 +77,15 @@ module Gitlab
       # @param sort [String] order list by 'first_seen', 'last_seen', or 'frequency'
       # @param filters [Hash<Symbol, String>] filter list by
       # @option filters [String] :status error status
+      # @params query [String, nil] free text search
       # @param limit [Integer, String] limit result
       # @param cursor [Hash] pagination information
       #
       # @return [Array<Array<Gitlab::ErrorTracking::Error>, Pagination>]
-      def list_errors(sort: 'last_seen', filters: {}, limit: 20, cursor: {})
+      def list_errors(sort: 'last_seen', filters: {}, query: nil, limit: 20, cursor: {})
         limit = [limit.to_i, 100].min
 
-        strategy.list_errors(filters: filters, sort: sort, limit: limit, cursor: cursor)
+        strategy.list_errors(filters: filters, query: query, sort: sort, limit: limit, cursor: cursor)
       end
 
       # Fetches last event for error +id+.
@@ -103,6 +109,10 @@ module Gitlab
       # @raise [DatabaseError] if generic error occurred
       def update_error(id, status:)
         strategy.update_error(id, status: status)
+      end
+
+      def dsn_url(public_key)
+        strategy.dsn_url(public_key)
       end
 
       private

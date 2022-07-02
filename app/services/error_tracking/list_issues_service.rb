@@ -75,6 +75,7 @@ module ErrorTracking
         # For now we implement the bare minimum for rendering the list in UI.
         list_opts = {
           filters: { status: opts[:issue_status] },
+          query: opts[:search_term],
           sort: opts[:sort],
           limit: opts[:limit],
           cursor: opts[:cursor]

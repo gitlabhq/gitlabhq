@@ -549,3 +549,7 @@ gem 'parslet', '~> 1.8'
 gem 'ipynbdiff', path: 'vendor/gems/ipynbdiff'
 
 gem 'ed25519', '~> 1.3.0'
+
+# Error Tracking OpenAPI client
+# See https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/rake_tasks.md#update-openapi-client-for-error-tracking-feature
+gem 'error_tracking_open_api', path: 'vendor/gems/error_tracking_open_api'

@@ -1,4 +1,10 @@
 PATH
+  remote: vendor/gems/error_tracking_open_api
+  specs:
+    error_tracking_open_api (1.0.0)
+      typhoeus (~> 1.0, >= 1.0.1)
+
+PATH
   remote: vendor/gems/ipynbdiff
   specs:
     ipynbdiff (0.4.7)
@@ -1520,6 +1526,7 @@ DEPENDENCIES
   elasticsearch-rails (~> 7.2)
   email_reply_trimmer (~> 0.1)
   email_spec (~> 2.2.0)
+  error_tracking_open_api!
   erubi (~> 1.9.0)
   escape_utils (~> 1.1)
   factory_bot_rails (~> 6.2.0)

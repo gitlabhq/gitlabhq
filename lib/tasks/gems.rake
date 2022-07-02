@@ -55,6 +55,8 @@ namespace :gems do
       write_file(gem_dir / 'LICENSE', license)
       write_file(gem_dir / "#{gem_name}.gemspec") do |content|
         replace_string(content, 'Unlicense', 'MIT')
+        replace_string(content, /(\.files\s*=).*/, '\1 Dir.glob("lib/**/*")')
+        replace_string(content, /(\.test_files\s*=).*/, '\1 []')
       end
 
       remove_entry_secure(gem_dir / '.rubocop.yml')

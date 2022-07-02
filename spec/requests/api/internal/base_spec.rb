@@ -63,6 +63,11 @@ RSpec.describe API::Internal::Base do
       post api('/internal/error_tracking/allowed'), params: params, headers: headers
     end
 
+    before do
+      # Because the feature flag is disabled in specs we have to enable it explicitly.
+      stub_feature_flags(use_click_house_database_for_error_tracking: true)
+    end
+
     context 'when the secret header is missing' do
       let(:headers) { {} }
 
