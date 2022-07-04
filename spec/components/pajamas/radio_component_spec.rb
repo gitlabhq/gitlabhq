@@ -13,7 +13,7 @@ RSpec.describe Pajamas::RadioComponent, :aggregate_failures, type: :component do
 
   RSpec.shared_examples 'it renders unchecked radio' do
     it 'renders unchecked radio' do
-      expect(rendered_component).to have_unchecked_field(label)
+      expect(page).to have_unchecked_field(label)
     end
   end
 
@@ -58,11 +58,11 @@ RSpec.describe Pajamas::RadioComponent, :aggregate_failures, type: :component do
     include_examples 'it renders help text'
 
     it 'renders checked radio' do
-      expect(rendered_component).to have_checked_field(label, class: radio_options[:class])
+      expect(page).to have_checked_field(label, class: radio_options[:class])
     end
 
     it 'adds CSS class to label' do
-      expect(rendered_component).to have_selector('label.label-foo-bar')
+      expect(page).to have_selector('label.label-foo-bar')
     end
   end
 

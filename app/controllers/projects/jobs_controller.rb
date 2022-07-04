@@ -5,14 +5,14 @@ class Projects::JobsController < Projects::ApplicationController
   include ContinueParams
   include ProjectStatsRefreshConflictsGuard
 
-  urgency :low, [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :status, :erase, :raw]
+  urgency :low, [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :erase, :raw]
 
   before_action :find_job_as_build, except: [:index, :play, :show]
   before_action :find_job_as_processable, only: [:play, :show]
   before_action :authorize_read_build_trace!, only: [:trace, :raw]
   before_action :authorize_read_build!
   before_action :authorize_update_build!,
-    except: [:index, :show, :status, :raw, :trace, :erase, :cancel, :unschedule]
+    except: [:index, :show, :raw, :trace, :erase, :cancel, :unschedule]
   before_action :authorize_erase_build!, only: [:erase]
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
@@ -122,12 +122,6 @@ class Projects::JobsController < Projects::ApplicationController
     else
       head service_response.http_status
     end
-  end
-
-  def status
-    render json: Ci::JobSerializer
-      .new(project: @project, current_user: @current_user)
-      .represent_status(@build.present(current_user: current_user))
   end
 
   def erase

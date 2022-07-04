@@ -752,28 +752,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe 'GET status.json' do
-    let(:job) { create(:ci_build, pipeline: pipeline) }
-    let(:status) { job.detailed_status(double('user')) }
-
-    before do
-      get :status, params: {
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: job.id
-                   },
-                   format: :json
-    end
-
-    it 'return a detailed job status in json' do
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['text']).to eq status.text
-      expect(json_response['label']).to eq status.label
-      expect(json_response['icon']).to eq status.icon
-      expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.png"
-    end
-  end
-
   describe 'POST retry' do
     before do
       project.add_developer(user)

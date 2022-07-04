@@ -10,7 +10,7 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
 
   RSpec.shared_examples 'it renders unchecked checkbox with value of `1`' do
     it 'renders unchecked checkbox with value of `1`' do
-      expect(rendered_component).to have_unchecked_field(label, with: '1')
+      expect(page).to have_unchecked_field(label, with: '1')
     end
   end
 
@@ -31,7 +31,7 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
     include_examples 'it does not render help text'
 
     it 'renders hidden input with value of `0`' do
-      expect(rendered_component).to have_field('user[view_diffs_file_by_file]', type: 'hidden', with: '0')
+      expect(page).to have_field('user[view_diffs_file_by_file]', type: 'hidden', with: '0')
     end
   end
 
@@ -61,15 +61,15 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
     include_examples 'it renders help text'
 
     it 'renders checked checkbox with value of `yes`' do
-      expect(rendered_component).to have_checked_field(label, with: checked_value, class: checkbox_options[:class])
+      expect(page).to have_checked_field(label, with: checked_value, class: checkbox_options[:class])
     end
 
     it 'adds CSS class to label' do
-      expect(rendered_component).to have_selector('label.label-foo-bar')
+      expect(page).to have_selector('label.label-foo-bar')
     end
 
     it 'renders hidden input with value of `no`' do
-      expect(rendered_component).to have_field('user[view_diffs_file_by_file]', type: 'hidden', with: unchecked_value)
+      expect(page).to have_field('user[view_diffs_file_by_file]', type: 'hidden', with: unchecked_value)
     end
   end
 

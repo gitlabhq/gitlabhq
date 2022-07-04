@@ -180,7 +180,6 @@ export default {
       <gl-dropdown-item
         v-for="group in groups"
         :key="`${group.id}${group.name}`"
-        fingerprint
         data-testid="group-dropdown-item"
         :avatar-url="group.avatar_url"
         is-check-item

@@ -7,10 +7,8 @@
 .cells.0.source.3
 
 
-.cells.0.outputs.0
+.cells.0.outputs
 
 .cells.0.outputs.0.data.text/plain.0
-
-.cells.0.outputs.1
 
 .cells.0.outputs.1.data.image/png

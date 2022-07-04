@@ -1207,22 +1207,4 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       it { expect(page.status_code).to eq(404) }
     end
   end
-
-  describe "GET /:project/jobs/:id/status" do
-    context "Job from project" do
-      before do
-        visit status_project_job_path(project, job)
-      end
-
-      it { expect(page.status_code).to eq(200) }
-    end
-
-    context "Job from other project" do
-      before do
-        visit status_project_job_path(project, job2)
-      end
-
-      it { expect(page.status_code).to eq(404) }
-    end
-  end
 end

@@ -19,25 +19,14 @@ module IpynbDiff
     end
 
     def transform(output, symbol)
-      transformed = case (output_type = output['output_type'])
-                    when 'error'
-                      transform_error(output['traceback'], symbol / 'traceback')
-                    when 'execute_result', 'display_data'
-                      transform_non_error(ORDERED_KEYS[output_type], output['data'], symbol / 'data')
-                    when 'stream'
-                      transform_element('text', output['text'], symbol)
-                    end
-
-      transformed ? decorate_output(transformed, output, symbol) : []
-    end
-
-    def decorate_output(output_rows, output, symbol)
-      [
-        _,
-        _(symbol, %(%%%% Output: #{output['output_type']})),
-        _,
-        *output_rows
-      ]
+      case (output_type = output['output_type'])
+      when 'error'
+        transform_error(output['traceback'], symbol / 'traceback')
+      when 'execute_result', 'display_data'
+        transform_non_error(ORDERED_KEYS[output_type], output['data'], symbol / 'data')
+      when 'stream'
+        transform_element('text', output['text'], symbol)
+      end
     end
 
     def transform_error(traceback, symbol)

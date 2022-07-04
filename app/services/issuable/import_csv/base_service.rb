@@ -23,7 +23,8 @@ module Issuable
         with_csv_lines.each do |row, line_no|
           issuable_attributes = {
             title:       row[:title],
-            description: row[:description]
+            description: row[:description],
+            due_date:    row[:due_date]
           }
 
           if create_issuable(issuable_attributes).persisted?

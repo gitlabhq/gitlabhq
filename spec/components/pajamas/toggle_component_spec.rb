@@ -8,31 +8,31 @@ RSpec.describe Pajamas::ToggleComponent, type: :component do
     end
 
     it 'renders a toggle container with provided class' do
-      expect(rendered_component).to have_selector "[class='js-feature-toggle']"
+      expect(page).to have_selector "[class='js-feature-toggle']"
     end
 
     it 'does not set a name' do
-      expect(rendered_component).not_to have_selector('[data-name]')
+      expect(page).not_to have_selector('[data-name]')
     end
 
     it 'sets default is-checked attributes' do
-      expect(rendered_component).to have_selector('[data-is-checked="false"]')
+      expect(page).to have_selector('[data-is-checked="false"]')
     end
 
     it 'sets default disabled attributes' do
-      expect(rendered_component).to have_selector('[data-disabled="false"]')
+      expect(page).to have_selector('[data-disabled="false"]')
     end
 
     it 'sets default is-loading attributes' do
-      expect(rendered_component).to have_selector('[data-is-loading="false"]')
+      expect(page).to have_selector('[data-is-loading="false"]')
     end
 
     it 'does not set a label' do
-      expect(rendered_component).not_to have_selector('[data-label]')
+      expect(page).not_to have_selector('[data-label]')
     end
 
     it 'does not set a label position' do
-      expect(rendered_component).not_to have_selector('[data-label-position]')
+      expect(page).not_to have_selector('[data-label-position]')
     end
   end
 
@@ -52,35 +52,35 @@ RSpec.describe Pajamas::ToggleComponent, type: :component do
     end
 
     it 'sets the custom class' do
-      expect(rendered_component).to have_selector('.js-custom-gl-toggle')
+      expect(page).to have_selector('.js-custom-gl-toggle')
     end
 
     it 'sets the custom name' do
-      expect(rendered_component).to have_selector('[data-name="toggle-name"]')
+      expect(page).to have_selector('[data-name="toggle-name"]')
     end
 
     it 'sets the custom is-checked attributes' do
-      expect(rendered_component).to have_selector('[data-is-checked="true"]')
+      expect(page).to have_selector('[data-is-checked="true"]')
     end
 
     it 'sets the custom disabled attributes' do
-      expect(rendered_component).to have_selector('[data-disabled="true"]')
+      expect(page).to have_selector('[data-disabled="true"]')
     end
 
     it 'sets the custom is-loading attributes' do
-      expect(rendered_component).to have_selector('[data-is-loading="true"]')
+      expect(page).to have_selector('[data-is-loading="true"]')
     end
 
     it 'sets the custom label' do
-      expect(rendered_component).to have_selector('[data-label="Custom label"]')
+      expect(page).to have_selector('[data-label="Custom label"]')
     end
 
     it 'sets the custom label position' do
-      expect(rendered_component).to have_selector('[data-label-position="top"]')
+      expect(page).to have_selector('[data-label-position="top"]')
     end
 
     it 'sets custom data attributes' do
-      expect(rendered_component).to have_selector('[data-foo="bar"]')
+      expect(page).to have_selector('[data-foo="bar"]')
     end
   end
 
@@ -101,7 +101,7 @@ RSpec.describe Pajamas::ToggleComponent, type: :component do
     end
 
     with_them do
-      it { expect(rendered_component).to have_selector("[data-label-position='#{position}']", count: count) }
+      it { expect(page).to have_selector("[data-label-position='#{position}']", count: count) }
     end
   end
 end

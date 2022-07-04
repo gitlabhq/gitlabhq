@@ -171,7 +171,7 @@ Our current RSpec tests parallelization setup is as follows:
 1. The `retrieve-tests-metadata` job in the `prepare` stage ensures we have a
    `knapsack/report-master.json` file:
    - The `knapsack/report-master.json` file is fetched from the latest `main` pipeline which runs `update-tests-metadata`
-     (for now it's the 2-hourly scheduled master pipeline), if it's not here we initialize the file with `{}`.
+     (for now it's the 2-hourly `maintenance` scheduled master pipeline), if it's not here we initialize the file with `{}`.
 1. Each `[rspec|rspec-ee] [migration|unit|integration|system|geo] n m` job are run with
    `knapsack rspec` and should have an evenly distributed share of tests:
    - It works because the jobs have access to the `knapsack/report-master.json`
@@ -305,7 +305,7 @@ If these commands return `undercover: ✅ No coverage is missing in latest chang
 
 Our test suite runs against Ruby 2 in merge requests and default branch pipelines.
 
-We do run our test suite against Ruby 3 on 2-hourly scheduled pipelines, as GitLab.com will soon run on Ruby 3.
+We also run our test suite against Ruby 3 on another 2-hourly scheduled pipelines, as GitLab.com will soon run on Ruby 3.
 
 ## PostgreSQL versions testing
 
@@ -318,12 +318,13 @@ We also run our test suite against PG11 upon specific database library changes i
 
 ### Current versions testing
 
-| Where? | PostgreSQL version |
-| ------ | ------------------ |
-| MRs    | 12, 11 for DB library changes |
-| `main` (non-scheduled pipelines) | 12, 11 for DB library changes |
-| 2-hourly scheduled pipelines | 12, 11 for DB library changes |
-| `nightly` scheduled pipelines | 12, 11, 13 |
+| Where? | PostgreSQL version | Ruby version |
+| ------ | ------------------ | ------------ |
+| Merge requests    | 12 (default version), 11 for DB library changes | 2.7 (default version) |
+| `master` branch commits | 12 (default version), 11 for DB library changes | 2.7 (default version) |
+| `maintenance` scheduled pipelines (every 2 hours at even hour) | 12 (default version), 11 for DB library changes | 2.7 (default version) |
+| `maintenance` scheduled pipelines (every 2 hours at odd hour) | 12 (default version), 11 for DB library changes | 3.0 (set in the schedule variables) |
+| `nightly` scheduled pipelines | 12 (default version), 11, 13 | 2.7 (default version) |
 
 ### Long-term plan
 
@@ -618,7 +619,7 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/yaml_optimizat
 | `if-default-refs`                                            | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
 | `if-master-refs`                                             | Matches if the current branch is `master` or `main`. | |
 | `if-master-push`                                             | Matches if the current branch is `master` or `main` and pipeline source is `push`. | |
-| `if-master-schedule-2-hourly`                                | Matches if the current branch is `master` or `main` and pipeline runs on a 2-hourly schedule. | |
+| `if-master-schedule-maintenance`                                | Matches if the current branch is `master` or `main` and pipeline runs on a 2-hourly schedule. | |
 | `if-master-schedule-nightly`                                 | Matches if the current branch is `master` or `main` and pipeline runs on a nightly schedule. | |
 | `if-auto-deploy-branches`                                    | Matches if the current branch is an auto-deploy one. | |
 | `if-master-or-tag`                                           | Matches if the pipeline is for the `master` or `main` branch or for a tag. | |
@@ -705,7 +706,7 @@ This works well for the following reasons:
    - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
 1. These cache definitions are composed of [multiple atomic caches](../ci/caching/index.md#use-multiple-caches).
-1. Only the following jobs, running in 2-hourly scheduled pipelines, are pushing (that is, updating) to the caches:
+1. Only the following jobs, running in 2-hourly `maintenance` scheduled pipelines, are pushing (that is, updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-gitaly-binaries-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-rubocop-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).

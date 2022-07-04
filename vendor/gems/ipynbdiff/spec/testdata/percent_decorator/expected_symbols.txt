@@ -38,11 +38,9 @@
 .cells.4.source.3
 
 
-.cells.4.outputs.0
+.cells.4.outputs
 
 .cells.4.outputs.0.data.text/plain.0
-
-.cells.4.outputs.1
 
 .cells.4.outputs.1.data.image/png
 
@@ -58,7 +56,7 @@
 .cells.6.source.0
 
 
-.cells.6.outputs.0
+.cells.6.outputs
 
 .cells.6.outputs.0.data.text/plain.0
 .cells.6.outputs.0.data.text/plain.1

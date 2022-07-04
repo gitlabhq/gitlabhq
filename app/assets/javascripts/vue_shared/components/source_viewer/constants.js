@@ -45,6 +45,7 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   haskell: 'haskell',
   haxe: 'haxe',
   http: 'http',
+  html: 'xml',
   hylang: 'hy',
   ini: 'ini',
   isbl: 'isbl',

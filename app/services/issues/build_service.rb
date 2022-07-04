@@ -81,8 +81,9 @@ module Issues
       ::Issue
     end
 
-    def allowed_issue_params
-      allowed_params = [
+    def public_params
+      # Additional params may be assigned later (in a CreateService for example)
+      public_issue_params = [
         :title,
         :description,
         :confidential
@@ -90,17 +91,17 @@ module Issues
 
       params[:work_item_type] = WorkItems::Type.find_by(id: params[:work_item_type_id]) if params[:work_item_type_id].present? # rubocop: disable CodeReuse/ActiveRecord
 
-      allowed_params << :milestone_id if can?(current_user, :admin_issue, project)
-      allowed_params << :issue_type if create_issue_type_allowed?(project, params[:issue_type])
-      allowed_params << :work_item_type if create_issue_type_allowed?(project, params[:work_item_type]&.base_type)
+      public_issue_params << :milestone_id if can?(current_user, :admin_issue, project)
+      public_issue_params << :issue_type if create_issue_type_allowed?(project, params[:issue_type])
+      public_issue_params << :work_item_type if create_issue_type_allowed?(project, params[:work_item_type]&.base_type)
 
-      params.slice(*allowed_params)
+      params.slice(*public_issue_params)
     end
 
     def build_issue_params
       { author: current_user }
         .merge(issue_params_with_info_from_discussions)
-        .merge(allowed_issue_params)
+        .merge(public_params)
         .with_indifferent_access
     end
 

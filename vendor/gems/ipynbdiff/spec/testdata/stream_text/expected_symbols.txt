@@ -4,6 +4,6 @@
 .cells.0.source.0
 
 
-.cells.0.outputs.0
+.cells.0.outputs
 
 .cells.0.outputs.0.text.0

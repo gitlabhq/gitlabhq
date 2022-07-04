@@ -11,4 +11,4 @@
 
 .content_list.project-activity{ :"data-href" => activity_project_path(@project) }
 .loading
-  = gl_loading_icon(size: 'md')
+  = render Pajamas::SpinnerComponent.new(size: :md)

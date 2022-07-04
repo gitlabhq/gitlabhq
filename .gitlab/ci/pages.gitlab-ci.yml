@@ -15,7 +15,7 @@ pages:
     - job: "compile-production-assets"
     - job: "compile-storybook"
     # `update-tests-metadata` only runs on GitLab.com's EE schedules pipelines
-    # while `pages` runs for all the 2-hourly schedules.
+    # while `pages` runs for all the maintenance scheduled pipelines.
     - job: "update-tests-metadata"
       optional: true
   before_script:

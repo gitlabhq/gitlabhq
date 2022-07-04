@@ -7,10 +7,8 @@ y = 2 * np.sin(x)
 plt.plot(x, y)
 ```
 
-%%%% Output: execute_result
+%% Output
 
     [<matplotlib.lines.Line2D at 0x12a4e43d0>]
-
-%%%% Output: display_data
 
     ![](data:image/png;base64,this_is_an_invalid_hash_for_testing_purposes)

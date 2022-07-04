@@ -4,7 +4,7 @@
 df[:2]
 ```
 
-%%%% Output: execute_result
+%% Output
 
               x         y
     0  0.000000  0.000000

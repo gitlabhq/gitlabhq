@@ -1,0 +1,6 @@
+title,description,due date
+Issue in 中文,Test description,
+"Hello","World",
+"Title with quote""","Description
+/assign @csv_assignee
+/estimate 1h",2022-06-28

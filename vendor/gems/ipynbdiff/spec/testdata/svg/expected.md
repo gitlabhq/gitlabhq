@@ -10,10 +10,8 @@ svg = """<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 display(SVG(svg))
 ```
 
-%%%% Output: display_data
+%% Output
 
     ![](data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"/></svg>)
-
-%%%% Output: display_data
 
     ![](data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"/></svg>)

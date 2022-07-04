@@ -4,6 +4,6 @@
 print("G'bye")
 ```
 
-%%%% Output: stream
+%% Output
 
     G'bye

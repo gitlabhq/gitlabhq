@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Lifesize project import test executed from https://gitlab.com/gitlab-org/manage/import/import-metrics
+
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
   RSpec.describe "Manage", requires_admin: 'uses admin API client for resource creation',
@@ -114,6 +116,7 @@ module QA
           {
             importer: :gitlab,
             import_time: @import_time,
+            errors: imported_group.import_details.sum([]) { |details| details[:failures] },
             source: {
               name: "GitLab Source",
               project_name: source_project.path_with_namespace,

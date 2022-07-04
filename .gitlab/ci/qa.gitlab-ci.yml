@@ -73,7 +73,7 @@ populate-qa-tests-var:
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
   stage: prepare
   script:
-    - export QA_TESTS=$(scripts/determine-qa-tests --files $CHANGES_FILE --labels $CI_MERGE_REQUEST_LABELS)
+    - export QA_TESTS=$(scripts/determine-qa-tests --files $CHANGES_FILE --labels "$CI_MERGE_REQUEST_LABELS")
     - 'echo "QA_TESTS=$QA_TESTS" >> qa_tests_var.env'
     - 'echo "QA_TESTS: $QA_TESTS"'
   artifacts:

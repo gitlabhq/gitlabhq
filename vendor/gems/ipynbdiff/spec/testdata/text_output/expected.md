@@ -4,6 +4,6 @@
 plt.plot(x, y)
 ```
 
-%%%% Output: execute_result
+%% Output
 
     [<matplotlib.lines.Line2D at 0x12a4e43d0>]

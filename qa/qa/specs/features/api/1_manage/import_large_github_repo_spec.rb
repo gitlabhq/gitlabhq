@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
+# Lifesize project import test executed from https://gitlab.com/gitlab-org/manage/import/import-metrics
+
 # rubocop:disable Rails/Pluck
 module QA
-  # Only executes in custom job/pipeline
-  # https://gitlab.com/gitlab-org/manage/import/import-github-performance
-  #
   RSpec.describe 'Manage', :github, :requires_admin, only: { job: 'large-github-import' } do
     describe 'Project import' do
       let(:logger) { Runtime::Logger.logger }
@@ -108,7 +107,6 @@ module QA
 
       # rubocop:disable RSpec/InstanceVariable
       after do |example|
-        user.remove_via_api! unless example.exception
         next unless defined?(@import_time)
 
         # save data for comparison notification creation
@@ -117,6 +115,7 @@ module QA
           {
             importer: :github,
             import_time: @import_time,
+            errors: imported_project.project_import_status[:failed_relations],
             reported_stats: @stats,
             source: {
               name: "GitHub",

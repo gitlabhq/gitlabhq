@@ -1,0 +1,8 @@
+---
+name: web_hooks_no_rate_limit
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90868
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366084
+milestone: '15.2'
+type: development
+group: group::integrations
+default_enabled: false

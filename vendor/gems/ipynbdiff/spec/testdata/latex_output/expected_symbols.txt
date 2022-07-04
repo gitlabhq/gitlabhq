@@ -5,6 +5,6 @@
 .cells.0.source.1
 
 
-.cells.0.outputs.0
+.cells.0.outputs
 
 .cells.0.outputs.0.data.text/latex.0

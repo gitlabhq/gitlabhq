@@ -20,7 +20,7 @@ review-build-cng-env:
   extends:
     - .default-retry
     - .review:rules:review-build-cng
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}-alpine3.13
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:3.0-alpine3.13
   stage: prepare
   needs: []
   before_script:
@@ -79,7 +79,7 @@ review-build-cng:
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
     GITLAB_HELM_CHART_REF: "a6a609a19166f00b1a7774374041cd38a9f7e20d"
   environment:
-    name: review/${CI_COMMIT_REF_SLUG}${FREQUENCY}
+    name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
     auto_stop_in: 48 hours

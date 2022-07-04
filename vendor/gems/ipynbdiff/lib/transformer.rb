@@ -20,7 +20,7 @@ module IpynbDiff
     def initialize(include_frontmatter: true, hide_images: false)
       @include_frontmatter = include_frontmatter
       @hide_images = hide_images
-      @output_transformer = OutputTransformer.new(hide_images: hide_images)
+      @out_transformer = OutputTransformer.new(hide_images: hide_images)
     end
 
     def validate_notebook(notebook)
@@ -75,9 +75,19 @@ module IpynbDiff
         _(symbol / 'source', %(``` #{notebook.dig('metadata', 'kernelspec', 'language') || ''})),
         symbolize_array(symbol / 'source', cell['source'], &:rstrip),
         _(nil, '```'),
-        cell['outputs'].map.with_index do |output, idx|
-          @output_transformer.transform(output, symbol / ['outputs', idx])
-        end
+        transform_outputs(cell['outputs'], symbol)
+      ]
+    end
+
+    def transform_outputs(outputs, symbol)
+      transformed = outputs.map
+                           .with_index { |output, i| @out_transformer.transform(output, symbol / ['outputs', i]) }
+                           .compact
+                           .map { |el| [_, el] }
+
+      [
+        transformed.empty? ? [] : [_, _(symbol / 'outputs', '%% Output')],
+        transformed
       ]
     end
 

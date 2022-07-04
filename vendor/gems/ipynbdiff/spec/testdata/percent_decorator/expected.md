@@ -38,11 +38,9 @@ y = np.sin(x)
 plt.plot(x, y)
 ```
 
-%%%% Output: execute_result
+%% Output
 
     [<matplotlib.lines.Line2D at 0x123e39370>]
-
-%%%% Output: display_data
 
     ![](data:image/png;base64,some_invalid_base64_image_here)
 
@@ -58,7 +56,7 @@ df = pd.DataFrame({"x": x, "y": y})
 df[:2]
 ```
 
-%%%% Output: execute_result
+%% Output
 
               x         y
     0  0.000000  0.000000

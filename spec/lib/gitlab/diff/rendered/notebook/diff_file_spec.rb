@@ -144,7 +144,7 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
 
     context 'has image' do
       it 'replaces rich text with img to the embedded image' do
-        expect(nb_file.highlighted_diff_lines[58].rich_text).to include('<img')
+        expect(nb_file.highlighted_diff_lines[56].rich_text).to include('<img')
       end
 
       it 'adds image to src' do
@@ -159,11 +159,11 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
       let(:commit) { project.commit("4963fefc990451a8ad34289ce266b757456fc88c") }
 
       it 'prevents injected html to be rendered as html' do
-        expect(nb_file.highlighted_diff_lines[45].rich_text).not_to include('<div>Hello')
+        expect(nb_file.highlighted_diff_lines[43].rich_text).not_to include('<div>Hello')
       end
 
       it 'keeps the injected html as part of the string' do
-        expect(nb_file.highlighted_diff_lines[45].rich_text).to end_with('/div&gt;">')
+        expect(nb_file.highlighted_diff_lines[43].rich_text).to end_with('/div&gt;">')
       end
     end
   end

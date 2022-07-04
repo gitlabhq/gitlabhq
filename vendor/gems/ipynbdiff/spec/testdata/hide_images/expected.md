@@ -3,10 +3,8 @@
 ``` python
 ```
 
-%%%% Output: display_data
+%% Output
 
     [Hidden Image Output]
-
-%%%% Output: display_data
 
     [Hidden Image Output]

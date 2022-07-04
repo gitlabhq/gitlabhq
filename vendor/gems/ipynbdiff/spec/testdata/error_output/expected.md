@@ -5,7 +5,7 @@
 y = sin(x)
 ```
 
-%%%% Output: error
+%% Output
 
     ---------------------------------------------------------------------------
     NameError                                 Traceback (most recent call last)

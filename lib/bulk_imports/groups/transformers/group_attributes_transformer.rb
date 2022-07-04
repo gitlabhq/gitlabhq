@@ -7,16 +7,35 @@ module BulkImports
         def transform(context, data)
           import_entity = context.entity
 
+          if import_entity.destination_namespace.present?
+            namespace = Namespace.find_by_full_path(import_entity.destination_namespace)
+          end
+
           data
+            .then { |data| transform_name(import_entity, namespace, data) }
             .then { |data| transform_path(import_entity, data) }
             .then { |data| transform_full_path(data) }
-            .then { |data| transform_parent(context, import_entity, data) }
+            .then { |data| transform_parent(context, import_entity, namespace, data) }
             .then { |data| transform_visibility_level(data) }
             .then { |data| transform_project_creation_level(data) }
             .then { |data| transform_subgroup_creation_level(data) }
         end
 
         private
+
+        def transform_name(import_entity, namespace, data)
+          if namespace.present?
+            namespace_children_names = namespace.children.pluck(:name) # rubocop: disable CodeReuse/ActiveRecord
+
+            if namespace_children_names.include?(data['name'])
+              data['name'] = Uniquify.new(1).string(-> (counter) { "#{data['name']}(#{counter})" }) do |base|
+                namespace_children_names.include?(base)
+              end
+            end
+          end
+
+          data
+        end
 
         def transform_path(import_entity, data)
           data['path'] = import_entity.destination_name.parameterize
@@ -28,11 +47,8 @@ module BulkImports
           data
         end
 
-        def transform_parent(context, import_entity, data)
-          unless import_entity.destination_namespace.blank?
-            namespace = Namespace.find_by_full_path(import_entity.destination_namespace)
-            data['parent_id'] = namespace.id
-          end
+        def transform_parent(context, import_entity, namespace, data)
+          data['parent_id'] = namespace.id if namespace.present?
 
           data
         end

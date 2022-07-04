@@ -19,22 +19,22 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
     end
 
     it 'renders its content' do
-      expect(rendered_component).to have_text content
+      expect(page).to have_text content
     end
 
     it 'renders its title' do
-      expect(rendered_component).to have_css "h1[class='gl-banner-title']", text: title
+      expect(page).to have_css "h1[class='gl-banner-title']", text: title
     end
 
     it 'renders a close button' do
-      expect(rendered_component).to have_css "button.gl-banner-close"
+      expect(page).to have_css "button.gl-banner-close"
     end
 
     describe 'button_text and button_link' do
       let(:options) { { button_text: 'Learn more', button_link: '/learn-more' } }
 
       it 'define the primary action' do
-        expect(rendered_component).to have_css "a.btn-confirm.gl-button[href='/learn-more']", text: 'Learn more'
+        expect(page).to have_css "a.btn-confirm.gl-button[href='/learn-more']", text: 'Learn more'
       end
     end
 
@@ -42,14 +42,14 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
       let(:options) { { banner_options: { class: "baz", data: { foo: "bar" } } } }
 
       it 'are on the banner' do
-        expect(rendered_component).to have_css ".gl-banner.baz[data-foo='bar']"
+        expect(page).to have_css ".gl-banner.baz[data-foo='bar']"
       end
 
       context 'with custom classes' do
         let(:options) { { variant: :introduction, banner_options: { class: 'extra special' } } }
 
         it 'don\'t conflict with internal banner_classes' do
-          expect(rendered_component).to have_css '.extra.special.gl-banner-introduction.gl-banner'
+          expect(page).to have_css '.extra.special.gl-banner-introduction.gl-banner'
         end
       end
     end
@@ -58,14 +58,14 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
       let(:options) { { close_options: { class: "js-foo", data: { uid: "123" } } } }
 
       it 'are on the close button' do
-        expect(rendered_component).to have_css "button.gl-banner-close.js-foo[data-uid='123']"
+        expect(page).to have_css "button.gl-banner-close.js-foo[data-uid='123']"
       end
     end
 
     describe 'embedded' do
       context 'by default (false)' do
         it 'keeps the banner\'s borders' do
-          expect(rendered_component).not_to have_css ".gl-banner.gl-border-none"
+          expect(page).not_to have_css ".gl-banner.gl-border-none"
         end
       end
 
@@ -73,7 +73,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
         let(:options) { { embedded: true } }
 
         it 'removes the banner\'s borders' do
-          expect(rendered_component).to have_css ".gl-banner.gl-border-none"
+          expect(page).to have_css ".gl-banner.gl-border-none"
         end
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
     describe 'variant' do
       context 'by default (promotion)' do
         it 'applies no variant class' do
-          expect(rendered_component).to have_css "[class='gl-banner']"
+          expect(page).to have_css "[class='gl-banner']"
         end
       end
 
@@ -89,11 +89,11 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
         let(:options) { { variant: :introduction } }
 
         it "applies the introduction class to the banner" do
-          expect(rendered_component).to have_css ".gl-banner.gl-banner-introduction"
+          expect(page).to have_css ".gl-banner.gl-banner-introduction"
         end
 
         it "applies the confirm class to the close button" do
-          expect(rendered_component).to have_css ".gl-banner-close.btn-confirm.btn-confirm-tertiary"
+          expect(page).to have_css ".gl-banner-close.btn-confirm.btn-confirm-tertiary"
         end
       end
 
@@ -101,21 +101,21 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
         let(:options) { { variant: :foobar } }
 
         it 'ignores the unknown variant' do
-          expect(rendered_component).to have_css "[class='gl-banner']"
+          expect(page).to have_css "[class='gl-banner']"
         end
       end
     end
 
     describe 'illustration' do
       it 'has none by default' do
-        expect(rendered_component).not_to have_css ".gl-banner-illustration"
+        expect(page).not_to have_css ".gl-banner-illustration"
       end
 
       context 'with svg_path' do
         let(:options) { { svg_path: 'logo.svg' } }
 
         it 'renders an image as illustration' do
-          expect(rendered_component).to have_css ".gl-banner-illustration img"
+          expect(page).to have_css ".gl-banner-illustration img"
         end
       end
     end
@@ -131,15 +131,15 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
     end
 
     it 'renders the slot content as illustration' do
-      expect(rendered_component).to have_css ".gl-banner-illustration svg"
+      expect(page).to have_css ".gl-banner-illustration svg"
     end
 
     context 'and conflicting svg_path' do
       let(:options) { { svg_path: 'logo.svg' } }
 
       it 'uses the slot content' do
-        expect(rendered_component).to have_css ".gl-banner-illustration svg"
-        expect(rendered_component).not_to have_css ".gl-banner-illustration img"
+        expect(page).to have_css ".gl-banner-illustration svg"
+        expect(page).not_to have_css ".gl-banner-illustration img"
       end
     end
   end
@@ -154,15 +154,15 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
     end
 
     it 'renders the slot content as the primary action' do
-      expect(rendered_component).to have_css "a.special", text: 'Special'
+      expect(page).to have_css "a.special", text: 'Special'
     end
 
     context 'and conflicting button_text and button_link' do
       let(:options) { { button_text: 'Not special', button_link: '/' } }
 
       it 'uses the slot content' do
-        expect(rendered_component).to have_css "a.special[href='#']", text: 'Special'
-        expect(rendered_component).not_to have_css "a.btn[href='/']"
+        expect(page).to have_css "a.special[href='#']", text: 'Special'
+        expect(page).not_to have_css "a.btn[href='/']"
       end
     end
   end

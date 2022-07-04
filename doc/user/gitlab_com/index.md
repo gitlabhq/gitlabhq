@@ -230,11 +230,23 @@ also load certain page content directly from common public CDN hostnames.
 
 ## Webhooks
 
-The following limits apply for [webhooks](../project/integrations/webhooks.md):
+The following limits apply for [webhooks](../project/integrations/webhooks.md).
+
+### Rate limits
+
+The number of times a webhook can be called per minute, per top-level namespace.
+The limit varies depending on your plan and the number of seats in your subscription.
+
+| Plan              | Default for GitLab.com  |
+|----------------------|-------------------------|
+| Free    | `500` |
+| Premium | `99` seats or fewer: `1,600`<br>`100-399` seats: `2,800`<br>`400` seats or more: `4,000` |
+| Ultimate and open source |`999` seats or fewer: `6,000`<br>`1,000-4,999` seats: `9,000`<br>`5,000` seats or more: `13,000` |
+
+### Other limits
 
 | Setting              | Default for GitLab.com  |
 |----------------------|-------------------------|
-| Webhook rate limit   | `500` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate. Webhook rate limits are applied per top-level namespace. |
 | Number of webhooks   | `100` per project, `50` per group |
 | Maximum payload size | 25 MB                   |
 
