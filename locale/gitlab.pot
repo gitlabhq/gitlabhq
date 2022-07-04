@@ -11484,6 +11484,9 @@ msgstr ""
 msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
+msgid "DORA4Metrics|Change failure rate"
+msgstr ""
+
 msgid "DORA4Metrics|Date"
 msgstr ""
 
@@ -11515,6 +11518,15 @@ msgid "DORA4Metrics|No merge requests were deployed during this period"
 msgstr ""
 
 msgid "DORA4Metrics|Number of deployments"
+msgstr ""
+
+msgid "DORA4Metrics|Number of incidents divided by the number of deployments to a production environment in the given time period."
+msgstr ""
+
+msgid "DORA4Metrics|Percentage of failed deployments"
+msgstr ""
+
+msgid "DORA4Metrics|Something went wrong while getting change failure rate data."
 msgstr ""
 
 msgid "DORA4Metrics|Something went wrong while getting deployment frequency data."
@@ -18002,6 +18014,9 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
+msgid "Group \"%{group_name}\" was successfully updated."
+msgstr ""
+
 msgid "Group %{group_name} couldn't be exported."
 msgstr ""
 
@@ -18440,6 +18455,9 @@ msgstr ""
 msgid "GroupSettings|Auto DevOps pipeline was updated for the group"
 msgstr ""
 
+msgid "GroupSettings|Automatically ban users who download more than the specified number of projects within the specified interval."
+msgstr ""
+
 msgid "GroupSettings|Available only on the top-level group. Applies to all subgroups. Groups already shared with a group outside %{group} are still shared unless removed manually."
 msgstr ""
 
@@ -18497,7 +18515,13 @@ msgstr ""
 msgid "GroupSettings|If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
 msgstr ""
 
+msgid "GroupSettings|Interval (seconds)"
+msgstr ""
+
 msgid "GroupSettings|Members cannot invite groups outside of %{group} and its subgroups"
+msgstr ""
+
+msgid "GroupSettings|Number of projects"
 msgstr ""
 
 msgid "GroupSettings|Organizations and contacts can be created and associated with issues."
@@ -18518,7 +18542,13 @@ msgstr ""
 msgid "GroupSettings|Prevent forking setting was not saved"
 msgstr ""
 
+msgid "GroupSettings|Project download rate limit"
+msgstr ""
+
 msgid "GroupSettings|Projects in %{group} cannot be shared with other groups"
+msgstr ""
+
+msgid "GroupSettings|Reporting"
 msgstr ""
 
 msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
@@ -18539,7 +18569,13 @@ msgstr ""
 msgid "GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group."
 msgstr ""
 
+msgid "GroupSettings|Set to 0 to disable limiting."
+msgstr ""
+
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
+msgstr ""
+
+msgid "GroupSettings|The maximum number of unique projects a user can download within the specified interval before they're banned. Set to 0 to disable limiting."
 msgstr ""
 
 msgid "GroupSettings|The projects in this subgroup can be selected as templates for new projects created in the group. %{link_start}Learn more.%{link_end}"
@@ -35846,9 +35882,6 @@ msgstr ""
 msgid "Showing all issues"
 msgstr ""
 
-msgid "Showing data for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
-msgstr ""
-
 msgid "Showing data for workflow items created in this date range. Date range limited to %{maxDateRange} days."
 msgstr ""
 
@@ -35862,6 +35895,9 @@ msgid "Showing latest version"
 msgstr ""
 
 msgid "Showing version #%{versionNumber}"
+msgstr ""
+
+msgid "Shows issues and %{labels_count} labels for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
 msgstr ""
 
 msgid "Side-by-side"
@@ -37160,6 +37196,9 @@ msgstr ""
 msgid "Subscribes to this %{quick_action_target}."
 msgstr ""
 
+msgid "Subscript"
+msgstr ""
+
 msgid "Subscription"
 msgstr ""
 
@@ -37637,6 +37676,9 @@ msgid "SuperSonics|future subscriptions"
 msgstr ""
 
 msgid "SuperSonics|past subscriptions"
+msgstr ""
+
+msgid "Superscript"
 msgstr ""
 
 msgid "Support"

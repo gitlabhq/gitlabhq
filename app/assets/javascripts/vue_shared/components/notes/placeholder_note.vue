@@ -16,17 +16,17 @@
  *   :note="{body: 'This is a note'}"
  *   />
  */
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlSafeHtmlDirective as SafeHtml, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { renderMarkdown } from '~/notes/utils';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import userAvatarLink from '../user_avatar/user_avatar_link.vue';
 
 export default {
   name: 'PlaceholderNote',
   directives: { SafeHtml },
   components: {
-    userAvatarLink,
+    GlAvatarLink,
+    GlAvatar,
     TimelineEntryItem,
   },
   props: {
@@ -55,7 +55,10 @@ export default {
         return 24;
       }
 
-      return 40;
+      return {
+        default: 24,
+        md: 32,
+      };
     },
   },
 };
@@ -64,11 +67,14 @@ export default {
 <template>
   <timeline-entry-item class="note note-wrapper being-posted fade-in-half">
     <div class="timeline-icon">
-      <user-avatar-link
-        :link-href="getUserData.path"
-        :img-src="getUserData.avatar_url"
-        :img-size="avatarSize"
-      />
+      <gl-avatar-link class="gl-mr-3" :href="getUserData.path">
+        <gl-avatar
+          :src="getUserData.avatar_url"
+          :entity-name="getUserData.username"
+          :alt="getUserData.name"
+          :size="avatarSize"
+        />
+      </gl-avatar-link>
     </div>
     <div ref="note" :class="{ discussion: !note.individual_note }" class="timeline-content">
       <div class="note-header">

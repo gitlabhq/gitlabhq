@@ -40,7 +40,7 @@ RSpec.describe GlobalPolicy do
     end
 
     context "for an admin" do
-      let(:current_user) { create(:admin) }
+      let_it_be(:current_user) { create(:admin) }
 
       context "when the public level is restricted" do
         before do
@@ -118,7 +118,7 @@ RSpec.describe GlobalPolicy do
     end
 
     context 'admin' do
-      let(:current_user) { create(:user, :admin) }
+      let_it_be(:current_user) { create(:user, :admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:read_custom_attribute) }
@@ -138,7 +138,7 @@ RSpec.describe GlobalPolicy do
     end
 
     context 'admin' do
-      let(:current_user) { create(:admin) }
+      let_it_be(:current_user) { create(:admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:approve_user) }
@@ -156,7 +156,7 @@ RSpec.describe GlobalPolicy do
     end
 
     context 'admin' do
-      let(:current_user) { create(:admin) }
+      let_it_be(:current_user) { create(:admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:reject_user) }
@@ -174,7 +174,7 @@ RSpec.describe GlobalPolicy do
     end
 
     context 'admin' do
-      let(:current_user) { create(:user, :admin) }
+      let_it_be(:current_user) { create(:user, :admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:use_project_statistics_filters) }
@@ -589,6 +589,36 @@ RSpec.describe GlobalPolicy do
       end
 
       it { is_expected.not_to be_allowed(:log_in) }
+    end
+  end
+
+  describe 'delete runners' do
+    context 'when anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.not_to be_allowed(:delete_runners) }
+    end
+
+    context 'regular user' do
+      it { is_expected.not_to be_allowed(:delete_runners) }
+    end
+
+    context 'when external' do
+      let(:current_user) { build(:user, :external) }
+
+      it { is_expected.not_to be_allowed(:delete_runners) }
+    end
+
+    context 'admin user' do
+      let_it_be(:current_user) { create(:user, :admin) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:delete_runners) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:delete_runners) }
+      end
     end
   end
 end

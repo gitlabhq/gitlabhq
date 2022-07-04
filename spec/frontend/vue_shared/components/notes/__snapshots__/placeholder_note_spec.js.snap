@@ -7,16 +7,19 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
   <div
     class="timeline-icon"
   >
-    <user-avatar-link-stub
-      imgalt=""
-      imgcssclasses=""
-      imgsize="40"
-      imgsrc="mock_path"
-      linkhref="/root"
-      tooltipplacement="top"
-      tooltiptext=""
-      username=""
-    />
+    <gl-avatar-link-stub
+      class="gl-mr-3"
+      href="/root"
+    >
+      <gl-avatar-stub
+        alt="Root"
+        entityid="0"
+        entityname="root"
+        shape="circle"
+        size="[object Object]"
+        src="mock_path"
+      />
+    </gl-avatar-link-stub>
   </div>
    
   <div

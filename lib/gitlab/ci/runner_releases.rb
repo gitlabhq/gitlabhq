@@ -45,7 +45,7 @@ module Gitlab
       end
 
       def parse_runner_release(release)
-        ::Gitlab::VersionInfo.parse(release['name'].delete_prefix('v'))
+        ::Gitlab::VersionInfo.parse(release['name'], parse_suffix: true)
       end
 
       def next_backoff

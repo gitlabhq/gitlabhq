@@ -103,6 +103,26 @@ export default {
         :label="__('Insert link')"
         @execute="trackToolbarControlExecution"
       />
+      <toolbar-button
+        data-testid="superscript"
+        content-type="superscript"
+        icon-name="superscript"
+        editor-command="toggleSuperscript"
+        category="tertiary"
+        size="medium"
+        :label="__('Superscript')"
+        @execute="trackToolbarControlExecution"
+      />
+      <toolbar-button
+        data-testid="subscript"
+        content-type="subscript"
+        icon-name="subscript"
+        editor-command="toggleSubscript"
+        category="tertiary"
+        size="medium"
+        :label="__('Subscript')"
+        @execute="trackToolbarControlExecution"
+      />
     </gl-button-group>
   </bubble-menu>
 </template>

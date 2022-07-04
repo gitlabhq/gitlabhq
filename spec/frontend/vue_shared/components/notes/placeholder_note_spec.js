@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlAvatar } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import IssuePlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { userDataMock } from 'jest/notes/mock_data';
 
 Vue.use(Vuex);
@@ -56,14 +56,14 @@ describe('Issue placeholder note component', () => {
 
   describe('avatar size', () => {
     it.each`
-      size  | line                    | isOverviewTab
-      ${40} | ${null}                 | ${false}
-      ${24} | ${{ line_code: '123' }} | ${false}
-      ${40} | ${{ line_code: '123' }} | ${true}
+      size                       | line                    | isOverviewTab
+      ${{ default: 24, md: 32 }} | ${null}                 | ${false}
+      ${24}                      | ${{ line_code: '123' }} | ${false}
+      ${{ default: 24, md: 32 }} | ${{ line_code: '123' }} | ${true}
     `('renders avatar $size for $line and $isOverviewTab', ({ size, line, isOverviewTab }) => {
       createComponent(false, { line, isOverviewTab });
 
-      expect(wrapper.findComponent(UserAvatarLink).props('imgSize')).toBe(size);
+      expect(wrapper.findComponent(GlAvatar).props('size')).toEqual(size);
     });
   });
 });

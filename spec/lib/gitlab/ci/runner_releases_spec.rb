@@ -85,15 +85,22 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
         expect(http_call_timestamp_offsets).to eq([0, 5, 15, 35, 75, 155, 315, 635, 1275, 2555, 5115, 8715])
 
         # Finally a successful HTTP request results in releases being returned
-        allow(Gitlab::HTTP).to receive(:try_get).with('the release API URL').once { mock_http_response([{ 'name' => 'v14.9.1' }]) }
+        allow(Gitlab::HTTP).to receive(:try_get)
+          .with('the release API URL')
+          .once { mock_http_response([{ 'name' => 'v14.9.1-beta1-ee' }]) }
         travel 1.hour
         expect(releases).not_to be_nil
       end
     end
 
     context 'when response is not nil' do
-      let(:response) { [{ 'name' => 'v14.9.1' }, { 'name' => 'v14.9.0' }] }
-      let(:expected_result) { [Gitlab::VersionInfo.new(14, 9, 0), Gitlab::VersionInfo.new(14, 9, 1)] }
+      let(:response) { [{ 'name' => 'v14.9.1-beta1-ee' }, { 'name' => 'v14.9.0' }] }
+      let(:expected_result) do
+        [
+          Gitlab::VersionInfo.new(14, 9, 0),
+          Gitlab::VersionInfo.new(14, 9, 1, '-beta1-ee')
+        ]
+      end
 
       it 'returns parsed and sorted Gitlab::VersionInfo objects' do
         expect(releases).to eq(expected_result)

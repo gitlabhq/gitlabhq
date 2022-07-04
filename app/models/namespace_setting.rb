@@ -24,13 +24,26 @@ class NamespaceSetting < ApplicationRecord
   chronic_duration_attr :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval
   chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
 
-  NAMESPACE_SETTINGS_PARAMS = [:default_branch_name, :delayed_project_removal,
-                               :lock_delayed_project_removal, :resource_access_token_creation_allowed,
-                               :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap,
-                               :setup_for_company, :jobs_to_be_done, :runner_token_expiration_interval, :enabled_git_access_protocol,
-                               :subgroup_runner_token_expiration_interval, :project_runner_token_expiration_interval].freeze
+  NAMESPACE_SETTINGS_PARAMS = %i[
+    default_branch_name
+    delayed_project_removal
+    lock_delayed_project_removal
+    resource_access_token_creation_allowed
+    prevent_sharing_groups_outside_hierarchy
+    new_user_signups_cap
+    setup_for_company
+    jobs_to_be_done
+    runner_token_expiration_interval
+    enabled_git_access_protocol
+    subgroup_runner_token_expiration_interval
+    project_runner_token_expiration_interval
+  ].freeze
 
   self.primary_key = :namespace_id
+
+  def self.allowed_namespace_settings_params
+    NAMESPACE_SETTINGS_PARAMS
+  end
 
   sanitizes! :default_branch_name
 

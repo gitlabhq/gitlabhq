@@ -17550,6 +17550,8 @@ CREATE TABLE namespace_settings (
     project_runner_token_expiration_interval integer,
     exclude_from_free_user_cap boolean DEFAULT false NOT NULL,
     enabled_git_access_protocol smallint DEFAULT 0 NOT NULL,
+    unique_project_download_limit smallint DEFAULT 0 NOT NULL,
+    unique_project_download_limit_interval_in_seconds integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255))
 );
 
