@@ -839,6 +839,12 @@ Here's an example dependency scanning report:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/alpha-beta-support.md#beta-features).
 
+NOTE:
+CycloneDX SBOMs are a [Beta](../../../policy/alpha-beta-support.md#beta-features) feature,
+and the reports are subject to change during the beta period. Do not build integrations
+that rely on the format of these SBOMs staying consistent, as the format might change
+before the feature is made generally available.
+
 In addition to the [JSON report file](#reports-json-format), the [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
 Dependency Scanning tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for
 each supported lock or build file it detects. These CycloneDX SBOMs are named
@@ -909,12 +915,6 @@ GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--
 to store implementation-specific details in the metadata of each CycloneDX SBOM,
 such as the location of build and lock files. If multiple CycloneDX SBOMs are merged together,
 this information is removed from the resulting merged file.
-
-NOTE:
-CycloneDX SBOMs are a [Beta](../../../policy/alpha-beta-support.md#beta-features) feature,
-and the reports are subject to change during the beta period. Do not build integrations
-that rely on the format of these SBOMs staying consistent, as the format might change
-before the feature is made generally available.
 
 ## Versioning and release process
 
