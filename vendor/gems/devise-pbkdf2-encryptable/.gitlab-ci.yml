@@ -1,0 +1,26 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+.rspec:
+  cache:
+    key: devise-pbkdf2-encryptable
+    paths:
+      - vendor/gems/devise-pbkdf2-encryptable/vendor/ruby
+  before_script:
+    - cd vendor/gems/devise-pbkdf2-encryptable
+    - ruby -v                                   # Print out ruby version for debugging
+    - gem install bundler --no-document         # Bundler is not installed with the image
+    - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
+    - bundle config set with 'development'
+    - bundle install -j $(nproc)
+  script:
+    - bundle exec rspec
+
+rspec-2.7:
+  image: "ruby:2.7"
+  extends: .rspec
+
+rspec-3.0:
+  image: "ruby:3.0"
+  extends: .rspec

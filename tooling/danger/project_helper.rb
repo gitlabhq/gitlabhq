@@ -26,7 +26,7 @@ module Tooling
         %r{\Adoc/.*(\.(md|png|gif|jpg|yml))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
-        %r{\Adb/docs/.yml\z} => :docs,
+        %r{\Adb/docs/.+\.yml\z} => :docs,
         %r{\Adata/deprecations/} => :none,
         %r{\Adata/removals/} => :none,
 

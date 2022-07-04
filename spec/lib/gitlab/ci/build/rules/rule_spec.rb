@@ -14,10 +14,14 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
   let(:ci_build) { build(:ci_build, pipeline: pipeline) }
   let(:rule)     { described_class.new(rule_hash) }
 
+  before do
+    allow(pipeline).to receive(:modified_paths).and_return(['file.rb'])
+  end
+
   describe '#matches?' do
     subject { rule.matches?(pipeline, seed) }
 
-    context 'with one matching clause' do
+    context 'with one matching clause if' do
       let(:rule_hash) do
         { if: '$VAR == null', when: 'always' }
       end
@@ -25,9 +29,17 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
       it { is_expected.to eq(true) }
     end
 
+    context 'with one matching clause changes' do
+      let(:rule_hash) do
+        { changes: { paths: ['**/*'] }, when: 'always' }
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
     context 'with two matching clauses' do
       let(:rule_hash) do
-        { if: '$VAR == null', changes: '**/*', when: 'always' }
+        { if: '$VAR == null', changes: { paths: ['**/*'] }, when: 'always' }
       end
 
       it { is_expected.to eq(true) }
@@ -35,7 +47,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
 
     context 'with a matching and non-matching clause' do
       let(:rule_hash) do
-        { if: '$VAR != null', changes: '$VAR == null', when: 'always' }
+        { if: '$VAR != null', changes: { paths: ['invalid.xyz'] }, when: 'always' }
       end
 
       it { is_expected.to eq(false) }
@@ -43,7 +55,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
 
     context 'with two non-matching clauses' do
       let(:rule_hash) do
-        { if: '$VAR != null', changes: 'README', when: 'always' }
+        { if: '$VAR != null', changes: { paths: ['README'] }, when: 'always' }
       end
 
       it { is_expected.to eq(false) }

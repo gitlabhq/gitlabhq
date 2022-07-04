@@ -112,7 +112,7 @@ export default {
         <gl-icon v-if="statusIcon" :name="statusIcon" :class="statusIconClass" />
         <span class="gl-display-none gl-sm-display-block"><slot name="status-badge"></slot></span>
       </gl-badge>
-      <div class="issuable-meta gl-display-flex gl-align-items-center d-md-inline-block">
+      <div class="issuable-meta gl-display-flex! gl-align-items-center">
         <div v-if="blocked || confidential" class="gl-display-inline-block">
           <div v-if="blocked" data-testid="blocked" class="issuable-warning-icon inline">
             <gl-icon name="lock" :aria-label="__('Blocked')" />
@@ -139,13 +139,15 @@ export default {
             :size="24"
             :src="author.avatarUrl"
             :label="author.name"
-            class="d-none d-sm-inline-flex gl-mx-1"
+            :class="[{ 'gl-display-none': !isAuthorExternal }, 'gl-sm-display-inline-flex gl-mx-1']"
           >
             <template #meta>
-              <gl-icon v-if="isAuthorExternal" name="external-link" />
+              <gl-icon v-if="isAuthorExternal" name="external-link" class="gl-ml-1" />
             </template>
           </gl-avatar-labeled>
-          <strong class="author d-sm-none d-inline">@{{ author.username }}</strong>
+          <strong v-if="author.username" class="author gl-display-inline gl-sm-display-none!"
+            >@{{ author.username }}</strong
+          >
         </gl-avatar-link>
         <span
           v-if="taskCompletionStatus && hasTasks"

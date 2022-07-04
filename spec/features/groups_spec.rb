@@ -499,8 +499,6 @@ RSpec.describe 'Group' do
     let_it_be_with_refind(:user) { create(:user) }
 
     before do
-      stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
-
       group.add_owner(user)
       sign_in(user)
     end
@@ -509,8 +507,8 @@ RSpec.describe 'Group' do
       let_it_be(:storage_enforcement_date) { Date.today + 30 }
 
       before do
-        allow_next_found_instance_of(Group) do |g|
-          allow(g).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+        allow_next_found_instance_of(Group) do |grp|
+          allow(grp).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
         end
       end
 
@@ -520,8 +518,8 @@ RSpec.describe 'Group' do
       end
 
       it 'does not display the banner in a paid group page' do
-        allow_next_found_instance_of(Group) do |g|
-          allow(g).to receive(:paid?).and_return(true)
+        allow_next_found_instance_of(Group) do |grp|
+          allow(grp).to receive(:paid?).and_return(true)
         end
         visit group_path(group)
         expect_page_not_to_have_storage_enforcement_banner
@@ -531,12 +529,13 @@ RSpec.describe 'Group' do
         visit group_path(group)
         expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
         find('.js-storage-enforcement-banner [data-testid="close-icon"]').click
+        wait_for_requests
         page.refresh
         expect_page_not_to_have_storage_enforcement_banner
 
         storage_enforcement_date = Date.today + 13
-        allow_next_found_instance_of(Group) do |g|
-          allow(g).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
+        allow_next_found_instance_of(Group) do |grp|
+          allow(grp).to receive(:storage_enforcement_date).and_return(storage_enforcement_date)
         end
         page.refresh
         expect_page_to_have_storage_enforcement_banner(storage_enforcement_date)
@@ -547,6 +546,7 @@ RSpec.describe 'Group' do
       # This test should break and be rewritten after the implementation of the storage_enforcement_date
       # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
       it 'does not display the banner in the group page' do
+        stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
         visit group_path(group)
         expect_page_not_to_have_storage_enforcement_banner
       end

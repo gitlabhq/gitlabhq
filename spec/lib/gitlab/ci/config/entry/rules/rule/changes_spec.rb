@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes do
       it { is_expected.not_to be_valid }
 
       it 'reports an error about invalid policy' do
-        expect(entry.errors).to include(/should be an array of strings/)
+        expect(entry.errors).to include(/should be an array or a hash/)
       end
     end
 
@@ -64,7 +64,59 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes do
 
       it 'returns information about errors' do
         expect(entry.errors)
-          .to include(/should be an array of strings/)
+          .to include(/should be an array or a hash/)
+      end
+    end
+
+    context 'with paths' do
+      context 'when paths is an array of strings' do
+        let(:config) { { paths: %w[app/ lib/] } }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when paths is not an array' do
+        let(:config) { { paths: 'string' } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors)
+            .to include(/should be an array of strings/)
+        end
+      end
+
+      context 'when paths is an array of integers' do
+        let(:config) { { paths: [1, 2] } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors)
+            .to include(/should be an array of strings/)
+        end
+      end
+
+      context 'when paths is an array of long strings' do
+        let(:config) { { paths: ['a'] * 51 } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors)
+            .to include(/has too many entries \(maximum 50\)/)
+        end
+      end
+
+      context 'when paths is nil' do
+        let(:config) { { paths: nil } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors)
+            .to include(/should be an array of strings/)
+        end
       end
     end
   end
@@ -74,6 +126,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes do
 
     context 'when using a string array' do
       let(:config) { %w[app/ lib/ spec/ other/* paths/**/*.rb] }
+
+      it { is_expected.to eq(paths: config) }
+    end
+
+    context 'with paths' do
+      let(:config) do
+        { paths: ['app/', 'lib/'] }
+      end
 
       it { is_expected.to eq(config) }
     end

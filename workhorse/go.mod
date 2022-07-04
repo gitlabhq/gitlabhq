@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/Azure/azure-storage-blob-go v0.14.0
 	github.com/BurntSushi/toml v0.3.1
-	github.com/FZambia/sentinel v1.0.0
+	github.com/FZambia/sentinel v1.1.0
 	github.com/alecthomas/chroma v0.10.0
 	github.com/aws/aws-sdk-go v1.43.31
 	github.com/disintegration/imaging v1.6.2
@@ -14,7 +14,7 @@ require (
 	github.com/golang/gddo v0.0.0-20210115222349-20d68f94ee1f
 	github.com/golang/protobuf v1.5.2
 	github.com/gomodule/redigo v2.0.0+incompatible
-	github.com/gorilla/websocket v1.4.1
+	github.com/gorilla/websocket v1.5.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20220627085814-c3ac35da23b2

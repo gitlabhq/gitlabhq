@@ -11074,7 +11074,7 @@ Returns [`[DoraMetric!]`](#dorametric).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dorametricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the current date. |
-| <a id="dorametricsenvironmenttier"></a>`environmentTier` | [`DeploymentTier`](#deploymenttier) | Deployment tier of the environments to return. Planned for deprecation: please update to `environment_tiers` param. |
+| <a id="dorametricsenvironmenttier"></a>`environmentTier` | [`DeploymentTier`](#deploymenttier) | Deployment tier of the environments to return. Deprecated, please update to `environment_tiers` param. |
 | <a id="dorametricsenvironmenttiers"></a>`environmentTiers` | [`[DeploymentTier!]`](#deploymenttier) | Deployment tiers of the environments to return. Defaults to [`PRODUCTION`]. |
 | <a id="dorametricsinterval"></a>`interval` | [`DoraMetricBucketingInterval`](#dorametricbucketinginterval) | How the metric should be aggregrated. Defaults to `DAILY`. In the case of `ALL`, the `date` field in the response will be `null`. |
 | <a id="dorametricsmetric"></a>`metric` | [`DoraMetricType!`](#dorametrictype) | Type of metric to return. |

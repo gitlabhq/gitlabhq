@@ -70,7 +70,7 @@ module Gitlab
               options: { script: ['rspec'] },
               rules: [
                 { if: '$CI_COMMIT_REF_NAME == "master"' },
-                { changes: %w[README.md] }
+                { changes: { paths: %w[README.md] } }
               ],
               allow_failure: false,
               when: 'on_success',
@@ -2890,6 +2890,51 @@ module Gitlab
           end
 
           it_behaves_like 'returns errors', 'The pipeline has circular dependencies'
+        end
+      end
+
+      describe 'Rules' do
+        context 'changes' do
+          let(:config) do
+            <<~YAML
+            rspec:
+              script: exit 0
+              rules:
+                - changes: [README.md]
+            YAML
+          end
+
+          it 'returns builds with correct rules' do
+            expect(processor.builds.size).to eq(1)
+            expect(processor.builds[0]).to match(
+              hash_including(
+                name: "rspec",
+                rules: [{ changes: { paths: ["README.md"] } }]
+              )
+            )
+          end
+
+          context 'with paths' do
+            let(:config) do
+              <<~YAML
+              rspec:
+                script: exit 0
+                rules:
+                  - changes:
+                      paths: [README.md]
+              YAML
+            end
+
+            it 'returns builds with correct rules' do
+              expect(processor.builds.size).to eq(1)
+              expect(processor.builds[0]).to match(
+                hash_including(
+                  name: "rspec",
+                  rules: [{ changes: { paths: ["README.md"] } }]
+                )
+              )
+            end
+          end
         end
       end
 

@@ -21,3 +21,11 @@ vendor omniauth-gitlab:
   trigger:
     include: vendor/gems/omniauth-gitlab/.gitlab-ci.yml
     strategy: depend
+
+vendor devise-pbkdf2-encryptable:
+  extends:
+    - .vendor:rules:devise-pbkdf2-encryptable
+  needs: []
+  trigger:
+    include: vendor/gems/devise-pbkdf2-encryptable/.gitlab-ci.yml
+    strategy: depend

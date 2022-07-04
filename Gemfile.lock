@@ -5,6 +5,12 @@ PATH
       typhoeus (~> 1.0, >= 1.0.1)
 
 PATH
+  remote: vendor/gems/devise-pbkdf2-encryptable
+  specs:
+    devise-pbkdf2-encryptable (0.0.0)
+      devise (~> 4.0)
+
+PATH
   remote: vendor/gems/ipynbdiff
   specs:
     ipynbdiff (0.4.7)
@@ -1514,6 +1520,7 @@ DEPENDENCIES
   derailed_benchmarks
   device_detector
   devise (~> 4.7.2)
+  devise-pbkdf2-encryptable (~> 0.0.0)!
   devise-two-factor (~> 4.0.2)
   diff_match_patch (~> 0.1.0)
   diffy (~> 3.3)

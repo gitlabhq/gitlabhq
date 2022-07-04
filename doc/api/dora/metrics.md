@@ -21,15 +21,15 @@ Get project-level DORA metrics.
 GET /projects/:id/dora/metrics
 ```
 
-| Attribute            | Type             | Required | Description                                                                                                                                                                      |
-|----------------------|------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user.                                                     |
-| `metric`             | string           | yes      | The metric name: `deployment_frequency`, `lead_time_for_changes` or `time_to_restore_service`.                                                                                   |
-| `start_date`         | string           | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago.                                                                               |
-| `end_date`           | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date.                                                                               |
-| `interval`           | string           | no       | The bucketing interval. One of `all`, `monthly` or `daily`. Default is `daily`.                                                                                                  |
-| `environment_tier`   | string           | no       | The [tier of the environment](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. Planned for deprecation, please use `environment_tiers`. |
-| `environment_tiers`  | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`.                                                        |
+| Attribute            | Type             | Required | Description                                                                                                                                                         |
+|----------------------|------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user.                                        |
+| `metric`             | string           | yes      | The metric name: `deployment_frequency`, `lead_time_for_changes` or `time_to_restore_service`.                                                                      |
+| `start_date`         | string           | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago.                                                                  |
+| `end_date`           | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date.                                                                  |
+| `interval`           | string           | no       | The bucketing interval. One of `all`, `monthly` or `daily`. Default is `daily`.                                                                                     |
+| `environment_tier`   | string           | no       | The [tier of the environment](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. Deprecated, please use `environment_tiers`. |
+| `environment_tiers`  | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`.                                           |
 
 Example request:
 
@@ -62,15 +62,15 @@ Get group-level DORA metrics.
 GET /groups/:id/dora/metrics
 ```
 
-| Attribute           | Type             | Required | Description                                                                                                                                                                       |
-|---------------------|------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user.                                                      |
-| `metric`            | string           | yes      | One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service` or `change_failure_rate`.                                                                       |
-| `start_date`        | string           | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago.                                                                                |
-| `end_date`          | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date.                                                                                |
-| `interval`          | string           | no       | The bucketing interval. One of `all`, `monthly` or `daily`. Default is `daily`.                                                                                                   |
-| `environment_tier`  | string           | no       | The [tier of the environment](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. Planned for deprecation, please use `environment_tiers`.  |
-| `environment_tiers` | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`.                                                         |
+| Attribute           | Type             | Required | Description                                                                                                                                                         |
+|---------------------|------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string   | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user.                                        |
+| `metric`            | string           | yes      | One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service` or `change_failure_rate`.                                                         |
+| `start_date`        | string           | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago.                                                                  |
+| `end_date`          | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date.                                                                  |
+| `interval`          | string           | no       | The bucketing interval. One of `all`, `monthly` or `daily`. Default is `daily`.                                                                                     |
+| `environment_tier`  | string           | no       | The [tier of the environment](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. Deprecated, please use `environment_tiers`. |
+| `environment_tiers` | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`.                                           |
 
 Example request:
 

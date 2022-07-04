@@ -223,7 +223,7 @@ RSpec/ContextWording:
     - 'ee/spec/features/trials/select_namespace_spec.rb'
     - 'ee/spec/features/users/login_spec.rb'
     - 'ee/spec/features/users/signup_spec.rb'
-    - 'ee/spec/finders/audit_log_finder_spec.rb'
+    - 'ee/spec/finders/audit_event_finder_spec.rb'
     - 'ee/spec/finders/autocomplete/vulnerabilities_autocomplete_finder_spec.rb'
     - 'ee/spec/finders/billed_users_finder_spec.rb'
     - 'ee/spec/finders/clusters/environments_finder_spec.rb'

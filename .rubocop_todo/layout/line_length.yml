@@ -2019,7 +2019,7 @@ Layout/LineLength:
     - 'ee/spec/features/users/login_spec.rb'
     - 'ee/spec/finders/analytics/devops_adoption/enabled_namespaces_finder_spec.rb'
     - 'ee/spec/finders/analytics/devops_adoption/snapshots_finder_spec.rb'
-    - 'ee/spec/finders/audit_log_finder_spec.rb'
+    - 'ee/spec/finders/audit_event_finder_spec.rb'
     - 'ee/spec/finders/billed_users_finder_spec.rb'
     - 'ee/spec/finders/boards/users_finder_spec.rb'
     - 'ee/spec/finders/compliance_management/merge_requests/compliance_violations_finder_spec.rb'

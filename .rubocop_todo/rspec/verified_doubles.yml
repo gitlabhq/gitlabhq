@@ -442,7 +442,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/gitlab/ci/build/policy/variables_spec.rb
     - spec/lib/gitlab/ci/build/policy_spec.rb
     - spec/lib/gitlab/ci/build/prerequisite/kubernetes_namespace_spec.rb
-    - spec/lib/gitlab/ci/build/rules/rule/clause/changes_spec.rb
     - spec/lib/gitlab/ci/build/rules/rule_spec.rb
     - spec/lib/gitlab/ci/build/rules_spec.rb
     - spec/lib/gitlab/ci/build/status/reason_spec.rb

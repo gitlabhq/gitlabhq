@@ -6,19 +6,41 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
   describe '#satisfied_by?' do
     subject { described_class.new(globs).satisfied_by?(pipeline, context) }
 
-    it_behaves_like 'a glob matching rule' do
+    context 'a glob matching rule' do
+      using RSpec::Parameterized::TableSyntax
+
       let(:pipeline) { build(:ci_pipeline) }
       let(:context) {}
 
       before do
         allow(pipeline).to receive(:modified_paths).and_return(files.keys)
       end
+
+      # rubocop:disable Layout/LineLength
+      where(:case_name, :globs, :files, :satisfied) do
+        'exact top-level match'      | { paths: ['Dockerfile'] }               | { 'Dockerfile' => '', 'Gemfile' => '' }            | true
+        'exact top-level no match'   | { paths: ['Dockerfile'] }               | { 'Gemfile' => '' }                                | false
+        'pattern top-level match'    | { paths: ['Docker*'] }                  | { 'Dockerfile' => '', 'Gemfile' => '' }            | true
+        'pattern top-level no match' | { paths: ['Docker*'] }                  | { 'Gemfile' => '' }                                | false
+        'exact nested match'         | { paths: ['project/build.properties'] } | { 'project/build.properties' => '' }               | true
+        'exact nested no match'      | { paths: ['project/build.properties'] } | { 'project/README.md' => '' }                      | false
+        'pattern nested match'       | { paths: ['src/**/*.go'] }              | { 'src/gitlab.com/goproject/goproject.go' => '' }  | true
+        'pattern nested no match'    | { paths: ['src/**/*.go'] }              | { 'src/gitlab.com/goproject/README.md' => '' }     | false
+        'ext top-level match'        | { paths: ['*.go'] }                     | { 'main.go' => '', 'cmd/goproject/main.go' => '' } | true
+        'ext nested no match'        | { paths: ['*.go'] }                     | { 'cmd/goproject/main.go' => '' }                  | false
+        'ext slash no match'         | { paths: ['/*.go'] }                    | { 'main.go' => '', 'cmd/goproject/main.go' => '' } | false
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        it { is_expected.to eq(satisfied) }
+      end
     end
 
     context 'when pipeline is nil' do
       let(:pipeline) {}
       let(:context) {}
-      let(:globs) { [] }
+      let(:globs) { { paths: [] } }
 
       it { is_expected.to be_truthy }
     end
@@ -26,8 +48,8 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
     context 'when using variable expansion' do
       let(:pipeline) { build(:ci_pipeline) }
       let(:modified_paths) { ['helm/test.txt'] }
-      let(:globs) { ['$HELM_DIR/**/*'] }
-      let(:context) { double('context') }
+      let(:globs) { { paths: ['$HELM_DIR/**/*'] } }
+      let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
 
       before do
         allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
@@ -58,7 +80,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
       end
 
       context 'when variable expansion does not match' do
-        let(:globs) { ['path/with/$in/it/*'] }
+        let(:globs) { { paths: ['path/with/$in/it/*'] } }
         let(:modified_paths) { ['path/with/$in/it/file.txt'] }
 
         before do

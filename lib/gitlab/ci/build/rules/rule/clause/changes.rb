@@ -4,8 +4,10 @@ module Gitlab
   module Ci
     module Build
       class Rules::Rule::Clause::Changes < Rules::Rule::Clause
+        include Gitlab::Utils::StrongMemoize
+
         def initialize(globs)
-          @globs = Array(globs)
+          @globs = globs
         end
 
         def satisfied_by?(pipeline, context)
@@ -19,11 +21,19 @@ module Gitlab
           end
         end
 
-        def expand_globs(context)
-          return @globs unless context
+        private
 
-          @globs.map do |glob|
+        def expand_globs(context)
+          return paths unless context
+
+          paths.map do |glob|
             ExpandVariables.expand_existing(glob, -> { context.variables_hash })
+          end
+        end
+
+        def paths
+          strong_memoize(:paths) do
+            Array(@globs[:paths])
           end
         end
       end

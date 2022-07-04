@@ -96,8 +96,8 @@ The ability to opt-out of expiring access tokens was [deprecated](https://gitlab
 in GitLab 14.3 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in 15.0. All
 existing integrations must be updated to support access token refresh.
 
-Access tokens expire in two hours which means that integrations that use them must support generating new access
-tokens at least every two hours.
+Access tokens expire after two hours. Integrations that use access tokens must generate new ones at least every
+two hours.
 
 When applications are deleted, all grants and tokens associated with the application are also deleted.
 

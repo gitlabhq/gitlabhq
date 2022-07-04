@@ -2087,6 +2087,12 @@ RSpec.describe Ci::CreatePipelineService do
               rules:
                 - changes:
                   - $CI_JOB_NAME*
+
+            changes-paths:
+              script: "I am using a new syntax!"
+              rules:
+                - changes:
+                    paths: [README.md]
           EOY
         end
 
@@ -2098,8 +2104,9 @@ RSpec.describe Ci::CreatePipelineService do
 
           it 'creates five jobs' do
             expect(pipeline).to be_persisted
-            expect(build_names)
-              .to contain_exactly('regular-job', 'rules-job', 'delayed-job', 'negligible-job', 'README')
+            expect(build_names).to contain_exactly(
+              'regular-job', 'rules-job', 'delayed-job', 'negligible-job', 'README', 'changes-paths'
+            )
           end
 
           it 'sets when: for all jobs' do
