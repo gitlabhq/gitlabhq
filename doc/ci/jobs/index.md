@@ -136,9 +136,9 @@ jobs. Select to expand them.
 To create a group of jobs, in the [CI/CD pipeline configuration file](../yaml/index.md),
 separate each job name with a number and one of the following:
 
-- A slash (`/`), for example, `test 1/3`, `test 2/3`, `test 3/3`.
-- A colon (`:`), for example, `test 1:3`, `test 2:3`, `test 3:3`.
-- A space, for example `test 0 3`, `test 1 3`, `test 2 3`.
+- A slash (`/`), for example, `slash-test 1/3`, `slash-test 2/3`, `slash-test 3/3`.
+- A colon (`:`), for example, `colon-test 1:3`, `colon-test 2:3`, `colon-test 3:3`.
+- A space, for example `space-test 0 3`, `space-test 1 3`, `space-test 2 3`.
 
 You can use these symbols interchangeably.
 

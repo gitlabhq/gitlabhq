@@ -40,7 +40,7 @@ Some features are currently available only when using certificate-based integrat
 With GitLab-managed clusters, GitLab creates separate service accounts and namespaces
 for every branch and deploys by using these resources.
 
-The GitLab agent uses [impersonation](../../clusters/agent/ci_cd_workflow.md#use-impersonation-to-restrict-project-and-group-access)
+The GitLab agent uses [impersonation](../../clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation)
 strategies to deploy to your cluster with restricted account access. To do so:
 
 1. Choose the impersonation strategy that suits your needs.

@@ -91,20 +91,20 @@ The value is in MB and the default is 100MB per job. To change it at the:
 - Instance level:
 
   1. On the top bar, select **Menu > Admin**.
-  1. On the left sidebar, select **Settings > CI/CD**.
-  1. Change the value of maximum artifacts size (in MB).
+  1. On the left sidebar, select **Settings > CI/CD > Continuous Integration and Deployment**.
+  1. Change the value of **Maximum artifacts size (MB)**.
   1. Select **Save changes** for the changes to take effect.
 
 - Group level (this overrides the instance setting):
 
   1. Go to the group's **Settings > CI/CD > General Pipelines**.
-  1. Change the value of **maximum artifacts size (in MB)**.
+  1. Change the value of **Maximum artifacts size** (in MB).
   1. Select **Save changes** for the changes to take effect.
 
 - Project level (this overrides the instance and group settings):
 
   1. Go to the project's **Settings > CI/CD > General Pipelines**.
-  1. Change the value of **maximum artifacts size (in MB)**.
+  1. Change the value of **maximum artifacts size** (in MB).
   1. Select **Save changes** for the changes to take effect.
 
 NOTE:

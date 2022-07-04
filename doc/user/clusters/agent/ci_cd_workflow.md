@@ -42,7 +42,7 @@ If you have multiple GitLab projects that contain Kubernetes manifests:
 1. [Install the GitLab agent](install/index.md) in its own project, or in one of the
    GitLab projects where you keep Kubernetes manifests.
 1. [Authorize the agent](#authorize-the-agent) to access your GitLab projects.
-1. Optional. For added security, [use impersonation](#use-impersonation-to-restrict-project-and-group-access).
+1. Optional. For added security, [use impersonation](#restrict-project-and-group-access-by-using-impersonation).
 1. [Update your `.gitlab-ci.yml` file](#update-your-gitlab-ciyml-file-to-run-kubectl-commands) to
    select the agent's Kubernetes context and run the Kubernetes API commands.
 1. Run your pipeline to deploy to or update the cluster.
@@ -52,7 +52,7 @@ If you have multiple GitLab projects that contain Kubernetes manifests:
 If you have multiple GitLab projects, you must authorize the agent to access the project where you keep your Kubernetes manifests.
 You can authorize the agent to access individual projects, or authorize a group or subgroup,
 so all projects within have access. For added security, you can also
-[use impersonation](#use-impersonation-to-restrict-project-and-group-access).
+[use impersonation](#restrict-project-and-group-access-by-using-impersonation).
 
 Authorization configuration can take one or two minutes to propagate.
 
@@ -156,7 +156,7 @@ deploy:
   # ... rest of your job configuration
 ```
 
-## Use impersonation to restrict project and group access **(PREMIUM)**
+## Restrict project and group access by using impersonation **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
 
@@ -222,6 +222,24 @@ ci_access:
     - id: path/to/project
       access_as:
         ci_job: {}
+```
+
+#### Example RBAC to restrict CI/CD jobs
+
+The following `RoleBinding` resource restricts all CI/CD jobs to view rights only.
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ci-job-view
+roleRef:
+  name: view
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - name: gitlab:ci_job
+    kind: Group
 ```
 
 ### Impersonate a static identity
