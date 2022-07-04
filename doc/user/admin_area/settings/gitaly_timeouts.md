@@ -1,8 +1,7 @@
 ---
-stage: Create
+stage: Systems
 group: Gitaly
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Gitaly timeouts **(FREE SELF)**
