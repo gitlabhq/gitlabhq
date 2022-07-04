@@ -81,7 +81,7 @@ Please list the test areas (unit, integration and end-to-end) that needs to be a
 * Integration test changes
 * End-to-end test change
 
-See the test engineering planning process and reach out to your counterpart Software Engineer in Test for assistance: https://about.gitlab.com/handbook/engineering/quality/test-engineering/#test-planning -->
+See the Quality Engineering quad planning process and reach out to your counterpart Software Engineer in Test for assistance: https://about.gitlab.com/handbook/engineering/quality/quality-engineering/quad-planning -->
 
 ### Available Tier
 

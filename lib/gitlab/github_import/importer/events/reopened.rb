@@ -4,7 +4,7 @@ module Gitlab
   module GithubImport
     module Importer
       module Events
-        class Closed
+        class Reopened
           attr_reader :project, :user_id
 
           def initialize(project, user_id)
@@ -24,7 +24,7 @@ module Gitlab
             Event.create!(
               project_id: project.id,
               author_id: user_id,
-              action: 'closed',
+              action: 'reopened',
               target_type: Issue.name,
               target_id: issue_event.issue_db_id,
               created_at: issue_event.created_at,
@@ -36,10 +36,7 @@ module Gitlab
             ResourceStateEvent.create!(
               user_id: user_id,
               issue_id: issue_event.issue_db_id,
-              source_commit: issue_event.commit_id,
-              state: 'closed',
-              close_after_error_tracking_resolve: false,
-              close_auto_resolve_prometheus_alert: false,
+              state: 'reopened',
               created_at: issue_event.created_at
             )
           end

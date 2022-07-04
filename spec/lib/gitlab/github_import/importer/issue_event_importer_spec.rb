@@ -59,6 +59,13 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
                       Gitlab::GithubImport::Importer::Events::Closed
     end
 
+    context "when it's reopened issue event" do
+      let(:event_name) { 'reopened' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::Reopened
+    end
+
     context "when it's unknown issue event" do
       let(:event_name) { 'fake' }
 

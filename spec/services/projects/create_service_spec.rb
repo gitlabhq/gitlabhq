@@ -152,6 +152,20 @@ RSpec.describe Projects::CreateService, '#execute' do
 
       create_project(user, opts)
     end
+
+    it 'publishes a ProjectCreatedEvent' do
+      group = create(:group, :nested).tap do |group|
+        group.add_owner(user)
+      end
+
+      expect { create_project(user, name: 'Project', path: 'project', namespace_id: group.id) }
+        .to publish_event(Projects::ProjectCreatedEvent)
+        .with(
+          project_id: kind_of(Numeric),
+          namespace_id: group.id,
+          root_namespace_id: group.parent_id
+        )
+    end
   end
 
   context "admin creates project with other user's namespace_id" do

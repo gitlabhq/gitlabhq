@@ -129,6 +129,8 @@ module Projects
 
       create_readme if @initialize_with_readme
       create_sast_commit if @initialize_with_sast
+
+      publish_event
     end
 
     def create_project_settings
@@ -293,6 +295,16 @@ module Projects
       topic_list = topics || tag_list
 
       params[:topic_list] ||= topic_list if topic_list
+    end
+
+    def publish_event
+      event = Projects::ProjectCreatedEvent.new(data: {
+        project_id: project.id,
+        namespace_id: project.namespace_id,
+        root_namespace_id: project.root_namespace.id
+      })
+
+      Gitlab::EventStore.publish(event)
     end
   end
 end

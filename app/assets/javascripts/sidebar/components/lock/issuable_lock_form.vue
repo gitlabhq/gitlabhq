@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -28,6 +28,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    Outside,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
@@ -102,6 +103,9 @@ export default {
           this.isLoading = false;
         });
     },
+    closeForm() {
+      this.isLockDialogOpen = false;
+    },
   },
 };
 </script>
@@ -148,6 +152,7 @@ export default {
     <div class="value sidebar-item-value hide-collapsed">
       <edit-form
         v-if="isLockDialogOpen"
+        v-outside="closeForm"
         data-testid="edit-form"
         :is-locked="isLocked"
         :issuable-display-name="issuableDisplayName"
