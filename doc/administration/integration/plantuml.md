@@ -7,9 +7,11 @@ type: reference, howto
 
 # PlantUML and GitLab **(FREE)**
 
-When [PlantUML](https://plantuml.com) integration is enabled and configured in
-GitLab, you can create diagrams in snippets, wikis, and repositories. To set up
-the integration, you must:
+When the [PlantUML](https://plantuml.com) integration is enabled and configured in
+GitLab, you can create diagrams in snippets, wikis, and repositories. This integration
+is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
+
+To set up the integration on a self-managed instance, you must:
 
 1. [Configure your PlantUML server](#configure-your-plantuml-server).
 1. [Configure local PlantUML access](#configure-local-plantuml-access).

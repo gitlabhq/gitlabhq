@@ -4,13 +4,13 @@ module Gitlab
   module Tracking
     class << self
       def enabled?
-        snowplow.enabled?
+        tracker.enabled?
       end
 
       def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
         contexts = [Tracking::StandardContext.new(project: project, user: user, namespace: namespace, **extra).to_context, *context]
 
-        snowplow.event(category, action, label: label, property: property, value: value, context: contexts)
+        tracker.event(category, action, label: label, property: property, value: value, context: contexts)
       rescue StandardError => error
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
       end
@@ -31,11 +31,11 @@ module Gitlab
       end
 
       def options(group)
-        snowplow.options(group)
+        tracker.options(group)
       end
 
       def collector_hostname
-        snowplow.hostname
+        tracker.hostname
       end
 
       def snowplow_micro_enabled?
@@ -44,12 +44,12 @@ module Gitlab
 
       private
 
-      def snowplow
-        @snowplow ||= if snowplow_micro_enabled?
-                        Gitlab::Tracking::Destinations::SnowplowMicro.new
-                      else
-                        Gitlab::Tracking::Destinations::Snowplow.new
-                      end
+      def tracker
+        @tracker ||= if snowplow_micro_enabled?
+                       Gitlab::Tracking::Destinations::SnowplowMicro.new
+                     else
+                       Gitlab::Tracking::Destinations::Snowplow.new
+                     end
       end
     end
   end

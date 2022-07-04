@@ -37,6 +37,9 @@ Rails.application.configure do
   # Expands the lines which load the assets
   # config.assets.debug = true
 
+  # Annotate rendered view with template file names as HTML comments
+  config.action_view.annotate_rendered_view_with_filenames = true
+
   # Adds additional error checking when serving assets at runtime.
   # Checks for improperly declared sprockets dependencies.
   # Raises helpful error messages.
@@ -66,6 +69,7 @@ Rails.application.configure do
     config.active_record.migration_error = false
     config.active_record.verbose_query_logs = false
     config.action_view.cache_template_loading = true
+    config.action_view.annotate_rendered_view_with_filenames = false
 
     config.middleware.delete BetterErrors::Middleware
   end

@@ -12,7 +12,6 @@ import {
   IMAGE_DELETE_SCHEDULED_STATUS,
   IMAGE_MIGRATING_STATE,
   SCHEDULED_STATUS,
-  ROOT_IMAGE_TEXT,
   COPY_IMAGE_PATH_TITLE,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -96,10 +95,10 @@ describe('Image List Row', () => {
       });
     });
 
-    it(`when the image has no name appends ${ROOT_IMAGE_TEXT} to the path`, () => {
+    it(`when the image has no name lists the path`, () => {
       mountComponent({ item: { ...item, name: '' } });
 
-      expect(findDetailsLink().text()).toBe(`${item.path}/ ${ROOT_IMAGE_TEXT}`);
+      expect(findDetailsLink().text()).toBe(item.path);
     });
 
     it('contains a clipboard button', () => {

@@ -181,17 +181,17 @@ RSpec.describe BranchesFinder do
         it 'filters branches' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(feature_conflict fix))
+          expect(result.map(&:name)).to eq(%w(feature_conflict few-commits))
         end
       end
 
       context 'by next page_token and per_page' do
-        let(:params) { { page_token: 'fix', per_page: 2 } }
+        let(:params) { { page_token: 'few-commits', per_page: 2 } }
 
         it 'filters branches' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(flatten-dir gitattributes))
+          expect(result.map(&:name)).to eq(%w(fix flatten-dir))
         end
       end
 
@@ -254,7 +254,7 @@ RSpec.describe BranchesFinder do
         it 'falls back to default execute and ignore paginations' do
           result = subject
 
-          expect(result.map(&:name)).to eq(%w(feature feature_conflict fix flatten-dir))
+          expect(result.map(&:name)).to eq(%w(feature feature_conflict few-commits fix flatten-dir))
         end
       end
     end

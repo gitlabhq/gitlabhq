@@ -82,7 +82,13 @@ module TestEnv
     'trailers'                           => 'f0a5ed6',
     'add_commit_with_5mb_subject'        => '8cf8e80',
     'blame-on-renamed'                   => '32c33da',
-    'with-executables'                   => '6b8dc4a'
+    'with-executables'                   => '6b8dc4a',
+    'spooky-stuff'                       => 'ba3343b',
+    'few-commits'                        => '0031876',
+    'two-commits'                        => '304d257',
+    'utf-16'                             => 'f05a987',
+    'gitaly-rename-test'                 => '94bb47c',
+    'smime-signed-commits'               => 'ed775cc'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -259,41 +265,33 @@ module TestEnv
 
   # Create repository for FactoryBot.create(:project)
   def setup_factory_repo
-    setup_repo(factory_repo_path, factory_repo_path_bare, factory_repo_name, BRANCH_SHA)
+    setup_repo(factory_repo_path, factory_repo_bundle_path, factory_repo_name, BRANCH_SHA)
   end
 
   # Create repository for FactoryBot.create(:forked_project_with_submodules)
   # This repo has a submodule commit that is not present in the main test
   # repository.
   def setup_forked_repo
-    setup_repo(forked_repo_path, forked_repo_path_bare, forked_repo_name, FORKED_BRANCH_SHA)
+    setup_repo(forked_repo_path, forked_repo_bundle_path, forked_repo_name, FORKED_BRANCH_SHA)
   end
 
-  def setup_repo(repo_path, repo_path_bare, repo_name, refs)
+  def setup_repo(repo_path, repo_bundle_path, repo_name, refs)
     clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
 
     unless File.directory?(repo_path)
       start = Time.now
       system(*%W(#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}))
+      system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} remote remove origin))
       puts "==> #{repo_path} set up in #{Time.now - start} seconds...\n"
     end
 
     set_repo_refs(repo_path, refs)
 
-    unless File.directory?(repo_path_bare)
+    unless File.file?(repo_bundle_path)
       start = Time.now
-      # We must copy bare repositories because we will push to them.
-      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --quiet --bare -- #{repo_path} #{repo_path_bare}))
-      puts "==> #{repo_path_bare} set up in #{Time.now - start} seconds...\n"
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --all))
+      puts "==> #{repo_bundle_path} generated in #{Time.now - start} seconds...\n"
     end
-  end
-
-  def copy_repo(subject, bare_repo:, refs:)
-    target_repo_path = File.expand_path(repos_path + "/#{subject.disk_path}.git")
-
-    FileUtils.mkdir_p(target_repo_path)
-    FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
-    FileUtils.chmod_R 0755, target_repo_path
   end
 
   def rm_storage_dir(storage, dir)
@@ -349,12 +347,12 @@ module TestEnv
     Capybara.current_session.visit '/'
   end
 
-  def factory_repo_path_bare
-    "#{factory_repo_path}_bare"
+  def factory_repo_bundle_path
+    "#{factory_repo_path}.bundle"
   end
 
-  def forked_repo_path_bare
-    "#{forked_repo_path}_bare"
+  def forked_repo_bundle_path
+    "#{forked_repo_path}.bundle"
   end
 
   def with_empty_bare_repository(name = nil)
@@ -378,9 +376,9 @@ module TestEnv
       gitaly
       gitlab-shell
       gitlab-test
-      gitlab-test_bare
+      gitlab-test.bundle
       gitlab-test-fork
-      gitlab-test-fork_bare
+      gitlab-test-fork.bundle
       gitlab-workhorse
       gitlab_workhorse_secret
     ]

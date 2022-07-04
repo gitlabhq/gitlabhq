@@ -11,29 +11,31 @@ class Gitlab::Seeder::TriageOps
     puts "Updating settings to allow web hooks to localhost"
     ApplicationSetting.current_without_cache.update!(allow_local_requests_from_web_hooks_and_services: true)
 
-    Sidekiq::Testing.inline! do
-      puts "Ensuring required groups"
-      ensure_group('gitlab-com')
-      ensure_group('gitlab-com/gl-security/appsec')
-      ensure_group('gitlab-jh/jh-team')
-      ensure_group('gitlab-org')
-      ensure_group('gitlab-org/gitlab-core-team/community-members')
-      ensure_group('gitlab-org/security')
+    Sidekiq::Worker.skipping_transaction_check do
+      Sidekiq::Testing.inline! do
+        puts "Ensuring required groups"
+        ensure_group('gitlab-com')
+        ensure_group('gitlab-com/gl-security/appsec')
+        ensure_group('gitlab-jh/jh-team')
+        ensure_group('gitlab-org')
+        ensure_group('gitlab-org/gitlab-core-team/community-members')
+        ensure_group('gitlab-org/security')
 
-      puts "Ensuring required projects"
-      ensure_project('gitlab-org/gitlab')
-      ensure_project('gitlab-org/security/gitlab')
+        puts "Ensuring required projects"
+        ensure_project('gitlab-org/gitlab')
+        ensure_project('gitlab-org/security/gitlab')
 
-      puts "Ensuring required bot user"
-      ensure_bot_user
+        puts "Ensuring required bot user"
+        ensure_bot_user
 
-      puts "Setting up webhooks"
-      ensure_webhook_for('gitlab-com')
-      ensure_webhook_for('gitlab-org')
+        puts "Setting up webhooks"
+        ensure_webhook_for('gitlab-com')
+        ensure_webhook_for('gitlab-org')
 
-      puts "Ensuring work type labels"
-      ensure_work_type_labels_for('gitlab-com')
-      ensure_work_type_labels_for('gitlab-org')
+        puts "Ensuring work type labels"
+        ensure_work_type_labels_for('gitlab-com')
+        ensure_work_type_labels_for('gitlab-org')
+      end
     end
   end
 

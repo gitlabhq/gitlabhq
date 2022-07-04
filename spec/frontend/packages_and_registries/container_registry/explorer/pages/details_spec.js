@@ -20,7 +20,6 @@ import {
   ALERT_DANGER_IMAGE,
   ALERT_DANGER_IMPORTING,
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
-  ROOT_IMAGE_TEXT,
   MISSING_OR_DELETED_IMAGE_TITLE,
   MISSING_OR_DELETED_IMAGE_MESSAGE,
 } from '~/packages_and_registries/container_registry/explorer/constants';
@@ -482,7 +481,7 @@ describe('Details Page', () => {
       expect(breadCrumbState.updateName).toHaveBeenCalledWith(MISSING_OR_DELETED_IMAGE_BREADCRUMB);
     });
 
-    it(`when the image has no name set the breadcrumb to ${ROOT_IMAGE_TEXT}`, async () => {
+    it(`when the image has no name set the breadcrumb to project name`, async () => {
       mountComponent({
         resolver: jest
           .fn()
@@ -491,7 +490,7 @@ describe('Details Page', () => {
 
       await waitForApolloRequestRender();
 
-      expect(breadCrumbState.updateName).toHaveBeenCalledWith(ROOT_IMAGE_TEXT);
+      expect(breadCrumbState.updateName).toHaveBeenCalledWith('gitlab-test');
     });
   });
 

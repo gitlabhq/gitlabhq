@@ -13,7 +13,6 @@ import {
   IMAGE_DELETE_SCHEDULED_STATUS,
   IMAGE_FAILED_DELETED_STATUS,
   IMAGE_MIGRATING_STATE,
-  ROOT_IMAGE_TEXT,
   COPY_IMAGE_PATH_TITLE,
 } from '../../constants/index';
 import DeleteButton from '../delete_button.vue';
@@ -79,7 +78,7 @@ export default {
       );
     },
     imageName() {
-      return this.item.name ? this.item.path : `${this.item.path}/ ${ROOT_IMAGE_TEXT}`;
+      return this.item.path;
     },
     routerLinkEvent() {
       return this.deleting ? '' : 'click';

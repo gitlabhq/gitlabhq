@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/rafaeljusto/redigomock"
+	"github.com/rafaeljusto/redigomock/v3"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"

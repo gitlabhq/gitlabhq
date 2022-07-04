@@ -201,8 +201,9 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/gitlab-elasticsearch-indexer/bin/gitlab-elasticsearch-indexer
       - ${TMP_TEST_FOLDER}/gitlab-shell/
       - ${TMP_TEST_FOLDER}/gitlab-test-fork/
-      - ${TMP_TEST_FOLDER}/gitlab-test-fork_bare/
+      - ${TMP_TEST_FOLDER}/gitlab-test-fork.bundle
       - ${TMP_TEST_FOLDER}/gitlab-test/
+      - ${TMP_TEST_FOLDER}/gitlab-test.bundle
       - ${TMP_TEST_FOLDER}/repositories/
       - ${TMP_TEST_FOLDER}/second_storage/
       - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/

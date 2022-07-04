@@ -10057,9 +10057,6 @@ msgstr ""
 msgid "ContainerRegistry|Remove these tags"
 msgstr ""
 
-msgid "ContainerRegistry|Root image"
-msgstr ""
-
 msgid "ContainerRegistry|Run cleanup:"
 msgstr ""
 

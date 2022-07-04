@@ -233,6 +233,8 @@ RSpec.describe 'Branches' do
   end
 
   context 'with one or more pipeline', :js do
+    let(:project) { create(:project, :public, :empty_repo) }
+
     before do
       sha = create_file(branch_name: "branch")
       create(:ci_pipeline,

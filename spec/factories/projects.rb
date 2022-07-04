@@ -328,9 +328,10 @@ FactoryBot.define do
 
     trait :test_repo do
       after :create do |project|
-        TestEnv.copy_repo(project,
-          bare_repo: TestEnv.factory_repo_path_bare,
-          refs: TestEnv::BRANCH_SHA)
+        # There are various tests that rely on there being no repository cache.
+        # Using raw avoids caching.
+        repo = Gitlab::GlRepository::PROJECT.repository_for(project).raw
+        repo.create_from_bundle(TestEnv.factory_repo_bundle_path)
       end
     end
 
@@ -428,9 +429,10 @@ FactoryBot.define do
     path { 'forked-gitlabhq' }
 
     after :create do |project|
-      TestEnv.copy_repo(project,
-        bare_repo: TestEnv.forked_repo_path_bare,
-        refs: TestEnv::FORKED_BRANCH_SHA)
+      # There are various tests that rely on there being no repository cache.
+      # Using raw avoids caching.
+      repo = Gitlab::GlRepository::PROJECT.repository_for(project).raw
+      repo.create_from_bundle(TestEnv.forked_repo_bundle_path)
     end
   end
 

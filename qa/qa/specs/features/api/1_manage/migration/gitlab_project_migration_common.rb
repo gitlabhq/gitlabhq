@@ -68,7 +68,7 @@ module QA
       imported_group # trigger import
 
       expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
-      expect(imported_projects.count).to eq(1), 'Expected to have 1 imported project'
+      expect(imported_projects.count).to eq(1), "Expected to have 1 imported project. Found: #{imported_projects.count}"
     end
 
     before do
