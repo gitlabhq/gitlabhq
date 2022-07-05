@@ -246,7 +246,7 @@ query {
       nodes {
         destinationUrl
         id
-        headers { 
+        headers {
           nodes {
             key
             value

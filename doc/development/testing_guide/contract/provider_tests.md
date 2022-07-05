@@ -24,7 +24,7 @@ require_relative '../../../spec_helper'
 module Provider
   module DiscussionsHelper
     Pact.service_provider 'Merge Request Discussions Endpoint' do
-      
+
     end
   end
 end
@@ -41,7 +41,7 @@ module Provider
   module DiscussionsHelper
     Pact.service_provider 'Merge Request Discussions Endpoint' do
       honours_pact_with 'MergeRequest#show' do
-        
+
       end
     end
   end
@@ -61,9 +61,9 @@ module Provider
   module DiscussionsHelper
     Pact.service_provider 'Merge Request Discussions Endpoint' do
       app { Environment::Test.app }
-      
+
       honours_pact_with 'MergeRequest#show' do
-        
+
       end
     end
   end
@@ -81,7 +81,7 @@ module Provider
   module DiscussionsHelper
     Pact.service_provider 'Merge Request Discussions Endpoint' do
       app { Environment::Test.app }
-      
+
       honours_pact_with 'MergeRequest#show' do
         pact_uri '../contracts/project/merge_request/show/mergerequest#show-merge_request_discussions_endpoint.json'
       end
@@ -152,7 +152,7 @@ In the `provider_states_for` block, you then define the state the test data is f
 ```ruby
 Pact.provider_states_for "MergeRequest#show" do
   provider_state "a merge request with discussions exists" do
-  
+
   end
 end
 ```

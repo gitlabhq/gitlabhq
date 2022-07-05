@@ -265,7 +265,7 @@ Use the Admin Area to delete users.
 1. Select **Delete user**.
 
 NOTE:
-You can only delete a user if there are inherited or direct owners of a group. You cannot delete a user if they are the only group owner.  
+You can only delete a user if there are inherited or direct owners of a group. You cannot delete a user if they are the only group owner.
 
 You can also delete a user and their contributions, such as merge requests, issues, and groups of which they are the only group owner.
 

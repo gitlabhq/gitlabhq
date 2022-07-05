@@ -67,11 +67,11 @@ pactWith(
   (provider) => {
     describe('Merge Request Discussions Endpoint', () => {
       beforeEach(() => {
-        
+
       });
 
       it('return a successful body', () => {
-        
+
       });
     });
   },

@@ -577,6 +577,12 @@ class MyMigration < Gitlab::Database::Migration[2.0]
 end
 ```
 
+Verify the index is not being used anymore with this Thanos query:
+
+```sql
+sum(rate(pg_stat_user_indexes_idx_tup_read{env="gprd", indexrelname="index_ci_name", type="patroni-ci"}[5m]))
+```
+
 Note that it is not necessary to check if the index exists prior to
 removing it, however it is required to specify the name of the
 index that is being removed. This can be done either by passing the name

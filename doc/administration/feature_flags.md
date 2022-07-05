@@ -123,11 +123,11 @@ For example, to enable the [`:product_analytics`](../operations/product_analytic
 Feature.enable(:product_analytics, Project.find(1234))
 ```
 
-`Feature.enable` and `Feature.disable` always return `nil`, this is not an indication that the command failed:
+`Feature.enable` and `Feature.disable` always return `true`, even if the application doesn't use the flag:
 
 ```ruby
 irb(main):001:0> Feature.enable(:my_awesome_feature)
-=> nil
+=> true
 ```
 
 When the feature is ready, GitLab removes the feature flag, and the option for

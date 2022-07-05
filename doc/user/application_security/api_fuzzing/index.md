@@ -928,7 +928,7 @@ logging.basicConfig(filename=log_file_path, level=logging.DEBUG)
 def get_auth_response():
     authorization_url = 'https://authorization.service/api/get_api_token'
     return requests.get(
-        f'{authorization_url}', 
+        f'{authorization_url}',
         auth=(os.environ.get('AUTH_USER'), os.environ.get('AUTH_PWD'))
     )
 

@@ -210,7 +210,7 @@ In the second workflow, the `release` job runs in multiple pipelines. To prevent
 ```yaml
 release_job:
   rules:
-    - if: $CI_COMMIT_TAG  
+    - if: $CI_COMMIT_TAG
       when: never                                  # Do not run this job in a tag pipeline
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run this job when commits are pushed or merged to the default branch
   script:

@@ -104,7 +104,14 @@ module Feature
 
     def enable(key, thing = true)
       log(key: key, action: __method__, thing: thing)
-      with_feature(key) { _1.enable(thing) }
+      return_value = with_feature(key) { _1.enable(thing) }
+
+      # rubocop:disable Gitlab/RailsLogger
+      Rails.logger.warn('WARNING: Understand the stability and security risks of enabling in-development features with feature flags.')
+      Rails.logger.warn('See https://docs.gitlab.com/ee/administration/feature_flags.html#risks-when-enabling-features-still-in-development for more information.')
+      # rubocop:enable Gitlab/RailsLogger
+
+      return_value
     end
 
     def disable(key, thing = false)

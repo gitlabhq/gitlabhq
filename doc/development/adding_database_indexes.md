@@ -107,6 +107,13 @@ determining whether existing indexes are still required. More information on
 the meaning of the various columns can be found at
 <https://www.postgresql.org/docs/current/monitoring-stats.html>.
 
+To determine if an index is still being used on production, use the following
+Thanos query with your index name:
+
+```sql
+sum(rate(pg_stat_user_indexes_idx_tup_read{env="gprd", indexrelname="index_ci_name", type="patroni-ci"}[5m]))
+```
+
 Because the query output relies on the actual usage of your database, it
 may be affected by factors such as:
 

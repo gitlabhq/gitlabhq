@@ -39,7 +39,7 @@ Example response:
   "revision": "c401a659d0c",
   "kas": {
     "enabled": true,
-    "externalUrl": "grpc://gitlab.example.com:8150", 
+    "externalUrl": "grpc://gitlab.example.com:8150",
     "version": "15.0.0"
   }
 }

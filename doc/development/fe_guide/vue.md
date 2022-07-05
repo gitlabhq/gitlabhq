@@ -483,7 +483,7 @@ const useSomeLogic = () => {
 ```
 
 ```javascript
-const done = () => emit('done'); 
+const done = () => emit('done');
 
 const useSomeLogic = (done) => {
   doSomeLogic();

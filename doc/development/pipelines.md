@@ -37,7 +37,7 @@ flowchart LR
     subgraph backend
     be["Backend code"]--tested with-->rspec
     end
-    
+
     be--generates-->fixtures["frontend fixtures"]
     fixtures--used in-->jest
 ```
