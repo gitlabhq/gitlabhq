@@ -20,7 +20,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
 
     before do
       merge_request.update!(merge_commit_sha: sha)
-      project.add_user(user, role)
+      project.add_member(user, role)
       sign_in(user)
     end
 

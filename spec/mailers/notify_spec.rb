@@ -1550,7 +1550,7 @@ RSpec.describe Notify do
     end
 
     describe 'invitations' do
-      let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
+      let(:owner) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
       let(:group_member) { invite_to_group(group, inviter: inviter) }
       let(:inviter) { owner }
 
@@ -1605,7 +1605,7 @@ RSpec.describe Notify do
     end
 
     describe 'group invitation reminders' do
-      let_it_be(:inviter) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
+      let_it_be(:inviter) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
 
       let(:group_member) { invite_to_group(group, inviter: inviter) }
 
@@ -1688,7 +1688,7 @@ RSpec.describe Notify do
 
     describe 'group invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
+      let(:owner) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
       let(:group_member) do
         invitee = invite_to_group(group, inviter: owner)
         invitee.accept_invite!(invited_user)
@@ -1714,7 +1714,7 @@ RSpec.describe Notify do
     end
 
     describe 'group invitation declined' do
-      let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
+      let(:owner) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
       let(:group_member) do
         invitee = invite_to_group(group, inviter: owner)
         invitee.decline_invite!

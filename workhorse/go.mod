@@ -6,7 +6,7 @@ require (
 	github.com/Azure/azure-storage-blob-go v0.14.0
 	github.com/BurntSushi/toml v0.3.1
 	github.com/FZambia/sentinel v1.1.0
-	github.com/alecthomas/chroma v0.10.0
+	github.com/alecthomas/chroma/v2 v2.2.0
 	github.com/aws/aws-sdk-go v1.43.31
 	github.com/disintegration/imaging v1.6.2
 	github.com/getsentry/raven-go v0.2.0

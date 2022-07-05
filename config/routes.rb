@@ -55,6 +55,8 @@ Rails.application.routes.draw do
   match '/oauth/token' => 'oauth/tokens#create', via: :options
   match '/oauth/revoke' => 'oauth/tokens#revoke', via: :options
 
+  match '/-/jira_connect/oauth_application_id' => 'jira_connect/oauth_application_ids#show', via: :options
+
   # Sign up
   scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
     resource :welcome, only: [:show, :update], controller: 'welcome' do

@@ -7,7 +7,7 @@ RSpec.describe 'Project > Show > User interacts with auto devops implicitly enab
   let(:user) { create(:user) }
 
   before do
-    project.add_user(user, role)
+    project.add_member(user, role)
     sign_in(user)
   end
 

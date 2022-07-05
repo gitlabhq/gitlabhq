@@ -59,7 +59,7 @@ RSpec.describe Namespace::RootStorageStatisticsPolicy do
 
         with_them do
           before do
-            group.add_user(user, user_type) unless user_type == :non_member
+            group.add_member(user, user_type) unless user_type == :non_member
           end
 
           it { is_expected.to eq(outcome) }

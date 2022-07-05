@@ -675,14 +675,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               end
             end
 
-            context 'when variables are stored in trigger_request' do
-              before do
-                trigger_request.update_attribute(:variables, { TRIGGER_KEY_1: 'TRIGGER_VALUE_1' } )
-              end
-
-              it_behaves_like 'expected variables behavior'
-            end
-
             context 'when variables are stored in pipeline_variables' do
               before do
                 create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')

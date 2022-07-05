@@ -361,8 +361,8 @@ class Group < Namespace
     owners.include?(user)
   end
 
-  def add_users(users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
-    Members::Groups::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
+  def add_members(users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
+    Members::Groups::CreatorService.add_members( # rubocop:disable CodeReuse/ServiceClass
       self,
       users,
       access_level,
@@ -373,8 +373,8 @@ class Group < Namespace
     )
   end
 
-  def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false, blocking_refresh: true)
-    Members::Groups::CreatorService.add_user( # rubocop:disable CodeReuse/ServiceClass
+  def add_member(user, access_level, current_user: nil, expires_at: nil, ldap: false, blocking_refresh: true)
+    Members::Groups::CreatorService.add_member( # rubocop:disable CodeReuse/ServiceClass
       self,
       user,
       access_level,
@@ -386,23 +386,23 @@ class Group < Namespace
   end
 
   def add_guest(user, current_user = nil)
-    add_user(user, :guest, current_user: current_user)
+    add_member(user, :guest, current_user: current_user)
   end
 
   def add_reporter(user, current_user = nil)
-    add_user(user, :reporter, current_user: current_user)
+    add_member(user, :reporter, current_user: current_user)
   end
 
   def add_developer(user, current_user = nil)
-    add_user(user, :developer, current_user: current_user)
+    add_member(user, :developer, current_user: current_user)
   end
 
   def add_maintainer(user, current_user = nil)
-    add_user(user, :maintainer, current_user: current_user)
+    add_member(user, :maintainer, current_user: current_user)
   end
 
   def add_owner(user, current_user = nil)
-    add_user(user, :owner, current_user: current_user)
+    add_member(user, :owner, current_user: current_user)
   end
 
   def member?(user, min_access_level = Gitlab::Access::GUEST)

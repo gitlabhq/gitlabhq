@@ -13,7 +13,7 @@ RSpec.describe DisallowTwoFactorForGroupWorker do
   end
 
   it "updates group members" do
-    group.add_user(user, GroupMember::DEVELOPER)
+    group.add_member(user, GroupMember::DEVELOPER)
 
     described_class.new.perform(group.id)
 

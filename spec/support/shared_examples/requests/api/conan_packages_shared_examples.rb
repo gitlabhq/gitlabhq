@@ -72,7 +72,7 @@ RSpec.shared_examples 'conan search endpoint' do
         project.update!(visibility: 'private')
         project.team.truncate
         user.project_authorizations.delete_all
-        project.add_user(user, role) unless role == :anonymous
+        project.add_member(user, role) unless role == :anonymous
 
         get api(url), params: params, headers: headers
       end

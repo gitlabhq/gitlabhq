@@ -9,7 +9,7 @@ RSpec.describe 'issuable list', :js do
   issuable_types = [:issue, :merge_request]
 
   before do
-    project.add_user(user, :developer)
+    project.add_member(user, :developer)
     sign_in(user)
     issuable_types.each { |type| create_issuables(type) }
   end

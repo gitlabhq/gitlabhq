@@ -173,7 +173,7 @@ RSpec.describe API::Events do
         let(:second_note) { create(:note_on_issue, project: create(:project)) }
 
         before do
-          second_note.project.add_user(user, :developer)
+          second_note.project.add_member(user, :developer)
 
           [second_note].each do |note|
             EventCreateService.new.leave_note(note, user)

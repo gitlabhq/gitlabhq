@@ -396,6 +396,16 @@ gitlab:
       tag: v15.1.0-fips
 ```
 
+## FIPS Performance Benchmarking
+
+The Quality Engineering Enablement team assists these efforts by checking if FIPS-enabled environments perform well compared to non-FIPS environments.
+
+Testing shows an impact in some places, such as Gitaly SSL, but it's not large enough to impact customers.
+
+You can find more information on FIPS performance benchmarking in the following issue:
+
+- [Benchmark performance of FIPS reference architecture](https://gitlab.com/gitlab-org/gitlab/-/issues/364051#note_1010450415)
+
 ## Verify FIPS
 
 The following sections describe ways you can verify if FIPS is enabled.

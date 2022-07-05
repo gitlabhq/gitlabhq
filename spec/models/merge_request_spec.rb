@@ -658,7 +658,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     before do
-      project.add_user(user, :developer)
+      project.add_member(user, :developer)
     end
 
     describe '.total_time_to_merge' do

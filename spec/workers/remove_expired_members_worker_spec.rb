@@ -47,7 +47,7 @@ RSpec.describe RemoveExpiredMembersWorker do
         let_it_be(:expired_project_bot) { create(:user, :project_bot) }
 
         before do
-          project.add_user(expired_project_bot, :maintainer, expires_at: 1.day.from_now)
+          project.add_member(expired_project_bot, :maintainer, expires_at: 1.day.from_now)
           travel_to(3.days.from_now)
         end
 
@@ -67,7 +67,7 @@ RSpec.describe RemoveExpiredMembersWorker do
         let_it_be(:other_project_bot) { create(:user, :project_bot) }
 
         before do
-          project.add_user(other_project_bot, :maintainer, expires_at: 10.days.from_now)
+          project.add_member(other_project_bot, :maintainer, expires_at: 10.days.from_now)
           travel_to(3.days.from_now)
         end
 

@@ -69,28 +69,32 @@ module QuickActions
       Gitlab::QuickActions::Extractor.new(self.class.command_definitions)
     end
 
+    # Find users for commands like /assign
+    #
+    # eg. /assign me and @jane and jack
     def extract_users(params)
-      return [] if params.blank?
+      Gitlab::QuickActions::UsersExtractor
+        .new(current_user, project: project, group: group, target: quick_action_target, text: params)
+        .execute
 
-      # We are using the a simple User.by_username query here rather than a ReferenceExtractor
-      # because the needs here are much simpler: we only deal in usernames, and
-      # want to also handle bare usernames. The ReferenceExtractor also has
-      # different behaviour, and will return all group members for groups named
-      # using a user-style reference, which is not in scope here.
-      #
-      # nb: underscores may be passed in escaped to protect them from markdown rendering
-      args        = params.split(/\s|,/).select(&:present?).uniq - ['and']
-      args.map! { _1.gsub(/\\_/, '_') }
-      usernames   = (args - ['me']).map { _1.delete_prefix('@') }
-      found       = User.by_username(usernames).to_a.select { can?(:read_user, _1) }
-      found_names = found.map(&:username).map(&:downcase).to_set
-      missing     = args.reject do |arg|
-        arg == 'me' || found_names.include?(arg.downcase.delete_prefix('@'))
-      end.map { "'#{_1}'" }
+    rescue Gitlab::QuickActions::UsersExtractor::Error => err
+      extract_users_failed(err)
+    end
 
-      failed_parse(format(_("Failed to find users for %{missing}"), missing: missing.to_sentence)) if missing.present?
-
-      found + [current_user].select { args.include?('me') }
+    def extract_users_failed(err)
+      case err
+      when Gitlab::QuickActions::UsersExtractor::MissingError
+        failed_parse(format(_("Failed to find users for %{missing}"), missing: err.message))
+      when Gitlab::QuickActions::UsersExtractor::TooManyRefsError
+        failed_parse(format(_('Too many references. Quick actions are limited to at most %{max_count} user references'),
+                 max_count: err.limit))
+      when Gitlab::QuickActions::UsersExtractor::TooManyFoundError
+        failed_parse(format(_("Too many users found. Quick actions are limited to at most %{max_count} users"),
+                 max_count: err.limit))
+      else
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(err)
+        failed_parse(_('Something went wrong'))
+      end
     end
 
     def find_milestones(project, params = {})

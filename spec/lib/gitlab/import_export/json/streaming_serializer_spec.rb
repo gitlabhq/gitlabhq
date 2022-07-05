@@ -171,4 +171,27 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
       expect(described_class.batch_size(exportable)).to eq(described_class::BATCH_SIZE)
     end
   end
+
+  describe '#serialize_relation' do
+    context 'when record is a merge request' do
+      let(:json_writer) do
+        Class.new do
+          def write_relation_array(_, _, enumerator)
+            enumerator.each { _1 }
+          end
+        end.new
+      end
+
+      it 'removes cached external diff' do
+        merge_request = create(:merge_request, source_project: exportable, target_project: exportable)
+        cache_dir = merge_request.merge_request_diff.send(:external_diff_cache_dir)
+
+        expect(subject).to receive(:remove_cached_external_diff).with(merge_request).twice
+
+        subject.serialize_relation({ merge_requests: { include: [] } })
+
+        expect(Dir.exist?(cache_dir)).to eq(false)
+      end
+    end
+  end
 end

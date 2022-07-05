@@ -320,7 +320,7 @@ RSpec.describe API::Invitations do
       let(:source) { project }
     end
 
-    it 'records queries', :request_store, :use_sql_query_cache do
+    it 'does not exceed expected queries count for emails', :request_store, :use_sql_query_cache do
       post invitations_url(project, maintainer), params: { email: email, access_level: Member::DEVELOPER }
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
@@ -336,7 +336,25 @@ RSpec.describe API::Invitations do
       end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
     end
 
-    it 'records queries with secondary emails', :request_store, :use_sql_query_cache do
+    it 'does not exceed expected queries count for user_ids', :request_store, :use_sql_query_cache do
+      stranger2 = create(:user)
+
+      post invitations_url(project, maintainer), params: { user_id: stranger.id, access_level: Member::DEVELOPER }
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post invitations_url(project, maintainer), params: { user_id: stranger2.id, access_level: Member::DEVELOPER }
+      end
+
+      users = create_list(:user, 5)
+
+      unresolved_n_plus_ones = 116 # 51 for 1 vs 167 for 5 - currently there are 29 queries added per user
+
+      expect do
+        post invitations_url(project, maintainer), params: { user_id: users.map(&:id).join(','), access_level: Member::DEVELOPER }
+      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+    end
+
+    it 'does not exceed expected queries count with secondary emails', :request_store, :use_sql_query_cache do
       create(:email, email: email, user: create(:user))
 
       post invitations_url(project, maintainer), params: { email: email, access_level: Member::DEVELOPER }
@@ -365,7 +383,7 @@ RSpec.describe API::Invitations do
       let(:source) { group }
     end
 
-    it 'records queries', :request_store, :use_sql_query_cache do
+    it 'does not exceed expected queries count for emails', :request_store, :use_sql_query_cache do
       post invitations_url(group, maintainer), params: { email: email, access_level: Member::DEVELOPER }
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
@@ -381,7 +399,7 @@ RSpec.describe API::Invitations do
       end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
     end
 
-    it 'records queries with secondary emails', :request_store, :use_sql_query_cache do
+    it 'does not exceed expected queries count for secondary emails', :request_store, :use_sql_query_cache do
       create(:email, email: email, user: create(:user))
 
       post invitations_url(group, maintainer), params: { email: email, access_level: Member::DEVELOPER }

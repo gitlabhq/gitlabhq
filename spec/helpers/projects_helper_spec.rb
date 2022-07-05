@@ -698,7 +698,7 @@ RSpec.describe ProjectsHelper do
     def grant_user_access(project, user, access)
       case access
       when :developer, :maintainer
-        project.add_user(user, access)
+        project.add_member(user, access)
       when :owner
         project.namespace.update!(owner: user)
       end

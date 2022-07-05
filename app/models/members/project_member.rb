@@ -21,30 +21,30 @@ class ProjectMember < Member
   end
 
   class << self
-    # Add users to projects with passed access option
+    # Add members to projects with passed access option
     #
     # access can be an integer representing a access code
     # or symbol like :maintainer representing role
     #
     # Ex.
-    #   add_users_to_projects(
+    #   add_members_to_projects(
     #     project_ids,
     #     user_ids,
     #     ProjectMember::MAINTAINER
     #   )
     #
-    #   add_users_to_projects(
+    #   add_members_to_projects(
     #     project_ids,
     #     user_ids,
     #     :maintainer
     #   )
     #
-    def add_users_to_projects(project_ids, users, access_level, current_user: nil, expires_at: nil)
+    def add_members_to_projects(project_ids, users, access_level, current_user: nil, expires_at: nil)
       self.transaction do
         project_ids.each do |project_id|
           project = Project.find(project_id)
 
-          Members::Projects::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
+          Members::Projects::CreatorService.add_members( # rubocop:disable CodeReuse/ServiceClass
             project,
             users,
             access_level,

@@ -236,7 +236,7 @@ RSpec.describe 'Admin Groups' do
       it 'renders relative time' do
         expire_time = Time.current + 2.days
         current_user.update!(time_display_relative: true)
-        group.add_user(user, Gitlab::Access::REPORTER, expires_at: expire_time)
+        group.add_member(user, Gitlab::Access::REPORTER, expires_at: expire_time)
 
         visit admin_group_path(group)
 
@@ -246,7 +246,7 @@ RSpec.describe 'Admin Groups' do
       it 'renders absolute time' do
         expire_time = Time.current.tomorrow.middle_of_day
         current_user.update!(time_display_relative: false)
-        group.add_user(user, Gitlab::Access::REPORTER, expires_at: expire_time)
+        group.add_member(user, Gitlab::Access::REPORTER, expires_at: expire_time)
 
         visit admin_group_path(group)
 
@@ -257,7 +257,7 @@ RSpec.describe 'Admin Groups' do
 
   describe 'add admin himself to a group' do
     before do
-      group.add_user(:user, Gitlab::Access::OWNER)
+      group.add_member(:user, Gitlab::Access::OWNER)
     end
 
     it 'adds admin a to a group as developer', :js do
@@ -274,7 +274,7 @@ RSpec.describe 'Admin Groups' do
 
   describe 'admin removes themself from a group', :js do
     it 'removes admin from the group' do
-      group.add_user(current_user, Gitlab::Access::DEVELOPER)
+      group.add_member(current_user, Gitlab::Access::DEVELOPER)
 
       visit group_group_members_path(group)
 

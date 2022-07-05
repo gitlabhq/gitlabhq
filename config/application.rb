@@ -406,6 +406,16 @@ module Gitlab
         end
       end
 
+      # Cross-origin requests must be enabled to fetch the self-managed application oauth application ID
+      # for the GitLab for Jira app.
+      allow do
+        origins '*'
+        resource '/-/jira_connect/oauth_application_id',
+          headers: :any,
+          methods: %i(get options),
+          credentials: false
+      end
+
       # These are routes from doorkeeper-openid_connect:
       # https://github.com/doorkeeper-gem/doorkeeper-openid_connect#routes
       allow do

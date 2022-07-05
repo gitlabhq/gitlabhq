@@ -962,7 +962,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         group = create(:group)
         project = create(:project, group: group)
         item = create(factory, project: project)
-        group.add_user(user, :owner)
+        group.add_member(user, :owner)
 
         expect(items).to include(item)
       end

@@ -78,7 +78,7 @@ or API. However, administrators can use a workaround:
    bot.confirm
 
    # Add the bot to the group with the required role.
-   group.add_user(bot, :maintainer)
+   group.add_member(bot, :maintainer)
 
    # Give the bot a personal access token.
    token = bot.personal_access_tokens.create(scopes:[:api, :write_repository], name: 'group_token')

@@ -163,7 +163,7 @@ export default class SSHMirror {
     const $fingerprintsList = this.$hostKeysInformation.find('.js-fingerprints-list');
     let fingerprints = '';
     sshHostKeys.fingerprints.forEach((fingerprint) => {
-      const escFingerprints = escape(fingerprint.fingerprint);
+      const escFingerprints = escape(fingerprint.fingerprint_sha256 || fingerprint.fingerprint);
       fingerprints += `<code>${escFingerprints}</code>`;
     });
 

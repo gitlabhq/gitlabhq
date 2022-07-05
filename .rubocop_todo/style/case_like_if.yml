@@ -24,7 +24,6 @@ Style/CaseLikeIf:
     - 'ee/app/controllers/concerns/credentials_inventory_actions.rb'
     - 'ee/app/finders/ee/notes_finder.rb'
     - 'ee/app/helpers/ee/branches_helper.rb'
-    - 'ee/app/helpers/ee/namespace_storage_limit_alert_helper.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/app/services/merge_request_approval_settings/update_service.rb'
     - 'ee/lib/gitlab/alert_management/alert_payload_field_extractor.rb'

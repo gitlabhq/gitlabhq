@@ -72,7 +72,7 @@ RSpec.describe ProjectStatisticsPolicy do
 
         before do
           unless [:unauthenticated, :non_member].include?(user_type)
-            project.add_user(external, user_type)
+            project.add_member(external, user_type)
           end
         end
 

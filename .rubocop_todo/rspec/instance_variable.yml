@@ -14,7 +14,6 @@ RSpec/InstanceVariable:
     - ee/spec/graphql/types/vulnerability_request_type_spec.rb
     - ee/spec/graphql/types/vulnerability_response_type_spec.rb
     - ee/spec/helpers/ee/issuables_helper_spec.rb
-    - ee/spec/helpers/ee/namespace_storage_limit_alert_helper_spec.rb
     - ee/spec/helpers/ee/wiki_helper_spec.rb
     - ee/spec/helpers/notes_helper_spec.rb
     - ee/spec/helpers/search_helper_spec.rb

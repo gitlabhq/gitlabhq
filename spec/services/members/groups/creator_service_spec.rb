@@ -14,13 +14,13 @@ RSpec.describe Members::Groups::CreatorService do
 
   it_behaves_like 'owner management'
 
-  describe '.add_users' do
+  describe '.add_members' do
     it_behaves_like 'bulk member creation' do
       let_it_be(:member_type) { GroupMember }
     end
   end
 
-  describe '.add_user' do
+  describe '.add_member' do
     it_behaves_like 'member creation' do
       let_it_be(:member_type) { GroupMember }
     end
@@ -30,7 +30,7 @@ RSpec.describe Members::Groups::CreatorService do
         expect(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait).once
 
         1.upto(3) do
-          described_class.add_user(source, user, :maintainer)
+          described_class.add_member(source, user, :maintainer)
         end
       end
     end

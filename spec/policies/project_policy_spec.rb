@@ -1736,7 +1736,7 @@ RSpec.describe ProjectPolicy do
           %w(guest reporter developer maintainer).each do |role|
             context role do
               before do
-                project.add_user(current_user, role.to_sym)
+                project.add_member(current_user, role.to_sym)
               end
 
               if role == 'guest'
@@ -1770,7 +1770,7 @@ RSpec.describe ProjectPolicy do
           %w(guest reporter developer maintainer).each do |role|
             context role do
               before do
-                project.add_user(current_user, role.to_sym)
+                project.add_member(current_user, role.to_sym)
               end
 
               it { is_expected.to be_allowed(:read_ci_cd_analytics) }
@@ -1800,7 +1800,7 @@ RSpec.describe ProjectPolicy do
         %w(guest reporter developer maintainer).each do |role|
           context role do
             before do
-              project.add_user(current_user, role.to_sym)
+              project.add_member(current_user, role.to_sym)
             end
 
             if role == 'guest'

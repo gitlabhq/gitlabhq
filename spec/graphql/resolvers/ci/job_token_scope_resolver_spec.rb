@@ -17,7 +17,7 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
   describe '#resolve' do
     context 'with access to scope' do
       before do
-        project.add_user(current_user, :maintainer)
+        project.add_member(current_user, :maintainer)
       end
 
       it 'returns nil when scope is not enabled' do
@@ -51,7 +51,7 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
 
     context 'without access to scope' do
       before do
-        project.add_user(current_user, :developer)
+        project.add_member(current_user, :developer)
       end
 
       it 'generates an error' do

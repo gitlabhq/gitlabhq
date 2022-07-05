@@ -251,13 +251,13 @@ RSpec.describe ProjectTeam do
     end
   end
 
-  describe '#add_users' do
+  describe '#add_members' do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
     let(:project) { create(:project) }
 
     it 'add the given users to the team' do
-      project.team.add_users([user1, user2], :reporter)
+      project.team.add_members([user1, user2], :reporter)
 
       expect(project.team.reporter?(user1)).to be(true)
       expect(project.team.reporter?(user2)).to be(true)
@@ -265,7 +265,7 @@ RSpec.describe ProjectTeam do
 
     context 'when `tasks_to_be_done` and `tasks_project_id` are passed' do
       before do
-        project.team.add_users([user1], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
+        project.team.add_members([user1], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
       end
 
       it 'creates a member_task with the correct attributes', :aggregate_failures do
@@ -277,12 +277,12 @@ RSpec.describe ProjectTeam do
     end
   end
 
-  describe '#add_user' do
+  describe '#add_member' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
 
     it 'add the given user to the team' do
-      project.team.add_user(user, :reporter)
+      project.team.add_member(user, :reporter)
 
       expect(project.team.reporter?(user)).to be(true)
     end

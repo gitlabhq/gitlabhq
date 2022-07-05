@@ -579,9 +579,9 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
     context 'group setting' do
       before do
         group1 = create :group, name: 'Group 1', require_two_factor_authentication: true
-        group1.add_user(user, GroupMember::DEVELOPER)
+        group1.add_member(user, GroupMember::DEVELOPER)
         group2 = create :group, name: 'Group 2', require_two_factor_authentication: true
-        group2.add_user(user, GroupMember::DEVELOPER)
+        group2.add_member(user, GroupMember::DEVELOPER)
       end
 
       context 'with grace period defined' do

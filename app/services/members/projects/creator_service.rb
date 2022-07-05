@@ -32,7 +32,7 @@ module Members
       end
 
       def adding_the_creator_as_owner_in_a_personal_project?
-        # this condition is reached during testing setup a lot due to use of `.add_user`
+        # this condition is reached during testing setup a lot due to use of `.add_member`
         member.project.personal_namespace_holder?(member.user)
       end
 

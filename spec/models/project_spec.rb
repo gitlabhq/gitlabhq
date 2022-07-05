@@ -821,7 +821,7 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe 'delegation' do
-    [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_user, :add_users].each do |method|
+    [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
@@ -1862,7 +1862,7 @@ RSpec.describe Project, factory_default: :keep do
 
     describe 'when a user has access to a project' do
       before do
-        project.add_user(user, Gitlab::Access::MAINTAINER)
+        project.add_member(user, Gitlab::Access::MAINTAINER)
       end
 
       it { is_expected.to eq([project]) }

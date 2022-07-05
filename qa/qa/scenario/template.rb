@@ -86,3 +86,5 @@ module QA
     end
   end
 end
+
+QA::Scenario::Template.prepend_mod_with('Scenario::Template', namespace: QA)

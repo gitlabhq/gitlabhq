@@ -409,7 +409,7 @@ RSpec.describe ProjectsController do
 
         before do
           project.update!(visibility: project_visibility.to_s)
-          project.team.add_user(user, :guest) if user_type == :member
+          project.team.add_member(user, :guest) if user_type == :member
           sign_in(user) unless user_type == :anonymous
         end
 

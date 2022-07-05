@@ -20,7 +20,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
 
   context 'when signed in' do
     before do
-      project.add_user(user, membership_level)
+      project.add_member(user, membership_level)
 
       sign_in(user)
     end

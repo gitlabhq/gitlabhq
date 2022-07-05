@@ -471,21 +471,60 @@ RSpec.describe DiffHelper do
 
   describe '#conflicts' do
     let(:merge_request) { instance_double(MergeRequest) }
+    let(:merge_ref_head_diff) { true }
+    let(:can_be_resolved_in_ui?) { true }
+    let(:allow_tree_conflicts) { false }
+    let(:files) { [instance_double(Gitlab::Conflict::File, path: 'a')] }
+    let(:exception) { nil }
 
     before do
       allow(helper).to receive(:merge_request).and_return(merge_request)
-      allow(helper).to receive(:options).and_return(merge_ref_head_diff: true)
+      allow(helper).to receive(:options).and_return(merge_ref_head_diff: merge_ref_head_diff)
+
+      allow_next_instance_of(MergeRequests::Conflicts::ListService, merge_request, allow_tree_conflicts: allow_tree_conflicts) do |svc|
+        allow(svc).to receive(:can_be_resolved_in_ui?).and_return(can_be_resolved_in_ui?)
+
+        if exception.present?
+          allow(svc).to receive_message_chain(:conflicts, :files).and_raise(exception)
+        else
+          allow(svc).to receive_message_chain(:conflicts, :files).and_return(files)
+        end
+      end
+    end
+
+    it 'returns list of conflicts indexed by path' do
+      expect(helper.conflicts).to eq('a' => files.first)
+    end
+
+    context 'when merge_ref_head_diff option is false' do
+      let(:merge_ref_head_diff) { false }
+
+      it 'returns nil' do
+        expect(helper.conflicts).to be_nil
+      end
+    end
+
+    context 'when conflicts cannot be resolved in UI' do
+      let(:can_be_resolved_in_ui?) { false }
+
+      it 'returns nil' do
+        expect(helper.conflicts).to be_nil
+      end
+
+      context 'when allow_tree_conflicts is true' do
+        let(:allow_tree_conflicts) { true }
+
+        it 'returns list of conflicts' do
+          expect(helper.conflicts(allow_tree_conflicts: allow_tree_conflicts)).to eq('a' => files.first)
+        end
+      end
     end
 
     context 'when Gitlab::Git::Conflict::Resolver::ConflictSideMissing exception is raised' do
-      before do
-        allow_next_instance_of(MergeRequests::Conflicts::ListService, merge_request, allow_tree_conflicts: true) do |svc|
-          allow(svc).to receive_message_chain(:conflicts, :files).and_raise(Gitlab::Git::Conflict::Resolver::ConflictSideMissing)
-        end
-      end
+      let(:exception) { Gitlab::Git::Conflict::Resolver::ConflictSideMissing }
 
       it 'returns an empty hash' do
-        expect(helper.conflicts(allow_tree_conflicts: true)).to eq({})
+        expect(helper.conflicts).to eq({})
       end
     end
   end

@@ -1,8 +1,5 @@
 ---
 RSpec/RepeatedExampleGroupBody:
-  # Offense count: 143
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
     - 'ee/spec/controllers/ee/groups_controller_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/vulnerability_reference_filters_spec.rb'
@@ -18,7 +15,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/update_spec.rb'
     - 'ee/spec/requests/groups/security/credentials_controller_spec.rb'
     - 'ee/spec/services/app_sec/dast/profiles/create_associations_service_spec.rb'
-    - 'ee/spec/services/groups/sync_service_spec.rb'
     - 'spec/controllers/groups/registry/repositories_controller_spec.rb'
     - 'spec/controllers/projects/blob_controller_spec.rb'
     - 'spec/controllers/projects/graphs_controller_spec.rb'
@@ -30,6 +26,7 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/features/security/project/private_access_spec.rb'
     - 'spec/finders/packages/nuget/package_finder_spec.rb'
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
+    - 'spec/helpers/groups_helper_spec.rb'
     - 'spec/lib/api/entities/application_setting_spec.rb'
     - 'spec/lib/banzai/filter/references/commit_range_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/commit_reference_filter_spec.rb'
@@ -38,9 +35,9 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/lib/gitlab/ci/config/entry/release_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/build_spec.rb'
     - 'spec/lib/gitlab/ci/yaml_processor_spec.rb'
+    - 'spec/lib/gitlab/database/migrations/batched_background_migration_helpers_spec.rb'
     - 'spec/lib/gitlab/empty_search_results_spec.rb'
     - 'spec/lib/gitlab/import_export/project/sample/relation_factory_spec.rb'
-    - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
     - 'spec/lib/gitlab/lfs/client_spec.rb'
     - 'spec/lib/gitlab/pagination/keyset/simple_order_builder_spec.rb'
     - 'spec/lib/gitlab/sanitizers/exif_spec.rb'

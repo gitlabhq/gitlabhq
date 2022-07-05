@@ -20,7 +20,7 @@ RSpec.describe "Admin::Projects" do
     it 'renders relative time' do
       expire_time = Time.current + 2.days
       current_user.update!(time_display_relative: true)
-      project.add_user(user, Gitlab::Access::REPORTER, expires_at: expire_time)
+      project.add_member(user, Gitlab::Access::REPORTER, expires_at: expire_time)
 
       visit admin_project_path(project)
 
@@ -30,7 +30,7 @@ RSpec.describe "Admin::Projects" do
     it 'renders absolute time' do
       expire_time = Time.current.tomorrow.middle_of_day
       current_user.update!(time_display_relative: false)
-      project.add_user(user, Gitlab::Access::REPORTER, expires_at: expire_time)
+      project.add_member(user, Gitlab::Access::REPORTER, expires_at: expire_time)
 
       visit admin_project_path(project)
 

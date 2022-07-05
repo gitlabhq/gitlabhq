@@ -828,9 +828,7 @@
 .frontend:rules:eslint-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    # We already have `static-analysis as-if-foss` which already runs `lint:eslint:all` if the `pipeline:run-as-if-foss` label is set.
     - <<: *if-merge-request-labels-as-if-foss
-      when: never
     - <<: *if-merge-request
       changes: *frontend-patterns
 

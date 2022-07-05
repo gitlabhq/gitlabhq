@@ -32,14 +32,14 @@ RSpec.describe Projects::ForkService do
                                external_authorization_classification_label: 'classification-label')
         @to_user = create(:user)
         @to_namespace = @to_user.namespace
-        @from_project.add_user(@to_user, :developer)
+        @from_project.add_member(@to_user, :developer)
       end
 
       context 'fork project' do
         context 'when forker is a guest' do
           before do
             @guest = create(:user)
-            @from_project.add_user(@guest, :guest)
+            @from_project.add_member(@guest, :guest)
           end
           subject { fork_project(@from_project, @guest, using_service: true) }
 
@@ -261,10 +261,10 @@ RSpec.describe Projects::ForkService do
                               description: 'Wow, such a cool project!',
                               ci_config_path: 'debian/salsa-ci.yml')
         @group = create(:group)
-        @group.add_user(@group_owner, GroupMember::OWNER)
-        @group.add_user(@developer,   GroupMember::DEVELOPER)
-        @project.add_user(@developer,   :developer)
-        @project.add_user(@group_owner, :developer)
+        @group.add_member(@group_owner, GroupMember::OWNER)
+        @group.add_member(@developer,   GroupMember::DEVELOPER)
+        @project.add_member(@developer,   :developer)
+        @project.add_member(@group_owner, :developer)
         @opts = { namespace: @group, using_service: true }
       end
 

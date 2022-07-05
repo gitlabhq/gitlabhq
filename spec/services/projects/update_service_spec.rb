@@ -424,7 +424,7 @@ RSpec.describe Projects::UpdateService do
 
       it 'does not update when not project owner' do
         maintainer = create(:user)
-        project.add_user(maintainer, :maintainer)
+        project.add_member(maintainer, :maintainer)
 
         expect { update_project(project, maintainer, emails_disabled: true) }
           .not_to change { project.emails_disabled }

@@ -219,19 +219,19 @@ RSpec.describe Gitlab::UserAccess do
   describe '#can_create_tag?' do
     describe 'push to none protected tag' do
       it 'returns true if user is a maintainer' do
-        project.add_user(user, :maintainer)
+        project.add_member(user, :maintainer)
 
         expect(access.can_create_tag?('random_tag')).to be_truthy
       end
 
       it 'returns true if user is a developer' do
-        project.add_user(user, :developer)
+        project.add_member(user, :developer)
 
         expect(access.can_create_tag?('random_tag')).to be_truthy
       end
 
       it 'returns false if user is a reporter' do
-        project.add_user(user, :reporter)
+        project.add_member(user, :reporter)
 
         expect(access.can_create_tag?('random_tag')).to be_falsey
       end
@@ -242,19 +242,19 @@ RSpec.describe Gitlab::UserAccess do
       let(:not_existing_tag) { create :protected_tag, project: project }
 
       it 'returns true if user is a maintainer' do
-        project.add_user(user, :maintainer)
+        project.add_member(user, :maintainer)
 
         expect(access.can_create_tag?(tag.name)).to be_truthy
       end
 
       it 'returns false if user is a developer' do
-        project.add_user(user, :developer)
+        project.add_member(user, :developer)
 
         expect(access.can_create_tag?(tag.name)).to be_falsey
       end
 
       it 'returns false if user is a reporter' do
-        project.add_user(user, :reporter)
+        project.add_member(user, :reporter)
 
         expect(access.can_create_tag?(tag.name)).to be_falsey
       end
@@ -266,19 +266,19 @@ RSpec.describe Gitlab::UserAccess do
       end
 
       it 'returns true if user is a maintainer' do
-        project.add_user(user, :maintainer)
+        project.add_member(user, :maintainer)
 
         expect(access.can_create_tag?(@tag.name)).to be_truthy
       end
 
       it 'returns true if user is a developer' do
-        project.add_user(user, :developer)
+        project.add_member(user, :developer)
 
         expect(access.can_create_tag?(@tag.name)).to be_truthy
       end
 
       it 'returns false if user is a reporter' do
-        project.add_user(user, :reporter)
+        project.add_member(user, :reporter)
 
         expect(access.can_create_tag?(@tag.name)).to be_falsey
       end
@@ -288,19 +288,19 @@ RSpec.describe Gitlab::UserAccess do
   describe '#can_delete_branch?' do
     describe 'delete unprotected branch' do
       it 'returns true if user is a maintainer' do
-        project.add_user(user, :maintainer)
+        project.add_member(user, :maintainer)
 
         expect(access.can_delete_branch?('random_branch')).to be_truthy
       end
 
       it 'returns true if user is a developer' do
-        project.add_user(user, :developer)
+        project.add_member(user, :developer)
 
         expect(access.can_delete_branch?('random_branch')).to be_truthy
       end
 
       it 'returns false if user is a reporter' do
-        project.add_user(user, :reporter)
+        project.add_member(user, :reporter)
 
         expect(access.can_delete_branch?('random_branch')).to be_falsey
       end
@@ -310,19 +310,19 @@ RSpec.describe Gitlab::UserAccess do
       let(:branch) { create(:protected_branch, project: project, name: "test") }
 
       it 'returns true if user is a maintainer' do
-        project.add_user(user, :maintainer)
+        project.add_member(user, :maintainer)
 
         expect(access.can_delete_branch?(branch.name)).to be_truthy
       end
 
       it 'returns false if user is a developer' do
-        project.add_user(user, :developer)
+        project.add_member(user, :developer)
 
         expect(access.can_delete_branch?(branch.name)).to be_falsey
       end
 
       it 'returns false if user is a reporter' do
-        project.add_user(user, :reporter)
+        project.add_member(user, :reporter)
 
         expect(access.can_delete_branch?(branch.name)).to be_falsey
       end
@@ -334,7 +334,7 @@ RSpec.describe Gitlab::UserAccess do
 
     context 'when user cannot push_code to a project repository (eg. as a guest)' do
       it 'is false' do
-        project.add_user(user, :guest)
+        project.add_member(user, :guest)
 
         expect(access.can_push_for_ref?(ref)).to be_falsey
       end
@@ -342,7 +342,7 @@ RSpec.describe Gitlab::UserAccess do
 
     context 'when user can push_code to a project repository (eg. as a developer)' do
       it 'is true' do
-        project.add_user(user, :developer)
+        project.add_member(user, :developer)
 
         expect(access.can_push_for_ref?(ref)).to be_truthy
       end

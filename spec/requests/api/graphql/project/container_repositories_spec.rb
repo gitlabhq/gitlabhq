@@ -81,7 +81,7 @@ RSpec.describe 'getting container repositories in a project' do
     with_them do
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility.to_s.upcase, false))
-        project.add_user(user, role) unless role == :anonymous
+        project.add_member(user, role) unless role == :anonymous
       end
 
       it 'return the proper response' do

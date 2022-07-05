@@ -186,6 +186,12 @@ graphql-schema-dump:
       - tmp/tests/graphql/gitlab_schema.graphql
       - tmp/tests/graphql/gitlab_schema.json
 
+graphql-schema-dump as-if-foss:
+  extends:
+    - graphql-schema-dump
+    - .frontend:rules:eslint-as-if-foss
+    - .as-if-foss
+
 .frontend-test-base:
   extends:
     - .default-retry

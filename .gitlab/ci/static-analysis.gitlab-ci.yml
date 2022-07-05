@@ -49,7 +49,7 @@ static-verification-with-database:
   variables:
     SETUP_DB: "true"
 
-generate-apollo-graphl-schema:
+generate-apollo-graphql-schema:
   extends:
     - .static-analysis-base
     - .frontend:rules:default-frontend-jobs
@@ -66,12 +66,19 @@ generate-apollo-graphl-schema:
     paths:
       - "${GRAPHQL_SCHEMA_APOLLO_FILE}"
 
+generate-apollo-graphql-schema as-if-foss:
+  extends:
+    - generate-apollo-graphql-schema
+    - .frontend:rules:eslint-as-if-foss
+    - .as-if-foss
+  needs: ['graphql-schema-dump as-if-foss']
+
 eslint:
   extends:
     - .static-analysis-base
     - .yarn-cache
     - .frontend:rules:default-frontend-jobs
-  needs: ['generate-apollo-graphl-schema']
+  needs: ['generate-apollo-graphql-schema']
   variables:
     USE_BUNDLE_INSTALL: "false"
   script:
@@ -83,6 +90,7 @@ eslint as-if-foss:
     - eslint
     - .frontend:rules:eslint-as-if-foss
     - .as-if-foss
+  needs: ['generate-apollo-graphql-schema as-if-foss']
 
 haml-lint foss:
   extends:

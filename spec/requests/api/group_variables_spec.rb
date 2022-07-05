@@ -10,7 +10,7 @@ RSpec.describe API::GroupVariables do
   let(:access_level) {}
 
   before do
-    group.add_user(user, access_level) if access_level
+    group.add_member(user, access_level) if access_level
   end
 
   describe 'GET /groups/:id/variables' do

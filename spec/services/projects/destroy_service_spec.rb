@@ -224,7 +224,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   context 'when flushing caches fail due to Redis' do
     before do
       new_user = create(:user)
-      project.team.add_user(new_user, Gitlab::Access::DEVELOPER)
+      project.team.add_member(new_user, Gitlab::Access::DEVELOPER)
       allow_any_instance_of(described_class).to receive(:flush_caches).and_raise(::Redis::CannotConnectError)
     end
 

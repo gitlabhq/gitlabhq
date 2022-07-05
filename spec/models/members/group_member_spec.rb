@@ -219,7 +219,7 @@ RSpec.describe GroupMember do
     end
 
     context 'on create' do
-      let(:action) { group.add_user(user, Gitlab::Access::GUEST) }
+      let(:action) { group.add_member(user, Gitlab::Access::GUEST) }
       let(:blocking) { true }
 
       it 'changes access level', :sidekiq_inline do
@@ -241,7 +241,7 @@ RSpec.describe GroupMember do
 
     context 'on update' do
       before do
-        group.add_user(user, Gitlab::Access::GUEST)
+        group.add_member(user, Gitlab::Access::GUEST)
       end
 
       let(:action) { group.members.find_by(user: user).update!(access_level: Gitlab::Access::DEVELOPER) }
@@ -266,7 +266,7 @@ RSpec.describe GroupMember do
 
     context 'on destroy' do
       before do
-        group.add_user(user, Gitlab::Access::GUEST)
+        group.add_member(user, Gitlab::Access::GUEST)
       end
 
       let(:action) { group.members.find_by(user: user).destroy! }

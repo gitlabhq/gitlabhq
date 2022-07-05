@@ -25,7 +25,7 @@ RSpec.describe Import::AvailableNamespacesController do
 
         it "does not include group with access level #{params[:role]} in list" do
           group = create(:group, project_creation_level: group_project_creation_level)
-          group.add_user(user, role)
+          group.add_member(user, role)
           get :index
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -52,7 +52,7 @@ RSpec.describe Import::AvailableNamespacesController do
 
         it "does not include group with access level #{params[:role]} in list" do
           group = create(:group, project_creation_level: group_project_creation_level)
-          group.add_user(user, role)
+          group.add_member(user, role)
           get :index
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -81,7 +81,7 @@ RSpec.describe Import::AvailableNamespacesController do
 
         it "#{params[:is_visible] ? 'includes' : 'does not include'} group with access level #{params[:role]} in list" do
           group = create(:group, project_creation_level: project_creation_level)
-          group.add_user(user, :developer)
+          group.add_member(user, :developer)
 
           get :index
 

@@ -26,7 +26,6 @@ module Gitlab
             variables.concat(secret_instance_variables)
             variables.concat(secret_group_variables(environment: environment))
             variables.concat(secret_project_variables(environment: environment))
-            variables.concat(job.trigger_request.user_variables) if job.trigger_request
             variables.concat(pipeline.variables)
             variables.concat(pipeline_schedule_variables)
           end

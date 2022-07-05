@@ -61,7 +61,6 @@ Style/EmptyMethod:
     - 'app/controllers/registrations/welcome_controller.rb'
     - 'app/controllers/search_controller.rb'
     - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'
-    - 'app/helpers/namespace_storage_limit_alert_helper.rb'
     - 'app/helpers/subscribable_banner_helper.rb'
     - 'app/helpers/users/callouts_helper.rb'
     - 'app/models/ci/bridge.rb'

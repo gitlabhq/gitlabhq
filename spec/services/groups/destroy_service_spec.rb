@@ -12,7 +12,7 @@ RSpec.describe Groups::DestroyService do
   let(:remove_path)  { group.path + "+#{group.id}+deleted" }
 
   before do
-    group.add_user(user, Gitlab::Access::OWNER)
+    group.add_member(user, Gitlab::Access::OWNER)
   end
 
   def destroy_group(group, user, async)
@@ -168,8 +168,8 @@ RSpec.describe Groups::DestroyService do
       let(:group2_user) { create(:user) }
 
       before do
-        group1.add_user(group1_user, Gitlab::Access::OWNER)
-        group2.add_user(group2_user, Gitlab::Access::OWNER)
+        group1.add_member(group1_user, Gitlab::Access::OWNER)
+        group2.add_member(group2_user, Gitlab::Access::OWNER)
       end
 
       context 'when a project is shared with a group' do
@@ -203,7 +203,7 @@ RSpec.describe Groups::DestroyService do
           let(:group3_user) { create(:user) }
 
           before do
-            group3.add_user(group3_user, Gitlab::Access::OWNER)
+            group3.add_member(group3_user, Gitlab::Access::OWNER)
 
             create(:group_group_link, shared_group: group2, shared_with_group: group3)
             group3.refresh_members_authorized_projects
@@ -290,7 +290,7 @@ RSpec.describe Groups::DestroyService do
       let!(:shared_with_group_user) { create(:user) }
 
       before do
-        shared_with_group.add_user(shared_with_group_user, Gitlab::Access::MAINTAINER)
+        shared_with_group.add_member(shared_with_group_user, Gitlab::Access::MAINTAINER)
 
         create(:group_group_link, shared_group: shared_group, shared_with_group: shared_with_group)
         shared_with_group.refresh_members_authorized_projects

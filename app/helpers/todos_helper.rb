@@ -87,7 +87,8 @@ module TodosHelper
     elsif todo.for_alert?
       details_project_alert_management_path(todo.project, todo.target)
     elsif todo.for_issue_or_work_item?
-      Gitlab::UrlBuilder.build(todo.target, only_path: true)
+      path_options[:only_path] = true
+      Gitlab::UrlBuilder.build(todo.target, **path_options)
     else
       path = [todo.resource_parent, todo.target]
 

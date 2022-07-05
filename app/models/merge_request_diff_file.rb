@@ -45,4 +45,38 @@ class MergeRequestDiffFile < ApplicationRecord
       content
     end
   end
+
+  # This method is meant to be used during Project Export.
+  # It is identical to the behaviour in #diff & #utf8_diff with the only
+  # difference of caching externally stored diffs on local disk in
+  # temp storage location in order to improve diff export performance.
+  def diff_export
+    return utf8_diff unless Feature.enabled?(:externally_stored_diffs_caching_export)
+    return utf8_diff unless merge_request_diff&.stored_externally?
+
+    content = merge_request_diff.cached_external_diff do |file|
+      file.seek(external_diff_offset)
+
+      force_encode_utf8(file.read(external_diff_size))
+    end
+
+    # See #diff
+    if binary?
+      content = begin
+        content.unpack1('m0')
+      rescue ArgumentError
+        content
+      end
+    end
+
+    if content.respond_to?(:encoding)
+      content = encode_utf8(content)
+    end
+
+    return '' if content.blank?
+
+    content
+  rescue StandardError
+    utf8_diff
+  end
 end

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe QuickActions::InterpretService do
+  include AfterNextHelpers
+
   let_it_be(:group) { create(:group, :crm_enabled) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
@@ -17,8 +19,9 @@ RSpec.describe QuickActions::InterpretService do
 
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:commit) { create(:commit, project: project) }
+  let(:current_user) { developer }
 
-  subject(:service) { described_class.new(project, developer) }
+  subject(:service) { described_class.new(project, current_user) }
 
   before_all do
     public_project.add_developer(developer)
@@ -682,6 +685,58 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     shared_examples 'assign command' do
+      it 'assigns to me' do
+        cmd = '/assign me'
+
+        _, updates, _ = service.execute(cmd, issuable)
+
+        expect(updates).to eq(assignee_ids: [current_user.id])
+      end
+
+      it 'does not assign to group members' do
+        grp = create(:group)
+        grp.add_developer(developer)
+        grp.add_developer(developer2)
+
+        cmd = "/assign #{grp.to_reference}"
+
+        _, updates, message = service.execute(cmd, issuable)
+
+        expect(updates).to be_blank
+        expect(message).to include('Failed to find users')
+      end
+
+      context 'when there are too many references' do
+        before do
+          stub_const('Gitlab::QuickActions::UsersExtractor::MAX_QUICK_ACTION_USERS', 2)
+        end
+
+        it 'says what went wrong' do
+          cmd = '/assign her and you, me and them'
+
+          _, updates, message = service.execute(cmd, issuable)
+
+          expect(updates).to be_blank
+          expect(message).to include('Too many references. Quick actions are limited to at most 2 user references')
+        end
+      end
+
+      context 'when the user extractor raises an uninticipated error' do
+        before do
+          allow_next(Gitlab::QuickActions::UsersExtractor)
+            .to receive(:execute).and_raise(Gitlab::QuickActions::UsersExtractor::Error)
+        end
+
+        it 'tracks the exception in dev, and reports a generic message in production' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).twice
+
+          _, updates, message = service.execute('/assign some text', issuable)
+
+          expect(updates).to be_blank
+          expect(message).to include('Something went wrong')
+        end
+      end
+
       it 'assigns to users with escaped underscores' do
         user = create(:user)
         base = user.username

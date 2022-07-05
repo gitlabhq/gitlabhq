@@ -726,7 +726,7 @@ RSpec.describe Group do
 
       context 'when user is a member of private group' do
         before do
-          private_group.add_user(user, Gitlab::Access::DEVELOPER)
+          private_group.add_member(user, Gitlab::Access::DEVELOPER)
         end
 
         it { is_expected.to match_array([private_group, internal_group, group]) }
@@ -736,7 +736,7 @@ RSpec.describe Group do
         let!(:private_subgroup) { create(:group, :private, parent: private_group) }
 
         before do
-          private_subgroup.add_user(user, Gitlab::Access::DEVELOPER)
+          private_subgroup.add_member(user, Gitlab::Access::DEVELOPER)
         end
 
         it { is_expected.to match_array([private_subgroup, internal_group, group]) }
@@ -848,7 +848,7 @@ RSpec.describe Group do
         expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true)
       end
 
-      group.add_user(user, GroupMember::MAINTAINER)
+      group.add_member(user, GroupMember::MAINTAINER)
 
       expect(group.group_members.maintainers.map(&:user)).to include(user)
     end
@@ -858,7 +858,7 @@ RSpec.describe Group do
         expect(member).to receive(:refresh_member_authorized_projects).with(blocking: false)
       end
 
-      group.add_user(user, GroupMember::MAINTAINER, blocking_refresh: false)
+      group.add_member(user, GroupMember::MAINTAINER, blocking_refresh: false)
     end
   end
 
@@ -866,12 +866,12 @@ RSpec.describe Group do
     let(:user) { create(:user) }
 
     before do
-      group.add_users([user.id], GroupMember::GUEST)
+      group.add_members([user.id], GroupMember::GUEST)
     end
 
     it "updates the group permission" do
       expect(group.group_members.guests.map(&:user)).to include(user)
-      group.add_users([user.id], GroupMember::DEVELOPER)
+      group.add_members([user.id], GroupMember::DEVELOPER)
       expect(group.group_members.developers.map(&:user)).to include(user)
       expect(group.group_members.guests.map(&:user)).not_to include(user)
     end
@@ -880,7 +880,7 @@ RSpec.describe Group do
       let!(:project) { create(:project, group: group) }
 
       before do
-        group.add_users([create(:user)], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
+        group.add_members([create(:user)], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
       end
 
       it 'creates a member_task with the correct attributes', :aggregate_failures do
@@ -896,7 +896,7 @@ RSpec.describe Group do
     let(:user) { create(:user) }
 
     before do
-      group.add_user(user, GroupMember::MAINTAINER)
+      group.add_member(user, GroupMember::MAINTAINER)
     end
 
     it "is true if avatar is image" do
@@ -993,7 +993,7 @@ RSpec.describe Group do
 
     context 'there is also a project_bot owner' do
       before do
-        group.add_user(create(:user, :project_bot), GroupMember::OWNER)
+        group.add_member(create(:user, :project_bot), GroupMember::OWNER)
       end
 
       it { expect(group.last_owner?(@members[:owner])).to be_truthy }
@@ -1024,7 +1024,7 @@ RSpec.describe Group do
     let(:member) { blocked_user.group_members.last }
 
     before do
-      group.add_user(blocked_user, GroupMember::OWNER)
+      group.add_member(blocked_user, GroupMember::OWNER)
     end
 
     context 'when last_blocked_owner is set' do
@@ -1050,7 +1050,7 @@ RSpec.describe Group do
 
       context 'with another active owner' do
         before do
-          group.add_user(create(:user), GroupMember::OWNER)
+          group.add_member(create(:user), GroupMember::OWNER)
         end
 
         it { expect(group.member_last_blocked_owner?(member)).to be(false) }
@@ -1058,7 +1058,7 @@ RSpec.describe Group do
 
       context 'with 2 blocked owners' do
         before do
-          group.add_user(create(:user, :blocked), GroupMember::OWNER)
+          group.add_member(create(:user, :blocked), GroupMember::OWNER)
         end
 
         it { expect(group.member_last_blocked_owner?(member)).to be(false) }
@@ -1082,7 +1082,7 @@ RSpec.describe Group do
     describe '#single_blocked_owner?' do
       context 'when there is only one blocked owner' do
         before do
-          group.add_user(blocked_user, GroupMember::OWNER)
+          group.add_member(blocked_user, GroupMember::OWNER)
         end
 
         it 'returns true' do
@@ -1094,8 +1094,8 @@ RSpec.describe Group do
         let_it_be(:blocked_user_2) { create(:user, :blocked) }
 
         before do
-          group.add_user(blocked_user, GroupMember::OWNER)
-          group.add_user(blocked_user_2, GroupMember::OWNER)
+          group.add_member(blocked_user, GroupMember::OWNER)
+          group.add_member(blocked_user_2, GroupMember::OWNER)
         end
 
         it 'returns true' do
@@ -1114,8 +1114,8 @@ RSpec.describe Group do
       let_it_be(:user) { create(:user) }
 
       before do
-        group.add_user(blocked_user, GroupMember::OWNER)
-        group.add_user(user, GroupMember::OWNER)
+        group.add_member(blocked_user, GroupMember::OWNER)
+        group.add_member(user, GroupMember::OWNER)
       end
 
       it 'has only blocked owners' do
@@ -1129,7 +1129,7 @@ RSpec.describe Group do
 
     context 'when there is only one owner' do
       let!(:owner) do
-        group.add_user(user, GroupMember::OWNER)
+        group.add_member(user, GroupMember::OWNER)
       end
 
       it 'returns the owner' do
@@ -1138,7 +1138,7 @@ RSpec.describe Group do
 
       context 'and there is also a project_bot owner' do
         before do
-          group.add_user(create(:user, :project_bot), GroupMember::OWNER)
+          group.add_member(create(:user, :project_bot), GroupMember::OWNER)
         end
 
         it 'returns only the human owner' do
@@ -1151,11 +1151,11 @@ RSpec.describe Group do
       let_it_be(:user_2) { create(:user) }
 
       let!(:owner) do
-        group.add_user(user, GroupMember::OWNER)
+        group.add_member(user, GroupMember::OWNER)
       end
 
       let!(:owner2) do
-        group.add_user(user_2, GroupMember::OWNER)
+        group.add_member(user_2, GroupMember::OWNER)
       end
 
       it 'returns both owners' do
@@ -1164,7 +1164,7 @@ RSpec.describe Group do
 
       context 'and there is also a project_bot owner' do
         before do
-          group.add_user(create(:user, :project_bot), GroupMember::OWNER)
+          group.add_member(create(:user, :project_bot), GroupMember::OWNER)
         end
 
         it 'returns only the human owners' do
@@ -1186,7 +1186,7 @@ RSpec.describe Group do
     let(:member) { group.members.last }
 
     before do
-      group.add_user(user, GroupMember::OWNER)
+      group.add_member(user, GroupMember::OWNER)
     end
 
     context 'when last_owner is set' do
@@ -1284,11 +1284,11 @@ RSpec.describe Group do
       requester: create(:user)
     }
 
-    group.add_user(members[:owner], GroupMember::OWNER)
-    group.add_user(members[:maintainer], GroupMember::MAINTAINER)
-    group.add_user(members[:developer], GroupMember::DEVELOPER)
-    group.add_user(members[:reporter], GroupMember::REPORTER)
-    group.add_user(members[:guest], GroupMember::GUEST)
+    group.add_member(members[:owner], GroupMember::OWNER)
+    group.add_member(members[:maintainer], GroupMember::MAINTAINER)
+    group.add_member(members[:developer], GroupMember::DEVELOPER)
+    group.add_member(members[:reporter], GroupMember::REPORTER)
+    group.add_member(members[:guest], GroupMember::GUEST)
     group.request_access(members[:requester])
 
     members
@@ -1464,8 +1464,8 @@ RSpec.describe Group do
 
   describe '#direct_members' do
     let_it_be(:group) { create(:group, :nested) }
-    let_it_be(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
-    let_it_be(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+    let_it_be(:maintainer) { group.parent.add_member(create(:user), GroupMember::MAINTAINER) }
+    let_it_be(:developer) { group.add_member(create(:user), GroupMember::DEVELOPER) }
 
     it 'does not return members of the parent' do
       expect(group.direct_members).not_to include(maintainer)
@@ -1491,8 +1491,8 @@ RSpec.describe Group do
 
   shared_examples_for 'members_with_parents' do
     let!(:group) { create(:group, :nested) }
-    let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
-    let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+    let!(:maintainer) { group.parent.add_member(create(:user), GroupMember::MAINTAINER) }
+    let!(:developer) { group.add_member(create(:user), GroupMember::DEVELOPER) }
     let!(:pending_maintainer) { create(:group_member, :awaiting, :maintainer, group: group.parent) }
     let!(:pending_developer) { create(:group_member, :awaiting, :developer, group: group) }
 
@@ -1603,9 +1603,9 @@ RSpec.describe Group do
   context 'members-related methods' do
     let!(:group) { create(:group, :nested) }
     let!(:sub_group) { create(:group, parent: group) }
-    let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
-    let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
-    let!(:other_developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+    let!(:maintainer) { group.parent.add_member(create(:user), GroupMember::MAINTAINER) }
+    let!(:developer) { group.add_member(create(:user), GroupMember::DEVELOPER) }
+    let!(:other_developer) { group.add_member(create(:user), GroupMember::DEVELOPER) }
 
     describe '#direct_and_indirect_members' do
       it 'returns parents members' do
@@ -1619,7 +1619,7 @@ RSpec.describe Group do
     end
 
     describe '#direct_and_indirect_members_with_inactive' do
-      let!(:maintainer_blocked) { group.parent.add_user(create(:user, :blocked), GroupMember::MAINTAINER) }
+      let!(:maintainer_blocked) { group.parent.add_member(create(:user, :blocked), GroupMember::MAINTAINER) }
 
       it 'returns parents members' do
         expect(group.direct_and_indirect_members_with_inactive).to include(developer)
@@ -1795,8 +1795,8 @@ RSpec.describe Group do
       maintainer = create(:user)
       developer = create(:user)
 
-      group.add_user(maintainer, GroupMember::MAINTAINER)
-      group.add_user(developer, GroupMember::DEVELOPER)
+      group.add_member(maintainer, GroupMember::MAINTAINER)
+      group.add_member(developer, GroupMember::DEVELOPER)
 
       expect(group.user_ids_for_project_authorizations)
         .to include(maintainer.id, developer.id)
@@ -1847,7 +1847,7 @@ RSpec.describe Group do
 
     context 'group membership' do
       before do
-        group.add_user(user, GroupMember::OWNER)
+        group.add_member(user, GroupMember::OWNER)
       end
 
       it 'is called when require_two_factor_authentication is changed' do
@@ -1870,7 +1870,7 @@ RSpec.describe Group do
 
       it 'calls #update_two_factor_requirement on each group member' do
         other_user = create(:user)
-        group.add_user(other_user, GroupMember::OWNER)
+        group.add_member(other_user, GroupMember::OWNER)
 
         calls = 0
         allow_any_instance_of(User).to receive(:update_two_factor_requirement) do
@@ -1885,7 +1885,7 @@ RSpec.describe Group do
 
     context 'sub groups and projects' do
       it 'enables two_factor_requirement for group member' do
-        group.add_user(user, GroupMember::OWNER)
+        group.add_member(user, GroupMember::OWNER)
 
         group.update!(require_two_factor_authentication: true)
 
@@ -1899,7 +1899,7 @@ RSpec.describe Group do
           context 'two_factor_requirement is also enabled for ancestor group' do
             it 'enables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group)
-              subgroup.add_user(indirect_user, GroupMember::OWNER)
+              subgroup.add_member(indirect_user, GroupMember::OWNER)
 
               group.update!(require_two_factor_authentication: true)
 
@@ -1910,7 +1910,7 @@ RSpec.describe Group do
           context 'two_factor_requirement is disabled for ancestor group' do
             it 'enables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group, require_two_factor_authentication: true)
-              subgroup.add_user(indirect_user, GroupMember::OWNER)
+              subgroup.add_member(indirect_user, GroupMember::OWNER)
 
               group.update!(require_two_factor_authentication: false)
 
@@ -1919,7 +1919,7 @@ RSpec.describe Group do
 
             it 'enable two_factor_requirement for ancestor group member' do
               ancestor_group = create(:group)
-              ancestor_group.add_user(indirect_user, GroupMember::OWNER)
+              ancestor_group.add_member(indirect_user, GroupMember::OWNER)
               group.update!(parent: ancestor_group)
 
               group.update!(require_two_factor_authentication: true)
@@ -1933,7 +1933,7 @@ RSpec.describe Group do
           context 'two_factor_requirement is enabled for ancestor group' do
             it 'enables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group)
-              subgroup.add_user(indirect_user, GroupMember::OWNER)
+              subgroup.add_member(indirect_user, GroupMember::OWNER)
 
               group.update!(require_two_factor_authentication: true)
 
@@ -1944,7 +1944,7 @@ RSpec.describe Group do
           context 'two_factor_requirement is also disabled for ancestor group' do
             it 'disables two_factor_requirement for subgroup member' do
               subgroup = create(:group, :nested, parent: group)
-              subgroup.add_user(indirect_user, GroupMember::OWNER)
+              subgroup.add_member(indirect_user, GroupMember::OWNER)
 
               group.update!(require_two_factor_authentication: false)
 
@@ -1954,7 +1954,7 @@ RSpec.describe Group do
             it 'disables two_factor_requirement for ancestor group member' do
               ancestor_group = create(:group, require_two_factor_authentication: false)
               indirect_user.update!(require_two_factor_authentication_from_group: true)
-              ancestor_group.add_user(indirect_user, GroupMember::OWNER)
+              ancestor_group.add_member(indirect_user, GroupMember::OWNER)
 
               group.update!(require_two_factor_authentication: false)
 

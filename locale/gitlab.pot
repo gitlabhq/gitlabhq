@@ -40498,6 +40498,12 @@ msgstr ""
 msgid "Too many projects enabled. Manage them through the console or the API."
 msgstr ""
 
+msgid "Too many references. Quick actions are limited to at most %{max_count} user references"
+msgstr ""
+
+msgid "Too many users found. Quick actions are limited to at most %{max_count} users"
+msgstr ""
+
 msgid "TopNav|Go back"
 msgstr ""
 

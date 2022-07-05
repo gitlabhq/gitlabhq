@@ -13,9 +13,9 @@ module Members
         Gitlab::Access.sym_options_with_owner
       end
 
-      def add_users( # rubocop:disable Metrics/ParameterLists
+      def add_members( # rubocop:disable Metrics/ParameterLists
         source,
-        users,
+        invitees,
         access_level,
         current_user: nil,
         expires_at: nil,
@@ -24,17 +24,17 @@ module Members
         ldap: nil,
         blocking_refresh: nil
       )
-        return [] unless users.present?
+        return [] unless invitees.present?
 
         # If this user is attempting to manage Owner members and doesn't have permission, do not allow
         return [] if managing_owners?(current_user, access_level) && cannot_manage_owners?(source, current_user)
 
-        emails, users, existing_members = parse_users_list(source, users)
+        emails, users, existing_members = parse_users_list(source, invitees)
 
         Member.transaction do
-          (emails + users).map! do |user|
+          (emails + users).map! do |invitee|
             new(source,
-                user,
+                invitee,
                 access_level,
                 existing_members: existing_members,
                 current_user: current_user,
@@ -48,17 +48,17 @@ module Members
         end
       end
 
-      def add_user( # rubocop:disable Metrics/ParameterLists
+      def add_member( # rubocop:disable Metrics/ParameterLists
         source,
-        user,
+        invitee,
         access_level,
         current_user: nil,
         expires_at: nil,
         ldap: nil,
         blocking_refresh: nil
       )
-        add_users(source,
-                  [user],
+        add_members(source,
+                  [invitee],
                   access_level,
                   current_user: current_user,
                   expires_at: expires_at,
@@ -113,9 +113,9 @@ module Members
       end
     end
 
-    def initialize(source, user, access_level, **args)
+    def initialize(source, invitee, access_level, **args)
       @source = source
-      @user = user
+      @invitee = invitee
       @access_level = self.class.parsed_access_level(access_level)
       @args = args
     end
@@ -133,7 +133,7 @@ module Members
     private
 
     delegate :new_record?, to: :member
-    attr_reader :source, :user, :access_level, :member, :args
+    attr_reader :source, :invitee, :access_level, :member, :args
 
     def assign_member_attributes
       member.attributes = member_attributes
@@ -170,7 +170,7 @@ module Members
     # Populates the attributes of a member.
     #
     # This logic resides in a separate method so that EE can extend this logic,
-    # without having to patch the `add_user` method directly.
+    # without having to patch the `add_members` method directly.
     def member_attributes
       {
         created_by: member.created_by || current_user,
@@ -241,12 +241,10 @@ module Members
     end
 
     def find_or_build_member
-      @user = parse_user_param
-
-      @member = if user.is_a?(User)
+      @member = if invitee.is_a?(User)
                   find_or_initialize_member_by_user
                 else
-                  source.members.build(invite_email: user)
+                  find_or_initialize_member_with_email
                 end
 
       @member.blocking_refresh = args[:blocking_refresh]
@@ -254,24 +252,23 @@ module Members
 
     # This method is used to find users that have been entered into the "Add members" field.
     # These can be the User objects directly, their IDs, their emails, or new emails to be invited.
-    def parse_user_param
-      case user
-      when User
-        user
-      when Integer
-        # might not return anything - this needs enhancement
-        User.find_by(id: user) # rubocop:todo CodeReuse/ActiveRecord
+    def find_or_initialize_member_with_email
+      if user_by_email
+        find_or_initialize_member_by_user(user_id: user_by_email.id)
       else
-        # must be an email or at least we'll consider it one
-        source.users_by_emails([user])[user] || user
+        source.members.build(invite_email: invitee)
       end
     end
 
-    def find_or_initialize_member_by_user
+    def user_by_email
+      source.users_by_emails([invitee])[invitee]
+    end
+
+    def find_or_initialize_member_by_user(user_id: invitee.id)
       # We have to use `members_and_requesters` here since the given `members` is modified in the models
       # to act more like a scope(removing the requested_at members) and therefore ActiveRecord has issues with that
       # on build and refreshing that relation.
-      existing_members[user.id] || source.members_and_requesters.build(user_id: user.id) # rubocop:disable CodeReuse/ActiveRecord
+      existing_members[user_id] || source.members_and_requesters.build(user_id: user_id) # rubocop:disable CodeReuse/ActiveRecord
     end
 
     def ldap

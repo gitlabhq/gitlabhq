@@ -582,8 +582,8 @@ RSpec.describe NotificationService, :mailer do
 
           before do
             note.project.namespace_id = group.id
-            group.add_user(@u_watcher, GroupMember::MAINTAINER)
-            group.add_user(@u_custom_global, GroupMember::MAINTAINER)
+            group.add_member(@u_watcher, GroupMember::MAINTAINER)
+            group.add_member(@u_custom_global, GroupMember::MAINTAINER)
             note.project.save!
 
             @u_watcher.notification_settings_for(note.project).participating!
@@ -3850,7 +3850,7 @@ RSpec.describe NotificationService, :mailer do
 
     # Group member: global=watch, group=global
     @g_global_watcher ||= create_global_setting_for(create(:user), :watch)
-    group.add_users([@g_watcher, @g_global_watcher], :maintainer)
+    group.add_members([@g_watcher, @g_global_watcher], :maintainer)
 
     group
   end

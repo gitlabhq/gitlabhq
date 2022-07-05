@@ -120,9 +120,9 @@ RSpec.describe 'OpenID Connect requests' do
       let!(:group4) { create :group, parent: group3 }
 
       before do
-        group1.add_user(user, GroupMember::OWNER)
-        group3.add_user(user, Gitlab::Access::DEVELOPER)
-        group4.add_user(user, Gitlab::Access::MAINTAINER)
+        group1.add_member(user, GroupMember::OWNER)
+        group3.add_member(user, Gitlab::Access::DEVELOPER)
+        group4.add_member(user, Gitlab::Access::MAINTAINER)
 
         request_user_info!
       end
@@ -163,8 +163,8 @@ RSpec.describe 'OpenID Connect requests' do
       let!(:group4) { create :group, parent: group3 }
 
       before do
-        group1.add_user(user, Gitlab::Access::OWNER)
-        group3.add_user(user, Gitlab::Access::DEVELOPER)
+        group1.add_member(user, Gitlab::Access::OWNER)
+        group3.add_member(user, Gitlab::Access::DEVELOPER)
 
         request_access_token!
         @payload = JSON::JWT.decode(json_response['id_token'], :skip_verification)
@@ -358,8 +358,8 @@ RSpec.describe 'OpenID Connect requests' do
       let!(:group4) { create :group, parent: group3 }
 
       before do
-        group1.add_user(user, Gitlab::Access::OWNER)
-        group3.add_user(user, Gitlab::Access::DEVELOPER)
+        group1.add_member(user, Gitlab::Access::OWNER)
+        group3.add_member(user, Gitlab::Access::DEVELOPER)
 
         request_access_token!
         @payload = JSON::JWT.decode(json_response['id_token'], :skip_verification)

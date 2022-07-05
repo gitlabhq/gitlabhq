@@ -133,6 +133,16 @@ RSpec.describe TodosHelper do
         expect(path).to eq("/#{todo.project.full_path}/-/work_items/#{todo.target.id}")
       end
     end
+
+    context 'when given an issue with a note anchor' do
+      let(:todo) { create(:todo, project: issue.project, target: issue, note: note) }
+
+      it 'responds with an appropriate path' do
+        path = helper.todo_target_path(todo)
+
+        expect(path).to eq("/#{issue.project.full_path}/-/issues/#{issue.iid}##{dom_id(note)}")
+      end
+    end
   end
 
   describe '#todo_target_type_name' do

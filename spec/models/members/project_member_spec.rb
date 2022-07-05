@@ -111,12 +111,12 @@ RSpec.describe ProjectMember do
     end
   end
 
-  describe '.add_users_to_projects' do
+  describe '.add_members_to_projects' do
     it 'adds the given users to the given projects' do
       projects = create_list(:project, 2)
       users = create_list(:user, 2)
 
-      described_class.add_users_to_projects(
+      described_class.add_members_to_projects(
         [projects.first.id, projects.second.id],
         [users.first.id, users.second],
         described_class::MAINTAINER)
@@ -236,7 +236,7 @@ RSpec.describe ProjectMember do
     end
 
     context 'on create' do
-      let(:action) { project.add_user(user, Gitlab::Access::GUEST) }
+      let(:action) { project.add_member(user, Gitlab::Access::GUEST) }
 
       it 'changes access level' do
         expect { action }.to change { user.can?(:guest_access, project) }.from(false).to(true)
@@ -250,7 +250,7 @@ RSpec.describe ProjectMember do
       let(:action) { project.members.find_by(user: user).update!(access_level: Gitlab::Access::DEVELOPER) }
 
       before do
-        project.add_user(user, Gitlab::Access::GUEST)
+        project.add_member(user, Gitlab::Access::GUEST)
       end
 
       it 'changes access level' do
@@ -265,7 +265,7 @@ RSpec.describe ProjectMember do
       let(:action) { project.members.find_by(user: user).destroy! }
 
       before do
-        project.add_user(user, Gitlab::Access::GUEST)
+        project.add_member(user, Gitlab::Access::GUEST)
       end
 
       it 'changes access level', :sidekiq_inline do

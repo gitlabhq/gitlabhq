@@ -58,7 +58,7 @@ RSpec.describe Groups::UpdateService do
         let!(:service) { described_class.new(public_group, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
 
         before do
-          public_group.add_user(user, Gitlab::Access::OWNER)
+          public_group.add_member(user, Gitlab::Access::OWNER)
           create(:project, :public, group: public_group)
 
           expect(TodosDestroyer::GroupPrivateWorker).not_to receive(:perform_in)
@@ -119,7 +119,7 @@ RSpec.describe Groups::UpdateService do
         let!(:service) { described_class.new(internal_group, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
         before do
-          internal_group.add_user(user, Gitlab::Access::OWNER)
+          internal_group.add_member(user, Gitlab::Access::OWNER)
           create(:project, :internal, group: internal_group)
 
           expect(TodosDestroyer::GroupPrivateWorker).not_to receive(:perform_in)
@@ -135,7 +135,7 @@ RSpec.describe Groups::UpdateService do
         let!(:service) { described_class.new(internal_group, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
         before do
-          internal_group.add_user(user, Gitlab::Access::OWNER)
+          internal_group.add_member(user, Gitlab::Access::OWNER)
           create(:project, :private, group: internal_group)
 
           expect(TodosDestroyer::GroupPrivateWorker).to receive(:perform_in)
@@ -233,7 +233,7 @@ RSpec.describe Groups::UpdateService do
     let!(:service) { described_class.new(internal_group, user, visibility_level: 99) }
 
     before do
-      internal_group.add_user(user, Gitlab::Access::MAINTAINER)
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
     end
 
     it "does not change permission level" do
@@ -246,7 +246,7 @@ RSpec.describe Groups::UpdateService do
     let(:service) { described_class.new(internal_group, user, emails_disabled: true) }
 
     it 'updates the attribute' do
-      internal_group.add_user(user, Gitlab::Access::OWNER)
+      internal_group.add_member(user, Gitlab::Access::OWNER)
 
       expect { service.execute }.to change { internal_group.emails_disabled }.to(true)
     end
@@ -280,7 +280,7 @@ RSpec.describe Groups::UpdateService do
     let!(:service) { described_class.new(internal_group, user, path: SecureRandom.hex) }
 
     before do
-      internal_group.add_user(user, Gitlab::Access::MAINTAINER)
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
       create(:project, :internal, group: internal_group)
     end
 

@@ -875,7 +875,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
       context 'with group visibility' do
         before do
           group = create(:group, visibility_level: group_visibility)
-          group.add_users([user], GroupMember::MAINTAINER)
+          group.add_members([user], GroupMember::MAINTAINER)
           project.update!(group: group)
         end
 

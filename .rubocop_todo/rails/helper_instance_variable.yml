@@ -71,7 +71,6 @@ Rails/HelperInstanceVariable:
     - 'ee/app/helpers/ee/lock_helper.rb'
     - 'ee/app/helpers/ee/merge_requests_helper.rb'
     - 'ee/app/helpers/ee/mirror_helper.rb'
-    - 'ee/app/helpers/ee/namespace_storage_limit_alert_helper.rb'
     - 'ee/app/helpers/ee/notes_helper.rb'
     - 'ee/app/helpers/ee/operations_helper.rb'
     - 'ee/app/helpers/ee/projects/security/configuration_helper.rb'

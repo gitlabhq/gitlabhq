@@ -1120,4 +1120,101 @@ RSpec.describe MergeRequestDiff do
       expect(described_class.latest_diff_for_merge_requests(nil)).to be_empty
     end
   end
+
+  context 'external diff caching' do
+    let(:test_dir) { 'tmp/tests/external-diffs' }
+    let(:cache_dir) { File.join(Dir.tmpdir, "project-#{diff.project.id}-external-mr-#{diff.merge_request_id}-diff-#{diff.id}-cache") }
+    let(:cache_filepath) { File.join(cache_dir, "diff-#{diff.id}") }
+    let(:external_diff_content) { diff.opening_external_diff { |diff| diff.read } }
+
+    around do |example|
+      FileUtils.mkdir_p(test_dir)
+
+      begin
+        example.run
+      ensure
+        FileUtils.rm_rf(test_dir)
+      end
+    end
+
+    before do
+      stub_external_diffs_setting(enabled: true, storage_path: test_dir)
+    end
+
+    subject(:diff) { diff_with_commits }
+
+    describe '#cached_external_diff' do
+      context 'when diff is externally stored' do
+        context 'when diff is already cached' do
+          it 'yields cached file' do
+            Dir.mkdir(cache_dir)
+            File.open(cache_filepath, 'wb') { |f| f.write(external_diff_content) }
+
+            expect(diff).not_to receive(:cache_external_diff)
+
+            expect { |b| diff.cached_external_diff(&b) }.to yield_with_args(File)
+          end
+        end
+
+        context 'when diff is not cached' do
+          it 'caches external diff in tmp storage' do
+            expect(diff).to receive(:cache_external_diff).and_call_original
+            expect(File.exist?(cache_filepath)).to eq(false)
+            expect { |b| diff.cached_external_diff(&b) }.to yield_with_args(File)
+            expect(File.exist?(cache_filepath)).to eq(true)
+            expect(File.read(cache_filepath)).to eq(external_diff_content)
+          end
+        end
+      end
+
+      context 'when diff is not externally stored' do
+        it 'yields nil' do
+          stub_external_diffs_setting(enabled: false)
+
+          expect { |b| diff.cached_external_diff(&b) }.to yield_with_args(nil)
+        end
+      end
+    end
+
+    describe '#remove_cached_external_diff' do
+      before do
+        diff.cached_external_diff { |diff| diff }
+      end
+
+      it 'removes external diff cache diff' do
+        expect(Dir.exist?(cache_dir)).to eq(true)
+
+        diff.remove_cached_external_diff
+
+        expect(Dir.exist?(cache_dir)).to eq(false)
+      end
+
+      context 'when path is traversed' do
+        it 'raises' do
+          allow(diff).to receive(:external_diff_cache_dir).and_return(File.join(cache_dir, '..'))
+
+          expect { diff.remove_cached_external_diff }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+        end
+      end
+
+      context 'when path is not allowed' do
+        it 'raises' do
+          allow(diff).to receive(:external_diff_cache_dir).and_return('/')
+
+          expect { diff.remove_cached_external_diff }.to raise_error(StandardError, 'path / is not allowed')
+        end
+      end
+
+      context 'when dir does not exist' do
+        it 'returns' do
+          FileUtils.rm_rf(cache_dir)
+
+          expect(Dir.exist?(cache_dir)).to eq(false)
+          expect(FileUtils).not_to receive(:rm_rf).with(cache_dir)
+
+          diff.remove_cached_external_diff
+        end
+      end
+    end
+  end
 end

@@ -84,7 +84,7 @@ module Members
     end
 
     def add_members
-      @members = source.add_users(
+      @members = source.add_members(
         invites,
         params[:access_level],
         expires_at: params[:expires_at],

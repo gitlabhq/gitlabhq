@@ -258,7 +258,7 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
           end
 
           before do
-            group.add_users([user, user2], GroupMember::DEVELOPER)
+            group.add_members([user, user2], GroupMember::DEVELOPER)
           end
 
           it 'maps the project member' do
@@ -281,7 +281,7 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
           end
 
           before do
-            group.add_users([user, user2], GroupMember::DEVELOPER)
+            group.add_members([user, user2], GroupMember::DEVELOPER)
           end
 
           it 'maps the importer' do
@@ -315,7 +315,7 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
 
       shared_examples_for 'it fetches the access level from parent group' do
         before do
-          group.add_users([user], group_access_level)
+          group.add_members([user], group_access_level)
         end
 
         it "and resolves it correctly" do

@@ -133,7 +133,7 @@ module Gitlab
         end
 
         def setup_diff
-          diff = @relation_hash.delete('utf8_diff')
+          diff = @relation_hash.delete('diff_export') || @relation_hash.delete('utf8_diff')
 
           parsed_relation_hash['diff'] = diff
         end

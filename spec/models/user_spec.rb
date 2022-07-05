@@ -2292,7 +2292,7 @@ RSpec.describe User do
       @group = create :group
       @group.add_owner(@user)
 
-      @group.add_user(@user2, GroupMember::OWNER)
+      @group.add_member(@user2, GroupMember::OWNER)
     end
 
     it { expect(@user2.several_namespaces?).to be_truthy }
@@ -3834,7 +3834,7 @@ RSpec.describe User do
     let!(:project) { create(:project, group: project_group) }
 
     before do
-      private_group.add_user(user, Gitlab::Access::MAINTAINER)
+      private_group.add_member(user, Gitlab::Access::MAINTAINER)
       project.add_maintainer(user)
     end
 
@@ -3861,7 +3861,7 @@ RSpec.describe User do
 
     let_it_be(:parent_group) do
       create(:group).tap do |g|
-        g.add_user(user, Gitlab::Access::MAINTAINER)
+        g.add_member(user, Gitlab::Access::MAINTAINER)
       end
     end
 
@@ -4289,7 +4289,7 @@ RSpec.describe User do
       let!(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       def add_user(access)
-        group.add_user(user, access)
+        group.add_member(user, access)
       end
 
       it_behaves_like :group_member
@@ -4379,7 +4379,7 @@ RSpec.describe User do
       let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
       def add_user(access)
-        project.add_user(user, access)
+        project.add_member(user, access)
       end
 
       it_behaves_like :project_member
@@ -4401,8 +4401,8 @@ RSpec.describe User do
       let!(:another_user) { create(:user) }
 
       def add_user(access)
-        subgroup.add_user(user, access)
-        group.add_user(another_user, :owner)
+        subgroup.add_member(user, access)
+        group.add_member(another_user, :owner)
       end
 
       it_behaves_like :group_member
@@ -4759,8 +4759,8 @@ RSpec.describe User do
       let(:group2) { create :group, require_two_factor_authentication: true, two_factor_grace_period: 32 }
 
       before do
-        group1.add_user(user, GroupMember::OWNER)
-        group2.add_user(user, GroupMember::OWNER)
+        group1.add_member(user, GroupMember::OWNER)
+        group2.add_member(user, GroupMember::OWNER)
 
         user.update_two_factor_requirement
       end
@@ -4779,7 +4779,7 @@ RSpec.describe User do
       let!(:group1a) { create :group, parent: group1 }
 
       before do
-        group1a.add_user(user, GroupMember::OWNER)
+        group1a.add_member(user, GroupMember::OWNER)
 
         user.update_two_factor_requirement
       end
@@ -4794,7 +4794,7 @@ RSpec.describe User do
       let!(:group1a) { create :group, require_two_factor_authentication: true, parent: group1 }
 
       before do
-        group1.add_user(user, GroupMember::OWNER)
+        group1.add_member(user, GroupMember::OWNER)
 
         user.update_two_factor_requirement
       end
@@ -4815,7 +4815,7 @@ RSpec.describe User do
           group_access: ProjectGroupLink.default_access
         )
 
-        group2.add_user(user, GroupMember::OWNER)
+        group2.add_member(user, GroupMember::OWNER)
       end
 
       it 'does not require 2FA' do
@@ -4829,7 +4829,7 @@ RSpec.describe User do
       let(:group) { create :group }
 
       before do
-        group.add_user(user, GroupMember::OWNER)
+        group.add_member(user, GroupMember::OWNER)
 
         user.update_two_factor_requirement
       end
@@ -4858,8 +4858,8 @@ RSpec.describe User do
     let(:user) { create :user }
 
     before do
-      group.add_user(user, GroupMember::OWNER)
-      group_not_requiring_2FA.add_user(user, GroupMember::OWNER)
+      group.add_member(user, GroupMember::OWNER)
+      group_not_requiring_2FA.add_member(user, GroupMember::OWNER)
     end
 
     context 'when user is direct member of group requiring 2FA' do

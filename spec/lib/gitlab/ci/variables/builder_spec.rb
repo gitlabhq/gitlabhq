@@ -166,9 +166,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
         allow(builder).to receive(:secret_instance_variables) { [var('J', 10), var('K', 10)] }
         allow(builder).to receive(:secret_group_variables) { [var('K', 11), var('L', 11)] }
         allow(builder).to receive(:secret_project_variables) { [var('L', 12), var('M', 12)] }
-        allow(job).to receive(:trigger_request) { double(user_variables: [var('M', 13), var('N', 13)]) }
-        allow(pipeline).to receive(:variables) { [var('N', 14), var('O', 14)] }
-        allow(pipeline).to receive(:pipeline_schedule) { double(job_variables: [var('O', 15), var('P', 15)]) }
+        allow(pipeline).to receive(:variables) { [var('M', 13), var('N', 13)] }
+        allow(pipeline).to receive(:pipeline_schedule) { double(job_variables: [var('N', 14), var('O', 14)]) }
       end
 
       it 'returns variables in order depending on resource hierarchy' do
@@ -185,8 +184,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
            var('K', 11), var('L', 11),
            var('L', 12), var('M', 12),
            var('M', 13), var('N', 13),
-           var('N', 14), var('O', 14),
-           var('O', 15), var('P', 15)])
+           var('N', 14), var('O', 14)])
       end
 
       it 'overrides duplicate keys depending on resource hierarchy' do
@@ -198,7 +196,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
           'I' => '9', 'J' => '10',
           'K' => '11', 'L' => '12',
           'M' => '13', 'N' => '14',
-          'O' => '15', 'P' => '15')
+          'O' => '14')
       end
     end
 
