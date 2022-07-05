@@ -10,7 +10,7 @@ This is the GitLab Support Team's collection of information regarding the GitLab
 console, for use while troubleshooting. It is listed here for transparency,
 and it may be useful for users with experience with these tools. If you are currently
 having an issue with GitLab, it is highly recommended that you first check
-our guide on [navigating our Rails console](navigating_gitlab_via_rails_console.md),
+our guide on [our Rails console](../operations/rails_console.md),
 and your [support options](https://about.gitlab.com/support/), before attempting to use
 this information.
 
@@ -517,7 +517,7 @@ If this all runs successfully, you see an output like the following before being
 
 The exported project is located within a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
 
-If this fails, [enable verbose logging](navigating_gitlab_via_rails_console.md#looking-up-database-persisted-objects),
+If this fails, [enable verbose logging](../operations/rails_console.md#looking-up-database-persisted-objects),
 repeat the above procedure after,
 and report the output to
 [GitLab Support](https://about.gitlab.com/support/).
@@ -1114,7 +1114,7 @@ License.select(&TYPE).each(&:destroy!)
 As a GitLab administrator, you may need to reduce disk space consumption.
 A common culprit is Docker Registry images that are no longer in use. To find
 the storage broken down by each project, run the following in the
-[GitLab Rails console](../troubleshooting/navigating_gitlab_via_rails_console.md):
+[GitLab Rails console](../operations/rails_console.md):
 
 ```ruby
 projects_and_size = [["project_id", "creator_id", "registry_size_bytes", "project path"]]

@@ -146,7 +146,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       let(:snowplow_micro_url) { "http://#{snowplow_micro_hostname}/" }
 
       before do
-        stub_env('SNOWPLOW_MICRO_ENABLE', 1)
+        stub_config(snowplow_micro: { enabled: true })
         allow(Gitlab::Tracking).to receive(:collector_hostname).and_return(snowplow_micro_hostname)
       end
 
@@ -169,9 +169,9 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
           expect(directives['connect_src']).to match(Regexp.new(snowplow_micro_url))
         end
 
-        context 'when not enabled using ENV[SNOWPLOW_MICRO_ENABLE]' do
+        context 'when not enabled using config' do
           before do
-            stub_env('SNOWPLOW_MICRO_ENABLE', nil)
+            stub_config(snowplow_micro: { enabled: false })
           end
 
           it 'does not add Snowplow Micro URL to connect-src' do

@@ -20,7 +20,6 @@ installation.
 - [Kubernetes cheat sheet](kubernetes_cheat_sheet.md)
 - [Linux cheat sheet](linux_cheat_sheet.md)
 - [Parsing GitLab logs with `jq`](log_parsing.md)
-- [Navigating GitLab via Rails console](navigating_gitlab_via_rails_console.md)
 - [Diagnostics tools](diagnostics_tools.md)
 - [Debugging tips](debug.md)
 - [Tracing requests with correlation ID](tracing_correlation_id.md)

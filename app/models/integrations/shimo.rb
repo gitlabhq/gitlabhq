@@ -25,7 +25,7 @@ module Integrations
 
     # support for `test` method
     def execute(_data)
-      response = Gitlab::HTTP.get(properties['external_wiki_url'], verify: true, use_read_total_timeout: true)
+      response = Gitlab::HTTP.get(properties['external_wiki_url'], verify: true)
       response.body if response.code == 200
     rescue StandardError
       nil

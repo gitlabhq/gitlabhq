@@ -163,3 +163,14 @@ report format XML files contain an `attachment` tag, GitLab parses the attachmen
 
 A link to the test case attachment appears in the test case details in
 [the pipeline test report](#view-unit-test-reports-on-gitlab).
+
+## Troubleshooting
+
+### Test report appears empty
+
+A unit test report can appear to be empty when [viewed in a merge request](#view-unit-test-reports-on-gitlab)
+if the artifact that contained the report [expires](../yaml/index.md#artifactsexpire_in).
+If the artifact frequently expires too early, set a longer `expire_in` value for
+the report artifact.
+
+Alternatively, you can run a new pipeline to generate a new report.

@@ -173,21 +173,23 @@ export default {
     <template #header>
       <gl-search-box-by-type ref="search" v-model.trim="query" :is-loading="loading" />
     </template>
-    <template v-if="groups.length">
-      <gl-dropdown-section-header>{{
-        $options.i18n.groupsSectionHeader
-      }}</gl-dropdown-section-header>
-      <gl-dropdown-item
-        v-for="group in groups"
-        :key="`${group.id}${group.name}`"
-        data-testid="group-dropdown-item"
-        :avatar-url="group.avatar_url"
-        is-check-item
-        :is-checked="isSelected(group)"
-        @click.native.capture.stop="onItemClick(group)"
-      >
-        {{ group.name }}
-      </gl-dropdown-item>
-    </template>
+    <div>
+      <template v-if="groups.length">
+        <gl-dropdown-section-header>{{
+          $options.i18n.groupsSectionHeader
+        }}</gl-dropdown-section-header>
+        <gl-dropdown-item
+          v-for="group in groups"
+          :key="`${group.id}${group.name}`"
+          data-testid="group-dropdown-item"
+          :avatar-url="group.avatar_url"
+          is-check-item
+          :is-checked="isSelected(group)"
+          @click.native.capture.stop="onItemClick(group)"
+        >
+          {{ group.name }}
+        </gl-dropdown-item>
+      </template>
+    </div>
   </gl-dropdown>
 </template>

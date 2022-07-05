@@ -1,11 +1,10 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlTab, GlTabs, GlLink } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SecurityConfigurationApp, { i18n } from '~/security_configuration/components/app.vue';
 import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_alert.vue';
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
@@ -67,34 +66,32 @@ describe('App component', () => {
   const createComponent = ({ shouldShowCallout = true, ...propsData } = {}) => {
     userCalloutDismissSpy = jest.fn();
 
-    wrapper = extendedWrapper(
-      mount(SecurityConfigurationApp, {
-        propsData: {
-          augmentedSecurityFeatures: securityFeaturesMock,
-          augmentedComplianceFeatures: complianceFeaturesMock,
-          securityTrainingEnabled: true,
-          ...propsData,
-        },
-        provide: {
-          upgradePath,
-          autoDevopsHelpPagePath,
-          autoDevopsPath,
-          projectFullPath,
-          vulnerabilityTrainingDocsPath,
-        },
-        stubs: {
-          ...stubChildren(SecurityConfigurationApp),
-          GlLink: false,
-          GlSprintf: false,
-          LocalStorageSync: false,
-          SectionLayout: false,
-          UserCalloutDismisser: makeMockUserCalloutDismisser({
-            dismiss: userCalloutDismissSpy,
-            shouldShowCallout,
-          }),
-        },
-      }),
-    );
+    wrapper = mountExtended(SecurityConfigurationApp, {
+      propsData: {
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
+        securityTrainingEnabled: true,
+        ...propsData,
+      },
+      provide: {
+        upgradePath,
+        autoDevopsHelpPagePath,
+        autoDevopsPath,
+        projectFullPath,
+        vulnerabilityTrainingDocsPath,
+      },
+      stubs: {
+        ...stubChildren(SecurityConfigurationApp),
+        GlLink: false,
+        GlSprintf: false,
+        LocalStorageSync: false,
+        SectionLayout: false,
+        UserCalloutDismisser: makeMockUserCalloutDismisser({
+          dismiss: userCalloutDismissSpy,
+          shouldShowCallout,
+        }),
+      },
+    });
   };
 
   const findMainHeading = () => wrapper.find('h1');

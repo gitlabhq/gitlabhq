@@ -60,8 +60,7 @@ module Integrations
       response = Gitlab::HTTP.try_get(
         commit_status_path(sha, ref),
         verify: enable_ssl_verification,
-        extra_log_info: { project_id: project_id },
-        use_read_total_timeout: true
+        extra_log_info: { project_id: project_id }
       )
 
       status =

@@ -1293,6 +1293,9 @@ production: &base
   prometheus:
     # enabled: true
     # server_address: 'localhost:9090'
+  snowplow_micro:
+    enabled: true
+    address: '127.0.0.1:9091'
 
   ## Consul settings
   consul:

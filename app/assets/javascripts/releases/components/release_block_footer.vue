@@ -66,8 +66,11 @@ export default {
 </script>
 <template>
   <div>
-    <div v-if="commit" class="float-left mr-3 d-flex align-items-center js-commit-info">
-      <gl-icon ref="commitIcon" name="commit" class="mr-1" />
+    <div
+      v-if="commit"
+      class="gl-float-left gl-mr-5 gl-display-flex gl-align-items-center js-commit-info"
+    >
+      <gl-icon ref="commitIcon" name="commit" class="gl-mr-2" />
       <div v-gl-tooltip.bottom :title="commit.title">
         <gl-link v-if="commitPath" :href="commitPath">
           {{ commit.shortId }}
@@ -76,8 +79,11 @@ export default {
       </div>
     </div>
 
-    <div v-if="tagName" class="float-left mr-3 d-flex align-items-center js-tag-info">
-      <gl-icon name="tag" class="mr-1" />
+    <div
+      v-if="tagName"
+      class="gl-float-left gl-mr-5 gl-display-flex gl-align-items-center js-tag-info"
+    >
+      <gl-icon name="tag" class="gl-mr-2" />
       <div v-gl-tooltip.bottom :title="__('Tag')">
         <gl-link v-if="tagPath" :href="tagPath">
           {{ tagName }}
@@ -88,23 +94,23 @@ export default {
 
     <div
       v-if="releasedAt || author"
-      class="float-left d-flex align-items-center js-author-date-info"
+      class="gl-float-left gl-display-flex gl-align-items-center js-author-date-info"
     >
-      <span class="text-secondary">{{ createdTime }}&nbsp;</span>
+      <span class="gl-text-secondary">{{ createdTime }}&nbsp;</span>
       <template v-if="releasedAt">
         <span
           v-gl-tooltip.bottom
           :title="tooltipTitle(releasedAt)"
-          class="text-secondary flex-shrink-0"
+          class="gl-text-secondary gl-flex-shrink-0"
         >
           {{ releasedAtTimeAgo }}&nbsp;
         </span>
       </template>
 
-      <div v-if="author" class="d-flex">
-        <span class="text-secondary">{{ __('by') }}&nbsp;</span>
+      <div v-if="author" class="gl-display-flex">
+        <span class="gl-text-secondary">{{ __('by') }}&nbsp;</span>
         <user-avatar-link
-          class="gl-my-n1"
+          class="gl-my-n1 gl-display-flex"
           :link-href="author.webUrl"
           :img-src="author.avatarUrl"
           :img-alt="userImageAltDescription"

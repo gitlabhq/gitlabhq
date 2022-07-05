@@ -519,7 +519,7 @@ To solve this:
    curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<first_failed_geo_sync_ID>"
    ```
 
-1. Enter the [Rails console](../../troubleshooting/navigating_gitlab_via_rails_console.md) and run:
+1. Enter the [Rails console](../../operations/rails_console.md) and run:
 
    ```ruby
    failed_geo_syncs = Geo::ProjectRegistry.failed.pluck(:id)
@@ -805,7 +805,7 @@ You can work around this by marking the objects as synced and succeeded verifica
 be aware that can also mark objects that may be
 [missing from the primary](#missing-files-on-the-geo-primary-site).
 
-To do that, enter the [Rails console](../../troubleshooting/navigating_gitlab_via_rails_console.md)
+To do that, enter the [Rails console](../../operations/rails_console.md)
 and run:
 
 ```ruby

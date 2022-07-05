@@ -887,7 +887,7 @@ administrators can clean up image tags
 and [run garbage collection](#container-registry-garbage-collection).
 
 To remove image tags by running the cleanup policy, run the following commands in the
-[GitLab Rails console](../troubleshooting/navigating_gitlab_via_rails_console.md):
+[GitLab Rails console](../operations/rails_console.md):
 
 ```ruby
 # Numeric ID of the project whose container registry should be cleaned up
@@ -1738,7 +1738,7 @@ In this case, follow these steps:
 1. Try the removal again.
 
 If you still can't remove the repository using the common methods, you can use the
-[GitLab Rails console](../troubleshooting/navigating_gitlab_via_rails_console.md)
+[GitLab Rails console](../operations/rails_console.md)
 to remove the project by force:
 
 ```ruby

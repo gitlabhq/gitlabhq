@@ -1,10 +1,11 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlCard, GlLoadingIcon } from '@gitlab/ui';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import statisticsLabels from '../constants';
 
 export default {
   components: {
+    GlCard,
     GlLoadingIcon,
   },
   data() {
@@ -26,20 +27,14 @@ export default {
 </script>
 
 <template>
-  <div class="gl-card">
-    <div class="gl-card-body">
-      <h4>{{ __('Statistics') }}</h4>
-      <gl-loading-icon v-if="isLoading" size="lg" class="my-3" />
-      <template v-else>
-        <p
-          v-for="statistic in getStatistics(statisticsLabels)"
-          :key="statistic.key"
-          class="js-stats"
-        >
-          {{ statistic.label }}
-          <span class="light float-right">{{ statistic.value }}</span>
-        </p>
-      </template>
-    </div>
-  </div>
+  <gl-card>
+    <h4>{{ __('Statistics') }}</h4>
+    <gl-loading-icon v-if="isLoading" size="lg" class="my-3" />
+    <template v-else>
+      <p v-for="statistic in getStatistics(statisticsLabels)" :key="statistic.key" class="js-stats">
+        {{ statistic.label }}
+        <span class="light float-right">{{ statistic.value }}</span>
+      </p>
+    </template>
+  </gl-card>
 </template>

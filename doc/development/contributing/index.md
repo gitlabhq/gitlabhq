@@ -240,4 +240,4 @@ For information on how to contribute documentation, see GitLab
 ## Getting an Enterprise Edition License
 
 If you need a license for contributing to an EE-feature, see
-[relevant information](https://about.gitlab.com/handbook/marketing/community-relations/code-contributor-program/#for-contributors-to-the-gitlab-enterprise-edition-ee).
+[relevant information](https://about.gitlab.com/handbook/marketing/community-relations/code-contributor-program/#contributing-to-the-gitlab-enterprise-edition-ee).

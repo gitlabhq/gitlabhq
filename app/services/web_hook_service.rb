@@ -48,7 +48,6 @@ class WebHookService
     @force = force
     @request_options = {
       timeout: Gitlab.config.gitlab.webhook_timeout,
-      use_read_total_timeout: true,
       allow_local_requests: hook.allow_local_requests?
     }
   end

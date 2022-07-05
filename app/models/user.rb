@@ -9,6 +9,7 @@ class User < ApplicationRecord
   include Gitlab::SQL::Pattern
   include AfterCommitQueue
   include Avatarable
+  include Awareness
   include Referable
   include Sortable
   include CaseSensitivity

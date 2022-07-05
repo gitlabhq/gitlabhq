@@ -18,7 +18,6 @@ Your type of GitLab installation determines how
 See also:
 
 - [GitLab Rails Console Cheat Sheet](gitlab_rails_cheat_sheet.md).
-- [Navigating GitLab via Rails console](navigating_gitlab_via_rails_console.md).
 
 ### Enabling Active Record logging
 

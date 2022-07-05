@@ -46,8 +46,7 @@ module Integrations
       response = Gitlab::HTTP.post(webhook, body: {
         subject: message.project_name,
         text: message.summary,
-        markdown: true,
-        use_read_total_timeout: true
+        markdown: true
       }.to_json)
 
       response if response.success?
