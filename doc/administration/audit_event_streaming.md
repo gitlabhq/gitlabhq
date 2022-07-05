@@ -157,7 +157,7 @@ Each streaming destination can have up to 20 custom HTTP headers included with e
 
 ### Adding custom HTTP headers
 
-Add customer HTTP headers with the API or GitLab UI.
+Add custom HTTP headers with the API or GitLab UI.
 
 #### Use the API
 
