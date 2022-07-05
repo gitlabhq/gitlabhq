@@ -6,8 +6,10 @@ RSpec.describe Gitlab::GithubImport::ImportIssueEventWorker do
   subject(:worker) { described_class.new }
 
   describe '#import' do
+    let(:import_state) { create(:import_state, :started) }
+
     let(:project) do
-      instance_double('Project', full_path: 'foo/bar', id: 1, import_state: nil)
+      instance_double('Project', full_path: 'foo/bar', id: 1, import_state: import_state)
     end
 
     let(:client) { instance_double('Gitlab::GithubImport::Client') }

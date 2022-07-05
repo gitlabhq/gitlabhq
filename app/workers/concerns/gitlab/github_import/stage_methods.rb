@@ -9,6 +9,12 @@ module Gitlab
 
         return unless (project = find_project(project_id))
 
+        if project.import_state&.canceled?
+          info(project_id, message: 'project import canceled')
+
+          return
+        end
+
         client = GithubImport.new_client_for(project)
 
         try_import(client, project)

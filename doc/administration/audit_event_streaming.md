@@ -506,3 +506,52 @@ X-Gitlab-Audit-Event-Type: audit_operation
   "event_type": "audit_operation"
 }
 ```
+
+## Audit event streaming on merge request create actions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90911) in GitLab 15.2.
+
+Stream audit events that relate to merge request create actions using the `/logs` endpoint.
+
+Send API requests that contain the `X-Gitlab-Audit-Event-Type` header with value `merge_request_create`. GitLab responds with JSON payloads with an
+`event_type` field set to `merge_request_create`.
+
+### Headers
+
+Headers are formatted as follows:
+
+```plaintext
+POST /logs HTTP/1.1
+Host: <DESTINATION_HOST>
+Content-Type: application/x-www-form-urlencoded
+X-Gitlab-Audit-Event-Type: merge_request_create
+X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
+```
+
+### Example payload
+
+```json
+{
+  "id": 1,
+  "author_id": 1,
+  "entity_id": 24,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "example_user",
+    "target_id": 132,
+    "target_type": "MergeRequest",
+    "target_details": "Update test.md",
+    "custom_message": "Added merge request",
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "Administrator",
+  "entity_path": "example-group/example-project",
+  "target_details": "Update test.md",
+  "created_at": "2022-07-04T00:19:22.675Z",
+  "target_type": "MergeRequest",
+  "target_id": 132,
+  "event_type": "merge_request_create"
+}
+```

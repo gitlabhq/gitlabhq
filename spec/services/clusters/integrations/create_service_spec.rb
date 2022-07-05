@@ -61,7 +61,6 @@ RSpec.describe Clusters::Integrations::CreateService, '#execute' do
   end
 
   it_behaves_like 'a cluster integration', 'prometheus'
-  it_behaves_like 'a cluster integration', 'elastic_stack'
 
   context 'when application_type is invalid' do
     let(:params) do

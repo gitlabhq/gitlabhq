@@ -187,27 +187,6 @@ Alternatively, you can mount the certificate file at a different location and sp
 This error occurs when the project where you keep your manifests is not public. To fix it, make sure your project is public or your manifest files
 are stored in the repository where the agent is configured.
 
-## Failed to perform vulnerability scan on workload: Service account not found
-
-```json
-{
-  "level": "error",
-  "time": "2022-06-17T15:15:02.665Z",
-  "msg": "Failed to perform vulnerability scan on workload",
-  "mod_name": "starboard_vulnerability",
-  "error": "getting service account by name: gitlab-agent/gitlab-agent: serviceaccounts \"gitlab-agent\" not found"
-}
-```
-
-The GitLab agent for Kubernetes has been able to run [vulnerability scans](vulnerabilities.md) since GitLab 15.0. However, the agent
-cannot detect the service account name. Refer to [issue 361972](https://gitlab.com/gitlab-org/gitlab/-/issues/361972) for more
-information. As a workaround you can pass the `--set serviceAccount.name=gitlab-agent` parameter
-to the Helm command when [installing the agent](install/#install-the-agent-in-the-cluster), or manually create a service account.
-
-```shell
-kubectl create serviceaccount gitlab-agent -n gitlab-agent
-```
-
 ## Failed to perform vulnerability scan on workload: jobs.batch already exists
 
 ```json

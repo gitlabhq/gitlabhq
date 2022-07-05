@@ -34,6 +34,10 @@ FactoryBot.define do
       status { :failed }
     end
 
+    trait :canceled do
+      status { :canceled }
+    end
+
     after(:create) do |import_state, evaluator|
       columns = {}
       columns[:import_url] = evaluator.import_url unless evaluator.import_url.blank?

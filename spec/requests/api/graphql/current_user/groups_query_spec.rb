@@ -8,8 +8,9 @@ RSpec.describe 'Query current user groups' do
   let_it_be(:user) { create(:user) }
   let_it_be(:guest_group) { create(:group, name: 'public guest', path: 'public-guest') }
   let_it_be(:private_maintainer_group) { create(:group, :private, name: 'b private maintainer', path: 'b-private-maintainer') }
-  let_it_be(:public_developer_group) { create(:group, :private, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer') }
-  let_it_be(:public_maintainer_group) { create(:group, :private, name: 'a public maintainer', path: 'a-public-maintainer') }
+  let_it_be(:public_developer_group) { create(:group, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer') }
+  let_it_be(:public_maintainer_group) { create(:group, name: 'a public maintainer', path: 'a-public-maintainer') }
+  let_it_be(:public_owner_group) { create(:group, name: 'a public owner', path: 'a-public-owner') }
 
   let(:group_arguments) { {} }
   let(:current_user) { user }
@@ -29,6 +30,7 @@ RSpec.describe 'Query current user groups' do
     private_maintainer_group.add_maintainer(user)
     public_developer_group.add_developer(user)
     public_maintainer_group.add_maintainer(user)
+    public_owner_group.add_owner(user)
   end
 
   subject { graphql_data.dig('currentUser', 'groups', 'nodes') }
@@ -52,6 +54,7 @@ RSpec.describe 'Query current user groups' do
     is_expected.to match(
       expected_group_hash(
         public_maintainer_group,
+        public_owner_group,
         private_maintainer_group,
         public_developer_group,
         guest_group
@@ -66,6 +69,7 @@ RSpec.describe 'Query current user groups' do
       is_expected.to match(
         expected_group_hash(
           public_maintainer_group,
+          public_owner_group,
           private_maintainer_group,
           public_developer_group
         )
@@ -80,6 +84,32 @@ RSpec.describe 'Query current user groups' do
           expected_group_hash(
             public_maintainer_group,
             private_maintainer_group
+          )
+        )
+      end
+    end
+  end
+
+  context 'when permission_scope is TRANSFER_PROJECTS' do
+    let(:group_arguments) { { permission_scope: :TRANSFER_PROJECTS } }
+
+    specify do
+      is_expected.to match(
+        expected_group_hash(
+          public_maintainer_group,
+          public_owner_group,
+          private_maintainer_group
+        )
+      )
+    end
+
+    context 'when search is provided' do
+      let(:group_arguments) { { permission_scope: :TRANSFER_PROJECTS, search: 'owner' } }
+
+      specify do
+        is_expected.to match(
+          expected_group_hash(
+            public_owner_group
           )
         )
       end

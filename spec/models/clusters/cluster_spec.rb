@@ -42,7 +42,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   it { is_expected.to delegate_method(:available?).to(:application_helm).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_ingress).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_knative).with_prefix }
-  it { is_expected.to delegate_method(:available?).to(:integration_elastic_stack).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:integration_prometheus).with_prefix }
   it { is_expected.to delegate_method(:external_ip).to(:application_ingress).with_prefix }
   it { is_expected.to delegate_method(:external_hostname).to(:application_ingress).with_prefix }
@@ -196,22 +195,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     context 'cluster does not have prometheus application' do
       let(:cluster) { create(:cluster) }
 
-      it { is_expected.not_to include(cluster) }
-    end
-  end
-
-  describe '.with_available_elasticstack' do
-    subject { described_class.with_available_elasticstack }
-
-    let_it_be(:cluster) { create(:cluster) }
-
-    context 'cluster has ElasticStack application' do
-      let!(:application) { create(:clusters_applications_elastic_stack, :installed, cluster: cluster) }
-
-      it { is_expected.to include(cluster) }
-    end
-
-    context 'cluster does not have ElasticStack application' do
       it { is_expected.not_to include(cluster) }
     end
   end

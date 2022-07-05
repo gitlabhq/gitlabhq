@@ -1096,14 +1096,15 @@ copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
 
 ### Animated images
 
-Sometimes an image with animation (such as an animated GIF)
-can help the reader understand a complicated interaction with the user interface.
+Avoid using animated images (such as animated GIFs). They can be distracting
+and annoying for users.
 
-However, you should use them sparingly and avoid them when you can.
-Do not use them to replace written descriptions of processes or the product.
+If you're describing a complicated interaction in the user interface and want to
+include a visual representation to help readers understand it, you can:
 
-If you include an animated image, follow the same size and naming conventions we use for images. If the animated image loops, add at least a three
-second pause to the end of the loop.
+- Use a static image (screenshot) and if necessary, add callouts to emphasize an
+  an area of the screen.
+- Create a short video of the interaction and link to it.
 
 ## Videos
 

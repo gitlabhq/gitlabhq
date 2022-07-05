@@ -456,10 +456,6 @@ class Environment < ApplicationRecord
     self.auto_stop_at = parsed_result.seconds.from_now
   end
 
-  def elastic_stack_available?
-    !!deployment_platform&.cluster&.elastic_stack_available?
-  end
-
   def rollout_status
     return unless rollout_status_available?
 

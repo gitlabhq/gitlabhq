@@ -18,8 +18,8 @@ import JobsTableApp from '~/jobs/components/table/jobs_table_app.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
 import {
-  mockJobsQueryResponse,
-  mockJobsQueryEmptyResponse,
+  mockJobsResponsePaginated,
+  mockJobsResponseEmpty,
   mockFailedSearchToken,
 } from '../../mock_data';
 
@@ -32,9 +32,9 @@ describe('Job table app', () => {
   let wrapper;
   let jobsTableVueSearch = true;
 
-  const successHandler = jest.fn().mockResolvedValue(mockJobsQueryResponse);
+  const successHandler = jest.fn().mockResolvedValue(mockJobsResponsePaginated);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
-  const emptyHandler = jest.fn().mockResolvedValue(mockJobsQueryEmptyResponse);
+  const emptyHandler = jest.fn().mockResolvedValue(mockJobsResponseEmpty);
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
@@ -128,15 +128,18 @@ describe('Job table app', () => {
       });
 
       it('handles infinite scrolling by calling fetch more', async () => {
+        const pageSize = 30;
+
         expect(findLoadingSpinner().exists()).toBe(true);
 
         await waitForPromises();
 
         expect(findLoadingSpinner().exists()).toBe(false);
 
-        expect(successHandler).toHaveBeenCalledWith({
-          after: 'eyJpZCI6IjIzMTcifQ',
-          fullPath: 'gitlab-org/gitlab',
+        expect(successHandler).toHaveBeenLastCalledWith({
+          first: pageSize,
+          fullPath: projectPath,
+          after: mockJobsResponsePaginated.data.project.jobs.pageInfo.endCursor,
         });
       });
     });

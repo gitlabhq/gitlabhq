@@ -156,12 +156,49 @@ RSpec.describe ProjectImportState, type: :model do
         project.import_state.finish
       end
 
-      it 'does not qneueue housekeeping when project does not have a valid import type' do
+      it 'does not enqueue housekeeping when project does not have a valid import type' do
         project = create(:project, :import_started, import_type: nil)
 
         expect(Projects::AfterImportWorker).not_to receive(:perform_async)
 
         project.import_state.finish
+      end
+    end
+
+    context 'state transition: [:none, :scheduled, :started] => [:canceled]' do
+      it 'updates the import status' do
+        import_state = create(:import_state, :none)
+        expect { import_state.cancel }
+          .to change { import_state.status }
+          .from('none').to('canceled')
+      end
+
+      it 'unsets the JID' do
+        import_state = create(:import_state, :started, jid: '123')
+
+        expect(Gitlab::SidekiqStatus)
+          .to receive(:unset)
+          .with('123')
+          .and_call_original
+
+        import_state.cancel!
+
+        expect(import_state.jid).to be_nil
+      end
+
+      it 'removes import data' do
+        import_data = ProjectImportData.new(data: { 'test' => 'some data' })
+        project = create(:project, :import_scheduled, import_data: import_data)
+
+        expect(project)
+          .to receive(:remove_import_data)
+          .and_call_original
+
+        expect do
+          project.import_state.cancel
+          project.reload
+        end.to change { project.import_data }
+          .from(import_data).to(nil)
       end
     end
   end
@@ -178,7 +215,7 @@ RSpec.describe ProjectImportState, type: :model do
       end
     end
 
-    context 'with an JID' do
+    context 'with a JID' do
       it 'unsets the JID' do
         import_state = create(:import_state, :started, jid: '123')
 

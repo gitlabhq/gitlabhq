@@ -1,35 +1,11 @@
 ---
-stage: Systems
-group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
+redirect_to: '../../ci/troubleshooting.md#disaster-recovery'
+remove_date: '2022-10-04'
 ---
 
-# Disaster recovery **(FREE SELF)**
+This document was moved to [another location](../../ci/troubleshooting.md#disaster-recovery).
 
-This document describes a feature that allows you to disable some important but computationally
-expensive parts of the application to relieve stress on the database during an ongoing downtime.
-
-## `ci_queueing_disaster_recovery_disable_fair_scheduling`
-
-This feature flag, if temporarily enabled, disables fair scheduling on shared runners.
-This can help to reduce system resource usage on the `jobs/request` endpoint
-by significantly reducing the computations being performed.
-
-Side effects:
-
-- In case of a large backlog of jobs, the jobs are processed in the order
-  they were put in the system, instead of balancing the jobs across many projects.
-
-## `ci_queueing_disaster_recovery_disable_quota`
-
-This feature flag, if temporarily enabled, disables enforcing CI/CD minutes quota
-on shared runners. This can help to reduce system resource usage on the
-`jobs/request` endpoint by significantly reducing the computations being
-performed.
-
-Side effects:
-
-- Projects which are out of quota will be run. This affects
-  only jobs created during the last hour, as prior jobs are canceled
-  by a periodic background worker (`StuckCiJobsWorker`).
+<!-- This redirect file can be deleted after <2022-10-04>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

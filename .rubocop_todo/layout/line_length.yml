@@ -340,7 +340,6 @@ Layout/LineLength:
     - 'app/models/ci/unit_test.rb'
     - 'app/models/clusters/agent.rb'
     - 'app/models/clusters/applications/cert_manager.rb'
-    - 'app/models/clusters/applications/elastic_stack.rb'
     - 'app/models/clusters/applications/knative.rb'
     - 'app/models/clusters/applications/prometheus.rb'
     - 'app/models/clusters/cluster.rb'

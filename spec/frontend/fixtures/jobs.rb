@@ -35,13 +35,21 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
   end
 
   describe GraphQL::Query, type: :request do
+    let(:artifact) { create(:ci_job_artifact, file_type: :archive, file_format: :zip) }
+
     let!(:build) { create(:ci_build, :success, name: 'build', pipeline: pipeline) }
+    let!(:cancelable) { create(:ci_build, :cancelable, name: 'cancelable', pipeline: pipeline) }
     let!(:created_by_tag) { create(:ci_build, :success, name: 'created_by_tag', tag: true, pipeline: pipeline) }
+    let!(:pending) { create(:ci_build, :pending, name: 'pending', pipeline: pipeline) }
+    let!(:playable) { create(:ci_build, :playable, name: 'playable', pipeline: pipeline) }
+    let!(:retryable) { create(:ci_build, :retryable, name: 'retryable', pipeline: pipeline) }
+    let!(:scheduled) { create(:ci_build, :scheduled, name: 'scheduled', pipeline: pipeline) }
+    let!(:with_artifact) { create(:ci_build, :success, name: 'with_artifact', job_artifacts: [artifact], pipeline: pipeline) }
     let!(:with_coverage) { create(:ci_build, :success, name: 'with_coverage', coverage: 40.0, pipeline: pipeline) }
-    let!(:stuck) { create(:ci_build, :pending, name: 'stuck', pipeline: pipeline) }
 
     fixtures_path = 'graphql/jobs/'
     get_jobs_query = 'get_jobs.query.graphql'
+    full_path = 'frontend-fixtures/builds-project'
 
     let_it_be(:query) do
       get_graphql_query_as_string("jobs/components/table/graphql/queries/#{get_jobs_query}")
@@ -49,7 +57,7 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
 
     it "#{fixtures_path}#{get_jobs_query}.json" do
       post_graphql(query, current_user: user, variables: {
-        fullPath: 'frontend-fixtures/builds-project'
+        fullPath: full_path
       })
 
       expect_graphql_errors_to_be_empty
@@ -60,7 +68,25 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
       project.add_guest(guest)
 
       post_graphql(query, current_user: guest, variables: {
-        fullPath: 'frontend-fixtures/builds-project'
+        fullPath: full_path
+      })
+
+      expect_graphql_errors_to_be_empty
+    end
+
+    it "#{fixtures_path}#{get_jobs_query}.paginated.json" do
+      post_graphql(query, current_user: user, variables: {
+        fullPath: full_path,
+        first: 2
+      })
+
+      expect_graphql_errors_to_be_empty
+    end
+
+    it "#{fixtures_path}#{get_jobs_query}.empty.json" do
+      post_graphql(query, current_user: user, variables: {
+        fullPath: full_path,
+        first: 0
       })
 
       expect_graphql_errors_to_be_empty

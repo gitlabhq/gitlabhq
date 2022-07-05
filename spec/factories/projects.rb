@@ -151,6 +151,10 @@ FactoryBot.define do
       import_status { :failed }
     end
 
+    trait :import_canceled do
+      import_status { :canceled }
+    end
+
     trait :jira_dvcs_cloud do
       before(:create) do |project|
         create(:project_feature_usage, :dvcs_cloud, project: project)

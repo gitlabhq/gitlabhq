@@ -31,6 +31,10 @@ class ProjectImportState < ApplicationRecord
       transition started: :finished
     end
 
+    event :cancel do
+      transition [:none, :scheduled, :started] => :canceled
+    end
+
     event :fail_op do
       transition [:scheduled, :started] => :failed
     end
@@ -39,6 +43,7 @@ class ProjectImportState < ApplicationRecord
     state :started
     state :finished
     state :failed
+    state :canceled
 
     after_transition [:none, :finished, :failed] => :scheduled do |state, _|
       state.run_after_commit do
@@ -51,7 +56,7 @@ class ProjectImportState < ApplicationRecord
       end
     end
 
-    after_transition any => :finished do |state, _|
+    after_transition any => [:canceled, :finished] do |state, _|
       if state.jid.present?
         Gitlab::SidekiqStatus.unset(state.jid)
 
@@ -59,7 +64,7 @@ class ProjectImportState < ApplicationRecord
       end
     end
 
-    after_transition any => :failed do |state, _|
+    after_transition any => [:canceled, :failed] do |state, _|
       state.project.remove_import_data
     end
 

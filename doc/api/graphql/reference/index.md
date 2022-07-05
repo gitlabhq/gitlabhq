@@ -19245,6 +19245,7 @@ User permission on groups.
 | Value | Description |
 | ----- | ----------- |
 | <a id="grouppermissioncreate_projects"></a>`CREATE_PROJECTS` | Groups where the user can create projects. |
+| <a id="grouppermissiontransfer_projects"></a>`TRANSFER_PROJECTS` | Groups where the user can transfer projects to. |
 
 ### `HealthStatus`
 

@@ -125,6 +125,7 @@ colocated
 colocating
 compilable
 composable
+composables
 Conda
 Consul
 Contentful

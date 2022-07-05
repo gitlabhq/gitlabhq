@@ -98,7 +98,7 @@ where:
 - [YAML `!reference` tags](../yaml/yaml_optimization.md#reference-tags) are also replaced
   with the linked configuration.
 
-Using `!refence` tags can cause nested configuration that display with
+Using `!reference` tags can cause nested configuration that display with
 multiple hyphens (`-`) in the expanded view. This behavior is expected, and the extra
 hyphens do not affect the job's execution. For example, this configuration and
 fully expanded version are both valid:

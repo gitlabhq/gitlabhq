@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
-import { mockJobsInTable } from '../../mock_data';
+import { mockJobsNodes } from '../../mock_data';
 
 describe('Jobs Table', () => {
   let wrapper;
@@ -19,7 +19,7 @@ describe('Jobs Table', () => {
     wrapper = extendedWrapper(
       mount(JobsTable, {
         propsData: {
-          jobs: mockJobsInTable,
+          jobs: mockJobsNodes,
           ...props,
         },
       }),
@@ -39,7 +39,7 @@ describe('Jobs Table', () => {
   });
 
   it('displays correct number of job rows', () => {
-    expect(findTableRows()).toHaveLength(mockJobsInTable.length);
+    expect(findTableRows()).toHaveLength(mockJobsNodes.length);
   });
 
   it('displays job status', () => {
@@ -47,14 +47,14 @@ describe('Jobs Table', () => {
   });
 
   it('displays the job stage and name', () => {
-    const firstJob = mockJobsInTable[0];
+    const firstJob = mockJobsNodes[0];
 
     expect(findJobStage().text()).toBe(firstJob.stage.name);
     expect(findJobName().text()).toBe(firstJob.name);
   });
 
   it('displays the coverage for only jobs that have coverage', () => {
-    const jobsThatHaveCoverage = mockJobsInTable.filter((job) => job.coverage !== null);
+    const jobsThatHaveCoverage = mockJobsNodes.filter((job) => job.coverage !== null);
 
     jobsThatHaveCoverage.forEach((job, index) => {
       expect(findAllCoverageJobs().at(index).text()).toBe(`${job.coverage}%`);

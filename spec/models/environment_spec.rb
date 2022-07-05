@@ -1711,25 +1711,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#elastic_stack_available?' do
-    let!(:cluster) { create(:cluster, :project, :provided_by_user, projects: [project]) }
-    let!(:deployment) { create(:deployment, :success, environment: environment, project: project, cluster: cluster) }
-
-    context 'when integration does not exist' do
-      it 'returns false' do
-        expect(environment.elastic_stack_available?).to be(false)
-      end
-    end
-
-    context 'when integration is enabled' do
-      let!(:integration) { create(:clusters_integrations_elastic_stack, cluster: cluster) }
-
-      it 'returns true' do
-        expect(environment.elastic_stack_available?).to be(true)
-      end
-    end
-  end
-
   describe '#destroy' do
     it 'remove the deployment refs from gitaly' do
       deployment = create(:deployment, :success, environment: environment, project: project)

@@ -1,8 +1,8 @@
-query getJobs($fullPath: ID!, $after: String, $statuses: [CiJobStatus!]) {
+query getJobs($fullPath: ID!, $after: String, $first: Int = 30, $statuses: [CiJobStatus!]) {
   project(fullPath: $fullPath) {
     id
     __typename
-    jobs(after: $after, first: 30, statuses: $statuses) {
+    jobs(after: $after, first: $first, statuses: $statuses) {
       count
       pageInfo {
         endCursor
