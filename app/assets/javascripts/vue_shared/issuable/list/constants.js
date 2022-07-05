@@ -56,3 +56,5 @@ export const IssuableTypes = {
 export const DEFAULT_PAGE_SIZE = 20;
 
 export const DEFAULT_SKELETON_COUNT = 5;
+
+export const PAGE_SIZE_STORAGE_KEY = 'issuable_list_page_size';

@@ -153,6 +153,7 @@ RSpec.describe 'User uses header search field', :js do
 
       it 'displays search options' do
         fill_in_search('test')
+
         expect(page).to have_selector(scoped_search_link('test', search_code: true))
         expect(page).to have_selector(scoped_search_link('test', group_id: group.id, search_code: true))
         expect(page).to have_selector(scoped_search_link('test', project_id: project.id, group_id: group.id, search_code: true))
@@ -167,6 +168,7 @@ RSpec.describe 'User uses header search field', :js do
 
       it 'displays search options' do
         fill_in_search('test')
+        sleep 0.5
         expect(page).to have_selector(scoped_search_link('test', search_code: true, repository_ref: 'master'))
         expect(page).not_to have_selector(scoped_search_link('test', search_code: true, group_id: project.namespace_id, repository_ref: 'master'))
         expect(page).to have_selector(scoped_search_link('test', search_code: true, project_id: project.id, repository_ref: 'master'))
@@ -184,7 +186,7 @@ RSpec.describe 'User uses header search field', :js do
         fill_in_search('Feature')
 
         within(dashboard_search_options_popup_menu) do
-          expect(page).to have_text('"Feature" in all GitLab')
+          expect(page).to have_text('Feature in all GitLab')
           expect(page).to have_no_text('Feature Flags')
         end
       end

@@ -170,7 +170,7 @@ module SearchHelper
   # search_context exposes a bit too much data to the frontend, this controls what data we share and when.
   def header_search_context
     {}.tap do |hash|
-      hash[:group] = { id: search_context.group.id, name: search_context.group.name } if search_context.for_group?
+      hash[:group] = { id: search_context.group.id, name: search_context.group.name, full_name: search_context.group.full_name } if search_context.for_group?
       hash[:group_metadata] = search_context.group_metadata if search_context.for_group?
 
       hash[:project] = { id: search_context.project.id, name: search_context.project.name } if search_context.for_project?

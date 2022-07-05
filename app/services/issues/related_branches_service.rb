@@ -36,8 +36,10 @@ module Issues
     end
 
     def branches_with_iid_of(issue)
-      project.repository.branch_names.select do |branch|
-        branch =~ /\A#{issue.iid}-(?!\d+-stable)/i
+      branch_name_regex = /\A#{issue.iid}-(?!\d+-stable)/i
+
+      project.repository.search_branch_names("#{issue.iid}-*").select do |branch|
+        branch.match?(branch_name_regex)
       end
     end
   end

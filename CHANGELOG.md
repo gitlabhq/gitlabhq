@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.1.2 (2022-07-05)
+
+### Fixed (3 changes)
+
+- [Resolve "White screen of death on creating new project"](gitlab-org/gitlab@b737280d402aa88f723ada9885ccca22fa4457b5) ([merge request](gitlab-org/gitlab!91668))
+- [Fix agent token modal](gitlab-org/gitlab@6fdffc4a534f67953a1555a0e4e35e4bd2bcb960) ([merge request](gitlab-org/gitlab!91668))
+- [Resolve "Gitlab doesn't detect the deployment pods after K8s cluster upgrade to v1.22"](gitlab-org/gitlab@5eb84d7d96189f7119aa325e83a3723942cc14ba) ([merge request](gitlab-org/gitlab!91668))
+
+### Changed (2 changes)
+
+- [Update gitaly_cgroups metric name in docs](gitlab-org/gitlab@1af956596f052446f7ee2d42635b891670ddccd4) ([merge request](gitlab-org/gitlab!91668))
+- [Refactor add populate commit permission migration](gitlab-org/gitlab@bc80cc41c2b90b8e459055c5ec1885941798f3c2) ([merge request](gitlab-org/gitlab!91668)) **GitLab Enterprise Edition**
+
+### Removed (1 change)
+
+- [Geo Sites Form - Remove Beta Badge](gitlab-org/gitlab@2feffa8e272aa8d9e608ad3e510a93fda93b7fcb) ([merge request](gitlab-org/gitlab!91668)) **GitLab Enterprise Edition**
+
 ## 15.1.1 (2022-06-30)
 
 ### Security (16 changes)

@@ -90,7 +90,7 @@ RSpec.describe MergeRequests::ApprovalService do
 
       it 'tracks merge request approve action' do
         expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-          .to receive(:track_approve_mr_action).with(user: user)
+          .to receive(:track_approve_mr_action).with(user: user, merge_request: merge_request)
 
         service.execute(merge_request)
       end

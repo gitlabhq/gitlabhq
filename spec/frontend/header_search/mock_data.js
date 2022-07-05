@@ -4,9 +4,12 @@ import {
   MSG_MR_ASSIGNED_TO_ME,
   MSG_MR_IM_REVIEWER,
   MSG_MR_IVE_CREATED,
-  MSG_IN_PROJECT,
-  MSG_IN_GROUP,
   MSG_IN_ALL_GITLAB,
+  PROJECTS_CATEGORY,
+  ICON_PROJECT,
+  GROUPS_CATEGORY,
+  ICON_GROUP,
+  ICON_SUBGROUP,
 } from '~/header_search/constants';
 
 export const MOCK_USERNAME = 'anyone';
@@ -27,10 +30,22 @@ export const MOCK_PROJECT = {
   path: '/mock-project',
 };
 
+export const MOCK_PROJECT_LONG = {
+  id: 124,
+  name: 'Mock Project Name That Is Ridiculously Long And It Goes Forever',
+  path: '/mock-project-name-that-is-ridiculously-long-and-it-goes-forever',
+};
+
 export const MOCK_GROUP = {
   id: 321,
   name: 'MockGroup',
   path: '/mock-group',
+};
+
+export const MOCK_SUBGROUP = {
+  id: 322,
+  name: 'MockSubGroup',
+  path: `${MOCK_GROUP}/mock-subgroup`,
 };
 
 export const MOCK_SEARCH_QUERY = 'http://gitlab.com/search?search=test';
@@ -42,6 +57,20 @@ export const MOCK_SEARCH_CONTEXT = {
   project_metadata: {},
   group: null,
   group_metadata: {},
+};
+
+export const MOCK_SEARCH_CONTEXT_FULL = {
+  group: {
+    id: 31,
+    name: 'testGroup',
+    full_name: 'testGroup',
+  },
+  group_metadata: {
+    group_path: 'testGroup',
+    name: 'testGroup',
+    issues_path: '/groups/testGroup/-/issues',
+    mr_path: '/groups/testGroup/-/merge_requests',
+  },
 };
 
 export const MOCK_DEFAULT_SEARCH_OPTIONS = [
@@ -76,13 +105,51 @@ export const MOCK_SCOPED_SEARCH_OPTIONS = [
   {
     html_id: 'scoped-in-project',
     scope: MOCK_PROJECT.name,
-    description: MSG_IN_PROJECT,
+    scopeCategory: PROJECTS_CATEGORY,
+    icon: ICON_PROJECT,
+    url: MOCK_PROJECT.path,
+  },
+  {
+    html_id: 'scoped-in-project-long',
+    scope: MOCK_PROJECT_LONG.name,
+    scopeCategory: PROJECTS_CATEGORY,
+    icon: ICON_PROJECT,
+    url: MOCK_PROJECT_LONG.path,
+  },
+  {
+    html_id: 'scoped-in-group',
+    scope: MOCK_GROUP.name,
+    scopeCategory: GROUPS_CATEGORY,
+    icon: ICON_GROUP,
+    url: MOCK_GROUP.path,
+  },
+  {
+    html_id: 'scoped-in-subgroup',
+    scope: MOCK_SUBGROUP.name,
+    scopeCategory: GROUPS_CATEGORY,
+    icon: ICON_SUBGROUP,
+    url: MOCK_SUBGROUP.path,
+  },
+  {
+    html_id: 'scoped-in-all',
+    description: MSG_IN_ALL_GITLAB,
+    url: MOCK_ALL_PATH,
+  },
+];
+
+export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [
+  {
+    html_id: 'scoped-in-project',
+    scope: MOCK_PROJECT.name,
+    scopeCategory: PROJECTS_CATEGORY,
+    icon: ICON_PROJECT,
     url: MOCK_PROJECT.path,
   },
   {
     html_id: 'scoped-in-group',
     scope: MOCK_GROUP.name,
-    description: MSG_IN_GROUP,
+    scopeCategory: GROUPS_CATEGORY,
+    icon: ICON_GROUP,
     url: MOCK_GROUP.path,
   },
   {

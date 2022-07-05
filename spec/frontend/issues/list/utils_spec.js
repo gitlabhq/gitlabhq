@@ -10,12 +10,7 @@ import {
   urlParams,
   urlParamsWithSpecialValues,
 } from 'jest/issues/list/mock_data';
-import {
-  PAGE_SIZE,
-  PAGE_SIZE_MANUAL,
-  RELATIVE_POSITION_ASC,
-  urlSortParams,
-} from '~/issues/list/constants';
+import { PAGE_SIZE, urlSortParams } from '~/issues/list/constants';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -29,52 +24,30 @@ import {
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 describe('getInitialPageParams', () => {
-  it.each(Object.keys(urlSortParams))(
-    'returns the correct page params for sort key %s',
-    (sortKey) => {
-      const firstPageSize = sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE;
+  it('returns page params with a default page size when no arguments are given', () => {
+    expect(getInitialPageParams()).toEqual({ firstPageSize: PAGE_SIZE });
+  });
 
-      expect(getInitialPageParams(sortKey)).toEqual({ firstPageSize });
-    },
-  );
+  it('returns page params with the given page size', () => {
+    const pageSize = 100;
+    expect(getInitialPageParams(pageSize)).toEqual({ firstPageSize: pageSize });
+  });
 
-  it.each(Object.keys(urlSortParams))(
-    'returns the correct page params for sort key %s with afterCursor',
-    (sortKey) => {
-      const firstPageSize = sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE;
-      const lastPageSize = undefined;
-      const afterCursor = 'randomCursorString';
-      const beforeCursor = undefined;
-      const pageParams = getInitialPageParams(
-        sortKey,
-        firstPageSize,
-        lastPageSize,
-        afterCursor,
-        beforeCursor,
-      );
+  it('does not return firstPageSize when lastPageSize is provided', () => {
+    const firstPageSize = 100;
+    const lastPageSize = 50;
+    const afterCursor = undefined;
+    const beforeCursor = 'randomCursorString';
+    const pageParams = getInitialPageParams(
+      100,
+      firstPageSize,
+      lastPageSize,
+      afterCursor,
+      beforeCursor,
+    );
 
-      expect(pageParams).toEqual({ firstPageSize, afterCursor });
-    },
-  );
-
-  it.each(Object.keys(urlSortParams))(
-    'returns the correct page params for sort key %s with beforeCursor',
-    (sortKey) => {
-      const firstPageSize = undefined;
-      const lastPageSize = PAGE_SIZE;
-      const afterCursor = undefined;
-      const beforeCursor = 'anotherRandomCursorString';
-      const pageParams = getInitialPageParams(
-        sortKey,
-        firstPageSize,
-        lastPageSize,
-        afterCursor,
-        beforeCursor,
-      );
-
-      expect(pageParams).toEqual({ lastPageSize, beforeCursor });
-    },
-  );
+    expect(pageParams).toEqual({ lastPageSize, beforeCursor });
+  });
 });
 
 describe('getSortKey', () => {

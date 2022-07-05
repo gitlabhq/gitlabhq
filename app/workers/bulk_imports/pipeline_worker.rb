@@ -53,12 +53,8 @@ module BulkImports
       pipeline_tracker.update!(status_event: 'start', jid: jid)
       pipeline_tracker.pipeline_class.new(context).run
       pipeline_tracker.finish!
-    rescue BulkImports::NetworkError => e
-      if e.retriable?(pipeline_tracker)
-        retry_tracker(e)
-      else
-        fail_tracker(e)
-      end
+    rescue BulkImports::RetryPipelineError => e
+      retry_tracker(e)
     rescue StandardError => e
       fail_tracker(e)
     end

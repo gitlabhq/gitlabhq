@@ -4,7 +4,8 @@ $search-sidebar-min-width: 240px;
 $search-sidebar-max-width: 300px;
 $search-input-field-x-min-width: 200px;
 $search-input-field-min-width: 320px;
-$search-input-field-max-width: 600px;
+$search-input-field-max-width: 640px;
+$search-keyboard-shortcut: '/';
 
 $border-radius-medium: 3px;
 
@@ -67,54 +68,58 @@ input[type='checkbox']:hover {
   }
 }
 
-// This is a temporary workaround!
-// the button in GitLab UI Search components need to be updated to not be the small size
-// see in Figma: https://www.figma.com/file/qEddyqCrI7kPSBjGmwkZzQ/Component-library?node-id=43905%3A45540
-.header-search .gl-search-box-by-type-clear.btn-sm {
-  padding: 0.5rem !important;
-}
-
 .header-search {
   min-width: $search-input-field-min-width;
+
+  // This is a temporary workaround!
+  // the button in GitLab UI Search components need to be updated to not be the small size
+  // see in Figma: https://www.figma.com/file/qEddyqCrI7kPSBjGmwkZzQ/Component-library?node-id=43905%3A45540
+  .gl-search-box-by-type-clear.btn-sm {
+    padding: 0.5rem !important;
+  }
 
   @include media-breakpoint-between(md, lg) {
     min-width: $search-input-field-x-min-width;
   }
 
-  input,
-  svg {
-    transition: border-color ease-in-out $default-transition-duration,
-      background-color ease-in-out $default-transition-duration;
+  &.is-active {
+    &.is-searching {
+      .in-search-scope-help {
+        position: absolute;
+        top: $gl-spacing-scale-2;
+        right: 2.125rem;
+        z-index: 2;
+      }
+    }
+  }
+
+  &.is-not-searching {
+    .in-search-scope-help {
+      display: none;
+    }
   }
 
   &.is-not-active {
-    .btn.gl-clear-icon-button {
+    .btn.gl-clear-icon-button,
+    .in-search-scope-help {
       display: none;
     }
 
     &::after {
-      content: '/';
-      display: inline-block;
+      content: $search-keyboard-shortcut;
+      transform: translateY(calc(50% - #{$gl-spacing-scale-2}));
       position: absolute;
       top: 0;
-      right: 8px;
-      transform: translateY(calc(50% - 4px));
-      padding: 4px 5px;
+      right: $gl-spacing-scale-3;
+      padding: $gl-spacing-scale-2 5px;
       font-size: $gl-font-size-small;
       font-family: $monospace-font;
       line-height: 1;
       vertical-align: middle;
       border-width: 0;
-      border-style: solid;
-      border-image: none;
       border-radius: $border-radius-medium;
       box-shadow: none;
-      white-space: pre-wrap;
       box-sizing: border-box;
-      // Safari
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      word-break: keep-all;
     }
   }
 }

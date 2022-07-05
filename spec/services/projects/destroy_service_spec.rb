@@ -25,8 +25,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
     end
 
-    it 'publishes a ProjectDeleted event with project id and namespace id' do
-      expected_data = { project_id: project.id, namespace_id: project.namespace_id }
+    it 'publishes a ProjectDeletedEvent' do
+      expected_data = {
+        project_id: project.id,
+        namespace_id: project.namespace_id,
+        root_namespace_id: project.root_namespace.id
+      }
 
       expect { destroy_project(project, user, {}) }.to publish_event(Projects::ProjectDeletedEvent).with(expected_data)
     end

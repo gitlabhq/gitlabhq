@@ -1,65 +1,50 @@
-import Vue, { nextTick } from 'vue';
-
-import groupFolderComponent from '~/groups/components/group_folder.vue';
-import groupItemComponent from '~/groups/components/group_item.vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import GroupFolder from '~/groups/components/group_folder.vue';
+import GroupItem from '~/groups/components/group_item.vue';
+import { MAX_CHILDREN_COUNT } from '~/groups/constants';
 import { mockGroups, mockParentGroupItem } from '../mock_data';
 
-const createComponent = (groups = mockGroups, parentGroup = mockParentGroupItem) => {
-  const Component = Vue.extend(groupFolderComponent);
+describe('GroupFolder component', () => {
+  let wrapper;
 
-  return new Component({
-    propsData: {
-      groups,
-      parentGroup,
-    },
-  });
-};
+  Vue.component('GroupItem', GroupItem);
 
-describe('GroupFolderComponent', () => {
-  let vm;
+  const findLink = () => wrapper.find('a');
 
-  beforeEach(async () => {
-    Vue.component('GroupItem', groupItemComponent);
-
-    vm = createComponent();
-    vm.$mount();
-
-    await nextTick();
-  });
+  const createComponent = ({ groups = mockGroups, parentGroup = mockParentGroupItem } = {}) =>
+    shallowMount(GroupFolder, {
+      propsData: {
+        groups,
+        parentGroup,
+      },
+    });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  describe('computed', () => {
-    describe('hasMoreChildren', () => {
-      it('should return false when childrenCount of group is less than MAX_CHILDREN_COUNT', () => {
-        expect(vm.hasMoreChildren).toBeFalsy();
-      });
-    });
+  it('does not render more children stats link when children count of group is under limit', () => {
+    wrapper = createComponent();
 
-    describe('moreChildrenStats', () => {
-      it('should return message with count of excess children over MAX_CHILDREN_COUNT limit', () => {
-        expect(vm.moreChildrenStats).toBe('3 more items');
-      });
-    });
+    expect(findLink().exists()).toBe(false);
   });
 
-  describe('template', () => {
-    it('should render component template correctly', () => {
-      expect(vm.$el.classList.contains('group-list-tree')).toBeTruthy();
-      expect(vm.$el.querySelectorAll('li.group-row').length).toBe(7);
+  it('renders text of count of excess children when children count of group is over limit', () => {
+    const childrenCount = MAX_CHILDREN_COUNT + 1;
+    wrapper = createComponent({
+      parentGroup: {
+        ...mockParentGroupItem,
+        childrenCount,
+      },
     });
 
-    it('should render more children link when groups list has children over MAX_CHILDREN_COUNT limit', () => {
-      const parentGroup = { ...mockParentGroupItem };
-      parentGroup.childrenCount = 21;
+    expect(findLink().text()).toBe(`${childrenCount} more items`);
+  });
 
-      const newVm = createComponent(mockGroups, parentGroup);
-      newVm.$mount();
+  it('renders group items', () => {
+    wrapper = createComponent();
 
-      expect(newVm.$el.querySelector('li.group-row a.has-more-items')).toBeDefined();
-      newVm.$destroy();
-    });
+    expect(wrapper.findAllComponents(GroupItem)).toHaveLength(7);
   });
 });

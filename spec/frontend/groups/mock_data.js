@@ -5,26 +5,6 @@ export const ITEM_TYPE = {
   GROUP: 'group',
 };
 
-export const GROUP_VISIBILITY_TYPE = {
-  public: 'Public - The group and any public projects can be viewed without any authentication.',
-  internal:
-    'Internal - The group and any internal projects can be viewed by any logged in user except external users.',
-  private: 'Private - The group and its projects can only be viewed by members.',
-};
-
-export const PROJECT_VISIBILITY_TYPE = {
-  public: 'Public - The project can be accessed without any authentication.',
-  internal: 'Internal - The project can be accessed by any logged in user except external users.',
-  private:
-    'Private - Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.',
-};
-
-export const VISIBILITY_TYPE_ICON = {
-  public: 'earth',
-  internal: 'shield',
-  private: 'lock',
-};
-
 export const mockParentGroupItem = {
   id: 55,
   name: 'hardware',

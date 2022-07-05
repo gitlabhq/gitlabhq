@@ -1,0 +1,26 @@
+---
+description: Merge request approvals
+category: merge_requests
+action: i_code_review_user_approve_mr
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_section: 'TBD'
+product_stage: create
+product_group: code_review
+product_category: code_review
+milestone: "15.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91493
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+

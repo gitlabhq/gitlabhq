@@ -263,8 +263,12 @@ module Projects
     end
 
     def publish_project_deleted_event_for(project)
-      data = { project_id: project.id, namespace_id: project.namespace_id }
-      event = Projects::ProjectDeletedEvent.new(data: data)
+      event = Projects::ProjectDeletedEvent.new(data: {
+        project_id: project.id,
+        namespace_id: project.namespace_id,
+        root_namespace_id: project.root_namespace.id
+      })
+
       Gitlab::EventStore.publish(event)
     end
   end

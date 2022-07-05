@@ -1,4 +1,5 @@
 <script>
+import { GlTabs, GlTab } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import {
@@ -45,6 +46,8 @@ const MARKDOWN_FILE_TYPE = 'markdown';
 export default {
   name: 'RepoEditor',
   components: {
+    GlTabs,
+    GlTab,
     FileAlert,
     ContentViewer,
     DiffViewer,
@@ -120,16 +123,6 @@ export default {
     },
     isPreviewViewMode() {
       return this.fileEditor.viewMode === FILE_VIEW_MODE_PREVIEW;
-    },
-    editTabCSS() {
-      return {
-        active: this.isEditorViewMode,
-      };
-    },
-    previewTabCSS() {
-      return {
-        active: this.isPreviewViewMode,
-      };
     },
     showEditor() {
       return !this.shouldHideEditor && this.isEditorViewMode;
@@ -487,28 +480,18 @@ export default {
 
 <template>
   <div id="ide" class="blob-viewer-container blob-editor-container">
-    <div v-if="showTabs" class="ide-mode-tabs clearfix">
-      <ul class="nav-links float-left border-bottom-0">
-        <li :class="editTabCSS">
-          <a
-            href="javascript:void(0);"
-            role="button"
-            data-testid="edit-tab"
-            @click.prevent="updateEditor({ viewMode: $options.FILE_VIEW_MODE_EDITOR })"
-            >{{ __('Edit') }}</a
-          >
-        </li>
-        <li :class="previewTabCSS">
-          <a
-            href="javascript:void(0);"
-            role="button"
-            data-testid="preview-tab"
-            @click.prevent="updateEditor({ viewMode: $options.FILE_VIEW_MODE_PREVIEW })"
-            >{{ previewMode.previewTitle }}</a
-          >
-        </li>
-      </ul>
-    </div>
+    <gl-tabs v-if="showTabs" content-class="gl-display-none">
+      <gl-tab
+        :title="__('Edit')"
+        data-testid="edit-tab"
+        @click="updateEditor({ viewMode: $options.FILE_VIEW_MODE_EDITOR })"
+      />
+      <gl-tab
+        :title="previewMode.previewTitle"
+        data-testid="preview-tab"
+        @click="updateEditor({ viewMode: $options.FILE_VIEW_MODE_PREVIEW })"
+      />
+    </gl-tabs>
     <file-alert v-if="alertKey" :alert-key="alertKey" />
     <file-templates-bar v-else-if="showFileTemplatesBar(file.name)" />
     <div

@@ -17,10 +17,10 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
 
   shared_examples 'exception logging' do
     it 'logs error' do
-      expect(Gitlab::AppLogger).to receive(:error).with(
+      expect(Gitlab::AppLogger).to receive(:error).with({
         'open_api.http_code' => api_exception.code,
         'open_api.response_body' => api_exception.response_body.truncate(100)
-      )
+      })
 
       subject
     end
@@ -66,11 +66,11 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
           .and_return(error)
 
         allow(open_api).to receive(:list_events)
-          .with(project.id, error.fingerprint, sort: 'occurred_at_asc', limit: 1)
+          .with(project.id, error.fingerprint, { sort: 'occurred_at_asc', limit: 1 })
           .and_return(list_events_asc)
 
         allow(open_api).to receive(:list_events)
-          .with(project.id, error.fingerprint, sort: 'occurred_at_desc', limit: 1)
+          .with(project.id, error.fingerprint, { sort: 'occurred_at_desc', limit: 1 })
           .and_return(list_events_desc)
       end
     end

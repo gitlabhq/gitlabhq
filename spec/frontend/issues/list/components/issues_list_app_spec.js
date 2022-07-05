@@ -29,6 +29,7 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
+
 import {
   CREATED_DESC,
   RELATIVE_POSITION,
@@ -98,6 +99,7 @@ describe('CE IssuesListApp component', () => {
   };
 
   let defaultQueryResponse = getIssuesQueryResponse;
+  let router;
   if (IS_EE) {
     defaultQueryResponse = cloneDeep(getIssuesQueryResponse);
     defaultQueryResponse.data.project.issues.nodes[0].blockingCount = 1;
@@ -133,9 +135,11 @@ describe('CE IssuesListApp component', () => {
       [setSortPreferenceMutation, sortPreferenceMutationResponse],
     ];
 
+    router = new VueRouter({ mode: 'history' });
+
     return mountFn(IssuesListApp, {
       apolloProvider: createMockApollo(requestHandlers),
-      router: new VueRouter({ mode: 'history' }),
+      router,
       provide: {
         ...defaultProvide,
         ...provide,
@@ -736,7 +740,7 @@ describe('CE IssuesListApp component', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
       beforeEach(() => {
         wrapper = mountComponent();
-        jest.spyOn(wrapper.vm.$router, 'push');
+        router.push = jest.fn();
 
         findIssuableList().vm.$emit('click-tab', IssuableStates.Closed);
       });
@@ -746,16 +750,26 @@ describe('CE IssuesListApp component', () => {
       });
 
       it('updates url to the new tab', () => {
-        expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+        expect(router.push).toHaveBeenCalledWith({
           query: expect.objectContaining({ state: IssuableStates.Closed }),
         });
       });
     });
 
     describe.each`
-      event              | params
-      ${'next-page'}     | ${{ page_after: 'endCursor', page_before: undefined, first_page_size: 20, last_page_size: undefined }}
-      ${'previous-page'} | ${{ page_after: undefined, page_before: 'startCursor', first_page_size: undefined, last_page_size: 20 }}
+      event | params
+      ${'next-page'} | ${{
+  page_after: 'endCursor',
+  page_before: undefined,
+  first_page_size: 20,
+  last_page_size: undefined,
+}}
+      ${'previous-page'} | ${{
+  page_after: undefined,
+  page_before: 'startCursor',
+  first_page_size: undefined,
+  last_page_size: 20,
+}}
     `('when "$event" event is emitted by IssuableList', ({ event, params }) => {
       beforeEach(() => {
         wrapper = mountComponent({
@@ -766,7 +780,7 @@ describe('CE IssuesListApp component', () => {
             },
           },
         });
-        jest.spyOn(wrapper.vm.$router, 'push');
+        router.push = jest.fn();
 
         findIssuableList().vm.$emit(event);
       });
@@ -776,7 +790,7 @@ describe('CE IssuesListApp component', () => {
       });
 
       it(`updates url`, () => {
-        expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+        expect(router.push).toHaveBeenCalledWith({
           query: expect.objectContaining(params),
         });
       });
@@ -888,13 +902,13 @@ describe('CE IssuesListApp component', () => {
         'updates to the new sort when payload is `%s`',
         async (sortKey) => {
           wrapper = mountComponent();
-          jest.spyOn(wrapper.vm.$router, 'push');
+          router.push = jest.fn();
 
           findIssuableList().vm.$emit('sort', sortKey);
           jest.runOnlyPendingTimers();
           await nextTick();
 
-          expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+          expect(router.push).toHaveBeenCalledWith({
             query: expect.objectContaining({ sort: urlSortParams[sortKey] }),
           });
         },
@@ -907,13 +921,13 @@ describe('CE IssuesListApp component', () => {
           wrapper = mountComponent({
             provide: { initialSort, isIssueRepositioningDisabled: true },
           });
-          jest.spyOn(wrapper.vm.$router, 'push');
+          router.push = jest.fn();
 
           findIssuableList().vm.$emit('sort', RELATIVE_POSITION_ASC);
         });
 
         it('does not update the sort to manual', () => {
-          expect(wrapper.vm.$router.push).not.toHaveBeenCalled();
+          expect(router.push).not.toHaveBeenCalled();
         });
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
@@ -978,12 +992,12 @@ describe('CE IssuesListApp component', () => {
     describe('when "filter" event is emitted by IssuableList', () => {
       it('updates IssuableList with url params', async () => {
         wrapper = mountComponent();
-        jest.spyOn(wrapper.vm.$router, 'push');
+        router.push = jest.fn();
 
         findIssuableList().vm.$emit('filter', filteredTokens);
         await nextTick();
 
-        expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+        expect(router.push).toHaveBeenCalledWith({
           query: expect.objectContaining(urlParams),
         });
       });
@@ -993,13 +1007,13 @@ describe('CE IssuesListApp component', () => {
           wrapper = mountComponent({
             provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
           });
-          jest.spyOn(wrapper.vm.$router, 'push');
+          router.push = jest.fn();
 
           findIssuableList().vm.$emit('filter', filteredTokens);
         });
 
         it('does not update url params', () => {
-          expect(wrapper.vm.$router.push).not.toHaveBeenCalled();
+          expect(router.push).not.toHaveBeenCalled();
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {
@@ -1028,6 +1042,21 @@ describe('CE IssuesListApp component', () => {
       jest.runOnlyPendingTimers();
 
       expect(mockQuery).toHaveBeenCalledWith(expect.objectContaining({ hideUsers }));
+    });
+  });
+
+  describe('when "page-size-change" event is emitted by IssuableList', () => {
+    it('updates url params with new page size', async () => {
+      wrapper = mountComponent();
+      router.push = jest.fn();
+
+      findIssuableList().vm.$emit('page-size-change', 50);
+      await nextTick();
+
+      expect(router.push).toHaveBeenCalledTimes(1);
+      expect(router.push).toHaveBeenCalledWith({
+        query: expect.objectContaining({ first_page_size: 50 }),
+      });
     });
   });
 });

@@ -1,41 +1,30 @@
-import Vue from 'vue';
-import noteSignedOut from '~/notes/components/note_signed_out_widget.vue';
+import { shallowMount } from '@vue/test-utils';
+import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
 import createStore from '~/notes/stores';
 import { notesDataMock } from '../mock_data';
 
-describe('note_signed_out_widget component', () => {
-  let store;
-  let vm;
+describe('NoteSignedOutWidget component', () => {
+  let wrapper;
 
   beforeEach(() => {
-    const Component = Vue.extend(noteSignedOut);
-    store = createStore();
+    const store = createStore();
     store.dispatch('setNotesData', notesDataMock);
-
-    vm = new Component({
-      store,
-    }).$mount();
+    wrapper = shallowMount(NoteSignedOutWidget, { store });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  it('should render sign in link provided in the store', () => {
-    expect(vm.$el.querySelector(`a[href="${notesDataMock.newSessionPath}"]`).textContent).toEqual(
-      'sign in',
-    );
+  it('renders sign in link provided in the store', () => {
+    expect(wrapper.find(`a[href="${notesDataMock.newSessionPath}"]`).text()).toBe('sign in');
   });
 
-  it('should render register link provided in the store', () => {
-    expect(vm.$el.querySelector(`a[href="${notesDataMock.registerPath}"]`).textContent).toEqual(
-      'register',
-    );
+  it('renders register link provided in the store', () => {
+    expect(wrapper.find(`a[href="${notesDataMock.registerPath}"]`).text()).toBe('register');
   });
 
-  it('should render information text', () => {
-    expect(vm.$el.textContent.replace(/\s+/g, ' ').trim()).toEqual(
-      'Please register or sign in to reply',
-    );
+  it('renders information text', () => {
+    expect(wrapper.text()).toContain('Please register or sign in to reply');
   });
 });

@@ -1504,7 +1504,7 @@ svg.s16 {
   vertical-align: -3px;
 }
 .header-content .header-search-new {
-  max-width: 600px;
+  max-width: 640px;
 }
 .header-search {
   min-width: 320px;
@@ -1516,27 +1516,20 @@ svg.s16 {
 }
 .header-search.is-not-active::after {
   content: "/";
-  display: inline-block;
+  transform: translateY(calc(50% - 0.25rem));
   position: absolute;
   top: 0;
-  right: 8px;
-  transform: translateY(calc(50% - 4px));
-  padding: 4px 5px;
+  right: 0.5rem;
+  padding: 0.25rem 5px;
   font-size: 12px;
   font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
     "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
   line-height: 1;
   vertical-align: middle;
   border-width: 0;
-  border-style: solid;
-  border-image: none;
   border-radius: 3px;
   box-shadow: none;
-  white-space: pre-wrap;
   box-sizing: border-box;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  word-break: keep-all;
 }
 .search {
   margin: 0 8px;

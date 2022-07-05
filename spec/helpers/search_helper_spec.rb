@@ -741,7 +741,7 @@ RSpec.describe SearchHelper do
         let(:for_group) { true }
 
         it 'adds the :group and :group_metadata correctly to hash' do
-          expect(header_search_context[:group]).to eq({ id: group.id, name: group.name })
+          expect(header_search_context[:group]).to eq({ id: group.id, name: group.name, full_name: group.full_name })
           expect(header_search_context[:group_metadata]).to eq(group_metadata)
         end
 

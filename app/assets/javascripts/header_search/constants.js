@@ -10,15 +10,21 @@ export const MSG_MR_IM_REVIEWER = s__("GlobalSearch|Merge requests that I'm a re
 
 export const MSG_MR_IVE_CREATED = s__("GlobalSearch|Merge requests I've created");
 
-export const MSG_IN_ALL_GITLAB = s__('GlobalSearch|in all GitLab');
+export const MSG_IN_ALL_GITLAB = s__('GlobalSearch|all GitLab');
 
-export const MSG_IN_GROUP = s__('GlobalSearch|in group');
+export const MSG_IN_GROUP = s__('GlobalSearch|group');
 
-export const MSG_IN_PROJECT = s__('GlobalSearch|in project');
+export const MSG_IN_PROJECT = s__('GlobalSearch|project');
 
-export const GROUPS_CATEGORY = 'Groups';
+export const ICON_PROJECT = 'project';
 
-export const PROJECTS_CATEGORY = 'Projects';
+export const ICON_GROUP = 'group';
+
+export const ICON_SUBGROUP = 'subgroup';
+
+export const GROUPS_CATEGORY = s__('GlobalSearch|Groups');
+
+export const PROJECTS_CATEGORY = s__('GlobalSearch|Projects');
 
 export const ISSUES_CATEGORY = 'Recent issues';
 
@@ -39,3 +45,7 @@ export const SEARCH_SHORTCUTS_MIN_CHARACTERS = 2;
 export const SEARCH_INPUT_DESCRIPTION = 'search-input-description';
 
 export const SEARCH_RESULTS_DESCRIPTION = 'search-results-description';
+
+export const SCOPE_TOKEN_MAX_LENGTH = 36;
+
+export const INPUT_FIELD_PADDING = 52;

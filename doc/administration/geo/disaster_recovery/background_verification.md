@@ -13,29 +13,25 @@ disable or enable this feature manually by following
 [these instructions](#disabling-or-enabling-the-automatic-background-verification).
 
 Automatic background verification ensures that the transferred data matches a
-calculated checksum. If the checksum of the data on the **primary** node matches checksum of the
-data on the **secondary** node, the data transferred successfully. Following a planned failover,
+calculated checksum. If the checksum of the data on the **primary** site matches checksum of the
+data on the **secondary** site, the data transferred successfully. Following a planned failover,
 any corrupted data may be **lost**, depending on the extent of the corruption.
 
-If verification fails on the **primary** node, this indicates Geo is replicating a corrupted object.
-You can restore it from backup or remove it from the **primary** node to resolve the issue.
+If verification fails on the **primary** site, this indicates Geo is replicating a corrupted object.
+You can restore it from backup or remove it from the **primary** site to resolve the issue.
 
-If verification succeeds on the **primary** node but fails on the **secondary** node,
+If verification succeeds on the **primary** site but fails on the **secondary** site,
 this indicates that the object was corrupted during the replication process.
 Geo actively try to correct verification failures marking the repository to
 be resynced with a back-off period. If you want to reset the verification for
 these failures, so you should follow [these instructions](background_verification.md#reset-verification-for-projects-where-verification-has-failed).
 
 If verification is lagging significantly behind replication, consider giving
-the node more time before scheduling a planned failover.
+the site more time before scheduling a planned failover.
 
 ## Disabling or enabling the automatic background verification
 
-Run the following commands in a Rails console on the **primary** node:
-
-```shell
-gitlab-rails console
-```
+Run the following commands in a [Rails console](../../operations/rails_console.md) on a **Rails node on the primary** site.
 
 To check if automatic background verification is enabled:
 
@@ -57,33 +53,33 @@ Feature.enable('geo_repository_verification')
 
 ## Repository verification
 
-On the **primary** node:
+On the **primary** site:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes**.
-1. Expand **Verification information** tab for that node to view automatic checksumming
+1. On the left sidebar, select **Geo > Sites**.
+1. Expand **Verification information** tab for that site to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
    in gray, and failures in red.
 
    ![Verification status](img/verification_status_primary_v14_0.png)
 
-On the **secondary** node:
+On the **secondary** site:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes**.
-1. Expand **Verification information** tab for that node to view automatic checksumming
+1. On the left sidebar, select **Geo > Sites**.
+1. Expand **Verification information** tab for that site to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
    in gray, and failures in red.
 
    ![Verification status](img/verification_status_secondary_v14_0.png)
 
-## Using checksums to compare Geo nodes
+## Using checksums to compare Geo sites
 
-To check the health of Geo **secondary** nodes, we use a checksum over the list of
+To check the health of Geo **secondary** sites, we use a checksum over the list of
 Git references and their values. The checksum includes `HEAD`, `heads`, `tags`,
-`notes`, and GitLab-specific references to ensure true consistency. If two nodes
+`notes`, and GitLab-specific references to ensure true consistency. If two sites
 have the same checksum, then they definitely hold the same references. We compute
-the checksum for every node after every update to make sure that they are all
+the checksum for every site after every update to make sure that they are all
 in sync.
 
 ## Repository re-verification
@@ -95,22 +91,17 @@ data. The default and recommended re-verification interval is 7 days, though
 an interval as short as 1 day can be set. Shorter intervals reduce risk but
 increase load and vice versa.
 
-On the **primary** node:
+On the **primary** site:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes**.
-1. Select **Edit** for the **primary** node to customize the minimum
+1. On the left sidebar, select **Geo > Sites**.
+1. Select **Edit** for the **primary** site to customize the minimum
    re-verification interval:
 
    ![Re-verification interval](img/reverification-interval.png)
 
 The automatic background re-verification is enabled by default, but you can
-disable if you need. Run the following commands in a Rails console on the
-**primary** node:
-
-```shell
-gitlab-rails console
-```
+disable if you need. Run the following commands in a [Rails console](../../operations/rails_console.md) on a **Rails node on the primary** site:
 
 To disable automatic background re-verification:
 
@@ -126,10 +117,12 @@ Feature.enable('geo_repository_reverification')
 
 ## Reset verification for projects where verification has failed
 
-Geo actively try to correct verification failures marking the repository to
+Geo actively tries to correct verification failures marking the repository to
 be resynced with a back-off period. If you want to reset them manually, this
 Rake task marks projects where verification has failed or the checksum mismatch
 to be resynced without the back-off period:
+
+Run the appropriate commands on a **Rails node on the primary** site.
 
 For repositories:
 
@@ -145,9 +138,9 @@ sudo gitlab-rake geo:verification:wiki:reset
 
 ## Reconcile differences with checksum mismatches
 
-If the **primary** and **secondary** nodes have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
+If the **primary** and **secondary** sites have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
 
-1. On the **primary** node:
+1. On the **primary** site:
    1. On the top bar, select **Menu > Admin**.
    1. On the left sidebar, select **Overview > Projects**.
    1. Find the project that you want to check the checksum differences and
@@ -157,31 +150,32 @@ If the **primary** and **secondary** nodes have a checksum verification mismatch
 
       ![Project administration page](img/checksum-differences-admin-project-page.png)
 
-1. Go to the project's repository directory on both **primary** and **secondary** nodes
-   (the path is usually `/var/opt/gitlab/git-data/repositories`). If `git_data_dirs`
+1. On a **Gitaly node on the primary** site and a **Gitaly node on the secondary** site, go to the project's repository directory. If using Gitaly Cluster, [check that it is in a healthy state](../../gitaly/troubleshooting.md#check-cluster-health) prior to running these commands.
+
+   The default path is `/var/opt/gitlab/git-data/repositories`. If `git_data_dirs`
    is customized, check the directory layout on your server to be sure:
 
    ```shell
    cd /var/opt/gitlab/git-data/repositories
    ```
+   
+   1. Run the following command on the **primary** site, redirecting the output to a file:
 
-1. Run the following command on the **primary** node, redirecting the output to a file:
+      ```shell
+      git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > primary-site-refs
+      ```
 
-   ```shell
-   git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > primary-node-refs
-   ```
+   1. Run the following command on the **secondary** site, redirecting the output to a file:
 
-1. Run the following command on the **secondary** node, redirecting the output to a file:
+      ```shell
+      git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > secondary-site-refs
+      ```
 
-   ```shell
-   git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > secondary-node-refs
-   ```
+   1. Copy the files from the previous steps on the same system, and do a diff between the contents:
 
-1. Copy the files from the previous steps on the same system, and do a diff between the contents:
-
-   ```shell
-   diff primary-node-refs secondary-node-refs
-   ```
+      ```shell
+      diff primary-site-refs secondary-site-refs
+      ```
 
 ## Current limitations
 
@@ -191,10 +185,10 @@ progress to include them in [Geo: Verify all replicated data](https://gitlab.com
 
 For now, you can verify their integrity
 manually by following [these instructions](../../raketasks/check.md) on both
-nodes, and comparing the output between them.
+sites, and comparing the output between them.
 
 In GitLab EE 12.1, Geo calculates checksums for attachments, LFS objects, and
-archived traces on secondary nodes after the transfer, compares it with the
+archived traces on secondary sites after the transfer, compares it with the
 stored checksums, and rejects transfers if mismatched. Geo
 currently does not support an automatic way to verify these data if they have
 been synced before GitLab EE 12.1.

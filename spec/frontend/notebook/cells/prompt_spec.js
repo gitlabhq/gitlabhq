@@ -1,52 +1,40 @@
-import Vue, { nextTick } from 'vue';
-import PromptComponent from '~/notebook/cells/prompt.vue';
-
-const Component = Vue.extend(PromptComponent);
+import { shallowMount } from '@vue/test-utils';
+import Prompt from '~/notebook/cells/prompt.vue';
 
 describe('Prompt component', () => {
-  let vm;
+  let wrapper;
+
+  const mountComponent = ({ type }) => shallowMount(Prompt, { propsData: { type, count: 1 } });
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
 
   describe('input', () => {
     beforeEach(() => {
-      vm = new Component({
-        propsData: {
-          type: 'In',
-          count: 1,
-        },
-      });
-      vm.$mount();
-
-      return nextTick();
+      wrapper = mountComponent({ type: 'In' });
     });
 
     it('renders in label', () => {
-      expect(vm.$el.textContent.trim()).toContain('In');
+      expect(wrapper.text()).toContain('In');
     });
 
     it('renders count', () => {
-      expect(vm.$el.textContent.trim()).toContain('1');
+      expect(wrapper.text()).toContain('1');
     });
   });
 
   describe('output', () => {
     beforeEach(() => {
-      vm = new Component({
-        propsData: {
-          type: 'Out',
-          count: 1,
-        },
-      });
-      vm.$mount();
-
-      return nextTick();
+      wrapper = mountComponent({ type: 'Out' });
     });
 
     it('renders in label', () => {
-      expect(vm.$el.textContent.trim()).toContain('Out');
+      expect(wrapper.text()).toContain('Out');
     });
 
     it('renders count', () => {
-      expect(vm.$el.textContent.trim()).toContain('1');
+      expect(wrapper.text()).toContain('1');
     });
   });
 });

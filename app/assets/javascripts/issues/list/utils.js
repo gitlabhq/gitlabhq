@@ -21,7 +21,6 @@ import {
   MILESTONE_DUE_DESC,
   NORMAL_FILTER,
   PAGE_SIZE,
-  PAGE_SIZE_MANUAL,
   PARAM_ASSIGNEE_ID,
   POPULARITY_ASC,
   POPULARITY_DESC,
@@ -49,8 +48,8 @@ import {
 } from './constants';
 
 export const getInitialPageParams = (
-  sortKey,
-  firstPageSize = sortKey === RELATIVE_POSITION_ASC ? PAGE_SIZE_MANUAL : PAGE_SIZE,
+  pageSize,
+  firstPageSize = pageSize ?? PAGE_SIZE,
   lastPageSize,
   afterCursor,
   beforeCursor,

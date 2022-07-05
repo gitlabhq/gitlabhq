@@ -70,6 +70,7 @@ import {
   UPDATED_DESC,
   urlSortParams,
 } from '../constants';
+
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
@@ -172,6 +173,7 @@ export default {
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
       state: IssuableStates.Opened,
+      pageSize: PAGE_SIZE,
     };
   },
   apollo: {
@@ -423,6 +425,10 @@ export default {
     showPaginationControls() {
       return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
     },
+    showPageSizeControls() {
+      /** only show page size controls when the tab count is greater than the default/minimum page size control i.e 20 in this case */
+      return this.currentTabCount > PAGE_SIZE;
+    },
     sortOptions() {
       return getSortOptions(this.hasIssueWeightsFeature, this.hasBlockedIssuesFeature);
     },
@@ -445,8 +451,8 @@ export default {
         ...this.urlFilterParams,
         first_page_size: this.pageParams.firstPageSize,
         last_page_size: this.pageParams.lastPageSize,
-        page_after: this.pageParams.afterCursor,
-        page_before: this.pageParams.beforeCursor,
+        page_after: this.pageParams.afterCursor ?? undefined,
+        page_before: this.pageParams.beforeCursor ?? undefined,
       };
     },
   },
@@ -555,7 +561,7 @@ export default {
     },
     handleClickTab(state) {
       if (this.state !== state) {
-        this.pageParams = getInitialPageParams(this.sortKey);
+        this.pageParams = getInitialPageParams(this.pageSize);
       }
       this.state = state;
 
@@ -570,7 +576,7 @@ export default {
         return;
       }
 
-      this.pageParams = getInitialPageParams(this.sortKey);
+      this.pageParams = getInitialPageParams(this.pageSize);
       this.filterTokens = filter;
 
       this.$router.push({ query: this.urlParams });
@@ -578,7 +584,7 @@ export default {
     handleNextPage() {
       this.pageParams = {
         afterCursor: this.pageInfo.endCursor,
-        firstPageSize: PAGE_SIZE,
+        firstPageSize: this.pageSize,
       };
       scrollUp();
 
@@ -587,7 +593,7 @@ export default {
     handlePreviousPage() {
       this.pageParams = {
         beforeCursor: this.pageInfo.startCursor,
-        lastPageSize: PAGE_SIZE,
+        lastPageSize: this.pageSize,
       };
       scrollUp();
 
@@ -636,7 +642,7 @@ export default {
       }
 
       if (this.sortKey !== sortKey) {
-        this.pageParams = getInitialPageParams(sortKey);
+        this.pageParams = getInitialPageParams(this.pageSize);
       }
       this.sortKey = sortKey;
 
@@ -676,6 +682,17 @@ export default {
     toggleBulkEditSidebar(showBulkEditSidebar) {
       this.showBulkEditSidebar = showBulkEditSidebar;
     },
+    handlePageSizeChange(newPageSize) {
+      /** make sure the page number is preserved so that the current context is not lost* */
+      const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
+      const pageNumberSize = lastPageSize ? 'lastPageSize' : 'firstPageSize';
+      /** depending upon what page or page size we are dynamically set pageParams * */
+      this.pageParams[pageNumberSize] = newPageSize;
+      this.pageSize = newPageSize;
+      scrollUp();
+
+      this.$router.push({ query: this.urlParams });
+    },
     updateData(sortValue) {
       const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
@@ -708,7 +725,7 @@ export default {
       this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.filterTokens = isSearchDisabled ? [] : getFilterTokens(window.location.search);
       this.pageParams = getInitialPageParams(
-        sortKey,
+        this.pageSize,
         isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
         isPositiveInteger(lastPageSize) ? parseInt(lastPageSize, 10) : undefined,
         pageAfter,
@@ -744,8 +761,10 @@ export default {
       :is-manual-ordering="isManualOrdering"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :show-pagination-controls="showPaginationControls"
+      :default-page-size="pageSize"
       sync-filter-and-sort
       use-keyset-pagination
+      :show-page-size-change-controls="showPageSizeControls"
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
       @click-tab="handleClickTab"
@@ -756,6 +775,7 @@ export default {
       @reorder="handleReorder"
       @sort="handleSort"
       @update-legacy-bulk-edit="handleUpdateLegacyBulkEdit"
+      @page-size-change="handlePageSizeChange"
     >
       <template #nav-actions>
         <gl-button

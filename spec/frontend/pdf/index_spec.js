@@ -1,48 +1,33 @@
-import Vue from 'vue';
-
+import { shallowMount } from '@vue/test-utils';
 import { FIXTURES_PATH } from 'spec/test_constants';
 import PDFLab from '~/pdf/index.vue';
 
-jest.mock('pdfjs-dist/webpack', () => {
-  return { default: jest.requireActual('pdfjs-dist/build/pdf') };
-});
+describe('PDFLab component', () => {
+  let wrapper;
 
-const pdf = `${FIXTURES_PATH}/blob/pdf/test.pdf`;
+  const mountComponent = ({ pdf }) => shallowMount(PDFLab, { propsData: { pdf } });
 
-const Component = Vue.extend(PDFLab);
-
-describe('PDF component', () => {
-  let vm;
+  afterEach(() => {
+    wrapper.destroy();
+  });
 
   describe('without PDF data', () => {
     beforeEach(() => {
-      vm = new Component({
-        propsData: {
-          pdf: '',
-        },
-      });
-
-      vm.$mount();
+      wrapper = mountComponent({ pdf: '' });
     });
 
     it('does not render', () => {
-      expect(vm.$el.tagName).toBeUndefined();
+      expect(wrapper.isVisible()).toBe(false);
     });
   });
 
   describe('with PDF data', () => {
     beforeEach(() => {
-      vm = new Component({
-        propsData: {
-          pdf,
-        },
-      });
-
-      vm.$mount();
+      wrapper = mountComponent({ pdf: `${FIXTURES_PATH}/blob/pdf/test.pdf` });
     });
 
-    it('renders pdf component', () => {
-      expect(vm.$el.tagName).toBeDefined();
+    it('renders', () => {
+      expect(wrapper.isVisible()).toBe(true);
     });
   });
 });

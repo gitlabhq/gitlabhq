@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issues::RelatedBranchesService do
+RSpec.describe Issues::RelatedBranchesService, :clean_gitlab_redis_cache do
   let_it_be(:developer) { create(:user) }
   let_it_be(:issue) { create(:issue) }
 

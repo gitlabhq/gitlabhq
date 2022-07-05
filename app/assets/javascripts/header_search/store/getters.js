@@ -7,9 +7,13 @@ import {
   MSG_MR_ASSIGNED_TO_ME,
   MSG_MR_IM_REVIEWER,
   MSG_MR_IVE_CREATED,
-  MSG_IN_PROJECT,
-  MSG_IN_GROUP,
+  ICON_GROUP,
+  ICON_SUBGROUP,
+  ICON_PROJECT,
   MSG_IN_ALL_GITLAB,
+  PROJECTS_CATEGORY,
+  GROUPS_CATEGORY,
+  SEARCH_SHORTCUTS_MIN_CHARACTERS,
 } from '../constants';
 
 export const searchQuery = (state) => {
@@ -149,7 +153,8 @@ export const scopedSearchOptions = (state, getters) => {
     options.push({
       html_id: 'scoped-in-project',
       scope: state.searchContext.project?.name || '',
-      description: MSG_IN_PROJECT,
+      scopeCategory: PROJECTS_CATEGORY,
+      icon: ICON_PROJECT,
       url: getters.projectUrl,
     });
   }
@@ -158,7 +163,8 @@ export const scopedSearchOptions = (state, getters) => {
     options.push({
       html_id: 'scoped-in-group',
       scope: state.searchContext.group?.name || '',
-      description: MSG_IN_GROUP,
+      scopeCategory: GROUPS_CATEGORY,
+      icon: state.searchContext.group?.full_name?.includes('/') ? ICON_SUBGROUP : ICON_GROUP,
       url: getters.groupUrl,
     });
   }
@@ -190,6 +196,7 @@ export const autocompleteGroupedSearchOptions = (state) => {
       results.push(groupedOptions[option.category]);
     }
   });
+
   return results;
 };
 
@@ -204,6 +211,10 @@ export const searchOptions = (state, getters) => {
     },
     [],
   );
+
+  if (state.search?.length <= SEARCH_SHORTCUTS_MIN_CHARACTERS) {
+    return sortedAutocompleteOptions;
+  }
 
   return getters.scopedSearchOptions.concat(sortedAutocompleteOptions);
 };

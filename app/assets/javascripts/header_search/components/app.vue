@@ -1,8 +1,15 @@
 <script>
-import { GlSearchBoxByType, GlOutsideDirective as Outside } from '@gitlab/ui';
+import {
+  GlSearchBoxByType,
+  GlOutsideDirective as Outside,
+  GlIcon,
+  GlToken,
+  GlResizeObserverDirective,
+} from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce } from 'lodash';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { truncate } from '~/lib/utils/text_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
@@ -12,6 +19,8 @@ import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
+  SCOPE_TOKEN_MAX_LENGTH,
+  INPUT_FIELD_PADDING,
 } from '../constants';
 import HeaderSearchAutocompleteItems from './header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from './header_search_default_items.vue';
@@ -34,14 +43,17 @@ export default {
       'GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.',
     ),
     searchResultsLoading: s__('GlobalSearch|Search results are loading'),
+    searchResultsScope: s__('GlobalSearch|in %{scope}'),
   },
-  directives: { Outside },
+  directives: { Outside, GlResizeObserverDirective },
   components: {
     GlSearchBoxByType,
     HeaderSearchDefaultItems,
     HeaderSearchScopedItems,
     HeaderSearchAutocompleteItems,
     DropdownKeyboardNavigation,
+    GlIcon,
+    GlToken,
   },
   data() {
     return {
@@ -50,8 +62,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(['search', 'loading']),
-    ...mapGetters(['searchQuery', 'searchOptions', 'autocompleteGroupedSearchOptions']),
+    ...mapState(['search', 'loading', 'searchContext']),
+    ...mapGetters(['searchQuery', 'searchOptions']),
     searchText: {
       get() {
         return this.search;
@@ -70,16 +82,17 @@ export default {
       return Boolean(gon?.current_username);
     },
     showSearchDropdown() {
-      const hasResultsUnderMinCharacters =
-        this.searchText?.length === 1 ? this?.autocompleteGroupedSearchOptions?.length > 0 : true;
+      if (!this.showDropdown || !this.isLoggedIn) {
+        return false;
+      }
 
-      return this.showDropdown && this.isLoggedIn && hasResultsUnderMinCharacters;
+      return this.searchOptions?.length > 0;
     },
     showDefaultItems() {
       return !this.searchText;
     },
-    showShortcuts() {
-      return this.searchText && this.searchText?.length >= SEARCH_SHORTCUTS_MIN_CHARACTERS;
+    showScopes() {
+      return this.searchText?.length > SEARCH_SHORTCUTS_MIN_CHARACTERS;
     },
     defaultIndex() {
       if (this.showDefaultItems) {
@@ -88,11 +101,11 @@ export default {
 
       return FIRST_DROPDOWN_INDEX;
     },
+
     searchInputDescribeBy() {
       if (this.isLoggedIn) {
         return this.$options.i18n.searchInputDescribeByWithDropdown;
       }
-
       return this.$options.i18n.searchInputDescribeByNoDropdown;
     },
     dropdownResultsDescription() {
@@ -112,8 +125,26 @@ export default {
             count: this.searchOptions.length,
           });
     },
-    headerSearchActivityDescriptor() {
-      return this.showDropdown ? 'is-active' : 'is-not-active';
+    searchBarStateIndicator() {
+      const hasIcon =
+        this.searchContext?.project || this.searchContext?.group ? 'has-icon' : 'has-no-icon';
+      const isSearching = this.showScopes ? 'is-searching' : 'is-not-searching';
+      const isActive = this.showSearchDropdown ? 'is-active' : 'is-not-active';
+      return `${isActive} ${isSearching} ${hasIcon}`;
+    },
+    searchBarItem() {
+      return this.searchOptions?.[0];
+    },
+    infieldHelpContent() {
+      return this.searchBarItem?.scope || this.searchBarItem?.description;
+    },
+    infieldHelpIcon() {
+      return this.searchBarItem?.icon;
+    },
+    scopeTokenTitle() {
+      return sprintf(this.$options.i18n.searchResultsScope, {
+        scope: this.infieldHelpContent,
+      });
     },
   },
   methods: {
@@ -127,6 +158,9 @@ export default {
       this.$emit('toggleDropdown', this.showDropdown);
     },
     submitSearch() {
+      if (this.search?.length <= SEARCH_SHORTCUTS_MIN_CHARACTERS && this.currentFocusIndex < 0) {
+        return null;
+      }
       return visitUrl(this.currentFocusedOption?.url || this.searchQuery);
     },
     getAutocompleteOptions: debounce(function debouncedSearch(searchTerm) {
@@ -136,8 +170,19 @@ export default {
         this.fetchAutocompleteOptions();
       }
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
+    getTruncatedScope(scope) {
+      return truncate(scope, SCOPE_TOKEN_MAX_LENGTH);
+    },
+    observeTokenWidth({ contentRect: { width } }) {
+      const inputField = this.$refs?.searchInputBox?.$el?.querySelector('input');
+      if (!inputField) {
+        return;
+      }
+      inputField.style.paddingRight = `${width + INPUT_FIELD_PADDING}px`;
+    },
   },
   SEARCH_BOX_INDEX,
+  FIRST_DROPDOWN_INDEX,
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
 };
@@ -149,10 +194,12 @@ export default {
     role="search"
     :aria-label="$options.i18n.searchGitlab"
     class="header-search gl-relative gl-rounded-base gl-w-full"
-    :class="headerSearchActivityDescriptor"
+    :class="searchBarStateIndicator"
+    data-testid="header-search-form"
   >
     <gl-search-box-by-type
       id="search"
+      ref="searchInputBox"
       v-model="searchText"
       role="searchbox"
       class="gl-z-index-1"
@@ -165,7 +212,28 @@ export default {
       @click="openDropdown"
       @input="getAutocompleteOptions"
       @keydown.enter.stop.prevent="submitSearch"
+      @keydown.esc.stop.prevent="closeDropdown"
     />
+    <gl-token
+      v-if="showScopes"
+      v-gl-resize-observer-directive="observeTokenWidth"
+      class="in-search-scope-help"
+      :view-only="true"
+      :title="scopeTokenTitle"
+      ><gl-icon
+        v-if="infieldHelpIcon"
+        class="gl-mr-2"
+        :aria-label="infieldHelpContent"
+        :name="infieldHelpIcon"
+        :size="16"
+      />{{
+        getTruncatedScope(
+          sprintf($options.i18n.searchResultsScope, {
+            scope: infieldHelpContent,
+          }),
+        )
+      }}
+    </gl-token>
     <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">{{
       searchInputDescribeBy
     }}</span>
@@ -187,7 +255,7 @@ export default {
         <dropdown-keyboard-navigation
           v-model="currentFocusIndex"
           :max="searchOptions.length - 1"
-          :min="$options.SEARCH_BOX_INDEX"
+          :min="$options.FIRST_DROPDOWN_INDEX"
           :default-index="defaultIndex"
           @tab="closeDropdown"
         />
@@ -197,7 +265,7 @@ export default {
         />
         <template v-else>
           <header-search-scoped-items
-            v-if="showShortcuts"
+            v-if="showScopes"
             :current-focused-option="currentFocusedOption"
           />
           <header-search-autocomplete-items :current-focused-option="currentFocusedOption" />

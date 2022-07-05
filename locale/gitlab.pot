@@ -938,9 +938,6 @@ msgstr ""
 msgid "%{scope} results for term '%{term}'"
 msgstr ""
 
-msgid "%{search} %{description} %{scope}"
-msgstr ""
-
 msgid "%{seconds}s"
 msgstr ""
 
@@ -1354,6 +1351,11 @@ msgstr ""
 
 msgid "0 bytes"
 msgstr ""
+
+msgid "1 Code quality finding"
+msgid_plural "%d Code quality findings"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "1 Day"
 msgid_plural "%d Days"
@@ -12988,9 +12990,6 @@ msgstr ""
 msgid "Deprecations|The logs and tracing features were also deprecated in GitLab 14.7, and are %{removal_link_start} scheduled for removal %{link_end} in GitLab 15.0."
 msgstr ""
 
-msgid "Deprecations|The logs and tracing features were deprecated in GitLab 14.7 and are %{epicStart} scheduled for removal %{epicEnd} in GitLab 15.0."
-msgstr ""
-
 msgid "Deprecations|The metrics feature was deprecated in GitLab 14.7."
 msgstr ""
 
@@ -13080,9 +13079,6 @@ msgstr ""
 msgid "DesignManagement|Comment"
 msgstr ""
 
-msgid "DesignManagement|Comments you resolve can be viewed and unresolved by going to the \"Resolved Comments\" section below"
-msgstr ""
-
 msgid "DesignManagement|Could not add a new comment. Please try again."
 msgstr ""
 
@@ -13123,9 +13119,6 @@ msgid "DesignManagement|Keep changes"
 msgstr ""
 
 msgid "DesignManagement|Keep comment"
-msgstr ""
-
-msgid "DesignManagement|Learn more about resolving comments"
 msgstr ""
 
 msgid "DesignManagement|Requested design version does not exist. Showing latest version instead"
@@ -14615,12 +14608,6 @@ msgstr ""
 msgid "Environments|Commit"
 msgstr ""
 
-msgid "Environments|Currently showing %{fetched} results."
-msgstr ""
-
-msgid "Environments|Currently showing all results."
-msgstr ""
-
 msgid "Environments|Delete"
 msgstr ""
 
@@ -14657,9 +14644,6 @@ msgstr ""
 msgid "Environments|How do I create an environment?"
 msgstr ""
 
-msgid "Environments|Install Elastic Stack on your cluster to enable advanced querying capabilities such as full text search."
-msgstr ""
-
 msgid "Environments|Job"
 msgstr ""
 
@@ -14667,9 +14651,6 @@ msgid "Environments|Learn about environments"
 msgstr ""
 
 msgid "Environments|Learn more about stopping environments"
-msgstr ""
-
-msgid "Environments|Logs from %{start} to %{end}."
 msgstr ""
 
 msgid "Environments|New environment"
@@ -14694,9 +14675,6 @@ msgid "Environments|Open"
 msgstr ""
 
 msgid "Environments|Open live environment"
-msgstr ""
-
-msgid "Environments|Pod name"
 msgstr ""
 
 msgid "Environments|Re-deploy environment"
@@ -14730,9 +14708,6 @@ msgid "Environments|Stopping %{environmentName}"
 msgstr ""
 
 msgid "Environments|There are no deployments for this environment yet. %{linkStart}Learn more about setting up deployments.%{linkEnd}"
-msgstr ""
-
-msgid "Environments|There was an error fetching the logs. Please try again."
 msgstr ""
 
 msgid "Environments|This action will %{docsStart}retry the latest deployment%{docsEnd} with the commit %{commitId}, for this environment. Are you sure you want to continue?"
@@ -17690,7 +17665,13 @@ msgstr ""
 msgid "Global notification settings"
 msgstr ""
 
+msgid "GlobalSearch| %{search} %{description} %{scope}"
+msgstr ""
+
 msgid "GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list."
+msgstr ""
+
+msgid "GlobalSearch|Groups"
 msgstr ""
 
 msgid "GlobalSearch|Issues I've created"
@@ -17706,6 +17687,9 @@ msgid "GlobalSearch|Merge requests assigned to me"
 msgstr ""
 
 msgid "GlobalSearch|Merge requests that I'm a reviewer"
+msgstr ""
+
+msgid "GlobalSearch|Projects"
 msgstr ""
 
 msgid "GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit."
@@ -17732,13 +17716,16 @@ msgstr ""
 msgid "GlobalSearch|What are you searching for?"
 msgstr ""
 
-msgid "GlobalSearch|in all GitLab"
+msgid "GlobalSearch|all GitLab"
 msgstr ""
 
-msgid "GlobalSearch|in group"
+msgid "GlobalSearch|group"
 msgstr ""
 
-msgid "GlobalSearch|in project"
+msgid "GlobalSearch|in %{scope}"
+msgstr ""
+
+msgid "GlobalSearch|project"
 msgstr ""
 
 msgid "Globally-allowed IP ranges"
@@ -42431,9 +42418,6 @@ msgid "VersionCheck|Update available"
 msgstr ""
 
 msgid "VersionCheck|Your GitLab Version"
-msgstr ""
-
-msgid "View Documentation"
 msgstr ""
 
 msgid "View Stage: %{title}"

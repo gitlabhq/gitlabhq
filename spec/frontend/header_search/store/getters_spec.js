@@ -9,6 +9,7 @@ import {
   MOCK_SEARCH_CONTEXT,
   MOCK_DEFAULT_SEARCH_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
+  MOCK_SCOPED_SEARCH_OPTIONS_DEF,
   MOCK_PROJECT,
   MOCK_GROUP,
   MOCK_ALL_PATH,
@@ -284,7 +285,7 @@ describe('Header Search Store Getters', () => {
 
     it('returns the correct array', () => {
       expect(getters.scopedSearchOptions(state, mockGetters)).toStrictEqual(
-        MOCK_SCOPED_SEARCH_OPTIONS,
+        MOCK_SCOPED_SEARCH_OPTIONS_DEF,
       );
     });
   });
@@ -308,6 +309,11 @@ describe('Header Search Store Getters', () => {
     ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${[]}                                | ${MOCK_SCOPED_SEARCH_OPTIONS}
     ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${[]}                         | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SORTED_AUTOCOMPLETE_OPTIONS}
     ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS.concat(MOCK_SORTED_AUTOCOMPLETE_OPTIONS)}
+    ${1}           | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${[]}                         | ${[]}                                | ${[]}
+    ${'('}         | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${[]}                         | ${[]}                                | ${[]}
+    ${'t'}         | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SORTED_AUTOCOMPLETE_OPTIONS}
+    ${'te'}        | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SORTED_AUTOCOMPLETE_OPTIONS}
+    ${'tes'}       | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS.concat(MOCK_SORTED_AUTOCOMPLETE_OPTIONS)}
   `(
     'searchOptions',
     ({

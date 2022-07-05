@@ -1,14 +1,14 @@
 PATH
-  remote: vendor/gems/error_tracking_open_api
-  specs:
-    error_tracking_open_api (1.0.0)
-      typhoeus (~> 1.0, >= 1.0.1)
-
-PATH
   remote: vendor/gems/devise-pbkdf2-encryptable
   specs:
     devise-pbkdf2-encryptable (0.0.0)
       devise (~> 4.0)
+
+PATH
+  remote: vendor/gems/error_tracking_open_api
+  specs:
+    error_tracking_open_api (1.0.0)
+      typhoeus (~> 1.0, >= 1.0.1)
 
 PATH
   remote: vendor/gems/ipynbdiff
