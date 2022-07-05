@@ -3086,6 +3086,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         let(:pipeline_action) { action }
 
         it 'schedules a new PipelineHooksWorker job' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            message: include("Enqueuing hooks for Pipeline #{pipeline.id}"),
+            class: described_class.name,
+            pipeline_id: pipeline.id,
+            project_id: pipeline.project_id,
+            pipeline_status: String
+          )
           expect(PipelineHooksWorker).to receive(:perform_async).with(pipeline.id)
 
           pipeline.public_send(pipeline_action)

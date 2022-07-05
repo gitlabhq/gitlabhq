@@ -23,6 +23,25 @@ RSpec.describe BuildHooksWorker do
     end
   end
 
+  describe '.perform_async' do
+    it 'sends a message to the application logger, before performing', :sidekiq_inline do
+      build = create(:ci_build)
+
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        message: include('Enqueuing hooks for Build'),
+        class: described_class.name,
+        build_id: build.id,
+        pipeline_id: build.pipeline_id,
+        project_id: build.project_id,
+        build_status: build.status
+      )
+
+      expect_any_instance_of(Ci::Build).to receive(:execute_hooks)
+
+      described_class.perform_async(build)
+    end
+  end
+
   it_behaves_like 'worker with data consistency',
                   described_class,
                   data_consistency: :delayed

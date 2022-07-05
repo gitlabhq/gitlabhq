@@ -38,6 +38,7 @@ include:
     DOCKER_TLS_CERTDIR: /certs
     DOCKER_CERT_PATH: /certs/client
     DOCKER_TLS_VERIFY: 1
+    WD_INSTALL_DIR: /usr/local/bin
   before_script:
     - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
     - export QA_GITLAB_URL="$(cat environment_url.txt)"

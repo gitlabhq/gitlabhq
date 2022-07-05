@@ -177,6 +177,35 @@ RSpec.describe ProjectsFinder do
         end
       end
 
+      describe 'filter by topic_id' do
+        let_it_be(:topic1) { create(:topic) }
+        let_it_be(:topic2) { create(:topic) }
+
+        before do
+          public_project.reload
+          public_project.topics << topic1
+          public_project.save!
+        end
+
+        context 'topic with assigned projects' do
+          let(:params) { { topic_id: topic1.id } }
+
+          it { is_expected.to eq([public_project]) }
+        end
+
+        context 'topic without assigned projects' do
+          let(:params) { { topic_id: topic2.id } }
+
+          it { is_expected.to eq([]) }
+        end
+
+        context 'non-existing topic' do
+          let(:params) { { topic_id: non_existing_record_id } }
+
+          it { is_expected.to eq([]) }
+        end
+      end
+
       describe 'filter by personal' do
         let!(:personal_project) { create(:project, namespace: user.namespace) }
         let(:params) { { personal: true } }

@@ -11,8 +11,5 @@
 #tree-holder.tree-holder
   = render 'blob', blob: @blob
 
-  - if can_modify_blob?(@blob)
-    = render 'projects/blob/remove'
-
 = render partial: 'pipeline_tour_success' if show_suggest_pipeline_creation_celebration?
 = render 'shared/web_ide_path'

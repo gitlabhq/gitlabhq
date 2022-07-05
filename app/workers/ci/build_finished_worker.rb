@@ -37,7 +37,7 @@ module Ci
       Ci::BuildReportResultService.new.execute(build)
 
       # We execute these async as these are independent operations.
-      BuildHooksWorker.perform_async(build.id)
+      BuildHooksWorker.perform_async(build)
       ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
       build.track_deployment_usage
 

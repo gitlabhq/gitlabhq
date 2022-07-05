@@ -235,6 +235,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
       end
 
       it 'logs the authorization' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
         expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id, user_id: user.id)
 
         perform!

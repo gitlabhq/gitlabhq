@@ -16,6 +16,7 @@
 #     visibility_level: int
 #     tag: string[] - deprecated, use 'topic' instead
 #     topic: string[]
+#     topic_id: int
 #     personal: boolean
 #     search: string
 #     search_namespaces: boolean
@@ -81,6 +82,7 @@ class ProjectsFinder < UnionFinder
     collection = by_trending(collection)
     collection = by_visibility_level(collection)
     collection = by_topics(collection)
+    collection = by_topic_id(collection)
     collection = by_search(collection)
     collection = by_archived(collection)
     collection = by_custom_attributes(collection)
@@ -186,10 +188,19 @@ class ProjectsFinder < UnionFinder
 
     topics = params[:topic].instance_of?(String) ? params[:topic].split(',') : params[:topic]
     topics.map(&:strip).uniq.reject(&:empty?).each do |topic|
-      items = items.with_topic(topic)
+      items = items.with_topic_by_name(topic)
     end
 
     items
+  end
+
+  def by_topic_id(items)
+    return items unless params[:topic_id].present?
+
+    topic = Projects::Topic.find_by(id: params[:topic_id]) # rubocop: disable CodeReuse/ActiveRecord
+    return Project.none unless topic
+
+    items.with_topic(topic)
   end
 
   def by_search(items)

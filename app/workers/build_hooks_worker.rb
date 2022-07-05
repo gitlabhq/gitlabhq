@@ -18,4 +18,16 @@ class BuildHooksWorker # rubocop:disable Scalability/IdempotentWorker
       .try(:execute_hooks)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def self.perform_async(build)
+    Gitlab::AppLogger.info(
+      message: "Enqueuing hooks for Build #{build.id}: #{build.status}",
+      class: self.name,
+      build_id: build.id,
+      pipeline_id: build.pipeline_id,
+      project_id: build.project_id,
+      build_status: build.status)
+
+    super(build.id)
+  end
 end

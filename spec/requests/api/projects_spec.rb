@@ -328,6 +328,45 @@ RSpec.describe API::Projects do
         end
       end
 
+      context 'filter by topic_id' do
+        let_it_be(:topic1) { create(:topic) }
+        let_it_be(:topic2) { create(:topic) }
+
+        let(:current_user) { user }
+
+        before do
+          project.topics << topic1
+        end
+
+        context 'with id of assigned topic' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { topic_id: topic1.id } }
+            let(:projects) { [project] }
+          end
+        end
+
+        context 'with id of unassigned topic' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { topic_id: topic2.id } }
+            let(:projects) { [] }
+          end
+        end
+
+        context 'with non-existing topic id' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { topic_id: non_existing_record_id } }
+            let(:projects) { [] }
+          end
+        end
+
+        context 'with empty topic id' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { topic_id: '' } }
+            let(:projects) { user_projects }
+          end
+        end
+      end
+
       context 'and with_issues_enabled=true' do
         it 'only returns projects with issues enabled' do
           project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)

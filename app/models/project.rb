@@ -670,10 +670,12 @@ class Project < ApplicationRecord
     joins(:service_desk_setting).where('service_desk_settings.project_key' => key)
   end
 
-  scope :with_topic, ->(topic_name) do
+  scope :with_topic, ->(topic) { where(id: topic.project_topics.select(:project_id)) }
+
+  scope :with_topic_by_name, ->(topic_name) do
     topic = Projects::Topic.find_by_name(topic_name)
 
-    topic ? where(id: topic.project_topics.select(:project_id)) : none
+    topic ? with_topic(topic) : none
   end
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }

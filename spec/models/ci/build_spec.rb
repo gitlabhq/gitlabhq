@@ -3805,7 +3805,7 @@ RSpec.describe Ci::Build do
     end
 
     it 'queues BuildHooksWorker' do
-      expect(BuildHooksWorker).to receive(:perform_async).with(build.id)
+      expect(BuildHooksWorker).to receive(:perform_async).with(build)
 
       build.enqueue
     end

@@ -239,6 +239,13 @@ module Ci
 
         pipeline.run_after_commit do
           unless pipeline.user&.blocked?
+            Gitlab::AppLogger.info(
+              message: "Enqueuing hooks for Pipeline #{pipeline.id}: #{pipeline.status}",
+              class: self.class.name,
+              pipeline_id: pipeline.id,
+              project_id: pipeline.project_id,
+              pipeline_status: pipeline.status)
+
             PipelineHooksWorker.perform_async(pipeline.id)
           end
 

@@ -641,6 +641,7 @@ module API
                  :last_activity_after,
                  :last_activity_before,
                  :topic,
+                 :topic_id,
                  :repository_storage)
           .symbolize_keys
           .compact

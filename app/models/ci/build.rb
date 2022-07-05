@@ -196,7 +196,7 @@ module Ci
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
-      run_after_commit { BuildHooksWorker.perform_async(build.id) }
+      run_after_commit { BuildHooksWorker.perform_async(build) }
     end
 
     class << self
@@ -287,7 +287,7 @@ module Ci
 
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
-          BuildHooksWorker.perform_async(id)
+          BuildHooksWorker.perform_async(build)
         end
       end
 
@@ -315,7 +315,7 @@ module Ci
         build.run_after_commit do
           build.ensure_persistent_ref
 
-          BuildHooksWorker.perform_async(id)
+          BuildHooksWorker.perform_async(build)
         end
       end
 

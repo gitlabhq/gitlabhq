@@ -19,10 +19,6 @@ module QA
           element :delete_button, '_("Delete")' # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/projects/blob/_remove.html.haml' do
-          element :delete_file_button, "button_tag 'Delete file'" # rubocop:disable QA/ElementWithPattern
-        end
-
         view 'app/assets/javascripts/vue_shared/components/web_ide_link.vue' do
           element :edit_button
         end
