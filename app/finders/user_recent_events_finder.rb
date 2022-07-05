@@ -47,24 +47,6 @@ class UserRecentEventsFinder
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def execute_optimized_multi(users)
-    Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
-      scope: Event.reorder(id: :desc),
-      array_scope: User.select(:id).where(id: users),
-      # Event model has a default scope { reorder(nil) }
-      # When a relation is rordered and used as a target when merging scope,
-      # its order takes a precedence and _overwrites_ the original scope's order.
-      # Thus we have to explicitly provide `reorder` for array_mapping_scope here.
-      array_mapping_scope: -> (author_id_expression) { Event.where(Event.arel_table[:author_id].eq(author_id_expression)).reorder(id: :desc) },
-      finder_query: -> (id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
-    )
-    .execute
-    .limit(limit)
-    .offset(params[:offset] || 0)
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute_multi
     users = []
     @target_user.each do |user|
@@ -73,26 +55,18 @@ class UserRecentEventsFinder
 
     return Event.none if users.empty?
 
-    if Feature.enabled?(:optimized_followed_users_queries, current_user)
-      array_data = {
-        scope_ids: users,
-        scope_model: User,
-        mapping_column: :author_id
-      }
-      query_builder_params = event_filter.in_operator_query_builder_params(array_data)
+    array_data = {
+      scope_ids: users,
+      scope_model: User,
+      mapping_column: :author_id
+    }
+    query_builder_params = event_filter.in_operator_query_builder_params(array_data)
 
-      Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder
-        .new(**query_builder_params)
-        .execute
-        .limit(limit)
-        .offset(params[:offset] || 0)
-    else
-      if event_filter.filter == EventFilter::ALL
-        execute_optimized_multi(users)
-      else
-        event_filter.apply_filter(Event.where(author: users).limit_recent(limit, params[:offset] || 0))
-      end
-    end
+    Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder
+      .new(**query_builder_params)
+      .execute
+      .limit(limit)
+      .offset(params[:offset] || 0)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

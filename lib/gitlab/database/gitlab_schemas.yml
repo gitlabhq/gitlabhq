@@ -437,7 +437,6 @@ projects: :gitlab_main
 projects_sync_events: :gitlab_main
 project_statistics: :gitlab_main
 project_topics: :gitlab_main
-project_tracing_settings: :gitlab_main
 prometheus_alert_events: :gitlab_main
 prometheus_alerts: :gitlab_main
 prometheus_metrics: :gitlab_main

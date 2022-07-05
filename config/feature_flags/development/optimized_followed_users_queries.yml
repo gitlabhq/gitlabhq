@@ -1,8 +1,0 @@
----
-name: optimized_followed_users_queries
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84856
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/358649
-milestone: '15.0'
-type: development
-group: group::optimize
-default_enabled: true

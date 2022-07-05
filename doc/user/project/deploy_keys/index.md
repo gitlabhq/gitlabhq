@@ -82,7 +82,7 @@ Prerequisites:
 A project deploy key is enabled when it is created. You can modify only a project deploy key's
 name and permissions.
 
-## Create a public deploy key
+## Create a public deploy key **(FREE SELF)**
 
 Prerequisites:
 

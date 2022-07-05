@@ -46137,6 +46137,9 @@ msgstr[1] ""
 msgid "mrWidget|Merge"
 msgstr ""
 
+msgid "mrWidget|Merge blocked: all required approvals must be given."
+msgstr ""
+
 msgid "mrWidget|Merge blocked: all threads must be resolved."
 msgstr ""
 
@@ -46153,9 +46156,6 @@ msgid "mrWidget|Merge blocked: pipeline must succeed. It's waiting for a manual 
 msgstr ""
 
 msgid "mrWidget|Merge blocked: pipeline must succeed. Push a commit that fixes the failure, or %{linkStart}learn about other solutions.%{linkEnd}"
-msgstr ""
-
-msgid "mrWidget|Merge blocked: this merge request must be approved."
 msgstr ""
 
 msgid "mrWidget|Merge blocked: you can only merge after the above items are resolved."
@@ -46619,6 +46619,9 @@ msgid "severity|Unknown"
 msgstr ""
 
 msgid "should be an array of %{object_name} objects"
+msgstr ""
+
+msgid "should be an array of existing usernames. %{invalid} does not exist"
 msgstr ""
 
 msgid "should be greater than or equal to %{access} inherited membership from group %{group_name}"
