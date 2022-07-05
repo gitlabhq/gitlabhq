@@ -97,7 +97,7 @@ If you have a large GitLab installation or cannot tolerate downtime, consider
 Doing so reduces both the length of the maintenance window, and the risk of data
 loss as a result of a poorly executed planned failover.
 
-In GitLab 12.4, you can optionally allow GitLab to manage replication of Object Storage for
+In GitLab 15.1, you can optionally allow GitLab to manage replication of Object Storage for
 **secondary** sites. For more information, see [Object Storage replication](../replication/object_storage.md).
 
 ### Review the configuration of each **secondary** site

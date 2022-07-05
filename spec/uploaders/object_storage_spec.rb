@@ -48,6 +48,28 @@ RSpec.describe ObjectStorage do
           expect(uploader.store_dir).to start_with("uploads/-/system/user/")
         end
       end
+
+      describe '#store_path' do
+        subject { uploader.store_path('filename') }
+
+        it 'uses store_dir' do
+          expect(subject).to eq("uploads/-/system/user/#{object.id}/filename")
+        end
+
+        context 'when a bucket prefix is configured' do
+          before do
+            allow(uploader_class).to receive(:object_store_options) do
+              double(
+                bucket_prefix: 'my/prefix'
+              )
+            end
+          end
+
+          it 'uses store_dir and ignores prefix' do
+            expect(subject).to eq("uploads/-/system/user/#{object.id}/filename")
+          end
+        end
+      end
     end
 
     context 'object_store is Store::REMOTE' do
@@ -58,6 +80,28 @@ RSpec.describe ObjectStorage do
       describe '#store_dir' do
         it 'is the composition of (dynamic_segment)' do
           expect(uploader.store_dir).to start_with("user/")
+        end
+      end
+
+      describe '#store_path' do
+        subject { uploader.store_path('filename') }
+
+        it 'uses store_dir' do
+          expect(subject).to eq("user/#{object.id}/filename")
+        end
+
+        context 'when a bucket prefix is configured' do
+          before do
+            allow(uploader_class).to receive(:object_store_options) do
+              double(
+                bucket_prefix: 'my/prefix'
+              )
+            end
+          end
+
+          it 'uses the prefix and store_dir' do
+            expect(subject).to eq("my/prefix/user/#{object.id}/filename")
+          end
         end
       end
     end

@@ -81,6 +81,10 @@ module Gitlab
         :update_gateway,
         to: :istio_client
 
+      delegate :get_ingresses, :patch_ingress, to: :networking_client
+
+      delegate :get_deployments, to: :apps_client
+
       attr_reader :api_prefix, :kubeclient_options
 
       DEFAULT_KUBECLIENT_OPTIONS = {
@@ -125,46 +129,6 @@ module Gitlab
           .merge(http_max_redirects: 0)
 
         validate_url!
-      end
-
-      # Deployments resource is currently on the apis/extensions api group
-      # until Kubernetes 1.15. Kubernetest 1.16+ has deployments resources in
-      # the apis/apps api group.
-      #
-      # As we still support Kubernetes 1.12+, we will need to support both.
-      def get_deployments(**args)
-        extensions_client.discover unless extensions_client.discovered
-
-        if extensions_client.respond_to?(:get_deployments)
-          extensions_client.get_deployments(**args)
-        else
-          apps_client.get_deployments(**args)
-        end
-      end
-
-      # Ingresses resource is currently on the apis/extensions api group
-      # until Kubernetes 1.21. Kubernetest 1.22+ has ingresses resources in
-      # the networking.k8s.io/v1 api group.
-      #
-      # As we still support Kubernetes 1.12+, we will need to support both.
-      def get_ingresses(**args)
-        extensions_client.discover unless extensions_client.discovered
-
-        if extensions_client.respond_to?(:get_ingresses)
-          extensions_client.get_ingresses(**args)
-        else
-          networking_client.get_ingresses(**args)
-        end
-      end
-
-      def patch_ingress(*args)
-        extensions_client.discover unless extensions_client.discovered
-
-        if extensions_client.respond_to?(:patch_ingress)
-          extensions_client.patch_ingress(*args)
-        else
-          networking_client.patch_ingress(*args)
-        end
       end
 
       def create_or_update_cluster_role_binding(resource)

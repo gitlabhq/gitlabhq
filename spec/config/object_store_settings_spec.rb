@@ -73,6 +73,7 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.artifacts['object_store']['background_upload']).to be false
         expect(settings.artifacts['object_store']['proxy_download']).to be false
         expect(settings.artifacts['object_store']['remote_directory']).to eq('artifacts')
+        expect(settings.artifacts['object_store']['bucket_prefix']).to eq(nil)
         expect(settings.artifacts['object_store']['consolidated_settings']).to be true
         expect(settings.artifacts).to eq(settings['artifacts'])
 
@@ -83,6 +84,7 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.lfs['object_store']['background_upload']).to be false
         expect(settings.lfs['object_store']['proxy_download']).to be true
         expect(settings.lfs['object_store']['remote_directory']).to eq('lfs-objects')
+        expect(settings.lfs['object_store']['bucket_prefix']).to eq(nil)
         expect(settings.lfs['object_store']['consolidated_settings']).to be true
         expect(settings.lfs).to eq(settings['lfs'])
 
@@ -90,12 +92,25 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.pages['object_store']['enabled']).to be true
         expect(settings.pages['object_store']['connection']).to eq(connection)
         expect(settings.pages['object_store']['remote_directory']).to eq('pages')
+        expect(settings.pages['object_store']['bucket_prefix']).to eq(nil)
         expect(settings.pages['object_store']['consolidated_settings']).to be true
         expect(settings.pages).to eq(settings['pages'])
 
         expect(settings.external_diffs['enabled']).to be false
         expect(settings.external_diffs['object_store']).to be_nil
         expect(settings.external_diffs).to eq(settings['external_diffs'])
+      end
+
+      it 'supports bucket prefixes' do
+        config['object_store']['objects']['artifacts']['bucket'] = 'gitlab/artifacts'
+        config['object_store']['objects']['lfs']['bucket'] = 'gitlab/lfs'
+
+        subject
+
+        expect(settings.artifacts['object_store']['remote_directory']).to eq('gitlab')
+        expect(settings.artifacts['object_store']['bucket_prefix']).to eq('artifacts')
+        expect(settings.lfs['object_store']['remote_directory']).to eq('gitlab')
+        expect(settings.lfs['object_store']['bucket_prefix']).to eq('lfs')
       end
 
       it 'raises an error when a bucket is missing' do
@@ -152,6 +167,7 @@ RSpec.describe ObjectStoreSettings do
 
           expect(settings.artifacts['enabled']).to be true
           expect(settings.artifacts['object_store']['remote_directory']).to be_nil
+          expect(settings.artifacts['object_store']['bucket_prefix']).to be_nil
           expect(settings.artifacts['object_store']['enabled']).to be_falsey
           expect(settings.artifacts['object_store']['consolidated_settings']).to be_falsey
         end
@@ -177,6 +193,7 @@ RSpec.describe ObjectStoreSettings do
 
           expect(settings.artifacts['object_store']).to be_nil
           expect(settings.lfs['object_store']['remote_directory']).to eq('some-bucket')
+          expect(settings.lfs['object_store']['bucket_prefix']).to eq(nil)
           # Disable background_upload, regardless of the input config
           expect(settings.lfs['object_store']['direct_upload']).to eq(true)
           expect(settings.lfs['object_store']['background_upload']).to eq(false)
@@ -203,6 +220,7 @@ RSpec.describe ObjectStoreSettings do
 
           expect(settings.artifacts['object_store']).to be_nil
           expect(settings.lfs['object_store']['remote_directory']).to eq('some-bucket')
+          expect(settings.lfs['object_store']['bucket_prefix']).to eq(nil)
           # Enable background_upload if the environment variable is available
           expect(settings.lfs['object_store']['direct_upload']).to eq(false)
           expect(settings.lfs['object_store']['background_upload']).to eq(true)
@@ -220,6 +238,7 @@ RSpec.describe ObjectStoreSettings do
       expect(settings['direct_upload']).to be true
       expect(settings['background_upload']).to be false
       expect(settings['remote_directory']).to be nil
+      expect(settings['bucket_prefix']).to be nil
     end
 
     it 'respects original values' do
@@ -234,6 +253,18 @@ RSpec.describe ObjectStoreSettings do
       expect(settings['direct_upload']).to be true
       expect(settings['background_upload']).to be false
       expect(settings['remote_directory']).to eq 'artifacts'
+      expect(settings['bucket_prefix']).to be nil
+    end
+
+    it 'supports bucket prefixes' do
+      original_settings = Settingslogic.new({
+        'enabled' => true,
+        'remote_directory' => 'gitlab/artifacts'
+      })
+
+      settings = described_class.legacy_parse(original_settings, 'artifacts')
+      expect(settings['remote_directory']).to eq 'gitlab'
+      expect(settings['bucket_prefix']).to eq 'artifacts'
     end
 
     context 'legacy background upload environment variable is enabled' do
@@ -253,6 +284,7 @@ RSpec.describe ObjectStoreSettings do
         expect(settings['direct_upload']).to be false
         expect(settings['background_upload']).to be true
         expect(settings['remote_directory']).to eq 'artifacts'
+        expect(settings['bucket_prefix']).to eq nil
       end
     end
 
@@ -273,6 +305,50 @@ RSpec.describe ObjectStoreSettings do
         expect(settings['direct_upload']).to be true
         expect(settings['background_upload']).to be false
         expect(settings['remote_directory']).to eq 'artifacts'
+        expect(settings['bucket_prefix']).to eq nil
+      end
+    end
+  end
+
+  describe '.split_bucket_prefix' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.split_bucket_prefix(input) }
+
+    context 'valid inputs' do
+      where(:input, :bucket, :prefix) do
+        nil | nil | nil
+        '' | nil | nil
+        'bucket' | 'bucket' | nil
+        'bucket/prefix' | 'bucket' | 'prefix'
+        'bucket/pre/fix' | 'bucket' | 'pre/fix'
+      end
+
+      with_them do
+        it { expect(subject).to eq([bucket, prefix]) }
+      end
+    end
+
+    context 'invalid inputs' do
+      where(:input) do
+        [
+          ['bucket/'],
+          ['bucket/.'],
+          ['bucket/..'],
+          ['bucket/prefix/'],
+          ['bucket/prefix/.'],
+          ['bucket/prefix/..'],
+          ['/bucket/prefix'],
+          ['./bucket/prefix'],
+          ['../bucket/prefix'],
+          ['bucket//prefix'],
+          ['bucket/./prefix'],
+          ['bucket/../prefix']
+        ]
+      end
+
+      with_them do
+        it { expect { subject }.to raise_error(/invalid bucket/) }
       end
     end
   end

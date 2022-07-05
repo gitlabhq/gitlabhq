@@ -298,6 +298,20 @@ RSpec.describe 'New project', :js do
       end
     end
 
+    context 'Import project options without any sources', :js do
+      before do
+        stub_application_setting(import_sources: [])
+
+        visit new_project_path
+        click_link 'Import project'
+      end
+
+      it 'displays the no import options message' do
+        expect(page).to have_text s_('ProjectsNew|No import options available')
+        expect(page).to have_text s_('ProjectsNew|Contact an administrator to enable options for importing your project.')
+      end
+    end
+
     context 'Import project options', :js do
       before do
         visit new_project_path

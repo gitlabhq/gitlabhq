@@ -13,7 +13,7 @@ module Projects
     urgency :high
 
     idempotent!
-    deduplicate :until_executed
+    deduplicate :until_executing
 
     def perform
       results = ::Ci::ProcessSyncEventsService.new(

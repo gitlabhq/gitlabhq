@@ -16617,9 +16617,6 @@ msgstr ""
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
 msgstr ""
 
-msgid "Geo|Beta"
-msgstr ""
-
 msgid "Geo|Checksummed"
 msgstr ""
 

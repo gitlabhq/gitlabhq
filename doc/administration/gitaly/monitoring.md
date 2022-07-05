@@ -48,8 +48,8 @@ the Gitaly logs and Prometheus:
 
 You can observe the status of [control groups (cgroups)](configure_gitaly.md#control-groups) using Prometheus:
 
-- `gitaly_cgroups_memory_failed_total`, a gauge for the total number of times
-   the memory limit has been hit. This number resets each time a server is
+- `gitaly_cgroups_reclaim_attempts_total`, a gauge for the total number of times
+   there has been a memory relcaim attempt. This number resets each time a server is
    restarted.
 - `gitaly_cgroups_cpu_usage`, a gauge that measures CPU usage per cgroup.
 - `gitaly_cgroup_procs_total`, a gauge that measures the total number of
