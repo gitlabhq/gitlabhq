@@ -18,9 +18,11 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
 
       # rubocop:disable Layout/LineLength
       where(:case_name, :globs, :files, :satisfied) do
+        'exact top-level match'      |  ['Dockerfile']                         | { 'Dockerfile' => '', 'Gemfile' => '' }            | true
         'exact top-level match'      | { paths: ['Dockerfile'] }               | { 'Dockerfile' => '', 'Gemfile' => '' }            | true
         'exact top-level no match'   | { paths: ['Dockerfile'] }               | { 'Gemfile' => '' }                                | false
         'pattern top-level match'    | { paths: ['Docker*'] }                  | { 'Dockerfile' => '', 'Gemfile' => '' }            | true
+        'pattern top-level no match' | ['Docker*']                             | { 'Gemfile' => '' }                                | false
         'pattern top-level no match' | { paths: ['Docker*'] }                  | { 'Gemfile' => '' }                                | false
         'exact nested match'         | { paths: ['project/build.properties'] } | { 'project/build.properties' => '' }               | true
         'exact nested no match'      | { paths: ['project/build.properties'] } | { 'project/README.md' => '' }                      | false

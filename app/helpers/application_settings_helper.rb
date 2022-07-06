@@ -238,6 +238,8 @@ module ApplicationSettingsHelper
       :email_author_in_body,
       :enabled_git_access_protocol,
       :enforce_terms,
+      :error_tracking_enabled,
+      :error_tracking_api_url,
       :external_pipeline_validation_service_timeout,
       :external_pipeline_validation_service_token,
       :external_pipeline_validation_service_url,

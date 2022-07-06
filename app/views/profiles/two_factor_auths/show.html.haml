@@ -78,7 +78,7 @@
     .col-lg-8
       - registration = webauthn_enabled ? @webauthn_registration : @u2f_registration
       - if registration.errors.present?
-        = form_errors(registration)
+        = form_errors(registration, pajamas_alert: true)
       - if webauthn_enabled
         = render "authentication/register", target_path: create_webauthn_profile_two_factor_auth_path
       - else

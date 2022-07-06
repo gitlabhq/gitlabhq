@@ -1075,6 +1075,27 @@ RSpec.describe ApplicationSetting do
         is_expected.to validate_numericality_of(:metrics_method_call_threshold).is_greater_than_or_equal_to(0)
       end
     end
+
+    context 'error tracking settings' do
+      context 'with error tracking disabled' do
+        before do
+          setting.error_tracking_enabled = false
+        end
+
+        it { is_expected.to allow_value(nil).for(:error_tracking_api_url) }
+      end
+
+      context 'with error tracking enabled' do
+        before do
+          setting.error_tracking_enabled = true
+        end
+
+        it { is_expected.to allow_value(http).for(:error_tracking_api_url) }
+        it { is_expected.to allow_value(https).for(:error_tracking_api_url) }
+        it { is_expected.not_to allow_value(ftp).for(:error_tracking_api_url) }
+        it { is_expected.to validate_presence_of(:error_tracking_api_url) }
+      end
+    end
   end
 
   context 'restrict creating duplicates' do

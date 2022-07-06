@@ -183,6 +183,7 @@ const alias = {
   test_fixtures: path.join(ROOT_PATH, 'tmp/tests/frontend/fixtures'),
   test_fixtures_static: path.join(ROOT_PATH, 'spec/frontend/fixtures/static'),
   test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
+  public: path.join(ROOT_PATH, 'public'),
 };
 
 if (IS_EE) {

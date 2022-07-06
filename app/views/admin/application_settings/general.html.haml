@@ -117,6 +117,7 @@
 = render_if_exists 'admin/application_settings/feishu_integration'
 = render 'admin/application_settings/third_party_offers'
 = render 'admin/application_settings/snowplow'
+= render 'admin/application_settings/error_tracking' if Feature.enabled?(:gitlab_error_tracking)
 = render 'admin/application_settings/eks'
 = render 'admin/application_settings/floc'
 = render_if_exists 'admin/application_settings/add_license'

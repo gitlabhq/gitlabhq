@@ -1,0 +1,23 @@
+- expanded = integration_expanded?('error_tracking_')
+%section.settings.as-error-tracking.no-animate#js-error-tracking-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('GitLab Error Tracking')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Allows projects to track errors using an Opstrace integration.').html_safe % { link: help_page_path('operations/error_tracking.md') }
+      = link_to _('Learn more.'), help_page_path('operations/error_tracking.md'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-error-tracking-settings'), html: { class: 'fieldset-form', id: 'error-tracking-settings' } do |f|
+      = form_errors(@application_setting, pajamas_alert: true) if expanded
+
+      %fieldset
+        .form-group
+          = f.gitlab_ui_checkbox_component :error_tracking_enabled,
+          _('Enable GitLab Error Tracking')
+        .form-group
+          = f.label :error_tracking_api_url, _('Opstrace endpoint for Error Tracking integration'), class: 'label-light'
+          = f.text_field :error_tracking_api_url, class: 'form-control gl-form-input'
+
+      = f.submit _('Save changes'), class: 'gl-button btn btn-confirm'

@@ -1,0 +1,11 @@
+---
+table_name: sbom_sources
+classes:
+- Sbom::Source
+feature_categories:
+- container_scanning
+- dependency_scanning
+- license_compliance
+description: Stores information about where an SBoM component originated from
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90812
+milestone: '15.2'

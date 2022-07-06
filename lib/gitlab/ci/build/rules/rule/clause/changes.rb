@@ -33,7 +33,11 @@ module Gitlab
 
         def paths
           strong_memoize(:paths) do
-            Array(@globs[:paths])
+            if @globs.is_a?(Array)
+              @globs
+            else
+              Array(@globs[:paths])
+            end
           end
         end
       end

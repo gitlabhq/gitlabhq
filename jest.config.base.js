@@ -57,6 +57,7 @@ module.exports = (path, options = {}) => {
     [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures$1',
     '^test_fixtures_static(/.*)$': '<rootDir>/spec/frontend/fixtures/static$1',
     '\\.(jpg|jpeg|png|svg|css)$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
+    '^public(/.*)$': '<rootDir>/public$1',
     'emojis(/.*).json': '<rootDir>/fixtures/emojis$1.json',
     '^spec/test_constants$': '<rootDir>/spec/frontend/__helpers__/test_constants',
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',

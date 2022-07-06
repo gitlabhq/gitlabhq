@@ -3902,6 +3902,9 @@ msgstr ""
 msgid "Allows projects or subgroups in this group to override the global setting."
 msgstr ""
 
+msgid "Allows projects to track errors using an Opstrace integration."
+msgstr ""
+
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr ""
 
@@ -14215,6 +14218,9 @@ msgstr ""
 msgid "Enable Auto DevOps"
 msgstr ""
 
+msgid "Enable GitLab Error Tracking"
+msgstr ""
+
 msgid "Enable Gitpod"
 msgstr ""
 
@@ -17372,6 +17378,9 @@ msgid "GitLab Account Request"
 msgstr ""
 
 msgid "GitLab Billing Team."
+msgstr ""
+
+msgid "GitLab Error Tracking"
 msgstr ""
 
 msgid "GitLab Import"
@@ -26452,6 +26461,9 @@ msgstr ""
 msgid "Notify|Merge request URL: %{merge_request_url}"
 msgstr ""
 
+msgid "Notify|Milestone changed to %{milestone}"
+msgstr ""
+
 msgid "Notify|New issue: %{project_issue_url}"
 msgstr ""
 
@@ -27130,6 +27142,9 @@ msgid "OperationsDashboard|Operations Dashboard"
 msgstr ""
 
 msgid "OperationsDashboard|The operations dashboard provides a summary of each project's operational health, including pipeline and alert statuses."
+msgstr ""
+
+msgid "Opstrace endpoint for Error Tracking integration"
 msgstr ""
 
 msgid "Optimize your workflow with CI/CD Pipelines"

@@ -97,4 +97,26 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
       expect(rendered).to match ' data-minimum-password-length='
     end
   end
+
+  describe 'error tracking integration' do
+    context 'with error tracking feature flag enabled' do
+      it 'expects error tracking settings to be available' do
+        stub_feature_flags(gitlab_error_tracking: true)
+
+        render
+
+        expect(rendered).to have_field('application_setting_error_tracking_api_url')
+      end
+    end
+
+    context 'with error tracking feature flag disabled' do
+      it 'expects error tracking settings to not be avaiable' do
+        stub_feature_flags(gitlab_error_tracking: false)
+
+        render
+
+        expect(rendered).not_to have_field('application_setting_error_tracking_api_url')
+      end
+    end
+  end
 end

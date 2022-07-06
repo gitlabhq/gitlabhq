@@ -12,7 +12,7 @@
 
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-jira-connect-application-id-settings'), html: { class: 'fieldset-form', id: 'jira-connect-application-id-settings' } do |f|
-      = form_errors(@application_setting)
+      = form_errors(@application_setting, pajamas_alert: true)
 
       %fieldset
         .form-group

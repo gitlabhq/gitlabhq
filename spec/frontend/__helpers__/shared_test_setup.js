@@ -15,6 +15,7 @@ import '~/commons/bootstrap';
 
 // This module has some fairly decent visual test coverage in it's own repository.
 jest.mock('@gitlab/favicon-overlay');
+jest.mock('~/lib/utils/axios_utils', () => jest.requireActual('helpers/mocks/axios_utils'));
 
 process.on('unhandledRejection', global.promiseRejectionHandler);
 

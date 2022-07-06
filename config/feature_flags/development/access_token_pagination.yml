@@ -1,0 +1,8 @@
+---
+name: access_token_pagination
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91372
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366534
+milestone: '15.2'
+type: development
+group: group::authentication and authorization
+default_enabled: false

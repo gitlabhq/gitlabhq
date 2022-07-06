@@ -594,6 +594,14 @@ class ApplicationSetting < ApplicationRecord
     presence: true, length: { maximum: 255 },
     if: :sentry_enabled?
 
+  validates :error_tracking_enabled,
+    inclusion: { in: [true, false], message: _('must be a boolean value') }
+  validates :error_tracking_api_url,
+    presence: true,
+    addressable_url: true,
+    length: { maximum: 255 },
+    if: :error_tracking_enabled?
+
   validates :users_get_by_id_limit,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :users_get_by_id_limit_allowlist,

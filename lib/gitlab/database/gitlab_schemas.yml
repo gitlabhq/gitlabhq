@@ -474,6 +474,7 @@ saml_providers: :gitlab_main
 saved_replies: :gitlab_main
 sbom_components: :gitlab_main
 sbom_component_versions: :gitlab_main
+sbom_sources: :gitlab_main
 schema_migrations: :gitlab_internal
 scim_identities: :gitlab_main
 scim_oauth_access_tokens: :gitlab_main

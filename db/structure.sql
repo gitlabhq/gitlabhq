@@ -11329,6 +11329,8 @@ CREATE TABLE application_settings (
     encrypted_feishu_app_key_iv bytea,
     encrypted_feishu_app_secret bytea,
     encrypted_feishu_app_secret_iv bytea,
+    error_tracking_enabled boolean DEFAULT false NOT NULL,
+    error_tracking_api_url text,
     git_rate_limit_users_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
@@ -11346,6 +11348,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_3455368420 CHECK ((char_length(database_grafana_api_url) <= 255)),
     CONSTRAINT check_3559645ae5 CHECK ((char_length(container_registry_import_target_plan) <= 255)),
     CONSTRAINT check_3def0f1829 CHECK ((char_length(sentry_clientside_dsn) <= 255)),
+    CONSTRAINT check_492cc1354d CHECK ((char_length(error_tracking_api_url) <= 255)),
     CONSTRAINT check_4f8b811780 CHECK ((char_length(sentry_dsn) <= 255)),
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_57123c9593 CHECK ((char_length(help_page_documentation_base_url) <= 255)),
@@ -20568,6 +20571,24 @@ CREATE SEQUENCE sbom_components_id_seq
 
 ALTER SEQUENCE sbom_components_id_seq OWNED BY sbom_components.id;
 
+CREATE TABLE sbom_sources (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    source_type smallint NOT NULL,
+    source jsonb DEFAULT '{}'::jsonb NOT NULL,
+    fingerprint bytea NOT NULL
+);
+
+CREATE SEQUENCE sbom_sources_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE sbom_sources_id_seq OWNED BY sbom_sources.id;
+
 CREATE TABLE schema_migrations (
     version character varying NOT NULL,
     finished_at timestamp with time zone DEFAULT now()
@@ -23474,6 +23495,8 @@ ALTER TABLE ONLY sbom_component_versions ALTER COLUMN id SET DEFAULT nextval('sb
 
 ALTER TABLE ONLY sbom_components ALTER COLUMN id SET DEFAULT nextval('sbom_components_id_seq'::regclass);
 
+ALTER TABLE ONLY sbom_sources ALTER COLUMN id SET DEFAULT nextval('sbom_sources_id_seq'::regclass);
+
 ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_identities_id_seq'::regclass);
 
 ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('scim_oauth_access_tokens_id_seq'::regclass);
@@ -25675,6 +25698,9 @@ ALTER TABLE ONLY sbom_component_versions
 
 ALTER TABLE ONLY sbom_components
     ADD CONSTRAINT sbom_components_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY sbom_sources
+    ADD CONSTRAINT sbom_sources_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
