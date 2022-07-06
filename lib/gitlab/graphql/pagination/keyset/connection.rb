@@ -199,7 +199,7 @@ module Gitlab
               field_name = field.try(:attribute_name) || field
               field_value = node[field_name]
               ordering[field_name] = if field_value.is_a?(Time)
-                                       field_value.strftime('%Y-%m-%d %H:%M:%S.%N %Z')
+                                       field_value.to_s(:inspect)
                                      else
                                        field_value.to_s
                                      end

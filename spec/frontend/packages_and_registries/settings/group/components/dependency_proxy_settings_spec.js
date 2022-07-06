@@ -38,7 +38,6 @@ describe('DependencyProxySettings', () => {
   let updateTtlPoliciesMutationResolver;
 
   const defaultProvide = {
-    defaultExpanded: false,
     groupPath: 'foo_group_path',
     groupDependencyProxyPath: 'group_dependency_proxy_path',
   };
@@ -107,12 +106,6 @@ describe('DependencyProxySettings', () => {
     mountComponent();
 
     expect(findSettingsBlock().exists()).toBe(true);
-  });
-
-  it('passes the correct props to settings block', () => {
-    mountComponent();
-
-    expect(findSettingsBlock().props('defaultExpanded')).toBe(false);
   });
 
   it('has the correct header text and description', () => {

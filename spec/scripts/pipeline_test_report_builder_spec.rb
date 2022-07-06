@@ -103,16 +103,18 @@ RSpec.describe PipelineTestReportBuilder do
   end
 
   describe '#test_report_for_latest_pipeline' do
+    let(:failed_build_uri) { "#{failed_pipeline_url}/tests/suite.json?build_ids[]=#{failed_build_id}" }
+
+    before do
+      allow(subject).to receive(:fetch).with(failed_build_uri).and_return(failed_builds_for_pipeline)
+    end
+
     it 'fetches builds from pipeline related to MR' do
-      expect(subject).to receive(:fetch).with("#{failed_pipeline_url}/tests/suite.json?build_ids[]=#{failed_build_id}").and_return(failed_builds_for_pipeline)
-      subject.test_report_for_latest_pipeline
+      expected = { "suites" => [failed_builds_for_pipeline] }.to_json
+      expect(subject.test_report_for_latest_pipeline).to eq(expected)
     end
 
     context 'canonical pipeline' do
-      before do
-        allow(subject).to receive(:test_report_for_build).and_return(test_report_for_build)
-      end
-
       context 'no previous pipeline' do
         let(:mr_pipelines) { [] }
 
@@ -171,6 +173,10 @@ RSpec.describe PipelineTestReportBuilder do
       end
 
       context 'failed pipeline and failed test builds' do
+        before do
+          allow(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)
+        end
+
         it 'returns populated test list for suites' do
           actual = subject.test_report_for_latest_pipeline
           expected = {
@@ -178,6 +184,36 @@ RSpec.describe PipelineTestReportBuilder do
           }.to_json
 
           expect(actual).to eq(expected)
+        end
+      end
+
+      context 'when receiving a server error' do
+        let(:response) { instance_double('Net::HTTPResponse') }
+        let(:error) { Net::HTTPServerException.new('server error', response) }
+        let(:test_report_for_latest_pipeline) { subject.test_report_for_latest_pipeline }
+
+        before do
+          allow(response).to receive(:code).and_return(response_code)
+          allow(subject).to receive(:fetch).with(failed_build_uri).and_raise(error)
+        end
+
+        context 'when response code is 404' do
+          let(:response_code) { 404 }
+
+          it 'continues without the missing reports' do
+            expected = { 'suites' => [] }.to_json
+
+            expect { test_report_for_latest_pipeline }.not_to raise_error
+            expect(test_report_for_latest_pipeline).to eq(expected)
+          end
+        end
+
+        context 'when response code is unexpected' do
+          let(:response_code) { 500 }
+
+          it 'raises HTTPServerException' do
+            expect { test_report_for_latest_pipeline }.to raise_error(error)
+          end
         end
       end
     end

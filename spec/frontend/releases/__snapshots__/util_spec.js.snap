@@ -196,10 +196,10 @@ Object {
   ],
   "paginationInfo": Object {
     "__typename": "PageInfo",
-    "endCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTgtMTItMTAgMDA6MDA6MDAuMDAwMDAwMDAwIFVUQyIsImlkIjoiMSJ9",
+    "endCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTgtMTItMTAgMDA6MDA6MDAuMDAwMDAwMDAwICswMDAwIiwiaWQiOiIxIn0",
     "hasNextPage": false,
     "hasPreviousPage": false,
-    "startCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTktMDEtMTAgMDA6MDA6MDAuMDAwMDAwMDAwIFVUQyIsImlkIjoiMiJ9",
+    "startCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTktMDEtMTAgMDA6MDA6MDAuMDAwMDAwMDAwICswMDAwIiwiaWQiOiIyIn0",
   },
 }
 `;

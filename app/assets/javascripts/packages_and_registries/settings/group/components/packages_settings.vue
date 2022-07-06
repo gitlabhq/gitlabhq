@@ -9,7 +9,7 @@ import {
 import updateNamespacePackageSettings from '~/packages_and_registries/settings/group/graphql/mutations/update_group_packages_settings.mutation.graphql';
 import { updateGroupPackageSettings } from '~/packages_and_registries/settings/group/graphql/utils/cache_update';
 import { updateGroupPackagesSettingsOptimisticResponse } from '~/packages_and_registries/settings/group/graphql/utils/optimistic_responses';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 
 export default {
   name: 'PackageSettings',
@@ -23,7 +23,7 @@ export default {
     GenericSettings,
     DuplicatesSettings,
   },
-  inject: ['defaultExpanded', 'groupPath'],
+  inject: ['groupPath'],
   props: {
     packageSettings: {
       type: Object,
@@ -84,10 +84,7 @@ export default {
 </script>
 
 <template>
-  <settings-block
-    :default-expanded="defaultExpanded"
-    data-qa-selector="package_registry_settings_content"
-  >
+  <settings-block data-qa-selector="package_registry_settings_content">
     <template #title> {{ $options.i18n.PACKAGE_SETTINGS_HEADER }}</template>
     <template #description>
       <span data-testid="description">

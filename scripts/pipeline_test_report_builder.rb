@@ -72,6 +72,10 @@ class PipelineTestReportBuilder
   # Please see for more info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053#note_709939709
   def test_report_for_build(pipeline, build_id)
     fetch("#{pipeline['web_url']}/tests/suite.json?build_ids[]=#{build_id}")
+  rescue Net::HTTPServerException => e
+    raise e unless e.response.code == 404
+
+    puts "Artifacts not found. They may have expired. Skipping this build."
   end
 
   def build_test_report_json_for_pipeline(pipeline)
@@ -92,7 +96,8 @@ class PipelineTestReportBuilder
       test_report['suites'] ||= []
 
       failed_builds_for_test_stage.each do |failed_build|
-        test_report['suites'] << test_report_for_build(pipeline, failed_build['id'])
+        suite = test_report_for_build(pipeline, failed_build['id'])
+        test_report['suites'] << suite if suite
       end
     end
 

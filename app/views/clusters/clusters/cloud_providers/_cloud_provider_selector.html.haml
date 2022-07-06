@@ -1,14 +1,18 @@
 - gke_label = s_('ClusterIntegration|Google GKE')
 - eks_label = s_('ClusterIntegration|Amazon EKS')
+- civo_label = s_('ClusterIntegration|Civo Kubernetes')
 - create_cluster_label = s_('ClusterIntegration|Where do you want to create a cluster?')
-- eks_help_path = help_page_path('user/infrastructure/clusters/connect/new_eks_cluster')
-- gke_help_path = help_page_path('user/infrastructure/clusters/connect/new_gke_cluster')
+- eks_help_path = help_page_path('user/infrastructure/clusters/connect/new_eks_cluster.md')
+- gke_help_path = help_page_path('user/infrastructure/clusters/connect/new_gke_cluster.md')
+- civo_help_path = help_page_path('user/infrastructure/clusters/connect/new_civo_cluster.md')
 
-.gl-p-5
+.gl-py-5.gl-md-pl-5.gl-md-pr-5
   %h4.gl-mb-5
     = create_cluster_label
   .gl-display-flex
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',
       locals: { label: eks_label, logo_path: 'illustrations/logos/amazon_eks.svg', help_path: eks_help_path }
+    = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',
+      locals: { label: civo_label, logo_path: 'illustrations/third-party-logos/civo.svg', help_path: civo_help_path }
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',
       locals: { label: gke_label, logo_path: 'illustrations/logos/google_gke.svg', help_path: gke_help_path, last: true }

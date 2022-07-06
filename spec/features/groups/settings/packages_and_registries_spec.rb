@@ -60,7 +60,6 @@ RSpec.describe 'Group Packages & Registries settings' do
       visit_settings_page
 
       expect(page).to have_content('Duplicate packages')
-      expect(page).to have_button('Collapse')
     end
 
     it 'automatically saves changes to the server', :js do

@@ -5,6 +5,7 @@ tasks:
   - name: GDK
     command: |
       echo START_TIME_IN_SECONDS="$(date +%s)" | tee /workspace/gitpod_start_time.sh
+      gp sync-done gitpod-start
       gp sync-await gdk-copied && cd /workspace/gitlab-development-kit && gdk help
 
   - init: |
@@ -35,9 +36,10 @@ tasks:
       )
     command: |
       (
+        gp sync-await gitpod-start
         set -e
         gp sync-done gdk-copied
-        source /workspace/gitpod_start_time.sh
+        [[ -f /workspace/gitpod_start_time.sh ]] && source /workspace/gitpod_start_time.sh
         SECONDS=0
         cd /workspace/gitlab-development-kit
         # update GDK
@@ -72,7 +74,7 @@ tasks:
         git checkout db/structure.sql
         cd /workspace/gitlab-development-kit
         # Waiting for GitLab ...
-        gp await-port 3000
+        gp ports await 3000
         printf "Waiting for GitLab at $(gp url 3000) ..."
         # Check /-/readiness which returns JSON, but we're only interested in the exit code
         #
@@ -84,7 +86,7 @@ tasks:
         printf "$(date) – GitLab is up (took ~%.1f minutes)\n" "$((10*$SECONDS/60))e-1" | tee -a /workspace/startup.log
         gp preview $(gp url 3000) || true
         PREBUILD_LOG=(/workspace/.gitpod/prebuild-log-*)
-        printf "Took %.1f minutes from https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitpod.yml being executed through to completion %s\n" "$((10*(($(date +%s)-${START_TIME_IN_SECONDS}))/60))e-1" "$([[ -f "$PREBUILD_LOG" ]] && echo "With Prebuilds")"    
+        [[ -f /workspace/gitpod_start_time.sh ]] && printf "Took %.1f minutes from https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitpod.yml being executed through to completion %s\n" "$((10*(($(date +%s)-${START_TIME_IN_SECONDS}))/60))e-1" "$([[ -f "$PREBUILD_LOG" ]] && echo "With Prebuilds")"    
       )
 
 ports:

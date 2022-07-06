@@ -8812,6 +8812,9 @@ msgstr ""
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
+msgid "ClusterIntegration|Civo Kubernetes"
+msgstr ""
+
 msgid "ClusterIntegration|Clear cluster cache"
 msgstr ""
 
@@ -14665,12 +14668,6 @@ msgstr ""
 msgid "Environments|No deployments yet"
 msgstr ""
 
-msgid "Environments|No pod selected"
-msgstr ""
-
-msgid "Environments|No pods to display"
-msgstr ""
-
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file."
 msgstr ""
 
@@ -14693,9 +14690,6 @@ msgid "Environments|Rollback environment"
 msgstr ""
 
 msgid "Environments|Rollback environment %{name}?"
-msgstr ""
-
-msgid "Environments|Select pod"
 msgstr ""
 
 msgid "Environments|Show all"
@@ -31748,9 +31742,6 @@ msgstr ""
 msgid "Refine your search criteria (select a %{strong_open}group%{strong_close} and %{strong_open}project%{strong_close} when possible)"
 msgstr ""
 
-msgid "Refresh"
-msgstr ""
-
 msgid "Refresh the page and try again."
 msgstr ""
 
@@ -34359,7 +34350,7 @@ msgstr ""
 msgid "SecurityOrchestration|After dismissing the alert, the information will never be shown again."
 msgstr ""
 
-msgid "SecurityOrchestration|After enabling a group-level policy, this policy automatically applies to all projects in this group."
+msgid "SecurityOrchestration|After enabling a group-level policy, this policy automatically applies to all projects and sub-groups in this group."
 msgstr ""
 
 msgid "SecurityOrchestration|All policies"

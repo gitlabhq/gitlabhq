@@ -31,7 +31,6 @@ describe('Packages Settings', () => {
   let apolloProvider;
 
   const defaultProvide = {
-    defaultExpanded: false,
     groupPath: 'foo_group_path',
   };
 
@@ -91,12 +90,6 @@ describe('Packages Settings', () => {
     mountComponent();
 
     expect(findSettingsBlock().exists()).toBe(true);
-  });
-
-  it('passes the correct props to settings block', () => {
-    mountComponent();
-
-    expect(findSettingsBlock().props('defaultExpanded')).toBe(false);
   });
 
   it('has the correct header text', () => {

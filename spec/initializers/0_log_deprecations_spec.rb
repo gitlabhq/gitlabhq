@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe '0_log_deprecations' do
+  def setup_other_deprecations
+    Warning.process(__FILE__) { :raise }
+  end
+
   def load_initializer
     load Rails.root.join('config/initializers/0_log_deprecations.rb')
   end
@@ -11,6 +15,7 @@ RSpec.describe '0_log_deprecations' do
 
   before do
     stub_env('GITLAB_LOG_DEPRECATIONS', env_var)
+    setup_other_deprecations
     load_initializer
   end
 
@@ -20,7 +25,7 @@ RSpec.describe '0_log_deprecations' do
     ActiveSupport::Notifications.unsubscribe('deprecation.rails')
   end
 
-  context 'for Ruby deprecations' do
+  describe 'Ruby deprecations' do
     context 'when catching deprecations through Kernel#warn' do
       it 'also logs them to deprecation logger' do
         expect(Gitlab::DeprecationJsonLogger).to receive(:info).with(
@@ -32,7 +37,7 @@ RSpec.describe '0_log_deprecations' do
       end
     end
 
-    context 'for other messages from Kernel#warn' do
+    describe 'other messages from Kernel#warn' do
       it 'does not log them to deprecation logger' do
         expect(Gitlab::DeprecationJsonLogger).not_to receive(:info)
 
@@ -51,7 +56,7 @@ RSpec.describe '0_log_deprecations' do
     end
   end
 
-  context 'for Rails deprecations' do
+  describe 'Rails deprecations' do
     it 'logs them to deprecation logger' do
       expect(Gitlab::DeprecationJsonLogger).to receive(:info).with(
         message: match(/^DEPRECATION WARNING: ABC will be removed/),

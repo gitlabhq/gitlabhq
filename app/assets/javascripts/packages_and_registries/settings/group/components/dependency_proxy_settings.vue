@@ -1,7 +1,7 @@
 <script>
 import { GlToggle, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import updateDependencyProxySettings from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_settings.mutation.graphql';
 import updateDependencyProxyImageTtlGroupPolicy from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_image_ttl_group_policy.mutation.graphql';
 import { updateGroupPackageSettings } from '~/packages_and_registries/settings/group/graphql/utils/cache_update';
@@ -39,7 +39,7 @@ export default {
   links: {
     DEPENDENCY_PROXY_DOCS_PATH,
   },
-  inject: ['defaultExpanded', 'groupPath', 'groupDependencyProxyPath'],
+  inject: ['groupPath', 'groupDependencyProxyPath'],
   props: {
     dependencyProxySettings: {
       type: Object,
@@ -129,10 +129,7 @@ export default {
 </script>
 
 <template>
-  <settings-block
-    :default-expanded="defaultExpanded"
-    data-qa-selector="dependency_proxy_settings_content"
-  >
+  <settings-block data-qa-selector="dependency_proxy_settings_content">
     <template #title> {{ $options.i18n.DEPENDENCY_PROXY_HEADER }} </template>
     <template #description> {{ $options.i18n.DEPENDENCY_PROXY_DESCRIPTION }} </template>
     <template #default>
