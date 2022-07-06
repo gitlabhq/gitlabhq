@@ -14,7 +14,7 @@ RSpec.describe 'Unsubscribe links', :sidekiq_might_not_need_inline do
   let(:mail) { ActionMailer::Base.deliveries.last }
   let(:body) { Capybara::Node::Simple.new(mail.default_part_body.to_s) }
   let(:header_link) { mail.header['List-Unsubscribe'].to_s[1..-2] } # Strip angle brackets
-  let(:body_link) { body.find_link('unsubscribe')['href'] }
+  let(:body_link) { body.find_link('Unsubscribe')['href'] }
 
   before do
     perform_enqueued_jobs { issue }

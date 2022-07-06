@@ -125,5 +125,11 @@ RSpec.describe Gitlab::Metrics::Samplers::RubySampler do
 
       sampler.sample
     end
+
+    it 'adds a heap fragmentation metric' do
+      expect(sampler.metrics[:heap_fragmentation]).to receive(:set).with({}, anything)
+
+      sampler.sample
+    end
   end
 end

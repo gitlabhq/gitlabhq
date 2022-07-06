@@ -1,7 +1,7 @@
 - expanded = integration_expanded?('mailgun_')
 %section.settings.as-mailgun.no-animate#js-mailgun-settings{ class: ('expanded' if expanded) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Mailgun')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')

@@ -436,7 +436,7 @@ class IssuableFinder
     elsif not_params.filter_by_started_milestone?
       items.joins(:milestone).merge(Milestone.not_started)
     else
-      items.without_particular_milestone(not_params[:milestone_title])
+      items.without_particular_milestones(not_params[:milestone_title])
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

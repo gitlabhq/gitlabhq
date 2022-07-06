@@ -3,7 +3,7 @@
 
 %section.settings.as-sourcegraph.no-animate#js-sourcegraph-settings{ class: ('expanded' if expanded) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Sourcegraph')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')

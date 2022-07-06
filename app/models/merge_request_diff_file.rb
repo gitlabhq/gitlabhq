@@ -15,7 +15,12 @@ class MergeRequestDiffFile < ApplicationRecord
   end
 
   def utf8_diff
-    fetched_diff = diff
+    fetched_diff = if Feature.enabled?(:externally_stored_diffs_caching_export) &&
+                      merge_request_diff&.stored_externally?
+                     diff_export
+                   else
+                     diff
+                   end
 
     return '' if fetched_diff.blank?
 
@@ -46,14 +51,13 @@ class MergeRequestDiffFile < ApplicationRecord
     end
   end
 
+  private
+
   # This method is meant to be used during Project Export.
-  # It is identical to the behaviour in #diff & #utf8_diff with the only
+  # It is identical to the behaviour in #diff with the only
   # difference of caching externally stored diffs on local disk in
   # temp storage location in order to improve diff export performance.
   def diff_export
-    return utf8_diff unless Feature.enabled?(:externally_stored_diffs_caching_export)
-    return utf8_diff unless merge_request_diff&.stored_externally?
-
     content = merge_request_diff.cached_external_diff do |file|
       file.seek(external_diff_offset)
 
@@ -69,14 +73,17 @@ class MergeRequestDiffFile < ApplicationRecord
       end
     end
 
-    if content.respond_to?(:encoding)
-      content = encode_utf8(content)
-    end
-
-    return '' if content.blank?
-
     content
-  rescue StandardError
-    utf8_diff
+  rescue StandardError => e
+    log_payload = {
+      message: 'Cached external diff export failed',
+      merge_request_diff_file_id: id,
+      merge_request_diff_id: merge_request_diff&.id
+    }
+
+    Gitlab::ExceptionLogFormatter.format!(e, log_payload)
+    Gitlab::AppLogger.warn(log_payload)
+
+    diff
   end
 end

@@ -1,0 +1,9 @@
+---
+table_name: namespace_bans
+classes:
+  - NamespaceBan
+feature_categories:
+  - instance_resiliency
+description: Contains users banned from namespaces
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91271
+milestone: "15.2"

@@ -14,6 +14,7 @@ jest.mock('~/lib/utils/url_utility');
 const DeploymentFrequencyChartsStub = { name: 'DeploymentFrequencyCharts', render: () => {} };
 const LeadTimeChartsStub = { name: 'LeadTimeCharts', render: () => {} };
 const TimeToRestoreServiceChartsStub = { name: 'TimeToRestoreServiceCharts', render: () => {} };
+const ChangeFailureRateChartsStub = { name: 'ChangeFailureRateCharts', render: () => {} };
 const ProjectQualitySummaryStub = { name: 'ProjectQualitySummary', render: () => {} };
 
 describe('ProjectsPipelinesChartsApp', () => {
@@ -33,6 +34,7 @@ describe('ProjectsPipelinesChartsApp', () => {
             DeploymentFrequencyCharts: DeploymentFrequencyChartsStub,
             LeadTimeCharts: LeadTimeChartsStub,
             TimeToRestoreServiceCharts: TimeToRestoreServiceChartsStub,
+            ChangeFailureRateCharts: ChangeFailureRateChartsStub,
             ProjectQualitySummary: ProjectQualitySummaryStub,
           },
         },
@@ -50,6 +52,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   const findGlTabAtIndex = (index) => findAllGlTabs().at(index);
   const findLeadTimeCharts = () => wrapper.find(LeadTimeChartsStub);
   const findTimeToRestoreServiceCharts = () => wrapper.find(TimeToRestoreServiceChartsStub);
+  const findChangeFailureRateCharts = () => wrapper.find(ChangeFailureRateChartsStub);
   const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
   const findPipelineCharts = () => wrapper.find(PipelineCharts);
   const findProjectQualitySummary = () => wrapper.find(ProjectQualitySummaryStub);
@@ -59,58 +62,49 @@ describe('ProjectsPipelinesChartsApp', () => {
       createComponent();
     });
 
-    it('renders tabs', () => {
-      expect(findGlTabs().exists()).toBe(true);
-
-      expect(findGlTabAtIndex(0).attributes('title')).toBe('Pipelines');
-      expect(findGlTabAtIndex(1).attributes('title')).toBe('Deployment frequency');
-      expect(findGlTabAtIndex(2).attributes('title')).toBe('Lead time');
-      expect(findGlTabAtIndex(3).attributes('title')).toBe('Time to restore service');
-    });
-
-    it('renders the pipeline charts', () => {
-      expect(findPipelineCharts().exists()).toBe(true);
-    });
-
-    it('renders the deployment frequency charts', () => {
-      expect(findDeploymentFrequencyCharts().exists()).toBe(true);
-    });
-
-    it('renders the lead time charts', () => {
-      expect(findLeadTimeCharts().exists()).toBe(true);
-    });
-
-    it('renders the time to restore service charts', () => {
-      expect(findTimeToRestoreServiceCharts().exists()).toBe(true);
-    });
-
-    it('renders the project quality summary', () => {
-      expect(findProjectQualitySummary().exists()).toBe(true);
-    });
-
-    it('sets the tab and url when a tab is clicked', async () => {
-      let chartsPath;
-      setWindowLocation(`${TEST_HOST}/gitlab-org/gitlab-test/-/pipelines/charts`);
-
-      mergeUrlParams.mockImplementation(({ chart }, path) => {
-        expect(chart).toBe('deployment-frequency');
-        expect(path).toBe(window.location.pathname);
-        chartsPath = `${path}?chart=${chart}`;
-        return chartsPath;
+    describe.each`
+      title                        | finderFn                          | index
+      ${'Pipelines'}               | ${findPipelineCharts}             | ${0}
+      ${'Deployment frequency'}    | ${findDeploymentFrequencyCharts}  | ${1}
+      ${'Lead time'}               | ${findLeadTimeCharts}             | ${2}
+      ${'Time to restore service'} | ${findTimeToRestoreServiceCharts} | ${3}
+      ${'Change failure rate'}     | ${findChangeFailureRateCharts}    | ${4}
+      ${'Project quality'}         | ${findProjectQualitySummary}      | ${5}
+    `('Tabs', ({ title, finderFn, index }) => {
+      it(`renders tab with a title ${title} at index ${index}`, () => {
+        expect(findGlTabAtIndex(index).attributes('title')).toBe(title);
       });
 
-      updateHistory.mockImplementation(({ url }) => {
-        expect(url).toBe(chartsPath);
+      it(`renders the ${title} chart`, () => {
+        expect(finderFn().exists()).toBe(true);
       });
-      const tabs = findGlTabs();
 
-      expect(tabs.attributes('value')).toBe('0');
+      it(`updates the current tab and url when the ${title} tab is clicked`, async () => {
+        let chartsPath;
+        const tabName = title.toLowerCase().replace(/\s/g, '-');
 
-      tabs.vm.$emit('input', 1);
+        setWindowLocation(`${TEST_HOST}/gitlab-org/gitlab-test/-/pipelines/charts`);
 
-      await nextTick();
+        mergeUrlParams.mockImplementation(({ chart }, path) => {
+          expect(chart).toBe(tabName);
+          expect(path).toBe(window.location.pathname);
+          chartsPath = `${path}?chart=${chart}`;
+          return chartsPath;
+        });
 
-      expect(tabs.attributes('value')).toBe('1');
+        updateHistory.mockImplementation(({ url }) => {
+          expect(url).toBe(chartsPath);
+        });
+        const tabs = findGlTabs();
+
+        expect(tabs.attributes('value')).toBe('0');
+
+        tabs.vm.$emit('input', index);
+
+        await nextTick();
+
+        expect(tabs.attributes('value')).toBe(index.toString());
+      });
     });
 
     it('should not try to push history if the tab does not change', async () => {
@@ -151,6 +145,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   describe('when provided with a query param', () => {
     it.each`
       chart                        | tab
+      ${'change-failure-rate'}     | ${'4'}
       ${'time-to-restore-service'} | ${'3'}
       ${'lead-time'}               | ${'2'}
       ${'deployment-frequency'}    | ${'1'}

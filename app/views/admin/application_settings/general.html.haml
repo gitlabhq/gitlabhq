@@ -4,7 +4,7 @@
 
 %section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Visibility and access controls')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -15,7 +15,7 @@
 
 %section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'account_and_limit_settings_content' } }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Account and limit')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -26,7 +26,7 @@
 
 %section.settings.as-diff-limits.no-animate#js-merge-request-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Diff limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -37,7 +37,7 @@
 
 %section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'sign_up_restrictions_settings_content' } }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Sign-up restrictions')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -48,7 +48,7 @@
 
 %section.settings.as-signin.no-animate#js-signin-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Sign-in restrictions')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -60,7 +60,7 @@
 
 %section.settings.as-terms.no-animate#js-terms-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Terms of Service and Privacy Policy')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -74,7 +74,7 @@
 
 %section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Web terminal')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -86,7 +86,7 @@
 
 %section.settings.no-animate#js-web-ide-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Web IDE')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')

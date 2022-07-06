@@ -17493,6 +17493,23 @@ CREATE TABLE namespace_aggregation_schedules (
     namespace_id integer NOT NULL
 );
 
+CREATE TABLE namespace_bans (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE namespace_bans_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE namespace_bans_id_seq OWNED BY namespace_bans.id;
+
 CREATE TABLE namespace_ci_cd_settings (
     namespace_id bigint NOT NULL,
     allow_stale_runner_pruning boolean DEFAULT false NOT NULL
@@ -22447,7 +22464,7 @@ CREATE TABLE webauthn_registrations (
     public_key text NOT NULL,
     u2f_registration_id integer,
     CONSTRAINT check_2f02e74321 CHECK ((char_length(name) <= 255)),
-    CONSTRAINT check_e54008d9ce CHECK ((char_length(credential_xid) <= 340))
+    CONSTRAINT check_f5ab2b551a CHECK ((char_length(credential_xid) <= 1364))
 );
 
 CREATE SEQUENCE webauthn_registrations_id_seq
@@ -23222,6 +23239,8 @@ ALTER TABLE ONLY metrics_users_starred_dashboards ALTER COLUMN id SET DEFAULT ne
 ALTER TABLE ONLY milestones ALTER COLUMN id SET DEFAULT nextval('milestones_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_admin_notes ALTER COLUMN id SET DEFAULT nextval('namespace_admin_notes_id_seq'::regclass);
+
+ALTER TABLE ONLY namespace_bans ALTER COLUMN id SET DEFAULT nextval('namespace_bans_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_statistics ALTER COLUMN id SET DEFAULT nextval('namespace_statistics_id_seq'::regclass);
 
@@ -25233,6 +25252,9 @@ ALTER TABLE ONLY namespace_admin_notes
 
 ALTER TABLE ONLY namespace_aggregation_schedules
     ADD CONSTRAINT namespace_aggregation_schedules_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY namespace_bans
+    ADD CONSTRAINT namespace_bans_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY namespace_ci_cd_settings
     ADD CONSTRAINT namespace_ci_cd_settings_pkey PRIMARY KEY (namespace_id);
@@ -28780,6 +28802,10 @@ CREATE INDEX index_namespace_admin_notes_on_namespace_id ON namespace_admin_note
 
 CREATE UNIQUE INDEX index_namespace_aggregation_schedules_on_namespace_id ON namespace_aggregation_schedules USING btree (namespace_id);
 
+CREATE UNIQUE INDEX index_namespace_bans_on_namespace_id_and_user_id ON namespace_bans USING btree (namespace_id, user_id);
+
+CREATE INDEX index_namespace_bans_on_user_id ON namespace_bans USING btree (user_id);
+
 CREATE UNIQUE INDEX index_namespace_root_storage_statistics_on_namespace_id ON namespace_root_storage_statistics USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_namespace_statistics_on_namespace_id ON namespace_statistics USING btree (namespace_id);
@@ -29539,6 +29565,10 @@ CREATE UNIQUE INDEX index_security_findings_on_uuid_and_scan_id ON security_find
 CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (created_at);
 
 CREATE INDEX index_security_scans_on_date_created_at_and_id ON security_scans USING btree (date(timezone('UTC'::text, created_at)), id);
+
+CREATE INDEX index_security_scans_on_length_of_errors ON security_scans USING btree (pipeline_id, jsonb_array_length(COALESCE((info -> 'errors'::text), '[]'::jsonb)));
+
+CREATE INDEX index_security_scans_on_length_of_warnings ON security_scans USING btree (pipeline_id, jsonb_array_length(COALESCE((info -> 'warnings'::text), '[]'::jsonb)));
 
 CREATE INDEX index_security_scans_on_pipeline_id ON security_scans USING btree (pipeline_id);
 
@@ -31777,6 +31807,9 @@ ALTER TABLE ONLY protected_environment_approval_rules
 ALTER TABLE ONLY ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY namespace_bans
+    ADD CONSTRAINT fk_4275fbb1d7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_42c3b54bed FOREIGN KEY (cache_invalidation_event_id) REFERENCES geo_cache_invalidation_events(id) ON DELETE CASCADE;
 
@@ -32163,6 +32196,9 @@ ALTER TABLE ONLY deployments
 
 ALTER TABLE ONLY routes
     ADD CONSTRAINT fk_bb2e5b8968 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY namespace_bans
+    ADD CONSTRAINT fk_bcc024eef2 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT fk_bd0c4019c3 FOREIGN KEY (hosted_plan_id) REFERENCES plans(id) ON DELETE CASCADE;

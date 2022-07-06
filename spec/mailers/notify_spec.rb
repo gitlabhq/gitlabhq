@@ -7,6 +7,7 @@ RSpec.describe Notify do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
   include EmailHelpers
+  include EmailsHelper
   include RepoHelpers
   include MembersHelper
 
@@ -396,7 +397,7 @@ RSpec.describe Notify do
           end
         end
 
-        context 'when sent with a reason' do
+        context 'when sent with a reason', type: :helper do
           subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, NotificationReason::ASSIGNED) }
 
           it_behaves_like 'appearance header and footer enabled'
@@ -407,15 +408,15 @@ RSpec.describe Notify do
           end
 
           it 'includes the reason in the footer' do
-            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(NotificationReason::ASSIGNED)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(reason: NotificationReason::ASSIGNED, format: :html)
             is_expected.to have_body_text(text)
 
             new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, NotificationReason::MENTIONED)
-            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(NotificationReason::MENTIONED)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(reason: NotificationReason::MENTIONED, format: :html)
             expect(new_subject).to have_body_text(text)
 
             new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, nil)
-            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(nil)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(format: :html)
             expect(new_subject).to have_body_text(text)
           end
         end

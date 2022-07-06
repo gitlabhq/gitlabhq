@@ -977,7 +977,7 @@ methods:
   statuses:
     - :type
   merge_request_diff_files:
-    - :diff_export
+    - :utf8_diff
   merge_requests:
     - :diff_head_sha
     - :source_branch_sha

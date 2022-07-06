@@ -116,19 +116,16 @@ module EmailsHelper
     end
   end
 
-  # "You are receiving this email because #{reason} on #{gitlab_host}."
-  def notification_reason_text(reason)
-    gitlab_host = Gitlab.config.gitlab.host
-
-    case reason
-    when NotificationReason::OWN_ACTIVITY
-      _("You're receiving this email because of your activity on %{host}.") % { host: gitlab_host }
-    when NotificationReason::ASSIGNED
-      _("You're receiving this email because you have been assigned an item on %{host}.") % { host: gitlab_host }
-    when NotificationReason::MENTIONED
-      _("You're receiving this email because you have been mentioned on %{host}.") % { host: gitlab_host }
+  # "You are receiving this email because ... on #{host}. ..."
+  def notification_reason_text(reason: nil, show_manage_notifications_link: false, show_help_link: false, manage_label_subscriptions_url: nil, unsubscribe_url: nil, format: :text)
+    if unsubscribe_url && show_manage_notifications_link && show_help_link
+      notification_reason_text_with_unsubscribe_and_manage_notifications_and_help_links(reason: reason, unsubscribe_url: unsubscribe_url, format: format)
+    elsif !reason && manage_label_subscriptions_url && show_help_link
+      notification_reason_text_with_manage_label_subscriptions_and_help_links(manage_label_subscriptions_url: manage_label_subscriptions_url, format: format)
+    elsif show_manage_notifications_link && show_help_link
+      notification_reason_text_with_manage_notifications_and_help_links(reason: reason, format: format)
     else
-      _("You're receiving this email because of your account on %{host}.") % { host: gitlab_host }
+      notification_reason_text_without_links(reason: reason, format: format)
     end
   end
 
@@ -259,9 +256,7 @@ module EmailsHelper
   end
 
   def instance_access_request_text(user, format: nil)
-    gitlab_host = Gitlab.config.gitlab.host
-
-    _('%{username} has asked for a GitLab account on your instance %{host}:') % { username: sanitize_name(user.name), host: gitlab_host }
+    _('%{username} has asked for a GitLab account on your instance %{host}:').html_safe % { username: sanitize_name(user.name), host: gitlab_host_link(format) }
   end
 
   def instance_access_request_link(user, format: nil)
@@ -324,6 +319,75 @@ module EmailsHelper
 
   def email_header_and_footer_enabled?
     current_appearance&.email_header_and_footer_enabled?
+  end
+
+  def gitlab_host_link(format)
+    case format
+    when :html
+      generate_link(Gitlab.config.gitlab.host, Gitlab.config.gitlab.url)
+    when :text
+      Gitlab.config.gitlab.host
+    end
+  end
+
+  def notification_reason_text_with_unsubscribe_and_manage_notifications_and_help_links(reason:, unsubscribe_url:, format:)
+    unsubscribe_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: unsubscribe_url }
+    unsubscribe_link_end = '</a>'.html_safe
+
+    manage_notifications_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="mng-notif-link">'.html_safe % { url: profile_notifications_url }
+    manage_notifications_link_end = '</a>'.html_safe
+
+    help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="help-link">'.html_safe % { url: help_url }
+    help_link_end = '</a>'.html_safe
+
+    case reason
+    when NotificationReason::OWN_ACTIVITY
+      _("You're receiving this email because of your activity on %{host}. %{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; %{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}").html_safe % { host: gitlab_host_link(format), unsubscribe_link_start: unsubscribe_link_start, unsubscribe_link_end: unsubscribe_link_end, manage_notifications_link_start: manage_notifications_link_start, manage_notifications_link_end: manage_notifications_link_end, help_link_start: help_link_start, help_link_end: help_link_end }
+    when NotificationReason::ASSIGNED
+      _("You're receiving this email because you have been assigned an item on %{host}. %{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; %{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}").html_safe % { host: gitlab_host_link(format), unsubscribe_link_start: unsubscribe_link_start, unsubscribe_link_end: unsubscribe_link_end, manage_notifications_link_start: manage_notifications_link_start, manage_notifications_link_end: manage_notifications_link_end, help_link_start: help_link_start, help_link_end: help_link_end }
+    when NotificationReason::MENTIONED
+      _("You're receiving this email because you have been mentioned on %{host}. %{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; %{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}").html_safe % { host: gitlab_host_link(format), unsubscribe_link_start: unsubscribe_link_start, unsubscribe_link_end: unsubscribe_link_end, manage_notifications_link_start: manage_notifications_link_start, manage_notifications_link_end: manage_notifications_link_end, help_link_start: help_link_start, help_link_end: help_link_end }
+    else
+      _("You're receiving this email because of your account on %{host}. %{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; %{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}").html_safe % { host: gitlab_host_link(format), unsubscribe_link_start: unsubscribe_link_start, unsubscribe_link_end: unsubscribe_link_end, manage_notifications_link_start: manage_notifications_link_start, manage_notifications_link_end: manage_notifications_link_end, help_link_start: help_link_start, help_link_end: help_link_end }
+    end
+  end
+
+  def notification_reason_text_with_manage_label_subscriptions_and_help_links(manage_label_subscriptions_url:, format:)
+    manage_label_subscriptions_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="mng-notif-link">'.html_safe % { url: manage_label_subscriptions_url }
+    manage_label_subscriptions_link_end = '</a>'.html_safe
+
+    help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="help-link">'.html_safe % { url: help_url }
+    help_link_end = '</a>'.html_safe
+
+    _("You're receiving this email because of your account on %{host}. %{manage_label_subscriptions_link_start}Manage label subscriptions%{manage_label_subscriptions_link_end} &middot; %{help_link_start}Help%{help_link_end}").html_safe % { host: gitlab_host_link(format), manage_label_subscriptions_link_start: manage_label_subscriptions_link_start, manage_label_subscriptions_link_end: manage_label_subscriptions_link_end, help_link_start: help_link_start, help_link_end: help_link_end }
+  end
+
+  def notification_reason_text_with_manage_notifications_and_help_links(reason:, format:)
+    manage_notifications_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="mng-notif-link">'.html_safe % { url: profile_notifications_url }
+    manage_notifications_link_end = '</a>'.html_safe
+
+    help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" class="help-link">'.html_safe % { url: help_url }
+    help_link_end = '</a>'.html_safe
+
+    case reason
+    when NotificationReason::MENTIONED
+      _("You're receiving this email because you have been mentioned on %{host}. %{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}").html_safe % { host: gitlab_host_link(format), manage_notifications_link_start: manage_notifications_link_start, manage_notifications_link_end: manage_notifications_link_end, help_link_start: help_link_start, help_link_end: help_link_end }
+    else
+      _("You're receiving this email because of your account on %{host}. %{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}").html_safe % { host: gitlab_host_link(format), manage_notifications_link_start: manage_notifications_link_start, manage_notifications_link_end: manage_notifications_link_end, help_link_start: help_link_start, help_link_end: help_link_end }
+    end
+  end
+
+  def notification_reason_text_without_links(reason:, format:)
+    case reason
+    when NotificationReason::OWN_ACTIVITY
+      _("You're receiving this email because of your activity on %{host}.").html_safe % { host: gitlab_host_link(format) }
+    when NotificationReason::ASSIGNED
+      _("You're receiving this email because you have been assigned an item on %{host}.").html_safe % { host: gitlab_host_link(format) }
+    when NotificationReason::MENTIONED
+      _("You're receiving this email because you have been mentioned on %{host}.").html_safe % { host: gitlab_host_link(format) }
+    else
+      _("You're receiving this email because of your account on %{host}.").html_safe % { host: gitlab_host_link(format) }
+    end
   end
 end
 

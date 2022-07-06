@@ -138,5 +138,20 @@ RSpec.describe UnnestedInFilters::Rewriter do
         end
       end
     end
+
+    describe 'logging' do
+      subject(:load_reload) { rewriter.rewrite }
+
+      before do
+        allow(::Gitlab::AppLogger).to receive(:info)
+      end
+
+      it 'logs the call' do
+        load_reload
+
+        expect(::Gitlab::AppLogger)
+          .to have_received(:info).with(message: 'Query is being rewritten by `UnnestedInFilters`', model: 'User')
+      end
+    end
   end
 end

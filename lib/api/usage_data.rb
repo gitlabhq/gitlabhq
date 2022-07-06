@@ -29,7 +29,7 @@ module API
       params do
         requires :event, type: String, desc: 'The event name that should be tracked'
       end
-      post 'increment_unique_users' do
+      post 'increment_unique_users', urgency: :low do
         event_name = params[:event]
 
         increment_unique_values(event_name, current_user.id)

@@ -873,6 +873,7 @@ Payload example:
   },
   "object_attributes": {
     "id": 99,
+    "iid": 1,
     "target_branch": "master",
     "source_branch": "ms-viewport",
     "source_project_id": 14,
@@ -884,10 +885,12 @@ Payload example:
     "milestone_id": null,
     "state": "opened",
     "blocking_discussions_resolved": true,
+    "work_in_progress": false,
+    "first_contribution": true,
     "merge_status": "unchecked",
     "target_project_id": 14,
-    "iid": 1,
     "description": "",
+    "url": "http://example.com/diaspora/merge_requests/1",
     "source": {
       "name":"Awesome Project",
       "description":"Aut reprehenderit ut est.",
@@ -930,8 +933,18 @@ Payload example:
         "email": "gitlabdev@dv6700.(none)"
       }
     },
-    "work_in_progress": false,
-    "url": "http://example.com/diaspora/merge_requests/1",
+    "labels": [{
+      "id": 206,
+      "title": "API",
+      "color": "#ffffff",
+      "project_id": 14,
+      "created_at": "2013-12-03T17:15:43Z",
+      "updated_at": "2013-12-03T17:15:43Z",
+      "template": false,
+      "description": "API related issues",
+      "type": "ProjectLabel",
+      "group_id": 41
+    }],
     "action": "open",
     "assignee": {
       "name": "User1",
@@ -989,6 +1002,9 @@ Payload example:
   }
 }
 ```
+
+NOTE:
+The fields `assignee_id`, and `state` are deprecated.
 
 ## Wiki page events
 

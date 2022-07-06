@@ -3,7 +3,7 @@
 <%= yield -%>
 
 -- <%# signature marker %>
-<%= _("You're receiving this email because of your account on %{host}.") % { host: Gitlab.config.gitlab.host } %>
+<%= notification_reason_text %>
 <%= render_if_exists 'layouts/mailer/additional_text' %>
 
 <%= text_footer_message %>

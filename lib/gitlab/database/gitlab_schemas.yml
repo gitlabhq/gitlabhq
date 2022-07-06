@@ -327,6 +327,7 @@ milestone_releases: :gitlab_main
 milestones: :gitlab_main
 namespace_admin_notes: :gitlab_main
 namespace_aggregation_schedules: :gitlab_main
+namespace_bans: :gitlab_main
 namespace_limits: :gitlab_main
 namespace_package_settings: :gitlab_main
 namespace_root_storage_statistics: :gitlab_main

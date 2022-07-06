@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlSprintf, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlSafeHtmlDirective, GlTooltipDirective } from '@gitlab/ui';
 import gitlabLogo from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg';
 import { s__, __ } from '~/locale';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
@@ -29,6 +29,7 @@ export default {
   },
   directives: {
     safeHtml: GlSafeHtmlDirective,
+    tooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
   i18n: {
@@ -92,7 +93,7 @@ export default {
   >
     <template #default="{ dismiss }">
       <aside
-        class="gl-fixed gl-bottom-0 gl-right-0 gl-z-index-9999 gl-p-5"
+        class="mr-experience-survey-wrapper gl-fixed gl-bottom-0 gl-right-0 gl-p-5"
         :aria-label="$options.i18n.survey"
       >
         <transition name="survey-slide-up">
@@ -101,6 +102,7 @@ export default {
             class="mr-experience-survey-body gl-relative gl-display-flex gl-flex-direction-column gl-bg-white gl-p-5 gl-border gl-rounded-base"
           >
             <gl-button
+              v-tooltip="$options.i18n.close"
               :aria-label="$options.i18n.close"
               variant="default"
               category="tertiary"

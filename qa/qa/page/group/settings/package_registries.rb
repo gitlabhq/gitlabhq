@@ -18,13 +18,13 @@ module QA
           end
 
           def set_allow_duplicates_disabled
-            expand_content :package_registry_settings_content do
+            within_element :package_registry_settings_content do
               click_on_allow_duplicates_button if duplicates_enabled?
             end
           end
 
           def set_allow_duplicates_enabled
-            expand_content :package_registry_settings_content do
+            within_element :package_registry_settings_content do
               click_on_allow_duplicates_button unless duplicates_enabled?
             end
           end
@@ -49,7 +49,7 @@ module QA
           end
 
           def has_dependency_proxy_enabled?
-            expand_content :dependency_proxy_settings_content do
+            within_element :dependency_proxy_settings_content do
               within_element :dependency_proxy_setting_toggle do
                 toggle = find('button.gl-toggle')
                 toggle[:class].include?('is-checked')

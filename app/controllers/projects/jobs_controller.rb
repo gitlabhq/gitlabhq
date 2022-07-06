@@ -22,10 +22,6 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :push_jobs_table_vue_search, only: [:index]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
 
-  before_action do
-    push_frontend_feature_flag(:trigger_job_retry_action, @project)
-  end
-
   layout 'project'
 
   feature_category :continuous_integration

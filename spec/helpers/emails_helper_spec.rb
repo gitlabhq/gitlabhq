@@ -77,7 +77,7 @@ RSpec.describe EmailsHelper do
   end
 
   describe 'notification_reason_text' do
-    subject { helper.notification_reason_text(reason_code) }
+    subject { helper.notification_reason_text(reason: reason_code) }
 
     using RSpec::Parameterized::TableSyntax
 

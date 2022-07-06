@@ -1,7 +1,7 @@
 - expanded = integration_expanded?('snowplow_')
 %section.settings.as-snowplow.no-animate#js-snowplow-settings{ class: ('expanded' if expanded), data: { qa_selector: 'snowplow_settings_content' } }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Snowplow')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')

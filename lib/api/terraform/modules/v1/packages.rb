@@ -151,6 +151,16 @@ module API
                   present_carrierwave_file!(package_file.file)
                 end
               end
+
+              # This endpoint has to be the last within namespace '*module_version' block
+              # due to how the route matching works in grape
+              # format: false is required, otherwise grape splits the semver version into 2 params:
+              # params[:module_version] and params[:format],
+              # thus leading to an invalid/not found module version
+              get format: false do
+                presenter = ::Terraform::ModuleVersionPresenter.new(package, params[:module_system])
+                present presenter, with: ::API::Entities::Terraform::ModuleVersion
+              end
             end
           end
 

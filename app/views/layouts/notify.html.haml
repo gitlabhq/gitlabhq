@@ -26,16 +26,7 @@
           - else
             #{link_to _("View it on GitLab"), @target_url}.
           %br
-          -# Don't link the host in the line below, one link in the email is easier to quickly click than two.
-          = notification_reason_text(@reason)
-          If you'd like to receive fewer emails, you can
-          - if @labels_url
-            adjust your #{link_to 'label subscriptions', @labels_url}.
-          - else
-            - if @unsubscribe_url
-              = link_to "unsubscribe", @unsubscribe_url
-              from this thread or
-            adjust your notification settings.
+          = notification_reason_text(reason: @reason, show_manage_notifications_link: !@labels_url, show_help_link: true, manage_label_subscriptions_url: @labels_url, unsubscribe_url: @unsubscribe_url, format: :html)
 
           = email_action @target_url
 

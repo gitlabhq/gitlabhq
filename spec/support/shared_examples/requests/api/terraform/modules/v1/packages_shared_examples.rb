@@ -102,6 +102,22 @@ RSpec.shared_examples 'returns terraform module packages' do |user_type, status,
   end
 end
 
+RSpec.shared_examples 'returns terraform module version' do |user_type, status, add_member = true|
+  context "for user type #{user_type}" do
+    before do
+      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    end
+
+    it_behaves_like 'returning response status', status
+
+    it 'returning a valid response' do
+      subject
+
+      expect(json_response).to match_schema('public_api/v4/packages/terraform/modules/v1/single_version')
+    end
+  end
+end
+
 RSpec.shared_examples 'returns no terraform module packages' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do

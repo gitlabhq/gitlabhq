@@ -78,7 +78,7 @@ To view the lead time for changes chart:
 
 ![Lead time](img/lead_time_chart_v13_11.png)
 
-## View time to restore service chart **(PREMIUM)**
+## View time to restore service chart **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1
 
@@ -93,3 +93,17 @@ To view the time to restore service chart:
 1. Select the **Time to restore service** tab.
 
 ![Lead time](img/time_to_restore_service_charts_v15_1.png)
+
+## View change failure rate chart **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357072) in GitLab 15.2
+
+The change failure rate chart shows information about the percentage of deployments that cause an incident in a production environment. This chart is available for groups and projects.
+
+Change failure rate is one of the four [DORA metrics](index.md#devops-research-and-assessment-dora-key-metrics) that DevOps teams use for measuring excellence in software delivery.
+
+To view the change failure rate chart:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > CI/CD Analytics**.
+1. Select the **Change failure rate** tab.

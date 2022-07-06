@@ -347,6 +347,7 @@ Some basic Ruby runtime metrics are available:
 |:---------------------------------------- |:--------- |:----- |:----------- |
 | `ruby_gc_duration_seconds`               | Counter   | 11.1  | Time spent by Ruby in GC |
 | `ruby_gc_stat_...`                       | Gauge     | 11.1  | Various metrics from [GC.stat](https://ruby-doc.org/core-2.6.5/GC.html#method-c-stat) |
+| `ruby_gc_stat_ext_heap_fragmentation`    | Gauge     | 15.2  | Degree of Ruby heap fragmentation as live objects versus eden slots (range 0 to 1) |
 | `ruby_file_descriptors`                  | Gauge     | 11.1  | File descriptors per process |
 | `ruby_sampler_duration_seconds`          | Counter   | 11.1  | Time spent collecting stats |
 | `ruby_process_cpu_seconds_total`         | Gauge     | 12.0  | Total amount of CPU time per process |

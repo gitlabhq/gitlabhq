@@ -1,7 +1,7 @@
 - expanded = integration_expanded?('eks_')
 %section.settings.as-eks.no-animate#js-eks-settings{ class: ('expanded' if expanded) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Amazon EKS')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')

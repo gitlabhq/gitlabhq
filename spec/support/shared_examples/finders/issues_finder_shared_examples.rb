@@ -269,6 +269,17 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         it 'returns items not assigned to that milestone' do
           expect(items).to contain_exactly(item2, item3, item4, item5)
         end
+
+        context 'with multiple milestones' do
+          let(:milestone2) { create(:milestone, project: project2) }
+          let(:params) { { not: { milestone_title: [milestone.title, milestone2.title] } } }
+
+          it 'returns items not assigned to both milestones' do
+            item2.update!(milestone: milestone2)
+
+            expect(items).to contain_exactly(item3, item4, item5)
+          end
+        end
       end
 
       context 'filtering by group milestone' do

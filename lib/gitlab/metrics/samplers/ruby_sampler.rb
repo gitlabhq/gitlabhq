@@ -39,7 +39,8 @@ module Gitlab
             process_proportional_memory_bytes: ::Gitlab::Metrics.gauge(metric_name(:process, :proportional_memory_bytes), 'Memory used (PSS)', labels),
             process_start_time_seconds:        ::Gitlab::Metrics.gauge(metric_name(:process, :start_time_seconds), 'Process start time seconds'),
             sampler_duration:                  ::Gitlab::Metrics.counter(metric_name(:sampler, :duration_seconds_total), 'Sampler time', labels),
-            gc_duration_seconds:               ::Gitlab::Metrics.histogram(metric_name(:gc, :duration_seconds), 'GC time', labels, GC_REPORT_BUCKETS)
+            gc_duration_seconds:               ::Gitlab::Metrics.histogram(metric_name(:gc, :duration_seconds), 'GC time', labels, GC_REPORT_BUCKETS),
+            heap_fragmentation:                ::Gitlab::Metrics.gauge(metric_name(:gc_stat_ext, :heap_fragmentation), 'Ruby heap fragmentation', labels)
           }
 
           GC.stat.keys.each do |key|
@@ -76,8 +77,13 @@ module Gitlab
           end
 
           # Collect generic GC stats
-          GC.stat.each do |key, value|
-            metrics[key].set(labels, value)
+          GC.stat.then do |gc_stat|
+            gc_stat.each do |key, value|
+              metrics[key].set(labels, value)
+            end
+
+            # Collect custom GC stats
+            metrics[:heap_fragmentation].set(labels, Memory.gc_heap_fragmentation(gc_stat))
           end
         end
 

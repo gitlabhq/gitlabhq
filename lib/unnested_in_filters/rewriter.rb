@@ -105,6 +105,8 @@ module UnnestedInFilters
     #   LIMIT 20
     #
     def rewrite
+      log_rewrite
+
       model.from(from)
            .limit(limit_value)
            .order(order_values)
@@ -124,6 +126,10 @@ module UnnestedInFilters
     attr_reader :relation
 
     delegate :model, :order_values, :limit_value, :where_values_hash, to: :relation, private: true
+
+    def log_rewrite
+      ::Gitlab::AppLogger.info(message: 'Query is being rewritten by `UnnestedInFilters`', model: model.name)
+    end
 
     def from
       [value_tables.map(&:to_sql) + [lateral]].join(', ')

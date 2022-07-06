@@ -97,10 +97,8 @@ RSpec.describe MergeRequestDiffFile do
 
       file.utf8_diff
     end
-  end
 
-  describe '#diff_export' do
-    context 'when diff is externally stored' do
+    context 'externally stored diff caching' do
       let(:test_dir) { 'tmp/tests/external-diffs' }
 
       around do |example|
@@ -121,7 +119,7 @@ RSpec.describe MergeRequestDiffFile do
         it 'caches external diffs' do
           expect(file.merge_request_diff).to receive(:cache_external_diff).and_call_original
 
-          expect(file.diff_export).to eq(file.utf8_diff)
+          expect(file.utf8_diff).to eq(file.diff)
         end
       end
 
@@ -133,7 +131,7 @@ RSpec.describe MergeRequestDiffFile do
           expect(file_stub).to receive(:seek).with(file.external_diff_offset)
           expect(file_stub).to receive(:read).with(file.external_diff_size)
 
-          file.diff_export
+          file.utf8_diff
         end
       end
 
@@ -151,28 +149,28 @@ RSpec.describe MergeRequestDiffFile do
           end
 
           it 'unpacks from base 64' do
-            expect(file.diff_export).to eq(unpacked)
+            expect(file.utf8_diff).to eq(unpacked)
           end
 
           context 'invalid base64' do
             let(:packed) { '---/dev/null' }
 
             it 'returns the raw diff' do
-              expect(file.diff_export).to eq(packed)
+              expect(file.utf8_diff).to eq(packed)
             end
           end
         end
 
         context 'when the diff is not marked as binary' do
           it 'returns the raw diff' do
-            expect(file.diff_export).to eq(packed)
+            expect(file.utf8_diff).to eq(packed)
           end
         end
       end
 
       context 'when content responds to #encoding' do
         it 'encodes content to utf8 encoding' do
-          expect(file.diff_export.encoding).to eq(Encoding::UTF_8)
+          expect(file.utf8_diff.encoding).to eq(Encoding::UTF_8)
         end
       end
 
@@ -180,35 +178,46 @@ RSpec.describe MergeRequestDiffFile do
         it 'returns an empty string' do
           allow(file.merge_request_diff).to receive(:cached_external_diff).and_return(nil)
 
-          expect(file.diff_export).to eq('')
+          expect(file.utf8_diff).to eq('')
         end
       end
 
       context 'when exception is raised' do
-        it 'falls back to #utf8_diff' do
-          allow(file).to receive(:binary?).and_raise(StandardError)
-          expect(file).to receive(:utf8_diff)
+        it 'falls back to #diff' do
+          allow(file).to receive(:binary?).and_raise(StandardError, 'Error!')
+          expect(file).to receive(:diff)
+          expect(Gitlab::AppLogger)
+            .to receive(:warn)
+            .with(
+              a_hash_including(
+                :message => 'Cached external diff export failed',
+                :merge_request_diff_file_id => file.id,
+                :merge_request_diff_id => file.merge_request_diff.id,
+                'exception.class' => 'StandardError',
+                'exception.message' => 'Error!'
+              )
+            )
 
-          file.diff_export
+          file.utf8_diff
         end
       end
     end
 
     context 'when externally_stored_diffs_caching_export feature flag is disabled' do
-      it 'calls #utf8_diff' do
+      it 'calls #diff' do
         stub_feature_flags(externally_stored_diffs_caching_export: false)
 
-        expect(file).to receive(:utf8_diff)
+        expect(file).to receive(:diff)
 
-        file.diff_export
+        file.utf8_diff
       end
     end
 
     context 'when diff is not stored externally' do
-      it 'calls #utf8_diff' do
-        expect(file).to receive(:utf8_diff)
+      it 'calls #diff' do
+        expect(file).to receive(:diff)
 
-        file.diff_export
+        file.utf8_diff
       end
     end
   end

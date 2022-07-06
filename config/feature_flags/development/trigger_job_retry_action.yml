@@ -1,8 +1,0 @@
----
-name: trigger_job_retry_action
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77951
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349966
-milestone: '14.7'
-type: development
-group: group::pipeline authoring
-default_enabled: false

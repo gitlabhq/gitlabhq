@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/commits/_commit.html.haml' do
-  let(:template) { 'projects/commits/commit.html.haml' }
+  let(:template) { 'projects/commits/commit' }
   let(:project) { create(:project, :repository) }
   let(:commit) { project.repository.commit(ref) }
 
