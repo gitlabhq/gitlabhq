@@ -1672,6 +1672,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       'abcdef'   | ChronicDuration::DurationParseError
       ''         | nil
       nil        | nil
+      'never'    | nil
     end
     with_them do
       it 'sets correct auto_stop_in' do

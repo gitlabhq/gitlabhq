@@ -451,9 +451,11 @@ class Environment < ApplicationRecord
 
   def auto_stop_in=(value)
     return unless value
-    return unless parsed_result = ChronicDuration.parse(value)
 
-    self.auto_stop_at = parsed_result.seconds.from_now
+    parser = ::Gitlab::Ci::Build::DurationParser.new(value)
+    return if parser.seconds_from_now.nil?
+
+    self.auto_stop_at = parser.seconds_from_now
   end
 
   def rollout_status

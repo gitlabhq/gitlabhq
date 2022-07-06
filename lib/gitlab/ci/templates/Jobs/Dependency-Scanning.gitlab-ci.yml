@@ -46,10 +46,10 @@ dependency_scanning:
   script:
     - /analyzer run
 
-.cyclone-dx-reports:
+.cyclonedx-reports:
   artifacts:
     paths:
-      - "**/cyclonedx-*.json"
+      - "**/gl-sbom-*.cdx.json"
 
 .gemnasium-shared-rule:
   exists:
@@ -66,7 +66,7 @@ dependency_scanning:
 gemnasium-dependency_scanning:
   extends:
     - .ds-analyzer
-    - .cyclone-dx-reports
+    - .cyclonedx-reports
   variables:
     DS_ANALYZER_NAME: "gemnasium"
     GEMNASIUM_LIBRARY_SCAN_ENABLED: "true"
@@ -95,7 +95,7 @@ gemnasium-dependency_scanning:
 gemnasium-maven-dependency_scanning:
   extends:
     - .ds-analyzer
-    - .cyclone-dx-reports
+    - .cyclonedx-reports
   variables:
     DS_ANALYZER_NAME: "gemnasium-maven"
   rules:
@@ -125,7 +125,7 @@ gemnasium-maven-dependency_scanning:
 gemnasium-python-dependency_scanning:
   extends:
     - .ds-analyzer
-    - .cyclone-dx-reports
+    - .cyclonedx-reports
   variables:
     DS_ANALYZER_NAME: "gemnasium-python"
   rules:

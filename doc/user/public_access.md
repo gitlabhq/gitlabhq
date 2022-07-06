@@ -70,6 +70,8 @@ Prerequisite:
 Prerequisite:
 
 - You must have the Owner role for a group.
+- Subgroups and projects must already have visibility settings that are at least as
+  restrictive as the new setting for the group.
 
 1. On the top bar, select **Menu > Groups** and find your project.
 1. On the left sidebar, select **Settings > General**.

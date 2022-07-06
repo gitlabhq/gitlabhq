@@ -54,7 +54,7 @@ module Gitlab
 
               validates :on_stop, type: String, allow_nil: true
               validates :kubernetes, type: Hash, allow_nil: true
-              validates :auto_stop_in, duration: true, allow_nil: true
+              validates :auto_stop_in, duration: { parser: ::Gitlab::Ci::Build::DurationParser }, allow_nil: true
             end
           end
 

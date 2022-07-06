@@ -848,7 +848,7 @@ before the feature is made generally available.
 In addition to the [JSON report file](#reports-json-format), the [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
 Dependency Scanning tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for
 each supported lock or build file it detects. These CycloneDX SBOMs are named
-`cyclonedx-<package-type>-<package-manager>.json`, and are saved in the same directory
+`gl-sbom-<package-type>-<package-manager>.cdx.json`, and are saved in the same directory
 as the detected lock or build files.
 
 For example, if your project has the following structure:
@@ -871,16 +871,16 @@ Then the Gemnasium scanner generates the following CycloneDX SBOMs:
 .
 ├── ruby-project/
 │   ├── Gemfile.lock
-│   └── cyclonedx-gem-bundler.json
+│   └── gl-sbom-gem-bundler.cdx.json
 ├── ruby-project-2/
 │   ├── Gemfile.lock
-│   └── cyclonedx-gem-bundler.json
+│   └── gl-sbom-gem-bundler.cdx.json
 ├── php-project/
 │   ├── composer.lock
-│   └── cyclonedx-packagist-composer.json
+│   └── gl-sbom-packagist-composer.cdx.json
 └── go-project/
     ├── go.sum
-    └── cyclonedx-go-go.json
+    └── gl-sbom-go-go.cdx.json
 ```
 
 The CycloneDX SBOMs can be downloaded [the same way as other job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
@@ -905,10 +905,10 @@ merge cyclonedx sboms:
     - wget https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.22.0/cyclonedx-linux-musl-x64 -O /usr/local/bin/cyclonedx-cli
     - chmod 755 /usr/local/bin/cyclonedx-cli
     - apk --update add --no-cache icu-dev libstdc++
-    - find * -name "cyclonedx-*.json" -exec cyclonedx-cli merge --input-files {} --output-file cyclonedx-all.json +
+    - find * -name "gl-sbom-*.cdx.json" -exec cyclonedx-cli merge --input-files {} --output-file gl-sbom-all.cdx.json +
   artifacts:
     paths:
-      - cyclonedx-all.json
+      - gl-sbom-all.cdx.json
 ```
 
 GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
