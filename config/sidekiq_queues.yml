@@ -327,6 +327,8 @@
   - 1
 - - pages_domain_verification
   - 1
+- - pages_invalidate_domain_cache
+  - 1
 - - pages_transfer
   - 1
 - - personal_access_tokens

@@ -1885,15 +1885,29 @@ RSpec.describe Namespace do
 
   describe '#pages_virtual_domain' do
     let(:project) { create(:project, namespace: namespace) }
+    let(:virtual_domain) { namespace.pages_virtual_domain }
 
-    it 'returns the virual domain' do
+    before do
       project.mark_pages_as_deployed
       project.update_pages_deployment!(create(:pages_deployment, project: project))
+    end
 
-      virtual_domain = namespace.pages_virtual_domain
-
+    it 'returns the virual domain' do
       expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
       expect(virtual_domain.lookup_paths).not_to be_empty
+      expect(virtual_domain.cache_key).to eq("pages_domain_for_namespace_#{namespace.root_ancestor.id}")
+    end
+
+    context 'when :cache_pages_domain_api is disabled' do
+      before do
+        stub_feature_flags(cache_pages_domain_api: false)
+      end
+
+      it 'returns the virual domain' do
+        expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+        expect(virtual_domain.lookup_paths).not_to be_empty
+        expect(virtual_domain.cache_key).to be_nil
+      end
     end
   end
 

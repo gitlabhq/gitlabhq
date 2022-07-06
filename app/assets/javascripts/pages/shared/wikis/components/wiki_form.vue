@@ -1,5 +1,15 @@
 <script>
-import { GlForm, GlIcon, GlLink, GlButton, GlSprintf, GlAlert } from '@gitlab/ui';
+import {
+  GlForm,
+  GlIcon,
+  GlLink,
+  GlButton,
+  GlSprintf,
+  GlAlert,
+  GlFormGroup,
+  GlFormInput,
+  GlFormSelect,
+} from '@gitlab/ui';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
@@ -76,9 +86,12 @@ export default {
   },
   components: {
     GlAlert,
-    GlForm,
-    GlSprintf,
     GlIcon,
+    GlForm,
+    GlFormGroup,
+    GlFormInput,
+    GlFormSelect,
+    GlSprintf,
     GlLink,
     GlButton,
     MarkdownField,
@@ -311,155 +324,151 @@ export default {
       name="wiki[last_commit_sha]"
       :value="pageInfo.lastCommitSha"
     />
-    <div class="form-group row">
-      <div class="col-sm-2 col-form-label">
-        <label class="control-label-full-width" for="wiki_title">{{
-          $options.i18n.title.label
-        }}</label>
-      </div>
-      <div class="col-sm-10">
-        <input
-          id="wiki_title"
-          v-model="title"
-          name="wiki[title]"
-          type="text"
-          class="form-control"
-          data-qa-selector="wiki_title_textbox"
-          :required="true"
-          :autofocus="!pageInfo.persisted"
-          :placeholder="$options.i18n.title.placeholder"
-          @input="updateCommitMessage"
-        />
-        <span class="gl-display-inline-block gl-max-w-full gl-mt-2 gl-text-gray-600">
-          <gl-icon class="gl-mr-n1" name="bulb" />
-          {{ titleHelpText }}
-          <gl-link :href="helpPath" target="_blank">
-            {{ $options.i18n.title.helpText.learnMore }}
-          </gl-link>
-        </span>
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-sm-2 col-form-label">
-        <label class="control-label-full-width" for="wiki_format">{{
-          $options.i18n.format.label
-        }}</label>
-      </div>
-      <div class="col-sm-10">
-        <select
-          id="wiki_format"
-          v-model="format"
-          class="form-control"
-          name="wiki[format]"
-          :disabled="isContentEditorActive"
-        >
-          <option v-for="(key, label) of formatOptions" :key="key" :value="key">
-            {{ label }}
-          </option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group row" data-testid="wiki-form-content-fieldset">
-      <div class="col-sm-2 col-form-label">
-        <label class="control-label-full-width" for="wiki_content">{{
-          $options.i18n.content.label
-        }}</label>
-      </div>
-      <div class="col-sm-10">
-        <div v-if="isMarkdownFormat" class="gl-display-flex gl-justify-content-end gl-mb-3">
-          <gl-button
-            data-testid="toggle-editing-mode-button"
-            data-qa-selector="editing_mode_button"
-            :data-qa-mode="toggleEditingModeButtonText"
-            variant="link"
-            @click="toggleEditingMode"
-            >{{ toggleEditingModeButtonText }}</gl-button
-          >
-        </div>
-        <local-storage-sync
-          storage-key="gl-wiki-content-editor-enabled"
-          :value="useContentEditor"
-          @input="setUseContentEditor"
-        />
-        <markdown-field
-          v-if="!isContentEditorActive"
-          :markdown-preview-path="pageInfo.markdownPreviewPath"
-          :can-attach-file="true"
-          :enable-autocomplete="true"
-          :textarea-value="content"
-          :markdown-docs-path="pageInfo.markdownHelpPath"
-          :uploads-path="pageInfo.uploadsPath"
-          :enable-preview="isMarkdownFormat"
-          class="bordered-box"
-        >
-          <template #textarea>
-            <textarea
-              id="wiki_content"
-              ref="textarea"
-              v-model="content"
-              name="wiki[content]"
-              class="note-textarea js-gfm-input js-autosize markdown-area"
-              dir="auto"
-              data-supports-quick-actions="false"
-              data-qa-selector="wiki_content_textarea"
-              :autofocus="pageInfo.persisted"
-              :aria-label="$options.i18n.content.label"
-              :placeholder="$options.i18n.content.placeholder"
-              @input="handleContentChange"
-            >
-            </textarea>
+
+    <div class="row">
+      <div class="col-sm-9">
+        <gl-form-group :label="$options.i18n.title.label" label-for="wiki_title">
+          <template #description>
+            <gl-icon class="gl-mr-n1" name="bulb" />
+            {{ titleHelpText }}
+            <gl-link :href="helpPath" target="_blank">
+              {{ $options.i18n.title.helpText.learnMore }}
+            </gl-link>
           </template>
-        </markdown-field>
-        <div v-if="isContentEditorActive">
-          <content-editor
-            :render-markdown="renderMarkdown"
-            :uploads-path="pageInfo.uploadsPath"
-            @initialized="loadInitialContent"
-            @change="handleContentEditorChange"
+
+          <gl-form-input
+            id="wiki_title"
+            v-model="title"
+            name="wiki[title]"
+            type="text"
+            class="form-control"
+            data-qa-selector="wiki_title_textbox"
+            :required="true"
+            :autofocus="!pageInfo.persisted"
+            :placeholder="$options.i18n.title.placeholder"
+            @input="updateCommitMessage"
           />
-          <input id="wiki_content" v-model.trim="content" type="hidden" name="wiki[content]" />
-        </div>
+        </gl-form-group>
+      </div>
 
-        <div class="clearfix"></div>
-        <div class="error-alert"></div>
+      <div class="col-sm-3 row-sm-10">
+        <gl-form-group :label="$options.i18n.format.label" label-for="wiki_format">
+          <gl-form-select
+            id="wiki_format"
+            v-model="format"
+            name="wiki[format]"
+            :disabled="isContentEditorActive"
+            class="form-control"
+            :value="formatOptions.Markdown"
+          >
+            <option v-for="(key, label) of formatOptions" :key="key" :value="key">
+              {{ label }}
+            </option>
+          </gl-form-select>
+        </gl-form-group>
+      </div>
+    </div>
 
-        <div class="form-text gl-text-gray-600">
-          <gl-sprintf v-if="displayWikiSpecificMarkdownHelp" :message="$options.i18n.linksHelpText">
-            <template #linkExample
-              ><code>{{ linkExample }}</code></template
+    <div class="row" data-testid="wiki-form-content-fieldset">
+      <div class="col-sm-12 row-sm-5">
+        <gl-form-group>
+          <div v-if="isMarkdownFormat" class="gl-display-flex gl-justify-content-end gl-mb-3">
+            <gl-button
+              data-testid="toggle-editing-mode-button"
+              data-qa-selector="editing_mode_button"
+              :data-qa-mode="toggleEditingModeButtonText"
+              variant="link"
+              @click="toggleEditingMode"
+              >{{ toggleEditingModeButtonText }}</gl-button
             >
-            <template
-              #link="// eslint-disable-next-line vue/no-template-shadow
+          </div>
+          <local-storage-sync
+            storage-key="gl-wiki-content-editor-enabled"
+            :value="useContentEditor"
+            @input="setUseContentEditor"
+          />
+          <markdown-field
+            v-if="!isContentEditorActive"
+            :markdown-preview-path="pageInfo.markdownPreviewPath"
+            :can-attach-file="true"
+            :enable-autocomplete="true"
+            :textarea-value="content"
+            :markdown-docs-path="pageInfo.markdownHelpPath"
+            :uploads-path="pageInfo.uploadsPath"
+            :enable-preview="isMarkdownFormat"
+            class="bordered-box"
+          >
+            <template #textarea>
+              <textarea
+                id="wiki_content"
+                ref="textarea"
+                v-model="content"
+                name="wiki[content]"
+                class="note-textarea js-gfm-input js-autosize markdown-area"
+                dir="auto"
+                data-supports-quick-actions="false"
+                data-qa-selector="wiki_content_textarea"
+                :autofocus="pageInfo.persisted"
+                :aria-label="$options.i18n.content.label"
+                :placeholder="$options.i18n.content.placeholder"
+                @input="handleContentChange"
+              >
+              </textarea>
+            </template>
+          </markdown-field>
+          <div v-if="isContentEditorActive">
+            <content-editor
+              :render-markdown="renderMarkdown"
+              :uploads-path="pageInfo.uploadsPath"
+              @initialized="loadInitialContent"
+              @change="handleContentEditorChange"
+            />
+            <input id="wiki_content" v-model.trim="content" type="hidden" name="wiki[content]" />
+          </div>
+
+          <div class="clearfix"></div>
+          <div class="error-alert"></div>
+
+          <div class="form-text gl-text-gray-600">
+            <gl-sprintf
+              v-if="displayWikiSpecificMarkdownHelp"
+              :message="$options.i18n.linksHelpText"
+            >
+              <template #linkExample>
+                <code>{{ linkExample }}</code>
+              </template>
+              <template
+                #link="// eslint-disable-next-line vue/no-template-shadow
                 { content }"
-              ><gl-link
-                :href="wikiSpecificMarkdownHelpPath"
-                target="_blank"
-                data-testid="wiki-markdown-help-link"
-                >{{ content }}</gl-link
-              ></template
-            >
-          </gl-sprintf>
-        </div>
+                ><gl-link
+                  :href="wikiSpecificMarkdownHelpPath"
+                  target="_blank"
+                  data-testid="wiki-markdown-help-link"
+                  >{{ content }}</gl-link
+                ></template
+              >
+            </gl-sprintf>
+          </div>
+        </gl-form-group>
       </div>
     </div>
-    <div class="form-group row">
-      <div class="col-sm-2 col-form-label">
-        <label class="control-label-full-width" for="wiki_message">{{
-          $options.i18n.commitMessage.label
-        }}</label>
-      </div>
-      <div class="col-sm-10">
-        <input
-          id="wiki_message"
-          v-model.trim="commitMessage"
-          name="wiki[message]"
-          type="text"
-          class="form-control"
-          data-qa-selector="wiki_message_textbox"
-          :placeholder="$options.i18n.commitMessage.label"
-        />
+
+    <div class="row">
+      <div class="col-sm-12 row-sm-5">
+        <gl-form-group :label="$options.i18n.commitMessage.label" label-for="wiki_message">
+          <gl-form-input
+            id="wiki_message"
+            v-model.trim="commitMessage"
+            name="wiki[message]"
+            type="text"
+            class="form-control"
+            data-qa-selector="wiki_message_textbox"
+            :placeholder="$options.i18n.commitMessage.label"
+          />
+        </gl-form-group>
       </div>
     </div>
+
     <div class="form-actions">
       <gl-button
         category="primary"

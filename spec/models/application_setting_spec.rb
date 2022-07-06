@@ -305,18 +305,20 @@ RSpec.describe ApplicationSetting do
       end
     end
 
-    context 'when snowplow is enabled' do
-      before do
-        setting.snowplow_enabled = true
+    describe 'snowplow settings', :do_not_stub_snowplow_by_default do
+      context 'when snowplow is enabled' do
+        before do
+          setting.snowplow_enabled = true
+        end
+
+        it { is_expected.not_to allow_value(nil).for(:snowplow_collector_hostname) }
+        it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
+        it { is_expected.not_to allow_value('/example').for(:snowplow_collector_hostname) }
       end
 
-      it { is_expected.not_to allow_value(nil).for(:snowplow_collector_hostname) }
-      it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
-      it { is_expected.not_to allow_value('/example').for(:snowplow_collector_hostname) }
-    end
-
-    context 'when snowplow is not enabled' do
-      it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
+      context 'when snowplow is not enabled' do
+        it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
+      end
     end
 
     context 'when mailgun_events_enabled is enabled' do

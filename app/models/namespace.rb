@@ -450,9 +450,14 @@ class Namespace < ApplicationRecord
   end
 
   def pages_virtual_domain
+    cache = if Feature.enabled?(:cache_pages_domain_api, root_ancestor)
+              ::Gitlab::Pages::CacheControl.for_namespace(root_ancestor.id)
+            end
+
     Pages::VirtualDomain.new(
-      all_projects_with_pages.includes(:route, :project_feature, pages_metadatum: :pages_deployment),
-      trim_prefix: full_path
+      projects: all_projects_with_pages.includes(:route, :project_feature, pages_metadatum: :pages_deployment),
+      trim_prefix: full_path,
+      cache: cache
     )
   end
 

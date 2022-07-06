@@ -1,3 +1,4 @@
 %p
-  Merge request #{merge_request_reference_link(@merge_request)}
-  was closed by #{sanitize_name(@updated_by.name)}
+  - mr_link = merge_request_reference_link(@merge_request)
+  - closed_by = sanitize_name(@updated_by.name)
+  = s_('Notify|Merge request %{mr_link} was closed by %{closed_by}').html_safe % { mr_link: mr_link, closed_by: closed_by }

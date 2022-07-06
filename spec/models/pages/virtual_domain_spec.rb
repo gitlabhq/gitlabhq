@@ -7,7 +7,7 @@ RSpec.describe Pages::VirtualDomain do
     let(:domain) { nil }
     let(:project) { instance_double(Project) }
 
-    subject(:virtual_domain) { described_class.new([project], domain: domain) }
+    subject(:virtual_domain) { described_class.new(projects: [project], domain: domain) }
 
     it 'returns nil if there is no domain provided' do
       expect(virtual_domain.certificate).to be_nil
@@ -35,7 +35,7 @@ RSpec.describe Pages::VirtualDomain do
     context 'when there is pages domain provided' do
       let(:domain) { instance_double(PagesDomain) }
 
-      subject(:virtual_domain) { described_class.new([project_a, project_b, project_c], domain: domain) }
+      subject(:virtual_domain) { described_class.new(projects: [project_a, project_b, project_c], domain: domain) }
 
       it 'returns collection of projects pages lookup paths sorted by prefix in reverse' do
         expect(project_a).to receive(:pages_lookup_path).with(domain: domain, trim_prefix: nil).and_return(pages_lookup_path_a)
@@ -47,7 +47,7 @@ RSpec.describe Pages::VirtualDomain do
     end
 
     context 'when there is trim_prefix provided' do
-      subject(:virtual_domain) { described_class.new([project_a, project_b], trim_prefix: 'group/') }
+      subject(:virtual_domain) { described_class.new(projects: [project_a, project_b], trim_prefix: 'group/') }
 
       it 'returns collection of projects pages lookup paths sorted by prefix in reverse' do
         expect(project_a).to receive(:pages_lookup_path).with(trim_prefix: 'group/', domain: nil).and_return(pages_lookup_path_a)
@@ -55,6 +55,21 @@ RSpec.describe Pages::VirtualDomain do
 
         expect(virtual_domain.lookup_paths).to eq([pages_lookup_path_b, pages_lookup_path_a])
       end
+    end
+  end
+
+  describe '#cache_key' do
+    it 'returns the cache key based in the given cache_control' do
+      cache_control = instance_double(::Gitlab::Pages::CacheControl, cache_key: 'cache_key')
+      virtual_domain = described_class.new(projects: [instance_double(Project)], cache: cache_control)
+
+      expect(virtual_domain.cache_key).to eq('cache_key')
+    end
+
+    it 'returns nil when no cache_control is given' do
+      virtual_domain = described_class.new(projects: [instance_double(Project)])
+
+      expect(virtual_domain.cache_key).to be_nil
     end
   end
 end

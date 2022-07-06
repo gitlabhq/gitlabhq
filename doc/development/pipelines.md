@@ -275,6 +275,19 @@ rather than from the default branch `main-jh`.
 NOTE:
 For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
 
+## Ruby 3.0 jobs
+
+You can add the `pipeline:run-in-ruby3` label to the merge request to switch
+the Ruby version used for running the whole test suite to 3.0. When you do
+this, the test suite will no longer run in Ruby 2.7 (default), and an
+additional job `verify-ruby-2.7` will also run and always fail to remind us to
+remove the label and run in Ruby 2.7 before merging the merge request.
+
+This should let us:
+
+- Test changes for Ruby 3.0
+- Make sure it will not break anything when it's merged into the default branch
+
 ## `undercover` RSpec test
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74859) in GitLab 14.6.

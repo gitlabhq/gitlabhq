@@ -35,6 +35,9 @@ module Gitlab
 
       store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
       store.subscribe ::Namespaces::UpdateRootStatisticsWorker, to: ::Projects::ProjectDeletedEvent
+
+      store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Pages::PageDeployedEvent
+      store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Pages::PageDeletedEvent
     end
     private_class_method :configure!
   end

@@ -23,13 +23,19 @@ cache gems:
     - .default-retry
   needs: []
 
-dont-interrupt-me:
-  extends: .setup:rules:dont-interrupt-me
-  stage: sync
+.absolutely-minimal-job:
+  extends:
+    - .minimal-job
   image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
-  interruptible: false
   variables:
     GIT_STRATEGY: none
+
+dont-interrupt-me:
+  extends:
+    - .absolutely-minimal-job
+    - .setup:rules:dont-interrupt-me
+  stage: sync
+  interruptible: false
   script:
     - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
 
@@ -57,6 +63,15 @@ no-jh-check:
   script:
     - scripts/no-dir-check jh
 
+verify-ruby-2.7:
+  extends:
+    - .absolutely-minimal-job
+    - .setup:rules:verify-ruby-2.7
+  stage: prepare
+  script:
+    - echo 'Please remove label ~"pipeline:run-in-ruby3" so we do test against Ruby 2.7 (default version) before merging the merge request'
+    - exit 1
+
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
@@ -70,8 +85,8 @@ verify-tests-yml:
 
 verify-approvals:
   extends:
+    - .minimal-job
     - .setup:rules:jh-contribution
-  needs: []
   script:
     - source scripts/utils.sh
     - install_gitlab_gem

@@ -205,7 +205,12 @@ RSpec.describe CacheableAttributes do
       end
     end
 
-    it 'uses RequestStore in addition to process memory cache', :request_store, :do_not_mock_admin_mode_setting do
+    it(
+      'uses RequestStore in addition to process memory cache',
+      :request_store,
+      :do_not_mock_admin_mode_setting,
+      :do_not_stub_snowplow_by_default
+    ) do
       # Warm up the cache
       create(:application_setting).cache!
 

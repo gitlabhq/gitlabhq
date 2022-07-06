@@ -373,7 +373,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       end
     end
 
-    context "snowplow tracking settings" do
+    context "snowplow tracking settings", :do_not_stub_snowplow_by_default do
       let(:settings) do
         {
           snowplow_collector_hostname: "snowplow.example.com",

@@ -54,7 +54,15 @@ module API
             virtual_domain = host.pages_virtual_domain
             no_content! unless virtual_domain
 
-            present virtual_domain, with: Entities::Internal::Pages::VirtualDomain
+            if virtual_domain.cache_key.present?
+              # Cache context is not added to make it easier to expire the cache with
+              # Gitlab::Pages::CacheControl
+              present_cached virtual_domain,
+                cache_context: nil,
+                with: Entities::Internal::Pages::VirtualDomain
+            else
+              present virtual_domain, with: Entities::Internal::Pages::VirtualDomain
+            end
           end
         end
       end

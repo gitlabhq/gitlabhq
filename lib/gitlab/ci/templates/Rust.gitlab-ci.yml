@@ -26,3 +26,14 @@ test:cargo:
   script:
     - rustc --version && cargo --version  # Print version info for debugging
     - cargo test --workspace --verbose
+
+# Optional: Use a third party library to generate gitlab junit reports
+# test:junit-report:
+#   script:
+#     Should be specified in Cargo.toml
+#     - cargo install junitify
+#     - cargo test -- --format=json -Z unstable-options --report-time | junitify --out $CI_PROJECT_DIR/tests/
+#   artifacts:
+#     when: always
+#     reports:
+#       junit: $CI_PROJECT_DIR/tests/*.xml

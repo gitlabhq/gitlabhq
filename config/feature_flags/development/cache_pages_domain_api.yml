@@ -1,0 +1,8 @@
+---
+name: cache_pages_domain_api
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88956
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364127
+milestone: '15.2'
+type: development
+group: group::editor
+default_enabled: false

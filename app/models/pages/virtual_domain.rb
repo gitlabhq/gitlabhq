@@ -2,8 +2,9 @@
 
 module Pages
   class VirtualDomain
-    def initialize(projects, trim_prefix: nil, domain: nil)
+    def initialize(projects:, cache: nil, trim_prefix: nil, domain: nil)
       @projects = projects
+      @cache = cache
       @trim_prefix = trim_prefix
       @domain = domain
     end
@@ -27,8 +28,12 @@ module Pages
       paths.sort_by(&:prefix).reverse
     end
 
+    def cache_key
+      @cache_key ||= cache&.cache_key
+    end
+
     private
 
-    attr_reader :projects, :trim_prefix, :domain
+    attr_reader :projects, :trim_prefix, :domain, :cache
   end
 end

@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlAlert, GlButton } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -107,6 +107,8 @@ describe('WikiForm', () => {
           GlAlert,
           GlButton,
           LocalStorageSync: stubComponent(LocalStorageSync),
+          GlFormInput,
+          GlFormGroup,
         },
       }),
     );
@@ -132,7 +134,7 @@ describe('WikiForm', () => {
   `(
     'updates the commit message to $message when title is $title and persisted=$persisted',
     async ({ title, message, persisted }) => {
-      createWrapper({ persisted });
+      createWrapper({ persisted, mountFn: mount });
 
       await findTitle().setValue(title);
 
@@ -141,7 +143,7 @@ describe('WikiForm', () => {
   );
 
   it('sets the commit message to "Update My page" when the page first loads when persisted', async () => {
-    createWrapper({ persisted: true });
+    createWrapper({ persisted: true, mountFn: mount });
 
     await nextTick();
 
@@ -161,7 +163,7 @@ describe('WikiForm', () => {
     ${'asciidoc'} | ${false} | ${'hides'}
     ${'org'}      | ${false} | ${'hides'}
   `('$action preview in the markdown field when format is $format', async ({ format, enabled }) => {
-    createWrapper();
+    createWrapper({ mountFn: mount });
 
     await setFormat(format);
 
@@ -258,7 +260,7 @@ describe('WikiForm', () => {
     `(
       "when title='$title', content='$content', then the button is $buttonState'",
       async ({ title, content, disabledAttr }) => {
-        createWrapper();
+        createWrapper({ mountFn: mount });
 
         await findTitle().setValue(title);
         await findContent().setValue(content);
@@ -295,7 +297,7 @@ describe('WikiForm', () => {
 
   describe('toggle editing mode control', () => {
     beforeEach(() => {
-      createWrapper();
+      createWrapper({ mountFn: mount });
     });
 
     it.each`

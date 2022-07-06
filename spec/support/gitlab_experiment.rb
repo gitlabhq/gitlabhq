@@ -2,7 +2,6 @@
 
 # Require the provided spec helper and matchers.
 require 'gitlab/experiment/rspec'
-require_relative 'stub_snowplow'
 
 RSpec.configure do |config|
   config.include StubSnowplow, :experiment

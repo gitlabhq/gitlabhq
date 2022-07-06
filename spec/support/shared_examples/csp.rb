@@ -15,64 +15,66 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
     end
   end
 
-  context 'when no CSP config' do
-    include_context 'csp config', nil
+  context 'csp config and feature toggle', :do_not_stub_snowplow_by_default do
+    context 'when no CSP config' do
+      include_context 'csp config', nil
 
-    it 'does not add CSP directives' do
-      is_expected.to be_blank
-    end
-  end
-
-  describe "when a CSP config exists for #{rule_name}" do
-    include_context 'csp config', rule_name.parameterize.underscore.to_sym
-
-    context 'when feature is enabled' do
-      it "appends to #{rule_name}" do
-        is_expected.to eql("#{rule_name} #{default_csp_values} #{allowlisted_url}")
+      it 'does not add CSP directives' do
+        is_expected.to be_blank
       end
     end
 
-    context 'when feature is disabled' do
-      include_context 'disable feature'
+    describe "when a CSP config exists for #{rule_name}" do
+      include_context 'csp config', rule_name.parameterize.underscore.to_sym
 
-      it "keeps original #{rule_name}" do
-        is_expected.to eql("#{rule_name} #{default_csp_values}")
+      context 'when feature is enabled' do
+        it "appends to #{rule_name}" do
+          is_expected.to eql("#{rule_name} #{default_csp_values} #{allowlisted_url}")
+        end
       end
-    end
-  end
 
-  describe "when a CSP config exists for default-src but not #{rule_name}" do
-    include_context 'csp config', :default_src
+      context 'when feature is disabled' do
+        include_context 'disable feature'
 
-    context 'when feature is enabled' do
-      it "uses default-src values in #{rule_name}" do
-        is_expected.to eql("default-src #{default_csp_values}; #{rule_name} #{default_csp_values} #{allowlisted_url}")
-      end
-    end
-
-    context 'when feature is disabled' do
-      include_context 'disable feature'
-
-      it "does not add #{rule_name}" do
-        is_expected.to eql("default-src #{default_csp_values}")
-      end
-    end
-  end
-
-  describe "when a CSP config exists for font-src but not #{rule_name}" do
-    include_context 'csp config', :font_src
-
-    context 'when feature is enabled' do
-      it "uses default-src values in #{rule_name}" do
-        is_expected.to eql("font-src #{default_csp_values}; #{rule_name} #{allowlisted_url}")
+        it "keeps original #{rule_name}" do
+          is_expected.to eql("#{rule_name} #{default_csp_values}")
+        end
       end
     end
 
-    context 'when feature is disabled' do
-      include_context 'disable feature'
+    describe "when a CSP config exists for default-src but not #{rule_name}" do
+      include_context 'csp config', :default_src
 
-      it "does not add #{rule_name}" do
-        is_expected.to eql("font-src #{default_csp_values}")
+      context 'when feature is enabled' do
+        it "uses default-src values in #{rule_name}" do
+          is_expected.to eql("default-src #{default_csp_values}; #{rule_name} #{default_csp_values} #{allowlisted_url}")
+        end
+      end
+
+      context 'when feature is disabled' do
+        include_context 'disable feature'
+
+        it "does not add #{rule_name}" do
+          is_expected.to eql("default-src #{default_csp_values}")
+        end
+      end
+    end
+
+    describe "when a CSP config exists for font-src but not #{rule_name}" do
+      include_context 'csp config', :font_src
+
+      context 'when feature is enabled' do
+        it "uses default-src values in #{rule_name}" do
+          is_expected.to eql("font-src #{default_csp_values}; #{rule_name} #{allowlisted_url}")
+        end
+      end
+
+      context 'when feature is disabled' do
+        include_context 'disable feature'
+
+        it "does not add #{rule_name}" do
+          is_expected.to eql("font-src #{default_csp_values}")
+        end
       end
     end
   end

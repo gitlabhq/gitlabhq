@@ -201,10 +201,12 @@ RSpec.configure do |config|
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
   config.include StubSpamServices
+  config.include SnowplowHelpers
   config.include RenderedHelpers
   config.include RSpec::Benchmark::Matchers, type: :benchmark
 
   include StubFeatureFlags
+  include StubSnowplow
 
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -367,6 +369,9 @@ RSpec.configure do |config|
     stub_application_setting(admin_mode: true) unless example.metadata[:do_not_mock_admin_mode_setting]
 
     allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(false)
+
+    # Ensure that Snowplow is enabled by default unless forced to the opposite
+    stub_snowplow unless example.metadata[:do_not_stub_snowplow_by_default]
   end
 
   config.around(:example, :quarantine) do |example|

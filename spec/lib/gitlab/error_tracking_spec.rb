@@ -424,5 +424,25 @@ RSpec.describe Gitlab::ErrorTracking do
         end
       end
     end
+
+    context 'when request contains sensitive information' do
+      before do
+        Sentry.get_current_scope.set_rack_env({
+          'HTTP_AUTHORIZATION' => 'Bearer 123456',
+          'HTTP_PRIVATE_TOKEN' => 'abcdef',
+          'HTTP_JOB_TOKEN' => 'secret123'
+        })
+      end
+
+      it 'filters sensitive data' do
+        track_exception
+
+        expect(sentry_event.to_hash[:request][:headers]).to include(
+          'Authorization' => '[FILTERED]',
+          'Private-Token' => '[FILTERED]',
+          'Job-Token' => '[FILTERED]'
+        )
+      end
+    end
   end
 end

@@ -13,7 +13,7 @@ module StubSnowplow
       .and_return(SnowplowTracker::Emitter.new(host, buffer_size: buffer_size))
     # rubocop:enable RSpec/AnyInstanceOf
 
-    stub_application_setting(snowplow_enabled: true)
+    stub_application_setting(snowplow_enabled: true, snowplow_collector_hostname: host)
 
     allow(SnowplowTracker::SelfDescribingJson).to receive(:new).and_call_original
     allow(Gitlab::Tracking).to receive(:event).and_call_original # rubocop:disable RSpec/ExpectGitlabTracking

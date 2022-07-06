@@ -38,7 +38,11 @@ RSpec.describe Gitlab::DatabaseImporters::InstanceAdministrators::CreateGroup do
       end
     end
 
-    context 'with application settings and admin users', :do_not_mock_admin_mode_setting do
+    context(
+      'with application settings and admin users',
+      :do_not_mock_admin_mode_setting,
+      :do_not_stub_snowplow_by_default
+    ) do
       let(:group) { result[:group] }
       let(:application_setting) { Gitlab::CurrentSettings.current_application_settings }
 

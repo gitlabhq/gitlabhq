@@ -26446,6 +26446,9 @@ msgstr ""
 msgid "Notify|Merge request %{merge_request} was merged"
 msgstr ""
 
+msgid "Notify|Merge request %{mr_link} was closed by %{closed_by}"
+msgstr ""
+
 msgid "Notify|Merge request URL: %{merge_request_url}"
 msgstr ""
 
@@ -40985,9 +40988,6 @@ msgid "Unable to fetch branches list, please close the form and try again"
 msgstr ""
 
 msgid "Unable to fetch upstream and downstream pipelines."
-msgstr ""
-
-msgid "Unable to fetch vulnerable projects"
 msgstr ""
 
 msgid "Unable to find Jira project to import data from."
