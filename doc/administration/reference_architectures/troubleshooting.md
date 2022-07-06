@@ -54,20 +54,20 @@ This can result in some of the following problems:
 
 - If GitLab is using non-secure HTTP to access the object storage, clients may generate
 `https->http` downgrade errors and refuse to process the redirect. The solution to this
-is for GitLab to use HTTPS. LFS, for example, will generate this error:
+is for GitLab to use HTTPS. LFS, for example, generates this error:
 
    ```plaintext
    LFS: lfsapi/client: refusing insecure redirect, https->http
    ```
 
-- Clients will need to trust the certificate authority that issued the object storage
+- Clients must trust the certificate authority that issued the object storage
 certificate, or may return common TLS errors such as:
 
    ```plaintext
    x509: certificate signed by unknown authority
    ```
 
-- Clients will need network access to the object storage. Errors that might result
+- Clients need network access to the object storage. Errors that might result
 if this access is not in place include:
 
    ```plaintext
@@ -113,7 +113,7 @@ You can check if everything is correct by connecting to each server using
 /opt/gitlab/embedded/bin/redis-cli -h <redis-host-or-ip> -a '<redis-password>' info replication
 ```
 
-When connected to a `Primary` Redis, you will see the number of connected
+When connected to a `Primary` Redis, you see the number of connected
 `replicas`, and a list of each with connection details:
 
 ```plaintext
@@ -128,7 +128,7 @@ repl_backlog_first_byte_offset:206989083
 repl_backlog_histlen:1048576
 ```
 
-When it's a `replica`, you will see details of the primary connection and if
+When it's a `replica`, you see details of the primary connection and if
 its `up` or `down`:
 
 ```plaintext
@@ -254,7 +254,7 @@ To start a session:
 sudo gitlab-ctl pgb-console
 ```
 
-The password you will be prompted for is the `pgbouncer_user_password`
+The password you are prompted for is the `pgbouncer_user_password`
 
 To get some basic information about the instance, run
 
@@ -315,7 +315,7 @@ sudo gitlab-ctl tail patroni
 
 ### Consul and PostgreSQL with Patroni changes not taking effect
 
-Due to the potential impacts, `gitlab-ctl reconfigure` only reloads Consul and PostgreSQL, it will not restart the services. However, not all changes can be activated by reloading.
+Due to the potential impacts, `gitlab-ctl reconfigure` only reloads Consul and PostgreSQL, it does not restart the services. However, not all changes can be activated by reloading.
 
 To restart either service, run `gitlab-ctl restart consul` or `gitlab-ctl restart patroni` respectively.
 
@@ -335,7 +335,7 @@ PG::ConnectionBad: ERROR:  pgbouncer cannot connect to server
 The problem may be that your PgBouncer node's IP address is not included in the
 `trust_auth_cidr_addresses` setting in `/etc/gitlab/gitlab.rb` on the database nodes.
 
-You can confirm that this is the issue by checking the PostgreSQL log on the master
+You can confirm that this is the issue by checking the PostgreSQL log on the primary
 database node. If you see the following error then `trust_auth_cidr_addresses`
 is the problem.
 

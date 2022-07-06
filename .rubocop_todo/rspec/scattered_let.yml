@@ -156,7 +156,6 @@ RSpec/ScatteredLet:
     - 'spec/lib/gitlab/diff/position_tracer/line_strategy_spec.rb'
     - 'spec/lib/gitlab/diff/suggestion_diff_spec.rb'
     - 'spec/lib/gitlab/diff/suggestion_spec.rb'
-    - 'spec/lib/gitlab/elasticsearch/logs/lines_spec.rb'
     - 'spec/lib/gitlab/email/handler/service_desk_handler_spec.rb'
     - 'spec/lib/gitlab/error_tracking/processor/context_payload_processor_spec.rb'
     - 'spec/lib/gitlab/error_tracking_spec.rb'

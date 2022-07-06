@@ -159,7 +159,6 @@
       color: rgba($search-and-nav-links, 0.8);
     }
 
-
     input {
       background-color: transparent;
       color: rgba($search-and-nav-links, 0.8);
@@ -177,9 +176,11 @@
       }
     }
 
-    &.is-not-active::after {
-      color: $search-and-nav-links;
-      background-color: rgba($search-and-nav-links, 0.2);
+    &.is-not-active {
+      .keyboard-shortcut-helper {
+        color: $search-and-nav-links;
+        background-color: rgba($search-and-nav-links, 0.2);
+      }
     }
   }
 

@@ -380,8 +380,6 @@ RSpec/AnyInstanceOf:
   - spec/services/packages/nuget/metadata_extraction_service_spec.rb
   - spec/services/packages/nuget/update_package_from_metadata_service_spec.rb
   - spec/services/pages/delete_services_spec.rb
-  - spec/services/pod_logs/elasticsearch_service_spec.rb
-  - spec/services/pod_logs/kubernetes_service_spec.rb
   - spec/services/post_receive_service_spec.rb
   - spec/services/projects/after_rename_service_spec.rb
   - spec/services/projects/container_repository/cleanup_tags_service_spec.rb

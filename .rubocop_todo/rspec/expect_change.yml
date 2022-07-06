@@ -628,4 +628,3 @@ RSpec/ExpectChange:
     - 'spec/workers/update_highest_role_worker_spec.rb'
     - 'spec/workers/user_status_cleanup/batch_worker_spec.rb'
     - 'spec/workers/users/create_statistics_worker_spec.rb'
-    - 'spec/workers/web_hooks/destroy_worker_spec.rb'

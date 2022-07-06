@@ -234,7 +234,7 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 Sometimes during version upgrades you might end up with some wrong CSS or
 missing some icons. In that case, try to precompile the assets again.
 
-This only applies to source installations and does NOT apply to
+This only applies to source installations and does not apply to
 Omnibus packages.
 
 **Source Installation**

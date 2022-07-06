@@ -4,6 +4,8 @@ import {
   GlOutsideDirective as Outside,
   GlIcon,
   GlToken,
+  GlSafeHtmlDirective as SafeHtml,
+  GlTooltipDirective,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
@@ -44,8 +46,13 @@ export default {
     ),
     searchResultsLoading: s__('GlobalSearch|Search results are loading'),
     searchResultsScope: s__('GlobalSearch|in %{scope}'),
+    kbdHelp: sprintf(
+      s__('GlobalSearch|Use the shortcut key %{kbdOpen}/%{kbdClose} to start a search'),
+      { kbdOpen: '<kbd>', kbdClose: '</kbd>' },
+      false,
+    ),
   },
-  directives: { Outside, GlResizeObserverDirective },
+  directives: { SafeHtml, Outside, GlTooltip: GlTooltipDirective, GlResizeObserverDirective },
   components: {
     GlSearchBoxByType,
     HeaderSearchDefaultItems,
@@ -234,6 +241,12 @@ export default {
         )
       }}
     </gl-token>
+    <kbd
+      v-gl-tooltip.bottom.hover.html
+      class="gl-absolute gl-right-3 gl-top-0 gl-z-index-1 keyboard-shortcut-helper"
+      :title="$options.i18n.kbdHelp"
+      >/</kbd
+    >
     <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">{{
       searchInputDescribeBy
     }}</span>

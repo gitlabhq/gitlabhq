@@ -11,6 +11,7 @@ module Gitlab
         return :invalid unless runner_version.valid?
 
         releases = RunnerReleases.instance.releases
+        return :error unless releases
 
         # Recommend patch update if there's a newer release in a same minor branch as runner
         releases.each do |available_release|
@@ -48,7 +49,7 @@ module Gitlab
       end
 
       def outside_backport_window?(runner_version, releases)
-        return false if runner_version >= releases.last # return early if runner version is too new
+        return false if releases.empty? || runner_version >= releases.last # return early if runner version is too new
 
         latest_minor_releases = releases.map(&:without_patch).uniq
         latest_version_position = latest_minor_releases.count - 1

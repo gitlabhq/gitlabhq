@@ -137,7 +137,7 @@ GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee
 to lowest precedence:
 
 - `|` - the logical `OR` operator. For example, `query_a|query_b` (where `query_a`
-  and `query_b` are queries made up of the other operators here) will include
+  and `query_b` are queries made up of the other operators here) includes
   queues that match either query.
 - `&` - the logical `AND` operator. For example, `query_a&query_b` (where
   `query_a` and `query_b` are queries made up of the other operators here) will
@@ -181,7 +181,7 @@ sidekiq['routing_rules'] = [
 ]
 ```
 
-These queues will also need to be included in at least one [Sidekiq
+These queues must also be included in at least one [Sidekiq
 queue group](extra_sidekiq_processes.md#start-multiple-processes).
 
 The following table shows the workers that should have their own queue:

@@ -465,7 +465,6 @@ Layout/SpaceInsideBlockBraces:
     - 'spec/lib/gitlab/database/with_lock_retries_spec.rb'
     - 'spec/lib/gitlab/database_importers/common_metrics/importer_spec.rb'
     - 'spec/lib/gitlab/database_spec.rb'
-    - 'spec/lib/gitlab/elasticsearch/logs/lines_spec.rb'
     - 'spec/lib/gitlab/email/handler/create_note_handler_spec.rb'
     - 'spec/lib/gitlab/email/handler/service_desk_handler_spec.rb'
     - 'spec/lib/gitlab/email/message/in_product_marketing/admin_verify_spec.rb'

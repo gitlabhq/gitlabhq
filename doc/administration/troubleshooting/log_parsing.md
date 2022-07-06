@@ -47,7 +47,7 @@ grep <TERM> <FILE> | jq .
 jq -cR 'fromjson?' file.json | jq <COMMAND>
 ```
 
-By default `jq` will error out when it encounters a line that is not valid JSON.
+By default `jq` errors out when it encounters a line that is not valid JSON.
 This skips over all invalid lines and parses the rest.
 
 #### Print a JSON log's time range

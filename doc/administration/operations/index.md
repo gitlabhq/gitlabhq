@@ -24,7 +24,7 @@ Keep your GitLab instance up and running smoothly.
   of SSH certificates](ssh_certificates.md).
 - [File System Performance Benchmarking](filesystem_benchmarking.md): File system
   performance can have a big impact on GitLab performance, especially for actions
-  that read or write Git repositories. This information will help benchmark
+  that read or write Git repositories. This information helps benchmark
   file system performance against known good and bad real-world systems.
 - [The Rails Console](rails_console.md): Provides a way to interact with your GitLab instance from the command line.
   Used for troubleshooting a problem or retrieving some data that can only be done through direct access to GitLab.

@@ -15,12 +15,12 @@ there are a number of constraints. In particular, you can upgrade to only one mi
 at a time, for example, from 14.6 to 14.7, then to 14.8, etc.
 
 If you want to upgrade to more than one minor release at a time (for example, from 14.6 to 14.9),
-you need to take your GitLab instance offline, which implies downtime.
+you must take your GitLab instance offline, which implies downtime.
 Before starting this process, verify the
 [version specific upgrading instructions](index.md#version-specific-upgrading-instructions)
 relevant to your [upgrade path](index.md#upgrade-paths).
 
-For a single node installation, you only need to [uprgade the GitLab package](package/index.md).
+For a single node installation, you must only [upgrade the GitLab package](package/index.md).
 
 The process for upgrading a number of components of a multi-node GitLab
 installation is the same as for zero downtime upgrades.
@@ -86,11 +86,11 @@ for Gitaly cluster.
 
 If you are using Amazon Machine Images (AMIs) on AWS, the Gitaly nodes
 **should not be upgraded via the AMI process**. Gitaly nodes should **only**
-be upgraded using the package upgrade. This is because:
+be upgraded using the package upgrade because:
 
 - Praefect tracks replicas of Git repositories by server hostname.
-- Redeployment using AMIs will issue the nodes with new hostnames.
-- Even though the storage will be the same, Gitaly cluster will not work after this.
+- Redeployment using AMIs issues the nodes with new hostnames.
+- Even though the storage is the same, Gitaly cluster does not work after this.
 
 The Praefect nodes, however, can be upgraded via an AMI redeployment process:
 
@@ -100,7 +100,7 @@ The Praefect nodes, however, can be upgraded via an AMI redeployment process:
   1. The first node to be redeployed with the upgraded image should be your
      deploy node.
   1. After it's deployed, set `praefect['auto_migrate'] = true` in `gitlab.rb`
-     and apply with `gitlab-ctl reconfigure`. This will run the database
+     and apply with `gitlab-ctl reconfigure`. This runs the database
      migrations.
   1. Redeploy your other Praefect nodes.
 
@@ -142,7 +142,7 @@ For unclustered PostgreSQL servers:
 
 ## Upgrade the Patroni node
 
-Patroni is used to achiece high availabilty with PostgreSQL.
+Patroni is used to achieve high availability with PostgreSQL.
 
 If a PostgreSQL major version upgrade is required,
 [follow the major version process](../administration/postgresql/replication_and_failover.md#upgrading-postgresql-major-version-in-a-patroni-cluster).
@@ -150,7 +150,7 @@ If a PostgreSQL major version upgrade is required,
 The upgrade process for all other versions is performed on all replicas first.
 After they're upgraded, a cluster failover occurs from the leader to one of the upgraded
 replicas. This ensures that only one failover is needed, and once complete the new
-leader will be upgraded.
+leader is upgraded.
 
 Follow the following process:
 
@@ -232,7 +232,7 @@ All the Puma and Sidekiq processes were previously shut down. On each node:
    ps -ef | egrep 'puma: | puma | sidekiq '
    ```
 
-Select one node that runs Puma. This will be your deploy node, and is responsible for
+Select one node that runs Puma. This is your deploy node, and is responsible for
 running all database migrations. On the deploy node:
 
 1. Ensure the server is configured to permit regular migrations. Check that

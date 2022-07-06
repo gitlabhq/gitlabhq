@@ -8,12 +8,12 @@ comments: false
 # Upgrading Community Edition and Enterprise Edition from source **(FREE SELF)**
 
 Make sure you view this update guide from the branch (version) of GitLab you
-would like to install (for example, `11.8`). You can select the required version of documentation in the dropdown at the top right corner of GitLab documentation page.
+would like to install (for example, `11.8`). You can select the required version of documentation in the dropdown list at the top right corner of GitLab documentation page.
 
 In each of the following examples, replace `BRANCH` with the branch of the version you upgrading to (for example, `11-8-stable` for `11.8`). Replace `PREVIOUS_BRANCH` with the
 branch for the version you are upgrading from (for example, `11-7-stable` for `11.7`).
 
-If the highest number stable branch is unclear please check the
+If the highest number stable branch is unclear check the
 [GitLab Blog](https://about.gitlab.com/blog/archives.html) for installation
 guide links by version.
 
@@ -24,7 +24,7 @@ the [Upgrading from CE to EE](upgrading_from_ce_to_ee.md) documentation.
 
 Major versions are reserved for backwards incompatible changes. We recommend that
 you first upgrade to the latest available minor version of your current major version.
-Please follow the [Upgrade Recommendations](../policy/maintenance.md#upgrade-recommendations)
+Follow the [Upgrade Recommendations](../policy/maintenance.md#upgrade-recommendations)
 to identify the ideal upgrade path.
 
 Before upgrading to a new major version, you should ensure that any background
@@ -225,7 +225,7 @@ NGINX configuration to continue using it. This is because the GitLab application
 sets it.
 
 If you are using Apache instead of NGINX see the updated [Apache templates](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
-Also note that because Apache does not support upstreams behind Unix sockets you
+Also because Apache does not support upstreams behind Unix sockets you
 must let GitLab Workhorse listen on a TCP port. You can do this
 via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/init.d/gitlab.default.example#L38).
 
@@ -428,7 +428,7 @@ Additional instructions here.
 ### 15.0.0
 
 Support for more than one database has been added to GitLab. [As part of this](https://gitlab.com/gitlab-org/gitlab/-/issues/338182),
-`config/database.yml` needs to include a database name in the database configuration.
+`config/database.yml` must include a database name in the database configuration.
 The `main: database` must be first. If an invalid or deprecated syntax is used, an error is generated
 during application start:
 
@@ -447,7 +447,7 @@ production:
   ...
 ```
 
-Starting with GitLab 15.0, it needs to define a `main` database first:
+Starting with GitLab 15.0, it must define a `main` database first:
 
 ```yaml
 production:
@@ -492,7 +492,7 @@ for the previous version.
 
 For example, if you have upgraded to GitLab 12.6 and want to revert back to
 12.5, follow the guides for upgrading from 12.4 to 12.5. You can
-use the version dropdown at the top of the page to select the right version.
+use the version dropdown list at the top of the page to select the right version.
 
 When reverting, you should **not** follow the database migration guides, as the
 backup has already been migrated to the previous version.

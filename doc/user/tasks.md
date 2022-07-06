@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tasks **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `work_items`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `work_items`. Disabled by default.
+> - [Creating, editing, and deleting tasks](https://gitlab.com/groups/gitlab-org/-/epics/7169) introduced in GitLab 15.0.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -41,7 +42,7 @@ To edit a task:
 1. In the issue description, view the task links.
 1. Select a link. The task is displayed.
    - To edit the description, select **Edit**, then select **Save**.
-   - To edit the title or state, make your changes, then click outside the field. The changes are saved automatically.
+   - To edit the title or state, make your changes, then select any area outside the field. The changes are saved automatically.
 
 ## Delete a task
 

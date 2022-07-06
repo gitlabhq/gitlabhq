@@ -19,7 +19,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20220627085814-c3ac35da23b2
 	github.com/jpillora/backoff v1.0.0
-	github.com/mitchellh/copystructure v1.0.0
+	github.com/mitchellh/copystructure v1.2.0
 	github.com/prometheus/client_golang v1.12.2
 	github.com/rafaeljusto/redigomock/v3 v3.1.1
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
@@ -81,7 +81,7 @@ require (
 	github.com/lightstep/lightstep-tracer-go v0.25.0 // indirect
 	github.com/mattn/go-ieproxy v0.0.6 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
-	github.com/mitchellh/reflectwalk v1.0.0 // indirect
+	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/oklog/ulid/v2 v2.0.2 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/philhofer/fwd v1.1.1 // indirect

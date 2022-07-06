@@ -66,7 +66,7 @@ For source installations the following settings are nested under `uploads:` and 
 | Setting | Description | Default |
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
-| `remote_directory` | The bucket name where Uploads will be stored| |
+| `remote_directory` | The bucket name where Uploads are stored| |
 | `proxy_download` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 

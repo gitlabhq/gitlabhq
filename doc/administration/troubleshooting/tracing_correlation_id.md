@@ -32,7 +32,7 @@ documentation for some popular browsers.
 
 To locate a relevant request and view its correlation ID:
 
-1. Enable persistent logging in your network monitor. Some actions in GitLab will redirect you quickly after you submit a form, so this will help capture all relevant activity.
+1. Enable persistent logging in your network monitor. Some actions in GitLab redirect you quickly after you submit a form, so this helps capture all relevant activity.
 1. To help isolate the requests you are looking for, you can filter for `document` requests.
 1. Select the request of interest to view further detail.
 1. Go to the **Headers** section and look for **Response Headers**. There you should find an `x-request-id` header with a
@@ -121,7 +121,7 @@ find /var/log/gitlab -type f -mtime 0 -exec grep 'LOt9hgi1TV4' '{}' '+'
 ### Searching in distributed architectures
 
 If you have done some horizontal scaling in your GitLab infrastructure, then
-you will need to search across _all_ of your GitLab nodes. You can do this with
+you must search across _all_ of your GitLab nodes. You can do this with
 some sort of log aggregation software like Loki, ELK, Splunk, or others.
 
 You can use a tool like Ansible or PSSH (parallel SSH) that can execute identical commands across your servers in

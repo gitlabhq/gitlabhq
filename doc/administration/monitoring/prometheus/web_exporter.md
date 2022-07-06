@@ -54,6 +54,8 @@ Metrics can now be served and scraped from `localhost:8083/metrics`.
 
 ## Enable HTTPS
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364771) in GitLab 15.2.
+
 To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 
 1. Edit `/etc/gitlab/gitlab.rb` to add (or find and uncomment) the following lines:

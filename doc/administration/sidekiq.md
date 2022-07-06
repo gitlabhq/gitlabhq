@@ -193,6 +193,8 @@ To configure the metrics server:
 
 ### Enable HTTPS
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364771) in GitLab 15.2.
+
 To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 
 1. Edit `/etc/gitlab/gitlab.rb` to add (or find and uncomment) the following lines:
@@ -206,7 +208,7 @@ To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 
-When TLS is enabled, the same `port` and `address` will be used as described above.
+When TLS is enabled, the same `port` and `address` are used as described above.
 The metrics server cannot serve both HTTP and HTTPS at the same time.
 
 ## Configure health checks

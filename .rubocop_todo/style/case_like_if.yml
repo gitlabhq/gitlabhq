@@ -33,7 +33,6 @@ Style/CaseLikeIf:
     - 'ee/spec/features/projects/custom_projects_template_spec.rb'
     - 'ee/spec/support/matchers/ee/epic_aggregate_matchers.rb'
     - 'lib/api/helpers/label_helpers.rb'
-    - 'lib/gitlab/analytics/unique_visits.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
     - 'lib/gitlab/ci/ansi2json/converter.rb'
     - 'lib/gitlab/ci/build/image.rb'

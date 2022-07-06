@@ -82,6 +82,7 @@ describe('HeaderSearchApp', () => {
   const findHeaderSearchForm = () => wrapper.findByTestId('header-search-form');
   const findHeaderSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findScopeToken = () => wrapper.findComponent(GlToken);
+  const findHeaderSearchInputKBD = () => wrapper.find('.keyboard-shortcut-helper');
   const findHeaderSearchDropdown = () => wrapper.findByTestId('header-search-dropdown-menu');
   const findHeaderSearchDefaultItems = () => wrapper.findComponent(HeaderSearchDefaultItems);
   const findHeaderSearchScopedItems = () => wrapper.findComponent(HeaderSearchScopedItems);
@@ -99,6 +100,14 @@ describe('HeaderSearchApp', () => {
 
       it('Header Search Input', () => {
         expect(findHeaderSearchInput().exists()).toBe(true);
+      });
+
+      it('Header Search Input KBD hint', () => {
+        expect(findHeaderSearchInputKBD().exists()).toBe(true);
+        expect(findHeaderSearchInputKBD().text()).toContain('/');
+        expect(findHeaderSearchInputKBD().attributes('title')).toContain(
+          'Use the shortcut key <kbd>/</kbd> to start a search',
+        );
       });
 
       it('Search Input Description', () => {

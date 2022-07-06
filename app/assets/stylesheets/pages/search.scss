@@ -99,27 +99,22 @@ input[type='checkbox']:hover {
     }
   }
 
+  .keyboard-shortcut-helper {
+    transform: translateY(calc(50% - 2px));
+    box-shadow: none;
+    border-color: transparent;
+  }
+
+  &.is-active {
+    .keyboard-shortcut-helper {
+      display: none;
+    }
+  }
+
   &.is-not-active {
     .btn.gl-clear-icon-button,
     .in-search-scope-help {
       display: none;
-    }
-
-    &::after {
-      content: $search-keyboard-shortcut;
-      transform: translateY(calc(50% - #{$gl-spacing-scale-2}));
-      position: absolute;
-      top: 0;
-      right: $gl-spacing-scale-3;
-      padding: $gl-spacing-scale-2 5px;
-      font-size: $gl-font-size-small;
-      font-family: $monospace-font;
-      line-height: 1;
-      vertical-align: middle;
-      border-width: 0;
-      border-radius: $border-radius-medium;
-      box-shadow: none;
-      box-sizing: border-box;
     }
   }
 }

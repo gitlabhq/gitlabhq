@@ -1845,7 +1845,6 @@ RSpec/ContextWording:
     - 'spec/helpers/events_helper_spec.rb'
     - 'spec/helpers/git_helper_spec.rb'
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
-    - 'spec/helpers/groups/crm_settings_helper_spec.rb'
     - 'spec/helpers/groups/group_members_helper_spec.rb'
     - 'spec/helpers/groups_helper_spec.rb'
     - 'spec/helpers/ide_helper_spec.rb'

@@ -717,7 +717,6 @@ Rails/SkipsModelValidations:
     - 'spec/uploaders/job_artifact_uploader_spec.rb'
     - 'spec/views/groups/edit.html.haml_spec.rb'
     - 'spec/views/projects/environments/terminal.html.haml_spec.rb'
-    - 'spec/views/projects/tracing/show.html.haml_spec.rb'
     - 'spec/workers/auto_devops/disable_worker_spec.rb'
     - 'spec/workers/build_finished_worker_spec.rb'
     - 'spec/workers/ci/merge_requests/add_todo_when_build_fails_worker_spec.rb'

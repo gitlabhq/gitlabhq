@@ -17716,6 +17716,9 @@ msgstr ""
 msgid "GlobalSearch|Type for new suggestions to appear below."
 msgstr ""
 
+msgid "GlobalSearch|Use the shortcut key %{kbdOpen}/%{kbdClose} to start a search"
+msgstr ""
+
 msgid "GlobalSearch|What are you searching for?"
 msgstr ""
 

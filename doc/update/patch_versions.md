@@ -11,11 +11,11 @@ comments: false
 
 Make sure you view [this update guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/update/patch_versions.md) from the tag (version) of GitLab you would like to install.
 In most cases this should be the highest numbered production tag (without `rc` in it).
-You can select the tag in the version dropdown in the top left corner of GitLab (below the menu bar).
+You can select the tag in the version dropdown list in the top left corner of GitLab (below the menu bar).
 
 ### 0. Backup
 
-It's useful to make a backup just in case things go south. Depending on the installation method, backup commands vary. See the [backing up and restoring GitLab](../raketasks/backup_restore.md) documentation.
+Make a backup just in case things go south. Depending on the installation method, backup commands vary. See the [backing up and restoring GitLab](../raketasks/backup_restore.md) documentation.
 
 ### 1. Stop server
 
@@ -107,7 +107,7 @@ sudo -u git -H make
 
 ### 8. Install/Update `gitlab-elasticsearch-indexer` **(PREMIUM SELF)**
 
-Please follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
+Follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
 
 ### 9. Start application
 

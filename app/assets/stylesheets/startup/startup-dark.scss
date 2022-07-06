@@ -3,9 +3,12 @@
 // https://gitlab.com/gitlab-org/gitlab/-/issues/331812
 @charset "UTF-8";
 body.gl-dark {
+  --gray-10: #1f1f1f;
   --gray-50: #303030;
   --gray-100: #404040;
+  --gray-200: #525252;
   --gray-600: #bfbfbf;
+  --gray-700: #dbdbdb;
   --gray-900: #fafafa;
   --green-100: #0d532a;
   --green-700: #91d4a8;
@@ -61,6 +64,11 @@ a:not([href]):not([class]) {
   color: inherit;
   text-decoration: none;
 }
+kbd {
+  font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
+    "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
+  font-size: 1em;
+}
 img {
   vertical-align: middle;
   border-style: none;
@@ -104,6 +112,18 @@ button::-moz-focus-inner,
 .list-unstyled {
   padding-left: 0;
   list-style: none;
+}
+kbd {
+  padding: 0.2rem 0.4rem;
+  font-size: 90%;
+  color: #333;
+  background-color: #fafafa;
+  border-radius: 0.2rem;
+}
+kbd kbd {
+  padding: 0;
+  font-size: 100%;
+  font-weight: 600;
 }
 .container-fluid {
   width: 100%;
@@ -739,6 +759,22 @@ input {
 }
 .form-control::placeholder {
   color: #868686;
+}
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 0.6875rem;
+  line-height: 10px;
+  color: var(--gray-700, #dbdbdb);
+  vertical-align: middle;
+  background-color: var(--gray-10, #1f1f1f);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--gray-100, #404040) var(--gray-100, #404040)
+    var(--gray-200, #525252);
+  border-image: none;
+  border-radius: 3px;
+  box-shadow: 0 -1px 0 var(--gray-200, #525252) inset;
 }
 .navbar-gitlab {
   padding: 0 16px;
@@ -1514,22 +1550,10 @@ svg.s16 {
     min-width: 200px;
   }
 }
-.header-search.is-not-active::after {
-  content: "/";
-  transform: translateY(calc(50% - 0.25rem));
-  position: absolute;
-  top: 0;
-  right: 0.5rem;
-  padding: 0.25rem 5px;
-  font-size: 12px;
-  font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
-    "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
-  line-height: 1;
-  vertical-align: middle;
-  border-width: 0;
-  border-radius: 3px;
+.header-search .keyboard-shortcut-helper {
+  transform: translateY(calc(50% - 2px));
   box-shadow: none;
-  box-sizing: border-box;
+  border-color: transparent;
 }
 .search {
   margin: 0 8px;
@@ -1877,7 +1901,7 @@ body.gl-dark .header-search input::placeholder {
 body.gl-dark .header-search input:active::placeholder {
   color: #868686;
 }
-body.gl-dark .header-search.is-not-active::after {
+body.gl-dark .header-search.is-not-active .keyboard-shortcut-helper {
   color: #fafafa;
   background-color: rgba(250, 250, 250, 0.2);
 }
@@ -2077,6 +2101,12 @@ body.gl-dark {
 .gl-absolute {
   position: absolute;
 }
+.gl-top-0 {
+  top: 0;
+}
+.gl-right-3 {
+  right: 0.5rem;
+}
 .gl-w-full {
   width: 100%;
 }
@@ -2111,6 +2141,9 @@ body.gl-dark {
 }
 .gl-font-weight-bold {
   font-weight: 600;
+}
+.gl-z-index-1 {
+  z-index: 1;
 }
 
 @import "startup/cloaking";

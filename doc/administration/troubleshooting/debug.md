@@ -28,7 +28,7 @@ session by running:
 ActiveRecord::Base.logger = Logger.new($stdout)
 ```
 
-This will show information about database queries triggered by any Ruby code
+This shows information about database queries triggered by any Ruby code
 you may run in the console. To turn off logging again, run:
 
 ```ruby
@@ -44,8 +44,8 @@ session by running:
 ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
 ```
 
-This change only affects the current Rails console session and will
-not be persisted in the GitLab production environment or in the next Rails
+This change only affects the current Rails console session and is
+not persisted in the GitLab production environment or in the next Rails
 console session.
 
 ### Output Rails console session history
@@ -163,7 +163,7 @@ in Omnibus, run as root:
 
 ## Common Problems
 
-Many of the tips to diagnose issues below apply to many different situations. We'll use one
+Many of the tips to diagnose issues below apply to many different situations. We use one
 concrete example to illustrate what you can do to learn what is going wrong.
 
 ### 502 Gateway Timeout after Unicorn spins at 100% CPU
@@ -213,7 +213,7 @@ downtime. Otherwise skip to the next section.
    ```
 
 If the Puma process terminates before you are able to run these
-commands, GDB will report an error. To buy more time, you can always raise the
+commands, GDB reports an error. To buy more time, you can always raise the
 Puma worker timeout. For omnibus users, you can edit `/etc/gitlab/gitlab.rb` and
 increase it from 60 seconds to 600:
 

@@ -41,7 +41,7 @@ You can check if everything is correct by connecting to each server using
 /opt/gitlab/embedded/bin/redis-cli -h <redis-host-or-ip> -a '<redis-password>' info replication
 ```
 
-When connected to a `Primary` Redis, you will see the number of connected
+When connected to a `Primary` Redis, you see the number of connected
 `replicas`, and a list of each with connection details:
 
 ```plaintext
@@ -56,7 +56,7 @@ repl_backlog_first_byte_offset:206989083
 repl_backlog_histlen:1048576
 ```
 
-When it's a `replica`, you will see details of the primary connection and if
+When it's a `replica`, you see details of the primary connection and if
 its `up` or `down`:
 
 ```plaintext
@@ -138,7 +138,7 @@ there may be something wrong with your configuration files or it can be related
 to [this upstream issue](https://github.com/redis/redis-rb/issues/531).
 
 You must make sure that `resque.yml` and `sentinel.conf` are configured correctly,
-otherwise `redis-rb` will not work properly.
+otherwise `redis-rb` does not work properly.
 
 The `master-group-name` (`gitlab-redis`) defined in (`sentinel.conf`)
 **must** be used as the hostname in GitLab (`resque.yml`):

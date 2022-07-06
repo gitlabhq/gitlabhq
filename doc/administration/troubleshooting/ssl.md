@@ -236,7 +236,7 @@ remote server that is serving only HTTP.
 
 One scenario is that you're using [object storage](../object_storage.md), which
 isn't served under HTTPS. GitLab is misconfigured and attempts a TLS handshake,
-but the object storage will respond with plain HTTP.
+but the object storage responds with plain HTTP.
 
 ## `schannel: SEC_E_UNTRUSTED_ROOT`
 
