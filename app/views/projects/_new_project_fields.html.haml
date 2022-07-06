@@ -35,7 +35,7 @@
 - if current_user.can_create_group?
   .form-text.text-muted
     - link_start_group_path = '<a href="%{path}">' % { path: new_group_path }
-    - project_tip = s_('ProjectsNew|Want to house several dependent projects under the same namespace? %{link_start}Create a group.%{link_end}') % { link_start: link_start_group_path, link_end: '</a>' }
+    - project_tip = s_('ProjectsNew|Want to organize several dependent projects under the same namespace? %{link_start}Create a group.%{link_end}') % { link_start: link_start_group_path, link_end: '</a>' }
     = project_tip.html_safe
 = render Pajamas::AlertComponent.new(alert_options: { class: "gl-mb-4 gl-display-none js-user-readme-repo" },
   dismissible: false,

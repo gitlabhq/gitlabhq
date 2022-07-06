@@ -642,7 +642,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/admin_area/credentials_inventory.md @eread
 /doc/user/admin_area/custom_project_templates.md @eread
 /doc/user/admin_area/diff_limits.md @aqualls
-/doc/user/admin_area/geo_nodes.md @axil
+/doc/user/admin_area/geo_sites.md @axil
 /doc/user/admin_area/labels.md @msedlakjakubowski
 /doc/user/admin_area/license_file.md @sselhorn
 /doc/user/admin_area/license.md @sselhorn

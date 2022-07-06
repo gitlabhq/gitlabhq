@@ -183,7 +183,7 @@ This machine's Geo node name matches a database record ... no
 ```
 
 Learn more about recommended site names in the description of the Name field in
-[Geo Admin Area Common Settings](../../../user/admin_area/geo_nodes.md#common-settings).
+[Geo Admin Area Common Settings](../../../user/admin_area/geo_sites.md#common-settings).
 
 ### Message: `WARNING: oldest xmin is far in the past` and `pg_wal` size growing
 

@@ -83,6 +83,8 @@ The following are important notes about 2FA:
   1. Uncheck the **Allow subgroups to set up their own two-factor authentication rule** field.
 
   This action causes all subgroups with 2FA requirements to stop requiring that from their members.
+- Access tokens are not required to provide a second factor for authentication because they are API-based.
+  Tokens generated before 2FA is enforced remain valid.
 
 ## Disable 2FA
 

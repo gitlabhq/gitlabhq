@@ -6,8 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Multiple Databases
 
-To scale GitLab, the we are
-[decomposing the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
+To allow GitLab to scale further we
+[decomposed the GitLab application database into multiple
+databases](https://gitlab.com/groups/gitlab-org/-/epics/6168). The two databases
+are `main` and `ci`. GitLab supports being run with either one database or two databases.
+On GitLab.com we are using two separate databases.
 
 ## GitLab Schema
 
@@ -40,7 +43,7 @@ The `gitlab_schema` primary purpose is to introduce a barrier between different 
 
 This is used as a primary source of classification for:
 
-- [Discovering cross-joins across tables from different schemas](#removing-joins-between-ci_-and-non-ci_-tables)
+- [Discovering cross-joins across tables from different schemas](#removing-joins-between-ci-and-non-ci-tables)
 - [Discovering cross-database transactions across tables from different schemas](#removing-cross-database-transactions)
 
 ### The special purpose of `gitlab_shared`
@@ -71,10 +74,6 @@ might be missing some of those application-defined `gitlab_shared` tables (like 
 Read [Migrations for Multiple Databases](migrations_for_multiple_databases.md).
 
 ## CI/CD Database
-
-> Support for configuring the GitLab Rails application to use a distinct
-database for CI/CD tables was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64289)
-in GitLab 14.1. This feature is still under development, and is not ready for production use.
 
 ### Configure single database
 
@@ -107,32 +106,14 @@ NOTE: The `validate_cross_joins!` method in `spec/support/database/prevent_cross
       the corresponding documentation URL used in `spec/support/database/prevent_cross_joins.rb`.
 -->
 
-### Removing joins between `ci_*` and non `ci_*` tables
+### Removing joins between `ci` and non `ci` tables
 
 Queries that join across databases raise an error. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68620)
 in GitLab 14.3, for new queries only. Pre-existing queries do not raise an error.
 
-We are planning on moving all the `ci_*` tables to a separate database, so
-referencing `ci_*` tables with other tables will not be possible. This means,
-that using any kind of `JOIN` in SQL queries will not work. We have identified
-already many such examples that need to be fixed in
-<https://gitlab.com/groups/gitlab-org/-/epics/6289> .
-
-#### Path to removing cross-database joins
-
-The following steps are the process to remove cross-database joins between
-`ci_*` and non `ci_*` tables:
-
-1. **{check-circle}** Add all failing specs to the [`cross-join-allowlist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/database/cross-join-allowlist.yml)
-   file.
-1. **{check-circle}** Find the code that caused the spec failure and wrap the isolated code
-   in [`allow_cross_joins_across_databases`](#allowlist-for-existing-cross-joins).
-   Link to a new issue assigned to the correct team to remove the specs from the
-   `cross-join-allowlist.yml` file.
-1. **{dotted-circle}** Remove the `cross-join-allowlist.yml` file and stop allowing
-   whole test files.
-1. **{dotted-circle}** Fix the problem and remove the `allow_cross_joins_across_databases` call.
-1. **{dotted-circle}** Fix all the cross-joins and remove the `allow_cross_joins_across_databases` method.
+Because GitLab can be run with multiple separate databases, referencing `ci`
+tables with non `ci` tables in a single query is not possible. Therefore,
+using any kind of `JOIN` in SQL queries will not work.
 
 #### Suggestions for removing cross-database joins
 
@@ -416,13 +397,10 @@ query or look at other patterns described above for removing cross-joins.
 
 #### How to validate you have correctly removed a cross-join
 
-Using RSpec tests, you can validate all SQL queries within a code block to
-ensure that none of them are joining across the two databases. This is a useful
-tool to confirm you have correctly fixed an existing cross-join.
-
-At some point in the future we will have fixed all cross-joins and this tool
-will run by default in all tests. For now, the tool needs to be explicitly enabled
-for your test.
+RSpec is configured to automatically validate all SQL queries do not join
+across databases. If this validation is disabled in
+`spec/support/database/cross-join-allowlist.yml` then you can still validate an
+isolated code block using `with_cross_joins_prevented`.
 
 You can use this method like so:
 
@@ -553,12 +531,11 @@ The `MyAsyncConsistencyJob` would also attempt to update the timestamp if they d
 
 At this point, we don't have the tooling (we might not even need it) to ensure similar consistency
 characteristics as we had with one database. If you think that the code you're working on requires
-these properties, then you can disable the cross-database modification check by wrapping to
-offending database queries with a block and create a follow-up issue mentioning the sharding group
-(`gitlab-org/sharding-group`).
+these properties, then you can disable the cross-database modification check in your tests by wrapping the
+offending test code with a block and create a follow-up issue.
 
 ```ruby
-Gitlab::Database.allow_cross_joins_across_databases(url: 'gitlab issue URL') do
+allow_cross_database_modification_within_transaction(url: 'gitlab issue URL') do
   ApplicationRecord.transaction do
     ci_build.update!(updated_at: Time.current) # UPDATE on CI DB
     ci_build.project.update!(updated_at: Time.current) # UPDATE on Main DB
@@ -567,7 +544,7 @@ end
 ```
 
 Don't hesitate to reach out to the
-[sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding/)
+[pods group](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/pods/)
 for advice.
 
 ##### Avoid `dependent: :nullify` and `dependent: :destroy` across databases

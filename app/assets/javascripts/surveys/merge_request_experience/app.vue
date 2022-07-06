@@ -92,7 +92,7 @@ export default {
   >
     <template #default="{ dismiss }">
       <aside
-        class="gl-fixed gl-bottom-0 gl-right-0 gl-z-index-200 gl-p-5"
+        class="gl-fixed gl-bottom-0 gl-right-0 gl-z-index-9999 gl-p-5"
         :aria-label="$options.i18n.survey"
       >
         <transition name="survey-slide-up">

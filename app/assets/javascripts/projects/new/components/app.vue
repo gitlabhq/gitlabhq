@@ -16,7 +16,7 @@ const PANELS = [
     selector: '#blank-project-pane',
     title: s__('ProjectsNew|Create blank project'),
     description: s__(
-      'ProjectsNew|Create a blank project to house your files, plan your work, and collaborate on code, among other things.',
+      'ProjectsNew|Create a blank project to store your files, plan your work, and collaborate on code, among other things.',
     ),
     illustration: blankProjectIllustration,
   },

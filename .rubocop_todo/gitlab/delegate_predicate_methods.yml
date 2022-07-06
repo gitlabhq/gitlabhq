@@ -2,4 +2,3 @@
 Gitlab/DelegatePredicateMethods:
   Exclude:
   - app/models/clusters/cluster.rb
-  - ee/app/models/concerns/ee/ci/metadatable.rb
