@@ -724,6 +724,9 @@ msgstr ""
 msgid "%{labelStart}Crash State:%{labelEnd} %{stacktrace_snippet}"
 msgstr ""
 
+msgid "%{labelStart}Crash Type:%{labelEnd} %{crash_type}"
+msgstr ""
+
 msgid "%{labelStart}Evidence:%{labelEnd} %{evidence}"
 msgstr ""
 
@@ -12244,9 +12247,6 @@ msgstr ""
 msgid "Delete File"
 msgstr ""
 
-msgid "Delete Internal Note"
-msgstr ""
-
 msgid "Delete Key"
 msgstr ""
 
@@ -12290,6 +12290,9 @@ msgid "Delete image"
 msgstr ""
 
 msgid "Delete image repository"
+msgstr ""
+
+msgid "Delete internal note"
 msgstr ""
 
 msgid "Delete label"

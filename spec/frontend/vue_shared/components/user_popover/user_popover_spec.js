@@ -2,7 +2,6 @@ import { GlSkeletonLoader, GlIcon } from '@gitlab/ui';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
-import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
@@ -48,7 +47,6 @@ describe('User Popover Component', () => {
 
   const findUserStatus = () => wrapper.findByTestId('user-popover-status');
   const findTarget = () => document.querySelector('.js-user-link');
-  const findUserName = () => wrapper.find(UserNameWithStatus);
   const findSecurityBotDocsLink = () => wrapper.findByTestId('user-popover-bot-docs-link');
   const findUserLocalTime = () => wrapper.findByTestId('user-popover-local-time');
   const findToggleFollowButton = () => wrapper.findByTestId('toggle-follow-button');
@@ -245,9 +243,7 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(findUserName().exists()).toBe(true);
-      expect(wrapper.text()).toContain(user.name);
-      expect(wrapper.text()).toContain('(Busy)');
+      expect(wrapper.findByText('(Busy)').exists()).toBe(true);
     });
 
     it('should hide the busy status for any other status', () => {
@@ -258,13 +254,32 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(wrapper.text()).not.toContain('(Busy)');
+      expect(wrapper.findByText('(Busy)').exists()).toBe(false);
     });
 
-    it('passes `pronouns` prop to `UserNameWithStatus` component', () => {
+    it('shows pronouns when user has them set', () => {
       createWrapper();
 
-      expect(findUserName().props('pronouns')).toBe('they/them');
+      expect(wrapper.findByText('(they/them)').exists()).toBe(true);
+    });
+
+    describe.each`
+      pronouns
+      ${undefined}
+      ${null}
+      ${''}
+      ${'   '}
+    `('when pronouns are set to $pronouns', ({ pronouns }) => {
+      it('does not render pronouns', () => {
+        const user = {
+          ...DEFAULT_PROPS.user,
+          pronouns,
+        };
+
+        createWrapper({ user });
+
+        expect(wrapper.findByTestId('user-popover-pronouns').exists()).toBe(false);
+      });
     });
   });
 

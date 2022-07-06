@@ -9,7 +9,7 @@
     %br
     = _('After a successful password update you will be redirected to login screen.')
 
-  = form_errors(@user)
+  = form_errors(@user, pajamas_alert: true)
 
   - unless @user.password_automatically_set?
     .form-group.row

@@ -286,10 +286,6 @@ RSpec.describe MergeRequests::RefreshService do
         context 'when service runs on forked project' do
           let(:project) { @fork_project }
 
-          before do
-            stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: false)
-          end
-
           it 'creates detached merge request pipeline for fork merge request' do
             expect { subject }
               .to change { @fork_merge_request.pipelines_for_merge_request.count }.by(1)

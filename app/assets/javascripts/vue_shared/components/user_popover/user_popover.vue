@@ -7,13 +7,13 @@ import {
   GlSafeHtmlDirective,
   GlSprintf,
   GlButton,
+  GlAvatarLabeled,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
-import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import { glEmojiTag } from '~/emoji';
 import createFlash from '~/flash';
 import { followUser, unfollowUser } from '~/rest_api';
-import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
+import { isUserBusy } from '~/set_status_modal/utils';
 import { USER_POPOVER_DELAY } from './constants';
 
 const MAX_SKELETON_LINES = 4;
@@ -22,15 +22,17 @@ export default {
   name: 'UserPopover',
   maxSkeletonLines: MAX_SKELETON_LINES,
   USER_POPOVER_DELAY,
+  i18n: {
+    busy: __('Busy'),
+  },
   components: {
     GlIcon,
     GlLink,
     GlPopover,
     GlSkeletonLoader,
-    UserAvatarImage,
-    UserNameWithStatus,
     GlSprintf,
     GlButton,
+    GlAvatarLabeled,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -95,6 +97,15 @@ export default {
     toggleFollowButtonVariant() {
       return this.user?.isFollowed ? 'default' : 'confirm';
     },
+    hasPronouns() {
+      return Boolean(this.user?.pronouns?.trim());
+    },
+    isBusy() {
+      return isUserBusy(this.availabilityStatus);
+    },
+    username() {
+      return `@${this.user?.username}`;
+    },
   },
   methods: {
     async toggleFollow() {
@@ -149,43 +160,46 @@ export default {
     :placement="placement"
     boundary="viewport"
     triggers="hover focus manual"
+    data-testid="user-popover"
   >
-    <div class="gl-py-3 gl-line-height-normal gl-display-flex" data-testid="user-popover">
-      <div class="gl-mr-4 gl-flex-shrink-0">
-        <user-avatar-image :img-src="user.avatarUrl" :size="64" css-classes="gl-m-0!" />
+    <div class="gl-mb-3">
+      <div v-if="userIsLoading" class="gl-w-20">
+        <gl-skeleton-loader :width="160" :height="64">
+          <rect x="70" y="19" rx="3" ry="3" width="88" height="9" />
+          <rect x="70" y="36" rx="3" ry="3" width="64" height="8" />
+          <circle cx="32" cy="32" r="32" />
+        </gl-skeleton-loader>
       </div>
-      <div class="gl-w-full gl-word-break-word gl-display-flex gl-align-items-center">
-        <template v-if="userIsLoading">
-          <gl-skeleton-loader
-            :lines="$options.maxSkeletonLines"
-            preserve-aspect-ratio="none"
-            equal-width-lines
-            :height="52"
-          />
+      <gl-avatar-labeled
+        v-else
+        :size="64"
+        :src="user.avatarUrl"
+        :label="user.name"
+        :sub-label="username"
+      >
+        <gl-button
+          v-if="shouldRenderToggleFollowButton"
+          class="gl-mt-3 gl-align-self-start"
+          :variant="toggleFollowButtonVariant"
+          :loading="toggleFollowLoading"
+          size="small"
+          data-testid="toggle-follow-button"
+          @click="toggleFollow"
+          >{{ toggleFollowButtonText }}</gl-button
+        >
+
+        <template #meta>
+          <span
+            v-if="hasPronouns"
+            class="gl-text-gray-500 gl-font-sm gl-font-weight-normal gl-p-1"
+            data-testid="user-popover-pronouns"
+            >({{ user.pronouns }})</span
+          >
+          <span v-if="isBusy" class="gl-text-gray-500 gl-font-sm gl-font-weight-normal gl-p-1"
+            >({{ $options.i18n.busy }})</span
+          >
         </template>
-        <template v-else>
-          <div>
-            <h5 class="gl-m-0">
-              <user-name-with-status
-                :name="user.name"
-                :availability="availabilityStatus"
-                :pronouns="user.pronouns"
-              />
-            </h5>
-            <span class="gl-text-gray-500">@{{ user.username }}</span>
-            <div v-if="shouldRenderToggleFollowButton" class="gl-mt-3">
-              <gl-button
-                :variant="toggleFollowButtonVariant"
-                :loading="toggleFollowLoading"
-                size="small"
-                data-testid="toggle-follow-button"
-                @click="toggleFollow"
-                >{{ toggleFollowButtonText }}</gl-button
-              >
-            </div>
-          </div>
-        </template>
-      </div>
+      </gl-avatar-labeled>
     </div>
     <div class="gl-mt-2 gl-w-full gl-word-break-word">
       <template v-if="userIsLoading">

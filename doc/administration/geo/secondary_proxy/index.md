@@ -124,7 +124,7 @@ sudo gitlab-rails runner "Feature.disable(:geo_secondary_proxy_separate_urls)"
 ```
 
 In Kubernetes, you can run the same command in the toolbox pod. Refer to the
-[Kubernetes cheat sheet](../../troubleshooting/kubernetes_cheat_sheet.md#gitlab-specific-kubernetes-information)
+[Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information)
 for details.
 
 ## Limitations

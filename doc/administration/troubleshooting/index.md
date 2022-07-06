@@ -17,7 +17,7 @@ installation.
 - [Sidekiq](sidekiq.md)
 - [GitLab Rails console cheat sheet](gitlab_rails_cheat_sheet.md)
 - [Group SAML and SCIM troubleshooting](group_saml_scim.md) **(PREMIUM SAAS)**
-- [Kubernetes cheat sheet](kubernetes_cheat_sheet.md)
+- [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
 - [Linux cheat sheet](linux_cheat_sheet.md)
 - [Parsing GitLab logs with `jq`](log_parsing.md)
 - [Diagnostics tools](diagnostics_tools.md)

@@ -50,12 +50,8 @@ module MergeRequests
     end
 
     def can_create_pipeline_in_target_project?(merge_request)
-      if ::Feature.enabled?(:ci_disallow_to_create_merge_request_pipelines_in_target_project, merge_request.target_project)
-        merge_request.for_same_project?
-      else
-        can?(current_user, :create_pipeline, merge_request.target_project) &&
-          can_update_source_branch_in_target_project?(merge_request)
-      end
+      can?(current_user, :create_pipeline, merge_request.target_project) &&
+        can_update_source_branch_in_target_project?(merge_request)
     end
 
     def can_update_source_branch_in_target_project?(merge_request)

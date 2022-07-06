@@ -259,7 +259,7 @@ export default {
       });
       const confirmed = await confirmAction(msg, {
         primaryBtnVariant: 'danger',
-        primaryBtnText: this.note.confidential ? __('Delete Internal Note') : __('Delete Comment'),
+        primaryBtnText: this.note.confidential ? __('Delete internal note') : __('Delete comment'),
       });
 
       if (confirmed) {

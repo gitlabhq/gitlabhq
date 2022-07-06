@@ -35,8 +35,7 @@ compliance report is shown properly.
 
 The results are saved as a
 [License Compliance report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportslicense_scanning)
-that you can later download and analyze. Due to implementation limitations, we
-always take the latest License Compliance artifact available.
+that you can later download and analyze.
 
 WARNING:
 License Compliance Scanning does not support run-time installation of compilers and interpreters.

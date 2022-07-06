@@ -39,7 +39,7 @@ sudo -u git -H bundle exec rails console -e production
 
 **For Kubernetes deployments**
 
-The console is in the toolbox pod. Refer to our [Kubernetes cheat sheet](../troubleshooting/kubernetes_cheat_sheet.md#gitlab-specific-kubernetes-information) for details.
+The console is in the toolbox pod. Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
 
 To exit the console, type: `quit`.
 

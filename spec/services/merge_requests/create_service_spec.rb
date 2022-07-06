@@ -212,7 +212,6 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
             end
 
             before do
-              stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: false)
               target_project.add_developer(user2)
               target_project.add_maintainer(user)
             end

@@ -51,7 +51,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
     find('.js-note-delete').click
 
     page.within('.modal') do
-      click_button('Delete Comment', match: :first)
+      click_button('Delete comment', match: :first)
     end
 
     wait_for_requests
