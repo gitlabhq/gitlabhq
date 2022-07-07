@@ -1,8 +1,0 @@
----
-name: delayed_project_import_schedule_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87438
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1681
-milestone: '15.0'
-type: development
-group: group::scalability
-default_enabled: false

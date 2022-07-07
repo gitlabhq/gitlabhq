@@ -14,7 +14,7 @@ class MergeRequestPolicy < IssuablePolicy
     prevent :accept_merge_request
   end
 
-  rule { can?(:update_merge_request) }.policy do
+  rule { can?(:update_merge_request) & is_project_member }.policy do
     enable :approve_merge_request
   end
 

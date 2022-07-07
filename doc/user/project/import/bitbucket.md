@@ -58,7 +58,7 @@ For user contributions to be mapped, each user must complete the following befor
    If they don't match, modify the public name in the Atlassian account settings to match the
    username in the Bitbucket account settings.
 
-1. Connect your Bitbucket account in [GitLab profile social sign-in](https://gitlab.com/-/profile/account).
+1. Connect your Bitbucket account in [GitLab profile service sign-in](https://gitlab.com/-/profile/account).
 
 1. [Set your public email](../../profile/index.md#set-your-public-email).
 
@@ -97,7 +97,7 @@ If you've accidentally started the import process with the wrong account, follow
 the username in the Bitbucket account settings must match the public name in the Atlassian account
 settings. If these names match but user mapping still fails, the user may have modified their
 Bitbucket username after connecting their Bitbucket account in the
-[GitLab profile social sign-in](https://gitlab.com/-/profile/account).
+[GitLab profile service sign-in](https://gitlab.com/-/profile/account).
 
 To fix this, the user must verify that their Bitbucket external UID in the GitLab database matches their
 current Bitbucket public name, and reconnect if there's a mismatch:
@@ -106,7 +106,7 @@ current Bitbucket public name, and reconnect if there's a mismatch:
 
 1. In the API's response, the `identities` attribute contains the Bitbucket account that exists in
    the GitLab database. If the `extern_uid` doesn't match the current Bitbucket public name, the
-   user should reconnect their Bitbucket account in the [GitLab profile social sign-in](https://gitlab.com/-/profile/account).
+   user should reconnect their Bitbucket account in the [GitLab profile service sign-in](https://gitlab.com/-/profile/account).
 
 1. Following reconnection, the user should use the API again to verify that their `extern_uid` in
    the GitLab database now matches their current Bitbucket public name.

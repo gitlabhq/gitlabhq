@@ -18,6 +18,8 @@ CI/CD minutes used on GitLab SaaS macOS runners are included in your CI/CD minut
 
 Refer to the CI/CD minutes [cost factor](../../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the GitLab SaaS macOS runners.
 
+Jobs handled by macOS shared runners on GitLab.com **time out after 2 hours**, regardless of the timeout configured in a project.
+
 ## Access request process
 
 While in limited availability, to run CI jobs on the macOS runners, GitLab SaaS customer namespaces must be explicitly added to the macOS `allow-list`. Customers who participated in the beta have already been added.

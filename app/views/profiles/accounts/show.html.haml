@@ -17,9 +17,9 @@
 .row.gl-mt-3.js-search-settings-section
   .col-lg-4.profile-settings-sidebar
     %h4.gl-mt-0
-      = s_('Profiles|Two-Factor Authentication')
+      = s_('Profiles|Two-factor authentication')
     %p
-      = s_("Profiles|Increase your account's security by enabling Two-Factor Authentication (2FA)")
+      = s_("Profiles|Increase your account's security by enabling two-factor authentication (2FA).")
   .col-lg-8
     %p
       #{_('Status')}: #{current_user.two_factor_enabled? ? _('Enabled') : _('Disabled')}
@@ -35,9 +35,9 @@
   .row.gl-mt-3.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0
-        = s_('Profiles|Social sign-in')
+        = s_('Profiles|Service sign-in')
       %p
-        = s_('Profiles|Activate signin with one of the following services')
+        = s_('Profiles|Connect a service for sign-in.')
     .col-lg-8
       = render 'providers', providers: button_based_providers, group_saml_identities: local_assigns[:group_saml_identities]
     .col-lg-12

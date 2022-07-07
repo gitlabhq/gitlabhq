@@ -5481,7 +5481,8 @@ Input type: `VulnerabilityFindingDismissInput`
 | <a id="mutationvulnerabilityfindingdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilityfindingdismisscomment"></a>`comment` | [`String`](#string) | Comment why finding should be dismissed. |
 | <a id="mutationvulnerabilityfindingdismissdismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason why finding should be dismissed. |
-| <a id="mutationvulnerabilityfindingdismissid"></a>`id` | [`VulnerabilitiesFindingID!`](#vulnerabilitiesfindingid) | ID of the finding to be dismissed. |
+| <a id="mutationvulnerabilityfindingdismissid"></a>`id` **{warning-solid}** | [`VulnerabilitiesFindingID`](#vulnerabilitiesfindingid) | **Deprecated:** Use `uuid`. Deprecated in 15.2. |
+| <a id="mutationvulnerabilityfindingdismissuuid"></a>`uuid` | [`String`](#string) | UUID of the finding to be dismissed. |
 
 #### Fields
 

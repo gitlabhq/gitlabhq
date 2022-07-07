@@ -9,7 +9,7 @@ RSpec.describe 'Profile > Account', :js do
     sign_in(user)
   end
 
-  describe 'Social sign-in' do
+  describe 'Service sign-in' do
     context 'when an identity does not exist' do
       before do
         allow(Devise).to receive_messages(omniauth_configs: { google_oauth2: {} })

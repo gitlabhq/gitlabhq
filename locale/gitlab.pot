@@ -29456,9 +29456,6 @@ msgstr ""
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
-msgid "Profiles|Activate signin with one of the following services"
-msgstr ""
-
 msgid "Profiles|Active"
 msgstr ""
 
@@ -29511,6 +29508,9 @@ msgid "Profiles|Commit email"
 msgstr ""
 
 msgid "Profiles|Connect %{provider}"
+msgstr ""
+
+msgid "Profiles|Connect a service for sign-in."
 msgstr ""
 
 msgid "Profiles|Connected Accounts"
@@ -29591,7 +29591,7 @@ msgstr ""
 msgid "Profiles|Incoming email token was successfully reset"
 msgstr ""
 
-msgid "Profiles|Increase your account's security by enabling Two-Factor Authentication (2FA)"
+msgid "Profiles|Increase your account's security by enabling two-factor authentication (2FA)."
 msgstr ""
 
 msgid "Profiles|Invalid password"
@@ -29678,13 +29678,13 @@ msgstr ""
 msgid "Profiles|Select a service to sign in with."
 msgstr ""
 
+msgid "Profiles|Service sign-in"
+msgstr ""
+
 msgid "Profiles|Set new profile picture"
 msgstr ""
 
 msgid "Profiles|Set your local time zone."
-msgstr ""
-
-msgid "Profiles|Social sign-in"
 msgstr ""
 
 msgid "Profiles|Some options are unavailable for LDAP accounts"
@@ -29720,7 +29720,7 @@ msgstr ""
 msgid "Profiles|Title"
 msgstr ""
 
-msgid "Profiles|Two-Factor Authentication"
+msgid "Profiles|Two-factor authentication"
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"

@@ -125,8 +125,8 @@ If you're not an administrator:
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
-1. In the **Social sign-in** section, select **Connect Kerberos SPNEGO**.
-   If you don't see a **Social sign-in** Kerberos option, follow the
+1. In the **Service sign-in** section, select **Connect Kerberos SPNEGO**.
+   If you don't see a **Service sign-in** Kerberos option, follow the
    requirements in [Enable single sign-on](#enable-single-sign-on).
 
 In either case, you should now be able to sign in to your GitLab account

@@ -87,6 +87,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :rebase,
     :discussions,
     :pipelines,
+    :coverage_reports,
     :test_reports,
     :codequality_mr_diff_reports,
     :codequality_reports,

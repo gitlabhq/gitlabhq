@@ -51,7 +51,8 @@ RSpec.describe MergeRequestPolicy do
   end
 
   context 'when merge request is public' do
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
+    let(:user) { author }
 
     context 'and user is anonymous' do
       subject { permissions(nil, merge_request) }
@@ -61,19 +62,62 @@ RSpec.describe MergeRequestPolicy do
       end
     end
 
-    describe 'the author, who became a guest' do
-      subject { permissions(author, merge_request) }
+    context 'and user is author' do
+      subject { permissions(user, merge_request) }
 
-      it do
-        is_expected.to be_allowed(:update_merge_request)
+      context 'and the user is a guest' do
+        let(:user) { guest }
+
+        it do
+          is_expected.to be_allowed(:update_merge_request)
+        end
+
+        it do
+          is_expected.to be_allowed(:reopen_merge_request)
+        end
+
+        it do
+          is_expected.to be_allowed(:approve_merge_request)
+        end
       end
 
-      it do
-        is_expected.to be_allowed(:reopen_merge_request)
+      context 'and the user is a group member' do
+        let(:project) { create(:project, :public, group: group) }
+        let(:group) { create(:group) }
+        let(:user) { non_team_member }
+
+        before do
+          group.add_guest(non_team_member)
+        end
+
+        it do
+          is_expected.to be_allowed(:approve_merge_request)
+        end
       end
 
-      it do
-        is_expected.to be_allowed(:approve_merge_request)
+      context 'and the user is a member of a shared group' do
+        let(:user) { non_team_member }
+
+        before do
+          group = create(:group)
+          project.project_group_links.create!(
+            group: group,
+            group_access: Gitlab::Access::DEVELOPER)
+
+          group.add_guest(non_team_member)
+        end
+
+        it do
+          is_expected.to be_allowed(:approve_merge_request)
+        end
+      end
+
+      context 'and the user is not a project member' do
+        let(:user) { non_team_member }
+
+        it do
+          is_expected.not_to be_allowed(:approve_merge_request)
+        end
       end
     end
   end
