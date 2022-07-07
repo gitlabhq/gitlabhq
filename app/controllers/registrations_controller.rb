@@ -7,6 +7,7 @@ class RegistrationsController < Devise::RegistrationsController
   include InvisibleCaptchaOnSignup
   include OneTrustCSP
   include BizibleCSP
+  include GoogleAnalyticsCSP
 
   layout 'devise'
 

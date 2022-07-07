@@ -1,7 +1,8 @@
 ARG DOCKER_VERSION=20.10.14
 ARG CHROME_VERSION=101
+ARG QA_BUILD_TARGET=qa
 
-FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
+FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23 AS qa
 LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
 
 ENV DEBIAN_FRONTEND="noninteractive"
@@ -50,3 +51,11 @@ COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
 COPY ./qa /home/gitlab/qa
 
 ENTRYPOINT ["bin/test"]
+
+# Add JH files when pass the parameter: `--build-arg QA_BUILD_TARGET=jhqa`
+FROM qa AS jhqa
+ONBUILD COPY ./jh/qa /home/gitlab/jh/qa
+ONBUILD COPY ./jh/lib /home/gitlab/jh/lib
+ONBUILD COPY ./jh/config/feature_flags /home/gitlab/jh/config/feature_flags
+
+FROM $QA_BUILD_TARGET

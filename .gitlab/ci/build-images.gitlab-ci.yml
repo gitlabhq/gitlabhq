@@ -37,6 +37,7 @@ build-qa-image:
         --destination=${QA_IMAGE_BRANCH} \
         --build-arg=CHROME_VERSION=${CHROME_VERSION} \
         --build-arg=DOCKER_VERSION=${DOCKER_VERSION} \
+        --build-arg=QA_BUILD_TARGET=${QA_BUILD_TARGET:-qa} \
         --cache=true
 
 # This image is used by:

@@ -4,6 +4,7 @@ module Packages
   module Debian
     class ExtractChangesMetadataService
       include Gitlab::Utils::StrongMemoize
+      include ::Packages::FIPS
 
       ExtractionError = Class.new(StandardError)
 
@@ -13,6 +14,8 @@ module Packages
       end
 
       def execute
+        raise DisabledError, 'Debian registry is not FIPS compliant' if Gitlab::FIPS.enabled?
+
         {
           file_type: file_type,
           architecture: metadata[:architecture],

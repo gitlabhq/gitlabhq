@@ -3,12 +3,15 @@
 module Packages
   module Debian
     class CreatePackageFileService
+      include ::Packages::FIPS
+
       def initialize(package, params)
         @package = package
         @params = params
       end
 
       def execute
+        raise DisabledError, 'Debian registry is not FIPS compliant' if Gitlab::FIPS.enabled?
         raise ArgumentError, "Invalid package" unless package.present?
 
         # Debian package file are first uploaded to incoming with empty metadata,

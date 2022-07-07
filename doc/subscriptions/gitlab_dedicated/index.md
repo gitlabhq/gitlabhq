@@ -42,7 +42,7 @@ Features that are not available but we plan to support in the future:
 - GitLab-managed runners
 - FortiAuthenticator/FortiToken 2FA
 - Reply-by email
-- Service desk
+- Service Desk
 
 Features that we do not plan to offer at all:
 

@@ -703,6 +703,10 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   as Sidekiq would continue using a bad connection. Geo and other features that rely on
   cron jobs running regularly do not work until Sidekiq is restarted. We recommend
   upgrading to GitLab 14.4.3 and later if this issue affects you.
+- After enabling database load balancing by default in 14.4.0, we found an issue where
+  [Database load balancing does not work with an AWS Aurora cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/220617).
+  We recommend moving your databases from Aurora to RDS for PostgreSQL before
+  upgrading. Refer to [Moving GitLab databases to a different PostgreSQL instance](../administration/postgresql/moving.md).
 - GitLab 14.4.0 includes a
 [background migration `PopulateTopicsTotalProjectsCountCache`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71033)
 that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.

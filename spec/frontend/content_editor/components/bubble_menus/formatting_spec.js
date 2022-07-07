@@ -51,9 +51,9 @@ describe('content_editor/components/bubble_menus/formatting', () => {
     ${'italic'}      | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic text', editorCommand: 'toggleItalic' }}
     ${'strike'}      | ${{ contentType: 'strike', iconName: 'strikethrough', label: 'Strikethrough', editorCommand: 'toggleStrike' }}
     ${'code'}        | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode' }}
-    ${'link'}        | ${{ contentType: 'link', iconName: 'link', label: 'Insert link', editorCommand: 'toggleLink', editorCommandParams: { href: '' } }}
     ${'superscript'} | ${{ contentType: 'superscript', iconName: 'superscript', label: 'Superscript', editorCommand: 'toggleSuperscript' }}
     ${'subscript'}   | ${{ contentType: 'subscript', iconName: 'subscript', label: 'Subscript', editorCommand: 'toggleSubscript' }}
+    ${'link'}        | ${{ contentType: 'link', iconName: 'link', label: 'Insert link', editorCommand: 'toggleLink', editorCommandParams: { href: '' } }}
   `('given a $testId toolbar control', ({ testId, controlProps }) => {
     beforeEach(() => {
       buildWrapper();

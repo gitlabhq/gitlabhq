@@ -927,9 +927,9 @@ these controls should migrate to the GitLab interface.
 
 Users who have the [Maintainer role](../../user/permissions.md) for the project can
 [delete Container Registry tags in bulk](../../api/container_registry.md#delete-registry-repository-tags-in-bulk)
-periodically based on their own criteria, however, this alone does not recycle data,
+periodically based on their own criteria. However, deleting the tags alone does not recycle data,
 it only unlinks tags from manifests and image blobs. To recycle the Container
-Registry data in the whole GitLab instance, you can use the built-in command
+Registry data in the whole GitLab instance, you can use the built-in garbage collection command
 provided by `gitlab-ctl`.
 
 Prerequisites:

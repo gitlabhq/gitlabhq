@@ -3,6 +3,8 @@
 RSpec.shared_examples 'Debian distributions GET request' do |status, body = nil|
   and_body = body.nil? ? '' : ' and expected body'
 
+  it_behaves_like 'Debian API FIPS mode'
+
   it "returns #{status}#{and_body}" do
     subject
 
@@ -16,6 +18,8 @@ end
 
 RSpec.shared_examples 'Debian distributions PUT request' do |status, body|
   and_body = body.nil? ? '' : ' and expected body'
+
+  it_behaves_like 'Debian API FIPS mode'
 
   if status == :success
     it 'updates distribution', :aggregate_failures do
@@ -48,6 +52,8 @@ end
 
 RSpec.shared_examples 'Debian distributions DELETE request' do |status, body|
   and_body = body.nil? ? '' : ' and expected body'
+
+  it_behaves_like 'Debian API FIPS mode'
 
   if status == :success
     it 'updates distribution', :aggregate_failures do

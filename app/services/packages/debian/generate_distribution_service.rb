@@ -4,6 +4,7 @@ module Packages
   module Debian
     class GenerateDistributionService
       include Gitlab::Utils::StrongMemoize
+      include ::Packages::FIPS
       include ExclusiveLeaseGuard
 
       ONE_HOUR = 1.hour.freeze
@@ -70,6 +71,8 @@ module Packages
       end
 
       def execute
+        raise DisabledError, 'Debian registry is not FIPS compliant' if Gitlab::FIPS.enabled?
+
         try_obtain_lease do
           @distribution.transaction do
             # We consider `apt-get update` can take at most one hour

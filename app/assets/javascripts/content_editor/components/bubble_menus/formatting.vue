@@ -91,19 +91,6 @@ export default {
         @execute="trackToolbarControlExecution"
       />
       <toolbar-button
-        data-testid="link"
-        content-type="link"
-        icon-name="link"
-        editor-command="toggleLink"
-        :editor-command-params="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-          href: '',
-        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-        category="tertiary"
-        size="medium"
-        :label="__('Insert link')"
-        @execute="trackToolbarControlExecution"
-      />
-      <toolbar-button
         data-testid="superscript"
         content-type="superscript"
         icon-name="superscript"
@@ -121,6 +108,19 @@ export default {
         category="tertiary"
         size="medium"
         :label="__('Subscript')"
+        @execute="trackToolbarControlExecution"
+      />
+      <toolbar-button
+        data-testid="link"
+        content-type="link"
+        icon-name="link"
+        editor-command="toggleLink"
+        :editor-command-params="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+          href: '',
+        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+        category="tertiary"
+        size="medium"
+        :label="__('Insert link')"
         @execute="trackToolbarControlExecution"
       />
     </gl-button-group>
