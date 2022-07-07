@@ -130,56 +130,48 @@ Install Gitaly on each Gitaly server using either Omnibus GitLab or install it f
 - To install from source, follow the steps at
   [Install Gitaly](../../install/installation.md#install-gitaly).
 
-### Configure authentication
+### Configure Gitaly servers
+
+To configure Gitaly servers, you must:
+
+- Configure authentication.
+- Configure storage paths.
+- Enable the network listener.
+
+The `git` user must be able to read, write, and set permissions on the configured storage path.
+
+To avoid downtime while rotating Gitaly's token, you can temporarily disable authentication using the `gitaly['auth_transitioning']` setting. For more information, see the documentation on
+[enabling "auth transitioning mode"](#enable-auth-transitioning-mode).
+
+#### Configure authentication
 
 Gitaly and GitLab use two shared secrets for authentication:
 
-- One to authenticate gRPC requests to Gitaly.
-- A second for authentication callbacks from GitLab Shell to the GitLab internal API.
+- _Gitaly token_: used to authenticate gRPC requests to Gitaly
+- _GitLab Shell token_: used for authentication callbacks from GitLab Shell to the GitLab internal API
 
 **For Omnibus GitLab**
 
-To configure the Gitaly token:
-
-1. On the Gitaly clients, edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['gitaly_token'] = 'abc123secret'
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. On the Gitaly server, edit `/etc/gitlab/gitlab.rb`:
+To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitaly['auth_token'] = 'abc123secret'
    ```
+   
+There are two ways to configure the _GitLab Shell token_.
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+Method 1 (recommended):
 
-There are two ways to configure the GitLab Shell token.
-
-Method 1:
-
-1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly servers
+Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly servers
    (and any other Gitaly clients).
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on Gitaly servers.
 
 Method 2:
 
-1. On the Gitaly clients, edit `/etc/gitlab/gitlab.rb`:
+Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_shell['secret_token'] = 'shellsecret'
    ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. On the Gitaly servers, edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_shell['secret_token'] = 'shellsecret'
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 **For installations from source**
 
@@ -203,14 +195,7 @@ Method 2:
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
-### Configure Gitaly servers
-
-On the Gitaly servers, you must configure storage paths and enable the network listener.
-The Gitaly server must be able to read, write, and set permissions on the configured path.
-
-If you want to reduce the risk of downtime when you enable authentication, you can temporarily
-disable enforcement. For more information, see the documentation on configuring
-[Gitaly authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication).
+#### Configure Gitaly server
 
 **For Omnibus GitLab**
 

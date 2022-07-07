@@ -27,20 +27,20 @@ following the
 
 ## Consider the Omnibus package installation
 
-Since an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/install/) (deb/rpm).
+Because an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/install/) (deb/rpm).
 
 One reason the Omnibus package is more reliable is its use of runit to restart any of the GitLab processes in case one crashes.
 On heavily used GitLab instances the memory usage of the Sidekiq background worker grows over time.
 
 Omnibus packages solve this by [letting the Sidekiq terminate gracefully](../administration/operations/sidekiq_memory_killer.md) if it uses too much memory.
 After this termination runit detects Sidekiq is not running and starts it.
-Since installations from source don't use runit for process supervision, Sidekiq
+Because installations from source don't use runit for process supervision, Sidekiq
 can't be terminated and its memory usage grows over time.
 
 ## Select a version to install
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (for example, `11-7-stable`).
-You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
+You can select the branch in the version dropdown list in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
@@ -51,7 +51,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 | [Ruby](#2-ruby)     | `2.7`             | From GitLab 13.6, Ruby 2.7 is required. Ruby 3.0 is not supported yet (see [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/5149) for the current status). You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
 | [Go](#3-go) | `1.16` | |
 | [Git](#git) | `2.33.x` | From GitLab 14.4, Git 2.33.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git). |
-| [Node.js](#4-node) | `14.15.0` | GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets. Node.js 16.x is recommended, as it's faster. You can check which version you're running with `node -v`. You need to update it to a newer version if needed. |
+| [Node.js](#4-node) | `14.15.0` | GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets. Node.js 16.x is recommended, as it's faster. You can check which version you're running with `node -v`. You must update it to a newer version if needed. |
 
 ## GitLab directory structure
 
@@ -179,7 +179,7 @@ the Git path:
 ### GraphicsMagick
 
 For the [Custom Favicon](../user/admin_area/appearance.md#favicon) to work, GraphicsMagick
-needs to be installed.
+must be installed.
 
 ```shell
 sudo apt-get install -y graphicsmagick
@@ -187,7 +187,7 @@ sudo apt-get install -y graphicsmagick
 
 ### Mail server
 
-In order to receive mail notifications, make sure to install a mail server.
+To receive mail notifications, make sure to install a mail server.
 By default, Debian is shipped with `exim4` but this
 [has problems](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/12754) while
 Ubuntu does not ship with one. The recommended mail server is `postfix` and you
@@ -264,7 +264,7 @@ requirements for these are:
 
 In many distributions,
 the versions provided by the official package repositories are out of date, so
-we need to install through the following commands:
+we must install through the following commands:
 
 ```shell
 # install node v16.x
@@ -298,7 +298,7 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 14.0 and later
    ```
 
    For Ubuntu 18.04 and earlier, the available PostgreSQL doesn't meet the minimum
-   version requirement. You need to add PostgreSQL's repository:
+   version requirement. You must add PostgreSQL's repository:
 
    ```shell
    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
@@ -426,7 +426,7 @@ sudo usermod -aG redis git
 ### Supervise Redis with systemd
 
 If your distribution uses systemd init and the output of the following command is `notify`,
-you do not need to make any changes:
+you must not make any changes:
 
 ```shell
 systemctl show --value --property=Type redis-server.service
@@ -678,7 +678,7 @@ sudo -u git -H bundle exec rake "gitlab:indexer:install[/home/git/gitlab-elastic
 ```
 
 The source code first is fetched to the path specified by the first parameter. Then a binary is built under its `bin` directory.
-You then need to update `gitlab.yml`'s `production -> elasticsearch -> indexer_path` setting to point to that binary.
+You must then update `gitlab.yml`'s `production -> elasticsearch -> indexer_path` setting to point to that binary.
 
 ### Install GitLab Pages
 
@@ -740,7 +740,7 @@ sudo systemctl daemon-reload
 
 The units provided by GitLab make very little assumptions about where you are running Redis and PostgreSQL.
 
-If you installed GitLab in another directory or as a user other than the default, you need to change these values in the units as well.
+If you installed GitLab in another directory or as a user other than the default, you must change these values in the units as well.
 
 For example, if you're running Redis and PostgreSQL on the same machine as GitLab, you should:
 
@@ -853,7 +853,7 @@ sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 # When done, you see 'Administrator account created:'
 ```
 
-You can set the Administrator/root password and email by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you'll be forced to change the default password. An Enterprise Edition license may also be installed at this time by supplying a full path in the `GITLAB_LICENSE_FILE` environment variable.
+You can set the Administrator/root password and email by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you are forced to change the default password. An Enterprise Edition license may also be installed at this time by supplying a full path in the `GITLAB_LICENSE_FILE` environment variable.
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail GITLAB_LICENSE_FILE="/path/to/license"
@@ -942,7 +942,7 @@ to use. Read all about the needed configuration at the
 
 If you want to use HTTPS, replace the `gitlab` NGINX configuration with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
-For the NGINX to be able to read the GitLab-Workhorse socket, you need to make sure, that the `www-data` user can read the socket, which will be owned by the GitLab user. This is most easily achieved, if it is world-readable, for example that it has permissions `0755`, which is the default. `www-data` also needs to be able to list the parent directories.
+For the NGINX to be able to read the GitLab-Workhorse socket, you must make sure, that the `www-data` user can read the socket, which is owned by the GitLab user. This is achieved, if it is world-readable, for example that it has permissions `0755`, which is the default. `www-data` also must be able to list the parent directories.
 
 ### Test Configuration
 
@@ -999,8 +999,8 @@ Supply the `SANITIZE=true` environment variable to `gitlab:check` to omit projec
 Visit YOUR_SERVER in your web browser for your first GitLab login.
 
 If you didn't [provide a root password during setup](#initialize-database-and-activate-advanced-features),
-you'll be redirected to a password reset screen to provide the password for the
-initial administrator account. Enter your desired password and you'll be
+you are redirected to a password reset screen to provide the password for the
+initial administrator account. Enter your desired password and you are
 redirected back to the login screen.
 
 The default account's username is **root**. Provide the password you created
@@ -1114,7 +1114,7 @@ host localhost          # Give your setup a name (here: override localhost)
     hostname 127.0.0.1; # Your server name or IP
 ```
 
-You also need to change the corresponding options (for example, `ssh_user`, `ssh_host`, `admin_uri`) in the `config/gitlab.yml` file.
+You must also change the corresponding options (for example, `ssh_user`, `ssh_host`, `admin_uri`) in the `config/gitlab.yml` file.
 
 ### Additional Markup Styles
 
@@ -1123,7 +1123,7 @@ Apart from the always supported Markdown style, there are other rich text files 
 ### Using Sidekiq instead of Sidekiq Cluster
 
 As of GitLab 12.10, Source installations are using `bin/sidekiq-cluster` for managing Sidekiq processes.
-Using Sidekiq directly is still supported until 14.0. So if you're experiencing issues, please:
+Using Sidekiq directly is still supported until 14.0. So if you're experiencing issues:
 
 1. Edit the system `init.d` script to remove the `SIDEKIQ_WORKERS` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
 1. Restart GitLab.

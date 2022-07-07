@@ -25,6 +25,20 @@ Geo handles replication for different components:
 With the exception of the Database replication, on a *secondary* site, everything is coordinated
 by the [Geo Log Cursor](#geo-log-cursor-daemon).
 
+### Replication states
+
+The following diagram illustrates how the replication works. Some allowed transitions are omitted for clarity.
+
+```mermaid
+stateDiagram-v2
+    Pending --> Started
+    Started --> Synced
+    Started --> Failed
+    Synced --> Pending: Mark for resync
+    Failed --> Pending: Mark for resync
+    Failed --> Started: Retry
+```
+
 ### Geo Log Cursor daemon
 
 The [Geo Log Cursor daemon](#geo-log-cursor-daemon) is a separate process running on
@@ -425,6 +439,22 @@ ignores items in object storage. Either:
 - All secondary sites should use the same storage site.
 
 ## Verification
+
+### Verification states
+
+The following diagram illustrates how the verification works. Some allowed transitions are omitted for clarity.
+
+```mermaid
+stateDiagram-v2
+    Pending --> Started
+    Pending --> Disabled: No primary checksum
+    Disabled --> Started: Primary checksum succeeded
+    Started --> Succeeded
+    Started --> Failed
+    Succeeded --> Pending: Mark for reverify
+    Failed --> Pending: Mark for reverify
+    Failed --> Started: Retry
+```
 
 ### Repository verification
 

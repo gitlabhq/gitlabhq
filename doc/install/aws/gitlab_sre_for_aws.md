@@ -23,15 +23,15 @@ If you would like to understand the underlying rationale on why GitLab had to in
 
 ### Gitaly and Praefect elections
 
-As part of Gitaly cluster consistency, Praefect nodes will occasionally need to vote on what data copy is the most accurate. This requires an uneven number of Praefect nodes to avoid stalemates. This means that for HA, Gitaly and Praefect require a minimum of three nodes.
+As part of Gitaly cluster consistency, Praefect nodes must occasionally vote on what data copy is the most accurate. This requires an uneven number of Praefect nodes to avoid stalemates. This means that for HA, Gitaly and Praefect require a minimum of three nodes.
 
 ### Gitaly performance monitoring
 
-Complete performance metrics should be collected for Gitaly instances for identification of bottlenecks, as they could have to do with disk IO, network IO or memory.
+Complete performance metrics should be collected for Gitaly instances for identification of bottlenecks, as they could have to do with disk IO, network IO, or memory.
 
 ### Gitaly performance guidelines
 
-Gitaly functions as the primary Git Repository Storage in GitLab. However, it's not simply a streaming file server. It also does a lot of demanding computing work, such as preparing and caching Git pack files which informs some of the performance recommendations below.
+Gitaly functions as the primary Git Repository Storage in GitLab. However, it's not a streaming file server. It also does a lot of demanding computing work, such as preparing and caching Git pack files which informs some of the performance recommendations below.
 
 NOTE:
 All recommendations are for production configurations, including performance testing. For test configurations, like training or functional testing, you can use less expensive options. However, you should adjust or rebuild if performance is an issue.
@@ -45,7 +45,7 @@ All recommendations are for production configurations, including performance tes
 
 #### CPU and memory recommendations
 
-- The general GitLab Gitaly node recommendations for CPU and Memory assume relatively even loading across repositories. GPT testing of any non-characteristic repositories and/or SRE monitoring of Gitaly metrics may inform when to choose memory and/or CPU higher than general recommendations.
+- The general GitLab Gitaly node recommendations for CPU and Memory assume relatively even loading across repositories. GitLab Performance Tool (GPT) testing of any non-characteristic repositories and/or SRE monitoring of Gitaly metrics may inform when to choose memory and/or CPU higher than general recommendations.
 
 **To accommodate:**
 
@@ -54,9 +54,9 @@ All recommendations are for production configurations, including performance tes
 
 #### Disk I/O recommendations
 
-- Use only SSD storage and the [class of EBS storage](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html) that suites your durability and speed requirements.
+- Use only SSD storage and the [class of Elastic Block Store (EBS) storage](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html) that suites your durability and speed requirements.
 - When not using provisioned EBS IO, EBS volume size determines the I/O level, so provisioning volumes that are much larger than needed can be the least expensive way to improve EBS IO.
-- If Gitaly performance monitoring shows signs of disk stress then one of the provisioned IOPs levels can be chosen. Note that EBS IOPs levels also have enhanced durability which may be appealing for some implementations aside from performance considerations.
+- If Gitaly performance monitoring shows signs of disk stress then one of the provisioned IOPs levels can be chosen. EBS IOPs levels also have enhanced durability which may be appealing for some implementations aside from performance considerations.
 
 **To accommodate:**
 
@@ -66,7 +66,7 @@ All recommendations are for production configurations, including performance tes
 
 #### Network I/O recommendations
 
-- Use only instance types [from the list of ones that support ENA advanced networking]( https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-type-summary-table) to ensure that cluster replication latency is not due to instance level network I/O bottlenecks.
+- Use only instance types [from the list of ones that support Elastic Network Adapter (ENA) advanced networking](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-type-summary-table) to ensure that cluster replication latency is not due to instance level network I/O bottlenecks.
 - Choose instances with sizes with more than 10 Gbps - but only if needed and only when having proven a node level network bottleneck with monitoring and/or stress testing.
 
 **To accommodate:**
@@ -93,4 +93,4 @@ The [AWS GitLab Cloud Native Hybrid on EKS Quick Start](gitlab_hybrid_on_aws.md#
 
 ### Gitaly long term management
 
-Gitaly node disk sizes will need to be monitored and increased to accommodate Git repository growth and Gitaly temporary and caching storage needs. The storage configuration on all nodes should be kept identical.
+Gitaly node disk sizes must be monitored and increased to accommodate Git repository growth and Gitaly temporary and caching storage needs. The storage configuration on all nodes should be kept identical.

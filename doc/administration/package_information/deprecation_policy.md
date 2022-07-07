@@ -41,7 +41,7 @@ We can differentiate two different types of configuration:
   installation usable (like a change in default project/group settings, or
   miscommunication with other components)
 
-We also need to differentiate deprecation and removal procedure.
+We must also differentiate deprecation and removal procedure.
 
 #### Deprecating configuration
 
@@ -78,7 +78,7 @@ The final comment in the issue **has to have**:
 
 1. Text snippet for the release blog post section
 1. Documentation MR ( or snippet ) for introducing the change
-1. Draft MR removing the configuration OR details on what needs to be done. See [Adding deprecation messages](https://docs.gitlab.com/omnibus/development/adding-deprecation-messages.html) for more on this
+1. Draft MR removing the configuration or details on what must be done. See [Adding deprecation messages](https://docs.gitlab.com/omnibus/development/adding-deprecation-messages.html) for more on this
 
 ## Example
 

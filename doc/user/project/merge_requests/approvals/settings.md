@@ -55,7 +55,7 @@ this setting, unless you configure one of these options:
 > Moved to GitLab Premium in 13.9.
 
 By default, users who commit to a merge request can still approve it. At both
-the project level or [instance level](../../../admin_area/merge_requests_approvals.md)
+the project level or [instance level](../../../admin_area/merge_requests_approvals.md),
 you can prevent committers from approving merge requests that are partially
 their own. To do this:
 
@@ -82,7 +82,7 @@ read the official Git documentation for an explanation.
 ## Prevent editing approval rules in merge requests
 
 By default, users can override the approval rules you [create for a project](rules.md)
-on a per-merge request basis. If you don't want users to change approval rules
+on a per-merge-request basis. If you don't want users to change approval rules
 on merge requests, you can disable this setting:
 
 1. Go to your project and select **Settings > General**.
@@ -119,7 +119,7 @@ when more changes are added to it:
 1. Select the **Remove all approvals when commits are added to the source branch** checkbox.
 1. Select **Save changes**.
 
-Approvals aren't reset when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)
+Approvals aren't reset when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods).
 However, approvals are reset if the target branch is changed.
 
 ## Code coverage check approvals

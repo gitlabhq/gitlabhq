@@ -16,6 +16,7 @@ second: '(?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)'
 exceptions:
   - ACL
   - AJAX
+  - AMI
   - ANSI
   - APAC
   - API
@@ -23,6 +24,7 @@ exceptions:
   - ARM
   - ARN
   - ASCII
+  - ASG
   - AWS
   - BMP
   - BSD
@@ -58,11 +60,13 @@ exceptions:
   - DSL
   - DVCS
   - DVD
+  - EBS
   - ECDSA
   - ECS
   - EFS
   - EKS
   - ELB
+  - ENA
   - EOL
   - EWM
   - EXIF
@@ -88,6 +92,7 @@ exceptions:
   - GPG
   - GPL
   - GPS
+  - GPT
   - GPU
   - GUI
   - HAML
@@ -125,10 +130,12 @@ exceptions:
   - LSIF
   - LTM
   - LTS
+  - LVM
   - MIME
   - MIT
   - MITRE
   - MVC
+  - NAS
   - NAT
   - NDA
   - NFS

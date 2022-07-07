@@ -49,7 +49,7 @@ GitLab adds all troubleshooting information to the documentation, no matter how
 unlikely a user is to encounter a situation.
 
 GitLab Support maintains their own
-[troubleshooting content](../../../administration/index.md#support-team-docs)
+[troubleshooting content](../../../administration/index.md#support-team-documentation)
 in the GitLab documentation.
 
 ### The documentation includes all media types

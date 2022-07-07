@@ -10,7 +10,7 @@ module QA
 
       attribute :id
 
-      def_delegators :key, :private_key, :public_key, :md5_fingerprint
+      def_delegators :key, :private_key, :public_key, :md5_fingerprint, :sha256_fingerprint
 
       def initialize
         self.title = Time.now.to_f

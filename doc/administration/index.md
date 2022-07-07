@@ -215,7 +215,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [GitLab application limits](instance_limits.md)
 - [Responding to security incidents](../security/responding_to_security_incidents.md)
 
-### Support Team Docs
+### Support Team Documentation
 
 The GitLab Support Team has collected a lot of information about troubleshooting GitLab.
 The following documents are used by the Support Team or by customers

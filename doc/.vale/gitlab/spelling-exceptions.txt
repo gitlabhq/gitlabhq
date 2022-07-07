@@ -240,6 +240,7 @@ Fortinet
 Fugit
 fuzzer
 Gantt
+Gbps
 Gemfile
 Gemnasium
 Gemojione
