@@ -51,7 +51,7 @@ RSpec.describe 'Milestone' do
       end
       find('input[name="commit"]').click
 
-      expect(find('.alert-danger')).to have_content('already being used for another group or project milestone.')
+      expect(find('.gl-alert-danger')).to have_content('already being used for another group or project milestone.')
     end
 
     it 'displays validation message when there is a group milestone with same title' do

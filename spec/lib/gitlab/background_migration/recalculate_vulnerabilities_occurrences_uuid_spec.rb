@@ -454,6 +454,16 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
       allow(Gitlab::ErrorTracking).to receive(:track_and_raise_exception)
       expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_exception).with(expected_error).once
     end
+
+    it_behaves_like 'marks background migration job records' do
+      let(:arguments) { [1, 4] }
+      subject { described_class.new }
+    end
+  end
+
+  it_behaves_like 'marks background migration job records' do
+    let(:arguments) { [1, 4] }
+    subject { described_class.new }
   end
 
   private

@@ -5,7 +5,10 @@ module Projects
     def execute(fork_to_project = nil)
       forked_project = fork_to_project ? link_existing_project(fork_to_project) : fork_new_project
 
-      refresh_forks_count if forked_project&.saved?
+      if forked_project&.saved?
+        refresh_forks_count
+        stream_audit_event(forked_project)
+      end
 
       forked_project
     end
@@ -133,5 +136,11 @@ module Projects
     def target_mr_default_target_self
       @target_mr_default_target_self ||= params[:mr_default_target_self]
     end
+
+    def stream_audit_event(forked_project)
+      # Defined in EE
+    end
   end
 end
+
+Projects::ForkService.prepend_mod

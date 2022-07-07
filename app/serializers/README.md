@@ -22,6 +22,10 @@ Using serializers, instead of `to_json` method, has several benefits:
 * it makes it easier to reduce merge conflicts between CE -> EE
 * it makes it easier to benefit from domain driven development techniques
 
+## Security considerations
+
+Consult the `Serialization` section of our [Secure Coding Guidelines](../../doc/development/secure_coding_guidelines.md#serialization) to help avoiding leaking sensitive attributes when using serializers.
+
 ## What is a serializer?
 
 A serializer is a class that encapsulates all business rules for building a

@@ -555,3 +555,52 @@ X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
   "event_type": "merge_request_create"
 }
 ```
+
+## Audit event streaming on project fork actions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90916) in GitLab 15.2.
+
+Stream audit events that relate to project fork actions using the `/logs` endpoint.
+
+Send API requests that contain the `X-Gitlab-Audit-Event-Type` header with value `project_fork_operation`. GitLab responds with JSON payloads with an
+`event_type` field set to `project_fork_operation`.
+
+### Headers
+
+Headers are formatted as follows:
+
+```plaintext
+POST /logs HTTP/1.1
+Host: <DESTINATION_HOST>
+Content-Type: application/x-www-form-urlencoded
+X-Gitlab-Audit-Event-Type: project_fork_operation
+X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
+```
+
+### Example payload
+
+```json
+{
+  "id": 1,
+  "author_id": 1,
+  "entity_id": 24,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "example_username",
+    "target_id": 24,
+    "target_type": "Project",
+    "target_details": "example-project",
+    "custom_message": "Forked project to another-group/example-project-forked",
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "example_username",
+  "entity_path": "example-group/example-project",
+  "target_details": "example-project",
+  "created_at": "2022-06-30T03:43:35.384Z",
+  "target_type": "Project",
+  "target_id": 24,
+  "event_type": "project_fork_operation"
+}
+```
