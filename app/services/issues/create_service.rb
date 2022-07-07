@@ -47,7 +47,7 @@ module Issues
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id)
         Issues::PlacementWorker.perform_async(nil, issue.project_id)
-        Namespaces::OnboardingIssueCreatedWorker.perform_async(issue.namespace.id)
+        Namespaces::OnboardingIssueCreatedWorker.perform_async(issue.project.namespace_id)
       end
     end
 

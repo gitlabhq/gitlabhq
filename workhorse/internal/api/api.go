@@ -306,6 +306,7 @@ func (api *API) PreAuthorizeFixedPath(r *http.Request, method string, path strin
 		return nil, fmt.Errorf("construct auth request: %w", err)
 	}
 	authReq.Header = helper.HeaderClone(r.Header)
+	authReq.URL.RawQuery = r.URL.RawQuery
 
 	failureResponse, apiResponse, err := api.PreAuthorize(path, authReq)
 	if err != nil {

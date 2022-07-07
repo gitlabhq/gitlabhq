@@ -89,6 +89,16 @@ describe('RunnerList', () => {
     ]);
   });
 
+  it('can be configured with null or undefined tokens, which are ignored', () => {
+    createComponent({
+      props: {
+        tokens: [statusTokenConfig, null, undefined],
+      },
+    });
+
+    expect(findFilteredSearch().props('tokens')).toEqual([statusTokenConfig]);
+  });
+
   it('fails validation for v-model with the wrong shape', () => {
     expect(() => {
       createComponent({ props: { value: { filters: 'wrong_filters', sort: 'sort' } } });

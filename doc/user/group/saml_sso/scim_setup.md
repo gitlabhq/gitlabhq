@@ -169,7 +169,7 @@ If [Group SAML](index.md) has been configured and you have an existing GitLab.co
 
 We recommend users do this prior to turning on sync, because while synchronization is active, there may be provisioning errors for existing users.
 
-New users and existing users on subsequent visits can access the group through the identify provider's dashboard or by visiting links directly.
+New users and existing users on subsequent visits can access the group through the identity provider's dashboard or by visiting links directly.
 
 [In GitLab 14.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325712), GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning display with an **Enterprise** badge in the **Members** view.
 
@@ -257,7 +257,7 @@ Changing the SAML or SCIM configuration or provider can cause the following prob
 | Problem                                                                   | Solution                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | SAML and SCIM identity mismatch.                                          | First [verify that the user's SAML NameId matches the SCIM externalId](#how-do-i-verify-users-saml-nameid-matches-the-scim-externalid) and then [update or fix the mismatched SCIM externalId and SAML NameId](#update-or-fix-mismatched-scim-externalid-and-saml-nameid).                                                                                                                                                                              |
-| SCIM identity mismatch between GitLab and the Identify Provider SCIM app. | You can confirm whether you're hitting the error because of your SCIM identity mismatch between your SCIM app and GitLab.com by using [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) which shows up in the `id` key and compares it with the user `externalId` in the SCIM app. You can use the same [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) to update the SCIM `id` for the user on GitLab.com. |
+| SCIM identity mismatch between GitLab and the identity provider SCIM app. | You can confirm whether you're hitting the error because of your SCIM identity mismatch between your SCIM app and GitLab.com by using [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) which shows up in the `id` key and compares it with the user `externalId` in the SCIM app. You can use the same [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) to update the SCIM `id` for the user on GitLab.com. |
 
 ### Azure
 

@@ -15,8 +15,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
-
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
@@ -222,21 +220,3 @@ func (aa *apiAuthorizer) AuthorizeFile(r *http.Request) (*api.Response, error) {
 }
 
 var _ fileAuthorizer = &apiAuthorizer{}
-
-type testAuthorizer struct {
-	test   fileAuthorizer
-	actual fileAuthorizer
-}
-
-func (ta *testAuthorizer) AuthorizeFile(r *http.Request) (*api.Response, error) {
-	logger := log.WithRequest(r)
-	if response, err := ta.test.AuthorizeFile(r); err != nil {
-		logger.WithError(err).Error("test api preauthorize request failed")
-	} else {
-		logger.WithFields(log.Fields{
-			"temp_path": response.TempPath,
-		}).Info("test api preauthorize request")
-	}
-
-	return ta.actual.AuthorizeFile(r)
-}

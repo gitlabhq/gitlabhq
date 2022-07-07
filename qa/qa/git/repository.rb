@@ -163,7 +163,7 @@ module QA
           ssh
         end
 
-        env_vars << %(GIT_SSH_COMMAND="ssh -i #{ssh.private_key_file.path} -o UserKnownHostsFile=#{ssh.known_hosts_file.path}")
+        env_vars << %(GIT_SSH_COMMAND="ssh -i #{ssh.private_key_file.path} -o UserKnownHostsFile=#{ssh.known_hosts_file.path} -o IdentitiesOnly=yes")
       end
 
       def delete_ssh_key

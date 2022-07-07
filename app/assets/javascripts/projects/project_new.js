@@ -342,6 +342,7 @@ const bindEvents = () => {
 
 export default {
   bindEvents,
+  validateGroupNamespaceDropdown,
   deriveProjectPathFromUrl,
   onProjectNameChange,
   onProjectPathChange,

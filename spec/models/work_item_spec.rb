@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe WorkItem do
   describe 'associations' do
+    it { is_expected.to belong_to(:namespace) }
     it { is_expected.to have_one(:work_item_parent).class_name('WorkItem') }
 
     it 'has one `parent_link`' do

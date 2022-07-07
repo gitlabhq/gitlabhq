@@ -57,10 +57,7 @@ export default {
             id: this.namespaceId,
             fullPath: this.namespaceFullPath,
           }
-        : {
-            id: undefined,
-            fullPath: s__('ProjectsNew|Pick a group or namespace'),
-          },
+        : this.$options.emptyNameSpace,
       shouldSkipQuery: true,
       userNamespaceId: this.userNamespaceId,
     };
@@ -120,11 +117,17 @@ export default {
       this.setNamespace({ id, fullPath });
     },
     setNamespace({ id, fullPath }) {
-      this.selectedNamespace = {
-        id: getIdFromGraphQLId(id),
-        fullPath,
-      };
+      this.selectedNamespace = id
+        ? {
+            id: getIdFromGraphQLId(id),
+            fullPath,
+          }
+        : this.$options.emptyNameSpace;
     },
+  },
+  emptyNameSpace: {
+    id: undefined,
+    fullPath: s__('ProjectsNew|Pick a group or namespace'),
   },
 };
 </script>

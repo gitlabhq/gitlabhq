@@ -17,7 +17,209 @@ import groupRunnersData from 'test_fixtures/graphql/runner/list/group_runners.qu
 import groupRunnersDataPaginated from 'test_fixtures/graphql/runner/list/group_runners.query.graphql.paginated.json';
 import groupRunnersCountData from 'test_fixtures/graphql/runner/list/group_runners_count.query.graphql.json';
 
+import { RUNNER_PAGE_SIZE } from '~/runner/constants';
+
 // Other mock data
+
+// Mock searches and their corresponding urls
+export const mockSearchExamples = [
+  {
+    name: 'a default query',
+    urlQuery: '',
+    search: { runnerType: null, filters: [], pagination: { page: 1 }, sort: 'CREATED_DESC' },
+    graphqlVariables: { sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    isDefault: true,
+  },
+  {
+    name: 'a single status',
+    urlQuery: '?status[]=ACTIVE',
+    search: {
+      runnerType: null,
+      filters: [{ type: 'status', value: { data: 'ACTIVE', operator: '=' } }],
+      pagination: { page: 1 },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: { status: 'ACTIVE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+  },
+  {
+    name: 'a single term text search',
+    urlQuery: '?search=something',
+    search: {
+      runnerType: null,
+      filters: [
+        {
+          type: 'filtered-search-term',
+          value: { data: 'something' },
+        },
+      ],
+      pagination: { page: 1 },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: { search: 'something', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+  },
+  {
+    name: 'a two terms text search',
+    urlQuery: '?search=something+else',
+    search: {
+      runnerType: null,
+      filters: [
+        {
+          type: 'filtered-search-term',
+          value: { data: 'something' },
+        },
+        {
+          type: 'filtered-search-term',
+          value: { data: 'else' },
+        },
+      ],
+      pagination: { page: 1 },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: { search: 'something else', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+  },
+  {
+    name: 'single instance type',
+    urlQuery: '?runner_type[]=INSTANCE_TYPE',
+    search: {
+      runnerType: 'INSTANCE_TYPE',
+      filters: [],
+      pagination: { page: 1 },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: { type: 'INSTANCE_TYPE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+  },
+  {
+    name: 'multiple runner status',
+    urlQuery: '?status[]=ACTIVE&status[]=PAUSED',
+    search: {
+      runnerType: null,
+      filters: [
+        { type: 'status', value: { data: 'ACTIVE', operator: '=' } },
+        { type: 'status', value: { data: 'PAUSED', operator: '=' } },
+      ],
+      pagination: { page: 1 },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: { status: 'ACTIVE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+  },
+  {
+    name: 'multiple status, a single instance type and a non default sort',
+    urlQuery: '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&sort=CREATED_ASC',
+    search: {
+      runnerType: 'INSTANCE_TYPE',
+      filters: [{ type: 'status', value: { data: 'ACTIVE', operator: '=' } }],
+      pagination: { page: 1 },
+      sort: 'CREATED_ASC',
+    },
+    graphqlVariables: {
+      status: 'ACTIVE',
+      type: 'INSTANCE_TYPE',
+      sort: 'CREATED_ASC',
+      first: RUNNER_PAGE_SIZE,
+    },
+  },
+  {
+    name: 'a tag',
+    urlQuery: '?tag[]=tag-1',
+    search: {
+      runnerType: null,
+      filters: [{ type: 'tag', value: { data: 'tag-1', operator: '=' } }],
+      pagination: { page: 1 },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: {
+      tagList: ['tag-1'],
+      first: 20,
+      sort: 'CREATED_DESC',
+    },
+  },
+  {
+    name: 'two tags',
+    urlQuery: '?tag[]=tag-1&tag[]=tag-2',
+    search: {
+      runnerType: null,
+      filters: [
+        { type: 'tag', value: { data: 'tag-1', operator: '=' } },
+        { type: 'tag', value: { data: 'tag-2', operator: '=' } },
+      ],
+      pagination: { page: 1 },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: {
+      tagList: ['tag-1', 'tag-2'],
+      first: 20,
+      sort: 'CREATED_DESC',
+    },
+  },
+  {
+    name: 'the next page',
+    urlQuery: '?page=2&after=AFTER_CURSOR',
+    search: {
+      runnerType: null,
+      filters: [],
+      pagination: { page: 2, after: 'AFTER_CURSOR' },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: { sort: 'CREATED_DESC', after: 'AFTER_CURSOR', first: RUNNER_PAGE_SIZE },
+  },
+  {
+    name: 'the previous page',
+    urlQuery: '?page=2&before=BEFORE_CURSOR',
+    search: {
+      runnerType: null,
+      filters: [],
+      pagination: { page: 2, before: 'BEFORE_CURSOR' },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: { sort: 'CREATED_DESC', before: 'BEFORE_CURSOR', last: RUNNER_PAGE_SIZE },
+  },
+  {
+    name: 'the next page filtered by a status, an instance type, tags and a non default sort',
+    urlQuery:
+      '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&tag[]=tag-1&tag[]=tag-2&sort=CREATED_ASC&page=2&after=AFTER_CURSOR',
+    search: {
+      runnerType: 'INSTANCE_TYPE',
+      filters: [
+        { type: 'status', value: { data: 'ACTIVE', operator: '=' } },
+        { type: 'tag', value: { data: 'tag-1', operator: '=' } },
+        { type: 'tag', value: { data: 'tag-2', operator: '=' } },
+      ],
+      pagination: { page: 2, after: 'AFTER_CURSOR' },
+      sort: 'CREATED_ASC',
+    },
+    graphqlVariables: {
+      status: 'ACTIVE',
+      type: 'INSTANCE_TYPE',
+      tagList: ['tag-1', 'tag-2'],
+      sort: 'CREATED_ASC',
+      after: 'AFTER_CURSOR',
+      first: RUNNER_PAGE_SIZE,
+    },
+  },
+  {
+    name: 'paused runners',
+    urlQuery: '?paused[]=true',
+    search: {
+      runnerType: null,
+      filters: [{ type: 'paused', value: { data: 'true', operator: '=' } }],
+      pagination: { page: 1 },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: { paused: true, sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+  },
+  {
+    name: 'active runners',
+    urlQuery: '?paused[]=false',
+    search: {
+      runnerType: null,
+      filters: [{ type: 'paused', value: { data: 'false', operator: '=' } }],
+      pagination: { page: 1 },
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: { paused: false, sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+  },
+];
+
 export const onlineContactTimeoutSecs = 2 * 60 * 60;
 export const staleTimeoutSecs = 7889238; // Ruby's `3.months`
 

@@ -287,30 +287,38 @@ func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
-			key := upload.RewrittenFieldsHeader
-			if tc.present && r.URL.Path != "/api/v4/internal/workhorse/authorize_upload" {
-				require.Contains(t, r.Header, key)
-			} else {
-				require.NotContains(t, r.Header, key)
-			}
+		t.Run(tc.desc, func(t *testing.T) {
+			ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+				switch r.URL.Path {
+				case "/api/v4/internal/workhorse/authorize_upload":
+					w.Header().Set("Content-Type", api.ResponseContentType)
+					io.WriteString(w, `{"TempPath":"`+os.TempDir()+`"}`)
+				default:
+					if tc.present {
+						require.Contains(t, r.Header, upload.RewrittenFieldsHeader)
+					} else {
+						require.NotContains(t, r.Header, upload.RewrittenFieldsHeader)
 
-			require.NotEqual(t, canary, r.Header.Get(key), "Found canary %q in header %q", canary, key)
+					}
+				}
+
+				require.NotEqual(t, canary, r.Header.Get(upload.RewrittenFieldsHeader), "Found canary %q in header", canary)
+			})
+			defer ts.Close()
+			ws := startWorkhorseServer(ts.URL)
+			defer ws.Close()
+
+			req, err := http.NewRequest("POST", ws.URL+"/something", tc.body)
+			require.NoError(t, err)
+
+			req.Header.Set("Content-Type", tc.contentType)
+			req.Header.Set(upload.RewrittenFieldsHeader, canary)
+			resp, err := http.DefaultClient.Do(req)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+
+			require.Equal(t, 200, resp.StatusCode, "status code")
 		})
-		defer ts.Close()
-		ws := startWorkhorseServer(ts.URL)
-		defer ws.Close()
-
-		req, err := http.NewRequest("POST", ws.URL+"/something", tc.body)
-		require.NoError(t, err)
-
-		req.Header.Set("Content-Type", tc.contentType)
-		req.Header.Set(upload.RewrittenFieldsHeader, canary)
-		resp, err := http.DefaultClient.Do(req)
-		require.NoError(t, err)
-		defer resp.Body.Close()
-
-		require.Equal(t, 200, resp.StatusCode, "status code")
 	}
 }
 

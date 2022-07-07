@@ -32,6 +32,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
     it { is_expected.to have_one :cluster_enabled_grant }
+    it { is_expected.to have_many(:work_items) }
 
     it do
       is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)

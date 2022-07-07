@@ -2,14 +2,14 @@ package api
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -73,16 +73,39 @@ func testRailsServer(url *regexp.Regexp, code int, body string) *httptest.Server
 
 		w.Header().Set("Content-Type", ResponseContentType)
 
-		logEntry := log.WithFields(log.Fields{
-			"method": r.Method,
-			"url":    r.URL,
-		})
-		logEntryWithCode := logEntry.WithField("code", code)
-
-		// Write pure string
-		logEntryWithCode.Info("UPSTREAM")
-
 		w.WriteHeader(code)
 		fmt.Fprint(w, body)
 	})
+}
+
+func TestPreAuthorizeFixedPath(t *testing.T) {
+	var (
+		upstreamHeaders http.Header
+		upstreamQuery   url.Values
+	)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/my/api/path" {
+			return
+		}
+
+		upstreamHeaders = r.Header
+		upstreamQuery = r.URL.Query()
+		w.Header().Set("Content-Type", ResponseContentType)
+		io.WriteString(w, `{"TempPath":"HELLO!!"}`)
+	}))
+	defer ts.Close()
+
+	req, err := http.NewRequest("GET", "/original/request/path?q1=Q1&q2=Q2", nil)
+	require.NoError(t, err)
+	req.Header.Set("key1", "value1")
+
+	api := NewAPI(helper.URLMustParse(ts.URL), "123", http.DefaultTransport)
+	resp, err := api.PreAuthorizeFixedPath(req, "POST", "/my/api/path")
+	require.NoError(t, err)
+
+	require.Equal(t, "value1", upstreamHeaders.Get("key1"), "original headers must propagate")
+	require.Equal(t, url.Values{"q1": []string{"Q1"}, "q2": []string{"Q2"}}, upstreamQuery,
+		"original query must propagate")
+	require.Equal(t, "HELLO!!", resp.TempPath, "sanity check: successful API call")
 }

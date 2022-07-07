@@ -46,7 +46,6 @@ class Issue < ApplicationRecord
   TYPES_FOR_LIST = %w(issue incident).freeze
 
   belongs_to :project
-  has_one :namespace, through: :project
 
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'

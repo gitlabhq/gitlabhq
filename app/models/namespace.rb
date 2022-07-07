@@ -74,6 +74,7 @@ class Namespace < ApplicationRecord
   has_many :sync_events, class_name: 'Namespaces::SyncEvent'
 
   has_one :cluster_enabled_grant, inverse_of: :namespace, class_name: 'Clusters::ClusterEnabledGrant'
+  has_many :work_items, inverse_of: :namespace, class_name: 'WorkItem'
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,

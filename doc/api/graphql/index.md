@@ -61,14 +61,6 @@ You can work with sample queries that pull data from public projects on GitLab.c
 
 The [get started](getting_started.md) page includes different methods to customize GraphQL queries.
 
-### Update the GraphQL API reference
-
-If you change the GraphQL schema, create a merge request to get your changes approved.
-To generate the required documentation and schema, see
-[Rake tasks for developers](../../development/rake_tasks.md#update-graphql-documentation-and-schema-definitions).
-
-Run the commands using the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/).
-
 ## Breaking changes
 
 The GitLab GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning) and changes to the API are primarily backward-compatible.
