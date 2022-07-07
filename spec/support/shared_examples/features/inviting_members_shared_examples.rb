@@ -78,22 +78,21 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
   end
 
   context 'when member is already a member by email' do
-    it 'fails with an error', :js do
+    it 'updates the member for that email', :js do
       visit members_page_path
 
       invite_member('test@example.com', role: 'Developer')
 
       invite_member('test@example.com', role: 'Reporter', refresh: false)
 
-      expect(page).to have_selector(invite_modal_selector)
-      expect(page).to have_content("The member's email address has already been taken")
+      expect(page).not_to have_selector(invite_modal_selector)
 
       page.refresh
 
       click_link 'Invited'
 
       page.within find_invited_member_row('test@example.com') do
-        expect(page).to have_button('Developer')
+        expect(page).to have_button('Reporter')
       end
     end
   end

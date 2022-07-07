@@ -29,54 +29,81 @@ RSpec.describe WaitableWorker do
   subject(:job) { worker.new }
 
   describe '.bulk_perform_and_wait' do
-    it 'schedules the jobs and waits for them to complete' do
-      worker.bulk_perform_and_wait([[1], [2]])
+    context '1 job' do
+      it 'inlines the job' do
+        args_list = [[1]]
+        expect(worker).to receive(:bulk_perform_inline).with(args_list).and_call_original
+        expect(Gitlab::AppJsonLogger).to(
+          receive(:info).with(a_hash_including('message' => 'running inline',
+                                               'class' => 'Gitlab::Foo::Bar::DummyWorker',
+                                               'job_status' => 'running',
+                                               'queue' => 'foo_bar_dummy'))
+                        .once)
 
-      expect(worker.counter).to eq(3)
-    end
+        worker.bulk_perform_and_wait(args_list)
 
-    it 'inlines workloads <= 3 jobs' do
-      args_list = [[1], [2], [3]]
-      expect(worker).to receive(:bulk_perform_inline).with(args_list).and_call_original
-      expect(Gitlab::AppJsonLogger).to(
-        receive(:info).with(a_hash_including('message' => 'running inline',
-                                             'class' => 'Gitlab::Foo::Bar::DummyWorker',
-                                             'job_status' => 'running',
-                                             'queue' => 'foo_bar_dummy'))
-                      .exactly(3).times)
-
-      worker.bulk_perform_and_wait(args_list)
-
-      expect(worker.counter).to eq(6)
-    end
-
-    context 'when the feature flag `async_only_project_authorizations_refresh` is turned off' do
-      before do
-        stub_feature_flags(async_only_project_authorizations_refresh: false)
-      end
-
-      it 'runs > 3 jobs using sidekiq and a waiter key' do
-        expect(worker).to receive(:bulk_perform_async)
-                            .with([[1, anything], [2, anything], [3, anything], [4, anything]])
-
-        worker.bulk_perform_and_wait([[1], [2], [3], [4]])
+        expect(worker.counter).to eq(1)
       end
     end
 
-    it 'runs > 3 jobs using sidekiq and no waiter key' do
-      arguments = 1.upto(5).map { |i| [i] }
+    context 'between 2 and 3 jobs' do
+      it 'runs the jobs asynchronously' do
+        arguments = [[1], [2], [3]]
 
-      expect(worker).to receive(:bulk_perform_async).with(arguments)
+        expect(worker).to receive(:bulk_perform_async).with(arguments)
 
-      worker.bulk_perform_and_wait(arguments, timeout: 2)
+        worker.bulk_perform_and_wait(arguments)
+      end
+
+      context 'when the feature flag `inline_project_authorizations_refresh_only_for_single_element` is turned off' do
+        before do
+          stub_feature_flags(inline_project_authorizations_refresh_only_for_single_element: false)
+        end
+
+        it 'inlines the jobs' do
+          args_list = [[1], [2], [3]]
+          expect(worker).to receive(:bulk_perform_inline).with(args_list).and_call_original
+          expect(Gitlab::AppJsonLogger).to(
+            receive(:info).with(a_hash_including('message' => 'running inline',
+                                                 'class' => 'Gitlab::Foo::Bar::DummyWorker',
+                                                 'job_status' => 'running',
+                                                 'queue' => 'foo_bar_dummy'))
+                          .exactly(3).times)
+
+          worker.bulk_perform_and_wait(args_list)
+        end
+      end
     end
 
-    it 'runs > 10 * timeout jobs using sidekiq and no waiter key' do
-      arguments = 1.upto(21).map { |i| [i] }
+    context '>= 4 jobs' do
+      it 'runs jobs using sidekiq and no waiter key' do
+        arguments = 1.upto(5).map { |i| [i] }
 
-      expect(worker).to receive(:bulk_perform_async).with(arguments)
+        expect(worker).to receive(:bulk_perform_async).with(arguments)
 
-      worker.bulk_perform_and_wait(arguments, timeout: 2)
+        worker.bulk_perform_and_wait(arguments, timeout: 2)
+      end
+
+      it 'runs > 10 * timeout jobs using sidekiq and no waiter key' do
+        arguments = 1.upto(21).map { |i| [i] }
+
+        expect(worker).to receive(:bulk_perform_async).with(arguments)
+
+        worker.bulk_perform_and_wait(arguments, timeout: 2)
+      end
+
+      context 'when the feature flag `async_only_project_authorizations_refresh` is turned off' do
+        before do
+          stub_feature_flags(async_only_project_authorizations_refresh: false)
+        end
+
+        it 'runs > 3 jobs using sidekiq and a waiter key' do
+          expect(worker).to receive(:bulk_perform_async)
+                              .with([[1, anything], [2, anything], [3, anything], [4, anything]])
+
+          worker.bulk_perform_and_wait([[1], [2], [3], [4]])
+        end
+      end
     end
   end
 

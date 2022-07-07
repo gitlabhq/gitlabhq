@@ -256,7 +256,7 @@ module Members
       if user_by_email
         find_or_initialize_member_by_user(user_id: user_by_email.id)
       else
-        source.members.build(invite_email: invitee)
+        source.members_and_requesters.find_or_initialize_by(invite_email: invitee) # rubocop:disable CodeReuse/ActiveRecord
       end
     end
 

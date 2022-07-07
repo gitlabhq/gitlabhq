@@ -98,7 +98,9 @@ FactoryBot.define do
         project.add_owner(project.first_owner)
       end
 
-      project.group&.refresh_members_authorized_projects
+      if project.group
+        AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
+      end
 
       # assign the delegated `#ci_cd_settings` attributes after create
       project.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?

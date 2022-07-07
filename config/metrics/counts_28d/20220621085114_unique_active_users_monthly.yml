@@ -1,5 +1,5 @@
 ---
-key_path: redis_hll_counters.manage.unque_active_users_monthly
+key_path: redis_hll_counters.manage.unique_active_users_monthly
 description: Users that have a last_activity_on date within the past 28 days
 product_section: dev
 product_stage: manage

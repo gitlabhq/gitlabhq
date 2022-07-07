@@ -1729,6 +1729,9 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 

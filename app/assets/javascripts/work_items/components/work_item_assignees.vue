@@ -1,8 +1,19 @@
 <script>
-import { GlTokenSelector, GlIcon, GlAvatar, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import {
+  GlTokenSelector,
+  GlIcon,
+  GlAvatar,
+  GlLink,
+  GlSkeletonLoader,
+  GlButton,
+  GlDropdownItem,
+  GlDropdownDivider,
+} from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import { n__ } from '~/locale';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -27,7 +38,11 @@ export default {
     GlAvatar,
     GlLink,
     GlSkeletonLoader,
+    GlButton,
     SidebarParticipant,
+    InviteMembersTrigger,
+    GlDropdownItem,
+    GlDropdownDivider,
   },
   inject: ['fullPath'],
   props: {
@@ -47,6 +62,7 @@ export default {
       localAssignees: this.assignees.map(addClass),
       searchKey: '',
       searchUsers: [],
+      currentUser: null,
     };
   },
   apollo: {
@@ -70,6 +86,9 @@ export default {
         this.$emit('error', i18n.fetchError);
       },
     },
+    currentUser: {
+      query: currentUserQuery,
+    },
   },
   computed: {
     assigneeListEmpty() {
@@ -78,11 +97,23 @@ export default {
     containerClass() {
       return !this.isEditing ? 'gl-shadow-none! gl-bg-transparent!' : '';
     },
-    isLoading() {
+    isLoadingUsers() {
       return this.$apollo.queries.searchUsers.loading;
     },
     assigneeText() {
       return n__('WorkItem|Assignee', 'WorkItem|Assignees', this.localAssignees.length);
+    },
+    dropdownItems() {
+      if (this.currentUser && this.searchEmpty) {
+        if (this.searchUsers.some((user) => user.username === this.currentUser.username)) {
+          return this.moveCurrentUserToStart(this.searchUsers);
+        }
+        return [this.currentUser, ...this.searchUsers];
+      }
+      return this.searchUsers;
+    },
+    searchEmpty() {
+      return this.searchKey.length === 0;
     },
   },
   watch: {
@@ -99,15 +130,18 @@ export default {
     getUserId(id) {
       return getIdFromGraphQLId(id);
     },
-    setAssignees(e) {
+    handleBlur(e) {
       if (isTokenSelectorElement(e.relatedTarget) || !this.isEditing) return;
       this.isEditing = false;
+      this.setAssignees(this.localAssignees);
+    },
+    setAssignees(assignees) {
       this.$apollo.mutate({
         mutation: localUpdateWorkItemMutation,
         variables: {
           input: {
             id: this.workItemId,
-            assignees: this.localAssignees,
+            assignees,
           },
         },
       });
@@ -132,6 +166,15 @@ export default {
     setSearchKey(value) {
       this.searchKey = value;
     },
+    moveCurrentUserToStart(users = []) {
+      if (this.currentUser) {
+        return [this.currentUser, ...users.filter((user) => user.id !== this.currentUser.id)];
+      }
+      return users;
+    },
+    closeDropdown() {
+      this.$refs.tokenSelector.closeDropdown();
+    },
   },
 };
 </script>
@@ -147,13 +190,13 @@ export default {
       ref="tokenSelector"
       v-model="localAssignees"
       :container-class="containerClass"
-      class="gl-flex-grow-1 gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base col-9 gl-align-self-start"
-      :dropdown-items="searchUsers"
-      :loading="isLoading"
+      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base col-9 gl-align-self-start gl-px-0!"
+      :dropdown-items="dropdownItems"
+      :loading="isLoadingUsers"
       @input="focusTokenSelector"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"
-      @blur="setAssignees"
+      @blur="handleBlur"
       @mouseover.native="handleMouseOver"
       @mouseout.native="handleMouseOut"
     >
@@ -163,7 +206,15 @@ export default {
           data-testid="empty-state"
         >
           <gl-icon name="profile" />
-          <span class="gl-ml-2">{{ __('Add assignees') }}</span>
+          <span class="gl-ml-2 gl-mr-4">{{ __('Add assignees') }}</span>
+          <gl-button
+            v-if="currentUser"
+            size="small"
+            class="assign-myself"
+            data-testid="assign-self"
+            @click.stop="setAssignees([currentUser])"
+            >{{ __('Assign myself') }}</gl-button
+          >
         </div>
       </template>
       <template #token-content="{ token }">
@@ -188,6 +239,18 @@ export default {
           <rect width="380" height="20" x="10" y="95" rx="4" />
           <rect width="280" height="20" x="10" y="130" rx="4" />
         </gl-skeleton-loader>
+      </template>
+      <template #dropdown-footer>
+        <gl-dropdown-divider />
+        <gl-dropdown-item @click="closeDropdown">
+          <invite-members-trigger
+            :display-text="__('Invite members')"
+            trigger-element="side-nav"
+            icon="plus"
+            trigger-source="work-item-assignees-dropdown"
+            classes="gl-display-block gl-text-body! gl-hover-text-decoration-none gl-pb-2"
+          />
+        </gl-dropdown-item>
       </template>
     </gl-token-selector>
   </div>

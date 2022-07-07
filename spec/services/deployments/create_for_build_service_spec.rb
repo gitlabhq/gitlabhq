@@ -25,6 +25,7 @@ RSpec.describe Deployments::CreateForBuildService do
         expect(build.deployment.deployable).to eq(build)
         expect(build.deployment.deployable_type).to eq('CommitStatus')
         expect(build.deployment.environment).to eq(build.persisted_environment)
+        expect(build.deployment.valid?).to be_truthy
       end
 
       context 'when creation failure occures' do

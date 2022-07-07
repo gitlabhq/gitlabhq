@@ -25,7 +25,7 @@ export const temporaryConfig = {
                     nodes: [
                       {
                         __typename: 'UserCore',
-                        id: 'gid://gitlab/User/1',
+                        id: 'gid://gitlab/User/10001',
                         avatarUrl: '',
                         webUrl: '',
                         // eslint-disable-next-line @gitlab/require-i18n-strings
@@ -34,7 +34,7 @@ export const temporaryConfig = {
                       },
                       {
                         __typename: 'UserCore',
-                        id: 'gid://gitlab/User/2',
+                        id: 'gid://gitlab/User/10002',
                         avatarUrl: '',
                         webUrl: '',
                         // eslint-disable-next-line @gitlab/require-i18n-strings

@@ -333,13 +333,25 @@ export const availableWorkItemsResponse = {
   },
 };
 
-export const projectMembersResponse = {
+export const projectMembersResponseWithCurrentUser = {
   data: {
     workspace: {
       id: '1',
       __typename: 'Project',
       users: {
         nodes: [
+          {
+            id: 'user-2',
+            user: {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/5',
+              avatarUrl: '/avatar2',
+              name: 'rookie',
+              username: 'rookie',
+              webUrl: 'rookie',
+              status: null,
+            },
+          },
           {
             id: 'user-1',
             user: {
@@ -353,6 +365,19 @@ export const projectMembersResponse = {
               status: null,
             },
           },
+        ],
+      },
+    },
+  },
+};
+
+export const projectMembersResponseWithoutCurrentUser = {
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      users: {
+        nodes: [
           {
             id: 'user-2',
             user: {
@@ -389,3 +414,23 @@ export const mockAssignees = [
     username: 'ruthfull',
   },
 ];
+
+export const currentUserResponse = {
+  data: {
+    currentUser: {
+      __typename: 'UserCore',
+      id: 'gid://gitlab/User/1',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+      name: 'Administrator',
+      username: 'root',
+      webUrl: '/root',
+    },
+  },
+};
+
+export const currentUserNullResponse = {
+  data: {
+    currentUser: null,
+  },
+};

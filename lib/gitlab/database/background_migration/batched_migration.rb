@@ -199,8 +199,30 @@ module Gitlab
           BatchOptimizer.new(self).optimize!
         end
 
+        def health_context
+          HealthStatus::Context.new([table_name])
+        end
+
         def hold!(until_time: 10.minutes.from_now)
+          duration_s = (until_time - Time.current).round
+          Gitlab::AppLogger.info(
+            message: "#{self} put on hold until #{until_time}",
+            migration_id: id,
+            job_class_name: job_class_name,
+            duration_s: duration_s
+          )
+
           update!(on_hold_until: until_time)
+        end
+
+        def on_hold?
+          return false unless on_hold_until
+
+          on_hold_until > Time.zone.now
+        end
+
+        def to_s
+          "BatchedMigration[id: #{id}]"
         end
 
         private

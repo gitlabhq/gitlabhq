@@ -104,6 +104,7 @@ RSpec.describe 'factories' do
   factories_based_on_view = %i[
     postgres_index
     postgres_index_bloat_estimate
+    postgres_autovacuum_activity
   ].to_set.freeze
 
   without_fd, with_fd = FactoryBot.factories

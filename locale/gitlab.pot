@@ -5129,6 +5129,9 @@ msgstr ""
 msgid "Assign milestone"
 msgstr ""
 
+msgid "Assign myself"
+msgstr ""
+
 msgid "Assign reviewer"
 msgstr ""
 

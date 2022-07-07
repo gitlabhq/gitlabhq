@@ -809,7 +809,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/assets/javascripts/authentication/ @gitlab-org/manage/authentication-and-authorization
 /app/assets/javascripts/ide/components/shared/tokened_input.vue @gitlab-org/manage/authentication-and-authorization
 /app/assets/javascripts/invite_members/components/members_token_select.vue @gitlab-org/manage/authentication-and-authorization
-/app/assets/javascripts/logs/components/tokens/ @gitlab-org/manage/authentication-and-authorization
 /app/assets/javascripts/packages_and_registries/package_registry/components/list/tokens/ @gitlab-org/manage/authentication-and-authorization
 /app/assets/javascripts/pages/admin/impersonation_tokens/ @gitlab-org/manage/authentication-and-authorization
 /app/assets/javascripts/pages/groups/settings/access_tokens/ @gitlab-org/manage/authentication-and-authorization

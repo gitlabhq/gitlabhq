@@ -13,7 +13,7 @@ FactoryBot.define do
     trait(:maintainer) { group_access { Gitlab::Access::MAINTAINER } }
 
     after(:create) do |project_group_link, evaluator|
-      project_group_link.group.refresh_members_authorized_projects
+      AuthorizedProjectUpdate::ProjectRecalculateService.new(project_group_link.project).execute
     end
   end
 end

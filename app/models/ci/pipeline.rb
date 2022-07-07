@@ -131,6 +131,7 @@ module Ci
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
+    after_find :observe_age_in_minutes, unless: :importing?
 
     use_fast_destroy :job_artifacts
     use_fast_destroy :build_trace_chunks
@@ -1322,6 +1323,16 @@ module Ci
       end
     end
 
+    def age_in_minutes
+      return 0 unless persisted?
+
+      unless has_attribute?(:created_at)
+        raise ArgumentError, 'pipeline not fully loaded'
+      end
+
+      (Time.current - created_at).ceil / 60
+    end
+
     private
 
     def add_message(severity, content)
@@ -1370,6 +1381,21 @@ module Ci
       return unless project
 
       project.repository.keep_around(self.sha, self.before_sha)
+    end
+
+    def observe_age_in_minutes
+      return unless age_metric_enabled?
+      return unless persisted? && has_attribute?(:created_at)
+
+      ::Gitlab::Ci::Pipeline::Metrics
+        .pipeline_age_histogram
+        .observe({}, age_in_minutes)
+    end
+
+    def age_metric_enabled?
+      ::Gitlab::SafeRequestStore.fetch(:age_metric_enabled) do
+        ::Feature.enabled?(:ci_pipeline_age_histogram, type: :ops)
+      end
     end
 
     # Without using `unscoped`, caller scope is also included into the query.

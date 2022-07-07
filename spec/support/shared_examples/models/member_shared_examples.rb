@@ -299,37 +299,51 @@ RSpec.shared_examples_for "member creation" do
   end
 
   context 'when member already exists' do
-    before do
-      source.add_member(user, :developer)
-    end
+    context 'when member is a user' do
+      before do
+        source.add_member(user, :developer)
+      end
 
-    context 'with no current_user' do
-      it 'updates the member' do
-        expect(source.users).to include(user)
+      context 'with no current_user' do
+        it 'updates the member' do
+          expect(source.users).to include(user)
 
-        described_class.add_member(source, user, :maintainer)
+          described_class.add_member(source, user, :maintainer)
 
-        expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MAINTAINER)
+          expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MAINTAINER)
+        end
+      end
+
+      context 'when current_user can update member', :enable_admin_mode do
+        it 'updates the member' do
+          expect(source.users).to include(user)
+
+          described_class.add_member(source, user, :maintainer, current_user: admin)
+
+          expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MAINTAINER)
+        end
+      end
+
+      context 'when current_user cannot update member' do
+        it 'does not update the member' do
+          expect(source.users).to include(user)
+
+          described_class.add_member(source, user, :maintainer, current_user: user)
+
+          expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::DEVELOPER)
+        end
       end
     end
 
-    context 'when current_user can update member', :enable_admin_mode do
-      it 'updates the member' do
-        expect(source.users).to include(user)
+    context 'when member is an invite by email' do
+      let_it_be(:email) { 'user@email.com' }
+      let_it_be(:existing_member) { source.add_developer(email) }
 
-        described_class.add_member(source, user, :maintainer, current_user: admin)
-
-        expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MAINTAINER)
-      end
-    end
-
-    context 'when current_user cannot update member' do
-      it 'does not update the member' do
-        expect(source.users).to include(user)
-
-        described_class.add_member(source, user, :maintainer, current_user: user)
-
-        expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::DEVELOPER)
+      it 'updates the member for that email' do
+        expect do
+          described_class.add_member(source, email, :maintainer)
+        end.to change { existing_member.reset.access_level }.from(Member::DEVELOPER).to(Member::MAINTAINER)
+                                                            .and not_change { source.members.invite.count }
       end
     end
   end

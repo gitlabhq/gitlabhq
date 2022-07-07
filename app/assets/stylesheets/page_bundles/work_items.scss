@@ -13,3 +13,13 @@
 #weight-widget-input[readonly] {
   background-color: var(--white, $white);
 }
+
+.work-item-assignees {
+  .assign-myself {
+    display: none;
+  }
+
+  .assignees-selector:hover .assign-myself {
+    display: block;
+  }
+}

@@ -229,6 +229,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
   describe 'executing an entire migration', :freeze_time, if: Gitlab::Database.has_config?(tracking_database) do
     include Gitlab::Database::DynamicModelHelpers
+    include Database::DatabaseHelpers
 
     let(:migration_class) do
       Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
@@ -346,6 +347,21 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
     it 'does not update non-matching records in the range' do
       expect { full_migration_run }.not_to change { example_data.where('status <> 1 AND some_column <> 0').count }
+    end
+
+    context 'health status' do
+      subject(:migration_run) { described_class.new.perform }
+
+      it 'puts migration on hold when there is autovaccum activity on related tables' do
+        swapout_view_for_table(:postgres_autovacuum_activity, connection: connection)
+        create(
+          :postgres_autovacuum_activity,
+          table: migration.table_name,
+          table_identifier: "public.#{migration.table_name}"
+        )
+
+        expect { migration_run }.to change { migration.reload.on_hold? }.from(false).to(true)
+      end
     end
   end
 end

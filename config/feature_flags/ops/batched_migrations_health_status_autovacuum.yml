@@ -1,0 +1,8 @@
+---
+name: batched_migrations_health_status_autovacuum
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85196
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/360331
+milestone: '15.2'
+type: ops
+group: group::database
+default_enabled: false

@@ -118,6 +118,38 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe 'pipeline age metric' do
+    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+
+    let(:pipeline_age_histogram) do
+      ::Gitlab::Ci::Pipeline::Metrics.pipeline_age_histogram
+    end
+
+    context 'when pipeline age histogram is enabled' do
+      before do
+        stub_feature_flags(ci_pipeline_age_histogram: true)
+      end
+
+      it 'observes pipeline age' do
+        expect(pipeline_age_histogram).to receive(:observe)
+
+        described_class.find(pipeline.id)
+      end
+    end
+
+    context 'when pipeline age histogram is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_age_histogram: false)
+      end
+
+      it 'observes pipeline age' do
+        expect(pipeline_age_histogram).not_to receive(:observe)
+
+        described_class.find(pipeline.id)
+      end
+    end
+  end
+
   describe '#set_status' do
     let(:pipeline) { build(:ci_empty_pipeline, :created) }
 
@@ -4976,6 +5008,36 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it 'returns nil' do
         is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#age_in_minutes' do
+    let(:pipeline) { build(:ci_pipeline) }
+
+    context 'when pipeline has not been persisted' do
+      it 'returns zero' do
+        expect(pipeline.age_in_minutes).to eq 0
+      end
+    end
+
+    context 'when pipeline has been saved' do
+      it 'returns pipeline age in minutes' do
+        pipeline.save!
+
+        travel_to(pipeline.created_at + 2.hours) do
+          expect(pipeline.age_in_minutes).to eq 120
+        end
+      end
+    end
+
+    context 'when pipeline has been loaded without all attributes' do
+      it 'raises an exception' do
+        pipeline.save!
+
+        pipeline_id = Ci::Pipeline.where(id: pipeline.id).select(:id).first
+
+        expect { pipeline_id.age_in_minutes }.to raise_error(ArgumentError)
       end
     end
   end

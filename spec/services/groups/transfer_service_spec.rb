@@ -601,8 +601,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
             }.from(0).to(1)
           end
 
-          it 'performs authorizations job immediately' do
-            expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_inline)
+          it 'performs authorizations job' do
+            expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_async)
 
             transfer_service.execute(new_parent_group)
           end

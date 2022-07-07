@@ -7,7 +7,9 @@ module WaitableWorker
     # Schedules multiple jobs and waits for them to be completed.
     def bulk_perform_and_wait(args_list, timeout: 10)
       # Short-circuit: it's more efficient to do small numbers of jobs inline
-      return bulk_perform_inline(args_list) if args_list.size <= 3
+      if args_list.size == 1 || (args_list.size <= 3 && !inline_refresh_only_for_single_element?)
+        return bulk_perform_inline(args_list)
+      end
 
       # Don't wait if there's too many jobs to be waited for. Not including the
       # waiter allows them to be deduplicated and it skips waiting for jobs that
@@ -44,6 +46,10 @@ module WaitableWorker
 
     def async_only_refresh?
       Feature.enabled?(:async_only_project_authorizations_refresh)
+    end
+
+    def inline_refresh_only_for_single_element?
+      Feature.enabled?(:inline_project_authorizations_refresh_only_for_single_element)
     end
   end
 

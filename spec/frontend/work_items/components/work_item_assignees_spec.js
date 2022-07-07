@@ -4,13 +4,22 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stripTypenames } from 'helpers/graphql_helpers';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import { i18n } from '~/work_items/constants';
 import { temporaryConfig, resolvers } from '~/work_items/graphql/provider';
-import { projectMembersResponse, mockAssignees, workItemQueryResponse } from '../mock_data';
+import {
+  projectMembersResponseWithCurrentUser,
+  mockAssignees,
+  workItemQueryResponse,
+  currentUserResponse,
+  currentUserNullResponse,
+  projectMembersResponseWithoutCurrentUser,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -24,17 +33,31 @@ describe('WorkItemAssignees component', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const findEmptyState = () => wrapper.findByTestId('empty-state');
+  const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
 
-  const successSearchQueryHandler = jest.fn().mockResolvedValue(projectMembersResponse);
+  const successSearchQueryHandler = jest
+    .fn()
+    .mockResolvedValue(projectMembersResponseWithCurrentUser);
+  const successCurrentUserQueryHandler = jest.fn().mockResolvedValue(currentUserResponse);
+  const noCurrentUserQueryHandler = jest.fn().mockResolvedValue(currentUserNullResponse);
+
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const createComponent = ({
     assignees = mockAssignees,
     searchQueryHandler = successSearchQueryHandler,
+    currentUserQueryHandler = successCurrentUserQueryHandler,
   } = {}) => {
-    const apolloProvider = createMockApollo([[userSearchQuery, searchQueryHandler]], resolvers, {
-      typePolicies: temporaryConfig.cacheConfig.typePolicies,
-    });
+    const apolloProvider = createMockApollo(
+      [
+        [userSearchQuery, searchQueryHandler],
+        [currentUserQuery, currentUserQueryHandler],
+      ],
+      resolvers,
+      {
+        typePolicies: temporaryConfig.cacheConfig.typePolicies,
+      },
+    );
 
     apolloProvider.clients.defaultClient.writeQuery({
       query: workItemQuery,
@@ -170,5 +193,96 @@ describe('WorkItemAssignees component', () => {
     expect(successSearchQueryHandler).toHaveBeenCalledWith(
       expect.objectContaining({ search: searchKey }),
     );
+  });
+
+  it('does not show `Assign myself` button if current user is loading', () => {
+    createComponent();
+    findTokenSelector().trigger('mouseover');
+
+    expect(findAssignSelfButton().exists()).toBe(false);
+  });
+
+  it('does not show `Assign myself` button if work item has assignees', async () => {
+    createComponent();
+    await waitForPromises();
+    findTokenSelector().trigger('mouseover');
+
+    expect(findAssignSelfButton().exists()).toBe(false);
+  });
+
+  it('does now show `Assign myself` button if user is not logged in', async () => {
+    createComponent({ currentUserQueryHandler: noCurrentUserQueryHandler, assignees: [] });
+    await waitForPromises();
+    findTokenSelector().trigger('mouseover');
+
+    expect(findAssignSelfButton().exists()).toBe(false);
+  });
+
+  describe('when user is logged in and there are no assignees', () => {
+    beforeEach(() => {
+      createComponent({ assignees: [] });
+      return waitForPromises();
+    });
+
+    it('renders `Assign myself` button', async () => {
+      findTokenSelector().trigger('mouseover');
+      expect(findAssignSelfButton().exists()).toBe(true);
+    });
+
+    it('calls update work item assignees mutation with current user as a variable on button click', () => {
+      // TODO: replace this test as soon as we have a real mutation implemented
+      jest.spyOn(wrapper.vm.$apollo, 'mutate').mockImplementation(jest.fn());
+
+      findTokenSelector().trigger('mouseover');
+      findAssignSelfButton().vm.$emit('click', new MouseEvent('click'));
+
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            input: {
+              assignees: [stripTypenames(currentUserResponse.data.currentUser)],
+              id: workItemId,
+            },
+          },
+        }),
+      );
+    });
+  });
+
+  it('moves current user to the top of dropdown items if user is a project member', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findTokenSelector().props('dropdownItems')[0]).toEqual(
+      expect.objectContaining({
+        ...stripTypenames(currentUserResponse.data.currentUser),
+      }),
+    );
+  });
+
+  describe('when current user is not in the list of project members', () => {
+    const searchQueryHandler = jest
+      .fn()
+      .mockResolvedValue(projectMembersResponseWithoutCurrentUser);
+
+    beforeEach(() => {
+      createComponent({ searchQueryHandler });
+      return waitForPromises();
+    });
+
+    it('adds current user to the top of dropdown items', () => {
+      expect(findTokenSelector().props('dropdownItems')[0]).toEqual(
+        stripTypenames(currentUserResponse.data.currentUser),
+      );
+    });
+
+    it('does not add current user if search is not empty', async () => {
+      findTokenSelector().vm.$emit('text-input', 'test');
+      await waitForPromises();
+
+      expect(findTokenSelector().props('dropdownItems')[0]).not.toEqual(
+        stripTypenames(currentUserResponse.data.currentUser),
+      );
+    });
   });
 });

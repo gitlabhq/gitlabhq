@@ -69,6 +69,20 @@ RSpec.describe API::Invitations do
           end
         end
 
+        context 'when invitee is already an invited member' do
+          it 'updates the member for that email' do
+            member = source.add_developer(email)
+
+            expect do
+              post invitations_url(source, maintainer),
+                   params: { email: email, access_level: Member::MAINTAINER }
+
+              expect(response).to have_gitlab_http_status(:created)
+            end.to change { member.reset.access_level }.from(Member::DEVELOPER).to(Member::MAINTAINER)
+                                                       .and not_change { source.members.invite.count }
+          end
+        end
+
         it 'adds a new member by email' do
           expect do
             post invitations_url(source, maintainer),

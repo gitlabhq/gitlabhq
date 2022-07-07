@@ -572,6 +572,30 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '#on_hold?', :freeze_time do
+    subject { migration.on_hold? }
+
+    let(:migration) { create(:batched_background_migration) }
+
+    it 'returns false if no on_hold_until is set' do
+      migration.on_hold_until = nil
+
+      expect(subject).to be_falsey
+    end
+
+    it 'returns false if on_hold_until has passed' do
+      migration.on_hold_until = 1.minute.ago
+
+      expect(subject).to be_falsey
+    end
+
+    it 'returns true if on_hold_until is in the future' do
+      migration.on_hold_until = 1.minute.from_now
+
+      expect(subject).to be_truthy
+    end
+  end
+
   describe '.for_configuration' do
     let!(:attributes) do
       {

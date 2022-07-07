@@ -42,6 +42,15 @@ module Gitlab
           ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
         end
 
+        def self.pipeline_age_histogram
+          name = :gitlab_ci_pipeline_age_minutes
+          comment = 'Pipeline age histogram'
+          buckets = [5, 30, 120, 720, 1440, 7200, 21600, 43200, 86400, 172800, 518400, 1036800]
+          #          5m 30m 2h   12h  24h   5d    15d    30d    60d    180d    360d    2y
+
+          ::Gitlab::Metrics.histogram(name, comment, {}, buckets)
+        end
+
         def self.active_jobs_histogram
           name = :gitlab_ci_active_jobs
           comment = 'Total amount of active jobs'
