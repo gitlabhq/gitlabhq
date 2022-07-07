@@ -45,16 +45,19 @@ the immediate parent group.
 
 ### Namespaces
 
-In GitLab, a namespace is a unique name for a user, a group, or subgroup under
-which a project can be created.
+In GitLab, a *namespace* organizes related projects together.
+GitLab has two types of namespaces:
 
-For example, consider a user named Alex:
+- A *personal* namespace, which is based on your username. Projects under a personal namespace must be configured one at a time.
+- A *group* or *subgroup* namespace. In these namespaces, you can manage multiple projects at once.
 
-| GitLab URL | Namespace |
-| ---------- | --------- |
-| Alex creates an account with the username `alex`: `https://gitlab.example.com/alex`. | The namespace in this case is `alex`. |
-| Alex creates a group for their team with the group name `alex-team`. The group and its projects are available at: `https://gitlab.example.com/alex-team`. | The namespace in this case is `alex-team`. |
-| Alex creates a subgroup of `alex-team` with the subgroup name `marketing`. The subgroup and its projects are available at: `https://gitlab.example.com/alex-team/marketing`. | The namespace in this case is `alex-team/marketing`. |
+To determine whether you're viewing a group or personal namespace, you can view the URL. For example:
+
+| Namespace for | URL | Namespace |
+| ------------- | --- | --------- |
+| A user named `alex`. | `https://gitlab.example.com/alex` | `alex` |
+| A group named `alex-team`. | `https://gitlab.example.com/alex-team` | `alex-team` |
+| A group named `alex-team` with a subgroup named `marketing`. |  `https://gitlab.example.com/alex-team/marketing` | `alex-team/marketing` |
 
 ## Create a group
 

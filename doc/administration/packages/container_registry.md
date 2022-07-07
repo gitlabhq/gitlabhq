@@ -1452,7 +1452,7 @@ curl "localhost:5001/debug/vars"
 
 ### Access old schema v1 Docker images
 
-Support for the [Docker registry v1 API](https://www.docker.com/blog/registry-v1-api-deprecation/),
+Support for the Docker registry API V1,
 including [schema V1 image manifests](https://docs.docker.com/registry/spec/manifest-v2-1/),
 was:
 

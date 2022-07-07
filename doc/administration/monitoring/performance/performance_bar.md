@@ -54,7 +54,7 @@ From left to right, the performance bar displays:
   - [**First Contentful Paint**](https://web.dev/first-contentful-paint/):
     Time until something was visible to the user. Displays `NaN` if your browser does not
     support this feature.
-  - [**DomContentLoaded**](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp) Event.
+  - [**DomContentLoaded**](https://web.dev/critical-rendering-path-measure-crp/) Event.
   - **Total number of requests** the page loaded.
 - **Memory**: the amount of memory consumed and objects allocated during the selected request.
   Select it to display a window with more details.

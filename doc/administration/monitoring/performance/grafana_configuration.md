@@ -14,7 +14,7 @@ and Grafana allows you to query the data to display useful graphs.
 
 Omnibus GitLab can [help you install Grafana (recommended)](https://docs.gitlab.com/omnibus/settings/grafana.html)
 or Grafana supplies package repositories (Yum/Apt) for easy installation.
-See [Grafana installation documentation](https://grafana.com/docs/grafana/latest/installation/)
+See [Grafana installation documentation](https://grafana.com/docs/grafana/latest/setup-grafana/installation/)
 for detailed steps.
 
 Before starting Grafana for the first time, set the administration user
@@ -133,8 +133,8 @@ However, you should **not** reinstate your old data _except_ under one of the fo
 If you require access to your old Grafana data but don't meet one of these criteria, you may consider:
 
 1. Reinstating it temporarily.
-1. [Exporting the dashboards](https://grafana.com/docs/grafana/latest/reference/export_import/#exporting-a-dashboard) you need.
-1. Refreshing the data and [re-importing your dashboards](https://grafana.com/docs/grafana/latest/reference/export_import/#importing-a-dashboard).
+1. [Exporting the dashboards](https://grafana.com/docs/grafana/latest/dashboards/export-import/#exporting-a-dashboard) you need.
+1. Refreshing the data and [re-importing your dashboards](https://grafana.com/docs/grafana/latest/dashboards/export-import/#import-dashboard).
 
 WARNING:
 These actions pose a temporary vulnerability while your old Grafana data is in use.

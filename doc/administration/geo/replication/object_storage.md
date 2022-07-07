@@ -79,7 +79,7 @@ the bucket used by **secondary** sites.
 
 If you are using Google Cloud Storage, consider using
 [Multi-Regional Storage](https://cloud.google.com/storage/docs/storage-classes#multi-regional).
-Or you can use the [Storage Transfer Service](https://cloud.google.com/storage-transfer/docs/),
+Or you can use the [Storage Transfer Service](https://cloud.google.com/storage-transfer/docs/overview),
 although this only supports daily synchronization.
 
 For manual synchronization, or scheduled by `cron`, see:

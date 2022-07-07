@@ -34347,6 +34347,9 @@ msgstr ""
 msgid "SecurityOrchestration|+%{count} more"
 msgstr ""
 
+msgid "SecurityOrchestration|, and %{count} more"
+msgstr ""
+
 msgid "SecurityOrchestration|.yaml mode"
 msgstr ""
 
@@ -34659,18 +34662,6 @@ msgstr ""
 msgid "SecurityOrchestration|branches"
 msgstr ""
 
-msgid "SecurityOrchestration|members of groups"
-msgstr ""
-
-msgid "SecurityOrchestration|members of groups with ids"
-msgstr ""
-
-msgid "SecurityOrchestration|members of the group"
-msgstr ""
-
-msgid "SecurityOrchestration|members of the group with id"
-msgstr ""
-
 msgid "SecurityOrchestration|scanner finds"
 msgstr ""
 
@@ -34678,12 +34669,6 @@ msgid "SecurityOrchestration|scanners find"
 msgstr ""
 
 msgid "SecurityOrchestration|the %{branches}"
-msgstr ""
-
-msgid "SecurityOrchestration|user with id"
-msgstr ""
-
-msgid "SecurityOrchestration|users with ids"
 msgstr ""
 
 msgid "SecurityOrchestration|vulnerabilities"

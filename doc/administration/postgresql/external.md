@@ -21,7 +21,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
 1. If you are using a cloud-managed service, you may need to grant additional
    roles to your `gitlab` user:
    - Amazon RDS requires the [`rds_superuser`](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Roles) role.
-   - Azure Database for PostgreSQL requires the [`azure_pg_admin`](https://docs.microsoft.com/en-us/azure/postgresql/howto-create-users#how-to-create-additional-admin-users-in-azure-database-for-postgresql) role. Azure Database for PostgreSQL - Flexible Server requires [allow-listing extensions before they can be installed](https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions#how-to-use-postgresql-extensions).
+   - Azure Database for PostgreSQL requires the [`azure_pg_admin`](https://docs.microsoft.com/en-us/azure/postgresql/single-server/how-to-create-users#how-to-create-additional-admin-users-in-azure-database-for-postgresql) role. Azure Database for PostgreSQL - Flexible Server requires [allow-listing extensions before they can be installed](https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions#how-to-use-postgresql-extensions).
    - Google Cloud SQL requires the [`cloudsqlsuperuser`](https://cloud.google.com/sql/docs/postgres/users#default-users) role.
 
    This is for the installation of extensions during installation and upgrades. As an alternative,

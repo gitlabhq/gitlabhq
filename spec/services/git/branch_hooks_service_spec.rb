@@ -387,6 +387,27 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
 
         expect(commits_count).to eq(project.repository.commit_count_for_ref(newrev))
       end
+
+      it 'collects the related metrics' do
+        expect(Gitlab::Metrics).to receive(:add_event).with(:push_commit, { branch: 'master' })
+        expect(Gitlab::Metrics).to receive(:add_event).with(:push_branch, {})
+        expect(Gitlab::Metrics).to receive(:add_event).with(:change_default_branch, {})
+        expect(Gitlab::Metrics).to receive(:add_event).with(:process_commit_limit_overflow)
+
+        service.execute
+      end
+
+      context 'when limit is not hit' do
+        before do
+          stub_const("::Git::BaseHooksService::PROCESS_COMMIT_LIMIT", 100)
+        end
+
+        it 'does not collect the corresponding metric' do
+          expect(Gitlab::Metrics).not_to receive(:add_event).with(:process_commit_limit_overflow)
+
+          service.execute
+        end
+      end
     end
 
     context 'updating the default branch' do

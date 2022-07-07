@@ -413,7 +413,7 @@ required:
 1. Promote the replica database associated with the **secondary** site. This
    sets the database to read-write. The instructions vary depending on where your database is hosted:
    - [Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.Promote)
-   - [Azure PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/howto-read-replicas-portal#stop-replication)
+   - [Azure PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/single-server/how-to-read-replicas-portal#stop-replication)
    - [Google Cloud SQL](https://cloud.google.com/sql/docs/mysql/replication/manage-replicas#promote-replica)
    - For other external PostgreSQL databases, save the following script in your
      secondary site, for example `/tmp/geo_promote.sh`, and modify the connection
