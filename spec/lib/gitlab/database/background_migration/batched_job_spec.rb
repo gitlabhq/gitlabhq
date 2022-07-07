@@ -220,6 +220,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
         expect(described_class.created_since(fixed_time)).to contain_exactly(stuck_job, failed_job, max_attempts_failed_job)
       end
     end
+
+    describe '.blocked_by_max_attempts' do
+      it 'returns blocked jobs' do
+        expect(described_class.blocked_by_max_attempts).to contain_exactly(max_attempts_failed_job)
+      end
+    end
   end
 
   describe 'delegated batched_migration attributes' do

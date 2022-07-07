@@ -104,6 +104,12 @@ module Gitlab
             .sum(:batch_size)
         end
 
+        def reset_attempts_of_blocked_jobs!
+          batched_jobs.blocked_by_max_attempts.each_batch(of: 100) do |batch|
+            batch.update_all(attempts: 0)
+          end
+        end
+
         def interval_elapsed?(variance: 0)
           return true unless last_job
 

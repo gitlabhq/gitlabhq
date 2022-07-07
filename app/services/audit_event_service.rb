@@ -121,10 +121,13 @@ class AuditEventService
   def log_security_event_to_database
     return if Gitlab::Database.read_only?
 
-    event = AuditEvent.new(base_payload.merge(details: @details))
+    event = build_event
     save_or_track event
-
     event
+  end
+
+  def build_event
+    AuditEvent.new(base_payload.merge(details: @details))
   end
 
   def stream_event_to_external_destinations(_event)

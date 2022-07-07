@@ -26,6 +26,7 @@ module Gitlab
         scope :successful_in_execution_order, -> { where.not(finished_at: nil).with_status(:succeeded).order(:finished_at) }
         scope :with_preloads, -> { preload(:batched_migration) }
         scope :created_since, ->(date_time) { where('created_at >= ?', date_time) }
+        scope :blocked_by_max_attempts, -> { where('attempts >= ?', MAX_ATTEMPTS) }
 
         state_machine :status, initial: :pending do
           state :pending, value: 0

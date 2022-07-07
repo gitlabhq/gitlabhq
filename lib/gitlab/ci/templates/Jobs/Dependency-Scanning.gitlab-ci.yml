@@ -81,6 +81,7 @@ gemnasium-dependency_scanning:
       exists: !reference [.gemnasium-shared-rule, exists]
       variables:
         DS_IMAGE_SUFFIX: "-fips"
+        DS_REMEDIATE: "false"
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-shared-rule, exists]

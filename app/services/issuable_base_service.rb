@@ -282,8 +282,9 @@ class IssuableBaseService < ::BaseProjectService
     assign_requested_labels(issuable)
     assign_requested_assignees(issuable)
     assign_requested_crm_contacts(issuable)
+    widget_params = filter_widget_params
 
-    if issuable.changed? || params.present?
+    if issuable.changed? || params.present? || widget_params.present?
       issuable.assign_attributes(allowed_update_params(params))
 
       if has_title_or_description_changed?(issuable)
@@ -303,7 +304,7 @@ class IssuableBaseService < ::BaseProjectService
       ensure_milestone_available(issuable)
 
       issuable_saved = issuable.with_transaction_returning_status do
-        issuable.save(touch: should_touch)
+        transaction_update(issuable, { save_with_touch: should_touch })
       end
 
       if issuable_saved
@@ -330,6 +331,12 @@ class IssuableBaseService < ::BaseProjectService
     end
 
     issuable
+  end
+
+  def transaction_update(issuable, opts = {})
+    touch = opts[:save_with_touch] || false
+
+    issuable.save(touch: touch)
   end
 
   def update_task(issuable)
@@ -589,6 +596,10 @@ class IssuableBaseService < ::BaseProjectService
     return unless issuable_sla = issuable.issuable_sla
 
     issuable_sla.update(issuable_closed: issuable.closed?)
+  end
+
+  def filter_widget_params
+    params.delete(:widget_params)
   end
 end
 

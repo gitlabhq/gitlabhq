@@ -2,8 +2,8 @@
 key_path: counts_monthly.promoted_issues
 name: count_promoted_issues
 description: Count of issues promoted to epics
-product_section: growth
-product_stage: growth
+product_section: analytics
+product_stage: analytics
 product_group: product_intelligence
 product_category: collection
 value_type: number

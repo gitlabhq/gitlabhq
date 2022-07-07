@@ -2,8 +2,8 @@
 key_path: settings.snowplow_enabled
 name: snowplow_enabled_gitlab_instance
 description: Whether snowplow is enabled for the GitLab instance
-product_section: growth
-product_stage: growth
+product_section: analytics
+product_stage: analytics
 product_group: product_intelligence
 product_category: product intelligence
 value_type: boolean

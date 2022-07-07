@@ -4,9 +4,7 @@
 
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
-  RSpec.describe "Manage", requires_admin: 'uses admin API client for resource creation',
-                           feature_flag: { name: 'bulk_import_projects', scope: :global },
-                           only: { job: 'large-gitlab-import' } do
+  RSpec.describe "Manage", requires_admin: 'creates users', only: { job: 'large-gitlab-import' } do
     describe "Gitlab migration" do
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
@@ -101,8 +99,6 @@ module QA
       let(:issues) { fetch_issues(imported_project, target_api_client) }
 
       before do
-        Runtime::Feature.enable(:bulk_import_projects)
-
         destination_group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
       end
 

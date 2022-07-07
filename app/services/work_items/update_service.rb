@@ -3,16 +3,36 @@
 module WorkItems
   class UpdateService < ::Issues::UpdateService
     def initialize(project:, current_user: nil, params: {}, spam_params: nil, widget_params: {})
+      params[:widget_params] = true if widget_params.present?
+
       super(project: project, current_user: current_user, params: params, spam_params: nil)
 
       @widget_params = widget_params
       @widget_services = {}
     end
 
+    def execute(work_item)
+      updated_work_item = super
+
+      if updated_work_item.valid?
+        success(payload(work_item))
+      else
+        error(updated_work_item.errors.full_messages, :unprocessable_entity, pass_back: payload(updated_work_item))
+      end
+    rescue ::WorkItems::Widgets::BaseService::WidgetError => e
+      error(e.message, :unprocessable_entity)
+    end
+
     private
 
     def update(work_item)
       execute_widgets(work_item: work_item, callback: :update)
+
+      super
+    end
+
+    def transaction_update(work_item, opts = {})
+      execute_widgets(work_item: work_item, callback: :before_update_in_transaction)
 
       super
     end
@@ -30,15 +50,17 @@ module WorkItems
     end
 
     def widget_service(widget)
-      service_class = begin
-        "WorkItems::Widgets::#{widget.type.capitalize}Service::UpdateService".constantize
-      rescue NameError
-        nil
-      end
+      @widget_services[widget] ||= widget_service_class(widget)&.new(widget: widget, current_user: current_user)
+    end
 
-      return unless service_class
+    def widget_service_class(widget)
+      "WorkItems::Widgets::#{widget.type.capitalize}Service::UpdateService".constantize
+    rescue NameError
+      nil
+    end
 
-      @widget_services[widget] ||= service_class.new(widget: widget, current_user: current_user)
+    def payload(work_item)
+      { work_item: work_item }
     end
   end
 end

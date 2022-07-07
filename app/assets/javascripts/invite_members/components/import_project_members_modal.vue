@@ -1,20 +1,19 @@
 <script>
-import { GlButton, GlFormGroup, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
+import { GlFormGroup, GlModal, GlSprintf } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { importProjectMembers } from '~/api/projects_api';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
+import eventHub from '../event_hub';
 import ProjectSelect from './project_select.vue';
 
 export default {
+  name: 'ImportProjectMembersModal',
   components: {
-    GlButton,
     GlFormGroup,
     GlModal,
     GlSprintf,
     ProjectSelect,
-  },
-  directives: {
-    GlModal: GlModalDirective,
   },
   props: {
     projectId: {
@@ -45,8 +44,33 @@ export default {
     validationState() {
       return this.invalidFeedbackMessage === '' ? null : false;
     },
+    actionPrimary() {
+      return {
+        text: this.$options.i18n.modalPrimaryButton,
+        attributes: {
+          variant: 'confirm',
+          disabled: this.importDisabled,
+          loading: this.isLoading,
+        },
+      };
+    },
+    actionCancel() {
+      return { text: this.$options.i18n.modalCancelButton };
+    },
+  },
+  mounted() {
+    eventHub.$on('openProjectMembersModal', () => {
+      this.openModal();
+    });
   },
   methods: {
+    openModal() {
+      this.$root.$emit(BV_SHOW_MODAL, this.$options.modalId);
+    },
+    resetFields() {
+      this.invalidFeedbackMessage = '';
+      this.projectToBeImported = {};
+    },
     submitImport() {
       this.isLoading = true;
       return importProjectMembers(this.projectId, this.projectToBeImported.id)
@@ -56,11 +80,6 @@ export default {
           this.isLoading = false;
           this.projectToBeImported = {};
         });
-    },
-    closeModal() {
-      this.invalidFeedbackMessage = '';
-
-      this.$refs.modal.hide();
     },
     showToastMessage() {
       this.$toast.show(this.$options.i18n.successMessage, this.$options.toastOptions);
@@ -79,7 +98,6 @@ export default {
     };
   },
   i18n: {
-    buttonText: s__('ImportAProjectModal|Import from a project'),
     projectLabel: __('Project'),
     modalTitle: s__('ImportAProjectModal|Import members from another project'),
     modalIntro: s__(
@@ -95,63 +113,37 @@ export default {
   },
   projectSelectLabelId: 'project-select',
   modalId: uniqueId('import-a-project-modal-'),
-  formClasses: 'gl-md-w-auto gl-w-full',
-  buttonClasses: 'gl-w-full',
 };
 </script>
 
 <template>
-  <form :class="$options.formClasses">
-    <gl-button v-gl-modal="$options.modalId" :class="$options.buttonClasses" variant="default">{{
-      $options.i18n.buttonText
-    }}</gl-button>
-
-    <gl-modal
-      ref="modal"
-      :modal-id="$options.modalId"
-      size="sm"
-      :title="$options.i18n.modalTitle"
-      ok-variant="danger"
-      footer-class="gl-bg-gray-10 gl-p-5"
+  <gl-modal
+    ref="modal"
+    :modal-id="$options.modalId"
+    size="sm"
+    :title="$options.i18n.modalTitle"
+    :action-primary="actionPrimary"
+    :action-cancel="actionCancel"
+    @primary="submitImport"
+    @hidden="resetFields"
+  >
+    <p ref="modalIntro">
+      <gl-sprintf :message="modalIntro">
+        <template #strong="{ content }">
+          <strong>{{ content }}</strong>
+        </template>
+      </gl-sprintf>
+    </p>
+    <gl-form-group
+      :invalid-feedback="invalidFeedbackMessage"
+      :state="validationState"
+      data-testid="form-group"
     >
-      <div>
-        <p ref="modalIntro">
-          <gl-sprintf :message="modalIntro">
-            <template #strong="{ content }">
-              <strong>{{ content }}</strong>
-            </template>
-          </gl-sprintf>
-        </p>
-        <gl-form-group
-          :invalid-feedback="invalidFeedbackMessage"
-          :state="validationState"
-          data-testid="form-group"
-        >
-          <label :id="$options.projectSelectLabelId" class="col-form-label">{{
-            $options.i18n.projectLabel
-          }}</label>
-          <project-select v-model="projectToBeImported" />
-        </gl-form-group>
-        <p>{{ $options.i18n.modalHelpText }}</p>
-      </div>
-      <template #modal-footer>
-        <div
-          class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-m-0"
-        >
-          <gl-button data-testid="cancel-button" @click="closeModal">
-            {{ $options.i18n.modalCancelButton }}
-          </gl-button>
-          <div class="gl-mr-3"></div>
-          <gl-button
-            :disabled="importDisabled"
-            :loading="isLoading"
-            variant="confirm"
-            data-testid="import-button"
-            @click="submitImport"
-            >{{ $options.i18n.modalPrimaryButton }}</gl-button
-          >
-        </div>
-      </template>
-    </gl-modal>
-  </form>
+      <label :id="$options.projectSelectLabelId" class="col-form-label">{{
+        $options.i18n.projectLabel
+      }}</label>
+      <project-select v-model="projectToBeImported" />
+    </gl-form-group>
+    <p>{{ $options.i18n.modalHelpText }}</p>
+  </gl-modal>
 </template>

@@ -5,7 +5,7 @@ import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as ProjectsApi from '~/api/projects_api';
-import ImportAProjectModal from '~/invite_members/components/import_a_project_modal.vue';
+import ImportProjectMembersModal from '~/invite_members/components/import_project_members_modal.vue';
 import ProjectSelect from '~/invite_members/components/project_select.vue';
 import axios from '~/lib/utils/axios_utils';
 
@@ -20,7 +20,7 @@ const $toast = {
 };
 
 const createComponent = () => {
-  wrapper = shallowMountExtended(ImportAProjectModal, {
+  wrapper = shallowMountExtended(ImportProjectMembersModal, {
     propsData: {
       projectId,
       projectName,
@@ -51,12 +51,11 @@ afterEach(() => {
   mock.restore();
 });
 
-describe('ImportAProjectModal', () => {
+describe('ImportProjectMembersModal', () => {
+  const findGlModal = () => wrapper.findComponent(GlModal);
   const findIntroText = () => wrapper.find({ ref: 'modalIntro' }).text();
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findImportButton = () => wrapper.findByTestId('import-button');
-  const clickImportButton = () => findImportButton().vm.$emit('click');
-  const clickCancelButton = () => findCancelButton().vm.$emit('click');
+  const clickImportButton = () => findGlModal().vm.$emit('primary', { preventDefault: jest.fn() });
+  const closeModal = () => findGlModal().vm.$emit('hidden', { preventDefault: jest.fn() });
   const findFormGroup = () => wrapper.findByTestId('form-group');
   const formGroupInvalidFeedback = () => findFormGroup().props('invalidFeedback');
   const formGroupErrorState = () => findFormGroup().props('state');
@@ -68,25 +67,28 @@ describe('ImportAProjectModal', () => {
     });
 
     it('renders the modal with the correct title', () => {
-      expect(wrapper.findComponent(GlModal).props('title')).toBe(
-        'Import members from another project',
-      );
+      expect(findGlModal().props('title')).toBe('Import members from another project');
     });
 
     it('renders the Cancel button text correctly', () => {
-      expect(findCancelButton().text()).toBe('Cancel');
+      expect(findGlModal().props('actionCancel')).toMatchObject({
+        text: 'Cancel',
+      });
     });
 
     it('renders the Import button text correctly', () => {
-      expect(findImportButton().text()).toBe('Import project members');
+      expect(findGlModal().props('actionPrimary')).toMatchObject({
+        text: 'Import project members',
+        attributes: {
+          variant: 'confirm',
+          disabled: true,
+          loading: false,
+        },
+      });
     });
 
     it('renders the modal intro text correctly', () => {
       expect(findIntroText()).toBe("You're importing members to the test name project.");
-    });
-
-    it('renders the Import button modal without isLoading', () => {
-      expect(findImportButton().props('loading')).toBe(false);
     });
 
     it('sets isLoading to true when the Invite button is clicked', async () => {
@@ -94,11 +96,11 @@ describe('ImportAProjectModal', () => {
 
       await nextTick();
 
-      expect(findImportButton().props('loading')).toBe(true);
+      expect(findGlModal().props('actionPrimary').attributes.loading).toBe(true);
     });
   });
 
-  describe('submitting the import form', () => {
+  describe('submitting the import', () => {
     describe('when the import is successful', () => {
       beforeEach(() => {
         createComponent();
@@ -125,7 +127,7 @@ describe('ImportAProjectModal', () => {
       });
 
       it('sets isLoading to false after success', () => {
-        expect(findImportButton().props('loading')).toBe(false);
+        expect(findGlModal().props('actionPrimary').attributes.loading).toBe(false);
       });
     });
 
@@ -149,14 +151,14 @@ describe('ImportAProjectModal', () => {
       });
 
       it('sets isLoading to false after error', () => {
-        expect(findImportButton().props('loading')).toBe(false);
+        expect(findGlModal().props('actionPrimary').attributes.loading).toBe(false);
       });
 
       it('clears the error when the modal is closed with an error', async () => {
         expect(formGroupInvalidFeedback()).toBe('Unable to import project members');
         expect(formGroupErrorState()).toBe(false);
 
-        clickCancelButton();
+        closeModal();
 
         await nextTick();
 

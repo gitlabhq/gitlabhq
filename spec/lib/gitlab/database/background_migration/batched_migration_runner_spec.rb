@@ -402,6 +402,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
           .with(gitlab_schemas, 'CopyColumnUsingBackgroundMigrationJob', table_name, column_name, job_arguments)
           .and_return(batched_migration)
 
+        expect(batched_migration).to receive(:reset_attempts_of_blocked_jobs!).and_call_original
+
         expect(batched_migration).to receive(:finalize!).and_call_original
 
         expect do
@@ -426,7 +428,9 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
         end
 
         it 'raises an error' do
-          batched_migration.batched_jobs.with_status(:failed).update_all(attempts: Gitlab::Database::BackgroundMigration::BatchedJob::MAX_ATTEMPTS)
+          allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:find_for_configuration).and_return(batched_migration)
+
+          allow(batched_migration).to receive(:finished?).and_return(false)
 
           expect do
             runner.finalize(

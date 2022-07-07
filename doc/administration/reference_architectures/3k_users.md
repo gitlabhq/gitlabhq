@@ -1295,6 +1295,9 @@ To configure the Praefect nodes, on each one:
    on the page.
 1. Edit the `/etc/gitlab/gitlab.rb` file to configure Praefect:
 
+   NOTE:
+   You can't remove the `default` entry from `virtual_storages` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
+
 <!--
 Updates to example must be made at:
 - https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect.md

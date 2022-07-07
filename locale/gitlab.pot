@@ -1571,6 +1571,9 @@ msgstr ""
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
 msgstr ""
 
+msgid "A Work Item can be a parent or a child, but not both."
+msgstr ""
+
 msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
 msgstr ""
 
@@ -25854,6 +25857,9 @@ msgstr ""
 msgid "No Scopes"
 msgstr ""
 
+msgid "No Work Item found with ID: %{id}."
+msgstr ""
+
 msgid "No active admin user found"
 msgstr ""
 
@@ -25999,6 +26005,9 @@ msgid "No license. All rights reserved"
 msgstr ""
 
 msgid "No matches found"
+msgstr ""
+
+msgid "No matching %{issuable} found. Make sure that you are adding a valid %{issuable} ID."
 msgstr ""
 
 msgid "No matching %{issuable} found. Make sure that you are adding a valid %{issuable} URL."
@@ -37968,6 +37977,9 @@ msgstr ""
 msgid "Task list"
 msgstr ""
 
+msgid "Task with ID: %{id} could not be found."
+msgstr ""
+
 msgid "TasksToBeDone|Create/import code into a project (repository)"
 msgstr ""
 
@@ -44908,6 +44920,9 @@ msgid "`end_time` should not exceed one month after `start_time`"
 msgstr ""
 
 msgid "`start_time` should precede `end_time`"
+msgstr ""
+
+msgid "`work_items_hierarchy` feature flag disabled for this project"
 msgstr ""
 
 msgid "a deleted user"

@@ -289,8 +289,8 @@ Self-managed runners:
 GitLab.com shared runners:
 
 - Linux
-- Windows
-- [Planned: macOS](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/5720)
+- [Windows](../runners/saas/windows_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta-features)).
+- [macOS](../runners/saas/macos_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta-features)).
 
 ### Machine and specific build environments
 

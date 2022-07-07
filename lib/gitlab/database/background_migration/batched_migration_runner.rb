@@ -72,6 +72,8 @@ module Gitlab
           elsif migration.finished?
             Gitlab::AppLogger.warn "Batched background migration for the given configuration is already finished: #{configuration}"
           else
+            migration.reset_attempts_of_blocked_jobs!
+
             migration.finalize!
             migration.batched_jobs.with_status(:pending).each { |job| migration_wrapper.perform(job) }
 

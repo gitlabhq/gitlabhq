@@ -68,6 +68,10 @@ export default {
   },
   methods: {
     ...mapActions(['createTempEntry', 'renameEntry']),
+    submitAndClose() {
+      this.submitForm();
+      this.close();
+    },
     submitForm() {
       this.entryName = trimPathComponents(this.entryName);
 
@@ -161,15 +165,17 @@ export default {
     <div class="form-group row">
       <label class="label-bold col-form-label col-sm-2"> {{ __('Name') }} </label>
       <div class="col-sm-10">
-        <input
-          ref="fieldName"
-          v-model.trim="entryName"
-          type="text"
-          class="form-control"
-          data-testid="file-name-field"
-          data-qa-selector="file_name_field"
-          :placeholder="placeholder"
-        />
+        <form data-testid="file-name-form" @submit.prevent="submitAndClose">
+          <input
+            ref="fieldName"
+            v-model.trim="entryName"
+            type="text"
+            class="form-control"
+            data-testid="file-name-field"
+            data-qa-selector="file_name_field"
+            :placeholder="placeholder"
+          />
+        </form>
         <ul v-if="isCreatingNewFile" class="file-templates gl-mt-3 list-inline qa-template-list">
           <li v-for="(template, index) in templateTypes" :key="index" class="list-inline-item">
             <gl-button

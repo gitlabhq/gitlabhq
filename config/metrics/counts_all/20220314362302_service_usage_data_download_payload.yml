@@ -2,9 +2,9 @@
 key_path: counts.service_usage_data_download_payload_click
 description: Count Download Payload button clicks
 data_category: optional
-name: count_promoted_issues
-product_section: growth
-product_stage: growth
+name: service_usage_data_download_payload_click
+product_section: analytics
+product_stage: analytics
 product_group: product_intelligence
 product_category: collection
 value_type: number

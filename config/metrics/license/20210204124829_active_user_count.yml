@@ -1,8 +1,8 @@
 ---
 key_path: active_user_count
 description: The number of active users existing in the instance. This is named the instance_user_count in the Versions application.
-product_section: growth
-product_stage: growth
+product_section: analytics
+product_stage: analytics
 product_group: product_intelligence
 product_category: collection
 value_type: number

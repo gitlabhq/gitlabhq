@@ -4,7 +4,7 @@
 
 # rubocop:disable Rails/Pluck
 module QA
-  RSpec.describe 'Manage', :github, :requires_admin, only: { job: 'large-github-import' } do
+  RSpec.describe 'Manage', :github, requires_admin: 'creates users', only: { job: 'large-github-import' } do
     describe 'Project import' do
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }

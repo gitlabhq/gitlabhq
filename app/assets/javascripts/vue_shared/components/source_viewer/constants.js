@@ -91,7 +91,7 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   scala: 'scala',
   scheme: 'scheme',
   scss: 'scss',
-  shell: 'shell',
+  shell: 'sh',
   smalltalk: 'smalltalk',
   sml: 'sml',
   sqf: 'sqf',

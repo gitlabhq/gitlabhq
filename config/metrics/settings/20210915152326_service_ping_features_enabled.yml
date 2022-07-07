@@ -2,8 +2,8 @@
 key_path: settings.service_ping_features_enabled
 name: "service_ping_features_enabled"
 description: Whether Service Ping features are enabled
-product_section: growth
-product_stage: growth
+product_section: analytics
+product_stage: analytics
 product_group: product_intelligence
 product_category: collection
 value_type: boolean

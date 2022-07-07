@@ -18,6 +18,7 @@ describe('new file modal component', () => {
   let store;
   let wrapper;
 
+  const findForm = () => wrapper.findByTestId('file-name-form');
   const findGlModal = () => wrapper.findComponent(GlModal);
   const findInput = () => wrapper.findByTestId('file-name-field');
   const findTemplateButtons = () => wrapper.findAllComponents(GlButton);
@@ -33,7 +34,10 @@ describe('new file modal component', () => {
     // We have to interact with the open() method?
     wrapper.vm.open(type, path);
   };
-  const triggerSubmit = () => {
+  const triggerSubmitForm = () => {
+    findForm().trigger('submit');
+  };
+  const triggerSubmitModal = () => {
     findGlModal().vm.$emit('primary');
   };
   const triggerCancel = () => {
@@ -211,20 +215,41 @@ describe('new file modal component', () => {
     ${'tree'} | ${'foo/dir'}     | ${'foo/dir'}
     ${'tree'} | ${'foo /dir'}    | ${'foo/dir'}
   `('when submitting as $modalType with "$name"', ({ modalType, name, expectedName }) => {
-    beforeEach(async () => {
-      mountComponent();
+    describe('when using the modal primary button', () => {
+      beforeEach(async () => {
+        mountComponent();
 
-      open(modalType, '');
-      await nextTick();
+        open(modalType, '');
+        await nextTick();
 
-      findInput().setValue(name);
-      triggerSubmit();
+        findInput().setValue(name);
+        triggerSubmitModal();
+      });
+
+      it('triggers createTempEntry action', () => {
+        expect(store.dispatch).toHaveBeenCalledWith('createTempEntry', {
+          name: expectedName,
+          type: modalType,
+        });
+      });
     });
 
-    it('triggers createTempEntry action', () => {
-      expect(store.dispatch).toHaveBeenCalledWith('createTempEntry', {
-        name: expectedName,
-        type: modalType,
+    describe('when triggering form submit (pressing enter)', () => {
+      beforeEach(async () => {
+        mountComponent();
+
+        open(modalType, '');
+        await nextTick();
+
+        findInput().setValue(name);
+        triggerSubmitForm();
+      });
+
+      it('triggers createTempEntry action', () => {
+        expect(store.dispatch).toHaveBeenCalledWith('createTempEntry', {
+          name: expectedName,
+          type: modalType,
+        });
       });
     });
   });
@@ -301,21 +326,42 @@ describe('new file modal component', () => {
     });
 
     describe('when renames is submitted successfully', () => {
-      beforeEach(() => {
-        findInput().setValue(NEW_NAME);
-        triggerSubmit();
-      });
+      describe('when using the modal primary button', () => {
+        beforeEach(() => {
+          findInput().setValue(NEW_NAME);
+          triggerSubmitModal();
+        });
 
-      it('dispatches renameEntry event', () => {
-        expect(store.dispatch).toHaveBeenCalledWith('renameEntry', {
-          path: origPath,
-          parentPath: '',
-          name: NEW_NAME,
+        it('dispatches renameEntry event', () => {
+          expect(store.dispatch).toHaveBeenCalledWith('renameEntry', {
+            path: origPath,
+            parentPath: '',
+            name: NEW_NAME,
+          });
+        });
+
+        it('does not trigger flash', () => {
+          expect(createFlash).not.toHaveBeenCalled();
         });
       });
 
-      it('does not trigger flash', () => {
-        expect(createFlash).not.toHaveBeenCalled();
+      describe('when triggering form submit (pressing enter)', () => {
+        beforeEach(() => {
+          findInput().setValue(NEW_NAME);
+          triggerSubmitForm();
+        });
+
+        it('dispatches renameEntry event', () => {
+          expect(store.dispatch).toHaveBeenCalledWith('renameEntry', {
+            path: origPath,
+            parentPath: '',
+            name: NEW_NAME,
+          });
+        });
+
+        it('does not trigger flash', () => {
+          expect(createFlash).not.toHaveBeenCalled();
+        });
       });
     });
   });
@@ -330,7 +376,7 @@ describe('new file modal component', () => {
 
       // Set to something that already exists!
       findInput().setValue('src');
-      triggerSubmit();
+      triggerSubmitModal();
     });
 
     it('creates flash', () => {
@@ -355,7 +401,7 @@ describe('new file modal component', () => {
       await nextTick();
 
       findInput().setValue('src/deleted.js');
-      triggerSubmit();
+      triggerSubmitModal();
     });
 
     it('does not create flash', () => {

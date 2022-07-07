@@ -1,8 +1,8 @@
 ---
 key_path: hostname
 description: Host name of GitLab instance
-product_section: growth
-product_stage: growth
+product_section: analytics
+product_stage: analytics
 product_group: product_intelligence
 product_category: collection
 value_type: string

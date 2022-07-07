@@ -2,8 +2,8 @@
 key_path: settings.snowplow_configured_to_gitlab_collector
 name: snowplow_configured_to_gitlab_collector
 description: Metric informs if currently configured Snowplow collector hostname points towards Gitlab Snowplow collection pipeline.
-product_section: growth
-product_stage: growth
+product_section: analytics
+product_stage: analytics
 product_group: product_intelligence
 product_category: product intelligence
 value_type: boolean
