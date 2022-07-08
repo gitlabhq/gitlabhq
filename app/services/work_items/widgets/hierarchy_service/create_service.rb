@@ -3,8 +3,8 @@
 module WorkItems
   module Widgets
     module HierarchyService
-      class UpdateService < WorkItems::Widgets::HierarchyService::BaseService
-        def before_update_in_transaction(params:)
+      class CreateService < WorkItems::Widgets::HierarchyService::BaseService
+        def after_create_in_transaction(params:)
           return unless params.present?
 
           result = handle_hierarchy_changes(params)

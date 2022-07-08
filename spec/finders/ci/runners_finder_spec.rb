@@ -49,6 +49,67 @@ RSpec.describe Ci::RunnersFinder do
           end
         end
 
+        context 'by upgrade status' do
+          let(:upgrade_status) {}
+
+          let_it_be(:runner1) { create(:ci_runner, version: 'a') }
+          let_it_be(:runner2) { create(:ci_runner, version: 'b') }
+          let_it_be(:runner3) { create(:ci_runner, version: 'c') }
+          let_it_be(:runner_version_recommended) do
+            create(:ci_runner_version, version: 'a', status: :recommended)
+          end
+
+          let_it_be(:runner_version_not_available) do
+            create(:ci_runner_version, version: 'b', status: :not_available)
+          end
+
+          let_it_be(:runner_version_available) do
+            create(:ci_runner_version, version: 'c', status: :available)
+          end
+
+          def execute
+            described_class.new(current_user: admin, params: { upgrade_status: upgrade_status }).execute
+          end
+
+          Ci::RunnerVersion.statuses.keys.map(&:to_sym).each do |status|
+            context "set to :#{status}" do
+              let(:upgrade_status) { status }
+
+              it "calls with_upgrade_status scope with corresponding :#{status} status" do
+                if [:available, :not_available, :recommended].include?(status)
+                  expected_result = Ci::Runner.with_upgrade_status(status)
+                end
+
+                expect(Ci::Runner).to receive(:with_upgrade_status).with(status).and_call_original
+
+                result = execute
+
+                expect(result).to match_array(expected_result) if expected_result
+              end
+            end
+          end
+
+          context 'set to an invalid value' do
+            let(:upgrade_status) { :some_invalid_status }
+
+            it 'does not call with_upgrade_status' do
+              expect(Ci::Runner).not_to receive(:with_upgrade_status)
+
+              expect(execute).to match_array(Ci::Runner.all)
+            end
+          end
+
+          context 'set to nil' do
+            let(:upgrade_status) { nil }
+
+            it 'does not call with_upgrade_status' do
+              expect(Ci::Runner).not_to receive(:with_upgrade_status)
+
+              expect(execute).to match_array(Ci::Runner.all)
+            end
+          end
+        end
+
         context 'by status' do
           Ci::Runner::AVAILABLE_STATUSES.each do |status|
             it "calls the corresponding :#{status} scope on Ci::Runner" do

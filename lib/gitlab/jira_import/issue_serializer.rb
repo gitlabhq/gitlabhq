@@ -5,10 +5,11 @@ module Gitlab
     class IssueSerializer
       attr_reader :jira_issue, :project, :import_owner_id, :params, :formatter
 
-      def initialize(project, jira_issue, import_owner_id, params = {})
+      def initialize(project, jira_issue, import_owner_id, work_item_type_id, params = {})
         @jira_issue = jira_issue
         @project = project
         @import_owner_id = import_owner_id
+        @work_item_type_id = work_item_type_id
         @params = params
         @formatter = Gitlab::ImportFormatter.new
       end
@@ -24,7 +25,8 @@ module Gitlab
           created_at: jira_issue.created,
           author_id: reporter,
           assignee_ids: assignees,
-          label_ids: label_ids
+          label_ids: label_ids,
+          work_item_type_id: @work_item_type_id
         }
       end
 

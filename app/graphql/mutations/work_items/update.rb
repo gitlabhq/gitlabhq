@@ -9,6 +9,7 @@ module Mutations
 
       include Mutations::SpamProtection
       include Mutations::WorkItems::UpdateArguments
+      include Mutations::WorkItems::Widgetable
 
       authorize :update_work_item
 
@@ -24,7 +25,7 @@ module Mutations
         end
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-        widget_params = extract_widget_params(work_item, attributes)
+        widget_params = extract_widget_params(work_item.work_item_type, attributes)
 
         update_result = ::WorkItems::UpdateService.new(
           project: work_item.project,
@@ -46,16 +47,6 @@ module Mutations
 
       def find_object(id:)
         GitlabSchema.find_by_gid(id)
-      end
-
-      def extract_widget_params(work_item, attributes)
-        # Get the list of widgets for the work item's type to extract only the supported attributes
-        widget_keys = work_item.work_item_type.widgets.map(&:api_symbol)
-        widget_params = attributes.extract!(*widget_keys)
-
-        # Cannot use prepare to use `.to_h` on each input due to
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87472#note_945199865
-        widget_params.transform_values { |values| values.to_h }
       end
     end
   end

@@ -7,6 +7,7 @@ module Mutations
 
       include Mutations::SpamProtection
       include FindsProject
+      include Mutations::WorkItems::Widgetable
 
       description "Creates a work item. Available only when feature flag `work_items` is enabled."
 
@@ -15,6 +16,9 @@ module Mutations
       argument :description, GraphQL::Types::String,
                required: false,
                description: copy_field_description(Types::WorkItemType, :description)
+      argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyCreateInputType,
+               required: false,
+               description: 'Input for hierarchy widget.'
       argument :project_path, GraphQL::Types::ID,
                required: true,
                description: 'Full path of the project the work item is associated with.'
@@ -36,10 +40,18 @@ module Mutations
           return { errors: ['`work_items` feature flag disabled for this project'] }
         end
 
-        params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
-
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-        create_result = ::WorkItems::CreateService.new(project: project, current_user: current_user, params: params, spam_params: spam_params).execute
+        params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
+        type = ::WorkItems::Type.find(attributes[:work_item_type_id])
+        widget_params = extract_widget_params(type, params)
+
+        create_result = ::WorkItems::CreateService.new(
+          project: project,
+          current_user: current_user,
+          params: params,
+          spam_params: spam_params,
+          widget_params: widget_params
+        ).execute
 
         check_spam_action_response!(create_result[:work_item]) if create_result[:work_item]
 

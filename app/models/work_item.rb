@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class WorkItem < Issue
+  include Gitlab::Utils::StrongMemoize
+
   self.table_name = 'issues'
   self.inheritance_column = :_type_disabled
 
@@ -23,8 +25,10 @@ class WorkItem < Issue
   end
 
   def widgets
-    work_item_type.widgets.map do |widget_class|
-      widget_class.new(self)
+    strong_memoize(:widgets) do
+      work_item_type.widgets.map do |widget_class|
+        widget_class.new(self)
+      end
     end
   end
 

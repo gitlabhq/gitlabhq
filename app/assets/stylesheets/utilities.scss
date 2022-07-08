@@ -366,3 +366,7 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   /* stylelint-disable property-no-vendor-prefix */
   -webkit-backdrop-filter: blur(2px); // still required by Safari
 }
+
+.gl-flex-flow-row-wrap {
+  flex-flow: row wrap;
+}

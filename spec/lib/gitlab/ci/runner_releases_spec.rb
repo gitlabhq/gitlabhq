@@ -5,12 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::RunnerReleases do
   subject { described_class.instance }
 
-  describe '#releases' do
-    before do
-      subject.reset!
+  let(:runner_releases_url) { 'the release API URL' }
 
-      stub_application_setting(public_runner_releases_url: 'the release API URL')
-      allow(Gitlab::HTTP).to receive(:try_get).with('the release API URL').once { mock_http_response(response) }
+  describe '#releases', :use_clean_rails_memory_store_caching do
+    before do
+      subject.reset_backoff!
+
+      stub_application_setting(public_runner_releases_url: runner_releases_url)
+      allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response(response) }
     end
 
     def releases
@@ -40,7 +42,9 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
           releases
 
           travel followup_request_interval do
-            expect(Gitlab::HTTP).to receive(:try_get).with('the release API URL').once { mock_http_response(followup_response) }
+            expect(Gitlab::HTTP).to receive(:try_get)
+              .with(runner_releases_url)
+              .once { mock_http_response(followup_response) }
 
             expect(releases).to eq((expected_result || []) + [Gitlab::VersionInfo.new(14, 9, 2)])
           end
@@ -62,14 +66,14 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
         start_time = Time.now.utc.change(usec: 0)
 
         http_call_timestamp_offsets = []
-        allow(Gitlab::HTTP).to receive(:try_get).with('the release API URL') do
+        allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url) do
           http_call_timestamp_offsets << Time.now.utc - start_time
           mock_http_response(response)
         end
 
         # An initial HTTP request fails
         travel_to(start_time)
-        subject.reset!
+        subject.reset_backoff!
         expect(releases).to be_nil
 
         # Successive failed requests result in HTTP requests only after specific backoff periods
@@ -86,7 +90,7 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
 
         # Finally a successful HTTP request results in releases being returned
         allow(Gitlab::HTTP).to receive(:try_get)
-          .with('the release API URL')
+          .with(runner_releases_url)
           .once { mock_http_response([{ 'name' => 'v14.9.1-beta1-ee' }]) }
         travel 1.hour
         expect(releases).not_to be_nil
@@ -109,13 +113,58 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
       it_behaves_like 'requests that follow cache status', 1.day
     end
 
-    def mock_http_response(response)
-      http_response = instance_double(HTTParty::Response)
+    context 'when response contains unexpected input type' do
+      let(:response) { 'error' }
 
-      allow(http_response).to receive(:success?).and_return(response.present?)
-      allow(http_response).to receive(:parsed_response).and_return(response)
-
-      http_response
+      it { expect(releases).to be_nil }
     end
+
+    context 'when response contains unexpected input array' do
+      let(:response) { ['error'] }
+
+      it { expect(releases).to be_nil }
+    end
+  end
+
+  describe '#expired?', :use_clean_rails_memory_store_caching do
+    def expired?
+      described_class.instance.expired?
+    end
+
+    before do
+      stub_application_setting(public_runner_releases_url: runner_releases_url)
+
+      subject.send(:reset_backoff!)
+    end
+
+    it { expect(expired?).to be_truthy }
+
+    it 'behaves appropriately in refetch' do
+      allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response([]) }
+
+      subject.releases
+      expect(expired?).to be_falsey
+
+      travel Gitlab::Ci::RunnerReleases::RELEASES_VALIDITY_PERIOD + 1.second do
+        expect(expired?).to be_truthy
+
+        allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response(nil) }
+        subject.releases
+        expect(expired?).to be_truthy
+
+        allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response([]) }
+        subject.releases
+        expect(expired?).to be_truthy
+      end
+    end
+  end
+
+  def mock_http_response(response)
+    http_response = instance_double(HTTParty::Response)
+
+    allow(http_response).to receive(:success?).and_return(!response.nil?)
+    allow(http_response).to receive(:parsed_response).and_return(response)
+
+    http_response
   end
 end

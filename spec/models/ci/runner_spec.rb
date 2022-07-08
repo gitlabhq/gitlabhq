@@ -1767,4 +1767,39 @@ RSpec.describe Ci::Runner do
       end
     end
   end
+
+  describe '#with_upgrade_status' do
+    subject { described_class.with_upgrade_status(upgrade_status) }
+
+    let_it_be(:runner_14_0_0) { create(:ci_runner, version: '14.0.0') }
+    let_it_be(:runner_14_1_0) { create(:ci_runner, version: '14.1.0') }
+    let_it_be(:runner_14_1_1) { create(:ci_runner, version: '14.1.1') }
+    let_it_be(:runner_version_14_0_0) { create(:ci_runner_version, version: '14.0.0', status: :available) }
+    let_it_be(:runner_version_14_1_0) { create(:ci_runner_version, version: '14.1.0', status: :recommended) }
+    let_it_be(:runner_version_14_1_1) { create(:ci_runner_version, version: '14.1.1', status: :not_available) }
+
+    context ':not_available' do
+      let(:upgrade_status) { :not_available }
+
+      it 'returns runners whose version is assigned :not_available' do
+        is_expected.to contain_exactly(runner_14_1_1)
+      end
+    end
+
+    context ':available' do
+      let(:upgrade_status) { :available }
+
+      it 'returns runners whose version is assigned :available' do
+        is_expected.to contain_exactly(runner_14_0_0)
+      end
+    end
+
+    context ':recommended' do
+      let(:upgrade_status) { :recommended}
+
+      it 'returns runners whose version is assigned :recommended' do
+        is_expected.to contain_exactly(runner_14_1_0)
+      end
+    end
+  end
 end

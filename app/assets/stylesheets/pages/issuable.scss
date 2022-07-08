@@ -296,7 +296,7 @@
         @include media-breakpoint-up(lg) {
           padding: 0;
 
-          form {
+          .issuable-context-form {
             --initial-top: calc(#{$header-height} + #{$mr-tabs-height});
             --top: var(--initial-top);
 

@@ -78,6 +78,7 @@ module Ci
     has_many :groups, through: :runner_namespaces, disable_joins: true
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
+    has_one :runner_version, primary_key: :version, foreign_key: :version, class_name: 'Ci::RunnerVersion'
 
     before_save :ensure_token
 
@@ -474,6 +475,10 @@ module Ci
     end
 
     private
+
+    scope :with_upgrade_status, ->(upgrade_status) do
+      Ci::Runner.joins(:runner_version).where(runner_version: { status: upgrade_status })
+    end
 
     EXECUTOR_NAME_TO_TYPES = {
       'unknown' => :unknown,

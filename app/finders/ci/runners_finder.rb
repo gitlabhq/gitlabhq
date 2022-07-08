@@ -17,6 +17,7 @@ module Ci
       search!
       filter_by_active!
       filter_by_status!
+      filter_by_upgrade_status!
       filter_by_runner_type!
       filter_by_tag_list!
       sort!
@@ -65,6 +66,13 @@ module Ci
 
     def filter_by_status!
       filter_by!(:status_status, Ci::Runner::AVAILABLE_STATUSES)
+    end
+
+    def filter_by_upgrade_status!
+      return unless @params.key?(:upgrade_status)
+      return unless Ci::RunnerVersion.statuses.key?(@params[:upgrade_status])
+
+      @runners = @runners.with_upgrade_status(@params[:upgrade_status])
     end
 
     def filter_by_runner_type!

@@ -231,7 +231,7 @@ class IssuableBaseService < ::BaseProjectService
     before_create(issuable)
 
     issuable_saved = issuable.with_transaction_returning_status do
-      issuable.save
+      transaction_create(issuable)
     end
 
     if issuable_saved
@@ -337,6 +337,10 @@ class IssuableBaseService < ::BaseProjectService
     touch = opts[:save_with_touch] || false
 
     issuable.save(touch: touch)
+  end
+
+  def transaction_create(issuable)
+    issuable.save
   end
 
   def update_task(issuable)

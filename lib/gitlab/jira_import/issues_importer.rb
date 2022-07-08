@@ -16,6 +16,7 @@ module Gitlab
         @start_at = Gitlab::JiraImport.get_issues_next_start_at(project.id)
         @imported_items_cache_key = JiraImport.already_imported_cache_key(:issues, project.id)
         @job_waiter = JobWaiter.new
+        @issue_type_id = WorkItems::Type.default_issue_type.id
       end
 
       def execute
@@ -58,8 +59,13 @@ module Gitlab
           next if already_imported?(jira_issue.id)
 
           begin
-            issue_attrs = IssueSerializer.new(project, jira_issue, running_import.user_id, { iid: next_iid }).execute
-
+            issue_attrs = IssueSerializer.new(
+              project,
+              jira_issue,
+              running_import.user_id,
+              @issue_type_id,
+              { iid: next_iid }
+            ).execute
             Gitlab::JiraImport::ImportIssueWorker.perform_async(project.id, jira_issue.id, issue_attrs, job_waiter.key)
 
             job_waiter.jobs_remaining += 1

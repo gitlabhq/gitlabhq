@@ -77,6 +77,36 @@ RSpec.describe WorkItems::UpdateService do
       end
     end
 
+    it_behaves_like 'work item widgetable service' do
+      let(:widget_params) do
+        {
+          hierarchy_widget: { parent_id: 1 },
+          description_widget: { description: 'foo' },
+          weight_widget: { weight: 1 }
+        }
+      end
+
+      let(:service) do
+        described_class.new(
+          project: project,
+          current_user: current_user,
+          params: opts,
+          spam_params: spam_params,
+          widget_params: widget_params
+        )
+      end
+
+      let(:service_execute) { service.execute(work_item) }
+
+      let(:supported_widgets) do
+        [
+          { klass: WorkItems::Widgets::DescriptionService::UpdateService, callback: :update, params: { description: 'foo' } },
+          { klass: WorkItems::Widgets::WeightService::UpdateService, callback: :update, params: { weight: 1 } },
+          { klass: WorkItems::Widgets::HierarchyService::UpdateService, callback: :before_update_in_transaction, params: { parent_id: 1 } }
+        ]
+      end
+    end
+
     context 'when updating widgets' do
       let(:widget_service_class) { WorkItems::Widgets::DescriptionService::UpdateService }
       let(:widget_params) { { description_widget: { description: 'changed' } } }

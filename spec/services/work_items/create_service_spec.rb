@@ -9,6 +9,7 @@ RSpec.describe WorkItems::CreateService do
   let_it_be(:guest) { create(:user) }
   let_it_be(:user_with_no_access) { create(:user) }
 
+  let(:widget_params) { {} }
   let(:spam_params) { double }
   let(:current_user) { guest }
   let(:opts) do
@@ -23,7 +24,15 @@ RSpec.describe WorkItems::CreateService do
   end
 
   describe '#execute' do
-    subject(:service_result) { described_class.new(project: project, current_user: current_user, params: opts, spam_params: spam_params).execute }
+    subject(:service_result) do
+      described_class.new(
+        project: project,
+        current_user: current_user,
+        params: opts,
+        spam_params: spam_params,
+        widget_params: widget_params
+      ).execute
+    end
 
     before do
       stub_spam_services
@@ -78,6 +87,80 @@ RSpec.describe WorkItems::CreateService do
         end
 
         service_result
+      end
+    end
+
+    it_behaves_like 'work item widgetable service' do
+      let(:widget_params) do
+        {
+          hierarchy_widget: { parent_id: 1 }
+        }
+      end
+
+      let(:service) do
+        described_class.new(
+          project: project,
+          current_user: current_user,
+          params: opts,
+          spam_params: spam_params,
+          widget_params: widget_params
+        )
+      end
+
+      let(:service_execute) { service.execute }
+
+      let(:supported_widgets) do
+        [
+          { klass: WorkItems::Widgets::HierarchyService::CreateService, callback: :after_create_in_transaction, params: { parent_id: 1 } }
+        ]
+      end
+    end
+
+    describe 'hierarchy widget' do
+      context 'when parent is valid work item' do
+        let_it_be(:parent) { create(:work_item, project: project) }
+
+        let(:widget_params) { { hierarchy_widget: { parent_id: parent.id } } }
+
+        let(:opts) do
+          {
+            title: 'Awesome work_item',
+            description: 'please fix',
+            work_item_type: create(:work_item_type, :task)
+          }
+        end
+
+        it 'creates new work item and sets parent reference' do
+          expect { service_result }.to change(
+            WorkItem, :count).by(1).and(change(
+              WorkItems::ParentLink, :count).by(1))
+
+          expect(service_result[:status]).to be(:success)
+        end
+
+        context 'when parent type is invalid' do
+          let_it_be(:parent) { create(:work_item, :task, project: project) }
+
+          it 'does not create new work item if parent can not be set' do
+            expect { service_result }.not_to change(WorkItem, :count)
+
+            expect(service_result[:status]).to be(:error)
+            expect(service_result[:message]).to match(/Only Issue can be parent of Task./)
+          end
+        end
+
+        context 'when hiearchy feature flag is disabled' do
+          before do
+            stub_feature_flags(work_items_hierarchy: false)
+          end
+
+          it 'does not create new work item if parent can not be set' do
+            expect { service_result }.not_to change(WorkItem, :count)
+
+            expect(service_result[:status]).to be(:error)
+            expect(service_result[:message]).to eq('`work_items_hierarchy` feature flag disabled for this project')
+          end
+        end
       end
     end
   end
