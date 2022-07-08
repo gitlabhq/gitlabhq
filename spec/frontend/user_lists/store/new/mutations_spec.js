@@ -9,7 +9,7 @@ describe('User List Edit Mutations', () => {
     state = createState({ projectId: '1' });
   });
 
-  describe(types.RECIEVE_USER_LIST_ERROR, () => {
+  describe(types.RECEIVE_USER_LIST_ERROR, () => {
     beforeEach(() => {
       mutations[types.RECEIVE_CREATE_USER_LIST_ERROR](state, ['network error']);
     });

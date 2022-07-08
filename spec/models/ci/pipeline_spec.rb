@@ -1479,7 +1479,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let(:build_c) { create_build('build3', queued_at: 0) }
 
     %w[succeed! drop! cancel! skip! block! delay!].each do |action|
-      context "when the pipeline recieved #{action} event" do
+      context "when the pipeline received #{action} event" do
         it 'deletes a persistent ref' do
           expect(pipeline.persistent_ref).to receive(:delete).once
 
@@ -1702,7 +1702,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         end
 
         %w[succeed! drop! cancel! skip!].each do |action|
-          context "when the pipeline recieved #{action} event" do
+          context "when the pipeline received #{action} event" do
             it 'performs AutoMergeProcessWorker' do
               expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id)
 

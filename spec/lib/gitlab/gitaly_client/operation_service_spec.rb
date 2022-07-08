@@ -188,7 +188,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       end
 
       shared_examples 'a failed branch deletion' do
-        it 'raises a PreRecieveError' do
+        it 'raises a PreReceiveError' do
           expect_any_instance_of(Gitaly::OperationService::Stub)
             .to receive(:user_delete_branch).with(request, kind_of(Hash))
             .and_raise(custom_hook_error)
@@ -288,7 +288,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       end
 
       shared_examples 'a failed merge' do
-        it 'raises a PreRecieveError' do
+        it 'raises a PreReceiveError' do
           expect_any_instance_of(Gitaly::OperationService::Stub)
             .to receive(:user_merge_branch).with(kind_of(Enumerator), kind_of(Hash))
             .and_raise(custom_hook_error)

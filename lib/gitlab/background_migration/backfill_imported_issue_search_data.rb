@@ -3,14 +3,15 @@
 
 module Gitlab
   module BackgroundMigration
-    # Backfills the `issue_search_data` table for issues imported prior
+    # Rechedules the backfill for the `issue_search_data` table for issues imported prior
     # to the fix for the imported issues search data bug:
-    #  https://gitlab.com/gitlab-org/gitlab/-/issues/361219
+
     class BackfillImportedIssueSearchData < BatchedMigrationJob
+      SUB_BATCH_SIZE = 1_000
+
       def perform
         each_sub_batch(
-          operation_name: :update_search_data,
-          batching_scope: -> (relation) { Issue }
+          operation_name: :update_search_data
         ) do |sub_batch|
           update_search_data(sub_batch)
         rescue ActiveRecord::StatementInvalid => e
@@ -32,8 +33,7 @@ module Gitlab
             NOW(),
             NOW(),
             setweight(to_tsvector('english', LEFT(title, 255)), 'A') || setweight(to_tsvector('english', LEFT(REGEXP_REPLACE(description, '[A-Za-z0-9+/@]{50,}', ' ', 'g'), 1048576)), 'B')
-          FROM issues
-          WHERE issues.id IN (#{relation.select(:id).to_sql})
+          FROM (#{relation.limit(SUB_BATCH_SIZE).to_sql}) issues
           ON CONFLICT DO NOTHING
           SQL
         )

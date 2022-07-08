@@ -9,7 +9,7 @@ module Gitlab
 
         attr_reader :attributes
 
-        expose_attribute :id, :actor, :event, :commit_id, :created_at
+        expose_attribute :id, :actor, :event, :commit_id, :label_title, :created_at
         expose_attribute :issue_db_id # set in SingleEndpointIssueEventsImporter#each_associated
 
         # Builds a event from a GitHub API response.
@@ -21,6 +21,7 @@ module Gitlab
             actor: event.actor && Representation::User.from_api_response(event.actor),
             event: event.event,
             commit_id: event.commit_id,
+            label_title: event.label && event.label[:name],
             issue_db_id: event.issue_db_id,
             created_at: event.created_at
           )

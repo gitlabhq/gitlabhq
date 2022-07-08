@@ -3,18 +3,17 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillImportedIssueSearchData do
-  let_it_be(:batched_migration) { described_class::MIGRATION }
+RSpec.describe RescheduleBackfillImportedIssueSearchData do
+  let_it_be(:reschedule_migration) { described_class::MIGRATION }
 
   context 'when BackfillIssueSearchData.max_value is nil' do
-    it 'schedules a new batched migration with a default max_value' do
+    it 'schedules a new batched migration with a default value' do
       reversible_migration do |migration|
         migration.before -> {
-          expect(batched_migration).not_to have_scheduled_batched_migration
+          expect(reschedule_migration).not_to have_scheduled_batched_migration
         }
-
         migration.after -> {
-          expect(batched_migration).to have_scheduled_batched_migration(
+          expect(reschedule_migration).to have_scheduled_batched_migration(
             table_name: :issues,
             column_name: :id,
             interval: described_class::DELAY_INTERVAL,
@@ -43,7 +42,7 @@ RSpec.describe BackfillImportedIssueSearchData do
     it 'schedules a new batched migration with a custom max_value' do
       reversible_migration do |migration|
         migration.after -> {
-          expect(batched_migration).to have_scheduled_batched_migration(
+          expect(reschedule_migration).to have_scheduled_batched_migration(
             table_name: :issues,
             column_name: :id,
             interval: described_class::DELAY_INTERVAL,

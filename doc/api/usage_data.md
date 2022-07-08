@@ -79,6 +79,7 @@ Example response:
   "active_user_count": "SELECT COUNT(\"users\".\"id\") FROM \"users\" WHERE (\"users\".\"state\" IN ('active')) AND (\"users\".\"user_type\" IS NULL OR \"users\".\"user_type\" IN (NULL, 6, 4))",
   "edition": "EE",
   "license_md5": "c701acc03844c45366dd175ef7a4e19c",
+  "license_sha256": "366dd175ef7a4e19cc701acc03844c45366dd175ef7a4e19cc701acc03844c45",
   "license_id": null,
   "historical_max_users": 0,
   "licensee": {
@@ -138,6 +139,7 @@ Sample response:
   "active_user_count": -3,
   "edition": "EE",
   "license_md5": "bb8cd0d8a6d9569ff3f70b8927a1f949",
+  "license_sha256": "366dd175ef7a4e19cc701acc03844c45366dd175ef7a4e19cc701acc03844c45",
   "license_id": null,
   "historical_max_users": 0,
   "licensee": {

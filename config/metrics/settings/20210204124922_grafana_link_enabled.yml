@@ -2,9 +2,9 @@
 data_category: optional
 key_path: grafana_link_enabled
 description: Whether Grafana is enabled
-product_section: growth
-product_stage: growth
-product_group: product_intelligence
+product_section: ops
+product_stage: monitor
+product_group: respond
 product_category: collection
 value_type: boolean
 status: active

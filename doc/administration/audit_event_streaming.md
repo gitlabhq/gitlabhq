@@ -604,3 +604,117 @@ X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
   "event_type": "project_fork_operation"
 }
 ```
+
+## Audit event streaming on project group link actions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90955) in GitLab 15.2.
+
+Stream audit events that relate to project group link creation, updates, and deletion using the `/logs` endpoint.
+
+Send API requests that contain the `X-Gitlab-Audit-Event-Type` header with value of either:
+
+- `project_group_link_create`.
+- `project_group_link_update`.
+- `project_group_link_destroy`.
+
+GitLab responds with JSON payloads with an `event_type` field set to either:
+
+- `project_group_link_create`.
+- `project_group_link_update`.
+- `project_group_link_destroy`.
+
+### Example Headers
+
+Headers are formatted as follows:
+
+```plaintext
+POST /logs HTTP/1.1
+Host: <DESTINATION_HOST>
+Content-Type: application/x-www-form-urlencoded
+X-Gitlab-Audit-Event-Type: project_group_link_create
+X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
+```
+
+### Example payload for project group link create
+
+```json
+{
+  "id": 1,
+  "author_id": 1,
+  "entity_id": 24,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "example-user",
+    "target_id": 31,
+    "target_type": "Group",
+    "target_details": "another-group",
+    "custom_message": "Added project group link",
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "example-user",
+  "entity_path": "example-group/example-project",
+  "target_details": "another-group",
+  "created_at": "2022-07-04T00:43:09.318Z",
+  "target_type": "Group",
+  "target_id": 31,
+  "event_type": "project_group_link_create"
+}
+```
+
+### Example payload for project group link update
+
+```json
+{
+  "id": 1,
+  "author_id": 1,
+  "entity_id": 24,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "example-user",
+    "target_id": 31,
+    "target_type": "Group",
+    "target_details": "another-group",
+    "custom_message": "Changed project group link profile group_access from Developer to Guest",
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "example-user",
+  "entity_path": "example-group/example-project",
+  "target_details": "another-group",
+  "created_at": "2022-07-04T00:43:28.328Z",
+  "target_type": "Group",
+  "target_id": 31,
+  "event_type": "project_group_link_update"
+}
+```
+
+### Example payload for project group link delete
+
+```json
+{
+  "id": 1,
+  "author_id": 1,
+  "entity_id": 24,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "example-user",
+    "target_id": 31,
+    "target_type": "Group",
+    "target_details": "another-group",
+    "custom_message": "Removed project group link",
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "example-user",
+  "entity_path": "example-group/example-project",
+  "target_details": "another-group",
+  "created_at": "2022-07-04T00:42:56.279Z",
+  "target_type": "Group",
+  "target_id": 31,
+  "event_type": "project_group_link_destroy"
+}
+```

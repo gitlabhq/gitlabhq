@@ -1,0 +1,81 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForInactivePublicProjects, :migration do
+  let(:namespaces_table) { table(:namespaces) }
+  let(:projects_table) { table(:projects) }
+  let(:project_settings_table) { table(:project_settings) }
+
+  subject(:perform_migration) do
+    described_class.new(start_id: projects_table.minimum(:id),
+                        end_id: projects_table.maximum(:id),
+                        batch_table: :projects,
+                        batch_column: :id,
+                        sub_batch_size: 2,
+                        pause_ms: 0,
+                        connection: ActiveRecord::Base.connection)
+                   .perform
+  end
+
+  let(:queries) { ActiveRecord::QueryRecorder.new { perform_migration } }
+
+  let(:namespace_1) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-1') }
+  let(:project_namespace_2) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-2', type: 'Project') }
+  let(:project_namespace_3) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-3', type: 'Project') }
+  let(:project_namespace_4) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-4', type: 'Project') }
+  let(:project_namespace_5) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-5', type: 'Project') }
+
+  let(:project_1) do
+    projects_table
+    .create!(
+      name: 'proj-1', path: 'path-1', namespace_id: namespace_1.id,
+      project_namespace_id: project_namespace_2.id, visibility_level: 0
+    )
+  end
+
+  let(:project_2) do
+    projects_table
+    .create!(
+      name: 'proj-2', path: 'path-2', namespace_id: namespace_1.id,
+      project_namespace_id: project_namespace_3.id, visibility_level: 10
+    )
+  end
+
+  let(:project_3) do
+    projects_table
+    .create!(
+      name: 'proj-3', path: 'path-3', namespace_id: namespace_1.id,
+      project_namespace_id: project_namespace_4.id, visibility_level: 20, last_activity_at: '2021-01-01'
+    )
+  end
+
+  let(:project_4) do
+    projects_table
+    .create!(
+      name: 'proj-4', path: 'path-4', namespace_id: namespace_1.id,
+      project_namespace_id: project_namespace_5.id, visibility_level: 20, last_activity_at: '2022-01-01'
+    )
+  end
+
+  before do
+    project_settings_table.create!(project_id: project_1.id, legacy_open_source_license_available: true)
+    project_settings_table.create!(project_id: project_2.id, legacy_open_source_license_available: true)
+    project_settings_table.create!(project_id: project_3.id, legacy_open_source_license_available: true)
+    project_settings_table.create!(project_id: project_4.id, legacy_open_source_license_available: true)
+  end
+
+  it 'sets `legacy_open_source_license_available` attribute to false for inactive, public projects',
+   :aggregate_failures do
+    expect(queries.count).to eq(5)
+
+    expect(migrated_attribute(project_1.id)).to be_truthy
+    expect(migrated_attribute(project_2.id)).to be_truthy
+    expect(migrated_attribute(project_3.id)).to be_falsey
+    expect(migrated_attribute(project_4.id)).to be_truthy
+  end
+
+  def migrated_attribute(project_id)
+    project_settings_table.find(project_id).legacy_open_source_license_available
+  end
+end

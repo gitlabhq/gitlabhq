@@ -80,7 +80,7 @@ export default {
       return this.getUserData;
     },
     mappedLines() {
-      // TODO: Do this data generation when we recieve a response to save a computed property being created
+      // TODO: Do this data generation when we receive a response to save a computed property being created
       return this.diffLines(this.diffFile).map(mapParallel(this)) || [];
     },
   },

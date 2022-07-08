@@ -100,6 +100,8 @@ $monokai-gh: #75715e;
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
   @include hljs-override('string', $monokai-s);
   @include hljs-override('attr', $monokai-na);
+  @include hljs-override('attribute', $monokai-n);
+  @include hljs-override('selector-tag', $monokai-nt);
   @include hljs-override('keyword', $monokai-k);
   @include hljs-override('variable', $monokai-nv);
   @include hljs-override('variable.language_', $monokai-k);

@@ -24,6 +24,9 @@ module Gitlab
           when 'reopened'
             Gitlab::GithubImport::Importer::Events::Reopened.new(project, author_id)
               .execute(issue_event)
+          when 'labeled', 'unlabeled'
+            Gitlab::GithubImport::Importer::Events::ChangedLabel.new(project, author_id)
+              .execute(issue_event)
           else
             Gitlab::GithubImport::Logger.debug(
               message: 'UNSUPPORTED_EVENT_TYPE',

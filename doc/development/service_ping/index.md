@@ -200,6 +200,7 @@ The following is example content of the Service Ping payload.
   "recorded_at": "2020-04-17T07:43:54.162+00:00",
   "edition": "EEU",
   "license_md5": "00000000000000000000000000000000",
+  "license_sha256: "0000000000000000000000000000000000000000000000000000000000000000",
   "license_id": null,
   "historical_max_users": 999,
   "licensee": {

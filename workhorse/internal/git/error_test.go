@@ -30,7 +30,7 @@ func TestHandleLimitErr(t *testing.T) {
 			}, []byte{}),
 		},
 		{
-			desc:      "recieve pack",
+			desc:      "receive pack",
 			errWriter: writeReceivePackError,
 			expectedBytes: bytes.Join([][]byte{
 				{'0', '0', '2', '3', 1, '0', '0', '1', 'a'},

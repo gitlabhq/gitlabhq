@@ -159,7 +159,6 @@ The daily job provides **only** the following information to the Customers Porta
 - GitLab version
 - Hostname
 - Instance ID
-- MD5 hash of license
 
 Example of a cloud licensing sync request:
 
@@ -208,8 +207,7 @@ Example of a cloud licensing sync request:
   "max_historical_user_count": 75,
   "billable_users_count": 75,
   "hostname": "gitlab.example.com",
-  "instance_id": "9367590b-82ad-48cb-9da7-938134c29088",
-  "license_md5": "002f02470fe45ef6a333a4282aca6222"
+  "instance_id": "9367590b-82ad-48cb-9da7-938134c29088"
 }
 ```
 

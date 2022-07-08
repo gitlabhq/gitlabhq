@@ -103,6 +103,8 @@ $solarized-dark-il: #2aa198;
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
     @include hljs-override('string', $solarized-dark-s);
     @include hljs-override('attr', $solarized-dark-na);
+    @include hljs-override('attribute', $solarized-dark-n);
+    @include hljs-override('selector-tag', $solarized-dark-nt);
     @include hljs-override('keyword', $solarized-dark-k);
     @include hljs-override('variable', $solarized-dark-nv);
     @include hljs-override('variable.language_', $solarized-dark-k);

@@ -2,6 +2,7 @@
 #
 # Requires a context containing:
 # - subject
+# - project
 # - feature_flag_name
 # - category
 # - action

@@ -3,7 +3,9 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillImportedIssueSearchData, :migration, schema: 20220621040800 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillImportedIssueSearchData,
+  :migration,
+  schema: 20220707075300 do
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let!(:issue_search_data_table) { table(:issue_search_data) }
 

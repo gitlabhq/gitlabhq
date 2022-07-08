@@ -15,15 +15,20 @@ To configure GitLab for this, see
 
 This functionality is based on the [doorkeeper Ruby gem](https://github.com/doorkeeper-gem/doorkeeper).
 
-## CORS preflight requests
+## Cross-origin resource sharing
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364680) in GitLab 15.1.
+> CORS preflight request support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364680) in GitLab 15.1.
 
-The following endpoints support [CORS preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS):
+Many `/oauth` endpoints support cross-origin resource sharing (CORS). From GitLab 15.1, the following endpoints also
+support [CORS preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS):
 
 - `/oauth/revoke`
 - `/oauth/token`
 - `/oauth/userinfo`
+
+In addition to the headers listed for [simple requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests),
+only the `Authorization` header can be used for preflight requests. For example, the `X-Requested-With` header
+can't be used for preflight requests.
 
 ## Supported OAuth 2.0 flows
 

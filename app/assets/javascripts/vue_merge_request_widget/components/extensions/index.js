@@ -36,7 +36,7 @@ export const registerExtension = (extension) => {
         (acc, computedKey) => ({
           ...acc,
           // Making the computed property a method allows us to pass in arguments
-          // this allows for each computed property to recieve some data
+          // this allows for each computed property to receive some data
           [computedKey]() {
             return extension.computed[computedKey];
           },

@@ -15,7 +15,7 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute' do
       expires_at: expiry_date }
   end
 
-  subject { described_class.new(link).execute(group_link_params) }
+  subject { described_class.new(link, user).execute(group_link_params) }
 
   before do
     group.add_developer(user)

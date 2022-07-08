@@ -66,6 +66,20 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
                       Gitlab::GithubImport::Importer::Events::Reopened
     end
 
+    context "when it's labeled issue event" do
+      let(:event_name) { 'labeled' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedLabel
+    end
+
+    context "when it's unlabeled issue event" do
+      let(:event_name) { 'unlabeled' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedLabel
+    end
+
     context "when it's unknown issue event" do
       let(:event_name) { 'fake' }
 

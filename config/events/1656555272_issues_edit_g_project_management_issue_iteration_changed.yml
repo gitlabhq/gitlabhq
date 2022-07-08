@@ -1,0 +1,20 @@
+---
+description: Issue's iteration was changed
+category: issues_edit
+action: g_project_management_issue_iteration_changed
+identifiers:
+  - project
+  - user
+  - namespace
+product_section: dev
+product_stage: plan
+product_group: project_management
+product_category: issue_tracking
+milestone: "15.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91443
+distributions:
+  - ee
+tiers:
+  - premium
+  - ultimate
+

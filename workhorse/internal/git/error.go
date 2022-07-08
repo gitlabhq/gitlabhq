@@ -44,7 +44,7 @@ func handleLimitErr(err error, w io.Writer, f func(w io.Writer) error) {
 }
 
 // writeReceivePackError writes a "server is busy" error message to the
-// git-recieve-pack-result.
+// git-receive-pack-result.
 //
 // 0023\x01001aunpack server is busy
 // 00000044\x2GitLab is currently unable to handle this request due to load.
