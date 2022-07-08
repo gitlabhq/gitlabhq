@@ -176,11 +176,16 @@
   }
 
   .gutter-toggle {
+    display: flex;
+    align-items: center;
     margin-left: 20px;
-    padding-left: 10px;
+    padding: 4px;
+    border-radius: 4px;
+    height: 24px;
 
     &:hover {
       color: $gl-text-color;
+      background: $gray-50;
     }
 
     &:hover,
@@ -338,7 +343,6 @@
     }
 
     .gutter-toggle {
-      border-left: 1px solid $border-gray-normal;
       text-align: center;
     }
 
@@ -405,8 +409,8 @@
       width: 100%;
       height: $sidebar-toggle-height;
       margin-left: 0;
-      padding-left: 0;
       border-bottom: 1px solid $border-white-normal;
+      border-radius: 0;
     }
 
     a.gutter-toggle {

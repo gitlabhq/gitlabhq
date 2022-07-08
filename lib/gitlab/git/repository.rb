@@ -800,9 +800,9 @@ module Gitlab
         end
       end
 
-      def list_refs
+      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX])
         wrapped_gitaly_errors do
-          gitaly_ref_client.list_refs
+          gitaly_ref_client.list_refs(patterns)
         end
       end
 

@@ -125,7 +125,7 @@ module API
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
 
         if entity == Entities::UserWithAdmin
-          users = users.preload(:identities, :u2f_registrations, :webauthn_registrations, :namespace)
+          users = users.preload(:identities, :u2f_registrations, :webauthn_registrations, :namespace, :followers, :followees, :user_preference)
         end
 
         users, options = with_custom_attributes(users, { with: entity, current_user: current_user })

@@ -3442,6 +3442,15 @@ RSpec.describe User do
     end
   end
 
+  describe '#followed_by?' do
+    it 'check if followed by another user' do
+      follower = create :user
+      followee = create :user
+
+      expect { follower.follow(followee) }.to change { followee.followed_by?(follower) }.from(false).to(true)
+    end
+  end
+
   describe '#follow' do
     it 'follow another user' do
       user = create :user

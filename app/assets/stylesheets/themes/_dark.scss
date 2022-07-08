@@ -101,6 +101,10 @@ $white-dark: #444;
 $border-color: #4f4f4f;
 $nav-active-bg: rgba(255, 255, 255, 0.08);
 
+:root {
+  color-scheme: dark;
+}
+
 body.gl-dark {
   --gray-10: #{$gray-10};
   --gray-50: #{$gray-50};

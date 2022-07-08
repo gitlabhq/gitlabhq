@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import PipelineTabs from 'ee_else_ce/pipelines/components/pipeline_tabs.vue';
 import { removeParams, updateHistory } from '~/lib/utils/url_utility';
@@ -7,6 +8,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { getPipelineDefaultTab, reportToSentry } from './utils';
 
 Vue.use(VueApollo);
+Vue.use(Vuex);
 
 export const createAppOptions = (selector, apolloProvider) => {
   const el = document.querySelector(selector);
@@ -37,6 +39,7 @@ export const createAppOptions = (selector, apolloProvider) => {
       PipelineTabs,
     },
     apolloProvider,
+    store: new Vuex.Store(),
     provide: {
       canGenerateCodequalityReports: parseBoolean(canGenerateCodequalityReports),
       codequalityReportDownloadPath,

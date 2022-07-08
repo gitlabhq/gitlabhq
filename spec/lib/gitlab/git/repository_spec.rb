@@ -367,8 +367,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         end
 
         it 'returns the correct count bounding at max_count' do
-          branch_a_sha = repository_rugged.branches['left-branch'].target.oid
-          branch_b_sha = repository_rugged.branches['right-branch'].target.oid
+          branch_a_sha = repository.find_branch('left-branch').dereferenced_target.sha
+          branch_b_sha = repository.find_branch('right-branch').dereferenced_target.sha
 
           count = repository.diverging_commit_count(branch_a_sha, branch_b_sha, max_count: 1000)
 
@@ -407,8 +407,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         end
 
         it 'returns the correct count bounding at max_count' do
-          branch_a_sha = repository_rugged.branches['left-branch'].target.oid
-          branch_b_sha = repository_rugged.branches['right-branch'].target.oid
+          branch_a_sha = repository.find_branch('left-branch').dereferenced_target.sha
+          branch_b_sha = repository.find_branch('right-branch').dereferenced_target.sha
 
           results = repository.diverging_commit_count(branch_a_sha, branch_b_sha, max_count: max_count)
 
@@ -469,16 +469,14 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     it 'deletes the ref' do
       repository.delete_refs('refs/heads/feature')
 
-      expect(repository_rugged.references['refs/heads/feature']).to be_nil
+      expect(repository.find_branch('feature')).to be_nil
     end
 
     it 'deletes all refs' do
       refs = %w[refs/heads/wip refs/tags/v1.1.0]
       repository.delete_refs(*refs)
 
-      refs.each do |ref|
-        expect(repository_rugged.references[ref]).to be_nil
-      end
+      expect(repository.list_refs(refs)).to be_empty
     end
 
     it 'does not fail when deleting an empty list of refs' do
@@ -491,7 +489,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#branch_names_contains_sha' do
-    let(:head_id) { repository_rugged.head.target.oid }
+    let(:head_id) { repository.commit.id }
     let(:new_branch) { head_id }
     let(:utf8_branch) { 'branch-é' }
 
@@ -1823,7 +1821,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
 
         before do
-          source_rugged.branches.create(source_branch, new_oid)
+          source_repository.write_ref(source_branch, new_oid)
         end
 
         it 'writes the ref' do
@@ -1869,7 +1867,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     it "removes the branch from the repo" do
       repository.rm_branch(branch_name, user: user)
 
-      expect(repository_rugged.branches[branch_name]).to be_nil
+      expect(repository.find_branch(branch_name)).to be_nil
     end
   end
 
@@ -2342,14 +2340,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   def create_remote_branch(remote_name, branch_name, source_branch_name)
-    source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
+    source_branch = repository.find_branch(source_branch_name)
     repository.write_ref("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
-  end
-
-  def refs(dir)
-    IO.popen(%W[git -C #{dir} for-each-ref], &:read).split("\n").map do |line|
-      line.split("\t").last
-    end
   end
 
   describe '#disconnect_alternates' do
@@ -2483,7 +2475,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       it 'mirrors the source repository' do
         subject
 
-        expect(refs(new_repository_path)).to eq(refs(repository_path))
+        expect(new_repository.list_refs(['refs/'])).to eq(repository.list_refs(['refs/']))
       end
     end
 
@@ -2495,7 +2487,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       it 'mirrors the source repository' do
         subject
 
-        expect(refs(new_repository_path)).to eq(refs(repository_path))
+        expect(new_repository.list_refs(['refs/'])).to eq(repository.list_refs(['refs/']))
       end
 
       context 'with keep-around refs' do
@@ -2511,8 +2503,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         it 'includes the temporary and keep-around refs' do
           subject
 
-          expect(refs(new_repository_path)).to include(keep_around_ref)
-          expect(refs(new_repository_path)).to include(tmp_ref)
+          expect(new_repository.list_refs([keep_around_ref]).map(&:name)).to match_array([keep_around_ref])
+          expect(new_repository.list_refs([tmp_ref]).map(&:name)).to match_array([tmp_ref])
         end
       end
     end

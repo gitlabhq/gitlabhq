@@ -39,8 +39,7 @@ RSpec.describe Projects::AfterImportWorker do
       end
 
       it 'removes refs/pull/**/*' do
-        expect(rugged.references.map(&:name))
-          .not_to include(%r{\Arefs/pull/})
+        expect(repository.list_refs(['refs/pull/'])).to be_empty
       end
     end
 
@@ -53,8 +52,7 @@ RSpec.describe Projects::AfterImportWorker do
         end
 
         it "does not remove refs/#{name}/tmp" do
-          expect(rugged.references.map(&:name))
-            .to include("refs/#{name}/tmp")
+          expect(repository.list_refs(["refs/#{name}/tmp"]).length).to be(1)
         end
       end
     end
@@ -100,8 +98,7 @@ RSpec.describe Projects::AfterImportWorker do
       it 'removes refs/pull/**/*' do
         subject
 
-        expect(rugged.references.map(&:name))
-          .not_to include(%r{\Arefs/pull/})
+        expect(repository.list_refs(['refs/pull/'])).to be_empty
       end
 
       it 'records the failures in the database', :aggregate_failures do
@@ -122,10 +119,6 @@ RSpec.describe Projects::AfterImportWorker do
         expect(import_failure.exception_message).to be_present
         expect(import_failure.correlation_id_value).not_to be_empty
       end
-    end
-
-    def rugged
-      rugged_repo(repository)
     end
   end
 end

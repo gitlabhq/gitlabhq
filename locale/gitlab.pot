@@ -41023,6 +41023,9 @@ msgstr ""
 msgid "Unable to load the merge request widget. Try reloading the page."
 msgstr ""
 
+msgid "Unable to parse the vulnerability report's options."
+msgstr ""
+
 msgid "Unable to save iteration. Please try again"
 msgstr ""
 

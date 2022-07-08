@@ -36,7 +36,7 @@ require (
 	golang.org/x/tools v0.1.11
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
-	honnef.co/go/tools v0.1.3
+	honnef.co/go/tools v0.3.2
 )
 
 require (
@@ -102,6 +102,7 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
+	golang.org/x/exp/typeparams v0.0.0-20220218215828-6cf2b201936e // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect

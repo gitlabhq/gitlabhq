@@ -2,6 +2,9 @@
 // Please see the feedback issue for more details and help:
 // https://gitlab.com/gitlab-org/gitlab/-/issues/331812
 @charset "UTF-8";
+:root {
+  color-scheme: dark;
+}
 body.gl-dark {
   --gray-10: #1f1f1f;
   --gray-50: #303030;
@@ -1714,6 +1717,9 @@ svg.s16 {
 .rect-avatar.s32 {
   border-radius: 4px;
 }
+:root {
+  color-scheme: dark;
+}
 body.gl-dark {
   --gray-10: #1f1f1f;
   --gray-50: #303030;
@@ -1955,6 +1961,9 @@ body.gl-dark .navbar-gitlab .search form .search-input {
   color: var(--gl-text-color);
 }
 
+:root {
+  color-scheme: dark;
+}
 body.gl-dark {
   --gray-10: #1f1f1f;
   --gray-50: #303030;

@@ -2259,20 +2259,12 @@ RSpec.describe Repository do
   describe '#branch_count' do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
-
-      rugged_count = rugged_repo(repository).branches.count
-
-      expect(repository.branch_count).to eq(rugged_count)
     end
   end
 
   describe '#tag_count' do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
-
-      rugged_count = rugged_repo(repository).tags.count
-
-      expect(repository.tag_count).to eq(rugged_count)
     end
   end
 

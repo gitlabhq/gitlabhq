@@ -1572,6 +1572,10 @@ class User < ApplicationRecord
     self.followees.exists?(user.id)
   end
 
+  def followed_by?(user)
+    self.followers.include?(user)
+  end
+
   def follow(user)
     return false if self.id == user.id
 

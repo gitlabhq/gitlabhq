@@ -185,6 +185,40 @@ RSpec.describe API::Users do
             expect(json_response.first['note']).to eq '2018-11-05 | 2FA removed | user requested | www.gitlab.com'
           end
         end
+
+        context 'N+1 queries' do
+          before do
+            create_list(:user, 2)
+          end
+
+          it 'avoids N+1 queries when requested by admin' do
+            control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+              get api("/users", admin)
+            end.count
+
+            create_list(:user, 3)
+
+            # There is a still a pending N+1 query related to fetching
+            # project count for each user.
+            # Refer issue https://gitlab.com/gitlab-org/gitlab/-/issues/367080
+
+            expect do
+              get api("/users", admin)
+            end.not_to exceed_all_query_limit(control_count + 3)
+          end
+
+          it 'avoids N+1 queries when requested by a regular user' do
+            control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+              get api("/users", user)
+            end.count
+
+            create_list(:user, 3)
+
+            expect do
+              get api("/users", user)
+            end.not_to exceed_all_query_limit(control_count)
+          end
+        end
       end
     end
 

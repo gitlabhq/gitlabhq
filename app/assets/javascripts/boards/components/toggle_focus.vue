@@ -20,7 +20,7 @@ export default {
       hide(this.$refs.toggleFocusModeButton);
 
       const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
-      issueBoardsContent.classList.toggle('is-focused');
+      issueBoardsContent?.classList.toggle('is-focused');
 
       this.isFullscreen = !this.isFullscreen;
     },
