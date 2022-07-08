@@ -5856,9 +5856,6 @@ msgstr ""
 msgid "Be careful. Renaming a project's repository can have unintended side effects."
 msgstr ""
 
-msgid "Before July 1, 2022, all free tier public open source projects must %{enrollment_link} to continue to receive GitLab Ultimate benefits."
-msgstr ""
-
 msgid "Before enabling this integration, create a webhook for the room in Google Chat where you want to receive notifications from this project. %{docs_link}"
 msgstr ""
 
@@ -7530,9 +7527,6 @@ msgid "Changes suppressed. Click to show."
 msgstr ""
 
 msgid "Changes the title to \"%{title_param}\"."
-msgstr ""
-
-msgid "Changes to free tier open source projects"
 msgstr ""
 
 msgid "Changes to the title have not been saved"
@@ -16519,9 +16513,6 @@ msgid "For more information on how the number of active users is calculated, see
 msgstr ""
 
 msgid "For more information, go to the "
-msgstr ""
-
-msgid "For more information, see the %{faq_link}."
 msgstr ""
 
 msgid "For more information, see the File Hooks documentation."

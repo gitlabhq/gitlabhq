@@ -133,9 +133,7 @@ On GitLab.com, this feature is available.
          {"name"=>"counts.clusters_platforms_user",
           "time_elapsed"=>0.06410990096628666},
          {"name"=>"counts.clusters_management_project",
-          "time_elapsed"=>0.24020783510059118},
-         {"name"=>"counts.clusters_integrations_elastic_stack",
-          "time_elapsed"=>0.03484998410567641}
+          "time_elapsed"=>0.24020783510059118}
         ]
       }
     }

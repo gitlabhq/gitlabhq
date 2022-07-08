@@ -3,6 +3,8 @@
 module Gitlab
   module WikiPages
     class FrontMatterParser
+      FEATURE_FLAG = :wiki_front_matter
+
       # We limit the maximum length of text we are prepared to parse as YAML, to
       # avoid exploitations and attempts to consume memory and CPU. We allow for:
       #  - a title line
@@ -28,12 +30,18 @@ module Gitlab
       end
 
       # @param [String] wiki_content
-      def initialize(wiki_content)
+      # @param [FeatureGate] feature_gate The scope for feature availability
+      def initialize(wiki_content, feature_gate)
         @wiki_content = wiki_content
+        @feature_gate = feature_gate
+      end
+
+      def self.enabled?(gate = nil)
+        Feature.enabled?(FEATURE_FLAG, gate)
       end
 
       def parse
-        return empty_result unless wiki_content.present?
+        return empty_result unless enabled? && wiki_content.present?
         return empty_result(block.error) unless block.valid?
 
         Result.new(front_matter: block.data, content: strip_front_matter_block)
@@ -86,10 +94,14 @@ module Gitlab
 
       private
 
-      attr_reader :wiki_content
+      attr_reader :wiki_content, :feature_gate
 
       def empty_result(reason = nil, error = nil)
         Result.new(content: wiki_content, reason: reason, error: error)
+      end
+
+      def enabled?
+        self.class.enabled?(feature_gate)
       end
 
       def block

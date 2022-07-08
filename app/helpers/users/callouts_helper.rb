@@ -9,7 +9,6 @@ module Users
     FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
     REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
-    MINUTE_LIMIT_BANNER = 'minute_limit_banner'
     SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
 
@@ -59,10 +58,6 @@ module Users
     def show_security_newsletter_user_callout?
       current_user&.admin? &&
         !user_dismissed?(SECURITY_NEWSLETTER_CALLOUT)
-    end
-
-    def minute_limit_banner_dismissed?
-      user_dismissed?(MINUTE_LIMIT_BANNER)
     end
 
     private

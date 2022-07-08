@@ -13619,25 +13619,6 @@ CREATE SEQUENCE clusters_applications_crossplane_id_seq
 
 ALTER SEQUENCE clusters_applications_crossplane_id_seq OWNED BY clusters_applications_crossplane.id;
 
-CREATE TABLE clusters_applications_elastic_stacks (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    cluster_id bigint NOT NULL,
-    status integer NOT NULL,
-    version character varying(255) NOT NULL,
-    status_reason text
-);
-
-CREATE SEQUENCE clusters_applications_elastic_stacks_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE clusters_applications_elastic_stacks_id_seq OWNED BY clusters_applications_elastic_stacks.id;
-
 CREATE TABLE clusters_applications_helm (
     id integer NOT NULL,
     cluster_id integer NOT NULL,
@@ -13778,15 +13759,6 @@ CREATE SEQUENCE clusters_id_seq
     CACHE 1;
 
 ALTER SEQUENCE clusters_id_seq OWNED BY clusters.id;
-
-CREATE TABLE clusters_integration_elasticstack (
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    cluster_id bigint NOT NULL,
-    enabled boolean DEFAULT false NOT NULL,
-    chart_version text,
-    CONSTRAINT check_f8d671ce04 CHECK ((char_length(chart_version) <= 10))
-);
 
 CREATE TABLE clusters_integration_prometheus (
     created_at timestamp with time zone NOT NULL,
@@ -22925,8 +22897,6 @@ ALTER TABLE ONLY clusters_applications_cilium ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY clusters_applications_crossplane ALTER COLUMN id SET DEFAULT nextval('clusters_applications_crossplane_id_seq'::regclass);
 
-ALTER TABLE ONLY clusters_applications_elastic_stacks ALTER COLUMN id SET DEFAULT nextval('clusters_applications_elastic_stacks_id_seq'::regclass);
-
 ALTER TABLE ONLY clusters_applications_helm ALTER COLUMN id SET DEFAULT nextval('clusters_applications_helm_id_seq'::regclass);
 
 ALTER TABLE ONLY clusters_applications_ingress ALTER COLUMN id SET DEFAULT nextval('clusters_applications_ingress_id_seq'::regclass);
@@ -24687,9 +24657,6 @@ ALTER TABLE ONLY clusters_applications_cilium
 ALTER TABLE ONLY clusters_applications_crossplane
     ADD CONSTRAINT clusters_applications_crossplane_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY clusters_applications_elastic_stacks
-    ADD CONSTRAINT clusters_applications_elastic_stacks_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY clusters_applications_helm
     ADD CONSTRAINT clusters_applications_helm_pkey PRIMARY KEY (id);
 
@@ -24707,9 +24674,6 @@ ALTER TABLE ONLY clusters_applications_prometheus
 
 ALTER TABLE ONLY clusters_applications_runners
     ADD CONSTRAINT clusters_applications_runners_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY clusters_integration_elasticstack
-    ADD CONSTRAINT clusters_integration_elasticstack_pkey PRIMARY KEY (cluster_id);
 
 ALTER TABLE ONLY clusters_integration_prometheus
     ADD CONSTRAINT clusters_integration_prometheus_pkey PRIMARY KEY (cluster_id);
@@ -27812,8 +27776,6 @@ CREATE UNIQUE INDEX index_clusters_applications_cilium_on_cluster_id ON clusters
 
 CREATE UNIQUE INDEX index_clusters_applications_crossplane_on_cluster_id ON clusters_applications_crossplane USING btree (cluster_id);
 
-CREATE UNIQUE INDEX index_clusters_applications_elastic_stacks_on_cluster_id ON clusters_applications_elastic_stacks USING btree (cluster_id);
-
 CREATE UNIQUE INDEX index_clusters_applications_helm_on_cluster_id ON clusters_applications_helm USING btree (cluster_id);
 
 CREATE UNIQUE INDEX index_clusters_applications_ingress_on_cluster_id ON clusters_applications_ingress USING btree (cluster_id);
@@ -27829,8 +27791,6 @@ CREATE UNIQUE INDEX index_clusters_applications_prometheus_on_cluster_id ON clus
 CREATE UNIQUE INDEX index_clusters_applications_runners_on_cluster_id ON clusters_applications_runners USING btree (cluster_id);
 
 CREATE INDEX index_clusters_applications_runners_on_runner_id ON clusters_applications_runners USING btree (runner_id);
-
-CREATE INDEX index_clusters_integration_elasticstack_enabled ON clusters_integration_elasticstack USING btree (enabled, created_at, cluster_id);
 
 CREATE INDEX index_clusters_integration_prometheus_enabled ON clusters_integration_prometheus USING btree (enabled, created_at, cluster_id);
 
@@ -32514,9 +32474,6 @@ ALTER TABLE ONLY approval_merge_request_rules
 ALTER TABLE ONLY namespace_statistics
     ADD CONSTRAINT fk_rails_0062050394 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY clusters_applications_elastic_stacks
-    ADD CONSTRAINT fk_rails_026f219f46 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT fk_rails_032b12996a FOREIGN KEY (oncall_rotation_id) REFERENCES incident_management_oncall_rotations(id) ON DELETE CASCADE;
 
@@ -33776,9 +33733,6 @@ ALTER TABLE ONLY boards_epic_board_positions
 
 ALTER TABLE ONLY vulnerability_finding_links
     ADD CONSTRAINT fk_rails_cbdfde27ce FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY clusters_integration_elasticstack
-    ADD CONSTRAINT fk_rails_cc5ba8f658 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_cc5d88bbb0 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

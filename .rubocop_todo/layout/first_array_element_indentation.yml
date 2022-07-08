@@ -281,7 +281,6 @@ Layout/FirstArrayElementIndentation:
     - 'spec/models/ci/pipeline_spec.rb'
     - 'spec/models/ci/unit_test_spec.rb'
     - 'spec/models/clusters/applications/cert_manager_spec.rb'
-    - 'spec/models/clusters/applications/elastic_stack_spec.rb'
     - 'spec/models/clusters/platforms/kubernetes_spec.rb'
     - 'spec/models/commit_collection_spec.rb'
     - 'spec/models/compare_spec.rb'

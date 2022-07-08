@@ -8,7 +8,6 @@ Rails/FilePath:
     - 'app/controllers/help_controller.rb'
     - 'app/helpers/startupjs_helper.rb'
     - 'app/models/clusters/applications/cert_manager.rb'
-    - 'app/models/clusters/applications/elastic_stack.rb'
     - 'app/models/clusters/concerns/application_data.rb'
     - 'app/models/concerns/cross_database_modification.rb'
     - 'app/models/release_highlight.rb'

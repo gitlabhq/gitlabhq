@@ -128,10 +128,6 @@
     > li {
       display: inline-block;
 
-      &:not(:last-child) {
-        margin-right: $gl-padding;
-      }
-
       &.right {
         vertical-align: top;
         margin-top: 0;
@@ -179,7 +175,6 @@
     }
 
     .btn {
-      margin-bottom: $gl-padding-8;
       padding: $gl-btn-vert-padding $gl-btn-padding;
       line-height: $gl-btn-line-height;
 
@@ -187,12 +182,6 @@
         top: 0;
       }
     }
-  }
-}
-
-.project-buttons {
-  .nav > li:not(:last-child) {
-    margin-right: $gl-padding-8;
   }
 }
 

@@ -252,15 +252,6 @@ security issues:
 - A software license compliance violation. For more details, read
   [Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
 
-### Migration of existing Vulnerability-Check rules
-
-If your projects have rules that have a security orchestration project, a new MR with
-the existing rule's content is created automatically against the default branch belonging
-to the security orchestration project. To maintain the same security approval rules you
-had before GitLab 15.0, we recommend merging this new MR.
-
-If your projects have rules without a security orchestration project, a new security orchestration project is created automatically with the content of the existing rule. No additional action is required.
-
 ## Using private Maven repositories
 
 If you have a private Apache Maven repository that requires login credentials,

@@ -316,6 +316,7 @@ class WikiPage
   end
 
   def update_front_matter(attrs)
+    return unless Gitlab::WikiPages::FrontMatterParser.enabled?(container)
     return unless attrs.has_key?(:front_matter)
 
     fm_yaml = serialize_front_matter(attrs[:front_matter])
@@ -326,7 +327,7 @@ class WikiPage
 
   def parsed_content
     strong_memoize(:parsed_content) do
-      Gitlab::WikiPages::FrontMatterParser.new(raw_content).parse
+      Gitlab::WikiPages::FrontMatterParser.new(raw_content, container).parse
     end
   end
 

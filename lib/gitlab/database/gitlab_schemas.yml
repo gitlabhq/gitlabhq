@@ -133,7 +133,6 @@ cluster_providers_gcp: :gitlab_main
 clusters_applications_cert_managers: :gitlab_main
 clusters_applications_cilium: :gitlab_main
 clusters_applications_crossplane: :gitlab_main
-clusters_applications_elastic_stacks: :gitlab_main
 clusters_applications_helm: :gitlab_main
 clusters_applications_ingress: :gitlab_main
 clusters_applications_jupyter: :gitlab_main
@@ -141,7 +140,6 @@ clusters_applications_knative: :gitlab_main
 clusters_applications_prometheus: :gitlab_main
 clusters_applications_runners: :gitlab_main
 clusters: :gitlab_main
-clusters_integration_elasticstack: :gitlab_main
 clusters_integration_prometheus: :gitlab_main
 clusters_kubernetes_namespaces: :gitlab_main
 commit_user_mentions: :gitlab_main
