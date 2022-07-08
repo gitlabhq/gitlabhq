@@ -106,10 +106,32 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
                   SSLEnable: true,
                   SSLCertificate: an_instance_of(OpenSSL::X509::Certificate),
                   SSLPrivateKey: an_instance_of(OpenSSL::PKey::RSA),
-                  SSLStartImmediately: true
+                  SSLStartImmediately: true,
+                  SSLExtraChainCert: []
                 ))
 
               exporter.start
+            end
+
+            context 'with intermediate certificates' do
+              let(:test_cert) { Rails.root.join('spec/fixtures/clusters/chain_certificates.pem').to_s }
+              let(:test_key) { Rails.root.join('spec/fixtures/clusters/sample_key.key').to_s }
+
+              it 'injects them in the extra chain' do
+                expect(::WEBrick::HTTPServer).to receive(:new).with(
+                  a_hash_including(
+                    SSLEnable: true,
+                    SSLCertificate: an_instance_of(OpenSSL::X509::Certificate),
+                    SSLPrivateKey: an_instance_of(OpenSSL::PKey::RSA),
+                    SSLStartImmediately: true,
+                    SSLExtraChainCert: [
+                      an_instance_of(OpenSSL::X509::Certificate),
+                      an_instance_of(OpenSSL::X509::Certificate)
+                    ]
+                  ))
+
+                exporter.start
+              end
             end
           end
         end

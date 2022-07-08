@@ -48,6 +48,15 @@ export default {
     isDraggable() {
       return !this.disabled && this.item.id && !this.item.isLoading;
     },
+    cardStyle() {
+      return this.isColorful && this.item.color ? { borderColor: this.item.color } : '';
+    },
+    isColorful() {
+      return gon?.features?.epicColorHighlight;
+    },
+    colorClass() {
+      return this.isColorful ? 'gl-pl-4 gl-border-l-solid gl-border-4' : '';
+    },
   },
   methods: {
     ...mapActions(['toggleBoardItemMultiSelection', 'toggleBoardItem']),
@@ -70,17 +79,21 @@ export default {
 <template>
   <li
     data-qa-selector="board_card"
-    :class="{
-      'multi-select': multiSelectVisible,
-      'gl-cursor-grab': isDraggable,
-      'is-disabled': isDisabled,
-      'is-active': isActive,
-      'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
-    }"
+    :class="[
+      {
+        'multi-select': multiSelectVisible,
+        'gl-cursor-grab': isDraggable,
+        'is-disabled': isDisabled,
+        'is-active': isActive,
+        'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
+      },
+      colorClass,
+    ]"
     :index="index"
     :data-item-id="item.id"
     :data-item-iid="item.iid"
     :data-item-path="item.referencePath"
+    :style="cardStyle"
     data-testid="board_card"
     class="board-card gl-p-5 gl-rounded-base"
     @click="toggleIssue($event)"

@@ -27,7 +27,7 @@ module Gitlab
             conflict_end = ">>>>>>> #{their_path}"
 
             text.each_line.map do |line|
-              full_line = line.delete("\n")
+              full_line = line.chomp
 
               if full_line == conflict_start
                 validate_delimiter!(type.nil?)

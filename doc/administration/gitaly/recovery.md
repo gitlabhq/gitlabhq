@@ -425,3 +425,21 @@ This command fails if:
 
 - The repository is already being tracked by the Praefect database.
 - The repository does not exist on disk.
+
+### List virtual storage details
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4609) in GitLab 15.1.
+
+The `list-storages` Praefect sub-command lists virtual storages and their associated storage nodes. If a virtual storage is:
+
+- Specified using `-virtual-storage`, it lists only storage nodes for the specified virtual storage.
+- Not specified, all virtual storages and their associated storage nodes are listed in tabular format.
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-storages -virtual-storage <virtual_storage_name>
+```
+
+The command outputs:
+
+- Result to `STDOUT` and the command's logs.
+- Errors to `STDERR`.

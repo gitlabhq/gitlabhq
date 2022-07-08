@@ -86,43 +86,68 @@ RSpec.describe Gitlab::Git::Conflict::Parser do
         CONFLICT
       end
 
-      let(:lines) do
-        described_class.parse(text, our_path: 'files/ruby/regex.rb', their_path: 'files/ruby/regex.rb')
+      shared_examples_for 'successful parsing' do
+        let(:lines) do
+          described_class.parse(content, our_path: 'files/ruby/regex.rb', their_path: 'files/ruby/regex.rb')
+        end
+
+        let(:old_line_numbers) do
+          lines.select { |line| line[:type] != 'new' }.map { |line| line[:line_old] }
+        end
+
+        let(:new_line_numbers) do
+          lines.select { |line| line[:type] != 'old' }.map { |line| line[:line_new] }
+        end
+
+        let(:line_indexes) { lines.map { |line| line[:line_obj_index] } }
+
+        it 'sets our lines as new lines' do
+          expect(lines[8..13]).to all(include(type: 'new'))
+          expect(lines[26..27]).to all(include(type: 'new'))
+          expect(lines[56..57]).to all(include(type: 'new'))
+        end
+
+        it 'sets their lines as old lines' do
+          expect(lines[14..19]).to all(include(type: 'old'))
+          expect(lines[28..29]).to all(include(type: 'old'))
+          expect(lines[58..59]).to all(include(type: 'old'))
+        end
+
+        it 'sets non-conflicted lines as both' do
+          expect(lines[0..7]).to all(include(type: nil))
+          expect(lines[20..25]).to all(include(type: nil))
+          expect(lines[30..55]).to all(include(type: nil))
+          expect(lines[60..62]).to all(include(type: nil))
+        end
+
+        it 'sets consecutive line numbers for line_obj_index, line_old, and line_new' do
+          expect(line_indexes).to eq(0.upto(62).to_a)
+          expect(old_line_numbers).to eq(1.upto(53).to_a)
+          expect(new_line_numbers).to eq(1.upto(53).to_a)
+        end
       end
 
-      let(:old_line_numbers) do
-        lines.select { |line| line[:type] != 'new' }.map { |line| line[:line_old] }
+      context 'content has LF endings' do
+        let(:content) { text }
+
+        it_behaves_like 'successful parsing'
       end
 
-      let(:new_line_numbers) do
-        lines.select { |line| line[:type] != 'old' }.map { |line| line[:line_new] }
+      context 'content has CRLF endings' do
+        let(:content) { text.gsub("\n", "\r\n") }
+
+        it_behaves_like 'successful parsing'
       end
 
-      let(:line_indexes) { lines.map { |line| line[:line_obj_index] } }
+      context 'content has mixed LF and CRLF endings' do
+        # Simulate mixed line endings by only changing some of the lines to CRLF
+        let(:content) do
+          text.each_line.map.with_index do |line, index|
+            index.odd? ? line.gsub("\n", "\r\n") : line
+          end.join
+        end
 
-      it 'sets our lines as new lines' do
-        expect(lines[8..13]).to all(include(type: 'new'))
-        expect(lines[26..27]).to all(include(type: 'new'))
-        expect(lines[56..57]).to all(include(type: 'new'))
-      end
-
-      it 'sets their lines as old lines' do
-        expect(lines[14..19]).to all(include(type: 'old'))
-        expect(lines[28..29]).to all(include(type: 'old'))
-        expect(lines[58..59]).to all(include(type: 'old'))
-      end
-
-      it 'sets non-conflicted lines as both' do
-        expect(lines[0..7]).to all(include(type: nil))
-        expect(lines[20..25]).to all(include(type: nil))
-        expect(lines[30..55]).to all(include(type: nil))
-        expect(lines[60..62]).to all(include(type: nil))
-      end
-
-      it 'sets consecutive line numbers for line_obj_index, line_old, and line_new' do
-        expect(line_indexes).to eq(0.upto(62).to_a)
-        expect(old_line_numbers).to eq(1.upto(53).to_a)
-        expect(new_line_numbers).to eq(1.upto(53).to_a)
+        it_behaves_like 'successful parsing'
       end
     end
 

@@ -6,7 +6,7 @@ import Vuex from 'vuex';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { inactiveId } from '~/boards/constants';
-import { mockLabelList, mockIssue } from '../mock_data';
+import { mockLabelList, mockIssue, DEFAULT_COLOR } from '../mock_data';
 
 describe('Board card', () => {
   let wrapper;
@@ -178,6 +178,42 @@ describe('Board card', () => {
 
       expect(wrapper.classes()).not.toContain('is-disabled');
       expect(wrapper.classes()).toContain('gl-cursor-grab');
+    });
+  });
+
+  describe('when Epic colors are enabled', () => {
+    it('applies the correct color', () => {
+      window.gon.features = { epicColorHighlight: true };
+      createStore();
+      mountComponent({
+        item: {
+          ...mockIssue,
+          color: DEFAULT_COLOR,
+        },
+      });
+
+      expect(wrapper.classes()).toEqual(
+        expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-4']),
+      );
+      expect(wrapper.attributes('style')).toContain(`border-color: ${DEFAULT_COLOR}`);
+    });
+  });
+
+  describe('when Epic colors are not enabled', () => {
+    it('applies the correct color', () => {
+      window.gon.features = { epicColorHighlight: false };
+      createStore();
+      mountComponent({
+        item: {
+          ...mockIssue,
+          color: DEFAULT_COLOR,
+        },
+      });
+
+      expect(wrapper.classes()).not.toEqual(
+        expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-4']),
+      );
+      expect(wrapper.attributes('style')).toBeUndefined();
     });
   });
 });

@@ -71,8 +71,10 @@ Follow [Azure documentation to configure the attribute mapping](https://docs.mic
 
 The following table below provides an attribute mapping known to work with GitLab. If
 your SAML configuration differs from [the recommended SAML settings](index.md#azure-setup-notes),
-modify the corresponding `customappsso` settings accordingly. If a mapping is not listed in the
-table, use the Azure defaults. For a list of required attributes, refer to the [SCIM API documentation](../../../api/scim.md).
+modify the corresponding `customappsso` settings accordingly. In particular, the `externalId` must
+match the [SAML NameID](index.md#nameid).
+If a mapping is not listed in the table, use the Azure defaults.
+For a list of required attributes, refer to the [SCIM API documentation](../../../api/scim.md).
 
 | Azure Active Directory Attribute | `customappsso` Attribute       | Matching precedence |
 | -------------------------------- | ------------------------------ | ------------------- |

@@ -80,6 +80,14 @@ If you're running Omnibus, run the following Rake task:
 gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"
 ```
 
+#### Enable verbose output
+
+To make the import Rake task more verbose, use the `IMPORT_DEBUG` environment variable:
+
+```shell
+IMPORT_DEBUG=true gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"
+```
+
 #### Troubleshooting
 
 Check the common errors listed below, what they mean, and how to fix them.
@@ -168,6 +176,16 @@ Issue.where(project_id: Project.find(ID).root_namespace.all_projects).maximum(:r
 
 Repeat the import attempt after that and check if the issues are imported successfully.
 
+##### Gitaly calls error when importing
+
+If you're attempting to import a large project into a development environment, you may see Gitaly throw an error about too many calls or invocations, for example:
+
+```plaintext
+Error importing repository into qa-perf-testing/gitlabhq - GitalyClient#call called 31 times from single request. Potential n+1?
+```
+
+This is due to a [n+1 calls limit being set for development setups](gitaly.md#toomanyinvocationserror-errors). You can work around this by setting `GITALY_DISABLE_REQUEST_LIMITS=1` as an environment variable, restarting your development environment and importing again.
+
 ### Importing via the Rails console
 
 The last option is to import a project using a Rails console:
@@ -240,20 +258,6 @@ You can execute the script from the `gdk/gitlab` directory like this:
 ```shell
 bundle exec rails r  /path_to_script/script.rb project_name /path_to_extracted_project request_store_enabled
 ```
-
-## Troubleshooting
-
-This section details known issues we've seen when trying to import a project and how to manage them.
-
-### Gitaly calls error when importing
-
-If you're attempting to import a large project into a development environment, you may see Gitaly throw an error about too many calls or invocations, for example:
-
-```plaintext
-Error importing repository into qa-perf-testing/gitlabhq - GitalyClient#call called 31 times from single request. Potential n+1?
-```
-
-This is due to a [n+1 calls limit being set for development setups](gitaly.md#toomanyinvocationserror-errors). You can work around this by setting `GITALY_DISABLE_REQUEST_LIMITS=1` as an environment variable, restarting your development environment and importing again.
 
 ## Access token setup
 

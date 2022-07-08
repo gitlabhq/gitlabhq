@@ -790,3 +790,5 @@ export const epicBoardListQueryResponse = (totalWeight = 5) => ({
     },
   },
 });
+
+export const DEFAULT_COLOR = '#1068bf';

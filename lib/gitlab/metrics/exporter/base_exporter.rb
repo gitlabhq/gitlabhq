@@ -7,6 +7,8 @@ module Gitlab
   module Metrics
     module Exporter
       class BaseExporter < Daemon
+        CERT_REGEX = /-----BEGIN CERTIFICATE-----(?:.|\n)+?-----END CERTIFICATE-----/.freeze
+
         attr_reader :server
 
         # @param settings [Hash] SettingsLogic hash containing the `*_exporter` config
@@ -45,19 +47,7 @@ module Gitlab
             AccessLog: access_log
           }
 
-          if settings['tls_enabled']
-            # This monkey-patches WEBrick::GenericServer, so never require this unless TLS is enabled.
-            require 'webrick/ssl'
-
-            server_config.merge!({
-              SSLEnable: true,
-              SSLCertificate: OpenSSL::X509::Certificate.new(File.binread(settings['tls_cert_path'])),
-              SSLPrivateKey: OpenSSL::PKey.read(File.binread(settings['tls_key_path'])),
-              # SSLStartImmediately is true by default according to the docs, but when WEBrick creates the
-              # SSLServer internally, the switch was always nil for some reason. Setting this explicitly fixes this.
-              SSLStartImmediately: true
-            })
-          end
+          server_config.merge!(ssl_config) if settings['tls_enabled']
 
           @server = ::WEBrick::HTTPServer.new(server_config)
           server.mount '/', Rack::Handler::WEBrick, rack_app
@@ -98,6 +88,33 @@ module Gitlab
             use Gitlab::Metrics::Exporter::GcRequestMiddleware if gc_requests
             use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
             run -> (env) { [404, {}, ['']] }
+          end
+        end
+
+        def ssl_config
+          # This monkey-patches WEBrick::GenericServer, so never require this unless TLS is enabled.
+          require 'webrick/ssl'
+
+          certs = load_ca_certs_bundle(File.binread(settings['tls_cert_path']))
+
+          {
+            SSLEnable: true,
+            SSLCertificate: certs.shift,
+            SSLPrivateKey: OpenSSL::PKey.read(File.binread(settings['tls_key_path'])),
+            # SSLStartImmediately is true by default according to the docs, but when WEBrick creates the
+            # SSLServer internally, the switch was always nil for some reason. Setting this explicitly fixes this.
+            SSLStartImmediately: true,
+            SSLExtraChainCert: certs
+          }
+        end
+
+        # In Ruby OpenSSL v3.0.0, this can be replaced by OpenSSL::X509::Certificate.load
+        # https://github.com/ruby/openssl/issues/254
+        def load_ca_certs_bundle(ca_certs_string)
+          return [] unless ca_certs_string
+
+          ca_certs_string.scan(CERT_REGEX).map do |ca_cert_string|
+            OpenSSL::X509::Certificate.new(ca_cert_string)
           end
         end
       end
