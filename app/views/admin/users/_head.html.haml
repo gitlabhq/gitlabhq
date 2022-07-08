@@ -27,15 +27,18 @@
       = render_if_exists 'admin/users/gma_user_badge'
 
   .gl-my-3.gl-display-flex.gl-flex-wrap.gl-my-n2.gl-mx-n2
-    - if @user != current_user
-      .gl-p-2
-        - if impersonation_enabled? && @user.can?(:log_in)
-          = link_to _('Impersonate'), impersonate_admin_user_path(@user), method: :post, class: "btn btn-default gl-button", data: { qa_selector: 'impersonate_user_link' }
-        - if can_force_email_confirmation?(@user)
-          = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'js-confirm-modal-button', data: confirm_user_data(@user) }) do
-            = _('Confirm user')
     .gl-p-2
       #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
+    - if @user != current_user
+      - if impersonation_enabled? && @user.can?(:log_in)
+        .gl-p-2
+          = link_to _('Impersonate'), impersonate_admin_user_path(@user), method: :post, class: "btn btn-default gl-button", data: { qa_selector: 'impersonate_user_link' }
+      - if can_force_email_confirmation?(@user)
+        .gl-p-2
+          = render Pajamas::ButtonComponent.new(variant: :default, button_options: { class: 'js-confirm-modal-button', data: confirm_user_data(@user) }) do
+            = _('Confirm user')
+    .gl-p-2
+      = link_to _('New identity'), new_admin_user_identity_path(@user), class: "btn btn-primary gl-button"
 = gl_tabs_nav do
   = gl_tab_link_to _("Account"), admin_user_path(@user)
   = gl_tab_link_to _("Groups and projects"), projects_admin_user_path(@user)

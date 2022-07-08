@@ -523,6 +523,48 @@ For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluste
 To upgrade a Gitaly Cluster, follow the documentation for
 [zero downtime upgrades](../../update/zero_downtime.md#gitaly-or-gitaly-cluster).
 
+### Downgrade Gitaly Cluster to a previous version
+
+If you need to roll back a Gitaly Cluster to an earlier version, some Praefect database migrations may need to be reverted. In a cluster with:
+
+- A single Praefect node, this happens when GitLab itself is downgraded.
+- Multiple Praefect nodes, additional steps are required.
+
+To downgrade a Gitaly Cluster with multiple Praefect nodes:
+
+1. Stop the Praefect service on all Praefect nodes:
+
+   ```shell
+   gitlab-ctl stop praefect
+   ```
+
+1. Downgrade the GitLab package to the older version on one of the Praefect nodes.
+1. On the downgraded node, check the state of Praefect migrations:
+
+   ```shell
+   /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status
+   ```
+
+1. Count the number of migrations with `unknown migration` in the `APPLIED` column.
+1. On a Praefect node that has **not** been downgraded, perform a dry run of the rollback to validate which migrations to revert. `<CT_UNKNOWN>`
+   is the number of unknown migrations reported by the downgraded node.
+
+   ```shell
+   /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate <CT_UNKNOWN>
+   ```
+
+1. If the results look correct, run the same command with the `-f` option to revert the migrations:
+
+   ```shell
+   /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate -f <CT_UNKNOWN>
+   ```
+
+1. Downgrade the GitLab package on the remaining Praefect nodes and start the Praefect service again:
+
+   ```shell
+   gitlab-ctl start praefect
+   ```
+
 ## Migrate to Gitaly Cluster
 
 WARNING:

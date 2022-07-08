@@ -77,12 +77,6 @@ describe('AdminUserActions component', () => {
         expect(findActionsDropdown().exists()).toBe(true);
       });
 
-      it('renders the tooltip', () => {
-        const tooltip = getBinding(findActionsDropdown().element, 'gl-tooltip');
-
-        expect(tooltip.value).toBe(I18N_USER_ACTIONS.userAdministration);
-      });
-
       describe('when there are actions that require confirmation', () => {
         beforeEach(() => {
           initComponent({ actions: CONFIRMATION_ACTIONS });

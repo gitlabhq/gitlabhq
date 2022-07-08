@@ -94,13 +94,13 @@ export default {
     :data-testid="`user-actions-${user.id}`"
   >
     <div v-if="hasEditAction" class="gl-p-2">
-      <gl-button v-if="showButtonLabels" v-bind="editButtonAttrs">{{
+      <gl-button v-if="showButtonLabels" v-bind="editButtonAttrs" icon="pencil-square">{{
         $options.i18n.edit
       }}</gl-button>
       <gl-button
         v-else
         v-gl-tooltip="$options.i18n.edit"
-        icon="pencil"
+        icon="pencil-square"
         v-bind="editButtonAttrs"
         :aria-label="$options.i18n.edit"
       />
@@ -108,18 +108,12 @@ export default {
 
     <div v-if="hasDropdownActions" class="gl-p-2">
       <gl-dropdown
-        v-gl-tooltip="$options.i18n.userAdministration"
+        :text="$options.i18n.userAdministration"
         data-testid="dropdown-toggle"
-        icon="ellipsis_v"
         data-qa-selector="user_actions_dropdown_toggle"
         :data-qa-username="user.username"
-        no-caret
-        right
+        left
       >
-        <gl-dropdown-section-header>{{
-          $options.i18n.userAdministration
-        }}</gl-dropdown-section-header>
-
         <template v-for="action in dropdownSafeActions">
           <component
             :is="getActionComponent(action)"

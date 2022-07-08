@@ -153,7 +153,7 @@ The following scanners are supported by this feature:
 
 - [Dependency Scanning](../dependency_scanning/index.md).
   Automatic Patch creation is only available for Node.js projects managed with
-  `yarn`.
+  `yarn` when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is disabled.
 - [Container Scanning](../container_scanning/index.md).
 
 To resolve a vulnerability, you can either:

@@ -29,7 +29,7 @@ to the desired destination:
 cd <destination folder>
 ```
 
-[Create a new branch](create-branch.md) to add your file into. Submitting changes directly
+[Create a new branch](../tutorials/make_your_first_git_commit.md#create-a-branch-and-make-changes) to add your file into. Submitting changes directly
 to the default branch should be avoided unless your project is very small and you're the
 only person working on it.
 

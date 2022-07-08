@@ -71,10 +71,12 @@ Gradle 1.x projects are not supported. The minimum supported version of Maven is
 |------------|----------------------------------------------------------------------------------------------|-------|
 | JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/) (7 and earlier)                    |       |
 | Go         | [Godep](https://github.com/tools/godep) ([deprecated](../../../update/deprecations.md#godep-support-in-license-compliance)), [go mod](https://github.com/golang/go/wiki/Modules) |       |
-| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/)                            |       |
+| Java       | [Gradle](https://gradle.org/) <sup>1</sup>, [Maven](https://maven.apache.org/)                            |       |
 | .NET       | [NuGet](https://www.nuget.org/)                                                              | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. |
 | Python     | [pip](https://pip.pypa.io/en/stable/)                                                        | Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock). |
 | Ruby       | [gem](https://rubygems.org/) |  |
+
+1. Gradle 7 and later is not supported as dependencies are not discovered when included with the `implementation` directive. Please see [GitLab#341222](https://gitlab.com/gitlab-org/gitlab/-/issues/341222) for more details.
 
 ### Experimental support
 
@@ -100,6 +102,8 @@ To enable License Compliance in your project's pipeline, either:
   (provided by [Auto DevOps](../../../topics/autodevops/index.md)).
 - Include the [`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
+Please note that License Compliance is not supported when GitLab is run with FIPS mode enabled.
+
 ### Include the License Scanning template
 
 Prerequisites:
@@ -109,6 +113,7 @@ Prerequisites:
   shared runners on GitLab.com, this is enabled by default.
 - License Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the
   `.gitlab-ci.yml` file, the `test` stage is required.
+- [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) must be disabled.
 
 To [include](../../../ci/yaml/index.md#includetemplate) the
 [`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml), add it to your `.gitlab-ci.yml` file:

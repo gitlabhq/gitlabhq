@@ -428,7 +428,6 @@ Gitlab/NamespacedClass:
     - 'app/presenters/group_clusterable_presenter.rb'
     - 'app/presenters/group_member_presenter.rb'
     - 'app/presenters/instance_clusterable_presenter.rb'
-    - 'app/presenters/invitation_presenter.rb'
     - 'app/presenters/issue_presenter.rb'
     - 'app/presenters/label_presenter.rb'
     - 'app/presenters/member_presenter.rb'

@@ -85,6 +85,15 @@ place for it.
 Do not include the same information in multiple places.
 [Link to a single source of truth instead.](../styleguide/index.md#link-instead-of-repeating-text)
 
+For example, if you have code in a repository other than the [primary repositories](index.md#architecture),
+and documentation in the same repository, you can keep the documentation in that repository.
+
+Then you can either:
+
+- Publish it to <https://docs.gitlab.com>. 
+- Link to it from <https://docs.gitlab.com> by adding an entry in the global navigation.
+  View [an example](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fedb6378a3c92274ba3b6031df0d34455594e4cc/content/_data/navigation.yaml#L2944).
+
 ## References across documents
 
 - Give each folder an `index.md` page that introduces the topic, and both introduces

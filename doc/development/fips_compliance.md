@@ -112,6 +112,14 @@ def default_min_key_size(name)
 end
 ```
 
+#### Unsupported features in FIPS mode
+
+Some GitLab features may not work when FIPS mode is enabled. The following features are known to not work in FIPS mode; however, there may be additional features not listed here that also do not work properly in FIPS mode:
+
+- [License compliance](../user/compliance/license_compliance/index.md)
+- [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle
+- [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability) for yarn projects
+
 ## Nightly Omnibus FIPS builds
 
 The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds). These

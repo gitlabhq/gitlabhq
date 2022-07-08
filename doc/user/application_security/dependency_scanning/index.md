@@ -311,7 +311,7 @@ table.supported-languages ul {
     <p>
       Although Gradle with Java 8 is supported, there are other issues such that Android project builds are not supported at this time.
       Please see the backlog issue <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336866">Android support for Dependency
-      Scanning (gemnasium-maven)</a> for more details.
+      Scanning (gemnasium-maven)</a> for more details. Also, Gradle is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled.
     </p>
   </li>
   <li>
@@ -693,7 +693,7 @@ To manually switch to FIPS-enabled images, set the variable `DS_IMAGE_SUFFIX` to
 To ensure compliance with FIPS, the FIPS-enabled image of `gemnasium-maven` uses the OpenJDK packages for RedHat UBI.
 As a result, it only supports Java 8, 11, and 17.
 
-Auto-remediation for Yarn projects isn't supported in FIPS mode.
+Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
 
 ## Interacting with the vulnerabilities
 
