@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/Azure/azure-storage-blob-go v0.14.0
-	github.com/BurntSushi/toml v0.3.1
+	github.com/BurntSushi/toml v1.1.0
 	github.com/FZambia/sentinel v1.1.0
 	github.com/alecthomas/chroma/v2 v2.2.0
 	github.com/aws/aws-sdk-go v1.43.31

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe AwarenessSession do
   subject { AwarenessSession.for(session_id) }
 
-  let(:user) { create(:user) }
+  let!(:user) { create(:user) }
   let(:session_id) { 1 }
 
   after do
@@ -13,6 +13,8 @@ RSpec.describe AwarenessSession do
   end
 
   describe "when a user joins a session" do
+    let(:user2) { create(:user) }
+
     let(:presence_ttl) { 15.minutes }
 
     it "changes number of session members" do
@@ -29,6 +31,26 @@ RSpec.describe AwarenessSession do
         expect(session_user.id).to be(user.id)
         expect(last_activity).to be_eql(Time.now.utc)
       end
+    end
+
+    it "maintains user ID and last_activity pairs" do
+      now = Time.zone.now
+
+      travel_to now - 1.minute do
+        subject.join(user2)
+      end
+
+      travel_to now do
+        subject.join(user)
+      end
+
+      session_users = subject.users_with_last_activity
+
+      expect(session_users[0].first.id).to eql(user.id)
+      expect(session_users[0].last.to_i).to eql(now.to_i)
+
+      expect(session_users[1].first.id).to eql(user2.id)
+      expect(session_users[1].last.to_i).to eql((now - 1.minute).to_i)
     end
 
     it "reports user as present" do

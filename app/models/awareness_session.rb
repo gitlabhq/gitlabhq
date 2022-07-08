@@ -148,8 +148,13 @@ class AwarenessSession # rubocop:disable Gitlab/NamespacedClass
   end
 
   def users_with_last_activity
-    user_ids, last_activities = user_ids_with_last_activity.transpose
-    users = User.where(id: user_ids)
+    # where in (x, y, [...z]) is a set and does not maintain any order, we need to
+    # make sure to establish a stable order for both, the pairs returned from
+    # redis and the ActiveRecord query. Using IDs in ascending order.
+    user_ids, last_activities = user_ids_with_last_activity
+      .sort_by(&:first)
+      .transpose
+    users = User.where(id: user_ids).order(id: :asc)
     users.zip(last_activities)
   end
 

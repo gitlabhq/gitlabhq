@@ -261,6 +261,18 @@ Changing the SAML or SCIM configuration or provider can cause the following prob
 | SAML and SCIM identity mismatch.                                          | First [verify that the user's SAML NameId matches the SCIM externalId](#how-do-i-verify-users-saml-nameid-matches-the-scim-externalid) and then [update or fix the mismatched SCIM externalId and SAML NameId](#update-or-fix-mismatched-scim-externalid-and-saml-nameid).                                                                                                                                                                              |
 | SCIM identity mismatch between GitLab and the identity provider SCIM app. | You can confirm whether you're hitting the error because of your SCIM identity mismatch between your SCIM app and GitLab.com by using [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) which shows up in the `id` key and compares it with the user `externalId` in the SCIM app. You can use the same [SCIM API](../../../api/scim.md#update-a-single-scim-provisioned-user) to update the SCIM `id` for the user on GitLab.com. |
 
+### Search Rails logs for SCIM requests
+
+GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in [Kibana](https://about.gitlab.com/handbook/support/workflows/kibana.html#using-kibana). Use the following filters based on the [SCIM API](../../../api/scim.md):
+
+- `json.path`: `/scim/v2/groups/<group-path>`
+- `json.params.value`: `<externalId>`
+
+In a relevant log entry, the `json.params.value` shows the values of SCIM parameters GitLab receives. These values can be used to verify if SCIM parameters configured in an
+identity provider's SCIM app are communicated to GitLab as intended. For example, we can use these values as a definitive source on why an account was provisioned with a certain
+set of details. This information can help where an account was SCIM provisioned with details that appear to be incongruent with what might have been configured within an identity
+provider's SCIM app.
+
 ### Azure
 
 #### How do I verify my SCIM configuration is correct?

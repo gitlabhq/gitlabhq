@@ -5,6 +5,7 @@ FactoryBot.define do
     resource_owner
     application
     token { Doorkeeper::OAuth::Helpers::UniqueToken.generate }
+    refresh_token { Doorkeeper::OAuth::Helpers::UniqueToken.generate }
     scopes { application.scopes }
   end
 end

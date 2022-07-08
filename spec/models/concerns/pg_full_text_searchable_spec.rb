@@ -14,6 +14,8 @@ RSpec.describe PgFullTextSearchable do
       belongs_to :project
       has_one :search_data, class_name: 'Issues::SearchData'
 
+      before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
+
       def persist_pg_full_text_search_vector(search_vector)
         Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
       end
@@ -184,6 +186,8 @@ RSpec.describe PgFullTextSearchable do
 
           belongs_to :project
           has_one :search_data, class_name: 'Issues::SearchData'
+
+          before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
 
           def self.name
             'Issue'
