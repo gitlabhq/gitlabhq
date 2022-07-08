@@ -175,7 +175,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def stage
-    @stage = pipeline.legacy_stage(params[:stage])
+    @stage = pipeline.stage(params[:stage])
     return not_found unless @stage
 
     render json: StageSerializer

@@ -1,6 +1,11 @@
+import { GlSearchBoxByClick } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import JobLogControllers from '~/jobs/components/job_log_controllers.vue';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import { mockJobLog } from '../mock_data';
+
+const mockToastShow = jest.fn();
 
 describe('Job log controllers', () => {
   let wrapper;
@@ -19,13 +24,29 @@ describe('Job log controllers', () => {
     isScrollBottomDisabled: false,
     isScrollingDown: true,
     isJobLogSizeVisible: true,
+    jobLog: mockJobLog,
   };
 
-  const createWrapper = (props) => {
+  const createWrapper = (props, jobLogSearch = false) => {
     wrapper = mount(JobLogControllers, {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      provide: {
+        glFeatures: {
+          jobLogSearch,
+        },
+      },
+      data() {
+        return {
+          searchTerm: '82',
+        };
+      },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
       },
     });
   };
@@ -35,6 +56,8 @@ describe('Job log controllers', () => {
   const findRawLinkController = () => wrapper.find('[data-testid="job-raw-link-controller"]');
   const findScrollTop = () => wrapper.find('[data-testid="job-controller-scroll-top"]');
   const findScrollBottom = () => wrapper.find('[data-testid="job-controller-scroll-bottom"]');
+  const findJobLogSearch = () => wrapper.findComponent(GlSearchBoxByClick);
+  const findSearchHelp = () => wrapper.findComponent(HelpPopover);
 
   describe('Truncate information', () => {
     describe('with isJobLogSizeVisible', () => {
@@ -176,6 +199,42 @@ describe('Job log controllers', () => {
         it('does not render animate class for the scroll down button', () => {
           expect(findScrollBottom().classes()).not.toContain('animate');
         });
+      });
+    });
+  });
+
+  describe('Job log search', () => {
+    describe('with feature flag off', () => {
+      it('does not display job log search', () => {
+        createWrapper();
+
+        expect(findJobLogSearch().exists()).toBe(false);
+        expect(findSearchHelp().exists()).toBe(false);
+      });
+    });
+
+    describe('with feature flag on', () => {
+      beforeEach(() => {
+        createWrapper({}, { jobLogSearch: true });
+      });
+
+      it('displays job log search', () => {
+        expect(findJobLogSearch().exists()).toBe(true);
+        expect(findSearchHelp().exists()).toBe(true);
+      });
+
+      it('emits search results', () => {
+        const expectedSearchResults = [[[mockJobLog[6].lines[1], mockJobLog[6].lines[2]]]];
+
+        findJobLogSearch().vm.$emit('submit');
+
+        expect(wrapper.emitted('searchResults')).toEqual(expectedSearchResults);
+      });
+
+      it('clears search results', () => {
+        findJobLogSearch().vm.$emit('clear');
+
+        expect(wrapper.emitted('searchResults')).toEqual([[[]]]);
       });
     });
   });

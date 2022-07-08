@@ -19,14 +19,10 @@ module Ci
 
         return unless pipeline
 
-        if Feature.enabled?(:ci_child_pipeline_coverage_reports, pipeline.project)
-          pipeline.root_ancestor.try do |root_ancestor_pipeline|
-            next unless root_ancestor_pipeline.self_and_descendants_complete?
+        pipeline.root_ancestor.try do |root_ancestor_pipeline|
+          next unless root_ancestor_pipeline.self_and_descendants_complete?
 
-            Ci::PipelineArtifacts::CoverageReportService.new(root_ancestor_pipeline).execute
-          end
-        else
-          Ci::PipelineArtifacts::CoverageReportService.new(pipeline).execute
+          Ci::PipelineArtifacts::CoverageReportService.new(root_ancestor_pipeline).execute
         end
       end
     end

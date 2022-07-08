@@ -88,20 +88,6 @@ RSpec.describe Ci::GenerateCoverageReportsService do
       end
 
       it { is_expected.to be_falsy }
-
-      context 'when feature flag ci_child_pipeline_coverage_reports is disabled' do
-        let!(:key) do
-          # `let!` is executed before `before` block. If the feature flag
-          # is stubbed in `before`, the first call to `#key` uses the
-          # default feature flag value (enabled).
-          # The feature flag needs to be stubbed before the first call to `#key`
-          # so that the first and second key are calculated using the same method.
-          stub_feature_flags(ci_child_pipeline_coverage_reports: false)
-          service.send(:key, base_pipeline, head_pipeline)
-        end
-
-        it { is_expected.to be_truthy }
-      end
     end
   end
 end

@@ -113,6 +113,14 @@ module QA
           has_personal_area?(wait: 0)
         end
 
+        def signed_in_as_user?(user)
+          return false if has_no_personal_area?
+
+          within_user_menu do
+            has_element?(:user_profile_link, text: /#{user.username}/)
+          end
+        end
+
         def not_signed_in?
           return true if Page::Main::Login.perform(&:on_login_page?)
 
@@ -202,7 +210,7 @@ module QA
 
         def within_user_menu(&block)
           within_top_menu do
-            click_element :user_avatar
+            click_element :user_avatar unless has_element?(:user_profile_link, wait: 1)
 
             within_element(:user_menu, &block)
           end

@@ -80,23 +80,17 @@ to draw the visualization on the merge request expires **one week** after creati
 
 ### Coverage report from child pipeline
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363301) in GitLab 15.1 [with a flag](../../administration/feature_flags.md). Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363301) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_child_pipeline_coverage_reports`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363557) and feature flag `ci_child_pipeline_coverage_reports` removed in GitLab 15.2.
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_child_pipeline_coverage_reports`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
-
-If the test coverage is created in jobs that are in a child pipeline, the parent pipeline must use
-`strategy: depend`.
+If a job in a child pipeline creates a coverage report, the report is included in
+the parent pipeline's coverage report.
 
 ```yaml
 child_test_pipeline:
   trigger:
     include:
-      - local: path/to/child_pipeline.yml
-      - template: Security/SAST.gitlab-ci.yml
-    strategy: depend
+      - local: path/to/child_pipeline_with_coverage.yml
 ```
 
 ### Automatic class path correction

@@ -59,7 +59,7 @@ describe('SecureFilesList', () => {
   const findUploadButton = () => wrapper.findAll('span.gl-button-text');
   const findDeleteModal = () => wrapper.findComponent(GlModal);
   const findUploadInput = () => wrapper.findAll('input[type="file"]').at(0);
-  const findDeleteButton = () => wrapper.findAll('tbody tr td button.btn-danger');
+  const findDeleteButton = () => wrapper.findAll('[data-testid="delete-button"]');
 
   describe('when secure files exist in a project', () => {
     beforeEach(async () => {
@@ -71,7 +71,7 @@ describe('SecureFilesList', () => {
     });
 
     it('displays a table with expected headers', () => {
-      const headers = ['Filename', 'Uploaded'];
+      const headers = ['File name', 'Uploaded date'];
       headers.forEach((header, i) => {
         expect(findHeaderAt(i).text()).toBe(header);
       });
@@ -121,14 +121,14 @@ describe('SecureFilesList', () => {
     });
 
     it('displays a table with expected headers', () => {
-      const headers = ['Filename', 'Uploaded'];
+      const headers = ['File name', 'Uploaded date'];
       headers.forEach((header, i) => {
         expect(findHeaderAt(i).text()).toBe(header);
       });
     });
 
     it('displays a table with a no records message', () => {
-      expect(findCell(0, 0).text()).toBe('There are no records to show');
+      expect(findCell(0, 0).text()).toBe('There are no secure files yet.');
     });
   });
 

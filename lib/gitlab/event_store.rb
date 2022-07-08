@@ -38,6 +38,7 @@ module Gitlab
 
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Pages::PageDeployedEvent
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Pages::PageDeletedEvent
+      store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Projects::ProjectDeletedEvent
     end
     private_class_method :configure!
   end

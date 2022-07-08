@@ -14,7 +14,7 @@ RSpec.describe 'Secure Files', :js do
 
   it 'user sees the Secure Files list component' do
     visit project_ci_secure_files_path(project)
-    expect(page).to have_content('There are no records to show')
+    expect(page).to have_content('There are no secure files yet.')
   end
 
   it 'prompts the user to confirm before deleting a file' do
@@ -37,7 +37,7 @@ RSpec.describe 'Secure Files', :js do
 
   it 'displays an uploaded file in the file list' do
     visit project_ci_secure_files_path(project)
-    expect(page).to have_content('There are no records to show')
+    expect(page).to have_content('There are no secure files yet.')
 
     page.attach_file('spec/fixtures/ci_secure_files/upload-keystore.jks') do
       click_button 'Upload File'

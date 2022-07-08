@@ -23,11 +23,12 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_runtime_dependency 'diffy', '~> 3.3'
-  s.add_runtime_dependency 'json', '~> 2.5', '>= 2.5.1'
+  s.add_runtime_dependency 'oj', '~> 3.13.16'
 
   s.add_development_dependency 'bundler', '~> 2.2'
   s.add_development_dependency 'pry', '~> 0.14'
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.10'
   s.add_development_dependency 'rspec-parameterized', '~> 0.5.1'
+  s.add_development_dependency 'benchmark-memory', '~>0.2.0'
 end

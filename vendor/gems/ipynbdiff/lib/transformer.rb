@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module IpynbDiff
+  require 'oj'
+
   class InvalidNotebookError < StandardError
   end
 
@@ -10,26 +12,25 @@ module IpynbDiff
     require 'yaml'
     require 'output_transformer'
     require 'symbolized_markdown_helper'
-    require 'ipynb_symbol_map'
+    require 'symbol_map'
     require 'transformed_notebook'
     include SymbolizedMarkdownHelper
 
     @include_frontmatter = true
-    @objects_to_ignore = ['application/javascript', 'application/vnd.holoviews_load.v0+json']
 
     def initialize(include_frontmatter: true, hide_images: false)
       @include_frontmatter = include_frontmatter
       @hide_images = hide_images
-      @out_transformer = OutputTransformer.new(hide_images: hide_images)
+      @out_transformer = OutputTransformer.new(hide_images)
     end
 
     def validate_notebook(notebook)
-      notebook_json = JSON.parse(notebook)
+      notebook_json = Oj::Parser.usual.parse(notebook)
 
       return notebook_json if notebook_json.key?('cells')
 
       raise InvalidNotebookError
-    rescue JSON::ParserError
+    rescue EncodingError, Oj::ParseError, JSON::ParserError
       raise InvalidNotebookError
     end
 
@@ -38,7 +39,7 @@ module IpynbDiff
 
       notebook_json = validate_notebook(notebook)
       transformed = transform_document(notebook_json)
-      symbol_map = IpynbSymbolMap.parse(notebook)
+      symbol_map = SymbolMap.parse(notebook)
 
       TransformedNotebook.new(transformed, symbol_map)
     end

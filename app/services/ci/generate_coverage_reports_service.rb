@@ -36,8 +36,6 @@ module Ci
     private
 
     def key(base_pipeline, head_pipeline)
-      return super unless Feature.enabled?(:ci_child_pipeline_coverage_reports, head_pipeline.project)
-
       [
         base_pipeline&.id, last_update_timestamp(base_pipeline),
         head_pipeline&.id, last_update_timestamp(head_pipeline)

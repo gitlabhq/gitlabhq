@@ -9,6 +9,7 @@ import { initInstallRunner } from '~/pages/shared/mount_runner_instructions';
 import initSharedRunnersToggle from '~/projects/settings/mount_shared_runners_toggle';
 import initSettingsPanels from '~/settings_panels';
 import { initTokenAccess } from '~/token_access';
+import { initCiSecureFiles } from '~/ci_secure_files';
 
 // Initialize expandable settings panels
 initSettingsPanels();
@@ -41,3 +42,4 @@ initSharedRunnersToggle();
 initInstallRunner();
 initRunnerAwsDeployments();
 initTokenAccess();
+initCiSecureFiles();

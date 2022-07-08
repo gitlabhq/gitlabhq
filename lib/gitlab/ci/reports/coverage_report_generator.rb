@@ -35,17 +35,7 @@ module Gitlab
         private
 
         def report_builds
-          if child_pipeline_feature_enabled?
-            @pipeline.latest_report_builds_in_self_and_descendants(::Ci::JobArtifact.coverage_reports)
-          else
-            @pipeline.latest_report_builds(::Ci::JobArtifact.coverage_reports)
-          end
-        end
-
-        def child_pipeline_feature_enabled?
-          strong_memoize(:feature_enabled) do
-            Feature.enabled?(:ci_child_pipeline_coverage_reports, @pipeline.project)
-          end
+          @pipeline.latest_report_builds_in_self_and_descendants(::Ci::JobArtifact.coverage_reports)
         end
       end
     end

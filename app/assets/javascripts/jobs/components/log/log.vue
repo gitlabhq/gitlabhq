@@ -8,6 +8,13 @@ export default {
     CollapsibleLogSection,
     LogLine,
   },
+  props: {
+    searchResults: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   computed: {
     ...mapState([
       'jobLogEndpoint',
@@ -56,9 +63,16 @@ export default {
         :key="`collapsible-${index}`"
         :section="section"
         :job-log-endpoint="jobLogEndpoint"
+        :search-results="searchResults"
         @onClickCollapsibleLine="handleOnClickCollapsibleLine"
       />
-      <log-line v-else :key="section.offset" :line="section" :path="jobLogEndpoint" />
+      <log-line
+        v-else
+        :key="section.offset"
+        :line="section"
+        :path="jobLogEndpoint"
+        :search-results="searchResults"
+      />
     </template>
 
     <div v-if="!isJobLogComplete" class="js-log-animation loader-animation pt-3 pl-3">

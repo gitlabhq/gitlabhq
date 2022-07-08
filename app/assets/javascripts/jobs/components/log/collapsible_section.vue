@@ -17,6 +17,11 @@ export default {
       type: String,
       required: true,
     },
+    searchResults: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     badgeDuration() {
@@ -45,6 +50,7 @@ export default {
         :key="line.offset"
         :line="line"
         :path="jobLogEndpoint"
+        :search-results="searchResults"
       />
     </template>
   </div>

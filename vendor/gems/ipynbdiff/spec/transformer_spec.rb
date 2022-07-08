@@ -5,10 +5,10 @@ require 'ipynbdiff'
 require 'json'
 require 'rspec-parameterized'
 
-BASE_PATH = File.join(File.expand_path(File.dirname(__FILE__)),  'testdata')
+TRANSFORMER_BASE_PATH = File.join(File.expand_path(File.dirname(__FILE__)),  'testdata')
 
 def read_file(*paths)
-  File.read(File.join(BASE_PATH, *paths))
+  File.read(File.join(TRANSFORMER_BASE_PATH, *paths))
 end
 
 def default_config
@@ -68,10 +68,25 @@ describe IpynbDiff::Transformer do
         expect(transformed.as_text).to eq expected_md
       end
 
-      it 'generates the expected symbol map' do
-        expect(transformed.blocks.map { |b| b[:source_symbol] }.join("\n")).to eq expected_symbols
+      it 'marks the lines correctly' do
+        blocks = transformed.blocks.map { |b| b[:source_symbol] }.join("\n")
+        result = expected_symbols
+
+        expect(blocks).to eq result
       end
     end
+  end
+
+  it 'generates the correct transformed to source line map' do
+    input = read_file('text_png_output', 'input.ipynb' )
+    expected_line_numbers = read_file('text_png_output', 'expected_line_numbers.txt' )
+
+    transformed = IpynbDiff::Transformer.new(**{ include_frontmatter: false }).transform(input)
+
+    line_numbers = transformed.blocks.map { |b| b[:source_line] }.join("\n")
+
+    expect(line_numbers).to eq(expected_line_numbers)
+
   end
 
   context 'When the notebook is invalid' do

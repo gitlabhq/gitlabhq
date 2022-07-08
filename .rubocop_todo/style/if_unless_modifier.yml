@@ -153,7 +153,6 @@ Style/IfUnlessModifier:
     - 'app/models/ci/build.rb'
     - 'app/models/ci/build_trace_chunk.rb'
     - 'app/models/ci/job_artifact.rb'
-    - 'app/models/ci/legacy_stage.rb'
     - 'app/models/ci/pipeline.rb'
     - 'app/models/ci/runner.rb'
     - 'app/models/ci/running_build.rb'

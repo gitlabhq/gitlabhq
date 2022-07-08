@@ -68,6 +68,11 @@ export default {
       default: null,
     },
   },
+  data() {
+    return {
+      searchResults: [],
+    };
+  },
   computed: {
     ...mapState([
       'isLoading',
@@ -184,6 +189,9 @@ export default {
 
       this.throttled();
     },
+    setSearchResults(searchResults) {
+      this.searchResults = searchResults;
+    },
   },
 };
 </script>
@@ -279,10 +287,12 @@ export default {
             :is-scroll-top-disabled="isScrollTopDisabled"
             :is-job-log-size-visible="isJobLogSizeVisible"
             :is-scrolling-down="isScrollingDown"
+            :job-log="jobLog"
             @scrollJobLogTop="scrollTop"
             @scrollJobLogBottom="scrollBottom"
+            @searchResults="setSearchResults"
           />
-          <log :job-log="jobLog" :is-complete="isJobLogComplete" />
+          <log :job-log="jobLog" :is-complete="isJobLogComplete" :search-results="searchResults" />
         </div>
         <!-- EO job log -->
 

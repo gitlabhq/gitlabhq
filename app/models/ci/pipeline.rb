@@ -496,38 +496,14 @@ module Ci
         .pluck(:stage, :stage_idx).map(&:first)
     end
 
-    def legacy_stage(name)
-      stage = Ci::LegacyStage.new(self, name: name)
-      stage unless stage.statuses_count == 0
-    end
-
     def ref_exists?
       project.repository.ref_exists?(git_ref)
     rescue Gitlab::Git::Repository::NoRepository
       false
     end
 
-    def legacy_stages_using_composite_status
-      stages = latest_statuses_ordered_by_stage.group_by(&:stage)
-
-      stages.map do |stage_name, jobs|
-        composite_status = Gitlab::Ci::Status::Composite
-          .new(jobs)
-
-        Ci::LegacyStage.new(self,
-          name: stage_name,
-          status: composite_status.status,
-          warnings: composite_status.warnings?)
-      end
-    end
-
     def triggered_pipelines_with_preloads
       triggered_pipelines.preload(:source_job)
-    end
-
-    # TODO: Remove usage of this method in templates
-    def legacy_stages
-      legacy_stages_using_composite_status
     end
 
     def valid_commit_sha
@@ -1230,6 +1206,10 @@ module Ci
 
     def source_ref_slug
       Gitlab::Utils.slugify(source_ref.to_s)
+    end
+
+    def stage(name)
+      stages.find_by(name: name)
     end
 
     def find_stage_by_name!(name)

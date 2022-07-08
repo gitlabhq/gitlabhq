@@ -9,11 +9,6 @@ module Ci
       end
 
       def execute
-        unless Feature.enabled?(:ci_child_pipeline_coverage_reports, pipeline.project) ||
-          !pipeline.has_coverage_reports?
-          return
-        end
-
         return if report.empty?
 
         Ci::PipelineArtifact.create_or_replace_for_pipeline!(**pipeline_artifact_params).tap do |pipeline_artifact|

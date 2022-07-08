@@ -69,16 +69,6 @@ RSpec.describe Ci::PipelineArtifacts::CoverageReportService do
       end
 
       it_behaves_like 'creating or updating a pipeline coverage report'
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_child_pipeline_coverage_reports: false)
-        end
-
-        it 'does not change existing pipeline artifact' do
-          expect { subject }.not_to change { pipeline_artifact.reload.updated_at }
-        end
-      end
     end
 
     context 'when pipeline is running and coverage report does not exist' do

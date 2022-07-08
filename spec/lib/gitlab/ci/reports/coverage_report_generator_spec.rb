@@ -75,16 +75,6 @@ RSpec.describe Gitlab::Ci::Reports::CoverageReportGenerator, factory_default: :k
       end
 
       it_behaves_like 'having a coverage report'
-
-      context 'when feature flag ci_child_pipeline_coverage_reports is disabled' do
-        before do
-          stub_feature_flags(ci_child_pipeline_coverage_reports: false)
-        end
-
-        it 'returns empty coverage reports' do
-          expect(subject).to be_empty
-        end
-      end
     end
 
     context 'when both parent and child pipeline have builds with coverage reports' do

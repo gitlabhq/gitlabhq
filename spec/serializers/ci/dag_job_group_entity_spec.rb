@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::DagJobGroupEntity do
   let_it_be(:request) { double(:request) }
   let_it_be(:pipeline) { create(:ci_pipeline) }
-  let_it_be(:stage) { create(:ci_stage, pipeline: pipeline) }
+  let_it_be(:stage) { create(:ci_stage_entity, pipeline: pipeline) }
 
   let(:group) { Ci::Group.new(pipeline.project, stage, name: 'test', jobs: jobs) }
   let(:entity) { described_class.new(group, request: request) }
@@ -14,7 +14,7 @@ RSpec.describe Ci::DagJobGroupEntity do
     subject { entity.as_json }
 
     context 'when group contains 1 job' do
-      let(:job) { create(:ci_build, stage: stage, pipeline: pipeline, name: 'test') }
+      let(:job) { create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'test') }
       let(:jobs) { [job] }
 
       it 'exposes a name' do
@@ -38,8 +38,8 @@ RSpec.describe Ci::DagJobGroupEntity do
     end
 
     context 'when group contains multiple parallel jobs' do
-      let(:job_1) { create(:ci_build, stage: stage, pipeline: pipeline, name: 'test 1/2') }
-      let(:job_2) { create(:ci_build, stage: stage, pipeline: pipeline, name: 'test 2/2') }
+      let(:job_1) { create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'test 1/2') }
+      let(:job_2) { create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'test 2/2') }
       let(:jobs) { [job_1, job_2] }
 
       it 'exposes a name' do

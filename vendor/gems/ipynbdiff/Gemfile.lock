@@ -3,18 +3,21 @@ PATH
   specs:
     ipynbdiff (0.4.7)
       diffy (~> 3.3)
-      json (~> 2.5, >= 2.5.1)
+      oj (~> 3.13.16)
 
 GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
+    benchmark-memory (0.2.0)
+      memory_profiler (~> 1)
     binding_ninja (0.2.3)
     coderay (1.1.3)
     diff-lcs (1.5.0)
     diffy (3.4.2)
-    json (2.6.2)
+    memory_profiler (1.0.0)
     method_source (1.0.0)
+    oj (3.13.16)
     parser (3.1.2.0)
       ast (~> 2.4.1)
     proc_to_ast (0.1.0)
@@ -37,7 +40,7 @@ GEM
     rspec-mocks (3.11.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
-    rspec-parameterized (0.5.1)
+    rspec-parameterized (0.5.2)
       binding_ninja (>= 0.2.3)
       parser
       proc_to_ast
@@ -53,6 +56,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  benchmark-memory (~> 0.2.0)
   bundler (~> 2.2)
   ipynbdiff!
   pry (~> 0.14)

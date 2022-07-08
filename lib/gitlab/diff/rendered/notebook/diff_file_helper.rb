@@ -91,7 +91,7 @@ module Gitlab
 
             return 0 unless line_in_source.present?
 
-            line_in_source + 1
+            line_in_source
           end
 
           def image_as_rich_text(line_text)

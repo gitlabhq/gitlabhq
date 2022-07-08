@@ -1333,48 +1333,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
                                status: 'success')
       end
 
-      describe '#legacy_stages' do
-        using RSpec::Parameterized::TableSyntax
-
-        subject { pipeline.legacy_stages }
-
-        context 'stages list' do
-          it 'returns ordered list of stages' do
-            expect(subject.map(&:name)).to eq(%w[build test deploy])
-          end
-        end
-
-        context 'stages with statuses' do
-          let(:statuses) do
-            subject.map { |stage| [stage.name, stage.status] }
-          end
-
-          it 'returns list of stages with correct statuses' do
-            expect(statuses).to eq([%w(build failed),
-                                    %w(test success),
-                                    %w(deploy running)])
-          end
-        end
-
-        context 'when there is a stage with warnings' do
-          before do
-            create(:commit_status, pipeline: pipeline,
-                                  stage: 'deploy',
-                                  name: 'prod:2',
-                                  stage_idx: 2,
-                                  status: 'failed',
-                                  allow_failure: true)
-          end
-
-          it 'populates stage with correct number of warnings' do
-            deploy_stage = pipeline.legacy_stages.third
-
-            expect(deploy_stage).not_to receive(:statuses)
-            expect(deploy_stage).to have_warnings
-          end
-        end
-      end
-
       describe '#stages_count' do
         it 'returns a valid number of stages' do
           expect(pipeline.stages_count).to eq(3)
@@ -1384,32 +1342,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       describe '#stages_names' do
         it 'returns a valid names of stages' do
           expect(pipeline.stages_names).to eq(%w(build test deploy))
-        end
-      end
-    end
-
-    describe '#legacy_stage' do
-      subject { pipeline.legacy_stage('test') }
-
-      let(:pipeline) { build(:ci_empty_pipeline, :created) }
-
-      context 'with status in stage' do
-        before do
-          create(:commit_status, pipeline: pipeline, stage: 'test')
-        end
-
-        it { expect(subject).to be_a Ci::LegacyStage }
-        it { expect(subject.name).to eq 'test' }
-        it { expect(subject.statuses).not_to be_empty }
-      end
-
-      context 'without status in stage' do
-        before do
-          create(:commit_status, pipeline: pipeline, stage: 'build')
-        end
-
-        it 'return stage object' do
-          is_expected.to be_nil
         end
       end
     end
@@ -4320,7 +4252,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#find_stage_by_name' do
+  describe 'fetching a stage by name' do
     let_it_be(:pipeline) { create(:ci_pipeline) }
 
     let(:stage_name) { 'test' }
@@ -4336,19 +4268,37 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       create_list(:ci_build, 2, pipeline: pipeline, stage: stage.name)
     end
 
-    subject { pipeline.find_stage_by_name!(stage_name) }
+    describe '#stage' do
+      subject { pipeline.stage(stage_name) }
 
-    context 'when stage exists' do
-      it { is_expected.to eq(stage) }
+      context 'when stage exists' do
+        it { is_expected.to eq(stage) }
+      end
+
+      context 'when stage does not exist' do
+        let(:stage_name) { 'build' }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
     end
 
-    context 'when stage does not exist' do
-      let(:stage_name) { 'build' }
+    describe '#find_stage_by_name' do
+      subject { pipeline.find_stage_by_name!(stage_name) }
 
-      it 'raises an ActiveRecord exception' do
-        expect do
-          subject
-        end.to raise_exception(ActiveRecord::RecordNotFound)
+      context 'when stage exists' do
+        it { is_expected.to eq(stage) }
+      end
+
+      context 'when stage does not exist' do
+        let(:stage_name) { 'build' }
+
+        it 'raises an ActiveRecord exception' do
+          expect do
+            subject
+          end.to raise_exception(ActiveRecord::RecordNotFound)
+        end
       end
     end
   end

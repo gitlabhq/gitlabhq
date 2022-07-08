@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::Common do
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:stage) do
-    build(:ci_stage, pipeline: pipeline, name: 'test')
+    build(:ci_stage_entity, pipeline: pipeline, name: 'test')
   end
 
   subject do

@@ -6,10 +6,10 @@ RSpec.describe Ci::DagStageEntity do
   let_it_be(:pipeline) { create(:ci_pipeline) }
   let_it_be(:request) { double(:request) }
 
-  let(:stage) { build(:ci_stage, pipeline: pipeline, name: 'test') }
+  let(:stage) { create(:ci_stage_entity, pipeline: pipeline, name: 'test') }
   let(:entity) { described_class.new(stage, request: request) }
 
-  let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
+  let!(:job) { create(:ci_build, :success, pipeline: pipeline, stage_id: stage.id) }
 
   describe '#as_json' do
     subject { entity.as_json }

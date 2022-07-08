@@ -79,7 +79,7 @@ module Gitlab
             rescue Timeout::Error => e
               rendered_timeout.increment(source: Gitlab::Runtime.sidekiq? ? BACKGROUND_EXECUTION : FOREGROUND_EXECUTION)
               log_event(LOG_IPYNBDIFF_TIMEOUT, e)
-            rescue IpynbDiff::InvalidNotebookError, IpynbDiff::InvalidTokenError => e
+            rescue IpynbDiff::InvalidNotebookError => e
               log_event(LOG_IPYNBDIFF_INVALID, e)
             end
           end

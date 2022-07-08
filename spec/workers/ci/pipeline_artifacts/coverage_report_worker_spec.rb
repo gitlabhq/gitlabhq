@@ -46,20 +46,6 @@ RSpec.describe Ci::PipelineArtifacts::CoverageReportWorker do
           subject
         end
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_child_pipeline_coverage_reports: false)
-        end
-
-        it 'calls the pipeline coverage report service on the pipeline' do
-          expect_next_instance_of(::Ci::PipelineArtifacts::CoverageReportService, pipeline) do |service|
-            expect(service).to receive(:execute)
-          end
-
-          subject
-        end
-      end
     end
 
     context 'when pipeline does not exist' do

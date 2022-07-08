@@ -27674,9 +27674,7 @@ CREATE UNIQUE INDEX index_ci_runner_namespaces_on_runner_id_and_namespace_id ON 
 
 CREATE INDEX index_ci_runner_projects_on_project_id ON ci_runner_projects USING btree (project_id);
 
-CREATE INDEX index_ci_runner_versions_on_status ON ci_runner_versions USING btree (status);
-
-CREATE INDEX index_ci_runner_versions_on_version ON ci_runner_versions USING btree (version);
+CREATE UNIQUE INDEX index_ci_runner_versions_on_unique_status_and_version ON ci_runner_versions USING btree (status, version);
 
 CREATE INDEX index_ci_runners_on_active ON ci_runners USING btree (active, id);
 

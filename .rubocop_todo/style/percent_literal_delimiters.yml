@@ -79,7 +79,6 @@ Style/PercentLiteralDelimiters:
     - 'app/models/bulk_imports/file_transfer/project_config.rb'
     - 'app/models/ci/build.rb'
     - 'app/models/ci/build_runner_session.rb'
-    - 'app/models/ci/legacy_stage.rb'
     - 'app/models/ci/pipeline.rb'
     - 'app/models/clusters/applications/cert_manager.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'

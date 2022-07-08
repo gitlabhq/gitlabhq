@@ -12,12 +12,12 @@ RSpec.describe StageEntity do
   end
 
   let(:stage) do
-    build(:ci_stage, pipeline: pipeline, name: 'test')
+    create(:ci_stage_entity, pipeline: pipeline, status: :success)
   end
 
   before do
     allow(request).to receive(:current_user).and_return(user)
-    create(:ci_build, :success, pipeline: pipeline)
+    create(:ci_build, :success, pipeline: pipeline, stage_id: stage.id)
   end
 
   describe '#as_json' do

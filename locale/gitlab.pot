@@ -22355,6 +22355,9 @@ msgstr ""
 msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{ref}"
 msgstr ""
 
+msgid "Job|%{searchLength} results found for %{searchTerm}"
+msgstr ""
+
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
 
@@ -22394,10 +22397,16 @@ msgstr ""
 msgid "Job|Job has been erased by %{userLink}"
 msgstr ""
 
+msgid "Job|Job log search"
+msgstr ""
+
 msgid "Job|Keep"
 msgstr ""
 
 msgid "Job|Manual"
+msgstr ""
+
+msgid "Job|No search results found"
 msgstr ""
 
 msgid "Job|Passed"
@@ -22422,6 +22431,12 @@ msgid "Job|Scroll to bottom"
 msgstr ""
 
 msgid "Job|Scroll to top"
+msgstr ""
+
+msgid "Job|Search for substrings in your job log output. Currently search is only supported for the visible job log output, not for any log output that is truncated due to size."
+msgstr ""
+
+msgid "Job|Search job log"
 msgstr ""
 
 msgid "Job|Show complete raw"
@@ -22458,6 +22473,9 @@ msgid "Job|This job is stuck because you don't have any active runners that can 
 msgstr ""
 
 msgid "Job|Waiting for resource"
+msgstr ""
+
+msgid "Job|We could not find this element"
 msgstr ""
 
 msgid "Job|allowed to fail"
@@ -23641,9 +23659,6 @@ msgid "Make sure you save it - you won't be able to access it again."
 msgstr ""
 
 msgid "Makes this issue confidential."
-msgstr ""
-
-msgid "Manage"
 msgstr ""
 
 msgid "Manage %{workspace} labels"
@@ -39027,6 +39042,9 @@ msgstr ""
 msgid "There are no projects shared with this group yet"
 msgstr ""
 
+msgid "There are no secure files yet."
+msgstr ""
+
 msgid "There are no topics to show."
 msgstr ""
 
@@ -41383,7 +41401,7 @@ msgstr ""
 msgid "Upload object map"
 msgstr ""
 
-msgid "Uploaded"
+msgid "Uploaded date"
 msgstr ""
 
 msgid "Uploading changes to terminal"
@@ -44115,9 +44133,6 @@ msgstr ""
 msgid "You can only add up to %{max_contacts} contacts at one time"
 msgstr ""
 
-msgid "You can only approve an indivdual user, member, or all members"
-msgstr ""
-
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
@@ -44155,9 +44170,6 @@ msgid "You cannot %{action} %{state} users."
 msgstr ""
 
 msgid "You cannot access the raw file. Please wait a minute."
-msgstr ""
-
-msgid "You cannot approve all pending members on a free plan"
 msgstr ""
 
 msgid "You cannot approve your own deployment."

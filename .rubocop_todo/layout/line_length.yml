@@ -5512,7 +5512,6 @@ Layout/LineLength:
     - 'spec/presenters/alert_management/alert_presenter_spec.rb'
     - 'spec/presenters/blob_presenter_spec.rb'
     - 'spec/presenters/blobs/notebook_presenter_spec.rb'
-    - 'spec/presenters/ci/legacy_stage_presenter_spec.rb'
     - 'spec/presenters/ci/pipeline_artifacts/code_quality_mr_diff_presenter_spec.rb'
     - 'spec/presenters/ci/pipeline_presenter_spec.rb'
     - 'spec/presenters/clusters/cluster_presenter_spec.rb'

@@ -315,7 +315,8 @@
 }
 
 .ci-variable-table,
-.deploy-freeze-table {
+.deploy-freeze-table,
+.ci-secure-files-table {
   table {
     thead {
       border-bottom: 1px solid $white-normal;

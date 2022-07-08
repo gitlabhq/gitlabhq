@@ -15,7 +15,7 @@ PATH
   specs:
     ipynbdiff (0.4.7)
       diffy (~> 3.3)
-      json (~> 2.5, >= 2.5.1)
+      oj (~> 3.13.16)
 
 PATH
   remote: vendor/gems/mail-smtp_pool

@@ -14,7 +14,7 @@ module IpynbDiff
       'stream' => %w[text]
     }.freeze
 
-    def initialize(hide_images: false)
+    def initialize(hide_images = false)
       @hide_images = hide_images
     end
 

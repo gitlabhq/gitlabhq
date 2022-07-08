@@ -10,6 +10,7 @@ import {
 } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
+import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
@@ -18,6 +19,7 @@ import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
+import RunnerCount from '~/runner/components/stat/runner_count.vue';
 import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
@@ -28,7 +30,6 @@ import {
   DEFAULT_SORT,
   INSTANCE_TYPE,
   GROUP_TYPE,
-  PROJECT_TYPE,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
@@ -61,6 +62,9 @@ const mockRegistrationToken = 'AABBCC';
 const mockGroupRunnersEdges = groupRunnersData.data.group.runners.edges;
 const mockGroupRunnersCount = mockGroupRunnersEdges.length;
 
+const mockGroupRunnersQuery = jest.fn();
+const mockGroupRunnersCountQuery = jest.fn();
+
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -70,8 +74,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('GroupRunnersApp', () => {
   let wrapper;
-  let mockGroupRunnersQuery;
-  let mockGroupRunnersCountQuery;
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
@@ -85,12 +87,7 @@ describe('GroupRunnersApp', () => {
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
-  const mockCountQueryResult = (count) =>
-    Promise.resolve({
-      data: { group: { id: groupRunnersCountData.data.group.id, runners: { count } } },
-    });
-
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
     const handlers = [
       [getGroupRunnersQuery, mockGroupRunnersQuery],
       [getGroupRunnersCountQuery, mockGroupRunnersCountQuery],
@@ -110,89 +107,75 @@ describe('GroupRunnersApp', () => {
         emptyStateSvgPath,
         emptyStateFilteredSvgPath,
       },
+      ...options,
     });
+
+    return waitForPromises();
   };
 
   beforeEach(async () => {
-    setWindowLocation(`/groups/${mockGroupFullPath}/-/runners`);
-
-    mockGroupRunnersQuery = jest.fn().mockResolvedValue(groupRunnersData);
-    mockGroupRunnersCountQuery = jest.fn().mockResolvedValue(groupRunnersCountData);
-
-    createComponent();
-    await waitForPromises();
+    mockGroupRunnersQuery.mockResolvedValue(groupRunnersData);
+    mockGroupRunnersCountQuery.mockResolvedValue(groupRunnersCountData);
   });
 
-  it('shows total runner counts', async () => {
-    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
-      groupFullPath: mockGroupFullPath,
-      status: STATUS_ONLINE,
-    });
-    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
-      groupFullPath: mockGroupFullPath,
-      status: STATUS_OFFLINE,
-    });
-    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
-      groupFullPath: mockGroupFullPath,
-      status: STATUS_STALE,
-    });
-
-    expect(findRunnerStats().props()).toMatchObject({
-      onlineRunnersCount: mockGroupRunnersCount,
-      offlineRunnersCount: mockGroupRunnersCount,
-      staleRunnersCount: mockGroupRunnersCount,
-    });
+  afterEach(() => {
+    mockGroupRunnersQuery.mockReset();
+    mockGroupRunnersCountQuery.mockReset();
+    wrapper.destroy();
   });
 
   it('shows the runner tabs with a runner count for each type', async () => {
-    mockGroupRunnersCountQuery.mockImplementation(({ type }) => {
-      switch (type) {
-        case GROUP_TYPE:
-          return mockCountQueryResult(2);
-        case PROJECT_TYPE:
-          return mockCountQueryResult(1);
-        default:
-          return mockCountQueryResult(4);
-      }
-    });
-
-    createComponent({ mountFn: mountExtended });
-    await waitForPromises();
-
-    expect(findRunnerTypeTabs().text()).toMatchInterpolatedText('All 4 Group 2 Project 1');
-  });
-
-  it('shows the runner tabs with a formatted runner count', async () => {
-    mockGroupRunnersCountQuery.mockImplementation(({ type }) => {
-      switch (type) {
-        case GROUP_TYPE:
-          return mockCountQueryResult(2000);
-        case PROJECT_TYPE:
-          return mockCountQueryResult(1000);
-        default:
-          return mockCountQueryResult(3000);
-      }
-    });
-
-    createComponent({ mountFn: mountExtended });
-    await waitForPromises();
+    await createComponent({ mountFn: mountExtended });
 
     expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
-      'All 3,000 Group 2,000 Project 1,000',
+      `All ${mockGroupRunnersCount} Group ${mockGroupRunnersCount} Project ${mockGroupRunnersCount}`,
     );
   });
 
   it('shows the runner setup instructions', () => {
+    createComponent();
+
     expect(findRegistrationDropdown().props('registrationToken')).toBe(mockRegistrationToken);
     expect(findRegistrationDropdown().props('type')).toBe(GROUP_TYPE);
   });
 
-  it('shows the runners list', () => {
+  it('shows total runner counts', async () => {
+    await createComponent({ mountFn: mountExtended });
+
+    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+      status: STATUS_ONLINE,
+      groupFullPath: mockGroupFullPath,
+    });
+    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+      status: STATUS_OFFLINE,
+      groupFullPath: mockGroupFullPath,
+    });
+    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+      status: STATUS_STALE,
+      groupFullPath: mockGroupFullPath,
+    });
+
+    expect(findRunnerStats().text()).toContain(
+      `${s__('Runners|Online runners')} ${mockGroupRunnersCount}`,
+    );
+    expect(findRunnerStats().text()).toContain(
+      `${s__('Runners|Offline runners')} ${mockGroupRunnersCount}`,
+    );
+    expect(findRunnerStats().text()).toContain(
+      `${s__('Runners|Stale runners')} ${mockGroupRunnersCount}`,
+    );
+  });
+
+  it('shows the runners list', async () => {
+    await createComponent();
+
     const runners = findRunnerList().props('runners');
     expect(runners).toEqual(mockGroupRunnersEdges.map(({ node }) => node));
   });
 
-  it('requests the runners with group path and no other filters', () => {
+  it('requests the runners with group path and no other filters', async () => {
+    await createComponent();
+
     expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
       groupFullPath: mockGroupFullPath,
       status: undefined,
@@ -229,12 +212,8 @@ describe('GroupRunnersApp', () => {
     const FILTERED_COUNT_QUERIES = 3; // Smart queries that display a count of runners in tabs
 
     beforeEach(async () => {
-      mockGroupRunnersCountQuery.mockClear();
-
-      createComponent({ mountFn: mountExtended });
+      await createComponent({ mountFn: mountExtended });
       showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
-
-      await waitForPromises();
     });
 
     it('view link is displayed correctly', () => {
@@ -277,8 +256,12 @@ describe('GroupRunnersApp', () => {
     beforeEach(async () => {
       setWindowLocation(`?status[]=${STATUS_ONLINE}&runner_type[]=${INSTANCE_TYPE}`);
 
-      createComponent();
-      await waitForPromises();
+      await createComponent({
+        stubs: {
+          RunnerStats,
+          RunnerCount,
+        },
+      });
     });
 
     it('sets the filters in the search bar', () => {
@@ -306,15 +289,18 @@ describe('GroupRunnersApp', () => {
         type: INSTANCE_TYPE,
         status: STATUS_ONLINE,
       });
-
-      expect(findRunnerStats().props()).toMatchObject({
-        onlineRunnersCount: mockGroupRunnersCount,
-      });
     });
   });
 
   describe('when a filter is selected by the user', () => {
     beforeEach(async () => {
+      createComponent({
+        stubs: {
+          RunnerStats,
+          RunnerCount,
+        },
+      });
+
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
         filters: [
@@ -330,7 +316,7 @@ describe('GroupRunnersApp', () => {
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: 'http://test.host/groups/group1/-/runners?status[]=ONLINE&tag[]=tag1&sort=CREATED_ASC',
+        url: expect.stringContaining('?status[]=ONLINE&tag[]=tag1&sort=CREATED_ASC'),
       });
     });
 
@@ -350,28 +336,6 @@ describe('GroupRunnersApp', () => {
         tagList: ['tag1'],
         status: STATUS_ONLINE,
       });
-
-      expect(findRunnerStats().props()).toMatchObject({
-        onlineRunnersCount: mockGroupRunnersCount,
-      });
-    });
-
-    it('skips fetching count results for status that were not in filter', () => {
-      expect(mockGroupRunnersCountQuery).not.toHaveBeenCalledWith({
-        groupFullPath: mockGroupFullPath,
-        tagList: ['tag1'],
-        status: STATUS_OFFLINE,
-      });
-      expect(mockGroupRunnersCountQuery).not.toHaveBeenCalledWith({
-        groupFullPath: mockGroupFullPath,
-        tagList: ['tag1'],
-        status: STATUS_STALE,
-      });
-
-      expect(findRunnerStats().props()).toMatchObject({
-        offlineRunnersCount: null,
-        staleRunnersCount: null,
-      });
     });
   });
 
@@ -382,7 +346,7 @@ describe('GroupRunnersApp', () => {
 
   describe('when no runners are found', () => {
     beforeEach(async () => {
-      mockGroupRunnersQuery = jest.fn().mockResolvedValue({
+      mockGroupRunnersQuery.mockResolvedValue({
         data: {
           group: {
             id: '1',
@@ -390,8 +354,7 @@ describe('GroupRunnersApp', () => {
           },
         },
       });
-      createComponent();
-      await waitForPromises();
+      await createComponent();
     });
 
     it('shows an empty state', async () => {
@@ -401,9 +364,8 @@ describe('GroupRunnersApp', () => {
 
   describe('when runners query fails', () => {
     beforeEach(async () => {
-      mockGroupRunnersQuery = jest.fn().mockRejectedValue(new Error('Error!'));
-      createComponent();
-      await waitForPromises();
+      mockGroupRunnersQuery.mockRejectedValue(new Error('Error!'));
+      await createComponent();
     });
 
     it('error is shown to the user', async () => {
@@ -420,10 +382,9 @@ describe('GroupRunnersApp', () => {
 
   describe('Pagination', () => {
     beforeEach(async () => {
-      mockGroupRunnersQuery = jest.fn().mockResolvedValue(groupRunnersDataPaginated);
+      mockGroupRunnersQuery.mockResolvedValue(groupRunnersDataPaginated);
 
-      createComponent({ mountFn: mountExtended });
-      await waitForPromises();
+      await createComponent({ mountFn: mountExtended });
     });
 
     it('navigates to the next page', async () => {
