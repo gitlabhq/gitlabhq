@@ -511,7 +511,7 @@ RSpec.describe SearchService do
         end
 
         context 'with :with_api_entity_associations' do
-          it_behaves_like "redaction limits N+1 queries", limit: 13
+          it_behaves_like "redaction limits N+1 queries", limit: 14
         end
       end
 

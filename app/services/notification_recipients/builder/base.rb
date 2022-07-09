@@ -47,6 +47,8 @@ module NotificationRecipients
         end
 
         users = Array(users).compact
+        preload_users_namespace_bans(users)
+
         recipients.concat(users.map { |u| make_recipient(u, type, reason) })
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -240,6 +242,14 @@ module NotificationRecipients
           add_recipients(label.subscribers(project), :subscription, NotificationReason::SUBSCRIBED)
         end
       end
+
+      private
+
+      def preload_users_namespace_bans(_users)
+        # overridden in EE
+      end
     end
   end
 end
+
+NotificationRecipients::Builder::Base.prepend_mod_with('NotificationRecipients::Builder::Base')

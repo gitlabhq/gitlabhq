@@ -159,12 +159,19 @@ module Types
           owner_ids = runner_owner_ids_by_runner_id.values.flatten.uniq
           owners = assoc_type.where(id: owner_ids).index_by(&:id)
 
+          # Preload projects namespaces to avoid N+1 queries when checking the `read_project` policy for each
+          preload_projects_namespaces(owners.values) if assoc_type == Project
+
           runner_ids.each do |runner_id|
             loader.call(runner_id, runner_owner_ids_by_runner_id[runner_id]&.map { |owner_id| owners[owner_id] } || [])
           end
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def preload_projects_namespaces(_projects)
+        # overridden in EE
+      end
     end
   end
 end
