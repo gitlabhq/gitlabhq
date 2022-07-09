@@ -471,6 +471,7 @@ saml_group_links: :gitlab_main
 saml_providers: :gitlab_main
 saved_replies: :gitlab_main
 sbom_components: :gitlab_main
+sbom_occurrences: :gitlab_main
 sbom_component_versions: :gitlab_main
 sbom_sources: :gitlab_main
 schema_migrations: :gitlab_internal

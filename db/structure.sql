@@ -20545,6 +20545,26 @@ CREATE SEQUENCE sbom_components_id_seq
 
 ALTER SEQUENCE sbom_components_id_seq OWNED BY sbom_components.id;
 
+CREATE TABLE sbom_occurrences (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    component_version_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    pipeline_id bigint,
+    source_id bigint,
+    commit_sha bytea NOT NULL
+);
+
+CREATE SEQUENCE sbom_occurrences_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE sbom_occurrences_id_seq OWNED BY sbom_occurrences.id;
+
 CREATE TABLE sbom_sources (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23467,6 +23487,8 @@ ALTER TABLE ONLY sbom_component_versions ALTER COLUMN id SET DEFAULT nextval('sb
 
 ALTER TABLE ONLY sbom_components ALTER COLUMN id SET DEFAULT nextval('sbom_components_id_seq'::regclass);
 
+ALTER TABLE ONLY sbom_occurrences ALTER COLUMN id SET DEFAULT nextval('sbom_occurrences_id_seq'::regclass);
+
 ALTER TABLE ONLY sbom_sources ALTER COLUMN id SET DEFAULT nextval('sbom_sources_id_seq'::regclass);
 
 ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_identities_id_seq'::regclass);
@@ -25664,6 +25686,9 @@ ALTER TABLE ONLY sbom_component_versions
 
 ALTER TABLE ONLY sbom_components
     ADD CONSTRAINT sbom_components_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY sbom_occurrences
+    ADD CONSTRAINT sbom_occurrences_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY sbom_sources
     ADD CONSTRAINT sbom_sources_pkey PRIMARY KEY (id);
@@ -29524,6 +29549,14 @@ CREATE UNIQUE INDEX index_saved_replies_on_name_text_pattern_ops ON saved_replie
 
 CREATE INDEX index_sbom_component_versions_on_component_id ON sbom_component_versions USING btree (component_id);
 
+CREATE INDEX index_sbom_occurrences_on_component_version_id ON sbom_occurrences USING btree (component_version_id);
+
+CREATE INDEX index_sbom_occurrences_on_pipeline_id ON sbom_occurrences USING btree (pipeline_id);
+
+CREATE INDEX index_sbom_occurrences_on_project_id ON sbom_occurrences USING btree (project_id);
+
+CREATE INDEX index_sbom_occurrences_on_source_id ON sbom_occurrences USING btree (source_id);
+
 CREATE INDEX index_scim_identities_on_group_id ON scim_identities USING btree (group_id);
 
 CREATE UNIQUE INDEX index_scim_identities_on_lower_extern_uid_and_group_id ON scim_identities USING btree (lower((extern_uid)::text), group_id);
@@ -31646,6 +31679,9 @@ ALTER TABLE ONLY vulnerabilities
 ALTER TABLE ONLY webauthn_registrations
     ADD CONSTRAINT fk_13e04d719a FOREIGN KEY (u2f_registration_id) REFERENCES u2f_registrations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY sbom_occurrences
+    ADD CONSTRAINT fk_157506c0e2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_15d2a7a4ae FOREIGN KEY (deploy_key_id) REFERENCES keys(id) ON DELETE CASCADE;
 
@@ -31819,6 +31855,9 @@ ALTER TABLE ONLY releases
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_4a99ebfd60 FOREIGN KEY (repositories_changed_event_id) REFERENCES geo_repositories_changed_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY sbom_occurrences
+    ADD CONSTRAINT fk_4b88e5b255 FOREIGN KEY (component_version_id) REFERENCES sbom_component_versions(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_5001652292 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -32218,6 +32257,9 @@ ALTER TABLE ONLY design_management_versions
 
 ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT fk_c188f0dba4 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY sbom_occurrences
+    ADD CONSTRAINT fk_c2a5562923 FOREIGN KEY (source_id) REFERENCES sbom_sources(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages
     ADD CONSTRAINT fk_c3339bdfc9 FOREIGN KEY (stage_event_hash_id) REFERENCES analytics_cycle_analytics_stage_event_hashes(id) ON DELETE CASCADE;
