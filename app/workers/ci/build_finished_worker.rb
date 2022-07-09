@@ -40,6 +40,7 @@ module Ci
       BuildHooksWorker.perform_async(build)
       ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
       build.track_deployment_usage
+      build.track_verify_usage
 
       if build.failed? && !build.auto_retry_expected?
         ::Ci::MergeRequests::AddTodoWhenBuildFailsWorker.perform_async(build.id)

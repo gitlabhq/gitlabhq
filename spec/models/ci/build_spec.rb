@@ -1554,6 +1554,32 @@ RSpec.describe Ci::Build do
       end
     end
 
+    describe '#count_user_verification?' do
+      subject { build.count_user_verification? }
+
+      context 'when build is the verify action for the environment' do
+        let(:build) do
+          create(:ci_build,
+                 ref: 'master',
+                 environment: 'staging',
+                 options: { environment: { action: 'verify' } })
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build is not the verify action for the environment' do
+        let(:build) do
+          create(:ci_build,
+                 ref: 'master',
+                 environment: 'staging',
+                 options: { environment: { action: 'start' } })
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
     describe '#expanded_environment_name' do
       subject { build.expanded_environment_name }
 

@@ -1135,6 +1135,14 @@ module Ci
       Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_deployment_job', user_id) if user_id.present? && count_user_deployment?
     end
 
+    def track_verify_usage
+      Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_verify_environment_job', user_id) if user_id.present? && count_user_verification?
+    end
+
+    def count_user_verification?
+      has_environment? && environment_action == 'verify'
+    end
+
     def each_report(report_types)
       job_artifacts_for_types(report_types).each do |report_artifact|
         report_artifact.each_blob do |blob|
