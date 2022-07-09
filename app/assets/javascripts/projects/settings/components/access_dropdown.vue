@@ -203,11 +203,13 @@ export default {
         const {
           id,
           fingerprint,
+          fingerprint_sha256: fingerprintSha256,
           title,
           owner: { avatar_url, name, username },
         } = response;
 
-        const shortFingerprint = `(${fingerprint.substring(0, 14)}...)`;
+        const availableFingerprint = fingerprintSha256 || fingerprint;
+        const shortFingerprint = `(${availableFingerprint.substring(0, 14)}...)`;
 
         return {
           id,
@@ -387,7 +389,7 @@ export default {
       }}</gl-dropdown-section-header>
       <gl-dropdown-item
         v-for="key in deployKeys"
-        :key="`${key.id}${key.fingerprint}`"
+        :key="`${key.id}-{key.title}`"
         data-testid="deploy_key-dropdown-item"
         is-check-item
         :is-checked="isSelected(key)"

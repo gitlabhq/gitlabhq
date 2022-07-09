@@ -16371,7 +16371,10 @@ msgstr ""
 msgid "Find file"
 msgstr ""
 
-msgid "Fingerprint"
+msgid "Fingerprint (MD5)"
+msgstr ""
+
+msgid "Fingerprint (SHA256)"
 msgstr ""
 
 msgid "Fingerprints"

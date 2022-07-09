@@ -27,6 +27,7 @@ describe('DeployKeysTable', () => {
 
   const deployKey = responseBody[0];
   const deployKey2 = responseBody[1];
+  const deployKeyWithoutMd5Fingerprint = responseBody[2];
 
   const createComponent = (provide = {}) => {
     wrapper = mountExtended(DeployKeysTable, {
@@ -57,14 +58,22 @@ describe('DeployKeysTable', () => {
     const timeAgoTooltip = findTimeAgoTooltip(expectedRowIndex);
 
     expect(wrapper.findByText(expectedDeployKey.title).exists()).toBe(true);
-    expect(wrapper.findByText(expectedDeployKey.fingerprint, { selector: 'code' }).exists()).toBe(
-      true,
-    );
+
+    expect(
+      wrapper.findByText(expectedDeployKey.fingerprint_sha256, { selector: 'span' }).exists(),
+    ).toBe(true);
     expect(timeAgoTooltip.exists()).toBe(true);
     expect(timeAgoTooltip.props('time')).toBe(expectedDeployKey.created_at);
     expect(editButton.exists()).toBe(true);
     expect(editButton.attributes('href')).toBe(`/admin/deploy_keys/${expectedDeployKey.id}/edit`);
     expect(findRemoveButton(expectedRowIndex).exists()).toBe(true);
+  };
+
+  const expectDeployKeyWithFingerprintIsRendered = (expectedDeployKey, expectedRowIndex) => {
+    expect(wrapper.findByText(expectedDeployKey.fingerprint, { selector: 'span' }).exists()).toBe(
+      true,
+    );
+    expectDeployKeyIsRendered(expectedDeployKey, expectedRowIndex);
   };
 
   const itRendersTheEmptyState = () => {
@@ -127,8 +136,12 @@ describe('DeployKeysTable', () => {
       });
 
       it('renders deploy keys in table', () => {
-        expectDeployKeyIsRendered(deployKey, 0);
-        expectDeployKeyIsRendered(deployKey2, 1);
+        expectDeployKeyWithFingerprintIsRendered(deployKey, 0);
+        expectDeployKeyWithFingerprintIsRendered(deployKey2, 1);
+      });
+
+      it('renders deploy keys that do not have an MD5 fingerprint', () => {
+        expectDeployKeyIsRendered(deployKeyWithoutMd5Fingerprint, 2);
       });
 
       describe('when delete button is clicked', () => {
@@ -157,7 +170,7 @@ describe('DeployKeysTable', () => {
       beforeEach(() => {
         Api.deployKeys.mockResolvedValueOnce({
           data: [deployKey],
-          headers: { 'x-total': '2' },
+          headers: { 'x-total': '3' },
         });
 
         createComponent();
@@ -179,7 +192,7 @@ describe('DeployKeysTable', () => {
       describe('when pagination is changed', () => {
         it('calls API with `page` parameter', async () => {
           const pagination = findPagination();
-          expectDeployKeyIsRendered(deployKey, 0);
+          expectDeployKeyWithFingerprintIsRendered(deployKey, 0);
 
           Api.deployKeys.mockResolvedValue({
             data: [deployKey2],
@@ -199,7 +212,7 @@ describe('DeployKeysTable', () => {
             page: 2,
             public: true,
           });
-          expectDeployKeyIsRendered(deployKey2, 0);
+          expectDeployKeyWithFingerprintIsRendered(deployKey2, 0);
         });
       });
     });

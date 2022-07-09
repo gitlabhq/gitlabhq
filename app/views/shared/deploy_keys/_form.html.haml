@@ -18,9 +18,14 @@
         = _('Paste a public key here. %{link_start}How do I generate it?%{link_end}').html_safe % { link_start: link_start, link_end: link_end.html_safe }
       = form.text_area :key, class: 'form-control gl-form-input thin_area', rows: 5, data: { qa_selector: 'deploy_key_field' }
   - else
-    = form.label :fingerprint, class: 'col-form-label col-sm-2'
-    .col-sm-10
-      = form.text_field :fingerprint, class: 'form-control gl-form-input', readonly: 'readonly'
+    - if deploy_key.fingerprint_sha256.present?
+      = form.label :fingerprint, _('Fingerprint (SHA256)'), class: 'col-form-label col-sm-2'
+      .col-sm-10
+        = form.text_field :fingerprint_sha256, class: 'form-control gl-form-input', readonly: 'readonly'
+    - if deploy_key.fingerprint.present?
+      = form.label :fingerprint, _('Fingerprint (MD5)'), class: 'col-form-label col-sm-2'
+      .col-sm-10
+        = form.text_field :fingerprint, class: 'form-control gl-form-input', readonly: 'readonly'
 
 - if deploy_keys_project.present?
   = form.fields_for :deploy_keys_projects, deploy_keys_project do |deploy_keys_project_form|

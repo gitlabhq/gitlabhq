@@ -20,6 +20,12 @@ FactoryBot.define do
       expires_at { Date.today.beginning_of_day + 3.hours }
     end
 
+    trait :without_md5_fingerprint do
+      after(:create) do |key|
+        key.update_column(:fingerprint, nil)
+      end
+    end
+
     factory :key_without_comment do
       key { SSHData::PrivateKey::RSA.generate(3072, unsafe_allow_small_key: true).public_key.openssh }
     end
