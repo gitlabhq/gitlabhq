@@ -172,7 +172,6 @@ export const endpointKeys = [
   'dashboardsEndpoint',
   'currentDashboard',
   'projectPath',
-  'logsPath',
 ];
 
 /**
@@ -271,7 +270,6 @@ export const VARIABLE_PREFIX = 'var-';
 
 export const keyboardShortcutKeys = {
   EXPAND: 'e',
-  VISIT_LOGS: 'l',
   SHOW_ALERT: 'a',
   DOWNLOAD_CSV: 'd',
   CHART_COPY: 'c',

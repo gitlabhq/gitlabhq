@@ -24948,9 +24948,6 @@ msgstr ""
 msgid "Metrics|View documentation"
 msgstr ""
 
-msgid "Metrics|View logs"
-msgstr ""
-
 msgid "Metrics|Y-axis label"
 msgstr ""
 

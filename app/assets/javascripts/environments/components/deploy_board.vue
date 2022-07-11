@@ -51,11 +51,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    logsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     graphql: {
       type: Boolean,
       required: false,
@@ -186,7 +181,6 @@ export default {
                   :status="instance.status"
                   :tooltip-text="instance.tooltip"
                   :pod-name="podName(instance)"
-                  :logs-path="logsPath"
                   :stable="instance.stable"
                 />
               </template>

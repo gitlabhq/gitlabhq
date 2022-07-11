@@ -358,10 +358,6 @@ export default {
           actionToRun = 'onExpandFromKeyboardShortcut';
           break;
 
-        case keyboardShortcutKeys.VISIT_LOGS:
-          actionToRun = 'visitLogsPageFromKeyboardShortcut';
-          break;
-
         case keyboardShortcutKeys.SHOW_ALERT:
           actionToRun = 'showAlertModalFromKeyboardShortcut';
           break;

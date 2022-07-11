@@ -83,7 +83,6 @@ export default () => ({
   externalDashboardUrl: '',
   projectPath: null,
   operationsSettingsPath: '',
-  logsPath: invalidUrl,
   addDashboardDocumentationPath: '',
 
   // static paths
