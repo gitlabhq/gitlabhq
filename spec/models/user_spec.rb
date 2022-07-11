@@ -2743,131 +2743,149 @@ RSpec.describe User do
     end
   end
 
-  describe '.search' do
-    let_it_be(:user) { create(:user, name: 'user', username: 'usern', email: 'email@example.com') }
-    let_it_be(:public_email) do
-      create(:email, :confirmed, user: user, email: 'publicemail@example.com').tap do |email|
-        user.update!(public_email: email.email)
-      end
-    end
-
-    let_it_be(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@example.com') }
-    let_it_be(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@example.com') }
-    let_it_be(:email) { create(:email, user: user, email: 'alias@example.com') }
-
-    describe 'name user and email relative ordering' do
-      let_it_be(:named_alexander) { create(:user, name: 'Alexander Person', username: 'abcd', email: 'abcd@example.com') }
-      let_it_be(:username_alexand) { create(:user, name: 'Joao Alexander', username: 'Alexand', email: 'joao@example.com') }
-
-      it 'prioritizes exact matches' do
-        expect(described_class.search('Alexand')).to eq([username_alexand, named_alexander])
+  shared_examples '.search examples' do
+    describe '.search' do
+      let_it_be(:user) { create(:user, name: 'user', username: 'usern', email: 'email@example.com') }
+      let_it_be(:public_email) do
+        create(:email, :confirmed, user: user, email: 'publicemail@example.com').tap do |email|
+          user.update!(public_email: email.email)
+        end
       end
 
-      it 'falls back to ordering by name' do
-        expect(described_class.search('Alexander')).to eq([named_alexander, username_alexand])
-      end
-    end
+      let_it_be(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@example.com') }
+      let_it_be(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@example.com') }
+      let_it_be(:email) { create(:email, user: user, email: 'alias@example.com') }
 
-    describe 'name matching' do
-      it 'returns users with a matching name with exact match first' do
-        expect(described_class.search(user.name)).to eq([user, user2])
-      end
+      describe 'name user and email relative ordering' do
+        let_it_be(:named_alexander) { create(:user, name: 'Alexander Person', username: 'abcd', email: 'abcd@example.com') }
+        let_it_be(:username_alexand) { create(:user, name: 'Joao Alexander', username: 'Alexand', email: 'joao@example.com') }
 
-      it 'returns users with a partially matching name' do
-        expect(described_class.search(user.name[0..2])).to eq([user, user2])
-      end
+        it 'prioritizes exact matches' do
+          expect(described_class.search('Alexand')).to eq([username_alexand, named_alexander])
+        end
 
-      it 'returns users with a matching name regardless of the casing' do
-        expect(described_class.search(user2.name.upcase)).to eq([user2])
-      end
-
-      it 'returns users with a exact matching name shorter than 3 chars' do
-        expect(described_class.search(user3.name)).to eq([user3])
+        it 'falls back to ordering by name' do
+          expect(described_class.search('Alexander')).to eq([named_alexander, username_alexand])
+        end
       end
 
-      it 'returns users with a exact matching name shorter than 3 chars regardless of the casing' do
-        expect(described_class.search(user3.name.upcase)).to eq([user3])
-      end
+      describe 'name matching' do
+        it 'returns users with a matching name with exact match first' do
+          expect(described_class.search(user.name)).to eq([user, user2])
+        end
 
-      context 'when use_minimum_char_limit is false' do
         it 'returns users with a partially matching name' do
-          expect(described_class.search('u', use_minimum_char_limit: false)).to eq([user3, user, user2])
-        end
-      end
-    end
-
-    describe 'email matching' do
-      it 'returns users with a matching public email' do
-        expect(described_class.search(user.public_email)).to match_array([user])
-      end
-
-      it 'does not return users with a partially matching public email' do
-        expect(described_class.search(user.public_email[1...-1])).to be_empty
-      end
-
-      it 'returns users with a matching public email regardless of the casing' do
-        expect(described_class.search(user.public_email.upcase)).to match_array([user])
-      end
-
-      it 'does not return users with a matching private email' do
-        expect(described_class.search(user.email)).to be_empty
-        expect(described_class.search(email.email)).to be_empty
-      end
-
-      context 'with private emails search' do
-        it 'returns users with matching private email' do
-          expect(described_class.search(user.email, with_private_emails: true)).to match_array([user])
+          expect(described_class.search(user.name[0..2])).to eq([user, user2])
         end
 
-        it 'returns users with matching private secondary email' do
-          expect(described_class.search(email.email, with_private_emails: true)).to match_array([user])
+        it 'returns users with a matching name regardless of the casing' do
+          expect(described_class.search(user2.name.upcase)).to eq([user2])
+        end
+
+        it 'returns users with a exact matching name shorter than 3 chars' do
+          expect(described_class.search(user3.name)).to eq([user3])
+        end
+
+        it 'returns users with a exact matching name shorter than 3 chars regardless of the casing' do
+          expect(described_class.search(user3.name.upcase)).to eq([user3])
+        end
+
+        context 'when use_minimum_char_limit is false' do
+          it 'returns users with a partially matching name' do
+            expect(described_class.search('u', use_minimum_char_limit: false)).to eq([user3, user, user2])
+          end
         end
       end
-    end
 
-    describe 'username matching' do
-      it 'returns users with a matching username' do
-        expect(described_class.search(user.username)).to eq([user, user2])
+      describe 'email matching' do
+        it 'returns users with a matching public email' do
+          expect(described_class.search(user.public_email)).to match_array([user])
+        end
+
+        it 'does not return users with a partially matching public email' do
+          expect(described_class.search(user.public_email[1...-1])).to be_empty
+        end
+
+        it 'returns users with a matching public email regardless of the casing' do
+          expect(described_class.search(user.public_email.upcase)).to match_array([user])
+        end
+
+        it 'does not return users with a matching private email' do
+          expect(described_class.search(user.email)).to be_empty
+          expect(described_class.search(email.email)).to be_empty
+        end
+
+        context 'with private emails search' do
+          it 'returns users with matching private email' do
+            expect(described_class.search(user.email, with_private_emails: true)).to match_array([user])
+          end
+
+          it 'returns users with matching private secondary email' do
+            expect(described_class.search(email.email, with_private_emails: true)).to match_array([user])
+          end
+        end
       end
 
-      it 'returns users with a matching username starting with a @' do
-        expect(described_class.search("@#{user.username}")).to eq([user, user2])
-      end
+      describe 'username matching' do
+        it 'returns users with a matching username' do
+          expect(described_class.search(user.username)).to eq([user, user2])
+        end
 
-      it 'returns users with a partially matching username' do
-        expect(described_class.search(user.username[0..2])).to eq([user, user2])
-      end
+        it 'returns users with a matching username starting with a @' do
+          expect(described_class.search("@#{user.username}")).to eq([user, user2])
+        end
 
-      it 'returns users with a partially matching username starting with @' do
-        expect(described_class.search("@#{user.username[0..2]}")).to eq([user, user2])
-      end
-
-      it 'returns users with a matching username regardless of the casing' do
-        expect(described_class.search(user2.username.upcase)).to eq([user2])
-      end
-
-      it 'returns users with a exact matching username shorter than 3 chars' do
-        expect(described_class.search(user3.username)).to eq([user3])
-      end
-
-      it 'returns users with a exact matching username shorter than 3 chars regardless of the casing' do
-        expect(described_class.search(user3.username.upcase)).to eq([user3])
-      end
-
-      context 'when use_minimum_char_limit is false' do
         it 'returns users with a partially matching username' do
-          expect(described_class.search('se', use_minimum_char_limit: false)).to eq([user3, user, user2])
+          expect(described_class.search(user.username[0..2])).to eq([user, user2])
+        end
+
+        it 'returns users with a partially matching username starting with @' do
+          expect(described_class.search("@#{user.username[0..2]}")).to eq([user, user2])
+        end
+
+        it 'returns users with a matching username regardless of the casing' do
+          expect(described_class.search(user2.username.upcase)).to eq([user2])
+        end
+
+        it 'returns users with a exact matching username shorter than 3 chars' do
+          expect(described_class.search(user3.username)).to eq([user3])
+        end
+
+        it 'returns users with a exact matching username shorter than 3 chars regardless of the casing' do
+          expect(described_class.search(user3.username.upcase)).to eq([user3])
+        end
+
+        context 'when use_minimum_char_limit is false' do
+          it 'returns users with a partially matching username' do
+            expect(described_class.search('se', use_minimum_char_limit: false)).to eq([user3, user, user2])
+          end
         end
       end
+
+      it 'returns no matches for an empty string' do
+        expect(described_class.search('')).to be_empty
+      end
+
+      it 'returns no matches for nil' do
+        expect(described_class.search(nil)).to be_empty
+      end
+    end
+  end
+
+  context 'when the use_keyset_aware_user_search_query FF is on' do
+    before do
+      stub_feature_flags(use_keyset_aware_user_search_query: true)
     end
 
-    it 'returns no matches for an empty string' do
-      expect(described_class.search('')).to be_empty
+    it_behaves_like '.search examples'
+  end
+
+  context 'when the use_keyset_aware_user_search_query FF is off' do
+    before do
+      stub_feature_flags(use_keyset_aware_user_search_query: false)
     end
 
-    it 'returns no matches for nil' do
-      expect(described_class.search(nil)).to be_empty
-    end
+    it_behaves_like '.search examples'
   end
 
   describe '.user_search_minimum_char_limit' do

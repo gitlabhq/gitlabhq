@@ -39,7 +39,7 @@ module QA
       end
 
       def api_delete
-        QA::Runtime::Logger.debug("Deleting SSH key with title '#{title}' and fingerprint '#{md5_fingerprint}'")
+        QA::Runtime::Logger.debug("Deleting SSH key with title '#{title}' and fingerprint '#{sha256_fingerprint}'")
 
         super
       end

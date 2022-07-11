@@ -1,0 +1,8 @@
+---
+name: use_keyset_aware_user_search_query
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91764
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/367025
+milestone: '15.2'
+type: development
+group: group::optimize
+default_enabled: false

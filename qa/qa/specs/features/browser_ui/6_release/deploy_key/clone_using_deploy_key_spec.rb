@@ -4,7 +4,7 @@ require 'digest/sha1'
 
 module QA
   RSpec.describe 'Release', :runner do
-    describe 'Git clone using a deploy key', :skip_fips_env do
+    describe 'Git clone using a deploy key' do
       let(:runner_name) { "qa-runner-#{SecureRandom.hex(4)}" }
       let(:repository_location) { project.repository_ssh_location }
 
