@@ -83,3 +83,11 @@ export const billingPlanNames = {
   [billingPlans.PREMIUM]: s__('BillingPlans|Premium'),
   [billingPlans.ULTIMATE]: s__('BillingPlans|Ultimate'),
 };
+
+const INTEGRATION_TYPE_SLACK = 'slack';
+const INTEGRATION_TYPE_MATTERMOST = 'mattermost';
+
+export const placeholderForType = {
+  [INTEGRATION_TYPE_SLACK]: __('#general, #development'),
+  [INTEGRATION_TYPE_MATTERMOST]: __('my-channel'),
+};
