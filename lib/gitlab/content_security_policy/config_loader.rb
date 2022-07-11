@@ -138,9 +138,8 @@ module Gitlab
       def self.allow_sentry(directives)
         sentry_dsn = Gitlab.config.sentry.clientside_dsn
         sentry_uri = URI(sentry_dsn)
-        sentry_uri.user = nil
 
-        append_to_directive(directives, 'connect_src', sentry_uri.to_s)
+        append_to_directive(directives, 'connect_src', "#{sentry_uri.scheme}://#{sentry_uri.host}")
       end
 
       def self.allow_letter_opener(directives)

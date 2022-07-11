@@ -176,6 +176,14 @@ export const trackSaasTrialGetStarted = () => {
   });
 };
 
+export const trackTrialAcceptTerms = () => {
+  if (!isSupported()) {
+    return;
+  }
+
+  pushEvent('saasTrialAcceptTerms');
+};
+
 export const trackCheckout = (selectedPlan, quantity) => {
   if (!isSupported()) {
     return;

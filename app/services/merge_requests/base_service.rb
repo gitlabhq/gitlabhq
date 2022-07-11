@@ -128,13 +128,8 @@ module MergeRequests
       if draft_event = params.delete(:wip_event)
         # We update the title that is provided in the params or we use the mr title
         title = params[:title] || merge_request.title
-        # Supports both `wip` and `draft` permutations of draft_event
-        # This support can be removed >= %15.2
-        #
         params[:title] = case draft_event
-                         when 'wip' then MergeRequest.draft_title(title)
                          when 'draft' then MergeRequest.draft_title(title)
-                         when 'unwip' then MergeRequest.draftless_title(title)
                          when 'ready' then MergeRequest.draftless_title(title)
                          end
       end

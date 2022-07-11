@@ -12,6 +12,7 @@ RSpec.shared_context 'ProjectPolicy context' do
   let_it_be_with_refind(:private_project) { create(:project, :private, namespace: owner.namespace) }
   let_it_be_with_refind(:internal_project) { create(:project, :internal, namespace: owner.namespace) }
   let_it_be_with_refind(:public_project) { create(:project, :public, namespace: owner.namespace) }
+  let_it_be_with_refind(:public_project_in_group) { create(:project, :public, namespace: create(:group, :public)) }
 
   let(:base_guest_permissions) do
     %i[
@@ -93,7 +94,7 @@ RSpec.shared_context 'ProjectPolicy context' do
   let(:owner_permissions) { base_owner_permissions + additional_owner_permissions }
 
   before_all do
-    [private_project, internal_project, public_project].each do |project|
+    [private_project, internal_project, public_project, public_project_in_group].each do |project|
       project.add_guest(guest)
       project.add_reporter(reporter)
       project.add_developer(developer)

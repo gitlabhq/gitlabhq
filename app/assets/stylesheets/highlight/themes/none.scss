@@ -25,7 +25,19 @@
 
   // Line numbers
   .file-line-num {
-    @include line-number-link($black-transparent);
+    @include line-link($black, 'link');
+  }
+
+  .file-line-blame {
+    @include line-link($black, 'git');
+  }
+
+  .line-links {
+    @include line-hover-bg;
+  }
+
+  .line-links-wrapper {
+    @include first-line-top-space;
   }
 
   .line-numbers,

@@ -127,7 +127,19 @@ $dark-il: #de935f;
 .code.dark {
   // Line numbers
   .file-line-num {
-    @include line-number-link($dark-line-num-color);
+    @include line-link($white, 'link');
+  }
+
+  .file-line-blame {
+    @include line-link($white, 'git');
+  }
+
+  .line-links {
+    @include line-hover-bg($dark-main-bg);
+  }
+
+  .line-links-wrapper {
+    @include first-line-top-space($dark-main-bg, $dark-code-border);
   }
 
   .line-numbers,

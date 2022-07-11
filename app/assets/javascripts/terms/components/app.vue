@@ -7,6 +7,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 import '~/behaviors/markdown/render_gfm';
+import { trackTrialAcceptTerms } from '~/google_tag_manager';
 
 export default {
   name: 'TermsApp',
@@ -73,6 +74,7 @@ export default {
       this.setScrollableViewportHeight();
       event.target.removeEventListener(FLASH_CLOSED_EVENT, this.handleFlashClose);
     },
+    trackTrialAcceptTerms,
   },
 };
 </script>
@@ -99,7 +101,13 @@ export default {
         <gl-button type="submit">{{ $options.i18n.decline }}</gl-button>
         <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
       </form>
-      <form v-if="permissions.canAccept" class="gl-ml-3" method="post" :action="paths.accept">
+      <form
+        v-if="permissions.canAccept"
+        class="gl-ml-3"
+        method="post"
+        :action="paths.accept"
+        @submit="trackTrialAcceptTerms"
+      >
         <gl-button
           type="submit"
           variant="confirm"

@@ -10,6 +10,7 @@ import {
   trackSaasTrialGroup,
   trackSaasTrialProject,
   trackSaasTrialGetStarted,
+  trackTrialAcceptTerms,
   trackCheckout,
   trackTransaction,
   trackAddToCartUsageTab,
@@ -252,6 +253,16 @@ describe('~/google_tag_manager/index', () => {
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith({ event: 'saasTrialSubmit' });
+      expect(logError).not.toHaveBeenCalled();
+    });
+
+    it('when trackTrialAcceptTerms is invoked', () => {
+      expect(spy).not.toHaveBeenCalled();
+
+      trackTrialAcceptTerms();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith({ event: 'saasTrialAcceptTerms' });
       expect(logError).not.toHaveBeenCalled();
     });
 

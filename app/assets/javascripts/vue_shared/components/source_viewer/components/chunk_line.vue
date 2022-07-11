@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlLink, GlSafeHtmlDirective, GlTooltipDirective } from '@gitlab/ui';
 import { setAttributes } from '~/lib/utils/dom_utils';
 import { BIDI_CHARS, BIDI_CHARS_CLASS_LIST, BIDI_CHAR_TOOLTIP } from '../constants';
 
@@ -9,6 +9,7 @@ export default {
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     number: {
@@ -20,6 +21,10 @@ export default {
       required: true,
     },
     language: {
+      type: String,
+      required: true,
+    },
+    blamePath: {
       type: String,
       required: true,
     },
@@ -58,21 +63,35 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex">
-    <div class="gl-p-0! gl-absolute gl-z-index-3 gl-border-r diff-line-num line-numbers">
+  <div class="gl-display-flex line-links-wrapper">
+    <div
+      class="gl-p-0! gl-absolute gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
+      :class="firstLineClass"
+    >
+      <gl-link
+        v-gl-tooltip="__('View blame')"
+        class="gl-user-select-none gl-ml-3 gl-shadow-none! file-line-blame"
+        :href="`${blamePath}#L${number}`"
+        data-track-action="click_link"
+        data-track-label="file_line_action"
+        data-track-property="blame"
+      />
+
       <gl-link
         :id="`L${number}`"
-        class="gl-user-select-none gl-ml-5 gl-pr-3 gl-shadow-none! file-line-num diff-line-num"
-        :class="firstLineClass"
+        class="gl-user-select-none gl-flex-grow-1 gl-justify-content-end gl-pr-3 gl-shadow-none! file-line-num"
         :to="`#L${number}`"
         :data-line-number="number"
+        data-track-action="click_link"
+        data-track-label="file_line_action"
+        data-track-property="link"
       >
         {{ number }}
       </gl-link>
     </div>
 
     <pre
-      class="gl-p-0! gl-w-full gl-overflow-visible! gl-ml-11! gl-border-none! code highlight gl-line-height-normal"
+      class="gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-line-height-normal"
       :class="firstLineClass"
     ><code><span :id="`LC${number}`" v-safe-html="formattedContent" :lang="language" class="line" data-testid="content"></span></code></pre>
   </div>

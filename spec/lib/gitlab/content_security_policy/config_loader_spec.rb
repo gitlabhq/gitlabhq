@@ -92,11 +92,11 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
     context 'when sentry is configured' do
       before do
         stub_sentry_settings
-        stub_config_setting(host: 'example.com')
+        stub_config_setting(host: 'gitlab.example.com')
       end
 
       it 'adds sentry path to CSP without user' do
-        expect(directives['connect_src']).to eq("'self' ws://example.com dummy://example.com/43")
+        expect(directives['connect_src']).to eq("'self' ws://gitlab.example.com dummy://example.com")
       end
     end
 

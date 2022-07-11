@@ -108,7 +108,19 @@ $solarized-light-il: #2aa198;
 .code.solarized-light {
   // Line numbers
   .file-line-num {
-    @include line-number-link($solarized-light-line-color);
+    @include line-link($black, 'link');
+  }
+
+  .file-line-blame {
+    @include line-link($black, 'git');
+  }
+
+  .line-links {
+    @include line-hover-bg($solarized-light-pre-bg);
+  }
+
+  .line-links-wrapper {
+    @include first-line-top-space($solarized-light-pre-bg, $solarized-light-border);
   }
 
   .line-numbers,
