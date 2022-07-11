@@ -32,9 +32,6 @@ export default {
       };
     },
     statusIcon(data) {
-      if (data.parsingInProgress) {
-        return null;
-      }
       if (data.status === TESTS_FAILED_STATUS) {
         return EXTENSION_ICONS.warning;
       }
@@ -56,18 +53,19 @@ export default {
   },
   methods: {
     fetchCollapsedData() {
-      return axios.get(this.testResultsPath).then((res) => {
-        const { data = {}, status } = res;
+      return axios.get(this.testResultsPath).then((response) => {
+        const { data = {}, status } = response;
+        const { suites = [], summary = {} } = data;
 
         return {
-          ...res,
+          ...response,
           data: {
-            hasSuiteError: data.suites?.some((suite) => suite.status === ERROR_STATUS),
+            hasSuiteError: suites.some((suite) => suite.status === ERROR_STATUS),
             parsingInProgress: status === 204,
             ...data,
             summary: {
-              recentlyFailed: countRecentlyFailedTests(data.suites),
-              ...data.summary,
+              recentlyFailed: countRecentlyFailedTests(suites),
+              ...summary,
             },
           },
         };

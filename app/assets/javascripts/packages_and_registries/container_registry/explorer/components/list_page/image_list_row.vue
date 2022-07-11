@@ -1,10 +1,12 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlSprintf, GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { n__ } from '~/locale';
-
+import Tracking from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
+import { joinPaths } from '~/lib/utils/url_utility';
 import {
   LIST_DELETE_BUTTON_DISABLED,
   LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION,
@@ -14,6 +16,9 @@ import {
   IMAGE_FAILED_DELETED_STATUS,
   IMAGE_MIGRATING_STATE,
   COPY_IMAGE_PATH_TITLE,
+  IMAGE_FULL_PATH_LABEL,
+  TRACKING_ACTION_CLICK_SHOW_FULL_PATH,
+  TRACKING_LABEL_REGISTRY_IMAGE_LIST,
 } from '../../constants/index';
 import DeleteButton from '../delete_button.vue';
 import CleanupStatus from './cleanup_status.vue';
@@ -24,6 +29,7 @@ export default {
     ClipboardButton,
     DeleteButton,
     GlSprintf,
+    GlButton,
     GlIcon,
     ListItem,
     GlSkeletonLoader,
@@ -32,6 +38,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   inject: ['config'],
   props: {
     item: {
@@ -53,6 +60,12 @@ export default {
     REMOVE_REPOSITORY_LABEL,
     ROW_SCHEDULED_FOR_DELETION,
     COPY_IMAGE_PATH_TITLE,
+    IMAGE_FULL_PATH_LABEL,
+  },
+  data() {
+    return {
+      showFullPath: false,
+    };
   },
   computed: {
     disabledDelete() {
@@ -78,6 +91,16 @@ export default {
       );
     },
     imageName() {
+      if (this.glFeatures.containerRegistryShowShortenedPath) {
+        if (this.showFullPath) {
+          return this.item.path;
+        }
+        const projectPath = this.item?.project?.path ?? '';
+        if (this.item.name) {
+          return joinPaths(projectPath, this.item.name);
+        }
+        return projectPath;
+      }
       return this.item.path;
     },
     routerLinkEvent() {
@@ -87,6 +110,15 @@ export default {
       return this.migrating
         ? LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION
         : LIST_DELETE_BUTTON_DISABLED;
+    },
+  },
+  methods: {
+    hideButton() {
+      this.showFullPath = true;
+      this.$refs.imageName.$el.focus();
+      this.track(TRACKING_ACTION_CLICK_SHOW_FULL_PATH, {
+        label: TRACKING_LABEL_REGISTRY_IMAGE_LIST,
+      });
     },
   },
 };
@@ -103,7 +135,20 @@ export default {
     :disabled="deleting"
   >
     <template #left-primary>
+      <gl-button
+        v-if="glFeatures.containerRegistryShowShortenedPath && !showFullPath"
+        v-gl-tooltip="{
+          placement: 'top',
+          title: $options.i18n.IMAGE_FULL_PATH_LABEL,
+        }"
+        icon="ellipsis_h"
+        size="small"
+        class="gl-mr-2"
+        :aria-label="$options.i18n.IMAGE_FULL_PATH_LABEL"
+        @click="hideButton"
+      />
       <router-link
+        ref="imageName"
         class="gl-text-body gl-font-weight-bold"
         data-testid="details-link"
         data-qa-selector="registry_image_content"

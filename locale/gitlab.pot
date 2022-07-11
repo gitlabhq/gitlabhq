@@ -10086,6 +10086,9 @@ msgstr ""
 msgid "ContainerRegistry|Set up cleanup"
 msgstr ""
 
+msgid "ContainerRegistry|Show full path"
+msgstr ""
+
 msgid "ContainerRegistry|Some tags were not deleted"
 msgstr ""
 

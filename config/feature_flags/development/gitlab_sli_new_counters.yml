@@ -1,8 +1,0 @@
----
-name: gitlab_sli_new_counters
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90977
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1760
-milestone: '15.2'
-type: development
-group: group::scalability
-default_enabled: false

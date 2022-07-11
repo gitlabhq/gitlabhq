@@ -72,14 +72,23 @@ describe('Test report extension', () => {
   });
 
   describe('summary', () => {
-    it('displays loading text', () => {
+    it('displays loading state initially', () => {
       mockApi(httpStatusCodes.OK);
       createComponent();
 
       expect(wrapper.text()).toContain(i18n.loading);
     });
 
-    it('displays failed loading text', async () => {
+    it('with a 204 response, continues to display loading state', async () => {
+      mockApi(httpStatusCodes.NO_CONTENT, '');
+      createComponent();
+
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain(i18n.loading);
+    });
+
+    it('with an error response, displays failed to load text', async () => {
       mockApi(httpStatusCodes.INTERNAL_SERVER_ERROR);
       createComponent();
 

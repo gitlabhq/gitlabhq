@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { i18n } from './constants';
 
 const textBuilder = (results, boldNumbers = false) => {
@@ -65,6 +66,11 @@ export const reportSubTextBuilder = ({ suite_errors, summary }) => {
 };
 
 export const countRecentlyFailedTests = (subject) => {
+  // return 0 count if subject is [], null, or undefined
+  if (isEmpty(subject)) {
+    return 0;
+  }
+
   // handle either a single report or an array of reports
   const reports = !subject.length ? [subject] : subject;
 
@@ -73,10 +79,10 @@ export const countRecentlyFailedTests = (subject) => {
       return (
         [report.new_failures, report.existing_failures, report.resolved_failures]
           // only count tests which have failed more than once
-          .map(
-            (failureArray) =>
-              failureArray.filter((failure) => failure.recent_failures?.count > 1).length,
-          )
+          .map((failureArray) => {
+            if (!failureArray) return 0;
+            return failureArray.filter((failure) => failure.recent_failures?.count > 1).length;
+          })
           .reduce((total, count) => total + count, 0)
       );
     })

@@ -1,6 +1,7 @@
-import { GlIcon, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlSprintf, GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { mockTracking } from 'helpers/tracking_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import DeleteButton from '~/packages_and_registries/container_registry/explorer/components/delete_button.vue';
 import CleanupStatus from '~/packages_and_registries/container_registry/explorer/components/list_page/cleanup_status.vue';
@@ -30,13 +31,15 @@ describe('Image List Row', () => {
   const findCleanupStatus = () => wrapper.findComponent(CleanupStatus);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findListItemComponent = () => wrapper.findComponent(ListItem);
+  const findShowFullPathButton = () => wrapper.findComponent(GlButton);
 
-  const mountComponent = (props) => {
+  const mountComponent = (props, features = {}) => {
     wrapper = shallowMount(Component, {
       stubs: {
         RouterLink,
         GlSprintf,
         ListItem,
+        GlButton,
       },
       propsData: {
         item,
@@ -44,6 +47,9 @@ describe('Image List Row', () => {
       },
       provide: {
         config: {},
+        glFeatures: {
+          ...features,
+        },
       },
       directives: {
         GlTooltip: createMockDirective(),
@@ -95,7 +101,7 @@ describe('Image List Row', () => {
       });
     });
 
-    it(`when the image has no name lists the path`, () => {
+    it('when the image has no name lists the path', () => {
       mountComponent({ item: { ...item, name: '' } });
 
       expect(findDetailsLink().text()).toBe(item.path);
@@ -141,6 +147,35 @@ describe('Image List Row', () => {
       });
       it('the clipboard button is disabled', () => {
         expect(findClipboardButton().attributes('disabled')).toBe('true');
+      });
+    });
+
+    describe('when containerRegistryShowShortenedPath feature enabled', () => {
+      let trackingSpy;
+
+      beforeEach(() => {
+        mountComponent({}, { containerRegistryShowShortenedPath: true });
+        trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+      });
+
+      it('renders shortened name of image', () => {
+        expect(findShowFullPathButton().exists()).toBe(true);
+        expect(findDetailsLink().text()).toBe('gitlab-test/rails-12009');
+      });
+
+      it('clicking on shortened name of image hides the button & shows full path', async () => {
+        const btn = findShowFullPathButton();
+        const mockFocusFn = jest.fn();
+        wrapper.vm.$refs.imageName.$el.focus = mockFocusFn;
+
+        await btn.trigger('click');
+
+        expect(findShowFullPathButton().exists()).toBe(false);
+        expect(findDetailsLink().text()).toBe(item.path);
+        expect(mockFocusFn).toHaveBeenCalled();
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_show_full_path', {
+          label: 'registry_image_list',
+        });
       });
     });
   });
