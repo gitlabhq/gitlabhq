@@ -2204,6 +2204,7 @@ In this example:
 
 Use `needs:project` to download artifacts from up to five jobs in other pipelines.
 The artifacts are downloaded from the latest successful pipeline for the specified ref.
+To specify multiple jobs, add each as separate array items under the `needs` keyword.
 
 If there is a pipeline running for the specified ref, a job with `needs:project`
 does not wait for the pipeline to complete. Instead, the job downloads the artifact
@@ -2232,10 +2233,14 @@ build_job:
       job: build-1
       ref: main
       artifacts: true
+    - project: namespace/group/project-name-2
+      job: build-2
+      ref: main
+      artifacts: true
 ```
 
-In this example, `build_job` downloads the artifacts from the latest successful `build-1` job
-on the `main` branch in the `group/project-name` project.
+In this example, `build_job` downloads the artifacts from the latest successful `build-1` and `build-2` jobs
+on the `main` branches in the `group/project-name` and `group/project-name-2` projects.
 
 In GitLab 13.3 and later, you can use [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
 in `needs:project`, for example:
