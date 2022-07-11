@@ -3,17 +3,6 @@
 module Gitlab
   module Gpg
     class Commit < Gitlab::SignedCommit
-      def signature
-        super
-
-        return @signature if @signature
-
-        cached_signature = lazy_signature&.itself
-        return @signature = cached_signature if cached_signature.present?
-
-        @signature = create_cached_signature!
-      end
-
       def update_signature!(cached_signature)
         using_keychain do |gpg_key|
           cached_signature.update!(attributes(gpg_key))
@@ -23,12 +12,8 @@ module Gitlab
 
       private
 
-      def lazy_signature
-        BatchLoader.for(@commit.sha).batch do |shas, loader|
-          CommitSignatures::GpgSignature.by_commit_sha(shas).each do |signature|
-            loader.call(signature.commit_sha, signature)
-          end
-        end
+      def signature_class
+        CommitSignatures::GpgSignature
       end
 
       def using_keychain
