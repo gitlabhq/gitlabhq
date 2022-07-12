@@ -33,12 +33,19 @@ module QA
       end
 
       keys = [
-        ['https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348022', Runtime::Key::RSA, 8192],
-        ['https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348021', Runtime::Key::ECDSA, 521],
-        ['https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348020', Runtime::Key::ED25519]
+        ['https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348022', Runtime::Key::RSA, 8192, true],
+        ['https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348021', Runtime::Key::ECDSA, 521, true],
+        ['https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348020', Runtime::Key::ED25519, false]
       ]
 
-      keys.each do |(testcase, key_class, bits)|
+      supported_keys =
+        if QA::Support::FIPS.enabled?
+          keys.select { |(_, _, _, allowed_in_fips)| allowed_in_fips }
+        else
+          keys
+        end
+
+      supported_keys.each do |(testcase, key_class, bits, _)|
         it "user sets up a deploy key with #{key_class}(#{bits}) to clone code using pipelines", testcase: testcase do
           key = key_class.new(*bits)
 

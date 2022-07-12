@@ -352,23 +352,23 @@ When this scenario is detected, the Rake task displays an error message. For exa
 
 ```shell
 Checking integrity of Job artifacts
-- 3..8: Failures: 2
-  - Job artifact: 3: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /var/opt/gitlab/gitlab-rails/shared/artifacts/4e/07/4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce/2021_05_26/5/3/job.log>
-  - Job artifact: 8: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /var/opt/gitlab/gitlab-rails/shared/artifacts/4e/07/4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce/2021_05_26/6/8/job.log>
+- 1..15: Failures: 2
+  - Job artifact: 9: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /var/opt/gitlab/gitlab-rails/shared/artifacts/4b/22/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a/2022_06_30/8/9/job.log>
+  - Job artifact: 15: Remote object does not exist
 Done!
 
 ```
 
-To delete these references to missing local artifacts (`job.log` files):
+To delete these references to missing local and/or remote artifacts (`job.log` files):
 
 1. Open the [GitLab Rails Console](../operations/rails_console.md#starting-a-rails-console-session).
 1. Run the following Ruby code:
 
    ```ruby
    artifacts_deleted = 0
-   ::Ci::JobArtifact.find_each do |artifact|                       ### Iterate artifacts
+   ::Ci::JobArtifact.find_each do |artifact|                      ### Iterate artifacts
    #  next if artifact.file.filename != "job.log"                 ### Uncomment if only `job.log` files' references are to be processed
-     next if artifact.file.exists?                                ### Skip if the file reference is valid
+     next if artifact.file.file.exists?                           ### Skip if the file reference is valid
      artifacts_deleted += 1
      puts "#{artifact.id}  #{artifact.file.path} is missing."     ### Allow verification before destroy
    #  artifact.destroy!                                           ### Uncomment to actually destroy

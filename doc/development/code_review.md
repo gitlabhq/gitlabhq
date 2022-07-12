@@ -79,6 +79,16 @@ page, with these behaviors:
       - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
       - **At capacity** - 🔴 `:red_circle:`
       - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
+1. It doesn't pick people who are already assigned a number of reviews that is equal to
+   or greater than their chosen "review limit". The review limit is the maximum number of
+   reviews people are ready to handle at a time. Set a review limit by using one of the following
+   as a Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
+   - 0️⃣ - `:zero:` (similar to `:red_circle:`)
+   - 1️⃣ - `:one:`
+   - 2️⃣ - `:two:`
+   - 3️⃣ - `:three:`
+   - 4️⃣ - `:four:`
+   - 5️⃣ - `:five:`
 1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
    is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
    - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.

@@ -1,7 +1,7 @@
 ---
-stage: Growth
-group: Adoption
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+stage: none
+group: unassigned
+info: For assistance with this What's new page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # What's new **(FREE)**

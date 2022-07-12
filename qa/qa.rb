@@ -17,6 +17,8 @@ require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 require 'rainbow/refinement'
 
+require_relative 'qa/support/fips'
+
 module QA
   root = "#{__dir__}/qa"
 

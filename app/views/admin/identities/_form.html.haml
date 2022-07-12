@@ -1,5 +1,5 @@
 = form_for [:admin, @user, @identity], html: { class: 'fieldset-form' } do |f|
-  = form_errors(@identity)
+  = form_errors(@identity, pajamas_alert: true)
 
   .form-group.row
     .col-sm-2.col-form-label
