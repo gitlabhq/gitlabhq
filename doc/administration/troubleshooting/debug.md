@@ -86,41 +86,6 @@ sudo -u git -H bundle exec rails runner -e production "user = User.first; puts u
 sudo -u git -H bundle exec rails runner -e production /path/to/script.rb
 ```
 
-## Mail not working
-
-A common problem is that mails are not being sent for some reason. Suppose you configured
-an SMTP server, but you're not seeing mail delivered. Here's how to check the settings:
-
-1. Run a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
-
-1. Look at the ActionMailer `delivery_method` to make sure it matches what you
-   intended. If you configured SMTP, it should say `:smtp`. If you're using
-   Sendmail, it should say `:sendmail`:
-
-   ```ruby
-   irb(main):001:0> ActionMailer::Base.delivery_method
-   => :smtp
-   ```
-
-1. If you're using SMTP, check the mail settings:
-
-   ```ruby
-   irb(main):002:0> ActionMailer::Base.smtp_settings
-   => {:address=>"localhost", :port=>25, :domain=>"localhost.localdomain", :user_name=>nil, :password=>nil, :authentication=>nil, :enable_starttls_auto=>true}
-   ```
-
-   In the example above, the SMTP server is configured for the local machine. If this is intended, you may need to check your local mail
-   logs (for example, `/var/log/mail.log`) for more details.
-
-1. Send a test message via the console.
-
-   ```ruby
-   irb(main):003:0> Notify.test_email('youremail@email.com', 'Hello World', 'This is a test message').deliver_now
-   ```
-
-   If you do not receive an email and/or see an error message, then check
-   your mail server settings.
-
 ## Advanced Issues
 
 For more advanced issues, `gdb` is a must-have tool for debugging issues.
