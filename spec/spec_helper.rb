@@ -275,6 +275,9 @@ RSpec.configure do |config|
       # (ie. ApplicationSetting#auto_devops_enabled)
       stub_feature_flags(force_autodevops_on_by_default: false)
 
+      # The survey popover can block the diffs causing specs to fail
+      stub_feature_flags(mr_experience_survey: false)
+
       # Merge request widget GraphQL requests are disabled in the tests
       # for now whilst we migrate as much as we can over the GraphQL
       # stub_feature_flags(merge_request_widget_graphql: false)

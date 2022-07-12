@@ -88,23 +88,7 @@ sudo -u git -H bundle exec rails runner -e production /path/to/script.rb
 
 ## Advanced Issues
 
-For more advanced issues, `gdb` is a must-have tool for debugging issues.
-
-### The GNU Project Debugger (GDB)
-
-To install on Ubuntu/Debian:
-
-```shell
-sudo apt-get install gdb
-```
-
-On CentOS:
-
-```shell
-sudo yum install gdb
-```
-
-<!-- vale gitlab.Spelling = NO -->
+For more advanced issues, there are some tools you can enable to assist with your debugging process.
 
 ### rbtrace
 
@@ -162,4 +146,3 @@ The output in `/tmp/puma.txt` may help diagnose the root cause.
 ## More information
 
 - [Debugging Stuck Ruby Processes](https://newrelic.com/blog/best-practices/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9)
-- [Cheat sheet of using GDB and Ruby processes](gdb-stuck-ruby.txt)

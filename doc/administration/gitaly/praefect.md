@@ -833,6 +833,7 @@ For more information on Gitaly server configuration, see our
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    prometheus_monitoring['enable'] = false
+   gitlab_kas['enable'] = false
 
    # Enable only the Gitaly service
    gitaly['enable'] = true
