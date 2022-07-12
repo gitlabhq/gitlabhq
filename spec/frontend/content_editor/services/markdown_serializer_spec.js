@@ -57,8 +57,6 @@ const tiptapEditor = createTestEditor({
     HardBreak,
     Heading,
     HorizontalRule,
-    ...HTMLMarks,
-    ...HTMLNodes,
     Image,
     InlineDiff,
     Italic,
@@ -73,6 +71,8 @@ const tiptapEditor = createTestEditor({
     TableRow,
     TaskItem,
     TaskList,
+    ...HTMLMarks,
+    ...HTMLNodes,
   ],
 });
 
@@ -122,13 +122,6 @@ const {
     codeBlock: { nodeType: CodeBlockHighlight.name },
     details: { nodeType: Details.name },
     detailsContent: { nodeType: DetailsContent.name },
-    ...HTMLNodes.reduce(
-      (builders, htmlNode) => ({
-        ...builders,
-        [htmlNode.name]: { nodeType: htmlNode.name },
-      }),
-      {},
-    ),
     descriptionItem: { nodeType: DescriptionItem.name },
     descriptionList: { nodeType: DescriptionList.name },
     emoji: { markType: Emoji.name },
@@ -153,6 +146,13 @@ const {
     tableRow: { nodeType: TableRow.name },
     taskItem: { nodeType: TaskItem.name },
     taskList: { nodeType: TaskList.name },
+    ...HTMLNodes.reduce(
+      (builders, htmlNode) => ({
+        ...builders,
+        [htmlNode.name]: { nodeType: htmlNode.name },
+      }),
+      {},
+    ),
   },
 });
 

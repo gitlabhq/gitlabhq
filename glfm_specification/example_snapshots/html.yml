@@ -1527,8 +1527,9 @@
              <a></a>
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div><p>
+      *hello*
+             </p></div>
 04_06__leaf_blocks__html_blocks__004:
   canonical: |
     </div>
@@ -1549,8 +1550,7 @@
     <p data-sourcepos="3:1-3:10"><em>Markdown</em></p>
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div><p><em>Markdown</em></p></div>
 04_06__leaf_blocks__html_blocks__006:
   canonical: |
     <div id="foo"
@@ -1560,8 +1560,7 @@
     <div>
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div></div>
 04_06__leaf_blocks__html_blocks__007:
   canonical: |
     <div id="foo" class="bar
@@ -1571,8 +1570,7 @@
     <div>
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div></div>
 04_06__leaf_blocks__html_blocks__008:
   canonical: |
     <div>
@@ -1584,8 +1582,9 @@
     <p data-sourcepos="4:1-4:5"><em>bar</em></p>
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div><p>
+    *foo*
+    </p><p><em>bar</em></p></div>
 04_06__leaf_blocks__html_blocks__009:
   canonical: |
     <div id="foo"
@@ -1616,8 +1615,7 @@
   static: |-
     <div><a href="bar">*foo*</a></div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div><p><a target="_blank" rel="noopener noreferrer nofollow" href="bar">*foo*</a></p></div>
 04_06__leaf_blocks__html_blocks__013:
   canonical: |
     <table><tr><td>
@@ -1643,8 +1641,7 @@
     int x = 33;
     ```
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div></div>
 04_06__leaf_blocks__html_blocks__015:
   canonical: |
     <a href="foo">
@@ -1667,8 +1664,7 @@
 
     *bar*
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "warning" not supported by this converter. Please, provide an specification.
+    <p></p>
 04_06__leaf_blocks__html_blocks__017:
   canonical: |
     <i class="foo">
@@ -1761,8 +1757,7 @@
 
     <p data-sourcepos="6:1-6:4" dir="auto">okay</p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "script" not supported by this converter. Please, provide an specification.
+    <p>okay</p>
 04_06__leaf_blocks__html_blocks__024:
   canonical: |
     <style
@@ -1780,8 +1775,7 @@
 
     <p data-sourcepos="7:1-7:4" dir="auto">okay</p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "style" not supported by this converter. Please, provide an specification.
+    <p>okay</p>
 04_06__leaf_blocks__html_blocks__025:
   canonical: |
     <style
@@ -1793,8 +1787,7 @@
 
     foo
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "style" not supported by this converter. Please, provide an specification.
+    <p></p>
 04_06__leaf_blocks__html_blocks__026:
   canonical: |
     <blockquote>
@@ -1811,8 +1804,9 @@
     </div>
     </blockquote>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <blockquote multiline="false"><div><p>
+    foo
+    </p></div></blockquote>
 04_06__leaf_blocks__html_blocks__027:
   canonical: |
     <ul>
@@ -1831,8 +1825,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <ul bullet="*"><li><p></p><div></div></li><li><p>foo</p></li></ul>
 04_06__leaf_blocks__html_blocks__028:
   canonical: |
     <style>p{color:red;}</style>
@@ -1841,8 +1834,7 @@
     p{color:red;}
     <p data-sourcepos="2:1-2:5" dir="auto"><em>foo</em></p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "style" not supported by this converter. Please, provide an specification.
+    <p><em>foo</em></p>
 04_06__leaf_blocks__html_blocks__029:
   canonical: |
     <!-- foo -->*bar*
@@ -1861,8 +1853,7 @@
   static: |-
     1. *bar*
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "script" not supported by this converter. Please, provide an specification.
+    <p>1. *bar*</p>
 04_06__leaf_blocks__html_blocks__031:
   canonical: |
     <!-- Foo
@@ -1955,8 +1946,7 @@
     </div>
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div><pre class="content-editor-code-block undefined code highlight"><code>&lt;div&gt;</code></pre></div>
 04_06__leaf_blocks__html_blocks__037:
   canonical: |
     <p>Foo</p>
@@ -1969,8 +1959,7 @@
     bar
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <p>Foo</p>
 04_06__leaf_blocks__html_blocks__038:
   canonical: |
     <div>
@@ -1983,8 +1972,9 @@
     </div>
     *foo*
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div><p>
+    bar
+    </p></div>
 04_06__leaf_blocks__html_blocks__039:
   canonical: |
     <p>Foo
@@ -2008,8 +1998,7 @@
     <p data-sourcepos="3:1-3:18"><em>Emphasized</em> text.</p>
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div><p><em>Emphasized</em> text.</p></div>
 04_06__leaf_blocks__html_blocks__041:
   canonical: |
     <div>
@@ -2020,8 +2009,9 @@
     *Emphasized* text.
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "div" not supported by this converter. Please, provide an specification.
+    <div><p>
+    *Emphasized* text.
+    </p></div>
 04_06__leaf_blocks__html_blocks__042:
   canonical: |
     <table>
@@ -2157,8 +2147,7 @@
     <p data-sourcepos="1:1-1:17" dir="auto">[foo]: (baz)</p>
     <p data-sourcepos="3:1-3:5" dir="auto">[foo]</p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "bar" not supported by this converter. Please, provide an specification.
+    <p>[foo]: </p>
 04_07__leaf_blocks__link_reference_definitions__011:
   canonical: |
     <p><a href="/url%5Cbar*baz" title="foo&quot;bar\baz">foo</a></p>
@@ -6096,8 +6085,7 @@
   static: |-
     <p data-sourcepos="1:1-2:5" dir="auto">[link]()</p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "foo" not supported by this converter. Please, provide an specification.
+    <p>[link](</p>
 06_07__inlines__links__009:
   canonical: |
     <p><a href="b)c">a</a></p>
@@ -6336,8 +6324,7 @@
   static: |-
     <p data-sourcepos="1:1-1:24" dir="auto">[foo </p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "bar" not supported by this converter. Please, provide an specification.
+    <p>[foo </p>
 06_07__inlines__links__041:
   canonical: |
     <p>[foo<code>](/uri)</code></p>
@@ -6422,8 +6409,7 @@
   static: |-
     <p data-sourcepos="1:1-1:24" dir="auto">[foo </p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "bar" not supported by this converter. Please, provide an specification.
+    <p>[foo </p>
 06_07__inlines__links__053:
   canonical: |
     <p>[foo<code>][ref]</code></p>
@@ -7085,16 +7071,14 @@
   static: |-
     <p data-sourcepos="1:1-1:13" dir="auto"><a></a></p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "bab" not supported by this converter. Please, provide an specification.
+    <p></p>
 06_11__inlines__raw_html__002:
   canonical: |
     <p><a/><b2/></p>
   static: |-
     <p data-sourcepos="1:1-1:9" dir="auto"><a></a></p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "b2" not supported by this converter. Please, provide an specification.
+    <p></p>
 06_11__inlines__raw_html__003:
   canonical: |
     <p><a  /><b2
@@ -7102,8 +7086,7 @@
   static: |-
     <p data-sourcepos="1:1-2:12" dir="auto"><a></a></p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "b2" not supported by this converter. Please, provide an specification.
+    <p></p>
 06_11__inlines__raw_html__004:
   canonical: |
     <p><a foo="bar" bam = 'baz <em>"</em>'
@@ -7118,8 +7101,7 @@
   static: |-
     <p data-sourcepos="1:1-1:38" dir="auto">Foo </p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "responsive-image" not supported by this converter. Please, provide an specification.
+    <p>Foo </p>
 06_11__inlines__raw_html__006:
   canonical: |
     <p>&lt;33&gt; &lt;__&gt;</p>
@@ -7260,8 +7242,7 @@
       &lt;xmp&gt; is disallowed.  &lt;XMP&gt; is also disallowed.
     &lt;/blockquote&gt;</strong></p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "title" not supported by this converter. Please, provide an specification.
+    <p></p>
 06_13__inlines__hard_line_breaks__001:
   canonical: |
     <p>foo<br />
@@ -7434,11 +7415,11 @@
 07_01__gitlab_specific_markdown__footnotes__001:
   canonical: ""
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-4281" id="fnref-1-4281" data-footnote-ref>1</a></sup></p>
+    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-794" id="fnref-1-794" data-footnote-ref>1</a></sup></p>
     <section data-footnotes class="footnotes">
     <ol>
-    <li id="fn-1-4281">
-    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-4281" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    <li id="fn-1-794">
+    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-794" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
     </section>

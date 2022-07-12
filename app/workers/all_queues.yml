@@ -2353,6 +2353,15 @@
   :weight: 2
   :idempotent: false
   :tags: []
+- :name: google_cloud_create_cloudsql_instance
+  :worker_name: GoogleCloud::CreateCloudsqlInstanceWorker
+  :feature_category: :not_owned
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: group_destroy
   :worker_name: GroupDestroyWorker
   :feature_category: :subgroups

@@ -17587,6 +17587,9 @@ msgstr ""
 msgid "GitLabPages|Unverified"
 msgstr ""
 
+msgid "GitLabPages|Updating your Pages configuration..."
+msgstr ""
+
 msgid "GitLabPages|Verified"
 msgstr ""
 

@@ -6,6 +6,7 @@ import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
 import FootnoteReference from '~/content_editor/extensions/footnote_reference';
 import HardBreak from '~/content_editor/extensions/hard_break';
+import HTMLNodes from '~/content_editor/extensions/html_nodes';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
 import Image from '~/content_editor/extensions/image';
@@ -52,6 +53,7 @@ const tiptapEditor = createTestEditor({
     TableCell,
     TaskList,
     TaskItem,
+    ...HTMLNodes,
   ],
 });
 
@@ -64,6 +66,7 @@ const {
     bulletList,
     code,
     codeBlock,
+    div,
     footnoteDefinition,
     footnoteReference,
     hardBreak,
@@ -108,6 +111,13 @@ const {
     tableRow: { nodeType: TableRow.name },
     taskItem: { nodeType: TaskItem.name },
     taskList: { nodeType: TaskList.name },
+    ...HTMLNodes.reduce(
+      (builders, htmlNode) => ({
+        ...builders,
+        [htmlNode.name]: { nodeType: htmlNode.name },
+      }),
+      {},
+    ),
   },
 });
 
@@ -915,6 +925,12 @@ Paragraph
         paragraph(source('Paragraph'), 'Paragraph'),
       ),
     },
+    {
+      markdown: `
+<div>div</div>
+`,
+      expectedDoc: doc(div(source('<div>div</div>'), paragraph(source('div'), 'div'))),
+    },
   ];
 
   const runOnly = examples.find((example) => example.only === true);
@@ -928,4 +944,64 @@ Paragraph
     expect(document.toJSON()).toEqual(expectedDoc.toJSON());
     expect(serialize(document)).toEqual(trimmed);
   });
+
+  /**
+   * DISCLAIMER: THIS IS A SECURITY ORIENTED TEST THAT ENSURES
+   * THE CLIENT-SIDE PARSER IGNORES DANGEROUS TAGS THAT ARE NOT
+   * EXPLICITELY SUPPORTED.
+   *
+   * PLEASE CONSIDER THIS INFORMATION WHILE MODIFYING THESE TESTS
+   */
+  it.each([
+    {
+      markdown: `
+<script>
+alert("Hello world")
+</script>
+    `,
+      expectedHtml: '<p></p>',
+    },
+    {
+      markdown: `
+<foo>Hello</foo>
+      `,
+      expectedHtml: '<p></p>',
+    },
+    {
+      markdown: `
+<h1 class="heading-with-class">Header</h1>
+      `,
+      expectedHtml: '<h1>Header</h1>',
+    },
+    {
+      markdown: `
+<a id="link-id">Header</a> and other text
+      `,
+      expectedHtml:
+        '<p><a target="_blank" rel="noopener noreferrer nofollow">Header</a> and other text</p>',
+    },
+    {
+      markdown: `
+<style>
+body {
+  display: none;
+}
+</style>
+      `,
+      expectedHtml: '<p></p>',
+    },
+    {
+      markdown: '<div style="transform">div</div>',
+      expectedHtml: '<div><p>div</p></div>',
+    },
+  ])(
+    'removes unknown tags and unsupported attributes from HTML output',
+    async ({ markdown, expectedHtml }) => {
+      const document = await deserialize(markdown);
+
+      tiptapEditor.commands.setContent(document.toJSON());
+
+      expect(tiptapEditor.getHTML()).toEqual(expectedHtml);
+    },
+  );
 });

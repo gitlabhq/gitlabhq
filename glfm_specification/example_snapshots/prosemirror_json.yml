@@ -2941,8 +2941,25 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__003: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "\n  *hello*\n         "
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__004: |-
   {
     "type": "doc",
@@ -2959,17 +2976,82 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__005: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "marks": [
+                  {
+                    "type": "italic"
+                  }
+                ],
+                "text": "Markdown"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__006: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div"
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__007: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div"
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__008: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "\n*foo*\n"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "marks": [
+                  {
+                    "type": "italic"
+                  }
+                ],
+                "text": "bar"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__009: |-
   {
     "type": "doc",
@@ -2998,8 +3080,37 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__012: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "marks": [
+                  {
+                    "type": "link",
+                    "attrs": {
+                      "href": "bar",
+                      "target": "_blank",
+                      "class": null,
+                      "title": null,
+                      "canonicalSrc": null
+                    }
+                  }
+                ],
+                "text": "*foo*"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__013: |-
   {
     "type": "doc",
@@ -3039,8 +3150,23 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__014: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div"
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "\n``` c\nint x = 33;\n```"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__015: |-
   {
     "type": "doc",
@@ -3069,8 +3195,14 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__016: |-
-  Error - check implementation:
-  Hast node of type "warning" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph"
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__017: |-
   {
     "type": "doc",
@@ -3181,29 +3313,158 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__023: |-
-  Error - check implementation:
-  Hast node of type "script" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "okay"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__024: |-
-  Error - check implementation:
-  Hast node of type "style" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "okay"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__025: |-
-  Error - check implementation:
-  Hast node of type "style" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph"
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__026: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "blockquote",
+        "attrs": {
+          "multiline": false
+        },
+        "content": [
+          {
+            "type": "div",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "\nfoo\n"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "bar"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__027: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph"
+              },
+              {
+                "type": "div"
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "foo"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__028: |-
-  Error - check implementation:
-  Hast node of type "style" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "foo"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__029: |-
   Error - check implementation:
   Cannot read properties of undefined (reading 'wrapper')
 04_06__leaf_blocks__html_blocks__030: |-
-  Error - check implementation:
-  Hast node of type "script" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "1. *bar*"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__031: |-
   Error - check implementation:
   Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
@@ -3226,14 +3487,87 @@
   Error - check implementation:
   Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__036: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "codeBlock",
+            "attrs": {
+              "language": null,
+              "class": "code highlight"
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "<div>"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__037: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Foo"
+          }
+        ]
+      },
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "\nbar\n"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__038: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "\nbar\n"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "\n*foo*"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__039: |-
   {
     "type": "doc",
@@ -3266,11 +3600,54 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__040: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "marks": [
+                  {
+                    "type": "italic"
+                  }
+                ],
+                "text": "Emphasized"
+              },
+              {
+                "type": "text",
+                "text": " text."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__041: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "div",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "\n*Emphasized* text.\n"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__042: |-
   {
     "type": "doc",
@@ -3586,8 +3963,29 @@
     ]
   }
 04_07__leaf_blocks__link_reference_definitions__010: |-
-  Error - check implementation:
-  Hast node of type "bar" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: "
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]"
+          }
+        ]
+      }
+    ]
+  }
 04_07__leaf_blocks__link_reference_definitions__011: |-
   {
     "type": "doc",
@@ -13715,8 +14113,20 @@
     ]
   }
 06_07__inlines__links__008: |-
-  Error - check implementation:
-  Hast node of type "foo" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "[link]("
+          }
+        ]
+      }
+    ]
+  }
 06_07__inlines__links__009: |-
   {
     "type": "doc",
@@ -14573,8 +14983,20 @@
     ]
   }
 06_07__inlines__links__040: |-
-  Error - check implementation:
-  Hast node of type "bar" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo "
+          }
+        ]
+      }
+    ]
+  }
 06_07__inlines__links__041: |-
   {
     "type": "doc",
@@ -14938,8 +15360,20 @@
     ]
   }
 06_07__inlines__links__052: |-
-  Error - check implementation:
-  Hast node of type "bar" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo "
+          }
+        ]
+      }
+    ]
+  }
 06_07__inlines__links__053: |-
   {
     "type": "doc",
@@ -17446,14 +17880,32 @@
     ]
   }
 06_11__inlines__raw_html__001: |-
-  Error - check implementation:
-  Hast node of type "bab" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph"
+      }
+    ]
+  }
 06_11__inlines__raw_html__002: |-
-  Error - check implementation:
-  Hast node of type "b2" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph"
+      }
+    ]
+  }
 06_11__inlines__raw_html__003: |-
-  Error - check implementation:
-  Hast node of type "b2" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph"
+      }
+    ]
+  }
 06_11__inlines__raw_html__004: |-
   {
     "type": "doc",
@@ -17464,8 +17916,20 @@
     ]
   }
 06_11__inlines__raw_html__005: |-
-  Error - check implementation:
-  Hast node of type "responsive-image" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "Foo "
+          }
+        ]
+      }
+    ]
+  }
 06_11__inlines__raw_html__006: |-
   {
     "type": "doc",
@@ -17662,8 +18126,25 @@
     ]
   }
 06_12__inlines__disallowed_raw_html_extension__001: |-
-  Error - check implementation:
-  Hast node of type "title" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph"
+      },
+      {
+        "type": "blockquote",
+        "attrs": {
+          "multiline": false
+        },
+        "content": [
+          {
+            "type": "paragraph"
+          }
+        ]
+      }
+    ]
+  }
 06_13__inlines__hard_line_breaks__001: |-
   {
     "type": "doc",

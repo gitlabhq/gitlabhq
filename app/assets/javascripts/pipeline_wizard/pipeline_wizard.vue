@@ -60,6 +60,7 @@ export default {
       :filename="filename"
       :project-path="projectPath"
       :steps="steps"
+      @done="$emit('done')"
     />
   </div>
 </template>

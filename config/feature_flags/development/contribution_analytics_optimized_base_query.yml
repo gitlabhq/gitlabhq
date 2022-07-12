@@ -1,0 +1,8 @@
+---
+name: contribution_analytics_optimized_base_query
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91468
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/367090
+milestone: '15.2'
+type: development
+group: group::optimize
+default_enabled: false

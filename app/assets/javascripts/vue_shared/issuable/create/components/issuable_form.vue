@@ -81,7 +81,8 @@ export default {
               ref="textarea"
               v-model="issuableDescription"
               dir="auto"
-              class="note-textarea qa-issuable-form-description rspec-issuable-form-description js-gfm-input js-autosize markdown-area"
+              class="note-textarea rspec-issuable-form-description js-gfm-input js-autosize markdown-area"
+              data-qa-selector="issuable_form_description_field"
               :aria-label="__('Description')"
               :placeholder="__('Write a comment or drag your files here…')"
             ></textarea>

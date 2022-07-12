@@ -85,3 +85,19 @@ You can also remove the Infrastructure Registry for a specific project:
 1. Select **Save changes**.
 
 To enable it back, follow the same steps above and toggle it on (in blue).
+
+## How module resolution works
+
+When you upload a new module, GitLab generates a path for the module, for example, `https://gitlab.example.com/parent-group/my-infra-package`.
+
+- This path conforms with [the Terraform spec](https://www.terraform.io/internals/module-registry-protocol).
+- The name of the path must be unique within the namespace.
+
+For projects in subgroups, GitLab checks that the module name does not already exist anywhere in the namespace, including all subgroups and the parent group.
+
+For example, if:
+
+- The project is `gitlab.example.com/parent-group/sub-group/my-project`.
+- The infrastructure package is `my-infra-package`.
+
+The project name must be unique in all projects in all groups under `parent-group`.

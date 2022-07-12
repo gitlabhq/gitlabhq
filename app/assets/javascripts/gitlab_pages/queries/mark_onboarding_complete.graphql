@@ -1,0 +1,6 @@
+mutation pagesMarkOnboardingComplete($input: PagesMarkOnboardingCompleteInput!) {
+  pagesMarkOnboardingComplete(input: $input) {
+    onboardingComplete
+    errors
+  }
+}

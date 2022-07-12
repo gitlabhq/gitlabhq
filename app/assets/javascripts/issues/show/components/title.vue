@@ -74,14 +74,15 @@ export default {
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
-      class="title qa-title gl-font-size-h-display"
+      class="title gl-font-size-h-display"
+      data-qa-selector="title_content"
       dir="auto"
     ></h1>
     <gl-button
       v-if="showInlineEditButton && canUpdate"
       v-gl-tooltip.bottom
       icon="pencil"
-      class="btn-edit js-issuable-edit qa-edit-button"
+      class="btn-edit js-issuable-edit"
       :title="$options.i18n.editTitleAndDescription"
       :aria-label="$options.i18n.editTitleAndDescription"
       @click="edit"

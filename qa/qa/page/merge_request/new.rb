@@ -8,10 +8,6 @@ module QA
           element :issuable_create_button, required: true
         end
 
-        view 'app/views/shared/form_elements/_description.html.haml' do
-          element :issuable_form_description
-        end
-
         view 'app/views/projects/merge_requests/creations/_new_compare.html.haml' do
           element :compare_branches_button
           element :source_branch_dropdown
@@ -38,10 +34,6 @@ module QA
 
         def create_merge_request
           click_element(:issuable_create_button, Page::MergeRequest::Show)
-        end
-
-        def has_description?(description)
-          has_element?(:issuable_form_description, text: description)
         end
 
         def click_diffs_tab

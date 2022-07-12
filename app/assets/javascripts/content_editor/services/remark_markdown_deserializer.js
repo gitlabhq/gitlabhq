@@ -88,6 +88,11 @@ const factorySpecs = {
     selector: (hastNode, ancestors) =>
       hastNode.tagName === 'input' && isTaskItem(ancestors[ancestors.length - 1]),
   },
+  div: {
+    type: 'block',
+    selector: 'div',
+    wrapInParagraph: true,
+  },
   table: {
     type: 'block',
     selector: 'table',

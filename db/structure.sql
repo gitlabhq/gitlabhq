@@ -28919,6 +28919,8 @@ CREATE INDEX index_on_dingtalk_tracker_data_corpid ON dingtalk_tracker_data USIN
 
 COMMENT ON INDEX index_on_dingtalk_tracker_data_corpid IS 'JiHu-specific index';
 
+CREATE INDEX index_on_events_to_improve_contribution_analytics_performance ON events USING btree (project_id, target_type, action, created_at, author_id, id);
+
 CREATE INDEX index_on_group_id_on_webhooks ON web_hooks USING btree (group_id);
 
 CREATE INDEX index_on_identities_lower_extern_uid_and_provider ON identities USING btree (lower((extern_uid)::text), provider);

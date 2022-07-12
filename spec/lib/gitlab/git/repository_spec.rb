@@ -1758,25 +1758,13 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   describe '#languages' do
     it 'returns exactly the expected results' do
       languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')
-      expected_languages = [
-        { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
-        { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-        { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-        { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
-      ]
 
-      expect(languages.size).to eq(expected_languages.size)
-
-      expected_languages.size.times do |i|
-        a = expected_languages[i]
-        b = languages[i]
-
-        expect(a.keys.sort).to eq(b.keys.sort)
-        expect(a[:value]).to be_within(0.1).of(b[:value])
-
-        non_float_keys = a.keys - [:value]
-        expect(a.values_at(*non_float_keys)).to eq(b.values_at(*non_float_keys))
-      end
+      expect(languages).to match_array([
+        { value: a_value_within(0.1).of(66.7), label: "Ruby", color: "#701516", highlight: "#701516" },
+        { value: a_value_within(0.1).of(22.96), label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+        { value: a_value_within(0.1).of(7.9), label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+        { value: a_value_within(0.1).of(2.51), label: "CoffeeScript", color: "#244776", highlight: "#244776" }
+      ])
     end
 
     it "uses the repository's HEAD when no ref is passed" do

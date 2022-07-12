@@ -235,6 +235,12 @@ When you use the [instance-level endpoint](#use-the-gitlab-endpoint-for-npm-pack
   example, a package `@MyScope/package-name` in GitLab becomes `@myscope/package-name` for npm.
 - The `package-name` can be whatever you want.
 
+NOTE:
+The value used for the `@scope` is the root of the project that will end up hosting the packages and not the root
+of the project with the source code of the package itself. For example, assume your package source code is located
+at `source-code-group/package-code` and deployed to a package registry inside `registries-group/registry-project`.
+In this case, the `@scope` needs to be `@registries-group` and not `@source-code-group`.
+
 For example, if your project is `https://gitlab.example.com/my-org/engineering-group/team-amazing/analytics`,
 the root namespace is `my-org`. When you publish a package, it must have `my-org` as the scope.
 

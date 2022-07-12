@@ -64,8 +64,9 @@ export default {
     <div class="title-container">
       <h1
         v-safe-html="issuable.titleHtml || issuable.title"
-        class="title qa-title gl-font-size-h-display"
+        class="title gl-font-size-h-display"
         dir="auto"
+        data-qa-selector="title_content"
         data-testid="title"
       ></h1>
       <gl-button
@@ -74,7 +75,7 @@ export default {
         :title="$options.i18n.editTitleAndDescription"
         :aria-label="$options.i18n.editTitleAndDescription"
         icon="pencil"
-        class="btn-edit js-issuable-edit qa-edit-button"
+        class="btn-edit js-issuable-edit"
         @click="$emit('edit-issuable', $event)"
       />
     </div>

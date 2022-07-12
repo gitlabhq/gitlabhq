@@ -570,11 +570,7 @@ export const createProseMirrorDocFromMdastTree = ({
     const factory = findFactory(hastNode, ancestors, proseMirrorNodeFactories);
 
     if (!factory) {
-      throw new Error(
-        `Hast node of type "${
-          hastNode.tagName || hastNode.type
-        }" not supported by this converter. Please, provide an specification.`,
-      );
+      return SKIP;
     }
 
     const parent = findParent(ancestors, factory.parent);

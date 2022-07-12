@@ -53,7 +53,6 @@ include:
         --tag ~skip_signup_disabled \
         --tag ~requires_git_protocol_v2 \
         --tag ~requires_praefect \
-        --tag ~sanity_feature_flags \
         --force-color \
         --order random \
         --format documentation \
@@ -101,29 +100,6 @@ download-knapsack-report:
       - qa/knapsack/review-qa-*.json
     expire_in: 1 day
 
-review-qa-sanity:
-  extends:
-    - .review-qa-base
-    - .review:rules:review-qa-sanity
-  retry: 1
-  variables:
-    QA_RUN_TYPE: review-qa-sanity
-  script:
-    - qa_run_status=0
-    - |
-      bundle exec rake "knapsack:rspec[\
-        --tag sanity_feature_flags \
-        --force-color \
-        --order random \
-        --format documentation \
-        --format RspecJunitFormatter --out tmp/rspec.xml \
-      ]" || qa_run_status=$?
-    - if [ ${qa_run_status} -ne 0 ]; then
-        release_sha=$(echo "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-${CI_COMMIT_SHA}}" | cut -c1-11);
-        echo "Errors can be found at https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/${release_sha}/all-events/.";
-      fi
-    - exit ${qa_run_status}
-
 review-qa-smoke:
   extends:
     - .review-qa-base
@@ -141,7 +117,7 @@ review-qa-reliable:
   parallel: 10
   variables:
     QA_RUN_TYPE: review-qa-reliable
-    RSPEC_TAGS: --tag reliable
+    RSPEC_TAGS: --tag reliable --tag sanity_feature_flags
 
 review-qa-all:
   extends:
@@ -150,7 +126,7 @@ review-qa-all:
   parallel: 5
   variables:
     QA_RUN_TYPE: review-qa-all
-    RSPEC_TAGS: --tag ~reliable --tag ~smoke
+    RSPEC_TAGS: --tag ~reliable --tag ~smoke --tag ~sanity_feature_flags
 
 review-performance:
   extends:

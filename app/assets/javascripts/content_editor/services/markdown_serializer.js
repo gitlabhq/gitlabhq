@@ -170,12 +170,6 @@ const defaultSerializerConfig = {
     [HardBreak.name]: preserveUnchanged(renderHardBreak),
     [Heading.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.heading),
     [HorizontalRule.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.horizontal_rule),
-    ...HTMLNodes.reduce((serializers, htmlNode) => {
-      return {
-        ...serializers,
-        [htmlNode.name]: (state, node) => renderHTMLNode(htmlNode.options.tagName)(state, node),
-      };
-    }, {}),
     [Image.name]: preserveUnchanged(renderImage),
     [ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
     [OrderedList.name]: preserveUnchanged(renderOrderedList),
@@ -202,6 +196,12 @@ const defaultSerializerConfig = {
     [Text.name]: defaultMarkdownSerializer.nodes.text,
     [Video.name]: renderPlayable,
     [WordBreak.name]: (state) => state.write('<wbr>'),
+    ...HTMLNodes.reduce((serializers, htmlNode) => {
+      return {
+        ...serializers,
+        [htmlNode.name]: (state, node) => renderHTMLNode(htmlNode.options.tagName)(state, node),
+      };
+    }, {}),
   },
 };
 

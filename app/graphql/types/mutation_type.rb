@@ -148,6 +148,7 @@ module Types
     mount_mutation Mutations::WorkItems::UpdateTask, deprecated: { milestone: '15.1', reason: :alpha }
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update
+    mount_mutation Mutations::Pages::MarkOnboardingComplete
     mount_mutation Mutations::SavedReplies::Destroy
   end
 end

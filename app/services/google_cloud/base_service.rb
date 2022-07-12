@@ -33,13 +33,14 @@ module GoogleCloud
       end
     end
 
-    def create_or_replace_project_vars(environment_scope, key, value, is_protected)
+    def create_or_replace_project_vars(environment_scope, key, value, is_protected, is_masked = false)
       change_params = {
         variable_params: {
           key: key,
           value: value,
           environment_scope: environment_scope,
-          protected: is_protected
+          protected: is_protected,
+          masked: is_masked
         }
       }
       existing_variable = find_existing_variable(environment_scope, key)

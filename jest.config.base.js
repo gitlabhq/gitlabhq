@@ -173,8 +173,9 @@ module.exports = (path, options = {}) => {
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
       '^.+\\.js$': 'babel-jest',
       '^.+\\.vue$': 'vue-jest',
-      '^.+\\.yml$': './spec/frontend/__helpers__/yaml_transformer.js',
-      '^.+\\.(md|zip|png)$': 'jest-raw-loader',
+      'spec/frontend/editor/schema/ci/yaml_tests/.+\\.(yml|yaml)$':
+        './spec/frontend/__helpers__/yaml_transformer.js',
+      '^.+\\.(md|zip|png|yml|yaml)$': 'jest-raw-loader',
     },
     transformIgnorePatterns: [`node_modules/(?!(${transformIgnoreNodeModules.join('|')}))`],
     timers: 'fake',

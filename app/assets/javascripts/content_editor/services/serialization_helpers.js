@@ -5,6 +5,8 @@ const defaultAttrs = {
   th: { colspan: 1, rowspan: 1, colwidth: null },
 };
 
+const defaultIgnoreAttrs = ['sourceMarkdown', 'sourceMapKey'];
+
 const ignoreAttrs = {
   dd: ['isTerm'],
   dt: ['isTerm'],
@@ -101,13 +103,17 @@ function htmlEncode(str = '') {
     .replace(/"/g, '&#34;');
 }
 
+const shouldIgnoreAttr = (tagName, attrKey, attrValue) =>
+  ignoreAttrs[tagName]?.includes(attrKey) ||
+  defaultIgnoreAttrs.includes(attrKey) ||
+  defaultAttrs[tagName]?.[attrKey] === attrValue;
+
 export function openTag(tagName, attrs) {
   let str = `<${tagName}`;
 
   str += Object.entries(attrs || {})
     .map(([key, value]) => {
-      if ((ignoreAttrs[tagName] || []).includes(key) || defaultAttrs[tagName]?.[key] === value)
-        return '';
+      if (shouldIgnoreAttr(tagName, key, value)) return '';
 
       return ` ${key}="${htmlEncode(value?.toString())}"`;
     })

@@ -12,7 +12,7 @@
 #     ide_commit
 #
 module WebIdeSpecHelpers
-  include ActionView::Helpers::JavaScriptHelper
+  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
   def ide_visit(project)
     visit project_path(project)
@@ -97,17 +97,11 @@ module WebIdeSpecHelpers
   end
 
   def ide_set_editor_value(value)
-    editor = find('.monaco-editor')
-    uri = editor['data-uri']
-
-    execute_script("monaco.editor.getModel('#{uri}').setValue('#{escape_javascript(value)}')")
+    editor_set_value(value)
   end
 
   def ide_editor_value
-    editor = find('.monaco-editor')
-    uri = editor['data-uri']
-
-    evaluate_script("monaco.editor.getModel('#{uri}').getValue()")
+    editor_get_value
   end
 
   def ide_commit_tab_selector

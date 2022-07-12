@@ -99,4 +99,12 @@ describe('PipelineWizard', () => {
       parseDocument(template).get('description').toString(),
     );
   });
+
+  it('bubbles the done event upwards', () => {
+    createComponent();
+
+    wrapper.findComponent(PipelineWizardWrapper).vm.$emit('done');
+
+    expect(wrapper.emitted().done.length).toBe(1);
+  });
 });

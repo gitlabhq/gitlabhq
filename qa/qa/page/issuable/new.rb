@@ -13,7 +13,7 @@ module QA
         end
 
         view 'app/views/shared/form_elements/_description.html.haml' do
-          element :issuable_form_description
+          element :issuable_form_description_field
         end
 
         view 'app/views/shared/issuable/_milestone_dropdown.html.haml' do
@@ -37,7 +37,7 @@ module QA
         end
 
         def fill_description(description)
-          fill_element :issuable_form_description, description
+          fill_element :issuable_form_description_field, description
         end
 
         def choose_milestone(milestone)

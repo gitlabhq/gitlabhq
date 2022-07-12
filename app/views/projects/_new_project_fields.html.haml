@@ -78,5 +78,7 @@
         = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
         = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 
+-# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/675
+= render_if_exists 'shared/other_project_options', f: f, visibility_level: visibility_level, track_label: track_label
 = f.submit _('Create project'), class: "btn gl-button btn-confirm js-create-project-button", data: { qa_selector: 'project_create_button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }
 = link_to _('Cancel'), dashboard_projects_path, class: 'btn gl-button btn-default btn-cancel', data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }

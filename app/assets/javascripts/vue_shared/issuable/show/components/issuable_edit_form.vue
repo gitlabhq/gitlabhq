@@ -123,7 +123,6 @@ export default {
         :placeholder="__('Title')"
         :aria-label="__('Title')"
         :autofocus="true"
-        class="qa-title-input"
         @keydown="handleKeydown($event, 'title')"
       />
     </gl-form-group>
@@ -149,7 +148,7 @@ export default {
             :data-supports-quick-actions="enableAutocomplete"
             :aria-label="__('Description')"
             :placeholder="__('Write a comment or drag your files here…')"
-            class="note-textarea js-gfm-input js-autosize markdown-area qa-description-textarea"
+            class="note-textarea js-gfm-input js-autosize markdown-area"
             dir="auto"
             @keydown="handleKeydown($event, 'description')"
           ></textarea>

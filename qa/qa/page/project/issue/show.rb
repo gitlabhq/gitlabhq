@@ -5,7 +5,6 @@ module QA
     module Project
       module Issue
         class Show < Page::Base
-          include Page::Component::Issuable::Common
           include Page::Component::Note
           include Page::Component::DesignManagement
           include Page::Component::Issuable::Sidebar
@@ -20,6 +19,10 @@ module QA
             element :reopen_issue_button
             element :issue_actions_ellipsis_dropdown
             element :delete_issue_button
+          end
+
+          view 'app/assets/javascripts/issues/show/components/title.vue' do
+            element :title_content, required: true
           end
 
           view 'app/assets/javascripts/related_issues/components/add_issuable_form.vue' do
