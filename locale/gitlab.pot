@@ -9669,6 +9669,9 @@ msgstr ""
 msgid "Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
 msgstr ""
 
+msgid "Configure advanced permissions, Large File Storage, two-factor authentication, and CI/CD settings."
+msgstr ""
+
 msgid "Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings."
 msgstr ""
 

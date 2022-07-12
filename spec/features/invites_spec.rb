@@ -221,7 +221,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
               category: 'RegistrationsController',
               action: 'accepted',
               label: 'invite_email',
-              property: group_invite.id.to_s
+              property: group_invite.id.to_s,
+              user: group_invite.reload.user
             )
           end
         end

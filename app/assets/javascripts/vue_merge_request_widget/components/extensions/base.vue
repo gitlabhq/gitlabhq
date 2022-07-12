@@ -315,6 +315,7 @@ export default {
       @mouseup="onRowMouseUp"
     >
       <status-icon
+        :level="1"
         :name="$options.label || $options.name"
         :is-loading="isLoadingSummary"
         :icon-name="statusIconName"

@@ -11,7 +11,8 @@ RSpec.describe GitlabSchema.types['Release'] do
       description description_html
       name milestones evidences author commit
       assets links
-      created_at released_at
+      created_at released_at upcoming_release
+      historical_release
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

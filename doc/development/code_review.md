@@ -71,34 +71,34 @@ It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
 page, with these behaviors:
 
-1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-    - Contains the string `OOO`, `PTO`, `Parental Leave`, or `Friends and Family`.
-    - GitLab user **Busy** indicator is set to `True`.
-    - Emoji is from one of these categories:
-      - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`
-      - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
-      - **At capacity** - 🔴 `:red_circle:`
-      - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
-1. It doesn't pick people who are already assigned a number of reviews that is equal to
-   or greater than their chosen "review limit". The review limit is the maximum number of
-   reviews people are ready to handle at a time. Set a review limit by using one of the following
-   as a Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-   - 0️⃣ - `:zero:` (similar to `:red_circle:`)
-   - 1️⃣ - `:one:`
-   - 2️⃣ - `:two:`
-   - 3️⃣ - `:three:`
-   - 4️⃣ - `:four:`
-   - 5️⃣ - `:five:`
-1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
-   is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
-   - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.
-   - [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer) with 🔵 `:large_blue_circle:` are three times as likely to be picked as other reviewers.
-1. People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
-   is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked.
-1. It always picks the same reviewers and maintainers for the same
-   branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
-   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
-   that it can be stable for backport branches.
+- It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
+  - Contains the string `OOO`, `PTO`, `Parental Leave`, or `Friends and Family`.
+  - GitLab user **Busy** indicator is set to `True`.
+  - Emoji is from one of these categories:
+    - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`
+    - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
+    - **At capacity** - 🔴 `:red_circle:`
+    - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
+- It doesn't pick people who are already assigned a number of reviews that is equal to
+  or greater than their chosen "review limit". The review limit is the maximum number of
+  reviews people are ready to handle at a time. Set a review limit by using one of the following
+  as a Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
+  - 0️⃣ - `:zero:` (similar to `:red_circle:`)
+  - 1️⃣ - `:one:`
+  - 2️⃣ - `:two:`
+  - 3️⃣ - `:three:`
+  - 4️⃣ - `:four:`
+  - 5️⃣ - `:five:`
+- Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
+  is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
+  - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.
+  - [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer) with 🔵 `:large_blue_circle:` are three times as likely to be picked as other reviewers.
+- People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
+  is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked.
+- It always picks the same reviewers and maintainers for the same
+  branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
+  removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
+  that it can be stable for backport branches.
 
 The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette) contains:
 

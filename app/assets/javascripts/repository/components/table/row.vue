@@ -43,7 +43,6 @@ export default {
       variables() {
         return {
           fileName: this.name,
-          type: this.type,
           path: this.currentPath,
           projectPath: this.projectPath,
           maxOffset: this.totalEntries,

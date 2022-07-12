@@ -39,7 +39,6 @@ erDiagram
         projects }|--|| namespaces : ""
         packages_packages }|--|| projects : ""
         packages_package_files }o--|| packages_packages : ""
-        package_debian_file_metadatum |o--|| packages_package_files : ""
         packages_debian_group_architectures }|--|| packages_debian_group_distributions : ""
         packages_debian_group_component_files }|--|| packages_debian_group_components : ""
         packages_debian_group_component_files }|--|| packages_debian_group_architectures : ""

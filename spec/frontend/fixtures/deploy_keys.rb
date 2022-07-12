@@ -27,9 +27,9 @@ RSpec.describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :c
   render_views
 
   it 'deploy_keys/keys.json' do
-    create(:rsa_deploy_key_2048, public: true)
-    project_key = create(:deploy_key, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCdMHEHyhRjbhEZVddFn6lTWdgEy5Q6Bz4nwGB76xWZI5YT/1WJOMEW+sL5zYd31kk7sd3FJ5L9ft8zWMWrr/iWXQikC2cqZK24H1xy+ZUmrRuJD4qGAaIVoyyzBL+avL+lF8J5lg6YSw8gwJY/lX64/vnJHUlWw2n5BF8IFOWhiw== dummy@gitlab.com')
-    internal_key = create(:deploy_key, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNd/UJWhPrpb+b/G5oL109y57yKuCxE+WUGJGYaj7WQKsYRJmLYh1mgjrl+KVyfsWpq4ylOxIfFSnN9xBBFN8mlb0Fma5DC7YsSsibJr3MZ19ZNBprwNcdogET7aW9I0In7Wu5f2KqI6e5W/spJHCy4JVxzVMUvk6Myab0LnJ2iQ== dummy@gitlab.com')
+    create(:rsa_deploy_key_5120, public: true)
+    project_key = create(:deploy_key)
+    internal_key = create(:deploy_key)
     create(:deploy_keys_project, project: project, deploy_key: project_key)
     create(:deploy_keys_project, project: project2, deploy_key: internal_key)
     create(:deploy_keys_project, project: project3, deploy_key: project_key)

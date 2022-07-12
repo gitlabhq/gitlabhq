@@ -43,22 +43,17 @@ This workflow is considered push-based, because GitLab is pushing requests from 
 GitLab supports the following Kubernetes versions. You can upgrade your
 Kubernetes version to a supported version at any time:
 
-- 1.24 (support ends on September 22, 2023)
-- 1.23 (support ends on February 22, 2023)
+- 1.24 (support ends on September 22, 2023 or when 1.27 becomes supported)
+- 1.23 (support ends on February 22, 2023 or when 1.26 becomes supported)
 - 1.22 (support ends on October 22, 2022)
-- 1.21 (support ends on September 22, 2022)
+- 1.21 (support ends on August 22, 2022)
 
-GitLab supports at least two production-ready Kubernetes minor
-versions at any given time. GitLab regularly reviews the supported versions and
-provides a three-month deprecation period before removing support for a specific
-version. The list of supported versions is based on:
+GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor
+versions at any given time.
 
-- The versions supported by major managed Kubernetes providers.
-- The versions [supported by the Kubernetes community](https://kubernetes.io/releases/version-skew-policy/#supported-versions).
+Support for deprecated APIs can be removed from the GitLab codebase when we drop support for the Kubernetes version that only supports the deprecated API.
 
-[This epic](https://gitlab.com/groups/gitlab-org/-/epics/4827) tracks support for other Kubernetes versions.
-
-Some GitLab features might work on versions not listed here.
+Some GitLab features might work on versions not listed here. [This epic](https://gitlab.com/groups/gitlab-org/-/epics/4827) tracks support for Kubernetes versions.
 
 ## Migrate to the agent from the legacy certificate-based integration
 

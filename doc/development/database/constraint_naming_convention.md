@@ -25,5 +25,7 @@ The intent is not to retroactively change names in existing databases but rather
 
 ## Observations
 
+- Check `db/structure.sql` for conflicts.
 - Prefixes are preferred over suffices because they make it easier to identify the type of a given constraint quickly, as well as group them alphabetically;
 - The `_and_` that joins column names can be omitted to keep the identifiers under the 63 characters' length limit defined by PostgreSQL. Additionally, the notation may be abbreviated to the best of our ability if struggling to keep under this limit.
+- For indexes added to solve a very specific problem, it may make sense for the name to reflect their use.

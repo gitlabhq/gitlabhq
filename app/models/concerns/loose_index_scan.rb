@@ -56,7 +56,8 @@ module LooseIndexScan
         .project(Arel::Nodes::Grouping.new(Arel.sql(inner_query.to_sql)).as(column.to_s))
 
       unscoped do
-        with
+        select(column)
+          .with
           .recursive(cte.to_arel)
           .from(cte.alias_to(arel_table))
           .where(arel_column.not_eq(nil)) # filtering out the last NULL value

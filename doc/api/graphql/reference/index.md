@@ -16419,6 +16419,7 @@ Represents a release.
 | <a id="releasedescription"></a>`description` | [`String`](#string) | Description (also known as "release notes") of the release. |
 | <a id="releasedescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="releaseevidences"></a>`evidences` | [`ReleaseEvidenceConnection`](#releaseevidenceconnection) | Evidence for the release. (see [Connections](#connections)) |
+| <a id="releasehistoricalrelease"></a>`historicalRelease` | [`Boolean`](#boolean) | Indicates the release is an historical release. |
 | <a id="releaseid"></a>`id` | [`ReleaseID!`](#releaseid) | Global ID of the release. |
 | <a id="releaselinks"></a>`links` | [`ReleaseLinks`](#releaselinks) | Links of the release. |
 | <a id="releasemilestones"></a>`milestones` | [`MilestoneConnection`](#milestoneconnection) | Milestones associated to the release. (see [Connections](#connections)) |
@@ -18498,6 +18499,7 @@ Represents an assignees widget.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` | [`Boolean`](#boolean) | Indicates whether multiple assignees are allowed. |
 | <a id="workitemwidgetassigneesassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetassigneescaninvitemembers"></a>`canInviteMembers` | [`Boolean!`](#boolean) | Indicates whether the current user can invite members to the work item's project. |
 | <a id="workitemwidgetassigneestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDescription`

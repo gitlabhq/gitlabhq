@@ -750,41 +750,7 @@ module Ci
       end
 
       context 'when using pending builds table' do
-        before do
-          stub_feature_flags(ci_pending_builds_queue_source: true)
-        end
-
-        context 'with ci_queuing_use_denormalized_data_strategy enabled' do
-          before do
-            stub_feature_flags(ci_queuing_use_denormalized_data_strategy: true)
-          end
-
-          include_examples 'handles runner assignment'
-        end
-
-        context 'with ci_queuing_use_denormalized_data_strategy disabled' do
-          before do
-            skip_if_multiple_databases_are_setup
-
-            stub_feature_flags(ci_queuing_use_denormalized_data_strategy: false)
-          end
-
-          around do |example|
-            allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
-              example.run
-            end
-          end
-
-          include_examples 'handles runner assignment'
-        end
-
-        context 'with ci_queuing_use_denormalized_data_strategy enabled' do
-          before do
-            stub_feature_flags(ci_queuing_use_denormalized_data_strategy: true)
-          end
-
-          include_examples 'handles runner assignment'
-        end
+        include_examples 'handles runner assignment'
 
         context 'when a conflicting data is stored in denormalized table' do
           let!(:specific_runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[conflict]) }
@@ -804,22 +770,6 @@ module Ci
             expect(pending_job.reload.queuing_entry).not_to be_present
           end
         end
-      end
-
-      context 'when not using pending builds table' do
-        before do
-          skip_if_multiple_databases_are_setup
-
-          stub_feature_flags(ci_pending_builds_queue_source: false)
-        end
-
-        around do |example|
-          allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
-            example.run
-          end
-        end
-
-        include_examples 'handles runner assignment'
       end
     end
 
@@ -888,14 +838,6 @@ module Ci
       shared_examples 'metrics collector' do
         it_behaves_like 'attempt counter collector'
         it_behaves_like 'jobs queueing time histogram collector'
-
-        context 'when using denormalized data is disabled' do
-          before do
-            stub_feature_flags(ci_pending_builds_maintain_denormalized_data: false)
-          end
-
-          it_behaves_like 'jobs queueing time histogram collector'
-        end
       end
 
       context 'when shared runner is used' do

@@ -8,10 +8,7 @@ module Gitlab
     CACHE_EXPIRE_IN = 1.hour
     MAX_OFFSET = 2**31
 
-    attr_reader :commit, :project, :path, :offset, :limit, :user
-
-    attr_reader :resolved_commits
-    private :resolved_commits
+    attr_reader :commit, :project, :path, :offset, :limit, :user, :resolved_commits
 
     def initialize(commit, project, user, params = {})
       @commit = commit
@@ -34,44 +31,37 @@ module Gitlab
     #
     #     - An Array of Hashes containing the following keys:
     #         - file_name:   The full path of the tree entry
-    #         - type:        One of :blob, :tree, or :submodule
     #         - commit:      The last ::Commit to touch this entry in the tree
     #         - commit_path: URI of the commit in the web interface
-    #     - An Array of the unique ::Commit objects in the first value
+    #         - commit_title_html: Rendered commit title
     def summarize
-      summary = contents
-        .tap { |summary| fill_last_commits!(summary) }
+      commits_hsh = fetch_last_cached_commits_list
+      prerender_commit_full_titles!(commits_hsh.values)
 
-      [summary, commits]
+      commits_hsh.map do |path_key, commit|
+        commit = cache_commit(commit)
+
+        {
+          file_name: File.basename(path_key).force_encoding(Encoding::UTF_8),
+          commit: commit,
+          commit_path: commit_path(commit),
+          commit_title_html: markdown_field(commit, :full_title)
+        }
+      end
     end
 
     def fetch_logs
-      logs, _ = summarize
+      logs = summarize
 
-      new_offset = next_offset if more?
-
-      [logs.as_json, new_offset]
-    end
-
-    # Does the tree contain more entries after the given offset + limit?
-    def more?
-      all_contents[next_offset].present?
-    end
-
-    # The offset of the next batch of tree entries. If more? returns false, this
-    # batch will be empty
-    def next_offset
-      [all_contents.size + 1, offset + limit].min
+      [logs.first(limit).as_json, next_offset(logs.size)]
     end
 
     private
 
-    def contents
-      all_contents[offset, limit] || []
-    end
+    def next_offset(entries_count)
+      return if entries_count <= limit
 
-    def commits
-      resolved_commits.values
+      offset + limit
     end
 
     def repository
@@ -83,32 +73,12 @@ module Gitlab
       File.join(*[path, ""]) if path
     end
 
-    def entry_path(entry)
-      File.join(*[path, entry[:file_name]].compact).force_encoding(Encoding::ASCII_8BIT)
-    end
-
-    def fill_last_commits!(entries)
-      commits_hsh = fetch_last_cached_commits_list
-      prerender_commit_full_titles!(commits_hsh.values)
-
-      entries.each do |entry|
-        path_key = entry_path(entry)
-        commit = cache_commit(commits_hsh[path_key])
-
-        if commit
-          entry[:commit] = commit
-          entry[:commit_path] = commit_path(commit)
-          entry[:commit_title_html] = markdown_field(commit, :full_title)
-        end
-      end
-    end
-
     def fetch_last_cached_commits_list
-      cache_key = ['projects', project.id, 'last_commits', commit.id, ensured_path, offset, limit]
+      cache_key = ['projects', project.id, 'last_commits', commit.id, ensured_path, offset, limit + 1]
 
       commits = Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRE_IN) do
         repository
-          .list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit, literal_pathspec: true)
+          .list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit + 1, literal_pathspec: true)
           .transform_values! { |commit| commit_to_hash(commit) }
       end
 
@@ -129,26 +99,6 @@ module Gitlab
 
     def commit_path(commit)
       Gitlab::Routing.url_helpers.project_commit_path(project, commit)
-    end
-
-    def all_contents
-      strong_memoize(:all_contents) { cached_contents }
-    end
-
-    def cached_contents
-      cache_key = ['projects', project.id, 'content', commit.id, path]
-
-      Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRE_IN) do
-        [
-          *tree.trees,
-          *tree.blobs,
-          *tree.submodules
-        ].map { |entry| { file_name: entry.name, type: entry.type } }
-      end
-    end
-
-    def tree
-      strong_memoize(:tree) { repository.tree(commit.id, path) }
     end
 
     def prerender_commit_full_titles!(commits)

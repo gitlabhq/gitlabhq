@@ -25,12 +25,7 @@ describe('RunnerDetails', () => {
 
   const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
 
-  const createComponent = ({
-    props = {},
-    stubs,
-    mountFn = shallowMountExtended,
-    ...options
-  } = {}) => {
+  const createComponent = ({ props = {}, stubs, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerDetails, {
       propsData: {
         ...props,
@@ -39,22 +34,11 @@ describe('RunnerDetails', () => {
         RunnerDetail,
         ...stubs,
       },
-      ...options,
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
-  });
-
-  it('when no runner is present, no contents are shown', () => {
-    createComponent({
-      props: {
-        runner: null,
-      },
-    });
-
-    expect(wrapper.text()).toBe('');
   });
 
   describe('Details tab', () => {
@@ -139,20 +123,6 @@ describe('RunnerDetails', () => {
       it('Shows a group runner details', () => {
         expect(findDetailGroups().props('runner')).toEqual(mockGroupRunner);
       });
-    });
-  });
-
-  describe('Jobs tab slot', () => {
-    it('shows job tab slot', () => {
-      const JOBS_TAB = '<div>Jobs Tab</div>';
-
-      createComponent({
-        slots: {
-          'jobs-tab': JOBS_TAB,
-        },
-      });
-
-      expect(wrapper.html()).toContain(JOBS_TAB);
     });
   });
 });

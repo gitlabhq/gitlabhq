@@ -141,16 +141,7 @@ created with one or more of the following options:
 
 ### Considerations for index names
 
-Index names don't have any significance in the database, so they should
-attempt to communicate intent to others. The most important rule to
-remember is that generic names are more likely to conflict or be duplicated,
-and should not be used. Some other points to consider:
-
-- For general indexes, use a template, like: `index_{table}_{column}_{options}`.
-- For indexes added to solve a very specific problem, it may make sense
-  for the name to reflect their use.
-- Identifiers in PostgreSQL have a maximum length of 63 bytes.
-- Check `db/structure.sql` for conflicts and ideas.
+Check our [Constraints naming conventions](database/constraint_naming_convention.md) page.
 
 ### Why explicit names are required
 
@@ -205,8 +196,7 @@ that would otherwise not be used.
 In these cases, consider a temporary index. To specify a
 temporary index:
 
-1. Prefix the index name with `tmp_` and follow the [naming conventions](database/constraint_naming_convention.md)
-   and [requirements for naming indexes](#requirements-for-naming-indexes) for the rest of the name.
+1. Prefix the index name with `tmp_` and follow the [naming conventions](database/constraint_naming_convention.md).
 1. Create a follow-up issue to remove the index in the next (or future) milestone.
 1. Add a comment in the migration mentioning the removal issue.
 

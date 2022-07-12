@@ -14,8 +14,6 @@ module Ci
     # Add a build to the pending builds queue
     #
     def push(build, transition)
-      return unless maintain_pending_builds_queue?
-
       raise InvalidQueueTransition unless transition.to == 'pending'
 
       transition.within_transaction do
@@ -33,8 +31,6 @@ module Ci
     # Remove a build from the pending builds queue
     #
     def pop(build, transition)
-      return unless maintain_pending_builds_queue?
-
       raise InvalidQueueTransition unless transition.from == 'pending'
 
       transition.within_transaction { remove!(build) }
@@ -57,7 +53,6 @@ module Ci
     # Add shared runner build tracking entry (used for queuing).
     #
     def track(build, transition)
-      return unless maintain_pending_builds_queue?
       return unless build.shared_runner_build?
 
       raise InvalidQueueTransition unless transition.to == 'running'
@@ -78,7 +73,6 @@ module Ci
     # queuing).
     #
     def untrack(build, transition)
-      return unless maintain_pending_builds_queue?
       return unless build.shared_runner_build?
 
       raise InvalidQueueTransition unless transition.from == 'running'
@@ -114,10 +108,6 @@ module Ci
 
         runner.pick_build!(build)
       end
-    end
-
-    def maintain_pending_builds_queue?
-      ::Ci::PendingBuild.maintain_denormalized_data?
     end
   end
 end

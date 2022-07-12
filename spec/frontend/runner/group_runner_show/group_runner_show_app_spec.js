@@ -177,10 +177,26 @@ describe('GroupRunnerShowApp', () => {
     });
   });
 
+  describe('When loading', () => {
+    beforeEach(() => {
+      mockRunnerQueryResult();
+
+      createComponent();
+    });
+
+    it('does not show runner details', () => {
+      expect(findRunnerDetails().exists()).toBe(false);
+    });
+  });
+
   describe('When there is an error', () => {
     beforeEach(async () => {
       mockRunnerQuery = jest.fn().mockRejectedValueOnce(new Error('Error!'));
       await createComponent();
+    });
+
+    it('does not show runner details', () => {
+      expect(findRunnerDetails().exists()).toBe(false);
     });
 
     it('error is reported to sentry', () => {

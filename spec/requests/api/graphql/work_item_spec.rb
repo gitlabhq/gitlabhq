@@ -200,6 +200,7 @@ RSpec.describe 'Query.work_item(id)' do
               type
               ... on WorkItemWidgetAssignees {
                 allowsMultipleAssignees
+                canInviteMembers
                 assignees {
                   nodes {
                     id
@@ -218,6 +219,7 @@ RSpec.describe 'Query.work_item(id)' do
               hash_including(
                 'type' => 'ASSIGNEES',
                 'allowsMultipleAssignees' => boolean,
+                'canInviteMembers' => boolean,
                 'assignees' => {
                   'nodes' => match_array(
                     assignees.map { |a| { 'id' => a.to_gid.to_s, 'username' => a.username } }

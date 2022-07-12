@@ -80,6 +80,13 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
                       Gitlab::GithubImport::Importer::Events::ChangedLabel
     end
 
+    context "when it's renamed issue event" do
+      let(:event_name) { 'renamed' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::Renamed
+    end
+
     context "when it's unknown issue event" do
       let(:event_name) { 'fake' }
 

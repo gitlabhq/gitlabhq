@@ -8,7 +8,7 @@ module Gitlab
       def check_runner_upgrade_status(runner_version)
         runner_version = ::Gitlab::VersionInfo.parse(runner_version, parse_suffix: true)
 
-        return :invalid unless runner_version.valid?
+        return :invalid_version unless runner_version.valid?
 
         releases = RunnerReleases.instance.releases
         return :error unless releases

@@ -1,25 +1,42 @@
 = gitlab_ui_form_for [:admin, @group] do |f|
   = form_errors(@group, pajamas_alert: true)
-  = render 'shared/group_form', f: f
-  = render 'shared/group_form_description', f: f
+  .gl-border-b.gl-mb-6
+    .row
+      .col-lg-4
+        %h4.gl-mt-0
+          = _('Naming, visibility')
+        %p
+          = _('Update your group name, description, avatar, and visibility.')
+          = link_to _('Learn more about groups.'), help_page_path('user/group/index')
+      .col-lg-8
+        = render 'shared/group_form', f: f
+        = render 'shared/group_form_description', f: f
+        .form-group.gl-form-group{ role: 'group' }
+          = f.label :avatar, _("Group avatar"), class: 'gl-display-block col-form-label'
+          = render 'shared/choose_avatar_button', f: f
+        = render 'shared/old_visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
 
-  = render 'shared/admin/admin_note_form', f: f
-
-  = render_if_exists 'shared/old_repository_size_limit_setting', form: f, type: :group
-  = render_if_exists 'admin/namespace_plan', f: f
-
-  .form-group.gl-form-group{ role: 'group' }
-    = f.label :avatar, _("Group avatar"), class: 'gl-display-block col-form-label'
-    = render 'shared/choose_avatar_button', f: f
-
-  = render 'shared/old_visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
-
-  .form-group.gl-form-group{ role: 'group' }
-    = render 'shared/allow_request_access', form: f
-
-  = render 'groups/group_admin_settings', f: f
-
-  = render_if_exists 'namespaces/shared_runners_minutes_settings', group: @group, form: f
+  .gl-border-b.gl-pb-3.gl-mb-6
+    .row
+      .col-lg-4
+        %h4.gl-mt-0
+          = _('Permissions and group features')
+        %p
+          = _('Configure advanced permissions, Large File Storage, two-factor authentication, and CI/CD settings.')
+      .col-lg-8
+        = render_if_exists 'shared/old_repository_size_limit_setting', form: f, type: :group
+        = render_if_exists 'admin/namespace_plan', f: f
+        .form-group.gl-form-group{ role: 'group' }
+          = render 'shared/allow_request_access', form: f
+        = render 'groups/group_admin_settings', f: f
+        = render_if_exists 'namespaces/shared_runners_minutes_settings', group: @group, form: f
+  .gl-mb-3
+    .row
+      .col-lg-4
+        %h4.gl-mt-0
+          = _('Admin notes')
+      .col-lg-8
+        = render 'shared/admin/admin_note_form', f: f
 
   - if @group.new_record?
     = render Pajamas::AlertComponent.new(dismissible: false) do |c|

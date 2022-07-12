@@ -9,7 +9,7 @@ module Gitlab
 
         attr_reader :attributes
 
-        expose_attribute :id, :actor, :event, :commit_id, :label_title, :created_at
+        expose_attribute :id, :actor, :event, :commit_id, :label_title, :old_title, :new_title, :created_at
         expose_attribute :issue_db_id # set in SingleEndpointIssueEventsImporter#each_associated
 
         # Builds a event from a GitHub API response.
@@ -22,6 +22,8 @@ module Gitlab
             event: event.event,
             commit_id: event.commit_id,
             label_title: event.label && event.label[:name],
+            old_title: event.rename && event.rename[:from],
+            new_title: event.rename && event.rename[:to],
             issue_db_id: event.issue_db_id,
             created_at: event.created_at
           )
@@ -30,7 +32,7 @@ module Gitlab
         # Builds a event using a Hash that was built from a JSON payload.
         def self.from_json_hash(raw_hash)
           hash = Representation.symbolize_hash(raw_hash)
-          hash[:actor] = Representation::User.from_json_hash(hash[:actor]) if hash[:actor]
+          hash[:actor] &&= Representation::User.from_json_hash(hash[:actor])
 
           new(hash)
         end

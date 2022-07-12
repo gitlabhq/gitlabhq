@@ -9,6 +9,7 @@ def get_ci_config_files(files)
 end
 
 schema_path = 'app/assets/javascripts/editor/schema/ci.json'
+schema_docs_path = 'https://docs.gitlab.com/ee/development/cicd/schema.html#write-specs'
 has_schema_update = all_changed_files.include?(schema_path)
 return if has_schema_update
 
@@ -17,4 +18,4 @@ return if ci_config_files.empty?
 
 file_list = "- #{ci_config_files.map { |path| "`#{path}`" }.join("\n- ")}"
 
-warn "This merge request changed CI config files but did not update the schema. Please consider updating [the schema](#{schema_path}) to reflect these changes:\n#{file_list}"
+warn "This merge request changed CI config files but did not update the schema. Please consider updating [the schema](#{schema_path}) to reflect these changes:\n#{file_list}.\n\nRefer to the [docs](#{schema_docs_path}) for help on how to run and write specs for the CI schema."

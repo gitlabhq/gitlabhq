@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlTab, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlTabs, GlTab, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -11,7 +11,7 @@ import RunnerPauseButton from '../components/runner_pause_button.vue';
 import RunnerHeader from '../components/runner_header.vue';
 import RunnerDetails from '../components/runner_details.vue';
 import RunnerJobs from '../components/runner_jobs.vue';
-import { I18N_FETCH_ERROR } from '../constants';
+import { I18N_DETAILS, I18N_FETCH_ERROR } from '../constants';
 import runnerQuery from '../graphql/show/runner.query.graphql';
 import { captureException } from '../sentry_utils';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
@@ -20,6 +20,7 @@ export default {
   name: 'AdminRunnerShowApp',
   components: {
     GlBadge,
+    GlTabs,
     GlTab,
     RunnerDeleteButton,
     RunnerEditButton,
@@ -84,6 +85,7 @@ export default {
       redirectTo(this.runnersPath);
     },
   },
+  I18N_DETAILS,
 };
 </script>
 <template>
@@ -96,24 +98,27 @@ export default {
       </template>
     </runner-header>
 
-    <runner-details :runner="runner">
-      <template #jobs-tab>
-        <gl-tab>
-          <template #title>
-            {{ s__('Runners|Jobs') }}
-            <gl-badge
-              v-if="jobCount"
-              data-testid="job-count-badge"
-              class="gl-tab-counter-badge"
-              size="sm"
-            >
-              {{ jobCount }}
-            </gl-badge>
-          </template>
+    <gl-tabs>
+      <gl-tab>
+        <template #title>{{ $options.I18N_DETAILS }}</template>
 
-          <runner-jobs v-if="runner" :runner="runner" />
-        </gl-tab>
-      </template>
-    </runner-details>
+        <runner-details v-if="runner" :runner="runner" />
+      </gl-tab>
+      <gl-tab>
+        <template #title>
+          {{ s__('Runners|Jobs') }}
+          <gl-badge
+            v-if="jobCount"
+            data-testid="job-count-badge"
+            class="gl-tab-counter-badge"
+            size="sm"
+          >
+            {{ jobCount }}
+          </gl-badge>
+        </template>
+
+        <runner-jobs v-if="runner" :runner="runner" />
+      </gl-tab>
+    </gl-tabs>
   </div>
 </template>

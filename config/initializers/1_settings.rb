@@ -630,6 +630,9 @@ Settings.cron_jobs['inactive_projects_deletion_cron_worker']['job_class'] = 'Pro
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
+Settings.cron_jobs['ci_runner_versions_reconciliation_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['cron'] ||= '20 * * * *'
+Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['job_class'] = 'Ci::Runners::ReconcileExistingRunnerVersionsCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})

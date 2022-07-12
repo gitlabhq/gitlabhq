@@ -9,6 +9,11 @@ export default {
     GlIcon,
   },
   props: {
+    level: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     name: {
       type: String,
       required: false,
@@ -27,7 +32,7 @@ export default {
     size: {
       type: Number,
       required: false,
-      default: 16,
+      default: 12,
     },
   },
   computed: {
@@ -44,8 +49,8 @@ export default {
   <div
     :class="[
       $options.EXTENSION_ICON_CLASS[iconName],
-      { 'mr-widget-extension-icon': !isLoading && size === 16 },
-      { 'gl-p-2': isLoading || size === 16 },
+      { 'mr-widget-extension-icon': !isLoading && level === 1 },
+      { 'gl-p-2': isLoading || level === 1 },
     ]"
     class="gl-rounded-full gl-mr-3 gl-relative gl-p-2"
   >

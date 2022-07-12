@@ -59,7 +59,6 @@ This feature flag re-enables the certificate-based Kubernetes integration.
 - [Cluster environments](../../clusters/environments.md)
 - [Show Canary Ingress deployments on deploy boards](../../project/canary_deployments.md#show-canary-ingress-deployments-on-deploy-boards-deprecated)
 - [Deploy Boards](../../project/deploy_boards.md)
-- [Pod logs](../../project/clusters/kubernetes_pod_logs.md)
 - [Clusters health](manage/clusters_health.md)
 - [Web terminals](../../../administration/integration/terminal.md)
 

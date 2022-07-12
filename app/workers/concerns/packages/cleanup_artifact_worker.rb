@@ -9,14 +9,21 @@ module Packages
     def perform_work
       return unless artifact
 
-      artifact.transaction do
-        log_metadata(artifact)
+      begin
+        artifact.transaction do
+          log_metadata(artifact)
 
-        artifact.destroy!
-      rescue StandardError
+          artifact.destroy!
+        end
+      rescue StandardError => exception
         unless artifact&.destroyed?
           artifact&.update_column(:status, :error)
         end
+
+        Gitlab::ErrorTracking.log_exception(
+          exception,
+          class: self.class.name
+        )
       end
 
       after_destroy

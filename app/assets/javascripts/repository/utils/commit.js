@@ -7,7 +7,6 @@ export function normalizeData(data, path, extra = () => {}) {
     commitPath: d.commit_path,
     fileName: d.file_name,
     filePath: `${path}/${d.file_name}`,
-    type: d.type,
     __typename: 'LogTreeCommit',
     ...extra(d),
   }));

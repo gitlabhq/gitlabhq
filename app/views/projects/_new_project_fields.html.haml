@@ -52,10 +52,11 @@
 - unless Gitlab::CurrentSettings.current_application_settings.hide_third_party_offers? || !Gitlab.com?
   .js-deployment-target-select
 
-= f.label :visibility_level, class: 'label-bold' do
-  = s_('ProjectsNew|Visibility Level')
-  = link_to sprite_icon('question-o'), help_page_path('user/public_access'), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
-= render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false, data: { qa_selector: 'visibility_radios'}
+.form-group.gl-form-group
+  = f.label :visibility_level, class: 'label-bold' do
+    = s_('ProjectsNew|Visibility Level')
+    = link_to sprite_icon('question-o'), help_page_path('user/public_access'), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
+  = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false, data: { qa_selector: 'visibility_radios'}
 
 - if !hide_init_with_readme
   = f.label :project_configuration, class: 'label-bold' do

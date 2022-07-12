@@ -89,6 +89,6 @@ export default {
       </template>
     </runner-header>
 
-    <runner-details :runner="runner" />
+    <runner-details v-if="runner" :runner="runner" />
   </div>
 </template>

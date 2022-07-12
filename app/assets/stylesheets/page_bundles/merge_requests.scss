@@ -630,6 +630,24 @@ $tabs-holder-z-index: 250;
   height: 24px;
 }
 
+.mr-widget-extension-icon::after {
+  @include gl-content-empty;
+  @include gl-absolute;
+  @include gl-rounded-full;
+
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  border: 4px solid currentColor;
+}
+
+.mr-widget-extension-icon svg {
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+
 .mr-widget-heading {
   position: relative;
   border: 1px solid var(--border-color, $border-color);

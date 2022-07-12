@@ -24,6 +24,6 @@
 
 .form-group.gl-form-group{ role: 'group' }
   = f.label :two_factor_grace_period, _('Two-factor authentication grace period'), class: 'gl-display-block col-form-label'
-  = f.text_field :two_factor_grace_period, class: 'form-control gl-form-input'
+  = f.text_field :two_factor_grace_period, class: 'form-control gl-form-input gl-form-input-sm'
   %small.form-text.text-gl-muted
     = _("Time (in hours) that users are allowed to skip forced configuration of two-factor authentication.")

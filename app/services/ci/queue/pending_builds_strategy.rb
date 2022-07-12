@@ -23,19 +23,11 @@ module Ci
       end
 
       def builds_matching_tag_ids(relation, ids)
-        if use_denormalized_data_strategy?
-          relation.for_tags(runner.tags_ids)
-        else
-          relation.merge(CommitStatus.matches_tag_ids(ids, table: 'ci_pending_builds', column: 'build_id'))
-        end
+        relation.for_tags(runner.tags_ids)
       end
 
       def builds_with_any_tags(relation)
-        if use_denormalized_data_strategy?
-          relation.where('cardinality(tag_ids) > 0')
-        else
-          relation.merge(CommitStatus.with_any_tags(table: 'ci_pending_builds', column: 'build_id'))
-        end
+        relation.where('cardinality(tag_ids) > 0')
       end
 
       def order(relation)
@@ -50,23 +42,10 @@ module Ci
         relation.pluck(:build_id)
       end
 
-      def use_denormalized_data_strategy?
-        ::Feature.enabled?(:ci_queuing_use_denormalized_data_strategy)
-      end
-
       private
 
       def builds_available_for_shared_runners
-        if use_denormalized_data_strategy?
-          new_builds.with_instance_runners
-        else
-          new_builds
-            # don't run projects which have not enabled shared runners and builds
-            .joins('INNER JOIN projects ON ci_pending_builds.project_id = projects.id')
-            .where(projects: { shared_runners_enabled: true, pending_delete: false })
-            .joins('LEFT JOIN project_features ON ci_pending_builds.project_id = project_features.project_id')
-            .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0')
-        end
+        new_builds.with_instance_runners
       end
 
       def builds_ordered_for_shared_runners(relation)

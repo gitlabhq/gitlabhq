@@ -65,16 +65,16 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
         context 'with nil runner_version' do
           let(:runner_version) { nil }
 
-          it 'returns :invalid' do
-            is_expected.to eq(:invalid)
+          it 'returns :invalid_version' do
+            is_expected.to eq(:invalid_version)
           end
         end
 
         context 'with invalid runner_version' do
           let(:runner_version) { 'junk' }
 
-          it 'returns :invalid' do
-            is_expected.to eq(:invalid)
+          it 'returns :invalid_version' do
+            is_expected.to eq(:invalid_version)
           end
         end
 

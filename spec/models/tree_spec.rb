@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Tree do
-  let(:repository) { create(:project, :repository).repository }
+  let_it_be(:repository) { create(:project, :repository).repository }
+
   let(:sha) { repository.root_ref }
 
   subject(:tree) { described_class.new(repository, '54fcc214') }

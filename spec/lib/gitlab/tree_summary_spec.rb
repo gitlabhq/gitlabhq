@@ -30,50 +30,31 @@ RSpec.describe Gitlab::TreeSummary do
   describe '#summarize' do
     let(:project) { create(:project, :custom_repo, files: { 'a.txt' => '' }) }
 
-    subject(:summarized) { summary.summarize }
+    subject(:entries) { summary.summarize }
 
-    it 'returns an array of entries, and an array of commits' do
-      expect(summarized).to be_a(Array)
-      expect(summarized.size).to eq(2)
+    it 'returns an array of entries' do
+      expect(entries).to be_a(Array)
+      expect(entries.size).to eq(1)
 
-      entries, commits = *summarized
       aggregate_failures do
         expect(entries).to contain_exactly(
           a_hash_including(file_name: 'a.txt', commit: have_attributes(id: commit.id))
         )
 
-        expect(commits).to match_array(entries.map { |entry| entry[:commit] })
-      end
-    end
-
-    context 'when offset is over the limit' do
-      let(:offset) { 100 }
-
-      it 'returns an empty array' do
-        expect(summarized).to eq([[], []])
+        expect(summary.resolved_commits.values).to match_array(entries.map { |entry| entry[:commit] })
       end
     end
 
     context 'with caching', :use_clean_rails_memory_store_caching do
       subject { Rails.cache.fetch(key) }
 
-      context 'Repository tree cache' do
-        let(:key) { ['projects', project.id, 'content', commit.id, path] }
-
-        it 'creates a cache for repository content' do
-          summarized
-
-          is_expected.to eq([{ file_name: 'a.txt', type: :blob }])
-        end
-      end
-
       context 'Commits list cache' do
         let(:offset) { 0 }
         let(:limit) { 25 }
-        let(:key) { ['projects', project.id, 'last_commits', commit.id, path, offset, limit] }
+        let(:key) { ['projects', project.id, 'last_commits', commit.id, path, offset, limit + 1] }
 
         it 'creates a cache for commits list' do
-          summarized
+          entries
 
           is_expected.to eq('a.txt' => commit.to_hash)
         end
@@ -93,7 +74,7 @@ RSpec.describe Gitlab::TreeSummary do
           let(:expected_message) { message[0...1021] + '...' }
 
           it 'truncates commit message to 1 kilobyte' do
-            summarized
+            entries
 
             is_expected.to include('long.txt' => a_hash_including(message: expected_message))
           end
@@ -102,7 +83,7 @@ RSpec.describe Gitlab::TreeSummary do
     end
   end
 
-  describe '#summarize (entries)' do
+  describe '#fetch_logs' do
     let(:limit) { 4 }
 
     custom_files = {
@@ -116,33 +97,32 @@ RSpec.describe Gitlab::TreeSummary do
     let!(:project) { create(:project, :custom_repo, files: custom_files) }
     let(:commit) { repo.head_commit }
 
-    subject(:entries) { summary.summarize.first }
+    subject(:entries) { summary.fetch_logs.first }
 
     it 'summarizes the entries within the window' do
       is_expected.to contain_exactly(
-        a_hash_including(type: :tree, file_name: 'directory'),
-        a_hash_including(type: :blob, file_name: 'a.txt'),
-        a_hash_including(type: :blob, file_name: ':file'),
-        a_hash_including(type: :tree, file_name: ':dir')
+        a_hash_including('file_name' => 'directory'),
+        a_hash_including('file_name' => 'a.txt'),
+        a_hash_including('file_name' => ':file'),
+        a_hash_including('file_name' => ':dir')
         # b.txt is excluded by the limit
       )
     end
 
     it 'references the commit and commit path in entries' do
       # There are 2 trees and the summary is not ordered
-      entry = entries.find { |entry| entry[:commit].id == commit.id }
+      entry = entries.find { |entry| entry['commit']['id'] == commit.id }
       expected_commit_path = Gitlab::Routing.url_helpers.project_commit_path(project, commit)
 
-      expect(entry[:commit]).to be_a(::Commit)
-      expect(entry[:commit_path]).to eq(expected_commit_path)
-      expect(entry[:commit_title_html]).to eq(commit.message)
+      expect(entry['commit_path']).to eq(expected_commit_path)
+      expect(entry['commit_title_html']).to eq(commit.message)
     end
 
     context 'in a good subdirectory' do
       let(:path) { 'directory' }
 
       it 'summarizes the entries in the subdirectory' do
-        is_expected.to contain_exactly(a_hash_including(type: :blob, file_name: 'c.txt'))
+        is_expected.to contain_exactly(a_hash_including('file_name' => 'c.txt'))
       end
     end
 
@@ -150,7 +130,7 @@ RSpec.describe Gitlab::TreeSummary do
       let(:path) { ':dir' }
 
       it 'summarizes the entries in the subdirectory' do
-        is_expected.to contain_exactly(a_hash_including(type: :blob, file_name: 'test.txt'))
+        is_expected.to contain_exactly(a_hash_including('file_name' => 'test.txt'))
       end
     end
 
@@ -164,7 +144,25 @@ RSpec.describe Gitlab::TreeSummary do
       let(:offset) { 4 }
 
       it 'returns entries from the offset' do
-        is_expected.to contain_exactly(a_hash_including(type: :blob, file_name: 'b.txt'))
+        is_expected.to contain_exactly(a_hash_including('file_name' => 'b.txt'))
+      end
+    end
+
+    context 'next offset' do
+      subject { summary.fetch_logs.last }
+
+      context 'when there are more entries to fetch' do
+        it 'returns next offset' do
+          is_expected.to eq(4)
+        end
+      end
+
+      context 'when there are no more entries to fetch' do
+        let(:limit) { 5 }
+
+        it 'returns next offset' do
+          is_expected.to be_nil
+        end
       end
     end
   end
@@ -178,10 +176,11 @@ RSpec.describe Gitlab::TreeSummary do
     let(:project) { create(:project, :repository) }
     let(:commit) { repo.commit(test_commit_sha) }
     let(:limit) { nil }
-    let(:entries) { summary.summarize.first }
+    let(:entries) { summary.summarize }
 
     subject(:commits) do
-      summary.summarize.last
+      summary.summarize
+      summary.resolved_commits.values
     end
 
     it 'returns an Array of ::Commit objects' do
@@ -227,7 +226,7 @@ RSpec.describe Gitlab::TreeSummary do
     let_it_be(:project) { create(:project, :empty_repo) }
     let_it_be(:issue) { create(:issue, project: project) }
 
-    let(:entries) { summary.summarize.first }
+    let(:entries) { summary.summarize }
     let(:entry) { entries.find { |entry| entry[:file_name] == 'issue.txt' } }
 
     before_all do
@@ -259,67 +258,6 @@ RSpec.describe Gitlab::TreeSummary do
         project.update!(visibility_level: Gitlab::VisibilityLevel.level_value(project_visibility))
         issue.update!(confidential: issue_confidential)
       end
-
-      it { is_expected.to eq(expected_result) }
-    end
-  end
-
-  describe '#more?' do
-    let(:path) { 'tmp/more' }
-
-    where(:num_entries, :offset, :limit, :expected_result) do
-      0 | 0 | 0 | false
-      0 | 0 | 1 | false
-
-      1 | 0 | 0 | true
-      1 | 0 | 1 | false
-      1 | 1 | 0 | false
-      1 | 1 | 1 | false
-
-      2 | 0 | 0 | true
-      2 | 0 | 1 | true
-      2 | 0 | 2 | false
-      2 | 0 | 3 | false
-      2 | 1 | 0 | true
-      2 | 1 | 1 | false
-      2 | 2 | 0 | false
-      2 | 2 | 1 | false
-    end
-
-    with_them do
-      before do
-        create_file('dummy', path: 'other') if num_entries == 0
-        1.upto(num_entries) { |n| create_file(n, path: path) }
-      end
-
-      subject { summary.more? }
-
-      it { is_expected.to eq(expected_result) }
-    end
-  end
-
-  describe '#next_offset' do
-    let(:path) { 'tmp/next_offset' }
-
-    where(:num_entries, :offset, :limit, :expected_result) do
-      0 | 0 | 0 | 0
-      0 | 0 | 1 | 1
-      0 | 1 | 0 | 1
-      0 | 1 | 1 | 1
-
-      1 | 0 | 0 | 0
-      1 | 0 | 1 | 1
-      1 | 1 | 0 | 1
-      1 | 1 | 1 | 2
-    end
-
-    with_them do
-      before do
-        create_file('dummy', path: 'other') if num_entries == 0
-        1.upto(num_entries) { |n| create_file(n, path: path) }
-      end
-
-      subject { summary.next_offset }
 
       it { is_expected.to eq(expected_result) }
     end
