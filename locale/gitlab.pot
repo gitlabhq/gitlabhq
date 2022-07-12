@@ -26467,6 +26467,12 @@ msgstr ""
 msgid "Notify|Author: %{author_name}"
 msgstr ""
 
+msgid "Notify|Auto DevOps pipeline was disabled for %{project}"
+msgstr ""
+
+msgid "Notify|CI/CD project settings"
+msgstr ""
+
 msgid "Notify|If you no longer wish to use this domain with GitLab Pages, please remove it from your GitLab project and delete any related DNS records."
 msgstr ""
 
@@ -26474,6 +26480,9 @@ msgid "Notify|Issue was %{issue_status} by %{updated_by}"
 msgstr ""
 
 msgid "Notify|Issue was moved to another project."
+msgstr ""
+
+msgid "Notify|Learn more about Auto DevOps"
 msgstr ""
 
 msgid "Notify|Merge request %{merge_request} can no longer be merged due to conflict."
@@ -26503,6 +26512,9 @@ msgstr ""
 msgid "Notify|Pipeline %{pipeline_link} triggered by"
 msgstr ""
 
+msgid "Notify|The Auto DevOps pipeline failed for pipeline %{pipeline_link} and has been disabled for %{project_link}. In order to use the Auto DevOps pipeline with your project, please review the %{supported_langs_link}, adjust your project accordingly, and turn on the Auto DevOps pipeline within your %{settings_link}."
+msgstr ""
+
 msgid "Notify|This issue is due on: %{issue_due_date}"
 msgstr ""
 
@@ -26513,6 +26525,9 @@ msgid "Notify|You don't have access to the project."
 msgstr ""
 
 msgid "Notify|Your request to join the %{target_to_join} %{target_type} has been %{denied_tag}."
+msgstr ""
+
+msgid "Notify|currently supported languages"
 msgstr ""
 
 msgid "Notify|successfully completed %{jobs} in %{stages}."
