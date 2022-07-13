@@ -15,9 +15,15 @@ module Resolvers
               required: false,
               description: 'Filter jobs by status.'
 
-      def resolve(statuses: nil, security_report_types: [])
+      argument :retried, ::GraphQL::Types::Boolean,
+              required: false,
+              description: 'Filter jobs by retry-status.'
+
+      def resolve(statuses: nil, security_report_types: [], retried: nil)
         jobs = init_collection(security_report_types)
         jobs = jobs.with_status(statuses) if statuses.present?
+        jobs = jobs.retried if retried
+        jobs = jobs.latest if retried == false
 
         jobs
       end

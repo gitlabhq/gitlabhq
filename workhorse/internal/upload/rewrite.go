@@ -159,7 +159,7 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 		case destination.ErrEntityTooLarge, exif.ErrRemovingExif:
 			return err
 		default:
-			return fmt.Errorf("persisting multipart file: %v", err)
+			return fmt.Errorf("persisting multipart file: %w", err)
 		}
 	}
 

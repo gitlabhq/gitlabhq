@@ -374,7 +374,7 @@ GitLab capitalizes the stages' names in the pipeline graphs.
 
 ### View full pipeline graph
 
-> - Visualization improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
+> Visualization improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
 
 The [pipeline details page](#view-pipelines) displays the full pipeline graph of
 all the jobs in the pipeline.

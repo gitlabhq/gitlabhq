@@ -101,7 +101,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
       context 'when the feature flag is toggled on' do
         before do
-          stub_feature_flags(require_email_verification: true)
+          stub_feature_flags(require_email_verification: user)
         end
 
         context 'when rate limited' do
@@ -150,8 +150,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
       end
 
       context 'when the feature flag is toggled off' do
+        let(:another_user) { build(:user) }
+
         before do
-          stub_feature_flags(require_email_verification: false)
+          stub_feature_flags(require_email_verification: another_user)
           sign_in
         end
 

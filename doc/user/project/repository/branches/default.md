@@ -76,7 +76,7 @@ overrides it.
 
 ### Group-level custom initial branch name
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221014) in GitLab 13.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221014) in GitLab 13.6.
 
 Users with at least the Owner role of groups and subgroups can configure the default branch name for a group:
 

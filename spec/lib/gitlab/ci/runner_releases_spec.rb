@@ -7,16 +7,23 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
 
   let(:runner_releases_url) { 'the release API URL' }
 
-  describe '#releases', :use_clean_rails_memory_store_caching do
+  def releases
+    subject.releases
+  end
+
+  def releases_by_minor
+    subject.releases_by_minor
+  end
+
+  before do
+    subject.reset_backoff!
+
+    stub_application_setting(public_runner_releases_url: runner_releases_url)
+  end
+
+  describe 'caching behavior', :use_clean_rails_memory_store_caching do
     before do
-      subject.reset_backoff!
-
-      stub_application_setting(public_runner_releases_url: runner_releases_url)
       allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response(response) }
-    end
-
-    def releases
-      subject.releases
     end
 
     shared_examples 'requests that follow cache status' do |validity_period|
@@ -29,7 +36,12 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
           travel followup_request_interval do
             expect(Gitlab::HTTP).not_to receive(:try_get)
 
-            expect(releases).to eq(expected_result)
+            if expected_releases
+              expected_result_by_minor = expected_releases.group_by(&:without_patch).transform_values(&:max)
+            end
+
+            expect(releases).to eq(expected_releases)
+            expect(releases_by_minor).to eq(expected_result_by_minor)
           end
         end
       end
@@ -46,19 +58,39 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
               .with(runner_releases_url)
               .once { mock_http_response(followup_response) }
 
-            expect(releases).to eq((expected_result || []) + [Gitlab::VersionInfo.new(14, 9, 2)])
+            new_releases = (expected_releases || []) + [Gitlab::VersionInfo.new(14, 9, 2)]
+            new_releases_by_minor_version = (expected_releases_by_minor || {}).merge(
+              Gitlab::VersionInfo.new(14, 9, 0) => Gitlab::VersionInfo.new(14, 9, 2)
+            )
+            expect(releases).to eq(new_releases)
+            expect(releases_by_minor).to eq(new_releases_by_minor_version)
           end
         end
       end
     end
 
+    context 'when response is not nil' do
+      let(:response) { [{ 'name' => 'v14.9.1-beta1-ee' }, { 'name' => 'v14.9.0' }] }
+      let(:expected_releases) do
+        [
+          Gitlab::VersionInfo.new(14, 9, 0),
+          Gitlab::VersionInfo.new(14, 9, 1, '-beta1-ee')
+        ]
+      end
+
+      let(:expected_releases_by_minor) do
+        {
+          Gitlab::VersionInfo.new(14, 9, 0) => Gitlab::VersionInfo.new(14, 9, 1, '-beta1-ee')
+        }
+      end
+
+      it_behaves_like 'requests that follow cache status', 1.day
+    end
+
     context 'when response is nil' do
       let(:response) { nil }
-      let(:expected_result) { nil }
-
-      it 'returns nil' do
-        expect(releases).to be_nil
-      end
+      let(:expected_releases) { nil }
+      let(:expected_releases_by_minor) { nil }
 
       it_behaves_like 'requests that follow cache status', 5.seconds
 
@@ -75,15 +107,18 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
         travel_to(start_time)
         subject.reset_backoff!
         expect(releases).to be_nil
+        expect(releases_by_minor).to be_nil
 
         # Successive failed requests result in HTTP requests only after specific backoff periods
         backoff_periods = [5, 10, 20, 40, 80, 160, 320, 640, 1280, 2560, 3600].map(&:seconds)
         backoff_periods.each do |period|
           travel(period - 1.second)
           expect(releases).to be_nil
+          expect(releases_by_minor).to be_nil
 
           travel 1.second
           expect(releases).to be_nil
+          expect(releases_by_minor).to be_nil
         end
 
         expect(http_call_timestamp_offsets).to eq([0, 5, 15, 35, 75, 155, 315, 635, 1275, 2555, 5115, 8715])
@@ -94,6 +129,22 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
           .once { mock_http_response([{ 'name' => 'v14.9.1-beta1-ee' }]) }
         travel 1.hour
         expect(releases).not_to be_nil
+        expect(releases_by_minor).not_to be_nil
+      end
+    end
+  end
+
+  describe '#releases', :use_clean_rails_memory_store_caching do
+    before do
+      allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response(response) }
+    end
+
+    context 'when response is nil' do
+      let(:response) { nil }
+      let(:expected_result) { nil }
+
+      it 'returns nil' do
+        expect(releases).to be_nil
       end
     end
 
@@ -109,8 +160,6 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
       it 'returns parsed and sorted Gitlab::VersionInfo objects' do
         expect(releases).to eq(expected_result)
       end
-
-      it_behaves_like 'requests that follow cache status', 1.day
     end
 
     context 'when response contains unexpected input type' do
@@ -126,36 +175,44 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
     end
   end
 
-  describe '#expired?', :use_clean_rails_memory_store_caching do
-    def expired?
-      described_class.instance.expired?
-    end
-
+  describe '#releases_by_minor', :use_clean_rails_memory_store_caching do
     before do
-      stub_application_setting(public_runner_releases_url: runner_releases_url)
-
-      subject.send(:reset_backoff!)
+      allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response(response) }
     end
 
-    it { expect(expired?).to be_truthy }
+    context 'when response is nil' do
+      let(:response) { nil }
+      let(:expected_result) { nil }
 
-    it 'behaves appropriately in refetch' do
-      allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response([]) }
-
-      subject.releases
-      expect(expired?).to be_falsey
-
-      travel Gitlab::Ci::RunnerReleases::RELEASES_VALIDITY_PERIOD + 1.second do
-        expect(expired?).to be_truthy
-
-        allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response(nil) }
-        subject.releases
-        expect(expired?).to be_truthy
-
-        allow(Gitlab::HTTP).to receive(:try_get).with(runner_releases_url).once { mock_http_response([]) }
-        subject.releases
-        expect(expired?).to be_truthy
+      it 'returns nil' do
+        expect(releases_by_minor).to be_nil
       end
+    end
+
+    context 'when response is not nil' do
+      let(:response) { [{ 'name' => 'v14.9.1-beta1-ee' }, { 'name' => 'v14.9.0' }, { 'name' => 'v14.8.1' }] }
+      let(:expected_result) do
+        {
+          Gitlab::VersionInfo.new(14, 8, 0) => Gitlab::VersionInfo.new(14, 8, 1),
+          Gitlab::VersionInfo.new(14, 9, 0) => Gitlab::VersionInfo.new(14, 9, 1, '-beta1-ee')
+        }
+      end
+
+      it 'returns parsed and grouped Gitlab::VersionInfo objects' do
+        expect(releases_by_minor).to eq(expected_result)
+      end
+    end
+
+    context 'when response contains unexpected input type' do
+      let(:response) { 'error' }
+
+      it { expect(releases_by_minor).to be_nil }
+    end
+
+    context 'when response contains unexpected input array' do
+      let(:response) { ['error'] }
+
+      it { expect(releases_by_minor).to be_nil }
     end
   end
 

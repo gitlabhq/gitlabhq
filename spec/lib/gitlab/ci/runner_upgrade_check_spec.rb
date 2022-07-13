@@ -17,10 +17,9 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
 
     context 'with failing Gitlab::Ci::RunnerReleases request' do
       let(:runner_version) { '14.1.123' }
+      let(:runner_releases_double) { instance_double(Gitlab::Ci::RunnerReleases) }
 
       before do
-        runner_releases_double = instance_double(Gitlab::Ci::RunnerReleases)
-
         allow(Gitlab::Ci::RunnerReleases).to receive(:instance).and_return(runner_releases_double)
         allow(runner_releases_double).to receive(:releases).and_return(nil)
       end
@@ -31,12 +30,16 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
     end
 
     context 'with available_runner_releases configured' do
-      before do
-        runner_releases_double = instance_double(Gitlab::Ci::RunnerReleases)
+      let(:runner_releases_double) { instance_double(Gitlab::Ci::RunnerReleases) }
 
+      before do
         allow(Gitlab::Ci::RunnerReleases).to receive(:instance).and_return(runner_releases_double)
         allow(runner_releases_double).to receive(:releases)
           .and_return(available_runner_releases.map { |v| ::Gitlab::VersionInfo.parse(v) })
+        allow(runner_releases_double).to receive(:releases_by_minor)
+          .and_return(available_runner_releases.map { |v| ::Gitlab::VersionInfo.parse(v) }
+                                               .group_by(&:without_patch)
+                                               .transform_values(&:max))
       end
 
       context 'with no available runner releases' do

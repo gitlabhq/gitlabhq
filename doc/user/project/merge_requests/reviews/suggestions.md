@@ -77,7 +77,7 @@ in four backticks instead of three:
 
 ## Configure the commit message for applied suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13086) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13086) in GitLab 12.7.
 
 GitLab uses a default commit message
 when applying suggestions: `Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)`

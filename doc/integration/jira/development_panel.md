@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Jira development panel integration **(FREE)**
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) from GitLab Premium to GitLab Free in 13.4.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) from GitLab Premium to GitLab Free in 13.4.
 
 With the Jira development panel integration, you can reference Jira issues in GitLab.
 When configured, activity (such as pipeline, deployment, and feature flags) displays in the Jira issue's

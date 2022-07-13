@@ -40,8 +40,9 @@ describe('Source Viewer component', () => {
   const chunk2 = generateContent('// Some source code 2', 70);
   const content = chunk1 + chunk2;
   const path = 'some/path.js';
+  const fileType = 'javascript';
   const blamePath = 'some/blame/path.js';
-  const DEFAULT_BLOB_DATA = { language, rawTextBlob: content, path, blamePath };
+  const DEFAULT_BLOB_DATA = { language, rawTextBlob: content, path, blamePath, fileType };
   const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
 
   const createComponent = async (blob = {}) => {
@@ -90,7 +91,7 @@ describe('Source Viewer component', () => {
     beforeEach(() => createComponent({ language: mappedLanguage }));
 
     it('registers our plugins for Highlight.js', () => {
-      expect(registerPlugins).toHaveBeenCalledWith(hljs);
+      expect(registerPlugins).toHaveBeenCalledWith(hljs, fileType, content);
     });
 
     it('registers the language definition', async () => {
@@ -100,6 +101,13 @@ describe('Source Viewer component', () => {
         mappedLanguage,
         languageDefinition.default,
       );
+    });
+
+    it('registers json language definition if fileType is package_json', async () => {
+      await createComponent({ language: 'json', fileType: 'package_json' });
+      const languageDefinition = await import(`highlight.js/lib/languages/json`);
+
+      expect(hljs.registerLanguage).toHaveBeenCalledWith('json', languageDefinition.default);
     });
 
     it('highlights the first chunk', () => {

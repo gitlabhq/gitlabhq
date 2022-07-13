@@ -123,14 +123,15 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       allow(project).to receive(:destroy!).and_return(true)
     end
 
-    it "deletes merge request and related records" do
-      merge_request_diffs = merge_request.merge_request_diffs
-      expect(merge_request_diffs.size).to eq(1)
+    [MergeRequestDiffCommit, MergeRequestDiffFile].each do |model|
+      it "deletes #{model} records of the merge request" do
+        merge_request_diffs = merge_request.merge_request_diffs
+        expect(merge_request_diffs.size).to eq(1)
 
-      mrdc_count = MergeRequestDiffCommit.where(merge_request_diff_id: merge_request_diffs.first.id).count
+        records_count = model.where(merge_request_diff_id: merge_request_diffs.first.id).count
 
-      expect { destroy_project(project, user, {}) }
-      .to change { MergeRequestDiffCommit.count }.by(-mrdc_count)
+        expect { destroy_project(project, user, {}) }.to change { model.count }.by(-records_count)
+      end
     end
   end
 

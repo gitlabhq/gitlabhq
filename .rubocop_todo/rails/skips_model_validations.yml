@@ -483,7 +483,6 @@ Rails/SkipsModelValidations:
     - 'spec/features/projects/settings/user_manages_merge_requests_settings_spec.rb'
     - 'spec/features/projects/user_sees_sidebar_spec.rb'
     - 'spec/features/projects_spec.rb'
-    - 'spec/features/refactor_blob_viewer_disabled/projects/blobs/blob_show_spec.rb'
     - 'spec/features/u2f_spec.rb'
     - 'spec/features/users/show_spec.rb'
     - 'spec/features/webauthn_spec.rb'

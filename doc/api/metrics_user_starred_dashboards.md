@@ -12,7 +12,7 @@ by displaying favorited dashboards at the top of the select list.
 
 ## Add a star to a dashboard
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31316) in GitLab 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31316) in GitLab 13.0.
 
 ```plaintext
 POST /projects/:id/metrics/user_starred_dashboards

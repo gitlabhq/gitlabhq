@@ -112,7 +112,7 @@ This example shows reviewers and approval rules in a merge request sidebar:
 
 ### Request a new review
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293933) in GitLab 13.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293933) in GitLab 13.9.
 
 After a reviewer completes their [merge request reviews](../../../discussions/index.md),
 the author of the merge request can request a new review from the reviewer:

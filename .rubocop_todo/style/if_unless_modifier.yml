@@ -1167,7 +1167,6 @@ Style/IfUnlessModifier:
     - 'spec/features/merge_request/batch_comments_spec.rb'
     - 'spec/features/merge_request/user_sees_avatar_on_diff_notes_spec.rb'
     - 'spec/features/projects/blobs/edit_spec.rb'
-    - 'spec/features/refactor_blob_viewer_disabled/projects/blobs/edit_spec.rb'
     - 'spec/graphql/mutations/releases/update_spec.rb'
     - 'spec/helpers/application_settings_helper_spec.rb'
     - 'spec/helpers/invite_members_helper_spec.rb'

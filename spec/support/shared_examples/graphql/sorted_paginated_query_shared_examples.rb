@@ -44,19 +44,25 @@
 #         end
 #       end
 #
+
+# Include this context if your field does not accept a sort argument
+RSpec.shared_context 'no sort argument' do
+  let(:sort_argument) { graphql_args }
+end
+
 RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
   # Provided as a convenience when constructing queries using string concatenation
   let(:page_info) { 'pageInfo { startCursor endCursor }' }
   # Convenience for using default implementation of pagination_results_data
   let(:node_path) { ['id'] }
+  let(:sort_argument) { graphql_args(sort: sort_param) }
 
   it_behaves_like 'requires variables' do
-    let(:required_variables) { [:sort_param, :first_param, :all_records, :data_path, :current_user] }
+    let(:required_variables) { [:first_param, :all_records, :data_path, :current_user] }
   end
 
   describe do
-    let(:sort_argument)  { graphql_args(sort: sort_param) }
-    let(:params)         { sort_argument }
+    let(:params) { sort_argument }
 
     # Convenience helper for the large number of queries defined as a projection
     # from some root value indexed by full_path to a collection of objects with IID

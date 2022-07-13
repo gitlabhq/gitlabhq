@@ -109,7 +109,7 @@ type RemoteObject struct {
 	// ID is a unique identifier of object storage upload
 	ID string
 	// Timeout is a number that represents timeout in seconds for sending data to StoreURL
-	Timeout int
+	Timeout float32
 	// MultipartUpload contains presigned URLs for S3 MultipartUpload
 	MultipartUpload *MultipartUploadParams
 	// Object storage config for Workhorse client

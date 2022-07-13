@@ -1642,8 +1642,6 @@ RSpec/ContextWording:
     - 'spec/features/projects/wiki/user_views_wiki_empty_spec.rb'
     - 'spec/features/projects_spec.rb'
     - 'spec/features/protected_branches_spec.rb'
-    - 'spec/features/refactor_blob_viewer_disabled/projects/blobs/blob_show_spec.rb'
-    - 'spec/features/refactor_blob_viewer_disabled/projects/blobs/edit_spec.rb'
     - 'spec/features/reportable_note/commit_spec.rb'
     - 'spec/features/reportable_note/merge_request_spec.rb'
     - 'spec/features/runners_spec.rb'

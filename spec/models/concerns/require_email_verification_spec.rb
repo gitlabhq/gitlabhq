@@ -23,10 +23,11 @@ RSpec.describe RequireEmailVerification do
   end
 
   with_them do
-    let(:instance) { model.new }
+    let(:instance) { model.new(id: 1) }
+    let(:another_instance) { model.new(id: 2) }
 
     before do
-      stub_feature_flags(require_email_verification: feature_flag_enabled)
+      stub_feature_flags(require_email_verification: feature_flag_enabled ? instance : another_instance)
       allow(instance).to receive(:two_factor_enabled?).and_return(two_factor_enabled)
     end
 

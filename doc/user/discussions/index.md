@@ -227,7 +227,7 @@ To change the activity sort order:
 
 ## Assign an issue to the commenting user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191455) in GitLab 13.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191455) in GitLab 13.1.
 
 You can assign an issue to a user who made a comment.
 

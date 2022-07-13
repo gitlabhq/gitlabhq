@@ -171,7 +171,7 @@ might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) from GitLab Starter to GitLab Free in 13.2.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) from GitLab Starter to GitLab Free in 13.2.
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run

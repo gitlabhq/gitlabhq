@@ -153,7 +153,7 @@ Usage of the `extend` at-rule is prohibited due to [memory leaks](https://gitlab
 }
 
 // Good
-@mixing gl-pt-3 {
+@mixin gl-pt-3 {
   padding-top: 12px;
 }
 

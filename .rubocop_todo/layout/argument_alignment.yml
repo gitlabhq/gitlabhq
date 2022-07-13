@@ -669,8 +669,6 @@ Layout/ArgumentAlignment:
     - 'spec/features/projects/milestones/milestones_sorting_spec.rb'
     - 'spec/features/projects/pipelines/pipeline_spec.rb'
     - 'spec/features/projects/pipelines/pipelines_spec.rb'
-    - 'spec/features/refactor_blob_viewer_disabled/projects/files/editing_a_file_spec.rb'
-    - 'spec/features/refactor_blob_viewer_disabled/projects/files/project_owner_creates_license_file_spec.rb'
     - 'spec/finders/ci/commit_statuses_finder_spec.rb'
     - 'spec/finders/ci/pipelines_for_merge_request_finder_spec.rb'
     - 'spec/finders/clusters/knative_services_finder_spec.rb'

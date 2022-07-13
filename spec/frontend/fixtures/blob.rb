@@ -12,7 +12,6 @@ RSpec.describe Projects::BlobController, '(JavaScript fixtures)', type: :control
   render_views
 
   before do
-    stub_feature_flags(refactor_blob_viewer: false) # This fixture is only used by the legacy (non-refactored) blob viewer
     sign_in(user)
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')
   end

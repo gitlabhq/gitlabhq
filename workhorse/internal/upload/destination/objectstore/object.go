@@ -52,7 +52,7 @@ func newObject(putURL, deleteURL string, putHeaders map[string]string, size int6
 
 func (o *Object) Upload(ctx context.Context, r io.Reader) error {
 	// we should prevent pr.Close() otherwise it may shadow error set with pr.CloseWithError(err)
-	req, err := http.NewRequest(http.MethodPut, o.putURL, io.NopCloser(r))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, o.putURL, io.NopCloser(r))
 
 	if err != nil {
 		return fmt.Errorf("PUT %q: %v", mask.URL(o.putURL), err)
@@ -65,7 +65,7 @@ func (o *Object) Upload(ctx context.Context, r io.Reader) error {
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("PUT request %q: %v", mask.URL(o.putURL), err)
+		return fmt.Errorf("PUT request %q: %w", mask.URL(o.putURL), err)
 	}
 	defer resp.Body.Close()
 

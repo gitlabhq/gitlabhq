@@ -282,7 +282,7 @@ GitLab can display the results of one or more reports in the merge request
 
 ## `artifacts:reports:requirements` **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
 
 The `requirements` report collects `requirements.json` files. The collected Requirements report uploads to GitLab as an
 artifact and existing [requirements](../../user/project/requirements/index.md) are marked as Satisfied.
@@ -292,7 +292,7 @@ GitLab can display the results of one or more reports in the
 
 ## `artifacts:reports:sast`
 
-> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
+> [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
 The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md). The collected SAST
 report uploads to GitLab as an artifact.

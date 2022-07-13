@@ -9,56 +9,52 @@ module Gitlab
         runner_version = ::Gitlab::VersionInfo.parse(runner_version, parse_suffix: true)
 
         return :invalid_version unless runner_version.valid?
-
-        releases = RunnerReleases.instance.releases
-        return :error unless releases
+        return :error unless runner_releases_store.releases
 
         # Recommend patch update if there's a newer release in a same minor branch as runner
-        releases.each do |available_release|
-          if available_release.same_minor_version?(runner_version) && available_release > runner_version
-            return :recommended
-          end
-        end
+        return :recommended if runner_release_update_recommended?(runner_version)
 
         # Recommend update if outside of backport window
-        if outside_backport_window?(runner_version, releases)
-          return :recommended
-        end
+        return :recommended if outside_backport_window?(runner_version)
 
         # Consider update if there's a newer release within the currently deployed GitLab version
-        releases.each do |available_release|
-          if available_release.same_minor_version?(gitlab_version) && available_release > runner_version
-            return :available
-          end
-        end
+        return :available if runner_release_available?(runner_version)
 
         :not_available
       end
 
       private
 
+      def runner_release_update_recommended?(runner_version)
+        recommended_release = runner_releases_store.releases_by_minor[runner_version.without_patch]
+
+        recommended_release && recommended_release > runner_version
+      end
+
+      def runner_release_available?(runner_version)
+        available_release = runner_releases_store.releases_by_minor[gitlab_version.without_patch]
+
+        available_release && available_release > runner_version
+      end
+
       def gitlab_version
         @gitlab_version ||= ::Gitlab::VersionInfo.parse(::Gitlab::VERSION)
       end
 
-      def patch_update?(available_release, runner_version)
-        # https://docs.gitlab.com/ee/policy/maintenance.html#patch-releases
-        available_release.major == runner_version.major &&
-          available_release.minor == runner_version.minor &&
-          available_release.patch > runner_version.patch
+      def runner_releases_store
+        RunnerReleases.instance
       end
 
-      def outside_backport_window?(runner_version, releases)
-        return false if releases.empty? || runner_version >= releases.last # return early if runner version is too new
+      def outside_backport_window?(runner_version)
+        return false if runner_releases_store.releases.empty?
+        return false if runner_version >= runner_releases_store.releases.last # return early if runner version is too new
 
-        latest_minor_releases = releases.map(&:without_patch).uniq
-        latest_version_position = latest_minor_releases.count - 1
-        runner_version_position = latest_minor_releases.index(runner_version.without_patch)
-
-        return true if runner_version_position.nil? # consider outside if version is too old
+        minor_releases_with_index = runner_releases_store.releases_by_minor.keys.each_with_index.to_h
+        runner_minor_version_index = minor_releases_with_index[runner_version.without_patch]
+        return true if runner_minor_version_index.nil?
 
         # https://docs.gitlab.com/ee/policy/maintenance.html#backporting-to-older-releases
-        latest_version_position - runner_version_position > 2
+        minor_releases_with_index.count - runner_minor_version_index > 3
       end
     end
   end

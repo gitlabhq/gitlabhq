@@ -64,7 +64,8 @@ RSpec.shared_examples 'group and project boards query' do
 
         context 'when ascending' do
           it_behaves_like 'sorted paginated query' do
-            let(:sort_param) { }
+            include_context 'no sort argument'
+
             let(:first_param) { 2 }
 
             def pagination_results_data(nodes)

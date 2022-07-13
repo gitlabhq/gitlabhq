@@ -9924,6 +9924,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobqueuedduration"></a>`queuedDuration` | [`Duration`](#duration) | How long the job was enqueued before starting. |
 | <a id="cijobrefname"></a>`refName` | [`String`](#string) | Ref name of the job. |
 | <a id="cijobrefpath"></a>`refPath` | [`String`](#string) | Path to the ref. |
+| <a id="cijobretried"></a>`retried` | [`Boolean`](#boolean) | Indicates that the job has been retried. |
 | <a id="cijobretryable"></a>`retryable` | [`Boolean!`](#boolean) | Indicates the job can be retried. |
 | <a id="cijobscheduledat"></a>`scheduledAt` | [`Time`](#time) | Schedule for the build. |
 | <a id="cijobschedulingtype"></a>`schedulingType` | [`String`](#string) | Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise. |
@@ -14972,6 +14973,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pipelinejobsretried"></a>`retried` | [`Boolean`](#boolean) | Filter jobs by retry-status. |
 | <a id="pipelinejobssecurityreporttypes"></a>`securityReportTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filter jobs by the type of security report they produce. |
 | <a id="pipelinejobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 

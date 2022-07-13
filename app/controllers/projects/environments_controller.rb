@@ -24,9 +24,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics, :cancel_auto_stop]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
-  before_action do
-    push_frontend_feature_flag(:monitor_logging, project)
-  end
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   feature_category :continuous_delivery

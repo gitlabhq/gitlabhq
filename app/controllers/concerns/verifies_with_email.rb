@@ -20,7 +20,7 @@ module VerifiesWithEmail
     if session[:verification_user_id] && token = verification_params[:verification_token].presence
       # The verification token is submitted, verify it
       verify_token(user, token)
-    elsif require_email_verification_enabled?
+    elsif require_email_verification_enabled?(user)
       # Limit the amount of password guesses, since we now display the email verification page
       # when the password is correct, which could be a giveaway when brute-forced.
       return render_sign_in_rate_limited if check_rate_limit!(:user_sign_in, scope: user) { true }
@@ -188,7 +188,7 @@ module VerifiesWithEmail
     )
   end
 
-  def require_email_verification_enabled?
-    Feature.enabled?(:require_email_verification)
+  def require_email_verification_enabled?(user)
+    Feature.enabled?(:require_email_verification, user)
   end
 end

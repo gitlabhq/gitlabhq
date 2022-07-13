@@ -78,6 +78,8 @@ module Types
             description: 'Ref name of the job.'
       field :ref_path, GraphQL::Types::String, null: true,
             description: 'Path to the ref.'
+      field :retried, GraphQL::Types::Boolean, null: true,
+            description: 'Indicates that the job has been retried.'
       field :retryable, GraphQL::Types::Boolean, null: false, method: :retryable?,
             description: 'Indicates the job can be retried.'
       field :scheduling_type, GraphQL::Types::String, null: true,

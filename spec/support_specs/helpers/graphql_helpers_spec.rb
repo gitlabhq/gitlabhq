@@ -305,6 +305,7 @@ RSpec.describe GraphqlHelpers do
       aFloat: 0.1,
       aString: "wibble",
       anEnum: LOW,
+      null: null,
       aBool: false,
       aVar: #{x.to_graphql_value}
       EXP

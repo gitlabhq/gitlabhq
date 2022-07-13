@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Scan execution policies **(ULTIMATE)**
 
-> - Group-level security policies were [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `group_level_security_policies`. Enabled by default.
+> Group-level security policies were [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `group_level_security_policies`. Enabled by default.
 
 Group, sub-group, or project owners can use scan execution policies to require that security scans run on a specified
 schedule or with the project (or multiple projects if the policy is defined at a group or sub-group level) pipeline. Required scans are injected into the CI pipeline as new jobs

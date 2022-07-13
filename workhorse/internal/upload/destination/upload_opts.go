@@ -80,7 +80,11 @@ func (s *UploadOpts) IsMultipart() bool {
 
 // GetOpts converts GitLab api.Response to a proper UploadOpts
 func GetOpts(apiResponse *api.Response) (*UploadOpts, error) {
-	timeout := time.Duration(apiResponse.RemoteObject.Timeout) * time.Second
+	timeout := time.Duration(
+		// By converting time.Second to a float32 value we can correctly handle
+		// small Timeout values like 0.1.
+		apiResponse.RemoteObject.Timeout * float32(time.Second),
+	)
 	if timeout == 0 {
 		timeout = DefaultObjectStoreTimeout
 	}

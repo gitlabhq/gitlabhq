@@ -8,8 +8,8 @@ module MarkupHelper
 
   # Let's increase the render timeout
   # For a smaller one, a test that renders the blob content statically fails
-  # We can consider removing this custom timeout when refactor_blob_viewer FF is removed:
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/324351
+  # We can consider removing this custom timeout when markup_rendering_timeout FF is removed:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/365358
   RENDER_TIMEOUT = 5.seconds
 
   def plain?(filename)

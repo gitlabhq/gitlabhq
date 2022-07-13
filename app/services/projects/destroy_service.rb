@@ -132,7 +132,7 @@ module Projects
       destroy_web_hooks!
       destroy_project_bots!
       destroy_ci_records!
-      destroy_mr_diff_commits!
+      destroy_mr_diff_relations!
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
@@ -153,23 +153,28 @@ module Projects
     #   cascading deletes may exceed statement timeouts, causing failures.
     #   (see https://gitlab.com/gitlab-org/gitlab/-/issues/346166)
     #
+    # Removing merge_request_diff_files records may also cause timeouts, so they
+    #   can be deleted in batches as well.
+    #
     # rubocop: disable CodeReuse/ActiveRecord
-    def destroy_mr_diff_commits!
+    def destroy_mr_diff_relations!
       mr_batch_size = 100
       delete_batch_size = 1000
 
       project.merge_requests.each_batch(column: :iid, of: mr_batch_size) do |relation_ids|
-        loop do
-          inner_query = MergeRequestDiffCommit
-            .select(:merge_request_diff_id, :relative_order)
-            .where(merge_request_diff_id: MergeRequestDiff.where(merge_request_id: relation_ids).select(:id))
-            .limit(delete_batch_size)
+        [MergeRequestDiffCommit, MergeRequestDiffFile].each do |model|
+          loop do
+            inner_query = model
+              .select(:merge_request_diff_id, :relative_order)
+              .where(merge_request_diff_id: MergeRequestDiff.where(merge_request_id: relation_ids).select(:id))
+              .limit(delete_batch_size)
 
-          deleted_rows = MergeRequestDiffCommit
-            .where('(merge_request_diff_commits.merge_request_diff_id, merge_request_diff_commits.relative_order) IN (?)', inner_query)
-            .delete_all
+            deleted_rows = model
+              .where("(#{model.table_name}.merge_request_diff_id, #{model.table_name}.relative_order) IN (?)", inner_query) # rubocop:disable GitlabSecurity/SqlInjection
+              .delete_all
 
-          break if deleted_rows == 0
+            break if deleted_rows == 0
+          end
         end
       end
     end

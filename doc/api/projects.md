@@ -2646,7 +2646,7 @@ PUT /projects/:id/push_rule
 
 ### Delete project push rule
 
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 Removes a push rule from a project. This is an idempotent method and can be
 called multiple times. Either the push rule is available or not.
@@ -2829,7 +2829,7 @@ with the API scope enabled.
 
 ## Start the pull mirroring process for a Project **(PREMIUM)**
 
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 ```plaintext
 POST /projects/:id/mirror/pull

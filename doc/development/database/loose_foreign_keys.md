@@ -66,8 +66,6 @@ The tool ensures that all aspects of swapping a foreign key are covered. This in
 - Updating `db/structure.sql` with the new migration.
 - Updating `lib/gitlab/database/gitlab_loose_foreign_keys.yml` to add the new loose foreign key.
 - Creating or updating a model's specs to ensure that the loose foreign key is properly supported.
-- Creating a new branch, commit, push, and creating a merge request on GitLab.com.
-- Creating a merge request template with all the necessary details to validate the safety of the foreign key removal.
 
 The tool is located at `scripts/decomposition/generate-loose-foreign-key`:
 
@@ -77,9 +75,7 @@ $ scripts/decomposition/generate-loose-foreign-key -h
 Usage: scripts/decomposition/generate-loose-foreign-key [options] <filters...>
     -c, --cross-schema               Show only cross-schema foreign keys
     -n, --dry-run                    Do not execute any commands (dry run)
-    -b, --[no-]branch                Create or not a new branch
     -r, --[no-]rspec                 Create or not a rspecs automatically
-    -m, --milestone MILESTONE        Specify custom milestone (current: 14.8)
     -h, --help                       Prints this help
 ```
 

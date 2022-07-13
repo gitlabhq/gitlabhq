@@ -16,7 +16,7 @@
 #blob-content-holder.blob-content-holder
   - if @code_navigation_path
     #js-code-navigation{ data: { code_navigation_path: @code_navigation_path, blob_path: blob.path, definition_path_prefix: project_blob_path(@project, @ref) } }
-  - if Feature.enabled?(:refactor_blob_viewer, @project) && !expanded
+  - if !expanded
     -# Data info will be removed once we migrate this to use GraphQL
     -# Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/330406
     #js-view-blob-app{ data: { blob_path: blob.path,

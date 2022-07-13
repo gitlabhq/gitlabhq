@@ -108,7 +108,7 @@ For more details about creating and managing Conan packages, see the
 
 #### Package without a username and a channel
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345055) in GitLab 14.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345055) in GitLab 14.6.
 
 Even though they are [recommended](https://docs.conan.io/en/latest/reference/conanfile/attributes.html#user-channel)
 to distinguish your package from a similarly named existing package,

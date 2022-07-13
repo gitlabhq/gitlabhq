@@ -91,9 +91,7 @@ export default function setupVueRepositoryList() {
 
   initLastCommitApp();
 
-  if (gon.features.refactorBlobViewer) {
-    initBlobControlsApp();
-  }
+  initBlobControlsApp();
 
   router.afterEach(({ params: { path } }) => {
     setTitle(path, ref, fullName);

@@ -6,10 +6,8 @@
 require 'optparse'
 
 $options = {
-  milestone: "#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}",
   cross_schema: false,
   dry_run: false,
-  branch: true,
   rspec: true
 }
 
@@ -24,16 +22,8 @@ OptionParser.new do |opts|
     $options[:dry_run] = v
   end
 
-  opts.on("-b", "--[no-]branch", "Create or not a new branch") do |v|
-    $options[:branch] = v
-  end
-
   opts.on("-r", "--[no-]rspec", "Create or not a rspecs automatically") do |v|
     $options[:rspec] = v
-  end
-
-  opts.on("-m", "--milestone MILESTONE", "Specify custom milestone (current: #{$options[:milestone]})") do |v|
-    $options[:milestone] = v
   end
 
   opts.on("-h", "--help", "Prints this help") do
@@ -50,9 +40,7 @@ unless system("git diff --quiet")
   raise "There are uncommitted changes. Commit to continue."
 end
 
-if Gitlab::Database.database_base_models.many?
-  raise 'Cannot run in multiple-databases mode. Use only `main:` in `config/database.yml`.'
-end
+$files_affected = []
 
 puts "Re-creating current test database"
 ActiveRecord::Tasks::DatabaseTasks.drop_current
@@ -84,6 +72,18 @@ def exec_cmd(*args, fail: nil)
   puts ">> #{command}"
   puts "--------------------------------------------------"
   false
+end
+
+def write_file(file_path, content)
+  $files_affected << file_path
+  File.write(file_path, content)
+end
+
+def print_files_affected
+  puts "The following files have been generated/modified:"
+  $files_affected.each do |filepath|
+    puts filepath
+  end
 end
 
 def has_lfk?(definition)
@@ -147,12 +147,10 @@ def add_definition_to_yaml(definition)
   end
 
   # emulate existing formatting
-  File.write(
+  write_file(
     Rails.root.join('config/gitlab_loose_foreign_keys.yml'),
     content.to_yaml.gsub(/^([- ] )/, '  \1')
   )
-
-  exec_cmd("git", "add", "config/gitlab_loose_foreign_keys.yml")
 end
 
 def generate_migration(definition)
@@ -185,12 +183,9 @@ def generate_migration(definition)
     end
   EOF
 
-  File.write(migration_name, content)
+  write_file(migration_name, content)
 
-  exec_cmd("git", "add", migration_name, fail: "Failed to add migration file.")
   exec_cmd("bin/rails", "db:migrate", fail: "Failed to run db:migrate.")
-  exec_cmd("git", "add", "db/schema_migrations/#{timestamp}", "db/structure.sql", fail: "There are uncommitted changes. We should not have any.")
-  exec_cmd("git diff --exit-code --name-only", fail: "There are uncommitted changes. We should not have any.")
 end
 
 def class_by_table_name
@@ -232,33 +227,7 @@ def add_test_to_specs(definition)
   lines = File.readlines(spec_path)
   insert_line = lines.count - 1
   lines.insert(insert_line, "\n", *spec_test.lines)
-  File.write(spec_path, lines.join(""))
-
-  # find a matching line
-  test_lines = (1..lines.count).select do |line|
-    lines[line-1].include?("it_behaves_like 'cleanup by a loose foreign key' do")
-  end.join(":")
-
-  loop do
-    if system("bin/rspec", "#{spec_path}:#{test_lines}")
-      puts "Test seems fine?"
-      break
-    end
-
-    puts "--------------------------------------------------"
-    puts "Test failed:"
-    puts "Edit:   vim #{spec_path} (lines #{test_lines})"
-    puts "Re-run: bin/rspec #{spec_path}:#{test_lines}"
-    puts "--------------------------------------------------"
-    puts "Running bash. To exit do 'Ctrl-D' to re-run, or do 'Ctrl-C' to break (and ignore failure)."
-    puts
-
-    unless exec_cmd("bash")
-      break
-    end
-  end
-
-  exec_cmd("git", "add", spec_path, fail: "There are uncommitted changes. We should not have any.")
+  write_file(spec_path, lines.join(""))
 end
 
 def update_no_cross_db_foreign_keys_spec(definition)
@@ -274,76 +243,7 @@ def update_no_cross_db_foreign_keys_spec(definition)
     return
   end
 
-  File.write(spec_path, updated.join(""))
-  exec_cmd("git", "add", spec_path, fail: "Failed to add changes from #{spec_path}")
-end
-
-def commit_changes(definition)
-  branch_name = "remove-#{definition.to_table}_#{definition.from_table}_#{definition.column}-fk"
-  commit_title = "Swap FK #{definition.from_table} to #{definition.to_table} for LFK"
-  mr_title = "Swap FK #{definition.from_table}.#{definition.column} to #{definition.to_table} for LFK"
-  description = <<-EOF.strip_heredoc
-    Swaps FK for #{definition.from_table}.#{definition.column} to #{definition.to_table}
-
-    Changelog: changed
-  EOF
-
-  commit_message = "#{commit_title}\n\n#{description}"
-
-  existing_branch = %x[git rev-parse --abbrev-ref HEAD].strip
-
-  if $options[:branch]
-    unless exec_cmd("git", "checkout", "-b", branch_name)
-      raise "Failed to create branch: #{branch_name}"
-    end
-  end
-
-  unless exec_cmd("git", "commit", "-m", commit_message)
-    raise "Failed to commit changes."
-  end
-
-  if $options[:branch]
-    exec_cmd("git", "push", "origin", "-u", "HEAD",
-      "-o", "merge_request.create",
-      "-o", "merge_request.target=#{existing_branch}",
-      "-o", "merge_request.milestone=#{$options[:milestone]}",
-      "-o", "merge_request.title=#{mr_title}"
-    )
-
-    puts
-    puts "--------------------------------------------------"
-    puts "Put this as MR description:"
-    puts "--------------------------------------------------"
-    puts <<-EOF.strip_heredoc
-      ## What does this MR do and why?
-  
-      Per https://gitlab.com/groups/gitlab-org/-/epics/7249
-  
-      As part of our CI "decomposition" efforts we need to remove all foreign keys that are cross-database (ie. between the planned \`main\` and \`ci\` databases). We are going to replace them all with ["loose foreign keys"](https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html).
-
-      Related: <DETAIL>
-
-      ## Validations
-
-      - **Best team to review (check off when reviewed):** TBD
-      - [ ] No way for user to access once parent is deleted. Please explain: <DETAIL>
-      - [ ] Possible to access once parent deleted but low user impact. Please explain: <DETAIL>
-      - [ ] Possible Sidekiq workers that may load directly and possibly lead to exceptions. Please explain: <DETAIL>
-      - [ ] Possible user impact to be evaluated or mitigated. Please explain: <DETAIL>
-      - [ ] Is this FK safe to be removed to avoid LOCKing problems? (Explanation: https://gitlab.com/groups/gitlab-org/-/epics/7249#note_819662046). Please explain: <DETAIL>
-
-      ## MR acceptance checklist
-  
-      This checklist encourages us to confirm any changes have been analyzed to reduce risks in quality, performance, reliability, security, and maintainability. 
-  
-      * [ ] I have evaluated the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist) for this MR.
-
-      /label ~"ci-decomposition::phase4" ~"database::review pending" ~"devops::enablement" ~"group::sharding" ~"section::enablement" ~"sharding::active" ~"type::feature" ~"workflow::in dev" ~backend ~"ci-decomposition" ~database ~"Category:Sharding"
-      /milestone %"#{$options[:milestone]}"
-      /assign_reviewer @ahegyi
-    EOF
-    puts "--------------------------------------------------"
-  end
+  write_file(spec_path, updated.join(""))
 end
 
 all_foreign_keys = ActiveRecord::Base.connection.tables.flat_map do |table|
@@ -400,6 +300,8 @@ all_foreign_keys.each_with_index do |definition, idx|
   generate_migration(definition)
   add_test_to_specs(definition)
   update_no_cross_db_foreign_keys_spec(definition)
-  commit_changes(definition)
 end
+
+print_files_affected
+
 puts

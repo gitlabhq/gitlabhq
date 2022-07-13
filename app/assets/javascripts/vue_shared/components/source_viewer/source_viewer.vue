@@ -141,7 +141,7 @@ export default {
       let detectedLanguage = language;
       let highlightedContent;
       if (this.hljs) {
-        registerPlugins(this.hljs);
+        registerPlugins(this.hljs, this.blob.fileType, this.content);
         if (!detectedLanguage) {
           const hljsHighlightAuto = this.hljs.highlightAuto(content);
           highlightedContent = hljsHighlightAuto.value;

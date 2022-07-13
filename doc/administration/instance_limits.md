@@ -156,7 +156,7 @@ Set the limit to `0` to disable it.
 
 ### Search rate limit
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9.
 
 This setting limits global search requests.
 

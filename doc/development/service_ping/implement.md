@@ -830,7 +830,7 @@ However, it has the following limitations:
 
 ## Aggregated metrics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
 
 WARNING:
 This feature is intended solely for internal GitLab use.

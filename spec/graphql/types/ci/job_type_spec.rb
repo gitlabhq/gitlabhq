@@ -33,6 +33,7 @@ RSpec.describe Types::Ci::JobType do
       refName
       refPath
       retryable
+      retried
       scheduledAt
       schedulingType
       shortSha

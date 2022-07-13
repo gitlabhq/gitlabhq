@@ -15,10 +15,6 @@ module Gitlab
         reset_backoff!
       end
 
-      def expired?
-        backoff_active? || !Rails.cache.exist?(cache_key)
-      end
-
       # Returns a sorted list of the publicly available GitLab Runner releases
       #
       def releases
@@ -31,6 +27,7 @@ module Gitlab
           race_condition_ttl: 10.seconds
         ) do
           response = Gitlab::HTTP.try_get(runner_releases_url)
+          @releases_by_minor = nil
 
           unless response.success?
             @backoff_expire_time = next_backoff.from_now
@@ -40,6 +37,14 @@ module Gitlab
           reset_backoff!
           extract_releases(response)
         end
+      end
+
+      # Returns a hash with the latest runner version per minor release
+      #
+      def releases_by_minor
+        return unless releases
+
+        @releases_by_minor ||= releases.group_by(&:without_patch).transform_values(&:max)
       end
 
       def reset_backoff!
