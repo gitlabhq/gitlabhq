@@ -32,19 +32,27 @@ module Members
         emails, users, existing_members = parse_users_list(source, invitees)
 
         Member.transaction do
-          (emails + users).map! do |invitee|
-            new(source,
-                invitee,
-                access_level,
-                existing_members: existing_members,
-                current_user: current_user,
-                expires_at: expires_at,
-                tasks_to_be_done: tasks_to_be_done,
-                tasks_project_id: tasks_project_id,
-                ldap: ldap,
-                blocking_refresh: blocking_refresh)
-              .execute
+          common_arguments = {
+            source: source,
+            access_level: access_level,
+            existing_members: existing_members,
+            current_user: current_user,
+            expires_at: expires_at,
+            tasks_to_be_done: tasks_to_be_done,
+            tasks_project_id: tasks_project_id,
+            ldap: ldap,
+            blocking_refresh: blocking_refresh
+          }
+
+          members = emails.map do |email|
+            new(invitee: email, builder: InviteMemberBuilder, **common_arguments).execute
           end
+
+          members += users.map do |user|
+            new(invitee: user, **common_arguments).execute
+          end
+
+          members
         end
       end
 
@@ -113,11 +121,11 @@ module Members
       end
     end
 
-    def initialize(source, invitee, access_level, **args)
-      @source = source
+    def initialize(invitee:, builder: StandardMemberBuilder, **args)
       @invitee = invitee
-      @access_level = self.class.parsed_access_level(access_level)
+      @builder = builder
       @args = args
+      @access_level = self.class.parsed_access_level(args[:access_level])
     end
 
     private_class_method :new
@@ -133,7 +141,7 @@ module Members
     private
 
     delegate :new_record?, to: :member
-    attr_reader :source, :invitee, :access_level, :member, :args
+    attr_reader :invitee, :access_level, :member, :args, :builder
 
     def assign_member_attributes
       member.attributes = member_attributes
@@ -182,14 +190,14 @@ module Members
     def commit_changes
       if member.request?
         approve_request
-      else
+      elsif member.changed?
         # Calling #save triggers callbacks even if there is no change on object.
         # This previously caused an incident due to the hard to predict
         # behaviour caused by the large number of callbacks.
         # See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6351
         # and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80920#note_911569038
         # for details.
-        member.save if member.changed?
+        member.save
       end
     end
 
@@ -241,38 +249,17 @@ module Members
     end
 
     def find_or_build_member
-      @member = if invitee.is_a?(User)
-                  find_or_initialize_member_by_user
-                else
-                  find_or_initialize_member_with_email
-                end
+      @member = builder.new(source, invitee, existing_members).execute
 
       @member.blocking_refresh = args[:blocking_refresh]
     end
 
-    # This method is used to find users that have been entered into the "Add members" field.
-    # These can be the User objects directly, their IDs, their emails, or new emails to be invited.
-    def find_or_initialize_member_with_email
-      if user_by_email
-        find_or_initialize_member_by_user(user_id: user_by_email.id)
-      else
-        source.members_and_requesters.find_or_initialize_by(invite_email: invitee) # rubocop:disable CodeReuse/ActiveRecord
-      end
-    end
-
-    def user_by_email
-      source.users_by_emails([invitee])[invitee]
-    end
-
-    def find_or_initialize_member_by_user(user_id: invitee.id)
-      # We have to use `members_and_requesters` here since the given `members` is modified in the models
-      # to act more like a scope(removing the requested_at members) and therefore ActiveRecord has issues with that
-      # on build and refreshing that relation.
-      existing_members[user_id] || source.members_and_requesters.build(user_id: user_id) # rubocop:disable CodeReuse/ActiveRecord
-    end
-
     def ldap
       args[:ldap] || false
+    end
+
+    def source
+      args[:source]
     end
 
     def existing_members

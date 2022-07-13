@@ -93,7 +93,8 @@ swap on your server, even if you currently have enough available memory. Having
 swap helps to reduce the chance of errors occurring if your available memory
 changes. We also recommend configuring the kernel's swappiness setting to a
 lower value (such as `10`) to make the most of your memory, while still having
-the swap available when needed.
+the swap available when needed. View the
+[Memory requirements](../../install/requirements.md#memory) for details.
 
 ## Setup instructions
 

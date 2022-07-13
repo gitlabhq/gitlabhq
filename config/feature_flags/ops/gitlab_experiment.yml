@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81834
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353921
 milestone: '14.9'
 type: ops
-group: group::conversion
+group: group::acquisition
 default_enabled: true

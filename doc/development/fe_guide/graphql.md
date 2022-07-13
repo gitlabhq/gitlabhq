@@ -597,7 +597,7 @@ export default {
 Note that, even if the directive evaluates to `false`, the guarded entity is sent to the backend and
 matched against the GraphQL schema. So this approach requires that the feature-flagged entity
 exists in the schema, even if the feature flag is disabled. When the feature flag is turned off, it
-is recommended that the resolver returns `null` at the very least.
+is recommended that the resolver returns `null` at the very least using the same feature flag as the frontend. See the [API GraphQL guide](../api_graphql_styleguide.md#frontend-and-backend-feature-flag-strategies).
 
 ##### Different versions of a query
 
@@ -617,8 +617,10 @@ export default {
 };
 ```
 
-This approach is not recommended as it results in bigger merge requests and requires maintaining
-two similar queries for as long as the feature flag exists. This can be used in cases where the new
+##### Avoiding multiple query versions
+
+The multiple version approach is not recommended as it results in bigger merge requests and requires maintaining
+two similar queries for as long as the feature flag exists. Multiple versions can be used in cases where the new
 GraphQL entities are not yet part of the schema, or if they are feature-flagged at the schema level
 (`new_entity: :feature_flag`).
 

@@ -98,8 +98,6 @@ This comment can also be a thread.
 
 An icon is displayed on the image and a comment field is displayed.
 
-![Start image thread](img/start_image_discussion.gif)
-
 ## Reply to a comment by sending email
 
 If you have ["reply by email"](../../administration/reply_by_email.md) configured,

@@ -116,7 +116,7 @@ You can download the source code that's stored in a repository.
 For the default branch of each repository, GitLab determines which programming languages
 are used. This information is displayed on the **Project information** page.
 
-![Repository Languages bar](img/repository_languages_v12_2.gif)
+![Repository Languages bar](img/repository_languages_v15_2.png)
 
 When new files are added, this information can take up to five minutes to update.
 

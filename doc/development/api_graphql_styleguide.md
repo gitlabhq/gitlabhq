@@ -486,6 +486,7 @@ You can refer to these guidelines to decide which approach to use:
 - If your field is stable and its definition doesn't change, even after the flag is
   removed, [toggle the return value](#toggle-the-value-of-a-field) of the field instead. Note that
   [all fields should be nullable](#nullable-fields) anyway.
+- If your field will be accessed from frontend using the `@include` or `@skip` directive, [do not use the `feature_flag` property](#frontend-and-backend-feature-flag-strategies).
 
 ### `feature_flag` property
 
@@ -516,6 +517,20 @@ field :test_field, type: GraphQL::Types::String,
       description: 'Some test field.',
       feature_flag: :my_feature_flag
 ```
+
+### Frontend and Backend feature flag strategies
+
+#### Directives
+
+When feature flags are used in the frontend to control the `@include` and `@skip` directives, do not use the `feature_flag`
+property on the server-side. For the accepted backend workaround, see [Toggle the value of a field](#toggle-the-value-of-a-field). It is recommended that the feature flag used in this approach be the same for frontend and backend.
+
+Even if the frontend directives evaluate to `@include:false` / `@skip:true`, the guarded entity is sent to the backend and matched
+against the GraphQL schema. We would then get an exception due to a schema mismatch. See the [frontend GraphQL guide](../development/fe_guide/graphql.md#the-include-directive) for more guidance.
+
+#### Different versions of a query
+
+See the guide frontend GraphQL guide for [different versions of a query](../development/fe_guide/graphql.md#different-versions-of-a-query), and [why it is not the preferred approach](../development/fe_guide/graphql.md#avoiding-multiple-query-versions)
 
 ### Toggle the value of a field
 

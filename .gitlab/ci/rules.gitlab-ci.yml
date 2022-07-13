@@ -262,7 +262,6 @@
   - "config/**/*.js"
   - "vendor/assets/**/*"
   - "{,ee/,jh/}{app/assets,app/helpers,app/presenters,app/views,locale,public,symbol}/**/*"
-  - "spec/frontend/**/*"
 
 .controllers-patterns: &controllers-patterns
   - "{,ee/,jh/}{app/controllers}/**/*"
@@ -828,20 +827,6 @@
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
-
-.frontend:rules:jest:foss-impact:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss
-      when: never
-    - <<: *if-merge-request-labels-run-all-jest
-      when: never
-    - changes: *core-frontend-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *ci-patterns
-    - <<: *if-merge-request
-      changes: *frontend-patterns
 
 .frontend:rules:eslint-as-if-foss:
   rules:

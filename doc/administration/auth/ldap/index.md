@@ -274,7 +274,7 @@ gitlab_rails['ldap_servers'] = {
 
 This example results in the following sign-in page:
 
-![Multiple LDAP servers sign in](img/multi_login.gif)
+![Multiple LDAP servers sign in](img/multi_login.png)
 
 ### Set up LDAP user filter
 

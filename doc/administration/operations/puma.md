@@ -111,7 +111,7 @@ To change the worker timeout to 600 seconds:
 WARNING:
 This is an experimental [Alpha feature](../../policy/alpha-beta-support.md#alpha-features) and subject to change without notice. The feature
 is not ready for production use. If you want to use this feature, we recommend testing
-with non-production data first. See the [known issues](#puma-single-mode-known-issues)
+outside of production first. See the [known issues](#puma-single-mode-known-issues)
 for additional details.
 
 In a memory-constrained environment with less than 4GB of RAM available, consider disabling Puma
@@ -136,6 +136,10 @@ For details on Puma worker and thread settings, see the [Puma requirements](../.
 
 The downside of running Puma in this configuration is the reduced throughput, which can be
 considered a fair tradeoff in a memory-constrained environment.
+
+Remember to have sufficient swap available to avoid out of memory (OOM)
+conditions. View the [Memory requirements](../../install/requirements.md#memory)
+for details.
 
 ### Puma single mode known issues
 

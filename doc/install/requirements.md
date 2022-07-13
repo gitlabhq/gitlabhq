@@ -94,6 +94,14 @@ if your available memory changes. We also recommend configuring the kernel's swa
 to a low value like `10` to make the most of your RAM while still having the swap
 available when needed.
 
+NOTE:
+Although excessive swapping is undesired and degrades performance, it is an
+extremely important last resort against out-of-memory conditions. During
+unexpected system load, such as OS updates or other services on the same host,
+peak memory load spikes could be much higher than average. Having plenty of swap
+helps avoid the Linux OOM killer unsafely terminating a potentially critical
+process, such as PostgreSQL, which can have disastrous consequences.
+
 ## Database
 
 PostgreSQL is the only supported database, which is bundled with the Omnibus GitLab package.

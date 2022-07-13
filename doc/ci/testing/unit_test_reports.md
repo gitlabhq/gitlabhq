@@ -145,8 +145,9 @@ GitLab does not parse very [large nodes](https://nokogiri.org/tutorials/parsing_
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0 behind the `:junit_pipeline_screenshots_view` feature flag, disabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/216979) in GitLab 13.12.
 
-Upload your screenshots as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) to GitLab. If JUnit
-report format XML files contain an `attachment` tag, GitLab parses the attachment. Note that:
+You can upload your screenshots as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) to GitLab.
+If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
+When uploading screenshot artifacts:
 
 - The `attachment` tag **must** contain the relative path to `$CI_PROJECT_DIR` of the screenshots you uploaded. For
   example:
@@ -161,8 +162,10 @@ report format XML files contain an `attachment` tag, GitLab parses the attachmen
   [`artifacts:when: always`](../yaml/index.md#artifactswhen) so that it still uploads a screenshot
   when a test fails.
 
-A link to the test case attachment appears in the test case details in
-[the pipeline test report](#view-unit-test-reports-on-gitlab).
+After the attachment is uploaded, [the pipeline test report](#view-unit-test-reports-on-gitlab)
+contains a link to the screenshot, for example:
+
+![Unit test report screenshot example](img/unit_test_report_screenshot_v13_12.png)
 
 ## Troubleshooting
 
