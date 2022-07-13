@@ -1,0 +1,26 @@
+---
+key_path: redis_hll_counters.analytics.p_analytics_ci_cd_change_failure_rate_weekly
+name: p_analytics_ci_cd_change_failure_rate_weekly
+description: Count of unique visits to the project level CI/CD Analytics Change failure rate tab
+product_section: dev
+product_stage: manage
+product_group: optimize
+product_category:
+value_type: number
+status: active
+milestone: "15.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91726
+time_frame: 7d
+data_source: redis_hll
+data_category: operational
+instrumentation_class: RedisHLLMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- premium
+- ultimate
+options:
+  events:
+    - p_analytics_ci_cd_change_failure_rate

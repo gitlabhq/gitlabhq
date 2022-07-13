@@ -130,6 +130,7 @@ describe('ProjectsPipelinesChartsApp', () => {
         ${'deployment-frequency-tab'}    | ${'p_analytics_ci_cd_deployment_frequency'}
         ${'lead-time-tab'}               | ${'p_analytics_ci_cd_lead_time'}
         ${'time-to-restore-service-tab'} | ${'p_analytics_ci_cd_time_to_restore_service'}
+        ${'change-failure-rate-tab'}     | ${'p_analytics_ci_cd_change_failure_rate'}
       `('tracks the $event event when clicked', ({ testId, event }) => {
         jest.spyOn(API, 'trackRedisHllUserEvent');
 

@@ -1,8 +1,0 @@
----
-name: group_name_path_vue
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88085
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363623
-milestone: '15.1'
-type: development
-group: group::workspace
-default_enabled: true

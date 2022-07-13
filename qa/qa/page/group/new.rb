@@ -6,7 +6,7 @@ module QA
       class New < Page::Base
         include Page::Component::VisibilitySetting
 
-        view 'app/views/shared/_group_form.html.haml' do
+        view 'app/assets/javascripts/groups/components/group_name_and_path.vue' do
           element :group_path_field
           element :group_name_field
         end

@@ -2,7 +2,7 @@
 - group_path = root_url
 - group_path << parent.full_path + '/' if parent
 
-= form_for '', url: import_gitlab_group_path, namespace: ('import_group' if Feature::enabled?(:group_name_path_vue, current_user)), class: 'group-form gl-show-field-errors', multipart: true do |f|
+= form_for '', url: import_gitlab_group_path, namespace: 'import_group', class: 'group-form gl-show-field-errors', multipart: true do |f|
   .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
     %h4
       = _('Import group from file')
@@ -13,38 +13,7 @@
         - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
         - link_end = '</a>'.html_safe
         = s_('GroupsNew|This feature is deprecated and replaced by %{docs_link_start}group migration%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end }
-    - if Feature::enabled?(:group_name_path_vue, current_user)
-      = render 'shared/groups/group_name_and_path_fields', f: f
-    - else
-      .form-group.gl-display-flex.gl-flex-direction-column.gl-mt-5
-        = f.label :name, _('New group name'), for: 'import_group_name'
-        = f.text_field :name, placeholder: s_('GroupsNew|My Awesome Group'), class: 'js-autofill-group-name gl-form-input col-xs-12 col-sm-8',
-          required: true,
-          title: _('Please fill in a descriptive name for your group.'),
-          autofocus: true,
-          id: 'import_group_name'
-
-      .form-group.gl-display-flex.gl-flex-direction-column
-        = f.label :import_group_path, _('New group URL'), for: 'import_group_path'
-        .input-group.gl-field-error-anchor.col-xs-12.col-sm-8.gl-p-0
-          .group-root-path.input-group-prepend.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
-            .input-group-text
-              %span
-                = root_url
-              - if parent
-                %strong= parent.full_path + '/'
-          = f.hidden_field :parent_id, value: parent&.id
-          = f.text_field :path, placeholder: 'my-awesome-group', class: 'form-control js-validate-group-path js-autofill-group-path',
-            id: 'import_group_path',
-            required: true,
-            pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
-            title: group_url_error_message,
-            maxlength: ::Namespace::URL_MAX_LENGTH,
-            "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
-        %p.validation-error.gl-field-error.field-validation.hide
-          = _("Group path is already taken. We've suggested one that is available.")
-        %p.validation-success.gl-field-success.field-validation.hide= _('Group path is available.')
-        %p.validation-pending.gl-field-error-ignore.field-validation.hide= _('Checking group path availability...')
+    = render 'shared/groups/group_name_and_path_fields', f: f
     .form-group
       = f.label :file, s_('GroupsNew|Upload file')
       .gl-font-weight-normal

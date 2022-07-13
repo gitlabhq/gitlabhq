@@ -831,6 +831,10 @@ RSpec.describe Projects::PipelinesController do
       {
         chart_param: 'time-to-restore-service',
         event: 'p_analytics_ci_cd_time_to_restore_service'
+      },
+      {
+        chart_param: 'change-failure-rate',
+        event: 'p_analytics_ci_cd_change_failure_rate'
       }
     ].each do |tab|
       it_behaves_like 'tracking unique visits', :charts do

@@ -222,7 +222,7 @@ module QA
         def has_pipeline_status?(text)
           # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
           wait_until(max_duration: 120, sleep_interval: 5, reload: true) do
-            has_element?(:merge_request_pipeline_info_content, text: text, wait: 15 )
+            has_element?(:merge_request_pipeline_info_content, text: text, wait: 15)
           end
         end
 
@@ -275,6 +275,11 @@ module QA
           # `wait_for_requests`, which should ensure the disabled/enabled
           # state of the element is reliable
           has_element?(:merge_button, disabled: false)
+        end
+
+        # Waits up 10 seconds and returns false if the Revert button is not enabled
+        def revertible?
+          has_element?(:revert_button, disabled: false, wait: 10)
         end
 
         # Waits up 60 seconds and raises an error if unable to merge.

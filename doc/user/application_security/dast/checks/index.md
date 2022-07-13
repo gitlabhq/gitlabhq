@@ -35,5 +35,133 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [601.1](601.1.md) | URL redirection to untrusted site ('open redirect') | Low | Passive |
 | [614.1](614.1.md) | Sensitive cookie without Secure attribute | Low | Passive |
 | [693.1](693.1.md) | Missing X-Content-Type-Options: nosniff | Low | Passive |
+| [798.1](798.1.md) | Exposure of confidential secret or token Adafruit API Key | High | Passive |
+| [798.2](798.2.md) | Exposure of confidential secret or token Adobe Client ID (OAuth Web) | High | Passive |
+| [798.3](798.3.md) | Exposure of confidential secret or token Adobe Client Secret | High | Passive |
+| [798.4](798.4.md) | Exposure of confidential secret or token Age secret key | High | Passive |
+| [798.5](798.5.md) | Exposure of confidential secret or token Airtable API Key | High | Passive |
+| [798.6](798.6.md) | Exposure of confidential secret or token Algolia API Key | High | Passive |
+| [798.7](798.7.md) | Exposure of confidential secret or token Alibaba AccessKey ID | High | Passive |
+| [798.8](798.8.md) | Exposure of confidential secret or token Alibaba Secret Key | High | Passive |
+| [798.9](798.9.md) | Exposure of confidential secret or token Asana Client ID | High | Passive |
+| [798.10](798.10.md) | Exposure of confidential secret or token Asana Client Secret | High | Passive |
+| [798.11](798.11.md) | Exposure of confidential secret or token Atlassian API token | High | Passive |
+| [798.12](798.12.md) | Exposure of confidential secret or token AWS | High | Passive |
+| [798.13](798.13.md) | Exposure of confidential secret or token Bitbucket Client ID | High | Passive |
+| [798.14](798.14.md) | Exposure of confidential secret or token Bitbucket Client Secret | High | Passive |
+| [798.15](798.15.md) | Exposure of confidential secret or token Bittrex Access Key | High | Passive |
+| [798.16](798.16.md) | Exposure of confidential secret or token Bittrex Secret Key | High | Passive |
+| [798.17](798.17.md) | Exposure of confidential secret or token Beamer API token | High | Passive |
+| [798.18](798.18.md) | Exposure of confidential secret or token Codecov Access Token | High | Passive |
+| [798.19](798.19.md) | Exposure of confidential secret or token Coinbase Access Token | High | Passive |
+| [798.20](798.20.md) | Exposure of confidential secret or token Clojars API token | High | Passive |
+| [798.21](798.21.md) | Exposure of confidential secret or token Confluent Access Token | High | Passive |
+| [798.22](798.22.md) | Exposure of confidential secret or token Confluent Secret Key | High | Passive |
+| [798.23](798.23.md) | Exposure of confidential secret or token Contentful delivery API token | High | Passive |
+| [798.24](798.24.md) | Exposure of confidential secret or token Databricks API token | High | Passive |
+| [798.25](798.25.md) | Exposure of confidential secret or token Datadog Access Token | High | Passive |
+| [798.26](798.26.md) | Exposure of confidential secret or token Discord API key | High | Passive |
+| [798.27](798.27.md) | Exposure of confidential secret or token Discord client ID | High | Passive |
+| [798.28](798.28.md) | Exposure of confidential secret or token Discord client secret | High | Passive |
+| [798.29](798.29.md) | Exposure of confidential secret or token Doppler API token | High | Passive |
+| [798.30](798.30.md) | Exposure of confidential secret or token Dropbox API secret | High | Passive |
+| [798.31](798.31.md) | Exposure of confidential secret or token Dropbox long lived API token | High | Passive |
+| [798.32](798.32.md) | Exposure of confidential secret or token Dropbox short lived API token | High | Passive |
+| [798.33](798.33.md) | Exposure of confidential secret or token Droneci Access Token | High | Passive |
+| [798.34](798.34.md) | Exposure of confidential secret or token Duffel API token | High | Passive |
+| [798.35](798.35.md) | Exposure of confidential secret or token Dynatrace API token | High | Passive |
+| [798.36](798.36.md) | Exposure of confidential secret or token EasyPost API token | High | Passive |
+| [798.37](798.37.md) | Exposure of confidential secret or token EasyPost test API token | High | Passive |
+| [798.38](798.38.md) | Exposure of confidential secret or token Etsy Access Token | High | Passive |
+| [798.39](798.39.md) | Exposure of confidential secret or token Facebook | High | Passive |
+| [798.40](798.40.md) | Exposure of confidential secret or token Fastly API key | High | Passive |
+| [798.41](798.41.md) | Exposure of confidential secret or token Finicity Client Secret | High | Passive |
+| [798.42](798.42.md) | Exposure of confidential secret or token Finicity API token | High | Passive |
+| [798.43](798.43.md) | Exposure of confidential secret or token Flickr Access Token | High | Passive |
+| [798.44](798.44.md) | Exposure of confidential secret or token Finnhub Access Token | High | Passive |
+| [798.45](798.45.md) | Exposure of confidential secret or token Finicity Public Key | High | Passive |
+| [798.46](798.46.md) | Exposure of confidential secret or token Flutterwave Secret Key | High | Passive |
+| [798.47](798.47.md) | Exposure of confidential secret or token Flutterwave Encryption Key | High | Passive |
+| [798.48](798.48.md) | Exposure of confidential secret or token Frame.io API token | High | Passive |
+| [798.49](798.49.md) | Exposure of confidential secret or token Freshbooks Access Token | High | Passive |
+| [798.50](798.50.md) | Exposure of confidential secret or token GoCardless API token | High | Passive |
+| [798.51](798.51.md) | Exposure of confidential secret or token GCP API key | High | Passive |
+| [798.52](798.52.md) | Exposure of confidential secret or token GitHub Personal Access Token | High | Passive |
+| [798.53](798.53.md) | Exposure of confidential secret or token GitHub OAuth Access Token | High | Passive |
+| [798.54](798.54.md) | Exposure of confidential secret or token GitHub App Token | High | Passive |
+| [798.55](798.55.md) | Exposure of confidential secret or token GitHub Refresh Token | High | Passive |
+| [798.56](798.56.md) | Exposure of confidential secret or token GitLab Personal Access Token | High | Passive |
+| [798.57](798.57.md) | Exposure of confidential secret or token Gitter Access Token | High | Passive |
+| [798.58](798.58.md) | Exposure of confidential secret or token HashiCorp Terraform user/org API token | High | Passive |
+| [798.59](798.59.md) | Exposure of confidential secret or token Heroku API Key | High | Passive |
+| [798.60](798.60.md) | Exposure of confidential secret or token HubSpot API Token | High | Passive |
+| [798.61](798.61.md) | Exposure of confidential secret or token Intercom API Token | High | Passive |
+| [798.62](798.62.md) | Exposure of confidential secret or token Kraken Access Token | High | Passive |
+| [798.63](798.63.md) | Exposure of confidential secret or token Kucoin Access Token | High | Passive |
+| [798.64](798.64.md) | Exposure of confidential secret or token Kucoin Secret Key | High | Passive |
+| [798.65](798.65.md) | Exposure of confidential secret or token Launchdarkly Access Token | High | Passive |
+| [798.66](798.66.md) | Exposure of confidential secret or token Linear API Token | High | Passive |
+| [798.67](798.67.md) | Exposure of confidential secret or token Linear Client Secret | High | Passive |
+| [798.68](798.68.md) | Exposure of confidential secret or token LinkedIn Client ID | High | Passive |
+| [798.69](798.69.md) | Exposure of confidential secret or token LinkedIn Client secret | High | Passive |
+| [798.70](798.70.md) | Exposure of confidential secret or token Lob API Key | High | Passive |
+| [798.71](798.71.md) | Exposure of confidential secret or token Lob Publishable API Key | High | Passive |
+| [798.72](798.72.md) | Exposure of confidential secret or token Mailchimp API key | High | Passive |
+| [798.73](798.73.md) | Exposure of confidential secret or token Mailgun public validation key | High | Passive |
+| [798.74](798.74.md) | Exposure of confidential secret or token Mailgun private API token | High | Passive |
+| [798.75](798.75.md) | Exposure of confidential secret or token Mailgun webhook signing key | High | Passive |
+| [798.76](798.76.md) | Exposure of confidential secret or token MapBox API token | High | Passive |
+| [798.77](798.77.md) | Exposure of confidential secret or token Mattermost Access Token | High | Passive |
+| [798.78](798.78.md) | Exposure of confidential secret or token MessageBird API token | High | Passive |
+| [798.79](798.79.md) | Exposure of confidential secret or token MessageBird client ID | High | Passive |
+| [798.80](798.80.md) | Exposure of confidential secret or token Netlify Access Token | High | Passive |
+| [798.81](798.81.md) | Exposure of confidential secret or token New Relic user API Key | High | Passive |
+| [798.82](798.82.md) | Exposure of confidential secret or token New Relic user API ID | High | Passive |
+| [798.83](798.83.md) | Exposure of confidential secret or token New Relic ingest browser API token | High | Passive |
+| [798.84](798.84.md) | Exposure of confidential secret or token npm access token | High | Passive |
+| [798.85](798.85.md) | Exposure of confidential secret or token Nytimes Access Token | High | Passive |
+| [798.86](798.86.md) | Exposure of confidential secret or token Okta Access Token | High | Passive |
+| [798.87](798.87.md) | Exposure of confidential secret or token Plaid Client ID | High | Passive |
+| [798.88](798.88.md) | Exposure of confidential secret or token Plaid Secret key | High | Passive |
+| [798.89](798.89.md) | Exposure of confidential secret or token Plaid API Token | High | Passive |
+| [798.90](798.90.md) | Exposure of confidential secret or token PlanetScale password | High | Passive |
+| [798.91](798.91.md) | Exposure of confidential secret or token PlanetScale API token | High | Passive |
+| [798.92](798.92.md) | Exposure of confidential secret or token PlanetScale OAuth token | High | Passive |
+| [798.93](798.93.md) | Exposure of confidential secret or token Postman API token | High | Passive |
+| [798.94](798.94.md) | Exposure of confidential secret or token Private Key | High | Passive |
+| [798.95](798.95.md) | Exposure of confidential secret or token Pulumi API token | High | Passive |
+| [798.96](798.96.md) | Exposure of confidential secret or token PyPI upload token | High | Passive |
+| [798.97](798.97.md) | Exposure of confidential secret or token Rubygem API token | High | Passive |
+| [798.98](798.98.md) | Exposure of confidential secret or token RapidAPI Access Token | High | Passive |
+| [798.99](798.99.md) | Exposure of confidential secret or token Sendbird Access ID | High | Passive |
+| [798.100](798.100.md) | Exposure of confidential secret or token Sendbird Access Token | High | Passive |
+| [798.101](798.101.md) | Exposure of confidential secret or token SendGrid API token | High | Passive |
+| [798.102](798.102.md) | Exposure of confidential secret or token Sendinblue API token | High | Passive |
+| [798.103](798.103.md) | Exposure of confidential secret or token Sentry Access Token | High | Passive |
+| [798.104](798.104.md) | Exposure of confidential secret or token Shippo API token | High | Passive |
+| [798.105](798.105.md) | Exposure of confidential secret or token Shopify access token | High | Passive |
+| [798.106](798.106.md) | Exposure of confidential secret or token Shopify custom access token | High | Passive |
+| [798.107](798.107.md) | Exposure of confidential secret or token Shopify private app access token | High | Passive |
+| [798.108](798.108.md) | Exposure of confidential secret or token Shopify shared secret | High | Passive |
+| [798.109](798.109.md) | Exposure of confidential secret or token Slack token | High | Passive |
+| [798.110](798.110.md) | Exposure of confidential secret or token Slack Webhook | High | Passive |
+| [798.111](798.111.md) | Exposure of confidential secret or token Stripe | High | Passive |
+| [798.112](798.112.md) | Exposure of confidential secret or token Square Access Token | High | Passive |
+| [798.113](798.113.md) | Exposure of confidential secret or token Squarespace Access Token | High | Passive |
+| [798.114](798.114.md) | Exposure of confidential secret or token SumoLogic Access ID | High | Passive |
+| [798.115](798.115.md) | Exposure of confidential secret or token SumoLogic Access Token | High | Passive |
+| [798.116](798.116.md) | Exposure of confidential secret or token Travis CI Access Token | High | Passive |
+| [798.117](798.117.md) | Exposure of confidential secret or token Twilio API Key | High | Passive |
+| [798.118](798.118.md) | Exposure of confidential secret or token Twitch API token | High | Passive |
+| [798.119](798.119.md) | Exposure of confidential secret or token Twitter API Key | High | Passive |
+| [798.120](798.120.md) | Exposure of confidential secret or token Twitter API Secret | High | Passive |
+| [798.121](798.121.md) | Exposure of confidential secret or token Twitter Access Token | High | Passive |
+| [798.122](798.122.md) | Exposure of confidential secret or token Twitter Access Secret | High | Passive |
+| [798.123](798.123.md) | Exposure of confidential secret or token Twitter Bearer Token | High | Passive |
+| [798.124](798.124.md) | Exposure of confidential secret or token Typeform API token | High | Passive |
+| [798.125](798.125.md) | Exposure of confidential secret or token Yandex API Key | High | Passive |
+| [798.126](798.126.md) | Exposure of confidential secret or token Yandex AWS Access Token | High | Passive |
+| [798.127](798.127.md) | Exposure of confidential secret or token Yandex Access Token | High | Passive |
+| [798.128](798.128.md) | Exposure of confidential secret or token Zendesk Secret Key | High | Passive |
 | [829.1](829.1.md) | Inclusion of Functionality from Untrusted Control Sphere | Low | Passive |
 | [829.2](829.2.md) | Invalid Sub-Resource Integrity values detected | Medium | Passive |

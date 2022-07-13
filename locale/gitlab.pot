@@ -18751,9 +18751,6 @@ msgstr ""
 msgid "GroupsNew|Import groups from another instance of GitLab"
 msgstr ""
 
-msgid "GroupsNew|My Awesome Group"
-msgstr ""
-
 msgid "GroupsNew|No import options available"
 msgstr ""
 
@@ -25729,12 +25726,6 @@ msgid "New file"
 msgstr ""
 
 msgid "New group"
-msgstr ""
-
-msgid "New group URL"
-msgstr ""
-
-msgid "New group name"
 msgstr ""
 
 msgid "New health check access token has been generated!"
