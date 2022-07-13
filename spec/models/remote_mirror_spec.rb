@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe RemoteMirror, :mailer do
   include GitHelpers
 
+  before do
+    stub_feature_flags(remote_mirror_no_delay: false)
+  end
+
   describe 'URL validation' do
     context 'with a valid URL' do
       it 'is valid' do
@@ -342,6 +346,20 @@ RSpec.describe RemoteMirror, :mailer do
             expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::UNPROTECTED_BACKOFF_DELAY, remote_mirror.id, Time.current)
 
             remote_mirror.sync
+          end
+
+          context 'when remote_mirror_no_delay is enabled' do
+            before do
+              stub_feature_flags(remote_mirror_no_delay: true)
+            end
+
+            it 'schedules a RepositoryUpdateRemoteMirrorWorker to run now' do
+              remote_mirror.last_update_started_at = Time.current - 30.seconds
+
+              expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.current)
+
+              remote_mirror.sync
+            end
           end
         end
       end

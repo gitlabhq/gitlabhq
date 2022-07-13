@@ -10,8 +10,8 @@ module ProtectedBranches
       {
         name: params[:name],
         allow_force_push: allow_force_push?,
-        push_access_levels_attributes: AccessLevelParams.new(:push, params).access_levels,
-        merge_access_levels_attributes: AccessLevelParams.new(:merge, params).access_levels
+        push_access_levels_attributes: ::ProtectedRefs::AccessLevelParams.new(:push, params).access_levels,
+        merge_access_levels_attributes: ::ProtectedRefs::AccessLevelParams.new(:merge, params).access_levels
       }
     end
 

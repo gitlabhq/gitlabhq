@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ProtectedBranches
+module ProtectedRefs
   class AccessLevelParams
     attr_reader :type, :params
 
@@ -34,4 +34,4 @@ module ProtectedBranches
   end
 end
 
-ProtectedBranches::AccessLevelParams.prepend_mod_with('ProtectedBranches::AccessLevelParams')
+ProtectedRefs::AccessLevelParams.prepend_mod_with('ProtectedRefs::AccessLevelParams')

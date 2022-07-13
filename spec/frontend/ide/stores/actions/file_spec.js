@@ -7,6 +7,7 @@ import { createStore } from '~/ide/stores';
 import * as actions from '~/ide/stores/actions/file';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import { file, createTriggerRenameAction, createTriggerUpdatePayload } from '../../helpers';
 
 const ORIGINAL_CONTENT = 'original content';
@@ -19,6 +20,8 @@ describe('IDE store file actions', () => {
   let router;
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     mock = new MockAdapter(axios);
     originalGon = window.gon;
     window.gon = {

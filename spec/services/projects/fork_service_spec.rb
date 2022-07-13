@@ -68,6 +68,9 @@ RSpec.describe Projects::ForkService do
           it { expect(to_project.avatar.file).to be_exists }
           it { expect(to_project.ci_config_path).to eq(@from_project.ci_config_path) }
           it { expect(to_project.external_authorization_classification_label).to eq(@from_project.external_authorization_classification_label) }
+          it { expect(to_project.suggestion_commit_message).to eq(@from_project.suggestion_commit_message) }
+          it { expect(to_project.merge_commit_template).to eq(@from_project.merge_commit_template) }
+          it { expect(to_project.squash_commit_template).to eq(@from_project.squash_commit_template) }
 
           # This test is here because we had a bug where the from-project lost its
           # avatar after being forked.

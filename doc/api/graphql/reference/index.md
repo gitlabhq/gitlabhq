@@ -15183,8 +15183,8 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectsecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
 | <a id="projectsecurityscanners"></a>`securityScanners` | [`SecurityScanners`](#securityscanners) | Information about security analyzers used in the project. |
 | <a id="projectsentryerrors"></a>`sentryErrors` | [`SentryErrorCollection`](#sentryerrorcollection) | Paginated collection of Sentry errors on the project. |
-| <a id="projectservicedeskaddress"></a>`serviceDeskAddress` | [`String`](#string) | E-mail address of the service desk. |
-| <a id="projectservicedeskenabled"></a>`serviceDeskEnabled` | [`Boolean`](#boolean) | Indicates if the project has service desk enabled. |
+| <a id="projectservicedeskaddress"></a>`serviceDeskAddress` | [`String`](#string) | E-mail address of the Service Desk. |
+| <a id="projectservicedeskenabled"></a>`serviceDeskEnabled` | [`Boolean`](#boolean) | Indicates if the project has Service Desk enabled. |
 | <a id="projectsharedrunnersenabled"></a>`sharedRunnersEnabled` | [`Boolean`](#boolean) | Indicates if shared runners are enabled for the project. |
 | <a id="projectsnippetsenabled"></a>`snippetsEnabled` | [`Boolean`](#boolean) | Indicates if Snippets are enabled for the current user. |
 | <a id="projectsquashcommittemplate"></a>`squashCommitTemplate` | [`String`](#string) | Template used to create squash commit message in merge requests. |

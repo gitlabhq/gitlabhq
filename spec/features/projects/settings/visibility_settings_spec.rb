@@ -16,7 +16,7 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js do
       visibility_select_container = find('.project-visibility-setting')
 
       expect(visibility_select_container.find('select').value).to eq project.visibility_level.to_s
-      expect(visibility_select_container).to have_content 'The project can be accessed by anyone, regardless of authentication.'
+      expect(visibility_select_container).to have_content 'Accessible by anyone, regardless of authentication.'
     end
 
     it 'project visibility description updates on change' do
@@ -25,7 +25,7 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js do
       visibility_select.select('Private')
 
       expect(visibility_select.value).to eq '0'
-      expect(visibility_select_container).to have_content 'Access must be granted explicitly to each user.'
+      expect(visibility_select_container).to have_content 'Only accessible by project members. Membership must be explicitly granted to each user.'
     end
 
     context 'merge requests select' do
@@ -86,7 +86,7 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js do
       visibility_select_container = find('.project-visibility-setting')
 
       expect(visibility_select_container).to have_selector 'select[name="project[visibility_level]"]:disabled'
-      expect(visibility_select_container).to have_content 'The project can be accessed by anyone, regardless of authentication.'
+      expect(visibility_select_container).to have_content 'Accessible by anyone, regardless of authentication.'
     end
 
     context 'disable email notifications' do

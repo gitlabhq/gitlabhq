@@ -1041,6 +1041,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
               'CI_MERGE_REQUEST_PROJECT_PATH' => merge_request.project.full_path,
               'CI_MERGE_REQUEST_PROJECT_URL' => merge_request.project.web_url,
               'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => merge_request.target_branch.to_s,
+              'CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED' => ProtectedBranch.protected?(merge_request.target_project, merge_request.target_branch).to_s,
               'CI_MERGE_REQUEST_TARGET_BRANCH_SHA' => '',
               'CI_MERGE_REQUEST_SOURCE_PROJECT_ID' => merge_request.source_project.id.to_s,
               'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH' => merge_request.source_project.full_path,
@@ -1137,6 +1138,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
               'CI_MERGE_REQUEST_PROJECT_PATH' => merge_request.project.full_path,
               'CI_MERGE_REQUEST_PROJECT_URL' => merge_request.project.web_url,
               'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => merge_request.target_branch.to_s,
+              'CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED' => ProtectedBranch.protected?(merge_request.target_project, merge_request.target_branch).to_s,
               'CI_MERGE_REQUEST_TARGET_BRANCH_SHA' => merge_request.target_branch_sha,
               'CI_MERGE_REQUEST_SOURCE_PROJECT_ID' => merge_request.source_project.id.to_s,
               'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH' => merge_request.source_project.full_path,
@@ -4851,13 +4853,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#has_expired_test_reports?' do
-    subject { pipeline.has_expired_test_reports? }
+  describe '#has_test_reports?' do
+    subject { pipeline.has_test_reports? }
 
     let(:pipeline) { create(:ci_pipeline, :success, :with_test_reports) }
 
     context 'when artifacts are not expired' do
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_truthy }
     end
 
     context 'when artifacts are expired' do
@@ -4866,6 +4868,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it { is_expected.to be_truthy }
+    end
+
+    context 'when artifacts are removed' do
+      before do
+        pipeline.job_artifacts.each(&:destroy)
+      end
+
+      it { is_expected.to be_falsey }
     end
 
     context 'when the pipeline is still running' do

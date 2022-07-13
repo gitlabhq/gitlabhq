@@ -388,7 +388,8 @@ module ProjectsHelper
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
       pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control'),
-      issuesHelpPath: help_page_path('user/project/issues/index')
+      issuesHelpPath: help_page_path('user/project/issues/index'),
+      membersPagePath: project_project_members_path(project)
     }
   end
 

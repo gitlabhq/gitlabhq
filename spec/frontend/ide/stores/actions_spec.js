@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import testAction from 'helpers/vuex_action_helper';
 import eventHub from '~/ide/eventhub';
 import { createRouter } from '~/ide/ide_router';
@@ -34,6 +35,8 @@ describe('Multi-file store actions', () => {
   let router;
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     store = createStore();
     router = createRouter(store);
 

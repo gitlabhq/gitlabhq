@@ -45,6 +45,21 @@ RSpec.describe Projects::Pipelines::TestsController do
           pipeline.job_artifacts.first.update!(expire_at: Date.yesterday)
         end
 
+        it 'renders test suite', :aggregate_failures do
+          get_tests_show_json(build_ids)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq('test')
+          expect(json_response['total_count']).to eq(3)
+          expect(json_response['test_cases'].size).to eq(3)
+        end
+      end
+
+      context 'when artifacts do not exist' do
+        before do
+          pipeline.job_artifacts.each(&:destroy)
+        end
+
         it 'renders not_found errors', :aggregate_failures do
           get_tests_show_json(build_ids)
 
@@ -68,7 +83,6 @@ RSpec.describe Projects::Pipelines::TestsController do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['name']).to eq('test')
-          expect(json_response['artifacts_expired']).to be_falsey
 
           # Each test failure in this pipeline has a matching failure in the default branch
           recent_failures = json_response['test_cases'].map { |tc| tc['recent_failures'] }

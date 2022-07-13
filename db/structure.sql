@@ -18834,7 +18834,9 @@ CREATE TABLE plan_limits (
     repository_size bigint DEFAULT 0 NOT NULL,
     security_policy_scan_execution_schedules integer DEFAULT 0 NOT NULL,
     web_hook_calls_mid integer DEFAULT 0 NOT NULL,
-    web_hook_calls_low integer DEFAULT 0 NOT NULL
+    web_hook_calls_low integer DEFAULT 0 NOT NULL,
+    project_ci_variables integer DEFAULT 200 NOT NULL,
+    group_ci_variables integer DEFAULT 200 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -20277,7 +20279,8 @@ CREATE TABLE requirements (
     description text,
     description_html text,
     issue_id bigint,
-    CONSTRAINT check_785ae25b9d CHECK ((char_length(description) <= 10000))
+    CONSTRAINT check_785ae25b9d CHECK ((char_length(description) <= 10000)),
+    CONSTRAINT check_requirement_issue_not_null CHECK ((issue_id IS NOT NULL))
 );
 
 CREATE SEQUENCE requirements_id_seq
@@ -24509,9 +24512,6 @@ ALTER TABLE sprints
 
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE requirements
-    ADD CONSTRAINT check_requirement_issue_not_null CHECK ((issue_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);

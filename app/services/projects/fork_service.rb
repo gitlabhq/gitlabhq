@@ -65,7 +65,10 @@ module Projects
         # exception.
         relations_block:           -> (project) { build_fork_network_member(project) },
         skip_disk_validation:      skip_disk_validation,
-        external_authorization_classification_label: @project.external_authorization_classification_label
+        external_authorization_classification_label: @project.external_authorization_classification_label,
+        suggestion_commit_message: @project.suggestion_commit_message,
+        merge_commit_template: @project.merge_commit_template,
+        squash_commit_template: @project.squash_commit_template
       }
 
       if @project.avatar.present? && @project.avatar.image?

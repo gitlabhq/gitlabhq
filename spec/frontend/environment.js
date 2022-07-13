@@ -67,12 +67,6 @@ class CustomEnvironment extends JSDOMEnvironment {
     // Expose the jsdom (created in super class) to the global so that we can call reconfigure({ url: '' }) to properly set `window.location`
     this.global.jsdom = this.dom;
 
-    Object.assign(this.global.performance, {
-      mark: () => null,
-      measure: () => null,
-      getEntriesByName: () => [],
-    });
-
     //
     // Monaco-related environment variables
     //

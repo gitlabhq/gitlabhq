@@ -520,6 +520,8 @@ Feature.remove(:feature_flag_name)
   ```
 
 - Any change behind a feature flag that is **enabled** by default **should** have a changelog entry.
+- The changelog for a feature flag should describe the feature and not the
+  flag, unless a default on feature flag is removed keeping the new code (`other` in the flowchart above).
 
 ## Feature flags in tests
 

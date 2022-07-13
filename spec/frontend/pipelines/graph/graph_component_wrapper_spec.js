@@ -5,6 +5,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
@@ -502,9 +503,7 @@ describe('Pipeline graph wrapper', () => {
 
       describe('when no duration is obtained', () => {
         beforeEach(async () => {
-          jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
-            return [];
-          });
+          stubPerformanceWebAPI();
 
           createComponentWithApollo({
             provide: {

@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/dom';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import * as ideHelper from './helpers/ide_helper';
 import startWebIDE from './helpers/start';
 
@@ -11,6 +12,8 @@ describe('IDE: User opens IDE', () => {
   let container;
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     setHTMLFixture('<div class="webide-container"></div>');
     container = document.querySelector('.webide-container');
   });

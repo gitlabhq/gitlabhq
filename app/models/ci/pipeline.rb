@@ -1297,9 +1297,9 @@ module Ci
       end
     end
 
-    def has_expired_test_reports?
-      strong_memoize(:has_expired_test_reports) do
-        has_reports?(::Ci::JobArtifact.test_reports.expired)
+    def has_test_reports?
+      strong_memoize(:has_test_reports) do
+        has_reports?(::Ci::JobArtifact.test_reports)
       end
     end
 

@@ -1979,6 +1979,12 @@ msgstr ""
 msgid "AccessibilityReport|The accessibility scanning found an error of the following type: %{code}"
 msgstr ""
 
+msgid "Accessible by any user who is logged in."
+msgstr ""
+
+msgid "Accessible by anyone, regardless of authentication."
+msgstr ""
+
 msgid "Account"
 msgstr ""
 
@@ -27093,6 +27099,9 @@ msgstr ""
 msgid "Only Task can be assigned as a child in hierarchy."
 msgstr ""
 
+msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted to each user."
+msgstr ""
+
 msgid "Only active projects show up in the search and on the dashboard."
 msgstr ""
 
@@ -38859,19 +38868,10 @@ msgstr ""
 msgid "The project can be accessed by any logged in user except external users."
 msgstr ""
 
-msgid "The project can be accessed by any user who is logged in."
-msgstr ""
-
-msgid "The project can be accessed by anyone, regardless of authentication."
-msgstr ""
-
 msgid "The project can be accessed without any authentication."
 msgstr ""
 
 msgid "The project has already been added to your dashboard."
-msgstr ""
-
-msgid "The project is accessible only by members of the project. Access must be granted explicitly to each user."
 msgstr ""
 
 msgid "The project is still being deleted. Please try again later."

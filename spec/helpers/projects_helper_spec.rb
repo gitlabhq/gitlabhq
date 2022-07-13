@@ -969,6 +969,10 @@ RSpec.describe ProjectsHelper do
         containerRegistryAccessLevel: project.project_feature.container_registry_access_level
       )
     end
+
+    it 'includes membersPagePath' do
+      expect(subject).to include(membersPagePath: project_project_members_path(project))
+    end
   end
 
   describe '#project_classes' do

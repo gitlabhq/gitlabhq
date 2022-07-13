@@ -70,10 +70,10 @@ module Types
           description: 'Indicates if shared runners are enabled for the project.'
 
     field :service_desk_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if the project has service desk enabled.'
+          description: 'Indicates if the project has Service Desk enabled.'
 
     field :service_desk_address, GraphQL::Types::String, null: true,
-          description: 'E-mail address of the service desk.'
+          description: 'E-mail address of the Service Desk.'
 
     field :avatar_url, GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'URL to avatar image file of the project.'

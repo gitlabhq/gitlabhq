@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initMrPage from 'helpers/init_vue_mr_page_helper';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs from '~/merge_request_tabs';
 import '~/lib/utils/common_utils';
@@ -24,6 +25,8 @@ describe('MergeRequestTabs', () => {
   };
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     initMrPage();
 
     testContext.class = new MergeRequestTabs({ stubLocation });
@@ -350,20 +353,12 @@ describe('MergeRequestTabs', () => {
     describe('when switching tabs', () => {
       const SCROLL_TOP = 100;
 
-      beforeAll(() => {
-        jest.useFakeTimers();
-      });
-
       beforeEach(() => {
         jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
         testContext.class.mergeRequestTabs = document.createElement('div');
         testContext.class.mergeRequestTabPanes = document.createElement('div');
         testContext.class.currentTab = 'tab';
         testContext.class.scrollPositions = { newTab: SCROLL_TOP };
-      });
-
-      afterAll(() => {
-        jest.useRealTimers();
       });
 
       it('scrolls to the stored position, if one is stored', () => {

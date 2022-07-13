@@ -6,6 +6,7 @@ import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import '~/behaviors/markdown/render_gfm';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import { exampleConfigs, exampleFiles } from 'jest/ide/lib/editorconfig/mock_data';
 import { EDITOR_CODE_INSTANCE_FN, EDITOR_DIFF_INSTANCE_FN } from '~/editor/constants';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
@@ -130,6 +131,8 @@ describe('RepoEditor', () => {
   const findPreviewTab = () => wrapper.find('[data-testid="preview-tab"]');
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     createInstanceSpy = jest.spyOn(SourceEditor.prototype, EDITOR_CODE_INSTANCE_FN);
     createDiffInstanceSpy = jest.spyOn(SourceEditor.prototype, EDITOR_DIFF_INSTANCE_FN);
     createModelSpy = jest.spyOn(monacoEditor, 'createModel');
