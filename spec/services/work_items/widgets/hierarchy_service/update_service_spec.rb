@@ -21,8 +21,8 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
   describe '#update' do
     subject { described_class.new(widget: widget, current_user: user).before_update_in_transaction(params: params) }
 
-    context 'when parent_id and children_ids params are present' do
-      let(:params) { { parent_id: parent_work_item.id, children_ids: [child_work_item.id] } }
+    context 'when parent and children_ids params are present' do
+      let(:params) { { parent: parent_work_item, children_ids: [child_work_item.id] } }
 
       it_behaves_like 'raises a WidgetError' do
         let(:message) { 'A Work Item can be a parent or a child, but not both.' }
@@ -95,7 +95,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
     context 'when updating parent' do
       let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
-      let(:params) {{ parent_id: parent_work_item.id } }
+      let(:params) {{ parent: parent_work_item } }
 
       context 'when work_items_hierarchy feature flag is disabled' do
         before do
@@ -104,15 +104,6 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
 
         it_behaves_like 'raises a WidgetError' do
           let(:message) { '`work_items_hierarchy` feature flag disabled for this project' }
-        end
-      end
-
-      context 'when parent_id does not match an existing work item' do
-        let(:invalid_id) { non_existing_record_iid }
-        let(:params) {{ parent_id: invalid_id } }
-
-        it_behaves_like 'raises a WidgetError' do
-          let(:message) { "No Work Item found with ID: #{invalid_id}." }
         end
       end
 
@@ -127,16 +118,35 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
           project.add_developer(user)
         end
 
-        it 'correctly sets work item parent' do
-          subject
-
+        it 'correctly sets new parent' do
+          expect(subject[:status]).to eq(:success)
           expect(work_item.work_item_parent).to eq(parent_work_item)
+        end
+
+        context 'when parent is nil' do
+          let(:params) { { parent: nil } }
+
+          it 'removes the work item parent if present' do
+            work_item.update!(work_item_parent: parent_work_item)
+
+            expect do
+              subject
+              work_item.reload
+            end.to change(work_item, :work_item_parent).from(parent_work_item).to(nil)
+          end
+
+          it 'returns success status if parent not present', :aggregate_failure do
+            work_item.update!(work_item_parent: nil)
+
+            expect(subject[:status]).to eq(:success)
+            expect(work_item.reload.work_item_parent).to be_nil
+          end
         end
 
         context 'when type is invalid' do
           let_it_be(:parent_task) { create(:work_item, :task, project: project)}
 
-          let(:params) {{ parent_id: parent_task.id } }
+          let(:params) {{ parent: parent_task } }
 
           it_behaves_like 'raises a WidgetError' do
             let(:message) { "#{work_item.to_reference} cannot be added: Only Issue can be parent of Task." }

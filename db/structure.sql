@@ -17905,7 +17905,8 @@ CREATE TABLE operations_feature_flags (
 CREATE TABLE operations_feature_flags_clients (
     id bigint NOT NULL,
     project_id integer NOT NULL,
-    token_encrypted character varying
+    token_encrypted character varying,
+    last_feature_flag_updated_at timestamp with time zone
 );
 
 CREATE SEQUENCE operations_feature_flags_clients_id_seq
@@ -22208,6 +22209,23 @@ CREATE SEQUENCE vulnerability_issue_links_id_seq
 
 ALTER SEQUENCE vulnerability_issue_links_id_seq OWNED BY vulnerability_issue_links.id;
 
+CREATE TABLE vulnerability_merge_request_links (
+    id bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    merge_request_id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE vulnerability_merge_request_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_merge_request_links_id_seq OWNED BY vulnerability_merge_request_links.id;
+
 CREATE TABLE vulnerability_occurrence_identifiers (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23628,6 +23646,8 @@ ALTER TABLE ONLY vulnerability_historical_statistics ALTER COLUMN id SET DEFAULT
 ALTER TABLE ONLY vulnerability_identifiers ALTER COLUMN id SET DEFAULT nextval('vulnerability_identifiers_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_issue_links ALTER COLUMN id SET DEFAULT nextval('vulnerability_issue_links_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_merge_request_links ALTER COLUMN id SET DEFAULT nextval('vulnerability_merge_request_links_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_occurrence_identifiers ALTER COLUMN id SET DEFAULT nextval('vulnerability_occurrence_identifiers_id_seq'::regclass);
 
@@ -25935,6 +25955,9 @@ ALTER TABLE ONLY vulnerability_identifiers
 
 ALTER TABLE ONLY vulnerability_issue_links
     ADD CONSTRAINT vulnerability_issue_links_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_merge_request_links
+    ADD CONSTRAINT vulnerability_merge_request_links_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_occurrence_identifiers
     ADD CONSTRAINT vulnerability_occurrence_identifiers_pkey PRIMARY KEY (id);
@@ -30053,6 +30076,8 @@ CREATE UNIQUE INDEX index_vulnerability_identifiers_on_project_id_and_fingerprin
 
 CREATE INDEX index_vulnerability_issue_links_on_issue_id ON vulnerability_issue_links USING btree (issue_id);
 
+CREATE INDEX index_vulnerability_merge_request_links_on_merge_request_id ON vulnerability_merge_request_links USING btree (merge_request_id);
+
 CREATE INDEX index_vulnerability_occurrence_identifiers_on_identifier_id ON vulnerability_occurrence_identifiers USING btree (identifier_id);
 
 CREATE UNIQUE INDEX index_vulnerability_occurrence_identifiers_on_unique_keys ON vulnerability_occurrence_identifiers USING btree (occurrence_id, identifier_id);
@@ -30270,6 +30295,8 @@ CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_suite 
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_request_metrics USING btree (merge_request_id);
 
 CREATE UNIQUE INDEX unique_projects_on_name_namespace_id ON projects USING btree (name, namespace_id);
+
+CREATE UNIQUE INDEX unique_vuln_merge_request_link_vuln_id_and_mr_id ON vulnerability_merge_request_links USING btree (vulnerability_id, merge_request_id);
 
 CREATE INDEX user_follow_users_followee_id_idx ON user_follow_users USING btree (followee_id);
 
@@ -31777,6 +31804,9 @@ ALTER TABLE ONLY members
 ALTER TABLE ONLY lfs_objects_projects
     ADD CONSTRAINT fk_2eb33f7a78 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
+ALTER TABLE ONLY vulnerability_merge_request_links
+    ADD CONSTRAINT fk_2ef3954596 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_3078345d6d FOREIGN KEY (stage_event_hash_id) REFERENCES analytics_cycle_analytics_stage_event_hashes(id) ON DELETE CASCADE;
 
@@ -31938,6 +31968,9 @@ ALTER TABLE ONLY projects
 
 ALTER TABLE ONLY dast_profile_schedules
     ADD CONSTRAINT fk_6cca0d8800 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_merge_request_links
+    ADD CONSTRAINT fk_6d7aa8796e FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_6e10d4d38a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;

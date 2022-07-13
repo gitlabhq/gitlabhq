@@ -32,6 +32,12 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
     end
 
     it 'creates and updates expected ci_runner_versions entries', :aggregate_failures do
+      expect(Ci::RunnerVersion).to receive(:insert_all)
+        .ordered
+        .with([{ version: '14.0.2' }], anything)
+        .once
+        .and_call_original
+
       result = nil
       expect { result = execute }
         .to change { runner_version_14_0_0.reload.status }.from('not_available').to('recommended')

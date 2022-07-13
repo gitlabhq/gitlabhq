@@ -117,36 +117,28 @@ GitLab has several features which can help you manage the number of users:
   users manually.
 - View a breakdown of users by role in the [Users statistics](../../user/admin_area/index.md#users-statistics) page.
 
-## Cloud licensing
+## Sync your subscription data with GitLab
 
 > Introduced in GitLab 14.1.
 
-Cloud licensing manages licenses for self-managed GitLab subscription plans. Cloud licensing includes:
+To sync subscription data between your self-managed instance and GitLab, you must [activate your instance](../../user/admin_area/license.md) with an
+activation code.
 
-- Activation: Unlock plan features and activate your self-managed instance by using an activation code.
-- License sync: Sync subscription data between your self-managed instance and GitLab.
+After you activate your instance, the following processes are automated:
 
-### How cloud licensing works
+- [Quarterly subscription reconciliation](../quarterly_reconciliation.md).
+- Subscription renewals.
+- Subscription updates, such as adding more seats or upgrading a GitLab tier.
 
-#### Add your license
+At approximately 03:00 UTC, a daily sync job sends subscription data to the Customers Portal. For this reason, updates and renewals may not
+apply immediately.
 
-1. When you purchase a GitLab self-managed plan, an activation code is generated.
-   This activation code is sent to the email address associated with the Customers Portal account.
-1. In GitLab, on the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Subscription** and paste the activation code in the text field.
-1. Select **Add license**.
+The data is sent securely through an encrypted HTTPS connection to `customers.gitlab.com` on port `443`.
+If the job fails, it retries up to 12 times over approximately 17 hours.
 
-The page displays the details of the subscription.
+### Subscription data that GitLab receives
 
-#### License sync
-
-Once a day, a job sends license data to the Customers Portal. This information automates activation,
-provisioning, co-terms, and renewals. The data is sent securely through an encrypted HTTPS connection
-to `customers.gitlab.com` on port `443`.
-
-This sync job runs daily around 3AM UTC. If the job fails, it is retried up to 12 times over approximately 17 hours.
-
-The daily job provides **only** the following information to the Customers Portal:
+The daily sync job sends **only** the following information to the Customers Portal:
 
 - Date
 - Timestamp
@@ -160,7 +152,7 @@ The daily job provides **only** the following information to the Customers Porta
 - Hostname
 - Instance ID
 
-Example of a cloud licensing sync request:
+Example of a license sync request:
 
 ```json
 {
@@ -211,7 +203,12 @@ Example of a cloud licensing sync request:
 }
 ```
 
-#### Sync subscription details
+### Troubleshoot automatic subscription sync
+
+If the sync job is not working, ensure you allow network traffic from your GitLab instance
+to IP address `104.18.26.123:443` (`customers.gitlab.com`).
+
+## Manually sync your subscription details
 
 You can manually sync your subscription details at any time.
 
@@ -220,11 +217,6 @@ You can manually sync your subscription details at any time.
 1. In the **Subscription details** section, select **Sync subscription details**.
 
 A job is queued. When the job finishes, the subscription details are updated.
-
-#### Troubleshooting cloud licensing sync
-
-If the sync job is not working, ensure you allow network traffic from your GitLab instance
-to IP address `104.18.26.123:443` (`customers.gitlab.com`).
 
 ## Obtain a subscription
 
@@ -271,7 +263,7 @@ If you are an administrator, you can export your license usage into a CSV:
 1. On the left sidebar, select **Subscription**.
 1. In the top right, select **Export license usage file**.
 
-This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or in an offline environment, you must provide GitLab with this information.
+This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or an offline environment, you must provide GitLab with this information.
 
 The **License Usage** CSV includes the following details:
 

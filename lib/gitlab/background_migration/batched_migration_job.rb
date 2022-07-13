@@ -44,7 +44,19 @@ module Gitlab
         end
       end
 
-      def parent_batch_relation(batching_scope)
+      def distinct_each_batch(operation_name: :default, batching_arguments: {})
+        all_batching_arguments = { column: batch_column, of: sub_batch_size }.merge(batching_arguments)
+
+        parent_batch_relation.distinct_each_batch(**all_batching_arguments) do |relation|
+          batch_metrics.instrument_operation(operation_name) do
+            yield relation
+          end
+
+          sleep([pause_ms, 0].max * 0.001)
+        end
+      end
+
+      def parent_batch_relation(batching_scope = nil)
         parent_relation = define_batchable_model(batch_table, connection: connection)
           .where(batch_column => start_id..end_id)
 

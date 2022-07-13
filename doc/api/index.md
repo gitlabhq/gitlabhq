@@ -441,7 +441,7 @@ GitLab also returns the following additional pagination headers:
 | `x-next-page`   | The index of the next page. |
 | `x-page`        | The index of the current page (starting at 1). |
 | `x-per-page`    | The number of items per page. |
-| `X-prev-page`   | The index of the previous page. |
+| `x-prev-page`   | The index of the previous page. |
 | `x-total`       | The total number of items. |
 | `x-total-pages` | The total number of pages. |
 

@@ -22148,7 +22148,7 @@ A time-frame defined as a closed inclusive range of two dates.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgethierarchyupdateinputchildrenids"></a>`childrenIds` | [`[WorkItemID!]`](#workitemid) | Global IDs of children work items. |
-| <a id="workitemwidgethierarchyupdateinputparentid"></a>`parentId` | [`WorkItemID`](#workitemid) | Global ID of the parent work item. |
+| <a id="workitemwidgethierarchyupdateinputparentid"></a>`parentId` | [`WorkItemID`](#workitemid) | Global ID of the parent work item. Use `null` to remove the association. |
 
 ### `WorkItemWidgetWeightInput`
 

@@ -124,6 +124,16 @@ RSpec.describe 'Create a work item' do
             expect(mutation_response['workItem']).to be_nil
           end
         end
+
+        context 'when parent work item is not found' do
+          let_it_be(:parent) { build_stubbed(:work_item, id: non_existing_record_id)}
+
+          it 'returns a top level error' do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(graphql_errors.first['message']).to include('No object found for `parentId')
+          end
+        end
       end
     end
 

@@ -7,9 +7,7 @@ module WorkItems
         def after_create_in_transaction(params:)
           return unless params.present?
 
-          result = handle_hierarchy_changes(params)
-
-          raise WidgetError, result[:message] if result[:status] == :error
+          service_response!(handle_hierarchy_changes(params))
         end
       end
     end

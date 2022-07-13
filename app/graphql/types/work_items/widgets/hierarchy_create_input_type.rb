@@ -8,8 +8,8 @@ module Types
 
         argument :parent_id, ::Types::GlobalIDType[::WorkItem],
                  required: false,
-                 description: 'Global ID of the parent work item.',
-                 prepare: ->(id, _) { id&.model_id }
+                 loads: ::Types::WorkItemType,
+                 description: 'Global ID of the parent work item.'
       end
     end
   end

@@ -20,6 +20,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 )
 
 type uploadArtifactsFunction func(url, contentType string, body io.Reader) (*http.Response, string, error)
@@ -82,7 +83,13 @@ func uploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraT
 
 		require.NoError(t, r.ParseMultipartForm(100000))
 
-		const nValues = 11 // file name, path, remote_url, remote_id, size, md5, sha1, sha256, sha512, upload_duration, gitlab-workhorse-upload for just the upload (no metadata because we are not POSTing a valid zip file)
+		var nValues int // file name, path, remote_url, remote_id, size, md5, sha1, sha256, sha512, upload_duration, gitlab-workhorse-upload for just the upload (no metadata because we are not POSTing a valid zip file)
+		if destination.FIPSEnabled() {
+			nValues = 10
+		} else {
+			nValues = 11
+		}
+
 		require.Len(t, r.MultipartForm.Value, nValues)
 
 		require.Empty(t, r.MultipartForm.File, "multipart form files")
@@ -183,7 +190,11 @@ func TestAcceleratedUpload(t *testing.T) {
 					require.Contains(t, uploadFields, "remote_url")
 					require.Contains(t, uploadFields, "remote_id")
 					require.Contains(t, uploadFields, "size")
-					require.Contains(t, uploadFields, "md5")
+					if destination.FIPSEnabled() {
+						require.NotContains(t, uploadFields, "md5")
+					} else {
+						require.Contains(t, uploadFields, "md5")
+					}
 					require.Contains(t, uploadFields, "sha1")
 					require.Contains(t, uploadFields, "sha256")
 					require.Contains(t, uploadFields, "sha512")

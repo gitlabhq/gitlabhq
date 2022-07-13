@@ -22,7 +22,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   before_action :redirect_if_task, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
-  after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
+  after_action :log_issue_show, only: :show
 
   before_action :set_issuables_index, if: ->(c) {
     SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request?

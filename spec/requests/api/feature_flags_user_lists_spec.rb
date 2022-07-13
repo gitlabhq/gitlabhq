@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::FeatureFlagsUserLists do
   let_it_be(:project, refind: true) { create(:project) }
+  let_it_be(:client, refind: true) { create(:operations_feature_flags_client, project: project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
 
@@ -215,6 +216,7 @@ RSpec.describe API::FeatureFlagsUserLists do
       }
 
       expect(response).to have_gitlab_http_status(:forbidden)
+      expect(client.reload.last_feature_flag_updated_at).to be_nil
     end
 
     it 'creates the flag' do
@@ -231,6 +233,7 @@ RSpec.describe API::FeatureFlagsUserLists do
       })
       expect(project.operations_feature_flags_user_lists.count).to eq(1)
       expect(project.operations_feature_flags_user_lists.last.name).to eq('mylist')
+      expect(client.reload.last_feature_flag_updated_at).not_to be_nil
     end
 
     it 'requires name' do
@@ -298,6 +301,7 @@ RSpec.describe API::FeatureFlagsUserLists do
       }
 
       expect(response).to have_gitlab_http_status(:forbidden)
+      expect(client.reload.last_feature_flag_updated_at).to be_nil
     end
 
     it 'updates the list' do
@@ -313,6 +317,7 @@ RSpec.describe API::FeatureFlagsUserLists do
         'user_xids' => '456,789'
       })
       expect(list.reload.name).to eq('mylist')
+      expect(client.reload.last_feature_flag_updated_at).not_to be_nil
     end
 
     it 'preserves attributes not listed in the request' do
@@ -377,6 +382,7 @@ RSpec.describe API::FeatureFlagsUserLists do
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response).to eq({ 'message' => '404 Not found' })
+      expect(client.reload.last_feature_flag_updated_at).to be_nil
     end
 
     it 'deletes the list' do
@@ -387,6 +393,7 @@ RSpec.describe API::FeatureFlagsUserLists do
       expect(response).to have_gitlab_http_status(:no_content)
       expect(response.body).to be_blank
       expect(project.operations_feature_flags_user_lists.count).to eq(0)
+      expect(client.reload.last_feature_flag_updated_at).not_to be_nil
     end
 
     it 'does not delete the list if it is associated with a strategy' do

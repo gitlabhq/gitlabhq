@@ -41,6 +41,8 @@ RSpec.describe FeatureFlags::CreateService do
 
         subject
       end
+
+      it_behaves_like 'does not update feature flag client'
     end
 
     context 'when feature flag is saved correctly' do
@@ -61,6 +63,8 @@ RSpec.describe FeatureFlags::CreateService do
       it 'creates feature flag' do
         expect { subject }.to change { Operations::FeatureFlag.count }.by(1)
       end
+
+      it_behaves_like 'update feature flag client'
 
       context 'when Jira Connect subscription does not exist' do
         it 'does not sync the feature flag to Jira' do

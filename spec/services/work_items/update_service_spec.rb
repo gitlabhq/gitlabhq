@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::UpdateService do
   let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project).tap { |proj| proj.add_developer(developer) } }
+  let_it_be(:parent) { create(:work_item, project: project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project, assignees: [developer]) }
 
   let(:spam_params) { double }
@@ -80,7 +81,7 @@ RSpec.describe WorkItems::UpdateService do
     it_behaves_like 'work item widgetable service' do
       let(:widget_params) do
         {
-          hierarchy_widget: { parent_id: 1 },
+          hierarchy_widget: { parent: parent },
           description_widget: { description: 'foo' },
           weight_widget: { weight: 1 }
         }
@@ -102,7 +103,7 @@ RSpec.describe WorkItems::UpdateService do
         [
           { klass: WorkItems::Widgets::DescriptionService::UpdateService, callback: :update, params: { description: 'foo' } },
           { klass: WorkItems::Widgets::WeightService::UpdateService, callback: :update, params: { weight: 1 } },
-          { klass: WorkItems::Widgets::HierarchyService::UpdateService, callback: :before_update_in_transaction, params: { parent_id: 1 } }
+          { klass: WorkItems::Widgets::HierarchyService::UpdateService, callback: :before_update_in_transaction, params: { parent: parent } }
         ]
       end
     end
@@ -144,6 +145,7 @@ RSpec.describe WorkItems::UpdateService do
       end
 
       context 'for the hierarchy widget' do
+        let(:opts) { { title: 'changed' } }
         let_it_be(:child_work_item) { create(:work_item, :task, project: project) }
 
         let(:widget_params) { { hierarchy_widget: { children_ids: [child_work_item.id] } } }
@@ -155,6 +157,23 @@ RSpec.describe WorkItems::UpdateService do
           end.to change(WorkItems::ParentLink, :count).by(1)
 
           expect(work_item.work_item_children).to include(child_work_item)
+        end
+
+        context 'when child type is invalid' do
+          let_it_be(:child_work_item) { create(:work_item, project: project) }
+
+          it 'returns error status' do
+            expect(subject[:status]).to be(:error)
+            expect(subject[:message])
+              .to match("#{child_work_item.to_reference} cannot be added: Only Task can be assigned as a child in hierarchy.")
+          end
+
+          it 'does not update work item attributes' do
+            expect do
+              update_work_item
+              work_item.reload
+            end.to not_change(WorkItems::ParentLink, :count).and(not_change(work_item, :title))
+          end
         end
       end
     end

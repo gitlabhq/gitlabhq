@@ -314,6 +314,66 @@ background migration.
 After the batched migration is completed, you can safely depend on the
 data in `routes.namespace_id` being populated.
 
+### Batching over non-distinct columns
+
+The default batching strategy provides an efficient way to iterate over primary key columns.
+However, if you need to iterate over columns where values are not unique, you must use a
+different batching strategy.
+
+The `LooseIndexScanBatchingStrategy` batching strategy uses a special version of [`EachBatch`](../iterating_tables_in_batches.md#loose-index-scan-with-distinct_each_batch)
+to provide efficient and stable iteration over the distinct column values.
+
+This example shows a batched background migration where the `issues.project_id` column is used as
+the batching column.
+
+Database post-migration:
+
+```ruby
+class ProjectsWithIssuesMigration < Gitlab::Database::Migration[2.0]
+  MIGRATION = 'BatchProjectsWithIssues'
+  INTERVAL = 2.minutes
+  BATCH_SIZE = 5000
+  SUB_BATCH_SIZE = 500
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+  disable_ddl_transaction!
+  def up
+    queue_batched_background_migration(
+      MIGRATION,
+      :issues,
+      :project_id,
+      job_interval: INTERVAL,
+      batch_size: BATCH_SIZE,
+      batch_class_name: 'LooseIndexScanBatchingStrategy', # Override the default batching strategy
+      sub_batch_size: SUB_BATCH_SIZE
+    )
+  end
+
+  def down
+    delete_batched_background_migration(MIGRATION, :issues, :project_id, [])
+  end
+end
+```
+
+Implementing the background migration class:
+
+```ruby
+module Gitlab
+  module BackgroundMigration
+    class BatchProjectsWithIssues < Gitlab::BackgroundMigration::BatchedMigrationJob
+      include Gitlab::Database::DynamicModelHelpers
+
+      def perform
+        distinct_each_batch(operation_name: :backfill_issues) do |batch|
+          project_ids = batch.pluck(batch_column)
+          # do something with the distinct project_ids
+        end
+      end
+    end
+  end
+end
+```
+
 ## Testing
 
 Writing tests is required for:

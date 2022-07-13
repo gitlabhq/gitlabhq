@@ -92,5 +92,69 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
         end
       end
     end
+
+    context 'when the subclass uses distinct each batch' do
+      let(:job_instance) do
+        job_class.new(start_id: 1,
+                      end_id: 100,
+                      batch_table: '_test_table',
+                      batch_column: 'from_column',
+                      sub_batch_size: 2,
+                      pause_ms: 10,
+                      connection: connection)
+      end
+
+      let(:job_class) do
+        Class.new(described_class) do
+          def perform(*job_arguments)
+            distinct_each_batch(operation_name: :insert) do |sub_batch|
+              sub_batch.pluck(:from_column).each do |value|
+                connection.execute("INSERT INTO _test_insert_table VALUES (#{value})")
+              end
+
+              sub_batch.size
+            end
+          end
+        end
+      end
+
+      let(:test_table) { table(:_test_table) }
+      let(:test_insert_table) { table(:_test_insert_table) }
+
+      before do
+        allow(job_instance).to receive(:sleep)
+
+        connection.create_table :_test_table do |t|
+          t.timestamps_with_timezone null: false
+          t.integer :from_column, null: false
+        end
+
+        connection.create_table :_test_insert_table, id: false do |t|
+          t.integer :to_column
+          t.index :to_column, unique: true
+        end
+
+        test_table.create!(id: 1, from_column: 5)
+        test_table.create!(id: 2, from_column: 10)
+        test_table.create!(id: 3, from_column: 10)
+        test_table.create!(id: 4, from_column: 5)
+        test_table.create!(id: 5, from_column: 15)
+      end
+
+      after do
+        connection.drop_table(:_test_table)
+        connection.drop_table(:_test_insert_table)
+      end
+
+      it 'calls the operation for each distinct batch' do
+        expect { perform_job }.to change { test_insert_table.pluck(:to_column) }.from([]).to([5, 10, 15])
+      end
+
+      it 'stores the affected rows' do
+        perform_job
+
+        expect(job_instance.batch_metrics.affected_rows[:insert]).to contain_exactly(2, 1)
+      end
+    end
   end
 end

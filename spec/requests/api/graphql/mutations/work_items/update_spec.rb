@@ -166,13 +166,13 @@ RSpec.describe 'Update a work item' do
 
       context 'when updating parent' do
         let_it_be(:work_item) { create(:work_item, :task, project: project) }
+        let_it_be(:valid_parent) { create(:work_item, project: project) }
+        let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
         context 'when parent work item type is invalid' do
-          let_it_be(:parent_task) { create(:work_item, :task, project: project) }
-
           let(:error) { "#{work_item.to_reference} cannot be added: Only Issue can be parent of Task." }
           let(:input) do
-            { 'hierarchyWidget' => { 'parentId' => parent_task.to_global_id.to_s }, 'title' => 'new title' }
+            { 'hierarchyWidget' => { 'parentId' => invalid_parent.to_global_id.to_s }, 'title' => 'new title' }
           end
 
           it 'returns response with errors' do
@@ -187,21 +187,19 @@ RSpec.describe 'Update a work item' do
         end
 
         context 'when parent work item has a valid type' do
-          let_it_be(:parent) { create(:work_item, project: project) }
-
-          let(:input) { { 'hierarchyWidget' => { 'parentId' => parent.to_global_id.to_s } } }
+          let(:input) { { 'hierarchyWidget' => { 'parentId' => valid_parent.to_global_id.to_s } } }
 
           it 'sets the parent for the work item' do
             expect do
               post_graphql_mutation(mutation, current_user: current_user)
               work_item.reload
-            end.to change(work_item, :work_item_parent).from(nil).to(parent)
+            end.to change(work_item, :work_item_parent).from(nil).to(valid_parent)
 
             expect(response).to have_gitlab_http_status(:success)
             expect(widgets_response).to include(
               {
                 'children' => { 'edges' => [] },
-                'parent' => { 'id' => parent.to_global_id.to_s },
+                'parent' => { 'id' => valid_parent.to_global_id.to_s },
                 'type' => 'HIERARCHY'
               }
             )
@@ -218,8 +216,60 @@ RSpec.describe 'Update a work item' do
               expect do
                 post_graphql_mutation(mutation, current_user: current_user)
                 work_item.reload
-              end.to change(work_item, :work_item_parent).from(existing_parent).to(parent)
+              end.to change(work_item, :work_item_parent).from(existing_parent).to(valid_parent)
             end
+          end
+        end
+
+        context 'when parentId is null' do
+          let(:input) { { 'hierarchyWidget' => { 'parentId' => nil } } }
+
+          context 'when parent is present' do
+            before do
+              work_item.update!(work_item_parent: valid_parent)
+            end
+
+            it 'removes parent and returns success message' do
+              expect do
+                post_graphql_mutation(mutation, current_user: current_user)
+                work_item.reload
+              end.to change(work_item, :work_item_parent).from(valid_parent).to(nil)
+
+              expect(response).to have_gitlab_http_status(:success)
+              expect(widgets_response)
+                .to include(
+                  {
+                    'children' => { 'edges' => [] },
+                    'parent' => nil,
+                    'type' => 'HIERARCHY'
+                  }
+                )
+            end
+          end
+
+          context 'when parent is not present' do
+            before do
+              work_item.update!(work_item_parent: nil)
+            end
+
+            it 'does not change work item and returns success message' do
+              expect do
+                post_graphql_mutation(mutation, current_user: current_user)
+                work_item.reload
+              end.not_to change(work_item, :work_item_parent)
+
+              expect(response).to have_gitlab_http_status(:success)
+            end
+          end
+        end
+
+        context 'when parent work item is not found' do
+          let(:input) { { 'hierarchyWidget' => { 'parentId' => "gid://gitlab/WorkItem/#{non_existing_record_id}" } } }
+
+          it 'returns a top level error' do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(graphql_errors.first['message']).to include('No object found for `parentId')
           end
         end
       end

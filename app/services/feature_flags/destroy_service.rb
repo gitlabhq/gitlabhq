@@ -13,6 +13,8 @@ module FeatureFlags
 
       ApplicationRecord.transaction do
         if feature_flag.destroy
+          update_last_feature_flag_updated_at!
+
           success(feature_flag: feature_flag)
         else
           error(feature_flag.errors.full_messages)

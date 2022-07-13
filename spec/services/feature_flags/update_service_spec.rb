@@ -58,6 +58,8 @@ RSpec.describe FeatureFlags::UpdateService do
       )
     end
 
+    it_behaves_like 'update feature flag client'
+
     context 'with invalid params' do
       let(:params) { { name: nil } }
 
@@ -79,6 +81,8 @@ RSpec.describe FeatureFlags::UpdateService do
 
         subject
       end
+
+      it_behaves_like 'does not update feature flag client'
     end
 
     context 'when user is reporter' do

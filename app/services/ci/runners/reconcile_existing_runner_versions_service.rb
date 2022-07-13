@@ -30,13 +30,19 @@ module Ci
         versions_from_runners = Set[]
         new_record_count = 0
         Ci::Runner.distinct_each_batch(column: :version, of: VERSION_BATCH_SIZE) do |version_batch|
-          batch_versions = version_batch.pluck(:version)
+          batch_versions = version_batch.pluck(:version).to_set
           versions_from_runners += batch_versions
-          new_record_count += Ci::RunnerVersion.bulk_insert!(
-            version_batch,
-            returns: :ids,
-            skip_duplicates: true,
-            validate: false).count
+
+          # Avoid hitting primary DB
+          already_existing_versions = Ci::RunnerVersion.where(version: batch_versions).pluck(:version)
+          new_versions = batch_versions - already_existing_versions
+
+          if new_versions.any?
+            new_record_count += Ci::RunnerVersion.insert_all(
+              new_versions.map { |v| { version: v } },
+              returning: :version,
+              unique_by: :version).count
+          end
         end
 
         { versions_from_runners: versions_from_runners, new_record_count: new_record_count }

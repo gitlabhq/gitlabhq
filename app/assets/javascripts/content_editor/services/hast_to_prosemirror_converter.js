@@ -24,6 +24,8 @@ import { visitParents, SKIP } from 'unist-util-visit-parents';
 import { toString } from 'hast-util-to-string';
 import { isFunction, isString, noop } from 'lodash';
 
+const NO_ATTRIBUTES = {};
+
 /**
  * Merges two ProseMirror text nodes if both text nodes
  * have the same set of marks.
@@ -269,7 +271,8 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
     root: {
       selector: 'root',
       wrapInParagraph: true,
-      handle: (state, hastNode) => state.openNode(schema.topNodeType, hastNode, {}, {}),
+      handle: (state, hastNode) =>
+        state.openNode(schema.topNodeType, hastNode, NO_ATTRIBUTES, factories.root),
     },
     text: {
       selector: 'text',
@@ -287,11 +290,7 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
   };
   for (const [proseMirrorName, factorySpec] of Object.entries(proseMirrorFactorySpecs)) {
     const factory = {
-      selector: factorySpec.selector,
-      skipChildren: factorySpec.skipChildren,
-      processText: factorySpec.processText,
-      parent: factorySpec.parent,
-      wrapInParagraph: factorySpec.wrapInParagraph,
+      ...factorySpec,
     };
 
     if (factorySpec.type === 'block') {
@@ -299,48 +298,35 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
         const nodeType = schema.nodeType(proseMirrorName);
 
         state.closeUntil(parent);
-        state.openNode(
-          nodeType,
-          hastNode,
-          getAttrs(factorySpec, hastNode, parent, source),
-          factorySpec,
-        );
+        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent, source), factory);
 
         /**
          * If a getContent function is provided, we immediately close
          * the node to delegate content processing to this function.
          * */
-        if (isFunction(factorySpec.getContent)) {
-          state.addText(
-            schema,
-            factorySpec.getContent({ hastNode, hastNodeText: toString(hastNode) }),
-          );
+        if (isFunction(factory.getContent)) {
+          state.addText(schema, factory.getContent({ hastNode, hastNodeText: toString(hastNode) }));
           state.closeNode();
         }
       };
-    } else if (factorySpec.type === 'inline') {
+    } else if (factory.type === 'inline') {
       const nodeType = schema.nodeType(proseMirrorName);
       factory.handle = (state, hastNode, parent) => {
         state.closeUntil(parent);
-        state.openNode(
-          nodeType,
-          hastNode,
-          getAttrs(factorySpec, hastNode, parent, source),
-          factorySpec,
-        );
+        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent, source), factory);
         // Inline nodes do not have children therefore they are immediately closed
         state.closeNode();
       };
-    } else if (factorySpec.type === 'mark') {
+    } else if (factory.type === 'mark') {
       const markType = schema.marks[proseMirrorName];
       factory.handle = (state, hastNode, parent) => {
-        state.openMark(markType, getAttrs(factorySpec, hastNode, parent, source));
+        state.openMark(markType, getAttrs(factory, hastNode, parent, source));
 
-        if (factorySpec.inlineContent) {
+        if (factory.inlineContent) {
           state.addText(schema, hastNode.value);
         }
       };
-    } else if (factorySpec.type === 'ignore') {
+    } else if (factory.type === 'ignore') {
       factory.handle = noop;
     } else {
       throw new RangeError(

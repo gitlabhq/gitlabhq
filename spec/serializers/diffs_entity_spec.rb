@@ -100,6 +100,7 @@ RSpec.describe DiffsEntity do
       let(:options) { super().merge(merge_ref_head_diff: merge_ref_head_diff) }
 
       before do
+        allow(merge_request).to receive(:cannot_be_merged?).and_return(true)
         allow(MergeRequests::Conflicts::ListService).to receive(:new).and_return(conflicts)
       end
 

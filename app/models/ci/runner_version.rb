@@ -4,7 +4,6 @@ module Ci
   class RunnerVersion < Ci::ApplicationRecord
     include EachBatch
     include EnumWithNil
-    include BulkInsertSafe # include this last (see https://docs.gitlab.com/ee/development/insert_into_tables_in_batches.html#prepare-applicationrecords-for-bulk-insertion)
 
     enum_with_nil status: {
       not_processed: nil,

@@ -10,6 +10,8 @@ module FeatureFlags
         feature_flag = project.operations_feature_flags.new(params)
 
         if feature_flag.save
+          update_last_feature_flag_updated_at!
+
           success(feature_flag: feature_flag)
         else
           error(feature_flag.errors.full_messages, 400)

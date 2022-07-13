@@ -23,3 +23,9 @@ workhorse:verify:
 workhorse:test using go 1.17:
   extends: .workhorse:test
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-1.17-git-2.31
+
+workhorse:test using go 1.17 with FIPS:
+  extends: .workhorse:test
+  variables:
+    WORKHORSE_TEST_FIPS_ENABLED: 1
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-1.17-git-2.31

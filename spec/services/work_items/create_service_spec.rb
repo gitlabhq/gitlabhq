@@ -6,6 +6,7 @@ RSpec.describe WorkItems::CreateService do
   include AfterNextHelpers
 
   let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:parent) { create(:work_item, project: project) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:user_with_no_access) { create(:user) }
 
@@ -93,7 +94,7 @@ RSpec.describe WorkItems::CreateService do
     it_behaves_like 'work item widgetable service' do
       let(:widget_params) do
         {
-          hierarchy_widget: { parent_id: 1 }
+          hierarchy_widget: { parent: parent }
         }
       end
 
@@ -111,16 +112,18 @@ RSpec.describe WorkItems::CreateService do
 
       let(:supported_widgets) do
         [
-          { klass: WorkItems::Widgets::HierarchyService::CreateService, callback: :after_create_in_transaction, params: { parent_id: 1 } }
+          {
+            klass: WorkItems::Widgets::HierarchyService::CreateService,
+            callback: :after_create_in_transaction,
+            params: { parent: parent }
+          }
         ]
       end
     end
 
     describe 'hierarchy widget' do
       context 'when parent is valid work item' do
-        let_it_be(:parent) { create(:work_item, project: project) }
-
-        let(:widget_params) { { hierarchy_widget: { parent_id: parent.id } } }
+        let(:widget_params) { { hierarchy_widget: { parent: parent } } }
 
         let(:opts) do
           {
@@ -149,7 +152,7 @@ RSpec.describe WorkItems::CreateService do
           end
         end
 
-        context 'when hiearchy feature flag is disabled' do
+        context 'when hierarchy feature flag is disabled' do
           before do
             stub_feature_flags(work_items_hierarchy: false)
           end

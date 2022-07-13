@@ -29,6 +29,8 @@ module FeatureFlags
         audit_event = audit_event(feature_flag)
 
         if feature_flag.save
+          update_last_feature_flag_updated_at!
+
           success(feature_flag: feature_flag, audit_event: audit_event)
         else
           error(feature_flag.errors.full_messages, :bad_request)
