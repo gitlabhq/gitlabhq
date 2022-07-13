@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::DagJobGroupEntity do
   let_it_be(:request) { double(:request) }
   let_it_be(:pipeline) { create(:ci_pipeline) }
-  let_it_be(:stage) { create(:ci_stage_entity, pipeline: pipeline) }
+  let_it_be(:stage) { create(:ci_stage, pipeline: pipeline) }
 
   let(:group) { Ci::Group.new(pipeline.project, stage, name: 'test', jobs: jobs) }
   let(:entity) { described_class.new(group, request: request) }

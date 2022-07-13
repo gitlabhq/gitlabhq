@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
 
   context 'tags persistence' do
     let(:stage) do
-      build(:ci_stage_entity, pipeline: pipeline, project: project)
+      build(:ci_stage, pipeline: pipeline, project: project)
     end
 
     let(:job) do

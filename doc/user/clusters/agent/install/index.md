@@ -156,7 +156,7 @@ To configure your agent, add content to the `config.yaml` file:
 
 - For a GitOps workflow, [view the configuration reference](../gitops.md#gitops-configuration-reference).
 - For a GitLab CI/CD workflow, [authorize the agent to access your projects](../ci_cd_workflow.md#authorize-the-agent). Then
-  [add `kubectl` commands to your `.gitlab-ci.yml` file](../ci_cd_workflow.md#update-your-gitlab-ciyml-file-to-run-kubectl-commands). 
+  [add `kubectl` commands to your `.gitlab-ci.yml` file](../ci_cd_workflow.md#update-your-gitlab-ciyml-file-to-run-kubectl-commands).
 
 ## Install multiple agents in your cluster
 

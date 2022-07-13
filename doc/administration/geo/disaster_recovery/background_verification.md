@@ -158,7 +158,7 @@ If the **primary** and **secondary** sites have a checksum verification mismatch
    ```shell
    cd /var/opt/gitlab/git-data/repositories
    ```
-   
+
    1. Run the following command on the **primary** site, redirecting the output to a file:
 
       ```shell

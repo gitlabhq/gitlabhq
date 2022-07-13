@@ -70,3 +70,17 @@ export const timelineEventsQueryEmptyResponse = {
     },
   },
 };
+
+export const timelineEventsCreateEventResponse = {
+  timelineEvent: {
+    ...mockEvents[0],
+  },
+  errors: [],
+};
+
+export const timelineEventsCreateEventError = {
+  timelineEvent: {
+    ...mockEvents[0],
+  },
+  errors: ['Error creating timeline event'],
+};

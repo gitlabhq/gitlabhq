@@ -331,7 +331,7 @@ downtime. Otherwise, skip to the next section.
    exit
    ```
 
-GDB reports an error if the Puma process terminates before you can run these commands. 
+GDB reports an error if the Puma process terminates before you can run these commands.
 To buy more time, you can always raise the
 Puma worker timeout. For omnibus users, you can edit `/etc/gitlab/gitlab.rb` and
 increase it from 60 seconds to 600:

@@ -18,3 +18,15 @@ const EVENT_ICONS = {
 export const getEventIcon = (actionName) => {
   return EVENT_ICONS[actionName] ?? EVENT_ICONS.default;
 };
+
+/**
+ * Returns a date shifted by the current timezone offset. Allows
+ * date.getHours() and similar to return UTC values.
+ *
+ * @returns {Date}
+ */
+export const getUtcShiftedDateNow = () => {
+  const date = new Date();
+  date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+  return date;
+};

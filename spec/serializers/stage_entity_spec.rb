@@ -12,7 +12,7 @@ RSpec.describe StageEntity do
   end
 
   let(:stage) do
-    create(:ci_stage_entity, pipeline: pipeline, status: :success)
+    create(:ci_stage, pipeline: pipeline, status: :success)
   end
 
   before do
@@ -74,7 +74,7 @@ RSpec.describe StageEntity do
     end
 
     context 'with a skipped stage ' do
-      let(:stage) { create(:ci_stage_entity, status: 'skipped') }
+      let(:stage) { create(:ci_stage, status: 'skipped') }
 
       it 'contains play_all_manual' do
         expect(subject[:status][:action]).to be_present
@@ -82,7 +82,7 @@ RSpec.describe StageEntity do
     end
 
     context 'with a scheduled stage ' do
-      let(:stage) { create(:ci_stage_entity, status: 'scheduled') }
+      let(:stage) { create(:ci_stage, status: 'scheduled') }
 
       it 'contains play_all_manual' do
         expect(subject[:status][:action]).to be_present
@@ -90,7 +90,7 @@ RSpec.describe StageEntity do
     end
 
     context 'with a manual stage ' do
-      let(:stage) { create(:ci_stage_entity, status: 'manual') }
+      let(:stage) { create(:ci_stage, status: 'manual') }
 
       it 'contains play_all_manual' do
         expect(subject[:status][:action]).to be_present

@@ -8,10 +8,6 @@ import MrWidgetOptions from 'ee_else_ce/vue_merge_request_widget/mr_widget_optio
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Translate from '../vue_shared/translate';
-import { registerExtension } from './components/extensions';
-import issuesExtension from './extensions/issues';
-
-registerExtension(issuesExtension);
 
 Vue.use(Translate);
 Vue.use(VueApollo);

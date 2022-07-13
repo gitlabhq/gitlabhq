@@ -991,4 +991,19 @@
       bottom: -10%;
     }
   }
+
+  &.timeline-event-note-form {
+    &::before {
+      top: -15% !important; // Override default positioning
+      height: 20%;
+    }
+
+    &::after {
+      content: none;
+    }
+  }
+}
+
+.timeline-event-note-form {
+  padding-left: 20px;
 }

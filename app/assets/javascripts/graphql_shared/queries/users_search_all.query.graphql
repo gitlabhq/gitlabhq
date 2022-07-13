@@ -1,0 +1,9 @@
+#import "../fragments/user.fragment.graphql"
+
+query searchAllUsers($search: String!, $first: Int = null) {
+  users(search: $search, first: $first) {
+    nodes {
+      ...User
+    }
+  }
+}

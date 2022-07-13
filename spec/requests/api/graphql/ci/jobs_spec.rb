@@ -14,7 +14,7 @@ RSpec.describe 'Query.project.pipeline' do
   describe '.stages.groups.jobs' do
     let(:pipeline) do
       pipeline = create(:ci_pipeline, project: project, user: user)
-      stage = create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'first', position: 1)
+      stage = create(:ci_stage, project: project, pipeline: pipeline, name: 'first', position: 1)
       create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'my test job', scheduling_type: :stage)
 
       pipeline
@@ -84,8 +84,8 @@ RSpec.describe 'Query.project.pipeline' do
 
     context 'when there is more than one stage and job needs' do
       before do
-        build_stage = create(:ci_stage_entity, position: 2, name: 'build', project: project, pipeline: pipeline)
-        test_stage = create(:ci_stage_entity, position: 3, name: 'test', project: project, pipeline: pipeline)
+        build_stage = create(:ci_stage, position: 2, name: 'build', project: project, pipeline: pipeline)
+        test_stage = create(:ci_stage, position: 3, name: 'test', project: project, pipeline: pipeline)
 
         create(:ci_build, pipeline: pipeline, name: 'docker 1 2', scheduling_type: :stage, stage: build_stage, stage_idx: build_stage.position)
         create(:ci_build, pipeline: pipeline, name: 'docker 2 2', stage: build_stage, stage_idx: build_stage.position, scheduling_type: :dag)

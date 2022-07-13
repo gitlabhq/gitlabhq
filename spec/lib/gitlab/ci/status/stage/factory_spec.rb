@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::Factory do
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
-  let(:stage) { create(:ci_stage_entity, pipeline: pipeline) }
+  let(:stage) { create(:ci_stage, pipeline: pipeline) }
 
   subject do
     described_class.new(stage, user)
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::Factory do
   context 'when stage has a core status' do
     (Ci::HasStatus::AVAILABLE_STATUSES - %w(manual skipped scheduled)).each do |core_status|
       context "when core status is #{core_status}" do
-        let(:stage) { create(:ci_stage_entity, pipeline: pipeline, status: core_status) }
+        let(:stage) { create(:ci_stage, pipeline: pipeline, status: core_status) }
 
         it "fabricates a core status #{core_status}" do
           expect(status).to be_a(
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::Factory do
 
   context 'when stage has warnings' do
     let(:stage) do
-      create(:ci_stage_entity, status: :success, pipeline: pipeline)
+      create(:ci_stage, status: :success, pipeline: pipeline)
     end
 
     before do
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::Factory do
   context 'when stage has manual builds' do
     (Ci::HasStatus::BLOCKED_STATUS + ['skipped']).each do |core_status|
       context "when status is #{core_status}" do
-        let(:stage) { create(:ci_stage_entity, pipeline: pipeline, status: core_status) }
+        let(:stage) { create(:ci_stage, pipeline: pipeline, status: core_status) }
 
         it 'fabricates a play manual status' do
           expect(status).to be_a(Gitlab::Ci::Status::Stage::PlayManual)

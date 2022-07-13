@@ -290,8 +290,8 @@ RSpec.describe 'getting pipeline information nested in a project' do
     end
 
     it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
-      build_stage = create(:ci_stage_entity, position: 1, name: 'build', project: project, pipeline: pipeline)
-      test_stage = create(:ci_stage_entity, position: 2, name: 'test', project: project, pipeline: pipeline)
+      build_stage = create(:ci_stage, position: 1, name: 'build', project: project, pipeline: pipeline)
+      test_stage = create(:ci_stage, position: 2, name: 'test', project: project, pipeline: pipeline)
       create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 1 2', stage: build_stage)
       create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 2 2', stage: build_stage)
       create(:ci_build, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 1 2', stage: test_stage)

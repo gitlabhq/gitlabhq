@@ -146,7 +146,7 @@ If you encounter an error with [Yarn](https://classic.yarnpkg.com/en/), view
 #### Instance-level npm endpoint
 
 NOTE:
-Note: Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project will give you 404 errors. You can use a [personal access token](../../profile/personal_access_tokens.md) as a workaround. [GitLab-#352962](https://gitlab.com/gitlab-org/gitlab/-/issues/352962) proposes a fix to this bug. 
+Note: Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project will give you 404 errors. You can use a [personal access token](../../profile/personal_access_tokens.md) as a workaround. [GitLab-#352962](https://gitlab.com/gitlab-org/gitlab/-/issues/352962) proposes a fix to this bug.
 
 To use the [instance-level](#use-the-gitlab-endpoint-for-npm-packages) npm endpoint, set your npm configuration:
 

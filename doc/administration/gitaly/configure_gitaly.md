@@ -157,7 +157,7 @@ To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
    ```ruby
    gitaly['auth_token'] = 'abc123secret'
    ```
-   
+
 There are two ways to configure the _GitLab Shell token_.
 
 Method 1 (recommended):

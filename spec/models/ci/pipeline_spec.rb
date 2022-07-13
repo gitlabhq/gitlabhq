@@ -1350,7 +1350,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let(:pipeline) { build(:ci_empty_pipeline, :created) }
 
       before do
-        create(:ci_stage_entity, project: project,
+        create(:ci_stage, project: project,
                                  pipeline: pipeline,
                                  position: 4,
                                  name: 'deploy')
@@ -1367,12 +1367,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
                           stage_idx: 2,
                           name: 'build')
 
-        create(:ci_stage_entity, project: project,
+        create(:ci_stage, project: project,
                                  pipeline: pipeline,
                                  position: 1,
                                  name: 'sanity')
 
-        create(:ci_stage_entity, project: project,
+        create(:ci_stage, project: project,
                                  pipeline: pipeline,
                                  position: 5,
                                  name: 'cleanup')
@@ -4258,7 +4258,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let(:stage_name) { 'test' }
 
     let(:stage) do
-      create(:ci_stage_entity,
+      create(:ci_stage,
              pipeline: pipeline,
              project: pipeline.project,
              name: 'test')

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:stage) { build(:ci_stage_entity, project: project, statuses: [job]) }
+  let(:stage) { build(:ci_stage, project: project, statuses: [job]) }
   let(:pipeline) { build(:ci_pipeline, project: project, stages: [stage]) }
 
   let(:command) do

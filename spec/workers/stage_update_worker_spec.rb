@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe StageUpdateWorker do
   describe '#perform' do
     context 'when stage exists' do
-      let(:stage) { create(:ci_stage_entity) }
+      let(:stage) { create(:ci_stage) }
 
       it 'updates stage status' do
         expect_any_instance_of(Ci::Stage).to receive(:set_status).with('skipped')

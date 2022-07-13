@@ -1112,8 +1112,8 @@ github.com/ziutek/mymysql v1.5.4/go.mod h1:LMSpPZ6DbqWFxNCHW77HeMg9I646SAhApZ/wK
 gitlab.com/gitlab-org/gitaly v1.68.0 h1:VlcJs1+PrhW7lqJUU7Fh1q8FMJujmbbivdfde/cwB98=
 gitlab.com/gitlab-org/gitaly v1.68.0/go.mod h1:/pCsB918Zu5wFchZ9hLYin9WkJ2yQqdVNz0zlv5HbXg=
 gitlab.com/gitlab-org/gitaly/v14 v14.0.0-rc1/go.mod h1:4Cz8tOAyueSZX5o6gYum1F/unupaOclxqETPcg4ODvQ=
-gitlab.com/gitlab-org/gitaly/v15 v15.1.0 h1:fxnBpIKtaTpkcDUPHKrxuhZj/VWrMqtWRZaO3mwp0WI=
-gitlab.com/gitlab-org/gitaly/v15 v15.1.0/go.mod h1:fZSeTXPLtbmTxNRk9AECM2shtJ6JNzIiLxAgknWBdT4=
+gitlab.com/gitlab-org/gitaly/v15 v15.1.2 h1:6NcpZENpvV4ialIjtrPuxCFHLn6VOrE3mJ9rd/4DuzU=
+gitlab.com/gitlab-org/gitaly/v15 v15.1.2/go.mod h1:fZSeTXPLtbmTxNRk9AECM2shtJ6JNzIiLxAgknWBdT4=
 gitlab.com/gitlab-org/gitlab-shell v1.9.8-0.20201117050822-3f9890ef73dc/go.mod h1:5QSTbpAHY2v0iIH5uHh2KA9w7sPUqPmnLjDApI/sv1U=
 gitlab.com/gitlab-org/gitlab-shell v1.9.8-0.20210720163109-50da611814d2/go.mod h1:QWDYBwuy24qGMandtCngLRPzFgnGPg6LSNoJWPKmJMc=
 gitlab.com/gitlab-org/golang-archive-zip v0.1.1 h1:35k9giivbxwF03+8A05Cm8YoxoakU8FBCj5gysjCTCE=

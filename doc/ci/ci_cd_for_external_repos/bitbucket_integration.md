@@ -22,7 +22,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
       - For **Git repository URL**, use the URL from the **Clone this repository** panel in Bitbucket.
       - Leave the username blank.
       - You can generate and use a [Bitbucket App Password](https://support.atlassian.com/bitbucket-cloud/docs/app-passwords/) for the password field.
-      
+
    GitLab imports the repository and enables [Pull Mirroring](../../user/project/repository/mirror/pull.md).
    You can check that mirroring is working in the project by going to **Settings > Repository > Mirroring repositories**.
 

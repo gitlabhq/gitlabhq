@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::StagePresenter do
-  let(:stage) { create(:ci_stage_entity) }
+  let(:stage) { create(:ci_stage) }
   let(:presenter) { described_class.new(stage) }
 
   let!(:build) { create(:ci_build, :tags, :artifacts, pipeline: stage.pipeline, stage: stage.name) }

@@ -803,7 +803,7 @@ RSpec.describe CommitStatus do
   describe 'ensure stage assignment' do
     context 'when commit status has a stage_id assigned' do
       let!(:stage) do
-        create(:ci_stage_entity, project: project, pipeline: pipeline)
+        create(:ci_stage, project: project, pipeline: pipeline)
       end
 
       let(:commit_status) do
@@ -836,7 +836,7 @@ RSpec.describe CommitStatus do
 
     context 'when commit status does not have stage but it exists' do
       let!(:stage) do
-        create(:ci_stage_entity, project: project,
+        create(:ci_stage, project: project,
                                  pipeline: pipeline,
                                  name: 'test')
       end

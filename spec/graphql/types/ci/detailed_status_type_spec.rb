@@ -13,7 +13,7 @@ RSpec.describe Types::Ci::DetailedStatusType do
                                                    :label, :text, :tooltip, :action)
   end
 
-  let_it_be(:stage) { create(:ci_stage_entity, status: :skipped) }
+  let_it_be(:stage) { create(:ci_stage, status: :skipped) }
 
   describe 'id field' do
     it 'correctly renders the field' do

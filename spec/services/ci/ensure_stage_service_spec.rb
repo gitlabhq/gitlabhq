@@ -6,7 +6,7 @@ RSpec.describe Ci::EnsureStageService, '#execute' do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
-  let(:stage) { create(:ci_stage_entity) }
+  let(:stage) { create(:ci_stage) }
   let(:job) { build(:ci_build) }
 
   let(:service) { described_class.new(project, user) }

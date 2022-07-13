@@ -36,7 +36,7 @@ RSpec.describe 'Query.project.pipeline.stages' do
   end
 
   before_all do
-    create(:ci_stage_entity, pipeline: pipeline, name: 'deploy')
+    create(:ci_stage, pipeline: pipeline, name: 'deploy')
     create_list(:ci_build, 2, pipeline: pipeline, stage: 'deploy')
   end
 

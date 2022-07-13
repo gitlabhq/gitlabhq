@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CreateDeployments do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
-  let(:stage) { build(:ci_stage_entity, project: project, statuses: [job]) }
+  let(:stage) { build(:ci_stage, project: project, statuses: [job]) }
   let(:pipeline) { create(:ci_pipeline, project: project, stages: [stage]) }
 
   let(:command) do

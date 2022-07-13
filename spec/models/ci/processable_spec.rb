@@ -24,7 +24,7 @@ RSpec.describe Ci::Processable do
       new_proc
     end
 
-    let_it_be(:stage) { create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'test') }
+    let_it_be(:stage) { create(:ci_stage, project: project, pipeline: pipeline, name: 'test') }
 
     shared_context 'processable bridge' do
       let_it_be(:downstream_project) { create(:project, :repository) }

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::Stage, :models do
   let_it_be(:pipeline) { create(:ci_empty_pipeline) }
 
-  let(:stage) { create(:ci_stage_entity, pipeline: pipeline, project: pipeline.project) }
+  let(:stage) { create(:ci_stage, pipeline: pipeline, project: pipeline.project) }
 
   it_behaves_like 'having unique enum values'
 
@@ -30,9 +30,9 @@ RSpec.describe Ci::Stage, :models do
 
   describe '.by_position' do
     it 'finds stages by position' do
-      a = create(:ci_stage_entity, position: 1)
-      b = create(:ci_stage_entity, position: 2)
-      c = create(:ci_stage_entity, position: 3)
+      a = create(:ci_stage, position: 1)
+      b = create(:ci_stage, position: 2)
+      c = create(:ci_stage, position: 3)
 
       expect(described_class.by_position(1)).to contain_exactly(a)
       expect(described_class.by_position(2)).to contain_exactly(b)
@@ -42,9 +42,9 @@ RSpec.describe Ci::Stage, :models do
 
   describe '.by_name' do
     it 'finds stages by name' do
-      a = create(:ci_stage_entity, name: 'a')
-      b = create(:ci_stage_entity, name: 'b')
-      c = create(:ci_stage_entity, name: 'c')
+      a = create(:ci_stage, name: 'a')
+      b = create(:ci_stage, name: 'b')
+      c = create(:ci_stage, name: 'c')
 
       expect(described_class.by_name('a')).to contain_exactly(a)
       expect(described_class.by_name('b')).to contain_exactly(b)
@@ -54,7 +54,7 @@ RSpec.describe Ci::Stage, :models do
 
   describe '#status' do
     context 'when stage is pending' do
-      let(:stage) { create(:ci_stage_entity, status: 'pending') }
+      let(:stage) { create(:ci_stage, status: 'pending') }
 
       it 'has a correct status value' do
         expect(stage.status).to eq 'pending'
@@ -62,7 +62,7 @@ RSpec.describe Ci::Stage, :models do
     end
 
     context 'when stage is success' do
-      let(:stage) { create(:ci_stage_entity, status: 'success') }
+      let(:stage) { create(:ci_stage, status: 'success') }
 
       it 'has a correct status value' do
         expect(stage.status).to eq 'success'
@@ -119,7 +119,7 @@ RSpec.describe Ci::Stage, :models do
     end
 
     context 'when stage has only created builds' do
-      let(:stage) { create(:ci_stage_entity, status: :created) }
+      let(:stage) { create(:ci_stage, status: :created) }
 
       before do
         create(:ci_build, :created, stage_id: stage.id)
@@ -206,7 +206,7 @@ RSpec.describe Ci::Stage, :models do
     using RSpec::Parameterized::TableSyntax
 
     let(:user) { create(:user) }
-    let(:stage) { create(:ci_stage_entity, status: :created) }
+    let(:stage) { create(:ci_stage, status: :created) }
 
     subject { stage.detailed_status(user) }
 
@@ -269,7 +269,7 @@ RSpec.describe Ci::Stage, :models do
   describe '#delay' do
     subject { stage.delay }
 
-    let(:stage) { create(:ci_stage_entity, status: :created) }
+    let(:stage) { create(:ci_stage, status: :created) }
 
     it 'updates stage status' do
       subject
@@ -361,12 +361,12 @@ RSpec.describe Ci::Stage, :models do
     end
   end
 
-  it_behaves_like 'manual playable stage', :ci_stage_entity
+  it_behaves_like 'manual playable stage', :ci_stage
 
   context 'loose foreign key on ci_stages.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }
-      let!(:model) { create(:ci_stage_entity, project: parent) }
+      let!(:model) { create(:ci_stage, project: parent) }
     end
   end
 end

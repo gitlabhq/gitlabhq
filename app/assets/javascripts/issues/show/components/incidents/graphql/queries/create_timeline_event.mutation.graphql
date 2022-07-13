@@ -1,0 +1,13 @@
+mutation CreateTimelineEvent($input: TimelineEventCreateInput!) {
+  timelineEventCreate(input: $input) {
+    timelineEvent {
+      id
+      note
+      noteHtml
+      action
+      occurredAt
+      createdAt
+    }
+    errors
+  }
+}

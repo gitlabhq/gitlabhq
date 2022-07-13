@@ -13,7 +13,7 @@ PostgreSQL, and Gitaly instances.
 
 By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. To change this:
 
-1. Edit the `/etc/gitlab/gitlab.rb` file on your GitLab instance and add the following: 
+1. Edit the `/etc/gitlab/gitlab.rb` file on your GitLab instance and add the following:
 
    ```ruby
 
@@ -55,7 +55,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
    ```shell
    sudo gitlab-ctl reconfigure
    ```
-   
+
 1. Restart the `PostgreSQL` server:
 
    ```shell
@@ -66,7 +66,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
 
    ```ruby
    gitlab_rails['auto_migrate'] = true
-   ``` 
+   ```
 
 1. Run `reconfigure` again:
 
