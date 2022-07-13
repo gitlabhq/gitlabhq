@@ -3,68 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Commit, :seed_helper do
-  include GitHelpers
-
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
-  let(:rugged_repo) do
-    Rugged::Repository.new(File.join(TestEnv.repos_path, TEST_REPO_PATH))
-  end
-
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
-  let(:rugged_commit) { rugged_repo.lookup(SeedRepo::Commit::ID) }
-
-  describe "Commit info" do
-    before do
-      @committer = {
-        email: 'mike@smith.com',
-        name: "Mike Smith",
-        time: Time.new(2000, 1, 1, 0, 0, 0, "+08:00")
-      }
-
-      @author = {
-        email: 'john@smith.com',
-        name: "John Smith",
-        time: Time.new(2000, 1, 1, 0, 0, 0, "-08:00")
-      }
-
-      @parents = [rugged_repo.head.target]
-      @gitlab_parents = @parents.map { |c| described_class.find(repository, c.oid) }
-      @tree = @parents.first.tree
-
-      sha = Rugged::Commit.create(
-        rugged_repo,
-        author: @author,
-        committer: @committer,
-        tree: @tree,
-        parents: @parents,
-        message: "Refactoring specs",
-        update_ref: "HEAD"
-      )
-
-      @raw_commit = rugged_repo.lookup(sha)
-      @commit = described_class.find(repository, sha)
-    end
-
-    it { expect(@commit.short_id).to eq(@raw_commit.oid[0..10]) }
-    it { expect(@commit.id).to eq(@raw_commit.oid) }
-    it { expect(@commit.sha).to eq(@raw_commit.oid) }
-    it { expect(@commit.safe_message).to eq(@raw_commit.message) }
-    it { expect(@commit.created_at).to eq(@raw_commit.committer[:time]) }
-    it { expect(@commit.date).to eq(@raw_commit.committer[:time]) }
-    it { expect(@commit.author_email).to eq(@author[:email]) }
-    it { expect(@commit.author_name).to eq(@author[:name]) }
-    it { expect(@commit.committer_name).to eq(@committer[:name]) }
-    it { expect(@commit.committer_email).to eq(@committer[:email]) }
-    it { expect(@commit.different_committer?).to be_truthy }
-    it { expect(@commit.parents).to eq(@gitlab_parents) }
-    it { expect(@commit.parent_id).to eq(@parents.first.oid) }
-    it { expect(@commit.no_commit_message).to eq("No commit message") }
-
-    after do
-      # Erase the new commit so other tests get the original repo
-      repository.write_ref("refs/heads/master", SeedRepo::LastCommit::ID)
-    end
-  end
 
   describe "Commit info from gitaly commit" do
     let(:subject) { (+"My commit").force_encoding('ASCII-8BIT') }
@@ -132,7 +72,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
     shared_examples '.find' do
       it "returns first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
-          rugged_repo.head.target.oid
+          repository.commit.sha
         )
       end
 
@@ -618,19 +558,6 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
 
           2.times { signatures.each(&:itself) }
         end
-      end
-    end
-  end
-
-  skip 'move this test to gitaly-ruby' do
-    RSpec.describe '#init_from_rugged' do
-      let(:gitlab_commit) { described_class.new(repository, rugged_commit) }
-
-      subject { gitlab_commit }
-
-      describe '#id' do
-        subject { super().id }
-        it { is_expected.to eq(SeedRepo::Commit::ID) }
       end
     end
   end

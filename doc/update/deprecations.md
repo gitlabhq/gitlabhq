@@ -45,6 +45,27 @@ sole discretion of GitLab Inc.
 
 <div class="announcement-milestone">
 
+## Announced in 15.2
+
+<div class="deprecation removal-160 breaking-change">
+
+### Remove `job_age` parameter from `POST /jobs/request` Runner endpoint
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
+
+The `job_age` parameter, returned from the `POST /jobs/request` API endpoint used in communication with GitLab Runner, was never used by any GitLab or Runner feature. This parameter will be removed in GitLab 16.0.
+
+This could be a breaking change for anyone that developed their own runner that relies on this parameter being returned by the endpoint. This is not a breaking change for anyone using an officially released version of GitLab Runner, including public shared runners on GitLab.com.
+
+</div>
+</div>
+
+<div class="announcement-milestone">
+
 ## Announced in 15.1
 
 <div class="deprecation removal-160 breaking-change">

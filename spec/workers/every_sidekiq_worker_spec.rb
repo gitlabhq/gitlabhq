@@ -365,7 +365,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'Packages::Rubygems::ExtractionWorker' => 3,
         'PagesDomainSslRenewalWorker' => 3,
         'PagesDomainVerificationWorker' => 3,
-        'PagesTransferWorker' => 3,
         'PagesWorker' => 3,
         'PersonalAccessTokens::Groups::PolicyWorker' => 3,
         'PersonalAccessTokens::Instance::PolicyWorker' => 3,

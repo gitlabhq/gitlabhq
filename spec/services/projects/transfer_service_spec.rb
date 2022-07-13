@@ -715,20 +715,6 @@ RSpec.describe Projects::TransferService do
     end
   end
 
-  context 'moving pages' do
-    let_it_be(:project) { create(:project, namespace: user.namespace) }
-
-    before do
-      group.add_owner(user)
-    end
-
-    it 'does not schedule a job when no pages are deployed' do
-      expect(PagesTransferWorker).not_to receive(:perform_async)
-
-      execute_transfer
-    end
-  end
-
   context 'handling issue contacts' do
     let_it_be(:root_group) { create(:group) }
 

@@ -131,6 +131,37 @@ RSpec.describe Issue do
         create(:issue)
       end
     end
+
+    context 'issue namespace' do
+      let(:issue) { build(:issue, project: reusable_project) }
+
+      it 'sets the namespace_id' do
+        expect(issue).to be_valid
+        expect(issue.namespace).to eq(reusable_project.project_namespace)
+      end
+
+      context 'when issue is created' do
+        it 'sets the namespace_id' do
+          issue.save!
+
+          expect(issue.reload.namespace).to eq(reusable_project.project_namespace)
+        end
+      end
+
+      context 'when existing issue is saved' do
+        let(:issue) { create(:issue) }
+
+        before do
+          issue.update!(namespace_id: nil)
+        end
+
+        it 'sets the namespace id' do
+          issue.update!(title: "#{issue.title} and something extra")
+
+          expect(issue.namespace).to eq(issue.project.project_namespace)
+        end
+      end
+    end
   end
 
   context 'order by upvotes' do

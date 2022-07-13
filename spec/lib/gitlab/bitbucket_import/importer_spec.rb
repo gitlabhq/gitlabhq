@@ -328,6 +328,7 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
 
       expect(project.issues.where(state_id: Issue.available_states[:closed]).size).to eq(5)
       expect(project.issues.where(state_id: Issue.available_states[:opened]).size).to eq(2)
+      expect(project.issues.map(&:namespace_id).uniq).to match_array([project.project_namespace_id])
     end
 
     describe 'wiki import' do

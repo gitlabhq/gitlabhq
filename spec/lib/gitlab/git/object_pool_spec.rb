@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Git::ObjectPool do
-  include RepoHelpers
-
   let(:pool_repository) { create(:pool_repository) }
   let(:source_repository) { pool_repository.source_project.repository }
 
@@ -80,8 +78,6 @@ RSpec.describe Gitlab::Git::ObjectPool do
   end
 
   describe '#fetch' do
-    let(:source_repository_path) { File.join(TestEnv.repos_path, source_repository.relative_path) }
-    let(:source_repository_rugged) { Rugged::Repository.new(source_repository_path) }
     let(:commit_count) { source_repository.commit_count }
 
     context "when the object's pool repository exists" do
@@ -106,7 +102,13 @@ RSpec.describe Gitlab::Git::ObjectPool do
       end
 
       it 'fetches objects from the source repository' do
-        new_commit_id = new_commit_edit_old_file(source_repository_rugged).oid
+        new_commit_id = source_repository.create_file(
+          pool_repository.source_project.owner,
+          'a.file',
+          'This is a file',
+          branch_name: source_repository.root_ref,
+          message: 'Add a file'
+        )
 
         expect(subject.repository.exists?).to be false
 

@@ -520,10 +520,11 @@ pagination headers.
 Keyset-based pagination is supported only for selected resources and ordering
 options:
 
-| Resource                 | Options                          | Availability                            |
-|:-------------------------|:---------------------------------|:----------------------------------------|
-| [Projects](projects.md)  | `order_by=id` only               | Authenticated and unauthenticated users |
-| [Groups](groups.md)      | `order_by=name`, `sort=asc` only | Unauthenticated users only              |
+| Resource                                                 | Options                          | Availability                                                                                                |
+|:---------------------------------------------------------|:---------------------------------|:------------------------------------------------------------------------------------------------------------|
+| [Projects](projects.md)                                  | `order_by=id` only               | Authenticated and unauthenticated users                                                                     |
+| [Groups](groups.md)                                      | `order_by=name`, `sort=asc` only | Unauthenticated users only                                                                                  |
+| [Group audit events](audit_events.md#group-audit-events) | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2 |
 
 ### Pagination response headers
 

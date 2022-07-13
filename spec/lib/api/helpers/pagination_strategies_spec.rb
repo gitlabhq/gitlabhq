@@ -55,9 +55,10 @@ RSpec.describe API::Helpers::PaginationStrategies do
         allow(subject).to receive(:keyset_pagination_enabled?).and_return(false)
       end
 
-      context 'when keyset pagination is available for the relation' do
+      context 'when keyset pagination is available and enforced for the relation' do
         before do
           allow(Gitlab::Pagination::Keyset).to receive(:available_for_type?).and_return(true)
+          allow(Gitlab::Pagination::CursorBasedKeyset).to receive(:enforced_for_type?).and_return(true)
         end
 
         context 'when a request scope is given' do
@@ -69,6 +70,18 @@ RSpec.describe API::Helpers::PaginationStrategies do
               expect(subject).to receive(:error!).with(/maximum allowed offset/, 405)
 
               subject.paginator(relation, request_scope)
+            end
+
+            context 'when keyset pagination is not enforced' do
+              before do
+                allow(Gitlab::Pagination::CursorBasedKeyset).to receive(:enforced_for_type?).and_return(false)
+              end
+
+              it 'returns no errors' do
+                expect(subject).not_to receive(:error!)
+
+                subject.paginator(relation, request_scope)
+              end
             end
           end
 

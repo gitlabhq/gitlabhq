@@ -75,6 +75,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
         expect(subject).to eq(
           iid: iid,
           project_id: project.id,
+          namespace_id: project.project_namespace_id,
           description: expected_description.strip,
           title: "[#{key}] #{summary}",
           state_id: 1,

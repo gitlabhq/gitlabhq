@@ -59,22 +59,6 @@ RSpec.describe Projects::AfterRenameService do
         end
       end
 
-      context 'gitlab pages' do
-        before do
-          allow(project_storage).to receive(:rename_repo) { true }
-        end
-
-        context 'when the project does not have pages deployed' do
-          it 'does nothing with the pages directory' do
-            allow(project).to receive(:pages_deployed?).and_return(false)
-
-            expect(PagesTransferWorker).not_to receive(:perform_async)
-
-            service_execute
-          end
-        end
-      end
-
       context 'attachments' do
         before do
           expect(project_storage).to receive(:rename_repo) { true }

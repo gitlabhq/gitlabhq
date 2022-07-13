@@ -106,6 +106,7 @@ module Gitlab
           description: description,
           state_id: Issue.available_states[issue.state],
           author_id: gitlab_user_id(project, issue.author),
+          namespace_id: project.project_namespace_id,
           milestone: milestone,
           created_at: issue.created_at,
           updated_at: issue.updated_at

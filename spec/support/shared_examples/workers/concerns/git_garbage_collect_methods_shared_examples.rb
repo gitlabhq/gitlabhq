@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-require 'fileutils'
-
 RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
-  include GitHelpers
-
   let!(:lease_uuid) { SecureRandom.uuid }
   let!(:lease_key) { "resource_housekeeping:#{resource.id}" }
   let(:params) { [resource.id, task, lease_key, lease_uuid] }
@@ -245,39 +241,6 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
         expect(repository_service).to receive(:garbage_collect).with(bitmaps_enabled, prune: true)
 
         subject.perform(resource.id, 'prune', lease_key, lease_uuid)
-      end
-
-      # Create a new commit on a random new branch
-      def create_objects(resource)
-        rugged = rugged_repo(resource.repository)
-        old_commit = rugged.branches.first.target
-        new_commit_sha = Rugged::Commit.create(
-          rugged,
-          message: "hello world #{SecureRandom.hex(6)}",
-          author: { email: 'foo@bar', name: 'baz' },
-          committer: { email: 'foo@bar', name: 'baz' },
-          tree: old_commit.tree,
-          parents: [old_commit]
-        )
-        repository.write_ref("refs/heads/#{SecureRandom.hex(6)}", new_commit_sha)
-      end
-
-      def packs(resource)
-        Dir["#{path_to_repo}/objects/pack/*.pack"]
-      end
-
-      def packed_refs(resource)
-        path = File.join(path_to_repo, 'packed-refs')
-        FileUtils.touch(path)
-        File.read(path)
-      end
-
-      def path_to_repo
-        @path_to_repo ||= File.join(TestEnv.repos_path, resource.repository.relative_path)
-      end
-
-      def bitmap_path(pack)
-        pack.sub(/\.pack\z/, '.bitmap')
       end
     end
 

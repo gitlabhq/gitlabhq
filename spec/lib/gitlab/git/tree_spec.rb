@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Tree, :seed_helper do
+  let_it_be(:user) { create(:user) }
+
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
 
   shared_examples :repo do
@@ -85,51 +87,29 @@ RSpec.describe Gitlab::Git::Tree, :seed_helper do
 
       context :flat_path do
         let(:filename) { 'files/flat/path/correct/content.txt' }
-        let(:sha) { create_file(filename) }
         let(:path) { 'files/flat' }
         # rubocop: disable Rails/FindBy
         # This is not ActiveRecord where..first
         let(:subdir_file) { entries.first }
         # rubocop: enable Rails/FindBy
-        let(:repository_rugged) { Rugged::Repository.new(File.join(SEED_STORAGE_PATH, TEST_REPO_PATH)) }
+        let!(:sha) do
+          repository.multi_action(
+            user,
+            branch_name: 'HEAD',
+            message: "Create #{filename}",
+            actions: [{
+              action: :create,
+              file_path: filename,
+              contents: 'test'
+            }]
+          ).newrev
+        end
+
+        after do
+          ensure_seeds
+        end
 
         it { expect(subdir_file.flat_path).to eq('files/flat/path/correct') }
-      end
-
-      def create_file(path)
-        oid = repository_rugged.write('test', :blob)
-        index = repository_rugged.index
-        index.add(path: filename, oid: oid, mode: 0100644)
-
-        options = commit_options(
-          repository_rugged,
-          index,
-          repository_rugged.head.target,
-          'HEAD',
-          'Add new file')
-
-        Rugged::Commit.create(repository_rugged, options)
-      end
-
-      # Build the options hash that's passed to Rugged::Commit#create
-      def commit_options(repo, index, target, ref, message)
-        options = {}
-        options[:tree] = index.write_tree(repo)
-        options[:author] = {
-          email: "test@example.com",
-          name: "Test Author",
-          time: Time.gm(2014, "mar", 3, 20, 15, 1)
-        }
-        options[:committer] = {
-          email: "test@example.com",
-          name: "Test Author",
-          time: Time.gm(2014, "mar", 3, 20, 15, 1)
-        }
-        options[:message] ||= message
-        options[:parents] = repo.empty? ? [] : [target].compact
-        options[:update_ref] = ref
-
-        options
       end
     end
 

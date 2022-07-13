@@ -131,13 +131,18 @@ Example response:
 
 ## Group Audit Events
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
+> - [Support for keyset pagination added](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
 
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
 This API cannot retrieve project audit events.
 
 A user with a Owner role (or above) can retrieve group audit events of all users.
 A user with a Developer or Maintainer role is limited to group audit events based on their individual actions.
+
+This endpoint optionally supports [keyset pagination](index.md#keyset-based-pagination):
+
+- When requesting consecutive pages of results, we recommend you use keyset pagination.
 
 ### Retrieve all group audit events
 

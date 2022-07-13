@@ -99,7 +99,8 @@ The **Overview** dashboard shows the following key metrics that measure team per
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) lead time for changes DORA metric in GitLab 14.5.
 > - DORA API-based deployment metrics for value stream analytics for groups were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in GitLab 14.3.
-> - DORA and key metrics were [separated into distinct rows in the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/359060) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355304) time to restore service tile in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357071) change failure rate tile in GitLab 15.0.
 
 The value stream analytics **Overview** dashboard displays the following [DORA](../../../user/analytics/index.md) metrics:
 

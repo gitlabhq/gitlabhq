@@ -4,9 +4,6 @@ require "spec_helper"
 
 RSpec.describe Gitlab::Git::Branch, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
-  let(:rugged) do
-    Rugged::Repository.new(File.join(TestEnv.repos_path, repository.relative_path))
-  end
 
   subject { repository.branches }
 
@@ -81,20 +78,6 @@ RSpec.describe Gitlab::Git::Branch, :seed_helper do
     end
 
     let(:user) { create(:user) }
-    let(:committer) { { email: user.email, name: user.name } }
-    let(:params) do
-      parents = [rugged.head.target]
-      tree = parents.first.tree
-
-      {
-        message: +'commit message',
-        author: committer,
-        committer: committer,
-        tree: tree,
-        parents: parents
-      }
-    end
-
     let(:stale_sha) { travel_to(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago - 5.days) { create_commit } }
     let(:active_sha) { travel_to(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago + 5.days) { create_commit } }
     let(:future_sha) { travel_to(100.days.since) { create_commit } }
@@ -137,7 +120,11 @@ RSpec.describe Gitlab::Git::Branch, :seed_helper do
   it { expect(repository.branches.size).to eq(SeedRepo::Repo::BRANCHES.size) }
 
   def create_commit
-    params[:message].delete!(+"\r")
-    Rugged::Commit.create(rugged, params.merge(committer: committer.merge(time: Time.now)))
+    repository.multi_action(
+      user,
+      branch_name: 'HEAD',
+      message: 'commit message',
+      actions: []
+    ).newrev
   end
 end

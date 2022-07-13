@@ -46,6 +46,7 @@ class Issue < ApplicationRecord
   TYPES_FOR_LIST = %w(issue incident).freeze
 
   belongs_to :project
+  belongs_to :namespace, inverse_of: :issues
 
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
@@ -97,6 +98,7 @@ class Issue < ApplicationRecord
 
   validates :project, presence: true
   validates :issue_type, presence: true
+  validates :namespace, presence: true, if: -> { project.present? }
 
   enum issue_type: WorkItems::Type.base_types
 
@@ -182,6 +184,8 @@ class Issue < ApplicationRecord
   end
   scope :with_null_relative_position, -> { where(relative_position: nil) }
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
+
+  before_validation :ensure_namespace_id
 
   after_commit :expire_etag_cache, unless: :importing?
   after_save :ensure_metrics, unless: :importing?
@@ -654,6 +658,10 @@ class Issue < ApplicationRecord
   def could_not_move(exception)
     # Symptom of running out of space - schedule rebalancing
     Issues::RebalancingWorker.perform_async(nil, *project.self_or_root_group_ids)
+  end
+
+  def ensure_namespace_id
+    self.namespace = project.project_namespace if project
   end
 end
 

@@ -313,11 +313,11 @@ run:
 
 ```shell
 # Validate all queries
-bundle exec rake gitlab::graphql:validate
+bundle exec rake gitlab:graphql:validate
 # Validate one query
-bundle exec rake gitlab::graphql:validate[path/to/query.graphql]
+bundle exec rake gitlab:graphql:validate[path/to/query.graphql]
 # Validate a directory
-bundle exec rake gitlab::graphql:validate[path/to/queries]
+bundle exec rake gitlab:graphql:validate[path/to/queries]
 ```
 
 This prints out a report with an entry for each query, explaining why
@@ -335,11 +335,11 @@ Usage:
 
 ```shell
 # Analyze all queries
-bundle exec rake gitlab::graphql:analyze
+bundle exec rake gitlab:graphql:analyze
 # Analyze one query
-bundle exec rake gitlab::graphql:analyze[path/to/query.graphql]
+bundle exec rake gitlab:graphql:analyze[path/to/query.graphql]
 # Analyze a directory
-bundle exec rake gitlab::graphql:analyze[path/to/queries]
+bundle exec rake gitlab:graphql:analyze[path/to/queries]
 ```
 
 This prints out a report for each query, including the complexity

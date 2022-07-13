@@ -331,8 +331,6 @@
   - 1
 - - pages_invalidate_domain_cache
   - 1
-- - pages_transfer
-  - 1
 - - personal_access_tokens
   - 1
 - - phabricator_import_import_tasks

@@ -25,25 +25,36 @@ mean FIPS 140-2.
 
 ## Current status
 
-GitLab Inc has not committed to making GitLab FIPS-compliant at this time. We are
-performing initial investigations to see how much work such an effort would be.
-
 Read [Epic &5104](https://gitlab.com/groups/gitlab-org/-/epics/5104) for more
 information on the status of the investigation.
 
+GitLab is actively working towards FIPS compliance.
+
 ## FIPS compliance at GitLab
-
-In a FIPS context, compliance is a form of self-certification - if we say we are
-"FIPS compliant", we mean that we *believe* we are. There are no external
-certifications to acquire, but if we are aware of non-compliant areas
-in GitLab, we cannot self-certify in good faith.
-
-The known areas of non-compliance are tracked in [Epic &5104](https://gitlab.com/groups/gitlab-org/-/epics/5104).
 
 To be compliant, all components (GitLab itself, Gitaly, etc) must be compliant,
 along with the communication between those components, and any storage used by
 them. Where functionality cannot be brought into compliance, it must be disabled
 when FIPS mode is enabled.
+
+### Leveraged Cryptographic modules
+
+| Cryptographic module name                                | CMVP number                                                                                     | Instance type | Software component used |
+|----------------------------------------------------------|-------------------------------------------------------------------------------------------------|---------------|-------------------------|
+| Ubuntu 20.04 AWS Kernel Crypto API Cryptographic Module  | [4132](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4132) | EC2           | Linux kernel |
+| Ubuntu 20.04 OpenSSL Cryptographic Module                | [3966](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3966) | EC2           | Gitaly, Rails (Puma/Sidekiq) |
+| Ubuntu 20.04 Libgcrypt Cryptographic Module              | [3902](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3902) | EC2 instances | `gpg`, `sshd` |
+| Amazon Linux 2 Kernel Crypto API Cryptographic Module    | [3709](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3709) | EKS nodes     | Linux kernel |
+| Amazon Linux 2 OpenSSL Cryptographic Module              | [3553](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3553) | EKS nodes     | NGINX |
+| RedHat Enterprise Linux 8 OpenSSL Cryptographic Module   | [3852](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3852) | EKS nodes     | UBI containers: Workhorse, Pages, Container Registry, Rails (Puma/Sidekiq), Security Analyzers |
+| RedHat Enterprise Linux 8 Libgcrypt Cryptographic Module | [3784](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3784) | EKS nodes     | UBI containers: GitLab Shell, `gpg` |
+
+### Supported Operating Systems
+
+The supported hybrid environments are:
+
+- Omnibus: Ubuntu 20.04 FIPS
+- EKS: Amazon Linux 2
 
 ## FIPS validation at GitLab
 
@@ -55,89 +66,24 @@ A list of FIPS-validated modules can be found at the
 NIST (National Institute of Standards and Technology)
 [cryptographic module validation program](https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules).
 
-## Setting up a FIPS-enabled development environment
+## Install GitLab with FIPS compliance
 
-The simplest approach is to set up a virtual machine running
-[Red Hat Enterprise Linux 8](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/using-the-system-wide-cryptographic-policies_security-hardening#switching-the-system-to-fips-mode_using-the-system-wide-cryptographic-policies).
+This guide is specifically for public users or GitLab team members with a requirement
+to run a production instance of GitLab that is FIPS compliant. This guide outlines
+a hybrid deployment using elements from both Omnibus and our Cloud Native GitLab installations.
 
-Red Hat provide free licenses to developers, and permit the CD image to be
-downloaded from the [Red Hat developer's portal](https://developers.redhat.com).
-Registration is required.
+### Prerequisites
 
-After the virtual machine is set up, you can follow the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
-installation instructions, including the [advanced instructions for RHEL](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#red-hat-enterprise-linux).
-Note that `asdf` is not used for dependency management because it's essential to
-use the RedHat-provided Go compiler and other system dependencies.
+- Amazon Web Services account. Our first target environment is running on AWS, and uses other FIPS Compliant AWS resources.
+- Ability to run Ubuntu 20.04 machines for GitLab. Our first target environment uses the hybrid architecture.
 
-### Enable FIPS mode
-
-After GDK and its dependencies are installed, run this command (as
-root) and restart the virtual machine:
-
-```shell
-fips-mode-setup --enable
-```
-
-You can check whether it's taken effect by running:
-
-```shell
-fips-mode-setup --check
-```
-
-In this environment, OpenSSL refuses to perform cryptographic operations
-forbidden by the FIPS standards. This enables you to reproduce FIPS-related bugs,
-and validate fixes.
-
-You should be able to open a web browser inside the virtual machine and log in
-to the GitLab instance.
-
-You can disable FIPS mode again by running this command, then restarting the
-virtual machine:
-
-```shell
-fips-mode-setup --disable
-```
-
-#### Detect FIPS enablement in code
-
-You can query `Gitlab::FIPS` in Ruby code to determine if the instance is FIPS-enabled:
-
-```ruby
-def default_min_key_size(name)
-  if Gitlab::FIPS.enabled?
-    Gitlab::SSHPublicKey.supported_sizes(name).select(&:positive?).min || -1
-  else
-    0
-  end
-end
-```
-
-#### Unsupported features in FIPS mode
-
-Some GitLab features may not work when FIPS mode is enabled. The following features are known to not work in FIPS mode; however, there may be additional features not listed here that also do not work properly in FIPS mode:
-
-- [License compliance](../user/compliance/license_compliance/index.md)
-- [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle
-- [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability) for yarn projects
-
-## Nightly Omnibus FIPS builds
-
-The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds). These
-GitLab builds are compiled to use the system OpenSSL instead of the Omnibus-embedded version of OpenSSL.
-
-See [the section on how FIPS builds are created](#how-fips-builds-are-created).
-
-## Runner
-
-See the [documentation on installing a FIPS-compliant GitLab Runner](https://docs.gitlab.com/runner/install/#fips-compliant-gitlab-runner).
-
-## Set up a FIPS-enabled cluster
+### Set up a FIPS-enabled cluster
 
 You can use the [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to spin
-up a FIPS-enabled cluster for development and testing. These instructions use Amazon Web Services (AWS)
-because that is the first target environment, but you can adapt them for other providers.
+up a FIPS-enabled cluster for development and testing. As mentioned in the prerequisites, these instructions use Amazon Web Services (AWS)
+because that is the first target environment.
 
-### Set up your environment
+#### Set up your environment
 
 To get started, your AWS account must subscribe to a FIPS-enabled Amazon
 Machine Image (AMI) in the [AWS Marketplace console](https://aws.amazon.com/premiumsupport/knowledge-center/launch-ec2-marketplace-subscription/).
@@ -146,13 +92,13 @@ This example assumes that the `Ubuntu Pro 20.04 FIPS LTS` AMI by
 `Canonical Group Limited` has been added your account. This operating
 system is used for virtual machines running in Amazon EC2.
 
-### Omnibus
+#### Omnibus
 
 The simplest way to get a FIPS-enabled GitLab cluster is to use an Omnibus reference architecture.
 See the [GET Quick Start Guide](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/docs/environment_quick_start_guide.md)
 for more details. The following instructions build on the Quick Start and are also necessary for [Cloud Native Hybrid](#cloud-native-hybrid) installations.
 
-#### Terraform: Use a FIPS AMI
+##### Terraform: Use a FIPS AMI
 
 1. Follow the guide to set up Terraform and Ansible.
 1. After [step 2b](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/docs/environment_quick_start_guide.md#2b-setup-config),
@@ -197,7 +143,7 @@ an instance, this would result in data loss: not only would disks be
 destroyed, but also GitLab secrets would be lost. There is a [Terraform lifecycle rule](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/blob/2aaeaff8ac8067f23cd7b6bb5bf131061649089d/terraform/modules/gitlab_aws_instance/main.tf#L40)
 to ignore AMI changes.
 
-#### Ansible: Specify the FIPS Omnibus builds
+##### Ansible: Specify the FIPS Omnibus builds
 
 The standard Omnibus GitLab releases build their own OpenSSL library, which is
 not FIPS-validated. However, we have nightly builds that create Omnibus packages
@@ -211,11 +157,11 @@ in this way:
 all:
   vars:
     ...
-    gitlab_repo_script_url: "https://packages.gitlab.com/install/repositories/gitlab/nightly-fips-builds/script.deb.sh"
+    gitlab_repo_script_url: "https://packages.gitlab.com/install/repositories/gitlab/gitlab-fips/script.deb.sh"
     gitlab_edition: "gitlab-fips"
 ```
 
-### Cloud Native Hybrid
+#### Cloud Native Hybrid
 
 A Cloud Native Hybrid install uses both Omnibus and Cloud Native GitLab
 (CNG) images. The previous instructions cover the Omnibus part, but two
@@ -224,7 +170,7 @@ additional steps are needed to enable FIPS in CNG:
 1. Use a custom Amazon Elastic Kubernetes Service (EKS) AMI.
 1. Use GitLab containers built with RedHat's Universal Base Image (UBI).
 
-#### Build a custom EKS AMI
+##### Build a custom EKS AMI
 
 Because Amazon does not yet publish a FIPS-enabled AMI, you have to
 build one yourself with Packer.
@@ -267,7 +213,7 @@ be different.
 Building a RHEL-based system with FIPS enabled should be possible, but
 there is [an outstanding issue preventing the Packer build from completing](https://github.com/aws-samples/amazon-eks-custom-amis/issues/51).
 
-#### Terraform: Use a custom EKS AMI
+##### Terraform: Use a custom EKS AMI
 
 Now you can set the custom EKS AMI.
 
@@ -294,7 +240,7 @@ Now you can set the custom EKS AMI.
    }
    ```
 
-#### Ansible: Use UBI images
+##### Ansible: Use UBI images
 
 CNG uses a Helm Chart to manage which container images to deploy. By default, GET
 deploys the latest released versions that use Debian-based containers.
@@ -413,6 +359,97 @@ Testing shows an impact in some places, such as Gitaly SSL, but it's not large e
 You can find more information on FIPS performance benchmarking in the following issue:
 
 - [Benchmark performance of FIPS reference architecture](https://gitlab.com/gitlab-org/gitlab/-/issues/364051#note_1010450415)
+
+## Setting up a FIPS-enabled development environment
+
+The simplest approach is to set up a virtual machine running
+[Red Hat Enterprise Linux 8](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/using-the-system-wide-cryptographic-policies_security-hardening#switching-the-system-to-fips-mode_using-the-system-wide-cryptographic-policies).
+
+Red Hat provide free licenses to developers, and permit the CD image to be
+downloaded from the [Red Hat developer's portal](https://developers.redhat.com).
+Registration is required.
+
+After the virtual machine is set up, you can follow the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
+installation instructions, including the [advanced instructions for RHEL](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#red-hat-enterprise-linux).
+Note that `asdf` is not used for dependency management because it's essential to
+use the RedHat-provided Go compiler and other system dependencies.
+
+### Enable FIPS mode
+
+After GDK and its dependencies are installed, run this command (as
+root) and restart the virtual machine:
+
+```shell
+fips-mode-setup --enable
+```
+
+You can check whether it's taken effect by running:
+
+```shell
+fips-mode-setup --check
+```
+
+In this environment, OpenSSL refuses to perform cryptographic operations
+forbidden by the FIPS standards. This enables you to reproduce FIPS-related bugs,
+and validate fixes.
+
+You should be able to open a web browser inside the virtual machine and log in
+to the GitLab instance.
+
+You can disable FIPS mode again by running this command, then restarting the
+virtual machine:
+
+```shell
+fips-mode-setup --disable
+```
+
+#### Detect FIPS enablement in code
+
+You can query `Gitlab::FIPS` in Ruby code to determine if the instance is FIPS-enabled:
+
+```ruby
+def default_min_key_size(name)
+  if Gitlab::FIPS.enabled?
+    Gitlab::SSHPublicKey.supported_sizes(name).select(&:positive?).min || -1
+  else
+    0
+  end
+end
+```
+
+#### Unsupported features in FIPS mode
+
+Some GitLab features may not work when FIPS mode is enabled. The following features
+are known to not work in FIPS mode. However, there may be additional features not
+listed here that also do not work properly in FIPS mode:
+
+- [Container Scanning](../user/application_security/container_scanning/index.md) support for scanning images in repositories that require authentication.
+- [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
+- [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
+- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/index.md)
+  does not support operating in FIPS-compliant mode.
+- [License compliance](../user/compliance/license_compliance/index.md).
+- [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
+  for yarn projects.
+- [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
+  supports a reduced set of [analyzers](../user/application_security/sast/#fips-enabled-images)
+  when operating in FIPS-compliant mode.
+
+Additionally, these package repositories are disabled in FIPS mode:
+
+- [Conan package repository](../user/packages/conan_repository/index.md).
+- [Debian package repository](../user/packages/debian_repository/index.md).
+
+## Nightly Omnibus FIPS builds
+
+The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds). These
+GitLab builds are compiled to use the system OpenSSL instead of the Omnibus-embedded version of OpenSSL.
+
+See [the section on how FIPS builds are created](#how-fips-builds-are-created).
+
+## Runner
+
+See the [documentation on installing a FIPS-compliant GitLab Runner](https://docs.gitlab.com/runner/install/#fips-compliant-gitlab-runner).
 
 ## Verify FIPS
 

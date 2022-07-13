@@ -6,7 +6,7 @@ class WorkItem < Issue
   self.table_name = 'issues'
   self.inheritance_column = :_type_disabled
 
-  belongs_to :namespace, class_name: 'Namespace', foreign_key: :namespace_id, inverse_of: :work_items
+  belongs_to :namespace, inverse_of: :work_items
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
   has_one :work_item_parent, through: :parent_link, class_name: 'WorkItem'
 

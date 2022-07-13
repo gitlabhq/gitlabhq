@@ -45,16 +45,26 @@ RSpec.describe Gitlab::EncodingHelper do
     end
 
     context 'with corrupted diff' do
+      let(:project) { create(:project, :empty_repo) }
+      let(:repository) { project.repository }
+      let(:content) { fixture_file('encoding/Japanese.md') }
       let(:corrupted_diff) do
-        with_empty_bare_repository do |repo|
-          content = File.read(Rails.root.join(
-            'spec/fixtures/encoding/Japanese.md').to_s)
-          commit_a = commit(repo, 'Japanese.md', content)
-          commit_b = commit(repo, 'Japanese.md',
-            content.sub('[TODO: Link]', '[現在作業中です: Link]'))
+        commit_a = repository.create_file(
+          project.creator,
+          'Japanese.md',
+          content,
+          branch_name: 'HEAD',
+          message: 'Create Japanese.md'
+        )
+        commit_b = repository.update_file(
+          project.creator,
+          'Japanese.md',
+          content.sub('[TODO: Link]', '[現在作業中です: Link]'),
+          branch_name: 'HEAD',
+          message: 'Update Japanese.md'
+        )
 
-          repo.diff(commit_a, commit_b).each_line.map(&:content).join
-        end
+        repository.diff(commit_a, commit_b).map(&:diff).join
       end
 
       let(:cleaned_diff) do
@@ -68,26 +78,6 @@ RSpec.describe Gitlab::EncodingHelper do
 
       it 'does not corrupt data but remove invalid characters' do
         expect(encoded_diff).to eq(cleaned_diff)
-      end
-
-      def commit(repo, path, content)
-        oid = repo.write(content, :blob)
-        index = repo.index
-
-        index.read_tree(repo.head.target.tree) unless repo.empty?
-
-        index.add(path: path, oid: oid, mode: 0100644)
-        user = { name: 'Test', email: 'test@example.com' }
-
-        Rugged::Commit.create(
-          repo,
-          tree: index.write_tree(repo),
-          author: user,
-          committer: user,
-          message: "Update #{path}",
-          parents: repo.empty? ? [] : [repo.head.target].compact,
-          update_ref: 'HEAD'
-        )
       end
     end
   end

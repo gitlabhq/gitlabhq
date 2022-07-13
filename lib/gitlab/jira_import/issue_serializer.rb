@@ -18,6 +18,7 @@ module Gitlab
         {
           iid: params[:iid],
           project_id: project.id,
+          namespace_id: project.project_namespace_id,
           description: description,
           title: title,
           state_id: map_status(jira_issue.status.statusCategory),

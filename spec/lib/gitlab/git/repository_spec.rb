@@ -352,12 +352,30 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
           repository.create_branch('left-branch')
           repository.create_branch('right-branch')
 
-          left.times do
-            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
+          left.times do |i|
+            repository.multi_action(
+              user,
+              branch_name: 'left-branch',
+              message: 'some more content for a',
+              actions: [{
+                action: i == 0 ? :create : :update,
+                file_path: 'encoding/CHANGELOG',
+                content: 'some stuff'
+              }]
+            )
           end
 
-          right.times do
-            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'right-branch', 'some more content for b', 'some stuff')
+          right.times do |i|
+            repository.multi_action(
+              user,
+              branch_name: 'right-branch',
+              message: 'some more content for b',
+              actions: [{
+                action: i == 0 ? :create : :update,
+                file_path: 'encoding/CHANGELOG',
+                content: 'some stuff'
+              }]
+            )
           end
         end
 
@@ -392,12 +410,30 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
           repository.create_branch('left-branch')
           repository.create_branch('right-branch')
 
-          left.times do
-            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
+          left.times do |i|
+            repository.multi_action(
+              user,
+              branch_name: 'left-branch',
+              message: 'some more content for a',
+              actions: [{
+                action: i == 0 ? :create : :update,
+                file_path: 'encoding/CHANGELOG',
+                content: 'some stuff'
+              }]
+            )
           end
 
-          right.times do
-            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'right-branch', 'some more content for b', 'some stuff')
+          right.times do |i|
+            repository.multi_action(
+              user,
+              branch_name: 'right-branch',
+              message: 'some more content for b',
+              actions: [{
+                action: i == 0 ? :create : :update,
+                file_path: 'encoding/CHANGELOG',
+                content: 'some stuff'
+              }]
+            )
           end
         end
 
@@ -557,14 +593,31 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
   describe '#search_files_by_content' do
     let(:repository) { mutable_repository }
-    let(:repository_rugged) { mutable_repository_rugged }
     let(:ref) { 'search-files-by-content-branch' }
     let(:content) { 'foobarbazmepmep' }
 
     before do
       repository.create_branch(ref)
-      new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', ref, 'committing something', content)
-      new_commit_edit_new_file_on_branch(repository_rugged, 'anotherfile', ref, 'committing something', content)
+      repository.multi_action(
+        user,
+        branch_name: ref,
+        message: 'committing something',
+        actions: [{
+          action: :create,
+          file_path: 'encoding/CHANGELOG',
+          content: content
+        }]
+      )
+      repository.multi_action(
+        user,
+        branch_name: ref,
+        message: 'committing something',
+        actions: [{
+          action: :create,
+          file_path: 'anotherfile',
+          content: content
+        }]
+      )
     end
 
     after do
@@ -667,14 +720,42 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
       before do
         # Add new commits so that there's a renamed file in the commit history
-        @commit_with_old_name_id = new_commit_edit_old_file(repository_rugged).oid
-        @rename_commit_id = new_commit_move_file(repository_rugged).oid
-        @commit_with_new_name_id = new_commit_edit_new_file(repository_rugged, "encoding/CHANGELOG", "Edit encoding/CHANGELOG", "I'm a new changelog with different text").oid
+        @commit_with_old_name_id = repository.multi_action(
+          user,
+          branch_name: repository.root_ref,
+          message: 'Update CHANGELOG',
+          actions: [{
+            action: :update,
+            file_path: 'CHANGELOG',
+            content: 'CHANGELOG'
+          }]
+        ).newrev
+        @rename_commit_id = repository.multi_action(
+          user,
+          branch_name: repository.root_ref,
+          message: 'Move CHANGELOG to encoding/',
+          actions: [{
+            action: :move,
+            previous_path: 'CHANGELOG',
+            file_path: 'encoding/CHANGELOG',
+            content: 'CHANGELOG'
+          }]
+        ).newrev
+        @commit_with_new_name_id = repository.multi_action(
+          user,
+          branch_name: repository.root_ref,
+          message: 'Edit encoding/CHANGELOG',
+          actions: [{
+            action: :update,
+            file_path: 'encoding/CHANGELOG',
+            content: "I'm a new changelog with different text"
+          }]
+        ).newrev
       end
 
       after do
         # Erase our commits so other tests get the original repo
-        repository.write_ref("refs/heads/master", SeedRepo::LastCommit::ID)
+        repository.write_ref(repository.root_ref, SeedRepo::LastCommit::ID)
       end
 
       context "where 'follow' == true" do
@@ -1804,12 +1885,18 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     context 'when the branch exists' do
       context 'when the commit does not exist locally' do
         let(:source_branch) { 'new-branch-for-fetch-source-branch' }
-        let(:source_path) { File.join(TestEnv.repos_path, source_repository.relative_path) }
-        let(:source_rugged) { Rugged::Repository.new(source_path) }
-        let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
 
-        before do
-          source_repository.write_ref(source_branch, new_oid)
+        let!(:new_oid) do
+          source_repository.multi_action(
+            user,
+            branch_name: source_branch,
+            message: 'Add a file',
+            actions: [{
+              action: :create,
+              file_path: 'a.file',
+              content: 'This is a file.'
+            }]
+          ).newrev
         end
 
         it 'writes the ref' do
@@ -2276,11 +2363,23 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       end
 
       context 'when the diff contains a rename' do
-        let(:end_sha) { new_commit_move_file(repository_rugged).oid }
+        let(:end_sha) do
+          repository.multi_action(
+            user,
+            branch_name: repository.root_ref,
+            message: 'Move CHANGELOG to encoding/',
+            actions: [{
+              action: :move,
+              previous_path: 'CHANGELOG',
+              file_path: 'encoding/CHANGELOG',
+              content: 'CHANGELOG'
+            }]
+          ).newrev
+        end
 
         after do
           # Erase our commits so other tests get the original repo
-          repository.write_ref('refs/heads/master', SeedRepo::LastCommit::ID)
+          repository.write_ref(repository.root_ref, SeedRepo::LastCommit::ID)
         end
 
         it 'does not include the renamed file in the sparse checkout' do
@@ -2336,10 +2435,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     let(:project) { create(:project, :repository) }
     let(:pool_repository) { create(:pool_repository) }
     let(:repository) { project.repository }
-    let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
     let(:object_pool) { pool_repository.object_pool }
-    let(:object_pool_path) { File.join(TestEnv.repos_path, object_pool.repository.relative_path) }
-    let(:object_pool_rugged) { Rugged::Repository.new(object_pool_path) }
 
     before do
       object_pool.create # rubocop:disable Rails/SaveBang
@@ -2349,25 +2445,24 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       expect { repository.disconnect_alternates }.not_to raise_error
     end
 
-    it 'removes the alternates file' do
-      object_pool.link(repository)
-
-      alternates_file = File.join(repository_path, "objects", "info", "alternates")
-      expect(File.exist?(alternates_file)).to be_truthy
-
-      repository.disconnect_alternates
-
-      expect(File.exist?(alternates_file)).to be_falsey
-    end
-
     it 'can still access objects in the object pool' do
       object_pool.link(repository)
-      new_commit = new_commit_edit_old_file(object_pool_rugged)
-      expect(repository.commit(new_commit.oid).id).to eq(new_commit.oid)
+      new_commit_id = object_pool.repository.multi_action(
+        project.owner,
+        branch_name: object_pool.repository.root_ref,
+        message: 'Add a file',
+        actions: [{
+          action: :create,
+          file_path: 'a.file',
+          content: 'This is a file.'
+        }]
+      ).newrev
+
+      expect(repository.commit(new_commit_id).id).to eq(new_commit_id)
 
       repository.disconnect_alternates
 
-      expect(repository.commit(new_commit.oid).id).to eq(new_commit.oid)
+      expect(repository.commit(new_commit_id).id).to eq(new_commit_id)
     end
   end
 
