@@ -115,7 +115,7 @@ $monokai-gh: #75715e;
   @include hljs-override('section', $monokai-gh);
   @include hljs-override('bullet', $monokai-n);
   @include hljs-override('subst', $monokai-p);
-  @include hljs-override('symbol', $monokai-ni);
+  @include hljs-override('symbol', $monokai-ss);
 
   // Line numbers
   .file-line-num {

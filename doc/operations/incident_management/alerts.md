@@ -168,8 +168,9 @@ by changing the status. Setting the status to:
 - **Acknowledged** limits on-call pages based on the project's [escalation policy](escalation_policies.md).
 - **Triggered** from **Resolved** restarts the alert escalating from the beginning.
 
-For [alerts with an associated incident](alerts.md#create-an-incident-from-an-alert),
-updating the alert status also updates the incident status.
+In GitLab 15.1 and earlier, updating the status of an [alert with an associated incident](alerts.md#create-an-incident-from-an-alert)
+also updates the incident status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
+the incident status is independent and does not update when the alert status changes.
 
 ### Create an incident from an alert
 

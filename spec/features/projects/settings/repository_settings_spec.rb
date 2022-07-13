@@ -141,6 +141,8 @@ RSpec.describe 'Projects > Settings > Repository settings' do
     end
 
     context 'remote mirror settings' do
+      let(:ssh_url) { 'ssh://user@localhost/project.git' }
+
       before do
         visit project_settings_repository_path(project)
       end
@@ -150,11 +152,12 @@ RSpec.describe 'Projects > Settings > Repository settings' do
       end
 
       it 'creates a push mirror that mirrors all branches', :js do
-        expect(find('.js-mirror-protected-hidden', visible: false).value).to eq('0')
+        expect(page).to have_css('.js-mirror-protected-hidden[value="0"]', visible: false)
 
-        fill_in 'url', with: 'ssh://user@localhost/project.git'
+        fill_in 'url', with: ssh_url
+        expect(page).to have_css(".js-mirror-url-hidden[value=\"#{ssh_url}\"]", visible: false)
+
         select 'SSH public key', from: 'Authentication method'
-
         select_direction
 
         Sidekiq::Testing.fake! do
@@ -167,13 +170,14 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         expect(project.remote_mirrors.first.only_protected_branches).to eq(false)
       end
 
-      it 'creates a push mirror that only mirrors protected branches', :js,
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/337394' do
+      it 'creates a push mirror that only mirrors protected branches', :js do
         find('#only_protected_branches').click
 
-        expect(find('.js-mirror-protected-hidden', visible: false).value).to eq('1')
+        expect(page).to have_css('.js-mirror-protected-hidden[value="1"]', visible: false)
 
-        fill_in 'url', with: 'ssh://user@localhost/project.git'
+        fill_in 'url', with: ssh_url
+        expect(page).to have_css(".js-mirror-url-hidden[value=\"#{ssh_url}\"]", visible: false)
+
         select 'SSH public key', from: 'Authentication method'
         select_direction
 
@@ -190,7 +194,9 @@ RSpec.describe 'Projects > Settings > Repository settings' do
       it 'creates a push mirror that keeps divergent refs', :js do
         select_direction
 
-        fill_in 'url', with: 'ssh://user@localhost/project.git'
+        fill_in 'url', with: ssh_url
+        expect(page).to have_css(".js-mirror-url-hidden[value=\"#{ssh_url}\"]", visible: false)
+
         fill_in 'Password', with: 'password'
         check 'Keep divergent refs'
 

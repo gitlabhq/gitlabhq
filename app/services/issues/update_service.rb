@@ -199,8 +199,7 @@ module Issues
 
       ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(
         issue,
-        current_user,
-        status_change_reason: @escalation_status_change_reason # Defined in IssuableBaseService before save
+        current_user
       ).execute
     end
 

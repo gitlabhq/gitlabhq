@@ -27,19 +27,4 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::CreateService do
       expect { execute }.not_to change { incident.reload.escalation_status }
     end
   end
-
-  context 'with associated alert' do
-    before do
-      create(:alert_management_alert, :acknowledged, project: project, issue: incident)
-    end
-
-    it 'creates an escalation status matching the alert attributes' do
-      expect { execute }.to change { incident.reload.escalation_status }.from(nil)
-      expect(incident.escalation_status).to have_attributes(
-        status_name: :acknowledged,
-        policy_id: nil,
-        escalations_started_at: nil
-      )
-    end
-  end
 end

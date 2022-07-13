@@ -25,4 +25,16 @@ RSpec.describe Packages::Cleanup::Policy, type: :model do
 
     it { is_expected.to contain_exactly(active_policy) }
   end
+
+  describe '#keep_n_duplicated_package_files_disabled?' do
+    subject { policy.keep_n_duplicated_package_files_disabled? }
+
+    %w[all 1].each do |value|
+      context "with value set to #{value}" do
+        let(:policy) { build(:packages_cleanup_policy, keep_n_duplicated_package_files: value) }
+
+        it { is_expected.to eq(value == 'all') }
+      end
+    end
+  end
 end

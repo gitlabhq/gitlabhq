@@ -1146,11 +1146,11 @@ RSpec.describe Issues::UpdateService, :mailer do
       let(:opts) { { escalation_status: { status: 'acknowledged' } } }
       let(:escalation_update_class) { ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService }
 
-      shared_examples 'updates the escalation status record' do |expected_status, expected_reason = nil|
+      shared_examples 'updates the escalation status record' do |expected_status|
         let(:service_double) { instance_double(escalation_update_class) }
 
         it 'has correct value' do
-          expect(escalation_update_class).to receive(:new).with(issue, user, status_change_reason: expected_reason).and_return(service_double)
+          expect(escalation_update_class).to receive(:new).with(issue, user).and_return(service_double)
           expect(service_double).to receive(:execute)
 
           update_issue(opts)
@@ -1192,23 +1192,6 @@ RSpec.describe Issues::UpdateService, :mailer do
           end
 
           it_behaves_like 'updates the escalation status record', :acknowledged
-
-          context 'with associated alert' do
-            let!(:alert) { create(:alert_management_alert, issue: issue, project: project) }
-
-            it 'syncs the update back to the alert' do
-              update_issue(opts)
-
-              expect(issue.escalation_status.status_name).to eq(:acknowledged)
-              expect(alert.reload.status_name).to eq(:acknowledged)
-            end
-          end
-
-          context 'with a status change reason provided' do
-            let(:opts) { { escalation_status: { status: 'acknowledged', status_change_reason: ' by changing the alert status' } } }
-
-            it_behaves_like 'updates the escalation status record', :acknowledged, ' by changing the alert status'
-          end
 
           context 'with unsupported status value' do
             let(:opts) { { escalation_status: { status: 'unsupported-status' } } }

@@ -931,19 +931,101 @@ Paragraph
 `,
       expectedDoc: doc(div(source('<div>div</div>'), paragraph(source('div'), 'div'))),
     },
+    {
+      markdown: `
+[![moon](moon.jpg)](/uri)
+`,
+      expectedDoc: doc(
+        paragraph(
+          source('[![moon](moon.jpg)](/uri)'),
+          link(
+            { ...source('[![moon](moon.jpg)](/uri)'), href: '/uri' },
+            image({ ...source('![moon](moon.jpg)'), src: 'moon.jpg', alt: 'moon' }),
+          ),
+        ),
+      ),
+    },
+    {
+      markdown: `
+<del>
+
+*foo*
+
+</del>
+`,
+      expectedDoc: doc(
+        paragraph(
+          source('*foo*'),
+          strike(source('<del>\n\n*foo*\n\n</del>'), italic(source('*foo*'), 'foo')),
+        ),
+      ),
+      expectedMarkdown: '*foo*',
+    },
+    {
+      markdown: `
+~[moon](moon.jpg) and [sun](sun.jpg)~
+`,
+      expectedDoc: doc(
+        paragraph(
+          source('~[moon](moon.jpg) and [sun](sun.jpg)~'),
+          strike(
+            source('~[moon](moon.jpg) and [sun](sun.jpg)~'),
+            link({ ...source('[moon](moon.jpg)'), href: 'moon.jpg' }, 'moon'),
+          ),
+          strike(source('~[moon](moon.jpg) and [sun](sun.jpg)~'), ' and '),
+          strike(
+            source('~[moon](moon.jpg) and [sun](sun.jpg)~'),
+            link({ ...source('[sun](sun.jpg)'), href: 'sun.jpg' }, 'sun'),
+          ),
+        ),
+      ),
+    },
+    {
+      markdown: `
+<del>
+
+**Paragraph 1**
+
+_Paragraph 2_
+
+</del>
+      `,
+      expectedDoc: doc(
+        paragraph(
+          source('**Paragraph 1**'),
+          strike(
+            source('<del>\n\n**Paragraph 1**\n\n_Paragraph 2_\n\n</del>'),
+            bold(source('**Paragraph 1**'), 'Paragraph 1'),
+          ),
+        ),
+        paragraph(
+          source('_Paragraph 2_'),
+          strike(
+            source('<del>\n\n**Paragraph 1**\n\n_Paragraph 2_\n\n</del>'),
+            italic(source('_Paragraph 2_'), 'Paragraph 2'),
+          ),
+        ),
+      ),
+      expectedMarkdown: `**Paragraph 1**
+
+_Paragraph 2_`,
+    },
   ];
 
   const runOnly = examples.find((example) => example.only === true);
   const runExamples = runOnly ? [runOnly] : examples;
 
-  it.each(runExamples)('processes %s correctly', async ({ markdown, expectedDoc }) => {
-    const trimmed = markdown.trim();
-    const document = await deserialize(trimmed);
+  it.each(runExamples)(
+    'processes %s correctly',
+    async ({ markdown, expectedDoc, expectedMarkdown }) => {
+      const trimmed = markdown.trim();
+      const document = await deserialize(trimmed);
 
-    expect(expectedDoc).not.toBeFalsy();
-    expect(document.toJSON()).toEqual(expectedDoc.toJSON());
-    expect(serialize(document)).toEqual(trimmed);
-  });
+      expect(expectedDoc).not.toBeFalsy();
+      expect(document.toJSON()).toEqual(expectedDoc.toJSON());
+      expect(serialize(document)).toEqual(expectedMarkdown || trimmed);
+    },
+  );
 
   /**
    * DISCLAIMER: THIS IS A SECURITY ORIENTED TEST THAT ENSURES

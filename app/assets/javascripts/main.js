@@ -115,34 +115,6 @@ function deferredInitialisation() {
     );
   }
 
-  const searchInputBox = document.querySelector('#search');
-  if (searchInputBox) {
-    searchInputBox.addEventListener(
-      'focus',
-      () => {
-        if (gon.features?.newHeaderSearch) {
-          import(/* webpackChunkName: 'globalSearch' */ '~/header_search')
-            .then(async ({ initHeaderSearchApp }) => {
-              // In case the user started searching before we bootstrapped, let's pass the search along.
-              const initialSearchValue = searchInputBox.value;
-              await initHeaderSearchApp(initialSearchValue);
-              // this is new #search input element. We need to re-find it.
-              document.querySelector('#search').focus();
-            })
-            .catch(() => {});
-        } else {
-          import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
-            .then(({ default: initSearchAutocomplete }) => {
-              const searchDropdown = initSearchAutocomplete();
-              searchDropdown.onSearchInputFocus();
-            })
-            .catch(() => {});
-        }
-      },
-      { once: true },
-    );
-  }
-
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
   const glTooltipDelay = localStorage.getItem('gl-tooltip-delay');
@@ -167,6 +139,36 @@ function deferredInitialisation() {
       .then((module) => module.default())
       .catch(() => {});
   }
+}
+
+// loading this inside requestIdleCallback is causing issues
+// see https://gitlab.com/gitlab-org/gitlab/-/issues/365746
+const searchInputBox = document.querySelector('#search');
+if (searchInputBox) {
+  searchInputBox.addEventListener(
+    'focus',
+    () => {
+      if (gon.features?.newHeaderSearch) {
+        import(/* webpackChunkName: 'globalSearch' */ '~/header_search')
+          .then(async ({ initHeaderSearchApp }) => {
+            // In case the user started searching before we bootstrapped, let's pass the search along.
+            const initialSearchValue = searchInputBox.value;
+            await initHeaderSearchApp(initialSearchValue);
+            // this is new #search input element. We need to re-find it.
+            document.querySelector('#search').focus();
+          })
+          .catch(() => {});
+      } else {
+        import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
+          .then(({ default: initSearchAutocomplete }) => {
+            const searchDropdown = initSearchAutocomplete();
+            searchDropdown.onSearchInputFocus();
+          })
+          .catch(() => {});
+      }
+    },
+    { once: true },
+  );
 }
 
 const $body = $('body');

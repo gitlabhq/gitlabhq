@@ -62,4 +62,3 @@ the rule fires. You can respond to a page or stop incident escalations by
 [unsetting the incident's escalation policy](incidents.md#change-escalation-policy).
 
 To avoid duplicate pages, [incidents created from alerts](alerts.md#create-an-incident-from-an-alert) do not support independent escalation.
-Instead, the status and escalation policy fields are synced between the alert and the incident.

@@ -278,8 +278,9 @@ by changing the status. Setting the status to:
 - **Acknowledged** limits on-call pages based on the selected [escalation policy](#change-escalation-policy).
 - **Triggered** from **Resolved** restarts the incident escalating from the beginning.
 
-For [incidents created from alerts](alerts.md#create-an-incident-from-an-alert),
-updating the incident status also updates the alert status.
+In GitLab 15.1 and earlier, updating the status of an [incident created from an alert](alerts.md#create-an-incident-from-an-alert)
+also updates the alert status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
+the alert status is independent and does not update when the incident status changes.
 
 ### Change escalation policy **(PREMIUM)**
 
@@ -296,8 +297,9 @@ Selecting an escalation policy updates the incident status to **Triggered** and 
 Deselecting an escalation policy halts escalation. Refer to the [incident status](#change-incident-status)
 to manage on-call paging once escalation has begun.
 
-For [incidents created from alerts](alerts.md#create-an-incident-from-an-alert),
-the incident's escalation policy reflects the alert's escalation policy and cannot be changed.
+In GitLab 15.1 and earlier, the escalation policy for [incidents created from alerts](alerts.md#create-an-incident-from-an-alert)
+reflects the alert's escalation policy and cannot be changed. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
+the incident escalation policy is independent and can be changed.
 
 ### Manage incidents from Slack
 

@@ -2,6 +2,7 @@
   @import '../white_base';
 
   @include conflict-colors('white');
+  @include hljs-override('symbol', $white-ss);
 }
 
 :root {

@@ -249,57 +249,6 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
 
         it_behaves_like 'adds a system note'
       end
-
-      context 'with an associated issue' do
-        let_it_be(:issue, reload: true) { create(:issue, project: project) }
-
-        before do
-          alert.update!(issue: issue)
-        end
-
-        shared_examples 'does not sync with the incident status' do
-          specify do
-            expect(::Issues::UpdateService).not_to receive(:new)
-            expect { response }.to change { alert.acknowledged? }.to(true)
-          end
-        end
-
-        it_behaves_like 'does not sync with the incident status'
-
-        context 'when the issue is an incident' do
-          before do
-            issue.update!(issue_type: Issue.issue_types[:incident])
-          end
-
-          it_behaves_like 'does not sync with the incident status'
-
-          context 'when the incident has an escalation status' do
-            let_it_be(:escalation_status, reload: true) { create(:incident_management_issuable_escalation_status, issue: issue) }
-
-            it 'updates the incident escalation status with the new alert status' do
-              expect(::Issues::UpdateService).to receive(:new).once.and_call_original
-              expect(described_class).to receive(:new).once.and_call_original
-
-              expect { response }.to change { escalation_status.reload.acknowledged? }.to(true)
-                                 .and change { alert.reload.acknowledged? }.to(true)
-            end
-
-            context 'when the statuses match' do
-              before do
-                escalation_status.update!(status_event: :acknowledge)
-              end
-
-              it_behaves_like 'does not sync with the incident status'
-            end
-          end
-        end
-      end
-
-      context 'when a status change reason is included' do
-        let(:params) { { status: new_status, status_change_reason: ' by changing the incident status' } }
-
-        it_behaves_like 'adds a system note', /changed the status to \*\*Acknowledged\*\* by changing the incident status/
-      end
     end
   end
 end

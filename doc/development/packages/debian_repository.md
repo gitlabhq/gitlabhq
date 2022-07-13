@@ -110,12 +110,12 @@ sequenceDiagram
     DebianProjectPackages->>+FindOrCreateIncomingService: Create "incoming" package
     DebianProjectPackages->>+CreatePackageFileService: Create "unknown" file
     Note over DebianProjectPackages: If `.changes` file
-    DebianProjectPackages->>+ProcessChangesWorker: 
+    DebianProjectPackages->>+ProcessChangesWorker: Schedule worker to process the file
     DebianProjectPackages->>+Client: 202 Created
-    ProcessChangesWorker->>+ProcessChangesService: 
-    ProcessChangesService->>+ExtractChangesMetadataService: 
-    ExtractChangesMetadataService->>+ExtractMetadataService: 
-    ExtractMetadataService->>+ParseDebian822Service: 
+    ProcessChangesWorker->>+ProcessChangesService: Start service
+    ProcessChangesService->>+ExtractChangesMetadataService: Extract changesmetadata
+    ExtractChangesMetadataService->>+ExtractMetadataService: Extract file metadata
+    ExtractMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
     ExtractMetadataService->>+ExtractDebMetadataService: If .deb or .udeb
     ExtractDebMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
     ParseDebian822Service-->>-ExtractDebMetadataService: Parse String as Debian RFC822 control data format
@@ -125,8 +125,8 @@ sequenceDiagram
     ExtractMetadataService-->>-ExtractChangesMetadataService: Parse Metadata file
     ExtractChangesMetadataService-->>-ProcessChangesService: Return list of files and hashes from the .changes file
     loop process files listed in .changes
-        ProcessChangesService->>+ExtractMetadataService: 
-        ExtractMetadataService->>+ParseDebian822Service: 
+        ProcessChangesService->>+ExtractMetadataService: Process file
+        ExtractMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
         ExtractMetadataService->>+ExtractDebMetadataService: If .deb or .udeb
         ExtractDebMetadataService->>+ParseDebian822Service: run `dpkg --field` to get control file
         ParseDebian822Service-->>-ExtractDebMetadataService: Parse String as Debian RFC822 control data format
@@ -135,8 +135,8 @@ sequenceDiagram
         ParseDebian822Service-->>-ExtractMetadataService:  Parse String as Debian RFC822 control data format
         ExtractMetadataService-->>-ProcessChangesService: Use parsed metadata to update "unknown" (or known) file
     end
-    ProcessChangesService->>+GenerateDistributionWorker: 
-    GenerateDistributionWorker->>+GenerateDistributionService: 
+    ProcessChangesService->>+GenerateDistributionWorker: Find distribution and start service
+    GenerateDistributionWorker->>+GenerateDistributionService: Generate distribution
     GenerateDistributionService->>+GenerateDistributionService: generate component files based on new archs and updates from .changes
     GenerateDistributionService->>+GenerateDistributionKeyService: generate GPG key for distribution
     GenerateDistributionKeyService-->>-GenerateDistributionService: GPG key

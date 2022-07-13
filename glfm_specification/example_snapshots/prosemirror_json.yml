@@ -2667,11 +2667,6 @@
         "content": [
           {
             "type": "text",
-            "marks": [
-              {
-                "type": "code"
-              }
-            ],
             "text": "\naaa"
           }
         ]
@@ -3259,8 +3254,28 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__020: |-
-  Error - check implementation:
-  Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              },
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "foo"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__021: |-
   {
     "type": "doc",
@@ -11691,12 +11706,20 @@
             "marks": [
               {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "foo"
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
             "text": ")"
           }
         ]
@@ -11723,6 +11746,9 @@
             "type": "text",
             "marks": [
               {
+                "type": "bold"
+              },
+              {
                 "type": "italic"
               }
             ],
@@ -11730,11 +11756,19 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
             "text": ", syn.\n"
           },
           {
             "type": "text",
             "marks": [
+              {
+                "type": "bold"
+              },
               {
                 "type": "italic"
               }
@@ -11743,6 +11777,11 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
             "text": ")"
           }
         ]
@@ -11769,6 +11808,9 @@
             "type": "text",
             "marks": [
               {
+                "type": "bold"
+              },
+              {
                 "type": "italic"
               }
             ],
@@ -11776,6 +11818,11 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
             "text": "\" foo"
           }
         ]
@@ -11857,12 +11904,20 @@
             "marks": [
               {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "foo"
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
             "text": ")"
           }
         ]
@@ -11971,6 +12026,9 @@
                   "title": null,
                   "canonicalSrc": null
                 }
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "bar"
@@ -12020,12 +12078,20 @@
             "marks": [
               {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "bar"
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
             "text": " baz"
           }
         ]
@@ -12121,12 +12187,20 @@
             "marks": [
               {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "bar"
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
             "text": " baz"
           }
         ]
@@ -12154,12 +12228,20 @@
             "marks": [
               {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "bar"
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
             "text": "baz"
           }
         ]
@@ -12207,6 +12289,11 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
             "text": " bar"
           }
         ]
@@ -12234,6 +12321,9 @@
             "marks": [
               {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "bar"
@@ -12263,6 +12353,9 @@
             "marks": [
               {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "bar"
@@ -12351,22 +12444,25 @@
             "marks": [
               {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
-            "text": "bar "
+            "text": "bar baz"
           },
           {
             "type": "text",
             "marks": [
               {
-                "type": "italic"
+                "type": "bold"
               }
             ],
-            "text": "baz"
+            "text": " bim"
           },
           {
             "type": "text",
-            "text": " bim bop"
+            "text": " bop"
           }
         ]
       }
@@ -12469,6 +12565,9 @@
                   "title": null,
                   "canonicalSrc": null
                 }
+              },
+              {
+                "type": "bold"
               }
             ],
             "text": "bar"
@@ -12517,6 +12616,9 @@
             "type": "text",
             "marks": [
               {
+                "type": "bold"
+              },
+              {
                 "type": "italic"
               }
             ],
@@ -12524,6 +12626,11 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
             "text": " baz"
           }
         ]
@@ -12618,6 +12725,9 @@
             "type": "text",
             "marks": [
               {
+                "type": "bold"
+              },
+              {
                 "type": "italic"
               }
             ],
@@ -12625,6 +12735,11 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
             "text": " baz"
           }
         ]
@@ -12651,6 +12766,9 @@
             "type": "text",
             "marks": [
               {
+                "type": "bold"
+              },
+              {
                 "type": "italic"
               }
             ],
@@ -12658,6 +12776,11 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
             "text": "baz"
           }
         ]
@@ -12685,6 +12808,11 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
             "text": " bar"
           }
         ]
@@ -12710,6 +12838,9 @@
           {
             "type": "text",
             "marks": [
+              {
+                "type": "bold"
+              },
               {
                 "type": "italic"
               }
@@ -12740,23 +12871,26 @@
             "type": "text",
             "marks": [
               {
+                "type": "bold"
+              },
+              {
                 "type": "italic"
               }
             ],
-            "text": "bar "
+            "text": "bar baz"
           },
           {
             "type": "text",
             "marks": [
               {
-                "type": "bold"
+                "type": "italic"
               }
             ],
-            "text": "baz"
+            "text": "\nbim"
           },
           {
             "type": "text",
-            "text": "\nbim bop"
+            "text": " bop"
           }
         ]
       }
@@ -12790,6 +12924,9 @@
                   "title": null,
                   "canonicalSrc": null
                 }
+              },
+              {
+                "type": "bold"
               },
               {
                 "type": "italic"
@@ -13602,12 +13739,20 @@
             "marks": [
               {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "bar *baz bim"
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
             "text": " bam"
           }
         ]
@@ -13799,6 +13944,9 @@
             "type": "text",
             "marks": [
               {
+                "type": "italic"
+              },
+              {
                 "type": "code"
               }
             ],
@@ -13827,6 +13975,9 @@
           {
             "type": "text",
             "marks": [
+              {
+                "type": "italic"
+              },
               {
                 "type": "code"
               }
@@ -14770,6 +14921,16 @@
             "type": "text",
             "marks": [
               {
+                "type": "link",
+                "attrs": {
+                  "href": "/uri",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              },
+              {
                 "type": "italic"
               }
             ],
@@ -14779,7 +14940,20 @@
             "type": "text",
             "marks": [
               {
+                "type": "link",
+                "attrs": {
+                  "href": "/uri",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              },
+              {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "bar"
@@ -14787,6 +14961,22 @@
           {
             "type": "text",
             "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/uri",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              },
+              {
+                "type": "bold"
+              },
+              {
+                "type": "italic"
+              },
               {
                 "type": "code"
               }
@@ -14798,8 +14988,38 @@
     ]
   }
 06_07__inlines__links__033: |-
-  Error - check implementation:
-  Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "image",
+            "attrs": {
+              "src": "moon.jpg",
+              "alt": "moon",
+              "title": null,
+              "uploading": false,
+              "canonicalSrc": null
+            },
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/uri",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 06_07__inlines__links__034: |-
   {
     "type": "doc",
@@ -14867,13 +15087,25 @@
                   "title": null,
                   "canonicalSrc": null
                 }
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "baz"
           },
           {
             "type": "text",
-            "text": "](/uri)](/uri)"
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "](/uri)"
+          },
+          {
+            "type": "text",
+            "text": "](/uri)"
           }
         ]
       }
@@ -15160,6 +15392,16 @@
             "type": "text",
             "marks": [
               {
+                "type": "link",
+                "attrs": {
+                  "href": "/uri",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              },
+              {
                 "type": "italic"
               }
             ],
@@ -15169,7 +15411,20 @@
             "type": "text",
             "marks": [
               {
+                "type": "link",
+                "attrs": {
+                  "href": "/uri",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              },
+              {
                 "type": "bold"
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "bar"
@@ -15177,6 +15432,22 @@
           {
             "type": "text",
             "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/uri",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              },
+              {
+                "type": "bold"
+              },
+              {
+                "type": "italic"
+              },
               {
                 "type": "code"
               }
@@ -15188,8 +15459,38 @@
     ]
   }
 06_07__inlines__links__047: |-
-  Error - check implementation:
-  Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "image",
+            "attrs": {
+              "src": "moon.jpg",
+              "alt": "moon",
+              "title": null,
+              "uploading": false,
+              "canonicalSrc": null
+            },
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/uri",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 06_07__inlines__links__048: |-
   {
     "type": "doc",
@@ -15273,6 +15574,9 @@
                   "title": null,
                   "canonicalSrc": null
                 }
+              },
+              {
+                "type": "italic"
               }
             ],
             "text": "baz"
@@ -15847,6 +16151,18 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/url",
+                  "target": "_blank",
+                  "class": null,
+                  "title": "title",
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": " bar"
           }
         ]
@@ -15966,6 +16282,18 @@
           },
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/url",
+                  "target": "_blank",
+                  "class": null,
+                  "title": "title",
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": " bar"
           }
         ]
@@ -16004,7 +16332,23 @@
           },
           {
             "type": "text",
-            "text": " bar]"
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "/url",
+                  "target": "_blank",
+                  "class": null,
+                  "title": "title",
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": " bar"
+          },
+          {
+            "type": "text",
+            "text": "]"
           }
         ]
       }
@@ -18256,11 +18600,79 @@
     ]
   }
 06_13__inlines__hard_line_breaks__006: |-
-  Error - check implementation:
-  Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "foo"
+          },
+          {
+            "type": "hardBreak",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "\nbar"
+          }
+        ]
+      }
+    ]
+  }
 06_13__inlines__hard_line_breaks__007: |-
-  Error - check implementation:
-  Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "foo"
+          },
+          {
+            "type": "hardBreak",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "\nbar"
+          }
+        ]
+      }
+    ]
+  }
 06_13__inlines__hard_line_breaks__008: |-
   {
     "type": "doc",

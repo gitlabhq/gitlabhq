@@ -27,6 +27,10 @@ module Packages
         # fixed cadence of 12 hours
         self.next_run_at = Time.zone.now + 12.hours
       end
+
+      def keep_n_duplicated_package_files_disabled?
+        keep_n_duplicated_package_files == 'all'
+      end
     end
   end
 end

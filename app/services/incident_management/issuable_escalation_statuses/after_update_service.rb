@@ -6,7 +6,6 @@ module IncidentManagement
       def initialize(issuable, current_user, **params)
         @issuable = issuable
         @escalation_status = issuable.escalation_status
-        @alert = issuable.alert_management_alert
 
         super(project: issuable.project, current_user: current_user, params: params)
       end
@@ -19,24 +18,11 @@ module IncidentManagement
 
       private
 
-      attr_reader :issuable, :escalation_status, :alert
+      attr_reader :issuable, :escalation_status
 
       def after_update
-        sync_status_to_alert
         add_status_system_note
         add_timeline_event
-      end
-
-      def sync_status_to_alert
-        return unless alert
-        return if alert.status == escalation_status.status
-
-        ::AlertManagement::Alerts::UpdateService.new(
-          alert,
-          current_user,
-          status: escalation_status.status_name,
-          status_change_reason: " by changing the incident status of #{issuable.to_reference(project)}"
-        ).execute
       end
 
       def add_status_system_note

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Exporting merge requests CSV enables you and your team to export all the data collected from merge requests into a comma-separated values (CSV) file, which stores tabular data in plain text.
 
-To export merge requests to CSV, navigate to your **Merge requests** from the sidebar of a project and select **Export to CSV**.
+To export merge requests to CSV, navigate to your **Merge requests** from the sidebar of a project and select **Export as CSV**.
 
 ## CSV Output
 
