@@ -164,20 +164,6 @@ module API
           check_allowed(params)
         end
 
-        post '/error_tracking/allowed', feature_category: :error_tracking do
-          public_key = params[:public_key]
-          project_id = params[:project_id]
-
-          unprocessable_entity! if public_key.blank? || project_id.blank?
-
-          project = Project.find(project_id)
-          enabled = Feature.enabled?(:use_click_house_database_for_error_tracking, project) &&
-            ::ErrorTracking::ClientKey.enabled_key_for(project_id, public_key).exists?
-
-          status 200
-          { enabled: enabled }
-        end
-
         post "/lfs_authenticate", feature_category: :source_code_management, urgency: :high do
           not_found! unless container&.lfs_enabled?
 

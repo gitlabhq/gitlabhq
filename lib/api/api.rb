@@ -314,6 +314,7 @@ module API
     mount ::API::Internal::Lfs
     mount ::API::Internal::Pages
     mount ::API::Internal::Kubernetes
+    mount ::API::Internal::ErrorTracking
     mount ::API::Internal::MailRoom
     mount ::API::Internal::ContainerRegistry::Migration
     mount ::API::Internal::Workhorse

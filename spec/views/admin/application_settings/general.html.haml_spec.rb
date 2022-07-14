@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'admin/application_settings/general.html.haml' do
-  let(:app_settings) { build(:application_setting) }
+  let(:app_settings) { Gitlab::CurrentSettings.current_application_settings }
   let(:user) { create(:admin) }
 
   before do
@@ -100,12 +100,19 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
 
   describe 'error tracking integration' do
     context 'with error tracking feature flag enabled' do
-      it 'expects error tracking settings to be available' do
+      before do
         stub_feature_flags(gitlab_error_tracking: true)
 
         render
+      end
 
+      it 'expects error tracking settings to be available' do
         expect(rendered).to have_field('application_setting_error_tracking_api_url')
+      end
+
+      it 'expects display token and reset token to be available' do
+        expect(rendered).to have_content(app_settings.error_tracking_access_token)
+        expect(rendered).to have_button('Reset error tracking access token')
       end
     end
 

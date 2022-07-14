@@ -290,6 +290,8 @@ NOTES:
 
 ## Renew your subscription
 
+You can renew your subscription starting from 15 days before your subscription expires.
+
 To renew your subscription,
 [prepare for renewal by reviewing your account](#prepare-for-renewal-by-reviewing-your-account),
 then [renew your GitLab self-managed subscription](#renew-a-subscription).
@@ -360,7 +362,8 @@ to your instance.
 
 ### Renew a subscription
 
-Starting 30 days before a subscription expires, GitLab notifies administrators of the date of expiry with a banner in the GitLab user interface.
+Starting 30 days before a subscription expires, a banner with the expiry date displays for administrators in the GitLab user interface.
+You can renew your subscription starting from 15 days before your subscription expires.
 
 We recommend following these steps during renewal:
 
@@ -371,7 +374,7 @@ The **Renew** button remains disabled (grayed-out) until 15 days before a subscr
 You can hover your mouse on the **Renew** button to see the date when it will become active.
 
    NOTE:
-   If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team via [the sales contact form](https://about.gitlab.com/sales/) for assistance as this can't be done in the Customers Portal.
+   If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team with [the sales contact form](https://about.gitlab.com/sales/) for assistance as this can't be done in the Customers Portal.
 
 1. In the first box, enter the total number of user licenses you'll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.

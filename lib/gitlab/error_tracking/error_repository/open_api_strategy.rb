@@ -226,7 +226,8 @@ module Gitlab
         end
 
         def configured_api_url
-          url = ENV.fetch('ERROR_TRACKING_API_URL', 'http://localhost:8080')
+          url = Gitlab::CurrentSettings.current_application_settings.error_tracking_api_url ||
+                'http://localhost:8080'
 
           Gitlab::UrlBlocker.validate!(url, schemes: %w[http https], allow_localhost: true)
 

@@ -20,11 +20,12 @@ Ensure your own [runners are configured](../../../ci/runners/index.md) and
 To deploy a project to Google Kubernetes Engine, follow the steps below:
 
 1. [Configure your Google account](#configure-your-google-account)
-1. [Create a new project from a template](#create-a-new-project-from-a-template)
-1. [Create a Kubernetes cluster from GitLab](#create-a-kubernetes-cluster-from-gitlab)
+1. [Create a Kubernetes cluster and deploy the agent](#create-a-kubernetes-cluster)
+1. [Create a new project from a template](#create-an-application-project-from-a-template)
+1. [Configure the agent](#configure-the-agent)
 1. [Install Ingress](#install-ingress)
-1. [Configure your base domain](#configure-your-base-domain)
-1. [Enable Auto DevOps](#enable-auto-devops-optional)
+1. [Configure Auto DevOps](#configure-auto-devops)
+1. [Enable Auto DevOps and run the pipeline](#enable-auto-devops-and-run-the-pipeline)
 1. [Deploy the application](#deploy-the-application)
 
 ## Configure your Google account
@@ -46,70 +47,45 @@ GCP accounts to get started with the GitLab integration with Google Kubernetes E
 [Follow this link](https://cloud.google.com/partners/partnercredit/?pcn_code=0014M00001h35gDQAQ#contact-form)
 and apply for credit.
 
-## Create a new project from a template
+## Create a Kubernetes cluster
+
+To create a new cluster on Google Kubernetes Engine (GKE), use Infrastructure as Code (IaC) approach
+by following steps in [Create a Google GKE cluster](../../../user/infrastructure/clusters/connect/new_gke_cluster.md) guide.
+The guide requires you to create a new project that uses [Terraform](https://www.terraform.io/) to create a GKE cluster and install a GitLab agent for Kubernetes.
+This project is where configuration for GitLab agent resides.
+
+## Create an application project from a template
 
 Use a GitLab project template to get started. As the name suggests,
 those projects provide a bare-bones application built on some well-known frameworks.
 
+WARNING:
+Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
+
 1. On the top bar in GitLab, select the plus icon (**{plus-square}**), and select
    **New project/repository**.
-1. Go to the **Create from template** tab, where you can choose a Ruby on
-   Rails, Spring, or NodeJS Express project.
-   For this tutorial, use the Ruby on Rails template.
-
-   ![Select project template](img/guide_project_template_v12_3.png)
-
+1. Select **Create from template**.
+1. Select the **Ruby on Rails** template.
 1. Give your project a name, optionally a description, and make it public so that
    you can take advantage of the features available in the
    [GitLab Ultimate plan](https://about.gitlab.com/pricing/).
-
-   ![Create project](img/guide_create_project_v12_3.png)
-
 1. Select **Create project**.
 
-Now that you've created a project, create the Kubernetes cluster
-to deploy this project to.
+Now you have an application project you are going to deploy to the GKE cluster.
 
-## Create a Kubernetes cluster from GitLab
+## Configure the agent
 
-1. On your project's landing page, select the button **Add Kubernetes cluster**.
+Now we need to configure the GitLab agent for Kubernetes for us to be able to use it to deploy the application project.
 
-   ![Project landing page](img/guide_project_landing_page_v12_10.png)
+1. Go to the project [we created to manage the cluster](#create-a-kubernetes-cluster).
+1. Navigate to the [agent configuration file](../../../user/clusters/agent/install/index.md#create-an-agent-configuration-file) (`.gitlab/agents/gke-agent/config.yaml`) and edit it.
+1. Configure `ci_access:projects` attribute. Use application's project path as `id`:
 
-1. On the **Kubernetes clusters** page, select the **Create a new cluster** option from the **Actions** dropdown menu.
-
-1. On the **Connect a Kubernetes cluster** page, select **Google GKE**.
-
-1. Connect with your Google account, and select **Allow** to allow access to your
-   Google account. (This authorization request is only displayed the first time
-   you connect GitLab with your Google account.)
-
-   After authorizing access, the **Connect a Kubernetes cluster** page
-   is displayed.
-
-1. In the **Enter your Kubernetes cluster certificate details** section, provide
-   details about your cluster:
-
-   - **Kubernetes cluster name**
-   - **Environment scope** - Leave this field unchanged.
-   - **Google Cloud Platform project** - Select a project. When you
-     [configured your Google account](#configure-your-google-account), a project
-     should have already been created for you.
-   - **Zone** - The [region/zone](https://cloud.google.com/compute/docs/regions-zones/) to
-     create the cluster in.
-   - **Number of nodes**
-   - **Machine type** - For more information about
-     [machine types](https://cloud.google.com/compute/docs/machine-types), see Google's documentation.
-   - **Enable Cloud Run for Anthos** - Select this checkbox to use the
-     [Cloud Run](../../../user/project/clusters/add_gke_clusters.md#cloud-run-for-anthos),
-     Istio, and HTTP Load Balancing add-ons for this cluster.
-   - **GitLab-managed cluster** - Select this checkbox to
-     [allow GitLab to manage namespace and service accounts](../../../user/project/clusters/gitlab_managed_clusters.md) for this cluster.
-
-1. Select **Create Kubernetes cluster**.
-
-After a couple of minutes, the cluster is created. You can also see its
-status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
+```yaml
+ci_access:
+  projects:
+    - id: path/to/application-project
+```
 
 ## Install Ingress
 
@@ -134,9 +110,9 @@ or manually with Google Cloud Shell:
    kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps
    ```
 
-## Configure your base domain
+## Configure Auto DevOps
 
-Follow these steps to configure the base domain where you access your apps.
+Follow these steps to configure the base domain and other settings required for Auto DevOps.
 
 1. A few minutes after you install NGINX, the load balancer obtains an IP address, and you can
    get the external IP address with the following command:
@@ -149,30 +125,34 @@ Follow these steps to configure the base domain where you access your apps.
 
    Copy this IP address, as you need it in the next step.
 
-1. Go back to the cluster page on GitLab, and go to the **Details** tab.
-   - Add your **Base domain**. For this example, use the domain `<IP address>.nip.io`.
+1. Go back to the application project.
+1. On the left sidebar, select **Settings > CI/CD** and expand **Variables**.
+   - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value. For this example, use the domain `<IP address>.nip.io`.
+   - Add a key called `KUBE_NAMESPACE` with a value of the Kubernetes namespace for your deployments to target. You can use different namespaces per environment. Configure the environment, use the environment scope.
+   - Add a key called `KUBE_CONTEXT` with a value like `path/to/agent/project:gke-agent`. Select the environment scope of your choice.
    - Select **Save changes**.
 
-   ![Cluster Base Domain](img/guide_base_domain_v12_3.png)
-
-## Enable Auto DevOps (optional)
+## Enable Auto DevOps and run the pipeline
 
 While Auto DevOps is enabled by default, Auto DevOps can be disabled at both
 the instance level (for self-managed instances) and the group level. Complete
 these steps to enable Auto DevOps if it's disabled:
 
-1. Go to **Settings > CI/CD > Auto DevOps**, and select **Expand**.
+1. On the top bar, select **Menu > Projects** and find the application project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Auto DevOps**.
 1. Select **Default to Auto DevOps pipeline** to display more options.
 1. In **Deployment strategy**, select your desired [continuous deployment strategy](../requirements.md#auto-devops-deployment-strategy)
    to deploy the application to production after the pipeline successfully runs on the default branch.
 1. Select **Save changes**.
+1. Edit `.gitlab-ci.yml` file to include Auto DevOps template and commit the change to `master` branch:
 
-   ![Auto DevOps settings](img/guide_enable_autodevops_v12_3.png)
+   ```yaml
+   include:
+   - template: Auto-DevOps.gitlab-ci.yml
+   ```
 
-After you save your changes, GitLab creates a new pipeline. To view it, go to
-**{rocket}** **CI/CD > Pipelines**.
-
-In the next section, we explain what each job does in the pipeline.
+The commit should trigger a pipeline. In the next section, we explain what each job does in the pipeline.
 
 ## Deploy the application
 
@@ -278,8 +258,6 @@ After submitting the merge request, GitLab runs your pipeline, and all the jobs
 in it, as [described previously](#deploy-the-application), in addition to
 a few more that run only on branches other than the default branch.
 
-![Merge request](img/guide_merge_request_v12_3.png)
-
 After a few minutes a test fails, which means a test was
 'broken' by your change. Select the failed `test` job to see more information
 about it:
@@ -310,8 +288,6 @@ Return to the **Overview** page of your merge request, and you should not only
 see the test passing, but also the application deployed as a
 [review application](../stages.md#auto-review-apps). You can visit it by selecting
 the **View app** **{external-link}** button to see your changes deployed.
-
-![Review app](img/guide_merge_request_review_app_v12_3.png)
 
 After merging the merge request, GitLab runs the pipeline on the default branch,
 and then deploys the application to production.

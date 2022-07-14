@@ -46,6 +46,8 @@ are very appreciative of the work done by translators and proofreaders!
   - scootergrisen - [GitLab](https://gitlab.com/scootergrisen), [Crowdin](https://crowdin.com/profile/scootergrisen)
 - Dutch
   - Emily Hendle - [GitLab](https://gitlab.com/pundachan), [Crowdin](https://crowdin.com/profile/pandachan)
+- English (UK)
+  - Andrew Smith - [GitLab](https://gitlab.com/espadav8), [Crowdin](https://crowdin.com/profile/espadav8)
 - Esperanto
   - Lyubomir Vasilev - [Crowdin](https://crowdin.com/profile/lyubomirv)
 - Estonian

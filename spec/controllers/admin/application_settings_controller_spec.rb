@@ -382,6 +382,24 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
+  describe 'PUT #reset_error_tracking_access_token' do
+    before do
+      sign_in(admin)
+    end
+
+    subject { put :reset_error_tracking_access_token }
+
+    it 'resets error_tracking_access_token' do
+      expect { subject }.to change { ApplicationSetting.current.error_tracking_access_token }
+    end
+
+    it 'redirects the user to application settings page' do
+      subject
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+    end
+  end
+
   describe 'GET #lets_encrypt_terms_of_service' do
     include LetsEncryptHelpers
 

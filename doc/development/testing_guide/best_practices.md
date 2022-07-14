@@ -155,16 +155,6 @@ FPROF=1 bin/rspec spec/[path]/[to]/[spec].rb
 FPROF=flamegraph bin/rspec spec/[path]/[to]/[spec].rb
 ```
 
-A common change is to use [`let_it_be`](#common-test-setup):
-
-```ruby
-# Old
-let(:project) { create(:project) }
-
-# New
-let_it_be(:project) { create(:project) }
-```
-
 A common cause of a large number of created factories is [factory cascades](https://github.com/test-prof/test-prof/blob/master/docs/profilers/factory_prof.md#factory-flamegraph), which result when factories create and recreate associations.
 They can be identified by a noticeable difference between `total time` and `top-level time` numbers:
 
@@ -213,6 +203,56 @@ In this case, the `total time` and `top-level time` numbers match more closely:
 
       31          30        4.6378s            0.1496s             4.5366s            project
        8           8        0.0477s            0.0477s             0.0477s          namespace
+```
+
+##### Let's talk about `let`
+
+There are various ways to create objects and store them in variables in your tests. They are, from least efficient to most efficient:
+
+- `let!` creates the object before each example runs. It also creates a new object for every example. You should only use this option if you need to create a clean object before each example without explicitly referring to it.
+- `let` lazily creates the object. It isn't created until the object is called. `let` is generally inefficient as it creates a new object for every example. `let` is fine for simple values. However, more efficient variants of `let` are best when dealing with database models such as factories.
+- `let_it_be_with_refind` works similar to `let_it_be_with_reload`, but the [former calls `ActiveRecord::Base#find`](https://github.com/test-prof/test-prof/blob/936b29f87b36f88a134e064aa6d8ade143ae7a13/lib/test_prof/ext/active_record_refind.rb#L15) instead of `ActiveRecord::Base#reload`. `reload` is usually faster than `refind`.
+- `let_it_be_with_reload` creates an object one time for all examples in the same context, but after each example, the database changes are rolled back, and `object.reload` will be called to restore the object to its original state. This means you can make changes to the object before or during an example. However, there are cases where [state leaks across other models](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection) can occur. In these cases, `let` may be an easier option, especially if only a few examples exist.
+- `let_it_be` creates an immutable object one time for all of the examples in the same context. This is a great alternative to `let` and `let!` for objects that do not need to change from one example to another. Using `let_it_be` can dramatically speed up tests that create database models. See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#let-it-be> for more details and examples.
+
+`let_it_be` is the most optimized option since it instantiates an object once and does not change it. If you find yourself needing `let` instead of `let_it_be`, try `let_it_be_with_reload`.
+
+```ruby
+# Old
+let(:project) { create(:project) }
+
+# New
+let_it_be(:project) { create(:project) }
+
+# If you need to expect changes to the object in the test
+let_it_be_with_reload(:project) { create(:project) }
+```
+
+Here is an example of when `let_it_be` cannot be used, but `let_it_be_with_reload` allows for more efficiency than `let`:
+
+```ruby
+let_it_be(:user) { create(:user) }
+let_it_be_with_reload(:project) { create(:project) } # The test will fail if `let_it_be` is used 
+
+context 'with a developer' do
+  before do
+    project.add_developer(user)
+  end
+
+  it 'project has an owner and a developer' do
+    expect(project.members.map(&:access_level)).to match_array([Gitlab::Access::OWNER, Gitlab::Access::DEVELOPER])
+  end
+end
+
+context 'with a maintainer' do
+  before do
+    project.add_maintainer(user)
+  end
+
+  it 'project has an owner and a maintainer' do
+    expect(project.members.map(&:access_level)).to match_array([Gitlab::Access::OWNER, Gitlab::Access::MAINTAINER])
+  end
+end
 ```
 
 #### Stubbing methods within factories

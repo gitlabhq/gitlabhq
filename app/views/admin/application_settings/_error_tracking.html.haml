@@ -1,23 +1,40 @@
 - expanded = integration_expanded?('error_tracking_')
+
 %section.settings.as-error-tracking.no-animate#js-error-tracking-settings{ class: ('expanded' if expanded) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('GitLab Error Tracking')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Allows projects to track errors using an Opstrace integration.').html_safe % { link: help_page_path('operations/error_tracking.md') }
       = link_to _('Learn more.'), help_page_path('operations/error_tracking.md'), target: '_blank', rel: 'noopener noreferrer'
+
   .settings-content
+
+    %fieldset
+      .sub-section
+        %h4= _('Access Token')
+        .form-group
+          .form-text
+            %p.text-secondary
+              = s_("ErrorTracking|Access token is %{token_in_code_tag}").html_safe % { token_in_code_tag: content_tag(:code, Gitlab::CurrentSettings.error_tracking_access_token, id: 'error-tracking-access-token') }
+          .form-inline
+            = button_to _("Reset error tracking access token"), reset_error_tracking_access_token_admin_application_settings_path,
+                  method: :put, class: 'gl-button btn btn-danger btn-sm',
+                  data: { confirm: _('Are you sure you want to reset the error tracking access token?') }
+
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-error-tracking-settings'), html: { class: 'fieldset-form', id: 'error-tracking-settings' } do |f|
       = form_errors(@application_setting, pajamas_alert: true) if expanded
 
       %fieldset
-        .form-group
-          = f.gitlab_ui_checkbox_component :error_tracking_enabled,
-          _('Enable GitLab Error Tracking')
-        .form-group
-          = f.label :error_tracking_api_url, _('Opstrace endpoint for Error Tracking integration'), class: 'label-light'
-          = f.text_field :error_tracking_api_url, class: 'form-control gl-form-input'
+        .sub-section
+          %h4= _('Configure Error Tracking')
+          .form-group
+            = f.gitlab_ui_checkbox_component :error_tracking_enabled,
+            _('Enable GitLab Error Tracking')
+          .form-group
+            = f.label :error_tracking_api_url, _('Opstrace endpoint for Error Tracking integration'), class: 'label-light'
+            = f.text_field :error_tracking_api_url, class: 'form-control gl-form-input'
 
       = f.submit _('Save changes'), class: 'gl-button btn btn-confirm'

@@ -28,7 +28,7 @@ require (
 	github.com/stretchr/testify v1.8.0
 	gitlab.com/gitlab-org/gitaly/v15 v15.1.2
 	gitlab.com/gitlab-org/golang-archive-zip v0.1.1
-	gitlab.com/gitlab-org/labkit v1.15.0
+	gitlab.com/gitlab-org/labkit v1.16.0
 	gocloud.dev v0.25.0
 	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616

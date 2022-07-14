@@ -445,6 +445,10 @@ module ApplicationSettingImplementation
     ensure_health_check_access_token!
   end
 
+  def error_tracking_access_token
+    ensure_error_tracking_access_token!
+  end
+
   def usage_ping_can_be_configured?
     Settings.gitlab.usage_ping_enabled
   end
