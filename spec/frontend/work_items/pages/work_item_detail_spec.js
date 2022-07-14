@@ -9,6 +9,7 @@ import WorkItemDescription from '~/work_items/components/work_item_description.v
 import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
+import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemWeight from '~/work_items/components/work_item_weight.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -32,6 +33,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemState = () => wrapper.findComponent(WorkItemState);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
+  const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemWeight = () => wrapper.findComponent(WorkItemWeight);
 
   const createComponent = ({
@@ -201,6 +203,19 @@ describe('WorkItemDetail component', () => {
     await waitForPromises();
 
     expect(findWorkItemAssignees().exists()).toBe(false);
+  });
+
+  describe('labels widget', () => {
+    it.each`
+      description                                               | includeWidgets | exists
+      ${'renders when widget is returned from API'}             | ${true}        | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}       | ${false}
+    `('$description', async ({ includeWidgets, exists }) => {
+      createComponent({ includeWidgets, workItemsMvc2Enabled: true });
+      await waitForPromises();
+
+      expect(findWorkItemLabels().exists()).toBe(exists);
+    });
   });
 
   describe('weight widget', () => {

@@ -11,7 +11,7 @@
         "author"
       ],
       "properties": {
-        "author_gravatar_url": { "type": "string" },
+        "author_gravatar_url": { "type": [ "string", "null" ] },
         "commit_url": { "type": "string" },
         "commit_path": { "type": "string" },
         "author": {

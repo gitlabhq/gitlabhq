@@ -52,6 +52,7 @@ type upstream struct {
 	geoProxyCableRoute    routeEntry
 	geoProxyRoute         routeEntry
 	geoProxyPollSleep     func(time.Duration)
+	geoPollerDone         chan struct{}
 	accessLogger          *logrus.Logger
 	enableGeoProxyFeature bool
 	mu                    sync.RWMutex
@@ -81,6 +82,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 	if up.CableSocket == "" {
 		up.CableSocket = up.Socket
 	}
+	up.geoPollerDone = make(chan struct{})
 	up.RoundTripper = roundtripper.NewBackendRoundTripper(up.Backend, up.Socket, up.ProxyHeadersTimeout, cfg.DevelopmentMode)
 	up.CableRoundTripper = roundtripper.NewBackendRoundTripper(up.CableBackend, up.CableSocket, up.ProxyHeadersTimeout, cfg.DevelopmentMode)
 	up.configureURLPrefix()
@@ -92,9 +94,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 
 	routesCallback(&up)
 
-	if up.enableGeoProxyFeature {
-		go up.pollGeoProxyAPI()
-	}
+	go up.pollGeoProxyAPI()
 
 	var correlationOpts []correlation.InboundHandlerOption
 	if cfg.PropagateCorrelationID {
@@ -165,10 +165,8 @@ func (u *upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *upstream) findRoute(cleanedPath string, r *http.Request) *routeEntry {
-	if u.enableGeoProxyFeature {
-		if route := u.findGeoProxyRoute(cleanedPath, r); route != nil {
-			return route
-		}
+	if route := u.findGeoProxyRoute(cleanedPath, r); route != nil {
+		return route
 	}
 
 	for _, ro := range u.Routes {
@@ -207,7 +205,15 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 }
 
 func (u *upstream) pollGeoProxyAPI() {
+	defer close(u.geoPollerDone)
+
 	for {
+		// Check enableGeoProxyFeature every time because `callGeoProxyApi()` can change its value.
+		// This is can also be disabled through the GEO_SECONDARY_PROXY env var.
+		if !u.enableGeoProxyFeature {
+			break
+		}
+
 		u.callGeoProxyAPI()
 		u.geoProxyPollSleep(geoProxyApiPollingInterval)
 	}
@@ -218,6 +224,14 @@ func (u *upstream) callGeoProxyAPI() {
 	geoProxyData, err := u.APIClient.GetGeoProxyData()
 	if err != nil {
 		// Unable to determine Geo Proxy URL. Fallback on cached value.
+		return
+	}
+
+	if !geoProxyData.GeoEnabled {
+		// When Geo is not enabled, we don't need to proxy, as it unnecessarily polls the
+		// API, whereas a restart is necessary to enable Geo in the first place; at which
+		// point we get fresh data from the API.
+		u.enableGeoProxyFeature = false
 		return
 	}
 

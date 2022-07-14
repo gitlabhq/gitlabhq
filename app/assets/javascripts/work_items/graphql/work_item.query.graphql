@@ -1,9 +1,17 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
 #import "./work_item.fragment.graphql"
 
 query workItem($id: WorkItemID!) {
   workItem(id: $id) {
     ...WorkItem
     mockWidgets @client {
+      ... on LocalWorkItemLabels {
+        type
+        allowScopedLabels
+        nodes {
+          ...Label
+        }
+      }
       ... on LocalWorkItemWeight {
         type
         weight

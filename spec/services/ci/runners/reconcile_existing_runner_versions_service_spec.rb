@@ -15,7 +15,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
 
     allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
       .to receive(:check_runner_upgrade_status)
-      .and_return(:recommended)
+      .and_return({ recommended: ::Gitlab::VersionInfo.new(14, 0, 2) })
   end
 
   context 'with runner with new version' do
@@ -27,7 +27,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
       allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
         .to receive(:check_runner_upgrade_status)
         .with('14.0.2')
-        .and_return(:not_available)
+        .and_return({ not_available: ::Gitlab::VersionInfo.new(14, 0, 2) })
         .once
     end
 
@@ -59,7 +59,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
     before do
       allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
         .to receive(:check_runner_upgrade_status)
-        .and_return(:not_available)
+        .and_return({ not_available: ::Gitlab::VersionInfo.new(14, 0, 2) })
     end
 
     it 'deletes orphan ci_runner_versions entry', :aggregate_failures do
@@ -81,7 +81,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
     before do
       allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
         .to receive(:check_runner_upgrade_status)
-        .and_return(:not_available)
+        .and_return({ not_available: ::Gitlab::VersionInfo.new(14, 0, 1) })
     end
 
     it 'does not modify ci_runner_versions entries', :aggregate_failures do
@@ -101,7 +101,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
     before do
       allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
         .to receive(:check_runner_upgrade_status)
-        .and_return(:error)
+        .and_return({ error: ::Gitlab::VersionInfo.new(14, 0, 1) })
     end
 
     it 'makes no changes to ci_runner_versions', :aggregate_failures do

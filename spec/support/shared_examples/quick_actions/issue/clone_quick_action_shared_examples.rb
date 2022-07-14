@@ -89,10 +89,13 @@ RSpec.shared_examples 'clone quick action' do
       let(:bug)      { create(:label, project: project, title: 'bug') }
       let(:wontfix)  { create(:label, project: project, title: 'wontfix') }
 
-      let!(:target_milestone) { create(:milestone, title: '1.0', project: target_project) }
-
       before do
         target_project.add_maintainer(user)
+
+        # create equivalent labels and milestones in the target project
+        create(:label, project: target_project, title: 'bug')
+        create(:label, project: target_project, title: 'wontfix')
+        create(:milestone, title: '1.0', project: target_project)
       end
 
       shared_examples 'applies the commands to issues in both projects, target and source' do

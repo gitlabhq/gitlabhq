@@ -122,10 +122,10 @@ const {
 });
 
 describe('Client side Markdown processing', () => {
-  const deserialize = async (content) => {
+  const deserialize = async (markdown) => {
     const { document } = await remarkMarkdownDeserializer().deserialize({
       schema: tiptapEditor.schema,
-      content,
+      markdown,
     });
 
     return document;

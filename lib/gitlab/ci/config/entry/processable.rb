@@ -86,16 +86,10 @@ module Gitlab
                 @entries.delete(:except) unless except_defined? # rubocop:disable Gitlab/ModuleWithInstanceVariables
               end
 
-              unless ::Feature.enabled?(:ci_value_change_for_processable_and_rules_entry)
-                validate_against_warnings unless has_workflow_rules
-              end
-
               yield if block_given?
             end
 
-            if ::Feature.enabled?(:ci_value_change_for_processable_and_rules_entry)
-              validate_against_warnings unless has_workflow_rules
-            end
+            validate_against_warnings unless has_workflow_rules
           end
 
           def validate_against_warnings

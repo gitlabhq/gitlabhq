@@ -121,6 +121,12 @@ GitLab has several features which can help you manage the number of users:
 
 > Introduced in GitLab 14.1.
 
+Prerequisites:
+
+- You must be running GitLab Enterprise Edition (EE).
+- You must have GitLab 14.1 or later.
+- Your instance must be connected to the internet, and not be in an offline environment.
+
 To sync subscription data between your self-managed instance and GitLab, you must [activate your instance](../../user/admin_area/license.md) with an
 activation code.
 

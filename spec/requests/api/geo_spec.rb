@@ -10,12 +10,24 @@ RSpec.describe API::Geo do
 
     include_context 'workhorse headers'
 
+    let(:non_proxy_response_schema) do
+      {
+        'type' => 'object',
+        'additionalProperties' => false,
+        'required' => %w(geo_enabled),
+        'properties' => {
+          'geo_enabled' => { 'type' => 'boolean' }
+        }
+      }
+    end
+
     context 'with valid auth' do
       it 'returns empty data' do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_empty
+        expect(json_response).to match_schema(non_proxy_response_schema)
+        expect(json_response['geo_enabled']).to be_falsey
       end
     end
 

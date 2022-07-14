@@ -30,7 +30,6 @@ jest.mock('~/flash');
 
 describe('Job table app', () => {
   let wrapper;
-  let jobsTableVueSearch = true;
 
   const successHandler = jest.fn().mockResolvedValue(mockJobsResponsePaginated);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
@@ -66,7 +65,6 @@ describe('Job table app', () => {
       },
       provide: {
         fullPath: projectPath,
-        glFeatures: { jobsTableVueSearch },
       },
       apolloProvider: createMockApolloProvider(handler),
     });
@@ -229,14 +227,6 @@ describe('Job table app', () => {
 
       expect(createFlash).toHaveBeenCalledWith(expectedWarning);
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
-    });
-
-    it('should not display filtered search', () => {
-      jobsTableVueSearch = false;
-
-      createComponent();
-
-      expect(findFilteredSearch().exists()).toBe(false);
     });
   });
 });

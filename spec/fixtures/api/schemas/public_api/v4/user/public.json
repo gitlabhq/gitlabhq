@@ -39,7 +39,7 @@
       "type": "string",
       "enum": ["active", "blocked"]
     },
-    "avatar_url": { "type": "string" },
+    "avatar_url": { "type": [ "string", "null" ] },
     "web_url": { "type": "string" },
     "created_at": { "type": "string", "format": "date-time" },
     "bio": { "type": ["string", "null"] },

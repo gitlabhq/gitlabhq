@@ -2,6 +2,7 @@
 
 class GravatarService
   def execute(email, size = nil, scale = 2, username: nil)
+    return if Gitlab::FIPS.enabled?
     return unless Gitlab::CurrentSettings.gravatar_enabled?
 
     identifier = email.presence || username.presence

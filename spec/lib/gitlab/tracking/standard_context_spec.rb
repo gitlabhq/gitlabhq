@@ -93,30 +93,11 @@ RSpec.describe Gitlab::Tracking::StandardContext do
     end
 
     context 'with incorrect argument type' do
-      context 'when standard_context_type_check FF is disabled' do
-        before do
-          stub_feature_flags(standard_context_type_check: false)
-        end
+      subject { described_class.new(project: create(:group)) }
 
-        subject { described_class.new(project: create(:group)) }
-
-        it 'does not call `track_and_raise_for_dev_exception`' do
-          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
-          snowplow_context
-        end
-      end
-
-      context 'when standard_context_type_check FF is enabled' do
-        before do
-          stub_feature_flags(standard_context_type_check: true)
-        end
-
-        subject { described_class.new(project: create(:group)) }
-
-        it 'does call `track_and_raise_for_dev_exception`' do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-          snowplow_context
-        end
+      it 'does call `track_and_raise_for_dev_exception`' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        snowplow_context
       end
     end
 

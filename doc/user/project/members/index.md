@@ -158,7 +158,7 @@ group itself.
 
 Prerequisites:
 
-- You must have the Owner role.
+- You must have the Maintainer or Owner role.
 - Optional. Unassign the member from all issues and merge requests that
   are assigned to them.
 

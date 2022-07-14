@@ -278,13 +278,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
 
     context 'when workflow rules is not used' do
       let(:workflow) { double('workflow', 'has_rules?' => false) }
-      let(:ci_value_change_for_processable_and_rules_entry) { true }
 
       before do
-        stub_feature_flags(
-          ci_value_change_for_processable_and_rules_entry: ci_value_change_for_processable_and_rules_entry
-        )
-
         entry.compose!(deps)
       end
 
@@ -307,14 +302,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
 
             it 'raises a warning' do
               expect(entry.warnings).to contain_exactly(/may allow multiple pipelines/)
-            end
-
-            context 'when the FF ci_value_change_for_processable_and_rules_entry is disabled' do
-              let(:ci_value_change_for_processable_and_rules_entry) { false }
-
-              it 'raises a warning' do
-                expect(entry.warnings).to contain_exactly(/may allow multiple pipelines/)
-              end
             end
           end
 

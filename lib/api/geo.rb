@@ -8,7 +8,7 @@ module API
     helpers do
       # Overridden in EE
       def geo_proxy_response
-        {}
+        { geo_enabled: false }
       end
     end
 

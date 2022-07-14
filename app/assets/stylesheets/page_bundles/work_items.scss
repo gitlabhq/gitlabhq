@@ -23,3 +23,13 @@
     display: block;
   }
 }
+
+.work-item-labels {
+  .gl-token {
+    padding-left: $gl-spacing-scale-1;
+  }
+
+  .gl-token-close {
+    display: none;
+  }
+}

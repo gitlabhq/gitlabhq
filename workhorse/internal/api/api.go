@@ -65,11 +65,13 @@ func NewAPI(myURL *url.URL, version string, roundTripper http.RoundTripper) *API
 type GeoProxyEndpointResponse struct {
 	GeoProxyURL       string `json:"geo_proxy_url"`
 	GeoProxyExtraData string `json:"geo_proxy_extra_data"`
+	GeoEnabled        bool   `json:"geo_enabled"`
 }
 
 type GeoProxyData struct {
 	GeoProxyURL       *url.URL
 	GeoProxyExtraData string
+	GeoEnabled        bool
 }
 
 type HandleFunc func(http.ResponseWriter, *http.Request, *Response)
@@ -458,5 +460,6 @@ func (api *API) GetGeoProxyData() (*GeoProxyData, error) {
 	return &GeoProxyData{
 		GeoProxyURL:       geoProxyURL,
 		GeoProxyExtraData: response.GeoProxyExtraData,
+		GeoEnabled:        response.GeoEnabled,
 	}, nil
 }

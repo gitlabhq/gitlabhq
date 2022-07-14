@@ -45,9 +45,6 @@ Clicking an individual job shows you its job log, and allows you to:
 
 ### View all jobs in a project
 
-> - An improved view was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293862) in GitLab 14.10, [with a flag](../../administration/feature_flags.md) named `jobs_table_vue`. Disabled by default.
-> - The job status filter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82539) in GitLab 14.10, [with a flag](../../administration/feature_flags.md) named `jobs_table_vue_search`. Disabled by default.
-
 To view the full list of jobs that ran in a project:
 
 1. On the top bar, select **Menu > Projects** and find the project.

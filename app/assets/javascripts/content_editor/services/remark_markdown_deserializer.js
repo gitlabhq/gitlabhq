@@ -169,7 +169,7 @@ const factorySpecs = {
 
 export default () => {
   return {
-    deserialize: async ({ schema, content: markdown }) => {
+    deserialize: async ({ schema, markdown }) => {
       const document = await render({
         markdown,
         renderer: (tree) =>
@@ -178,7 +178,7 @@ export default () => {
             factorySpecs,
             tree,
             wrappableTags,
-            source: markdown,
+            markdown,
           }),
       });
 

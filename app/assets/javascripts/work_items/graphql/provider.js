@@ -2,7 +2,7 @@ import produce from 'immer';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import { WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_WEIGHT } from '../constants';
+import { WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_LABELS, WIDGET_TYPE_WEIGHT } from '../constants';
 import typeDefs from './typedefs.graphql';
 import workItemQuery from './work_item.query.graphql';
 
@@ -10,7 +10,7 @@ export const temporaryConfig = {
   typeDefs,
   cacheConfig: {
     possibleTypes: {
-      LocalWorkItemWidget: ['LocalWorkItemWeight'],
+      LocalWorkItemWidget: ['LocalWorkItemLabels', 'LocalWorkItemWeight'],
     },
     typePolicies: {
       WorkItem: {
@@ -19,6 +19,12 @@ export const temporaryConfig = {
             read(widgets) {
               return (
                 widgets || [
+                  {
+                    __typename: 'LocalWorkItemLabels',
+                    type: WIDGET_TYPE_LABELS,
+                    allowScopedLabels: true,
+                    nodes: [],
+                  },
                   {
                     __typename: 'LocalWorkItemWeight',
                     type: 'WEIGHT',
@@ -55,6 +61,13 @@ export const resolvers = {
             (widget) => widget.type === WIDGET_TYPE_WEIGHT,
           );
           weightWidget.weight = input.weight;
+        }
+
+        if (input.labels) {
+          const labelsWidget = draftData.workItem.mockWidgets.find(
+            (widget) => widget.type === WIDGET_TYPE_LABELS,
+          );
+          labelsWidget.nodes = [...input.labels];
         }
       });
 

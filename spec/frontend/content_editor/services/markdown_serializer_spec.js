@@ -1177,7 +1177,7 @@ Oranges are orange [^1]
   };
 
   it.each`
-    mark          | content                                    | modifiedContent                                                               | editAction
+    mark          | markdown                                   | modifiedMarkdown                                                              | editAction
     ${'bold'}     | ${'**bold**'}                              | ${'**bold modified**'}                                                        | ${defaultEditAction}
     ${'bold'}     | ${'__bold__'}                              | ${'__bold modified__'}                                                        | ${defaultEditAction}
     ${'bold'}     | ${'<strong>bold</strong>'}                 | ${'<strong>bold modified</strong>'}                                           | ${defaultEditAction}
@@ -1213,10 +1213,10 @@ Oranges are orange [^1]
     ${'taskList'} | ${'2) [x] task list item'}                 | ${'2) [x] task list item modified'}                                           | ${defaultEditAction}
   `(
     'preserves original $mark syntax when sourceMarkdown is available for $content',
-    async ({ content, modifiedContent, editAction }) => {
+    async ({ markdown, modifiedMarkdown, editAction }) => {
       const { document } = await remarkMarkdownDeserializer().deserialize({
         schema: tiptapEditor.schema,
-        content,
+        markdown,
       });
 
       editAction(document);
@@ -1226,7 +1226,7 @@ Oranges are orange [^1]
         doc: tiptapEditor.state.doc,
       });
 
-      expect(serialized).toEqual(modifiedContent);
+      expect(serialized).toEqual(modifiedMarkdown);
     },
   );
 });

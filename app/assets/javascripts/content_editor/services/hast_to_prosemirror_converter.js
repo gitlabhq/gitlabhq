@@ -53,7 +53,7 @@ function maybeMerge(a, b) {
  * Hast node documentation: https://github.com/syntax-tree/hast
  *
  * @param {HastNode} hastNode A Hast node
- * @param {String} source Markdown source file
+ * @param {String} markdown Markdown source file
  *
  * @returns It returns an object with the following attributes:
  *
@@ -62,13 +62,13 @@ function maybeMerge(a, b) {
  * - sourceMarkdown: A node’s original Markdown source extrated
  * from the Markdown source file.
  */
-function createSourceMapAttributes(hastNode, source) {
+function createSourceMapAttributes(hastNode, markdown) {
   const { position } = hastNode;
 
   return position && position.end
     ? {
         sourceMapKey: `${position.start.offset}:${position.end.offset}`,
-        sourceMarkdown: source.substring(position.start.offset, position.end.offset),
+        sourceMarkdown: markdown.substring(position.start.offset, position.end.offset),
       }
     : {};
 }
@@ -84,16 +84,16 @@ function createSourceMapAttributes(hastNode, source) {
  * @param {*} proseMirrorNodeSpec ProseMirror node spec object
  * @param {HastNode} hastNode A hast node
  * @param {Array<HastNode>} hastParents All the ancestors of the hastNode
- * @param {String} source Markdown source file’s content
+ * @param {String} markdown Markdown source file’s content
  *
  * @returns An object that contains a ProseMirror node’s attributes
  */
-function getAttrs(proseMirrorNodeSpec, hastNode, hastParents, source) {
+function getAttrs(proseMirrorNodeSpec, hastNode, hastParents, markdown) {
   const { getAttrs: specGetAttrs } = proseMirrorNodeSpec;
 
   return {
-    ...createSourceMapAttributes(hastNode, source),
-    ...(isFunction(specGetAttrs) ? specGetAttrs(hastNode, hastParents, source) : {}),
+    ...createSourceMapAttributes(hastNode, markdown),
+    ...(isFunction(specGetAttrs) ? specGetAttrs(hastNode, hastParents, markdown) : {}),
   };
 }
 
@@ -319,11 +319,11 @@ class HastToProseMirrorConverterState {
  * @param {model.ProseMirrorSchema} schema A ProseMirror schema used to create the
  * ProseMirror nodes and marks.
  * @param {Object} proseMirrorFactorySpecs ProseMirror nodes factory specifications.
- * @param {String} source Markdown source file’s content
+ * @param {String} markdown Markdown source file’s content
  *
  * @returns An object that contains ProseMirror node factories
  */
-const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source) => {
+const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, markdown) => {
   const factories = {
     root: {
       selector: 'root',
@@ -356,7 +356,7 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
         const nodeType = schema.nodeType(proseMirrorName);
 
         state.closeUntil(parent);
-        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent, source), factory);
+        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent, markdown), factory);
 
         /**
          * If a getContent function is provided, we immediately close
@@ -371,14 +371,14 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
       const nodeType = schema.nodeType(proseMirrorName);
       factory.handle = (state, hastNode, parent) => {
         state.closeUntil(parent);
-        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent, source), factory);
+        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent, markdown), factory);
         // Inline nodes do not have children therefore they are immediately closed
         state.closeNode();
       };
     } else if (factory.type === 'mark') {
       const markType = schema.marks[proseMirrorName];
       factory.handle = (state, hastNode, parent) => {
-        state.openMark(markType, hastNode, getAttrs(factory, hastNode, parent, source), factory);
+        state.openMark(markType, hastNode, getAttrs(factory, hastNode, parent, markdown), factory);
       };
     } else if (factory.type === 'ignore') {
       factory.handle = noop;
@@ -601,9 +601,9 @@ export const createProseMirrorDocFromMdastTree = ({
   factorySpecs,
   wrappableTags,
   tree,
-  source,
+  markdown,
 }) => {
-  const proseMirrorNodeFactories = createProseMirrorNodeFactories(schema, factorySpecs, source);
+  const proseMirrorNodeFactories = createProseMirrorNodeFactories(schema, factorySpecs, markdown);
   const state = new HastToProseMirrorConverterState();
 
   visitParents(tree, (hastNode, ancestors) => {

@@ -12,7 +12,7 @@
   "properties": {
     "id": { "type": "integer" },
     "state": { "type": "string" },
-    "avatar_url": { "type": "string" },
+    "avatar_url": { "type": [ "string", "null" ] },
     "web_url": { "type": "string" },
     "path": { "type": "string" },
     "name": { "type": "string" },

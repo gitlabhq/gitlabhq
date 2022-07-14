@@ -75,7 +75,8 @@ module Ci
 
       def runner_version_with_updated_status(runner_version)
         version = runner_version['version']
-        new_status = upgrade_check.check_runner_upgrade_status(version)
+        suggestion = upgrade_check.check_runner_upgrade_status(version)
+        new_status = suggestion.each_key.first
 
         if new_status != :error && new_status != runner_version['status'].to_sym
           {

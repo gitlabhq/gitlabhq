@@ -25,19 +25,19 @@ module Issuable
 
       private
 
-      def copy_award_emoji
-        AwardEmojis::CopyService.new(original_entity, new_entity).execute
-      end
-
-      def copy_notes
-        Notes::CopyService.new(current_user, original_entity, new_entity).execute
+      def rewritten_old_entity_attributes(include_milestone: true)
+        Gitlab::Issuable::Clone::AttributesRewriter.new(
+          current_user,
+          original_entity,
+          target_project
+        ).execute(include_milestone: include_milestone)
       end
 
       def update_new_entity
         update_new_entity_description
-        update_new_entity_attributes
         copy_award_emoji
         copy_notes
+        copy_resource_events
       end
 
       def update_new_entity_description
@@ -52,8 +52,16 @@ module Issuable
         new_entity.update!(update_description_params)
       end
 
-      def update_new_entity_attributes
-        AttributesRewriter.new(current_user, original_entity, new_entity).execute
+      def copy_award_emoji
+        AwardEmojis::CopyService.new(original_entity, new_entity).execute
+      end
+
+      def copy_notes
+        Notes::CopyService.new(current_user, original_entity, new_entity).execute
+      end
+
+      def copy_resource_events
+        Gitlab::Issuable::Clone::CopyResourceEventsService.new(current_user, original_entity, new_entity).execute
       end
 
       def update_old_entity
@@ -72,12 +80,6 @@ module Issuable
 
       def new_parent
         new_entity.resource_parent
-      end
-
-      def group
-        if new_entity.project&.group && current_user.can?(:read_group, new_entity.project.group)
-          new_entity.project.group
-        end
       end
 
       def relative_position

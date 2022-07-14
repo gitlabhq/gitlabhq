@@ -48,9 +48,9 @@ module Gitlab
       def map_status(jira_status_category)
         case jira_status_category["key"].downcase
         when 'done'
-          Issuable::STATE_ID_MAP[:closed]
+          ::Issuable::STATE_ID_MAP[:closed]
         else
-          Issuable::STATE_ID_MAP[:opened]
+          ::Issuable::STATE_ID_MAP[:opened]
         end
       end
 

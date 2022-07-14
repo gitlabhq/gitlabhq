@@ -2,12 +2,4 @@
 - add_page_specific_style 'page_bundles/ci_status'
 - admin = local_assigns.fetch(:admin, false)
 
-- if Feature.enabled?(:jobs_table_vue, @project)
-  #js-jobs-table{ data: { admin: admin, full_path: @project.full_path, job_statuses: job_statuses.to_json, pipeline_editor_path: project_ci_pipeline_editor_path(@project), empty_state_svg_path: image_path('jobs-empty-state.svg') } }
-- else
-  .top-area
-    - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }
-    = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
-
-  .content-list.builds-content-list
-    = render "table", builds: @builds, project: @project
+#js-jobs-table{ data: { admin: admin, full_path: @project.full_path, job_statuses: job_statuses.to_json, pipeline_editor_path: project_ci_pipeline_editor_path(@project), empty_state_svg_path: image_path('jobs-empty-state.svg') } }

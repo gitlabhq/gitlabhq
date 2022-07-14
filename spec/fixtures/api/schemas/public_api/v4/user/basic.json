@@ -13,7 +13,7 @@
     "name": { "type": "string" },
     "username": { "type": "string" },
     "state": { "type": "string" },
-    "avatar_url": { "type": "string" },
+    "avatar_url": { "type": [ "string", "null" ] },
     "web_url": { "type": "string" }
   }
 }

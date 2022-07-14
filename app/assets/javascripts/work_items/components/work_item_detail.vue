@@ -4,6 +4,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_LABELS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_WEIGHT,
 } from '../constants';
@@ -14,6 +15,7 @@ import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
+import WorkItemLabels from './work_item_labels.vue';
 import WorkItemWeight from './work_item_weight.vue';
 
 export default {
@@ -25,6 +27,7 @@ export default {
     WorkItemAssignees,
     WorkItemActions,
     WorkItemDescription,
+    WorkItemLabels,
     WorkItemTitle,
     WorkItemState,
     WorkItemWeight,
@@ -99,6 +102,9 @@ export default {
     workItemAssignees() {
       return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES);
     },
+    workItemLabels() {
+      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
+    },
     workItemWeight() {
       return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
     },
@@ -153,6 +159,12 @@ export default {
           :work-item-id="workItem.id"
           :assignees="workItemAssignees.assignees.nodes"
           :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+          @error="error = $event"
+        />
+        <work-item-labels
+          v-if="workItemLabels"
+          :work-item-id="workItem.id"
+          :can-update="canUpdate"
           @error="error = $event"
         />
         <work-item-weight

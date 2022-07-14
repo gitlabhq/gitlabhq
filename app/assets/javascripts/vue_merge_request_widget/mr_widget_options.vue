@@ -221,8 +221,11 @@ export default {
     formattedHumanAccess() {
       return (this.mr.humanAccess || '').toLowerCase();
     },
+    hasMergeError() {
+      return this.mr.mergeError && this.state !== 'closed';
+    },
     hasAlerts() {
-      return this.mr.mergeError || this.showMergePipelineForkWarning;
+      return this.hasMergeError || this.showMergePipelineForkWarning;
     },
     shouldShowExtension() {
       return (
@@ -574,7 +577,12 @@ export default {
     />
     <div class="mr-section-container mr-widget-workflow">
       <div v-if="hasAlerts" class="gl-overflow-hidden mr-widget-alert-container">
-        <mr-widget-alert-message v-if="mr.mergeError" type="danger" dismissible>
+        <mr-widget-alert-message
+          v-if="hasMergeError"
+          type="danger"
+          dismissible
+          data-testid="merge_error"
+        >
           <span v-safe-html="mergeError"></span>
         </mr-widget-alert-message>
         <mr-widget-alert-message

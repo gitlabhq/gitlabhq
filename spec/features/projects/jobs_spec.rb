@@ -20,7 +20,6 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
   end
 
   before do
-    stub_feature_flags(jobs_table_vue: false)
     project.add_role(user, user_access_level)
     sign_in(user)
   end
@@ -29,9 +28,11 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
     context 'with no jobs' do
       before do
         visit project_jobs_path(project)
+
+        wait_for_requests
       end
 
-      it 'shows the empty state page' do
+      it 'shows the empty state page', :js do
         expect(page).to have_content('Use jobs to automate your tasks')
         expect(page).to have_link('Create CI/CD configuration file', href: project_ci_pipeline_editor_path(project))
       end
@@ -39,59 +40,6 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     context 'with a job' do
       let!(:job) { create(:ci_build, pipeline: pipeline) }
-
-      context "Pending scope" do
-        before do
-          visit project_jobs_path(project, scope: :pending)
-        end
-
-        it "shows Pending tab jobs" do
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Pending')
-          expect(page).to have_content job.short_sha
-          expect(page).to have_content job.ref
-          expect(page).to have_content job.name
-        end
-      end
-
-      context "Running scope" do
-        before do
-          job.run!
-          visit project_jobs_path(project, scope: :running)
-        end
-
-        it "shows Running tab jobs" do
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Running')
-          expect(page).to have_content job.short_sha
-          expect(page).to have_content job.ref
-          expect(page).to have_content job.name
-        end
-      end
-
-      context "Finished scope" do
-        before do
-          job.run!
-          visit project_jobs_path(project, scope: :finished)
-        end
-
-        it "shows Finished tab jobs" do
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Finished')
-          expect(page).to have_content('Use jobs to automate your tasks')
-        end
-      end
-
-      context "All jobs" do
-        before do
-          project.builds.running_or_pending.each(&:success)
-          visit project_jobs_path(project)
-        end
-
-        it "shows All tab jobs" do
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'All')
-          expect(page).to have_content job.short_sha
-          expect(page).to have_content job.ref
-          expect(page).to have_content job.name
-        end
-      end
 
       context "when visiting old URL" do
         let(:jobs_url) do

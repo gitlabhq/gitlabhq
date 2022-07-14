@@ -12,8 +12,6 @@ RSpec.describe 'Project Jobs Permissions' do
   let_it_be(:job) { create(:ci_build, :running, :coverage, :trace_artifact, pipeline: pipeline) }
 
   before do
-    stub_feature_flags(jobs_table_vue: false)
-
     sign_in(user)
 
     project.enable_ci
@@ -96,8 +94,8 @@ RSpec.describe 'Project Jobs Permissions' do
         end
 
         it_behaves_like 'project jobs page responds with status', 200 do
-          it 'renders job' do
-            page.within('.build') do
+          it 'renders job', :js do
+            page.within('[data-testid="jobs-table"]') do
               expect(page).to have_content("##{job.id}")
                 .and have_content(job.sha[0..7])
                 .and have_content(job.ref)

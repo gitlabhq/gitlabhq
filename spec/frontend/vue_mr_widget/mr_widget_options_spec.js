@@ -906,6 +906,19 @@ describe('MrWidgetOptions', () => {
     });
   });
 
+  describe('merge error', () => {
+    it.each`
+      state       | show     | showText
+      ${'closed'} | ${false} | ${'hides'}
+      ${'merged'} | ${true}  | ${'shows'}
+      ${'open'}   | ${true}  | ${'shows'}
+    `('it $showText merge error when state is $state', ({ state, show }) => {
+      createComponent({ ...mockData, state, merge_error: 'Error!' });
+
+      expect(wrapper.find('[data-testid="merge_error"]').exists()).toBe(show);
+    });
+  });
+
   describe('mock extension', () => {
     let pollRequest;
 

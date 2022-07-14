@@ -17,7 +17,7 @@ module WorkItems
           current_user: @current_user,
           params: @work_item_params.slice(:title, :work_item_type_id),
           spam_params: @spam_params,
-          link_params: { target_issuable: @work_item }
+          link_params: { parent_work_item: @work_item }
         ).execute
 
         if create_and_link_result.error?

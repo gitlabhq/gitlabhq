@@ -174,6 +174,10 @@ class MergeRequest < ApplicationRecord
       merge_request.merge_jid = nil
     end
 
+    before_transition any => :closed do |merge_request|
+      merge_request.merge_error = nil
+    end
+
     after_transition any => :opened do |merge_request|
       merge_request.run_after_commit do
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)

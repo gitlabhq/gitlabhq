@@ -47,6 +47,7 @@ RSpec.describe "Create a work item from a task in a work item's description" do
       expect(work_item.description).to eq("- [ ] #{created_work_item.to_reference}+")
       expect(created_work_item.issue_type).to eq('task')
       expect(created_work_item.work_item_type.base_type).to eq('task')
+      expect(created_work_item.work_item_parent).to eq(work_item)
       expect(mutation_response['workItem']).to include('id' => work_item.to_global_id.to_s)
       expect(mutation_response['newWorkItem']).to include('id' => created_work_item.to_global_id.to_s)
     end

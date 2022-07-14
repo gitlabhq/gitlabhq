@@ -4286,6 +4286,18 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
+    describe 'transition to closed' do
+      context 'with merge error' do
+        subject { create(:merge_request, merge_error: 'merge error') }
+
+        it 'clears merge error' do
+          subject.close!
+
+          expect(subject.reload.merge_error).to eq(nil)
+        end
+      end
+    end
+
     describe 'transition to cannot_be_merged' do
       let(:notification_service) { double(:notification_service) }
       let(:todo_service) { double(:todo_service) }

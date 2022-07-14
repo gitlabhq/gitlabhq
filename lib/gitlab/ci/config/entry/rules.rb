@@ -13,12 +13,7 @@ module Gitlab
           end
 
           def value
-            if ::Feature.enabled?(:ci_value_change_for_processable_and_rules_entry)
-              # `flatten` is needed to make it work with nested `!reference`
-              [super].flatten
-            else
-              [@config].flatten
-            end
+            [super].flatten
           end
 
           def composable_class

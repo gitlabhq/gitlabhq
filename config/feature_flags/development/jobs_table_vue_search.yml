@@ -1,8 +1,0 @@
----
-name: jobs_table_vue_search
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82539
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356007
-milestone: '14.10'
-type: development
-group: group::pipeline execution
-default_enabled: false

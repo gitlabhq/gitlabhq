@@ -1,5 +1,6 @@
 enum LocalWidgetType {
   ASSIGNEES
+  LABELS
   WEIGHT
 }
 
@@ -10,6 +11,12 @@ interface LocalWorkItemWidget {
 type LocalWorkItemAssignees implements LocalWorkItemWidget {
   type: LocalWidgetType!
   nodes: [UserCore]
+}
+
+type LocalWorkItemLabels implements LocalWorkItemWidget {
+  type: LocalWidgetType!
+  allowScopedLabels: Boolean!
+  nodes: [Label!]
 }
 
 type LocalWorkItemWeight implements LocalWorkItemWidget {
@@ -24,6 +31,7 @@ extend type WorkItem {
 input LocalUpdateWorkItemInput {
   id: WorkItemID!
   assignees: [UserCore!]
+  labels: [Label]
   weight: Int
 }
 

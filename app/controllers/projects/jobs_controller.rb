@@ -18,8 +18,6 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :authorize_create_proxy_build!, only: :proxy_websocket_authorize
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
-  before_action :push_jobs_table_vue, only: [:index]
-  before_action :push_jobs_table_vue_search, only: [:index]
   before_action :push_job_log_search, only: [:show]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
 
@@ -249,14 +247,6 @@ class Projects::JobsController < Projects::ApplicationController
     service[:url] = ::Gitlab::UrlHelpers.as_wss(service[:url])
 
     ::Gitlab::Workhorse.channel_websocket(service)
-  end
-
-  def push_jobs_table_vue
-    push_frontend_feature_flag(:jobs_table_vue, @project)
-  end
-
-  def push_jobs_table_vue_search
-    push_frontend_feature_flag(:jobs_table_vue_search, @project)
   end
 
   def push_job_log_search

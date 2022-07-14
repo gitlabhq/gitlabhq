@@ -77,7 +77,7 @@ describe('content_editor/services/markdown_sourcemap', () => {
       render: () => BULLET_LIST_HTML,
     }).deserialize({
       schema: tiptapEditor.schema,
-      content: BULLET_LIST_MARKDOWN,
+      markdown: BULLET_LIST_MARKDOWN,
     });
 
     const expected = doc(

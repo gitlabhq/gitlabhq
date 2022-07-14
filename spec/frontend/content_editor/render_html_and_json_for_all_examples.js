@@ -78,7 +78,7 @@ export const IMPLEMENTATION_ERROR_MSG = 'Error - check implementation';
 async function renderMarkdownToHTMLAndJSON(markdown, schema, deserializer) {
   let prosemirrorDocument;
   try {
-    const { document } = await deserializer.deserialize({ schema, content: markdown });
+    const { document } = await deserializer.deserialize({ schema, markdown });
     prosemirrorDocument = document;
   } catch (e) {
     const errorMsg = `${IMPLEMENTATION_ERROR_MSG}:\n${e.message}`;
