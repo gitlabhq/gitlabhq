@@ -49,15 +49,15 @@ describe('Failed Jobs App', () => {
   });
 
   describe('loading spinner', () => {
-    beforeEach(() => {
-      createComponent(resolverSpy);
-    });
-
     it('displays loading spinner when fetching failed jobs', () => {
+      createComponent(resolverSpy);
+
       expect(findLoadingSpinner().exists()).toBe(true);
     });
 
     it('hides loading spinner after the failed jobs have been fetched', async () => {
+      createComponent(resolverSpy);
+
       await waitForPromises();
 
       expect(findLoadingSpinner().exists()).toBe(false);

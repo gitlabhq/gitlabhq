@@ -162,9 +162,9 @@ describe('Ref selector component', () => {
     });
 
   describe('initialization behavior', () => {
-    beforeEach(createComponent);
-
     it('initializes the dropdown with branches and tags when mounted', () => {
+      createComponent();
+
       return waitForRequests().then(() => {
         expect(branchesApiCallSpy).toHaveBeenCalledTimes(1);
         expect(tagsApiCallSpy).toHaveBeenCalledTimes(1);
@@ -173,6 +173,8 @@ describe('Ref selector component', () => {
     });
 
     it('shows a spinner while network requests are in progress', () => {
+      createComponent();
+
       expect(findLoadingIcon().exists()).toBe(true);
 
       return waitForRequests().then(() => {

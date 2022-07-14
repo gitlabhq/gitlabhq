@@ -36,7 +36,6 @@ import {
   testProjectPath,
   testProviderIds,
   testProviderName,
-  tempProviderLogos,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -53,6 +52,31 @@ const TEST_TRAINING_PROVIDERS_ALL_ENABLED = getSecurityTrainingProvidersData({
   },
 });
 const TEST_TRAINING_PROVIDERS_DEFAULT = TEST_TRAINING_PROVIDERS_ALL_DISABLED;
+
+const TEMP_PROVIDER_LOGOS = {
+  Kontra: {
+    svg: '<svg>Kontra</svg>',
+  },
+  'Secure Code Warrior': {
+    svg: '<svg>Secure Code Warrior</svg>',
+  },
+};
+jest.mock('~/security_configuration/components/constants', () => {
+  return {
+    TEMP_PROVIDER_URLS: jest.requireActual('~/security_configuration/components/constants')
+      .TEMP_PROVIDER_URLS,
+    // NOTE: Jest hoists all mocks to the top so we can't use TEMP_PROVIDER_LOGOS
+    // here directly.
+    TEMP_PROVIDER_LOGOS: {
+      Kontra: {
+        svg: '<svg>Kontra</svg>',
+      },
+      'Secure Code Warrior': {
+        svg: '<svg>Secure Code Warrior</svg>',
+      },
+    },
+  };
+});
 
 describe('TrainingProviderList component', () => {
   let wrapper;
@@ -217,7 +241,6 @@ describe('TrainingProviderList component', () => {
 
     describe('provider logo', () => {
       beforeEach(async () => {
-        wrapper.vm.$options.TEMP_PROVIDER_LOGOS = tempProviderLogos;
         await waitForQueryToBeLoaded();
       });
 
@@ -231,9 +254,9 @@ describe('TrainingProviderList component', () => {
         expect(findLogos().at(provider).attributes('role')).toBe('presentation');
       });
 
-      it.each(providerIndexArray)('renders the svg content for provider %s', (provider) => {
+      it.each(providerIndexArray)('renders the svg content for provider %s', async (provider) => {
         expect(findLogos().at(provider).html()).toContain(
-          tempProviderLogos[testProviderName[provider]].svg,
+          TEMP_PROVIDER_LOGOS[testProviderName[provider]].svg,
         );
       });
     });
@@ -482,7 +505,7 @@ describe('TrainingProviderList component', () => {
       ${'backend error'} | ${jest.fn().mockReturnValue(dismissUserCalloutErrorResponse)}
       ${'network error'} | ${jest.fn().mockRejectedValue()}
     `('when dismissing the callout and a "$errorType" happens', ({ mutationHandler }) => {
-      beforeEach(async () => {
+      it('logs the error to sentry', async () => {
         jest.spyOn(Sentry, 'captureException').mockImplementation();
 
         createApolloProvider({
@@ -500,9 +523,7 @@ describe('TrainingProviderList component', () => {
 
         await waitForQueryToBeLoaded();
         toggleFirstProvider();
-      });
 
-      it('logs the error to sentry', async () => {
         expect(Sentry.captureException).not.toHaveBeenCalled();
 
         await waitForMutationToBeLoaded();

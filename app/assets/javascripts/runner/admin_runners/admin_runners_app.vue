@@ -4,6 +4,14 @@ import { createAlert } from '~/flash';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
+import {
+  fromUrlQueryToSearch,
+  fromSearchToUrl,
+  fromSearchToVariables,
+  isSearchFiltered,
+} from 'ee_else_ce/runner/runner_search_utils';
+import runnersAdminQuery from 'ee_else_ce/runner/graphql/list/admin_runners.query.graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -20,13 +28,6 @@ import { pausedTokenConfig } from '../components/search_tokens/paused_token_conf
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
 import { ADMIN_FILTERED_SEARCH_NAMESPACE, INSTANCE_TYPE, I18N_FETCH_ERROR } from '../constants';
-import runnersAdminQuery from '../graphql/list/admin_runners.query.graphql';
-import {
-  fromUrlQueryToSearch,
-  fromSearchToUrl,
-  fromSearchToVariables,
-  isSearchFiltered,
-} from '../runner_search_utils';
 import { captureException } from '../sentry_utils';
 
 export default {
@@ -105,6 +106,7 @@ export default {
           ...tagTokenConfig,
           recentSuggestionsStorageKey: `${this.$options.filteredSearchNamespace}-recent-tags`,
         },
+        upgradeStatusTokenConfig,
       ];
     },
     isBulkDeleteEnabled() {

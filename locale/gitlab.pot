@@ -33346,6 +33346,9 @@ msgstr ""
 msgid "Runners|Associated with one or more projects"
 msgstr ""
 
+msgid "Runners|Available"
+msgstr ""
+
 msgid "Runners|Available to all projects"
 msgstr ""
 
@@ -33533,6 +33536,9 @@ msgstr ""
 msgid "Runners|Protected"
 msgstr ""
 
+msgid "Runners|Recommended"
+msgstr ""
+
 msgid "Runners|Register a group runner"
 msgstr ""
 
@@ -33700,7 +33706,13 @@ msgstr ""
 msgid "Runners|To install Runner in a container follow the instructions described in the GitLab documentation"
 msgstr ""
 
+msgid "Runners|Up to date"
+msgstr ""
+
 msgid "Runners|Upgrade GitLab Runner to match the version of GitLab you're running. Both %{linkStart}major and minor versions%{linkEnd} should match."
+msgstr ""
+
+msgid "Runners|Upgrade Status"
 msgstr ""
 
 msgid "Runners|Upgrade available"

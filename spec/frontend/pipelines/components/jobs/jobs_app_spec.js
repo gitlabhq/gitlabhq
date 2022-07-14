@@ -50,20 +50,23 @@ describe('Jobs app', () => {
   });
 
   describe('loading spinner', () => {
-    beforeEach(async () => {
+    const setup = async () => {
       createComponent(resolverSpy);
 
       await waitForPromises();
 
       triggerInfiniteScroll();
-    });
+    };
 
-    it('displays loading spinner when fetching more jobs', () => {
+    it('displays loading spinner when fetching more jobs', async () => {
+      await setup();
+
       expect(findLoadingSpinner().exists()).toBe(true);
       expect(findSkeletonLoader().exists()).toBe(false);
     });
 
     it('hides loading spinner after jobs have been fetched', async () => {
+      await setup();
       await waitForPromises();
 
       expect(findLoadingSpinner().exists()).toBe(false);

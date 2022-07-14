@@ -103,7 +103,7 @@ describe('Linked pipeline', () => {
       expect(findCardTooltip().text()).toContain(mockPipeline.project.name);
       expect(findCardTooltip().text()).toContain(mockPipeline.status.label);
       expect(findCardTooltip().text()).toContain(mockPipeline.sourceJob.name);
-      expect(findCardTooltip().text()).toContain(mockPipeline.id);
+      expect(findCardTooltip().text()).toContain(mockPipeline.id.toString());
     });
 
     it('should display multi-project label when pipeline project id is not the same as triggered pipeline project id', () => {

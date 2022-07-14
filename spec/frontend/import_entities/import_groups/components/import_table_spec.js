@@ -50,11 +50,11 @@ describe('import table', () => {
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
 
-  const triggerSelectAllCheckbox = () =>
-    wrapper.find('thead input[type=checkbox]').trigger('click');
+  const triggerSelectAllCheckbox = (checked = true) =>
+    wrapper.find('thead input[type=checkbox]').setChecked(checked);
 
   const selectRow = (idx) =>
-    wrapper.findAll('tbody td input[type=checkbox]').at(idx).trigger('click');
+    wrapper.findAll('tbody td input[type=checkbox]').at(idx).setChecked(true);
 
   const createComponent = ({ bulkImportSourceGroups, importGroups }) => {
     apolloProvider = createMockApollo([], {
@@ -388,7 +388,7 @@ describe('import table', () => {
       expect(findSelectionCount().text()).toMatchInterpolatedText('0 selected');
       await triggerSelectAllCheckbox();
       expect(findSelectionCount().text()).toMatchInterpolatedText('2 selected');
-      await triggerSelectAllCheckbox();
+      await triggerSelectAllCheckbox(false);
       expect(findSelectionCount().text()).toMatchInterpolatedText('0 selected');
     });
 

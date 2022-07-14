@@ -6,7 +6,7 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { s__ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -75,17 +75,17 @@ describe('Job table app', () => {
   });
 
   describe('loading state', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('should display skeleton loader when loading', () => {
+      createComponent();
+
       expect(findSkeletonLoader().exists()).toBe(true);
       expect(findTable().exists()).toBe(false);
       expect(findLoadingSpinner().exists()).toBe(false);
     });
 
     it('when switching tabs only the skeleton loader should show', () => {
+      createComponent();
+
       findTabs().vm.$emit('fetchJobsByStatus', null);
 
       expect(findSkeletonLoader().exists()).toBe(true);
@@ -117,15 +117,17 @@ describe('Job table app', () => {
     });
 
     describe('when infinite scrolling is triggered', () => {
-      beforeEach(() => {
-        triggerInfiniteScroll();
-      });
-
       it('does not display a skeleton loader', () => {
+        triggerInfiniteScroll();
+
         expect(findSkeletonLoader().exists()).toBe(false);
       });
 
       it('handles infinite scrolling by calling fetch more', async () => {
+        triggerInfiniteScroll();
+
+        await nextTick();
+
         const pageSize = 30;
 
         expect(findLoadingSpinner().exists()).toBe(true);

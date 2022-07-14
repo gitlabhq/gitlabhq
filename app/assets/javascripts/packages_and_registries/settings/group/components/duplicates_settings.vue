@@ -77,9 +77,9 @@ export default {
     <gl-toggle
       :data-qa-selector="toggleQaSelector"
       :label="$options.i18n.DUPLICATES_TOGGLE_LABEL"
-      :value="duplicatesAllowed"
+      :value="!duplicatesAllowed"
       :disabled="loading"
-      @change="update(modelNames.allowed, $event)"
+      @change="update(modelNames.allowed, !$event)"
     />
     <gl-form-group
       v-if="!duplicatesAllowed"

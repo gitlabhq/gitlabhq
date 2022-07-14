@@ -14,6 +14,7 @@ import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
+import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
 import { createLocalState } from '~/runner/graphql/list/local_state';
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
@@ -40,10 +41,9 @@ import {
   STATUS_STALE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
-import adminRunnersQuery from '~/runner/graphql/list/admin_runners.query.graphql';
+import adminRunnersQuery from 'ee_else_ce/runner/graphql/list/admin_runners.query.graphql';
 import adminRunnersCountQuery from '~/runner/graphql/list/admin_runners_count.query.graphql';
 import { captureException } from '~/runner/sentry_utils';
-import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 import {
   runnersData,
@@ -86,7 +86,6 @@ describe('AdminRunnersApp', () => {
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
-  const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
   const createComponent = ({
     props = {},
@@ -207,9 +206,9 @@ describe('AdminRunnersApp', () => {
   });
 
   it('sets tokens in the filtered search', () => {
-    createComponent({ mountFn: mountExtended });
+    createComponent();
 
-    expect(findFilteredSearch().props('tokens')).toEqual([
+    expect(findRunnerFilteredSearchBar().props('tokens')).toEqual([
       expect.objectContaining({
         type: PARAM_KEY_PAUSED,
         options: expect.any(Array),
@@ -222,6 +221,7 @@ describe('AdminRunnersApp', () => {
         type: PARAM_KEY_TAG,
         recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
       }),
+      upgradeStatusTokenConfig,
     ]);
   });
 

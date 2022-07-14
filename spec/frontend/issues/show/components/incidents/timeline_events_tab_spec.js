@@ -89,22 +89,28 @@ describe('TimelineEventsTab', () => {
   describe('timelineEventsQuery', () => {
     let mockApollo;
 
-    beforeEach(() => {
+    const setup = () => {
       mockApollo = createMockApolloProvider();
       mountComponent({ mockApollo });
-    });
+    };
 
     it('should request data', () => {
+      setup();
+
       expect(listResponse).toHaveBeenCalled();
     });
 
     it('should show the loading state', () => {
+      setup();
+
       expect(findEmptyState().exists()).toBe(false);
       expect(findLoadingSpinner().exists()).toBe(true);
     });
 
     it('should render the list', async () => {
+      setup();
       await waitForPromises();
+
       expect(findEmptyState().exists()).toBe(false);
       expect(findTimelineEventsList().props('timelineEvents')).toHaveLength(3);
     });

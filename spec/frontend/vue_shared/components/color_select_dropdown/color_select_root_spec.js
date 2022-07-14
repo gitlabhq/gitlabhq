@@ -84,15 +84,15 @@ describe('LabelsSelectRoot', () => {
   });
 
   describe('if the variant is `sidebar`', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('renders SidebarEditableItem component', () => {
+      createComponent();
+
       expect(findSidebarEditableItem().exists()).toBe(true);
     });
 
     it('renders correct props for the SidebarEditableItem component', () => {
+      createComponent();
+
       expect(findSidebarEditableItem().props()).toMatchObject({
         title: wrapper.vm.$options.i18n.widgetTitle,
         canEdit: defaultProps.allowEdit,
@@ -161,16 +161,20 @@ describe('LabelsSelectRoot', () => {
   });
 
   describe('when updating color for epic', () => {
-    beforeEach(() => {
+    const setup = () => {
       createComponent();
       findDropdownContents().vm.$emit('setColor', color);
-    });
+    };
 
     it('sets the loading state', () => {
+      setup();
+
       expect(findSidebarEditableItem().props('loading')).toBe(true);
     });
 
     it('updates color correctly after successful mutation', async () => {
+      setup();
+
       await waitForPromises();
       expect(findDropdownValue().props('selectedColor').color).toEqual(
         updateColorMutationResponse.data.updateIssuableColor.issuable.color,

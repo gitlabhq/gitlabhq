@@ -91,7 +91,6 @@ describe('the graph view selector component', () => {
 
   describe('events', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
       createComponent({
         mountFn: mount,
         props: {

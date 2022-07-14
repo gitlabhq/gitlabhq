@@ -43,7 +43,6 @@ import getGroupRunnersQuery from '~/runner/graphql/list/group_runners.query.grap
 import getGroupRunnersCountQuery from '~/runner/graphql/list/group_runners_count.query.graphql';
 import GroupRunnersApp from '~/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/runner/sentry_utils';
-import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import {
   groupRunnersData,
   groupRunnersDataPaginated,
@@ -85,7 +84,6 @@ describe('GroupRunnersApp', () => {
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
-  const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
     const handlers = [
@@ -186,9 +184,9 @@ describe('GroupRunnersApp', () => {
   });
 
   it('sets tokens in the filtered search', () => {
-    createComponent({ mountFn: mountExtended });
+    createComponent();
 
-    const tokens = findFilteredSearch().props('tokens');
+    const tokens = findRunnerFilteredSearchBar().props('tokens');
 
     expect(tokens).toEqual([
       expect.objectContaining({

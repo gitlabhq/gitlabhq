@@ -64,7 +64,7 @@ describe('Admin statistics app', () => {
         createComponent();
 
         expect(findStats(index).text()).toContain(label);
-        expect(findStats(index).text()).toContain(count);
+        expect(findStats(index).text()).toContain(count.toString());
       });
     });
   });

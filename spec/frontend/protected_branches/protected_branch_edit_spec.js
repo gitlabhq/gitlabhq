@@ -114,27 +114,30 @@ describe('ProtectedBranchEdit', () => {
     });
 
     describe('when clicked', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mock.onPatch(TEST_URL, { protected_branch: { [patchParam]: true } }).replyOnce(200, {});
-
-        toggle.click();
       });
 
-      it('checks and disables button', () => {
+      it('checks and disables button', async () => {
+        await toggle.click();
+
         expect(toggle).toHaveClass(IS_CHECKED_CLASS);
         expect(toggle.querySelector(IS_LOADING_SELECTOR)).not.toBe(null);
         expect(toggle).toHaveClass(IS_DISABLED_CLASS);
       });
 
-      it('sends update to BE', () =>
-        axios.waitForAll().then(() => {
-          // Args are asserted in the `.onPatch` call
-          expect(mock.history.patch).toHaveLength(1);
+      it('sends update to BE', async () => {
+        await toggle.click();
 
-          expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
-          expect(toggle.querySelector(IS_LOADING_SELECTOR)).toBe(null);
-          expect(createFlash).not.toHaveBeenCalled();
-        }));
+        await axios.waitForAll();
+
+        // Args are asserted in the `.onPatch` call
+        expect(mock.history.patch).toHaveLength(1);
+
+        expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
+        expect(toggle.querySelector(IS_LOADING_SELECTOR)).toBe(null);
+        expect(createFlash).not.toHaveBeenCalled();
+      });
     });
 
     describe('when clicked and BE error', () => {
@@ -143,10 +146,11 @@ describe('ProtectedBranchEdit', () => {
         toggle.click();
       });
 
-      it('flashes error', () =>
-        axios.waitForAll().then(() => {
-          expect(createFlash).toHaveBeenCalled();
-        }));
+      it('flashes error', async () => {
+        await axios.waitForAll();
+
+        expect(createFlash).toHaveBeenCalled();
+      });
     });
   });
 });

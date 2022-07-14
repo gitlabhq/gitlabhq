@@ -60,7 +60,7 @@ describe('Deployment action button', () => {
 
     it('renders slot and icon prop correctly', () => {
       expect(wrapper.find(GlIcon).exists()).toBe(true);
-      expect(wrapper.text()).toContain(actionButtonMocks[DEPLOYING]);
+      expect(wrapper.text()).toContain(actionButtonMocks[DEPLOYING].toString());
     });
   });
 

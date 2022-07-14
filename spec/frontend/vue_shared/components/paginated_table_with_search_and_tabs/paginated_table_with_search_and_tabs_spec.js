@@ -195,7 +195,7 @@ describe('AlertManagementEmptyState', () => {
       tabs.forEach((tab, i) => {
         const status = ITEMS_STATUS_TABS[i].status.toLowerCase();
         expect(tab.attributes('data-testid')).toContain(ITEMS_STATUS_TABS[i].status);
-        expect(badges.at(i).text()).toContain(itemsCount[status]);
+        expect(badges.at(i).text()).toContain(itemsCount[status].toString());
       });
     });
   });

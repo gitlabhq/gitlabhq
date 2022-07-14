@@ -103,11 +103,9 @@ describe('Clusters', () => {
     });
 
     describe('when is loaded as a child component', () => {
-      beforeEach(() => {
-        createWrapper({ limit: 6 });
-      });
-
       it("shouldn't render pagination buttons", () => {
+        createWrapper({ limit: 6 });
+
         expect(findPaginatedButtons().exists()).toBe(false);
       });
     });

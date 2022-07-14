@@ -55,7 +55,6 @@ describe('DirtySubmitForm', () => {
   describe('throttling tests', () => {
     beforeEach(() => {
       throttle.mockImplementation(lodash.throttle);
-      jest.useFakeTimers();
     });
 
     afterEach(() => {

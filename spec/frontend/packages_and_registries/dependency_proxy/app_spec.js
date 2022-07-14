@@ -38,6 +38,8 @@ const dummyGon = {
 let originalGon;
 const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${dummyGrouptId}/dependency_proxy/cache`;
 
+Vue.use(VueApollo);
+
 describe('DependencyProxyApp', () => {
   let wrapper;
   let apolloProvider;
@@ -51,8 +53,6 @@ describe('DependencyProxyApp', () => {
   };
 
   function createComponent({ provide = provideDefaults } = {}) {
-    Vue.use(VueApollo);
-
     const requestHandlers = [[getDependencyProxyDetailsQuery, resolver]];
 
     apolloProvider = createMockApollo(requestHandlers);
@@ -103,19 +103,21 @@ describe('DependencyProxyApp', () => {
 
   describe('when the dependency proxy is available', () => {
     describe('when is loading', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
       it('renders the skeleton loader', () => {
+        createComponent();
+
         expect(findSkeletonLoader().exists()).toBe(true);
       });
 
       it('does not render a form group with label', () => {
+        createComponent();
+
         expect(findFormGroup().exists()).toBe(false);
       });
 
       it('does not show the main section', () => {
+        createComponent();
+
         expect(findMainArea().exists()).toBe(false);
       });
     });
@@ -215,23 +217,26 @@ describe('DependencyProxyApp', () => {
             });
 
             describe('triggering page event on list', () => {
-              beforeEach(async () => {
+              it('re-renders the skeleton loader', async () => {
                 findManifestList().vm.$emit('next-page');
-
                 await nextTick();
-              });
 
-              it('re-renders the skeleton loader', () => {
                 expect(findSkeletonLoader().exists()).toBe(true);
               });
 
-              it('renders form group with label', () => {
+              it('renders form group with label', async () => {
+                findManifestList().vm.$emit('next-page');
+                await nextTick();
+
                 expect(findFormGroup().attributes('label')).toEqual(
                   expect.stringMatching(DependencyProxyApp.i18n.proxyImagePrefix),
                 );
               });
 
-              it('does not show the main section', () => {
+              it('does not show the main section', async () => {
+                findManifestList().vm.$emit('next-page');
+                await nextTick();
+
                 expect(findMainArea().exists()).toBe(false);
               });
             });

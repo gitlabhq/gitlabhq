@@ -22,7 +22,7 @@ export const pausedTokenConfig = {
     // contain spaces!
     // see: https://gitlab.com/gitlab-org/gitlab/-/issues/344142
     // see: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1438
-    title: title.replace(' ', '\u00a0'),
+    title: title.replace(/\s/g, '\u00a0'),
   })),
   operators: OPERATOR_IS_ONLY,
 };

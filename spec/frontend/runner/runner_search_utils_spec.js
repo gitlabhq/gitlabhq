@@ -5,7 +5,7 @@ import {
   fromSearchToUrl,
   fromSearchToVariables,
   isSearchFiltered,
-} from '~/runner/runner_search_utils';
+} from 'ee_else_ce/runner/runner_search_utils';
 import { mockSearchExamples } from './mock_data';
 
 describe('search_params.js', () => {

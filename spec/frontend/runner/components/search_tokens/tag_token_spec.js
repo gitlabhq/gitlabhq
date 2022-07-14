@@ -134,8 +134,6 @@ describe('TagToken', () => {
   describe('when the users filters suggestions', () => {
     beforeEach(async () => {
       findGlFilteredSearchToken().vm.$emit('input', { data: mockSearchTerm });
-
-      jest.runAllTimers();
     });
 
     it('requests filtered tags suggestions', async () => {
@@ -145,6 +143,7 @@ describe('TagToken', () => {
     });
 
     it('shows the loading icon', async () => {
+      findGlFilteredSearchToken().vm.$emit('input', { data: mockSearchTerm });
       await nextTick();
 
       expect(findGlLoadingIcon().exists()).toBe(true);

@@ -68,7 +68,7 @@ describe('Environment item', () => {
     describe('With deployment', () => {
       it('should render deployment internal id', () => {
         expect(wrapper.find('.deployment-column span').text()).toContain(
-          environment.last_deployment.iid,
+          environment.last_deployment.iid.toString(),
         );
 
         expect(wrapper.find('.deployment-column span').text()).toContain('#');
@@ -400,7 +400,7 @@ describe('Environment item', () => {
     });
 
     it('should render the number of children in a badge', () => {
-      expect(wrapper.find('.folder-name .badge').text()).toContain(folder.size);
+      expect(wrapper.find('.folder-name .badge').text()).toContain(folder.size.toString());
     });
 
     it('should not render the "Upcoming deployment" column', () => {

@@ -99,9 +99,10 @@ deploy:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
 
-services: # use services to link your app container to the dast job
-  - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    alias: yourapp
+dast:
+  services: # use services to link your app container to the dast job
+    - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+      alias: yourapp
 
 variables:
   DAST_FULL_SCAN_ENABLED: "true" # do a full scan

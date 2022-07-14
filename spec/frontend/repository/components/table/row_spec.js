@@ -244,8 +244,6 @@ describe('Repository table row component', () => {
   });
 
   describe('row visibility', () => {
-    beforeAll(() => jest.useFakeTimers());
-
     beforeEach(() => {
       factory({
         id: '1',
@@ -260,12 +258,13 @@ describe('Repository table row component', () => {
     afterAll(() => jest.useRealTimers());
 
     it('emits a `row-appear` event', async () => {
+      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
       findIntersectionObserver().vm.$emit('appear');
 
       jest.runAllTimers();
 
-      expect(setTimeout).toHaveBeenCalledTimes(1);
-      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), ROW_APPEAR_DELAY);
+      expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+      expect(setTimeoutSpy).toHaveBeenLastCalledWith(expect.any(Function), ROW_APPEAR_DELAY);
       expect(vm.emitted('row-appear')).toEqual([[123]]);
     });
   });

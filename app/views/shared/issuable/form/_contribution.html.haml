@@ -9,11 +9,10 @@
 
 %hr
 
-.form-group.row
-  %label.col-form-label.col-sm-2.pt-sm-0
+.form-group
+  %label
     = _('Contribution')
-  .col-sm-10
-    = form.gitlab_ui_checkbox_component :allow_collaboration,
-      _('Allow commits from members who can merge to the target branch. %{link_start}About this feature.%{link_end}').html_safe % { link_start: contribution_help_link_start, link_end: '</a>'.html_safe },
-      checkbox_options: { disabled: !issuable.can_allow_collaboration?(current_user) },
-      help_text: allow_collaboration_unavailable_reason(issuable)
+  = form.gitlab_ui_checkbox_component :allow_collaboration,
+    _('Allow commits from members who can merge to the target branch. %{link_start}About this feature.%{link_end}').html_safe % { link_start: contribution_help_link_start, link_end: '</a>'.html_safe },
+    checkbox_options: { disabled: !issuable.can_allow_collaboration?(current_user) },
+    help_text: allow_collaboration_unavailable_reason(issuable)

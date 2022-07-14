@@ -665,7 +665,6 @@ describe('Pipelines', () => {
 
         it('stops polling & restarts polling', async () => {
           findStagesDropdownToggle().trigger('click');
-
           await waitForPromises();
 
           expect(cancelMock).not.toHaveBeenCalled();

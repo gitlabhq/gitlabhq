@@ -79,7 +79,7 @@ describe('job group dropdown component', () => {
 
   it('renders button with group name and size', () => {
     expect(findButton().text()).toContain(group.name);
-    expect(findButton().text()).toContain(group.size);
+    expect(findButton().text()).toContain(group.size.toString());
   });
 
   it('renders dropdown with jobs', () => {

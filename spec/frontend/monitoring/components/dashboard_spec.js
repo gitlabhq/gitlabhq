@@ -75,6 +75,7 @@ describe('Dashboard', () => {
     if (store.dispatch.mockReset) {
       store.dispatch.mockReset();
     }
+    wrapper.destroy();
   });
 
   describe('request information to the server', () => {
@@ -569,28 +570,37 @@ describe('Dashboard', () => {
     const findDraggablePanels = () => wrapper.findAll('.js-draggable-panel');
     const findRearrangeButton = () => wrapper.find('.js-rearrange-button');
 
-    beforeEach(async () => {
+    const setup = async () => {
       // call original dispatch
       store.dispatch.mockRestore();
 
       createShallowWrapper({ hasMetrics: true });
       setupStoreWithData(store);
       await nextTick();
-    });
+    };
 
-    it('wraps vuedraggable', () => {
+    it('wraps vuedraggable', async () => {
+      await setup();
+
       expect(findDraggablePanels().exists()).toBe(true);
       expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount);
     });
 
-    it('is disabled by default', () => {
+    it('is disabled by default', async () => {
+      await setup();
+
       expect(findRearrangeButton().exists()).toBe(false);
       expect(findEnabledDraggables().length).toBe(0);
     });
 
     describe('when rearrange is enabled', () => {
       beforeEach(async () => {
-        wrapper.setProps({ rearrangePanelsAvailable: true });
+        // call original dispatch
+        store.dispatch.mockRestore();
+
+        createShallowWrapper({ hasMetrics: true, rearrangePanelsAvailable: true });
+        setupStoreWithData(store);
+
         await nextTick();
       });
 
@@ -602,17 +612,18 @@ describe('Dashboard', () => {
         const findFirstDraggableRemoveButton = () =>
           findDraggablePanels().at(0).find('.js-draggable-remove');
 
-        beforeEach(async () => {
+        it('it enables draggables', async () => {
           findRearrangeButton().vm.$emit('click');
           await nextTick();
-        });
 
-        it('it enables draggables', () => {
           expect(findRearrangeButton().attributes('pressed')).toBeTruthy();
           expect(findEnabledDraggables().wrappers).toEqual(findDraggables().wrappers);
         });
 
         it('metrics can be swapped', async () => {
+          findRearrangeButton().vm.$emit('click');
+          await nextTick();
+
           const firstDraggable = findDraggables().at(0);
           const mockMetrics = [...metricsDashboardViewModel.panelGroups[0].panels];
 
@@ -624,6 +635,7 @@ describe('Dashboard', () => {
           firstDraggable.vm.$emit('input', mockMetrics);
 
           await nextTick();
+
           const { panels } = wrapper.vm.dashboard.panelGroups[0];
 
           expect(panels[1].title).toEqual(firstTitle);
@@ -631,16 +643,21 @@ describe('Dashboard', () => {
         });
 
         it('shows a remove button, which removes a panel', async () => {
+          findRearrangeButton().vm.$emit('click');
+          await nextTick();
+
           expect(findFirstDraggableRemoveButton().find('a').exists()).toBe(true);
 
           expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount);
-          findFirstDraggableRemoveButton().trigger('click');
+          await findFirstDraggableRemoveButton().trigger('click');
 
-          await nextTick();
           expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount - 1);
         });
 
         it('it disables draggables when clicked again', async () => {
+          findRearrangeButton().vm.$emit('click');
+          await nextTick();
+
           findRearrangeButton().vm.$emit('click');
           await nextTick();
           expect(findRearrangeButton().attributes('pressed')).toBeFalsy();

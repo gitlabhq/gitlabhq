@@ -55,10 +55,10 @@ describe('ValueStreamMetrics', () => {
   describe('with successful requests', () => {
     beforeEach(() => {
       mockGetValueStreamSummaryMetrics = jest.fn().mockResolvedValue({ data: metricsData });
-      wrapper = createComponent();
     });
 
     it('will display a loader with pending requests', async () => {
+      wrapper = createComponent();
       await nextTick();
 
       expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
@@ -66,6 +66,7 @@ describe('ValueStreamMetrics', () => {
 
     describe('with data loaded', () => {
       beforeEach(async () => {
+        wrapper = createComponent();
         await waitForPromises();
       });
 

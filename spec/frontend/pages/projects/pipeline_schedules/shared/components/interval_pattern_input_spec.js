@@ -31,10 +31,10 @@ describe('Interval Pattern Input Component', () => {
     wrapper.findAll('input[type="radio"]').wrappers.find((x) => x.element.checked);
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findSelectedRadioKey = () => findSelectedRadio()?.attributes('data-testid');
-  const selectEveryDayRadio = () => findEveryDayRadio().trigger('click');
-  const selectEveryWeekRadio = () => findEveryWeekRadio().trigger('click');
-  const selectEveryMonthRadio = () => findEveryMonthRadio().trigger('click');
-  const selectCustomRadio = () => findCustomRadio().trigger('click');
+  const selectEveryDayRadio = () => findEveryDayRadio().setChecked(true);
+  const selectEveryWeekRadio = () => findEveryWeekRadio().setChecked(true);
+  const selectEveryMonthRadio = () => findEveryMonthRadio().setChecked(true);
+  const selectCustomRadio = () => findCustomRadio().setChecked(true);
 
   const createWrapper = (props = {}, data = {}) => {
     if (wrapper) {

@@ -85,7 +85,7 @@ describe('Project PathNavigation', () => {
           const result = findPathNavigationTitles();
           transformedProjectStagePathData.forEach(({ title, metric }, index) => {
             expect(result[index]).toContain(title);
-            expect(result[index]).toContain(metric);
+            expect(result[index]).toContain(metric.toString());
           });
         });
 

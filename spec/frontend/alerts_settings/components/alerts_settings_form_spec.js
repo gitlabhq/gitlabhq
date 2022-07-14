@@ -265,7 +265,6 @@ describe('AlertsSettingsForm', () => {
     });
 
     it('should not allow a user to test invalid JSON', async () => {
-      jest.useFakeTimers();
       await findJsonTextArea().setValue('Invalid JSON');
 
       jest.runAllTimers();
@@ -278,7 +277,6 @@ describe('AlertsSettingsForm', () => {
     });
 
     it('should allow for the form to be automatically saved if the test payload is successfully submitted', async () => {
-      jest.useFakeTimers();
       await findJsonTextArea().setValue('{ "value": "value" }');
 
       jest.runAllTimers();

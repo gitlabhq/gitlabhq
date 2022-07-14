@@ -44,7 +44,7 @@ describe('Duplicates Settings', () => {
     expect(findToggle().exists()).toBe(true);
     expect(findToggle().props()).toMatchObject({
       label: DUPLICATES_TOGGLE_LABEL,
-      value: defaultProps.duplicatesAllowed,
+      value: !defaultProps.duplicatesAllowed,
     });
   });
 
@@ -54,7 +54,7 @@ describe('Duplicates Settings', () => {
     findToggle().vm.$emit('change', false);
 
     expect(wrapper.emitted('update')).toStrictEqual([
-      [{ [defaultProps.modelNames.allowed]: false }],
+      [{ [defaultProps.modelNames.allowed]: true }],
     ]);
   });
 

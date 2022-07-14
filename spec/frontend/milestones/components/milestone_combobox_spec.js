@@ -154,9 +154,9 @@ describe('Milestone combobox component', () => {
   };
 
   describe('initialization behavior', () => {
-    beforeEach(createComponent);
-
     it('initializes the dropdown with milestones when mounted', () => {
+      createComponent();
+
       return waitForRequests().then(() => {
         expect(projectMilestonesApiCallSpy).toHaveBeenCalledTimes(1);
         expect(groupMilestonesApiCallSpy).toHaveBeenCalledTimes(1);
@@ -164,6 +164,8 @@ describe('Milestone combobox component', () => {
     });
 
     it('shows a spinner while network requests are in progress', () => {
+      createComponent();
+
       expect(findLoadingIcon().exists()).toBe(true);
 
       return waitForRequests().then(() => {
@@ -172,6 +174,8 @@ describe('Milestone combobox component', () => {
     });
 
     it('shows additional links', () => {
+      createComponent();
+
       const links = wrapper.findAll('[data-testid="milestone-combobox-extra-links"]');
       links.wrappers.forEach((item, idx) => {
         expect(item.text()).toBe(extraLinks[idx].text);

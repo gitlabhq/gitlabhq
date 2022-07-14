@@ -17,7 +17,6 @@ describe('Grouped Issues List', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('renders a smart virtual list with the correct props', () => {
@@ -35,13 +34,15 @@ describe('Grouped Issues List', () => {
   });
 
   describe('without data', () => {
-    beforeEach(createComponent);
+    beforeEach(() => {
+      createComponent();
+    });
 
     it.each(['unresolved', 'resolved'])('does not a render a header for %s issues', (issueName) => {
       expect(findHeading(issueName).exists()).toBe(false);
     });
 
-    it.each('resolved', 'unresolved')('does not render report items for %s issues', () => {
+    it.each(['resolved', 'unresolved'])('does not render report items for %s issues', () => {
       expect(wrapper.find(ReportItem).exists()).toBe(false);
     });
   });
