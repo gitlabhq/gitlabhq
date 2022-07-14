@@ -6,10 +6,25 @@ module Integrations
 
     RECIPIENTS_LIMIT = 30
 
-    prop_accessor :recipients, :branches_to_be_notified
-    boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
     validates :recipients, presence: true, if: :validate_recipients?
     validate :number_of_recipients_within_limit, if: :validate_recipients?
+
+    field :recipients,
+      type: 'textarea',
+      help: -> { _('Comma-separated list of email addresses.') },
+      required: true
+
+    field :notify_only_broken_pipelines,
+      type: 'checkbox'
+
+    field :notify_only_default_branch,
+      type: 'checkbox',
+      api_only: true
+
+    field :branches_to_be_notified,
+      type: 'select',
+      title: -> { s_('Integrations|Branches for which notifications are to be sent') },
+      choices: branch_choices
 
     def initialize_properties
       super
@@ -63,21 +78,6 @@ module Integrations
 
     def testable?
       project&.ci_pipelines&.any?
-    end
-
-    def fields
-      [
-        { type: 'textarea',
-          name: 'recipients',
-          help: _('Comma-separated list of email addresses.'),
-          required: true },
-        { type: 'checkbox',
-          name: 'notify_only_broken_pipelines' },
-        { type: 'select',
-          name: 'branches_to_be_notified',
-          title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: self.class.branch_choices }
-      ]
     end
 
     def test(data)

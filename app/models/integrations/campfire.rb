@@ -2,8 +2,33 @@
 
 module Integrations
   class Campfire < Integration
-    prop_accessor :token, :subdomain, :room
     validates :token, presence: true, if: :activated?
+
+    field :token,
+      type: 'password',
+      title: -> { _('Campfire token') },
+      help: -> { s_('CampfireService|API authentication token from Campfire.') },
+      non_empty_password_title: -> { s_('ProjectService|Enter new token') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
+      placeholder: '',
+      required: true
+
+    field :subdomain,
+      title: -> { _('Campfire subdomain (optional)') },
+      placeholder: '',
+      help: -> do
+        ERB::Util.html_escape(
+          s_('CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain.')
+        ) % {
+          code_open: '<code>'.html_safe,
+          code_close: '</code>'.html_safe
+        }
+      end
+
+    field :room,
+      title: -> { _('Campfire room ID (optional)') },
+      placeholder: '123456',
+      help: -> { s_('CampfireService|From the end of the room URL.') }
 
     def title
       'Campfire'
@@ -15,40 +40,16 @@ module Integrations
 
     def help
       docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('api/services', anchor: 'campfire'), target: '_blank', rel: 'noopener noreferrer'
-      s_('CampfireService|Send notifications about push events to Campfire chat rooms. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+
+      ERB::Util.html_escape(
+        s_('CampfireService|Send notifications about push events to Campfire chat rooms. %{docs_link}')
+      ) % {
+        docs_link: docs_link.html_safe
+      }
     end
 
     def self.to_param
       'campfire'
-    end
-
-    def fields
-      [
-        {
-          type: 'password',
-          name: 'token',
-          title: _('Campfire token'),
-          help: s_('CampfireService|API authentication token from Campfire.'),
-          non_empty_password_title: s_('ProjectService|Enter new token'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
-          placeholder: '',
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'subdomain',
-          title: _('Campfire subdomain (optional)'),
-          placeholder: '',
-          help: s_('CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain.') % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-        },
-        {
-          type: 'text',
-          name: 'room',
-          title: _('Campfire room ID (optional)'),
-          placeholder: '123456',
-          help: s_('CampfireService|From the end of the room URL.')
-        }
-      ]
     end
 
     def self.supported_events

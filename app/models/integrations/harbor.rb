@@ -4,7 +4,7 @@ module Integrations
   class Harbor < Integration
     prop_accessor :url, :project_name, :username, :password
 
-    validates :url, public_url: true, presence: true, if: :activated?
+    validates :url, public_url: true, presence: true, addressable_url: { allow_localhost: false, allow_local_network: false }, if: :activated?
     validates :project_name, presence: true, if: :activated?
     validates :username, presence: true, if: :activated?
     validates :password, format: { with: ::Ci::Maskable::REGEX }, if: :activated?

@@ -4,12 +4,54 @@ require 'uri'
 
 module Integrations
   class Irker < Integration
-    prop_accessor :server_host, :server_port, :default_irc_uri
-    prop_accessor :recipients, :channels
-    boolean_accessor :colorize_messages
     validates :recipients, presence: true, if: :validate_recipients?
-
     before_validation :get_channels
+
+    field :server_host,
+      placeholder: 'localhost',
+      title: -> { s_('IrkerService|Server host (optional)') },
+      help: -> { s_('IrkerService|irker daemon hostname (defaults to localhost).') }
+
+    field :server_port,
+      placeholder: 6659,
+      title: -> { s_('IrkerService|Server port (optional)') },
+      help: -> { s_('IrkerService|irker daemon port (defaults to 6659).') }
+
+    field :default_irc_uri,
+      title: -> { s_('IrkerService|Default IRC URI (optional)') },
+      help: -> { s_('IrkerService|URI to add before each recipient.') },
+      placeholder: 'irc://irc.network.net:6697/'
+
+    field :recipients,
+      type: 'textarea',
+      title: -> { s_('IrkerService|Recipients') },
+      placeholder: 'irc[s]://irc.network.net[:port]/#channel',
+      required: true,
+      help: -> do
+        recipients_docs_link = ActionController::Base.helpers.link_to(
+          s_('IrkerService|How to enter channels or users?'),
+          Rails.application.routes.url_helpers.help_page_url(
+            'user/project/integrations/irker',
+            anchor: 'enter-irker-recipients'
+          ),
+          target: '_blank', rel: 'noopener noreferrer'
+        )
+
+        ERB::Util.html_escape(
+          s_('IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}')
+        ) % {
+          recipients_docs_link: recipients_docs_link.html_safe
+        }
+      end
+
+    field :colorize_messages,
+      type: 'checkbox',
+      title: -> { _('Colorize messages') }
+
+    # NOTE: This field is only used internally to store the parsed
+    # channels from the `recipients` field, it should not be exposed
+    # in the UI or API.
+    prop_accessor :channels
 
     def title
       s_('IrkerService|irker (IRC gateway)')
@@ -41,34 +83,6 @@ module Integrations
         server_host: server_host.presence || 'localhost',
         server_port: server_port.presence || 6659
       }
-    end
-
-    def fields
-      recipients_docs_link = ActionController::Base.helpers.link_to(
-        s_('IrkerService|How to enter channels or users?'),
-        Rails.application.routes.url_helpers.help_page_url(
-          'user/project/integrations/irker',
-          anchor: 'enter-irker-recipients'
-        ),
-        target: '_blank', rel: 'noopener noreferrer'
-      )
-
-      [
-        { type: 'text', name: 'server_host', placeholder: 'localhost', title: s_('IrkerService|Server host (optional)'),
-          help: s_('IrkerService|irker daemon hostname (defaults to localhost).') },
-        { type: 'text', name: 'server_port', placeholder: 6659, title: s_('IrkerService|Server port (optional)'),
-          help: s_('IrkerService|irker daemon port (defaults to 6659).') },
-        { type: 'text', name: 'default_irc_uri', title: s_('IrkerService|Default IRC URI (optional)'),
-          help: s_('IrkerService|URI to add before each recipient.'),
-          placeholder: 'irc://irc.network.net:6697/' },
-        { type: 'textarea', name: 'recipients', title: s_('IrkerService|Recipients'),
-          placeholder: 'irc[s]://irc.network.net[:port]/#channel', required: true,
-          help: format(
-            s_('IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}').html_safe,
-            recipients_docs_link: recipients_docs_link.html_safe
-          ) },
-        { type: 'checkbox', name: 'colorize_messages', title: _('Colorize messages') }
-      ]
     end
 
     def help

@@ -21698,13 +21698,7 @@ msgstr ""
 msgid "IssueTracker|The URL to create an issue in the external issue tracker."
 msgstr ""
 
-msgid "IssueTracker|The URL to the project in YouTrack."
-msgstr ""
-
 msgid "IssueTracker|The URL to the project in the external issue tracker."
-msgstr ""
-
-msgid "IssueTracker|The URL to view an issue in the YouTrack project. Must contain %{colon_id}."
 msgstr ""
 
 msgid "IssueTracker|The URL to view an issue in the external issue tracker. Must contain %{colon_id}."
@@ -30219,9 +30213,6 @@ msgid "ProjectService|Enter new password."
 msgstr ""
 
 msgid "ProjectService|Enter new token"
-msgstr ""
-
-msgid "ProjectService|Issue URL"
 msgstr ""
 
 msgid "ProjectService|Jenkins server URL"

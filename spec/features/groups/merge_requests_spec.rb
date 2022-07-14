@@ -86,7 +86,7 @@ RSpec.describe 'Group merge requests page' do
 
       expect(page).to have_selector('.empty-state')
       expect(page).to have_link('Select project to create merge request')
-      expect(page).not_to have_selector('.issues-filters')
+      expect(page).to have_selector('.issues-filters')
     end
 
     context 'with no open merge requests' do

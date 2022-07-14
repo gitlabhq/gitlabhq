@@ -5,7 +5,25 @@ module Integrations
     include HasWebHook
     extend Gitlab::Utils::Override
 
-    prop_accessor :username, :token, :server
+    field :username,
+      title: -> { _('Username') },
+      help: -> { s_('Enter your Packagist username.') },
+      placeholder: '',
+      required: true
+
+    field :token,
+      type: 'password',
+      title: -> { _('Token') },
+      help: -> { s_('Enter your Packagist token.') },
+      non_empty_password_title: -> { s_('ProjectService|Enter new token') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
+      placeholder: '',
+      required: true
+
+    field :server,
+      title: -> { _('Server (optional)') },
+      help: -> { s_('Enter your Packagist server. Defaults to https://packagist.org.') },
+      placeholder: 'https://packagist.org'
 
     validates :username, presence: true, if: :activated?
     validates :token, presence: true, if: :activated?
@@ -20,37 +38,6 @@ module Integrations
 
     def self.to_param
       'packagist'
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'username',
-          title: _('Username'),
-          help: s_('Enter your Packagist username.'),
-          placeholder: '',
-          required: true
-        },
-        {
-          type: 'password',
-          name: 'token',
-          title: _('Token'),
-          help: s_('Enter your Packagist token.'),
-          non_empty_password_title: s_('ProjectService|Enter new token'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
-          placeholder: '',
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'server',
-          title: _('Server (optional)'),
-          help: s_('Enter your Packagist server. Defaults to https://packagist.org.'),
-          placeholder: 'https://packagist.org',
-          required: false
-        }
-      ]
     end
 
     def self.supported_events

@@ -112,6 +112,8 @@ class Group < Namespace
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
   has_many :dependency_proxy_manifests, class_name: 'DependencyProxy::Manifest'
 
+  has_one :harbor_integration, class_name: 'Integrations::Harbor'
+
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::GroupDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 

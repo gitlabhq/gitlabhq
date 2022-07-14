@@ -21,14 +21,44 @@ module Gitlab
         { success: response.success? }
       end
 
-      private
-
-      def url(path)
-        Gitlab::Utils.append_path(base_url, path)
+      def get_repositories(params)
+        get(url("projects/#{integration.project_name}/repositories"), params)
       end
 
-      def base_url
-        Gitlab::Utils.append_path(integration.url, '/api/v2.0/')
+      def get_artifacts(params)
+        repository_name = params.delete(:repository_name)
+        get(url("projects/#{integration.project_name}/repositories/#{repository_name}/artifacts"), params)
+      end
+
+      def get_tags(params)
+        repository_name = params.delete(:repository_name)
+        artifact_name = params.delete(:artifact_name)
+        get(
+          url("projects/#{integration.project_name}/repositories/#{repository_name}/artifacts/#{artifact_name}/tags"),
+          params
+        )
+      end
+
+      private
+
+      def get(path, params = {})
+        options = { headers: headers, query: params }
+        response = Gitlab::HTTP.get(path, options)
+
+        raise Gitlab::Harbor::Client::Error, 'request error' unless response.success?
+
+        {
+          body: Gitlab::Json.parse(response.body),
+          total_count: response.headers['x-total-count'].to_i
+        }
+      rescue JSON::ParserError
+        raise Gitlab::Harbor::Client::Error, 'invalid response format'
+      end
+
+      # url must be used within get method otherwise this would avoid validation by GitLab::HTTP
+      def url(path)
+        base_url = Gitlab::Utils.append_path(integration.url, '/api/v2.0/')
+        Gitlab::Utils.append_path(base_url, path)
       end
 
       def headers

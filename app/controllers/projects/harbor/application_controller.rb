@@ -4,18 +4,12 @@ module Projects
   module Harbor
     class ApplicationController < Projects::ApplicationController
       layout 'project'
-
-      before_action :harbor_registry_enabled!
-      before_action do
-        push_frontend_feature_flag(:harbor_registry_integration)
-      end
-
-      feature_category :integrations
+      include ::Harbor::Access
 
       private
 
-      def harbor_registry_enabled!
-        render_404 unless Feature.enabled?(:harbor_registry_integration)
+      def authorize_read_harbor_registry!
+        render_404 unless can?(current_user, :read_harbor_registry, @project)
       end
     end
   end

@@ -2,8 +2,11 @@
 
 module Integrations
   class Shimo < BaseThirdPartyWiki
-    prop_accessor :external_wiki_url
     validates :external_wiki_url, presence: true, public_url: true, if: :activated?
+
+    field :external_wiki_url,
+      title: -> { s_('Shimo|Shimo Workspace URL') },
+      required: true
 
     def render?
       return false unless Feature.enabled?(:shimo_integration, project)
@@ -29,17 +32,6 @@ module Integrations
       response.body if response.code == 200
     rescue StandardError
       nil
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'external_wiki_url',
-          title: s_('Shimo|Shimo Workspace URL'),
-          required: true
-        }
-      ]
     end
   end
 end

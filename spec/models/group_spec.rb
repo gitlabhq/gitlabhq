@@ -42,6 +42,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
     it { is_expected.to have_one(:crm_settings) }
     it { is_expected.to have_one(:group_feature) }
+    it { is_expected.to have_one(:harbor_integration) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }

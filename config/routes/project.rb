@@ -457,6 +457,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
         end
+
+        namespace :harbor do
+          resources :repositories, only: [:index, :show] do
+            resources :artifacts, only: [:index] do
+              resources :tags, only: [:index]
+            end
+          end
+        end
       end
       # End of the /-/ scope.
 
@@ -522,9 +530,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :container_registry, only: [:index, :destroy, :show], # rubocop: disable Cop/PutProjectRoutesUnderScope
                                      controller: 'registry/repositories'
-
-      resources :harbor_registry, only: [:index, :show], # rubocop: disable Cop/PutProjectRoutesUnderScope
-                                  controller: 'harbor/repositories'
 
       namespace :registry do
         resources :repository, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
