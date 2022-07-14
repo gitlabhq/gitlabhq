@@ -179,8 +179,7 @@ The header is created if the returned `errors` object is empty.
 FLAG:
 On self-managed GitLab, by default the UI for this feature is not available. To make it available per group, ask an administrator to
 [enable the feature flag](../administration/feature_flags.md) named `custom_headers_streaming_audit_events_ui`. On GitLab.com, the UI for this feature is
-not available. The UI for this feature is not ready for production use. Custom header values are not saved by the GitLab UI. To track progress on saving
-custom header values in the GitLab UI, [see the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361631).
+not available. The UI for this feature is not ready for production use.
 
 Users with at least the Owner role for a group can add event streaming destinations and custom HTTP headers for it:
 

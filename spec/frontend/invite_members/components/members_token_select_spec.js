@@ -16,6 +16,7 @@ const createComponent = (props) => {
   return shallowMount(MembersTokenSelect, {
     propsData: {
       ariaLabelledby: label,
+      invalidMembers: {},
       placeholder,
       ...props,
     },
@@ -124,12 +125,14 @@ describe('MembersTokenSelect', () => {
         findTokenSelector().vm.$emit('token-remove', [user1]);
 
         expect(wrapper.emitted('clear')).toEqual([[]]);
+        expect(wrapper.emitted('token-remove')).toBeUndefined();
       });
 
-      it('does not emit `clear` event when there are still tokens selected', () => {
+      it('emits `token-remove` event with the token when there are still tokens selected', () => {
         findTokenSelector().vm.$emit('input', [user1, user2]);
         findTokenSelector().vm.$emit('token-remove', [user1]);
 
+        expect(wrapper.emitted('token-remove')).toEqual([[[user1]]]);
         expect(wrapper.emitted('clear')).toBeUndefined();
       });
     });

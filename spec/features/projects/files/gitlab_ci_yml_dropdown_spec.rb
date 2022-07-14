@@ -30,8 +30,8 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
     wait_for_requests
 
     expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'Apply a template')
-    expect(editor_get_value).to have_content('This file is a template, and might need editing before it works on your project')
-    expect(editor_get_value).to have_content('jekyll build -d test')
+    expect(find('.monaco-editor')).to have_content('This file is a template, and might need editing before it works on your project')
+    expect(find('.monaco-editor')).to have_content('jekyll build -d test')
   end
 
   context 'when template param is provided' do
@@ -41,8 +41,8 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
       wait_for_requests
 
       expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'Apply a template')
-      expect(editor_get_value).to have_content('This file is a template, and might need editing before it works on your project')
-      expect(editor_get_value).to have_content('jekyll build -d test')
+      expect(find('.monaco-editor')).to have_content('This file is a template, and might need editing before it works on your project')
+      expect(find('.monaco-editor')).to have_content('jekyll build -d test')
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
       wait_for_requests
 
       expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'Apply a template')
-      expect(editor_get_value).to have_content('')
+      expect(find('.monaco-editor')).to have_content('')
     end
   end
 
@@ -64,7 +64,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
     it 'leaves the editor empty' do
       wait_for_requests
 
-      expect(editor_get_value).to have_content('')
+      expect(find('.monaco-editor')).to have_content('')
     end
   end
 end

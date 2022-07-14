@@ -1,4 +1,4 @@
-import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -26,6 +26,7 @@ describe('WorkItemDetail component', () => {
   const initialSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findCloseButton = () => wrapper.findComponent(GlButton);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findWorkItemState = () => wrapper.findComponent(WorkItemState);
@@ -34,6 +35,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemWeight = () => wrapper.findComponent(WorkItemWeight);
 
   const createComponent = ({
+    isModal = false,
     workItemId = workItemQueryResponse.data.workItem.id,
     handler = successHandler,
     subscriptionHandler = initialSubscriptionHandler,
@@ -51,7 +53,7 @@ describe('WorkItemDetail component', () => {
           typePolicies: includeWidgets ? temporaryConfig.cacheConfig.typePolicies : {},
         },
       ),
-      propsData: { workItemId },
+      propsData: { isModal, workItemId },
       provide: {
         glFeatures: {
           workItemsMvc2: workItemsMvc2Enabled,
@@ -96,6 +98,36 @@ describe('WorkItemDetail component', () => {
       expect(findSkeleton().exists()).toBe(false);
       expect(findWorkItemState().exists()).toBe(true);
       expect(findWorkItemTitle().exists()).toBe(true);
+    });
+  });
+
+  describe('close button', () => {
+    describe('when isModal prop is false', () => {
+      it('does not render', async () => {
+        createComponent({ isModal: false });
+        await waitForPromises();
+
+        expect(findCloseButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when isModal prop is true', () => {
+      it('renders', async () => {
+        createComponent({ isModal: true });
+        await waitForPromises();
+
+        expect(findCloseButton().props('icon')).toBe('close');
+        expect(findCloseButton().attributes('aria-label')).toBe('Close');
+      });
+
+      it('emits `close` event when clicked', async () => {
+        createComponent({ isModal: true });
+        await waitForPromises();
+
+        findCloseButton().vm.$emit('click');
+
+        expect(wrapper.emitted('close')).toEqual([[]]);
+      });
     });
   });
 

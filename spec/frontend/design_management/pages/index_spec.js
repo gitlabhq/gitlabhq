@@ -1,5 +1,4 @@
 import { GlEmptyState } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 
 import VueApollo, { ApolloMutation } from 'vue-apollo';
@@ -9,6 +8,7 @@ import VueDraggable from 'vuedraggable';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import DeleteButton from '~/design_management/components/delete_button.vue';
@@ -23,6 +23,7 @@ import * as utils from '~/design_management/utils/design_management_utils';
 import {
   EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE,
   EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE,
+  UPLOAD_DESIGN_ERROR,
 } from '~/design_management/utils/error_messages';
 import {
   DESIGN_TRACKING_PAGE_NAME,
@@ -101,20 +102,20 @@ describe('Design management index page', () => {
   let moveDesignHandler;
 
   const findDesignCheckboxes = () => wrapper.findAll('.design-checkbox');
-  const findSelectAllButton = () => wrapper.find('[data-testid="select-all-designs-button"');
-  const findToolbar = () => wrapper.find('.qa-selector-toolbar');
-  const findDesignCollectionIsCopying = () =>
-    wrapper.find('[data-testid="design-collection-is-copying"');
-  const findDeleteButton = () => wrapper.find(DeleteButton);
-  const findDropzone = () => wrapper.findAll(DesignDropzone).at(0);
+  const findSelectAllButton = () => wrapper.findByTestId('select-all-designs-button');
+  const findToolbar = () => wrapper.findByTestId('design-selector-toolbar');
+  const findDesignCollectionIsCopying = () => wrapper.findByTestId('design-collection-is-copying');
+  const findDeleteButton = () => wrapper.findComponent(DeleteButton);
+  const findDropzone = () => wrapper.findAllComponents(DesignDropzone).at(0);
   const dropzoneClasses = () => findDropzone().classes();
-  const findDropzoneWrapper = () => wrapper.find('[data-testid="design-dropzone-wrapper"]');
-  const findFirstDropzoneWithDesign = () => wrapper.findAll(DesignDropzone).at(1);
-  const findDesignsWrapper = () => wrapper.find('[data-testid="designs-root"]');
+  const findDropzoneWrapper = () => wrapper.findByTestId('design-dropzone-wrapper');
+  const findFirstDropzoneWithDesign = () => wrapper.findAllComponents(DesignDropzone).at(1);
+  const findDesignsWrapper = () => wrapper.findByTestId('designs-root');
   const findDesigns = () => wrapper.findAll(Design);
   const draggableAttributes = () => wrapper.find(VueDraggable).vm.$attrs;
-  const findDesignUploadButton = () => wrapper.find('[data-testid="design-upload-button"]');
-  const findDesignToolbarWrapper = () => wrapper.find('[data-testid="design-toolbar-wrapper"]');
+  const findDesignUploadButton = () => wrapper.findByTestId('design-upload-button');
+  const findDesignToolbarWrapper = () => wrapper.findByTestId('design-toolbar-wrapper');
+  const findDesignUpdateAlert = () => wrapper.findByTestId('design-update-alert');
 
   async function moveDesigns(localWrapper) {
     await waitForPromises();
@@ -149,7 +150,7 @@ describe('Design management index page', () => {
       mutate,
     };
 
-    wrapper = shallowMount(Index, {
+    wrapper = shallowMountExtended(Index, {
       data() {
         return {
           allVersions,
@@ -185,7 +186,7 @@ describe('Design management index page', () => {
     ];
 
     fakeApollo = createMockApollo(requestHandlers, {}, { addTypename: true });
-    wrapper = shallowMount(Index, {
+    wrapper = shallowMountExtended(Index, {
       apolloProvider: fakeApollo,
       router,
       stubs: { VueDraggable },
@@ -412,7 +413,8 @@ describe('Design management index page', () => {
       await nextTick();
       expect(wrapper.vm.filesToBeSaved).toEqual([]);
       expect(wrapper.vm.isSaving).toBeFalsy();
-      expect(createFlash).toHaveBeenCalled();
+      expect(findDesignUpdateAlert().exists()).toBe(true);
+      expect(findDesignUpdateAlert().text()).toBe(UPLOAD_DESIGN_ERROR);
     });
 
     it('does not call mutation if createDesign is false', () => {
@@ -431,19 +433,23 @@ describe('Design management index page', () => {
 
         wrapper.vm.onUploadDesign(new Array(MAXIMUM_FILE_UPLOAD_LIMIT).fill(mockDesigns[0]));
 
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(findDesignUpdateAlert().exists()).toBe(false);
       });
 
-      it('warns when too many files are uploaded', () => {
+      it('warns when too many files are uploaded', async () => {
         createComponent();
 
         wrapper.vm.onUploadDesign(new Array(MAXIMUM_FILE_UPLOAD_LIMIT + 1).fill(mockDesigns[0]));
+        await nextTick();
 
-        expect(createFlash).toHaveBeenCalled();
+        expect(findDesignUpdateAlert().exists()).toBe(true);
+        expect(findDesignUpdateAlert().text()).toBe(
+          'The maximum number of designs allowed to be uploaded is 10. Please try again.',
+        );
       });
     });
 
-    it('flashes warning if designs are skipped', async () => {
+    it('displays warning if designs are skipped', async () => {
       createComponent({
         mockMutate: () =>
           Promise.resolve({
@@ -458,11 +464,8 @@ describe('Design management index page', () => {
       ]);
 
       await uploadDesign;
-      expect(createFlash).toHaveBeenCalledTimes(1);
-      expect(createFlash).toHaveBeenCalledWith({
-        message: 'Upload skipped. test.jpg did not change.',
-        types: 'warning',
-      });
+      expect(findDesignUpdateAlert().exists()).toBe(true);
+      expect(findDesignUpdateAlert().text()).toBe('Upload skipped. test.jpg did not change.');
     });
 
     describe('dragging onto an existing design', () => {
@@ -495,13 +498,17 @@ describe('Design management index page', () => {
         description             | eventPayload                              | message
         ${'> 1 file'}           | ${[{ name: 'test' }, { name: 'test-2' }]} | ${EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE}
         ${'different filename'} | ${[{ name: 'wrong-name' }]}               | ${EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE}
-      `('calls createFlash when upload has $description', ({ eventPayload, message }) => {
-        const designDropzone = findFirstDropzoneWithDesign();
-        designDropzone.vm.$emit('change', eventPayload);
+      `(
+        'displays GlAlert component when upload has $description',
+        async ({ eventPayload, message }) => {
+          expect(findDesignUpdateAlert().exists()).toBe(false);
+          const designDropzone = findFirstDropzoneWithDesign();
+          await designDropzone.vm.$emit('change', eventPayload);
 
-        expect(createFlash).toHaveBeenCalledTimes(1);
-        expect(createFlash).toHaveBeenCalledWith({ message });
-      });
+          expect(findDesignUpdateAlert().exists()).toBe(true);
+          expect(findDesignUpdateAlert().text()).toBe(message);
+        },
+      );
     });
 
     describe('tracking', () => {
@@ -804,7 +811,7 @@ describe('Design management index page', () => {
       expect(createFlash).toHaveBeenCalledWith({ message: 'Houston, we have a problem' });
     });
 
-    it('displays flash if mutation had a non-recoverable error', async () => {
+    it('displays alert if mutation had a non-recoverable error', async () => {
       createComponentWithApollo({
         moveHandler: jest.fn().mockRejectedValue('Error'),
       });
@@ -812,9 +819,10 @@ describe('Design management index page', () => {
       await moveDesigns(wrapper);
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalledWith({
-        message: 'Something went wrong when reordering designs. Please try again',
-      });
+      expect(findDesignUpdateAlert().exists()).toBe(true);
+      expect(findDesignUpdateAlert().text()).toBe(
+        'Something went wrong when reordering designs. Please try again',
+      );
     });
   });
 });

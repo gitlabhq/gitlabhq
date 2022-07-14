@@ -3,6 +3,7 @@ import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlIcon, GlSprintf } from '@
 import { debounce } from 'lodash';
 import { __ } from '~/locale';
 import { getUsers } from '~/rest_api';
+import { memberName } from '../utils/member_utils';
 import { SEARCH_DELAY, USERS_FILTER_ALL, USERS_FILTER_SAML_PROVIDER_ID } from '../constants';
 
 export default {
@@ -23,7 +24,7 @@ export default {
       type: String,
       required: true,
     },
-    validationState: {
+    exceptionState: {
       type: Boolean,
       required: false,
       default: false,
@@ -37,6 +38,10 @@ export default {
       type: Number,
       required: false,
       default: null,
+    },
+    invalidMembers: {
+      type: Object,
+      required: true,
     },
   },
   data() {
@@ -109,12 +114,17 @@ export default {
 
       this.hasBeenFocused = true;
     },
-    handleTokenRemove() {
+    handleTokenRemove(value) {
       if (this.selectedTokens.length) {
+        this.$emit('token-remove', value);
+
         return;
       }
 
       this.$emit('clear');
+    },
+    hasError(token) {
+      return Object.keys(this.invalidMembers).includes(memberName(token));
     },
   },
   defaultQueryOptions: { without_project_bots: true, active: true },
@@ -127,7 +137,7 @@ export default {
 <template>
   <gl-token-selector
     v-model="selectedTokens"
-    :state="validationState"
+    :state="exceptionState"
     :dropdown-items="users"
     :loading="loading"
     :allow-user-defined-tokens="emailIsValid"
@@ -145,8 +155,19 @@ export default {
     @token-remove="handleTokenRemove"
   >
     <template #token-content="{ token }">
-      <gl-icon v-if="validationState === false" name="error" :size="16" class="gl-mr-2" />
-      <gl-avatar v-else-if="token.avatar_url" :src="token.avatar_url" :size="16" />
+      <gl-icon
+        v-if="hasError(token)"
+        name="error"
+        :size="16"
+        class="gl-mr-2"
+        :data-testid="`error-icon-${token.id}`"
+      />
+      <gl-avatar
+        v-else-if="token.avatar_url"
+        :src="token.avatar_url"
+        :size="16"
+        data-testid="token-avatar"
+      />
       {{ token.name }}
     </template>
 

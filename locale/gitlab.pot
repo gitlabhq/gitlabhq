@@ -21398,6 +21398,9 @@ msgstr ""
 msgid "InviteMembersModal|Members were successfully added"
 msgstr ""
 
+msgid "InviteMembersModal|Review the invite errors and try again:"
+msgstr ""
+
 msgid "InviteMembersModal|Search for a group to invite"
 msgstr ""
 
@@ -21412,6 +21415,11 @@ msgstr ""
 
 msgid "InviteMembersModal|Something went wrong"
 msgstr ""
+
+msgid "InviteMembersModal|The following member couldn't be invited"
+msgid_plural "InviteMembersModal|The following %d members couldn't be invited"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "InviteMembersModal|This feature is disabled until this group has space for more members."
 msgstr ""
@@ -44202,9 +44210,6 @@ msgstr ""
 msgid "You can only transfer the project to namespaces you manage."
 msgstr ""
 
-msgid "You can only upload one design when dropping onto an existing design."
-msgstr ""
-
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
@@ -44478,9 +44483,6 @@ msgid "You must sign in to search for specific terms."
 msgstr ""
 
 msgid "You must solve the CAPTCHA in order to submit"
-msgstr ""
-
-msgid "You must upload a file with the same file name when dropping onto an existing design."
 msgstr ""
 
 msgid "You need a different license to enable FileLocks feature"
@@ -44939,6 +44941,12 @@ msgid "Your subscription will expire in %{remaining_days} day."
 msgid_plural "Your subscription will expire in %{remaining_days} days."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Your update failed. You can only upload one design when dropping onto an existing design."
+msgstr ""
+
+msgid "Your update failed. You must upload a file with the same file name when dropping onto an existing design."
+msgstr ""
 
 msgid "Your username is %{username}."
 msgstr ""

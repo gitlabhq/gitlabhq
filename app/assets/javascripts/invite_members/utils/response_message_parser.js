@@ -1,15 +1,4 @@
-import { isString } from 'lodash';
-
-function responseKeyedMessageParsed(keyedMessage) {
-  try {
-    const keys = Object.keys(keyedMessage);
-    const msg = keyedMessage[keys[0]];
-
-    return msg;
-  } catch {
-    return '';
-  }
-}
+import { isString, isArray } from 'lodash';
 
 export function responseMessageFromError(response) {
   if (!response?.response?.data) {
@@ -23,9 +12,9 @@ export function responseMessageFromError(response) {
   return data.error || data.message?.error || data.message || '';
 }
 
-export function responseMessageFromSuccess(response) {
+export function responseFromSuccess(response) {
   if (!response?.data) {
-    return '';
+    return { error: false };
   }
 
   const { data } = response;
@@ -34,11 +23,19 @@ export function responseMessageFromSuccess(response) {
     const { message } = data;
 
     if (isString(message)) {
-      return message;
+      return { message, error: true };
     }
 
-    return responseKeyedMessageParsed(message);
+    if (isArray(message)) {
+      return { message: message[0], error: true };
+    }
+    // we assume object now with our keyed format
+    return { message: { ...message }, error: true };
   }
 
-  return data.error || '';
+  if (data.error) {
+    return { message: data.error, error: true };
+  }
+
+  return { error: false };
 }

@@ -26,13 +26,17 @@ export const user2 = { id: 2, name: 'Name Two', username: 'one_2', avatar_url: '
 export const user3 = {
   id: 'user-defined-token',
   name: 'email@example.com',
-  username: 'one_2',
   avatar_url: '',
 };
 export const user4 = {
-  id: 'user-defined-token',
+  id: 'user-defined-token2',
   name: 'email4@example.com',
-  username: 'one_4',
+  avatar_url: '',
+};
+export const user5 = {
+  id: '3',
+  username: 'root',
+  name: 'root',
   avatar_url: '',
 };
 

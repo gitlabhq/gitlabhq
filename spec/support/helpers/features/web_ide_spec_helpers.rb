@@ -100,10 +100,6 @@ module WebIdeSpecHelpers
     editor_set_value(value)
   end
 
-  def ide_editor_value
-    editor_get_value
-  end
-
   def ide_commit_tab_selector
     ide_tab_selector('commit')
   end

@@ -9,18 +9,28 @@ module Spec
             click_on 'Invite members'
 
             page.within invite_modal_selector do
-              Array.wrap(names).each do |name|
-                find(member_dropdown_selector).set(name)
-
-                wait_for_requests
-                click_button name
-              end
-
+              select_members(names)
               choose_options(role, expires_at)
-
               click_button 'Invite'
+            end
 
-              page.refresh if refresh
+            page.refresh if refresh
+          end
+
+          def input_invites(names)
+            click_on 'Invite members'
+
+            page.within invite_modal_selector do
+              select_members(names)
+            end
+          end
+
+          def select_members(names)
+            Array.wrap(names).each do |name|
+              find(member_dropdown_selector).set(name)
+
+              wait_for_requests
+              click_button name
             end
           end
 
@@ -62,6 +72,24 @@ module Spec
 
           def invite_modal_selector
             '[data-testid="invite-modal"]'
+          end
+
+          def member_token_error_selector(id)
+            "[data-testid='error-icon-#{id}']"
+          end
+
+          def member_token_avatar_selector
+            "[data-testid='token-avatar']"
+          end
+
+          def member_token_selector(id)
+            "[data-token-id='#{id}']"
+          end
+
+          def remove_token(id)
+            page.within member_token_selector(id) do
+              find('[data-testid="close-icon"]').click
+            end
           end
 
           def expect_to_have_group(group)

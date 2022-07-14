@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   i18n,
@@ -20,6 +20,7 @@ export default {
   i18n,
   components: {
     GlAlert,
+    GlButton,
     GlSkeletonLoader,
     WorkItemAssignees,
     WorkItemActions,
@@ -30,6 +31,11 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   props: {
+    isModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemId: {
       type: String,
       required: false,
@@ -113,24 +119,29 @@ export default {
       </gl-skeleton-loader>
     </div>
     <template v-else>
-      <div class="gl-font-weight-bold gl-text-secondary gl-mb-2">{{ workItemType }}</div>
-      <div class="gl-display-flex gl-align-items-start">
-        <work-item-title
-          :work-item-id="workItem.id"
-          :work-item-title="workItem.title"
-          :work-item-type="workItemType"
-          :work-item-parent-id="workItemParentId"
-          class="gl-mr-5"
-          @error="error = $event"
-        />
+      <div class="gl-display-flex gl-align-items-center">
+        <span class="gl-font-weight-bold gl-text-secondary gl-mr-auto">{{ workItemType }}</span>
         <work-item-actions
           :work-item-id="workItem.id"
           :can-delete="canDelete"
-          class="gl-mt-4"
           @deleteWorkItem="$emit('deleteWorkItem')"
           @error="error = $event"
         />
+        <gl-button
+          v-if="isModal"
+          category="tertiary"
+          icon="close"
+          :aria-label="__('Close')"
+          @click="$emit('close')"
+        />
       </div>
+      <work-item-title
+        :work-item-id="workItem.id"
+        :work-item-title="workItem.title"
+        :work-item-type="workItemType"
+        :work-item-parent-id="workItemParentId"
+        @error="error = $event"
+      />
       <work-item-state
         :work-item="workItem"
         :work-item-parent-id="workItemParentId"

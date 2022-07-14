@@ -1,5 +1,5 @@
 import {
-  responseMessageFromSuccess,
+  responseFromSuccess,
   responseMessageFromError,
 } from '~/invite_members/utils/response_message_parser';
 import { invitationsApiResponse } from '../mock_data/api_responses';
@@ -11,12 +11,12 @@ describe('Response message parser', () => {
     const exampleKeyedMsg = { 'email@example.com': expectedMessage };
 
     it.each([
-      [{ data: { message: expectedMessage } }],
-      [{ data: { error: expectedMessage } }],
-      [{ data: { message: [expectedMessage] } }],
-      [{ data: { message: exampleKeyedMsg } }],
-    ])(`returns "${expectedMessage}" from success response: %j`, (successResponse) => {
-      expect(responseMessageFromSuccess(successResponse)).toBe(expectedMessage);
+      [{ data: { message: expectedMessage } }, { error: true, message: expectedMessage }],
+      [{ data: { error: expectedMessage } }, { error: true, message: expectedMessage }],
+      [{ data: { message: [expectedMessage] } }, { error: true, message: expectedMessage }],
+      [{ data: { message: exampleKeyedMsg } }, { error: true, message: { ...exampleKeyedMsg } }],
+    ])(`returns "${expectedMessage}" from success response: %j`, (successResponse, result) => {
+      expect(responseFromSuccess(successResponse)).toStrictEqual(result);
     });
   });
 
@@ -30,15 +30,18 @@ describe('Response message parser', () => {
     });
   });
 
-  describe('displaying only the first error when a response has messages for multiple users', () => {
-    const expected =
-      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.";
-
+  describe('displaying all errors when a response has messages for multiple users', () => {
     it.each([
-      [{ data: invitationsApiResponse.MULTIPLE_RESTRICTED }],
-      [{ data: invitationsApiResponse.EMAIL_RESTRICTED }],
-    ])(`returns "${expectedMessage}" from success response: %j`, (restrictedResponse) => {
-      expect(responseMessageFromSuccess(restrictedResponse)).toBe(expected);
+      [
+        { data: invitationsApiResponse.MULTIPLE_RESTRICTED },
+        { error: true, message: { ...invitationsApiResponse.MULTIPLE_RESTRICTED.message } },
+      ],
+      [
+        { data: invitationsApiResponse.EMAIL_RESTRICTED },
+        { error: true, message: { ...invitationsApiResponse.EMAIL_RESTRICTED.message } },
+      ],
+    ])(`returns "${expectedMessage}" from success response: %j`, (restrictedResponse, result) => {
+      expect(responseFromSuccess(restrictedResponse)).toStrictEqual(result);
     });
   });
 });

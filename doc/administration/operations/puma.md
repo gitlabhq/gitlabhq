@@ -373,6 +373,34 @@ separate Rails process to debug the issue:
 1. In a new window, run `top`. It should show this Ruby process using 100% CPU. Write down the PID.
 1. Follow step 2 from the previous section on using GDB.
 
+### GitLab: API is not accessible
+
+This often occurs when GitLab Shell attempts to request authorization via the
+[internal API](../../development/internal_api/index.md) (for example, `http://localhost:8080/api/v4/internal/allowed`), and
+something in the check fails. There are many reasons why this may happen:
+
+1. Timeout connecting to a database (for example, PostgreSQL or Redis)
+1. Error in Git hooks or push rules
+1. Error accessing the repository (for example, stale NFS handles)
+
+To diagnose this problem, try to reproduce the problem and then see if there
+is a Puma worker that is spinning via `top`. Try to use the `gdb`
+techniques above. In addition, using `strace` may help isolate issues:
+
+```shell
+strace -ttTfyyy -s 1024 -p <PID of puma worker> -o /tmp/puma.txt
+```
+
+If you cannot isolate which Puma worker is the issue, try to run `strace`
+on all the Puma workers to see where the
+[`/internal/allowed`](../../development/internal_api/index.md) endpoint gets stuck:
+
+```shell
+ps auwx | grep puma | awk '{ print " -p " $2}' | xargs  strace -ttTfyyy -s 1024 -o /tmp/puma.txt
+```
+
+The output in `/tmp/puma.txt` may help diagnose the root cause.
+
 ## Related topics
 
 - [Use a dedicated metrics server to export web metrics](../monitoring/prometheus/puma_exporter.md)
