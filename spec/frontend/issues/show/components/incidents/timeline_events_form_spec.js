@@ -38,6 +38,8 @@ describe('Timeline events form', () => {
   };
 
   afterEach(() => {
+    addEventResponse.mockReset();
+    createAlert.mockReset();
     if (wrapper) {
       wrapper.destroy();
     }
@@ -127,15 +129,30 @@ describe('Timeline events form', () => {
   });
 
   describe('error handling', () => {
-    const mockApollo = createMockApolloProvider(timelineEventsCreateEventError);
-    beforeEach(() => {
-      mountComponent({ mockApollo, mountMethod: mountExtended });
+    it('should show an error when submission returns an error', async () => {
+      const expectedAlertArgs = {
+        message: 'Error creating incident timeline event: Create error',
+      };
+      addEventResponse.mockResolvedValueOnce(timelineEventsCreateEventError);
+      mountComponent({ mockApollo: createMockApolloProvider(), mountMethod: mountExtended });
+
+      await submitForm();
+
+      expect(createAlert).toHaveBeenCalledWith(expectedAlertArgs);
     });
 
     it('should show an error when submission fails', async () => {
+      const expectedAlertArgs = {
+        captureError: true,
+        error: new Error(),
+        message: 'Something went wrong while creating the incident timeline event.',
+      };
+      addEventResponse.mockRejectedValueOnce();
+      mountComponent({ mockApollo: createMockApolloProvider(), mountMethod: mountExtended });
+
       await submitForm();
 
-      expect(createAlert).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalledWith(expectedAlertArgs);
     });
   });
 });

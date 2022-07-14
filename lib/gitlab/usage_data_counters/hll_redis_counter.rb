@@ -33,13 +33,13 @@ module Gitlab
         pipeline_authoring
         quickactions
         search
-        testing
         user_packages
       ].freeze
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
         error_tracking
         ide_edit
+        testing
       ].freeze
 
       # Track event on entity_id

@@ -14,13 +14,14 @@ import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import { temporaryConfig } from '~/work_items/graphql/provider';
-import { workItemTitleSubscriptionResponse, workItemQueryResponse } from '../mock_data';
+import { workItemTitleSubscriptionResponse, workItemResponseFactory } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
   let wrapper;
 
   Vue.use(VueApollo);
 
+  const workItemQueryResponse = workItemResponseFactory();
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
   const initialSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
 
@@ -107,7 +108,6 @@ describe('WorkItemDetail component', () => {
 
     it('shows description widget if description loads', async () => {
       createComponent();
-
       await waitForPromises();
 
       expect(findWorkItemDescription().exists()).toBe(true);
@@ -145,7 +145,6 @@ describe('WorkItemDetail component', () => {
     it('renders assignees component when assignees widget is returned from the API', async () => {
       createComponent({
         workItemsMvc2Enabled: true,
-        includeWidgets: true,
       });
       await waitForPromises();
 
@@ -155,7 +154,9 @@ describe('WorkItemDetail component', () => {
     it('does not render assignees component when assignees widget is not returned from the API', async () => {
       createComponent({
         workItemsMvc2Enabled: true,
-        includeWidgets: false,
+        handler: jest
+          .fn()
+          .mockResolvedValue(workItemResponseFactory({ assigneesWidgetPresent: false })),
       });
       await waitForPromises();
 

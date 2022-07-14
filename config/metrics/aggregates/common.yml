@@ -52,16 +52,6 @@
     - 'incident_management_incident_relate'
     - 'incident_management_incident_unrelate'
     - 'incident_management_incident_change_confidential'
-- name: i_testing_paid_monthly_active_user_total
-  operator: OR
-  source: redis
-  time_frame: [7d, 28d]
-  events:
-    - 'i_testing_web_performance_widget_total'
-    - 'i_testing_full_code_quality_report_total'
-    - 'i_testing_group_code_coverage_visit_total'
-    - 'i_testing_load_performance_widget_total'
-    - 'i_testing_metrics_report_widget_total'
 - name: xmau_plan
   operator: OR
   source: redis

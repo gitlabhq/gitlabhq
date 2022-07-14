@@ -24,7 +24,7 @@
     .form-group
       = f.label :import_sources, s_('AdminSettings|Import sources'), class: 'label-bold gl-mb-0'
       %span.form-text.gl-mt-0.gl-mb-3#import-sources-help
-        = _('Enabled sources for code import during project creation. OmniAuth must be configured for GitHub')
+        = _('Code can be imported from enabled sources during project creation. OmniAuth must be configured for GitHub')
         = link_to sprite_icon('question-o'), help_page_path("integration/github")
         , Bitbucket
         = link_to sprite_icon('question-o'), help_page_path("integration/bitbucket")

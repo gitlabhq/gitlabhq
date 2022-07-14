@@ -40,4 +40,31 @@ RSpec.describe 'Incident timeline events', :js do
       end
     end
   end
+
+  context 'when delete event is clicked' do
+    before do
+      click_button 'Add new timeline event'
+      fill_in 'Description', with: 'Event note to delete'
+      click_button 'Save'
+    end
+
+    it 'shows the confirmation modal and deletes the event' do
+      click_button 'More actions'
+
+      page.within '.gl-new-dropdown-item-text-wrapper' do
+        expect(page).to have_content('Delete')
+        page.find('.gl-new-dropdown-item-text-primary', text: 'Delete').click
+      end
+
+      page.within '.modal' do
+        expect(page).to have_content('Delete event')
+      end
+
+      click_button 'Delete event'
+
+      wait_for_requests
+
+      expect(page).to have_content('No timeline items have been added yet.')
+    end
+  end
 end

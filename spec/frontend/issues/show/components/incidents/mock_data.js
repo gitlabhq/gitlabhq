@@ -79,8 +79,27 @@ export const timelineEventsCreateEventResponse = {
 };
 
 export const timelineEventsCreateEventError = {
-  timelineEvent: {
-    ...mockEvents[0],
+  data: {
+    timelineEventCreate: {
+      timelineEvent: {
+        ...mockEvents[0],
+      },
+      errors: ['Create error'],
+    },
   },
-  errors: ['Error creating timeline event'],
 };
+
+const timelineEventDeleteData = (errors = []) => {
+  return {
+    data: {
+      timelineEventDestroy: {
+        timelineEvent: { ...mockEvents[0] },
+        errors,
+      },
+    },
+  };
+};
+
+export const timelineEventsDeleteEventResponse = timelineEventDeleteData();
+
+export const timelineEventsDeleteEventError = timelineEventDeleteData(['Item does not exist']);

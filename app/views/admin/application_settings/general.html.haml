@@ -9,7 +9,7 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Set default and restrict visibility levels. Configure import sources and git access protocol.')
+      = _('Set visibility of project contents. Configure import sources and Git access protocols.')
   .settings-content
     = render 'visibility_and_access'
 

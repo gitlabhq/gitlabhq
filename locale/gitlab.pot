@@ -2180,9 +2180,6 @@ msgstr ""
 msgid "Add approvers"
 msgstr ""
 
-msgid "Add assignees"
-msgstr ""
-
 msgid "Add attention request"
 msgstr ""
 
@@ -9145,6 +9142,9 @@ msgstr ""
 msgid "Code block"
 msgstr ""
 
+msgid "Code can be imported from enabled sources during project creation. OmniAuth must be configured for GitHub"
+msgstr ""
+
 msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
 msgstr ""
 
@@ -14402,9 +14402,6 @@ msgid "Enabled Git access protocols"
 msgstr ""
 
 msgid "Enabled OAuth authentication sources"
-msgstr ""
-
-msgid "Enabled sources for code import during project creation. OmniAuth must be configured for GitHub"
 msgstr ""
 
 msgid "Encountered an error while rendering: %{err}"
@@ -20598,7 +20595,13 @@ msgstr ""
 msgid "Incident|Alert details"
 msgstr ""
 
+msgid "Incident|Are you sure you want to delete this event?"
+msgstr ""
+
 msgid "Incident|Are you sure you wish to delete this image?"
+msgstr ""
+
+msgid "Incident|Delete event"
 msgstr ""
 
 msgid "Incident|Delete image"
@@ -20616,6 +20619,9 @@ msgstr ""
 msgid "Incident|Error creating incident timeline event: %{error}"
 msgstr ""
 
+msgid "Incident|Error deleting incident timeline event: %{error}"
+msgstr ""
+
 msgid "Incident|Metrics"
 msgstr ""
 
@@ -20623,6 +20629,12 @@ msgid "Incident|No timeline items have been added yet."
 msgstr ""
 
 msgid "Incident|Save and add another event"
+msgstr ""
+
+msgid "Incident|Something went wrong while creating the incident timeline event."
+msgstr ""
+
+msgid "Incident|Something went wrong while deleting the incident timeline event."
 msgstr ""
 
 msgid "Incident|Something went wrong while fetching incident timeline events."
@@ -29957,7 +29969,7 @@ msgstr ""
 msgid "Project URL"
 msgstr ""
 
-msgid "Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group."
+msgid "Project access must be granted explicitly to each user. If this project is part of a group, access is granted to members of the group."
 msgstr ""
 
 msgid "Project access token creation is disabled in this group. You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}"
@@ -34497,6 +34509,9 @@ msgstr ""
 msgid "SecurityOrchestration|Description"
 msgstr ""
 
+msgid "SecurityOrchestration|Direct"
+msgstr ""
+
 msgid "SecurityOrchestration|Don't show the alert anymore"
 msgstr ""
 
@@ -34525,6 +34540,9 @@ msgid "SecurityOrchestration|Failed to load cluster agents."
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
+msgstr ""
+
+msgid "SecurityOrchestration|Inherited"
 msgstr ""
 
 msgid "SecurityOrchestration|Inherited from %{namespace}"
@@ -35481,9 +35499,6 @@ msgstr ""
 msgid "Set any rate limit to %{code_open}0%{code_close} to disable the limit."
 msgstr ""
 
-msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
-msgstr ""
-
 msgid "Set due date"
 msgstr ""
 
@@ -35602,6 +35617,9 @@ msgid "Set up new password"
 msgstr ""
 
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
+msgstr ""
+
+msgid "Set visibility of project contents. Configure import sources and Git access protocols."
 msgstr ""
 
 msgid "Set weight"
@@ -43779,6 +43797,12 @@ msgid "WorkItem|Add"
 msgstr ""
 
 msgid "WorkItem|Add a child"
+msgstr ""
+
+msgid "WorkItem|Add assignee"
+msgstr ""
+
+msgid "WorkItem|Add assignees"
 msgstr ""
 
 msgid "WorkItem|Are you sure you want to cancel editing?"

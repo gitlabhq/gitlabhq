@@ -19,6 +19,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     # Monday 6th of June
     reference_time = Time.utc(2020, 6, 1)
     travel_to(reference_time) { example.run }
+    described_class.clear_memoization(:known_events)
   end
 
   context 'migration to instrumentation classes data collection' do
@@ -131,6 +132,34 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'error_tracking',
         'manage'
       )
+    end
+  end
+
+  describe '.known_events' do
+    let(:ce_temp_dir) { Dir.mktmpdir }
+    let(:ce_temp_file) { Tempfile.new(%w[common .yml], ce_temp_dir) }
+    let(:ce_event) do
+      {
+        "name" => "ce_event",
+        "redis_slot" => "analytics",
+        "category" => "analytics",
+        "expiry" => 84,
+        "aggregation" => "weekly"
+      }
+    end
+
+    before do
+      stub_const("#{described_class}::KNOWN_EVENTS_PATH", File.expand_path('*.yml', ce_temp_dir))
+      File.open(ce_temp_file.path, "w+b") { |f| f.write [ce_event].to_yaml }
+    end
+
+    it 'returns ce events' do
+      expect(described_class.known_events).to include(ce_event)
+    end
+
+    after do
+      ce_temp_file.unlink
+      FileUtils.remove_entry(ce_temp_dir) if Dir.exist?(ce_temp_dir)
     end
   end
 

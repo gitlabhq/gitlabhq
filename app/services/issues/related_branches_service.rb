@@ -5,26 +5,23 @@
 module Issues
   class RelatedBranchesService < Issues::BaseService
     def execute(issue)
-      branch_names = branches_with_iid_of(issue) - branches_with_merge_request_for(issue)
-      branch_names.map { |branch_name| branch_data(branch_name) }
+      branch_names_with_mrs = branches_with_merge_request_for(issue)
+      branches = branches_with_iid_of(issue).reject { |b| branch_names_with_mrs.include?(b[:name]) }
+
+      branches.map { |branch| branch_data(branch) }
     end
 
     private
 
-    def branch_data(branch_name)
+    def branch_data(branch)
       {
-        name: branch_name,
-        pipeline_status: pipeline_status(branch_name)
+        name: branch[:name],
+        pipeline_status: pipeline_status(branch)
       }
     end
 
-    def pipeline_status(branch_name)
-      branch = project.repository.find_branch(branch_name)
-      target = branch&.dereferenced_target
-
-      return unless target
-
-      pipeline = project.latest_pipeline(branch_name, target.sha)
+    def pipeline_status(branch)
+      pipeline = project.latest_pipeline(branch[:name], branch[:target])
       pipeline.detailed_status(current_user) if can?(current_user, :read_pipeline, pipeline)
     end
 
@@ -36,10 +33,16 @@ module Issues
     end
 
     def branches_with_iid_of(issue)
-      branch_name_regex = /\A#{issue.iid}-(?!\d+-stable)/i
+      branch_ref_regex = /\A#{Gitlab::Git::BRANCH_REF_PREFIX}#{issue.iid}-(?!\d+-stable)/i
 
-      project.repository.branch_names.select do |branch|
-        branch.match?(branch_name_regex)
+      return [] unless project.repository.exists?
+
+      project.repository.list_refs(
+        [Gitlab::Git::BRANCH_REF_PREFIX + "#{issue.iid}-*"]
+      ).each_with_object([]) do |ref, results|
+        if ref.name.match?(branch_ref_regex)
+          results << { name: ref.name.delete_prefix(Gitlab::Git::BRANCH_REF_PREFIX), target: ref.target }
+        end
       end
     end
   end

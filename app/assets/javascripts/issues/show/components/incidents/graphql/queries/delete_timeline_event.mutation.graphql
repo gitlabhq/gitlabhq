@@ -1,0 +1,8 @@
+mutation DestroyTimelineEvent($input: TimelineEventDestroyInput!) {
+  timelineEventDestroy(input: $input) {
+    timelineEvent {
+      id
+    }
+    errors
+  }
+}

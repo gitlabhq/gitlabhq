@@ -285,6 +285,8 @@ module Gitlab
     end
 
     def self.enforce_gitaly_request_limits?
+      return false if ENV["GITALY_DISABLE_REQUEST_LIMITS"]
+
       # We typically don't want to enforce request limits in production
       # However, we have some production-like test environments, i.e., ones
       # where `Rails.env.production?` returns `true`. We do want to be able to
@@ -293,7 +295,7 @@ module Gitlab
       # enforce request limits.
       return true if Feature::Gitaly.enabled?('enforce_requests_limits')
 
-      !(Rails.env.production? || ENV["GITALY_DISABLE_REQUEST_LIMITS"])
+      !Rails.env.production?
     end
     private_class_method :enforce_gitaly_request_limits?
 

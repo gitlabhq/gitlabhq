@@ -157,34 +157,6 @@
   category: testing
   redis_slot: testing
   aggregation: weekly
-- name: i_testing_metrics_report_widget_total
-  category: testing
-  redis_slot: testing
-  aggregation: weekly
-- name: i_testing_group_code_coverage_visit_total
-  category: testing
-  redis_slot: testing
-  aggregation: weekly
-- name: i_testing_full_code_quality_report_total
-  category: testing
-  redis_slot: testing
-  aggregation: weekly
-- name: i_testing_web_performance_widget_total
-  category: testing
-  redis_slot: testing
-  aggregation: weekly
-- name: i_testing_group_code_coverage_project_click_total
-  category: testing
-  redis_slot: testing
-  aggregation: weekly
-- name: i_testing_load_performance_widget_total
-  category: testing
-  redis_slot: testing
-  aggregation: weekly
-- name: i_testing_metrics_report_artifact_uploaders
-  category: testing
-  redis_slot: testing
-  aggregation: weekly
 - name: i_testing_summary_widget_total
   category: testing
   redis_slot: testing

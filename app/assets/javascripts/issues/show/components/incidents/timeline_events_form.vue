@@ -8,7 +8,7 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { createAlert } from '~/flash';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import { sprintf } from '~/locale';
-import { displayAndLogError, getUtcShiftedDateNow } from './utils';
+import { getUtcShiftedDateNow } from './utils';
 import { timelineFormI18n } from './constants';
 
 import CreateTimelineEvent from './graphql/queries/create_timeline_event.mutation.graphql';
@@ -117,7 +117,13 @@ export default {
             });
           }
         })
-        .catch(displayAndLogError)
+        .catch((error) => {
+          createAlert({
+            message: this.$options.i18n.createErrorGeneric,
+            captureError: true,
+            error,
+          });
+        })
         .finally(() => {
           this.createTimelineEventActive = false;
           this.timelineText = '';

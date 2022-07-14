@@ -1,9 +1,16 @@
 <script>
 import { formatDate } from '~/lib/utils/datetime_utility';
+import { createAlert } from '~/flash';
+import { sprintf } from '~/locale';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import IncidentTimelineEventListItem from './timeline_events_list_item.vue';
+import deleteTimelineEvent from './graphql/queries/delete_timeline_event.mutation.graphql';
+import { timelineListI18n } from './constants';
 
 export default {
   name: 'IncidentTimelineEventList',
+  i18n: timelineListI18n,
   components: {
     IncidentTimelineEventListItem,
   },
@@ -43,6 +50,41 @@ export default {
       }
       return eventIndex === events.length - 1;
     },
+    handleDelete: ignoreWhilePending(async function handleDelete(event) {
+      const msg = this.$options.i18n.deleteModal;
+
+      const confirmed = await confirmAction(msg, {
+        primaryBtnVariant: 'danger',
+        primaryBtnText: this.$options.i18n.deleteButton,
+      });
+
+      if (!confirmed) {
+        return;
+      }
+
+      try {
+        const result = await this.$apollo.mutate({
+          mutation: deleteTimelineEvent,
+          variables: {
+            input: {
+              id: event.id,
+            },
+          },
+          update: (cache) => {
+            const cacheId = cache.identify(event);
+            cache.evict({ id: cacheId });
+          },
+        });
+        const { errors } = result.data.timelineEventDestroy;
+        if (errors?.length) {
+          createAlert({
+            message: sprintf(this.$options.i18n.deleteError, { error: errors.join('. ') }, false),
+          });
+        }
+      } catch (error) {
+        createAlert({ message: this.$options.i18n.deleteErrorGeneric, captureError: true, error });
+      }
+    }),
   },
 };
 </script>
@@ -65,7 +107,7 @@ export default {
           :occurred-at="event.occurredAt"
           :note-html="event.noteHtml"
           :is-last-item="isLastItem(dateGroupedEvents, groupIndex, events, eventIndex)"
-          data-testid="timeline-event"
+          @delete="handleDelete(event)"
         />
       </ul>
     </div>

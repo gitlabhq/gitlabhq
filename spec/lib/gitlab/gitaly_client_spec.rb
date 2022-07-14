@@ -358,11 +358,7 @@ RSpec.describe Gitlab::GitalyClient do
       end
     end
 
-    context 'when RequestStore is enabled and the maximum number of calls is not enforced by a feature flag', :request_store do
-      before do
-        stub_feature_flags(gitaly_enforce_requests_limits: false)
-      end
-
+    shared_examples 'enforces maximum allowed Gitaly calls' do
       it 'allows up the maximum number of allowed calls' do
         expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS) }.not_to raise_error
       end
@@ -406,6 +402,18 @@ RSpec.describe Gitlab::GitalyClient do
           expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.to raise_error(Gitlab::GitalyClient::TooManyInvocationsError)
         end
       end
+    end
+
+    context 'when RequestStore is enabled and the maximum number of calls is enforced by a feature flag', :request_store do
+      include_examples 'enforces maximum allowed Gitaly calls'
+    end
+
+    context 'when RequestStore is enabled and the maximum number of calls is not enforced by a feature flag', :request_store do
+      before do
+        stub_feature_flags(gitaly_enforce_requests_limits: false)
+      end
+
+      include_examples 'enforces maximum allowed Gitaly calls'
     end
 
     context 'in production and when RequestStore is enabled', :request_store do

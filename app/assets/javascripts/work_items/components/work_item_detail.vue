@@ -3,7 +3,7 @@ import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   i18n,
-  WIDGET_TYPE_ASSIGNEE,
+  WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_WEIGHT,
 } from '../constants';
@@ -91,7 +91,7 @@ export default {
       return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
     },
     workItemAssignees() {
-      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEE);
+      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES);
     },
     workItemWeight() {
       return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
@@ -140,7 +140,9 @@ export default {
         <work-item-assignees
           v-if="workItemAssignees"
           :work-item-id="workItem.id"
-          :assignees="workItemAssignees.nodes"
+          :assignees="workItemAssignees.assignees.nodes"
+          :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+          @error="error = $event"
         />
         <work-item-weight
           v-if="workItemWeight"

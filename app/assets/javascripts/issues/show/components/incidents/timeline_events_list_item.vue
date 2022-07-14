@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlSafeHtmlDirective, GlSprintf } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlIcon, GlSafeHtmlDirective, GlSprintf } from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { getEventIcon } from './utils';
@@ -7,15 +7,20 @@ import { getEventIcon } from './utils';
 export default {
   name: 'IncidentTimelineEventListItem',
   i18n: {
+    delete: __('Delete'),
+    moreActions: __('More actions'),
     timeUTC: __('%{time} UTC'),
   },
   components: {
+    GlDropdown,
+    GlDropdownItem,
     GlIcon,
     GlSprintf,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
   },
+  inject: ['canUpdate'],
   props: {
     isLastItem: {
       type: Boolean,
@@ -55,16 +60,32 @@ export default {
         <gl-icon :name="getEventIcon(action)" class="note-icon" />
       </div>
       <div
-        class="timeline-event-note gl-w-full"
+        class="timeline-event-note gl-w-full gl-display-flex gl-flex-direction-row"
         :class="{ 'gl-pb-3 gl-border-gray-50 gl-border-1 gl-border-b-solid': !isLastItem }"
         data-testid="event-text-container"
       >
-        <strong class="gl-font-lg" data-testid="event-time">
-          <gl-sprintf :message="$options.i18n.timeUTC">
-            <template #time>{{ time }}</template>
-          </gl-sprintf>
-        </strong>
-        <div v-safe-html="noteHtml"></div>
+        <div>
+          <strong class="gl-font-lg" data-testid="event-time">
+            <gl-sprintf :message="$options.i18n.timeUTC">
+              <template #time>{{ time }}</template>
+            </gl-sprintf>
+          </strong>
+          <div v-safe-html="noteHtml"></div>
+        </div>
+        <gl-dropdown
+          v-if="canUpdate"
+          right
+          class="event-note-actions gl-ml-auto gl-align-self-center"
+          icon="ellipsis_v"
+          text-sr-only
+          :text="$options.i18n.moreActions"
+          category="tertiary"
+          no-caret
+        >
+          <gl-dropdown-item @click="$emit('delete')">
+            {{ $options.i18n.delete }}
+          </gl-dropdown-item>
+        </gl-dropdown>
       </div>
     </div>
   </li>

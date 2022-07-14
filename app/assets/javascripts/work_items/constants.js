@@ -15,7 +15,7 @@ export const i18n = {
 
 export const TASK_TYPE_NAME = 'Task';
 
-export const WIDGET_TYPE_ASSIGNEE = 'ASSIGNEES';
+export const WIDGET_TYPE_ASSIGNEES = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';

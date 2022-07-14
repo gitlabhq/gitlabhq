@@ -270,6 +270,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
         [:integrations_be, :backend]                 | '+ Integrations::Foo'                          | ['app/foo/bar.rb']
         [:integrations_be, :backend]                 | '+ project.execute_hooks(foo, :bar)'           | ['ee/lib/ee/foo.rb']
         [:integrations_be, :backend]                 | '+ project.execute_integrations(foo, :bar)'    | ['app/foo.rb']
+        [:frontend, :product_intelligence]           | '+ api.trackRedisCounterEvent("foo")'          | ['app/assets/javascripts/telemetry.js', 'ee/app/assets/javascripts/mr_widget.vue']
+        [:frontend, :product_intelligence]           | '+ api.trackRedisHllUserEvent("bar")'          | ['app/assets/javascripts/telemetry.js', 'ee/app/assets/javascripts/mr_widget.vue']
       end
 
       with_them do

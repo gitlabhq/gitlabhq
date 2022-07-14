@@ -4,16 +4,6 @@ query workItem($id: WorkItemID!) {
   workItem(id: $id) {
     ...WorkItem
     mockWidgets @client {
-      ... on LocalWorkItemAssignees {
-        type
-        nodes {
-          id
-          avatarUrl
-          name
-          username
-          webUrl
-        }
-      }
       ... on LocalWorkItemWeight {
         type
         weight

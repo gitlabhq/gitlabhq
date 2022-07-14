@@ -14,7 +14,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
-import { n__ } from '~/locale';
+import { n__, s__ } from '~/locale';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import localUpdateWorkItemMutation from '../graphql/local_update_work_item.mutation.graphql';
@@ -52,6 +52,10 @@ export default {
     },
     assignees: {
       type: Array,
+      required: true,
+    },
+    allowsMultipleAssignees: {
+      type: Boolean,
       required: true,
     },
   },
@@ -95,7 +99,7 @@ export default {
       return this.assignees.length === 0;
     },
     containerClass() {
-      return !this.isEditing ? 'gl-shadow-none! gl-bg-transparent!' : '';
+      return !this.isEditing ? 'gl-shadow-none!' : '';
     },
     isLoadingUsers() {
       return this.$apollo.queries.searchUsers.loading;
@@ -115,6 +119,11 @@ export default {
     searchEmpty() {
       return this.searchKey.length === 0;
     },
+    addAssigneesText() {
+      return this.allowsMultipleAssignees
+        ? s__('WorkItem|Add assignees')
+        : s__('WorkItem|Add assignee');
+    },
   },
   watch: {
     assignees(newVal) {
@@ -129,6 +138,15 @@ export default {
   methods: {
     getUserId(id) {
       return getIdFromGraphQLId(id);
+    },
+    handleAssigneesInput(assignees) {
+      if (!this.allowsMultipleAssignees) {
+        this.localAssignees = assignees.length > 0 ? [assignees[assignees.length - 1]] : [];
+        this.isEditing = false;
+        return;
+      }
+      this.localAssignees = assignees;
+      this.focusTokenSelector();
     },
     handleBlur(e) {
       if (isTokenSelectorElement(e.relatedTarget) || !this.isEditing) return;
@@ -188,12 +206,12 @@ export default {
     >
     <gl-token-selector
       ref="tokenSelector"
-      v-model="localAssignees"
+      :selected-tokens="localAssignees"
       :container-class="containerClass"
       class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base col-9 gl-align-self-start gl-px-0!"
       :dropdown-items="dropdownItems"
       :loading="isLoadingUsers"
-      @input="focusTokenSelector"
+      @input="handleAssigneesInput"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"
       @blur="handleBlur"
@@ -206,7 +224,7 @@ export default {
           data-testid="empty-state"
         >
           <gl-icon name="profile" />
-          <span class="gl-ml-2 gl-mr-4">{{ __('Add assignees') }}</span>
+          <span class="gl-ml-2 gl-mr-4">{{ addAssigneesText }}</span>
           <gl-button
             v-if="currentUser"
             size="small"

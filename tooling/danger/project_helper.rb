@@ -57,6 +57,7 @@ module Tooling
           spec/frontend/tracking/.*\.js |
           spec/frontend/tracking_spec\.js
         )\z}x => [:frontend, :product_intelligence],
+        [%r{\.(vue|js)\z}, %r{trackRedis}] => [:frontend, :product_intelligence],
         %r{\A((ee|jh)/)?app/assets/} => :frontend,
         %r{\A((ee|jh)/)?app/views/.*\.svg} => :frontend,
         %r{\A((ee|jh)/)?app/views/} => [:frontend, :backend],

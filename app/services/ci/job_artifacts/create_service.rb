@@ -6,7 +6,6 @@ module Ci
       include Gitlab::Utils::UsageData
 
       LSIF_ARTIFACT_TYPE = 'lsif'
-      METRICS_REPORT_UPLOAD_EVENT_NAME = 'i_testing_metrics_report_artifact_uploaders'
 
       OBJECT_STORAGE_ERRORS = [
         Errno::EIO,
@@ -154,10 +153,8 @@ module Ci
         )
       end
 
-      def track_artifact_uploader(artifact)
-        return unless artifact.file_type == 'metrics'
-
-        track_usage_event(METRICS_REPORT_UPLOAD_EVENT_NAME, @job.user_id)
+      def track_artifact_uploader(_artifact)
+        # Overridden in EE
       end
 
       def parse_dotenv_artifact(artifact)
@@ -166,3 +163,5 @@ module Ci
     end
   end
 end
+
+Ci::JobArtifacts::CreateService.prepend_mod

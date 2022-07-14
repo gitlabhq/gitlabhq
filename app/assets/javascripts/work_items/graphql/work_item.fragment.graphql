@@ -1,3 +1,5 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
 fragment WorkItem on WorkItem {
   id
   title
@@ -16,6 +18,15 @@ fragment WorkItem on WorkItem {
       type
       description
       descriptionHtml
+    }
+    ... on WorkItemWidgetAssignees {
+      type
+      allowsMultipleAssignees
+      assignees {
+        nodes {
+          ...User
+        }
+      }
     }
   }
 }

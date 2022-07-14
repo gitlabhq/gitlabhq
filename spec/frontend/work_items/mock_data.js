@@ -1,3 +1,22 @@
+export const mockAssignees = [
+  {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/1',
+    avatarUrl: '',
+    webUrl: '',
+    name: 'John Doe',
+    username: 'doe_I',
+  },
+  {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/2',
+    avatarUrl: '',
+    webUrl: '',
+    name: 'Marcus Rutherford',
+    username: 'ruthfull',
+  },
+];
+
 export const workItemQueryResponse = {
   data: {
     workItem: {
@@ -22,6 +41,14 @@ export const workItemQueryResponse = {
           description: 'some **great** text',
           descriptionHtml:
             '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+        },
+        {
+          __typename: 'WorkItemWidgetAssignees',
+          type: 'ASSIGNEES',
+          allowsMultipleAssignees: true,
+          assignees: {
+            nodes: mockAssignees,
+          },
         },
       ],
     },
@@ -53,7 +80,11 @@ export const updateWorkItemMutationResponse = {
   },
 };
 
-export const workItemResponseFactory = ({ canUpdate } = {}) => ({
+export const workItemResponseFactory = ({
+  canUpdate = false,
+  allowsMultipleAssignees = true,
+  assigneesWidgetPresent = true,
+} = {}) => ({
   data: {
     workItem: {
       __typename: 'WorkItem',
@@ -78,6 +109,16 @@ export const workItemResponseFactory = ({ canUpdate } = {}) => ({
           descriptionHtml:
             '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
         },
+        assigneesWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetAssignees',
+              type: 'ASSIGNEES',
+              allowsMultipleAssignees,
+              assignees: {
+                nodes: mockAssignees,
+              },
+            }
+          : { type: 'MOCK TYPE' },
       ],
     },
   },
@@ -395,25 +436,6 @@ export const projectMembersResponseWithoutCurrentUser = {
     },
   },
 };
-
-export const mockAssignees = [
-  {
-    __typename: 'UserCore',
-    id: 'gid://gitlab/User/1',
-    avatarUrl: '',
-    webUrl: '',
-    name: 'John Doe',
-    username: 'doe_I',
-  },
-  {
-    __typename: 'UserCore',
-    id: 'gid://gitlab/User/2',
-    avatarUrl: '',
-    webUrl: '',
-    name: 'Marcus Rutherford',
-    username: 'ruthfull',
-  },
-];
 
 export const currentUserResponse = {
   data: {

@@ -24,6 +24,7 @@ import {
 Vue.use(VueApollo);
 
 const workItemId = 'gid://gitlab/WorkItem/1';
+const dropdownItems = projectMembersResponseWithCurrentUser.data.workspace.users.nodes;
 
 describe('WorkItemAssignees component', () => {
   let wrapper;
@@ -34,6 +35,7 @@ describe('WorkItemAssignees component', () => {
 
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
+  const findAssigneesTitle = () => wrapper.findByTestId('assignees-title');
 
   const successSearchQueryHandler = jest
     .fn()
@@ -47,6 +49,7 @@ describe('WorkItemAssignees component', () => {
     assignees = mockAssignees,
     searchQueryHandler = successSearchQueryHandler,
     currentUserQueryHandler = successCurrentUserQueryHandler,
+    allowsMultipleAssignees = true,
   } = {}) => {
     const apolloProvider = createMockApollo(
       [
@@ -74,6 +77,7 @@ describe('WorkItemAssignees component', () => {
       propsData: {
         assignees,
         workItemId,
+        allowsMultipleAssignees,
       },
       attachTo: document.body,
       apolloProvider,
@@ -88,6 +92,19 @@ describe('WorkItemAssignees component', () => {
     createComponent();
 
     expect(findAssigneeLinks().at(0).attributes('data-user-id')).toBe('1');
+  });
+
+  it('container does not have shadow by default', () => {
+    createComponent();
+    expect(findTokenSelector().props('containerClass')).toBe('gl-shadow-none!');
+  });
+
+  it('container has shadow after focusing token selector', async () => {
+    createComponent();
+    findTokenSelector().vm.$emit('focus');
+    await nextTick();
+
+    expect(findTokenSelector().props('containerClass')).toBe('');
   });
 
   it('focuses token selector on token selector input event', async () => {
@@ -108,70 +125,80 @@ describe('WorkItemAssignees component', () => {
     expect(findTokenSelector().props('selectedTokens')).toEqual([mockAssignees[0]]);
   });
 
-  it('does not start user search by default', () => {
-    createComponent();
+  describe('when searching for users', () => {
+    beforeEach(() => {
+      createComponent();
+    });
 
-    expect(findTokenSelector().props('loading')).toBe(false);
-    expect(findTokenSelector().props('dropdownItems')).toEqual([]);
-  });
+    it('does not start user search by default', () => {
+      expect(findTokenSelector().props('loading')).toBe(false);
+      expect(findTokenSelector().props('dropdownItems')).toEqual([]);
+    });
 
-  it('starts user search on hovering for more than 250ms', async () => {
-    createComponent();
-    findTokenSelector().trigger('mouseover');
-    jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-    await nextTick();
+    it('starts user search on hovering for more than 250ms', async () => {
+      findTokenSelector().trigger('mouseover');
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+      await nextTick();
 
-    expect(findTokenSelector().props('loading')).toBe(true);
-  });
+      expect(findTokenSelector().props('loading')).toBe(true);
+    });
 
-  it('starts user search on focusing token selector', async () => {
-    createComponent();
-    findTokenSelector().vm.$emit('focus');
-    await nextTick();
+    it('starts user search on focusing token selector', async () => {
+      findTokenSelector().vm.$emit('focus');
+      await nextTick();
 
-    expect(findTokenSelector().props('loading')).toBe(true);
-  });
+      expect(findTokenSelector().props('loading')).toBe(true);
+    });
 
-  it('does not start searching if token-selector was hovered for less than 250ms', async () => {
-    createComponent();
-    findTokenSelector().trigger('mouseover');
-    jest.advanceTimersByTime(100);
-    await nextTick();
+    it('does not start searching if token-selector was hovered for less than 250ms', async () => {
+      findTokenSelector().trigger('mouseover');
+      jest.advanceTimersByTime(100);
+      await nextTick();
 
-    expect(findTokenSelector().props('loading')).toBe(false);
-  });
+      expect(findTokenSelector().props('loading')).toBe(false);
+    });
 
-  it('does not start searching if cursor was moved out from token selector before 250ms passed', async () => {
-    createComponent();
-    findTokenSelector().trigger('mouseover');
-    jest.advanceTimersByTime(100);
+    it('does not start searching if cursor was moved out from token selector before 250ms passed', async () => {
+      findTokenSelector().trigger('mouseover');
+      jest.advanceTimersByTime(100);
 
-    findTokenSelector().trigger('mouseout');
-    jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-    await nextTick();
+      findTokenSelector().trigger('mouseout');
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+      await nextTick();
 
-    expect(findTokenSelector().props('loading')).toBe(false);
-  });
+      expect(findTokenSelector().props('loading')).toBe(false);
+    });
 
-  it('shows skeleton loader on dropdown when loading users', async () => {
-    createComponent();
-    findTokenSelector().vm.$emit('focus');
-    await nextTick();
+    it('shows skeleton loader on dropdown when loading users', async () => {
+      findTokenSelector().vm.$emit('focus');
+      await nextTick();
 
-    expect(findSkeletonLoader().exists()).toBe(true);
-  });
+      expect(findSkeletonLoader().exists()).toBe(true);
+    });
 
-  it('shows correct user list in dropdown when loaded', async () => {
-    createComponent();
-    findTokenSelector().vm.$emit('focus');
-    await nextTick();
+    it('shows correct users list in dropdown when loaded', async () => {
+      findTokenSelector().vm.$emit('focus');
+      await nextTick();
 
-    expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findSkeletonLoader().exists()).toBe(true);
 
-    await waitForPromises();
+      await waitForPromises();
 
-    expect(findSkeletonLoader().exists()).toBe(false);
-    expect(findTokenSelector().props('dropdownItems')).toHaveLength(2);
+      expect(findSkeletonLoader().exists()).toBe(false);
+      expect(findTokenSelector().props('dropdownItems')).toHaveLength(2);
+    });
+
+    it('should search for users with correct key after text input', async () => {
+      const searchKey = 'Hello';
+
+      findTokenSelector().vm.$emit('focus');
+      findTokenSelector().vm.$emit('text-input', searchKey);
+      await waitForPromises();
+
+      expect(successSearchQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ search: searchKey }),
+      );
+    });
   });
 
   it('emits error event if search users query fails', async () => {
@@ -182,40 +209,29 @@ describe('WorkItemAssignees component', () => {
     expect(wrapper.emitted('error')).toEqual([[i18n.fetchError]]);
   });
 
-  it('should search for users with correct key after text input', async () => {
-    const searchKey = 'Hello';
+  describe('when assigning to current user', () => {
+    it('does not show `Assign myself` button if current user is loading', () => {
+      createComponent();
+      findTokenSelector().trigger('mouseover');
 
-    createComponent();
-    findTokenSelector().vm.$emit('focus');
-    findTokenSelector().vm.$emit('text-input', searchKey);
-    await waitForPromises();
+      expect(findAssignSelfButton().exists()).toBe(false);
+    });
 
-    expect(successSearchQueryHandler).toHaveBeenCalledWith(
-      expect.objectContaining({ search: searchKey }),
-    );
-  });
+    it('does not show `Assign myself` button if work item has assignees', async () => {
+      createComponent();
+      await waitForPromises();
+      findTokenSelector().trigger('mouseover');
 
-  it('does not show `Assign myself` button if current user is loading', () => {
-    createComponent();
-    findTokenSelector().trigger('mouseover');
+      expect(findAssignSelfButton().exists()).toBe(false);
+    });
 
-    expect(findAssignSelfButton().exists()).toBe(false);
-  });
+    it('does now show `Assign myself` button if user is not logged in', async () => {
+      createComponent({ currentUserQueryHandler: noCurrentUserQueryHandler, assignees: [] });
+      await waitForPromises();
+      findTokenSelector().trigger('mouseover');
 
-  it('does not show `Assign myself` button if work item has assignees', async () => {
-    createComponent();
-    await waitForPromises();
-    findTokenSelector().trigger('mouseover');
-
-    expect(findAssignSelfButton().exists()).toBe(false);
-  });
-
-  it('does now show `Assign myself` button if user is not logged in', async () => {
-    createComponent({ currentUserQueryHandler: noCurrentUserQueryHandler, assignees: [] });
-    await waitForPromises();
-    findTokenSelector().trigger('mouseover');
-
-    expect(findAssignSelfButton().exists()).toBe(false);
+      expect(findAssignSelfButton().exists()).toBe(false);
+    });
   });
 
   describe('when user is logged in and there are no assignees', () => {
@@ -283,6 +299,62 @@ describe('WorkItemAssignees component', () => {
       expect(findTokenSelector().props('dropdownItems')[0]).not.toEqual(
         stripTypenames(currentUserResponse.data.currentUser),
       );
+    });
+  });
+
+  it('has `Assignee` label when only one assignee is present', () => {
+    createComponent({ assignees: [mockAssignees[0]] });
+
+    expect(findAssigneesTitle().text()).toBe('Assignee');
+  });
+
+  it('has `Assignees` label if more than one assignee is present', () => {
+    createComponent();
+
+    expect(findAssigneesTitle().text()).toBe('Assignees');
+  });
+
+  describe('when multiple assignees are allowed', () => {
+    beforeEach(() => {
+      createComponent({ allowsMultipleAssignees: true, assignees: [] });
+      return waitForPromises();
+    });
+
+    it('has `Add assignees` text on placeholder', () => {
+      expect(findEmptyState().text()).toContain('Add assignees');
+    });
+
+    it('adds multiple assignees when token-selector provides multiple values', async () => {
+      findTokenSelector().vm.$emit('input', dropdownItems);
+      await nextTick();
+
+      expect(findTokenSelector().props('selectedTokens')).toHaveLength(2);
+    });
+  });
+
+  describe('when multiple assignees are not allowed', () => {
+    beforeEach(() => {
+      createComponent({ allowsMultipleAssignees: false, assignees: [] });
+      return waitForPromises();
+    });
+
+    it('has `Add assignee` text on placeholder', () => {
+      expect(findEmptyState().text()).toContain('Add assignee');
+      expect(findEmptyState().text()).not.toContain('Add assignees');
+    });
+
+    it('adds a single assignee token-selector provides multiple values', async () => {
+      findTokenSelector().vm.$emit('input', dropdownItems);
+      await nextTick();
+
+      expect(findTokenSelector().props('selectedTokens')).toHaveLength(1);
+    });
+
+    it('removes shadow after token-selector input', async () => {
+      findTokenSelector().vm.$emit('input', dropdownItems);
+      await nextTick();
+
+      expect(findTokenSelector().props('containerClass')).toBe('gl-shadow-none!');
     });
   });
 });
