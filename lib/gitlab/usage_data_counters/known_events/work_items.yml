@@ -9,3 +9,8 @@
   redis_slot: users
   aggregation: weekly
   feature_flag: track_work_items_activity
+- name: users_updating_weight_estimate
+  category: work_items
+  redis_slot: users
+  aggregation: weekly
+  feature_flag: track_work_items_activity

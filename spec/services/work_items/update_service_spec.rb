@@ -165,7 +165,7 @@ RSpec.describe WorkItems::UpdateService do
           it 'returns error status' do
             expect(subject[:status]).to be(:error)
             expect(subject[:message])
-              .to match("#{child_work_item.to_reference} cannot be added: Only Task can be assigned as a child in hierarchy.")
+              .to match("#{child_work_item.to_reference} cannot be added: only Task can be assigned as a child in hierarchy.")
           end
 
           it 'does not update work item attributes' do

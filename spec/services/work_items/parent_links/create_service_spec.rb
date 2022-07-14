@@ -102,8 +102,8 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
         end
 
         it 'returns error status' do
-          error = "#{issue.to_reference} cannot be added: Only Task can be assigned as a child in hierarchy.. " \
-            "#{other_project_task.to_reference} cannot be added: Parent must be in the same project as child."
+          error = "#{issue.to_reference} cannot be added: only Task can be assigned as a child in hierarchy.. " \
+            "#{other_project_task.to_reference} cannot be added: parent must be in the same project as child."
 
           is_expected.to eq(service_error(error, http_status: 422))
         end
@@ -115,7 +115,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
         let(:params) { { target_issuable: task1 } }
 
         it 'returns error status' do
-          error = "#{task1.to_reference} cannot be added: Only Issue can be parent of Task."
+          error = "#{task1.to_reference} cannot be added: only Issue and Incident can be parent of Task."
 
           is_expected.to eq(service_error(error, http_status: 422))
         end
@@ -129,7 +129,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
         end
 
         it 'returns error status' do
-          error = "#{task2.to_reference} cannot be added: Parent already has maximum number of children."
+          error = "#{task2.to_reference} cannot be added: parent already has maximum number of children."
 
           is_expected.to eq(service_error(error, http_status: 422))
         end

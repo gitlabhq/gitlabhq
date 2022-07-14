@@ -40,7 +40,7 @@ A typical pipeline might consist of four stages, executed in the following order
 NOTE:
 If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/mirror/pull.md),
 you may need to enable pipeline triggering in your project's
-**Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
+**Settings > Repository > Mirroring repositories > Trigger pipelines for mirror updates**.
 
 ## Types of pipelines
 

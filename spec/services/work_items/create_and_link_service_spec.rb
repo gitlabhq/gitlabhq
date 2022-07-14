@@ -68,7 +68,7 @@ RSpec.describe WorkItems::CreateAndLinkService do
         end
 
         it 'returns a link creation error message' do
-          expect(service_result.errors).to contain_exactly(/Only Issue can be parent of Task./)
+          expect(service_result.errors).to contain_exactly(/only Issue and Incident can be parent of Task./)
         end
       end
     end

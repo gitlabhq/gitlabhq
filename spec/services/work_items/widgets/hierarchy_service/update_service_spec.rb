@@ -85,7 +85,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
 
           it_behaves_like 'raises a WidgetError' do
             let(:message) do
-              "#{child_issue.to_reference} cannot be added: Only Task can be assigned as a child in hierarchy."
+              "#{child_issue.to_reference} cannot be added: only Task can be assigned as a child in hierarchy."
             end
           end
         end
@@ -149,7 +149,9 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
           let(:params) {{ parent: parent_task } }
 
           it_behaves_like 'raises a WidgetError' do
-            let(:message) { "#{work_item.to_reference} cannot be added: Only Issue can be parent of Task." }
+            let(:message) do
+              "#{work_item.to_reference} cannot be added: only Issue and Incident can be parent of Task."
+            end
           end
         end
       end

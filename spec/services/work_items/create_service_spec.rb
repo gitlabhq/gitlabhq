@@ -148,7 +148,7 @@ RSpec.describe WorkItems::CreateService do
             expect { service_result }.not_to change(WorkItem, :count)
 
             expect(service_result[:status]).to be(:error)
-            expect(service_result[:message]).to match(/Only Issue can be parent of Task./)
+            expect(service_result[:message]).to match(/only Issue and Incident can be parent of Task./)
           end
         end
 

@@ -22,7 +22,7 @@ module WorkItems
 
     WIDGETS_FOR_TYPE = {
       issue: [Widgets::Assignees, Widgets::Description, Widgets::Hierarchy, Widgets::Weight],
-      incident: [Widgets::Description],
+      incident: [Widgets::Description, Widgets::Hierarchy],
       test_case: [Widgets::Description],
       requirement: [Widgets::Description],
       task: [Widgets::Assignees, Widgets::Description, Widgets::Hierarchy, Widgets::Weight]

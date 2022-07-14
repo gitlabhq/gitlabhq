@@ -24,9 +24,9 @@ RSpec.describe WorkItems::Widgets::Hierarchy do
 
     it { is_expected.to eq parent_link.work_item_parent }
 
-    context 'when work_items_hierarchy flag is disabled' do
+    context 'when work_items flag is disabled' do
       before do
-        stub_feature_flags(work_items_hierarchy: false)
+        stub_feature_flags(work_items: false)
       end
 
       it { is_expected.to be_nil }
@@ -41,9 +41,9 @@ RSpec.describe WorkItems::Widgets::Hierarchy do
 
     it { is_expected.to match_array([parent_link1.work_item, parent_link2.work_item]) }
 
-    context 'when work_items_hierarchy flag is disabled' do
+    context 'when work_items flag is disabled' do
       before do
-        stub_feature_flags(work_items_hierarchy: false)
+        stub_feature_flags(work_items: false)
       end
 
       it { is_expected.to be_empty }

@@ -61,4 +61,6 @@ the rule fires. You can respond to a page or stop incident escalations by
 [updating the incident's status](incidents.md#change-incident-status) or, if applicable,
 [unsetting the incident's escalation policy](incidents.md#change-escalation-policy).
 
-To avoid duplicate pages, [incidents created from alerts](alerts.md#create-an-incident-from-an-alert) do not support independent escalation.
+In GitLab 15.1 and earlier, [incidents created from alerts](alerts.md#create-an-incident-from-an-alert)
+do not support independent escalation. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
+all incidents can be escalated independently.

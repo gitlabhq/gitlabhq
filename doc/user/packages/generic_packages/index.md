@@ -209,3 +209,25 @@ upload:
 The [Write CI-CD Variables in Pipeline](https://gitlab.com/guided-explorations/cfg-data/write-ci-cd-variables-in-pipeline) project contains a working example you can use to create, upload, and download generic packages in GitLab CI/CD.
 
 It also demonstrates how to manage a semantic version for the generic package: storing it in a CI/CD variable, retrieving it, incrementing it, and writing it back to the CI/CD variable when tests for the download work correctly.
+
+## Troubleshooting
+
+### Internal Server error on large file uploads to S3
+
+S3-compatible object storage [limits the size of a single PUT request to 5GB](https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html). If the `aws_signature_version` is set to `2` in the [object storage connection settings](../../../administration/object_storage.md), attempting to publish a package file larger than the 5GB limit can result in a `HTTP 500: Internal Server Error` response. 
+
+If you are receiving `HTTP 500: Internal Server Error` responses when publishing large files to S3, set the `aws_signature_version` to `4`:
+
+```ruby
+# Consolidated Object Storage settings
+gitlab_rails['object_store']['connection'] = {
+  # Other connection settings
+  `aws_signature_version` => '4'
+}
+# OR 
+# Storage-specific form settings
+gitlab_rails['packages_object_store_connection'] = {
+  # Other connection settings
+  `aws_signature_version` => '4'
+}
+```

@@ -27101,16 +27101,10 @@ msgstr ""
 msgid "Only Issue ID or merge request ID is required"
 msgstr ""
 
-msgid "Only Issue can be parent of Task."
-msgstr ""
-
 msgid "Only Project Members"
 msgstr ""
 
 msgid "Only SSH"
-msgstr ""
-
-msgid "Only Task can be assigned as a child in hierarchy."
 msgstr ""
 
 msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted to each user."
@@ -27880,16 +27874,10 @@ msgstr ""
 msgid "Parent"
 msgstr ""
 
-msgid "Parent already has maximum number of children."
-msgstr ""
-
 msgid "Parent epic doesn't exist."
 msgstr ""
 
 msgid "Parent epic is not present."
-msgstr ""
-
-msgid "Parent must be in the same project as child."
 msgstr ""
 
 msgid "Parsing error for param :embed_json. %{message}"
@@ -46531,6 +46519,12 @@ msgstr ""
 msgid "on track"
 msgstr ""
 
+msgid "only %{parent_types} can be parent of Task."
+msgstr ""
+
+msgid "only Task can be assigned as a child in hierarchy."
+msgstr ""
+
 msgid "only available on top-level groups."
 msgstr ""
 
@@ -46561,6 +46555,12 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "parent already has maximum number of children."
+msgstr ""
+
+msgid "parent must be in the same project as child."
+msgstr ""
 
 msgid "password"
 msgstr ""
