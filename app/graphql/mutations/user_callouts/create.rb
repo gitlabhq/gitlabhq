@@ -15,7 +15,7 @@ module Mutations
         description: 'User callout dismissed.'
 
       def resolve(feature_name:)
-        callout = Users::DismissCalloutService.new(
+        callout = ::Users::DismissCalloutService.new(
           container: nil, current_user: current_user, params: { feature_name: feature_name }
         ).execute
         errors = errors_on_object(callout)

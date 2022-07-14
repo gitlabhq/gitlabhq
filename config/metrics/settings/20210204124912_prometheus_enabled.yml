@@ -2,10 +2,9 @@
 data_category: operational
 key_path: prometheus_enabled
 description: Whether the bundled Prometheus is enabled
-product_section: growth
-product_stage: growth
-product_group: product_intelligence
-product_category: collection
+product_section: ops
+product_stage: monitor
+product_group: respond
 value_type: boolean
 status: active
 time_frame: none

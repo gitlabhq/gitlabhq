@@ -46,6 +46,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
    redis['port'] = 6379
    # Password to Authenticate Redis
    redis['password'] = 'redis-password-goes-here'
+   gitlab_rails['redis_password'] = 'redis-password-goes-here'
 
    gitlab_rails['auto_migrate'] = false
    ```
@@ -147,7 +148,7 @@ Updates to example must be made at:
    redis['master_password'] = '<redis_master_password>'
    
    ### If redis is running on the main Gitlab instance and you have opened the TCP port as above add the following
-   gitlab_rails['redis_host'] = '<gitlab host>'
+   gitlab_rails['redis_host'] = '<gitlab_host>'
    gitlab_rails['redis_port'] = 6379
 
    #######################################
@@ -158,7 +159,7 @@ Updates to example must be made at:
    ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
    git_data_dirs({
      "default" => {
-        "gitaly_address" => "tcp://gitaly:8075",
+        "gitaly_address" => "tcp://<gitlab_host>:8075",
         "gitaly_token" => "<gitaly_token>" 
      }
    })

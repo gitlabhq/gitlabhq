@@ -1,5 +1,6 @@
 <script>
-import { GlBadge, GlFriendlyWrap, GlLink, GlModal } from '@gitlab/ui';
+import { GlBadge, GlFriendlyWrap, GlLink, GlModal, GlTooltipDirective } from '@gitlab/ui';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import { __, n__, s__, sprintf } from '~/locale';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 
@@ -11,6 +12,10 @@ export default {
     GlFriendlyWrap,
     GlLink,
     GlModal,
+    ModalCopyButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     modalId: {
@@ -57,6 +62,7 @@ export default {
     history: __('History'),
     trace: __('System output'),
     attachment: s__('TestReports|Attachment'),
+    copyTestName: s__('TestReports|Copy test name to rerun locally'),
   },
   modalCloseButton: {
     text: __('Close'),
@@ -85,6 +91,13 @@ export default {
           {{ testCase.file }}
         </gl-link>
         <span v-else>{{ testCase.file }}</span>
+        <modal-copy-button
+          :title="$options.text.copyTestName"
+          :text="testCase.file"
+          :modal-id="modalId"
+          category="tertiary"
+          class="gl-ml-1"
+        />
       </div>
     </div>
 

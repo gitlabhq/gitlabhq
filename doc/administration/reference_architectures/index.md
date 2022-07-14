@@ -366,9 +366,9 @@ Additionally, the following cloud provider services are validated and supported 
 
 The following specific cloud provider services have been found to have issues in terms of either functionality or performance. As such, they either have caveats that should be considered or are not recommended:
 
+- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible. See [14.4.0](../../update/index.md#1440) for more details.
 - [Azure Blob Storage](https://azure.microsoft.com/en-gb/services/storage/blobs/) has been found to have performance limits that can impact production use at certain times. For larger Reference Architectures the service may not be sufficient for production use and an alternative is recommended for use instead.
 - [Azure Database for PostgreSQL Server](https://azure.microsoft.com/en-gb/services/postgresql/#overview) (Single / Flexible) is not recommended for use due to notable performance issues or missing functionality.
-- [AWS Aurora Database](https://aws.amazon.com/rds/aurora/) is not recommended due to compatibility issues.
 
 NOTE:
 As a general rule we unfortunately don't recommend Azure Services at this time.

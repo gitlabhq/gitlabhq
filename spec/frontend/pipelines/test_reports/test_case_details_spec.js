@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 describe('Test case details', () => {
   let wrapper;
@@ -19,6 +20,7 @@ describe('Test case details', () => {
     system_output: 'Line 42 is broken',
   };
 
+  const findCopyFileBtn = () => wrapper.findComponent(ModalCopyButton);
   const findModal = () => wrapper.findComponent(GlModal);
   const findName = () => wrapper.findByTestId('test-case-name');
   const findFile = () => wrapper.findByTestId('test-case-file');
@@ -64,6 +66,10 @@ describe('Test case details', () => {
     it('renders the test case file', () => {
       expect(findFile().text()).toBe(defaultTestCase.file);
       expect(findFileLink().attributes('href')).toBe(defaultTestCase.filePath);
+    });
+
+    it('renders copy button for test case file', () => {
+      expect(findCopyFileBtn().attributes('text')).toBe(defaultTestCase.file);
     });
 
     it('renders the test case duration', () => {

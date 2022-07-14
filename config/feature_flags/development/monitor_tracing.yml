@@ -1,8 +1,0 @@
----
-name: monitor_tracing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85877
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/359904
-milestone: '15.0'
-type: development
-group: group::respond
-default_enabled: false

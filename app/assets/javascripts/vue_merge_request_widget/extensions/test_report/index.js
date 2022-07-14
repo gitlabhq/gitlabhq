@@ -1,4 +1,5 @@
 import { uniqueId } from 'lodash';
+import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 import { EXTENSION_ICONS } from '../../constants';
@@ -19,6 +20,20 @@ export default {
   props: ['testResultsPath', 'headBlobPath', 'pipeline'],
   modalComponent: TestCaseDetails,
   computed: {
+    failedTestNames() {
+      if (!this.collapsedData?.suites) {
+        return '';
+      }
+
+      const newFailures = this.collapsedData?.suites.flatMap((suite) => [suite.new_failures || []]);
+      const fileNames = newFailures.flatMap((newFailure) => {
+        return newFailure.map((failure) => {
+          return failure.file;
+        });
+      });
+
+      return fileNames.join(' ');
+    },
     summary(data) {
       if (data.parsingInProgress) {
         return this.$options.i18n.loading;
@@ -41,14 +56,29 @@ export default {
       return EXTENSION_ICONS.success;
     },
     tertiaryButtons() {
-      return [
-        {
-          text: this.$options.i18n.fullReport,
-          href: `${this.pipeline.path}/test_report`,
-          target: '_blank',
-          fullReport: true,
-        },
-      ];
+      const actionButtons = [];
+
+      if (this.failedTestNames().length > 0) {
+        actionButtons.push({
+          dataClipboardText: this.failedTestNames(),
+          id: uniqueId('copy-to-clipboard'),
+          icon: 'copy-to-clipboard',
+          testId: 'copy-failed-specs-btn',
+          text: this.$options.i18n.copyFailedSpecs,
+          tooltipText: this.$options.i18n.copyFailedSpecsTooltip,
+          tooltipOnClick: __('Copied'),
+        });
+      }
+
+      actionButtons.push({
+        text: this.$options.i18n.fullReport,
+        href: `${this.pipeline.path}/test_report`,
+        target: '_blank',
+        fullReport: true,
+        testId: 'full-report-link',
+      });
+
+      return actionButtons;
     },
   },
   methods: {

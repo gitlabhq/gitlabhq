@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import testReportExtension from '~/vue_merge_request_widget/extensions/test_report';
 import { i18n } from '~/vue_merge_request_widget/extensions/test_report/constants';
@@ -38,7 +38,8 @@ describe('Test report extension', () => {
   };
 
   const findToggleCollapsedButton = () => wrapper.findByTestId('toggle-button');
-  const findTertiaryButton = () => wrapper.find(GlButton);
+  const findFullReportLink = () => wrapper.findByTestId('full-report-link');
+  const findCopyFailedSpecsBtn = () => wrapper.findByTestId('copy-failed-specs-btn');
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
   const findModal = () => wrapper.find(TestCaseDetails);
 
@@ -130,8 +131,57 @@ describe('Test report extension', () => {
 
       await waitForPromises();
 
-      expect(findTertiaryButton().text()).toBe('Full report');
-      expect(findTertiaryButton().attributes('href')).toBe('pipeline/path/test_report');
+      expect(findFullReportLink().text()).toBe('Full report');
+      expect(findFullReportLink().attributes('href')).toBe('pipeline/path/test_report');
+    });
+
+    it('hides copy failed tests button when there are no failing tests', async () => {
+      mockApi(httpStatusCodes.OK);
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findCopyFailedSpecsBtn().exists()).toBe(false);
+    });
+
+    it('displays copy failed tests button when there are failing tests', async () => {
+      mockApi(httpStatusCodes.OK, newFailedTestReports);
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findCopyFailedSpecsBtn().exists()).toBe(true);
+      expect(findCopyFailedSpecsBtn().text()).toBe(i18n.copyFailedSpecs);
+      expect(findCopyFailedSpecsBtn().attributes('data-clipboard-text')).toBe(
+        'spec/file_1.rb spec/file_2.rb',
+      );
+    });
+
+    it('copy failed tests button updates tooltip text when clicked', async () => {
+      mockApi(httpStatusCodes.OK, newFailedTestReports);
+      createComponent();
+
+      await waitForPromises();
+
+      // original tooltip shows up
+      expect(findCopyFailedSpecsBtn().attributes()).toMatchObject({
+        title: i18n.copyFailedSpecsTooltip,
+      });
+
+      await findCopyFailedSpecsBtn().trigger('click');
+
+      // tooltip text is replaced for 1 second
+      expect(findCopyFailedSpecsBtn().attributes()).toMatchObject({
+        title: 'Copied',
+      });
+
+      jest.runAllTimers();
+      await nextTick();
+
+      // tooltip reverts back to original string
+      expect(findCopyFailedSpecsBtn().attributes()).toMatchObject({
+        title: i18n.copyFailedSpecsTooltip,
+      });
     });
 
     it('shows an error when a suite has a parsing error', async () => {

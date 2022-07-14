@@ -2,10 +2,10 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Blame, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
-
-  let(:sha) { SeedRepo::Commit::ID }
+RSpec.describe Gitlab::Git::Blame do
+  let(:project) { create(:project, :repository) }
+  let(:repository) { project.repository.raw }
+  let(:sha) { TestEnv::BRANCH_SHA['master'] }
   let(:path) { 'CONTRIBUTING.md' }
   let(:range) { nil }
 
@@ -37,19 +37,17 @@ RSpec.describe Gitlab::Git::Blame, :seed_helper do
     end
 
     context "ISO-8859 encoding" do
-      let(:sha) { SeedRepo::EncodingCommit::ID }
       let(:path) { 'encoding/iso8859.txt' }
 
       it 'converts to UTF-8' do
         expect(result.size).to eq(1)
         expect(result.first[:commit]).to be_kind_of(Gitlab::Git::Commit)
-        expect(result.first[:line]).to eq("Ä ü")
+        expect(result.first[:line]).to eq("Äü")
         expect(result.first[:line]).to be_utf8
       end
     end
 
     context "unknown encoding" do
-      let(:sha) { SeedRepo::EncodingCommit::ID }
       let(:path) { 'encoding/iso8859.txt' }
 
       it 'converts to UTF-8' do
@@ -59,14 +57,12 @@ RSpec.describe Gitlab::Git::Blame, :seed_helper do
 
         expect(result.size).to eq(1)
         expect(result.first[:commit]).to be_kind_of(Gitlab::Git::Commit)
-        expect(result.first[:line]).to eq(" ")
+        expect(result.first[:line]).to eq("")
         expect(result.first[:line]).to be_utf8
       end
     end
 
     context "renamed file" do
-      let(:project) { create(:project, :repository) }
-      let(:repository) { project.repository.raw_repository }
       let(:commit) { project.commit('blame-on-renamed') }
       let(:sha) { commit.id }
       let(:path) { 'files/plain_text/renamed' }

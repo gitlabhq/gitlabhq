@@ -3845,6 +3845,25 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestupdatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
+### `Mutation.namespaceBanDestroy`
+
+Input type: `NamespaceBanDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacebandestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacebandestroyid"></a>`id` | [`NamespacesNamespaceBanID!`](#namespacesnamespacebanid) | Global ID of the namespace ban to remove. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacebandestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacebandestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationnamespacebandestroynamespaceban"></a>`namespaceBan` | [`NamespaceBan`](#namespaceban) | Namespace Ban. |
+
 ### `Mutation.namespaceCiCdSettingsUpdate`
 
 Input type: `NamespaceCiCdSettingsUpdateInput`
@@ -14505,6 +14524,16 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="namespacescanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`. |
 | <a id="namespacescanexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 
+### `NamespaceBan`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacebanid"></a>`id` | [`GlobalID!`](#globalid) | Global ID of the namespace ban. |
+| <a id="namespacebannamespace"></a>`namespace` | [`Namespace!`](#namespace) | Root namespace to which the ban applies. |
+| <a id="namespacebanuser"></a>`user` | [`UserCore!`](#usercore) | User to which the namespace ban applies. |
+
 ### `NamespaceCiCdSetting`
 
 #### Fields
@@ -20813,6 +20842,12 @@ An example `MilestoneID` is: `"gid://gitlab/Milestone/1"`.
 A `NamespaceID` is a global ID. It is encoded as a string.
 
 An example `NamespaceID` is: `"gid://gitlab/Namespace/1"`.
+
+### `NamespacesNamespaceBanID`
+
+A `NamespacesNamespaceBanID` is a global ID. It is encoded as a string.
+
+An example `NamespacesNamespaceBanID` is: `"gid://gitlab/Namespaces::NamespaceBan/1"`.
 
 ### `NoteID`
 

@@ -32543,6 +32543,12 @@ msgstr ""
 msgid "Reports|Classname"
 msgstr ""
 
+msgid "Reports|Copy failed test names to run locally"
+msgstr ""
+
+msgid "Reports|Copy failed tests"
+msgstr ""
+
 msgid "Reports|Execution time"
 msgstr ""
 
@@ -38427,6 +38433,9 @@ msgid "TestReports|%{rate}%{sign} success rate"
 msgstr ""
 
 msgid "TestReports|Attachment"
+msgstr ""
+
+msgid "TestReports|Copy test name to rerun locally"
 msgstr ""
 
 msgid "TestReports|Job artifacts are expired"
@@ -44414,6 +44423,9 @@ msgid "You have insufficient permissions to remove an on-call schedule from this
 msgstr ""
 
 msgid "You have insufficient permissions to remove this HTTP integration"
+msgstr ""
+
+msgid "You have insufficient permissions to remove this Namespace Ban"
 msgstr ""
 
 msgid "You have insufficient permissions to set customer relations contacts for this issue"

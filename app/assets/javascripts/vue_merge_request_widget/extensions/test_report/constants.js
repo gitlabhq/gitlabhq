@@ -7,6 +7,8 @@ export const TESTS_FAILED_STATUS = 'failed';
 export const ERROR_STATUS = 'error';
 
 export const i18n = {
+  copyFailedSpecs: s__('Reports|Copy failed tests'),
+  copyFailedSpecsTooltip: s__('Reports|Copy failed test names to run locally'),
   label: s__('Reports|Test summary'),
   loading: s__('Reports|Test summary results are loading'),
   error: s__('Reports|Test summary failed to load results'),
