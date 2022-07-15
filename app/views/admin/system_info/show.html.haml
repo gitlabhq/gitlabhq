@@ -29,9 +29,9 @@
       %h4.page-title.d-flex
         .gl-display-flex.gl-align-items-center.gl-justify-content-center
           = sprite_icon('clock', size: 18, css_class: 'pod-icon gl-mr-3')
-        = _('Uptime')
+        = _('System started')
       .data
-        %h2= distance_of_time_in_words_to_now(Rails.application.config.booted_at)
+        %h2= time_ago_with_tooltip(Rails.application.config.booted_at)
   .col-sm
     .bg-light.info-well.p-3
       %h4.page-title.d-flex

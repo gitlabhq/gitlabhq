@@ -117,9 +117,9 @@ export default {
   methods: {
     handleDropdownClose(color) {
       if (this.iid !== '') {
-        this.updateSelectedColor(this.getUpdateVariables(color));
+        this.updateSelectedColor(color);
       } else {
-        this.$emit('updateSelectedColor', color);
+        this.$emit('updateSelectedColor', { color });
       }
 
       this.collapseEditableItem();
@@ -140,13 +140,15 @@ export default {
         color: color.color,
       };
     },
-    updateSelectedColor(inputVariables) {
+    updateSelectedColor(color) {
       this.colorUpdateInProgress = true;
+
+      const input = this.getUpdateVariables(color);
 
       this.$apollo
         .mutate({
           mutation: updateEpicColorMutation,
-          variables: { input: inputVariables },
+          variables: { input },
         })
         .then(({ data }) => {
           if (data.updateIssuableColor?.errors?.length) {
@@ -155,7 +157,7 @@ export default {
 
           this.$emit('updateSelectedColor', {
             id: data.updateIssuableColor?.issuable?.id,
-            color: data.updateIssuableColor?.issuable?.color,
+            color,
           });
         })
         .catch((error) =>

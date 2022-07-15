@@ -81,7 +81,7 @@ class User < ApplicationRecord
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
-         :validatable, :omniauthable, :confirmable, :registerable
+         :validatable, :omniauthable, :confirmable, :registerable, :pbkdf2_encryptable
 
   include AdminChangedPasswordNotifier
 
@@ -922,21 +922,59 @@ class User < ApplicationRecord
     reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
-  # See https://gitlab.com/gitlab-org/security/gitlab/-/issues/638
-  DISALLOWED_PASSWORDS = %w[123qweQWE!@#000000000].freeze
+  def authenticatable_salt
+    return encrypted_password[0, 29] unless Feature.enabled?(:pbkdf2_password_encryption)
+    return super if password_strategy == :pbkdf2_sha512
+
+    encrypted_password[0, 29]
+  end
 
   # Overwrites valid_password? from Devise::Models::DatabaseAuthenticatable
   # In constant-time, check both that the password isn't on a denylist AND
   # that the password is the user's password
   def valid_password?(password)
+    return false unless password_allowed?(password)
+    return super if Feature.enabled?(:pbkdf2_password_encryption)
+
+    Devise::Encryptor.compare(self.class, encrypted_password, password)
+  rescue Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
+    validate_and_migrate_bcrypt_password(password)
+  rescue ::BCrypt::Errors::InvalidHash
+    false
+  end
+
+  # This method should be removed once the :pbkdf2_password_encryption feature flag is removed.
+  def password=(new_password)
+    if Feature.enabled?(:pbkdf2_password_encryption) && Feature.enabled?(:pbkdf2_password_encryption_write, self)
+      super
+    else
+      # Copied from Devise DatabaseAuthenticatable.
+      @password = new_password
+      self.encrypted_password = Devise::Encryptor.digest(self.class, new_password) if new_password.present?
+    end
+  end
+
+  def password_strategy
+    super
+  rescue Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
+    begin
+      return :bcrypt if BCrypt::Password.new(encrypted_password)
+    rescue BCrypt::Errors::InvalidHash
+      :unknown
+    end
+  end
+
+  # See https://gitlab.com/gitlab-org/security/gitlab/-/issues/638
+  DISALLOWED_PASSWORDS = %w[123qweQWE!@#000000000].freeze
+
+  def password_allowed?(password)
     password_allowed = true
+
     DISALLOWED_PASSWORDS.each do |disallowed_password|
       password_allowed = false if Devise.secure_compare(password, disallowed_password)
     end
 
-    original_result = super
-
-    password_allowed && original_result
+    password_allowed
   end
 
   def remember_me!
@@ -2349,6 +2387,15 @@ class User < ApplicationRecord
       .shortest_traversal_ids_prefixes
 
     Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
+  end
+
+  def validate_and_migrate_bcrypt_password(password)
+    return false unless Devise::Encryptor.compare(self.class, encrypted_password, password)
+    return true unless Feature.enabled?(:pbkdf2_password_encryption_write, self)
+
+    update_attribute(:password, password)
+  rescue ::BCrypt::Errors::InvalidHash
+    false
   end
 end
 

@@ -179,11 +179,19 @@
     - *ruby-gems-cache
     - *node-modules-cache
 
+.qa-bundler-variables: &qa-bundler-variables
+  variables:
+    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
+    BUNDLE_SILENCE_ROOT_WARNING: "true"
+    BUNDLE_PATH: vendor
+
 .qa-cache:
+  <<: *qa-bundler-variables
   cache:
     - *qa-ruby-gems-cache
 
 .qa-cache-push:
+  <<: *qa-bundler-variables
   cache:
     - *qa-ruby-gems-cache-push
 

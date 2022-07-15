@@ -172,4 +172,24 @@ RSpec.describe PreviewMarkdownService do
       expect(result[:commands]).to eq 'Tags this commit to v1.2.3 with "Stable release".'
     end
   end
+
+  context 'note with multiple quick actions' do
+    let(:issue) { create(:issue, project: project) }
+    let(:params) do
+      {
+        text: "/confidential\n/due 2001-12-31\n/estimate 2y\n/assign #{user.to_reference}",
+        target_type: 'Issue',
+        target_id: issue.id
+      }
+    end
+
+    let(:service) { described_class.new(project, user, params) }
+
+    it 'renders quick actions on multiple lines' do
+      result = service.execute
+
+      expect(result[:commands]).to eq "Makes this issue confidential.<br>Sets the due date to Dec 31, 2001.<br>" \
+        "Sets time estimate to 2y.<br>Assigns #{user.to_reference}."
+    end
+  end
 end

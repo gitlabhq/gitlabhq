@@ -1,4 +1,4 @@
-import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -15,7 +15,11 @@ import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import { temporaryConfig } from '~/work_items/graphql/provider';
-import { workItemTitleSubscriptionResponse, workItemResponseFactory } from '../mock_data';
+import {
+  workItemTitleSubscriptionResponse,
+  workItemResponseFactory,
+  mockParent,
+} from '../mock_data';
 
 describe('WorkItemDetail component', () => {
   let wrapper;
@@ -35,6 +39,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemWeight = () => wrapper.findComponent(WorkItemWeight);
   const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
+  const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
 
   const createComponent = ({
@@ -150,18 +155,35 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('secondary breadcrumbs', () => {
-    it('does not show secondary breadcrumbs if there is no parent', () => {
+    it('does not show secondary breadcrumbs by default', () => {
       createComponent();
 
       expect(findParent().exists()).toBe(false);
     });
 
-    it('shows secondary breadcrumbs if there is a parent', async () => {
+    it('does not show secondary breadcrumbs if there is not a parent', async () => {
       createComponent();
 
       await waitForPromises();
 
-      expect(findParent().exists()).toBe(true);
+      expect(findParent().exists()).toBe(false);
+    });
+
+    describe('with parent', () => {
+      beforeEach(async () => {
+        const parentResponse = workItemResponseFactory(mockParent);
+        createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
+
+        await waitForPromises();
+      });
+
+      it('shows secondary breadcrumbs if there is a parent', () => {
+        expect(findParent().exists()).toBe(true);
+      });
+
+      it('sets the parent breadcrumb URL', () => {
+        expect(findParentButton().attributes().href).toBe('../../issues/5');
+      });
     });
   });
 

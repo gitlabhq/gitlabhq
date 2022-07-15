@@ -5,12 +5,6 @@ include:
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
 
-.bundler_variables:
-  variables:
-    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
-    BUNDLE_SILENCE_ROOT_WARNING: "true"
-    BUNDLE_PATH: vendor
-
 .test_variables:
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
@@ -27,7 +21,6 @@ include:
     - .use-docker-in-docker
     - .qa-cache
     - .test_variables
-    - .bundler_variables
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   stage: qa
   needs:
@@ -85,7 +78,6 @@ download-knapsack-report:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-${CHROME_VERSION}
   extends:
     - .qa-cache
-    - .bundler_variables
     - .review:rules:review-qa-reliable
   stage: prepare
   variables:

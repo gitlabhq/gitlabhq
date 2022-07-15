@@ -41,7 +41,9 @@ changes](../contributing/index.md#breaking-changes) to GitLab features.
 
 Deprecations should be announced on the [Deprecated feature removal schedule](../../update/deprecations.md).
 
-For steps to create a deprecation entry, see [Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
+Do not include the deprecation announcement in the merge request that introduces a code change for the deprecation.
+Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see
+[Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
 
 ## When can a feature be removed/changed?
 

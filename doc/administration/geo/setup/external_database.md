@@ -20,9 +20,9 @@ We strongly recommend running Omnibus-managed instances as they are actively
 developed and tested. We aim to be compatible with most external
 (not managed by Omnibus) databases but we do not guarantee compatibility.
 
-## **Primary** node
+## **Primary** site
 
-1. SSH into a GitLab **primary** application server and login as root:
+1. SSH into a **Rails node on your primary** site and login as root:
 
    ```shell
    sudo -i
@@ -44,13 +44,13 @@ developed and tested. We aim to be compatible with most external
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
-1. Reconfigure the **primary** node for the change to take effect:
+1. Reconfigure the **Rails node** for the change to take effect:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. Execute the command below to define the node as **primary** node:
+1. Execute the command below on the **Rails node** to define the site as **primary** site:
 
    ```shell
    gitlab-ctl set-geo-primary-node
@@ -67,10 +67,10 @@ To set up an external database, you can either:
 
 #### Leverage your cloud provider's tools to replicate the primary database
 
-Given you have a primary node set up on AWS EC2 that uses RDS.
+Given you have a primary site set up on AWS EC2 that uses RDS.
 You can now just create a read-only replica in a different region and the
 replication process is managed by AWS. Make sure you've set Network ACL (Access Control List), Subnet, and
-Security Group according to your needs, so the secondary application node can access the database.
+Security Group according to your needs, so the secondary Rails node(s) can access the database.
 
 The following instructions detail how to create a read-only replica for common
 cloud providers:
@@ -79,7 +79,7 @@ cloud providers:
 - Azure Database for PostgreSQL - [Create and manage read replicas in Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/single-server/how-to-read-replicas-portal)
 - Google Cloud SQL - [Creating read replicas](https://cloud.google.com/sql/docs/postgres/replication/create-replica)
 
-Once your read-only replica is set up, you can skip to [configure your secondary application node](#configure-secondary-application-nodes-to-use-the-external-read-replica).
+Once your read-only replica is set up, you can skip to [configure your secondary site](#configure-secondary-site-to-use-the-external-read-replica)
 
 #### Manually configure the primary database for replication
 
@@ -112,7 +112,7 @@ max_replication_slots = 1 # number of secondary instances
 hot_standby = on
 ```
 
-## **Secondary** nodes
+## **Secondary** sites
 
 ### Manually configure the replica database
 
@@ -141,7 +141,7 @@ wal_keep_segments = 10
 hot_standby = on
 ```
 
-### Configure **secondary** application nodes to use the external read-replica
+### Configure **secondary** site to use the external read-replica
 
 With Omnibus, the
 [`geo_secondary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)
@@ -153,7 +153,7 @@ has three main functions:
 
 To configure the connection to the external read-replica database and enable Log Cursor:
 
-1. SSH into a GitLab **secondary** application server and login as root:
+1. SSH into each **Rails, Sidekiq and Geo Log Cursor** node on your **secondary** site and login as root:
 
    ```shell
    sudo -i
@@ -184,7 +184,7 @@ To configure the connection to the external read-replica database and enable Log
 
 ### Configure the tracking database
 
-**Secondary** nodes use a separate PostgreSQL installation as a tracking
+**Secondary** sites use a separate PostgreSQL installation as a tracking
 database to keep track of replication status and automatically recover from
 potential replication issues. Omnibus automatically configures a tracking database
 when `roles ['geo_secondary_role']` is set.
@@ -214,7 +214,7 @@ the tracking database on port 5432.
    [database requirements document](../../../install/requirements.md#database).
 1. Set up a `gitlab_geo` user with a password of your choice, create the `gitlabhq_geo_production` database, and make the user an owner of the database. You can see an example of this setup in the [installation from source documentation](../../../install/installation.md#6-database).
 1. If you are **not** using a cloud-managed PostgreSQL database, ensure that your secondary
-   node can communicate with your tracking database by manually changing the
+   site can communicate with your tracking database by manually changing the
    `pg_hba.conf` that is associated with your tracking database.
    Remember to restart PostgreSQL afterwards for the changes to take effect:
 

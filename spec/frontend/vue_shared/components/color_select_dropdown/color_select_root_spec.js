@@ -135,7 +135,7 @@ describe('LabelsSelectRoot', () => {
 
     it('handles DropdownContents setColor', () => {
       findDropdownContents().vm.$emit('setColor', color);
-      expect(wrapper.emitted('updateSelectedColor')).toEqual([[color]]);
+      expect(wrapper.emitted('updateSelectedColor')).toEqual([[{ color }]]);
     });
   });
 
@@ -157,7 +157,7 @@ describe('LabelsSelectRoot', () => {
     createComponent({ propsData: { iid: undefined } });
 
     findDropdownContents().vm.$emit('setColor', color);
-    expect(wrapper.emitted('updateSelectedColor')).toEqual([[color]]);
+    expect(wrapper.emitted('updateSelectedColor')).toEqual([[{ color }]]);
   });
 
   describe('when updating color for epic', () => {

@@ -329,16 +329,7 @@ to disable the wiki but toggle it on (in blue).
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345398) switching between editing experiences in GitLab 14.7 [with a flag](../../../administration/feature_flags.md) named `wiki_switch_between_content_editor_raw_markdown`. Enabled by default.
 > - Switching between editing experiences generally available in GitLab 14.10. [Feature flag `wiki_switch_between_content_editor_raw_markdown`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83760) removed.
 
-GitLab version 14.0 introduces a WYSIWYG editing experience for GitLab Flavored Markdown
-in Wikis through the [Content Editor](../../../development/fe_guide/content_editor.md).
-The Content Editor is under active development, and is not yet the default editing
-experience in the Wiki. To opt in for the new editor:
-
-1. Create a new wiki page, or edit an existing one.
-1. Ensure the wiki page uses the Markdown format. Other formats are not yet supported.
-1. Above the content field, select **Edit rich text**:
-
-   ![Use new editor button image](img/use_new_editor_button_v14.6.png)
+GitLab provides a WYSIWYG editing experience for GitLab Flavored Markdown in wikis.
 
 ### Use the Content Editor
 
@@ -346,9 +337,10 @@ experience in the Wiki. To opt in for the new editor:
 1. Select **Markdown** as your format.
 1. Above **Content**, select **Edit rich text**.
 1. Customize your page's content using the various formatting options available in the content editor.
-1. Select **Create page** for a new page, or **Save changes** for an existing page:
+1. Select **Create page** for a new page, or **Save changes** for an existing page.
 
-   ![Content Editor in Wikis image](img/content_editor_v14.6.png)
+The rich text editing mode remains the default until you switch back to
+[edit the raw source](#switch-back-to-the-old-editor).
 
 ### Switch back to the old editor
 

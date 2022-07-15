@@ -37922,6 +37922,9 @@ msgstr ""
 msgid "System output"
 msgstr ""
 
+msgid "System started"
+msgstr ""
+
 msgid "Table of Contents"
 msgstr ""
 
@@ -41509,9 +41512,6 @@ msgid "Uploading..."
 msgstr ""
 
 msgid "Upstream"
-msgstr ""
-
-msgid "Uptime"
 msgstr ""
 
 msgid "Upvotes"

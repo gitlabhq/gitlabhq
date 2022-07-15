@@ -17550,6 +17550,7 @@ CREATE TABLE namespace_settings (
     unique_project_download_limit smallint DEFAULT 0 NOT NULL,
     unique_project_download_limit_interval_in_seconds integer DEFAULT 0 NOT NULL,
     project_import_level smallint DEFAULT 0 NOT NULL,
+    include_for_free_user_cap_preview boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255))
 );
 

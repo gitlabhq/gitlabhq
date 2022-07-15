@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
+RSpec.describe Gitlab::BareRepositoryImport::Importer do
   let!(:admin) { create(:admin) }
   let!(:base_dir) { Dir.mktmpdir + '/' }
   let(:bare_repository) { Gitlab::BareRepositoryImport::Repository.new(base_dir, File.join(base_dir, "#{project_path}.git")) }
   let(:gitlab_shell) { Gitlab::Shell.new }
-  let(:source_project) { TEST_REPO_PATH }
+  let(:source_project) { TestEnv.factory_repo_bundle_path }
 
   subject(:importer) { described_class.new(admin, bare_repository) }
 
@@ -17,8 +17,6 @@ RSpec.describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
 
   after do
     FileUtils.rm_rf(base_dir)
-    TestEnv.clean_test_path
-    ensure_seeds
   end
 
   shared_examples 'importing a repository' do
@@ -150,7 +148,6 @@ RSpec.describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
     end
 
     context 'with a repository already on disk' do
-      let!(:base_dir) { TestEnv.repos_path }
       # This is a quick way to get a valid repository instead of copying an
       # existing one. Since it's not persisted, the importer will try to
       # create the project.

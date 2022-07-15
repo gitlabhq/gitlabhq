@@ -394,7 +394,7 @@ RSpec.describe API::Commits do
 
       context 'when using warden', :snowplow, :clean_gitlab_redis_sessions do
         before do
-          stub_session('warden.user.user.key' => [[user.id], user.encrypted_password[0, 29]])
+          stub_session('warden.user.user.key' => [[user.id], user.authenticatable_salt])
         end
 
         subject { post api(url), params: valid_c_params }

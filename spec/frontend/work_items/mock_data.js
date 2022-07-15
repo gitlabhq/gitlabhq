@@ -112,6 +112,7 @@ export const workItemResponseFactory = ({
   canUpdate = false,
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
+  parent = null,
 } = {}) => ({
   data: {
     workItem: {
@@ -150,11 +151,6 @@ export const workItemResponseFactory = ({
         {
           __typename: 'WorkItemWidgetHierarchy',
           type: 'HIERARCHY',
-          parent: {
-            id: 'gid://gitlab/Issue/1',
-            iid: '5',
-            title: 'Parent title',
-          },
           children: {
             edges: [
               {
@@ -164,6 +160,7 @@ export const workItemResponseFactory = ({
               },
             ],
           },
+          parent,
         },
       ],
     },
@@ -533,5 +530,13 @@ export const projectLabelsResponse = {
         nodes: mockLabels,
       },
     },
+  },
+};
+
+export const mockParent = {
+  parent: {
+    id: 'gid://gitlab/Issue/1',
+    iid: '5',
+    title: 'Parent title',
   },
 };

@@ -5921,8 +5921,44 @@ RSpec.describe User do
     end
   end
 
+  describe '#authenticatable_salt' do
+    let(:user) { create(:user) }
+
+    subject(:authenticatable_salt) { user.authenticatable_salt }
+
+    it 'uses password_salt' do
+      expect(authenticatable_salt).to eq(user.password_salt)
+    end
+
+    context 'when the encrypted_password is an unknown type' do
+      let(:encrypted_password) { '$argon2i$v=19$m=512,t=4,p=2$eM+ZMyYkpDRGaI3xXmuNcQ$c5DeJg3eb5dskVt1mDdxfw' }
+
+      before do
+        user.update_attribute(:encrypted_password, encrypted_password)
+      end
+
+      it 'returns the first 30 characters of the encrypted_password' do
+        expect(authenticatable_salt).to eq(encrypted_password[0, 29])
+      end
+    end
+
+    context 'when pbkdf2_password_encryption is disabled' do
+      before do
+        stub_feature_flags(pbkdf2_password_encryption: false)
+      end
+
+      it 'returns the first 30 characters of the encrypted_password' do
+        expect(authenticatable_salt).to eq(user.encrypted_password[0, 29])
+      end
+    end
+  end
+
+  def compare_pbkdf2_password(user, password)
+    Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.compare(user.encrypted_password, password)
+  end
+
   describe '#valid_password?' do
-    subject { user.valid_password?(password) }
+    subject(:validate_password) { user.valid_password?(password) }
 
     context 'user with password not in disallowed list' do
       let(:user) { create(:user) }
@@ -5934,6 +5970,15 @@ RSpec.describe User do
         let(:password) { 'WRONG PASSWORD' }
 
         it { is_expected.to be_falsey }
+      end
+
+      context 'when pbkdf2_sha512_encryption is disabled and the user password is pbkdf2+sha512' do
+        it 'does not validate correctly' do
+          user # Create the user while the feature is enabled
+          stub_feature_flags(pbkdf2_password_encryption: false)
+
+          expect(validate_password).to be_falsey
+        end
       end
     end
 
@@ -5947,6 +5992,174 @@ RSpec.describe User do
         let(:password) { 'WRONG PASSWORD' }
 
         it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'user with a bcrypt password hash' do
+      # Plaintext password 'eiFubohV6iro'
+      let(:encrypted_password) { '$2a$10$xLTxCKOa75IU4RQGqqOrTuZOgZdJEzfSzjG6ZSEi/C31TB/yLZYpi' }
+      let(:user) { create(:user, encrypted_password: encrypted_password) }
+
+      shared_examples 'not re-encrypting with PBKDF2' do
+        it 'does not re-encrypt with PBKDF2' do
+          validate_password
+
+          expect(user.reload.encrypted_password).to eq(encrypted_password)
+        end
+      end
+
+      context 'using the wrong password' do
+        let(:password) { 'WRONG PASSWORD' }
+
+        it { is_expected.to be_falsey }
+        it_behaves_like 'not re-encrypting with PBKDF2'
+
+        context 'when pbkdf2_password_encryption is disabled' do
+          before do
+            stub_feature_flags(pbkdf2_password_encryption: false)
+          end
+
+          it { is_expected.to be_falsey }
+          it_behaves_like 'not re-encrypting with PBKDF2'
+        end
+      end
+
+      context 'using the correct password' do
+        let(:password) { 'eiFubohV6iro' }
+
+        it { is_expected.to be_truthy }
+
+        it 'validates the password and re-encrypts with PBKDF2' do
+          validate_password
+
+          current_encrypted_password = user.reload.encrypted_password
+
+          expect(compare_pbkdf2_password(user, password)).to eq(true)
+          expect { ::BCrypt::Password.new(current_encrypted_password) }
+            .to raise_error(::BCrypt::Errors::InvalidHash)
+        end
+
+        context 'when pbkdf2_password_encryption is disabled' do
+          before do
+            stub_feature_flags(pbkdf2_password_encryption: false)
+          end
+
+          it { is_expected.to be_truthy }
+          it_behaves_like 'not re-encrypting with PBKDF2'
+        end
+
+        context 'when pbkdf2_password_encryption_write is disabled' do
+          before do
+            stub_feature_flags(pbkdf2_password_encryption_write: false)
+          end
+
+          it { is_expected.to be_truthy }
+          it_behaves_like 'not re-encrypting with PBKDF2'
+        end
+      end
+    end
+
+    context 'user with password hash that is neither PBKDF2 nor BCrypt' do
+      let(:user) { create(:user, encrypted_password: '$argon2i$v=19$m=512,t=4,p=2$eM+ZMyYkpDRGaI3xXmuNcQ$c5DeJg3eb5dskVt1mDdxfw') }
+      let(:password) { 'password' }
+
+      it { is_expected.to be_falsey }
+
+      context 'when pbkdf2_password_encryption is disabled' do
+        before do
+          stub_feature_flags(pbkdf2_password_encryption: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  # These entire test section can be removed once the :pbkdf2_password_encryption feature flag is removed.
+  describe '#password=' do
+    let(:user) { create(:user) }
+    let(:password) { 'Oot5iechahqu' }
+
+    def compare_bcrypt_password(user, password)
+      Devise::Encryptor.compare(User, user.encrypted_password, password)
+    end
+
+    context 'when pbkdf2_password_encryption is enabled' do
+      it 'calls PBKDF2 digest and not the default Devise encryptor' do
+        expect(Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512).to receive(:digest).at_least(:once).and_call_original
+        expect(Devise::Encryptor).not_to receive(:digest)
+
+        user.password = password
+      end
+
+      it 'saves the password in PBKDF2 format' do
+        user.password = password
+        user.save!
+
+        expect(compare_pbkdf2_password(user, password)).to eq(true)
+        expect { compare_bcrypt_password(user, password) }.to raise_error(::BCrypt::Errors::InvalidHash)
+      end
+
+      context 'when pbkdf2_password_encryption_write is disabled' do
+        before do
+          stub_feature_flags(pbkdf2_password_encryption_write: false)
+        end
+
+        it 'calls default Devise encryptor and not the PBKDF2 encryptor' do
+          expect(Devise::Encryptor).to receive(:digest).at_least(:once).and_call_original
+          expect(Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512).not_to receive(:digest)
+
+          user.password = password
+        end
+      end
+    end
+
+    context 'when pbkdf2_password_encryption is disabled' do
+      before do
+        stub_feature_flags(pbkdf2_password_encryption: false)
+      end
+
+      it 'calls default Devise encryptor and not the PBKDF2 encryptor' do
+        expect(Devise::Encryptor).to receive(:digest).at_least(:once).and_call_original
+        expect(Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512).not_to receive(:digest)
+
+        user.password = password
+      end
+
+      it 'saves the password in BCrypt format' do
+        user.password = password
+        user.save!
+
+        expect { compare_pbkdf2_password(user, password) }.to raise_error Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
+        expect(compare_bcrypt_password(user, password)).to eq(true)
+      end
+    end
+  end
+
+  describe '#password_strategy' do
+    let(:user) { create(:user, encrypted_password: encrypted_password) }
+
+    context 'with a PBKDF2+SHA512 encrypted password' do
+      let(:encrypted_password) { '$pbkdf2-sha512$20000$boHGAw0hEyI$DBA67J7zNZebyzLtLk2X9wRDbmj1LNKVGnZLYyz6PGrIDGIl45fl/BPH0y1TPZnV90A20i.fD9C3G9Bp8jzzOA' }
+
+      it 'extracts the correct strategy', :aggregate_failures do
+        expect(user.password_strategy).to eq(:pbkdf2_sha512)
+      end
+    end
+
+    context 'with a BCrypt encrypted password' do
+      let(:encrypted_password) { '$2a$10$xLTxCKOa75IU4RQGqqOrTuZOgZdJEzfSzjG6ZSEi/C31TB/yLZYpi' }
+
+      it 'extracts the correct strategy', :aggregate_failures do
+        expect(user.password_strategy).to eq(:bcrypt)
+      end
+    end
+
+    context 'with an unknown encrypted password' do
+      let(:encrypted_password) { '$pbkdf2-sha256$6400$.6UI/S.nXIk8jcbdHx3Fhg$98jZicV16ODfEsEZeYPGHU3kbrUrvUEXOPimVSQDD44' }
+
+      it 'returns unknown strategy' do
+        expect(user.password_strategy).to eq(:unknown)
       end
     end
   end
