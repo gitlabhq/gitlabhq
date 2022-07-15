@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Integrate LDAP with GitLab **(FREE SELF)**
 
-GitLab integrates with [LDAP](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol)
+GitLab integrates with [LDAP - Lightweight Directory Access Protocol](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol)
 to support user authentication.
 
 This integration works with most LDAP-compliant directory servers, including:

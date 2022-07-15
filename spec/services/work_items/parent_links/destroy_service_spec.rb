@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::ParentLinks::DestroyService do
   describe '#execute' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:reporter) { create(:user) }
+    let_it_be(:guest) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be(:work_item) { create(:work_item, project: project) }
     let_it_be(:task) { create(:work_item, :task, project: project) }
@@ -14,10 +15,13 @@ RSpec.describe WorkItems::ParentLinks::DestroyService do
 
     subject { described_class.new(parent_link, user).execute }
 
+    before do
+      project.add_reporter(reporter)
+      project.add_guest(guest)
+    end
+
     context 'when user has permissions to update work items' do
-      before do
-        project.add_developer(user)
-      end
+      let(:user) { reporter }
 
       it 'removes relation' do
         expect { subject }.to change(parent_link_class, :count).by(-1)
@@ -29,6 +33,8 @@ RSpec.describe WorkItems::ParentLinks::DestroyService do
     end
 
     context 'when user has insufficient permissions' do
+      let(:user) { guest }
+
       it 'does not remove relation' do
         expect { subject }.not_to change(parent_link_class, :count).from(1)
       end

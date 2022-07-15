@@ -24,7 +24,6 @@ RSpec.describe 'projects/blob/_viewer.html.haml' do
   before do
     assign(:project, project)
     assign(:blob, blob)
-    assign(:ref, 'master')
     assign(:id, File.join('master', blob.path))
 
     controller.params[:controller] = 'projects/blob'

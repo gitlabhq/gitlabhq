@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::ParentLinks::CreateService do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
+    let_it_be(:guest) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be(:work_item) { create(:work_item, project: project) }
     let_it_be(:task) { create(:work_item, :task, project: project) }
@@ -13,7 +14,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
     let_it_be(:guest_task) { create(:work_item, :task) }
     let_it_be(:invalid_task) { build_stubbed(:work_item, :task, id: non_existing_record_id)}
     let_it_be(:another_project) { (create :project) }
-    let_it_be(:other_project_task) { create(:work_item, :task, project: another_project) }
+    let_it_be(:other_project_task) { create(:work_item, :task, iid: 100, project: another_project) }
     let_it_be(:existing_parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item)}
 
     let(:parent_link_class) { WorkItems::ParentLink }
@@ -21,9 +22,10 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
     let(:params) { {} }
 
     before do
-      project.add_developer(user)
+      project.add_reporter(user)
+      project.add_guest(guest)
       guest_task.project.add_guest(user)
-      another_project.add_developer(user)
+      another_project.add_reporter(user)
     end
 
     shared_examples 'returns not found error' do
@@ -52,7 +54,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
       it_behaves_like 'returns not found error'
     end
 
-    context 'when user has no permission to link work item' do
+    context 'when user has no permission to link work items' do
       let(:params) { { issuable_references: [guest_task.id] } }
 
       it_behaves_like 'returns not found error'
@@ -147,6 +149,22 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
 
           expect(subject).to eq(service_error(message, http_status: 422))
         end
+      end
+
+      context 'when user is a guest' do
+        let(:user) { guest }
+
+        it_behaves_like 'returns not found error'
+      end
+
+      context 'when user is a guest assigned to the work item' do
+        let(:user) { guest }
+
+        before do
+          work_item.assignees = [guest]
+        end
+
+        it_behaves_like 'returns not found error'
       end
     end
   end

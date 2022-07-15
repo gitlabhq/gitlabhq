@@ -338,8 +338,8 @@ module Ci
     scope :for_id, -> (id) { where(id: id) }
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_project, -> (project_id) { where(project_id: project_id) }
-    scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
-    scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
+    scope :created_after, -> (time) { where(arel_table[:created_at].gt(time)) }
+    scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
     scope :with_pipeline_source, -> (source) { where(source: source) }
 

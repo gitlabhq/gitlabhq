@@ -20,7 +20,7 @@ module WorkItems
 
       def linkable_issuables(work_items)
         @linkable_issuables ||= begin
-          return [] unless can?(current_user, :read_work_item, issuable.project)
+          return [] unless can?(current_user, :admin_parent_link, issuable)
 
           work_items.select do |work_item|
             linkable?(work_item)
@@ -29,7 +29,7 @@ module WorkItems
       end
 
       def linkable?(work_item)
-        can?(current_user, :update_work_item, work_item) &&
+        can?(current_user, :admin_parent_link, work_item) &&
           !previous_related_issuables.include?(work_item)
       end
 
@@ -42,8 +42,8 @@ module WorkItems
           ::WorkItem.find(id)
         rescue ActiveRecord::RecordNotFound
           @errors << _("Task with ID: %{id} could not be found.") % { id: id }
-          nil
-        end
+          next
+        end.compact
       end
 
       # TODO: Create system notes when work item's parent or children are updated

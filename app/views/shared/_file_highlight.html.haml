@@ -1,16 +1,13 @@
 #blob-content.file-content.code.js-syntax-highlight
   -  offset = defined?(first_line_number) ? first_line_number : 1
-  .line-numbers{ class: "gl-p-0\!" }
+  .line-numbers
     - if blob.data.present?
       - link = blob_link if defined?(blob_link)
-      - blame_link = project_blame_path(@project, tree_join(@ref, blob.path))
       - blob.data.each_line.each_with_index do |_, index|
         - i = index + offset
         -# We're not using `link_to` because it is too slow once we get to thousands of lines.
-        .gl-display-flex.line-links.diff-line-num
-          %a.file-line-blame.gl-display-flex.has-tooltip.gl-ml-3{ href: "#{blame_link}#L#{i}", title: _('View blame'), data: { track_action: "click_link", track_label: "file_line_action", track_property: "blame" } }
-          %a.file-line-num.gl-display-flex.gl-justify-content-end.flex-grow-1.gl-pr-3{ href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i, data: { track_action: "click_link", track_label: "file_line_action", track_property: "link" } }
-            = i
+        %a.file-line-num.diff-line-num{ href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i }
+          = i
   - highlight = defined?(highlight_line) && highlight_line ? highlight_line - offset : nil
   .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight, qa_selector: 'file_content' } }
     %pre.code.highlight

@@ -14,25 +14,32 @@ exports[`ResourceLinksBlock with defaults renders correct component 1`] = `
       <h3
         class="card-title h5 position-relative gl-my-0 gl-display-flex gl-align-items-center gl-h-7"
       >
-        <gl-link-stub
+        <a
           aria-hidden="true"
-          class="anchor position-absolute gl-text-decoration-none"
+          class="gl-link anchor position-absolute gl-text-decoration-none"
           href="#resource-links"
           id="user-content-resource-links"
         />
          Linked resources 
-        <gl-link-stub
+        <a
           aria-label="Read more about linked resources"
-          class="gl-display-flex gl-align-items-center gl-ml-2 gl-text-gray-500"
+          class="gl-link gl-display-flex gl-align-items-center gl-ml-2 gl-text-gray-500"
           data-testid="help-link"
           href="/help/user/project/issues/linked_resources"
+          rel="noopener"
           target="_blank"
         >
-          <gl-icon-stub
-            name="question"
-            size="12"
-          />
-        </gl-link-stub>
+          <svg
+            aria-hidden="true"
+            class="gl-icon s12"
+            data-testid="question-icon"
+            role="img"
+          >
+            <use
+              href="#question"
+            />
+          </svg>
+        </a>
          
         <div
           class="gl-display-inline-flex"
@@ -43,27 +50,165 @@ exports[`ResourceLinksBlock with defaults renders correct component 1`] = `
             <span
               class="gl-display-inline-flex gl-align-items-center"
             >
-              <gl-icon-stub
-                class="gl-mr-2 gl-text-gray-500"
-                name="link"
-                size="16"
-              />
+              <svg
+                aria-hidden="true"
+                class="gl-mr-2 gl-text-gray-500 gl-icon s16"
+                data-testid="link-icon"
+                role="img"
+              >
+                <use
+                  href="#link"
+                />
+              </svg>
               
               0
             
             </span>
           </div>
            
-          <gl-button-stub
+          <button
             aria-label="Add a resource link"
-            buttontextclasses=""
-            category="primary"
-            icon="plus"
-            size="medium"
-            variant="default"
-          />
+            class="btn btn-default btn-md gl-button btn-icon"
+            type="button"
+          >
+            <!---->
+             
+            <svg
+              aria-hidden="true"
+              class="gl-button-icon gl-icon s16"
+              data-testid="plus-icon"
+              role="img"
+            >
+              <use
+                href="#plus"
+              />
+            </svg>
+              
+            <!---->
+          </button>
         </div>
       </h3>
+    </div>
+     
+    <div
+      class="linked-issues-card-body bg-gray-light"
+    >
+      <div
+        class="card-body bordered-box gl-bg-white"
+        style="display: none;"
+      >
+        <form>
+          <fieldset
+            aria-describedby=""
+            class="form-group gl-form-group"
+            id="__BVID__14"
+          >
+            <legend
+              class="bv-no-focus-ring col-form-label pt-0 col-form-label"
+              id="__BVID__14__BV_label_"
+              tabindex="-1"
+            >
+              
+      Text (Optional)
+      
+              <!---->
+               
+              <!---->
+            </legend>
+            <div
+              aria-labelledby="__BVID__14__BV_label_"
+              class="bv-no-focus-ring"
+              role="group"
+              tabindex="-1"
+            >
+              <input
+                class="gl-form-input form-control"
+                data-testid="link-text-input"
+                id="__BVID__16"
+                type="text"
+              />
+              <!---->
+              <!---->
+              <!---->
+            </div>
+          </fieldset>
+           
+          <fieldset
+            aria-describedby=""
+            class="form-group gl-form-group"
+            id="__BVID__18"
+          >
+            <legend
+              class="bv-no-focus-ring col-form-label pt-0 col-form-label"
+              id="__BVID__18__BV_label_"
+              tabindex="-1"
+            >
+              
+      Link
+      
+              <!---->
+               
+              <!---->
+            </legend>
+            <div
+              aria-labelledby="__BVID__18__BV_label_"
+              class="bv-no-focus-ring"
+              role="group"
+              tabindex="-1"
+            >
+              <input
+                class="gl-form-input form-control"
+                data-testid="link-value-input"
+                id="__BVID__20"
+                type="text"
+              />
+              <!---->
+              <!---->
+              <!---->
+            </div>
+          </fieldset>
+           
+          <div
+            class="gl-mt-5 gl-clearfix"
+          >
+            <button
+              class="btn gl-float-left btn-confirm btn-md disabled gl-button"
+              data-testid="add-button"
+              disabled="disabled"
+              type="submit"
+            >
+              <!---->
+               
+              <!---->
+                
+              <span
+                class="gl-button-text"
+              >
+                
+      Add
+    
+              </span>
+            </button>
+             
+            <button
+              class="btn gl-float-right btn-default btn-md gl-button"
+              type="button"
+            >
+              <!---->
+               
+              <!---->
+                
+              <span
+                class="gl-button-text"
+              >
+                
+      Cancel
+    
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

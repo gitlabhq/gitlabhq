@@ -11,7 +11,6 @@ const DEFAULT_PROPS = {
   number: 2,
   content: '// Line content',
   language: 'javascript',
-  blamePath: 'blame/file.js',
 };
 
 describe('Chunk Line component', () => {
@@ -21,7 +20,7 @@ describe('Chunk Line component', () => {
     wrapper = shallowMountExtended(ChunkLine, { propsData: { ...DEFAULT_PROPS, ...props } });
   };
 
-  const findLinks = () => wrapper.findAllComponents(GlLink);
+  const findLink = () => wrapper.findComponent(GlLink);
   const findContent = () => wrapper.findByTestId('content');
   const findWrappedBidiChars = () => wrapper.findAllByTestId('bidi-wrapper');
 
@@ -48,22 +47,14 @@ describe('Chunk Line component', () => {
       });
     });
 
-    it('renders a blame link', () => {
-      expect(findLinks().at(0).attributes()).toMatchObject({
-        href: `${DEFAULT_PROPS.blamePath}#L${DEFAULT_PROPS.number}`,
-      });
-
-      expect(findLinks().at(0).text()).toBe('');
-    });
-
     it('renders a line number', () => {
-      expect(findLinks().at(1).attributes()).toMatchObject({
+      expect(findLink().attributes()).toMatchObject({
         'data-line-number': `${DEFAULT_PROPS.number}`,
         to: `#L${DEFAULT_PROPS.number}`,
         id: `L${DEFAULT_PROPS.number}`,
       });
 
-      expect(findLinks().at(1).text()).toBe(DEFAULT_PROPS.number.toString());
+      expect(findLink().text()).toBe(DEFAULT_PROPS.number.toString());
     });
 
     it('renders content', () => {

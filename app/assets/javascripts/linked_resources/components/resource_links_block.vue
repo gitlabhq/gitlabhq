@@ -1,10 +1,7 @@
 <script>
 import { GlLink, GlIcon, GlButton } from '@gitlab/ui';
-import {
-  LINKED_RESOURCES_HEADER_TEXT,
-  LINKED_RESOURCES_HELP_TEXT,
-  LINKED_RESOURCES_ADD_BUTTON_TEXT,
-} from '../constants';
+import { resourceLinksI18n } from '../constants';
+import AddIssuableResourceLinkForm from './add_issuable_resource_link_form.vue';
 
 export default {
   name: 'ResourceLinksBlock',
@@ -12,7 +9,9 @@ export default {
     GlLink,
     GlButton,
     GlIcon,
+    AddIssuableResourceLinkForm,
   },
+  i18n: resourceLinksI18n,
   props: {
     helpPath: {
       type: String,
@@ -25,18 +24,26 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      isFormVisible: false,
+      isSubmitting: false,
+    };
+  },
   computed: {
-    helpLinkText() {
-      return LINKED_RESOURCES_HELP_TEXT;
-    },
     badgeLabel() {
       return 0;
     },
-    resourceLinkAddButtonText() {
-      return LINKED_RESOURCES_ADD_BUTTON_TEXT;
+    hasBody() {
+      return this.isFormVisible;
     },
-    resourceLinkHeaderText() {
-      return LINKED_RESOURCES_HEADER_TEXT;
+  },
+  methods: {
+    async toggleResourceLinkForm() {
+      this.isFormVisible = !this.isFormVisible;
+    },
+    hideResourceLinkForm() {
+      this.isFormVisible = false;
     },
   },
 };
@@ -46,7 +53,7 @@ export default {
   <div id="resource-links" class="gl-mt-5">
     <div class="card card-slim gl-overflow-hidden">
       <div
-        :class="{ 'panel-empty-heading border-bottom-0': true }"
+        :class="{ 'panel-empty-heading border-bottom-0': !hasBody }"
         class="card-header gl-display-flex gl-justify-content-space-between"
       >
         <h3
@@ -58,13 +65,13 @@ export default {
             href="#resource-links"
             aria-hidden="true"
           />
-          <slot name="header-text">{{ resourceLinkHeaderText }}</slot>
+          <slot name="header-text">{{ $options.i18n.headerText }}</slot>
           <gl-link
             :href="helpPath"
             target="_blank"
             class="gl-display-flex gl-align-items-center gl-ml-2 gl-text-gray-500"
             data-testid="help-link"
-            :aria-label="helpLinkText"
+            :aria-label="$options.i18n.helpText"
           >
             <gl-icon name="question" :size="12" />
           </gl-link>
@@ -79,10 +86,25 @@ export default {
             <gl-button
               v-if="canAddResourceLinks"
               icon="plus"
-              :aria-label="resourceLinkAddButtonText"
+              :aria-label="$options.i18n.addButtonText"
+              @click="toggleResourceLinkForm"
             />
           </div>
         </h3>
+      </div>
+      <div
+        class="linked-issues-card-body bg-gray-light"
+        :class="{
+          'gl-p-5': isFormVisible,
+        }"
+      >
+        <div v-show="isFormVisible" class="card-body bordered-box gl-bg-white">
+          <add-issuable-resource-link-form
+            ref="resourceLinkForm"
+            :is-submitting="isSubmitting"
+            @add-issuable-resource-link-form-cancel="hideResourceLinkForm"
+          />
+        </div>
       </div>
     </div>
   </div>

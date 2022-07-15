@@ -27,6 +27,7 @@ module WorkItems
 
         replacement_result = TaskListReferenceReplacementService.new(
           work_item: @work_item,
+          current_user: @current_user,
           work_item_reference: create_and_link_result[:work_item].to_reference,
           line_number_start: @work_item_params[:line_number_start],
           line_number_end: @work_item_params[:line_number_end],

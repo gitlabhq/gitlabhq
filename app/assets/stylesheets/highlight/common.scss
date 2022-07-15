@@ -98,50 +98,32 @@
   }
 }
 
+@mixin line-number-link($color) {
+  min-width: $gl-spacing-scale-9;
 
-@mixin line-link($color, $icon) {
   &::before {
-    @include gl-visibility-hidden;
+    @include gl-display-none;
     @include gl-align-self-center;
-    @include gl-mr-1;
-    @include gl-w-5;
-    @include gl-h-5;
-    background-color: rgba($color, 0.3);
-    mask-image: asset_url('icons-stacked.svg##{$icon}');
+    @include gl-mt-2;
+    @include gl-mr-2;
+    @include gl-w-4;
+    @include gl-h-4;
+    @include gl-absolute;
+    @include gl-left-3;
+    background-color: $color;
+    mask-image: asset_url('icons-stacked.svg#link');
     mask-repeat: no-repeat;
     mask-size: cover;
     mask-position: center;
     content: '';
   }
 
-  &:hover {
-    &::before {
-      background-color: rgba($color, 0.6);
-    }
+  &:hover::before {
+    @include gl-display-inline-block;
   }
-}
 
-@mixin line-hover-bg($color: $white-normal) {
-  &:hover,
-  &:focus-within {
-    background-color: darken($color, 10);
-  }
-}
-
-@mixin first-line-top-space($bg-color: $gray-light, $border-color: $white-normal) {
-  &:first-child {
-    .line-links {
-      &::before {
-        @include gl-absolute;
-        @include gl-h-3;
-        content: '';
-        bottom: 100%;
-        left: 0;
-        width: 6.5rem;
-        background-color: $bg-color;
-        border-right: 1px solid $border-color;
-      }
-    }
+  &:focus::before {
+    @include gl-display-inline-block;
   }
 }
 

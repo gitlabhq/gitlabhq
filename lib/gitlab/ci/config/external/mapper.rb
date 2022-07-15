@@ -7,8 +7,6 @@ module Gitlab
         class Mapper
           include Gitlab::Utils::StrongMemoize
 
-          MAX_INCLUDES = 100
-
           FILE_CLASSES = [
             External::File::Remote,
             External::File::Template,
@@ -134,8 +132,8 @@ module Gitlab
           end
 
           def verify_max_includes!
-            if expandset.count >= MAX_INCLUDES
-              raise TooManyIncludesError, "Maximum of #{MAX_INCLUDES} nested includes are allowed!"
+            if expandset.count >= context.max_includes
+              raise TooManyIncludesError, "Maximum of #{context.max_includes} nested includes are allowed!"
             end
           end
 

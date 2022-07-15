@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemState from '~/work_items/components/work_item_state.vue';
@@ -11,10 +12,12 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemWeight from '~/work_items/components/work_item_weight.vue';
+import WorkItemInformation from '~/work_items/components/work_item_information.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import { temporaryConfig } from '~/work_items/graphql/provider';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   workItemTitleSubscriptionResponse,
   workItemResponseFactory,
@@ -23,6 +26,7 @@ import {
 
 describe('WorkItemDetail component', () => {
   let wrapper;
+  useLocalStorageSpy();
 
   Vue.use(VueApollo);
 
@@ -42,6 +46,8 @@ describe('WorkItemDetail component', () => {
   const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
   const findWorkItemType = () => wrapper.find('[data-testid="work-item-type"]');
+  const findWorkItemInformationAlert = () => wrapper.findComponent(WorkItemInformation);
+  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   const createComponent = ({
     isModal = false,
@@ -298,6 +304,24 @@ describe('WorkItemDetail component', () => {
           expect(findWorkItemWeight().exists()).toBe(exists);
         });
       });
+    });
+  });
+
+  describe('work item information', () => {
+    beforeEach(() => {
+      createComponent();
+      return waitForPromises();
+    });
+
+    it('is visible when viewed for the first time and sets localStorage value', async () => {
+      localStorage.clear();
+      expect(findWorkItemInformationAlert().exists()).toBe(true);
+      expect(findLocalStorageSync().props('value')).toBe(true);
+    });
+
+    it('is not visible after reading local storage input', async () => {
+      await findLocalStorageSync().vm.$emit('input', false);
+      expect(findWorkItemInformationAlert().exists()).toBe(false);
     });
   });
 });

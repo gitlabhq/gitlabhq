@@ -41,8 +41,7 @@ describe('Source Viewer component', () => {
   const content = chunk1 + chunk2;
   const path = 'some/path.js';
   const fileType = 'javascript';
-  const blamePath = 'some/blame/path.js';
-  const DEFAULT_BLOB_DATA = { language, rawTextBlob: content, path, blamePath, fileType };
+  const DEFAULT_BLOB_DATA = { language, rawTextBlob: content, path, fileType };
   const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
 
   const createComponent = async (blob = {}) => {

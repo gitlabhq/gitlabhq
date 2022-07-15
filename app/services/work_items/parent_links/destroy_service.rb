@@ -25,7 +25,7 @@ module WorkItems
       end
 
       def permission_to_remove_relation?
-        can?(current_user, :update_work_item, child) && can?(current_user, :update_work_item, parent)
+        can?(current_user, :admin_parent_link, child) && can?(current_user, :admin_parent_link, parent)
       end
     end
   end

@@ -13,4 +13,8 @@ class WorkItemPolicy < IssuePolicy
   # need to make sure we also prevent this rule if read_issue
   # is prevented
   rule { ~can?(:read_issue) }.prevent :read_work_item
+
+  rule { can?(:reporter_access) }.policy do
+    enable :admin_parent_link
+  end
 end

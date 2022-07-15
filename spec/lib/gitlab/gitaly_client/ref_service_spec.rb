@@ -241,17 +241,16 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     end
   end
 
-  describe '#ref_exists?', :seed_helper do
-    it 'finds the master branch ref' do
-      expect(client.ref_exists?('refs/heads/master')).to eq(true)
-    end
+  describe '#ref_exists?' do
+    let(:ref) { 'refs/heads/master' }
 
-    it 'returns false for an illegal tag name ref' do
-      expect(client.ref_exists?('refs/tags/.this-tag-name-is-illegal')).to eq(false)
-    end
+    it 'sends a ref_exists message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:ref_exists)
+        .with(gitaly_request_with_params(ref: ref), kind_of(Hash))
+        .and_return(double('ref_exists_response', value: true))
 
-    it 'raises an argument error if the ref name parameter does not start with refs/' do
-      expect { client.ref_exists?('reXXXXX') }.to raise_error(ArgumentError)
+      expect(client.ref_exists?(ref)).to be true
     end
   end
 

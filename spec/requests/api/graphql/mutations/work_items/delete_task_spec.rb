@@ -54,7 +54,7 @@ RSpec.describe "Delete a task in a work item's description" do
       end.to change(WorkItem, :count).by(-1).and(
         change(IssueLink, :count).by(-1)
       ).and(
-        change(work_item, :description).from("- [ ] #{task.to_reference}+").to('')
+        change(work_item, :description).from("- [ ] #{task.to_reference}+").to("- [ ] #{task.title}")
       )
 
       expect(response).to have_gitlab_http_status(:success)

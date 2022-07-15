@@ -17,6 +17,7 @@ RSpec.describe 'Query.ciVariables' do
             protected
             masked
             raw
+            environmentScope
           }
         }
       }
@@ -39,7 +40,8 @@ RSpec.describe 'Query.ciVariables' do
         'variableType' => 'ENV_VAR',
         'masked' => false,
         'protected' => true,
-        'raw' => true
+        'raw' => true,
+        'environmentScope' => nil
       })
     end
   end

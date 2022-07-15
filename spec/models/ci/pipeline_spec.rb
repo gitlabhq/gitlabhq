@@ -211,6 +211,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.created_after' do
+    let_it_be(:old_pipeline) { create(:ci_pipeline, created_at: 1.week.ago) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    subject { described_class.created_after(1.day.ago) }
+
+    it 'returns the pipeline' do
+      is_expected.to contain_exactly(pipeline)
+    end
+  end
+
+  describe '.created_before_id' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:new_pipeline) { create(:ci_pipeline) }
+
+    subject { described_class.created_before_id(new_pipeline.id) }
+
+    it 'returns the pipeline' do
+      is_expected.to contain_exactly(pipeline)
+    end
+  end
+
   describe '.for_sha' do
     subject { described_class.for_sha(sha) }
 

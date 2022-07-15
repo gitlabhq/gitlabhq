@@ -202,10 +202,6 @@
           float: none;
           border-left: 1px solid $gray-100;
 
-          .file-line-num {
-            @include gl-min-w-9;
-          }
-
           i {
             float: none;
             margin-right: 0;

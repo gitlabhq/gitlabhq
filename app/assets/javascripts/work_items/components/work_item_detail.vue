@@ -1,6 +1,7 @@
 <script>
 import { GlAlert, GlSkeletonLoader, GlIcon, GlButton } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -8,6 +9,7 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_HIERARCHY,
+  WORK_ITEM_VIEWED_STORAGE_KEY,
 } from '../constants';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
@@ -18,6 +20,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemWeight from './work_item_weight.vue';
+import WorkItemInformation from './work_item_information.vue';
 
 export default {
   i18n,
@@ -33,6 +36,8 @@ export default {
     WorkItemTitle,
     WorkItemState,
     WorkItemWeight,
+    WorkItemInformation,
+    LocalStorageSync,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -56,6 +61,7 @@ export default {
     return {
       error: undefined,
       workItem: {},
+      showInfoBanner: true,
     };
   },
   apollo: {
@@ -120,6 +126,17 @@ export default {
       return `../../issues/${this.parentWorkItem?.iid}`;
     },
   },
+  beforeDestroy() {
+    /** make sure that if the user has not even dismissed the alert ,
+     * should no be able to see the information next time and update the local storage * */
+    this.dismissBanner();
+  },
+  methods: {
+    dismissBanner() {
+      this.showInfoBanner = false;
+    },
+  },
+  WORK_ITEM_VIEWED_STORAGE_KEY,
 };
 </script>
 
@@ -174,6 +191,16 @@ export default {
           @click="$emit('close')"
         />
       </div>
+      <local-storage-sync
+        v-model="showInfoBanner"
+        :storage-key="$options.WORK_ITEM_VIEWED_STORAGE_KEY"
+      >
+        <work-item-information
+          v-if="showInfoBanner"
+          :show-info-banner="showInfoBanner"
+          @work-item-banner-dismissed="dismissBanner"
+        />
+      </local-storage-sync>
       <work-item-title
         :work-item-id="workItem.id"
         :work-item-title="workItem.title"

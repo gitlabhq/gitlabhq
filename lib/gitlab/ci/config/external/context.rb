@@ -9,14 +9,20 @@ module Gitlab
 
           TimeoutError = Class.new(StandardError)
 
+          MAX_INCLUDES = 100
+          TRIAL_MAX_INCLUDES = 250
+
           include ::Gitlab::Utils::StrongMemoize
 
           attr_reader :project, :sha, :user, :parent_pipeline, :variables
-          attr_reader :expandset, :execution_deadline, :logger
+          attr_reader :expandset, :execution_deadline, :logger, :max_includes
 
           delegate :instrument, to: :logger
 
-          def initialize(project: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil, logger: nil)
+          def initialize(
+            project: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil,
+            logger: nil
+          )
             @project = project
             @sha = sha
             @user = user
@@ -25,7 +31,7 @@ module Gitlab
             @expandset = Set.new
             @execution_deadline = 0
             @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
-
+            @max_includes = Feature.enabled?(:ci_increase_includes_to_250, project) ? TRIAL_MAX_INCLUDES : MAX_INCLUDES
             yield self if block_given?
           end
 
@@ -52,6 +58,7 @@ module Gitlab
               ctx.expandset = expandset
               ctx.execution_deadline = execution_deadline
               ctx.logger = logger
+              ctx.max_includes = max_includes
             end
           end
 
@@ -86,7 +93,7 @@ module Gitlab
 
           protected
 
-          attr_writer :expandset, :execution_deadline, :logger
+          attr_writer :expandset, :execution_deadline, :logger, :max_includes
 
           private
 

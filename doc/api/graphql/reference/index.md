@@ -1435,6 +1435,7 @@ Input type: `CreateEpicInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreateepicaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | IDs of labels to be added to the epic. |
+| <a id="mutationcreateepicaddlabels"></a>`addLabels` | [`[String!]`](#string) | Array of labels to be added to the epic. |
 | <a id="mutationcreateepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateepiccolor"></a>`color` | [`Color`](#color) | Color of the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
 | <a id="mutationcreateepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
@@ -5117,6 +5118,7 @@ Input type: `UpdateEpicInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdateepicaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | IDs of labels to be added to the epic. |
+| <a id="mutationupdateepicaddlabels"></a>`addLabels` | [`[String!]`](#string) | Array of labels to be added to the epic. |
 | <a id="mutationupdateepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateepiccolor"></a>`color` | [`Color`](#color) | Color of the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
 | <a id="mutationupdateepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
@@ -5126,6 +5128,7 @@ Input type: `UpdateEpicInput`
 | <a id="mutationupdateepicgrouppath"></a>`groupPath` | [`ID!`](#id) | Group the epic to mutate is in. |
 | <a id="mutationupdateepiciid"></a>`iid` | [`ID!`](#id) | IID of the epic to mutate. |
 | <a id="mutationupdateepicremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | IDs of labels to be removed from the epic. |
+| <a id="mutationupdateepicremovelabels"></a>`removeLabels` | [`[String!]`](#string) | Array of labels to be removed from the epic. |
 | <a id="mutationupdateepicstartdatefixed"></a>`startDateFixed` | [`String`](#string) | Start date of the epic. |
 | <a id="mutationupdateepicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates start date should be sourced from start_date_fixed field not the issue milestones. |
 | <a id="mutationupdateepicstateevent"></a>`stateEvent` | [`EpicStateEvent`](#epicstateevent) | State event for the epic. |
@@ -9934,6 +9937,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobid"></a>`id` | [`JobID`](#jobid) | ID of the job. |
 | <a id="cijobkind"></a>`kind` | [`CiJobKind!`](#cijobkind) | Indicates the type of job. |
 | <a id="cijobmanualjob"></a>`manualJob` | [`Boolean`](#boolean) | Whether the job has a manual action. |
+| <a id="cijobmanualvariables"></a>`manualVariables` | [`CiVariableConnection`](#civariableconnection) | Variables added to a manual job when the job is triggered. (see [Connections](#connections)) |
 | <a id="cijobname"></a>`name` | [`String`](#string) | Name of the job. |
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. (see [Connections](#connections)) |
 | <a id="cijobpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline the job belongs to. |
@@ -10096,6 +10100,7 @@ GitLab CI/CD configuration template.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="civariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments in which the variable can be used. |
 | <a id="civariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="civariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="civariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |

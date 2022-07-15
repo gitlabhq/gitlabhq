@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::Context do
-  let(:project) { double('Project') }
+  let(:project) { build(:project) }
   let(:user) { double('User') }
   let(:sha) { '12345' }
   let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'a', 'value' => 'b' }]) }
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context do
     end
 
     context 'with attributes' do
-      let(:new_attributes) { { project: double, user: double, sha: '56789' } }
+      let(:new_attributes) { { project: build(:project), user: double, sha: '56789' } }
 
       it_behaves_like 'a mutated context'
     end

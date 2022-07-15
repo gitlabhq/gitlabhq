@@ -95,15 +95,7 @@ $white-gc-bg: #eaf2f5;
 
 // Line numbers
 .file-line-num {
-  @include line-link($black, 'link');
-}
-
-.file-line-blame {
-  @include line-link($black, 'git');
-}
-
-.line-links {
-  @include line-hover-bg;
+  @include line-number-link($black-transparent);
 }
 
 .line-numbers,
@@ -132,10 +124,6 @@ $white-gc-bg: #eaf2f5;
 pre.code,
 .diff-line-num {
   border-color: $white-normal;
-}
-
-.line-links-wrapper {
-  @include first-line-top-space;
 }
 
 &,

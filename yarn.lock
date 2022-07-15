@@ -1072,10 +1072,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.7.3.tgz#9ea641146436da388ffbad25d7f2abe0df52c235"
   integrity sha512-NMV++7Ew1FSBDN1xiZaauU9tfeSfgDHcOLpn+8bGpP+O5orUPm2Eu66R5eC5gkjBPaXosNAxNWtriee+aFk4+g==
 
-"@graphql-eslint/eslint-plugin@3.10.5":
-  version "3.10.5"
-  resolved "https://registry.yarnpkg.com/@graphql-eslint/eslint-plugin/-/eslint-plugin-3.10.5.tgz#a5d26fe95b52d5fbd02a4c122ca0bc1b2d62fcb2"
-  integrity sha512-rMsuoXA9ldD5IU+3sv9BqDb9SmP+BJFtzF8Y4bV1Pj5O3SROkVDHk/dbN4pv5uFu+Az/AM1BkwVbSzz9CvP5Sw==
+"@graphql-eslint/eslint-plugin@3.10.6":
+  version "3.10.6"
+  resolved "https://registry.yarnpkg.com/@graphql-eslint/eslint-plugin/-/eslint-plugin-3.10.6.tgz#4d5748fade6c11d74aeff9a99d6e38d2ed8f6310"
+  integrity sha512-rxGSrKVsDHCuZRvP81ElgtCs0sikdhcHqQySiyhir4G+VhiNlPZ7SQJWrXm9JJEAeB0wQ50kabvse5NRk0hqog==
   dependencies:
     "@babel/code-frame" "^7.16.7"
     "@graphql-tools/code-file-loader" "^7.2.14"

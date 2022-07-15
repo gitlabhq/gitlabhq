@@ -4,7 +4,7 @@
     .card-header
       = _('Protect a tag')
     .card-body
-      = form_errors(@protected_tag)
+      = form_errors(@protected_tag, pajamas_alert: true)
       .form-group.row
         = f.label :name, _('Tag:'), class: 'col-md-2 text-left text-md-right'
         .col-md-10.protected-tags-dropdown

@@ -126,5 +126,51 @@ RSpec.describe Ci::CreatePipelineService do
         it_behaves_like 'not including the file'
       end
     end
+
+    context 'with ci_increase_includes_to_250 enabled on root project' do
+      let_it_be(:included_project) do
+        create(:project, :repository).tap { |p| p.add_developer(user) }
+      end
+
+      before do
+        stub_const('::Gitlab::Ci::Config::External::Context::MAX_INCLUDES', 0)
+        stub_const('::Gitlab::Ci::Config::External::Context::TRIAL_MAX_INCLUDES', 3)
+
+        stub_feature_flags(ci_increase_includes_to_250: false)
+        stub_feature_flags(ci_increase_includes_to_250: project)
+
+        allow(Project)
+          .to receive(:find_by_full_path)
+          .with(included_project.full_path)
+          .and_return(included_project)
+
+        allow(included_project.repository)
+          .to receive(:blob_data_at).with(included_project.commit.id, '.gitlab-ci.yml')
+          .and_return(local_config)
+
+        allow(included_project.repository)
+         .to receive(:blob_data_at).with(included_project.commit.id, file_location)
+          .and_return(File.read(Rails.root.join(file_location)))
+      end
+
+      let(:config) do
+        <<~EOY
+          include:
+            - project: #{included_project.full_path}
+              file: .gitlab-ci.yml
+        EOY
+      end
+
+      let(:local_config) do
+        <<~EOY
+        include: #{file_location}
+
+        job:
+          script: exit 0
+        EOY
+      end
+
+      it_behaves_like 'including the file'
+    end
   end
 end

@@ -21,6 +21,7 @@ RSpec.describe 'Query.project(fullPath).ciVariables' do
               protected
               masked
               raw
+              environmentScope
             }
           }
         }
@@ -35,7 +36,7 @@ RSpec.describe 'Query.project(fullPath).ciVariables' do
 
     it "returns the project's CI variables" do
       variable = create(:ci_variable, project: project, key: 'TEST_VAR', value: 'test',
-                        masked: false, protected: true, raw: true)
+                        masked: false, protected: true, raw: true, environment_scope: 'production')
 
       post_graphql(query, current_user: user)
 
@@ -46,7 +47,8 @@ RSpec.describe 'Query.project(fullPath).ciVariables' do
         'variableType' => 'ENV_VAR',
         'masked' => false,
         'protected' => true,
-        'raw' => true
+        'raw' => true,
+        'environmentScope' => 'production'
       })
     end
   end

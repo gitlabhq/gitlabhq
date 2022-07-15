@@ -48,9 +48,8 @@
 
     a {
       font-family: $monospace-font;
+      display: block;
       white-space: nowrap;
-      @include gl-display-flex;
-      @include gl-justify-content-end;
 
       i,
       svg {
@@ -90,45 +89,4 @@ td.line-numbers {
   content: '\FFFD';
   cursor: pointer;
   text-decoration: underline wavy $red-500;
-}
-
-.blob-viewer {
-  .line-numbers {
-    // for server-side-rendering
-    .line-links {
-      min-width: 6.5rem;
-
-      &:first-child {
-        margin-top: 10px;
-      }
-
-      &:last-child {
-        margin-bottom: 10px;
-      }
-    }
-
-    // for client
-    &.line-links {
-      min-width: 6.5rem;
-      border-bottom-left-radius: 0;
-
-      + pre {
-        margin-left: 6.5rem;
-      }
-    }
-  }
-
-  .line-links {
-    &:hover .file-line-blame::before,
-    &:hover .file-line-num::before,
-    &:focus-within .file-line-blame::before,
-    &:focus-within .file-line-num::before {
-      @include gl-visibility-visible;
-    }
-  }
-
-  .file-line-num,
-  .file-line-blame {
-    @include gl-align-items-center;
-  }
 }

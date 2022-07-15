@@ -20,6 +20,7 @@ export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
+export const WORK_ITEM_VIEWED_STORAGE_KEY = 'gl-show-work-item-banner';
 
 export const WIDGET_TYPE_TASK_ICON = 'task-done';
 

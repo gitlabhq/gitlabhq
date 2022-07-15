@@ -82,7 +82,7 @@ RSpec.describe WorkItems::TaskListReferenceRemovalService do
       let(:line_number_end) { 1 }
       let(:work_item) { single_line_work_item }
 
-      it_behaves_like 'successful work item task reference removal service', ''
+      it_behaves_like 'successful work item task reference removal service', '- [ ] My title 1 single line'
 
       context 'when description does not contain a task' do
         let_it_be(:no_matching_work_item) { create(:work_item, project: project, description: 'no matching task') }
@@ -102,7 +102,8 @@ RSpec.describe WorkItems::TaskListReferenceRemovalService do
     end
 
     context 'when task mardown spans multiple lines' do
-      it_behaves_like 'successful work item task reference removal service', "Any text\n\n* [x] task\n\nMore text"
+      it_behaves_like 'successful work item task reference removal service',
+        "Any text\n\n* [ ] Item to be converted\n    My title 1 second line\n    third line\n* [x] task\n\nMore text"
     end
 
     context 'when updating the work item fails' do

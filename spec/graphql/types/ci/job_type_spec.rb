@@ -23,6 +23,7 @@ RSpec.describe Types::Ci::JobType do
       id
       kind
       manual_job
+      manual_variables
       name
       needs
       pipeline

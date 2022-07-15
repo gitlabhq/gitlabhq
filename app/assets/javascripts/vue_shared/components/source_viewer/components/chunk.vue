@@ -51,10 +51,6 @@ export default {
       required: false,
       default: null,
     },
-    blamePath: {
-      type: String,
-      required: true,
-    },
   },
   computed: {
     lines() {
@@ -80,7 +76,6 @@ export default {
           :number="startingFrom + index + 1"
           :content="line"
           :language="language"
-          :blame-path="blamePath"
         />
       </div>
       <div v-else class="gl-display-flex">

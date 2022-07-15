@@ -36,6 +36,7 @@ import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import { initTopNav } from './nav';
 import { initCopyCodeButton } from './behaviors/copy_code';
+import initHeaderSearch from './header_search/init';
 
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
@@ -141,35 +142,10 @@ function deferredInitialisation() {
   }
 }
 
+// header search vue component bootstrap
 // loading this inside requestIdleCallback is causing issues
 // see https://gitlab.com/gitlab-org/gitlab/-/issues/365746
-const searchInputBox = document.querySelector('#search');
-if (searchInputBox) {
-  searchInputBox.addEventListener(
-    'focus',
-    () => {
-      if (gon.features?.newHeaderSearch) {
-        import(/* webpackChunkName: 'globalSearch' */ '~/header_search')
-          .then(async ({ initHeaderSearchApp }) => {
-            // In case the user started searching before we bootstrapped, let's pass the search along.
-            const initialSearchValue = searchInputBox.value;
-            await initHeaderSearchApp(initialSearchValue);
-            // this is new #search input element. We need to re-find it.
-            document.querySelector('#search').focus();
-          })
-          .catch(() => {});
-      } else {
-        import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
-          .then(({ default: initSearchAutocomplete }) => {
-            const searchDropdown = initSearchAutocomplete();
-            searchDropdown.onSearchInputFocus();
-          })
-          .catch(() => {});
-      }
-    },
-    { once: true },
-  );
-}
+initHeaderSearch();
 
 const $body = $('body');
 const $document = $(document);
