@@ -11,9 +11,9 @@ A username should be passed as the second argument to the Rake task,
 which becomes the owner of the project. You can resume an import
 with the same command.
 
-Bear in mind that the syntax is very specific. Remove any spaces within the argument block and
+Bear in mind that the syntax is very specific. Remove any spaces in the argument block and
 before/after the brackets. Also, some shells (for example, Zsh) can interpret the open/close brackets
-(`[]`) separately. You may need to either escape the brackets or use double quotes.
+(`[]`) separately. You may want to either escape the brackets or use double quotes.
 
 ## Caveats
 

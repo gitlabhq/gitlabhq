@@ -10,7 +10,8 @@ module WorkItems
     belongs_to :work_item
     belongs_to :work_item_parent, class_name: 'WorkItem'
 
-    validates :work_item, :work_item_parent, presence: true
+    validates :work_item_parent, presence: true
+    validates :work_item, presence: true, uniqueness: true
     validate :validate_child_type
     validate :validate_parent_type
     validate :validate_same_project

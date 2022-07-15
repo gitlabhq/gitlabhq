@@ -63,7 +63,7 @@ The steps can be summed up to:
    piped script, you can first
    [check its contents](https://packages.gitlab.com/gitlab/gitlab-ee/install).
 
-1. Next, install the `gitlab-ee` package. Note that this automatically
+1. Install the `gitlab-ee` package. The install automatically
    uninstalls the `gitlab-ce` package on your GitLab server. `reconfigure`
    Omnibus right after the `gitlab-ee` package is installed. **Make sure that you
    install the exact same GitLab version**:

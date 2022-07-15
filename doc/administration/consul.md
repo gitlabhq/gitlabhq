@@ -80,14 +80,14 @@ Nodes should be:
 - Upgraded one node at a time.
 
 Identify any existing health issues in the cluster by running the following command
-within each node. The command returns an empty array if the cluster is healthy:
+in each node. The command returns an empty array if the cluster is healthy:
 
 ```shell
 curl "http://127.0.0.1:8500/v1/health/state/critical"
 ```
 
 If the Consul version has changed, you see a notice at the end of `gitlab-ctl reconfigure`
-informing you that Consul needs to be restarted for the new version to be used.
+informing you that Consul must be restarted for the new version to be used.
 
 Restart Consul one node at a time:
 
@@ -96,7 +96,7 @@ sudo gitlab-ctl restart consul
 ```
 
 Consul nodes communicate using the raft protocol. If the current leader goes
-offline, there needs to be a leader election. A leader node must exist to facilitate
+offline, there must be a leader election. A leader node must exist to facilitate
 synchronization across the cluster. If too many nodes go offline at the same time,
 the cluster loses quorum and doesn't elect a leader due to
 [broken consensus](https://www.consul.io/docs/architecture/consensus).
@@ -111,7 +111,7 @@ bundled Consul wasn't used by any process other than GitLab itself, you can
 
 ## Troubleshooting Consul
 
-Below are some useful operations should you need to debug any issues.
+Below are some operations should you debug any issues.
 You can see any error logs by running:
 
 ```shell

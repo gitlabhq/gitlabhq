@@ -211,7 +211,7 @@ jq --raw-output 'select(.severity == "ERROR") | [.project_path, .message] | @tsv
 
 ### Parsing `gitaly/current`
 
-The following examples are useful to [troubleshoot Gitaly](../gitaly/troubleshooting.md).
+Use the following examples to [troubleshoot Gitaly](../gitaly/troubleshooting.md).
 
 #### Find all Gitaly requests sent from web UI
 

@@ -12,8 +12,7 @@ limits to GitLab.
 ## Documentation
 
 First of all, you have to gather information and decide which are the different
-limits that are set for the different GitLab tiers. You also need to
-coordinate with others to [document](../administration/instance_limits.md)
+limits that are set for the different GitLab tiers. Coordinate with others to [document](../administration/instance_limits.md)
 and communicate those limits.
 
 There is a guide about [introducing application
@@ -206,6 +205,6 @@ rate limiting architecture:
 1. Making it possible to define and override limits per namespace / per plan.
 1. Automatically generating documentation about what limits are implemented and
    what the defaults are.
-1. Defining limits in a single place that is easy to find an explore.
+1. Defining limits in a single place that can be found and explored.
 1. Soft and hard limits, with support for notifying users when a limit is
    approaching.

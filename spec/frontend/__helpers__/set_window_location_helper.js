@@ -30,7 +30,7 @@
  *     // window.location.href is now 'http://test.host/a/b/foo.html?bar=1#qux
  *
  * Both approaches also automatically update the rest of the properties on
- * `window.locaton`. For instance:
+ * `window.location`. For instance:
  *
  *     setWindowLocation('http://test.host/a/b/foo.html?bar=1#qux');
  *     // window.location.origin is now 'http://test.host'

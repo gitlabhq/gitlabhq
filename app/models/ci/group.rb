@@ -50,8 +50,7 @@ module Ci
 
     def status_struct
       strong_memoize(:status_struct) do
-        Gitlab::Ci::Status::Composite
-          .new(@jobs, project: project)
+        Gitlab::Ci::Status::Composite.new(@jobs)
       end
     end
 

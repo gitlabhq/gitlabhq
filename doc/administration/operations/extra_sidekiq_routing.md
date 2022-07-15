@@ -75,7 +75,7 @@ workers.
 
 ## Worker matching query
 
-GitLab provides a simple query syntax to match a worker based on its
+GitLab provides a query syntax to match a worker based on its
 attributes. This query syntax is employed by both [Queue routing
 rules](#queue-routing-rules) and [Queue
 selector](extra_sidekiq_processes.md#queue-selector). A query includes two
@@ -102,12 +102,8 @@ based on a subset of worker attributes:
   quickly. Can be `high`, `low`, or `throttled`. For example, the
   `authorized_projects` queue is used to refresh user permissions, and
   is `high` urgency.
-- `worker_name` - the worker name. The other attributes are typically more useful as
-  they are more general, but this is available in case a particular worker needs
-  to be selected.
-- `name` - the queue name generated from the worker name. The other attributes
-  are typically more useful as they are more general, but this is available in
-  case a particular queue needs to be selected. Because this is generated from
+- `worker_name` - the worker name. Use this attribute to select a specific worker.
+- `name` - the queue name generated from the worker name. Use this attribute to select a specific queue. Because this is generated from
   the worker name, it does not change based on the result of other routing
   rules.
 - `resource_boundary` - if the queue is bound by `cpu`, `memory`, or
@@ -161,7 +157,7 @@ entire queue group selects all queues.
 
 ### Migration
 
-After the Sidekiq routing rules are changed, administrators need to take care
+After the Sidekiq routing rules are changed, administrators must take care
 with the migration to avoid losing jobs entirely, especially in a system with
 long queues of jobs. The migration can be done by following the migration steps
 mentioned in [Sidekiq job

@@ -90,7 +90,7 @@ deploy:
   services:
   - name: docker:dind
     alias: dind
-  image: docker:19.03.5
+  image: docker:20.10.16
   stage: build
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY

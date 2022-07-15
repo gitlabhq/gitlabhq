@@ -36,7 +36,7 @@ fio --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --bs
 ```
 
 This creates a 4GB file in `/path/to/git-data/testfile`. It performs
-4KB reads and writes using a 75%/25% split within the file, with 64
+4KB reads and writes using a 75%/25% split in the file, with 64
 operations running at a time. Be sure to delete the file after the test
 completes.
 
@@ -72,7 +72,7 @@ operations per second.
 ### Simple benchmarking
 
 NOTE:
-This test is naive but may be useful if `fio` is not
+This test is naive but can be used if `fio` is not
 available on the system. It's possible to receive good results on this
 test but still have poor performance due to read speed and various other
 factors.
@@ -83,7 +83,7 @@ executed, and then reads the same 1,000 files.
 
 1. Change into the root of the appropriate
    [repository storage path](../repository_storage_paths.md).
-1. Create a temporary directory for the test so it's easy to remove the files later:
+1. Create a temporary directory for the test so it can be removed later:
 
    ```shell
    mkdir test; cd test

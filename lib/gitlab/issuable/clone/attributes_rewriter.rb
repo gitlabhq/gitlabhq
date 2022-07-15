@@ -7,6 +7,8 @@ module Gitlab
         attr_reader :current_user, :original_entity, :target_parent
 
         def initialize(current_user, original_entity, target_parent)
+          raise ArgumentError, 'target_parent cannot be nil' if target_parent.nil?
+
           @current_user = current_user
           @original_entity = original_entity
           @target_parent = target_parent

@@ -1722,6 +1722,10 @@
     - when: on_success
     - when: on_failure
 
+.review:rules:review-qa-cleanup:
+  rules:
+    - when: always
+
 .review:rules:review-cleanup:
   rules:
     - <<: *if-not-ee

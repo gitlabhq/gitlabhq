@@ -401,6 +401,8 @@ Review all merge requests that introduce changes to the `.gitlab-ci.yml` file be
 - [Run a pipeline in the parent project for a merge request submitted from a forked project](../pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).
 - Merge the changes.
 
+Review the `.gitlab-ci.yml` file of imported projects before you add files or run pipelines against them.
+
 The following example shows malicious code in a `.gitlab-ci.yml` file:
 
 ```yaml

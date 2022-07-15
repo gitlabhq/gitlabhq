@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This is the GitLab Support Team's collection of information regarding the GitLab Rails
 console, for use while troubleshooting. It is listed here for transparency,
-and it may be useful for users with experience with these tools. If you are currently
+and for users with experience with these tools. If you are currently
 having an issue with GitLab, it is highly recommended that you first check
 our guide on [our Rails console](../operations/rails_console.md),
 and your [support options](https://about.gitlab.com/support/), before attempting to use
@@ -80,7 +80,7 @@ Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 
 ## Limiting output
 
-Adding a semicolon(`;`) and a follow-up statement at the end of a statement prevents the default implicit return output. This is useful if you are already explicitly printing details and potentially have a lot of return output:
+Adding a semicolon(`;`) and a follow-up statement at the end of a statement prevents the default implicit return output. This can be used if you are already explicitly printing details and potentially have a lot of return output:
 
 ```ruby
 puts ActiveRecord::Base.descendants; :ok
@@ -100,9 +100,9 @@ project.id
 # => 2537
 ```
 
-## Open object in irb
+## Open object in `irb`
 
-Sometimes it is easier to navigate through a method if you are within the context of the object. You can shim into the namespace of `Object` to let you open `irb` within the context of any object:
+Sometimes it is easier to go through a method if you are in the context of the object. You can shim into the namespace of `Object` to let you open `irb` in the context of any object:
 
 ```ruby
 Object.define_method(:irb) { binding.irb }
@@ -311,7 +311,7 @@ end
 
 ### Bulk update push rules for _all_ projects
 
-For example, enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes, and create a filter for allowing commits from a specific e-mail domain only:
+For example, enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes, and create a filter for allowing commits from a specific email domain only:
 
 ``` ruby
 Project.find_each do |p|
@@ -443,7 +443,7 @@ p.create_wiki  ### creates the wiki project on the filesystem
 
 ## Issue boards
 
-### In case of issue boards not loading properly and it's getting time out. We need to call the Issue Rebalancing service to fix this
+### In case of issue boards not loading properly and it's getting time out. Call the Issue Rebalancing service to fix this
 
 ```ruby
 p = Project.find_by_full_path('<username-or-group>/<project-name>')
@@ -515,7 +515,7 @@ If this all runs successfully, you see an output like the following before being
 => nil
 ```
 
-The exported project is located within a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
+The exported project is located in a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
 
 If this fails, [enable verbose logging](../operations/rails_console.md#looking-up-database-persisted-objects),
 repeat the above procedure after,
@@ -636,7 +636,7 @@ User.billable.count
 ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
 ```
 
-Using cURL and jq (up to a max 100, see the [pagination docs](../../api/index.md#pagination)):
+Using cURL and jq (up to a max 100, see [Pagination](../../api/index.md#pagination)):
 
 ```shell
 curl --silent --header "Private-Token: ********************" \
@@ -1111,7 +1111,7 @@ License.select(&TYPE).each(&:destroy!)
 
 ### Registry Disk Space Usage by Project
 
-As a GitLab administrator, you may need to reduce disk space consumption.
+As a GitLab administrator, you may want to reduce disk space consumption.
 A common culprit is Docker Registry images that are no longer in use. To find
 the storage broken down by each project, run the following in the
 [GitLab Rails console](../operations/rails_console.md):
@@ -1145,11 +1145,11 @@ end
 
 ### Run the Cleanup policy now
 
-Find this content in the [Container Registry troubleshooting docs](../packages/container_registry.md#run-the-cleanup-policy-now).
+Find this content in the [Container Registry troubleshooting documentation](../packages/container_registry.md#run-the-cleanup-policy-now).
 
 ## Sidekiq
 
-This content has been moved to the [Troubleshooting Sidekiq docs](sidekiq.md).
+This content has been moved to [Troubleshooting Sidekiq](sidekiq.md).
 
 ## Redis
 

@@ -34,7 +34,7 @@ In these types of setups it's recommended that the GitLab environment used match
 
 Gitaly Cluster can notably improve large repository performance as it holds multiple replicas of the repository across several nodes. As a result, Gitaly Cluster can load balance read requests against those repositories and is also fault tolerant.
 
-It's recommended for large repositories, however, Gitaly Cluster is a large solution with additional complexity of setup and management. Refer to the [Gitaly Cluster documentation for more information](../../../administration/gitaly/index.md), specifically the [Before deploying Gitaly Cluster](../../../administration/gitaly/index.md#before-deploying-gitaly-cluster) section.
+It's recommended for large repositories, however, Gitaly Cluster is a large solution with additional complexity of setup, and management. Refer to the [Gitaly Cluster documentation for more information](../../../administration/gitaly/index.md), specifically the [Before deploying Gitaly Cluster](../../../administration/gitaly/index.md#before-deploying-gitaly-cluster) section.
 
 ## Keep GitLab up to date
 
@@ -46,6 +46,6 @@ Large repositories tend to be monorepos. This in turn typically means that these
 
 CI/CD loads tend to be concurrent as pipelines are scheduled during set times. As a result, the Git requests against the repositories can spike notably during these times and lead to reduced performance for both CI and users alike.
 
-When designing CI/CD pipelines, it's advisable to reduce their concurrency by staggering them to run at different times, for example, a set running at one time and then another set running several minutes later.
+When designing CI/CD pipelines, it's advisable to reduce their concurrency by staggering them to run at different times, for example, a set running at one time, and another set running several minutes later.
 
 There's several other actions that can be explored to improve CI/CD performance with large repositories. Refer to the [Runner documentation for more information](../../../ci/large_repositories/index.md).

@@ -11,8 +11,8 @@ traffic to the application servers. The specifics on which load balancer to use
 or the exact configuration is beyond the scope of GitLab documentation. We hope
 that if you're managing HA systems like GitLab you have a load balancer of
 choice already. Some examples including HAProxy (open-source), F5 Big-IP LTM,
-and Citrix Net Scaler. This documentation outlines what ports and protocols
-you need to use with GitLab.
+and Citrix NetScaler. This documentation outlines what ports and protocols
+to use with GitLab.
 
 ## SSL
 
@@ -40,7 +40,7 @@ Configure your load balancers to use the 'HTTP(S)' protocol rather than 'TCP'.
 The load balancers is be responsible for managing SSL certificates and
 terminating SSL.
 
-Since communication between the load balancers and GitLab isn't secure,
+Because communication between the load balancers and GitLab isn't secure,
 there is some additional configuration needed. See
 [NGINX Proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
 for details.
@@ -52,7 +52,7 @@ The load balancers is responsible for managing SSL certificates that
 end users see.
 
 Traffic is secure between the load balancers and NGINX in this
-scenario. There is no need to add configuration for proxied SSL since the
+scenario. There is no need to add configuration for proxied SSL because the
 connection is secure all the way. However, configuration must be
 added to GitLab to configure SSL certificates. See
 [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)

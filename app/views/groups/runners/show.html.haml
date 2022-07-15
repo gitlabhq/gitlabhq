@@ -1,6 +1,6 @@
 - add_to_breadcrumbs _('Runners'), group_runners_path(@group)
 
-- if Feature.enabled?(:group_runner_view_ui)
+- if Feature.enabled?(:group_runner_view_ui, @group)
   - title = "##{@runner.id} (#{@runner.short_sha})"
   - breadcrumb_title title
   - page_title title

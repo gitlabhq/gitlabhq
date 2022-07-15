@@ -152,17 +152,17 @@ FROM gitlab.example.com:443/my-group/dependency_proxy/containers/alpine:latest
 
 ```yaml
 # .gitlab-ci.yml
-image: docker:19.03.12
+image: docker:20.10.16
 
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
 
 services:
-  - docker:19.03.12-dind
+  - docker:20.10.16-dind
 
 build:
-  image: docker:19.03.12
+  image: docker:20.10.16
   before_script:
     - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
   script:
@@ -301,7 +301,7 @@ hub_docker_quota_check:
 
 ### Dependency Proxy Connection Failure
 
-If a service alias is not set the `docker:19.03.12` image is unable to find the
+If a service alias is not set the `docker:20.10.16` image is unable to find the
 `dind` service, and an error like the following is thrown:
 
 ```plaintext

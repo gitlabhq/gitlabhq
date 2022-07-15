@@ -31,7 +31,7 @@ GitLab Rails application (Puma) as well as the other components, like:
 ### Omnibus GitLab restart
 
 There may be times in the documentation where you are asked to _restart_
-GitLab. In that case, you need to run the following command:
+GitLab. To restart, run the following command:
 
 ```shell
 sudo gitlab-ctl restart

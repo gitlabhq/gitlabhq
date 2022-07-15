@@ -208,10 +208,10 @@ should look:
 
 ```yaml
 build:
-  image: docker:19.03.12
+  image: docker:20.10.16
   stage: build
   services:
-    - docker:19.03.12-dind
+    - docker:20.10.16-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/group/project/image:latest .
@@ -222,10 +222,10 @@ You can also make use of [other CI/CD variables](../../../ci/variables/index.md)
 
 ```yaml
 build:
-  image: docker:19.03.12
+  image: docker:20.10.16
   stage: build
   services:
-    - docker:19.03.12-dind
+    - docker:20.10.16-dind
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
@@ -248,9 +248,9 @@ when needed. Changes to `main` also get tagged as `latest` and deployed using
 an application-specific deploy script:
 
 ```yaml
-image: docker:19.03.12
+image: docker:20.10.16
 services:
-  - docker:19.03.12-dind
+  - docker:20.10.16-dind
 
 stages:
   - build
@@ -323,9 +323,9 @@ Below is an example of what your `.gitlab-ci.yml` should look like:
 
 ```yaml
 build:
-  image: $CI_REGISTRY/group/project/docker:19.03.12
+  image: $CI_REGISTRY/group/project/docker:20.10.16
   services:
-    - name: $CI_REGISTRY/group/project/docker:19.03.12-dind
+    - name: $CI_REGISTRY/group/project/docker:20.10.16-dind
       alias: docker
   stage: build
   script:
@@ -333,7 +333,7 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
-If you forget to set the service alias, the `docker:19.03.12` image is unable to find the
+If you forget to set the service alias, the `docker:20.10.16` image is unable to find the
 `dind` service, and an error like the following is thrown:
 
 ```plaintext
@@ -353,7 +353,7 @@ Below is an example of what your `.gitlab-ci.yml` should look like:
 
 ```yaml
 build:
-  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:19.03.12
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:20.10.16
   services:
     - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:18.09.7-dind
       alias: docker
@@ -363,7 +363,7 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
-If you forget to set the service alias, the `docker:19.03.12` image is unable to find the
+If you forget to set the service alias, the `docker:20.10.16` image is unable to find the
 `dind` service, and an error like the following is thrown:
 
 ```plaintext
@@ -438,10 +438,10 @@ stages:
   - clean
 
 build_image:
-  image: docker:19.03.12
+  image: docker:20.10.16
   stage: build
   services:
-    - docker:19.03.12-dind
+    - docker:20.10.16-dind
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
@@ -454,10 +454,10 @@ build_image:
     - main
 
 delete_image:
-  image: docker:19.03.12
+  image: docker:20.10.16
   stage: clean
   services:
-    - docker:19.03.12-dind
+    - docker:20.10.16-dind
   variables:
     IMAGE_TAG: $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG
     REG_SHA256: ade837fc5224acd8c34732bf54a94f579b47851cc6a7fd5899a98386b782e228

@@ -63,7 +63,7 @@ sudo gitlab-ctl start puma
 
 ## Make the database read-only
 
-If you want to allow users to use the GitLab UI, then you need to ensure that
+If you want to allow users to use the GitLab UI, ensure that
 the database is read-only:
 
 1. Take a [GitLab backup](../raketasks/backup_restore.md)
@@ -113,7 +113,7 @@ the database is read-only:
    sudo gitlab-ctl restart postgresql
    ```
 
-When you're ready to revert the read-only state, you need to remove the added
+When you're ready to revert the read-only state, remove the added
 lines in `/etc/gitlab/gitlab.rb`, and reconfigure GitLab and restart PostgreSQL:
 
 ```shell
@@ -121,5 +121,5 @@ sudo gitlab-ctl reconfigure
 sudo gitlab-ctl restart postgresql
 ```
 
-Once you verify all works as expected, you can remove the `gitlab_read_only`
+After you verify all works as expected, remove the `gitlab_read_only`
 user from the database.

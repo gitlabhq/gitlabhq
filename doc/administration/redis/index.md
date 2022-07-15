@@ -12,7 +12,7 @@ multiple ways to configure Redis.
 
 You can choose to install and manage Redis and Sentinel yourself, use a hosted
 cloud solution, or you can use the ones that come bundled with the Omnibus GitLab
-packages so you only need to focus on configuration. Pick the one that suits your needs.
+packages so you can only focus on configuration. Pick the one that suits your needs.
 
 ## Redis replication and failover using Omnibus GitLab
 

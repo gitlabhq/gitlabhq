@@ -3,13 +3,13 @@
 module Issuable
   module Clone
     class BaseService < IssuableBaseService
-      attr_reader :original_entity, :new_entity, :target_project
+      attr_reader :original_entity, :new_entity
 
       alias_method :old_project, :project
 
-      def execute(original_entity, target_project = nil)
+      def execute(original_entity, target_parent)
         @original_entity = original_entity
-        @target_project = target_project
+        @target_parent = target_parent
 
         # Using transaction because of a high resources footprint
         # on rewriting notes (unfolding references)
@@ -25,11 +25,13 @@ module Issuable
 
       private
 
+      attr_reader :target_parent
+
       def rewritten_old_entity_attributes(include_milestone: true)
         Gitlab::Issuable::Clone::AttributesRewriter.new(
           current_user,
           original_entity,
-          target_project
+          target_parent
         ).execute(include_milestone: include_milestone)
       end
 
@@ -83,7 +85,7 @@ module Issuable
       end
 
       def relative_position
-        return if original_entity.project.root_ancestor.id != target_project.root_ancestor.id
+        return if original_entity.project.root_ancestor.id != target_parent.root_ancestor.id
 
         original_entity.relative_position
       end

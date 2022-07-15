@@ -315,7 +315,7 @@ You can configure many Auto DevOps jobs to run in an [offline environment](../..
    build:
      image: "$REGISTRY_URL/docker/auto-build-image:v0.6.0"
      services:
-       - name: "$REGISTRY_URL/greg/docker/docker:20.10.6-dind"
+       - name: "$REGISTRY_URL/greg/docker/docker:20.10.16-dind"
          command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
    ```
 

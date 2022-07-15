@@ -54,7 +54,7 @@ There are also instructions when you want to
   Editions.
 
 In the past we used separate documents for the upgrading instructions, but we
-have since switched to using a single document. The old upgrading guidelines
+have switched to using a single document. The old upgrading guidelines
 can still be found in the Git repository:
 
 - [Old upgrading guidelines for Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/tree/11-8-stable/doc/update)
@@ -179,7 +179,7 @@ Expected batched background migration for the given configuration to be marked a
 
 If you get this error, [check the batched background migration options](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished) to complete the upgrade.
 
-### What do I do if my background migrations are stuck?
+### What do you do if your background migrations are stuck?
 
 WARNING:
 The following operations can disrupt your GitLab performance. They run a number of Sidekiq jobs that perform various database or file updates.
@@ -331,11 +331,11 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 ```
 
-### What do I do if my Advanced Search migrations are stuck?
+### What do you do if your Advanced Search migrations are stuck?
 
 See [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
-### What do I do for the error `Elasticsearch version not compatible`
+### What do you do for the error `Elasticsearch version not compatible`
 
 Confirm that your version of Elasticsearch or OpenSearch is [compatible with your version of GitLab](../integration/advanced_search/elasticsearch.md#version-requirements).
 
@@ -361,7 +361,7 @@ It's also important to ensure that any [background migrations have been fully co
 before upgrading to a new major version.
 
 If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**, then
-[ensure all Advanced Search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version within
+[ensure all Advanced Search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version in
 your current version
 before proceeding with the major version upgrade.
 
@@ -425,7 +425,7 @@ Edition, follow the guides below based on the installation method:
 
 ### Enterprise to Community Edition
 
-If you need to downgrade your Enterprise Edition installation back to Community
+To downgrade your Enterprise Edition installation back to Community
 Edition, you can follow [this guide](../downgrade_ee_to_ce/index.md) to make the process as smooth as
 possible.
 
@@ -442,7 +442,7 @@ At the end of major and minor release posts, there are three sections to look fo
 
 These include:
 
-- Steps you need to perform as part of an upgrade.
+- Steps you must perform as part of an upgrade.
   For example [8.12](https://about.gitlab.com/releases/2016/09/22/gitlab-8-12-released/#upgrade-barometer)
   required the Elasticsearch index to be recreated. Any older version of GitLab upgrading to 8.12 or later would require this.
 - Changes to the versions of software we support such as
@@ -473,7 +473,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   to avoid the database crashing.
 - In GitLab 15.1.0, we are switching Rails `ActiveSupport::Digest` to use SHA256 instead of MD5.
   This affects ETag key generation for resources such as raw Snippet file
-  downloads. In order to ensure consistent ETag key generation across multiple
+  downloads. To ensure consistent ETag key generation across multiple
   web nodes when upgrading, all servers must first be upgraded to 15.1.Z before
   upgrading to 15.2.0 or later:
 
@@ -653,7 +653,7 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   All merge request diff commits automatically incorporate these changes, and there are no
   additional requirements to perform the upgrade.
   Existing data in the `merge_request_diff_commits` table remains unpacked until you run `VACUUM FULL merge_request_diff_commits`.
-  But note that the `VACUUM FULL` operation locks and rewrites the entire `merge_request_diff_commits` table,
+  However, the `VACUUM FULL` operation locks and rewrites the entire `merge_request_diff_commits` table,
   so the operation takes some time to complete and it blocks access to this table until the end of the process.
   We advise you to only run this command while GitLab is not actively used or it is taken offline for the duration of the process.
   The time it takes to complete depends on the size of the table, which can be obtained by using `select pg_size_pretty(pg_total_relation_size('merge_request_diff_commits'));`.
@@ -1015,10 +1015,10 @@ GitLab 13.2.0 [remediates](https://gitlab.com/gitlab-org/gitlab/-/merge_requests
 After upgrading, if some of your users are unexpectedly encountering 404 or 422 errors when signing in,
 or "blocked" messages when using the command line,
 their accounts may have been un-confirmed.
-In that case, please ask them to check their email for a re-confirmation link.
+In that case, ask them to check their email for a re-confirmation link.
 For more information, see our discussion of [Email confirmation issues](../user/upgrade_email_bypass.md).
 
-GitLab 13.2.0 relies on the `btree_gist` extension for PostgreSQL. For installations with an externally managed PostgreSQL setup, please make sure to
+GitLab 13.2.0 relies on the `btree_gist` extension for PostgreSQL. For installations with an externally managed PostgreSQL setup, make sure to
 [install the extension manually](https://www.postgresql.org/docs/11/sql-createextension.html) before upgrading GitLab if the database user for GitLab
 is not a superuser. This is not necessary for installations using a GitLab managed PostgreSQL database.
 
@@ -1065,7 +1065,7 @@ If you persist your own Rack Attack initializers between upgrades, you might
 
 - The final patch release (12.10.14)
   [has a regression affecting maven package uploads](https://about.gitlab.com/releases/2020/07/06/critical-security-release-gitlab-13-1-3-released/#maven-package-upload-broken-in-121014).
-  If you use this feature and need to stay on 12.10 while preparing to upgrade to 13.0:
+  If you use this feature and must stay on 12.10 while preparing to upgrade to 13.0:
 
   - Upgrade to 12.10.13 instead.
   - Upgrade to 13.0.14 as soon as possible.

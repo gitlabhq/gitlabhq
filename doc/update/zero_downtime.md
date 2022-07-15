@@ -277,7 +277,7 @@ node throughout the process.
 
 - To prevent `reconfigure` from automatically running database migrations, ensure that `gitlab_rails['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb`.
 
-**Postgres only nodes**
+**PostgreSQL only nodes**
 
 - Update the GitLab package
 
@@ -416,7 +416,7 @@ following command to get address of current Redis primary
   1. Get the address of one of the sentinel nodes specified as
      `gitlab_rails['redis_sentinels']` in `/etc/gitlab/gitlab.rb`
 
-  1. Get the Redis master name specified as `redis['master_name']` in
+  1. Get the Redis main name specified as `redis['master_name']` in
      `/etc/gitlab/gitlab.rb`
 
   1. Run the following command

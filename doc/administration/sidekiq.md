@@ -13,7 +13,7 @@ PostgreSQL, and Gitaly instances.
 
 By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. To change this:
 
-1. Edit the `/etc/gitlab/gitlab.rb` file on your GitLab instance and add the following:
+1. Edit the `/etc/gitlab/gitlab.rb` file on your GitLab instance, and add the following:
 
    ```ruby
 
@@ -23,7 +23,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
    postgresql['listen_address'] = '0.0.0.0'
    postgresql['port'] = 5432
-   
+
    # Add the Sidekiq nodes to PostgreSQL's trusted addresses.
    # In the following example, 10.10.1.30/32 is the private IP
    # of the Sidekiq server.
@@ -142,11 +142,11 @@ Updates to example must be made at:
    ####              Redis              ###
    ########################################
 
-   ## Must be the same in every sentinel node. 
+   ## Must be the same in every sentinel node.
    redis['master_name'] = 'gitlab-redis' # Required if you have setup redis cluster
    ## The same password for Redis authentication you set up for the master node.
    redis['master_password'] = '<redis_master_password>'
-   
+
    ### If redis is running on the main Gitlab instance and you have opened the TCP port as above add the following
    gitlab_rails['redis_host'] = '<gitlab_host>'
    gitlab_rails['redis_port'] = 6379

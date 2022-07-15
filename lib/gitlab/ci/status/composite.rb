@@ -7,10 +7,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         # This class accepts an array of arrays/hashes/or objects
-        #
-        # The parameter `project` is only used for the feature flag check, and will be removed with
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/321972
-        def initialize(all_statuses, with_allow_failure: true, dag: false, project: nil)
+        def initialize(all_statuses, with_allow_failure: true, dag: false)
           unless all_statuses.respond_to?(:pluck)
             raise ArgumentError, "all_statuses needs to respond to `.pluck`"
           end
@@ -19,7 +16,6 @@ module Gitlab
           @status_key = 0
           @allow_failure_key = 1 if with_allow_failure
           @dag = dag
-          @project = project
 
           consume_all_statuses(all_statuses)
         end

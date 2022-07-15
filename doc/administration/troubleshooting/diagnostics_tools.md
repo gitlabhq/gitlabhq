@@ -8,7 +8,7 @@ type: reference
 # Diagnostics tools **(FREE SELF)**
 
 These are some of the diagnostics tools the GitLab Support team uses during troubleshooting.
-They are listed here for transparency, and they may be useful for users with experience
+They are listed here for transparency, and for users with experience
 with troubleshooting GitLab. If you are currently having an issue with GitLab, you
 may want to check your [support options](https://about.gitlab.com/support/) first,
 before attempting to use these tools.
@@ -24,6 +24,6 @@ running on.
 [strace-parser](https://gitlab.com/wchandler/strace-parser) is a small tool to analyze
 and summarize raw `strace` data.
 
-## kubesos
+## `kubesos`
 
 The [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) utility retrieves GitLab cluster configuration and logs from GitLab Cloud Native chart deployments.

@@ -6,7 +6,7 @@
 .row.gl-mt-3
   .col-lg-12
     = gitlab_ui_form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings') do |f|
-      = form_errors(@project)
+      = form_errors(@project, pajamas_alert: true)
       %fieldset.builds-feature
         .form-group
           = f.gitlab_ui_checkbox_component :public_builds,

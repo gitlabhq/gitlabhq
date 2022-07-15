@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting Redis **(FREE SELF)**
 
-There are a lot of moving parts that needs to be taken care carefully
+There are a lot of moving parts that must be taken care carefully
 in order for the HA setup to work as expected.
 
 Before proceeding with the troubleshooting below, check your firewall rules:

@@ -9,8 +9,11 @@ RSpec.describe WorkItems::ParentLink do
   end
 
   describe 'validations' do
+    subject { build(:parent_link) }
+
     it { is_expected.to validate_presence_of(:work_item) }
     it { is_expected.to validate_presence_of(:work_item_parent) }
+    it { is_expected.to validate_uniqueness_of(:work_item) }
 
     describe 'hierarchy' do
       let_it_be(:project) { create(:project) }

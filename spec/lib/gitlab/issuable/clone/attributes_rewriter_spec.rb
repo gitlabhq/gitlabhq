@@ -11,6 +11,12 @@ RSpec.describe Gitlab::Issuable::Clone::AttributesRewriter do
 
   let(:new_attributes) { described_class.new(user, original_issue, project2).execute }
 
+  context 'with missing target parent' do
+    it 'raises an ArgumentError' do
+      expect { described_class.new(user, original_issue, nil) }.to raise_error ArgumentError
+    end
+  end
+
   context 'setting labels' do
     it 'sets labels present in the new project and group labels' do
       project1_label_1 = create(:label, title: 'label1', project: project1)

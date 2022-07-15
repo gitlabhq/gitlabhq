@@ -29,7 +29,7 @@ module Gitlab
           response = Gitlab::HTTP.try_get(runner_releases_url)
           @releases_by_minor = nil
 
-          unless response.success?
+          unless response&.success?
             @backoff_expire_time = next_backoff.from_now
             break nil
           end

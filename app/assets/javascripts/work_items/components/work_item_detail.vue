@@ -153,6 +153,12 @@ export default {
             {{ workItemType }}
           </li>
         </ul>
+        <span
+          v-else
+          class="gl-font-weight-bold gl-text-secondary gl-mr-auto"
+          data-testid="work-item-type"
+          >{{ workItemType }}</span
+        >
         <work-item-actions
           :work-item-id="workItem.id"
           :can-delete="canDelete"

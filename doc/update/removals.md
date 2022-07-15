@@ -31,6 +31,25 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 15.2
+
+### Support for older browsers
+
+In GitLab 15.2, we are cleaning up and [removing old code](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86003) that was specific for browsers that we no longer support. This has no impact on users if they use one of our [supported web browsers](https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers).
+
+Most notably, support for the following browsers has been removed:
+
+- Apple Safari 14 and older.
+- Mozilla Firefox 78.
+
+The minimum supported browser versions are:
+
+- Apple Safari 14.1.
+- Mozilla Firefox 91.
+- Google Chrome 92.
+- Chromium 92.
+- Microsoft Edge 92.
+
 ## Removed in 15.0
 
 ### API: `stale` status returned instead of `offline` or `not_connected`

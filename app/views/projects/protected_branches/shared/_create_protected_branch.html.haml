@@ -4,7 +4,7 @@
     .card-header.gl-font-weight-bold
       = s_("ProtectedBranch|Protect a branch")
     .card-body
-      = form_errors(@protected_branch)
+      = form_errors(@protected_branch, pajamas_alert: true)
       .form-group.row
         = f.label :name, s_('ProtectedBranch|Branch:'), class: 'col-sm-12'
         .col-sm-12

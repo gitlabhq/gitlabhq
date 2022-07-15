@@ -41,6 +41,7 @@ describe('WorkItemDetail component', () => {
   const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
   const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
+  const findWorkItemType = () => wrapper.find('[data-testid="work-item-type"]');
 
   const createComponent = ({
     isModal = false,
@@ -169,16 +170,27 @@ describe('WorkItemDetail component', () => {
       expect(findParent().exists()).toBe(false);
     });
 
+    it('shows work item type if there is not a parent', async () => {
+      createComponent();
+
+      await waitForPromises();
+      expect(findWorkItemType().exists()).toBe(true);
+    });
+
     describe('with parent', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         const parentResponse = workItemResponseFactory(mockParent);
         createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
 
-        await waitForPromises();
+        return waitForPromises();
       });
 
       it('shows secondary breadcrumbs if there is a parent', () => {
         expect(findParent().exists()).toBe(true);
+      });
+
+      it('does not show work item type', async () => {
+        expect(findWorkItemType().exists()).toBe(false);
       });
 
       it('sets the parent breadcrumb URL', () => {

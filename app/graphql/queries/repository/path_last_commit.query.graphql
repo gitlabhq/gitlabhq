@@ -4,43 +4,46 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
     id
     repository {
       __typename
-      tree(path: $path, ref: $ref) {
+      paginatedTree(path: $path, ref: $ref) {
         __typename
-        lastCommit {
+        nodes {
           __typename
-          id
-          sha
-          title
-          titleHtml
-          descriptionHtml
-          message
-          webPath
-          authoredDate
-          authorName
-          authorGravatar
-          author {
+          lastCommit {
             __typename
             id
-            name
-            avatarUrl
+            sha
+            title
+            titleHtml
+            descriptionHtml
+            message
             webPath
-          }
-          signatureHtml
-          pipelines(ref: $ref, first: 1) {
-            __typename
-            edges {
+            authoredDate
+            authorName
+            authorGravatar
+            author {
               __typename
-              node {
+              id
+              name
+              avatarUrl
+              webPath
+            }
+            signatureHtml
+            pipelines(ref: $ref, first: 1) {
+              __typename
+              edges {
                 __typename
-                id
-                detailedStatus {
+                node {
                   __typename
                   id
-                  detailsPath
-                  icon
-                  tooltip
-                  text
-                  group
+                  detailedStatus {
+                    __typename
+                    id
+                    detailsPath
+                    icon
+                    tooltip
+                    text
+                    group
+                  }
                 }
               }
             }
