@@ -4,14 +4,6 @@ import { hasContent } from '~/lib/utils/text_utility';
 import { getDuplicateItemsFromArray } from '~/lib/utils/array_utility';
 
 /**
- * @returns {Boolean} `true` if the app is editing an existing release.
- * `false` if the app is creating a new release.
- */
-export const isExistingRelease = (state) => {
-  return Boolean(state.tagName);
-};
-
-/**
  * @param {Object} link The link to test
  * @returns {Boolean} `true` if the release link is empty, i.e. it has
  * empty (or whitespace-only) values for both `url` and `name`.

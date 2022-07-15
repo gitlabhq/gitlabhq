@@ -408,14 +408,6 @@ class Issue < ApplicationRecord
     end
   end
 
-  # Returns boolean if a related branch exists for the current issue
-  # ignores merge requests branchs
-  def has_related_branch?
-    project.repository.branch_names.any? do |branch|
-      /\A#{iid}-(?!\d+-stable)/i =~ branch
-    end
-  end
-
   # To allow polymorphism with MergeRequest.
   def source_project
     project

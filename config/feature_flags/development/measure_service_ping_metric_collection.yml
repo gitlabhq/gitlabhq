@@ -1,8 +1,0 @@
----
-name: measure_service_ping_metric_collection
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82607
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/358128
-milestone: '15.0'
-type: development
-group: group::product intelligence
-default_enabled: true

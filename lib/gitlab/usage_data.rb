@@ -651,8 +651,6 @@ module Gitlab
       end
 
       def with_duration
-        return yield unless Feature.enabled?(:measure_service_ping_metric_collection)
-
         result = nil
         duration = Benchmark.realtime do
           result = yield

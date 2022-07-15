@@ -25,7 +25,7 @@ describe('Release edit/new mutations', () => {
       mutations[types.INITIALIZE_EMPTY_RELEASE](state);
 
       expect(state.release).toEqual({
-        tagName: null,
+        tagName: 'v1.3',
         name: '',
         description: '',
         milestones: [],
@@ -100,6 +100,16 @@ describe('Release edit/new mutations', () => {
       mutations[types.UPDATE_CREATE_FROM](state, newRef);
 
       expect(state.createFrom).toBe(newRef);
+    });
+  });
+
+  describe(`${types.UPDATE_SHOW_CREATE_FROM}`, () => {
+    it('updates the ref that the ref will be created from', () => {
+      state.showCreateFrom = true;
+      const newValue = false;
+      mutations[types.UPDATE_SHOW_CREATE_FROM](state, newValue);
+
+      expect(state.showCreateFrom).toBe(newValue);
     });
   });
 

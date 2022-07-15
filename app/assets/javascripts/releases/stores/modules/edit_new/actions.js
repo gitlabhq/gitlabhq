@@ -11,8 +11,8 @@ import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
 
 import * as types from './mutation_types';
 
-export const initializeRelease = ({ commit, dispatch, getters }) => {
-  if (getters.isExistingRelease) {
+export const initializeRelease = ({ commit, dispatch, state }) => {
+  if (state.isExistingRelease) {
     // When editing an existing release,
     // fetch the release object from the API
     return dispatch('fetchRelease');
@@ -53,6 +53,9 @@ export const updateReleaseTagName = ({ commit }, tagName) =>
 export const updateCreateFrom = ({ commit }, createFrom) =>
   commit(types.UPDATE_CREATE_FROM, createFrom);
 
+export const updateShowCreateFrom = ({ commit }, showCreateFrom) =>
+  commit(types.UPDATE_SHOW_CREATE_FROM, showCreateFrom);
+
 export const updateReleaseTitle = ({ commit }, title) => commit(types.UPDATE_RELEASE_TITLE, title);
 
 export const updateReleaseNotes = ({ commit }, notes) => commit(types.UPDATE_RELEASE_NOTES, notes);
@@ -88,10 +91,10 @@ export const receiveSaveReleaseSuccess = ({ commit }, urlToRedirectTo) => {
   redirectTo(urlToRedirectTo);
 };
 
-export const saveRelease = ({ commit, dispatch, getters }) => {
+export const saveRelease = ({ commit, dispatch, state }) => {
   commit(types.REQUEST_SAVE_RELEASE);
 
-  dispatch(getters.isExistingRelease ? 'updateRelease' : 'createRelease');
+  dispatch(state.isExistingRelease ? 'updateRelease' : 'createRelease');
 };
 
 /**

@@ -10,11 +10,12 @@ RSpec.describe 'Adding a DiffNote' do
   let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
   let(:project) { create(:project, :repository) }
   let(:diff_refs) { noteable.diff_refs }
+  let(:body) { 'Body text' }
 
   let(:base_variables) do
     {
       noteable_id: GitlabSchema.id_from_object(noteable).to_s,
-      body: 'Body text',
+      body: body,
       position: {
         paths: {
           old_path: 'files/ruby/popen.rb',
@@ -63,6 +64,17 @@ RSpec.describe 'Adding a DiffNote' do
       let(:diff_refs) { build(:commit).diff_refs } # Allow fake diff refs so arguments are valid
 
       it_behaves_like 'a Note mutation when the given resource id is not for a Noteable'
+    end
+
+    context 'with /merge quick action' do
+      let(:body) { "Body text \n/merge" }
+
+      it 'merges the merge request', :sidekiq_inline do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(noteable.reload.state).to eq('merged')
+        expect(mutation_response['note']['body']).to eq('Body text')
+      end
     end
 
     it 'returns the note with the correct position' do

@@ -377,62 +377,41 @@ RSpec.describe ServicePing::SubmitService do
       stub_database_flavor_check
       stub_application_setting(usage_ping_enabled: true)
       stub_response(body: with_conv_index_params)
-    end
-
-    context 'with feature flag measure_service_ping_metric_collection turned on' do
-      let(:metric_double) { instance_double(Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator, duration: 123) }
-      let(:payload) do
-        {
-          metric_a: metric_double,
-          metric_group: {
-            metric_b: metric_double
-          },
-          metric_without_timing: "value",
-          recorded_at: Time.current
-        }
-      end
-
-      let(:metadata_payload) do
-        {
-          metadata: {
-            metrics: [
-              { name: 'metric_a', time_elapsed: 123 },
-              { name: 'metric_group.metric_b', time_elapsed: 123 }
-            ]
-          }
-        }
-      end
-
-      before do
-        stub_feature_flags(measure_service_ping_metric_collection: true)
-
-        allow_next_instance_of(ServicePing::BuildPayload) do |service|
-          allow(service).to receive(:execute).and_return(payload)
-        end
-      end
-
-      it 'submits metadata' do
-        response = stub_full_request(service_ping_metadata_url, method: :post)
-                     .with(body: metadata_payload)
-
-        subject.execute
-
-        expect(response).to have_been_requested
+      allow_next_instance_of(ServicePing::BuildPayload) do |service|
+        allow(service).to receive(:execute).and_return(payload)
       end
     end
 
-    context 'with feature flag measure_service_ping_metric_collection turned off' do
-      before do
-        stub_feature_flags(measure_service_ping_metric_collection: false)
-      end
+    let(:metric_double) { instance_double(Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator, duration: 123) }
+    let(:payload) do
+      {
+        metric_a: metric_double,
+        metric_group: {
+          metric_b: metric_double
+        },
+        metric_without_timing: "value",
+        recorded_at: Time.current
+      }
+    end
 
-      it 'does NOT submit metadata' do
-        response = stub_full_request(service_ping_metadata_url, method: :post)
+    let(:metadata_payload) do
+      {
+        metadata: {
+          metrics: [
+            { name: 'metric_a', time_elapsed: 123 },
+            { name: 'metric_group.metric_b', time_elapsed: 123 }
+          ]
+        }
+      }
+    end
 
-        subject.execute
+    it 'submits metadata' do
+      response = stub_full_request(service_ping_metadata_url, method: :post)
+                   .with(body: metadata_payload)
 
-        expect(response).not_to have_been_requested
-      end
+      subject.execute
+
+      expect(response).to have_been_requested
     end
   end
 

@@ -1365,29 +1365,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   end
 
   describe ".with_duration" do
-    context 'with feature flag measure_service_ping_metric_collection turned off' do
-      before do
-        stub_feature_flags(measure_service_ping_metric_collection: false)
-      end
+    it 'records duration' do
+      expect(::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator)
+        .to receive(:new).with(2, kind_of(Float))
 
-      it 'does NOT record duration and return block response' do
-        expect(::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator).not_to receive(:new)
-
-        expect(described_class.with_duration { 1 + 1 }).to be 2
-      end
-    end
-
-    context 'with feature flag measure_service_ping_metric_collection turned off' do
-      before do
-        stub_feature_flags(measure_service_ping_metric_collection: true)
-      end
-
-      it 'records duration' do
-        expect(::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator)
-          .to receive(:new).with(2, kind_of(Float))
-
-        described_class.with_duration { 1 + 1 }
-      end
+      described_class.with_duration { 1 + 1 }
     end
   end
 

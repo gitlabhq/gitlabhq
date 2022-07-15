@@ -16,25 +16,12 @@ export const dateFormats = {
 // Some content is duplicated due to backward compatibility.
 // It will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/350614 in 14.9
 export const METRICS_POPOVER_CONTENT = {
-  'lead-time': {
-    description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
-  },
   lead_time: {
     description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
-  },
-  'cycle-time': {
-    description: s__(
-      "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
-    ),
   },
   cycle_time: {
     description: s__(
       "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
-    ),
-  },
-  'lead-time-for-changes': {
-    description: s__(
-      'ValueStreamAnalytics|Median time between merge request merge and deployment to a production environment for all MRs deployed in the given time period.',
     ),
   },
   lead_time_for_changes: {
@@ -43,31 +30,16 @@ export const METRICS_POPOVER_CONTENT = {
     ),
   },
   issues: { description: s__('ValueStreamAnalytics|Number of new issues created.') },
-  'new-issue': { description: s__('ValueStreamAnalytics|Number of new issues created.') },
-  'new-issues': { description: s__('ValueStreamAnalytics|Number of new issues created.') },
   deploys: { description: s__('ValueStreamAnalytics|Total number of deploys to production.') },
-  'deployment-frequency': {
-    description: s__('ValueStreamAnalytics|Average number of deployments to production per day.'),
-  },
   deployment_frequency: {
     description: s__('ValueStreamAnalytics|Average number of deployments to production per day.'),
   },
   commits: {
     description: s__('ValueStreamAnalytics|Number of commits pushed to the default branch'),
   },
-  'time-to-restore-service': {
-    description: s__(
-      'ValueStreamAnalytics|Median time an incident was open on a production environment in the given time period.',
-    ),
-  },
   time_to_restore_service: {
     description: s__(
       'ValueStreamAnalytics|Median time an incident was open on a production environment in the given time period.',
-    ),
-  },
-  'change-failure-rate': {
-    description: s__(
-      'ValueStreamAnalytics|Percentage of deployments that cause an incident in production.',
     ),
   },
   change_failure_rate: {

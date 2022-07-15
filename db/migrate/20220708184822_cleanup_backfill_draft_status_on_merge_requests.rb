@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 class CleanupBackfillDraftStatusOnMergeRequests < Gitlab::Database::Migration[2.0]
-  disable_ddl_transaction!
-
-  MIGRATION = 'BackfillDraftStatusOnMergeRequests'
-
   def up
-    finalize_background_migration(MIGRATION)
+    # no-op
+    #
+    # moved to post-deployment migration:
+    # db/post_migrate/20220713133515_cleanup_backfill_draft_statuses_on_merge_requests.rb
   end
 
   def down

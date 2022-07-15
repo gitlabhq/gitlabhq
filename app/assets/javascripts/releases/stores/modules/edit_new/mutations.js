@@ -9,7 +9,7 @@ const findReleaseLink = (release, id) => {
 export default {
   [types.INITIALIZE_EMPTY_RELEASE](state) {
     state.release = {
-      tagName: null,
+      tagName: state.tagName,
       name: '',
       description: '',
       milestones: [],
@@ -41,6 +41,9 @@ export default {
   },
   [types.UPDATE_CREATE_FROM](state, createFrom) {
     state.createFrom = createFrom;
+  },
+  [types.UPDATE_SHOW_CREATE_FROM](state, showCreateFrom) {
+    state.showCreateFrom = showCreateFrom;
   },
   [types.UPDATE_RELEASE_TITLE](state, title) {
     state.release.name = title;

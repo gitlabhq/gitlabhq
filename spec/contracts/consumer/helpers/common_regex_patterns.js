@@ -16,5 +16,9 @@ export const PIPELINE_STATUSES =
 export const PIPELINE_TEXTS =
   '^(canceled|created|delayed|failed|manual|passed|pending|preparing|running|skipped|waiting)$';
 
+// Jobs
+export const JOB_STATUSES =
+  '^(CANCELED|CREATED|FAILED|MANUAL|PENDING|PREPARING|RUNNING|SCHEDULED|SKIPPED|SUCCESS|WAITING_FOR_RESOURCE)$';
+
 // Users
 export const USER_STATES = '^(active|blocked)$';

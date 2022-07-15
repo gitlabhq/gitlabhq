@@ -86,13 +86,15 @@ module Gitlab
 
         create_labels
 
+        issue_type_id = WorkItems::Type.default_issue_type.id
+
         client.issues(repo).each do |issue|
-          import_issue(issue)
+          import_issue(issue, issue_type_id)
         end
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def import_issue(issue)
+      def import_issue(issue, issue_type_id)
         description = ''
         description += @formatter.author_line(issue.author) unless find_user_id(issue.author)
         description += issue.description
@@ -108,6 +110,7 @@ module Gitlab
           author_id: gitlab_user_id(project, issue.author),
           namespace_id: project.project_namespace_id,
           milestone: milestone,
+          work_item_type_id: issue_type_id,
           created_at: issue.created_at,
           updated_at: issue.updated_at
         )

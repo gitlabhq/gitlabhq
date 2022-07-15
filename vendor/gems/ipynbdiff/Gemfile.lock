@@ -52,8 +52,7 @@ GEM
       parser (>= 3.1.0)
 
 PLATFORMS
-  x86_64-darwin-20
-  x86_64-linux
+  ruby
 
 DEPENDENCIES
   benchmark-memory (~> 0.2.0)

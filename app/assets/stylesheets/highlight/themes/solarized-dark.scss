@@ -119,6 +119,7 @@ $solarized-dark-il: #2aa198;
     @include hljs-override('bullet', $solarized-dark-n);
     @include hljs-override('subst', $solarized-dark-p);
     @include hljs-override('symbol', $solarized-dark-ni);
+    @include hljs-override('title.class_.inherited__', $solarized-dark-no);
 
   // Line numbers
   .file-line-num {

@@ -30,6 +30,7 @@ describe('Release edit/new component', () => {
   const factory = async ({ featureFlags = {}, store: storeUpdates = {} } = {}) => {
     state = {
       release,
+      isExistingRelease: true,
       markdownDocsPath: 'path/to/markdown/docs',
       releasesPagePath,
       projectId: '8',
@@ -46,7 +47,6 @@ describe('Release edit/new component', () => {
 
     getters = {
       isValid: () => true,
-      isExistingRelease: () => true,
       validationErrors: () => ({
         assets: {
           links: [],
@@ -206,9 +206,7 @@ describe('Release edit/new component', () => {
         store: {
           modules: {
             editNew: {
-              getters: {
-                isExistingRelease: () => false,
-              },
+              state: { isExistingRelease: false },
             },
           },
         },

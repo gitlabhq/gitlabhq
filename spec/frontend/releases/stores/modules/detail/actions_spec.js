@@ -37,19 +37,15 @@ describe('Release edit/new actions', () => {
   let error;
 
   const setupState = (updates = {}) => {
-    const getters = {
-      isExistingRelease: true,
-    };
-
     state = {
       ...createState({
         projectId: '18',
+        isExistingRelease: true,
         tagName: releaseResponse.tag_name,
         releasesPagePath: 'path/to/releases/page',
         markdownDocsPath: 'path/to/markdown/docs',
         markdownPreviewPath: 'path/to/markdown/preview',
       }),
-      ...getters,
       ...updates,
     };
   };
@@ -182,6 +178,15 @@ describe('Release edit/new actions', () => {
         const newRef = 'my-feature-branch';
         return testAction(actions.updateCreateFrom, newRef, state, [
           { type: types.UPDATE_CREATE_FROM, payload: newRef },
+        ]);
+      });
+    });
+
+    describe('updateShowCreateFrom', () => {
+      it(`commits ${types.UPDATE_SHOW_CREATE_FROM} with the updated ref`, () => {
+        const newRef = 'my-feature-branch';
+        return testAction(actions.updateShowCreateFrom, newRef, state, [
+          { type: types.UPDATE_SHOW_CREATE_FROM, payload: newRef },
         ]);
       });
     });

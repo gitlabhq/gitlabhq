@@ -17,9 +17,16 @@ namespace :contracts do
       )
     end
 
+    Pact::VerificationTask.new(:get_pipeline_header_data) do |pact|
+      pact.uri(
+        "#{contracts}/contracts/project/pipeline/show/pipelines#show-get_pipeline_header_data.json",
+        pact_helper: "#{provider}/pact_helpers/project/pipeline/get_pipeline_header_data_helper.rb"
+      )
+    end
+
     desc 'Run all pipeline contract tests'
     task 'test:pipelines', :contract_mr do |_t, arg|
-      errors = %w[get_list_project_pipelines].each_with_object([]) do |task, err|
+      errors = %w[get_list_project_pipelines get_pipeline_header_data].each_with_object([]) do |task, err|
         Rake::Task["contracts:pipelines:pact:verify:#{task}"].execute
       rescue StandardError, SystemExit
         err << "contracts:pipelines:pact:verify:#{task}"

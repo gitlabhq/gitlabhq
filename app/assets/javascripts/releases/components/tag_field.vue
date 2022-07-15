@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import TagFieldExisting from './tag_field_existing.vue';
 import TagFieldNew from './tag_field_new.vue';
 
@@ -9,7 +9,7 @@ export default {
     TagFieldNew,
   },
   computed: {
-    ...mapGetters('editNew', ['isExistingRelease']),
+    ...mapState('editNew', ['isExistingRelease']),
   },
 };
 </script>

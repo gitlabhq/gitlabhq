@@ -59,6 +59,7 @@ module ReleasesHelper
 
   def data_for_new_release_page
     new_edit_pages_shared_data.merge(
+      tag_name: params[:tag_name],
       default_branch: @project.default_branch,
       releases_page_path: project_releases_path(@project)
     )

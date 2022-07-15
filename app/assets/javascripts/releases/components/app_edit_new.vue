@@ -34,6 +34,7 @@ export default {
   },
   computed: {
     ...mapState('editNew', [
+      'isExistingRelease',
       'isFetchingRelease',
       'isUpdatingRelease',
       'fetchError',
@@ -50,7 +51,7 @@ export default {
       'groupMilestonesAvailable',
       'tagNotes',
     ]),
-    ...mapGetters('editNew', ['isValid', 'isExistingRelease', 'formattedReleaseNotes']),
+    ...mapGetters('editNew', ['isValid', 'formattedReleaseNotes']),
     showForm() {
       return Boolean(!this.isFetchingRelease && !this.fetchError && this.release);
     },

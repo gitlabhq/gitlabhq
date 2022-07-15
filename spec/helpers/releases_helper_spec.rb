@@ -77,6 +77,7 @@ RSpec.describe ReleasesHelper do
                   group_id
                   group_milestones_available
                   project_path
+                  tag_name
                   releases_page_path
                   markdown_preview_path
                   markdown_docs_path

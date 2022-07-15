@@ -11,7 +11,7 @@ export default () => {
 
   const store = createStore({
     modules: {
-      editNew: createEditNewModule(el.dataset),
+      editNew: createEditNewModule({ ...el.dataset, isExistingRelease: false }),
     },
   });
 

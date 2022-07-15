@@ -46,10 +46,10 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     method_source (1.0.0)
+    mini_portile2 (2.8.0)
     minitest (5.16.0)
-    nokogiri (1.13.6-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.13.6-x86_64-linux)
+    nokogiri (1.13.6)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     racc (1.6.0)
@@ -92,8 +92,7 @@ GEM
     zeitwerk (2.6.0)
 
 PLATFORMS
-  arm64-darwin-21
-  x86_64-linux
+  ruby
 
 DEPENDENCIES
   activemodel (~> 6.1, < 8)

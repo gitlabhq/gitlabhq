@@ -37,6 +37,10 @@
 
     &.class_ {
       color: var(--color-hljs-class);
+
+      &.inherited__ {
+        color: var(--color-hljs-variable);
+      }
     }
 
     &.function_ {

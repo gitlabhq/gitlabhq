@@ -209,6 +209,7 @@ export default {
             :textarea-value="timelineText"
             :restricted-tool-bar-items="$options.restrictedToolBarItems"
             markdown-docs-path=""
+            :enable-preview="false"
             class="bordered-box gl-mt-0"
           >
             <template #textarea>
