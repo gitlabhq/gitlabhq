@@ -204,6 +204,7 @@ RSpec.configure do |config|
   config.include SnowplowHelpers
   config.include RenderedHelpers
   config.include RSpec::Benchmark::Matchers, type: :benchmark
+  config.include DetailedErrorHelpers
 
   include StubFeatureFlags
   include StubSnowplow

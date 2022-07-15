@@ -1,0 +1,4 @@
+- if Feature.enabled?(:incident_resource_links_widget, @project) && can?(current_user, :read_issuable_resource_link, @issue)
+  .js-linked-resources-root{ data: { issuable_id: @issue.id,
+    can_add_resource_links: "#{can?(current_user, :admin_issuable_resource_link, @issue)}",
+    help_path: help_page_path('user/project/issues/related_issues')} }

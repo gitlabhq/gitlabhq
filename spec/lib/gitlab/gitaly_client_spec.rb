@@ -545,4 +545,44 @@ RSpec.describe Gitlab::GitalyClient do
       end
     end
   end
+
+  describe '.decode_detailed_error' do
+    let(:detailed_error) do
+      new_detailed_error(GRPC::Core::StatusCodes::INVALID_ARGUMENT,
+                         "error message",
+                         Gitaly::InvalidRefFormatError.new)
+    end
+
+    let(:error_without_details) do
+      error_code = GRPC::Core::StatusCodes::INVALID_ARGUMENT
+      error_message = "error message"
+
+      status_error = Google::Rpc::Status.new(
+        code: error_code,
+        message: error_message,
+        details: nil
+      )
+
+      GRPC::BadStatus.new(
+        error_code,
+        error_message,
+        { "grpc-status-details-bin" => Google::Rpc::Status.encode(status_error) })
+    end
+
+    context 'decodes a structured error' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:error, :result) do
+        detailed_error | Gitaly::InvalidRefFormatError.new
+        error_without_details | nil
+        StandardError.new | nil
+      end
+
+      with_them do
+        it 'returns correct detailed error' do
+          expect(described_class.decode_detailed_error(error)).to eq(result)
+        end
+      end
+    end
+  end
 end

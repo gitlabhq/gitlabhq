@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ResourceLinksBlock with defaults renders correct component 1`] = `
+<div
+  class="gl-mt-5"
+  id="resource-links"
+>
+  <div
+    class="card card-slim gl-overflow-hidden"
+  >
+    <div
+      class="card-header gl-display-flex gl-justify-content-space-between panel-empty-heading border-bottom-0"
+    >
+      <h3
+        class="card-title h5 position-relative gl-my-0 gl-display-flex gl-align-items-center gl-h-7"
+      >
+        <gl-link-stub
+          aria-hidden="true"
+          class="anchor position-absolute gl-text-decoration-none"
+          href="#resource-links"
+          id="user-content-resource-links"
+        />
+         Linked resources 
+        <gl-link-stub
+          aria-label="Read more about linked resources"
+          class="gl-display-flex gl-align-items-center gl-ml-2 gl-text-gray-500"
+          data-testid="help-link"
+          href="/help/user/project/issues/linked_resources"
+          target="_blank"
+        >
+          <gl-icon-stub
+            name="question"
+            size="12"
+          />
+        </gl-link-stub>
+         
+        <div
+          class="gl-display-inline-flex"
+        >
+          <div
+            class="gl-display-inline-flex gl-mx-5"
+          >
+            <span
+              class="gl-display-inline-flex gl-align-items-center"
+            >
+              <gl-icon-stub
+                class="gl-mr-2 gl-text-gray-500"
+                name="link"
+                size="16"
+              />
+              
+              0
+            
+            </span>
+          </div>
+           
+          <gl-button-stub
+            aria-label="Add a resource link"
+            buttontextclasses=""
+            category="primary"
+            icon="plus"
+            size="medium"
+            variant="default"
+          />
+        </div>
+      </h3>
+    </div>
+  </div>
+</div>
+`;

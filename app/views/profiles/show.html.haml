@@ -44,20 +44,18 @@
       %p= s_("Profiles|This emoji and message will appear on your profile and throughout the interface.")
     .col-lg-8
       = f.fields_for :status, @user.status do |status_form|
-        - emoji_button = button_tag type: :button,
-          class: 'js-toggle-emoji-menu emoji-menu-toggle-button btn gl-button btn-default has-tooltip',
-          title: s_("Profiles|Add status emoji") do
+        - emoji_button = render Pajamas::ButtonComponent.new(button_options: { title: s_("Profiles|Add status emoji"),
+            class: 'js-toggle-emoji-menu emoji-menu-toggle-button has-tooltip' } ) do
           - if custom_emoji
             = emoji_icon(@user.status.emoji, class: 'gl-mr-0!')
           %span#js-no-emoji-placeholder.no-emoji-placeholder{ class: ('hidden' if custom_emoji) }
             = sprite_icon('slight-smile', css_class: 'award-control-icon-neutral')
             = sprite_icon('smiley', css_class: 'award-control-icon-positive')
             = sprite_icon('smile', css_class: 'award-control-icon-super-positive')
-        - reset_message_button = button_tag type: :button,
-          id: 'js-clear-user-status-button',
-          class: 'clear-user-status btn gl-button btn-default has-tooltip',
-          title: s_("Profiles|Clear status") do
-          = sprite_icon("close")
+        - reset_message_button = render Pajamas::ButtonComponent.new(icon: 'close',
+          button_options: { id: 'js-clear-user-status-button',
+            class: 'has-tooltip',
+            title: s_("Profiles|Clear status") } )
 
         = status_form.hidden_field :emoji, id: 'js-status-emoji-field'
         .form-group.gl-form-group

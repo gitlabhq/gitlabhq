@@ -51,6 +51,20 @@ describe('WorkItemLinks', () => {
     expect(findLinksBody().exists()).toBe(false);
   });
 
+  describe('add link form', () => {
+    it('displays form on click add button and hides form on cancel', async () => {
+      findToggleAddFormButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findAddLinksForm().exists()).toBe(true);
+
+      findAddLinksForm().vm.$emit('cancel');
+      await nextTick();
+
+      expect(findAddLinksForm().exists()).toBe(false);
+    });
+  });
+
   describe('when no child links', () => {
     beforeEach(async () => {
       await createComponent({ response: workItemHierarchyEmptyResponse });
@@ -58,22 +72,6 @@ describe('WorkItemLinks', () => {
 
     it('displays empty state if there are no children', () => {
       expect(findEmptyState().exists()).toBe(true);
-    });
-
-    describe('add link form', () => {
-      it('displays form on click add button and hides form on cancel', async () => {
-        expect(findEmptyState().exists()).toBe(true);
-
-        findToggleAddFormButton().vm.$emit('click');
-        await nextTick();
-
-        expect(findAddLinksForm().exists()).toBe(true);
-
-        findAddLinksForm().vm.$emit('cancel');
-        await nextTick();
-
-        expect(findAddLinksForm().exists()).toBe(false);
-      });
     });
   });
 

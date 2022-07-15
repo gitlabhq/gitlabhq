@@ -58,6 +58,15 @@ export const workItemQueryResponse = {
             iid: '5',
             title: 'Parent title',
           },
+          children: {
+            edges: [
+              {
+                node: {
+                  id: 'gid://gitlab/WorkItem/444',
+                },
+              },
+            ],
+          },
         },
       ],
     },
@@ -83,7 +92,17 @@ export const updateWorkItemMutationResponse = {
           deleteWorkItem: false,
           updateWorkItem: false,
         },
-        widgets: [],
+        widgets: [
+          {
+            children: {
+              edges: [
+                {
+                  node: 'gid://gitlab/WorkItem/444',
+                },
+              ],
+            },
+          },
+        ],
       },
     },
   },
@@ -135,6 +154,15 @@ export const workItemResponseFactory = ({
             id: 'gid://gitlab/Issue/1',
             iid: '5',
             title: 'Parent title',
+          },
+          children: {
+            edges: [
+              {
+                node: {
+                  id: 'gid://gitlab/WorkItem/444',
+                },
+              },
+            ],
           },
         },
       ],
@@ -378,12 +406,14 @@ export const availableWorkItemsResponse = {
             node: {
               id: 'gid://gitlab/WorkItem/458',
               title: 'Task 1',
+              state: 'OPEN',
             },
           },
           {
             node: {
               id: 'gid://gitlab/WorkItem/459',
               title: 'Task 2',
+              state: 'OPEN',
             },
           },
         ],

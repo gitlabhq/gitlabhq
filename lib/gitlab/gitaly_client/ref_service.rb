@@ -132,6 +132,17 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request, timeout: GitalyClient.medium_timeout)
 
         raise Gitlab::Git::Repository::GitError, response.git_error if response.git_error.present?
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :invalid_format
+          raise Gitlab::Git::InvalidRefFormatError, "references have an invalid format: #{detailed_error.invalid_format.refs.join(",")}"
+        when :references_locked
+          raise Gitlab::Git::ReferencesLockedError
+        else
+          raise e
+        end
       end
 
       # Limit: 0 implies no limit, thus all tag names will be returned

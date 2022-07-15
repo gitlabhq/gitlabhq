@@ -23,7 +23,6 @@ import (
 	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/rejectmethods"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
@@ -183,19 +182,15 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 	defer u.mu.RUnlock()
 
 	if u.geoProxyBackend.String() == "" {
-		log.WithRequest(r).Debug("Geo Proxy: Not a Geo proxy")
 		return nil
 	}
 
 	// Some routes are safe to serve from this GitLab instance
 	for _, ro := range u.geoLocalRoutes {
 		if ro.isMatch(cleanedPath, r) {
-			log.WithRequest(r).Debug("Geo Proxy: Handle this request locally")
 			return &ro
 		}
 	}
-
-	log.WithRequest(r).WithFields(log.Fields{"geoProxyBackend": u.geoProxyBackend}).Debug("Geo Proxy: Forward this request")
 
 	if cleanedPath == "/-/cable" {
 		return &u.geoProxyCableRoute

@@ -258,13 +258,54 @@ RSpec.describe Gitlab::GitalyClient::RefService do
   describe '#delete_refs' do
     let(:prefixes) { %w(refs/heads refs/keep-around) }
 
+    subject(:delete_refs) { client.delete_refs(except_with_prefixes: prefixes) }
+
     it 'sends a delete_refs message' do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:delete_refs)
         .with(gitaly_request_with_params(except_with_prefix: prefixes), kind_of(Hash))
         .and_return(double('delete_refs_response', git_error: ""))
 
-      client.delete_refs(except_with_prefixes: prefixes)
+      delete_refs
+    end
+
+    context 'with a references locked error' do
+      let(:references_locked_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          "error message",
+          Gitaly::DeleteRefsError.new(references_locked: Gitaly::ReferencesLockedError.new))
+      end
+
+      it 'raises ReferencesLockedError' do
+        expect_any_instance_of(Gitaly::RefService::Stub).to receive(:delete_refs)
+          .with(gitaly_request_with_params(except_with_prefix: prefixes), kind_of(Hash))
+          .and_raise(references_locked_error)
+
+        expect { delete_refs }.to raise_error(Gitlab::Git::ReferencesLockedError)
+      end
+    end
+
+    context 'with a invalid format error' do
+      let(:invalid_refs) {['\invali.\d/1', '\.invali/d/2']}
+      let(:invalid_reference_format_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::INVALID_ARGUMENT,
+          "error message",
+          Gitaly::DeleteRefsError.new(invalid_format: Gitaly::InvalidRefFormatError.new(refs: invalid_refs)))
+      end
+
+      it 'raises InvalidRefFormatError' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:delete_refs)
+          .with(gitaly_request_with_params(except_with_prefix: prefixes), kind_of(Hash))
+          .and_raise(invalid_reference_format_error)
+
+        expect { delete_refs }.to raise_error do |error|
+          expect(error).to be_a(Gitlab::Git::InvalidRefFormatError)
+          expect(error.message).to eq("references have an invalid format: #{invalid_refs.join(",")}")
+        end
+      end
     end
   end
 

@@ -73,7 +73,7 @@ class PipelineTestReportBuilder
   def test_report_for_build(pipeline, build_id)
     fetch("#{pipeline['web_url']}/tests/suite.json?build_ids[]=#{build_id}")
   rescue Net::HTTPServerException => e
-    raise e unless e.response.code == 404
+    raise e unless e.response.code.to_i == 404
 
     puts "Artifacts not found. They may have expired. Skipping this build."
   end

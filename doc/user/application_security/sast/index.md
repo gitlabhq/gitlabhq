@@ -147,8 +147,8 @@ The default scanner images are build off a base Alpine image for size and mainta
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
 
-GitLab offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
-versions of the images that are FIPS-enabled. To use the FIPS-enabled images, you can either:
+GitLab offers an image version, based on the [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image) base image,
+that uses a FIPS 140-validated cryptographic module. To use the FIPS-enabled image, you can either:
 
 - Set the `SAST_IMAGE_SUFFIX` to `-fips`.
 - Add the `-fips` extension to the default image name.
@@ -162,6 +162,10 @@ variables:
 include:
   - template: Security/SAST.gitlab-ci.yml
 ```
+
+A FIPS-compliant image is only available for the Semgrep-based analyzer.
+
+To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers).
 
 ### Making SAST analyzers available to all GitLab tiers
 

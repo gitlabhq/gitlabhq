@@ -236,6 +236,11 @@ command. For example:
 /chatops run feature list --staging
 ```
 
+## Toggle a feature flag
+
+See [rolling out changes](controls.md#rolling-out-changes) for more information about toggling
+feature flags.
+
 ## Delete a feature flag
 
 See [cleaning up feature flags](controls.md#cleaning-up) for more information about

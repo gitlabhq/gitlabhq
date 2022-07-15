@@ -2147,6 +2147,9 @@ msgstr ""
 msgid "Add a related issue"
 msgstr ""
 
+msgid "Add a resource link"
+msgstr ""
+
 msgid "Add a suffix to Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -23453,6 +23456,9 @@ msgstr ""
 msgid "Linked issues"
 msgstr ""
 
+msgid "Linked resources"
+msgstr ""
+
 msgid "LinkedIn"
 msgstr ""
 
@@ -31751,6 +31757,9 @@ msgid "Read more"
 msgstr ""
 
 msgid "Read more about GitLab at %{link_to_promo}."
+msgstr ""
+
+msgid "Read more about linked resources"
 msgstr ""
 
 msgid "Read more about project permissions %{help_link_open}here%{help_link_close}"
@@ -43828,16 +43837,16 @@ msgstr ""
 msgid "Work in progress Limit"
 msgstr ""
 
-msgid "WorkItem|Add"
-msgstr ""
-
-msgid "WorkItem|Add a child"
+msgid "WorkItem|Add a task"
 msgstr ""
 
 msgid "WorkItem|Add assignee"
 msgstr ""
 
 msgid "WorkItem|Add assignees"
+msgstr ""
+
+msgid "WorkItem|Add task"
 msgstr ""
 
 msgid "WorkItem|Are you sure you want to cancel editing?"
@@ -43894,6 +43903,9 @@ msgid "WorkItem|Something went wrong when fetching the work item. Please try aga
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
+msgstr ""
+
+msgid "WorkItem|Something went wrong when trying to add a child. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the work item. Please try again."

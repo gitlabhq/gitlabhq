@@ -469,6 +469,11 @@ clone, and compares the hash with the value the **primary** site
 calculated. If there is a mismatch, Geo will mark this as a mismatch
 and the administrator can see this in the [Geo Admin Area](../user/admin_area/geo_sites.md).
 
+## Geo proxying
+
+Geo secondaries can proxy web requests to the primary.
+Read more on the [Geo proxying (development) page](geo/proxying.md).
+
 ## Glossary
 
 ### Primary site

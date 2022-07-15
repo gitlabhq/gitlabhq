@@ -102,7 +102,7 @@ module Gitlab
           raise Gitlab::Git::PreReceiveError, pre_receive_error
         end
       rescue GRPC::BadStatus => e
-        detailed_error = decode_detailed_error(e)
+        detailed_error = GitalyClient.decode_detailed_error(e)
 
         case detailed_error&.error
         when :custom_hook
@@ -166,7 +166,7 @@ module Gitlab
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
 
       rescue GRPC::BadStatus => e
-        detailed_error = decode_detailed_error(e)
+        detailed_error = GitalyClient.decode_detailed_error(e)
 
         case detailed_error&.error
         when :access_check
@@ -277,7 +277,7 @@ module Gitlab
 
         rebase_sha
       rescue GRPC::BadStatus => e
-        detailed_error = decode_detailed_error(e)
+        detailed_error = GitalyClient.decode_detailed_error(e)
 
         case detailed_error&.error
         when :access_check
@@ -314,7 +314,7 @@ module Gitlab
 
         response.squash_sha
       rescue GRPC::BadStatus => e
-        detailed_error = decode_detailed_error(e)
+        detailed_error = GitalyClient.decode_detailed_error(e)
 
         case detailed_error&.error
         when :resolve_revision, :rebase_conflict
@@ -474,7 +474,7 @@ module Gitlab
 
         handle_cherry_pick_or_revert_response(response)
       rescue GRPC::BadStatus => e
-        detailed_error = decode_detailed_error(e)
+        detailed_error = GitalyClient.decode_detailed_error(e)
 
         case detailed_error&.error
         when :access_check
@@ -536,21 +536,6 @@ module Gitlab
         )
       rescue RangeError
         raise ArgumentError, "Unknown action '#{action[:action]}'"
-      end
-
-      def decode_detailed_error(err)
-        # details could have more than one in theory, but we only have one to worry about for now.
-        detailed_error = err.to_rpc_status&.details&.first
-
-        return unless detailed_error.present?
-
-        prefix = %r{type\.googleapis\.com\/gitaly\.(?<error_type>.+)}
-        error_type = prefix.match(detailed_error.type_url)[:error_type]
-
-        Gitaly.const_get(error_type, false).decode(detailed_error.value)
-      rescue NameError, NoMethodError
-        # Error Class might not be known to ruby yet
-        nil
       end
 
       def custom_hook_error_message(custom_hook_error)
