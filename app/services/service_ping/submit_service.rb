@@ -52,12 +52,21 @@ module ServicePing
         ServicePing::DevopsReport.new(response).execute
       end
 
-      submit_payload({ metadata: { metrics: metrics_collection_time(usage_data) } }, path: METADATA_PATH)
+      submit_payload(metadata(usage_data), path: METADATA_PATH)
     end
 
     private
 
     attr_reader :payload, :skip_db_write
+
+    def metadata(service_ping_payload)
+      {
+        metadata: {
+          uuid: service_ping_payload[:uuid],
+          metrics: metrics_collection_time(service_ping_payload)
+        }
+      }
+    end
 
     def metrics_collection_time(payload, parents = [])
       return [] unless payload.is_a?(Hash)

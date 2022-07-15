@@ -135,7 +135,7 @@ module QA
         end
       end
 
-      context 'duplication setting' do
+      context 'duplication setting', quarantine: { type: :stale, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/365150' } do
         before do
           package_project.group.visit!
 

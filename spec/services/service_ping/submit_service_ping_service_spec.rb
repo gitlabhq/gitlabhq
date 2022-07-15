@@ -385,24 +385,26 @@ RSpec.describe ServicePing::SubmitService do
     let(:metric_double) { instance_double(Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator, duration: 123) }
     let(:payload) do
       {
-        metric_a: metric_double,
-        metric_group: {
-          metric_b: metric_double
-        },
-        metric_without_timing: "value",
-        recorded_at: Time.current
-      }
+        uuid: 'uuid',
+          metric_a: metric_double,
+          metric_group: {
+            metric_b: metric_double
+          },
+          metric_without_timing: "value",
+          recorded_at: Time.current
+        }
     end
 
     let(:metadata_payload) do
       {
         metadata: {
-          metrics: [
-            { name: 'metric_a', time_elapsed: 123 },
-            { name: 'metric_group.metric_b', time_elapsed: 123 }
-          ]
+          uuid: 'uuid',
+            metrics: [
+              { name: 'metric_a', time_elapsed: 123 },
+              { name: 'metric_group.metric_b', time_elapsed: 123 }
+            ]
+          }
         }
-      }
     end
 
     it 'submits metadata' do

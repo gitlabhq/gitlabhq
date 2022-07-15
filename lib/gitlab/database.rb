@@ -286,7 +286,7 @@ module Gitlab
       extend ActiveSupport::Concern
 
       class_methods do
-        # A patch over ActiveRecord::Base.transaction that provides
+        # A patch over ApplicationRecord.transaction that provides
         # observability into transactional methods.
         def transaction(**options, &block)
           transaction_type = get_transaction_type(connection.transaction_open?, options[:requires_new])

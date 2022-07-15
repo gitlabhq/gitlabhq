@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# TODO: remove this file together with FF https://gitlab.com/gitlab-org/gitlab/-/issues/366244
 RSpec.describe 'Developer updates tag' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
@@ -10,6 +11,7 @@ RSpec.describe 'Developer updates tag' do
   before do
     project.add_developer(user)
     sign_in(user)
+    stub_feature_flags(edit_tag_release_notes_via_release_page: false)
     visit project_tags_path(project)
   end
 

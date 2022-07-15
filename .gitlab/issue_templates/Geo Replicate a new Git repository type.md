@@ -64,7 +64,7 @@ For more information, see the [Enable Geo migrations to use Migration[2.0]](http
     disable_ddl_transaction!
 
     def up
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         create_table :cool_widget_registry, id: :bigserial, force: :cascade do |t|
           t.bigint :cool_widget_id, null: false
           t.datetime_with_timezone :created_at, null: false

@@ -24,7 +24,7 @@ module Gitlab
 
         # This event is published from ActiveRecordBaseTransactionMetrics and
         # used to record a database transaction duration when calling
-        # ActiveRecord::Base.transaction {} block.
+        # ApplicationRecord.transaction {} block.
         def transaction(event)
           observe(:gitlab_database_transaction_seconds, event) do
             buckets TRANSACTION_DURATION_BUCKET

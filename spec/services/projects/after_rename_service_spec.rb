@@ -188,6 +188,22 @@ RSpec.describe Projects::AfterRenameService do
         )
       end
     end
+
+    context 'EventStore' do
+      let(:project) { create(:project, :repository, skip_disk_validation: true) }
+
+      it 'publishes a ProjectPathChangedEvent' do
+        expect { service_execute }
+          .to publish_event(Projects::ProjectPathChangedEvent)
+          .with(
+            project_id: project.id,
+            namespace_id: project.namespace_id,
+            root_namespace_id: project.root_namespace.id,
+            old_path: full_path_before_rename,
+            new_path: full_path_after_rename
+          )
+      end
+    end
   end
 
   def service_execute

@@ -240,15 +240,17 @@ The generator takes a list of key paths and 3 options as arguments. It creates m
 
 ```shell
 bundle exec rails generate gitlab:usage_metric_definition counts.issues --dir=7d --class_name=CountIssues
-create  config/metrics/counts_7d/issues.yml
+// Creates 1 file
+// create  config/metrics/counts_7d/issues.yml
 ```
 
 **Multiple metrics example**
 
 ```shell
 bundle exec rails generate gitlab:usage_metric_definition counts.issues counts.users --dir=7d --class_name=CountUsersCreatingIssues
-create  config/metrics/counts_7d/issues.yml
-create  config/metrics/counts_7d/users.yml
+// Creates 2 files
+// create  config/metrics/counts_7d/issues.yml
+// create  config/metrics/counts_7d/users.yml
 ```
 
 NOTE:
@@ -256,7 +258,8 @@ To create a metric definition used in EE, add the `--ee` flag.
 
 ```shell
 bundle exec rails generate gitlab:usage_metric_definition counts.issues --ee --dir=7d --class_name=CountUsersCreatingIssues
-create  ee/config/metrics/counts_7d/issues.yml
+// Creates 1 file
+// create  ee/config/metrics/counts_7d/issues.yml
 ```
 
 ### Metrics added dynamic to Service Ping payload
@@ -271,26 +274,29 @@ The generator takes `category` and `events` arguments, as the root key is `redis
 
 ```shell
 bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues count_users_closing_issues
-create  config/metrics/counts_7d/count_users_closing_issues_weekly.yml
-create  config/metrics/counts_28d/count_users_closing_issues_monthly.yml
+// Creates 2 files
+// create  config/metrics/counts_7d/count_users_closing_issues_weekly.yml
+// create  config/metrics/counts_28d/count_users_closing_issues_monthly.yml
 ```
 
 **Multiple metrics example**
 
 ```shell
 bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues count_users_closing_issues count_users_reopening_issues
-create  config/metrics/counts_7d/count_users_closing_issues_weekly.yml
-create  config/metrics/counts_28d/count_users_closing_issues_monthly.yml
-create  config/metrics/counts_7d/count_users_reopening_issues_weekly.yml
-create  config/metrics/counts_28d/count_users_reopening_issues_monthly.yml
+// Creates 4 files
+// create  config/metrics/counts_7d/count_users_closing_issues_weekly.yml
+// create  config/metrics/counts_28d/count_users_closing_issues_monthly.yml
+// create  config/metrics/counts_7d/count_users_reopening_issues_weekly.yml
+// create  config/metrics/counts_28d/count_users_reopening_issues_monthly.yml
 ```
 
 To create a metric definition used in EE, add the `--ee` flag.
 
 ```shell
 bundle exec rails generate gitlab:usage_metric_definition:redis_hll issues users_closing_issues --ee
-create  config/metrics/counts_7d/i_closed_weekly.yml
-create  config/metrics/counts_28d/i_closed_monthly.yml
+// Creates 2 files
+// create  config/metrics/counts_7d/i_closed_weekly.yml
+// create  config/metrics/counts_28d/i_closed_monthly.yml
 ```
 
 ## Metrics Dictionary

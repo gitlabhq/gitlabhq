@@ -38045,6 +38045,9 @@ msgstr ""
 msgid "TagsPage|Cancel, keep tag"
 msgstr ""
 
+msgid "TagsPage|Create release"
+msgstr ""
+
 msgid "TagsPage|Create tag"
 msgstr ""
 
@@ -38061,6 +38064,9 @@ msgid "TagsPage|Delete tag. Are you ABSOLUTELY SURE?"
 msgstr ""
 
 msgid "TagsPage|Deleting the %{strongStart}%{tagName}%{strongEnd} tag cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "TagsPage|Edit release"
 msgstr ""
 
 msgid "TagsPage|Edit release notes"
