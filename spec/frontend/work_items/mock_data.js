@@ -50,6 +50,15 @@ export const workItemQueryResponse = {
             nodes: mockAssignees,
           },
         },
+        {
+          __typename: 'WorkItemWidgetHierarchy',
+          type: 'HIERARCHY',
+          parent: {
+            id: 'gid://gitlab/Issue/1',
+            iid: '5',
+            title: 'Parent title',
+          },
+        },
       ],
     },
   },
@@ -119,6 +128,15 @@ export const workItemResponseFactory = ({
               },
             }
           : { type: 'MOCK TYPE' },
+        {
+          __typename: 'WorkItemWidgetHierarchy',
+          type: 'HIERARCHY',
+          parent: {
+            id: 'gid://gitlab/Issue/1',
+            iid: '5',
+            title: 'Parent title',
+          },
+        },
       ],
     },
   },

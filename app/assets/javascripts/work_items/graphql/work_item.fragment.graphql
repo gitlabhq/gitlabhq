@@ -28,5 +28,13 @@ fragment WorkItem on WorkItem {
         }
       }
     }
+    ... on WorkItemWidgetHierarchy {
+      type
+      parent {
+        id
+        iid
+        title
+      }
+    }
   }
 }

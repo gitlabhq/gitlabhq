@@ -1,4 +1,4 @@
-import { GlAlert, GlButton, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -27,7 +27,6 @@ describe('WorkItemDetail component', () => {
   const initialSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findCloseButton = () => wrapper.findComponent(GlButton);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findWorkItemState = () => wrapper.findComponent(WorkItemState);
@@ -35,6 +34,8 @@ describe('WorkItemDetail component', () => {
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemWeight = () => wrapper.findComponent(WorkItemWeight);
+  const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
+  const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
 
   const createComponent = ({
     isModal = false,
@@ -145,6 +146,22 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findWorkItemDescription().exists()).toBe(true);
+    });
+  });
+
+  describe('secondary breadcrumbs', () => {
+    it('does not show secondary breadcrumbs if there is no parent', () => {
+      createComponent();
+
+      expect(findParent().exists()).toBe(false);
+    });
+
+    it('shows secondary breadcrumbs if there is a parent', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findParent().exists()).toBe(true);
     });
   });
 

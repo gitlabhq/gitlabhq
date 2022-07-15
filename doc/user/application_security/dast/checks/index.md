@@ -24,6 +24,8 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [200.1](200.1.md) | Exposure of sensitive information to an unauthorized actor (private IP address) | Low | Passive |
 | [209.1](209.1.md) | Generation of error message containing sensitive information | Low | Passive |
 | [209.2](209.2.md) | Generation of database error message containing sensitive information | Low | Passive |
+| [287.1](287.1.md) | Insecure authentication over HTTP (Basic Authentication) | Medium | Passive |
+| [287.2](287.2.md) | Insecure authentication over HTTP (Digest Authentication) | Low | Passive |
 | [319.1](319.1.md) | Mixed Content | Info | Passive |
 | [352.1](352.1.md) | Absence of anti-CSRF tokens | Medium | Passive |
 | [359.1](359.1.md) | Exposure of Private Personal Information (PII) to an unauthorized actor (credit card) | Medium | Passive |

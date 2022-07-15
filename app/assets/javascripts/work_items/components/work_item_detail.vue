@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader, GlIcon, GlButton } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   i18n,
@@ -7,6 +7,7 @@ import {
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_HIERARCHY,
 } from '../constants';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
@@ -24,6 +25,7 @@ export default {
     GlAlert,
     GlButton,
     GlSkeletonLoader,
+    GlIcon,
     WorkItemAssignees,
     WorkItemActions,
     WorkItemDescription,
@@ -108,6 +110,15 @@ export default {
     workItemWeight() {
       return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
     },
+    workItemHierarchy() {
+      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
+    },
+    parentWorkItem() {
+      return this.workItemHierarchy?.parent;
+    },
+    parentUrl() {
+      return `../../issues/${this.parentWorkItem?.iid}`;
+    },
   },
 };
 </script>
@@ -126,7 +137,22 @@ export default {
     </div>
     <template v-else>
       <div class="gl-display-flex gl-align-items-center">
-        <span class="gl-font-weight-bold gl-text-secondary gl-mr-auto">{{ workItemType }}</span>
+        <ul
+          v-if="parentWorkItem"
+          class="list-unstyled gl-display-flex gl-mr-auto"
+          data-testid="work-item-parent"
+        >
+          <li class="gl-ml-n4">
+            <gl-button icon="issues" category="tertiary" :href="parentUrl">{{
+              parentWorkItem.title
+            }}</gl-button>
+            <gl-icon name="chevron-right" :size="16" />
+          </li>
+          <li class="gl-px-4 gl-py-3 gl-line-height-0">
+            <gl-icon name="task-done" />
+            {{ workItemType }}
+          </li>
+        </ul>
         <work-item-actions
           :work-item-id="workItem.id"
           :can-delete="canDelete"
@@ -136,6 +162,7 @@ export default {
         <gl-button
           v-if="isModal"
           category="tertiary"
+          data-testid="work-item-close"
           icon="close"
           :aria-label="__('Close')"
           @click="$emit('close')"
