@@ -5358,6 +5358,9 @@ msgstr ""
 msgid "AuditStreams|Value"
 msgstr ""
 
+msgid "AuditStreams|Verification token"
+msgstr ""
+
 msgid "Aug"
 msgstr ""
 
@@ -16213,6 +16216,9 @@ msgid "Feb"
 msgstr ""
 
 msgid "February"
+msgstr ""
+
+msgid "Feedback issue"
 msgstr ""
 
 msgid "Fetch and check out this merge request's feature branch:"
@@ -28090,6 +28096,9 @@ msgstr ""
 msgid "Perform common operations on GitLab project"
 msgstr ""
 
+msgid "Performance insights"
+msgstr ""
+
 msgid "Performance optimization"
 msgstr ""
 
@@ -28837,7 +28846,16 @@ msgstr ""
 msgid "Pipeline|Failed"
 msgstr ""
 
+msgid "Pipeline|Five slowest jobs"
+msgstr ""
+
 msgid "Pipeline|In progress"
+msgstr ""
+
+msgid "Pipeline|Last executed job"
+msgstr ""
+
+msgid "Pipeline|Longest queued job"
 msgstr ""
 
 msgid "Pipeline|Manual"
@@ -28852,10 +28870,16 @@ msgstr ""
 msgid "Pipeline|Merged result pipeline"
 msgstr ""
 
+msgid "Pipeline|Only able to show first 100 results"
+msgstr ""
+
 msgid "Pipeline|Passed"
 msgstr ""
 
 msgid "Pipeline|Pending"
+msgstr ""
+
+msgid "Pipeline|Performance insights"
 msgstr ""
 
 msgid "Pipeline|Pipeline"
@@ -28912,6 +28936,12 @@ msgstr ""
 msgid "Pipeline|Test coverage"
 msgstr ""
 
+msgid "Pipeline|The last executed job is the last job to start in the pipeline."
+msgstr ""
+
+msgid "Pipeline|The longest queued job is the job that spent the longest time in the pending state, waiting to be picked up by a Runner"
+msgstr ""
+
 msgid "Pipeline|This change will decrease the overall test coverage if merged."
 msgstr ""
 
@@ -28937,6 +28967,9 @@ msgid "Pipeline|Variables"
 msgstr ""
 
 msgid "Pipeline|View commit"
+msgstr ""
+
+msgid "Pipeline|View dependency"
 msgstr ""
 
 msgid "Pipeline|View pipeline"
@@ -43870,7 +43903,7 @@ msgstr ""
 msgid "WorkItem|Are you sure you want to cancel editing?"
 msgstr ""
 
-msgid "WorkItem|Are you sure you want to delete the work item? This action cannot be reversed."
+msgid "WorkItem|Are you sure you want to delete the task? This action cannot be reversed."
 msgstr ""
 
 msgid "WorkItem|Assignee"
@@ -43896,7 +43929,7 @@ msgstr ""
 msgid "WorkItem|Create work item"
 msgstr ""
 
-msgid "WorkItem|Delete work item"
+msgid "WorkItem|Delete task"
 msgstr ""
 
 msgid "WorkItem|Expand child items"
@@ -43917,7 +43950,13 @@ msgstr ""
 msgid "WorkItem|Select type"
 msgstr ""
 
+msgid "WorkItem|Something went wrong when creating a task. Please try again"
+msgstr ""
+
 msgid "WorkItem|Something went wrong when creating a work item. Please try again"
+msgstr ""
+
+msgid "WorkItem|Something went wrong when deleting the task. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when deleting the work item. Please try again."
@@ -43933,6 +43972,9 @@ msgid "WorkItem|Something went wrong when trying to add a child. Please try agai
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the work item. Please try again."
+msgstr ""
+
+msgid "WorkItem|Task deleted"
 msgstr ""
 
 msgid "WorkItem|Type"

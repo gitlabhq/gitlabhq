@@ -66,7 +66,7 @@ A burndown chart is available for every project or group milestone that has been
 date** and a **due date**.
 
 NOTE:
-You're able to [promote project](index.md#promoting-project-milestones-to-group-milestones) to group milestones and still see the **burndown chart** for them, respecting license limitations.
+You're able to [promote project](index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 

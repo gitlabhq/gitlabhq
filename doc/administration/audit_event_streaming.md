@@ -269,6 +269,17 @@ token is generated when the event destination is created and cannot be changed.
 Each streamed event contains a random alphanumeric identifier for the `X-Gitlab-Event-Streaming-Token` HTTP header that can be verified against
 the destination's value when [listing streaming destinations](#list-streaming-destinations).
 
+### Use the GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360814) in GitLab 15.2.
+
+Users with at least the Owner role for a group can list event streaming destinations and see the verification tokens:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Audit events**.
+1. On the main area, select **Streams**.
+1. View the verification token on the right side of each item.
+
 ## Audit event streaming on Git operations
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `audit_event_streaming_git_operations`. Disabled by default.

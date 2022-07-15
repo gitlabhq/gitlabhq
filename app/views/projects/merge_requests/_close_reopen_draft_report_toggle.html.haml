@@ -26,7 +26,7 @@
                 .gl-new-dropdown-item-text-wrapper
                   = _('Close')
                   = display_issuable_type
-          - elsif !@merge_request.source_project_missing?
+          - elsif !@merge_request.source_project_missing? && @merge_request.closed?
             %li.gl-new-dropdown-item
               = link_to reopen_issuable_path(@merge_request), method: :put, class: 'dropdown-item' do
                 .gl-new-dropdown-item-text-wrapper
@@ -34,7 +34,7 @@
                   = display_issuable_type
 
           - unless current_controller?('conflicts')
-            - if current_user && moved_mr_sidebar_enabled?
+            - if current_user && moved_mr_sidebar_enabled? && !@merge_request.merged?
               %li.gl-new-dropdown-divider
                 %hr.dropdown-divider
               %li.gl-new-dropdown-item.js-sidebar-subscriptions-entry-point

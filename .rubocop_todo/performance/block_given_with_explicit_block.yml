@@ -1,9 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Performance/BlockGivenWithExplicitBlock:
-  # Offense count: 53
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
     - 'app/controllers/concerns/redis_tracking.rb'
     - 'app/helpers/badges_helper.rb'
@@ -26,11 +23,14 @@ Performance/BlockGivenWithExplicitBlock:
     - 'lib/gitlab/metrics/methods/metric_options.rb'
     - 'lib/gitlab/null_request_store.rb'
     - 'lib/gitlab/quick_actions/dsl.rb'
+    - 'lib/gitlab/redis/multi_store.rb'
     - 'lib/gitlab/safe_request_loader.rb'
     - 'lib/gitlab/search/query.rb'
     - 'lib/gitlab/string_placeholder_replacer.rb'
     - 'lib/gitlab/terraform/state_migration_helper.rb'
+    - 'lib/gitlab/usage/metrics/instrumentations/base_metric.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/database_metric.rb'
+    - 'lib/gitlab/usage/metrics/instrumentations/numbers_metric.rb'
     - 'lib/gitlab/usage_data_queries.rb'
     - 'lib/gitlab/utils/usage_data.rb'
     - 'qa/qa/page/view.rb'
@@ -38,5 +38,6 @@ Performance/BlockGivenWithExplicitBlock:
     - 'spec/lib/gitlab/slash_commands/deploy_spec.rb'
     - 'spec/support/helpers/graphql_helpers.rb'
     - 'spec/support/helpers/query_recorder.rb'
+    - 'spec/support/helpers/stub_method_calls.rb'
     - 'tooling/lib/tooling/helm3_client.rb'
     - 'tooling/lib/tooling/test_map_packer.rb'

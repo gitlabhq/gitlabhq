@@ -332,7 +332,7 @@ describe('Description component', () => {
         findWorkItemDetailModal().vm.$emit('workItemDeleted', newDesc);
 
         expect(wrapper.emitted('updateDescription')).toEqual([[newDesc]]);
-        expect($toast.show).toHaveBeenCalledWith('Work item deleted');
+        expect($toast.show).toHaveBeenCalledWith('Task deleted');
       });
     });
 

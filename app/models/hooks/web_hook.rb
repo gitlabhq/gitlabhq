@@ -3,6 +3,8 @@
 class WebHook < ApplicationRecord
   include Sortable
 
+  InterpolationError = Class.new(StandardError)
+
   MAX_FAILURES = 100
   FAILURE_THRESHOLD = 3 # three strikes
   INITIAL_BACKOFF = 10.minutes
@@ -36,6 +38,7 @@ class WebHook < ApplicationRecord
   validates :token, format: { without: /\n/ }
   validates :push_events_branch_filter, branch_filter: true
   validates :url_variables, json_schema: { filename: 'web_hooks_url_variables' }
+  validate :no_missing_url_variables
 
   after_initialize :initialize_url_variables
 
@@ -164,6 +167,20 @@ class WebHook < ApplicationRecord
     super(options)
   end
 
+  # See app/validators/json_schemas/web_hooks_url_variables.json
+  VARIABLE_REFERENCE_RE = /\{([A-Za-z_][A-Za-z0-9_]+)\}/.freeze
+
+  def interpolated_url
+    return url unless url.include?('{')
+
+    vars = url_variables
+    url.gsub(VARIABLE_REFERENCE_RE) do
+      vars.fetch(_1.delete_prefix('{').delete_suffix('}'))
+    end
+  rescue KeyError => e
+    raise InterpolationError, "Invalid URL template. Missing key #{e.key}"
+  end
+
   private
 
   def web_hooks_disable_failed?
@@ -176,5 +193,18 @@ class WebHook < ApplicationRecord
 
   def rate_limiter
     @rate_limiter ||= Gitlab::WebHooks::RateLimiter.new(self)
+  end
+
+  def no_missing_url_variables
+    return if url.nil?
+
+    variable_names = url_variables.keys
+    used_variables = url.scan(VARIABLE_REFERENCE_RE).map(&:first)
+
+    missing = used_variables - variable_names
+
+    return if missing.empty?
+
+    errors.add(:url, "Invalid URL template. Missing keys: #{missing}")
   end
 end

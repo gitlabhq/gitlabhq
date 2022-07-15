@@ -10,7 +10,7 @@ import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.
 import ItemTitle from '../components/item_title.vue';
 
 export default {
-  createErrorText: s__('WorkItem|Something went wrong when creating a work item. Please try again'),
+  createErrorText: s__('WorkItem|Something went wrong when creating a task. Please try again'),
   fetchTypesErrorText: s__(
     'WorkItem|Something went wrong when fetching work item types. Please try again',
   ),

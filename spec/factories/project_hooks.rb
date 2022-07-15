@@ -7,7 +7,7 @@ FactoryBot.define do
     project
 
     trait :token do
-      token { SecureRandom.hex(10) }
+      token { generate(:token) }
     end
 
     trait :all_events_enabled do

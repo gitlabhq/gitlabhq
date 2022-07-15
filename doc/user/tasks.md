@@ -49,4 +49,4 @@ To edit a task:
 To delete a task:
 
 1. In the issue description, select the task.
-1. From the options menu (**{ellipsis_v}**), select **Delete work item**.
+1. From the options menu (**{ellipsis_v}**), select **Delete task**.

@@ -80,7 +80,7 @@ export default {
         .catch((e) => {
           this.error =
             e.message ||
-            s__('WorkItem|Something went wrong when deleting the work item. Please try again.');
+            s__('WorkItem|Something went wrong when deleting the task. Please try again.');
         });
     },
     closeModal() {

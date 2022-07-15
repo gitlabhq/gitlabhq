@@ -1,6 +1,7 @@
 -# We currently only support `alert`, `notice`, `success`, 'toast', and 'raw'
 - icons = {'alert' => 'error', 'notice' => 'information-o', 'success' => 'check-circle'}
 - type_to_variant = {'alert' => 'danger', 'notice' => 'info', 'success' => 'success'}
+- closable = %w[alert notice success]
 .flash-container.flash-container-page.sticky{ data: { qa_selector: 'flash_container' } }
   - flash.each do |key, value|
     - if key == 'toast' && value
@@ -13,6 +14,6 @@
       %div{ class: "flash-#{key} mb-2", data: { testid: "alert-#{type_to_variant[key]}" } }
         = sprite_icon(icons[key], css_class: 'align-middle mr-1') unless icons[key].nil?
         %span= value
-        - if %w(alert notice success).include?(key)
+        - if closable.include?(key)
           %div{ class: "close-icon-wrapper js-close-icon" }
             = sprite_icon('close', css_class: 'close-icon gl-vertical-align-baseline!')

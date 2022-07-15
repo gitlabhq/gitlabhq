@@ -20641,8 +20641,10 @@ CREATE TABLE security_findings (
     deduplicated boolean DEFAULT false NOT NULL,
     uuid uuid,
     overridden_uuid uuid,
+    partition_number integer DEFAULT 1 NOT NULL,
     CONSTRAINT check_6c2851a8c9 CHECK ((uuid IS NOT NULL)),
-    CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40))
+    CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40)),
+    CONSTRAINT check_partition_number CHECK ((partition_number = 1))
 );
 
 CREATE SEQUENCE security_findings_id_seq
@@ -20710,7 +20712,8 @@ CREATE TABLE security_scans (
     project_id bigint,
     pipeline_id bigint,
     latest boolean DEFAULT true NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    status smallint DEFAULT 0 NOT NULL,
+    findings_partition_number integer DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE security_scans_id_seq
@@ -28985,6 +28988,8 @@ CREATE INDEX index_on_projects_path ON projects USING btree (path);
 
 CREATE INDEX index_on_routes_lower_path ON routes USING btree (lower((path)::text));
 
+CREATE INDEX index_on_security_findings_uuid_and_id_order_desc ON security_findings USING btree (uuid, id DESC);
+
 CREATE INDEX index_on_users_lower_email ON users USING btree (lower((email)::text));
 
 CREATE INDEX index_on_users_lower_username ON users USING btree (lower((username)::text));
@@ -29152,8 +29157,6 @@ CREATE INDEX index_pages_domains_on_verified_at ON pages_domains USING btree (ve
 CREATE INDEX index_pages_domains_on_verified_at_and_enabled_until ON pages_domains USING btree (verified_at, enabled_until);
 
 CREATE INDEX index_pages_domains_on_wildcard ON pages_domains USING btree (wildcard);
-
-CREATE UNIQUE INDEX index_parent_links_on_work_item_id_and_work_item_parent_id ON work_item_parent_links USING btree (work_item_id, work_item_parent_id);
 
 CREATE INDEX index_partial_ci_builds_on_user_id_name_parser_features ON ci_builds USING btree (user_id, name) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('secret_detection'::character varying)::text])));
 
@@ -30172,6 +30175,8 @@ CREATE INDEX index_wiki_page_meta_on_project_id ON wiki_page_meta USING btree (p
 CREATE UNIQUE INDEX index_wiki_page_slugs_on_slug_and_wiki_page_meta_id ON wiki_page_slugs USING btree (slug, wiki_page_meta_id);
 
 CREATE INDEX index_wiki_page_slugs_on_wiki_page_meta_id ON wiki_page_slugs USING btree (wiki_page_meta_id);
+
+CREATE UNIQUE INDEX index_work_item_parent_links_on_work_item_id ON work_item_parent_links USING btree (work_item_id);
 
 CREATE INDEX index_work_item_parent_links_on_work_item_parent_id ON work_item_parent_links USING btree (work_item_parent_id);
 

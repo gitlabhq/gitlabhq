@@ -221,6 +221,17 @@ export default {
           >
             {{ __('Rebase') }}
           </gl-button>
+          <gl-button
+            v-if="glFeatures.restructuredMrWidget && showRebaseWithoutCi"
+            :loading="isMakingRequest"
+            variant="confirm"
+            size="small"
+            category="secondary"
+            data-testid="rebase-without-ci-button"
+            @click="rebaseWithoutCi"
+          >
+            {{ __('Rebase without pipeline') }}
+          </gl-button>
         </div>
       </div>
     </template>

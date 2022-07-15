@@ -1,8 +1,5 @@
 ---
 Performance/MethodObjectAsBlock:
-  # Offense count: 150
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
     - 'app/controllers/concerns/metrics_dashboard.rb'
     - 'app/controllers/concerns/requires_whitelisted_monitoring_client.rb'
@@ -30,7 +27,6 @@ Performance/MethodObjectAsBlock:
     - 'ee/app/graphql/resolvers/vulnerabilities/scanners_resolver.rb'
     - 'ee/app/services/dashboard/projects/create_service.rb'
     - 'ee/app/services/security/findings/cleanup_service.rb'
-    - 'ee/app/services/security/ingestion/bulk_insertable_task.rb'
     - 'ee/app/services/security/ingestion/ingest_reports_service.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_vulnerability_statistics.rb'
     - 'ee/app/services/security/store_findings_metadata_service.rb'
@@ -38,6 +34,7 @@ Performance/MethodObjectAsBlock:
     - 'ee/lib/ee/container_registry/client.rb'
     - 'ee/lib/ee/gitlab/ci/config_ee.rb'
     - 'ee/lib/ee/gitlab/etag_caching/router/rails.rb'
+    - 'ee/lib/gitlab/ingestion/bulk_insertable_task.rb'
     - 'ee/spec/services/groups/participants_service_spec.rb'
     - 'lib/api/helpers/packages/conan/api_helpers.rb'
     - 'lib/bulk_imports/pipeline.rb'
@@ -80,6 +77,7 @@ Performance/MethodObjectAsBlock:
     - 'lib/gitlab/utils.rb'
     - 'lib/peek/views/detailed_view.rb'
     - 'lib/tasks/gitlab/assets.rake'
+    - 'lib/unnested_in_filters/rewriter.rb'
     - 'qa/qa/specs/features/browser_ui/2_plan/email/trigger_email_notification_spec.rb'
     - 'rubocop/cop/avoid_return_from_blocks.rb'
     - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'
@@ -95,5 +93,6 @@ Performance/MethodObjectAsBlock:
     - 'spec/support/helpers/migrations_helpers.rb'
     - 'spec/support/shared_examples/models/active_record_enum_shared_examples.rb'
     - 'spec/support_specs/helpers/stub_feature_flags_spec.rb'
+    - 'tooling/lib/tooling/find_codeowners.rb'
     - 'tooling/lib/tooling/test_map_packer.rb'
     - 'tooling/quality/test_level.rb'

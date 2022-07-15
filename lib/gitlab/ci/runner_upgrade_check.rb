@@ -20,9 +20,8 @@ module Gitlab
         return { recommended: recommended_version } if recommended_version
 
         # Consider update if there's a newer release within the currently deployed GitLab version
-        if available_runner_release(runner_version)
-          return { available: runner_releases_store.releases_by_minor[gitlab_version.without_patch] }
-        end
+        available_version = available_runner_release(runner_version)
+        return { available: available_version } if available_version
 
         { not_available: runner_version }
       end
@@ -31,18 +30,21 @@ module Gitlab
 
       def recommended_runner_release_update(runner_version)
         recommended_release = runner_releases_store.releases_by_minor[runner_version.without_patch]
+        return recommended_release if recommended_release && recommended_release > runner_version
 
-        recommended_release if recommended_release && recommended_release > runner_version
+        # Consider the edge case of pre-release runner versions that get registered, but are never published.
+        # In this case, suggest the latest compatible runner version
+        latest_release = runner_releases_store.releases_by_minor.values.select { |v| v < gitlab_version }.max
+        latest_release if latest_release && latest_release > runner_version
       end
 
       def available_runner_release(runner_version)
         available_release = runner_releases_store.releases_by_minor[gitlab_version.without_patch]
-
         available_release if available_release && available_release > runner_version
       end
 
       def gitlab_version
-        @gitlab_version ||= ::Gitlab::VersionInfo.parse(::Gitlab::VERSION)
+        @gitlab_version ||= ::Gitlab::VersionInfo.parse(::Gitlab::VERSION, parse_suffix: true)
       end
 
       def runner_releases_store

@@ -281,6 +281,7 @@ export default {
         :type="graphViewType"
         :show-links="showLinks"
         :tip-previously-dismissed="hoverTipPreviouslyDismissed"
+        :is-pipeline-complete="pipeline.complete"
         @dismissHoverTip="handleTipDismissal"
         @updateViewType="updateViewType"
         @updateShowLinksState="updateShowLinksState"

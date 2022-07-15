@@ -23,87 +23,127 @@ Additionally, you can integrate milestones with the [Releases feature](../releas
 
 ## Project milestones and group milestones
 
+A milestone can belong to [project](../index.md) or [group](../../group/index.md).
+
 You can assign **project milestones** to issues or merge requests in that project only.
-To view the project milestone list, in a project, go to **{issues}** **Issues > Milestones**.
-
 You can assign **group milestones** to any issue or merge request of any project in that group.
-To view the group milestone list, in a group, go to **{issues}** **Issues > Milestones**.
-
-You can also view all milestones you have access to in the dashboard milestones list.
-To view both project milestones and group milestones you have access to, select **Menu > Milestones**
-on the top bar.
 
 For information about project and group milestones API, see:
 
 - [Project Milestones API](../../../api/milestones.md)
 - [Group Milestones API](../../../api/group_milestones.md)
 
-NOTE:
-If you're in a group and select **Issues > Milestones**, GitLab displays group milestones
-and the milestones of projects in this group.
-If you're in a project and select **Issues > Milestones**, GitLab displays only this project's milestones.
+### View project or group milestones
 
-## Creating milestones
+To view the milestone list:
+
+1. On the top bar, select **Menu > Projects** and find your project or
+   **Menu > Groups** and find your group.
+1. Select **Issues > Milestones**.
+
+In a project, GitLab displays milestones that belong to the project.
+In a group, GitLab displays milestones that belong to the group and all projects in the group.
+
+### View all milestones
+
+You can view all the milestones you have access to in the entire GitLab namespace.
+You might not see some milestones because they're in projects or groups you're not a member of.
+
+To do so, on the top bar select **Menu > Milestones**.
+
+## Create a milestone
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
-Milestones can be created either at project or group level.
+You can create a milestone either in a project or a group.
 
 Prerequisites:
 
-- You must have at least the Reporter role for a group.
+- You must have at least the Reporter role for the project or group the milestone belongs to.
 
 To create a milestone:
 
 1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Milestones**.
 1. Select **New milestone**.
-1. Enter the title, an optional description, an optional start date, and an optional due date.
+1. Enter the title.
+1. Optional. Enter description, start date, and due date.
 1. Select **New milestone**.
 
 ![New milestone](img/milestones_new_project_milestone.png)
 
-## Editing milestones
+## Edit a milestone
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
-Users with at least the Reporter role can edit milestones.
-
 Prerequisites:
 
-- You must have at least the Reporter role for a group.
+- You must have at least the Reporter role for the project or group the milestone belongs to.
 
 To edit a milestone:
 
-1. In a project or group, go to **{issues}** **Issues > Milestones**.
+1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
 1. Select a milestone's title.
 1. Select **Edit**.
+1. Edit the title, start date, due date, or description.
+1. Select **Save changes**.
 
-You can delete a milestone by selecting the **Delete** button.
+## Delete a milestone
 
-### Promoting project milestones to group milestones
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project or group the milestone belongs to.
+
+To edit a milestone:
+
+1. On the top bar, select **Menu > Projects** and find your project or **Menu > Groups** and find your group.
+1. Select a milestone's title.
+1. Select **Delete**.
+1. Select **Delete milestone**.
+
+## Promote a project milestone to a group milestone
 
 If you are expanding the number of projects in a group, you might want to share the same milestones
-among this group's projects. You can also promote project milestones to group milestones in order to
+among this group's projects. You can also promote project milestones to group milestones to
 make them available to other projects in the same group.
 
-From the project milestone list page, you can promote a project milestone to a group milestone.
-This merges all project milestones across all projects in this group with the same name into a single
-group milestones. All issues and merge requests that were previously assigned to one of these project
-milestones is assigned the new group milestones. This action cannot be reversed and the changes are
-permanent.
+Promoting a milestone merges all project milestones across all projects in this group with the same
+name into a single group milestone.
+All issues and merge requests that were previously assigned to one of these project
+milestones become assigned to the new group milestone.
 
 WARNING:
-From GitLab 12.4 and earlier, some information is lost when you promote a project milestone to a
-group milestone. Not all features on the project milestone view are available on the group milestone
-view. If you promote a project milestone to a group milestone, you lose these features. Visit
-[Milestone view](#milestone-view) to learn which features are missing from the group milestone view.
+This action cannot be reversed and the changes are permanent.
 
-![Promote milestone](img/milestones_promote_milestone.png)
+Prerequisites:
 
-## Assigning milestones from the sidebar
+- You must have at least the Reporter role for the group.
 
-Every issue and merge request can be assigned a milestone. The milestones are visible on every issue and merge request page, in the sidebar. They are also visible in the issue board. From the sidebar, you can assign or unassign a milestones to the object. You can also perform this as a [quick action](../quick_actions.md) in a comment. [As mentioned](#project-milestones-and-group-milestones), for a given issue or merge request, both project milestones and group milestones can be selected and assigned to the object.
+To promote a project milestone:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. Either:
+   - Select **Promote to Group Milestone** (**{level-up}**).
+   - Select the milestone title, and then select **Promote**.
+1. Select **Promote Milestone**.
+
+## Assign a milestone to an issue or merge request
+
+Every issue and merge request can be assigned one milestone.
+The milestones are visible on every issue and merge request page, on the right sidebar.
+They are also visible in the issue board.
+
+To assign or unassign a milestone:
+
+1. View an issue or a merge request.
+1. On the right sidebar, next to **Milestones**, select **Edit**.
+1. In the **Assign milestone** list, search for a milestone by typing its name.
+   You can select from both project and group milestones.
+1. Select the milestone you want to assign.
+
+You can also use the `/assign` [quick action](../quick_actions.md) in a comment.
 
 ## Filtering issues and merge requests by milestone
 

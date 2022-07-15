@@ -30,10 +30,16 @@ import * as Api from '~/pipelines/components/graph_shared/api';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
 import getPipelineHeaderData from '~/pipelines/graphql/queries/get_pipeline_header_data.query.graphql';
+import getPerformanceInsights from '~/pipelines/graphql/queries/get_performance_insights.query.graphql';
 import * as sentryUtils from '~/pipelines/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { mockRunningPipelineHeaderData } from '../mock_data';
-import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
+import {
+  mapCallouts,
+  mockCalloutsResponse,
+  mockPipelineResponse,
+  mockPerformanceInsightsResponse,
+} from './mock_data';
 
 const defaultProvide = {
   graphqlResourceEtag: 'frog/amphibirama/etag/',
@@ -89,11 +95,15 @@ describe('Pipeline graph wrapper', () => {
     const callouts = mapCallouts(calloutsList);
     const getUserCalloutsHandler = jest.fn().mockResolvedValue(mockCalloutsResponse(callouts));
     const getPipelineHeaderDataHandler = jest.fn().mockResolvedValue(mockRunningPipelineHeaderData);
+    const getPerformanceInsightsHandler = jest
+      .fn()
+      .mockResolvedValue(mockPerformanceInsightsResponse);
 
     const requestHandlers = [
       [getPipelineHeaderData, getPipelineHeaderDataHandler],
       [getPipelineDetails, getPipelineDetailsHandler],
       [getUserCallouts, getUserCalloutsHandler],
+      [getPerformanceInsights, getPerformanceInsightsHandler],
     ];
 
     const apolloProvider = createMockApollo(requestHandlers);

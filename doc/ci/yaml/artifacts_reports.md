@@ -52,7 +52,7 @@ GitLab can display the results of one or more reports in:
 
 - The merge request [security widget](../../user/application_security/api_fuzzing/index.md#view-details-of-an-api-fuzzing-vulnerability).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/api_fuzzing/index.md#security-dashboard).
 
 ## `artifacts:reports:browser_performance` **(PREMIUM)**
@@ -142,7 +142,7 @@ The collected Container Scanning report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [container scanning widget](../../user/application_security/container_scanning/index.md).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
@@ -156,7 +156,7 @@ The collected coverage fuzzing report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [coverage fuzzing widget](../../user/application_security/coverage_fuzzing/index.md#interacting-with-the-vulnerabilities).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
@@ -168,7 +168,7 @@ report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [security widget](../../user/application_security/dast/index.md#view-details-of-a-vulnerability-detected-by-dast).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
@@ -180,7 +180,7 @@ The collected Dependency Scanning report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [dependency scanning widget](../../user/application_security/dependency_scanning/index.md).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [dependency list](../../user/application_security/dependency_list/).

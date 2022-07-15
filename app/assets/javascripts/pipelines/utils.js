@@ -153,3 +153,24 @@ export const getPipelineDefaultTab = (url) => {
 
   return null;
 };
+
+export const calculateJobStats = (jobs, sortField) => {
+  const jobNodes = [...jobs.nodes];
+
+  const sorted = jobNodes.sort((a, b) => {
+    return b[sortField] - a[sortField];
+  });
+
+  return sorted[0];
+};
+
+export const calculateSlowestFiveJobs = (jobs) => {
+  const jobNodes = [...jobs.nodes];
+  const limit = 5;
+
+  return jobNodes
+    .sort((a, b) => {
+      return b.duration - a.duration;
+    })
+    .slice(0, limit);
+};

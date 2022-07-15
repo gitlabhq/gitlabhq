@@ -15,7 +15,7 @@ end
 # Use custom controller for LDAP omniauth callback
 if Gitlab::Auth::Ldap::Config.sign_in_enabled?
   devise_scope :user do
-    Gitlab::Auth::Ldap::Config.available_servers.each do |server|
+    Gitlab::Auth::Ldap::Config.servers.each do |server|
       override_omniauth(server['provider_name'], 'ldap/omniauth_callbacks')
     end
   end

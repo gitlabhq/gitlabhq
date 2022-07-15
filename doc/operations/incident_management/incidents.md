@@ -203,6 +203,67 @@ field populated.
 
 ![Incident alert details](img/incident_alert_details_v13_4.png)
 
+### Timeline events
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344059) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `incident_timeline`. Enabled on GitLab.com. Disabled on self-managed.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline`.
+On GitLab.com, this feature is available.
+
+Incident timelines are an important part of record keeping for incidents.
+They give a high-level overview, to executives and external viewers, of what happened during the incident,
+and the steps that were taken for it to be resolved.
+
+#### View the event timeline
+
+Incident timeline events are listed in ascending order of the date and time.
+They are grouped with dates and are listed in ascending order of the time when they occured:
+
+![Incident timeline events list](img/timeline_events_v15_1.png)
+
+To view the event timeline of an incident:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Incidents**.
+1. Select an incident.
+1. Select the **Timeline** tab.
+
+#### Create a timeline event
+
+Create a timeline event manually using the form.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To create a timeline event:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Incidents**.
+1. Select an incident.
+1. Select the **Timeline** tab.
+1. Select **Add new timeline event**.
+1. Complete the required fields.
+1. Select **Save** or **Save and add another event**.
+
+#### Delete a timeline event
+
+You can also delete timeline events.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To delete a timeline event:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Incidents**.
+1. Select an incident.
+1. Select the **Timeline** tab.
+1. On the right of a timeline event, select **More actions** (**{ellipsis_v}**) and then select **Delete**.
+1. To confirm, select **Delete Event**.
+
 ### Recent updates view **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227836) in GitLab 13.5.

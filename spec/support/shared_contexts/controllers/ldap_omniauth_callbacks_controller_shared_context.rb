@@ -14,6 +14,8 @@ RSpec.shared_context 'Ldap::OmniauthCallbacksController' do
     { main: ldap_config_defaults(:main) }
   end
 
+  let(:multiple_ldap_servers_license_available) { true }
+
   def ldap_config_defaults(key, hash = {})
     {
       provider_name: "ldap#{key}",
@@ -23,6 +25,7 @@ RSpec.shared_context 'Ldap::OmniauthCallbacksController' do
   end
 
   before do
+    stub_licensed_features(multiple_ldap_servers: multiple_ldap_servers_license_available)
     stub_ldap_setting(ldap_settings)
     described_class.define_providers!
     Rails.application.reload_routes!

@@ -143,6 +143,22 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
           end
         end
       end
+
+      context 'up to 15.1.0' do
+        let(:available_runner_releases) { %w[14.9.1 14.9.2 14.10.0 14.10.1 15.0.0 15.1.0] }
+
+        context 'with Gitlab::VERSION set to 15.2.0-pre' do
+          let(:gitlab_version) { '15.2.0-pre' }
+
+          context 'with unknown runner version' do
+            let(:runner_version) { '14.11.0~beta.29.gd0c550e3' }
+
+            it 'recommends 15.1.0 since 14.11 is an unknown release and 15.1.0 is available' do
+              is_expected.to eq({ recommended: Gitlab::VersionInfo.new(15, 1, 0) })
+            end
+          end
+        end
+      end
     end
   end
 end

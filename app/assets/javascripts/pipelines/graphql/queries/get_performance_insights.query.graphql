@@ -1,0 +1,28 @@
+query getPerformanceInsightsData($fullPath: ID!, $iid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $iid) {
+      id
+      jobs {
+        pageInfo {
+          hasNextPage
+        }
+        nodes {
+          id
+          duration
+          detailedStatus {
+            id
+            detailsPath
+          }
+          name
+          stage {
+            id
+            name
+          }
+          startedAt
+          queuedDuration
+        }
+      }
+    }
+  }
+}

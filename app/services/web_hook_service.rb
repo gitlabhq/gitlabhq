@@ -69,7 +69,7 @@ class WebHookService
     start_time = Gitlab::Metrics::System.monotonic_time
 
     response = if parsed_url.userinfo.blank?
-                 make_request(hook.url)
+                 make_request(parsed_url.to_s)
                else
                  make_request_with_auth
                end
@@ -87,17 +87,19 @@ class WebHookService
   rescue *Gitlab::HTTP::HTTP_ERRORS,
          Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError => e
     execution_duration = Gitlab::Metrics::System.monotonic_time - start_time
+    error_message = e.to_s
+
     log_execution(
       response: InternalErrorResponse.new,
       execution_duration: execution_duration,
-      error_message: e.to_s
+      error_message: error_message
     )
 
     Gitlab::AppLogger.error("WebHook Error after #{execution_duration.to_i.seconds}s => #{e}")
 
     {
       status: :error,
-      message: e.to_s
+      message: error_message
     }
   end
 
@@ -117,7 +119,11 @@ class WebHookService
   private
 
   def parsed_url
-    @parsed_url ||= URI.parse(hook.url)
+    @parsed_url ||= URI.parse(hook.interpolated_url)
+  rescue WebHook::InterpolationError => e
+    # Behavior-preserving fallback.
+    Gitlab::ErrorTracking.track_exception(e)
+    @parsed_url = URI.parse(hook.url)
   end
 
   def make_request(url, basic_auth = false)
@@ -130,7 +136,7 @@ class WebHookService
   end
 
   def make_request_with_auth
-    post_url = hook.url.gsub("#{parsed_url.userinfo}@", '')
+    post_url = parsed_url.to_s.gsub("#{parsed_url.userinfo}@", '')
     basic_auth = {
       username: CGI.unescape(parsed_url.user),
       password: CGI.unescape(parsed_url.password.presence || '')

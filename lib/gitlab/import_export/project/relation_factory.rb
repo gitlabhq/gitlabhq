@@ -89,6 +89,7 @@ module Gitlab
           when :'Ci::PipelineSchedule' then setup_pipeline_schedule
           when :'ProtectedBranch::MergeAccessLevel' then setup_protected_branch_access_level
           when :'ProtectedBranch::PushAccessLevel' then setup_protected_branch_access_level
+          when :releases then setup_release
           end
 
           update_project_references
@@ -148,6 +149,14 @@ module Gitlab
 
         def setup_issue
           @relation_hash['relative_position'] = compute_relative_position
+        end
+
+        def setup_release
+          # When author is not present for source release set the author as ghost user.
+
+          if @relation_hash['author_id'].blank?
+            @relation_hash['author_id'] = User.select(:id).ghost.id
+          end
         end
 
         def setup_pipeline_schedule

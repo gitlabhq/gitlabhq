@@ -465,7 +465,7 @@ export default {
     },
     handleDeleteTask(description) {
       this.$emit('updateDescription', description);
-      this.$toast.show(s__('WorkItem|Work item deleted'));
+      this.$toast.show(s__('WorkItem|Task deleted'));
     },
     updateWorkItemIdUrlQuery(workItemId) {
       updateHistory({

@@ -492,6 +492,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   to avoid the database crashing.
 - The use of encrypted S3 buckets with storage-specific configuration is no longer supported after [removing support for using `background_upload`](removals.md#background-upload-for-object-storage).
 - The [certificate-based Kubernetes integration (DEPRECATED)](../user/infrastructure/clusters/index.md#certificate-based-kubernetes-integration-deprecated) is disabled by default, but you can be re-enable it through the [`certificate_based_clusters` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) until GitLab 16.0.
+- When you use the GitLab Helm Chart project with a custom `serviceAccount`, ensure it has `get` and `list` permissions for the `serviceAccount` and `secret` resources.
 
 ### 14.10.0
 
