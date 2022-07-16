@@ -56,7 +56,7 @@ describe('import table', () => {
   const selectRow = (idx) =>
     wrapper.findAll('tbody td input[type=checkbox]').at(idx).setChecked(true);
 
-  const createComponent = ({ bulkImportSourceGroups, importGroups }) => {
+  const createComponent = ({ bulkImportSourceGroups, importGroups, defaultTargetNamespace }) => {
     apolloProvider = createMockApollo([], {
       Query: {
         availableNamespaces: () => availableNamespacesFixture,
@@ -73,6 +73,7 @@ describe('import table', () => {
         jobsPath: '/fake_job_path',
         sourceUrl: SOURCE_URL,
         historyPath: '/fake_history_path',
+        defaultTargetNamespace,
       },
       apolloProvider,
     });
@@ -163,6 +164,27 @@ describe('import table', () => {
       '[aria-haspopup]',
     );
     expect(targetNamespaceDropdownButton.text()).toBe('No parent');
+  });
+
+  it('respects default namespace if provided', async () => {
+    const targetNamespace = availableNamespacesFixture[1];
+
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: FAKE_GROUPS,
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
+      defaultTargetNamespace: targetNamespace.id,
+    });
+
+    await waitForPromises();
+
+    const firstRow = wrapper.find('tbody tr');
+    const targetNamespaceDropdownButton = findTargetNamespaceDropdown(firstRow).find(
+      '[aria-haspopup]',
+    );
+    expect(targetNamespaceDropdownButton.text()).toBe(targetNamespace.fullPath);
   });
 
   it('does not render status string when result list is empty', async () => {

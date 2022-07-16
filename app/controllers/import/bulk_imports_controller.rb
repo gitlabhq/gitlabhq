@@ -17,7 +17,7 @@ class Import::BulkImportsController < ApplicationController
     session[access_token_key] = configure_params[access_token_key]&.strip
     session[url_key] = configure_params[url_key]
 
-    redirect_to status_import_bulk_imports_url
+    redirect_to status_import_bulk_imports_url(namespace_id: params[:namespace_id])
   end
 
   def status
@@ -35,6 +35,12 @@ class Import::BulkImportsController < ApplicationController
         render json: json_response
       end
       format.html do
+        if params[:namespace_id]
+          @namespace = Namespace.find_by_id(params[:namespace_id])
+
+          render_404 unless current_user.can?(:create_subgroup, @namespace)
+        end
+
         @source_url = session[url_key]
       end
     end
