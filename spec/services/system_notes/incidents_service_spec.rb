@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe SystemNotes::IncidentsService do
-  include Gitlab::Routing
-
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:author) { create(:user) }
@@ -22,14 +20,12 @@ RSpec.describe SystemNotes::IncidentsService do
     end
 
     it 'posts the correct text to the system note' do
-      path = project_issues_incident_path(project, incident, anchor: "timeline_event_#{timeline_event.id}")
-      expect(subject.note).to match("added an [incident timeline event](#{path})")
+      expect(subject.note).to match("added an incident timeline event")
     end
   end
 
   describe '#edit_timeline_event' do
     let(:was_changed) { :unknown }
-    let(:path) { project_issues_incident_path(project, incident, anchor: "timeline_event_#{timeline_event.id}") }
 
     subject do
       described_class.new(noteable: incident).edit_timeline_event(timeline_event, author, was_changed: was_changed)
@@ -44,7 +40,7 @@ RSpec.describe SystemNotes::IncidentsService do
       let(:was_changed) { :occurred_at }
 
       it 'posts the correct text to the system note' do
-        expect(subject.note).to match("edited the event time/date on [incident timeline event](#{path})")
+        expect(subject.note).to match("edited the event time/date on incident timeline event")
       end
     end
 
@@ -52,7 +48,7 @@ RSpec.describe SystemNotes::IncidentsService do
       let(:was_changed) { :note }
 
       it 'posts the correct text to the system note' do
-        expect(subject.note).to match("edited the text on [incident timeline event](#{path})")
+        expect(subject.note).to match("edited the text on incident timeline event")
       end
     end
 
@@ -60,7 +56,7 @@ RSpec.describe SystemNotes::IncidentsService do
       let(:was_changed) { :occurred_at_and_note }
 
       it 'posts the correct text to the system note' do
-        expect(subject.note).to match("edited the event time/date and text on [incident timeline event](#{path})")
+        expect(subject.note).to match("edited the event time/date and text on incident timeline event")
       end
     end
 
@@ -68,7 +64,7 @@ RSpec.describe SystemNotes::IncidentsService do
       let(:was_changed) { :unknown }
 
       it 'posts the correct text to the system note' do
-        expect(subject.note).to match("edited [incident timeline event](#{path})")
+        expect(subject.note).to match("edited incident timeline event")
       end
     end
   end
