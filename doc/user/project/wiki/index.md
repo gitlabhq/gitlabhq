@@ -331,6 +331,14 @@ to disable the wiki but toggle it on (in blue).
 
 GitLab provides a WYSIWYG editing experience for GitLab Flavored Markdown in wikis.
 
+Support includes:
+
+- Text formatting options, including bold, italics, block quotes, headings, and inline code.
+- List formatting for unordered, numbered, and checklists.
+- Creating and editing the structure of tables.
+- Inserting and formatting code blocks with syntax highlighting.
+- Live preview of Mermaid, PlantUML, and Kroki diagrams ([Introduced]<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86701> in GitLab 15.2).
+
 ### Use the Content Editor
 
 1. [Create](#create-a-new-wiki-page) a new wiki page, or [edit](#edit-a-wiki-page) an existing one.
