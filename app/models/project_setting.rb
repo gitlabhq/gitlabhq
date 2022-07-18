@@ -5,6 +5,8 @@ class ProjectSetting < ApplicationRecord
 
   belongs_to :project, inverse_of: :project_setting
 
+  scope :for_projects, ->(projects) { where(project_id: projects) }
+
   enum squash_option: {
     never: 0,
     always: 1,

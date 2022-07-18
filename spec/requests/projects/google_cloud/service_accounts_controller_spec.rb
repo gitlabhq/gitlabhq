@@ -8,13 +8,15 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
   describe 'GET index', :snowplow do
     let_it_be(:url) { "#{project_google_cloud_service_accounts_path(project)}" }
 
-    let(:user_guest) { create(:user) }
-    let(:user_developer) { create(:user) }
-    let(:user_maintainer) { create(:user) }
-    let(:user_creator) { project.creator }
+    let_it_be(:user_guest) { create(:user) }
+    let_it_be(:user_developer) { create(:user) }
+    let_it_be(:user_maintainer) { create(:user) }
+    let_it_be(:user_creator) { project.creator }
 
-    let(:unauthorized_members) { [user_guest, user_developer] }
-    let(:authorized_members) { [user_maintainer, user_creator] }
+    let_it_be(:unauthorized_members) { [user_guest, user_developer] }
+    let_it_be(:authorized_members) { [user_maintainer, user_creator] }
+
+    let_it_be(:google_client_error) { Google::Apis::ClientError.new('client-error') }
 
     before do
       project.add_guest(user_guest)
@@ -30,7 +32,7 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
         expect_snowplow_event(
           category: 'Projects::GoogleCloud',
           action: 'admin_project_google_cloud!',
-          label: 'access_denied',
+          label: 'error_access_denied',
           property: 'invalid_user',
           project: project,
           user: nil
@@ -53,7 +55,7 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
           expect_snowplow_event(
             category: 'Projects::GoogleCloud',
             action: 'admin_project_google_cloud!',
-            label: 'access_denied',
+            label: 'error_access_denied',
             property: 'invalid_user',
             project: project,
             user: unauthorized_member
@@ -71,7 +73,7 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
           expect_snowplow_event(
             category: 'Projects::GoogleCloud',
             action: 'admin_project_google_cloud!',
-            label: 'access_denied',
+            label: 'error_access_denied',
             property: 'invalid_user',
             project: project,
             user: unauthorized_member
@@ -116,7 +118,7 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
             end
           end
 
-          it 'renders no_gcp_projects' do
+          it 'flashes error and redirects to google cloud configurations' do
             authorized_members.each do |authorized_member|
               allow_next_instance_of(BranchesFinder) do |branches_finder|
                 allow(branches_finder).to receive(:execute).and_return([])
@@ -130,7 +132,16 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
 
               get url
 
-              expect(response).to render_template('projects/google_cloud/errors/no_gcp_projects')
+              expect(response).to redirect_to(project_google_cloud_configuration_path(project))
+              expect(flash[:warning]).to eq('No Google Cloud projects - You need at least one Google Cloud project')
+              expect_snowplow_event(
+                category: 'Projects::GoogleCloud',
+                action: 'service_accounts#index',
+                label: 'error_form',
+                property: 'no_gcp_projects',
+                project: project,
+                user: authorized_member
+              )
             end
           end
         end
@@ -171,7 +182,7 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
 
               post url, params: { gcp_project: 'prj1', ref: 'env1' }
 
-              expect(response).to redirect_to(project_google_cloud_index_path(project))
+              expect(response).to redirect_to(project_google_cloud_configuration_path(project))
             end
           end
         end
@@ -181,29 +192,47 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
         before do
           allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
             allow(client).to receive(:validate_token).and_return(true)
-            allow(client).to receive(:list_projects).and_raise(Google::Apis::ClientError.new(''))
-            allow(client).to receive(:create_service_account).and_raise(Google::Apis::ClientError.new(''))
-            allow(client).to receive(:create_service_account_key).and_raise(Google::Apis::ClientError.new(''))
+            allow(client).to receive(:list_projects).and_raise(google_client_error)
+            allow(client).to receive(:create_service_account).and_raise(google_client_error)
+            allow(client).to receive(:create_service_account_key).and_raise(google_client_error)
           end
         end
 
-        it 'renders gcp_error template on GET' do
+        it 'GET flashes error and redirects to -/google_cloud/configurations' do
           authorized_members.each do |authorized_member|
             sign_in(authorized_member)
 
             get url
 
-            expect(response).to render_template(:gcp_error)
+            expect(response).to redirect_to(project_google_cloud_configuration_path(project))
+            expect(flash[:warning]).to eq('Google Cloud Error - client-error')
+            expect_snowplow_event(
+              category: 'Projects::GoogleCloud',
+              action: 'service_accounts#index',
+              label: 'error_gcp',
+              extra: google_client_error,
+              project: project,
+              user: authorized_member
+            )
           end
         end
 
-        it 'renders gcp_error template on POST' do
+        it 'POST flashes error and redirects to -/google_cloud/configurations' do
           authorized_members.each do |authorized_member|
             sign_in(authorized_member)
 
             post url, params: { gcp_project: 'prj1', environment: 'env1' }
 
-            expect(response).to render_template(:gcp_error)
+            expect(response).to redirect_to(project_google_cloud_configuration_path(project))
+            expect(flash[:warning]).to eq('Google Cloud Error - client-error')
+            expect_snowplow_event(
+              category: 'Projects::GoogleCloud',
+              action: 'service_accounts#create',
+              label: 'error_gcp',
+              extra: google_client_error,
+              project: project,
+              user: authorized_member
+            )
           end
         end
       end

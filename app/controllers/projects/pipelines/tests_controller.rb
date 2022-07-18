@@ -35,7 +35,7 @@ module Projects
 
       def validate_test_reports!
         unless pipeline.has_test_reports?
-          render json: { errors: 'Test report artifacts have expired' }, status: :not_found
+          render json: { errors: 'Test report artifacts not found' }, status: :not_found
         end
       end
 

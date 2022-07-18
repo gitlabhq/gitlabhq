@@ -49,7 +49,7 @@ describe('Mutations TestReports Store', () => {
 
   describe('set suite error', () => {
     it('should set the error message in state if provided', () => {
-      const message = 'Test report artifacts have expired';
+      const message = 'Test report artifacts not found';
 
       mutations[types.SET_SUITE_ERROR](mockState, {
         response: { data: { errors: message } },

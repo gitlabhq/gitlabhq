@@ -219,8 +219,7 @@ export default {
       :title="$options.i18n.tabValidate"
       @click="setCurrentTab($options.tabConstants.VALIDATE_TAB)"
     >
-      <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
-      <ci-validate v-else />
+      <ci-validate :ci-file-content="ciFileContent" />
     </editor-tab>
     <editor-tab
       v-else

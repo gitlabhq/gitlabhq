@@ -152,4 +152,26 @@ describe('CI Lint Results', () => {
       expect(findAfterScripts()).toHaveLength(filterEmptyScripts('afterScript').length);
     });
   });
+
+  describe('Hide Alert', () => {
+    it('hides alert on success if hide-alert prop is true', async () => {
+      await createComponent({ dryRun: true, hideAlert: true }, mount);
+
+      expect(findStatus().exists()).toBe(false);
+    });
+
+    it('hides alert on error if hide-alert prop is true', async () => {
+      await createComponent(
+        {
+          hideAlert: true,
+          isValid: false,
+          errors: mockErrors,
+          warnings: mockWarnings,
+        },
+        mount,
+      );
+
+      expect(findStatus().exists()).toBe(false);
+    });
+  });
 });

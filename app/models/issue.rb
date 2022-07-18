@@ -124,8 +124,24 @@ class Issue < ApplicationRecord
   scope :order_due_date_desc, -> { reorder(arel_table[:due_date].desc.nulls_last) }
   scope :order_closest_future_date, -> { reorder(Arel.sql('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC')) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
-  scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
-  scope :order_severity_desc, -> { includes(:issuable_severity).order('issuable_severities.severity DESC NULLS LAST') }
+  scope :order_severity_asc, -> do
+    build_keyset_order_on_joined_column(
+      scope: includes(:issuable_severity),
+      attribute_name: 'issuable_severities_severity',
+      column: IssuableSeverity.arel_table[:severity],
+      direction: :asc,
+      nullable: :nulls_first
+    )
+  end
+  scope :order_severity_desc, -> do
+    build_keyset_order_on_joined_column(
+      scope: includes(:issuable_severity),
+      attribute_name: 'issuable_severities_severity',
+      column: IssuableSeverity.arel_table[:severity],
+      direction: :desc,
+      nullable: :nulls_last
+    )
+  end
   scope :order_escalation_status_asc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].asc.nulls_last).references(:incident_management_issuable_escalation_status) }
   scope :order_escalation_status_desc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].desc.nulls_last).references(:incident_management_issuable_escalation_status) }
   scope :order_closed_at_asc, -> { reorder(arel_table[:closed_at].asc.nulls_last) }
@@ -234,6 +250,31 @@ class Issue < ApplicationRecord
     alias_method :with_state, :with_state_id
     alias_method :with_states, :with_state_ids
 
+    def build_keyset_order_on_joined_column(scope:, attribute_name:, column:, direction:, nullable:)
+      reversed_direction = direction == :asc ? :desc : :asc
+
+      # rubocop: disable GitlabSecurity/PublicSend
+      order = ::Gitlab::Pagination::Keyset::Order.build([
+        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: attribute_name,
+           column_expression: column,
+           order_expression: column.send(direction).send(nullable),
+           reversed_order_expression: column.send(reversed_direction).send(nullable),
+           order_direction: direction,
+           distinct: false,
+           add_to_projections: true,
+           nullable: nullable
+        ),
+        ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+           order_expression: arel_table['id'].desc
+        )
+      ])
+      # rubocop: enable GitlabSecurity/PublicSend
+
+      order.apply_cursor_conditions(scope).order(order)
+    end
+
     override :order_upvotes_desc
     def order_upvotes_desc
       reorder(upvotes_count: :desc)
@@ -331,10 +372,10 @@ class Issue < ApplicationRecord
     when 'due_date', 'due_date_asc'                       then order_due_date_asc.with_order_id_desc
     when 'due_date_desc'                                  then order_due_date_desc.with_order_id_desc
     when 'relative_position', 'relative_position_asc'     then order_by_relative_position
-    when 'severity_asc'                                   then order_severity_asc.with_order_id_desc
-    when 'severity_desc'                                  then order_severity_desc.with_order_id_desc
-    when 'escalation_status_asc'                          then order_escalation_status_asc.with_order_id_desc
-    when 'escalation_status_desc'                         then order_escalation_status_desc.with_order_id_desc
+    when 'severity_asc'                                   then order_severity_asc
+    when 'severity_desc'                                  then order_severity_desc
+    when 'escalation_status_asc'                          then order_escalation_status_asc
+    when 'escalation_status_desc'                         then order_escalation_status_desc
     when 'closed_at', 'closed_at_asc'                     then order_closed_at_asc
     when 'closed_at_desc'                                 then order_closed_at_desc
     else

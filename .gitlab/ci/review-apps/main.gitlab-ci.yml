@@ -77,7 +77,7 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "a6a609a19166f00b1a7774374041cd38a9f7e20d"
+    GITLAB_HELM_CHART_REF: "138c146a5ba787942f66d4c7d795d224d6ba206a"
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}

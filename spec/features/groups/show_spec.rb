@@ -97,6 +97,31 @@ RSpec.describe 'Group show page' do
       end
     end
 
+    context 'when a public project is shared with a private group' do
+      let_it_be(:private_group) { create(:group, :private) }
+      let_it_be(:public_project) { create(:project, :public) }
+      let_it_be(:project_group_link) { create(:project_group_link, group: private_group, project: public_project) }
+
+      before do
+        private_group.add_owner(user)
+        sign_in(user)
+      end
+
+      it 'shows warning popover', :js do
+        visit group_path(private_group)
+
+        click_link _('Shared projects')
+
+        wait_for_requests
+
+        page.within("[data-testid=\"group-overview-item-#{public_project.id}\"]") do
+          click_button _('Less restrictive visibility')
+        end
+
+        expect(page).to have_content _('Project visibility level is less restrictive than the group settings.')
+      end
+    end
+
     context 'when user does not have permissions to create new subgroups or projects', :js do
       before do
         group.add_reporter(user)

@@ -50,7 +50,7 @@ module QA
         it 'shows valid validations', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349128' do
           Page::Project::PipelineEditor::Show.perform do |show|
             aggregate_failures do
-              expect(show.ci_syntax_validate_message).to have_content('CI configuration is valid')
+              expect(show.ci_syntax_validate_message).to have_content('Pipeline syntax is correct')
 
               show.go_to_visualize_tab
               { stage1: 'job1', stage2: 'job2' }.each_pair do |stage, job|

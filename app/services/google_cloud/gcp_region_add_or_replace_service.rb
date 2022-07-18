@@ -3,7 +3,7 @@
 module GoogleCloud
   class GcpRegionAddOrReplaceService < ::GoogleCloud::BaseService
     def execute(environment, region)
-      gcp_region_key = Projects::GoogleCloudController::GCP_REGION_CI_VAR_KEY
+      gcp_region_key = Projects::GoogleCloud::GcpRegionsController::GCP_REGION_CI_VAR_KEY
 
       change_params = { variable_params: { key: gcp_region_key, value: region, environment_scope: environment } }
       filter_params = { key: gcp_region_key, filter: { environment_scope: environment } }

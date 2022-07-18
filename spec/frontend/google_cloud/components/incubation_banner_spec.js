@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { GlAlert, GlLink } from '@gitlab/ui';
 import IncubationBanner from '~/google_cloud/components/incubation_banner.vue';
 
-describe('IncubationBanner component', () => {
+describe('google_cloud/components/incubation_banner', () => {
   let wrapper;
 
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -12,12 +12,7 @@ describe('IncubationBanner component', () => {
   const findShareFeedbackLink = () => findLinks().at(2);
 
   beforeEach(() => {
-    const propsData = {
-      shareFeedbackUrl: 'url_general_feedback',
-      reportBugUrl: 'url_report_bug',
-      featureRequestUrl: 'url_feature_request',
-    };
-    wrapper = mount(IncubationBanner, { propsData });
+    wrapper = mount(IncubationBanner);
   });
 
   afterEach(() => {
@@ -41,20 +36,26 @@ describe('IncubationBanner component', () => {
 
     it('contains feature request link', () => {
       const link = findFeatureRequestLink();
+      const expected =
+        'https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/feedback/-/issues/new?issuable_template=feature_request';
       expect(link.text()).toBe('request a feature');
-      expect(link.attributes('href')).toBe('url_feature_request');
+      expect(link.attributes('href')).toBe(expected);
     });
 
     it('contains report bug link', () => {
       const link = findReportBugLink();
+      const expected =
+        'https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/feedback/-/issues/new?issuable_template=report_bug';
       expect(link.text()).toBe('report a bug');
-      expect(link.attributes('href')).toBe('url_report_bug');
+      expect(link.attributes('href')).toBe(expected);
     });
 
     it('contains share feedback link', () => {
       const link = findShareFeedbackLink();
+      const expected =
+        'https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/feedback/-/issues/new?issuable_template=general_feedback';
       expect(link.text()).toBe('share feedback');
-      expect(link.attributes('href')).toBe('url_general_feedback');
+      expect(link.attributes('href')).toBe(expected);
     });
   });
 });

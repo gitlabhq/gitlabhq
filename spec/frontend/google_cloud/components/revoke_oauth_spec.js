@@ -5,7 +5,7 @@ import RevokeOauth, {
   GOOGLE_CLOUD_REVOKE_DESCRIPTION,
 } from '~/google_cloud/components/revoke_oauth.vue';
 
-describe('RevokeOauth component', () => {
+describe('google_cloud/components/revoke_oauth', () => {
   let wrapper;
 
   const findTitle = () => wrapper.find('h2');

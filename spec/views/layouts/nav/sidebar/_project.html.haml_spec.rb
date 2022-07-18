@@ -532,7 +532,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     describe 'Google Cloud' do
       it 'has a link to the google cloud page' do
         render
-        expect(rendered).to have_link('Google Cloud', href: project_google_cloud_index_path(project))
+        expect(rendered).to have_link('Google Cloud', href: project_google_cloud_configuration_path(project))
       end
 
       describe 'when the user does not have access' do

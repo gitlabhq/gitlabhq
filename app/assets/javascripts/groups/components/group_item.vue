@@ -5,13 +5,23 @@ import {
   GlBadge,
   GlIcon,
   GlLabel,
+  GlButton,
+  GlPopover,
+  GlLink,
   GlTooltipDirective,
   GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
-import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '../constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { __ } from '~/locale';
+import {
+  VISIBILITY_TYPE_ICON,
+  GROUP_VISIBILITY_TYPE,
+  ITEM_TYPE,
+  VISIBILITY_PRIVATE,
+} from '../constants';
 import eventHub from '../event_hub';
 
 import itemActions from './item_actions.vue';
@@ -30,12 +40,16 @@ export default {
     GlLoadingIcon,
     GlIcon,
     GlLabel,
+    GlButton,
+    GlPopover,
+    GlLink,
     UserAccessRoleBadge,
     itemCaret,
     itemTypeIcon,
     itemActions,
     itemStats,
   },
+  inject: ['currentGroupVisibility'],
   props: {
     parentGroup: {
       type: Object,
@@ -56,6 +70,9 @@ export default {
     groupDomId() {
       return `group-${this.group.id}`;
     },
+    itemTestId() {
+      return `group-overview-item-${this.group.id}`;
+    },
     rowClass() {
       return {
         'is-open': this.group.isOpen,
@@ -74,10 +91,10 @@ export default {
       return Boolean(this.group.complianceFramework?.name);
     },
     isGroup() {
-      return this.group.type === 'group';
+      return this.group.type === ITEM_TYPE.GROUP;
     },
     isGroupPendingRemoval() {
-      return this.group.type === 'group' && this.group.pendingRemoval;
+      return this.group.type === ITEM_TYPE.GROUP && this.group.pendingRemoval;
     },
     visibilityIcon() {
       return VISIBILITY_TYPE_ICON[this.group.visibility];
@@ -93,6 +110,13 @@ export default {
     },
     showActionsMenu() {
       return this.isGroup && (this.group.canEdit || this.group.canRemove || this.group.canLeave);
+    },
+    shouldShowVisibilityWarning() {
+      return (
+        this.action === 'shared' &&
+        this.currentGroupVisibility === VISIBILITY_PRIVATE &&
+        this.group.visibility !== VISIBILITY_PRIVATE
+      );
     },
   },
   methods: {
@@ -110,6 +134,17 @@ export default {
       }
     },
   },
+  i18n: {
+    popoverTitle: __('Less restrictive visibility'),
+    popoverBody: __('Project visibility level is less restrictive than the group settings.'),
+    learnMore: __('Learn more'),
+  },
+  shareProjectsWithGroupsHelpPagePath: helpPagePath(
+    'user/project/members/share_project_with_groups',
+    {
+      anchor: 'share-a-public-project-with-private-group',
+    },
+  ),
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   AVATAR_SHAPE_OPTION_RECT,
 };
@@ -118,6 +153,7 @@ export default {
 <template>
   <li
     :id="groupDomId"
+    :data-testid="itemTestId"
     :class="rowClass"
     class="group-row"
     :itemprop="microdata.itemprop"
@@ -163,7 +199,7 @@ export default {
               data-testid="group-name"
               :href="group.relativePath"
               :title="group.fullName"
-              class="no-expand gl-mr-3 gl-mt-3 gl-text-gray-900!"
+              class="no-expand gl-mr-3 gl-text-gray-900!"
               :itemprop="microdata.nameItemprop"
             >
               {{
@@ -174,17 +210,40 @@ export default {
             </a>
             <gl-icon
               v-gl-tooltip.hover.bottom
-              class="gl-display-inline-flex gl-align-items-center gl-mr-3 gl-mt-3 gl-text-gray-500"
+              class="gl-display-inline-flex gl-align-items-center gl-mr-3 gl-text-gray-500"
               :name="visibilityIcon"
               :title="visibilityTooltip"
               data-testid="group-visibility-icon"
             />
-            <user-access-role-badge v-if="group.permission" class="gl-mt-3">
+            <template v-if="shouldShowVisibilityWarning">
+              <gl-button
+                ref="visibilityWarningButton"
+                class="gl-p-1! gl-bg-transparent! gl-mr-3"
+                category="tertiary"
+                icon="warning"
+                :aria-label="$options.i18n.popoverTitle"
+                @click.stop
+              />
+              <gl-popover
+                :target="() => $refs.visibilityWarningButton.$el"
+                :title="$options.i18n.popoverTitle"
+                triggers="hover focus"
+              >
+                {{ $options.i18n.popoverBody }}
+                <div class="gl-mt-3">
+                  <gl-link
+                    class="gl-font-sm"
+                    :href="$options.shareProjectsWithGroupsHelpPagePath"
+                    >{{ $options.i18n.learnMore }}</gl-link
+                  >
+                </div>
+              </gl-popover>
+            </template>
+            <user-access-role-badge v-if="group.permission" class="gl-mr-3">
               {{ group.permission }}
             </user-access-role-badge>
             <gl-label
               v-if="hasComplianceFramework"
-              class="gl-mt-3"
               :title="complianceFramework.name"
               :background-color="complianceFramework.color"
               :description="complianceFramework.description"

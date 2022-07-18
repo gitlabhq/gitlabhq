@@ -12,7 +12,7 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
 
   def admin_project_google_cloud!
     unless can?(current_user, :admin_project_google_cloud, project)
-      track_event('admin_project_google_cloud!', 'access_denied', 'invalid_user')
+      track_event('admin_project_google_cloud!', 'error_access_denied', 'invalid_user')
       access_denied!
     end
   end
@@ -20,7 +20,11 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
   def google_oauth2_enabled!
     config = Gitlab::Auth::OAuth::Provider.config_for('google_oauth2')
     if config.app_id.blank? || config.app_secret.blank?
-      track_event('google_oauth2_enabled!', 'access_denied', { reason: 'google_oauth2_not_configured', config: config })
+      track_event(
+        'google_oauth2_enabled!',
+        'error_access_denied',
+        { reason: 'google_oauth2_not_configured', config: config }
+      )
       access_denied! 'This GitLab instance not configured for Google Oauth2.'
     end
   end
@@ -31,7 +35,7 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
     enabled_for_project = Feature.enabled?(:incubation_5mp_google_cloud, project)
     feature_is_enabled = enabled_for_user || enabled_for_group || enabled_for_project
     unless feature_is_enabled
-      track_event('feature_flag_enabled!', 'access_denied', 'feature_flag_not_enabled')
+      track_event('feature_flag_enabled!', 'error_access_denied', 'feature_flag_not_enabled')
       access_denied!
     end
   end
@@ -42,7 +46,7 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
 
     return if is_token_valid
 
-    return_url = project_google_cloud_index_path(project)
+    return_url = project_google_cloud_configuration_path(project)
     state = generate_session_key_redirect(request.url, return_url)
     @authorize_url = GoogleApi::CloudPlatform::Client.new(nil,
                                                           callback_google_api_auth_url,
@@ -63,12 +67,6 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
 
   def expires_at_in_session
     session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at]
-  end
-
-  def handle_gcp_error(action, error)
-    track_event(action, 'gcp_error', error)
-    @js_data = { screen: 'gcp_error', error: error.to_s }.to_json
-    render status: :unauthorized, template: 'projects/google_cloud/errors/gcp_error'
   end
 
   def track_event(action, label, property)

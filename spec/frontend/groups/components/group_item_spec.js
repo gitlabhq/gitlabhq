@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { GlPopover } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import GroupFolder from '~/groups/components/group_folder.vue';
 import GroupItem from '~/groups/components/group_item.vue';
@@ -6,14 +6,25 @@ import ItemActions from '~/groups/components/item_actions.vue';
 import eventHub from '~/groups/event_hub';
 import { getGroupItemMicrodata } from '~/groups/store/utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
+import {
+  ITEM_TYPE,
+  VISIBILITY_INTERNAL,
+  VISIBILITY_PRIVATE,
+  VISIBILITY_PUBLIC,
+} from '~/groups/constants';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
 
 const createComponent = (
   propsData = { group: mockParentGroupItem, parentGroup: mockChildren[0] },
+  provide = {
+    currentGroupVisibility: VISIBILITY_PRIVATE,
+  },
 ) => {
-  return mount(GroupItem, {
+  return mountExtended(GroupItem, {
     propsData,
     components: { GroupFolder },
+    provide,
   });
 };
 
@@ -274,6 +285,92 @@ describe('GroupItemComponent', () => {
       `('it does set correct $selector', ({ selector, propValue } = {}) => {
         expect(wrapper.find(selector).attributes('itemprop')).toBe(propValue);
       });
+    });
+  });
+
+  describe('visibility warning popover', () => {
+    const findPopover = () => wrapper.findComponent(GlPopover);
+
+    const itDoesNotRenderVisibilityWarningPopover = () => {
+      it('does not render visibility warning popover', () => {
+        expect(findPopover().exists()).toBe(false);
+      });
+    };
+
+    describe('when showing groups', () => {
+      beforeEach(() => {
+        wrapper = createComponent();
+      });
+
+      itDoesNotRenderVisibilityWarningPopover();
+    });
+
+    describe('when `action` prop is not `shared`', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          group: mockParentGroupItem,
+          parentGroup: mockChildren[0],
+          action: 'subgroups_and_projects',
+        });
+      });
+
+      itDoesNotRenderVisibilityWarningPopover();
+    });
+
+    describe('when showing projects', () => {
+      describe.each`
+        itemVisibility         | currentGroupVisibility | isPopoverShown
+        ${VISIBILITY_PRIVATE}  | ${VISIBILITY_PUBLIC}   | ${false}
+        ${VISIBILITY_INTERNAL} | ${VISIBILITY_PUBLIC}   | ${false}
+        ${VISIBILITY_PUBLIC}   | ${VISIBILITY_PUBLIC}   | ${false}
+        ${VISIBILITY_PRIVATE}  | ${VISIBILITY_PRIVATE}  | ${false}
+        ${VISIBILITY_INTERNAL} | ${VISIBILITY_PRIVATE}  | ${true}
+        ${VISIBILITY_PUBLIC}   | ${VISIBILITY_PRIVATE}  | ${true}
+      `(
+        'when item visibility is $itemVisibility and parent group visibility is $currentGroupVisibility',
+        ({ itemVisibility, currentGroupVisibility, isPopoverShown }) => {
+          beforeEach(() => {
+            wrapper = createComponent(
+              {
+                group: {
+                  ...mockParentGroupItem,
+                  visibility: itemVisibility,
+                  type: ITEM_TYPE.PROJECT,
+                },
+                parentGroup: mockChildren[0],
+                action: 'shared',
+              },
+              {
+                currentGroupVisibility,
+              },
+            );
+          });
+
+          if (isPopoverShown) {
+            it('renders visibility warning popover', () => {
+              expect(findPopover().exists()).toBe(true);
+            });
+          } else {
+            itDoesNotRenderVisibilityWarningPopover();
+          }
+        },
+      );
+    });
+
+    it('sets up popover `target` prop correctly', () => {
+      wrapper = createComponent({
+        group: {
+          ...mockParentGroupItem,
+          visibility: VISIBILITY_PUBLIC,
+          type: ITEM_TYPE.PROJECT,
+        },
+        parentGroup: mockChildren[0],
+        action: 'shared',
+      });
+
+      expect(findPopover().props('target')()).toEqual(
+        wrapper.findByRole('button', { name: GroupItem.i18n.popoverTitle }).element,
+      );
     });
   });
 });

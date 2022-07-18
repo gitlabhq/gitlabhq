@@ -1,22 +1,20 @@
 <script>
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 
+const FEATURE_REQUEST_KEY = 'feature_request';
+const REPORT_BUG_KEY = 'report_bug';
+const GENERAL_FEEDBACK_KEY = 'general_feedback';
+
 export default {
   components: { GlAlert, GlLink, GlSprintf },
-  props: {
-    shareFeedbackUrl: {
-      required: true,
-      type: String,
-    },
-    reportBugUrl: {
-      required: true,
-      type: String,
-    },
-    featureRequestUrl: {
-      required: true,
-      type: String,
+  methods: {
+    feedbackUrl(template) {
+      return `https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/feedback/-/issues/new?issuable_template=${template}`;
     },
   },
+  FEATURE_REQUEST_KEY,
+  REPORT_BUG_KEY,
+  GENERAL_FEEDBACK_KEY,
 };
 </script>
 
@@ -31,13 +29,13 @@ export default {
       "
     >
       <template #featureLink="{ content }">
-        <gl-link :href="featureRequestUrl">{{ content }}</gl-link>
+        <gl-link :href="feedbackUrl($options.FEATURE_REQUEST_KEY)">{{ content }}</gl-link>
       </template>
       <template #bugLink="{ content }">
-        <gl-link :href="reportBugUrl">{{ content }}</gl-link>
+        <gl-link :href="feedbackUrl($options.REPORT_BUG_KEY)">{{ content }}</gl-link>
       </template>
       <template #feedbackLink="{ content }">
-        <gl-link :href="shareFeedbackUrl">{{ content }}</gl-link>
+        <gl-link :href="feedbackUrl($options.GENERAL_FEEDBACK_KEY)">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </gl-alert>

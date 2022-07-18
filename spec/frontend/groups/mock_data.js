@@ -29,6 +29,7 @@ export const mockParentGroupItem = {
   isChildrenLoading: false,
   isBeingRemoved: false,
   updatedAt: '2017-04-09T18:40:39.101Z',
+  lastActivityAt: '2017-04-09T18:40:39.101Z',
 };
 
 export const mockRawChildren = [

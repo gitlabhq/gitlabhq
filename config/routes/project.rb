@@ -298,15 +298,18 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :terraform, only: [:index]
 
-        resources :google_cloud, only: [:index]
-
         namespace :google_cloud do
+          get '/configuration', to: 'configuration#index'
+
           resources :revoke_oauth, only: [:create]
           resources :service_accounts, only: [:index, :create]
           resources :gcp_regions, only: [:index, :create]
 
+          get '/deployments', to: 'deployments#index'
           get '/deployments/cloud_run', to: 'deployments#cloud_run'
           get '/deployments/cloud_storage', to: 'deployments#cloud_storage'
+
+          get '/databases', to: 'databases#index'
         end
 
         resources :environments, except: [:destroy] do

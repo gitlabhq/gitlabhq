@@ -64,7 +64,7 @@ RSpec.describe Projects::Pipelines::TestsController do
           get_tests_show_json(build_ids)
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['errors']).to eq('Test report artifacts have expired')
+          expect(json_response['errors']).to eq('Test report artifacts not found')
         end
       end
 

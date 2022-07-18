@@ -55,6 +55,7 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
           renderEmptyState,
           canCreateSubgroups,
           canCreateProjects,
+          currentGroupVisibility,
         },
       } = this.$options.el;
 
@@ -67,6 +68,7 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
         renderEmptyState: parseBoolean(renderEmptyState),
         canCreateSubgroups: parseBoolean(canCreateSubgroups),
         canCreateProjects: parseBoolean(canCreateProjects),
+        currentGroupVisibility,
       };
     },
     data() {

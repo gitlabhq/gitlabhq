@@ -3,32 +3,47 @@
 class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::BaseController
   before_action :validate_gcp_token!
 
+  def index
+    @google_cloud_path = project_google_cloud_configuration_path(project)
+    js_data = {
+      configurationUrl: project_google_cloud_configuration_path(project),
+      deploymentsUrl: project_google_cloud_deployments_path(project),
+      databasesUrl: project_google_cloud_databases_path(project),
+      enableCloudRunUrl: project_google_cloud_deployments_cloud_run_path(project),
+      enableCloudStorageUrl: project_google_cloud_deployments_cloud_storage_path(project)
+    }
+    @js_data = js_data.to_json
+    track_event('deployments#index', 'success', js_data)
+  end
+
   def cloud_run
     params = { google_oauth2_token: token_in_session }
     enable_cloud_run_response = GoogleCloud::EnableCloudRunService
                                   .new(project, current_user, params).execute
 
     if enable_cloud_run_response[:status] == :error
-      track_event('deployments#cloud_run', 'enable_cloud_run_error', enable_cloud_run_response)
+      track_event('deployments#cloud_run', 'error_enable_cloud_run', enable_cloud_run_response)
       flash[:error] = enable_cloud_run_response[:message]
-      redirect_to project_google_cloud_index_path(project)
+      redirect_to project_google_cloud_deployments_path(project)
     else
       params = { action: GoogleCloud::GeneratePipelineService::ACTION_DEPLOY_TO_CLOUD_RUN }
       generate_pipeline_response = GoogleCloud::GeneratePipelineService
                                      .new(project, current_user, params).execute
 
       if generate_pipeline_response[:status] == :error
-        track_event('deployments#cloud_run', 'generate_pipeline_error', generate_pipeline_response)
+        track_event('deployments#cloud_run', 'error_generate_pipeline', generate_pipeline_response)
         flash[:error] = 'Failed to generate pipeline'
-        redirect_to project_google_cloud_index_path(project)
+        redirect_to project_google_cloud_deployments_path(project)
       else
         cloud_run_mr_params = cloud_run_mr_params(generate_pipeline_response[:branch_name])
-        track_event('deployments#cloud_run', 'cloud_run_success', cloud_run_mr_params)
+        track_event('deployments#cloud_run', 'success', cloud_run_mr_params)
         redirect_to project_new_merge_request_path(project, merge_request: cloud_run_mr_params)
       end
     end
-  rescue Google::Apis::ClientError => error
-    handle_gcp_error('deployments#cloud_run', error)
+  rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => error
+    track_event('deployments#cloud_run', 'error_gcp', error)
+    flash[:warning] = _('Google Cloud Error - %{error}') % { error: error }
+    redirect_to project_google_cloud_deployments_path(project)
   end
 
   def cloud_storage

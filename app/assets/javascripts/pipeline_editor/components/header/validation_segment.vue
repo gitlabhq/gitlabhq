@@ -19,7 +19,7 @@ export const i18n = {
   invalid: s__('Pipelines|This GitLab CI configuration is invalid.'),
   invalidWithReason: s__('Pipelines|This GitLab CI configuration is invalid: %{reason}.'),
   unavailableValidation: s__('Pipelines|Configuration validation currently not available.'),
-  valid: s__('Pipelines|This GitLab CI configuration is valid.'),
+  valid: s__('Pipelines|Pipeline syntax is correct.'),
 };
 
 export default {

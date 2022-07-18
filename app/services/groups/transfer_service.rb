@@ -162,6 +162,12 @@ module Groups
 
       projects_to_update
         .update_all(visibility_level: @new_parent_group.visibility_level)
+
+      update_project_settings(@updated_project_ids)
+    end
+
+    # Overridden in EE
+    def update_project_settings(updated_project_ids)
     end
 
     def update_two_factor_authentication

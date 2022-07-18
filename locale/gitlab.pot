@@ -8318,6 +8318,9 @@ msgstr ""
 msgid "CloudSeed|CloudSQL Instance"
 msgstr ""
 
+msgid "CloudSeed|Configuration"
+msgstr ""
+
 msgid "CloudSeed|Create cluster"
 msgstr ""
 
@@ -8334,6 +8337,12 @@ msgid "CloudSeed|Database instances associated with this project"
 msgstr ""
 
 msgid "CloudSeed|Database version"
+msgstr ""
+
+msgid "CloudSeed|Databases"
+msgstr ""
+
+msgid "CloudSeed|Deployments"
 msgstr ""
 
 msgid "CloudSeed|Description"
@@ -8393,10 +8402,16 @@ msgstr ""
 msgid "CloudSeed|Refs"
 msgstr ""
 
+msgid "CloudSeed|Regions"
+msgstr ""
+
 msgid "CloudSeed|Scalable, secure, and highly available in-memory service for Redis"
 msgstr ""
 
 msgid "CloudSeed|Service"
+msgstr ""
+
+msgid "CloudSeed|Service Account"
 msgstr ""
 
 msgid "CloudSeed|Services"
@@ -10660,9 +10675,6 @@ msgid "Create %{type}"
 msgstr ""
 
 msgid "Create %{workspace} label"
-msgstr ""
-
-msgid "Create Google Cloud project"
 msgstr ""
 
 msgid "Create New Directory"
@@ -17494,9 +17506,6 @@ msgstr ""
 msgid "GitLab account request rejected"
 msgstr ""
 
-msgid "GitLab and Google Cloud configuration seems to be incomplete. This probably can be fixed by your GitLab administration team. You may share these logs with them:"
-msgstr ""
-
 msgid "GitLab commit"
 msgstr ""
 
@@ -17983,16 +17992,13 @@ msgstr ""
 msgid "Google Cloud"
 msgstr ""
 
+msgid "Google Cloud Error - %{error}"
+msgstr ""
+
 msgid "Google Cloud Project"
 msgstr ""
 
 msgid "Google Cloud authorizations required"
-msgstr ""
-
-msgid "Google Cloud project misconfigured"
-msgstr ""
-
-msgid "Google Cloud project required"
 msgstr ""
 
 msgid "GoogleCloud|Cancel"
@@ -23204,6 +23210,9 @@ msgstr ""
 msgid "Less Details"
 msgstr ""
 
+msgid "Less restrictive visibility"
+msgstr ""
+
 msgid "Let's Encrypt does not accept emails on example.com"
 msgstr ""
 
@@ -25982,6 +25991,9 @@ msgstr ""
 msgid "No Epic"
 msgstr ""
 
+msgid "No Google Cloud projects - You need at least one Google Cloud project"
+msgstr ""
+
 msgid "No Matching Results"
 msgstr ""
 
@@ -28378,6 +28390,9 @@ msgstr ""
 msgid "PipelineEditorTutorial|🚀 Run your first pipeline"
 msgstr ""
 
+msgid "PipelineEditor|Configuration content has changed. Re-run validation for updated results."
+msgstr ""
+
 msgid "PipelineEditor|Current content in the Edit tab will be used for the simulation."
 msgstr ""
 
@@ -28394,6 +28409,15 @@ msgid "PipelineEditor|Pipeline behavior will be simulated including the %{codeSt
 msgstr ""
 
 msgid "PipelineEditor|Pipeline behavior will be simulated including the %{codeStart}rules%{codeEnd} %{codeStart}only%{codeEnd} %{codeStart}except%{codeEnd} and %{codeStart}needs%{codeEnd} job dependencies. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
+msgid "PipelineEditor|Pipeline simulation completed with errors"
+msgstr ""
+
+msgid "PipelineEditor|Simulated a %{codeStart}git push%{codeEnd} event for a default branch. %{codeStart}Rules%{codeEnd}, %{codeStart}only%{codeEnd}, %{codeStart}except%{codeEnd}, and %{codeStart}needs%{codeEnd} job dependencies logic have been evaluated. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
+msgid "PipelineEditor|Simulation completed successfully"
 msgstr ""
 
 msgid "PipelineEditor|The CI/CD configuration is continuously validated. Errors and warnings are displayed when the CI/CD configuration file is not empty."
@@ -28415,6 +28439,12 @@ msgid "PipelineEditor|Validate pipeline under selected conditions"
 msgstr ""
 
 msgid "PipelineEditor|Validate pipeline under simulated conditions"
+msgstr ""
+
+msgid "PipelineEditor|Validating pipeline... It can take up to a minute."
+msgstr ""
+
+msgid "PipelineEditor|Waiting for CI content to load..."
 msgstr ""
 
 msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Cron syntax%{linkEnd})"
@@ -28694,6 +28724,9 @@ msgid "Pipelines|Owner"
 msgstr ""
 
 msgid "Pipelines|Pipeline Editor"
+msgstr ""
+
+msgid "Pipelines|Pipeline syntax is correct."
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
@@ -30149,6 +30182,9 @@ msgid "Project slug"
 msgstr ""
 
 msgid "Project uploads"
+msgstr ""
+
+msgid "Project visibility level is less restrictive than the group settings."
 msgstr ""
 
 msgid "Project visibility level will be changed to match namespace rules when transferring to a group."
@@ -35586,9 +35622,6 @@ msgid "ServicePing|Turn on service ping"
 msgstr ""
 
 msgid "ServicePing|Turn on service ping to review instance-level analytics."
-msgstr ""
-
-msgid "Services"
 msgstr ""
 
 msgid "Session ID"
@@ -41343,9 +41376,6 @@ msgstr ""
 msgid "Unknown response text"
 msgstr ""
 
-msgid "Unknown screen"
-msgstr ""
-
 msgid "Unknown user"
 msgstr ""
 
@@ -44415,9 +44445,6 @@ msgid "You could not create a new trigger."
 msgstr ""
 
 msgid "You currently have more than %{free_limit} members across all your personal projects. From June 22, 2022, the %{free_limit} most recently active members will remain active, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access. To view and manage members, check the members page for each project in your namespace. We recommend you %{move_link_start}move your project to a group%{move_link_end} so you can easily manage users and features."
-msgstr ""
-
-msgid "You do not have any Google Cloud projects. Please create a Google Cloud project and then reload this page."
 msgstr ""
 
 msgid "You do not have any subscriptions yet"
