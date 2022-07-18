@@ -1461,6 +1461,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: package_cleanup:packages_cleanup_execute_policy
+  :worker_name: Packages::Cleanup::ExecutePolicyWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_cleanup:packages_cleanup_package_file
   :worker_name: Packages::CleanupPackageFileWorker
   :feature_category: :package_registry

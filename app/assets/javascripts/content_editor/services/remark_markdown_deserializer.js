@@ -1,4 +1,3 @@
-import { isString } from 'lodash';
 import { render } from '~/lib/gfm';
 import { createProseMirrorDocFromMdastTree } from './hast_to_prosemirror_converter';
 
@@ -45,15 +44,8 @@ const factorySpecs = {
   },
   codeBlock: {
     type: 'block',
-    skipChildren: true,
-    selector: 'pre',
-    getContent: ({ hastNodeText }) => hastNodeText.replace(/\n$/, ''),
-    getAttrs: (hastNode) => {
-      const languageClass = hastNode.children[0]?.properties.className?.[0];
-      const language = isString(languageClass) ? languageClass.replace('language-', '') : null;
-
-      return { language };
-    },
+    selector: 'codeblock',
+    getAttrs: (hastNode) => ({ ...hastNode.properties }),
   },
   horizontalRule: {
     type: 'block',
@@ -123,6 +115,11 @@ const factorySpecs = {
     selector: 'footnotedefinition',
     getAttrs: (hastNode) => hastNode.properties,
   },
+  pre: {
+    type: 'block',
+    selector: 'pre',
+    wrapInParagraph: true,
+  },
   image: {
     type: 'inline',
     selector: 'img',
@@ -188,6 +185,7 @@ export default () => {
             wrappableTags,
             markdown,
           }),
+        skipRendering: ['footnoteReference', 'footnoteDefinition', 'code'],
       });
 
       return { document };

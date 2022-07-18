@@ -357,6 +357,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'ObjectStorage::BackgroundMoveWorker' => 5,
         'ObjectStorage::MigrateUploadsWorker' => 3,
         'Packages::CleanupPackageFileWorker' => 0,
+        'Packages::Cleanup::ExecutePolicyWorker' => 0,
         'Packages::Composer::CacheUpdateWorker' => false,
         'Packages::Go::SyncPackagesWorker' => 3,
         'Packages::MarkPackageFilesForDestructionWorker' => 3,

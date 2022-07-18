@@ -399,6 +399,7 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :packages_cleanup_package_file_worker_capacity,
+            :package_registry_cleanup_policies_worker_capacity,
             allow_nil: false,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 

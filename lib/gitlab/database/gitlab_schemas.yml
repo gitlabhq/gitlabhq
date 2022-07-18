@@ -391,7 +391,6 @@ personal_access_tokens: :gitlab_main
 plan_limits: :gitlab_main
 plans: :gitlab_main
 pool_repositories: :gitlab_main
-post_migration_test_table: :gitlab_main
 postgres_async_indexes: :gitlab_shared
 postgres_autovacuum_activity: :gitlab_shared
 postgres_foreign_keys: :gitlab_shared

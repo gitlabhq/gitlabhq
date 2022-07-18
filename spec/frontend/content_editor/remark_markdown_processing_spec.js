@@ -77,6 +77,7 @@ const {
     link,
     listItem,
     orderedList,
+    pre,
     strike,
     table,
     tableRow,
@@ -1049,6 +1050,34 @@ function matchwo(a,b)
       expectedMarkdown: `*bar*
 
 *baz*`,
+    },
+    {
+      markdown: `
+<table><tr><td>
+<pre>
+**Hello**,
+
+_world_.
+</pre>
+</td></tr></table>
+`,
+      expectedDoc: doc(
+        table(
+          source('<table><tr><td>\n<pre>\n**Hello**,\n\n_world_.\n</pre>\n</td></tr></table>'),
+          tableRow(
+            source('<tr><td>\n<pre>\n**Hello**,\n\n_world_.\n</pre>\n</td></tr>'),
+            tableCell(
+              source('<td>\n<pre>\n**Hello**,\n\n_world_.\n</pre>\n</td>'),
+              pre(
+                source('<pre>\n**Hello**,\n\n_world_.\n</pre>'),
+                paragraph(source('**Hello**,'), '**Hello**,\n'),
+                paragraph(source('_world_.\n'), italic(source('_world_'), 'world'), '.\n'),
+              ),
+              paragraph(),
+            ),
+          ),
+        ),
+      ),
     },
   ];
 

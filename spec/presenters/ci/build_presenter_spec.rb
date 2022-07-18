@@ -29,36 +29,6 @@ RSpec.describe Ci::BuildPresenter do
     end
   end
 
-  describe '#erased_by_user?' do
-    it 'takes a build and optional params' do
-      expect(presenter).not_to be_erased_by_user
-    end
-  end
-
-  describe '#erased_by_name' do
-    context 'when build is not erased' do
-      before do
-        expect(presenter).to receive(:erased_by_user?).and_return(false)
-      end
-
-      it 'returns nil' do
-        expect(presenter.erased_by_name).to be_nil
-      end
-    end
-
-    context 'when build is erased' do
-      before do
-        expect(presenter).to receive(:erased_by_user?).and_return(true)
-        expect(build).to receive(:erased_by)
-          .and_return(double(:user, name: 'John Doe'))
-      end
-
-      it 'returns the name of the eraser' do
-        expect(presenter.erased_by_name).to eq('John Doe')
-      end
-    end
-  end
-
   describe '#status_title' do
     context 'when build is auto-canceled' do
       before do
@@ -164,58 +134,6 @@ RSpec.describe Ci::BuildPresenter do
 
       it 'returns variables' do
         expect(presenter.trigger_variables).to eq(trigger_request.user_variables)
-      end
-    end
-  end
-
-  describe '#tooltip_message' do
-    context 'When build has failed' do
-      let(:build) { create(:ci_build, :script_failure, pipeline: pipeline) }
-
-      it 'returns the reason of failure' do
-        tooltip = subject.tooltip_message
-
-        expect(tooltip).to eq("#{build.name} - failed - (script failure)")
-      end
-    end
-
-    context 'When build has failed and retried' do
-      let(:build) { create(:ci_build, :script_failure, :retried, pipeline: pipeline) }
-
-      it 'includes the reason of failure and the retried title' do
-        tooltip = subject.tooltip_message
-
-        expect(tooltip).to eq("#{build.name} - failed - (script failure) (retried)")
-      end
-    end
-
-    context 'When build has failed and is allowed to' do
-      let(:build) { create(:ci_build, :script_failure, :allowed_to_fail, pipeline: pipeline) }
-
-      it 'includes the reason of failure' do
-        tooltip = subject.tooltip_message
-
-        expect(tooltip).to eq("#{build.name} - failed - (script failure) (allowed to fail)")
-      end
-    end
-
-    context 'For any other build (no retried)' do
-      let(:build) { create(:ci_build, :success, pipeline: pipeline) }
-
-      it 'includes build name and status' do
-        tooltip = subject.tooltip_message
-
-        expect(tooltip).to eq("#{build.name} - passed")
-      end
-    end
-
-    context 'For any other build (retried)' do
-      let(:build) { create(:ci_build, :success, :retried, pipeline: pipeline) }
-
-      it 'includes build name and status' do
-        tooltip = subject.tooltip_message
-
-        expect(tooltip).to eq("#{build.name} - passed (retried)")
       end
     end
   end

@@ -404,6 +404,7 @@ module ApplicationSettingsHelper
       :wiki_page_max_content_bytes,
       :container_registry_delete_tags_service_timeout,
       :rate_limiting_response_text,
+      :package_registry_cleanup_policies_worker_capacity,
       :container_registry_expiration_policies_worker_capacity,
       :container_registry_cleanup_tags_service_max_list_size,
       :container_registry_import_max_tags_count,

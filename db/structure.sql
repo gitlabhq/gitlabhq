@@ -11333,12 +11333,14 @@ CREATE TABLE application_settings (
     error_tracking_api_url text,
     git_rate_limit_users_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     error_tracking_access_token_encrypted text,
+    package_registry_cleanup_policies_worker_capacity integer DEFAULT 2 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_git_rate_limit_users_allowlist_max_usernames CHECK ((cardinality(git_rate_limit_users_allowlist) <= 100)),
     CONSTRAINT app_settings_p_cleanup_package_file_worker_capacity_positive CHECK ((packages_cleanup_package_file_worker_capacity >= 0)),
+    CONSTRAINT app_settings_pkg_registry_cleanup_pol_worker_capacity_gte_zero CHECK ((package_registry_cleanup_policies_worker_capacity >= 0)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
     CONSTRAINT app_settings_yaml_max_depth_positive CHECK ((max_yaml_depth > 0)),
     CONSTRAINT app_settings_yaml_max_size_positive CHECK ((max_yaml_size_bytes > 0)),
@@ -18885,20 +18887,6 @@ CREATE SEQUENCE pool_repositories_id_seq
 
 ALTER SEQUENCE pool_repositories_id_seq OWNED BY pool_repositories.id;
 
-CREATE TABLE post_migration_test_table (
-    id bigint NOT NULL,
-    status integer NOT NULL
-);
-
-CREATE SEQUENCE post_migration_test_table_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE post_migration_test_table_id_seq OWNED BY post_migration_test_table.id;
-
 CREATE TABLE postgres_async_indexes (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23384,8 +23372,6 @@ ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regcl
 
 ALTER TABLE ONLY pool_repositories ALTER COLUMN id SET DEFAULT nextval('pool_repositories_id_seq'::regclass);
 
-ALTER TABLE ONLY post_migration_test_table ALTER COLUMN id SET DEFAULT nextval('post_migration_test_table_id_seq'::regclass);
-
 ALTER TABLE ONLY postgres_async_indexes ALTER COLUMN id SET DEFAULT nextval('postgres_async_indexes_id_seq'::regclass);
 
 ALTER TABLE ONLY postgres_reindex_actions ALTER COLUMN id SET DEFAULT nextval('postgres_reindex_actions_id_seq'::regclass);
@@ -25488,9 +25474,6 @@ ALTER TABLE ONLY plans
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT pool_repositories_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY post_migration_test_table
-    ADD CONSTRAINT post_migration_test_table_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY postgres_async_indexes
     ADD CONSTRAINT postgres_async_indexes_pkey PRIMARY KEY (id);
 
@@ -27041,6 +27024,8 @@ CREATE UNIQUE INDEX idx_devops_adoption_segments_namespaces_pair ON analytics_de
 CREATE INDEX idx_eaprpb_external_approval_rule_id ON external_approval_rules_protected_branches USING btree (external_approval_rule_id);
 
 CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON elastic_reindexing_slices USING btree (elastic_reindexing_subtask_id);
+
+CREATE INDEX idx_enabled_pkgs_cleanup_policies_on_next_run_at_project_id ON packages_cleanup_policies USING btree (next_run_at, project_id) WHERE (keep_n_duplicated_package_files <> 'all'::text);
 
 CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_merge_requests USING btree (environment_id, merge_request_id);
 

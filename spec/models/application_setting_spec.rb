@@ -104,6 +104,9 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_numericality_of(:packages_cleanup_package_file_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.not_to allow_value(nil).for(:packages_cleanup_package_file_worker_capacity) }
 
+    it { is_expected.to validate_numericality_of(:package_registry_cleanup_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.not_to allow_value(nil).for(:package_registry_cleanup_policies_worker_capacity) }
+
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
     it { is_expected.to validate_presence_of(:max_artifacts_size) }

@@ -21,7 +21,6 @@
 
 import { Mark } from 'prosemirror-model';
 import { visitParents, SKIP } from 'unist-util-visit-parents';
-import { toString } from 'hast-util-to-string';
 import { isFunction, isString, noop } from 'lodash';
 
 const NO_ATTRIBUTES = {};
@@ -357,15 +356,6 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, markdow
 
         state.closeUntil(parent);
         state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent, markdown), factory);
-
-        /**
-         * If a getContent function is provided, we immediately close
-         * the node to delegate content processing to this function.
-         * */
-        if (isFunction(factory.getContent)) {
-          state.addText(schema, factory.getContent({ hastNode, hastNodeText: toString(hastNode) }));
-          state.closeNode();
-        }
       };
     } else if (factory.type === 'inline') {
       const nodeType = schema.nodeType(proseMirrorName);
@@ -571,19 +561,6 @@ const wrapInlineElements = (nodes, wrappableTags) =>
  * it allows applying a processing function to that text. This is useful when
  * you can transform the text node, i.e trim(), substring(), etc.
  *
- * **skipChildren**
- *
- * Skips a hast node’s children while traversing the tree.
- *
- * **getContent**
- *
- * Allows to pass a custom function that returns the content of a block node. The
- * Content is limited to a single text node therefore the function should return
- * a String value.
- *
- * Use this property along skipChildren to provide custom processing of child nodes
- * for a block node.
- *
  * **parent**
  *
  * Specifies what is the node’s parent. This is useful when the node’s parent is not
@@ -634,7 +611,7 @@ export const createProseMirrorDocFromMdastTree = ({
 
     factory.handle(state, hastNode, parent);
 
-    return factory.skipChildren === true ? SKIP : true;
+    return true;
   });
 
   return state.buildDoc();

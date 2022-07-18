@@ -175,6 +175,7 @@ Example response:
   "container_registry_expiration_policies_caching": true,
   "container_registry_expiration_policies_worker_capacity": 4,
   "container_registry_token_expire_delay": 5,
+  "package_registry_cleanup_policies_worker_capacity": 2,
   "repository_storages": ["default"],
   "plantuml_enabled": false,
   "plantuml_url": null,
@@ -271,6 +272,7 @@ listed in the descriptions of the relevant settings.
 | `container_registry_expiration_policies_caching`  | boolean | no                                   | Caching during the execution of [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
 | `container_registry_expiration_policies_worker_capacity`  | integer          | no                  | Number of workers for [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
+| `package_registry_cleanup_policies_worker_capacity`  | integer          | no                  | Number of workers assigned to the packages cleanup policies. |
 | `deactivate_dormant_users`               | boolean          | no                                   | Enable [automatic deactivation of dormant users](../user/admin_area/moderate_users.md#automatically-deactivate-dormant-users). |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
 | `default_branch_name`                    | string           | no                                   | [Instance-level custom initial branch name](../user/project/repository/branches/default.md#instance-level-custom-initial-branch-name) ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225258) in GitLab 13.2). |

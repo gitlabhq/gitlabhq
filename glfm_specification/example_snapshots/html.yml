@@ -1292,8 +1292,7 @@
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>
-      </code></pre>
+    <pre class="content-editor-code-block undefined code highlight"><code></code></pre>
 04_05__leaf_blocks__fenced_code_blocks__012:
   canonical: |
     <pre><code></code></pre>
@@ -1557,8 +1556,9 @@
     </p></pre>
     </td></tr></table>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot read properties of undefined (reading 'className')
+    <table><tbody><tr><td colspan="1" rowspan="1"><pre><p>**Hello**,
+    </p><p><em>world</em>.
+    </p></pre><p></p></td></tr></tbody></table>
 04_06__leaf_blocks__html_blocks__002:
   canonical: |
     <table>
@@ -1810,11 +1810,12 @@
     </div>
     <p data-sourcepos="7:1-7:4" dir="auto">okay</p>
   wysiwyg: |-
-    <pre class="content-editor-code-block undefined code highlight"><code>
+    <pre><p><code>
     import Text.HTML.TagSoup
 
     main :: IO ()
-    main = print $ parseTags tags</code></pre>
+    main = print $ parseTags tags
+    </code></p></pre>
     <p>okay</p>
 04_06__leaf_blocks__html_blocks__023:
   canonical: |
@@ -4569,9 +4570,7 @@
     <li data-sourcepos="7:1-7:3">c</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a</p></li><li><p></p><pre class="content-editor-code-block undefined code highlight"><code>b
-
-    </code></pre></li><li><p>c</p></li></ul>
+    <ul bullet="*"><li><p>a</p></li><li><p></p><pre class="content-editor-code-block undefined code highlight"><code>b</code></pre></li><li><p>c</p></li></ul>
 05_04__container_blocks__lists__019:
   canonical: |
     <ul>
@@ -7559,11 +7558,11 @@
 07_01__gitlab_specific_markdown__footnotes__001:
   canonical: ""
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-9470" id="fnref-1-9470" data-footnote-ref>1</a></sup></p>
+    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-9034" id="fnref-1-9034" data-footnote-ref>1</a></sup></p>
     <section data-footnotes class="footnotes">
     <ol>
-    <li id="fn-1-9470">
-    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-9470" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    <li id="fn-1-9034">
+    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-9034" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
     </section>

@@ -23,6 +23,17 @@ module Packages
         where.not(keep_n_duplicated_package_files: 'all')
       end
 
+      def self.with_packages
+        exists_select = ::Packages::Package.installable
+                         .where('packages_packages.project_id = packages_cleanup_policies.project_id')
+                         .select(1)
+        where('EXISTS (?)', exists_select)
+      end
+
+      def self.runnable
+        runnable_schedules.with_packages.order(next_run_at: :asc)
+      end
+
       def set_next_run_at
         # fixed cadence of 12 hours
         self.next_run_at = Time.zone.now + 12.hours

@@ -2502,13 +2502,7 @@
         "attrs": {
           "language": null,
           "class": "code highlight"
-        },
-        "content": [
-          {
-            "type": "text",
-            "text": "\n  "
-          }
-        ]
+        }
       }
     ]
   }
@@ -2886,8 +2880,69 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__001: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'className')
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "pre",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "**Hello**,\n"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "marks": [
+                              {
+                                "type": "italic"
+                              }
+                            ],
+                            "text": "world"
+                          },
+                          {
+                            "type": "text",
+                            "text": ".\n"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__002: |-
   {
     "type": "doc",
@@ -3304,15 +3359,21 @@
     "type": "doc",
     "content": [
       {
-        "type": "codeBlock",
-        "attrs": {
-          "language": null,
-          "class": "code highlight"
-        },
+        "type": "pre",
         "content": [
           {
-            "type": "text",
-            "text": "\nimport Text.HTML.TagSoup\n\nmain :: IO ()\nmain = print $ parseTags tags"
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "marks": [
+                  {
+                    "type": "code"
+                  }
+                ],
+                "text": "\nimport Text.HTML.TagSoup\n\nmain :: IO ()\nmain = print $ parseTags tags\n"
+              }
+            ]
           }
         ]
       },
@@ -9571,7 +9632,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "b\n\n"
+                    "text": "b"
                   }
                 ]
               }
