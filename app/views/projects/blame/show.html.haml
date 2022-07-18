@@ -20,7 +20,7 @@
       %span.legend-box.legend-box-9
       %span.right-label Older
 
-    .table-responsive.file-content.blame.code{ class: user_color_scheme }
+    .table-responsive.file-content.blame.code{ class: user_color_scheme, data: { qa_selector: 'blame_file_content' } }
       %table
         - current_line = @blame.first_line
         - @blame.groups.each do |blame_group|
