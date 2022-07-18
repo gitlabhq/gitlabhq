@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Support for Alpha, Beta, Limited Availability, and Generally Available Features **(PREMIUM)**
 
-Some GitLab features are released as [Alpha or Beta versions](https://about.gitlab.com/support/statement-of-support.html#alpha--beta-features) which are not fully supported. All other features are considered to be Generally Available (GA).
+Some GitLab features are released as [Alpha or Beta versions](https://about.gitlab.com/support/statement-of-support/#alpha-beta-features) which are not fully supported. All other features are considered to be Generally Available (GA).
 
 ## Alpha Features
 

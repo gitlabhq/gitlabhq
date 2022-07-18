@@ -39,7 +39,11 @@ include:
     DOCKER_TLS_CERTDIR: /certs
     DOCKER_CERT_PATH: /certs/client
     DOCKER_TLS_VERIFY: 1
+    GIT_LFS_SKIP_SMUDGE: 1
     WD_INSTALL_DIR: /usr/local/bin
+  before_script:
+    - scripts/checkout-mr-source-sha
+    - !reference [.bundle-base, before_script]
   script:
     - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
     - qa_run_status=0
