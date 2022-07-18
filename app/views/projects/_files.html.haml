@@ -16,7 +16,7 @@
     #js-code-owners
 
   - if is_project_overview
-    .project-buttons.gl-mb-5.js-show-on-project-root
+    .project-buttons.gl-mb-5.js-show-on-project-root{ data: { qa_selector: 'project_buttons' } }
       = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout), project_buttons: true
 
   #js-tree-list{ data: vue_file_list_data(project, ref) }

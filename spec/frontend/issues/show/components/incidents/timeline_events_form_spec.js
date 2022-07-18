@@ -7,6 +7,7 @@ import IncidentTimelineEventForm from '~/issues/show/components/incidents/timeli
 import createTimelineEventMutation from '~/issues/show/components/incidents/graphql/queries/create_timeline_event.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert } from '~/flash';
+import { useFakeDate } from 'helpers/fake_date';
 import { timelineEventsCreateEventResponse, timelineEventsCreateEventError } from './mock_data';
 
 Vue.use(VueApollo);
@@ -21,6 +22,8 @@ function createMockApolloProvider(response = addEventResponse) {
 }
 
 describe('Timeline events form', () => {
+  // July 8 2020
+  useFakeDate(2020, 6, 8);
   let wrapper;
 
   const mountComponent = ({ mockApollo, mountMethod = shallowMountExtended, stubs }) => {
@@ -49,8 +52,14 @@ describe('Timeline events form', () => {
   const findSubmitAndAddButton = () => wrapper.findByText('Save and add another event');
   const findCancelButton = () => wrapper.findByText('Cancel');
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
+  const findDatePickerInput = () => wrapper.findByTestId('input-datepicker');
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');
+  const setDatetime = () => {
+    findDatePicker().vm.$emit('input', new Date('2021-08-12'));
+    findHourInput().vm.$emit('input', 5);
+    findMinuteInput().vm.$emit('input', 45);
+  };
 
   const submitForm = async () => {
     findSubmitButton().trigger('click');
@@ -85,6 +94,22 @@ describe('Timeline events form', () => {
       await cancelForm();
       expect(wrapper.emitted()).toEqual(closeFormEvent);
     });
+
+    it('should clear the form', async () => {
+      setDatetime();
+      await nextTick();
+
+      expect(findDatePickerInput().element.value).toBe('2021-08-12');
+      expect(findHourInput().element.value).toBe('5');
+      expect(findMinuteInput().element.value).toBe('45');
+
+      wrapper.vm.clear();
+      await nextTick();
+
+      expect(findDatePickerInput().element.value).toBe('2020-07-08');
+      expect(findHourInput().element.value).toBe('0');
+      expect(findMinuteInput().element.value).toBe('0');
+    });
   });
 
   describe('addTimelineEventQuery', () => {
@@ -92,7 +117,7 @@ describe('Timeline events form', () => {
       input: {
         incidentId: 'gid://gitlab/Issue/1',
         note: '',
-        occurredAt: '2020-07-06T00:00:00.000Z',
+        occurredAt: '2020-07-08T00:00:00.000Z',
       },
     };
 
@@ -117,9 +142,7 @@ describe('Timeline events form', () => {
         },
       };
 
-      findDatePicker().vm.$emit('input', new Date('2021-08-12'));
-      findHourInput().vm.$emit('input', 5);
-      findMinuteInput().vm.$emit('input', 45);
+      setDatetime();
 
       await nextTick();
       await submitForm();

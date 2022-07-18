@@ -31,6 +31,7 @@ module Gitlab
             sidekiq_elasticsearch_requests_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_elasticsearch_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent in requests to an Elasticsearch server', {}, SIDEKIQ_LATENCY_BUCKETS),
             sidekiq_jobs_failed_total:               ::Gitlab::Metrics.counter(:sidekiq_jobs_failed_total, 'Sidekiq jobs failed'),
             sidekiq_jobs_retried_total:              ::Gitlab::Metrics.counter(:sidekiq_jobs_retried_total, 'Sidekiq jobs retried'),
+            sidekiq_jobs_interrupted_total:          ::Gitlab::Metrics.counter(:sidekiq_jobs_interrupted_total, 'Sidekiq jobs interrupted'),
             sidekiq_redis_requests_total:            ::Gitlab::Metrics.counter(:sidekiq_redis_requests_total, 'Redis requests during a Sidekiq job execution'),
             sidekiq_elasticsearch_requests_total:    ::Gitlab::Metrics.counter(:sidekiq_elasticsearch_requests_total, 'Elasticsearch requests during a Sidekiq job execution'),
             sidekiq_running_jobs:                    ::Gitlab::Metrics.gauge(:sidekiq_running_jobs, 'Number of Sidekiq jobs running', {}, :all),
@@ -87,6 +88,10 @@ module Gitlab
 
         if job['retry_count'].present?
           @metrics[:sidekiq_jobs_retried_total].increment(labels, 1)
+        end
+
+        if job['interrupted_count'].present?
+          @metrics[:sidekiq_jobs_interrupted_total].increment(labels, 1)
         end
 
         job_succeeded = false

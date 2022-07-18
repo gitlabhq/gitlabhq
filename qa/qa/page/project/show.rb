@@ -44,6 +44,7 @@ module QA
         end
 
         view 'app/views/projects/_files.html.haml' do
+          element :project_buttons
           element :tree_holder, '.tree-holder' # rubocop:disable QA/ElementWithPattern
         end
 
@@ -191,6 +192,12 @@ module QA
         def has_visible_badge_image_link?(link_url)
           within_element(:project_badges_content) do
             has_element?(:badge_image_link, link_url: link_url)
+          end
+        end
+
+        def has_license?(name)
+          within_element(:project_buttons) do
+            has_link?(name)
           end
         end
       end

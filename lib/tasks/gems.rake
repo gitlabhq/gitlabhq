@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 namespace :gems do
+  # :nocov:
   namespace :error_tracking_open_api do
     desc 'Generate OpenAPI client for Error Tracking'
     # rubocop:disable Rails/RakeEnvironment
@@ -29,7 +30,6 @@ namespace :gems do
     end
     # rubocop:enable Rails/RakeEnvironment
 
-    # Stubbed in specs
     def root_directory
       File.expand_path('../../vendor/gems', __dir__)
     end
@@ -59,6 +59,7 @@ namespace :gems do
         replace_string(content, /(\.test_files\s*=).*/, '\1 []')
       end
 
+      remove_entry_secure(gem_dir / 'Gemfile')
       remove_entry_secure(gem_dir / '.rubocop.yml')
       remove_entry_secure(gem_dir / '.travis.yml')
       remove_entry_secure(gem_dir / 'git_push.sh')
@@ -103,4 +104,5 @@ namespace :gems do
       LICENSE
     end
   end
+  # :nocov:
 end

@@ -152,6 +152,15 @@ describe('TimelineEventsTab', () => {
       expect(findTimelineEventForm().isVisible()).toBe(true);
     });
 
+    it('should clear the form when button is clicked', async () => {
+      const mockClear = jest.fn();
+      wrapper.vm.$refs.eventForm.clear = mockClear;
+
+      await findAddEventButton().trigger('click');
+
+      expect(mockClear).toHaveBeenCalled();
+    });
+
     it('should hide the form when the hide event is emitted', async () => {
       // open the form
       await findAddEventButton().trigger('click');

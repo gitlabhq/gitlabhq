@@ -171,16 +171,6 @@ RSpec.describe Projects::UpdatePagesService do
           end
         end
 
-        shared_examples 'fails with outdated reference message' do
-          it 'fails' do
-            expect(execute).not_to eq(:success)
-            expect(project.reload.pages_metadatum).not_to be_deployed
-
-            expect(deploy_status).to be_failed
-            expect(deploy_status.description).to eq('build SHA is outdated for this ref')
-          end
-        end
-
         shared_examples 'successfully deploys' do
           it 'succeeds' do
             expect do
@@ -212,27 +202,29 @@ RSpec.describe Projects::UpdatePagesService do
             project.update_pages_deployment!(new_deployment)
           end
 
-          include_examples 'fails with outdated reference message'
+          it 'fails with outdated reference message' do
+            expect(execute).to eq(:error)
+            expect(project.reload.pages_metadatum).not_to be_deployed
+
+            expect(deploy_status).to be_failed
+            expect(deploy_status.description).to eq('build SHA is outdated for this ref')
+          end
         end
       end
 
-      context 'when uploaded deployment size is wrong' do
-        it 'raises an error' do
-          allow_next_instance_of(PagesDeployment) do |deployment|
-            allow(deployment)
-              .to receive(:size)
-              .and_return(file.size + 1)
-          end
-
-          expect do
-            expect(execute).not_to eq(:success)
-
-            expect(GenericCommitStatus.last.description).to eq("Error: The uploaded artifact size does not match the expected value.")
-            project.pages_metadatum.reload
-            expect(project.pages_metadatum).not_to be_deployed
-            expect(project.pages_metadatum.pages_deployment).to be_ni
-          end.to raise_error(Projects::UpdatePagesService::WrongUploadedDeploymentSizeError)
+      it 'fails when uploaded deployment size is wrong' do
+        allow_next_instance_of(PagesDeployment) do |deployment|
+          allow(deployment)
+            .to receive(:size)
+            .and_return(file.size + 1)
         end
+
+        expect(execute).not_to eq(:success)
+
+        expect(GenericCommitStatus.last.description).to eq('The uploaded artifact size does not match the expected value')
+        project.pages_metadatum.reload
+        expect(project.pages_metadatum).not_to be_deployed
+        expect(project.pages_metadatum.pages_deployment).to be_nil
       end
     end
   end

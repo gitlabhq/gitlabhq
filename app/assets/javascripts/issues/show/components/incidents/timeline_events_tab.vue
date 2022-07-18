@@ -61,6 +61,7 @@ export default {
       this.isEventFormVisible = false;
     },
     async showEventForm() {
+      this.$refs.eventForm.clear();
       this.isEventFormVisible = true;
       await this.$nextTick();
       this.$refs.eventForm.focusDate();

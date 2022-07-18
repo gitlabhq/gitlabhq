@@ -58,6 +58,12 @@ export default {
     };
   },
   methods: {
+    clear() {
+      const utcShiftedDate = getUtcShiftedDateNow();
+      this.currentDate = utcShiftedDate;
+      this.currentHour = utcShiftedDate.getHours();
+      this.currentMinute = utcShiftedDate.getMinutes();
+    },
     hideIncidentTimelineEventForm() {
       this.$emit('hide-incident-timeline-event-form');
     },
@@ -154,16 +160,17 @@ export default {
     >
       <gl-icon name="comment" class="note-icon" />
     </div>
-    <form class="gl-flex-grow-1" :class="{ 'gl-border-t': hasTimelineEvents }">
+    <form class="gl-flex-grow-1 gl-border-gray-50" :class="{ 'gl-border-t': hasTimelineEvents }">
       <div
         class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row datetime-picker"
       >
-        <gl-form-group :label="__('Date')" class="gl-mt-3 gl-mr-3">
+        <gl-form-group :label="__('Date')" class="gl-mt-5 gl-mr-5">
           <gl-datepicker id="incident-date" #default="{ formattedDate }" v-model="currentDate">
             <gl-form-input
               id="incident-date"
               ref="datepicker"
               v-model="datepickerTextInput"
+              data-testid="input-datepicker"
               class="gl-datepicker-input gl-pr-7!"
               :value="formattedDate"
               :placeholder="__('YYYY-MM-DD')"
@@ -171,7 +178,7 @@ export default {
             />
           </gl-datepicker>
         </gl-form-group>
-        <div class="gl-display-flex gl-mt-3">
+        <div class="gl-display-flex gl-mt-5">
           <gl-form-group :label="__('Time')">
             <div class="gl-display-flex">
               <label label-for="timeline-input-hours" class="sr-only"></label>
@@ -201,7 +208,7 @@ export default {
         </div>
       </div>
       <div class="common-note-form">
-        <gl-form-group :label="$options.i18n.areaLabel">
+        <gl-form-group class="gl-mb-3" :label="$options.i18n.areaLabel">
           <markdown-field
             :can-attach-file="false"
             :add-spacing-classes="false"

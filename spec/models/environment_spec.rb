@@ -34,6 +34,14 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
 
+  describe 'validation' do
+    it 'does not become invalid record when external_url is empty' do
+      environment = build(:environment, external_url: nil)
+
+      expect(environment).to be_valid
+    end
+  end
+
   describe '.before_save' do
     it 'ensures environment tier when a new object is created' do
       environment = build(:environment, name: 'gprd', tier: nil)
