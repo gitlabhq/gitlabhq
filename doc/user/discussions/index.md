@@ -154,11 +154,7 @@ If an issue or merge request is locked and closed, you cannot reopen it.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/351143) in GitLab 14.10: you can only mark comments in issues and epics as confidential. Previously, it was also possible for comments in merge requests and snippets.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `confidential_notes`.
-On GitLab.com, this feature is available.
+> - [Feature flag `confidential_notes`](https://gitlab.com/gitlab-org/gitlab/-/issues/362712) removed in GitLab 15.2.
 
 You can add an internal note **to an issue or an epic**. It's then visible only to the following people:
 

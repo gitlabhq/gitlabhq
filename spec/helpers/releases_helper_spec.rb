@@ -65,7 +65,8 @@ RSpec.describe ReleasesHelper do
                   manage_milestones_path
                   new_milestone_path
                   upcoming_release_docs_path
-                  edit_release_docs_path)
+                  edit_release_docs_path
+                  delete_release_docs_path)
 
         expect(helper.data_for_edit_release_page.keys).to match_array(keys)
       end

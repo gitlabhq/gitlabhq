@@ -13,6 +13,7 @@ export default ({
   editReleaseDocsPath,
   upcomingReleaseDocsPath,
 
+  deleteReleaseDocsPath = '',
   tagName = null,
   defaultBranch = null,
 }) => ({
@@ -29,6 +30,7 @@ export default ({
   releasesPagePath,
   editReleaseDocsPath,
   upcomingReleaseDocsPath,
+  deleteReleaseDocsPath,
 
   /**
    * The name of the tag associated with the release, provided by the backend.

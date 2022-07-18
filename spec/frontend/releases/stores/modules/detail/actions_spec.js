@@ -9,10 +9,15 @@ import { ASSET_LINK_TYPE } from '~/releases/constants';
 import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_release_link.mutation.graphql';
 import deleteReleaseAssetLinkMutation from '~/releases/graphql/mutations/delete_release_link.mutation.graphql';
 import updateReleaseMutation from '~/releases/graphql/mutations/update_release.mutation.graphql';
+import deleteReleaseMutation from '~/releases/graphql/mutations/delete_release.mutation.graphql';
 import * as actions from '~/releases/stores/modules/edit_new/actions';
 import * as types from '~/releases/stores/modules/edit_new/mutation_types';
 import createState from '~/releases/stores/modules/edit_new/state';
-import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
+import {
+  gqClient,
+  convertOneReleaseGraphQLResponse,
+  deleteReleaseSessionKey,
+} from '~/releases/util';
 
 jest.mock('~/api/tags_api');
 
@@ -581,6 +586,133 @@ describe('Release edit/new actions', () => {
           });
 
           expectCorrectErrorHandling();
+        });
+      });
+    });
+  });
+
+  describe('deleteRelease', () => {
+    let getters;
+    let dispatch;
+    let commit;
+    let release;
+
+    beforeEach(() => {
+      getters = {
+        releaseDeleteMutationVariables: {
+          input: {
+            projectPath: 'test-org/test',
+            tagName: 'v1.0',
+          },
+        },
+      };
+
+      release = convertOneReleaseGraphQLResponse(releaseResponse).data;
+
+      setupState({
+        release,
+        originalRelease: release,
+        ...getters,
+      });
+
+      dispatch = jest.fn();
+      commit = jest.fn();
+
+      gqClient.mutate.mockResolvedValue({
+        data: {
+          releaseDelete: {
+            errors: [],
+          },
+          releaseAssetLinkDelete: {
+            errors: [],
+          },
+        },
+      });
+    });
+
+    describe('when the delete is successful', () => {
+      beforeEach(() => {
+        window.sessionStorage.clear();
+      });
+
+      it('dispatches receiveSaveReleaseSuccess', async () => {
+        await actions.deleteRelease({ commit, dispatch, state, getters });
+        expect(dispatch.mock.calls).toEqual([
+          ['receiveSaveReleaseSuccess', state.releasesPagePath],
+        ]);
+      });
+
+      it('deletes the release', async () => {
+        await actions.deleteRelease({ commit, dispatch, state, getters });
+        expect(gqClient.mutate.mock.calls[0]).toEqual([
+          {
+            mutation: deleteReleaseMutation,
+            variables: getters.releaseDeleteMutationVariables,
+          },
+        ]);
+      });
+
+      it('stores the name for toasting', async () => {
+        await actions.deleteRelease({ commit, dispatch, state, getters });
+        expect(window.sessionStorage.getItem(deleteReleaseSessionKey(state.projectPath))).toBe(
+          state.release.name,
+        );
+      });
+    });
+
+    describe('when the delete request fails', () => {
+      beforeEach(() => {
+        gqClient.mutate.mockRejectedValue(error);
+      });
+
+      it('dispatches requestDeleteRelease and receiveSaveReleaseError with an error object', async () => {
+        await actions.deleteRelease({ commit, dispatch, state, getters });
+
+        expect(commit.mock.calls).toContainEqual([types.RECEIVE_SAVE_RELEASE_ERROR, error]);
+      });
+
+      it('shows a flash message', async () => {
+        await actions.deleteRelease({ commit, dispatch, state, getters });
+
+        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createFlash).toHaveBeenCalledWith({
+          message: 'Something went wrong while deleting the release.',
+        });
+      });
+    });
+
+    describe('when the delete returns errors', () => {
+      beforeEach(() => {
+        gqClient.mutate.mockResolvedValue({
+          data: {
+            releaseUpdate: {
+              errors: ['Something went wrong!'],
+            },
+            releaseAssetLinkDelete: {
+              errors: [],
+            },
+            releaseAssetLinkCreate: {
+              errors: [],
+            },
+          },
+        });
+      });
+
+      it('dispatches requestDeleteRelease and receiveSaveReleaseError with an error object', async () => {
+        await actions.deleteRelease({ commit, dispatch, state, getters });
+
+        expect(commit.mock.calls).toContainEqual([
+          types.RECEIVE_SAVE_RELEASE_ERROR,
+          expect.any(Error),
+        ]);
+      });
+
+      it('shows a flash message', async () => {
+        await actions.deleteRelease({ commit, dispatch, state, getters });
+
+        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createFlash).toHaveBeenCalledWith({
+          message: 'Something went wrong while deleting the release.',
         });
       });
     });

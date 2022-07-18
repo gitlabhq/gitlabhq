@@ -793,7 +793,6 @@ Gitlab/NamespacedClass:
     - 'app/workers/pages_domain_ssl_renewal_worker.rb'
     - 'app/workers/pages_domain_verification_cron_worker.rb'
     - 'app/workers/pages_domain_verification_worker.rb'
-    - 'app/workers/pages_transfer_worker.rb'
     - 'app/workers/pages_worker.rb'
     - 'app/workers/partition_creation_worker.rb'
     - 'app/workers/pipeline_hooks_worker.rb'

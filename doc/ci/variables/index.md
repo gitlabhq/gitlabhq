@@ -346,7 +346,7 @@ To mask a variable:
 1. Select the **Mask variable** checkbox.
 1. Select **Update variable**.
 
-The method used to mask variables [limits what can be included in a masked variable](](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13784#note_106756757)).
+The method used to mask variables [limits what can be included in a masked variable](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13784#note_106756757).
 The value of the variable must:
 
 - Be a single line.

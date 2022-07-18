@@ -20,7 +20,6 @@ Style/PercentLiteralDelimiters:
     - 'app/controllers/jira_connect/app_descriptor_controller.rb'
     - 'app/controllers/jira_connect/subscriptions_controller.rb'
     - 'app/controllers/profiles/two_factor_auths_controller.rb'
-    - 'app/controllers/projects/logs_controller.rb'
     - 'app/controllers/projects/performance_monitoring/dashboards_controller.rb'
     - 'app/controllers/projects/product_analytics_controller.rb'
     - 'app/controllers/projects/service_desk_controller.rb'

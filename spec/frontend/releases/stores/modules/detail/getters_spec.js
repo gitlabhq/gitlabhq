@@ -369,6 +369,26 @@ describe('Release edit/new getters', () => {
     });
   });
 
+  describe('releaseDeleteMutationVariables', () => {
+    it('returns all the data needed for the releaseDelete GraphQL mutation', () => {
+      const state = {
+        projectPath: 'test-org/test',
+        release: { tagName: 'v1.0' },
+      };
+
+      const expectedVariables = {
+        input: {
+          projectPath: 'test-org/test',
+          tagName: 'v1.0',
+        },
+      };
+
+      const actualVariables = getters.releaseDeleteMutationVariables(state);
+
+      expect(actualVariables).toEqual(expectedVariables);
+    });
+  });
+
   describe('formattedReleaseNotes', () => {
     it.each`
       description        | includeTagNotes | tagNotes       | included

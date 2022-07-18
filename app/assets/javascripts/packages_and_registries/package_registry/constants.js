@@ -9,6 +9,7 @@ export {
   DELETE_PACKAGE_FILE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
 } from '~/packages_and_registries/shared/constants';
 
 export const PACKAGE_TYPE_CONAN = 'CONAN';
@@ -61,6 +62,12 @@ export const TRACKING_ACTION_COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND =
   'copy_composer_registry_include_command';
 export const TRACKING_ACTION_COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND =
   'copy_composer_package_include_command';
+
+export const TRACKING_LABEL_PACKAGE_ASSET = 'package_assets';
+
+export const TRACKING_ACTION_DOWNLOAD_PACKAGE_ASSET = 'download_package_asset';
+export const TRACKING_ACTION_EXPAND_PACKAGE_ASSET = 'expand_package_asset';
+export const TRACKING_ACTION_COPY_PACKAGE_ASSET_SHA = 'copy_package_asset_sha';
 
 export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
 export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(

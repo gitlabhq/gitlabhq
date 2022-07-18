@@ -476,7 +476,6 @@ Layout/ArgumentAlignment:
     - 'ee/spec/services/geo/repository_verification_primary_service_spec.rb'
     - 'ee/spec/services/merge_requests/reset_approvals_service_spec.rb'
     - 'ee/spec/services/merge_trains/create_pipeline_service_spec.rb'
-    - 'ee/spec/services/namespaces/check_storage_size_service_spec.rb'
     - 'ee/spec/services/projects/mark_for_deletion_service_spec.rb'
     - 'ee/spec/services/projects/restore_service_spec.rb'
     - 'ee/spec/services/security/merge_reports_service_spec.rb'

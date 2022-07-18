@@ -44,7 +44,6 @@ Layout/SpaceInsideParens:
     - 'ee/app/services/compliance_management/frameworks/destroy_service.rb'
     - 'ee/app/services/compliance_management/frameworks/update_service.rb'
     - 'ee/app/services/elastic/cluster_reindexing_service.rb'
-    - 'ee/app/services/namespaces/check_storage_size_service.rb'
     - 'ee/app/services/sitemap/create_service.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
     - 'ee/lib/gitlab/auth/smartcard/session.rb'

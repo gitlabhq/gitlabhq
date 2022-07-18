@@ -269,6 +269,7 @@ Object {
     "name": "The first release",
     "releasedAt": 2018-12-10T00:00:00.000Z,
     "tagName": "v1.1",
+    "tagPath": "/releases-namespace/releases-project/-/tags/v1.1",
   },
 }
 `;

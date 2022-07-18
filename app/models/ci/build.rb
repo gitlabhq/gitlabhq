@@ -181,8 +181,6 @@ module Ci
       joins(:metadata).where("ci_builds_metadata.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
     end
 
-    scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
-
     scope :with_coverage, -> { where.not(coverage: nil) }
     scope :without_coverage, -> { where(coverage: nil) }
     scope :with_coverage_regex, -> { where.not(coverage_regex: nil) }

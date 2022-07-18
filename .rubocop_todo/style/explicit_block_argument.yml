@@ -16,7 +16,6 @@ Style/ExplicitBlockArgument:
     - 'app/models/merge_request.rb'
     - 'app/models/snippet_repository.rb'
     - 'app/services/import_export_clean_up_service.rb'
-    - 'app/services/issuable/clone/attributes_rewriter.rb'
     - 'app/services/packages/debian/generate_distribution_key_service.rb'
     - 'app/workers/concerns/each_shard_worker.rb'
     - 'db/migrate/20210629031900_associate_existing_dast_builds_with_variables.rb'

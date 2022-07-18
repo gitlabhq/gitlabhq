@@ -2,7 +2,6 @@
 Cop/UserAdmin:
   Exclude:
   - app/controllers/admin/impersonations_controller.rb
-  - app/controllers/concerns/spammable_actions.rb
   - app/controllers/sessions_controller.rb
   - app/finders/autocomplete/routes_finder.rb
   - app/finders/ci/jobs_finder.rb
@@ -32,8 +31,6 @@ Cop/UserAdmin:
   - app/services/projects/fork_service.rb
   - app/services/users/build_service.rb
   - ee/app/controllers/ee/projects_controller.rb
-  - ee/app/graphql/mutations/admin/analytics/devops_adoption/segments/mixins.rb
-  - ee/app/graphql/resolvers/admin/analytics/devops_adoption/segments_resolver.rb
   - ee/app/helpers/ee/dashboard_helper.rb
   - ee/app/helpers/ee/import_helper.rb
   - ee/app/helpers/ee/subscribable_banner_helper.rb
@@ -53,7 +50,6 @@ Cop/UserAdmin:
   - lib/api/award_emoji.rb
   - lib/api/ci/runners.rb
   - lib/api/entities/ci/runner_details.rb
-  - lib/api/entities/ci/user_safe.rb
   - lib/api/groups.rb
   - lib/api/helpers.rb
   - lib/api/personal_access_tokens.rb
@@ -61,7 +57,6 @@ Cop/UserAdmin:
   - lib/api/v3/github.rb
   - lib/constraints/admin_constrainer.rb
   - lib/gitlab/auth.rb
-  - lib/gitlab/background_migration/user_mentions/models/group.rb
   - lib/gitlab/ci/runner_instructions.rb
   - lib/gitlab/import_export/members_mapper.rb
   - lib/gitlab/performance_bar.rb

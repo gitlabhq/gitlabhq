@@ -45,7 +45,6 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   before_action only: :show do
-    push_frontend_feature_flag(:confidential_notes, project&.group)
     push_frontend_feature_flag(:issue_assignees_widget, project)
     push_frontend_feature_flag(:realtime_labels, project)
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)

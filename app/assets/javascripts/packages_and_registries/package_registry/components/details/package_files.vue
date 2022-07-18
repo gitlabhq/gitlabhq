@@ -5,8 +5,13 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import FileSha from '~/packages_and_registries/package_registry/components/details/file_sha.vue';
 import Tracking from '~/tracking';
+import { packageTypeToTrackCategory } from '~/packages_and_registries/package_registry/utils';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import {
+  TRACKING_LABEL_PACKAGE_ASSET,
+  TRACKING_ACTION_EXPAND_PACKAGE_ASSET,
+} from '~/packages_and_registries/package_registry/constants';
 
 export default {
   name: 'PackageFiles',
@@ -76,6 +81,11 @@ export default {
         },
       ].filter((c) => !c.hide);
     },
+    tracking() {
+      return {
+        category: packageTypeToTrackCategory(this.packageType),
+      };
+    },
   },
   methods: {
     formatSize(size) {
@@ -83,6 +93,11 @@ export default {
     },
     hasDetails(item) {
       return item.fileSha256 || item.fileMd5 || item.fileSha1;
+    },
+    trackToggleDetails(detailsShowing) {
+      if (!detailsShowing) {
+        this.track(TRACKING_ACTION_EXPAND_PACKAGE_ASSET, { label: TRACKING_LABEL_PACKAGE_ASSET });
+      }
     },
   },
   i18n: {
@@ -106,7 +121,10 @@ export default {
           :aria-label="detailsShowing ? __('Collapse') : __('Expand')"
           category="tertiary"
           size="small"
-          @click="toggleDetails"
+          @click="
+            toggleDetails();
+            trackToggleDetails(detailsShowing);
+          "
         />
         <gl-link
           :href="item.downloadPath"
@@ -129,8 +147,8 @@ export default {
           :href="item.pipeline.commitPath"
           class="gl-text-gray-500"
           data-testid="commit-link"
-          >{{ item.pipeline.sha }}</gl-link
-        >
+          >{{ item.pipeline.sha }}
+        </gl-link>
       </template>
 
       <template #cell(created)="{ item }">

@@ -454,11 +454,14 @@ const wrapInlineElements = (nodes, wrappableTags) =>
   nodes.reduce((children, child) => {
     const previous = children[children.length - 1];
 
-    if (child.type !== 'text' && !wrappableTags.includes(child.tagName)) {
+    if (
+      child.type === 'comment' ||
+      (child.type !== 'text' && !wrappableTags.includes(child.tagName))
+    ) {
       return [...children, child];
     }
 
-    const wrapperExists = previous?.properties.wrapper;
+    const wrapperExists = previous?.properties?.wrapper;
 
     if (wrapperExists) {
       const wrapper = previous;

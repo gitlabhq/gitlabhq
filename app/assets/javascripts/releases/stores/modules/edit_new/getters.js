@@ -156,6 +156,13 @@ export const releaseCreateMutatationVariables = (state, getters) => {
   };
 };
 
+export const releaseDeleteMutationVariables = (state) => ({
+  input: {
+    projectPath: state.projectPath,
+    tagName: state.release.tagName,
+  },
+});
+
 export const formattedReleaseNotes = ({ includeTagNotes, release: { description }, tagNotes }) =>
   includeTagNotes && tagNotes
     ? `${description}\n\n### ${s__('Releases|Tag message')}\n\n${tagNotes}\n`

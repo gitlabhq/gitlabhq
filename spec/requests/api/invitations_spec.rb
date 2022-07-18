@@ -361,7 +361,7 @@ RSpec.describe API::Invitations do
 
       users = create_list(:user, 5)
 
-      unresolved_n_plus_ones = 116 # 51 for 1 vs 167 for 5 - currently there are 29 queries added per user
+      unresolved_n_plus_ones = 136 # 54 for 1 vs 190 for 5 - currently there are 34 queries added per user
 
       expect do
         post invitations_url(project, maintainer), params: { user_id: users.map(&:id).join(','), access_level: Member::DEVELOPER }

@@ -3463,8 +3463,34 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__029: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapper')
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "*bar*\n"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "baz"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__030: |-
   {
     "type": "doc",
@@ -3481,11 +3507,44 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__031: |-
-  Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "okay"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__032: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapper')
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "';\n\n?>\n"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "okay"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__033: |-
   {
     "type": "doc",
@@ -3496,11 +3555,39 @@
     ]
   }
 04_06__leaf_blocks__html_blocks__034: |-
-  Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "okay"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__035: |-
-  Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "language": null,
+          "class": "code highlight"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "<!-- foo -->"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__036: |-
   {
     "type": "doc",
@@ -8782,11 +8869,147 @@
     ]
   }
 05_04__container_blocks__lists__008: |-
-  Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "foo"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "bar"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "baz"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "bim"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 05_04__container_blocks__lists__009: |-
-  Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "foo"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "notcode"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "foo"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "language": null,
+          "class": "code highlight"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "code"
+          }
+        ]
+      }
+    ]
+  }
 05_04__container_blocks__lists__010: |-
   {
     "type": "doc",
@@ -18374,8 +18597,20 @@
     ]
   }
 06_11__inlines__raw_html__013: |-
-  Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "foo "
+          }
+        ]
+      }
+    ]
+  }
 06_11__inlines__raw_html__014: |-
   {
     "type": "doc",
@@ -18416,14 +18651,50 @@
     ]
   }
 06_11__inlines__raw_html__016: |-
-  Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "foo "
+          }
+        ]
+      }
+    ]
+  }
 06_11__inlines__raw_html__017: |-
-  Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "foo "
+          }
+        ]
+      }
+    ]
+  }
 06_11__inlines__raw_html__018: |-
-  Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "foo &<]]>"
+          }
+        ]
+      }
+    ]
+  }
 06_11__inlines__raw_html__019: |-
   {
     "type": "doc",

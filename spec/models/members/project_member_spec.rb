@@ -174,8 +174,8 @@ RSpec.describe ProjectMember do
         expect { project.destroy! }.to change { user.can?(:guest_access, project) }.from(true).to(false)
       end
 
-      it 'refreshes the authorization without calling AuthorizedProjectUpdate::ProjectRecalculatePerUserService' do
-        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserService).not_to receive(:new)
+      it 'refreshes the authorization without calling AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker' do
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:bulk_perform_and_wait)
 
         project.destroy!
       end
@@ -199,7 +199,7 @@ RSpec.describe ProjectMember do
 
     context 'when importing' do
       it 'does not refresh' do
-        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserService).not_to receive(:new)
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:bulk_perform_and_wait)
 
         member = build(:project_member)
         member.importing = true
@@ -212,11 +212,11 @@ RSpec.describe ProjectMember do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
 
-    shared_examples_for 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService to recalculate authorizations' do
-      it 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService' do
-        expect_next_instance_of(AuthorizedProjectUpdate::ProjectRecalculatePerUserService, project, user) do |service|
-          expect(service).to receive(:execute)
-        end
+    shared_examples_for 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations' do
+      it 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker' do
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).to receive(:bulk_perform_and_wait).with(
+          [[project.id, user.id]]
+        )
 
         action
       end
@@ -242,7 +242,7 @@ RSpec.describe ProjectMember do
         expect { action }.to change { user.can?(:guest_access, project) }.from(false).to(true)
       end
 
-      it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService to recalculate authorizations'
+      it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations'
       it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
     end
 
@@ -257,7 +257,7 @@ RSpec.describe ProjectMember do
         expect { action }.to change { user.can?(:developer_access, project) }.from(false).to(true)
       end
 
-      it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService to recalculate authorizations'
+      it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations'
       it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
     end
 

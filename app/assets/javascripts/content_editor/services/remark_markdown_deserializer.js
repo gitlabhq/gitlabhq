@@ -5,7 +5,7 @@ import { createProseMirrorDocFromMdastTree } from './hast_to_prosemirror_convert
 const wrappableTags = ['img', 'br', 'code', 'i', 'em', 'b', 'strong', 'a', 'strike', 's', 'del'];
 
 const isTaskItem = (hastNode) => {
-  const { className } = hastNode.properties;
+  const className = hastNode.properties?.className;
 
   return (
     hastNode.tagName === 'li' && Array.isArray(className) && className.includes('task-list-item')
@@ -23,16 +23,16 @@ const factorySpecs = {
   listItem: {
     type: 'block',
     wrapInParagraph: true,
-    selector: (hastNode) => hastNode.tagName === 'li' && !hastNode.properties.className,
+    selector: (hastNode) => hastNode.tagName === 'li' && !hastNode.properties?.className,
     processText: (text) => text.trimRight(),
   },
   orderedList: {
     type: 'block',
-    selector: (hastNode) => hastNode.tagName === 'ol' && !hastNode.properties.className,
+    selector: (hastNode) => hastNode.tagName === 'ol' && !hastNode.properties?.className,
   },
   bulletList: {
     type: 'block',
-    selector: (hastNode) => hastNode.tagName === 'ul' && !hastNode.properties.className,
+    selector: (hastNode) => hastNode.tagName === 'ul' && !hastNode.properties?.className,
   },
   heading: {
     type: 'block',
@@ -62,7 +62,7 @@ const factorySpecs = {
   taskList: {
     type: 'block',
     selector: (hastNode) => {
-      const { className } = hastNode.properties;
+      const className = hastNode.properties?.className;
 
       return (
         ['ul', 'ol'].includes(hastNode.tagName) &&
@@ -164,6 +164,14 @@ const factorySpecs = {
   strike: {
     type: 'mark',
     selector: (hastNode) => ['strike', 's', 'del'].includes(hastNode.tagName),
+  },
+  /* TODO
+   * Implement proper editing support for HTML comments in the Content Editor
+   * https://gitlab.com/gitlab-org/gitlab/-/issues/342173
+   */
+  comment: {
+    type: 'ignore',
+    selector: (hastNode) => hastNode.type === 'comment',
   },
 };
 

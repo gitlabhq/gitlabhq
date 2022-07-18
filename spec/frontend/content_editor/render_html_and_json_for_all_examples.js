@@ -91,7 +91,9 @@ async function renderMarkdownToHTMLAndJSON(markdown, schema, deserializer) {
   const documentFragment = DOMSerializer.fromSchema(schema).serializeFragment(
     prosemirrorDocument.content,
   );
-  const htmlString = documentFragment.firstChild.outerHTML;
+  const htmlString = Array.from(documentFragment.children)
+    .map((el) => el.outerHTML)
+    .join('\n');
 
   const json = prosemirrorDocument.toJSON();
   const jsonString = JSON.stringify(json, null, 2);

@@ -108,7 +108,6 @@ Rails/SquishedSQLHeredocs:
     - 'ee/app/models/iterations/cadence.rb'
     - 'ee/app/models/vulnerabilities/statistic.rb'
     - 'ee/app/services/analytics/cycle_analytics/consistency_check_service.rb'
-    - 'ee/app/services/security/ingestion/bulk_updatable_task.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_vulnerability_statistics.rb'
     - 'ee/app/services/vulnerabilities/historical_statistics/adjustment_service.rb'
     - 'ee/app/services/vulnerabilities/statistics/adjustment_service.rb'

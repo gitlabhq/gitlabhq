@@ -71,7 +71,6 @@ Layout/MultilineOperationIndentation:
     - 'lib/gitlab/ci/reports/security/finding_key.rb'
     - 'lib/gitlab/database/load_balancing/connection_proxy.rb'
     - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'
-    - 'lib/gitlab/elasticsearch/logs/lines.rb'
     - 'lib/gitlab/form_builders/gitlab_ui_form_builder.rb'
     - 'lib/gitlab/git_access.rb'
     - 'lib/gitlab/gl_repository/repo_type.rb'

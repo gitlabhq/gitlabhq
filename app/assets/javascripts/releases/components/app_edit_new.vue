@@ -15,6 +15,7 @@ import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import AssetLinksForm from './asset_links_form.vue';
+import ConfirmDeleteModal from './confirm_delete_modal.vue';
 import TagField from './tag_field.vue';
 
 export default {
@@ -27,6 +28,7 @@ export default {
     GlDatepicker,
     GlLink,
     GlSprintf,
+    ConfirmDeleteModal,
     MarkdownField,
     AssetLinksForm,
     MilestoneCombobox,
@@ -133,6 +135,7 @@ export default {
     ...mapActions('editNew', [
       'initializeRelease',
       'saveRelease',
+      'deleteRelease',
       'updateReleaseTitle',
       'updateReleaseNotes',
       'updateReleaseMilestones',
@@ -260,6 +263,7 @@ export default {
         >
           {{ saveButtonLabel }}
         </gl-button>
+        <confirm-delete-modal v-if="isExistingRelease" @delete="deleteRelease" />
         <gl-button :href="cancelPath" class="js-cancel-button">{{ __('Cancel') }}</gl-button>
       </div>
     </form>

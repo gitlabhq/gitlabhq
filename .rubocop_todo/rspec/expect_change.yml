@@ -151,7 +151,6 @@ RSpec/ExpectChange:
     - 'ee/spec/services/ee/groups/deploy_tokens/create_service_spec.rb'
     - 'ee/spec/services/ee/groups/deploy_tokens/destroy_service_spec.rb'
     - 'ee/spec/services/ee/groups/deploy_tokens/revoke_service_spec.rb'
-    - 'ee/spec/services/ee/issuable/clone/attributes_rewriter_spec.rb'
     - 'ee/spec/services/ee/issuable/common_system_notes_service_spec.rb'
     - 'ee/spec/services/ee/issues/create_service_spec.rb'
     - 'ee/spec/services/ee/issues/update_service_spec.rb'

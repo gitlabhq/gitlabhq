@@ -173,6 +173,8 @@
     <hr data-sourcepos="3:1-3:3">
   wysiwyg: |-
     <hr>
+    <hr>
+    <hr>
 04_01__leaf_blocks__thematic_breaks__002:
   canonical: |
     <p>+++</p>
@@ -210,6 +212,8 @@
     <hr data-sourcepos="2:3-2:5">
     <hr data-sourcepos="3:4-3:6">
   wysiwyg: |-
+    <hr>
+    <hr>
     <hr>
 04_01__leaf_blocks__thematic_breaks__006:
   canonical: |
@@ -278,6 +282,8 @@
     <p data-sourcepos="5:1-5:7" dir="auto">---a---</p>
   wysiwyg: |-
     <p>_ _ _ _ a</p>
+    <p>a------</p>
+    <p>---a---</p>
 04_01__leaf_blocks__thematic_breaks__014:
   canonical: |
     <p><em>-</em></p>
@@ -304,6 +310,8 @@
     </ul>
   wysiwyg: |-
     <ul bullet="*"><li><p>foo</p></li></ul>
+    <hr>
+    <ul bullet="*"><li><p>bar</p></li></ul>
 04_01__leaf_blocks__thematic_breaks__016:
   canonical: |
     <p>Foo</p>
@@ -315,6 +323,8 @@
     <p data-sourcepos="3:1-3:3" dir="auto">bar</p>
   wysiwyg: |-
     <p>Foo</p>
+    <hr>
+    <p>bar</p>
 04_01__leaf_blocks__thematic_breaks__017:
   canonical: |
     <h2>Foo</h2>
@@ -325,6 +335,7 @@
     <p data-sourcepos="3:1-3:3" dir="auto">bar</p>
   wysiwyg: |-
     <h2>Foo</h2>
+    <p>bar</p>
 04_01__leaf_blocks__thematic_breaks__018:
   canonical: |
     <ul>
@@ -344,6 +355,8 @@
     </ul>
   wysiwyg: |-
     <ul bullet="*"><li><p>Foo</p></li></ul>
+    <hr>
+    <ul bullet="*"><li><p>Bar</p></li></ul>
 04_01__leaf_blocks__thematic_breaks__019:
   canonical: |
     <ul>
@@ -384,6 +397,11 @@
     <a id="user-content-foo-5" class="anchor" href="#foo-5" aria-hidden="true"></a>foo</h6>
   wysiwyg: |-
     <h1>foo</h1>
+    <h2>foo</h2>
+    <h3>foo</h3>
+    <h4>foo</h4>
+    <h5>foo</h5>
+    <h6>foo</h6>
 04_02__leaf_blocks__atx_headings__002:
   canonical: |
     <p>####### foo</p>
@@ -400,6 +418,7 @@
     <p data-sourcepos="3:1-3:8" dir="auto">#hashtag</p>
   wysiwyg: |-
     <p>#5 bolt</p>
+    <p>#hashtag</p>
 04_02__leaf_blocks__atx_headings__004:
   canonical: |
     <p>## foo</p>
@@ -437,6 +456,8 @@
     <a id="user-content-foo-2" class="anchor" href="#foo-2" aria-hidden="true"></a>foo</h1>
   wysiwyg: |-
     <h3>foo</h3>
+    <h2>foo</h2>
+    <h1>foo</h1>
 04_02__leaf_blocks__atx_headings__008:
   canonical: |
     <pre><code># foo
@@ -469,6 +490,7 @@
     <a id="user-content-bar" class="anchor" href="#bar" aria-hidden="true"></a>bar</h3>
   wysiwyg: |-
     <h2>foo</h2>
+    <h3>bar</h3>
 04_02__leaf_blocks__atx_headings__011:
   canonical: |
     <h1>foo</h1>
@@ -480,6 +502,7 @@
     <a id="user-content-foo-1" class="anchor" href="#foo-1" aria-hidden="true"></a>foo</h5>
   wysiwyg: |-
     <h1>foo</h1>
+    <h5>foo</h5>
 04_02__leaf_blocks__atx_headings__012:
   canonical: |
     <h3>foo</h3>
@@ -519,6 +542,8 @@
     </h1>
   wysiwyg: |-
     <h3>foo ###</h3>
+    <h2>foo ###</h2>
+    <h1>foo #</h1>
 04_02__leaf_blocks__atx_headings__016:
   canonical: |
     <hr />
@@ -530,6 +555,8 @@
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h2>
     <hr data-sourcepos="3:1-3:4">
   wysiwyg: |-
+    <hr>
+    <h2>foo</h2>
     <hr>
 04_02__leaf_blocks__atx_headings__017:
   canonical: |
@@ -543,6 +570,8 @@
     <p data-sourcepos="3:1-3:7" dir="auto">Bar foo</p>
   wysiwyg: |-
     <p>Foo bar</p>
+    <h1>baz</h1>
+    <p>Bar foo</p>
 04_02__leaf_blocks__atx_headings__018:
   canonical: |
     <h2></h2>
@@ -554,6 +583,8 @@
     <h3 data-sourcepos="3:1-3:3" dir="auto"></h3>
   wysiwyg: |-
     <h2></h2>
+    <h1></h1>
+    <h3></h3>
 04_03__leaf_blocks__setext_headings__001:
   canonical: |
     <h1>Foo <em>bar</em></h1>
@@ -567,6 +598,7 @@
     </h2>
   wysiwyg: |-
     <h1>Foo <em>bar</em></h1>
+    <h2>Foo <em>bar</em></h2>
 04_03__leaf_blocks__setext_headings__002:
   canonical: |
     <h1>Foo <em>bar
@@ -602,6 +634,7 @@
     <a id="user-content-foo-1" class="anchor" href="#foo-1" aria-hidden="true"></a>Foo</h1>
   wysiwyg: |-
     <h2>Foo</h2>
+    <h1>Foo</h1>
 04_03__leaf_blocks__setext_headings__005:
   canonical: |
     <h2>Foo</h2>
@@ -616,6 +649,8 @@
     <a id="user-content-foo-2" class="anchor" href="#foo-2" aria-hidden="true"></a>Foo</h1>
   wysiwyg: |-
     <h2>Foo</h2>
+    <h2>Foo</h2>
+    <h1>Foo</h1>
 04_03__leaf_blocks__setext_headings__006:
   canonical: |
     <pre><code>Foo
@@ -638,6 +673,7 @@
     ---
 
     Foo</code></pre>
+    <hr>
 04_03__leaf_blocks__setext_headings__007:
   canonical: |
     <h2>Foo</h2>
@@ -670,6 +706,8 @@
   wysiwyg: |-
     <p>Foo
     = =</p>
+    <p>Foo</p>
+    <hr>
 04_03__leaf_blocks__setext_headings__010:
   canonical: |
     <h2>Foo</h2>
@@ -701,6 +739,9 @@
     <p data-sourcepos="7:1-7:12" dir="auto">of dashes"/&gt;</p>
   wysiwyg: |-
     <h2>`Foo</h2>
+    <p>`</p>
+    <h2>&lt;a title="a lot</h2>
+    <p>of dashes"/&gt;</p>
 04_03__leaf_blocks__setext_headings__013:
   canonical: |
     <blockquote>
@@ -714,6 +755,7 @@
     <hr data-sourcepos="2:1-2:3">
   wysiwyg: |-
     <blockquote multiline="false"><p>Foo</p></blockquote>
+    <hr>
 04_03__leaf_blocks__setext_headings__014:
   canonical: |
     <blockquote>
@@ -744,6 +786,7 @@
     <hr data-sourcepos="2:1-2:3">
   wysiwyg: |-
     <ul bullet="*"><li><p>Foo</p></li></ul>
+    <hr>
 04_03__leaf_blocks__setext_headings__016:
   canonical: |
     <h2>Foo
@@ -771,6 +814,9 @@
     <p data-sourcepos="6:1-6:3" dir="auto">Baz</p>
   wysiwyg: |-
     <hr>
+    <h2>Foo</h2>
+    <h2>Bar</h2>
+    <p>Baz</p>
 04_03__leaf_blocks__setext_headings__018:
   canonical: |
     <p>====</p>
@@ -789,6 +835,7 @@
     </div>
   wysiwyg: |-
     <hr>
+    <hr>
 04_03__leaf_blocks__setext_headings__020:
   canonical: |
     <ul>
@@ -802,6 +849,7 @@
     <hr data-sourcepos="2:1-2:5">
   wysiwyg: |-
     <ul bullet="*"><li><p>foo</p></li></ul>
+    <hr>
 04_03__leaf_blocks__setext_headings__021:
   canonical: |
     <pre><code>foo
@@ -815,6 +863,7 @@
     <hr data-sourcepos="2:1-2:3">
   wysiwyg: |-
     <pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <hr>
 04_03__leaf_blocks__setext_headings__022:
   canonical: |
     <blockquote>
@@ -828,6 +877,7 @@
     <hr data-sourcepos="2:1-2:5">
   wysiwyg: |-
     <blockquote multiline="false"><p>foo</p></blockquote>
+    <hr>
 04_03__leaf_blocks__setext_headings__023:
   canonical: |
     <h2>&gt; foo</h2>
@@ -848,6 +898,8 @@
     <p data-sourcepos="5:1-5:3" dir="auto">baz</p>
   wysiwyg: |-
     <p>Foo</p>
+    <h2>bar</h2>
+    <p>baz</p>
 04_03__leaf_blocks__setext_headings__025:
   canonical: |
     <p>Foo
@@ -862,6 +914,8 @@
   wysiwyg: |-
     <p>Foo
     bar</p>
+    <hr>
+    <p>baz</p>
 04_03__leaf_blocks__setext_headings__026:
   canonical: |
     <p>Foo
@@ -876,6 +930,8 @@
   wysiwyg: |-
     <p>Foo
     bar</p>
+    <hr>
+    <p>baz</p>
 04_03__leaf_blocks__setext_headings__027:
   canonical: |
     <p>Foo
@@ -1027,6 +1083,7 @@
     <p data-sourcepos="2:1-2:3" dir="auto">bar</p>
   wysiwyg: |-
     <pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <p>bar</p>
 04_04__leaf_blocks__indented_code_blocks__009:
   canonical: |
     <h1>Heading</h1>
@@ -1052,6 +1109,10 @@
     <hr data-sourcepos="6:1-6:4">
   wysiwyg: |-
     <h1>Heading</h1>
+    <pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <h2>Heading</h2>
+    <pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre>
+    <hr>
 04_04__leaf_blocks__indented_code_blocks__010:
   canonical: |
     <pre><code>    foo
@@ -1221,6 +1282,7 @@
     <p data-sourcepos="4:1-4:3" dir="auto">bbb</p>
   wysiwyg: |-
     <blockquote multiline="false"><pre class="content-editor-code-block undefined code highlight"><code>aaa</code></pre></blockquote>
+    <p>bbb</p>
 04_05__leaf_blocks__fenced_code_blocks__011:
   canonical: "<pre><code>\n  \n</code></pre>\n"
   static: |-
@@ -1382,6 +1444,8 @@
     <p data-sourcepos="5:1-5:3" dir="auto">baz</p>
   wysiwyg: |-
     <p>foo</p>
+    <pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre>
+    <p>baz</p>
 04_05__leaf_blocks__fenced_code_blocks__023:
   canonical: |
     <h2>foo</h2>
@@ -1399,6 +1463,8 @@
     <a id="user-content-baz" class="anchor" href="#baz" aria-hidden="true"></a>baz</h1>
   wysiwyg: |-
     <h2>foo</h2>
+    <pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre>
+    <h1>baz</h1>
 04_05__leaf_blocks__fenced_code_blocks__024:
   canonical: |
     <pre><code class="language-ruby">def foo(x)
@@ -1516,6 +1582,7 @@
     <table><tbody><tr><td colspan="1" rowspan="1"><p>
                hi
         </p></td></tr></tbody></table>
+    <p>okay.</p>
 04_06__leaf_blocks__html_blocks__003:
   canonical: |2
      <div>
@@ -1642,6 +1709,10 @@
     ```
   wysiwyg: |-
     <div></div>
+    <p>
+    ``` c
+    int x = 33;
+    ```</p>
 04_06__leaf_blocks__html_blocks__015:
   canonical: |
     <a href="foo">
@@ -1744,6 +1815,7 @@
 
     main :: IO ()
     main = print $ parseTags tags</code></pre>
+    <p>okay</p>
 04_06__leaf_blocks__html_blocks__023:
   canonical: |
     <script type="text/javascript">
@@ -1806,6 +1878,7 @@
     <blockquote multiline="false"><div><p>
     foo
     </p></div></blockquote>
+    <p>bar</p>
 04_06__leaf_blocks__html_blocks__027:
   canonical: |
     <ul>
@@ -1842,8 +1915,9 @@
     *bar*
     <p data-sourcepos="2:1-2:5" dir="auto"><em>baz</em></p>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot read properties of undefined (reading 'wrapper')
+    <p>*bar*
+    </p>
+    <p><em>baz</em></p>
 04_06__leaf_blocks__html_blocks__030:
   canonical: |
     <script>
@@ -1864,8 +1938,7 @@
 
     <p data-sourcepos="5:1-5:4" dir="auto">okay</p>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    <p>okay</p>
 04_06__leaf_blocks__html_blocks__032:
   canonical: |
     <?php
@@ -1880,8 +1953,11 @@
     ?&gt;
     <p data-sourcepos="6:1-6:4" dir="auto">okay</p>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot read properties of undefined (reading 'wrapper')
+    <p>';
+
+    ?&gt;
+    </p>
+    <p>okay</p>
 04_06__leaf_blocks__html_blocks__033:
   canonical: |
     <!DOCTYPE html>
@@ -1918,8 +1994,7 @@
     ]]&gt;
     <p data-sourcepos="13:1-13:4" dir="auto">okay</p>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    <p>okay</p>
 04_06__leaf_blocks__html_blocks__035:
   canonical: |2
       <!-- foo -->
@@ -1930,8 +2005,7 @@
     lang=\"plaintext\" data-canonical-lang=\"\" v-pre=\"true\"><code><span id=\"LC1\"
     class=\"line\" lang=\"plaintext\">&lt;!-- foo --&gt;</span></code></pre>\n<copy-code></copy-code>\n</div>"
   wysiwyg: |-
-    Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    <pre class="content-editor-code-block undefined code highlight"><code>&lt;!-- foo --&gt;</code></pre>
 04_06__leaf_blocks__html_blocks__036:
   canonical: |2
       <div>
@@ -1959,6 +2033,9 @@
     </div>
   wysiwyg: |-
     <p>Foo</p>
+    <div><p>
+    bar
+    </p></div>
 04_06__leaf_blocks__html_blocks__038:
   canonical: |
     <div>
@@ -1974,6 +2051,8 @@
     <div><p>
     bar
     </p></div>
+    <p>
+    *foo*</p>
 04_06__leaf_blocks__html_blocks__039:
   canonical: |
     <p>Foo
@@ -2057,6 +2136,7 @@
     <pre class="content-editor-code-block undefined code highlight"><code>&lt;td&gt;
       Hi
     &lt;/td&gt;</code></pre>
+    <table><tbody><tr></tr></tbody></table>
 04_07__leaf_blocks__link_reference_definitions__001:
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
@@ -2115,6 +2195,8 @@
     <p data-sourcepos="5:1-5:5" dir="auto">[foo]</p>
   wysiwyg: |-
     <p>[foo]: /url 'title</p>
+    <p>with blank line'</p>
+    <p>[foo]</p>
 04_07__leaf_blocks__link_reference_definitions__007:
   canonical: |
     <p><a href="/url">foo</a></p>
@@ -2131,6 +2213,7 @@
     <p data-sourcepos="3:1-3:5" dir="auto">[foo]</p>
   wysiwyg: |-
     <p>[foo]:</p>
+    <p>[foo]</p>
 04_07__leaf_blocks__link_reference_definitions__009:
   canonical: |
     <p><a href="">foo</a></p>
@@ -2147,6 +2230,7 @@
     <p data-sourcepos="3:1-3:5" dir="auto">[foo]</p>
   wysiwyg: |-
     <p>[foo]: </p>
+    <p>[foo]</p>
 04_07__leaf_blocks__link_reference_definitions__011:
   canonical: |
     <p><a href="/url%5Cbar*baz" title="foo&quot;bar\baz">foo</a></p>
@@ -2221,6 +2305,7 @@
     <p data-sourcepos="3:1-3:5" dir="auto">[foo]</p>
   wysiwyg: |-
     <pre class="content-editor-code-block undefined code highlight"><code>[foo]: /url "title"</code></pre>
+    <p>[foo]</p>
 04_07__leaf_blocks__link_reference_definitions__021:
   canonical: |
     <pre><code>[foo]: /url
@@ -2234,6 +2319,7 @@
     <p data-sourcepos="5:1-5:5" dir="auto">[foo]</p>
   wysiwyg: |-
     <pre class="content-editor-code-block undefined code highlight"><code>[foo]: /url</code></pre>
+    <p>[foo]</p>
 04_07__leaf_blocks__link_reference_definitions__022:
   canonical: |
     <p>Foo
@@ -2246,6 +2332,7 @@
   wysiwyg: |-
     <p>Foo
     [bar]: /baz</p>
+    <p>[bar]</p>
 04_07__leaf_blocks__link_reference_definitions__023:
   canonical: |
     <h1><a href="/url">Foo</a></h1>
@@ -2261,6 +2348,7 @@
     </blockquote>
   wysiwyg: |-
     <h1><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Foo</a></h1>
+    <blockquote multiline="false"><p>bar</p></blockquote>
 04_07__leaf_blocks__link_reference_definitions__024:
   canonical: |
     <h1>bar</h1>
@@ -2271,6 +2359,7 @@
     <p data-sourcepos="4:1-4:5" dir="auto"><a href="/url">foo</a></p>
   wysiwyg: |-
     <h1>bar</h1>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__025:
   canonical: |
     <p>===
@@ -2305,6 +2394,7 @@
     </blockquote>
   wysiwyg: |-
     <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
+    <blockquote multiline="false"><p></p></blockquote>
 04_07__leaf_blocks__link_reference_definitions__028:
   canonical: ""
   static: ""
@@ -2319,6 +2409,7 @@
     <p data-sourcepos="3:1-3:3" dir="auto">bbb</p>
   wysiwyg: |-
     <p>aaa</p>
+    <p>bbb</p>
 04_08__leaf_blocks__paragraphs__002:
   canonical: |
     <p>aaa
@@ -2333,6 +2424,8 @@
   wysiwyg: |-
     <p>aaa
     bbb</p>
+    <p>ccc
+    ddd</p>
 04_08__leaf_blocks__paragraphs__003:
   canonical: |
     <p>aaa</p>
@@ -2342,6 +2435,7 @@
     <p data-sourcepos="4:1-4:3" dir="auto">bbb</p>
   wysiwyg: |-
     <p>aaa</p>
+    <p>bbb</p>
 04_08__leaf_blocks__paragraphs__004:
   canonical: |
     <p>aaa
@@ -2388,6 +2482,7 @@
     <p data-sourcepos="2:1-2:3" dir="auto">bbb</p>
   wysiwyg: |-
     <pre class="content-editor-code-block undefined code highlight"><code>aaa</code></pre>
+    <p>bbb</p>
 04_08__leaf_blocks__paragraphs__008:
   canonical: |
     <p>aaa<br />
@@ -2408,6 +2503,7 @@
     <a id="user-content-aaa" class="anchor" href="#aaa" aria-hidden="true"></a>aaa</h1>
   wysiwyg: |-
     <p>aaa</p>
+    <h1>aaa</h1>
 04_10__leaf_blocks__tables_extension__001:
   canonical: |
     <table>
@@ -2548,6 +2644,7 @@
     </blockquote>
   wysiwyg: |-
     <table><tbody><tr><th colspan="1" rowspan="1"><p>abc</p></th><th colspan="1" rowspan="1"><p>def</p></th></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p>baz</p></td></tr></tbody></table>
+    <blockquote multiline="false"><p>bar</p></blockquote>
 04_10__leaf_blocks__tables_extension__005:
   canonical: |
     <table>
@@ -2591,6 +2688,7 @@
     <p data-sourcepos="6:1-6:3" dir="auto">bar</p>
   wysiwyg: |-
     <table><tbody><tr><th colspan="1" rowspan="1"><p>abc</p></th><th colspan="1" rowspan="1"><p>def</p></th></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p>baz</p></td></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p></p></td></tr></tbody></table>
+    <p>bar</p>
 04_10__leaf_blocks__tables_extension__006:
   canonical: |
     <p>| abc | def |
@@ -2781,6 +2879,7 @@
     <hr data-sourcepos="2:1-2:3">
   wysiwyg: |-
     <blockquote multiline="false"><p>foo</p></blockquote>
+    <hr>
 05_01__container_blocks__block_quotes__008:
   canonical: |
     <blockquote>
@@ -2802,6 +2901,7 @@
     </ul>
   wysiwyg: |-
     <blockquote multiline="false"><ul bullet="*"><li><p>foo</p></li></ul></blockquote>
+    <ul bullet="*"><li><p>bar</p></li></ul>
 05_01__container_blocks__block_quotes__009:
   canonical: |
     <blockquote>
@@ -2823,6 +2923,7 @@
     </div>
   wysiwyg: |-
     <blockquote multiline="false"><pre class="content-editor-code-block undefined code highlight"><code>foo</code></pre></blockquote>
+    <pre class="content-editor-code-block undefined code highlight"><code>bar</code></pre>
 05_01__container_blocks__block_quotes__010:
   canonical: |
     <blockquote>
@@ -2844,6 +2945,8 @@
     </div>
   wysiwyg: |-
     <blockquote multiline="false"><pre class="content-editor-code-block undefined code highlight"><code></code></pre></blockquote>
+    <p>foo</p>
+    <pre class="content-editor-code-block undefined code highlight"><code></code></pre>
 05_01__container_blocks__block_quotes__011:
   canonical: |
     <blockquote>
@@ -2904,6 +3007,7 @@
     </blockquote>
   wysiwyg: |-
     <blockquote multiline="false"><p>foo</p></blockquote>
+    <blockquote multiline="false"><p>bar</p></blockquote>
 05_01__container_blocks__block_quotes__016:
   canonical: |
     <blockquote>
@@ -2944,6 +3048,7 @@
     </blockquote>
   wysiwyg: |-
     <p>foo</p>
+    <blockquote multiline="false"><p>bar</p></blockquote>
 05_01__container_blocks__block_quotes__019:
   canonical: |
     <blockquote>
@@ -2963,6 +3068,8 @@
     </blockquote>
   wysiwyg: |-
     <blockquote multiline="false"><p>aaa</p></blockquote>
+    <hr>
+    <blockquote multiline="false"><p>bbb</p></blockquote>
 05_01__container_blocks__block_quotes__020:
   canonical: |
     <blockquote>
@@ -2990,6 +3097,7 @@
     <p data-sourcepos="3:1-3:3" dir="auto">baz</p>
   wysiwyg: |-
     <blockquote multiline="false"><p>bar</p></blockquote>
+    <p>baz</p>
 05_01__container_blocks__block_quotes__022:
   canonical: |
     <blockquote>
@@ -3003,6 +3111,7 @@
     <p data-sourcepos="3:1-3:3" dir="auto">baz</p>
   wysiwyg: |-
     <blockquote multiline="false"><p>bar</p></blockquote>
+    <p>baz</p>
 05_01__container_blocks__block_quotes__023:
   canonical: |
     <blockquote>
@@ -3071,6 +3180,7 @@
     </blockquote>
   wysiwyg: |-
     <blockquote multiline="false"><pre class="content-editor-code-block undefined code highlight"><code>code</code></pre></blockquote>
+    <blockquote multiline="false"><p>not code</p></blockquote>
 05_02__container_blocks__list_items__001:
   canonical: |
     <p>A paragraph
@@ -3093,6 +3203,8 @@
   wysiwyg: |-
     <p>A paragraph
     with two lines.</p>
+    <pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre>
+    <blockquote multiline="false"><p>A block quote.</p></blockquote>
 05_02__container_blocks__list_items__002:
   canonical: |
     <ol>
@@ -3136,6 +3248,7 @@
     <p data-sourcepos="3:2-3:4" dir="auto">two</p>
   wysiwyg: |-
     <ul bullet="*"><li><p>one</p></li></ul>
+    <p>two</p>
 05_02__container_blocks__list_items__004:
   canonical: |
     <ul>
@@ -3170,6 +3283,7 @@
     </div>
   wysiwyg: |-
     <ul bullet="*"><li><p>one</p></li></ul>
+    <pre class="content-editor-code-block undefined code highlight"><code> two</code></pre>
 05_02__container_blocks__list_items__006:
   canonical: |
     <ul>
@@ -3242,6 +3356,7 @@
     <p data-sourcepos="3:1-3:5" dir="auto">2.two</p>
   wysiwyg: |-
     <p>-one</p>
+    <p>2.two</p>
 05_02__container_blocks__list_items__010:
   canonical: |
     <ul>
@@ -3426,6 +3541,8 @@
     </div>
   wysiwyg: |-
     <pre class="content-editor-code-block undefined code highlight"><code>indented code</code></pre>
+    <p>paragraph</p>
+    <pre class="content-editor-code-block undefined code highlight"><code>more code</code></pre>
 05_02__container_blocks__list_items__021:
   canonical: |
     <ol>
@@ -3489,6 +3606,7 @@
     <p data-sourcepos="3:1-3:3" dir="auto">bar</p>
   wysiwyg: |-
     <p>foo</p>
+    <p>bar</p>
 05_02__container_blocks__list_items__024:
   canonical: |
     <ul>
@@ -3502,6 +3620,7 @@
     <p data-sourcepos="3:3-3:5" dir="auto">bar</p>
   wysiwyg: |-
     <ul bullet="*"><li><p>foo</p></li></ul>
+    <p>bar</p>
 05_02__container_blocks__list_items__025:
   canonical: |
     <ul>
@@ -3575,6 +3694,7 @@
     <p data-sourcepos="3:3-3:5" dir="auto">foo</p>
   wysiwyg: |-
     <ul bullet="*"><li><p></p></li></ul>
+    <p>foo</p>
 05_02__container_blocks__list_items__029:
   canonical: |
     <ul>
@@ -3649,6 +3769,8 @@
   wysiwyg: |-
     <p>foo
     *</p>
+    <p>foo
+    1.</p>
 05_02__container_blocks__list_items__034:
   canonical: |
     <ol>
@@ -3949,6 +4071,7 @@
     </ul>
   wysiwyg: |-
     <ol parens="false"><li><p>foo</p></li></ol>
+    <ul bullet="*"><li><p>bar</p></li></ul>
 05_02__container_blocks__list_items__046:
   canonical: |
     <ul>
@@ -4038,6 +4161,7 @@
     </ul>
   wysiwyg: |-
     <ul bullet="*"><li><p>foo</p></li><li><p>bar</p></li></ul>
+    <ul bullet="*"><li><p>baz</p></li></ul>
 05_04__container_blocks__lists__002:
   canonical: |
     <ol>
@@ -4057,6 +4181,7 @@
     </ol>
   wysiwyg: |-
     <ol parens="false"><li><p>foo</p></li><li><p>bar</p></li></ol>
+    <ol parens="false"><li><p>baz</p></li></ol>
 05_04__container_blocks__lists__003:
   canonical: |
     <p>Foo</p>
@@ -4072,6 +4197,7 @@
     </ul>
   wysiwyg: |-
     <p>Foo</p>
+    <ul bullet="*"><li><p>bar</p></li><li><p>baz</p></li></ul>
 05_04__container_blocks__lists__004:
   canonical: |
     <p>The number of windows in my house is
@@ -4095,6 +4221,7 @@
     </ol>
   wysiwyg: |-
     <p>The number of windows in my house is</p>
+    <ol parens="false"><li><p>The number of doors is 6.</p></li></ol>
 05_04__container_blocks__lists__006:
   canonical: |
     <ul>
@@ -4177,8 +4304,8 @@
     <li data-sourcepos="7:1-7:5">bim</li>
     </ul>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    <ul bullet="*"><li><p>foo</p></li><li><p>bar</p></li></ul>
+    <ul bullet="*"><li><p>baz</p></li><li><p>bim</p></li></ul>
 05_04__container_blocks__lists__009:
   canonical: |
     <ul>
@@ -4209,8 +4336,8 @@
     <copy-code></copy-code>
     </div>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    <ul bullet="*"><li><p>foo</p><p>notcode</p></li><li><p>foo</p></li></ul>
+    <pre class="content-editor-code-block undefined code highlight"><code>code</code></pre>
 05_04__container_blocks__lists__010:
   canonical: |
     <ul>
@@ -4308,6 +4435,7 @@
     </div>
   wysiwyg: |-
     <ol parens="false"><li><p>a</p></li><li><p>b</p></li></ol>
+    <pre class="content-editor-code-block undefined code highlight"><code>3. c</code></pre>
 05_04__container_blocks__lists__014:
   canonical: |
     <ul>
@@ -4894,6 +5022,7 @@
     </ul>
   wysiwyg: |-
     <p>* foo</p>
+    <ul bullet="*"><li><p>foo</p></li></ul>
 06_03__inlines__entity_and_numeric_character_references__015:
   canonical: |
     <p>foo
@@ -6025,6 +6154,7 @@
     <p data-sourcepos="3:1-3:16" dir="auto">new paragraph~~.</p>
   wysiwyg: |-
     <p>This ~~has a</p>
+    <p>new paragraph~~.</p>
 06_07__inlines__links__001:
   canonical: |
     <p><a href="/uri" title="title">link</a></p>
@@ -6158,6 +6288,8 @@
     <p data-sourcepos="5:1-5:37" dir="auto"><a href="http://example.com?foo=3#frag" rel="nofollow noreferrer noopener" target="_blank">link</a></p>
   wysiwyg: |-
     <p><a target="_blank" rel="noopener noreferrer nofollow" href="#fragment">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com#fragment">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com?foo=3#frag">link</a></p>
 06_07__inlines__links__018:
   canonical: |
     <p><a href="foo%5Cbar">link</a></p>
@@ -6482,6 +6614,7 @@
     <p data-sourcepos="3:1-3:12" dir="auto">[ref[]: /uri</p>
   wysiwyg: |-
     <p>[foo][ref[]</p>
+    <p>[ref[]: /uri</p>
 06_07__inlines__links__063:
   canonical: |
     <p>[foo][ref[bar]]</p>
@@ -6491,6 +6624,7 @@
     <p data-sourcepos="3:1-3:16" dir="auto">[ref[bar]]: /uri</p>
   wysiwyg: |-
     <p>[foo][ref[bar]]</p>
+    <p>[ref[bar]]: /uri</p>
 06_07__inlines__links__064:
   canonical: |
     <p>[[[foo]]]</p>
@@ -6500,6 +6634,7 @@
     <p data-sourcepos="3:1-3:15" dir="auto">[[[foo]]]: /url</p>
   wysiwyg: |-
     <p>[[[foo]]]</p>
+    <p>[[[foo]]]: /url</p>
 06_07__inlines__links__065:
   canonical: |
     <p><a href="/uri">foo</a></p>
@@ -6523,6 +6658,7 @@
     <p data-sourcepos="3:1-3:8" dir="auto">[]: /uri</p>
   wysiwyg: |-
     <p>[]</p>
+    <p>[]: /uri</p>
 06_07__inlines__links__068:
   canonical: |
     <p>[
@@ -6537,6 +6673,8 @@
   wysiwyg: |-
     <p>[
     ]</p>
+    <p>[
+    ]: /uri</p>
 06_07__inlines__links__069:
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
@@ -6811,6 +6949,7 @@
     <p data-sourcepos="3:1-3:21" dir="auto">[[foo]]: /url "title"</p>
   wysiwyg: |-
     <p>![[foo]]</p>
+    <p>[[foo]]: /url "title"</p>
 06_08__inlines__images__020:
   canonical: |
     <p><img src="/url" alt="Foo" title="title" /></p>
@@ -6988,6 +7127,7 @@
     <p data-sourcepos="3:1-3:29" dir="auto">Visit <a href="http://www.commonmark.org/a.b" rel="nofollow noreferrer noopener" target="_blank">www.commonmark.org/a.b</a>.</p>
   wysiwyg: |-
     <p>Visit <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org">www.commonmark.org</a>.</p>
+    <p>Visit <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
 06_10__inlines__autolinks_extension__004:
   canonical: |
     <p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
@@ -7001,6 +7141,9 @@
     <p data-sourcepos="7:1-7:42" dir="auto">(<a href="http://www.google.com/search?q=Markup+(business)" rel="nofollow noreferrer noopener" target="_blank">www.google.com/search?q=Markup+(business)</a></p>
   wysiwyg: |-
     <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>))</p>
+    <p>(<a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p>
+    <p>(<a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
 06_10__inlines__autolinks_extension__005:
   canonical: |
     <p><a href="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
@@ -7017,6 +7160,7 @@
     <p data-sourcepos="3:1-3:38" dir="auto"><a href="http://www.google.com/search?q=commonmark" rel="nofollow noreferrer noopener" target="_blank">www.google.com/search?q=commonmark</a>&amp;hl;</p>
   wysiwyg: |-
     <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=commonmark">www.google.com/search?q=commonmark</a>&amp;hl;</p>
 06_10__inlines__autolinks_extension__007:
   canonical: |
     <p><a href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
@@ -7035,6 +7179,8 @@
     <p data-sourcepos="5:1-5:48" dir="auto">Anonymous FTP is available at <a href="ftp://foo.bar.baz/">ftp://foo.bar.baz</a>.</p>
   wysiwyg: |-
     <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://commonmark.org">http://commonmark.org</a></p>
+    <p>(Visit <a target="_blank" rel="noopener noreferrer nofollow" href="https://encrypted.google.com/search?q=Markup+(business)">https://encrypted.google.com/search?q=Markup+(business)</a>)</p>
+    <p>Anonymous FTP is available at ftp://foo.bar.baz.</p>
 06_10__inlines__autolinks_extension__009:
   canonical: |
     <p><a href="mailto:foo@bar.baz">foo@bar.baz</a></p>
@@ -7062,6 +7208,9 @@
     <p data-sourcepos="7:1-7:12" dir="auto">a.b-c_d@a.b_</p>
   wysiwyg: |-
     <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a>.</p>
+    <p>a.b-c_d@a.b-</p>
+    <p>a.b-c_d@a.b_</p>
 06_11__inlines__raw_html__001:
   canonical: |
     <p><a><bab><c2c></p>
@@ -7164,8 +7313,7 @@
   static: |-
     <p data-sourcepos="1:1-2:25" dir="auto">foo </p>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    <p>foo </p>
 06_11__inlines__raw_html__014:
   canonical: |
     <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
@@ -7182,30 +7330,28 @@
     <p data-sourcepos="3:1-3:16" dir="auto">foo &lt;!-- foo---&gt;</p>
   wysiwyg: |-
     <p>foo &lt;!--&gt; foo --&gt;</p>
+    <p>foo &lt;!-- foo---&gt;</p>
 06_11__inlines__raw_html__016:
   canonical: |
     <p>foo <?php echo $a; ?></p>
   static: |-
     <p data-sourcepos="1:1-1:21" dir="auto">foo <?php echo $a; ?></p>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    <p>foo </p>
 06_11__inlines__raw_html__017:
   canonical: |
     <p>foo <!ELEMENT br EMPTY></p>
   static: |-
     <p data-sourcepos="1:1-1:23" dir="auto">foo &lt;!ELEMENT br EMPTY&gt;</p>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    <p>foo </p>
 06_11__inlines__raw_html__018:
   canonical: |
     <p>foo <![CDATA[>&<]]></p>
   static: |-
     <p data-sourcepos="1:1-1:19" dir="auto">foo &lt;![CDATA[&gt;&amp;&lt;]]&gt;</p>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    <p>foo &amp;&lt;]]&gt;</p>
 06_11__inlines__raw_html__019:
   canonical: |
     <p>foo <a href="&ouml;"></p>
@@ -7240,6 +7386,7 @@
     &lt;/blockquote&gt;</strong></p>
   wysiwyg: |-
     <p></p>
+    <blockquote multiline="false"><p></p></blockquote>
 06_13__inlines__hard_line_breaks__001:
   canonical: |
     <p>foo<br />
@@ -7412,13 +7559,14 @@
 07_01__gitlab_specific_markdown__footnotes__001:
   canonical: ""
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-4719" id="fnref-1-4719" data-footnote-ref>1</a></sup></p>
+    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-9470" id="fnref-1-9470" data-footnote-ref>1</a></sup></p>
     <section data-footnotes class="footnotes">
     <ol>
-    <li id="fn-1-4719">
-    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-4719" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    <li id="fn-1-9470">
+    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-9470" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
     </section>
   wysiwyg: |-
     <p>footnote reference tag <sup identifier="1">1</sup></p>
+    <div node="footnoteDefinition(paragraph(&quot;footnote text&quot;))" htmlattributes="[object Object]"><p>footnote text</p></div>

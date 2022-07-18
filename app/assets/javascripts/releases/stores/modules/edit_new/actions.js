@@ -3,11 +3,16 @@ import createFlash from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';
+import deleteReleaseMutation from '~/releases/graphql/mutations/delete_release.mutation.graphql';
 import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_release_link.mutation.graphql';
 import deleteReleaseAssetLinkMutation from '~/releases/graphql/mutations/delete_release_link.mutation.graphql';
 import updateReleaseMutation from '~/releases/graphql/mutations/update_release.mutation.graphql';
 import oneReleaseForEditingQuery from '~/releases/graphql/queries/one_release_for_editing.query.graphql';
-import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
+import {
+  gqClient,
+  convertOneReleaseGraphQLResponse,
+  deleteReleaseSessionKey,
+} from '~/releases/util';
 
 import * as types from './mutation_types';
 
@@ -252,4 +257,27 @@ export const updateIncludeTagNotes = ({ commit }, includeTagNotes) => {
 
 export const updateReleasedAt = ({ commit }, releasedAt) => {
   commit(types.UPDATE_RELEASED_AT, releasedAt);
+};
+
+export const deleteRelease = ({ commit, getters, dispatch, state }) => {
+  commit(types.REQUEST_SAVE_RELEASE);
+  return gqClient
+    .mutate({
+      mutation: deleteReleaseMutation,
+      variables: getters.releaseDeleteMutationVariables,
+    })
+    .then((response) => checkForErrorsAsData(response, 'releaseDelete', ''))
+    .then(() => {
+      window.sessionStorage.setItem(
+        deleteReleaseSessionKey(state.projectPath),
+        state.originalRelease.name,
+      );
+      return dispatch('receiveSaveReleaseSuccess', state.releasesPagePath);
+    })
+    .catch((error) => {
+      commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
+      createFlash({
+        message: s__('Release|Something went wrong while deleting the release.'),
+      });
+    });
 };

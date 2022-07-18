@@ -17,7 +17,6 @@ module IncidentManagement
       end
 
       def execute
-        return error_non_editable unless timeline_event.editable?
         return error_no_permissions unless allowed?
 
         if timeline_event.update(update_params)
@@ -59,8 +58,8 @@ module IncidentManagement
         :none
       end
 
-      def error_non_editable
-        error(_('You cannot edit this timeline event.'))
+      def allowed?
+        user&.can?(:edit_incident_management_timeline_event, timeline_event)
       end
     end
   end

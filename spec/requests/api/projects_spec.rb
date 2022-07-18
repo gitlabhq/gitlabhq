@@ -3239,7 +3239,7 @@ RSpec.describe API::Projects do
       measure_project.add_developer(create(:user))
       measure_project.add_developer(create(:user)) # make this 2nd one to find any n+1
 
-      unresolved_n_plus_ones = 21 # 21 queries added per member
+      unresolved_n_plus_ones = 27 # 27 queries added per member
 
       expect do
         post api("/projects/#{project.id}/import_project_members/#{measure_project.id}", user)

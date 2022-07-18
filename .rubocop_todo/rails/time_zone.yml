@@ -121,7 +121,6 @@ Rails/TimeZone:
   - spec/lib/gitlab/prometheus/queries/deployment_query_spec.rb
   - spec/lib/gitlab/prometheus/queries/validate_query_spec.rb
   - spec/lib/gitlab/sidekiq_logging/json_formatter_spec.rb
-  - spec/lib/gitlab/updated_notes_paginator_spec.rb
   - spec/lib/gitlab/utils/json_size_estimator_spec.rb
   - spec/lib/gitlab/x509/signature_spec.rb
   - spec/lib/grafana/time_window_spec.rb

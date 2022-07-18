@@ -11,6 +11,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import ReleaseEditNewApp from '~/releases/components/app_edit_new.vue';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
+import ConfirmDeleteModal from '~/releases/components/confirm_delete_modal.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
@@ -43,6 +44,7 @@ describe('Release edit/new component', () => {
       initializeRelease: jest.fn(),
       saveRelease: jest.fn(),
       addEmptyAssetLink: jest.fn(),
+      deleteRelease: jest.fn(),
     };
 
     getters = {
@@ -285,6 +287,33 @@ describe('Release edit/new component', () => {
 
         expect(actions.saveRelease).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('delete', () => {
+    const findConfirmDeleteModal = () => wrapper.findComponent(ConfirmDeleteModal);
+
+    it('calls the deleteRelease action on confirmation', async () => {
+      await factory();
+      findConfirmDeleteModal().vm.$emit('delete');
+
+      expect(actions.deleteRelease).toHaveBeenCalled();
+    });
+
+    it('is hidden if this is a new release', async () => {
+      await factory({
+        store: {
+          modules: {
+            editNew: {
+              state: {
+                isExistingRelease: false,
+              },
+            },
+          },
+        },
+      });
+
+      expect(findConfirmDeleteModal().exists()).toBe(false);
     });
   });
 });

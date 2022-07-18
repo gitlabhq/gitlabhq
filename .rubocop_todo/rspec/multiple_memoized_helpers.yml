@@ -1,11 +1,9 @@
 ---
 RSpec/MultipleMemoizedHelpers:
   Exclude:
-  - spec/lib/gitlab/background_migration/populate_finding_uuid_for_vulnerability_feedback_spec.rb
   - spec/lib/gitlab/background_migration/recalculate_vulnerabilities_occurrences_uuid_spec.rb
   - spec/lib/gitlab/diff/position_tracer/line_strategy_spec.rb
   - spec/requests/api/ci/runner/jobs_artifacts_spec.rb
   - ee/spec/lib/ee/gitlab/background_migration/populate_latest_pipeline_ids_spec.rb
   - ee/spec/lib/ee/gitlab/background_migration/populate_uuids_for_security_findings_spec.rb
   - ee/spec/services/ee/boards/issues/move_service_spec.rb
-  - ee/spec/services/security/store_report_service_spec.rb

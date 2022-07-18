@@ -11501,6 +11501,9 @@ msgstr ""
 msgid "DAST Configuration"
 msgstr ""
 
+msgid "DAST configuration not found"
+msgstr ""
+
 msgid "DAST profile not found: %{name}"
 msgstr ""
 
@@ -12337,6 +12340,12 @@ msgstr ""
 msgid "Delete project"
 msgstr ""
 
+msgid "Delete release"
+msgstr ""
+
+msgid "Delete release %{release}?"
+msgstr ""
+
 msgid "Delete row"
 msgstr ""
 
@@ -12392,6 +12401,15 @@ msgid "DeleteProject|Failed to remove webhooks. Please try again or contact admi
 msgstr ""
 
 msgid "DeleteProject|Failed to remove wiki repository. Please try again or contact administrator."
+msgstr ""
+
+msgid "DeleteRelease|Are you sure you want to delete this release?"
+msgstr ""
+
+msgid "DeleteRelease|For more details, see %{docsPathStart}Deleting a release%{docsPathEnd}."
+msgstr ""
+
+msgid "DeleteRelease|You are about to delete release %{release} and its assets. The Git tag %{tag} will not be deleted."
 msgstr ""
 
 msgid "DeleteValueStream|'%{name}' Value Stream deleted"
@@ -32081,6 +32099,9 @@ msgid_plural "Releases"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Release %{deletedRelease} has been successfully deleted."
+msgstr ""
+
 msgid "Release assets"
 msgstr ""
 
@@ -32151,6 +32172,9 @@ msgid "Release|Include message from the annotated tag."
 msgstr ""
 
 msgid "Release|Something went wrong while creating a new release."
+msgstr ""
+
+msgid "Release|Something went wrong while deleting the release."
 msgstr ""
 
 msgid "Release|Something went wrong while getting the release details."
@@ -44358,9 +44382,6 @@ msgid "You cannot change the start date after the cadence has started. Please cr
 msgstr ""
 
 msgid "You cannot combine replace_ids with add_ids or remove_ids"
-msgstr ""
-
-msgid "You cannot edit this timeline event."
 msgstr ""
 
 msgid "You cannot impersonate a blocked user"

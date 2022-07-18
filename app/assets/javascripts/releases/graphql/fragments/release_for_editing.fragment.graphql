@@ -4,6 +4,7 @@ fragment ReleaseForEditing on Release {
   tagName
   description
   releasedAt
+  tagPath
   assets {
     links {
       nodes {

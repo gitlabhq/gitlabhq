@@ -1010,6 +1010,46 @@ _Paragraph 2_
 
 _Paragraph 2_`,
     },
+    /* TODO
+     * Implement proper editing support for HTML comments in the Content Editor
+     * https://gitlab.com/gitlab-org/gitlab/-/issues/342173
+     */
+    {
+      markdown: '<!-- HTML comment -->',
+      expectedDoc: doc(paragraph()),
+      expectedMarkdown: '',
+    },
+    {
+      markdown: `
+<![CDATA[
+function matchwo(a,b)
+{
+  if (a < b && a < 0) then {
+    return 1;
+
+  } else {
+
+    return 0;
+  }
+}
+]]>
+      `,
+      expectedDoc: doc(paragraph()),
+      expectedMarkdown: '',
+    },
+    {
+      markdown: `
+<!-- foo -->*bar*
+*baz*
+      `,
+      expectedDoc: doc(
+        paragraph(source('*bar*'), '*bar*\n'),
+        paragraph(source('*baz*'), italic(source('*baz*'), 'baz')),
+      ),
+      expectedMarkdown: `*bar*
+
+*baz*`,
+    },
   ];
 
   const runOnly = examples.find((example) => example.only === true);
@@ -1023,7 +1063,7 @@ _Paragraph 2_`,
 
       expect(expectedDoc).not.toBeFalsy();
       expect(document.toJSON()).toEqual(expectedDoc.toJSON());
-      expect(serialize(document)).toEqual(expectedMarkdown || trimmed);
+      expect(serialize(document)).toEqual(expectedMarkdown ?? trimmed);
     },
   );
 

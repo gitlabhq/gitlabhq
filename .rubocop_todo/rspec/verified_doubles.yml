@@ -85,14 +85,12 @@ RSpec/VerifiedDoubles:
     - ee/spec/lib/gitlab/graphql/aggregations/issues/lazy_links_aggregate_spec.rb
     - ee/spec/lib/gitlab/import_export/group/relation_factory_spec.rb
     - ee/spec/lib/gitlab/middleware/ip_restrictor_spec.rb
-    - ee/spec/lib/gitlab/patch/legacy_database_config_spec.rb
     - ee/spec/lib/gitlab/prometheus/queries/cluster_query_spec.rb
     - ee/spec/lib/gitlab/subscription_portal/clients/rest_spec.rb
     - ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb
     - ee/spec/lib/system_check/geo/geo_database_configured_check_spec.rb
     - ee/spec/models/app_sec/fuzzing/api/ci_configuration_spec.rb
     - ee/spec/models/approvable_spec.rb
-    - ee/spec/models/concerns/ee/sha_attribute_spec.rb
     - ee/spec/models/concerns/geo/verification_state_spec.rb
     - ee/spec/models/ee/ci/job_artifact_spec.rb
     - ee/spec/models/ee/user_spec.rb
@@ -247,7 +245,6 @@ RSpec/VerifiedDoubles:
     - qa/spec/support/formatters/allure_metadata_formatter_spec.rb
     - qa/spec/support/page_error_checker_spec.rb
     - qa/spec/support/run_spec.rb
-    - qa/spec/support/shared_examples/scenario_shared_examples.rb
     - qa/spec/tools/long_running_spec_reporter_spec.rb
     - spec/benchmarks/banzai_benchmark.rb
     - spec/bin/feature_flag_spec.rb
@@ -377,7 +374,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/api/helpers_spec.rb
     - spec/lib/atlassian/jira_connect/client_spec.rb
     - spec/lib/backup/files_spec.rb
-    - spec/lib/backup/gitaly_rpc_backup_spec.rb
     - spec/lib/backup/repositories_spec.rb
     - spec/lib/banzai/cross_project_reference_spec.rb
     - spec/lib/banzai/filter/gollum_tags_filter_spec.rb
@@ -400,7 +396,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/bulk_imports/projects/pipelines/snippets_repository_pipeline_spec.rb
     - spec/lib/bulk_imports/projects/transformers/project_attributes_transformer_spec.rb
     - spec/lib/constraints/admin_constrainer_spec.rb
-    - spec/lib/constraints/feature_constrainer_spec.rb
     - spec/lib/constraints/group_url_constrainer_spec.rb
     - spec/lib/constraints/jira_encoded_url_constrainer_spec.rb
     - spec/lib/constraints/project_url_constrainer_spec.rb
@@ -646,7 +641,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/gitlab/grape_logging/loggers/urgency_logger_spec.rb
     - spec/lib/gitlab/graphql/authorize/object_authorization_spec.rb
     - spec/lib/gitlab/graphql/batch_key_spec.rb
-    - spec/lib/gitlab/graphql/find_argument_in_parent_spec.rb
     - spec/lib/gitlab/graphql/generic_tracing_spec.rb
     - spec/lib/gitlab/graphql/lazy_spec.rb
     - spec/lib/gitlab/graphql/loaders/issuable_loader_spec.rb
@@ -707,7 +701,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/gitlab/metrics/elasticsearch_rack_middleware_spec.rb
     - spec/lib/gitlab/metrics/exporter/base_exporter_spec.rb
     - spec/lib/gitlab/metrics/exporter/gc_request_middleware_spec.rb
-    - spec/lib/gitlab/metrics/exporter/health_checks_middleware_spec.rb
     - spec/lib/gitlab/metrics/exporter/metrics_middleware_spec.rb
     - spec/lib/gitlab/metrics/rack_middleware_spec.rb
     - spec/lib/gitlab/metrics/requests_rack_middleware_spec.rb
@@ -835,7 +828,6 @@ RSpec/VerifiedDoubles:
     - spec/models/concerns/atomic_internal_id_spec.rb
     - spec/models/concerns/legacy_bulk_insert_spec.rb
     - spec/models/concerns/prometheus_adapter_spec.rb
-    - spec/models/concerns/sha256_attribute_spec.rb
     - spec/models/concerns/sha_attribute_spec.rb
     - spec/models/concerns/token_authenticatable_strategies/base_spec.rb
     - spec/models/concerns/token_authenticatable_strategies/encrypted_spec.rb
@@ -988,7 +980,6 @@ RSpec/VerifiedDoubles:
     - spec/services/ide/schemas_config_service_spec.rb
     - spec/services/import/bitbucket_server_service_spec.rb
     - spec/services/import/github_service_spec.rb
-    - spec/services/import/gitlab_projects/create_project_from_remote_file_service_spec.rb
     - spec/services/issues/create_service_spec.rb
     - spec/services/issues/related_branches_service_spec.rb
     - spec/services/jira_connect_subscriptions/create_service_spec.rb
@@ -1007,7 +998,6 @@ RSpec/VerifiedDoubles:
     - spec/services/metrics/users_starred_dashboards/create_service_spec.rb
     - spec/services/milestones/update_service_spec.rb
     - spec/services/namespaces/in_product_marketing_emails_service_spec.rb
-    - spec/services/namespaces/invite_team_email_service_spec.rb
     - spec/services/notes/create_service_spec.rb
     - spec/services/notes/render_service_spec.rb
     - spec/services/notification_service_spec.rb
@@ -1030,7 +1020,6 @@ RSpec/VerifiedDoubles:
     - spec/services/projects/update_service_spec.rb
     - spec/services/repositories/changelog_service_spec.rb
     - spec/services/search_service_spec.rb
-    - spec/services/service_ping/build_payload_service_spec.rb
     - spec/services/service_ping/submit_service_ping_service_spec.rb
     - spec/services/snippets/update_repository_storage_service_spec.rb
     - spec/services/spam/akismet_mark_as_spam_service_spec.rb

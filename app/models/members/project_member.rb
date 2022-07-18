@@ -111,7 +111,7 @@ class ProjectMember < Member
 
     # rubocop:disable CodeReuse/ServiceClass
     if blocking
-      AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user).execute
+      AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.bulk_perform_and_wait([[project.id, user.id]])
     else
       AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.perform_async(project.id, user.id)
     end

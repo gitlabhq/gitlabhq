@@ -33,7 +33,6 @@ import {
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
-  PULL_PACKAGE_TRACKING_ACTION,
   DELETE_PACKAGE_FILE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
@@ -41,6 +40,7 @@ import {
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
+  DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
 } from '~/packages_and_registries/package_registry/constants';
 
 import destroyPackageFileMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_file.mutation.graphql';
@@ -76,10 +76,10 @@ export default {
     DELETE_PACKAGE_TRACKING_ACTION,
     REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
     CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
-    PULL_PACKAGE_TRACKING_ACTION,
     DELETE_PACKAGE_FILE_TRACKING_ACTION,
     REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
     CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+    DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
   },
   data() {
     return {
@@ -288,7 +288,7 @@ export default {
           v-if="showFiles"
           :can-delete="packageEntity.canDestroy"
           :package-files="packageFiles"
-          @download-file="track($options.trackingActions.PULL_PACKAGE)"
+          @download-file="track($options.trackingActions.DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION)"
           @delete-file="handleFileDelete"
         />
       </gl-tab>

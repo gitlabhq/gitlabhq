@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe '0_log_deprecations' do
   def setup_other_deprecations
-    Warning.process(__FILE__) { :raise }
+    Warning.process(__FILE__) { :default }
   end
 
   def load_initializer
@@ -20,9 +20,12 @@ RSpec.describe '0_log_deprecations' do
   end
 
   after do
-    # reset state changed by initializer
-    Warning.clear
     ActiveSupport::Notifications.unsubscribe('deprecation.rails')
+  end
+
+  around do |example|
+    # reset state changed by initializer
+    Warning.clear(&example)
   end
 
   describe 'Ruby deprecations' do

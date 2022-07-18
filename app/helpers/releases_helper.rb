@@ -53,7 +53,8 @@ module ReleasesHelper
   def data_for_edit_release_page
     new_edit_pages_shared_data.merge(
       tag_name: @release.tag,
-      releases_page_path: project_releases_path(@project, anchor: @release.tag)
+      releases_page_path: project_releases_path(@project, anchor: @release.tag),
+      delete_release_docs_path: releases_help_page_path(anchor: 'delete-a-release')
     )
   end
 

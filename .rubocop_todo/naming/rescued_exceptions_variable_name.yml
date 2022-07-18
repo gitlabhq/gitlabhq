@@ -22,7 +22,6 @@ Naming/RescuedExceptionsVariableName:
     - 'app/models/blob_viewer/metrics_dashboard_yml.rb'
     - 'app/models/ci/build.rb'
     - 'app/models/ci/deleted_object.rb'
-    - 'app/models/clusters/concerns/elasticsearch_client.rb'
     - 'app/models/concerns/prometheus_adapter.rb'
     - 'app/models/concerns/repository_storage_movable.rb'
     - 'app/models/concerns/x509_serial_number_attribute.rb'

@@ -14,7 +14,6 @@ Rails/Pluck:
     - 'app/models/list.rb'
     - 'app/services/ci/pipeline_processing/atomic_processing_service/status_collection.rb'
     - 'app/services/feature_flags/update_service.rb'
-    - 'app/services/pod_logs/base_service.rb'
     - 'ee/app/graphql/mutations/incident_management/oncall_rotation/base.rb'
     - 'ee/app/models/boards/epic_list.rb'
     - 'ee/app/services/concerns/incident_management/oncall_rotations/shared_rotation_logic.rb'
