@@ -1,8 +1,0 @@
----
-name: soft_validation_on_external_url
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91970
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/367206
-milestone: '15.2'
-type: development
-group: group::release
-default_enabled: false

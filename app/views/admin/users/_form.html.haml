@@ -33,7 +33,8 @@
           - else
             .form-group.gl-form-group{ role: 'group' }
               = f.label :password, _('Password'), class: 'gl-display-block col-form-label'
-              = f.password_field :password, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input'
+              = f.password_field :password, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation'
+              = render_if_exists 'shared/password_requirements_list'
             .form-group.gl-form-group{ role: 'group' }
               = f.label :password_confirmation, _('Password confirmation'), class: 'gl-display-block col-form-label'
               = f.password_field :password_confirmation, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input'

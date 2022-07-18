@@ -387,3 +387,28 @@ When you are using GDK, you can set it up with:
 1. Start the database: `gdk start db`
 1. Load the environment from GDK: `eval $(cd ../gitaly && gdk env)`
 1. Create the database: `createdb --encoding=UTF8 --locale=C --echo praefect_test`
+
+## Git references used by Gitaly
+
+Gitaly uses many Git references ([refs](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefrefaref)) to provide Git services to GitLab.
+
+### Standard Git references
+
+These standard Git references are used by GitLab (through Gitaly) in any Git repository:
+
+- `refs/heads/`. Used for branches. See the [`git branch`](https://git-scm.com/docs/git-branch) documentation.
+- `refs/tags/`. Used for tags. See the [`git tag`](https://git-scm.com/docs/git-tag) documentation.
+
+### GitLab-specific references
+
+These GitLab-specific references are used exclusively by GitLab (through Gitaly):
+
+- `refs/keep-around/<object-id>`. References to commits that have pipeline jobs or merge requests. The `object-id` points to the commit the pipeline was run on.
+- `refs/merge-requests/<merge-request-iid>/`. [Merges](https://git-scm.com/docs/git-merge) merge two histories together. This ref namespace tracks information about a
+   merge using the following refs under it:
+  - `head`. Current `HEAD` of the merge request.
+  - `merge`. Commit for the merge request. Every merge request creates a commit object under `refs/keep-around`.
+  - If [merge trains are enabled](../ci/pipelines/merge_trains.md): `train`. Commit for the merge train.
+- `refs/pipelines/<pipeline-iid>`. References to pipelines. Temporarily used to store the pipeline commit object ID.
+- `refs/environments/<environment-slug>`. References to commits where deployments to environments were performed.
+- `refs/heads/revert-<source-commit-short-object-id>`. References to the commit's object ID created when [reverting changes](../user/project/merge_requests/revert_changes.md).

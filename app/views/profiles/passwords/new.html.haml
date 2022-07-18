@@ -21,7 +21,8 @@
     .col-sm-2.col-form-label
       = f.label :new_password, _('New password')
     .col-sm-10
-      = f.password_field :new_password, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input', data: { qa_selector: 'new_password_field' }
+      = f.password_field :new_password, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation', data: { qa_selector: 'new_password_field' }
+      = render_if_exists 'shared/password_requirements_list'
   .form-group.row
     .col-sm-2.col-form-label
       = f.label :password_confirmation, _('Password confirmation')

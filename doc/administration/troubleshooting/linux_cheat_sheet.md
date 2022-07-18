@@ -107,6 +107,9 @@ grep -2 search_term <filename>
 # Search on all files in directory (recursively)
 grep -r search_term <directory>
 
+# Grep namespace/project/name of a GitLab repository
+grep 'fullpath' /var/opt/gitlab/git-data/repositories/@hashed/<repo hash>/.git/config
+
 # search through *.gz files is the same except with zgrep
 zgrep search_term <filename>
 
@@ -125,6 +128,7 @@ history
 
 # Search through command history
 <ctrl>-R
+
 
 # Execute last command with sudo
 sudo !!

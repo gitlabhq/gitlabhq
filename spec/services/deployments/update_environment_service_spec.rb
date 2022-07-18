@@ -112,7 +112,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
       end
 
       context 'when external URL is invalid' do
-        let(:external_url) { 'javascript:alert("hello")' }
+        let(:external_url) { 'google.com' }
 
         it 'fails to update the tier due to validation error' do
           expect { subject.execute }.not_to change { environment.tier }
@@ -123,7 +123,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
             .with(an_instance_of(described_class::EnvironmentUpdateFailure),
                   project_id: project.id,
                   environment_id: environment.id,
-                  reason: %q{External url javascript scheme is not allowed})
+                  reason: %q{External url is blocked: Only allowed schemes are http, https})
             .once
 
           subject.execute

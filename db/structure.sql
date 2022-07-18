@@ -20270,14 +20270,14 @@ ALTER SEQUENCE required_code_owners_sections_id_seq OWNED BY required_code_owner
 
 CREATE TABLE requirements (
     id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
     project_id integer NOT NULL,
     author_id integer,
     iid integer NOT NULL,
     cached_markdown_version integer,
-    state smallint DEFAULT 1 NOT NULL,
-    title character varying(255) NOT NULL,
+    state smallint DEFAULT 1,
+    title character varying(255),
     title_html text,
     description text,
     description_html text,

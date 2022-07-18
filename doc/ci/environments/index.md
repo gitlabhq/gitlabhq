@@ -374,8 +374,6 @@ To retry or rollback a deployment:
 
 ### Environment URL
 
-> [Fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `soft_validation_on_external_url`. Disabled by default.
-
 The [environment URL](../yaml/index.md#environmenturl) is displayed in a few
 places in GitLab:
 

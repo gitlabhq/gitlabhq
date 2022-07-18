@@ -35,6 +35,11 @@ other internal references (refs) that are automatically created by GitLab. These
 
 These refs are not automatically downloaded and hidden refs are not advertised, but we can remove these refs using a project export.
 
+WARNING:
+This process is not suitable for removing sensitive data like password or keys from your repository.
+Information about commits, including file content, is cached in the database, and remain
+visible even after they have been removed from the repository.
+
 To purge files from a GitLab repository:
 
 1. Install either [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md) or
@@ -246,11 +251,6 @@ increased, your only option is to:
 
 1. Prune all the unneeded stuff locally.
 1. Create a new project on GitLab and start using that instead.
-
-WARNING:
-This process is not suitable for removing sensitive data like password or keys from your repository.
-Information about commits, including file content, is cached in the database, and remain
-visible even after they have been removed from the repository.
 
 ## Troubleshooting
 

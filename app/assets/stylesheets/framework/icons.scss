@@ -60,6 +60,13 @@
   @include icon-styles($gray-500, $gray-100);
 }
 
+.password-status-icon-success {
+  svg {
+    vertical-align: middle;
+    fill: $green-500;
+  }
+}
+
 .icon-link {
   &:hover {
     text-decoration: none;
