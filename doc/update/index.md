@@ -1127,7 +1127,7 @@ When Geo is enabled, LFS objects fail to be saved for imported or mirrored proje
 ### PostgreSQL segmentation fault issue
 
 If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you upgrade PostgreSQL
-to patch levels to a minimum of 12.10 or 13.3 before upgrading to GitLab 14.8 or later.
+to patch levels to a minimum of 12.7 or 13.3 before upgrading to GitLab 14.8 or later.
 
 [In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
 for GitLab Enterprise Edition and [in 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)

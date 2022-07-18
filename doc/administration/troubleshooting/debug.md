@@ -86,30 +86,6 @@ sudo -u git -H bundle exec rails runner -e production "user = User.first; puts u
 sudo -u git -H bundle exec rails runner -e production /path/to/script.rb
 ```
 
-## Advanced Issues
-
-For more advanced issues, there are some tools you can enable to assist with your debugging process.
-
-### rbtrace
-
-<!-- vale gitlab.Spelling = YES -->
-
-GitLab 11.2 ships with [`rbtrace`](https://github.com/tmm1/rbtrace), which
-allows you to trace Ruby code, view all running threads, take memory dumps,
-and more. However, this is not enabled by default. To enable it, define the
-`ENABLE_RBTRACE` variable to the environment. For example, in Omnibus:
-
-```ruby
-gitlab_rails['env'] = {"ENABLE_RBTRACE" => "1"}
-```
-
-Then reconfigure the system and restart Puma and Sidekiq. To run this
-in Omnibus, run as root:
-
-```ruby
-/opt/gitlab/embedded/bin/ruby /opt/gitlab/embedded/bin/rbtrace
-```
-
 ## More information
 
 - [Debugging Stuck Ruby Processes](https://newrelic.com/blog/best-practices/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9)

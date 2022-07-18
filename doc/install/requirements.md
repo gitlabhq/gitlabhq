@@ -120,7 +120,7 @@ the following table) as these were used for development and testing:
 | GitLab version | Minimum PostgreSQL version |
 |----------------|----------------------------|
 | 13.0           | 11                         |
-| 14.0           | 12.10                      |
+| 14.0           | 12.7                      |
 | 15.0           | 12.10                      |
 | 16.0 (planned) | 13.6                       |
 
