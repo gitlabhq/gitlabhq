@@ -7,7 +7,7 @@ module Ci
 
     enum_with_nil status: {
       not_processed: nil,
-      invalid_version: -1, # Named invalid_version to avoid clash with auto-generated `invalid?` ActiveRecord method
+      invalid_version: -1,
       unknown: 0,
       not_available: 1,
       available: 2,

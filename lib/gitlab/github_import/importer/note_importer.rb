@@ -21,14 +21,12 @@ module Gitlab
 
           author_id, author_found = user_finder.author_id_for(note)
 
-          note_body = MarkdownText.format(note.note, note.author, author_found)
-
           attributes = {
             noteable_type: note.noteable_type,
             noteable_id: noteable_id,
             project_id: project.id,
             author_id: author_id,
-            note: note_body,
+            note: note_body(author_found),
             discussion_id: note.discussion_id,
             system: false,
             created_at: note.created_at,
@@ -47,6 +45,13 @@ module Gitlab
         # Returns the ID of the issue or merge request to create the note for.
         def find_noteable_id
           GithubImport::IssuableFinder.new(project, note).database_id
+        end
+
+        private
+
+        def note_body(author_found)
+          text = MarkdownText.convert_ref_links(note.note, project)
+          MarkdownText.format(text, note.author, author_found)
         end
       end
     end

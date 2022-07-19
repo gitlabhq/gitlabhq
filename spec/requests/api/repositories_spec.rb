@@ -784,6 +784,40 @@ RSpec.describe API::Repositories do
       expect(json_response['notes']).to be_present
     end
 
+    it 'supports specified config file path' do
+      spy = instance_spy(Repositories::ChangelogService)
+
+      expect(Repositories::ChangelogService)
+        .to receive(:new)
+        .with(
+          project,
+          user,
+          version: '1.0.0',
+          from: 'foo',
+          to: 'bar',
+          date: DateTime.new(2020, 1, 1),
+          trailer: 'Foo',
+          config_file: 'specified_changelog_config.yml'
+        )
+        .and_return(spy)
+
+      expect(spy).to receive(:execute).with(commit_to_changelog: false)
+
+      get(
+        api("/projects/#{project.id}/repository/changelog", user),
+        params: {
+          version: '1.0.0',
+          from: 'foo',
+          to: 'bar',
+          date: '2020-01-01',
+          trailer: 'Foo',
+          config_file: 'specified_changelog_config.yml'
+        }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     context 'when previous tag version does not exist' do
       it_behaves_like '422 response' do
         let(:request) { get api("/projects/#{project.id}/repository/changelog", user), params: { version: 'v0.0.0' } }
@@ -904,6 +938,46 @@ RSpec.describe API::Repositories do
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to eq('Failed to generate the changelog: oops')
+    end
+
+    it "support specified config file path" do
+      spy = instance_spy(Repositories::ChangelogService)
+
+      expect(Repositories::ChangelogService)
+        .to receive(:new)
+        .with(
+          project,
+          user,
+          version: '1.0.0',
+          from: 'foo',
+          to: 'bar',
+          date: DateTime.new(2020, 1, 1),
+          branch: 'kittens',
+          trailer: 'Foo',
+          config_file: 'specified_changelog_config.yml',
+          file: 'FOO.md',
+          message: 'Commit message'
+        )
+        .and_return(spy)
+
+      allow(spy).to receive(:execute).with(commit_to_changelog: true)
+
+      post(
+        api("/projects/#{project.id}/repository/changelog", user),
+        params: {
+          version: '1.0.0',
+          from: 'foo',
+          to: 'bar',
+          date: '2020-01-01',
+          branch: 'kittens',
+          trailer: 'Foo',
+          config_file: 'specified_changelog_config.yml',
+          file: 'FOO.md',
+          message: 'Commit message'
+        }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 end

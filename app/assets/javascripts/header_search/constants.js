@@ -49,3 +49,5 @@ export const SEARCH_RESULTS_DESCRIPTION = 'search-results-description';
 export const SCOPE_TOKEN_MAX_LENGTH = 36;
 
 export const INPUT_FIELD_PADDING = 52;
+
+export const HEADER_INIT_EVENTS = ['input', 'focus'];

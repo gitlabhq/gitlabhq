@@ -6,9 +6,14 @@ module Types
       graphql_name 'CiRunnerUpgradeStatusType'
 
       ::Ci::RunnerVersion::STATUS_DESCRIPTIONS.each do |status, description|
-        status = :invalid if status == :invalid_version
+        status_name_src =
+          if status == :invalid_version
+            :invalid
+          else
+            status
+          end
 
-        value status.to_s.upcase, description: description, value: status
+        value status_name_src.to_s.upcase, description: description, value: status
       end
     end
   end

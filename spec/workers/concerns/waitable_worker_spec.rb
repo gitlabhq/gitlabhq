@@ -54,25 +54,6 @@ RSpec.describe WaitableWorker do
 
         worker.bulk_perform_and_wait(arguments)
       end
-
-      context 'when the feature flag `inline_project_authorizations_refresh_only_for_single_element` is turned off' do
-        before do
-          stub_feature_flags(inline_project_authorizations_refresh_only_for_single_element: false)
-        end
-
-        it 'inlines the jobs' do
-          args_list = [[1], [2], [3]]
-          expect(worker).to receive(:bulk_perform_inline).with(args_list).and_call_original
-          expect(Gitlab::AppJsonLogger).to(
-            receive(:info).with(a_hash_including('message' => 'running inline',
-                                                 'class' => 'Gitlab::Foo::Bar::DummyWorker',
-                                                 'job_status' => 'running',
-                                                 'queue' => 'foo_bar_dummy'))
-                          .exactly(3).times)
-
-          worker.bulk_perform_and_wait(args_list)
-        end
-      end
     end
 
     context '>= 4 jobs' do

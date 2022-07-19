@@ -1,6 +1,6 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
-import initHeaderSearch, { eventHandler } from '~/header_search/init';
+import initHeaderSearch, { eventHandler, cleanEventListeners } from '~/header_search/init';
 
 describe('Header Search EventListener', () => {
   beforeEach(() => {
@@ -21,24 +21,25 @@ describe('Header Search EventListener', () => {
 
   it('attached event listener', () => {
     const searchInputBox = document?.querySelector('#search');
-    const addEventListener = jest.spyOn(searchInputBox, 'addEventListener');
+    const addEventListenerSpy = jest.spyOn(searchInputBox, 'addEventListener');
     initHeaderSearch();
 
-    expect(addEventListener).toBeCalled();
+    expect(addEventListenerSpy).toBeCalledTimes(2);
   });
 
   it('removes event listener ', async () => {
-    const removeEventListener = jest.fn();
+    const searchInputBox = document?.querySelector('#search');
+    const removeEventListenerSpy = jest.spyOn(searchInputBox, 'removeEventListener');
     jest.mock('~/header_search', () => ({ initHeaderSearchApp: jest.fn() }));
     await eventHandler.apply(
       {
         newHeaderSearchFeatureFlag: true,
         searchInputBox: document.querySelector('#search'),
       },
-      [removeEventListener],
+      [cleanEventListeners],
     );
 
-    expect(removeEventListener).toBeCalled();
+    expect(removeEventListenerSpy).toBeCalledTimes(2);
   });
 
   it('attaches new vue dropdown  when feature flag is enabled', async () => {

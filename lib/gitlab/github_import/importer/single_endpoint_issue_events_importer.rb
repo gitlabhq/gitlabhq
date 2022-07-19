@@ -19,6 +19,7 @@ module Gitlab
         end
 
         def each_associated(parent_record, associated)
+          compose_associated_id!(parent_record, associated)
           return if already_imported?(associated)
 
           Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
@@ -67,6 +68,13 @@ module Gitlab
 
         def collection_options
           { state: 'all', sort: 'created', direction: 'asc' }
+        end
+
+        # Cross-referenced events on Github doesn't have id.
+        def compose_associated_id!(issue, event)
+          return if event.event != 'cross-referenced'
+
+          event.id = "cross-reference##{issue.id}-in-#{event.source.issue.id}"
         end
       end
     end

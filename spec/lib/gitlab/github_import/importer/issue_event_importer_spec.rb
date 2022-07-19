@@ -87,6 +87,13 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
                       Gitlab::GithubImport::Importer::Events::Renamed
     end
 
+    context "when it's cross-referenced issue event" do
+      let(:event_name) { 'cross-referenced' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::CrossReferenced
+    end
+
     context "when it's unknown issue event" do
       let(:event_name) { 'fake' }
 

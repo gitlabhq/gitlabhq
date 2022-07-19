@@ -5,8 +5,34 @@ module Gitlab
     class MarkdownText
       include Gitlab::EncodingHelper
 
-      def self.format(*args)
-        new(*args).to_s
+      ISSUE_REF_MATCHER = '%{github_url}/%{import_source}/issues'
+      PULL_REF_MATCHER = '%{github_url}/%{import_source}/pull'
+
+      class << self
+        def format(*args)
+          new(*args).to_s
+        end
+
+        # Links like `https://domain.github.com/<namespace>/<project>/pull/<iid>` needs to be converted
+        def convert_ref_links(text, project)
+          matcher_options = { github_url: github_url, import_source: project.import_source }
+          issue_ref_matcher = ISSUE_REF_MATCHER % matcher_options
+          pull_ref_matcher = PULL_REF_MATCHER % matcher_options
+
+          url_helpers = Rails.application.routes.url_helpers
+          text.gsub(issue_ref_matcher, url_helpers.project_issues_url(project))
+              .gsub(pull_ref_matcher, url_helpers.project_merge_requests_url(project))
+        end
+
+        private
+
+        # Returns github domain without slash in the end
+        def github_url
+          oauth_config = Gitlab::Auth::OAuth::Provider.config_for('github') || {}
+          url = oauth_config['url'].presence || 'https://github.com'
+          url = url.chop if url.end_with?('/')
+          url
+        end
       end
 
       # text - The Markdown text as a String.

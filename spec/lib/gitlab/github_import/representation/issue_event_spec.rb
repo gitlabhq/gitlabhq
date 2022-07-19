@@ -21,6 +21,10 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         expect(issue_event.commit_id).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
       end
 
+      it 'includes the issue event source' do
+        expect(issue_event.source).to eq({ type: 'issue', id: 123456 })
+      end
+
       it 'includes the issue_db_id' do
         expect(issue_event.issue_db_id).to eq(100500)
       end
@@ -89,7 +93,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
     let(:response) do
       event_resource = Struct.new(
         :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label,
-        :rename, :issue_db_id, :created_at, :performed_via_github_app,
+        :rename, :issue_db_id, :created_at, :performed_via_github_app, :source,
         keyword_init: true
       )
       user_resource = Struct.new(:id, :login, keyword_init: true)
@@ -103,6 +107,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         commit_url: 'https://api.github.com/repos/octocat/Hello-World/commits'\
           '/570e7b2abdd848b95f2f578043fc23bd6f6fd24d',
         rename: with_rename ? { from: 'old title', to: 'new title' } : nil,
+        source: { type: 'issue', id: 123456 },
         issue_db_id: 100500,
         label: with_label ? { name: 'label title' } : nil,
         created_at: '2022-04-26 18:30:53 UTC',
@@ -134,6 +139,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
           'label_title' => (with_label ? 'label title' : nil),
           'old_title' => with_rename ? 'old title' : nil,
           'new_title' => with_rename ? 'new title' : nil,
+          'source' => { 'type' => 'issue', 'id' => 123456 },
           "issue_db_id" => 100500,
           'created_at' => '2022-04-26 18:30:53 UTC',
           'performed_via_github_app' => nil

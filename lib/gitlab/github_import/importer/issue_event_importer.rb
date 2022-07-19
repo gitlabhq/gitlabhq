@@ -30,6 +30,9 @@ module Gitlab
           when 'renamed'
             Gitlab::GithubImport::Importer::Events::Renamed.new(project, author_id)
               .execute(issue_event)
+          when 'cross-referenced'
+            Gitlab::GithubImport::Importer::Events::CrossReferenced.new(project, author_id)
+              .execute(issue_event)
           else
             Gitlab::GithubImport::Logger.debug(
               message: 'UNSUPPORTED_EVENT_TYPE',

@@ -2735,6 +2735,33 @@ RSpec.describe Repository do
     end
   end
 
+  describe '#changelog_config' do
+    let(:user) { create(:user) }
+    let(:changelog_config_path) { Gitlab::Changelog::Config::DEFAULT_FILE_PATH }
+
+    before do
+      repository.create_file(
+        user,
+        changelog_config_path,
+        'CONTENT',
+        message: '...',
+        branch_name: 'master'
+      )
+    end
+
+    context 'when there is a changelog_config_path at the commit' do
+      it 'returns the content' do
+        expect(repository.changelog_config(repository.commit.sha, changelog_config_path)).to eq('CONTENT')
+      end
+    end
+
+    context 'when there is no changelog_config_path at the commit' do
+      it 'returns nil' do
+        expect(repository.changelog_config(repository.commit.parent.sha, changelog_config_path)).to be_nil
+      end
+    end
+  end
+
   describe '#route_map_for' do
     before do
       repository.create_file(User.last, '.gitlab/route-map.yml', 'CONTENT', message: 'Add .gitlab/route-map.yml', branch_name: 'master')

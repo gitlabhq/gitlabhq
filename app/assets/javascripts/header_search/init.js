@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import { HEADER_INIT_EVENTS } from './constants';
 
 async function eventHandler(callback = () => {}) {
   if (this.newHeaderSearchFeatureFlag) {
@@ -28,21 +29,25 @@ async function eventHandler(callback = () => {}) {
 }
 
 function cleanEventListeners() {
-  document.querySelector('#search').removeEventListener('focus', eventHandler);
+  HEADER_INIT_EVENTS.forEach((eventType) => {
+    document.querySelector('#search').removeEventListener(eventType, eventHandler);
+  });
 }
 
 function initHeaderSearch() {
   const searchInputBox = document.querySelector('#search');
 
-  searchInputBox?.addEventListener(
-    'focus',
-    eventHandler.bind(
-      { searchInputBox, newHeaderSearchFeatureFlag: gon?.features?.newHeaderSearch },
-      cleanEventListeners,
-    ),
-    { once: true },
-  );
+  HEADER_INIT_EVENTS.forEach((eventType) => {
+    searchInputBox?.addEventListener(
+      eventType,
+      eventHandler.bind(
+        { searchInputBox, newHeaderSearchFeatureFlag: gon?.features?.newHeaderSearch },
+        cleanEventListeners,
+      ),
+      { once: true },
+    );
+  });
 }
 
 export default initHeaderSearch;
-export { eventHandler };
+export { eventHandler, cleanEventListeners };
