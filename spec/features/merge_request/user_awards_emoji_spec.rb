@@ -11,27 +11,35 @@ RSpec.describe 'Merge request > User awards emoji', :js do
   describe 'logged in' do
     before do
       sign_in(user)
-      visit project_merge_request_path(project, merge_request)
 
+      visit project_merge_request_path(project, merge_request)
       wait_for_requests
     end
 
     it 'adds award to merge request' do
       first('[data-testid="award-button"]').click
+      wait_for_requests
       expect(page).to have_selector('[data-testid="award-button"].selected')
       expect(first('[data-testid="award-button"]')).to have_content '1'
 
       visit project_merge_request_path(project, merge_request)
+      wait_for_requests
+
       expect(first('[data-testid="award-button"]')).to have_content '1'
     end
 
     it 'removes award from merge request' do
       first('[data-testid="award-button"]').click
+      wait_for_requests
       expect(first('[data-testid="award-button"]')).to have_content '1'
+
       find('[data-testid="award-button"].selected').click
+      wait_for_requests
       expect(first('[data-testid="award-button"]')).to have_content '0'
 
       visit project_merge_request_path(project, merge_request)
+      wait_for_requests
+
       expect(first('[data-testid="award-button"]')).to have_content '0'
     end
 
@@ -62,6 +70,7 @@ RSpec.describe 'Merge request > User awards emoji', :js do
   describe 'logged out' do
     before do
       visit project_merge_request_path(project, merge_request)
+      wait_for_requests
     end
 
     it 'does not see award menu button' do
