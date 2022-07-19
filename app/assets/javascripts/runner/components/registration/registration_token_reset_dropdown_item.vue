@@ -8,14 +8,16 @@ import runnersRegistrationTokenResetMutation from '~/runner/graphql/list/runners
 import { captureException } from '~/runner/sentry_utils';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../../constants';
 
+const i18n = {
+  modalAction: s__('Runners|Reset token'),
+  modalCancel: __('Cancel'),
+  modalCopy: __('Are you sure you want to reset the registration token?'),
+  modalTitle: __('Reset registration token'),
+};
+
 export default {
   name: 'RunnerRegistrationTokenReset',
-  i18n: {
-    modalAction: s__('Runners|Reset token'),
-    modalCancel: __('Cancel'),
-    modalCopy: __('Are you sure you want to reset the registration token?'),
-    modalTitle: __('Reset registration token'),
-  },
+  i18n,
   components: {
     GlDropdownItem,
     GlLoadingIcon,
@@ -68,6 +70,18 @@ export default {
           return null;
       }
     },
+    actionPrimary() {
+      return {
+        text: i18n.modalAction,
+        attributes: [{ variant: 'danger' }],
+      };
+    },
+    actionSecondary() {
+      return {
+        text: i18n.modalCancel,
+        attributes: [{ variant: 'default' }],
+      };
+    },
   },
   methods: {
     handleModalPrimary() {
@@ -115,14 +129,8 @@ export default {
     <gl-modal
       size="sm"
       :modal-id="$options.modalId"
-      :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-        text: $options.i18n.modalAction,
-        attributes: [{ variant: 'danger' }],
-      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-      :action-secondary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-        text: $options.i18n.modalCancel,
-        attributes: [{ variant: 'default' }],
-      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+      :action-primary="actionPrimary"
+      :action-secondary="actionSecondary"
       :title="$options.i18n.modalTitle"
       @primary="handleModalPrimary"
     >

@@ -101,7 +101,7 @@ export default {
     >
       <gl-tab :title="s__('Incident|Summary')">
         <highlight-bar :alert="alert" />
-        <description-component v-bind="$attrs" />
+        <description-component v-bind="$attrs" v-on="$listeners" />
       </gl-tab>
       <incident-metric-tab />
       <gl-tab

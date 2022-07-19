@@ -2,7 +2,12 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Pipeline editor', :reliable do
+    # TODO: Remove this test when feature flag is removed
+    # Flag rollout issue https://gitlab.com/gitlab-org/gitlab/-/issues/364257
+    describe 'Pipeline editor', :reliable, feature_flag: {
+      name: :simulate_pipeline,
+      scope: :global
+    } do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pipeline-editor-project'
@@ -37,7 +42,7 @@ module QA
       end
 
       before do
-        Runtime::Feature.disable(:simulate_pipeline)
+        Runtime::Feature.disable(:simulate_pipeline) if Runtime::Feature.enabled?(:simulate_pipeline)
 
         Flow::Login.sign_in
         project.visit!

@@ -1080,17 +1080,17 @@ describe('MrWidgetOptions', () => {
         // The default working extension is a "warning" type, which generates a second - more specific - telemetry event for expansions
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(2);
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_expand',
+          'i_code_review_merge_request_widget_test_extension_expand',
         );
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_expand_warning',
+          'i_code_review_merge_request_widget_test_extension_expand_warning',
         );
         expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(2);
         expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_count_expand',
+          'i_code_review_merge_request_widget_test_extension_count_expand',
         );
         expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_count_expand_warning',
+          'i_code_review_merge_request_widget_test_extension_count_expand_warning',
         );
       });
     });
@@ -1160,11 +1160,11 @@ describe('MrWidgetOptions', () => {
 
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_test_extension_view',
+        'i_code_review_merge_request_widget_test_extension_view',
       );
       expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_test_extension_count_view',
+        'i_code_review_merge_request_widget_test_extension_count_view',
       );
     });
 
@@ -1183,17 +1183,17 @@ describe('MrWidgetOptions', () => {
         // The default working extension is a "warning" type, which generates a second - more specific - telemetry event for expansions
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(2);
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_expand',
+          'i_code_review_merge_request_widget_test_extension_expand',
         );
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_expand_warning',
+          'i_code_review_merge_request_widget_test_extension_expand_warning',
         );
         expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(2);
         expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_count_expand',
+          'i_code_review_merge_request_widget_test_extension_count_expand',
         );
         expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_count_expand_warning',
+          'i_code_review_merge_request_widget_test_extension_count_expand_warning',
         );
       });
 
@@ -1236,11 +1236,11 @@ describe('MrWidgetOptions', () => {
 
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_test_extension_click_full_report',
+        'i_code_review_merge_request_widget_test_extension_click_full_report',
       );
       expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_test_extension_count_click_full_report',
+        'i_code_review_merge_request_widget_test_extension_count_click_full_report',
       );
     });
 

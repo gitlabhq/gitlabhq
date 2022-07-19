@@ -2,5 +2,6 @@
 - add_to_breadcrumbs _("Incidents"), project_incidents_path(@project)
 - breadcrumb_title @issue.to_reference
 - page_title "#{@issue.title} (#{@issue.to_reference})", _("Incidents")
+- add_page_specific_style 'page_bundles/issues_show'
 
 = render 'projects/issuable/show', issuable: @issue

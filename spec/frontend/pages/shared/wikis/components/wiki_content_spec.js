@@ -7,8 +7,10 @@ import { renderGFM } from '~/pages/shared/wikis/render_gfm_facade';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
+import { handleLocationHash } from '~/lib/utils/common_utils';
 
 jest.mock('~/pages/shared/wikis/render_gfm_facade');
+jest.mock('~/lib/utils/common_utils');
 
 describe('pages/shared/wikis/components/wiki_content', () => {
   const PATH = '/test';
@@ -75,6 +77,12 @@ describe('pages/shared/wikis/components/wiki_content', () => {
       await nextTick();
 
       expect(renderGFM).toHaveBeenCalledWith(wrapper.element);
+    });
+
+    it('handles hash after render', async () => {
+      await nextTick();
+
+      expect(handleLocationHash).toHaveBeenCalled();
     });
   });
 

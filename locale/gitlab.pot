@@ -4803,16 +4803,13 @@ msgstr ""
 msgid "ApprovalSettings|Prevent approval by author"
 msgstr ""
 
-msgid "ApprovalSettings|Prevent approval by author."
-msgstr ""
-
 msgid "ApprovalSettings|Prevent approvals by users who add commits"
 msgstr ""
 
-msgid "ApprovalSettings|Prevent approvals by users who add commits."
+msgid "ApprovalSettings|Prevent editing approval rules in merge requests"
 msgstr ""
 
-msgid "ApprovalSettings|Prevent editing approval rules in merge requests"
+msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests"
 msgstr ""
 
 msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests."
@@ -29533,7 +29530,7 @@ msgstr ""
 msgid "Prevent auto-stopping"
 msgstr ""
 
-msgid "Prevent editing approval rules in projects and merge requests."
+msgid "Prevent editing approval rules in projects and merge requests"
 msgstr ""
 
 msgid "Prevent environment from auto-stopping"
