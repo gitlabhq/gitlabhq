@@ -131,7 +131,7 @@ To retrieve metrics for change failure rate, use the [GraphQL](../../api/graphql
 | `lead_time_for_changes`   | Project           | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.11 and later                                | Unit in seconds. Aggregation method is median. |
 | `lead_time_for_changes`   | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 14.0 and later                                 | Unit in seconds. Aggregation method is median. |
 | `time_to_restore_service` | Project and group | [GitLab 14.9 and later](../../api/dora/metrics.md)  | GitLab 15.1 and later                                 | Unit in days. Aggregation method is median.    |
-| `change_failure_rate`     | Project and group | [GitLab 14.10 and later](../../api/dora/metrics.md) | Not supported                                         |                                                |
+| `change_failure_rate`     | Project and group | [GitLab 14.10 and later](../../api/dora/metrics.md) | GitLab 15.2 and later                                 | Percentage of deployments.                     |                 |
 
 ## Definitions
 

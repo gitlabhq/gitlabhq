@@ -30,7 +30,7 @@ Event streaming destinations receive **all** audit event data, which could inclu
 Users with at least the Owner role for a group can add event streaming destinations for it:
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Audit events**
+1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
     - When the destination list is empty, select **Add stream** to show the section for adding destinations.
     - When the destination list is not empty, select **{plus}** to show the section for adding destinations.
@@ -77,7 +77,7 @@ Users with at least the Owner role for a group can list event streaming destinat
 Users with at least the Owner role for a group can list event streaming destinations:
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Audit events**
+1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
 
 ### Use the API
@@ -116,7 +116,7 @@ When the last destination is successfully deleted, event streaming is disabled f
 Users with at least the Owner role for a group can delete event streaming destinations.
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Audit events**
+1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select **{remove}** at the right side of each item.
 
@@ -185,7 +185,7 @@ not available. The UI for this feature is not ready for production use.
 Users with at least the Owner role for a group can add event streaming destinations and custom HTTP headers for it:
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Audit events**
+1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
     - When the destination list is empty, select **Add stream** to show the section for adding destinations.
     - When the destination list is not empty, select **{plus}** to show the section for adding destinations.
@@ -221,7 +221,7 @@ mutation {
 ### Deleting custom HTTP headers
 
 Group owners can remove a HTTP header using the GraphQL `auditEventsStreamingHeadersDestroy` mutation. You can retrieve the header ID
-by [listing all the custom headers](#list-all-custom-headers-with-the-api) on the group.
+by [listing all the custom headers](#list-all-custom-headers) on the group.
 
 ```graphql
 mutation {
@@ -233,7 +233,11 @@ mutation {
 
 The header is deleted if the returned `errors` object is empty.
 
-### List all custom headers with the API
+### List all custom headers
+
+List all custom HTTP headers with the API or GitLab UI.
+
+#### Use the API
 
 You can list all custom headers for a top-level group as well as their value and ID using the GraphQL `externalAuditEventDestinations` query. The ID
 value returned by this query is what you need to pass to the `deletion` mutation.
@@ -258,6 +262,22 @@ query {
   }
 }
 ```
+
+#### Use the GitLab UI
+
+FLAG:
+On self-managed GitLab, by default the UI for this feature is not available. To make it available per group, ask an administrator to
+[enable the feature flag](../administration/feature_flags.md) named `custom_headers_streaming_audit_events_ui`. On GitLab.com, the UI for this feature is
+not available. The UI for this feature is not ready for production use.
+
+Users with at least the Owner role for a group can add event streaming destinations and custom HTTP headers for it:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select **{pencil}** at the right side of an item.
+1. A read-only view of the items custom headers is shown. To track progress on adding editing functionality, see the [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361925).
+1. Select **Cancel** to close the read-only view.
 
 ## Verify event authenticity
 

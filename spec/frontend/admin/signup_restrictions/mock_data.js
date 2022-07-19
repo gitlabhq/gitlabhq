@@ -18,6 +18,10 @@ export const rawMockData = {
   emailRestrictions: 'user1@domain.com, user2@domain.com',
   afterSignUpText: 'Congratulations on your successful sign-up!',
   pendingUserCount: '0',
+  passwordNumberRequired: 'true',
+  passwordLowercaseRequired: 'true',
+  passwordUppercaseRequired: 'true',
+  passwordSymbolRequired: 'true',
 };
 
 export const mockData = {
@@ -40,4 +44,8 @@ export const mockData = {
   emailRestrictions: 'user1@domain.com, user2@domain.com',
   afterSignUpText: 'Congratulations on your successful sign-up!',
   pendingUserCount: '0',
+  passwordNumberRequired: true,
+  passwordLowercaseRequired: true,
+  passwordUppercaseRequired: true,
+  passwordSymbolRequired: true,
 };

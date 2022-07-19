@@ -334,6 +334,8 @@ describe('MergeRequestTabs', () => {
       ${'diffs'}   | ${true}  | ${'hides'}
       ${'commits'} | ${true}  | ${'hides'}
     `('it $hidesText expand button on $tab tab', ({ tab, hides }) => {
+      window.gon = { features: { movedMrSidebar: true } };
+
       const expandButton = document.createElement('div');
       expandButton.classList.add('js-expand-sidebar');
 
@@ -347,7 +349,11 @@ describe('MergeRequestTabs', () => {
       testContext.class = new MergeRequestTabs({ stubLocation });
       testContext.class.tabShown(tab, 'foobar');
 
-      expect(testContext.class.expandSidebar.classList.contains('gl-display-none!')).toBe(hides);
+      testContext.class.expandSidebar.forEach((el) => {
+        expect(el.classList.contains('gl-display-none!')).toBe(hides);
+      });
+
+      window.gon = {};
     });
 
     describe('when switching tabs', () => {

@@ -31,6 +31,15 @@ Get a list of the current user's snippets.
 GET /snippets
 ```
 
+Parameters:
+
+| Attribute        | Type     | Required | Description                                                                                         |
+|------------------|----------|----------|-----------------------------------------------------------------------------------------------------|
+| `per_page`       | integer  | no       | Number of snippets to return per page.                                                              |
+| `page`           | integer  | no       | Page to retrieve.                                                                                   |
+| `created_after`  | datetime | no       | Return snippets created after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)  |
+| `created_before` | datetime | no       | Return snippets created before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+
 Example request:
 
 ```shell
@@ -389,10 +398,12 @@ GET /snippets/public
 
 Parameters:
 
-| Attribute  | Type    | Required | Description                            |
-|:-----------|:--------|:---------|:---------------------------------------|
-| `per_page` | integer | no       | Number of snippets to return per page. |
-| `page`     | integer | no       | Page to retrieve.                      |
+| Attribute        | Type     | Required | Description                                                                                         |
+|------------------|----------|----------|-----------------------------------------------------------------------------------------------------|
+| `per_page`       | integer  | no       | Number of snippets to return per page.                                                              |
+| `page`           | integer  | no       | Page to retrieve.                                                                                   |
+| `created_after`  | datetime | no       | Return snippets created after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)  |
+| `created_before` | datetime | no       | Return snippets created before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 
 Example request:
 

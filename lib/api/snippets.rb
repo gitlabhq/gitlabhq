@@ -29,12 +29,16 @@ module API
         success Entities::Snippet
       end
       params do
+        optional :created_after, type: DateTime, desc: 'Return snippets created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return snippets created before the specified time'
+
         use :pagination
       end
       get do
         authenticate!
 
-        present paginate(snippets_for_current_user), with: Entities::Snippet, current_user: current_user
+        filter_params = declared_params(include_missing: false).merge(author: current_user)
+        present paginate(SnippetsFinder.new(current_user, filter_params).execute), with: Entities::Snippet, current_user: current_user
       end
 
       desc 'List all public personal snippets current_user has access to' do
@@ -42,12 +46,16 @@ module API
         success Entities::PersonalSnippet
       end
       params do
+        optional :created_after, type: DateTime, desc: 'Return snippets created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return snippets created before the specified time'
+
         use :pagination
       end
       get 'public', urgency: :low do
         authenticate!
 
-        present paginate(public_snippets), with: Entities::PersonalSnippet, current_user: current_user
+        filter_params = declared_params(include_missing: false).merge(only_personal: true)
+        present paginate(SnippetsFinder.new(nil, filter_params).execute), with: Entities::PersonalSnippet, current_user: current_user
       end
 
       desc 'Get a single snippet' do
