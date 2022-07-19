@@ -187,8 +187,8 @@ RSpec.describe WebHook do
     end
   end
 
-  describe '.executable' do
-    let(:not_executable) do
+  describe '.executable/.disabled' do
+    let!(:not_executable) do
       [
         [0, Time.current],
         [0, 1.minute.from_now],
@@ -202,7 +202,7 @@ RSpec.describe WebHook do
       end
     end
 
-    let(:executables) do
+    let!(:executables) do
       [
         [0, nil],
         [0, 1.day.ago],
@@ -217,6 +217,7 @@ RSpec.describe WebHook do
 
     it 'finds the correct set of project hooks' do
       expect(described_class.where(project_id: project.id).executable).to match_array executables
+      expect(described_class.where(project_id: project.id).disabled).to match_array not_executable
     end
 
     context 'when the feature flag is not enabled' do
@@ -224,7 +225,7 @@ RSpec.describe WebHook do
         stub_feature_flags(web_hooks_disable_failed: false)
       end
 
-      it 'is the same as all' do
+      specify 'enabled is the same as all' do
         expect(described_class.where(project_id: project.id).executable).to match_array(executables + not_executable)
       end
     end
@@ -633,6 +634,12 @@ RSpec.describe WebHook do
           expect(hook.interpolated_url).to eq 'http://example.com/%abc/resource?token=%xyz'
         end
       end
+    end
+  end
+
+  describe '#update_last_failure' do
+    it 'is a method of this class' do
+      expect { described_class.new.update_last_failure }.not_to raise_error
     end
   end
 end

@@ -136,6 +136,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:timelogs) }
     it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
+    it { is_expected.to have_many(:namespace_callouts).class_name('Users::NamespaceCallout') }
 
     describe '#user_detail' do
       it 'does not persist `user_detail` by default' do
@@ -6410,6 +6411,96 @@ RSpec.describe User do
 
         it 'is not valid' do
           expect(find_or_initialize_callout).not_to be_valid
+        end
+      end
+    end
+  end
+
+  describe 'Users::NamespaceCallout' do
+    describe '#dismissed_callout_for_namespace?' do
+      let_it_be(:user, refind: true) { create(:user) }
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:feature_name) { Users::NamespaceCallout.feature_names.each_key.first }
+
+      let(:query) do
+        { feature_name: feature_name, namespace: namespace }
+      end
+
+      def have_dismissed_callout
+        be_dismissed_callout_for_namespace(**query)
+      end
+
+      context 'when no callout dismissal record exists' do
+        it 'returns false when no ignore_dismissal_earlier_than provided' do
+          expect(user).not_to have_dismissed_callout
+        end
+      end
+
+      context 'when dismissed callout exists' do
+        before_all do
+          create(:namespace_callout,
+                 user: user,
+                 namespace_id: namespace.id,
+                 feature_name: feature_name,
+                 dismissed_at: 4.months.ago)
+        end
+
+        it 'returns true when no ignore_dismissal_earlier_than provided' do
+          expect(user).to have_dismissed_callout
+        end
+
+        it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
+          query[:ignore_dismissal_earlier_than] = 6.months.ago
+
+          expect(user).to have_dismissed_callout
+        end
+
+        it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
+          query[:ignore_dismissal_earlier_than] = 2.months.ago
+
+          expect(user).not_to have_dismissed_callout
+        end
+      end
+    end
+
+    describe '#find_or_initialize_namespace_callout' do
+      let_it_be(:user, refind: true) { create(:user) }
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:feature_name) { Users::NamespaceCallout.feature_names.each_key.first }
+
+      subject(:callout_with_source) do
+        user.find_or_initialize_namespace_callout(feature_name, namespace.id)
+      end
+
+      context 'when callout exists' do
+        let!(:callout) do
+          create(:namespace_callout, user: user, feature_name: feature_name, namespace_id: namespace.id)
+        end
+
+        it 'returns existing callout' do
+          expect(callout_with_source).to eq(callout)
+        end
+      end
+
+      context 'when callout does not exist' do
+        context 'when feature name is valid' do
+          it 'initializes a new callout' do
+            expect(callout_with_source)
+              .to be_a_new(Users::NamespaceCallout)
+              .and be_valid
+          end
+        end
+
+        context 'when feature name is not valid' do
+          let(:feature_name) { 'notvalid' }
+
+          it 'initializes a new callout' do
+            expect(callout_with_source).to be_a_new(Users::NamespaceCallout)
+          end
+
+          it 'is not valid' do
+            expect(callout_with_source).not_to be_valid
+          end
         end
       end
     end

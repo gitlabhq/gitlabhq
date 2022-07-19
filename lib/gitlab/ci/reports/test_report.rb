@@ -3,7 +3,7 @@
 module Gitlab
   module Ci
     module Reports
-      class TestReports
+      class TestReport
         attr_reader :test_suites
 
         def initialize

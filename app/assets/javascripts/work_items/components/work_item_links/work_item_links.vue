@@ -11,6 +11,7 @@ import {
 } from '../../constants';
 import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
 import WorkItemLinksForm from './work_item_links_form.vue';
+import WorkItemLinksMenu from './work_item_links_menu.vue';
 
 export default {
   components: {
@@ -19,6 +20,7 @@ export default {
     GlIcon,
     GlLoadingIcon,
     WorkItemLinksForm,
+    WorkItemLinksMenu,
   },
   props: {
     workItemId: {
@@ -156,19 +158,22 @@ export default {
         <div
           v-for="child in children"
           :key="child.id"
-          class="gl-relative gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-overflow-break-word gl-min-w-0 gl-bg-white gl-mb-3 gl-py-3 gl-px-4 gl-border gl-border-gray-100 gl-rounded-base"
+          class="gl-relative gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-overflow-break-word gl-min-w-0 gl-bg-white gl-mb-3 gl-py-3 gl-px-4 gl-border gl-border-gray-100 gl-rounded-base gl-line-height-32"
           data-testid="links-child"
         >
           <div>
             <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-3 gl-text-gray-700" />
             <span class="gl-word-break-all">{{ child.title }}</span>
           </div>
-          <div class="gl-ml-0 gl-sm-ml-auto! gl-mt-3 gl-sm-mt-0">
+          <div
+            class="gl-ml-0 gl-sm-ml-auto! gl-mt-3 gl-sm-mt-0 gl-display-inline-flex gl-align-items-center"
+          >
             <gl-badge :variant="badgeVariant(child.state)">
               <span class="gl-sm-display-block">{{
                 $options.WORK_ITEM_STATUS_TEXT[child.state]
               }}</span>
             </gl-badge>
+            <work-item-links-menu :work-item-id="child.id" :parent-work-item-id="issuableGid" />
           </div>
         </div>
       </template>

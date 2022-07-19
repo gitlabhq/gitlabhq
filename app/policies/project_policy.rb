@@ -492,6 +492,7 @@ class ProjectPolicy < BasePolicy
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_secure_files
+    enable :read_web_hooks
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do

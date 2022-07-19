@@ -68,10 +68,10 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
     end
 
     context 'with multiple jobs to run' do
-      it 'runs all jobs created within the last 48 hours' do
+      it 'runs all jobs created within the last 3 hours' do
         old_migration = define_background_migration(migration_name)
 
-        travel 3.days
+        travel 4.hours
 
         new_migration = define_background_migration('NewMigration') { travel 1.second }
         migration.queue_batched_background_migration('NewMigration', table_name, :id,

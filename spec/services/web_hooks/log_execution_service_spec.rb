@@ -35,6 +35,12 @@ RSpec.describe WebHooks::LogExecutionService do
       expect(WebHookLog.recent.first).to have_attributes(data)
     end
 
+    it 'updates the last failure' do
+      expect(project_hook).to receive(:update_last_failure)
+
+      service.execute
+    end
+
     context 'obtaining an exclusive lease' do
       let(:lease_key) { "web_hooks:update_hook_failure_state:#{project_hook.id}" }
 

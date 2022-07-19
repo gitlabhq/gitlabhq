@@ -392,6 +392,25 @@ export const workItemHierarchyResponse = {
   },
 };
 
+export const changeWorkItemParentMutationResponse = {
+  data: {
+    workItemUpdate: {
+      workItem: {
+        id: 'gid://gitlab/WorkItem/2',
+        workItemType: {
+          id: 'gid://gitlab/WorkItems::Type/5',
+          __typename: 'WorkItemType',
+        },
+        title: 'Foo',
+        state: 'OPEN',
+        __typename: 'WorkItem',
+      },
+      errors: [],
+      __typename: 'WorkItemUpdatePayload',
+    },
+  },
+};
+
 export const availableWorkItemsResponse = {
   data: {
     workspace: {

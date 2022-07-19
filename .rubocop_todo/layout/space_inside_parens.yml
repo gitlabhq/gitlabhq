@@ -185,7 +185,6 @@ Layout/SpaceInsideParens:
     - 'spec/controllers/projects/runners_controller_spec.rb'
     - 'spec/dependencies/omniauth_saml_spec.rb'
     - 'spec/factories/usage_data.rb'
-    - 'spec/features/admin/admin_runners_spec.rb'
     - 'spec/features/boards/board_filters_spec.rb'
     - 'spec/features/boards/user_visits_board_spec.rb'
     - 'spec/features/dashboard/datetime_on_tooltips_spec.rb'

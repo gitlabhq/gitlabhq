@@ -464,6 +464,20 @@ RSpec.describe 'File blob', :js do
     end
   end
 
+  context 'binary file that appears to be text in the first 1024 bytes' do
+    before do
+      visit_blob('encoding/binary-1.bin', ref: 'binary-encoding')
+    end
+
+    it 'displays the blob' do
+      expect(page).to have_link('Download (23.81 KiB)')
+      # does not show a viewer switcher
+      expect(page).not_to have_selector('.js-blob-viewer-switcher')
+      expect(page).not_to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+      expect(page).not_to have_link('Open raw')
+    end
+  end
+
   context 'empty file' do
     before do
       project.add_maintainer(project.creator)

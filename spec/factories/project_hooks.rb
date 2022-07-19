@@ -29,5 +29,9 @@ FactoryBot.define do
     trait :with_push_branch_filter do
       push_events_branch_filter { 'my-branch-*' }
     end
+
+    trait :permanently_disabled do
+      recent_failures { WebHook::FAILURE_THRESHOLD + 1 }
+    end
   end
 end

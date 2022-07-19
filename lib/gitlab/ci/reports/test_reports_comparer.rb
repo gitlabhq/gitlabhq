@@ -9,7 +9,7 @@ module Gitlab
         attr_reader :base_reports, :head_reports
 
         def initialize(base_reports, head_reports)
-          @base_reports = base_reports || TestReports.new
+          @base_reports = base_reports || TestReport.new
           @head_reports = head_reports
         end
 

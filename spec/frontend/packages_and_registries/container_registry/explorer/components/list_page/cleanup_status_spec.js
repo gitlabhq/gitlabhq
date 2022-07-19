@@ -109,5 +109,17 @@ describe('cleanup_status', () => {
       expect(findPopover().findComponent(GlLink).exists()).toBe(true);
       expect(findPopover().findComponent(GlLink).attributes('href')).toBe(cleanupPolicyHelpPage);
     });
+
+    it('id matches popover target attribute', () => {
+      mountComponent({
+        status: UNFINISHED_STATUS,
+        next_run_at: '2063-04-08T01:44:03Z',
+      });
+
+      const id = findExtraInfoIcon().attributes('id');
+
+      expect(id).toMatch(/status-info-[0-9]+/);
+      expect(findPopover().props('target')).toEqual(id);
+    });
   });
 });

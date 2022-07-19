@@ -28,7 +28,7 @@ module Resolvers
 
       def load_test_suite_data(builds)
         suite = builds.sum do |build|
-          build.collect_test_reports!(Gitlab::Ci::Reports::TestReports.new)
+          build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new)
         end
 
         Gitlab::Ci::Reports::TestFailureHistory.new(suite.failed.values, pipeline.project).load!

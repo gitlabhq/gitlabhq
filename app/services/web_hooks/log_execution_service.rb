@@ -44,6 +44,7 @@ module WebHooks
         end
 
         log_state_change
+        hook.update_last_failure
       end
     rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
       raise if raise_lock_error?

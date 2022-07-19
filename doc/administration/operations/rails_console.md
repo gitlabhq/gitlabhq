@@ -43,6 +43,35 @@ The console is in the toolbox pod. Refer to our [Kubernetes cheat sheet](https:/
 
 To exit the console, type: `quit`.
 
+## Enable Active Record logging
+
+You can enable output of Active Record debug logging in the Rails console
+session by running:
+
+```ruby
+ActiveRecord::Base.logger = Logger.new($stdout)
+```
+
+This shows information about database queries triggered by any Ruby code
+you may run in the console. To turn off logging again, run:
+
+```ruby
+ActiveRecord::Base.logger = nil
+```
+
+## Disable database statement timeout
+
+You can disable the PostgreSQL statement timeout for the current Rails console
+session by running:
+
+```ruby
+ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
+```
+
+This change only affects the current Rails console session and is
+not persisted in the GitLab production environment or in the next Rails
+console session.
+
 ## Output Rails console session history
 
 Enter the following command on the rails console to display

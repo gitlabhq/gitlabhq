@@ -48,6 +48,11 @@ class WebHook < ApplicationRecord
     where('recent_failures <= ? AND (disabled_until IS NULL OR disabled_until < ?)', FAILURE_THRESHOLD, Time.current)
   end
 
+  # Inverse of executable
+  scope :disabled, -> do
+    where('recent_failures > ? OR disabled_until >= ?', FAILURE_THRESHOLD, Time.current)
+  end
+
   def executable?
     !temporarily_disabled? && !permanently_disabled?
   end
@@ -179,6 +184,10 @@ class WebHook < ApplicationRecord
     end
   rescue KeyError => e
     raise InterpolationError, "Invalid URL template. Missing key #{e.key}"
+  end
+
+  def update_last_failure
+    # Overridden in child classes.
   end
 
   private

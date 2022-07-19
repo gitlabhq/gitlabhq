@@ -19590,6 +19590,9 @@ msgstr ""
 msgid "If no options are selected, only administrators can register runners."
 msgstr ""
 
+msgid "If none of the options work, try contacting a GitLab administrator."
+msgstr ""
+
 msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
 msgstr ""
 
@@ -26491,6 +26494,9 @@ msgstr ""
 msgid "Notes|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
 msgstr ""
 
+msgid "Note|The created date provided is too far in the past."
+msgstr ""
+
 msgid "Nothing to preview."
 msgstr ""
 
@@ -31990,6 +31996,9 @@ msgstr ""
 msgid "Reconfigure"
 msgstr ""
 
+msgid "Recover password"
+msgstr ""
+
 msgid "Recovery Codes"
 msgstr ""
 
@@ -36255,6 +36264,9 @@ msgstr ""
 msgid "Sign-in count:"
 msgstr ""
 
+msgid "Sign-in failed because %{error}."
+msgstr ""
+
 msgid "Sign-in page"
 msgstr ""
 
@@ -36262,6 +36274,9 @@ msgid "Sign-in restrictions"
 msgstr ""
 
 msgid "Sign-in text"
+msgstr ""
+
+msgid "Sign-in using %{provider} auth failed"
 msgstr ""
 
 msgid "Sign-out page URL"
@@ -41103,6 +41118,9 @@ msgstr ""
 msgid "Try grouping with different labels"
 msgstr ""
 
+msgid "Try logging in using your username or email. If you have forgotten your password, try recovering it"
+msgstr ""
+
 msgid "Try out GitLab Pipelines"
 msgstr ""
 
@@ -44021,6 +44039,9 @@ msgstr ""
 msgid "WorkItem|Child items"
 msgstr ""
 
+msgid "WorkItem|Child removed"
+msgstr ""
+
 msgid "WorkItem|Closed"
 msgstr ""
 
@@ -44049,6 +44070,9 @@ msgid "WorkItem|No child items are currently assigned. Use child items to priori
 msgstr ""
 
 msgid "WorkItem|Open"
+msgstr ""
+
+msgid "WorkItem|Remove"
 msgstr ""
 
 msgid "WorkItem|Select type"
@@ -44082,6 +44106,9 @@ msgid "WorkItem|Task deleted"
 msgstr ""
 
 msgid "WorkItem|Type"
+msgstr ""
+
+msgid "WorkItem|Undo"
 msgstr ""
 
 msgid "WorkItem|Work Items"

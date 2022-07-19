@@ -1090,7 +1090,7 @@ module Ci
     end
 
     def test_reports
-      Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
+      Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
         latest_test_report_builds.find_each do |build|
           build.collect_test_reports!(test_reports)
         end

@@ -222,6 +222,7 @@ class User < ApplicationRecord
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'Users::Callout'
   has_many :group_callouts, class_name: 'Users::GroupCallout'
+  has_many :namespace_callouts, class_name: 'Users::NamespaceCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
@@ -2085,6 +2086,13 @@ class User < ApplicationRecord
     callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
+  def dismissed_callout_for_namespace?(feature_name:, namespace:, ignore_dismissal_earlier_than: nil)
+    source_feature_name = "#{feature_name}_#{namespace.id}"
+    callout = namespace_callouts_by_feature_name[source_feature_name]
+
+    callout_dismissed?(callout, ignore_dismissal_earlier_than)
+  end
+
   # Load the current highest access by looking directly at the user's memberships
   def current_highest_access_level
     members.non_request.maximum(:access_level)
@@ -2109,6 +2117,11 @@ class User < ApplicationRecord
   def find_or_initialize_group_callout(feature_name, group_id)
     group_callouts
       .find_or_initialize_by(feature_name: ::Users::GroupCallout.feature_names[feature_name], group_id: group_id)
+  end
+
+  def find_or_initialize_namespace_callout(feature_name, namespace_id)
+    namespace_callouts
+      .find_or_initialize_by(feature_name: ::Users::NamespaceCallout.feature_names[feature_name], namespace_id: namespace_id)
   end
 
   def can_trigger_notifications?
@@ -2226,6 +2239,10 @@ class User < ApplicationRecord
 
   def group_callouts_by_feature_name
     @group_callouts_by_feature_name ||= group_callouts.index_by(&:source_feature_name)
+  end
+
+  def namespace_callouts_by_feature_name
+    @namespace_callouts_by_feature_name ||= namespace_callouts.index_by(&:source_feature_name)
   end
 
   def authorized_groups_without_shared_membership

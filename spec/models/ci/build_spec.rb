@@ -4281,7 +4281,7 @@ RSpec.describe Ci::Build do
   describe '#collect_test_reports!' do
     subject { build.collect_test_reports!(test_reports) }
 
-    let(:test_reports) { Gitlab::Ci::Reports::TestReports.new }
+    let(:test_reports) { Gitlab::Ci::Reports::TestReport.new }
 
     it { expect(test_reports.get_suite(build.name).total_count).to eq(0) }
 
@@ -4332,7 +4332,7 @@ RSpec.describe Ci::Build do
 
     context 'when build is part of parallel build' do
       let(:build_1) { create(:ci_build, name: 'build 1/2') }
-      let(:test_report) { Gitlab::Ci::Reports::TestReports.new }
+      let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
 
       before do
         build_1.collect_test_reports!(test_report)
@@ -4356,7 +4356,7 @@ RSpec.describe Ci::Build do
     end
 
     context 'when build is part of matrix build' do
-      let(:test_report) { Gitlab::Ci::Reports::TestReports.new }
+      let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
       let(:matrix_build_1) { create(:ci_build, :matrix) }
 
       before do

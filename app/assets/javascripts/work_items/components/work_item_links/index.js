@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlToast } from '@gitlab/ui';
 import createDefaultClient from '~/lib/graphql';
 import WorkItemLinks from './work_item_links.vue';
 
 Vue.use(VueApollo);
+Vue.use(GlToast);
 
 const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),

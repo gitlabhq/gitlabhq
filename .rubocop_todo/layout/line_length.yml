@@ -4153,7 +4153,6 @@ Layout/LineLength:
     - 'spec/features/action_cable_logging_spec.rb'
     - 'spec/features/admin/admin_abuse_reports_spec.rb'
     - 'spec/features/admin/admin_mode/login_spec.rb'
-    - 'spec/features/admin/admin_runners_spec.rb'
     - 'spec/features/admin/admin_sees_background_migrations_spec.rb'
     - 'spec/features/admin/admin_sees_project_statistics_spec.rb'
     - 'spec/features/admin/admin_settings_spec.rb'

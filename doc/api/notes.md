@@ -146,7 +146,7 @@ Parameters:
 | `issue_iid`    | integer        | yes      | The IID of an issue.                                                                                                         |
 | `body`         | string         | yes      | The content of a note. Limited to 1,000,000 characters.                                                                      |
 | `confidential` | boolean        | no       | The confidential flag of a note. Default is false.                                                                           |
-| `created_at`   | string         | no       | Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
+| `created_at`   | string         | no       | Date time string, ISO 8601 formatted. It must be after 1970-01-01. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=note"

@@ -7,8 +7,8 @@ RSpec.describe TestReportsComparerEntity do
 
   let(:entity) { described_class.new(comparer) }
   let(:comparer) { Gitlab::Ci::Reports::TestReportsComparer.new(base_reports, head_reports) }
-  let(:base_reports) { Gitlab::Ci::Reports::TestReports.new }
-  let(:head_reports) { Gitlab::Ci::Reports::TestReports.new }
+  let(:base_reports) { Gitlab::Ci::Reports::TestReport.new }
+  let(:head_reports) { Gitlab::Ci::Reports::TestReport.new }
 
   describe '#as_json' do
     subject { entity.as_json }

@@ -21669,6 +21669,23 @@ CREATE TABLE user_interacted_projects (
     project_id integer NOT NULL
 );
 
+CREATE TABLE user_namespace_callouts (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    dismissed_at timestamp with time zone,
+    feature_name smallint NOT NULL
+);
+
+CREATE SEQUENCE user_namespace_callouts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE user_namespace_callouts_id_seq OWNED BY user_namespace_callouts.id;
+
 CREATE TABLE user_permission_export_uploads (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23601,6 +23618,8 @@ ALTER TABLE ONLY user_custom_attributes ALTER COLUMN id SET DEFAULT nextval('use
 ALTER TABLE ONLY user_details ALTER COLUMN user_id SET DEFAULT nextval('user_details_user_id_seq'::regclass);
 
 ALTER TABLE ONLY user_group_callouts ALTER COLUMN id SET DEFAULT nextval('user_group_callouts_id_seq'::regclass);
+
+ALTER TABLE ONLY user_namespace_callouts ALTER COLUMN id SET DEFAULT nextval('user_namespace_callouts_id_seq'::regclass);
 
 ALTER TABLE ONLY user_permission_export_uploads ALTER COLUMN id SET DEFAULT nextval('user_permission_export_uploads_id_seq'::regclass);
 
@@ -25879,6 +25898,9 @@ ALTER TABLE ONLY user_highest_roles
 ALTER TABLE ONLY user_interacted_projects
     ADD CONSTRAINT user_interacted_projects_pkey PRIMARY KEY (project_id, user_id);
 
+ALTER TABLE ONLY user_namespace_callouts
+    ADD CONSTRAINT user_namespace_callouts_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY user_permission_export_uploads
     ADD CONSTRAINT user_permission_export_uploads_pkey PRIMARY KEY (id);
 
@@ -27495,8 +27517,6 @@ CREATE INDEX index_ci_builds_on_status_and_type_and_runner_id ON ci_builds USING
 
 CREATE UNIQUE INDEX index_ci_builds_on_token_encrypted ON ci_builds USING btree (token_encrypted) WHERE (token_encrypted IS NOT NULL);
 
-CREATE UNIQUE INDEX index_ci_builds_on_token_partial ON ci_builds USING btree (token) WHERE (token IS NOT NULL);
-
 CREATE INDEX index_ci_builds_on_updated_at ON ci_builds USING btree (updated_at);
 
 CREATE INDEX index_ci_builds_on_upstream_pipeline_id ON ci_builds USING btree (upstream_pipeline_id) WHERE (upstream_pipeline_id IS NOT NULL);
@@ -28911,6 +28931,8 @@ CREATE INDEX index_notification_settings_on_source_and_level_and_user ON notific
 
 CREATE UNIQUE INDEX index_notifications_on_user_id_and_source_id_and_source_type ON notification_settings USING btree (user_id, source_id, source_type);
 
+CREATE UNIQUE INDEX index_ns_user_callouts_feature ON user_namespace_callouts USING btree (user_id, feature_name, namespace_id);
+
 CREATE INDEX index_oauth_access_grants_on_resource_owner_id ON oauth_access_grants USING btree (resource_owner_id, application_id, created_at);
 
 CREATE UNIQUE INDEX index_oauth_access_grants_on_token ON oauth_access_grants USING btree (token);
@@ -29912,6 +29934,8 @@ CREATE INDEX index_user_group_callouts_on_group_id ON user_group_callouts USING 
 CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON user_highest_roles USING btree (user_id, highest_access_level);
 
 CREATE INDEX index_user_interacted_projects_on_user_id ON user_interacted_projects USING btree (user_id);
+
+CREATE INDEX index_user_namespace_callouts_on_namespace_id ON user_namespace_callouts USING btree (namespace_id);
 
 CREATE INDEX index_user_permission_export_uploads_on_user_id_and_status ON user_permission_export_uploads USING btree (user_id, status);
 
@@ -31780,6 +31804,9 @@ ALTER TABLE ONLY ci_pipelines
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_27548c6db3 FOREIGN KEY (hashed_storage_migrated_event_id) REFERENCES geo_hashed_storage_migrated_events(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY user_namespace_callouts
+    ADD CONSTRAINT fk_27a69fd1bd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_290ec1ab02 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -31884,6 +31911,9 @@ ALTER TABLE ONLY releases
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_4a99ebfd60 FOREIGN KEY (repositories_changed_event_id) REFERENCES geo_repositories_changed_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_namespace_callouts
+    ADD CONSTRAINT fk_4b1257f385 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_4b88e5b255 FOREIGN KEY (component_version_id) REFERENCES sbom_component_versions(id) ON DELETE CASCADE;

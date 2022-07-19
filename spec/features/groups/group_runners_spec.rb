@@ -17,7 +17,7 @@ RSpec.describe "Group Runners" do
   describe "Group runners page", :js do
     let!(:group_registration_token) { group.runners_token }
 
-    context "runners registration" do
+    describe "runners registration" do
       before do
         visit group_runners_path(group)
       end
@@ -128,7 +128,7 @@ RSpec.describe "Group Runners" do
       end
     end
 
-    context 'filtered search' do
+    describe 'filtered search' do
       before do
         visit group_runners_path(group)
       end

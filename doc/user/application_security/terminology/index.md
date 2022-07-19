@@ -220,11 +220,12 @@ once it's imported into the database.
 
 The type of scan. This must be one of the following:
 
-- `container_scanning`
-- `dependency_scanning`
-- `dast`
-- `sast`
 - `cluster_image_scanning`
+- `container_scanning`
+- `dast`
+- `dependency_scanning`
+- `sast`
+- `secret_detection`
 
 ### Scanner
 

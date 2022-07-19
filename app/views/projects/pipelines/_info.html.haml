@@ -6,9 +6,9 @@
       = preserve(markdown(commit.description, pipeline: :single_line))
 
 .info-well
-  .well-segment.pipeline-info
-    .icon-container.gl-vertical-align-text-bottom
-      = sprite_icon('clock')
+  .well-segment.pipeline-info{ class: "gl-align-items-baseline!" }
+    .icon-container
+      = sprite_icon('clock', css_class: 'gl-top-0!')
     = pluralize @pipeline.total_size, "job"
     = @pipeline.ref_text
     - if @pipeline.duration
@@ -20,7 +20,7 @@
   - if has_pipeline_badges?(@pipeline)
     .well-segment.qa-pipeline-badges
       .icon-container
-        = sprite_icon('flag')
+        = sprite_icon('flag', css_class: 'gl-top-0!')
       - if @pipeline.child?
         - text = sprintf(s_('Pipelines|Child pipeline (%{link_start}parent%{link_end})'), { link_start: "<a href='#{pipeline_path(@pipeline.triggered_by_pipeline)}' class='text-underline'>", link_end: "</a>"}).html_safe
         = gl_badge_tag text, { variant: :info, size: :sm }, { class: 'js-pipeline-child has-tooltip', title: s_("Pipelines|This is a child pipeline within the parent pipeline") }
@@ -44,13 +44,13 @@
 
   .well-segment.branch-info
     .icon-container.commit-icon
-      = custom_icon("icon_commit")
+      = sprite_icon('commit', css_class: 'gl-top-0!')
     = link_to commit.short_id, project_commit_path(@project, @pipeline.sha), class: "commit-sha"
     = clipboard_button(text: @pipeline.sha, title: _("Copy commit SHA"))
 
   .well-segment.related-merge-request-info
     .icon-container
-      = sprite_icon("git-merge")
+      = sprite_icon("git-merge", css_class: 'gl-top-0!')
     %span.related-merge-requests
       %span.js-truncated-mr-list
         = @pipeline.all_related_merge_request_text(limit: 1)

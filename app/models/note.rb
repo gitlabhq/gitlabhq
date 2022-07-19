@@ -111,6 +111,7 @@ class Note < ApplicationRecord
   end
 
   validate :does_not_exceed_notes_limit?, on: :create, unless: [:system?, :importing?]
+  validate :validate_created_after
 
   # @deprecated attachments are handled by the Upload model.
   #
@@ -746,6 +747,13 @@ class Note < ApplicationRecord
     return unless noteable
 
     errors.add(:base, _('Maximum number of comments exceeded')) if noteable.notes.count >= Noteable::MAX_NOTES_LIMIT
+  end
+
+  def validate_created_after
+    return unless created_at
+    return if created_at >= '1970-01-01'
+
+    errors.add(:created_at, s_('Note|The created date provided is too far in the past.'))
   end
 
   def noteable_label_url_method

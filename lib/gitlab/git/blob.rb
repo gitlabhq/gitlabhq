@@ -128,6 +128,9 @@ module Gitlab
         @loaded_size = @data.bytesize if @data
         @loaded_all_data = @loaded_size == size
 
+        # Recalculate binary status if we loaded all data
+        @binary = nil if @loaded_all_data
+
         record_metric_blob_size
         record_metric_truncated(truncated?)
       end

@@ -1,6 +1,6 @@
 import Vue from 'vue';
+import ResourceLinksBlock from 'ee_component/linked_resources/components/resource_links_block.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import ResourceLinksBlock from './components/resource_links_block.vue';
 
 export default function initLinkedResources() {
   const linkedResourcesRootElement = document.querySelector('.js-linked-resources-root');

@@ -1,4 +1,5 @@
 <script>
+import { uniqueId } from 'lodash';
 import { GlIcon, GlPopover, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { timeTilRun } from '../../utils';
@@ -43,6 +44,11 @@ export default {
     CLEANUP_STATUS_UNFINISHED,
     PARTIAL_CLEANUP_CONTINUE_MESSAGE,
   },
+  data() {
+    return {
+      iconId: uniqueId('status-info-'),
+    };
+  },
   computed: {
     showStatus() {
       return this.status !== UNSCHEDULED_STATUS;
@@ -85,14 +91,14 @@ export default {
     </span>
     <gl-icon
       v-if="failedDelete"
-      id="status-info"
+      :id="iconId"
       :size="14"
       class="gl-text-gray-500"
       data-testid="extra-info"
       name="information-o"
     />
     <gl-popover
-      target="status-info"
+      :target="iconId"
       container="status-popover-container"
       v-bind="$options.statusPopoverOptions"
     >

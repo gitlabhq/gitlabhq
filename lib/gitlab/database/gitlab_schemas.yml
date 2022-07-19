@@ -578,3 +578,4 @@ zentao_tracker_data: :gitlab_main
 dingtalk_tracker_data: :gitlab_main
 zoom_meetings: :gitlab_main
 batched_background_migration_job_transition_logs: :gitlab_shared
+user_namespace_callouts: :gitlab_main

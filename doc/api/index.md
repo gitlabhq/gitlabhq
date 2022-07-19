@@ -453,12 +453,14 @@ Keyset-pagination allows for more efficient retrieval of pages and - in contrast
 to offset-based pagination - runtime is independent of the size of the
 collection.
 
-This method is controlled by the following parameters:
+This method is controlled by the following parameters. `order_by` and `sort` are both mandatory.
 
-| Parameter    | Description |
-|--------------| ------------|
-| `pagination` | `keyset` (to enable keyset pagination). |
-| `per_page`   | Number of items to list per page (default: `20`, max: `100`). |
+| Parameter    | Required | Description |
+|--------------| ------------ | --------- |
+| `pagination` | yes | `keyset` (to enable keyset pagination). |
+| `per_page`   | no | Number of items to list per page (default: `20`, max: `100`). |
+| `order_by`   | yes | Column by which to order by. |
+| `sort`       | yes | Sort order (`asc` or `desc`) |
 
 In the following example, we list 50 [projects](projects.md) per page, ordered
 by `id` ascending.

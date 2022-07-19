@@ -5,6 +5,8 @@ module Gitlab
     module Keyset
       class CursorBasedRequestContext
         DEFAULT_SORT_DIRECTION = :desc
+        DEFAULT_SORT_COLUMN = :id
+
         attr_reader :request_context
 
         delegate :params, to: :request_context
@@ -28,7 +30,7 @@ module Gitlab
         end
 
         def order_by
-          { params[:order_by].to_sym => params[:sort]&.to_sym || DEFAULT_SORT_DIRECTION }
+          { (params[:order_by]&.to_sym || DEFAULT_SORT_COLUMN) => (params[:sort]&.to_sym || DEFAULT_SORT_DIRECTION) }
         end
       end
     end

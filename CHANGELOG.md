@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.1.3 (2022-07-19)
+
+### Added (1 change)
+
+- [Add praefect list virtual storages subcommand documentation](gitlab-org/gitlab@95689c32e2734831c00ef30de303098485ec095a) ([merge request](gitlab-org/gitlab!92708))
+
+### Fixed (1 change)
+
+- [Fix group access dropdown failure if no subgroups are available](gitlab-org/gitlab@518a2f55caddab0c18d0548d0a8f777afe5ae666) ([merge request](gitlab-org/gitlab!92708)) **GitLab Enterprise Edition**
+
 ## 15.1.2 (2022-07-05)
 
 ### Fixed (3 changes)
