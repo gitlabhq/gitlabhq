@@ -49,7 +49,7 @@ export default {
   <div
     :class="[
       $options.EXTENSION_ICON_CLASS[iconName],
-      { 'mr-widget-extension-icon': !isLoading && level === 1 },
+      { 'mr-widget-extension-icon gl-w-6': !isLoading && level === 1 },
       { 'gl-p-2': isLoading || level === 1 },
     ]"
     class="gl-rounded-full gl-mr-3 gl-relative gl-p-2"

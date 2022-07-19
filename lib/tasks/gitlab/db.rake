@@ -94,7 +94,7 @@ namespace :gitlab do
         connection = Gitlab::Database.database_base_models['main'].connection
         databases_loaded << configure_database(connection)
       else
-        Gitlab::Database.database_base_models.each do |name, model|
+        Gitlab::Database.database_base_models_with_gitlab_shared.each do |name, model|
           next unless databases_with_tasks.any? { |db_with_tasks| db_with_tasks.name == name }
 
           databases_loaded << configure_database(model.connection, database_name: name)

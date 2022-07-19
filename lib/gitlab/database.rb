@@ -63,13 +63,45 @@ module Gitlab
       }.compact.with_indifferent_access.freeze
     end
 
+    # This returns a list of databases that contains all the gitlab_shared schema
+    # tables. We can't reuse database_base_models because Geo does not support
+    # the gitlab_shared tables yet.
+    def self.database_base_models_with_gitlab_shared
+      @database_base_models_with_gitlab_shared ||= {
+        # Note that we use ActiveRecord::Base here and not ApplicationRecord.
+        # This is deliberate, as we also use these classes to apply load
+        # balancing to, and the load balancer must be enabled for _all_ models
+        # that inher from ActiveRecord::Base; not just our own models that
+        # inherit from ApplicationRecord.
+        main: ::ActiveRecord::Base,
+        ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
+      }.compact.with_indifferent_access.freeze
+    end
+
+    # This returns a list of databases whose connection supports database load
+    # balancing. We can't reuse the database_base_models method because the Geo
+    # database does not support load balancing yet.
+    #
+    # TODO: https://gitlab.com/gitlab-org/geo-team/discussions/-/issues/5032
+    def self.database_base_models_using_load_balancing
+      @database_base_models_with_gitlab_shared ||= {
+        # Note that we use ActiveRecord::Base here and not ApplicationRecord.
+        # This is deliberate, as we also use these classes to apply load
+        # balancing to, and the load balancer must be enabled for _all_ models
+        # that inher from ActiveRecord::Base; not just our own models that
+        # inherit from ApplicationRecord.
+        main: ::ActiveRecord::Base,
+        ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
+      }.compact.with_indifferent_access.freeze
+    end
+
     # This returns a list of base models with connection associated for a given gitlab_schema
     def self.schemas_to_base_models
       @schemas_to_base_models ||= {
         gitlab_main: [self.database_base_models.fetch(:main)],
         gitlab_ci: [self.database_base_models[:ci] || self.database_base_models.fetch(:main)], # use CI or fallback to main
-        gitlab_shared: self.database_base_models.values, # all models
-        gitlab_internal: self.database_base_models.values # all models
+        gitlab_shared: database_base_models_with_gitlab_shared.values, # all models
+        gitlab_internal: database_base_models.values # all models
       }.with_indifferent_access.freeze
     end
 
@@ -168,7 +200,7 @@ module Gitlab
       # can potentially upgrade from read to read-write mode (using a different connection), we specify
       # up-front that we'll explicitly use the primary for the duration of the operation.
       Gitlab::Database::LoadBalancing::Session.current.use_primary do
-        base_models = database_base_models.values
+        base_models = database_base_models_using_load_balancing.values
         base_models.reduce(block) { |blk, model| -> { model.uncached(&blk) } }.call
       end
     end

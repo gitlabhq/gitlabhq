@@ -63,6 +63,12 @@ The steps can be summed up to:
    piped script, you can first
    [check its contents](https://packages.gitlab.com/gitlab/gitlab-ee/install).
 
+   NOTE:
+   If you want to use `dpkg`/`rpm` instead of `apt-get`/`yum`, go through the first
+   step to find the current GitLab version, then follow
+   [Update using a manually-downloaded package](index.md#upgrade-using-a-manually-downloaded-package),
+   and then [add your license](../../user/admin_area/license.md). 
+
 1. Install the `gitlab-ee` package. The install automatically
    uninstalls the `gitlab-ce` package on your GitLab server. `reconfigure`
    Omnibus right after the `gitlab-ee` package is installed. **Make sure that you
@@ -91,8 +97,7 @@ The steps can be summed up to:
    sudo gitlab-ctl reconfigure
    ```
 
-1. Now go to the GitLab Admin Area of your server (`/admin/subscription`) and
-   [add your license](../../user/admin_area/license.md).
+1. Now activate GitLab Enterprise Edition by [adding your license](../../user/admin_area/license.md).
 
 1. After you confirm that GitLab is working as expected, you may remove the old
    Community Edition repository:
@@ -111,8 +116,3 @@ The steps can be summed up to:
 
 That's it! You can now use GitLab Enterprise Edition! To update to a newer
 version, follow [Update using the official repositories](index.md#upgrade-using-the-official-repositories).
-
-NOTE:
-If you want to use `dpkg`/`rpm` instead of `apt-get`/`yum`, go through the first
-step to find the current GitLab version and then follow
-[Update using a manually-downloaded package](index.md#upgrade-using-a-manually-downloaded-package).

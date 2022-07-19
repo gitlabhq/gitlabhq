@@ -186,7 +186,10 @@ module Gitlab
             end
 
             ::Gitlab::Database.database_base_models.keys.each do |config_name|
-              counters << compose_metric_key(metric, nil, config_name) # main / ci
+              counters << compose_metric_key(metric, nil, config_name) # main / ci / geo
+            end
+
+            ::Gitlab::Database.database_base_models_using_load_balancing.keys.each do |config_name|
               counters << compose_metric_key(metric, nil, config_name + ::Gitlab::Database::LoadBalancing::LoadBalancer::REPLICA_SUFFIX) # main_replica / ci_replica
             end
           end

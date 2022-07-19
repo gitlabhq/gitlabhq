@@ -34,7 +34,7 @@ module LooseForeignKeys
     # If two DBs are configured (Main, CI): minute 1 -> Main, minute 2 -> CI
     def current_connection_name_and_base_model
       minutes_since_epoch = Time.current.to_i / 60
-      connections_with_name = Gitlab::Database.database_base_models.to_a # this will never be empty
+      connections_with_name = Gitlab::Database.database_base_models_with_gitlab_shared.to_a # this will never be empty
       connections_with_name[minutes_since_epoch % connections_with_name.count]
     end
   end

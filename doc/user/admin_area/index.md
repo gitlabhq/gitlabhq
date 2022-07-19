@@ -372,14 +372,16 @@ The following topics document the **Monitoring** section of the Admin Area.
 
 ### System Information
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2, support for relative time. "Uptime" statistic was renamed to "System started".
+
 The **System Info** page provides the following statistics:
 
-| Field        | Description |
-|:-------------|:------------|
-| CPU          | Number of CPU cores available |
-| Memory Usage | Memory in use, and total memory available |
-| Disk Usage   | Disk space in use, and total disk space available |
-| Uptime       | Approximate uptime of the GitLab instance |
+| Field          | Description                                       |
+|:---------------|:--------------------------------------------------|
+| CPU            | Number of CPU cores available                     |
+| Memory Usage   | Memory in use, and total memory available         |
+| Disk Usage     | Disk space in use, and total disk space available |
+| System started | When the system hosting GitLab was started. In GitLab 15.1 and earlier, this was an uptime statistic. |
 
 These statistics are updated only when you navigate to the **System Info** page, or you refresh the page in your browser.
 

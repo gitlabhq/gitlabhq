@@ -26,6 +26,7 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 
 - `gitlab_main`: describes all tables that are being stored in the `main:` database (for example, like `projects`, `users`).
 - `gitlab_ci`: describes all CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`).
+- `gitlab_geo`: describes all Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`).
 - `gitlab_shared`: describe all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`.
 - `gitlab_internal`: describe all internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`).
 - `...`: more schemas to be introduced with additional decomposed databases
@@ -34,6 +35,7 @@ The usage of schema enforces the base class to be used:
 
 - `ApplicationRecord` for `gitlab_main`
 - `Ci::ApplicationRecord` for `gitlab_ci`
+- `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
 
 ### The impact of `gitlab_schema`

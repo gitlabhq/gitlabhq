@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::Reindexing do
   include Database::DatabaseHelpers
 
   describe '.invoke' do
-    let(:databases) { Gitlab::Database.database_base_models }
+    let(:databases) { Gitlab::Database.database_base_models_with_gitlab_shared }
     let(:databases_count) { databases.count }
 
     it 'cleans up any leftover indexes' do

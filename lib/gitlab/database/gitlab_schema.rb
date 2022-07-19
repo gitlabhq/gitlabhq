@@ -13,6 +13,8 @@
 module Gitlab
   module Database
     module GitlabSchema
+      GITLAB_SCHEMAS_FILE = 'lib/gitlab/database/gitlab_schemas.yml'
+
       # These tables are deleted/renamed, but still referenced by migrations.
       # This is needed for now, but should be removed in the future
       DELETED_TABLES = {
@@ -93,7 +95,7 @@ module Gitlab
       end
 
       def self.tables_to_schema
-        @tables_to_schema ||= YAML.load_file(Rails.root.join('lib/gitlab/database/gitlab_schemas.yml'))
+        @tables_to_schema ||= YAML.load_file(Rails.root.join(GITLAB_SCHEMAS_FILE))
       end
 
       def self.schema_names
@@ -102,3 +104,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Database::GitlabSchema.prepend_mod

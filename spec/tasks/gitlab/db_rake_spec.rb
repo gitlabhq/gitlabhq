@@ -45,7 +45,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       before do
         skip_unless_ci_uses_database_tasks
 
-        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+        allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end
 
       it 'marks the migration complete on each database' do
@@ -90,7 +90,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       let(:base_models) { { 'main' => main_model } }
 
       before do
-        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+        allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end
 
       it 'prints a warning message' do
@@ -110,7 +110,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       let(:base_models) { { 'main' => main_model } }
 
       before do
-        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+        allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end
 
       it 'prints an error and exits' do
@@ -136,6 +136,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       context 'when geo is not configured' do
         before do
           allow(ActiveRecord::Base).to receive_message_chain('configurations.configs_for').and_return([main_config])
+          allow(Gitlab::Database).to receive(:has_config?).with(:geo).and_return(false)
         end
 
         context 'when the schema is already loaded' do
@@ -260,7 +261,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       before do
         skip_unless_ci_uses_database_tasks
 
-        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+        allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end
 
       context 'when geo is not configured' do
@@ -444,7 +445,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       before do
         skip_unless_ci_uses_database_tasks
 
-        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+        allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
 
         allow(main_model.connection).to receive(:table_exists?).with('schema_migrations').and_return(true)
         allow(ci_model.connection).to receive(:table_exists?).with('schema_migrations').and_return(true)
@@ -574,7 +575,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       before do
         skip_if_multiple_databases_not_setup
 
-        allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+        allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end
 
       it 'delegates to Gitlab::Database::Reindexing without a specific database' do

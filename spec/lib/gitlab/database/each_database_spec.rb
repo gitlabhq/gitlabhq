@@ -4,9 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::EachDatabase do
   describe '.each_database_connection', :add_ci_connection do
+    let(:database_base_models) { { main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access }
+
     before do
-      allow(Gitlab::Database).to receive(:database_base_models)
-        .and_return({ main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access)
+      allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(database_base_models)
     end
 
     it 'yields each connection after connecting SharedModel' do
@@ -60,12 +61,20 @@ RSpec.describe Gitlab::Database::EachDatabase do
     end
 
     context 'when shared connections are not included' do
+      def clear_memoization(key)
+        Gitlab::Database.remove_instance_variable(key) if Gitlab::Database.instance_variable_defined?(key)
+      end
+
+      before do
+        allow(Gitlab::Database).to receive(:database_base_models).and_return(database_base_models)
+
+        # Clear the memoization because the return of Gitlab::Database#schemas_to_base_models depends stubbed value
+        clear_memoization(:@schemas_to_base_models)
+        clear_memoization(:@schemas_to_base_models_ee)
+      end
+
       it 'only yields the unshared connections' do
-        if Gitlab::Database.has_config?(:ci)
-          expect(Gitlab::Database).to receive(:db_config_share_with).exactly(3).times.and_return(nil, 'main', 'main')
-        else
-          expect(Gitlab::Database).to receive(:db_config_share_with).twice.and_return(nil, 'main')
-        end
+        expect(Gitlab::Database).to receive(:db_config_share_with).exactly(3).times.and_return(nil, 'main', 'main')
 
         expect { |b| described_class.each_database_connection(include_shared: false, &b) }
           .to yield_successive_args([ActiveRecord::Base.connection, 'main'])
@@ -79,7 +88,7 @@ RSpec.describe Gitlab::Database::EachDatabase do
       let(:model2) { Class.new(Gitlab::Database::SharedModel) }
 
       before do
-        allow(Gitlab::Database).to receive(:database_base_models)
+        allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared)
           .and_return({ main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access)
       end
 
@@ -136,7 +145,7 @@ RSpec.describe Gitlab::Database::EachDatabase do
       let(:ci_model) { Class.new(Ci::ApplicationRecord) }
 
       before do
-        allow(Gitlab::Database).to receive(:database_base_models)
+        allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared)
           .and_return({ main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access)
 
         allow(main_model).to receive_message_chain('connection_db_config.name').and_return('main')

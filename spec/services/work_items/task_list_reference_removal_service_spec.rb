@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::TaskListReferenceRemovalService do
   let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project, :repository).tap { |project| project.add_developer(developer) } }
-  let_it_be(:task) { create(:work_item, project: project) }
+  let_it_be(:task) { create(:work_item, project: project, title: 'Task title') }
   let_it_be(:single_line_work_item, refind: true) do
     create(:work_item, project: project, description: "- [ ] #{task.to_reference}+ single line")
   end
@@ -82,7 +82,7 @@ RSpec.describe WorkItems::TaskListReferenceRemovalService do
       let(:line_number_end) { 1 }
       let(:work_item) { single_line_work_item }
 
-      it_behaves_like 'successful work item task reference removal service', '- [ ] My title 1 single line'
+      it_behaves_like 'successful work item task reference removal service', '- [ ] Task title single line'
 
       context 'when description does not contain a task' do
         let_it_be(:no_matching_work_item) { create(:work_item, project: project, description: 'no matching task') }
@@ -103,7 +103,7 @@ RSpec.describe WorkItems::TaskListReferenceRemovalService do
 
     context 'when task mardown spans multiple lines' do
       it_behaves_like 'successful work item task reference removal service',
-        "Any text\n\n* [ ] Item to be converted\n    My title 1 second line\n    third line\n* [x] task\n\nMore text"
+        "Any text\n\n* [ ] Item to be converted\n    Task title second line\n    third line\n* [x] task\n\nMore text"
     end
 
     context 'when updating the work item fails' do

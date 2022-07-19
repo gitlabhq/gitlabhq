@@ -37,9 +37,18 @@ module Gitlab
       ].freeze
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
+        ci_users
         error_tracking
         ide_edit
+        importer
+        incident_management_alerts
+        pipeline_authoring
+        secure
+        snippets
+        source_code
+        terraform
         testing
+        work_items
       ].freeze
 
       # Track event on entity_id

@@ -75,12 +75,10 @@ draft merge requests:
 
 ## Pipelines for drafts
 
-When the [merged results pipelines](../../../ci/pipelines/merged_results_pipelines.md)
-feature is enabled, draft merge requests run
-[merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md) only.
+Draft merge requests run the same pipelines as merge request that are marked as ready.
 
-To run merged results pipelines, you must
-[mark the merge request as ready](#mark-merge-requests-as-ready).
+In GitLab 15.0 and older, you must [mark the merge request as ready](#mark-merge-requests-as-ready)
+if you want to run [merged results pipelines](../../../ci/pipelines/merged_results_pipelines.md).
 
 <!-- ## Troubleshooting
 
