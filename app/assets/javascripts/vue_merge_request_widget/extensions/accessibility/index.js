@@ -40,6 +40,9 @@ export default {
 
       return numOfResults === 0 ? successText : warningText;
     },
+    shouldCollapse() {
+      return this.collapsedData?.summary?.errored > 0;
+    },
     fetchCollapsedData() {
       return axios.get(this.accessibilityReportPath);
     },

@@ -168,7 +168,6 @@ NOTE:
 If all storage weights are `0` (for example, when `default` does not exist), GitLab attempts to
 create new repositories on `default`, regardless of the configuration or if `default` exists.
 See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) for more information.
-information.
 
 ## Move repositories
 

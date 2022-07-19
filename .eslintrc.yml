@@ -53,6 +53,7 @@ rules:
       - '^$'
       - '^variables$'
       - 'attrs?$'
+  '@gitlab/vue-prefer-dollar-scopedslots': error
   no-param-reassign:
     - error
     - props: true

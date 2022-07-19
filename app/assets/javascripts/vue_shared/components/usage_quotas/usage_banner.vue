@@ -25,13 +25,21 @@ export default {
       >
         <div class="gl-display-flex gl-flex-direction-column gl-xs-mb-3 gl-min-w-0 gl-flex-grow-1">
           <div
-            v-if="$slots['left-primary-text']"
+            v-if="
+              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
+                'left-primary-text'
+              ]
+            "
             class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6 gl-min-w-0"
           >
             <slot name="left-primary-text"></slot>
           </div>
           <div
-            v-if="$slots['left-secondary-text']"
+            v-if="
+              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
+                'left-secondary-text'
+              ]
+            "
             class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-grow-1 gl-w-70p gl-md-max-w-70p"
           >
             <slot name="left-secondary-text"></slot>
@@ -41,13 +49,21 @@ export default {
           class="gl-display-flex gl-flex-direction-column gl-sm-align-items-flex-end gl-justify-content-space-between gl-text-gray-500 gl-flex-shrink-0"
         >
           <div
-            v-if="$slots['right-primary-text']"
+            v-if="
+              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
+                'right-primary-text'
+              ]
+            "
             class="gl-display-flex gl-align-items-center gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
           >
             <slot name="right-primary-text"></slot>
           </div>
           <div
-            v-if="$slots['right-secondary-text']"
+            v-if="
+              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
+                'right-secondary-text'
+              ]
+            "
             class="gl-display-flex gl-align-items-center gl-min-h-6"
           >
             <slot v-if="!loading" name="right-secondary-text"></slot>

@@ -2,7 +2,7 @@
 
 module QA
   module Page
-    module Project
+    module Group
       module Settings
         class AccessTokens < Page::Base
           include Page::Component::AccessTokens

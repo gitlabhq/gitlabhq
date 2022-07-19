@@ -84,7 +84,7 @@ export default {
       </div>
     </div>
     <div
-      v-if="$slots.default"
+      v-if="$slots.default /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */"
       class="text-right flex-fill d-flex justify-content-end flex-column flex-sm-row"
     >
       <slot></slot>

@@ -38,6 +38,7 @@ export default {
     },
   },
   mounted() {
+    // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
     this.detailsSlots = Object.keys(this.$slots).filter((k) => k.startsWith('details-'));
   },
   methods: {
@@ -55,7 +56,7 @@ export default {
   >
     <div class="gl-display-flex gl-align-items-center gl-py-3">
       <div
-        v-if="$slots['left-action']"
+        v-if="$slots['left-action'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */"
         class="gl-w-7 gl-display-flex gl-justify-content-start gl-pl-2"
       >
         <slot name="left-action"></slot>
@@ -65,7 +66,9 @@ export default {
       >
         <div class="gl-display-flex gl-flex-direction-column gl-xs-mb-3 gl-min-w-0 gl-flex-grow-1">
           <div
-            v-if="$slots['left-primary']"
+            v-if="
+              $slots['left-primary'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
+            "
             class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6 gl-min-w-0"
           >
             <slot name="left-primary"></slot>
@@ -79,7 +82,11 @@ export default {
             />
           </div>
           <div
-            v-if="$slots['left-secondary']"
+            v-if="
+              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
+                'left-secondary'
+              ]
+            "
             class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-grow-1"
           >
             <slot name="left-secondary"></slot>
@@ -89,13 +96,21 @@ export default {
           class="gl-display-flex gl-flex-direction-column gl-sm-align-items-flex-end gl-justify-content-space-between gl-text-gray-500 gl-flex-shrink-0"
         >
           <div
-            v-if="$slots['right-primary']"
+            v-if="
+              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
+                'right-primary'
+              ]
+            "
             class="gl-display-flex gl-align-items-center gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
           >
             <slot name="right-primary"></slot>
           </div>
           <div
-            v-if="$slots['right-secondary']"
+            v-if="
+              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
+                'right-secondary'
+              ]
+            "
             class="gl-display-flex gl-align-items-center gl-min-h-6"
           >
             <slot name="right-secondary"></slot>
@@ -103,7 +118,9 @@ export default {
         </div>
       </div>
       <div
-        v-if="$slots['right-action']"
+        v-if="
+          $slots['right-action'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
+        "
         class="gl-w-9 gl-display-flex gl-justify-content-end gl-pr-1"
       >
         <slot name="right-action"></slot>

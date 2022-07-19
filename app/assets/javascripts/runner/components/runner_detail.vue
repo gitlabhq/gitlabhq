@@ -41,6 +41,7 @@ export default {
   <div class="gl-display-flex gl-pb-4">
     <dt class="gl-mr-2">{{ label }}</dt>
     <dd class="gl-mb-0">
+      <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
       <template v-if="value || $slots.value">
         <slot name="value">{{ value }}</slot>
       </template>

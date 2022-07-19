@@ -62,7 +62,7 @@ describe('Accessibility extension', () => {
       expect(wrapper.text()).toBe('Accessibility scanning failed loading results');
     });
 
-    it('displays detected errors', async () => {
+    it('displays detected errors and is expandable', async () => {
       mockApi(httpStatusCodes.OK, accessibilityReportResponseErrors);
 
       createComponent();
@@ -72,9 +72,10 @@ describe('Accessibility extension', () => {
       expect(wrapper.text()).toBe(
         'Accessibility scanning detected 8 issues for the source branch only',
       );
+      expect(findToggleCollapsedButton().exists()).toBe(true);
     });
 
-    it('displays no detected errors', async () => {
+    it('displays no detected errors and is not expandable', async () => {
       mockApi(httpStatusCodes.OK, accessibilityReportResponseSuccess);
 
       createComponent();
@@ -84,6 +85,7 @@ describe('Accessibility extension', () => {
       expect(wrapper.text()).toBe(
         'Accessibility scanning detected no issues for the source branch only',
       );
+      expect(findToggleCollapsedButton().exists()).toBe(false);
     });
   });
 

@@ -38,6 +38,7 @@ export default {
       <template #default>
         <div v-safe-html="options.content"></div>
       </template>
+      <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
       <template v-for="slot in Object.keys($slots)" #[slot]>
         <slot :name="slot"></slot>
       </template>

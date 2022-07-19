@@ -163,6 +163,7 @@ export default {
       </template>
     </section>
 
+    <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
     <section v-if="$slots.default" data-testid="ci-header-action-buttons" class="gl-display-flex">
       <slot></slot>
     </section>

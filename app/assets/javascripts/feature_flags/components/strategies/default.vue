@@ -4,7 +4,7 @@ export default {
     this.$emit('change', { parameters: {} });
   },
   render() {
-    return this.$slots.default;
+    return this.$scopedSlots.default?.();
   },
 };
 </script>

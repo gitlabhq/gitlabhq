@@ -117,6 +117,7 @@ export default {
       return this.badgeTitle.length > 0;
     },
     slots() {
+      // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
       return Object.keys(this.$slots);
     },
   },

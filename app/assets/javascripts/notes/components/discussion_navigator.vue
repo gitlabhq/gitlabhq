@@ -25,7 +25,7 @@ export default {
     eventHub.$off('jumpToFirstUnresolvedDiscussion', this.jumpToFirstUnresolvedDiscussion);
   },
   render() {
-    return this.$slots.default;
+    return this.$scopedSlots.default?.();
   },
 };
 </script>
