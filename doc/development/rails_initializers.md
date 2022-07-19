@@ -29,12 +29,18 @@ query) from an initializer means that tasks like `db:drop`, and
 `db:test:prepare` will fail because an active session prevents the database from
 being dropped.
 
-To help detect when database connections are opened from initializers, we now
-warn in `STDERR`. For example:
+To prevent this, we stop database connections from being opened during
+routes loading. Doing will result in an error:
 
 ```shell
-DEPRECATION WARNING: Database connection should not be called during initializers (called from block in <module:HasVariable> at app/models/concerns/ci/has_variable.rb:22)
+RuntimeError:
+  Database connection should not be called during initializers.
+# ./config/initializers/00_connection_logger.rb:15:in `new_client'
+# ./lib/gitlab/database/load_balancing/load_balancer.rb:112:in `block in read_write'
+# ./lib/gitlab/database/load_balancing/load_balancer.rb:184:in `retry_with_backoff'
+# ./lib/gitlab/database/load_balancing/load_balancer.rb:111:in `read_write'
+# ./lib/gitlab/database/load_balancing/connection_proxy.rb:119:in `write_using_load_balancer'
+# ./lib/gitlab/database/load_balancing/connection_proxy.rb:89:in `method_missing'
+# ./config/routes.rb:10:in `block in <main>'
+# ./config/routes.rb:9:in `<main>'
 ```
-
-If you wish to print out the full backtrace, set the
-`DEBUG_INITIALIZER_CONNECTIONS` environment variable.

@@ -3758,6 +3758,9 @@ msgstr ""
 msgid "All changes are committed"
 msgstr ""
 
+msgid "All eligible users"
+msgstr ""
+
 msgid "All email addresses will be used to identify your commits."
 msgstr ""
 
@@ -14125,9 +14128,6 @@ msgstr ""
 msgid "Elastic|None. Select projects to index."
 msgstr ""
 
-msgid "Eligible users"
-msgstr ""
-
 msgid "Email"
 msgstr ""
 
@@ -21916,6 +21916,9 @@ msgstr ""
 msgid "Iterations|All"
 msgstr ""
 
+msgid "Iterations|Automatic scheduling"
+msgstr ""
+
 msgid "Iterations|Cadence configuration is invalid."
 msgstr ""
 
@@ -21935,6 +21938,9 @@ msgid "Iterations|Create cadence"
 msgstr ""
 
 msgid "Iterations|Create iteration"
+msgstr ""
+
+msgid "Iterations|Create iterations automatically on a regular schedule."
 msgstr ""
 
 msgid "Iterations|Delete cadence"
@@ -21967,6 +21973,9 @@ msgstr ""
 msgid "Iterations|Edit iteration cadence"
 msgstr ""
 
+msgid "Iterations|Enable roll over"
+msgstr ""
+
 msgid "Iterations|Error loading iteration cadences."
 msgstr ""
 
@@ -21977,6 +21986,9 @@ msgid "Iterations|Iteration cadences"
 msgstr ""
 
 msgid "Iterations|Iterations are a way to track issues over a period of time, allowing teams to also track velocity and volatility metrics."
+msgstr ""
+
+msgid "Iterations|Iterations are scheduled to start on %{weekday}s."
 msgstr ""
 
 msgid "Iterations|Learn more about automatic scheduling"
@@ -22004,9 +22016,6 @@ msgid "Iterations|No iterations found"
 msgstr ""
 
 msgid "Iterations|No iterations in cadence."
-msgstr ""
-
-msgid "Iterations|No one can change this date after the cadence has begun."
 msgstr ""
 
 msgid "Iterations|No open iterations."
@@ -23225,7 +23234,7 @@ msgstr ""
 msgid "License Compliance"
 msgstr ""
 
-msgid "License Compliance| Used by"
+msgid "License Compliance| Used by %{dependencies}"
 msgstr ""
 
 msgid "License compliance"
@@ -38225,9 +38234,6 @@ msgstr ""
 msgid "Task list"
 msgstr ""
 
-msgid "Task with ID: %{id} could not be found."
-msgstr ""
-
 msgid "TasksToBeDone|Create/import code into a project (repository)"
 msgstr ""
 
@@ -42053,6 +42059,11 @@ msgstr ""
 
 msgid "Used"
 msgstr ""
+
+msgid "Used by %d package"
+msgid_plural "Used by %d packages"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Used by members to sign in to your group in GitLab"
 msgstr ""

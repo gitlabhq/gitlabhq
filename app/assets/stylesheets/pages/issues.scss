@@ -124,8 +124,16 @@ ul.related-merge-requests > li gl-emoji {
 
 .new-branch-col {
   .discussion-filter-container {
-    &:not(:only-child) {
-      margin-right: $gl-padding-8;
+    &:not(:last-child) {
+      margin-right: $gl-spacing-scale-3;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    width: 100%;
+
+    > div:not(:last-child) {
+      margin-bottom: $gl-spacing-scale-3;
     }
   }
 }
@@ -147,6 +155,16 @@ ul.related-merge-requests > li gl-emoji {
 
   .btn-group:not(.hidden) {
     display: flex;
+
+    @include media-breakpoint-down(xs) {
+      .btn.btn-confirm {
+        @include gl-justify-content-start;
+
+        &.dropdown-toggle {
+          @include gl-flex-grow-0;
+        }
+      }
+    }
   }
 
   .js-create-merge-request {

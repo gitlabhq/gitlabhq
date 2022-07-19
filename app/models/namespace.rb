@@ -343,6 +343,10 @@ class Namespace < ApplicationRecord
     end
   end
 
+  def emails_enabled?
+    !emails_disabled?
+  end
+
   def lfs_enabled?
     # User namespace will always default to the global setting
     Gitlab.config.lfs.enabled

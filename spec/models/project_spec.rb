@@ -3595,6 +3595,14 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#emails_enabled?' do
+    let(:project) { build(:project, emails_disabled: false) }
+
+    it "is the opposite of emails_disabled" do
+      expect(project.emails_enabled?).to be_truthy
+    end
+  end
+
   describe '#lfs_enabled?' do
     let(:namespace) { create(:namespace) }
     let(:project) { build(:project, namespace: namespace) }

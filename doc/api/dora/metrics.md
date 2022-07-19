@@ -21,15 +21,15 @@ Get project-level DORA metrics.
 GET /projects/:id/dora/metrics
 ```
 
-| Attribute            | Type             | Required | Description                                                                                                                                                         |
-|----------------------|------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user.                                        |
-| `metric`             | string           | yes      | One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service` or `change_failure_rate`.                                                         |
-| `start_date`         | string           | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago.                                                                  |
-| `end_date`           | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date.                                                                  |
-| `interval`           | string           | no       | The bucketing interval. One of `all`, `monthly` or `daily`. Default is `daily`.                                                                                     |
+| Attribute            | Type             | Required | Description |
+|:---------------------|:-----------------|:---------|:------------|
+| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user. |
+| `metric`             | string           | yes      | One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service` or `change_failure_rate`. |
+| `end_date`           | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date. |
 | `environment_tier`   | string           | no       | The [tier of the environment](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. Deprecated, please use `environment_tiers`. |
-| `environment_tiers`  | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`.                                           |
+| `environment_tiers`  | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. |
+| `interval`           | string           | no       | The bucketing interval. One of `all`, `monthly` or `daily`. Default is `daily`. |
+| `start_date`         | string           | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago. |
 
 Example request:
 
@@ -62,15 +62,15 @@ Get group-level DORA metrics.
 GET /groups/:id/dora/metrics
 ```
 
-| Attribute           | Type             | Required | Description                                                                                                                                                         |
-|---------------------|------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user.                                        |
-| `metric`            | string           | yes      | One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service` or `change_failure_rate`.                                                         |
-| `start_date`        | string           | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago.                                                                  |
-| `end_date`          | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date.                                                                  |
-| `interval`          | string           | no       | The bucketing interval. One of `all`, `monthly` or `daily`. Default is `daily`.                                                                                     |
+| Attribute           | Type             | Required | Description |
+|:--------------------|:-----------------|:---------|:------------|
+| `id`                | integer/string   | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user. |
+| `metric`            | string           | yes      | One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service` or `change_failure_rate`. |
+| `end_date`          | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date. |
 | `environment_tier`  | string           | no       | The [tier of the environment](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. Deprecated, please use `environment_tiers`. |
-| `environment_tiers` | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`.                                           |
+| `environment_tiers` | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. |
+| `interval`          | string           | no       | The bucketing interval. One of `all`, `monthly` or `daily`. Default is `daily`. |
+| `start_date`        | string           | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago. |
 
 Example request:
 
@@ -99,9 +99,9 @@ For both the project and group-level endpoints above, the `value` field in the
 API response has a different meaning depending on the provided `metric` query
 parameter:
 
-| `metric` query parameter | Description of `value` in response                                                                                                                           |
-| ------------------------ |--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `deployment_frequency`   | The number of successful deployments during the time period.                                                                                                 |
-| `lead_time_for_changes`  | The median number of seconds between the merge of the merge request (MR) and the deployment of the MR's commits for all MRs deployed during the time period. |
-| `time_to_restore_service`  | The median number of seconds an incident was open during the time period. Available only for production environment.                                         |
-| `change_failure_rate`  | The number of incidents divided by the number of deployments during the time period. Available only for production environment.                              |
+| `metric` query parameter   | Description of `value` in response |
+|:---------------------------|:-----------------------------------|
+| `change_failure_rate`      | The number of incidents divided by the number of deployments during the time period. Available only for production environment. |
+| `deployment_frequency`     | The number of successful deployments during the time period. |
+| `lead_time_for_changes`    | The median number of seconds between the merge of the merge request (MR) and the deployment of the MR's commits for all MRs deployed during the time period. |
+| `time_to_restore_service`  | The median number of seconds an incident was open during the time period. Available only for production environment. |

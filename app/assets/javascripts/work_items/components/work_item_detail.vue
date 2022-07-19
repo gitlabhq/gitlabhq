@@ -216,9 +216,11 @@ export default {
       <template v-if="workItemsMvc2Enabled">
         <work-item-assignees
           v-if="workItemAssignees"
+          :can-update="canUpdate"
           :work-item-id="workItem.id"
           :assignees="workItemAssignees.assignees.nodes"
           :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+          :work-item-type="workItemType"
           @error="error = $event"
         />
         <work-item-labels

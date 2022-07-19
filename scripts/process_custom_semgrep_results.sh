@@ -5,7 +5,7 @@ echo "Processing vuln report"
 # Preparing the message for the comment that will be posted by the bot
 # Empty string if there are no findings
 jq -crM '.vulnerabilities |
-  map( select( .identifiers[0].name | test( "glappsec_" ) ) |
+  map( select( .identifiersprocess_custom_semgrep_results[0].name | test( "glappsec_" ) ) |
   "- `" + .location.file + "` line " + ( .location.start_line | tostring ) +
     (
       if .location.start_line = .location.end_line then ""

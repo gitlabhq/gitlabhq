@@ -25,7 +25,7 @@ module Mutations
         end
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-        widget_params = extract_widget_params(work_item.work_item_type, attributes)
+        widget_params = extract_widget_params!(work_item.work_item_type, attributes)
 
         update_result = ::WorkItems::UpdateService.new(
           project: work_item.project,

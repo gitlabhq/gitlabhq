@@ -12,8 +12,8 @@ module WorkItems
 
           if params.key?(:parent)
             update_work_item_parent(params.delete(:parent))
-          elsif params.key?(:children_ids)
-            update_work_item_children(params.delete(:children_ids))
+          elsif params.key?(:children)
+            update_work_item_children(params.delete(:children))
           else
             invalid_args_error
           end
@@ -42,9 +42,9 @@ module WorkItems
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        def update_work_item_children(children_ids)
+        def update_work_item_children(children)
           ::WorkItems::ParentLinks::CreateService
-            .new(widget.work_item, current_user, { issuable_references: children_ids })
+            .new(widget.work_item, current_user, { issuable_references: children })
             .execute
         end
 
@@ -53,7 +53,7 @@ module WorkItems
         end
 
         def incompatible_args?(params)
-          params[:children_ids] && params[:parent]
+          params[:children] && params[:parent]
         end
 
         def feature_flag_error

@@ -1465,24 +1465,6 @@
     - <<: *if-merge-request
       changes: *static-analysis-patterns
 
-.semgrep-appsec-custom-rules:rules:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request
-      changes: *code-backstage-qa-patterns
-
-.ping-appsec-for-sast-findings:rules:
-  rules:
-    # Requiring $CUSTOM_SAST_RULES_BOT_PAT prevents the bot from running on forks or CE
-    # Without it the script would fail too.
-    - if: "$CUSTOM_SAST_RULES_BOT_PAT == null"
-      when: never
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request
-      changes: *code-backstage-qa-patterns
-
 #######################
 # Vendored gems rules #
 #######################
@@ -1569,6 +1551,7 @@
         - '**/*.tsx'
         - '**/*.c'
         - '**/*.go'
+        - '**/*.rb'
 
 .reports:rules:secret_detection:
   rules:

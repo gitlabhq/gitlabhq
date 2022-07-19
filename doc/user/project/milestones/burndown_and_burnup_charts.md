@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [Burndown](#burndown-charts) and [burnup](#burnup-charts) charts show the progress of completing a milestone.
 
-![burndown and burnup chart](img/burndown_and_burnup_charts_v15_1.png)
+![burndown and burnup chart](img/burndown_and_burnup_charts_v15_3.png)
 
 ## Burndown charts
 
@@ -19,7 +19,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Burndown charts show the number of issues over the course of a milestone.
 
-![burndown chart](img/burndown_chart_v15_1.png)
+![burndown chart](img/burndown_chart_v15_3.png)
 
 At a glance, you see the current state for the completion a given milestone.
 Without them, you would have to organize the data from the milestone and plot it
@@ -106,7 +106,7 @@ Reopened issues are considered as having been opened on the day after they were 
 
 Burnup charts show the assigned and completed work for a milestone.
 
-![burnup chart](img/burnup_chart_v15_1.png)
+![burnup chart](img/burnup_chart_v15_3.png)
 
 To view a project's burnup chart:
 

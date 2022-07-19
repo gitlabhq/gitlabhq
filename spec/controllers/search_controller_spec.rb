@@ -408,10 +408,11 @@ RSpec.describe SearchController do
           expect(payload[:metadata]['meta.search.filters.confidential']).to eq('true')
           expect(payload[:metadata]['meta.search.filters.state']).to eq('true')
           expect(payload[:metadata]['meta.search.project_ids']).to eq(%w(456 789))
-          expect(payload[:metadata]['meta.search.search_level']).to eq('multi-project')
+          expect(payload[:metadata]['meta.search.type']).to eq('basic')
+          expect(payload[:metadata]['meta.search.level']).to eq('global')
         end
 
-        get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456', project_ids: %w(456 789), search_level: 'multi-project', confidential: true, state: true, force_search_results: true }
+        get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456', project_ids: %w(456 789), confidential: true, state: true, force_search_results: true }
       end
 
       it 'appends the default scope in meta.search.scope' do
@@ -419,6 +420,16 @@ RSpec.describe SearchController do
           method.call(payload)
 
           expect(payload[:metadata]['meta.search.scope']).to eq('projects')
+        end
+
+        get :show, params: { search: 'hello world', group_id: '123', project_id: '456' }
+      end
+
+      it 'appends the search time based on the search' do
+        expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+          method.call(payload)
+
+          expect(payload[:metadata][:global_search_duration_s]).to be_a_kind_of(Numeric)
         end
 
         get :show, params: { search: 'hello world', group_id: '123', project_id: '456' }

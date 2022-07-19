@@ -14,7 +14,8 @@ module Types
         argument :children_ids, [::Types::GlobalIDType[::WorkItem]],
                  required: false,
                  description: 'Global IDs of children work items.',
-                 prepare: ->(ids, _) { ids.map(&:model_id) }
+                 loads: ::Types::WorkItemType,
+                 as: :children
       end
     end
   end

@@ -148,7 +148,7 @@ RSpec.describe WorkItems::UpdateService do
         let(:opts) { { title: 'changed' } }
         let_it_be(:child_work_item) { create(:work_item, :task, project: project) }
 
-        let(:widget_params) { { hierarchy_widget: { children_ids: [child_work_item.id] } } }
+        let(:widget_params) { { hierarchy_widget: { children: [child_work_item] } } }
 
         it 'updates the children of the work item' do
           expect do

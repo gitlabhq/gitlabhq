@@ -24,23 +24,21 @@ RSpec.describe 'Merge request > User sees versions', :js do
     visit diffs_project_merge_request_path(project, merge_request, params)
   end
 
-  shared_examples 'allows commenting' do |file_id:, line_code:, comment:|
+  shared_examples 'allows commenting' do |file_name:, line_text:, comment:|
     it do
-      diff_file_selector = ".diff-file[id='#{file_id}']"
-      line_code = "#{file_id}_#{line_code}"
+      page.within find_by_scrolling('.diff-file', text: file_name) do
+        line_code_element = page.find('.diff-grid-row', text: line_text)
 
-      page.within find_by_scrolling(diff_file_selector) do
-        line_code_element = first("[id='#{line_code}']")
         # scrolling to element's bottom is required in order for .hover action to work
         # otherwise, the element could be hidden underneath a sticky header
         scroll_to_elements_bottom(line_code_element)
         line_code_element.hover
-        first("[id='#{line_code}'] [role='button']").click
+        page.find("[data-testid='left-comment-button']", visible: true).click
 
-        page.within("form[data-line-code='#{line_code}']") do
-          fill_in "note[note]", with: comment
-          click_button('Add comment now')
-        end
+        expect(page).to have_selector("form", count: 1)
+
+        fill_in("note[note]", with: comment)
+        click_button('Add comment now')
 
         wait_for_requests
 
@@ -59,8 +57,8 @@ RSpec.describe 'Merge request > User sees versions', :js do
     end
 
     it_behaves_like 'allows commenting',
-                    file_id: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44',
-                    line_code: '1_1',
+                    file_name: '.gitmodules',
+                    line_text: '[submodule "six"]',
                     comment: 'Typo, please fix.'
   end
 
@@ -107,8 +105,8 @@ RSpec.describe 'Merge request > User sees versions', :js do
     end
 
     it_behaves_like 'allows commenting',
-                    file_id: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44',
-                    line_code: '2_2',
+                    file_name: '.gitmodules',
+                    line_text: 'path = six',
                     comment: 'Typo, please fix.'
   end
 
@@ -174,9 +172,9 @@ RSpec.describe 'Merge request > User sees versions', :js do
     end
 
     it_behaves_like 'allows commenting',
-                   file_id: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44',
-                   line_code: '4_4',
-                   comment: 'Typo, please fix.'
+                    file_name: '.gitmodules',
+                    line_text: '[submodule "gitlab-shell"]',
+                    comment: 'Typo, please fix.'
   end
 
   describe 'compare with same version' do
@@ -241,8 +239,8 @@ RSpec.describe 'Merge request > User sees versions', :js do
     end
 
     it_behaves_like 'allows commenting',
-                    file_id: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd',
-                    line_code: '6_6',
+                    file_name: 'files/ruby/popen.rb',
+                    line_text: 'RuntimeError',
                     comment: 'Typo, please fix.'
   end
 end

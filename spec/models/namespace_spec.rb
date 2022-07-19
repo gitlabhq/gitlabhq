@@ -1884,6 +1884,14 @@ RSpec.describe Namespace do
     end
   end
 
+  describe '#emails_enabled?' do
+    it "is the opposite of emails_disabled" do
+      group = create(:group, emails_disabled: false)
+
+      expect(group.emails_enabled?).to be_truthy
+    end
+  end
+
   describe '#pages_virtual_domain' do
     let(:project) { create(:project, namespace: namespace) }
     let(:virtual_domain) { namespace.pages_virtual_domain }

@@ -15,10 +15,11 @@ import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphq
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import { n__, s__ } from '~/locale';
+import Tracking from '~/tracking';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import localUpdateWorkItemMutation from '../graphql/local_update_work_item.mutation.graphql';
-import { i18n } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 
 function isTokenSelectorElement(el) {
   return el?.classList.contains('gl-token-close') || el?.classList.contains('dropdown-item');
@@ -44,6 +45,7 @@ export default {
     GlDropdownItem,
     GlDropdownDivider,
   },
+  mixins: [Tracking.mixin()],
   inject: ['fullPath'],
   props: {
     workItemId: {
@@ -57,6 +59,15 @@ export default {
     allowsMultipleAssignees: {
       type: Boolean,
       required: true,
+    },
+    workItemType: {
+      type: String,
+      required: true,
+    },
+    canUpdate: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -95,6 +106,13 @@ export default {
     },
   },
   computed: {
+    tracking() {
+      return {
+        category: TRACKING_CATEGORY_SHOW,
+        label: 'item_assignees',
+        property: `type_${this.workItemType}`,
+      };
+    },
     assigneeListEmpty() {
       return this.assignees.length === 0;
     },
@@ -163,6 +181,7 @@ export default {
           },
         },
       });
+      this.track('updated_assignees');
     },
     handleFocus() {
       this.isEditing = true;
@@ -208,9 +227,11 @@ export default {
       ref="tokenSelector"
       :selected-tokens="localAssignees"
       :container-class="containerClass"
-      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base col-9 gl-align-self-start gl-px-0!"
+      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0!"
+      :class="{ 'gl-hover-border-gray-200': canUpdate }"
       :dropdown-items="dropdownItems"
       :loading="isLoadingUsers"
+      :view-only="!canUpdate"
       @input="handleAssigneesInput"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"

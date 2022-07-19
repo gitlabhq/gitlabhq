@@ -1284,3 +1284,5 @@ module API
     end
   end
 end
+
+API::Users.prepend_mod

@@ -1,8 +1,3 @@
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Julia.gitlab-ci.yml
-
 # This is an example .gitlab-ci.yml file to test (and optionally report the coverage
 # results of) your [Julia][1] packages. Please refer to the [documentation][2]
 # for more information about package development in Julia.
@@ -12,6 +7,14 @@
 #
 # [1]: http://julialang.org/
 # [2]: https://docs.julialang.org/en/v1/manual/documentation/index.html
+#
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Julia.gitlab-ci.yml
 
 # Below is the template to run your tests in Julia
 .test_template: &test_definition

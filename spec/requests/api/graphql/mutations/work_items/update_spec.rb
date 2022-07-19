@@ -71,6 +71,20 @@ RSpec.describe 'Update a work item' do
       end
     end
 
+    context 'when unsupported widget input is sent' do
+      let_it_be(:test_case) { create(:work_item_type, :default, :test_case, name: 'some_test_case_name') }
+      let_it_be(:work_item) { create(:work_item, work_item_type: test_case, project: project) }
+
+      let(:input) do
+        {
+          'hierarchyWidget' => {}
+        }
+      end
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: ["Following widget keys are not supported by some_test_case_name type: [:hierarchy_widget]"]
+    end
+
     it_behaves_like 'has spam protection' do
       let(:mutation_class) { ::Mutations::WorkItems::Update }
     end
@@ -292,6 +306,19 @@ RSpec.describe 'Update a work item' do
 
             expect(mutation_response['workItem']).to be_nil
             expect(mutation_response['errors']).to match_array([error])
+          end
+        end
+
+        context 'when there is a mix of existing and non existing work items' do
+          let(:children_ids) { [valid_child1.to_global_id.to_s, "gid://gitlab/WorkItem/#{non_existing_record_id}"] }
+
+          it 'returns a top level error and does not add valid work item' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              work_item.reload
+            end.not_to change(work_item.work_item_children, :count)
+
+            expect(graphql_errors.first['message']).to include('No object found for `childrenIds')
           end
         end
 

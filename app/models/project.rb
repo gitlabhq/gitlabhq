@@ -1038,6 +1038,9 @@ class Project < ApplicationRecord
     end
   end
 
+  def emails_enabled?
+    !emails_disabled?
+  end
   override :lfs_enabled?
   def lfs_enabled?
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?

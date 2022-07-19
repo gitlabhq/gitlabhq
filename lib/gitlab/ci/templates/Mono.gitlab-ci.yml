@@ -1,8 +1,3 @@
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Mono.gitlab-ci.yml
-
 # This is a simple gitlab continuous integration template (compatible with the shared runner provided on gitlab.com)
 # using the official mono docker image to build a visual studio project.
 #
@@ -15,6 +10,14 @@
 #
 # Please find the full example project here:
 # https://gitlab.com/tobiaskoch/gitlab-ci-example-mono
+#
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Mono.gitlab-ci.yml
 
 # see https://hub.docker.com/_/mono/
 image: mono:latest

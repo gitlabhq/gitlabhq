@@ -49,19 +49,19 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
     end
 
     context 'when work item not found' do
-      let(:params) { { issuable_references: [invalid_task.id] } }
+      let(:params) { { issuable_references: [invalid_task] } }
 
       it_behaves_like 'returns not found error'
     end
 
     context 'when user has no permission to link work items' do
-      let(:params) { { issuable_references: [guest_task.id] } }
+      let(:params) { { issuable_references: [guest_task] } }
 
       it_behaves_like 'returns not found error'
     end
 
     context 'child and parent are the same work item' do
-      let(:params) { { issuable_references: [work_item.id] } }
+      let(:params) { { issuable_references: [work_item] } }
 
       it 'no relationship is created' do
         expect { subject }.not_to change(parent_link_class, :count)
@@ -69,7 +69,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
     end
 
     context 'when there are tasks to relate' do
-      let(:params) { { issuable_references: [task1.id, task2.id] } }
+      let(:params) { { issuable_references: [task1, task2] } }
 
       it 'creates relationships', :aggregate_failures do
         expect { subject }.to change(parent_link_class, :count).by(2)
@@ -85,7 +85,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
       end
 
       context 'when task is already assigned' do
-        let(:params) { { issuable_references: [task.id, task2.id] } }
+        let(:params) { { issuable_references: [task, task2] } }
 
         it 'creates links only for non related tasks' do
           expect { subject }.to change(parent_link_class, :count).by(1)
@@ -97,7 +97,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
       context 'when there are invalid children' do
         let_it_be(:issue) { create(:work_item, project: project) }
 
-        let(:params) { { issuable_references: [task1.id, issue.id, other_project_task.id] } }
+        let(:params) { { issuable_references: [task1, issue, other_project_task] } }
 
         it 'creates links only for valid children' do
           expect { subject }.to change { parent_link_class.count }.by(1)
@@ -124,7 +124,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
       end
 
       context 'when max depth is reached' do
-        let(:params) { { issuable_references: [task2.id] } }
+        let(:params) { { issuable_references: [task2] } }
 
         before do
           stub_const("#{parent_link_class}::MAX_CHILDREN", 1)
@@ -138,16 +138,10 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
       end
 
       context 'when params include invalid ids' do
-        let(:params) { { issuable_references: [task1.id, invalid_task.id] } }
+        let(:params) { { issuable_references: [task1, invalid_task] } }
 
         it 'creates links only for valid IDs' do
           expect { subject }.to change(parent_link_class, :count).by(1)
-        end
-
-        it 'returns error for invalid ID' do
-          message = "Task with ID: #{invalid_task.id} could not be found."
-
-          expect(subject).to eq(service_error(message, http_status: 422))
         end
       end
 

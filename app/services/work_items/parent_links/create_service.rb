@@ -38,12 +38,7 @@ module WorkItems
       end
 
       def extract_references
-        params[:issuable_references].map do |id|
-          ::WorkItem.find(id)
-        rescue ActiveRecord::RecordNotFound
-          @errors << _("Task with ID: %{id} could not be found.") % { id: id }
-          next
-        end.compact
+        params[:issuable_references]
       end
 
       # TODO: Create system notes when work item's parent or children are updated

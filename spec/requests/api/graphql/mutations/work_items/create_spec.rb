@@ -136,6 +136,20 @@ RSpec.describe 'Create a work item' do
           end
         end
       end
+
+      context 'when unsupported widget input is sent' do
+        let(:input) do
+          {
+            'title' => 'new title',
+            'description' => 'new description',
+            'workItemTypeId' => WorkItems::Type.default_by_type(:test_case).to_global_id.to_s,
+            'hierarchyWidget' => {}
+          }
+        end
+
+        it_behaves_like 'a mutation that returns top-level errors',
+          errors: ['Following widget keys are not supported by Test Case type: [:hierarchy_widget]']
+      end
     end
 
     context 'when the work_items feature flag is disabled' do

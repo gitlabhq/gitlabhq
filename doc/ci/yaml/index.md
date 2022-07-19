@@ -1099,6 +1099,8 @@ that use the same cache key use the same cache, including in different pipelines
 If not set, the default key is `default`. All jobs with the `cache` keyword but
 no `cache:key` share the `default` cache.
 
+Must be used with `cache: path`, or nothing is cached.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -1263,6 +1265,8 @@ rspec:
 
 Use `cache:when` to define when to save the cache, based on the status of the job.
 
+Must be used with `cache: path`, or nothing is cached.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -1300,6 +1304,8 @@ cache when the job starts, use `cache:policy:push`.
 Use the `pull` policy when you have many jobs executing in parallel that use the same cache.
 This policy speeds up job execution and reduces load on the cache server. You can
 use a job with the `push` policy to build the cache.
+
+Must be used with `cache: path`, or nothing is cached.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

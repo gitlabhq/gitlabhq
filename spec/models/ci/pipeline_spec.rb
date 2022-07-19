@@ -3953,7 +3953,21 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       context 'when pipeline status is running' do
         let(:pipeline) { create(:ci_pipeline, :running) }
 
-        it { is_expected.to be_falsey }
+        context 'with mr_show_reports_immediately flag enabled' do
+          before do
+            stub_feature_flags(mr_show_reports_immediately: project)
+          end
+
+          it { expect(subject).to be_truthy }
+        end
+
+        context 'with mr_show_reports_immediately flag disabled' do
+          before do
+            stub_feature_flags(mr_show_reports_immediately: false)
+          end
+
+          it { expect(subject).to be_falsey }
+        end
       end
 
       context 'when pipeline status is success' do
@@ -4027,7 +4041,21 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       context 'when pipeline status is running' do
         let(:pipeline) { create(:ci_pipeline, :running) }
 
-        it { expect(subject).to be_falsey }
+        context 'with mr_show_reports_immediately flag enabled' do
+          before do
+            stub_feature_flags(mr_show_reports_immediately: project)
+          end
+
+          it { expect(subject).to be_truthy }
+        end
+
+        context 'with mr_show_reports_immediately flag disabled' do
+          before do
+            stub_feature_flags(mr_show_reports_immediately: false)
+          end
+
+          it { expect(subject).to be_falsey }
+        end
       end
 
       context 'when pipeline status is success' do

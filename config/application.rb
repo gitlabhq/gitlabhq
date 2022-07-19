@@ -504,19 +504,6 @@ module Gitlab
       end
     end
 
-    # We know Rails closes database connections in the
-    # active_record.clear_active_connections initializer, so only log database
-    # connections opened after that.
-    initializer :start_logging_new_postgresql_connections, after: :finisher_hook do
-      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.warn_on_new_connection = true
-    end
-
-    # It is legitimate to open database connections after initializers so stop
-    # logging
-    initializer :stop_logging_new_postgresql_connections, after: :set_routes_reloader_hook do
-      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.warn_on_new_connection = false
-    end
-
     # Add assets for variants of GitLab. They should take precedence over CE.
     # This means if multiple files exist, e.g.:
     #

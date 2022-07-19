@@ -42,13 +42,19 @@ class SearchController < ApplicationController
     @sort = params[:sort] || default_sort
 
     @search_service = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
-    @scope = @search_service.scope
-    @without_count = @search_service.without_count?
-    @show_snippets = @search_service.show_snippets?
-    @search_results = @search_service.search_results
-    @search_objects = @search_service.search_objects
-    @search_highlight = @search_service.search_highlight
-    @aggregations = @search_service.search_aggregations
+
+    @search_level = @search_service.level
+    @search_type = search_type
+
+    @global_search_duration_s = Benchmark.realtime do
+      @scope = @search_service.scope
+      @without_count = @search_service.without_count?
+      @show_snippets = @search_service.show_snippets?
+      @search_results = @search_service.search_results
+      @search_objects = @search_service.search_objects
+      @search_highlight = @search_service.search_highlight
+      @aggregations = @search_service.search_aggregations
+    end
 
     increment_search_counters
   end
@@ -144,7 +150,9 @@ class SearchController < ApplicationController
     payload[:metadata]['meta.search.filters.state'] = params[:state]
     payload[:metadata]['meta.search.force_search_results'] = params[:force_search_results]
     payload[:metadata]['meta.search.project_ids'] = params[:project_ids]
-    payload[:metadata]['meta.search.search_level'] = params[:search_level]
+    payload[:metadata]['meta.search.type'] = @search_type if @search_type.present?
+    payload[:metadata]['meta.search.level'] = @search_level if @search_level.present?
+    payload[:metadata][:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?
 
     if search_service.abuse_detected?
       payload[:metadata]['abuse.confidence'] = Gitlab::Abuse.confidence(:certain)
@@ -206,6 +214,10 @@ class SearchController < ApplicationController
 
   def tracking_namespace_source
     search_service.project&.namespace || search_service.group
+  end
+
+  def search_type
+    'basic'
   end
 end
 

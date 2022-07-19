@@ -289,9 +289,32 @@ Please read [versioning](#versioning) section for introducing breaking change sa
 
 ## Versioning
 
-Versioning allows you to introduce a new template without modifying the existing
-one. This process is useful when we need to introduce a breaking change,
-but don't want to affect the existing projects that depends on the current template.
+To introduce a breaking change without affecting the existing projects that depend on
+the current template, use [stable](#stable-version) and [latest](#latest-version) versioning.
+
+Stable templates usually only receive breaking changes in major version releases, while
+latest templates can receive breaking changes in any release. In major release milestones,
+the latest template is made the new stable template (and the latest template might be deleted).
+
+Adding a latest template is safe, but comes with a maintenance burden:
+
+- GitLab has to choose a DRI to overwrite the stable template with the contents of the
+  latest template at the next major release of GitLab. The DRI is responsible for
+  supporting users who have trouble with the change.
+- When we make a new non-breaking change, both the stable and latest templates must be updated
+  to match, as must as possible.
+- A latest template could remain for longer than planned because many users could
+  directly depend on it continuing to exist.
+
+Before adding a new latest template, see if the change can be made to the stable
+template instead, even if it's a breaking change. If the template is intended for copy-paste
+usage only, it might be possible to directly change the stable version. Before changing
+the stable template with a breaking change in a minor milestone, make sure:
+
+- It's a [pipeline template](#template-types) and it has a [code comment](#explain-requirements-and-expectations)
+  explaining that it's not designed to be used with the `includes`.
+- The [CI/CD template usage metrics](#add-metrics) doesn't show any usage. If the metrics
+  show zero usage for the template, the template is not actively being used with `include`.
 
 ### Stable version
 
@@ -393,7 +416,9 @@ is updated in a major version GitLab release.
 
 ### Add metrics
 
-Every CI/CD template must also have metrics defined to track their use. The CI/CD template monthly usage report can be found in [Sisense (GitLab team members only)](https://app.periscopedata.com/app/gitlab/785953/Pipeline-Authoring-Dashboard?widget=14910475&udv=0).
+Every CI/CD template must also have metrics defined to track their use. The CI/CD template monthly usage report
+can be found in [Sisense (GitLab team members only)](https://app.periscopedata.com/app/gitlab/785953/Pipeline-Authoring-Dashboard?widget=13440051&udv=0).
+Double click a template to see the graph for that single template.
 
 To add a metric definition for a new template:
 

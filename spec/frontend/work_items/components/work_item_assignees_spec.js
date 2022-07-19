@@ -4,13 +4,14 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import { stripTypenames } from 'helpers/graphql_helpers';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
-import { i18n } from '~/work_items/constants';
+import { i18n, TASK_TYPE_NAME, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import { temporaryConfig, resolvers } from '~/work_items/graphql/provider';
 import {
   projectMembersResponseWithCurrentUser,
@@ -50,6 +51,7 @@ describe('WorkItemAssignees component', () => {
     searchQueryHandler = successSearchQueryHandler,
     currentUserQueryHandler = successCurrentUserQueryHandler,
     allowsMultipleAssignees = true,
+    canUpdate = true,
   } = {}) => {
     const apolloProvider = createMockApollo(
       [
@@ -78,6 +80,8 @@ describe('WorkItemAssignees component', () => {
         assignees,
         workItemId,
         allowsMultipleAssignees,
+        workItemType: TASK_TYPE_NAME,
+        canUpdate,
       },
       attachTo: document.body,
       apolloProvider,
@@ -123,6 +127,18 @@ describe('WorkItemAssignees component', () => {
     await waitForPromises();
 
     expect(findTokenSelector().props('selectedTokens')).toEqual([mockAssignees[0]]);
+  });
+
+  it('passes `false` to `viewOnly` token selector prop if user can update assignees', () => {
+    createComponent();
+
+    expect(findTokenSelector().props('viewOnly')).toBe(false);
+  });
+
+  it('passes `true` to `viewOnly` token selector prop if user can not update assignees', () => {
+    createComponent({ canUpdate: false });
+
+    expect(findTokenSelector().props('viewOnly')).toBe(true);
   });
 
   describe('when searching for users', () => {
@@ -355,6 +371,38 @@ describe('WorkItemAssignees component', () => {
       await nextTick();
 
       expect(findTokenSelector().props('containerClass')).toBe('gl-shadow-none!');
+    });
+  });
+
+  describe('tracking', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      createComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    afterEach(() => {
+      trackingSpy = null;
+    });
+
+    it('does not track updating assignees until token selector blur event', async () => {
+      findTokenSelector().vm.$emit('input', [mockAssignees[0]]);
+      await waitForPromises();
+
+      expect(trackingSpy).not.toHaveBeenCalled();
+    });
+
+    it('tracks editing the assignees on token selector blur', async () => {
+      findTokenSelector().vm.$emit('input', [mockAssignees[0]]);
+      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
+      await waitForPromises();
+
+      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'updated_assignees', {
+        category: TRACKING_CATEGORY_SHOW,
+        label: 'item_assignees',
+        property: 'type_Task',
+      });
     });
   });
 });

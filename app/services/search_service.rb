@@ -91,6 +91,17 @@ class SearchService
     end
   end
 
+  def level
+    @level ||=
+      if project
+        'project'
+      elsif group
+        'group'
+      else
+        'global'
+      end
+  end
+
   private
 
   def page
