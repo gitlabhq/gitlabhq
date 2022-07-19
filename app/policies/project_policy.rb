@@ -225,6 +225,10 @@ class ProjectPolicy < BasePolicy
     Gitlab.config.registry.enabled
   end
 
+  condition :packages_enabled do
+    Gitlab.config.packages.enabled
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin }.enable :read_project_for_iids
@@ -792,6 +796,10 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { registry_enabled & can?(:admin_container_image) }.policy do
+    enable :view_package_registry_project_settings
+  end
+
+  rule { packages_enabled & can?(:admin_package) }.policy do
     enable :view_package_registry_project_settings
   end
 

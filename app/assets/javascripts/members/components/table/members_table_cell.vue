@@ -1,5 +1,5 @@
 <script>
-import { MEMBER_TYPES } from '../../constants';
+import { MEMBER_TYPES } from 'ee_else_ce/members/constants';
 import {
   isGroup,
   isDirectMember,

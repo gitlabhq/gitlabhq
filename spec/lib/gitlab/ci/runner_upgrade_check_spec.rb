@@ -31,16 +31,14 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
     end
 
     context 'with available_runner_releases configured' do
-      let(:runner_releases_double) { instance_double(Gitlab::Ci::RunnerReleases) }
-
       before do
-        allow(Gitlab::Ci::RunnerReleases).to receive(:instance).and_return(runner_releases_double)
-        allow(runner_releases_double).to receive(:releases)
-          .and_return(available_runner_releases.map { |v| ::Gitlab::VersionInfo.parse(v) })
-        allow(runner_releases_double).to receive(:releases_by_minor)
-          .and_return(available_runner_releases.map { |v| ::Gitlab::VersionInfo.parse(v) }
-                                               .group_by(&:without_patch)
-                                               .transform_values(&:max))
+        url = ::Gitlab::CurrentSettings.current_application_settings.public_runner_releases_url
+
+        WebMock.stub_request(:get, url).to_return(
+          body: available_runner_releases.map { |v| { name: v } }.to_json,
+          status: 200,
+          headers: { 'Content-Type' => 'application/json' }
+        )
       end
 
       context 'with no available runner releases' do

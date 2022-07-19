@@ -44,6 +44,7 @@ RSpec.describe Groups::GroupMembersHelper do
         members: present_members(members_collection),
         invited: present_members(invited),
         access_requests: present_members(access_requests),
+        banned: [],
         include_relations: [:inherited, :direct],
         search: nil
       )
@@ -117,6 +118,7 @@ RSpec.describe Groups::GroupMembersHelper do
             members: present_members(members_collection),
             invited: present_members(invited),
             access_requests: present_members(access_requests),
+            banned: [],
             include_relations: include_relations,
             search: nil
           )

@@ -143,17 +143,34 @@ class AwarenessSession # rubocop:disable Gitlab/NamespacedClass
     end
   end
 
+  def to_param
+    id&.to_s
+  end
+
+  def to_s
+    "awareness_session=#{id}"
+  end
+
+  def online_users_with_last_activity(threshold: PRESENCE_LIFETIME)
+    users_with_last_activity.filter do |_user, last_activity|
+      user_online?(last_activity, threshold: threshold)
+    end
+  end
+
   def users
     User.where(id: user_ids)
   end
 
   def users_with_last_activity
-    # where in (x, y, [...z]) is a set and does not maintain any order, we need to
-    # make sure to establish a stable order for both, the pairs returned from
+    # where in (x, y, [...z]) is a set and does not maintain any order, we need
+    # to make sure to establish a stable order for both, the pairs returned from
     # redis and the ActiveRecord query. Using IDs in ascending order.
     user_ids, last_activities = user_ids_with_last_activity
       .sort_by(&:first)
       .transpose
+
+    return [] if user_ids.blank?
+
     users = User.where(id: user_ids).order(id: :asc)
     users.zip(last_activities)
   end
@@ -161,6 +178,10 @@ class AwarenessSession # rubocop:disable Gitlab/NamespacedClass
   private
 
   attr_reader :id
+
+  def user_online?(last_activity, threshold:)
+    last_activity.to_i + threshold.to_i > Time.zone.now.to_i
+  end
 
   # converts session id from hex to integer representation
   def id_i

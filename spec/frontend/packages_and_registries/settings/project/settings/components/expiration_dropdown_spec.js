@@ -16,6 +16,7 @@ describe('ExpirationDropdown', () => {
 
   const findFormSelect = () => wrapper.find(GlFormSelect);
   const findFormGroup = () => wrapper.find(GlFormGroup);
+  const findDescription = () => wrapper.find('[data-testid="description"]');
   const findOptions = () => wrapper.findAll('[data-testid="option"]');
 
   const mountComponent = (props) => {
@@ -46,6 +47,14 @@ describe('ExpirationDropdown', () => {
       mountComponent();
 
       expect(findOptions()).toHaveLength(defaultProps.formOptions.length);
+    });
+
+    it('renders the description if passed', () => {
+      mountComponent({
+        description: 'test description',
+      });
+
+      expect(findDescription().html()).toContain('test description');
     });
   });
 

@@ -110,6 +110,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Access Tokens'),
           _('Repository'),
           _('CI/CD'),
+          _('Packages & Registries'),
           _('Monitor'),
           s_('UsageQuota|Usage Quotas')
         ]

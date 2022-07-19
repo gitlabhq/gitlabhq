@@ -53,6 +53,7 @@ DECLARE
   state smallint;
   report_type smallint;
   resolved_on_default_branch boolean;
+  present_on_default_branch boolean;
 BEGIN
   IF (NEW.vulnerability_id IS NULL AND (TG_OP = 'INSERT' OR TG_OP = 'UPDATE')) THEN
     RETURN NULL;
@@ -63,13 +64,17 @@ BEGIN
   END IF;
 
   SELECT
-    vulnerabilities.severity, vulnerabilities.state, vulnerabilities.report_type, vulnerabilities.resolved_on_default_branch
+    vulnerabilities.severity, vulnerabilities.state, vulnerabilities.report_type, vulnerabilities.resolved_on_default_branch, vulnerabilities.present_on_default_branch
   INTO
-    severity, state, report_type, resolved_on_default_branch
+    severity, state, report_type, resolved_on_default_branch, present_on_default_branch
   FROM
      vulnerabilities
   WHERE
     vulnerabilities.id = NEW.vulnerability_id;
+
+  IF present_on_default_branch IS NOT true THEN
+    RETURN NULL;
+  END IF;
 
   INSERT INTO vulnerability_reads (vulnerability_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
     VALUES (NEW.vulnerability_id, NEW.project_id, NEW.scanner_id, report_type, severity, state, resolved_on_default_branch, NEW.uuid::uuid, NEW.location->>'image', NEW.location->'kubernetes_resource'->>'agent_id', CAST(NEW.location->'kubernetes_resource'->>'agent_id' AS bigint))
@@ -86,6 +91,33 @@ INSERT INTO projects_sync_events (project_id)
 VALUES(COALESCE(NEW.id, OLD.id));
 RETURN NULL;
 
+END
+$$;
+
+CREATE FUNCTION insert_vulnerability_reads_from_vulnerability() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  scanner_id bigint;
+  uuid uuid;
+  location_image text;
+  cluster_agent_id text;
+  casted_cluster_agent_id bigint;
+BEGIN
+  SELECT
+    v_o.scanner_id, v_o.uuid, v_o.location->>'image', v_o.location->'kubernetes_resource'->>'agent_id', CAST(v_o.location->'kubernetes_resource'->>'agent_id' AS bigint)
+  INTO
+    scanner_id, uuid, location_image, cluster_agent_id, casted_cluster_agent_id
+  FROM
+     vulnerability_occurrences v_o
+  WHERE
+    v_o.vulnerability_id = NEW.id
+  LIMIT 1;
+
+  INSERT INTO vulnerability_reads (vulnerability_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
+    VALUES (NEW.id, NEW.project_id, scanner_id, NEW.report_type, NEW.severity, NEW.state, NEW.resolved_on_default_branch, uuid::uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
+    ON CONFLICT(vulnerability_id) DO NOTHING;
+  RETURN NULL;
 END
 $$;
 
@@ -31645,6 +31677,8 @@ CREATE TRIGGER trigger_has_external_wiki_on_update AFTER UPDATE ON integrations 
 
 CREATE TRIGGER trigger_insert_or_update_vulnerability_reads_from_occurrences AFTER INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION insert_or_update_vulnerability_reads();
 
+CREATE TRIGGER trigger_insert_vulnerability_reads_from_vulnerability AFTER UPDATE ON vulnerabilities FOR EACH ROW WHEN (((old.present_on_default_branch IS NOT TRUE) AND (new.present_on_default_branch IS TRUE))) EXECUTE FUNCTION insert_vulnerability_reads_from_vulnerability();
+
 CREATE TRIGGER trigger_namespaces_parent_id_on_insert AFTER INSERT ON namespaces FOR EACH ROW EXECUTE FUNCTION insert_namespaces_sync_event();
 
 CREATE TRIGGER trigger_namespaces_parent_id_on_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((old.parent_id IS DISTINCT FROM new.parent_id)) EXECUTE FUNCTION insert_namespaces_sync_event();
@@ -31659,7 +31693,7 @@ CREATE TRIGGER trigger_update_has_issues_on_vulnerability_issue_links_update AFT
 
 CREATE TRIGGER trigger_update_location_on_vulnerability_occurrences_update AFTER UPDATE ON vulnerability_occurrences FOR EACH ROW WHEN (((new.report_type = ANY (ARRAY[2, 7])) AND (((old.location ->> 'image'::text) IS DISTINCT FROM (new.location ->> 'image'::text)) OR (((old.location -> 'kubernetes_resource'::text) ->> 'agent_id'::text) IS DISTINCT FROM ((new.location -> 'kubernetes_resource'::text) ->> 'agent_id'::text))))) EXECUTE FUNCTION update_location_from_vulnerability_occurrences();
 
-CREATE TRIGGER trigger_update_vulnerability_reads_on_vulnerability_update AFTER UPDATE ON vulnerabilities FOR EACH ROW WHEN (((old.severity IS DISTINCT FROM new.severity) OR (old.state IS DISTINCT FROM new.state) OR (old.resolved_on_default_branch IS DISTINCT FROM new.resolved_on_default_branch))) EXECUTE FUNCTION update_vulnerability_reads_from_vulnerability();
+CREATE TRIGGER trigger_update_vulnerability_reads_on_vulnerability_update AFTER UPDATE ON vulnerabilities FOR EACH ROW WHEN (((old.present_on_default_branch IS TRUE) AND ((old.severity IS DISTINCT FROM new.severity) OR (old.state IS DISTINCT FROM new.state) OR (old.resolved_on_default_branch IS DISTINCT FROM new.resolved_on_default_branch)))) EXECUTE FUNCTION update_vulnerability_reads_from_vulnerability();
 
 CREATE TRIGGER users_loose_fk_trigger AFTER DELETE ON users REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 

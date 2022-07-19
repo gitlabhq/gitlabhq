@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration policy', :js do
+RSpec.describe 'Project > Settings > Packages & Registries > Container registry tag expiration policy', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, namespace: user.namespace) }
 
@@ -23,14 +23,15 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
     it 'shows available section' do
       subject
 
-      settings_block = find('[data-testid="registry-settings-app"]')
+      settings_block = find('[data-testid="container-expiration-policy-project-settings"]')
       expect(settings_block).to have_text 'Clean up image tags'
     end
 
     it 'saves cleanup policy submit the form' do
       subject
 
-      within '[data-testid="registry-settings-app"]' do
+      within '[data-testid="container-expiration-policy-project-settings"]' do
+        click_button('Expand')
         select('Every day', from: 'Run cleanup')
         select('50 tags per image name', from: 'Keep the most recent:')
         fill_in('Keep tags matching:', with: 'stable')
@@ -48,7 +49,8 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
     it 'does not save cleanup policy submit form with invalid regex' do
       subject
 
-      within '[data-testid="registry-settings-app"]' do
+      within '[data-testid="container-expiration-policy-project-settings"]' do
+        click_button('Expand')
         fill_in('Remove tags matching:', with: '*-production')
 
         submit_button = find('[data-testid="save-button"')
@@ -73,7 +75,8 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       it 'displays the related section' do
         subject
 
-        within '[data-testid="registry-settings-app"]' do
+        within '[data-testid="container-expiration-policy-project-settings"]' do
+          click_button('Expand')
           expect(find('[data-testid="enable-toggle"]')).to have_content('Disabled - Tags will not be automatically deleted.')
         end
       end
@@ -87,7 +90,8 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       it 'does not display the related section' do
         subject
 
-        within '[data-testid="registry-settings-app"]' do
+        within '[data-testid="container-expiration-policy-project-settings"]' do
+          click_button('Expand')
           expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
         end
       end
@@ -100,7 +104,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
     it 'does not exists' do
       subject
 
-      expect(page).not_to have_selector('[data-testid="registry-settings-app"]')
+      expect(page).not_to have_selector('[data-testid="container-expiration-policy-project-settings"]')
     end
   end
 
@@ -110,7 +114,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
     it 'does not exists' do
       subject
 
-      expect(page).not_to have_selector('[data-testid="registry-settings-app"]')
+      expect(page).not_to have_selector('[data-testid="container-expiration-policy-project-settings"]')
     end
   end
 end

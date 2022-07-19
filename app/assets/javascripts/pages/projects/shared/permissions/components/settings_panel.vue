@@ -61,6 +61,10 @@ export default {
     GlFormCheckbox,
     GlToggle,
     ConfirmDanger,
+    otherProjectSettings: () =>
+      import(
+        'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
+      ),
   },
   mixins: [settingsMixin, glFeatureFlagsMixin()],
 
@@ -905,6 +909,7 @@ export default {
         <template #help>{{ $options.i18n.pucWarningHelpText }}</template>
       </gl-form-checkbox>
     </project-setting-row>
+    <other-project-settings />
     <confirm-danger
       v-if="isVisibilityReduced"
       button-variant="confirm"

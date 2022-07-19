@@ -26,6 +26,7 @@
                                                                              members: @members,
                                                                              invited: @invited_members,
                                                                              access_requests: @requesters,
+                                                                             banned: @banned || [],
                                                                              include_relations: @include_relations,
                                                                              search: params[:search_groups]).to_json } }
       = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

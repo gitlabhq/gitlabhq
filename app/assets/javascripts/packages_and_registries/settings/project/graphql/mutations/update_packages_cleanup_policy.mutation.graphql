@@ -1,0 +1,10 @@
+#import "../fragments/packages_cleanup_policy.fragment.graphql"
+
+mutation updatePackagesCleanupPolicy($input: UpdatePackagesCleanupPolicyInput!) {
+  updatePackagesCleanupPolicy(input: $input) {
+    packagesCleanupPolicy {
+      ...PackagesCleanupPolicyFields
+    }
+    errors
+  }
+}

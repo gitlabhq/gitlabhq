@@ -2,8 +2,8 @@ import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { parseDataAttributes } from '~/members/utils';
+import { MEMBER_TYPES } from 'ee_else_ce/members/constants';
 import MembersTabs from './components/members_tabs.vue';
-import { MEMBER_TYPES } from './constants';
 import membersStore from './store';
 
 export const initMembersApp = (el, options) => {

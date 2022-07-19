@@ -303,7 +303,9 @@ support `-fips`.
 Starting with GitLab 14.10, `-fips` is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is
 enabled in the GitLab instance.
 
-Container scanning of images in authenticated registries is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled.
+Container scanning of images in authenticated registries is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode)
+is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `DOCKER_USER` or `DOCKER_PASSWORD` is set,
+the analyzer exits with an error and does not perform the scan.
 
 ### Enable Container Scanning through an automatic merge request
 

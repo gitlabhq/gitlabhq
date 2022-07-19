@@ -20,6 +20,8 @@ export default () => {
     adminSettingsPath,
     tagsRegexHelpPagePath,
     helpPagePath,
+    showContainerRegistrySettings,
+    showPackageRegistrySettings,
   } = el.dataset;
   return new Vue({
     el,
@@ -34,6 +36,8 @@ export default () => {
       adminSettingsPath,
       tagsRegexHelpPagePath,
       helpPagePath,
+      showContainerRegistrySettings: parseBoolean(showContainerRegistrySettings),
+      showPackageRegistrySettings: parseBoolean(showPackageRegistrySettings),
     },
     render(createElement) {
       return createElement('registry-settings-app', {});

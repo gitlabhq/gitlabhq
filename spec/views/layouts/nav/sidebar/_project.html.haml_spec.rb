@@ -909,8 +909,11 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
 
     describe 'Packages & Registries' do
+      let(:packages_enabled) { false }
+
       before do
         stub_container_registry_config(enabled: registry_enabled)
+        stub_config(packages: { enabled: packages_enabled })
       end
 
       context 'when registry is enabled' do
@@ -930,6 +933,17 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
           render
 
           expect(rendered).not_to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
+        end
+      end
+
+      context 'when packages config is enabled' do
+        let(:registry_enabled) { false }
+        let(:packages_enabled) { true }
+
+        it 'has a link to the Packages & Registries settings' do
+          render
+
+          expect(rendered).to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
         end
       end
     end

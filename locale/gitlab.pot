@@ -5802,6 +5802,9 @@ msgstr ""
 msgid "BambooService|The user with API access to the Bamboo server."
 msgstr ""
 
+msgid "Banned"
+msgstr ""
+
 msgid "Banner message"
 msgstr ""
 
@@ -27707,6 +27710,9 @@ msgstr ""
 msgid "PackageRegistry|Error publishing"
 msgstr ""
 
+msgid "PackageRegistry|Examples of assets include .pom & .jar files"
+msgstr ""
+
 msgid "PackageRegistry|Failed to load the package data"
 msgstr ""
 
@@ -27764,6 +27770,9 @@ msgstr ""
 msgid "PackageRegistry|License information located at %{link}"
 msgstr ""
 
+msgid "PackageRegistry|Manage storage used by package assets"
+msgstr ""
+
 msgid "PackageRegistry|Manually Published"
 msgstr ""
 
@@ -27780,6 +27789,9 @@ msgid "PackageRegistry|NuGet"
 msgstr ""
 
 msgid "PackageRegistry|NuGet Command"
+msgstr ""
+
+msgid "PackageRegistry|Number of duplicate assets to keep"
 msgstr ""
 
 msgid "PackageRegistry|Package Registry"
@@ -27905,6 +27917,9 @@ msgid "PackageRegistry|Unable to fetch package version information."
 msgstr ""
 
 msgid "PackageRegistry|Unable to load package"
+msgstr ""
+
+msgid "PackageRegistry|When a package with same name and version is uploaded to the registry, more assets are added to the package. To save storage space, keep only the most recent assets."
 msgstr ""
 
 msgid "PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?"

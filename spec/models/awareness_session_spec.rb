@@ -2,14 +2,24 @@
 
 require 'spec_helper'
 
-RSpec.describe AwarenessSession do
+RSpec.describe AwarenessSession, :clean_gitlab_redis_shared_state do
   subject { AwarenessSession.for(session_id) }
 
   let!(:user) { create(:user) }
   let(:session_id) { 1 }
 
-  after do
-    redis_shared_state_cleanup!
+  describe "when initiating a session" do
+    it "provides a string representation of the model instance" do
+      expected = "awareness_session=6b86b273ff34fce"
+
+      expect(subject.to_s).to eql(expected)
+    end
+
+    it "provides a parameterized version of the session identifier" do
+      expected = "6b86b273ff34fce"
+
+      expect(subject.to_param).to eql(expected)
+    end
   end
 
   describe "when a user joins a session" do
@@ -101,6 +111,26 @@ RSpec.describe AwarenessSession do
 
         expect(ttl_session).to be > 0
         expect(ttl_user).to be > 0
+      end
+    end
+
+    it "fetches user(s) from database" do
+      subject.join(user)
+
+      expect(subject.users.first).to eql(user)
+    end
+
+    it "fetches and filters online user(s) from database" do
+      subject.join(user)
+
+      travel 2.hours do
+        subject.join(user2)
+
+        online_users = subject.online_users_with_last_activity
+        online_user, _ = online_users.first
+
+        expect(online_users.size).to be 1
+        expect(online_user).to eql(user2)
       end
     end
   end

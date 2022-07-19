@@ -2,14 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Awareness do
+RSpec.describe Awareness, :clean_gitlab_redis_shared_state do
   subject { create(:user) }
 
   let(:session) { AwarenessSession.for(1) }
-
-  after do
-    redis_shared_state_cleanup!
-  end
 
   describe "when joining a session" do
     it "increases the number of sessions" do

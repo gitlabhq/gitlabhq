@@ -108,7 +108,7 @@ Where `<namespace>` is the [namespace](../../../user/group/index.md#namespaces) 
 To work with Terraform modules in [GitLab CI/CD](../../../ci/index.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
-For example:
+For example, this job uploads a new module for the `local` [system provider](https://registry.terraform.io/browse/providers) and uses the module version from the Git commit tag:
 
 ```yaml
 stages:
@@ -121,15 +121,18 @@ upload:
     TERRAFORM_MODULE_DIR: ${CI_PROJECT_DIR} # The path to your Terraform module
     TERRAFORM_MODULE_NAME: ${CI_PROJECT_NAME} # The name of your Terraform module
     TERRAFORM_MODULE_SYSTEM: local # The system or provider your Terraform module targets (ex. local, aws, google)
-    TERRAFORM_MODULE_VERSION: ${CI_COMMIT_TAG} # The version of your Terraform module to be published to your project's registry
+    TERRAFORM_MODULE_VERSION: ${CI_COMMIT_TAG} # Tag commits with SemVer for the version of your Terraform module to be published
   script:
-    - tar -cvzf ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz -C ${TERRAFORM_MODULE_DIR} --exclude=./.git .
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file'
+    - TERRAFORM_MODULE_NAME=$(echo "${TERRAFORM_MODULE_NAME}" | tr " _" -) # module-name must not have spaces or underscores, so translate them to hyphens
+    - tar -vczf ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz -C ${TERRAFORM_MODULE_DIR} --exclude=./.git .
+    - 'curl --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}" 
+         --upload-file ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz
+         ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file'
   rules:
     - if: $CI_COMMIT_TAG
 ```
 
-To trigger this upload job, add a Git tag to your commit. The `rules:if: $CI_COMMIT_TAG` defines this so that not every commit to your repo triggers the upload.
+To trigger this upload job, add a Git tag to your commit. Ensure the tag follows the [Semantic Versioning Specification](https://semver.org/) that Terraform requires. The `rules:if: $CI_COMMIT_TAG` ensures that only tagged commits to your repo trigger the module upload job.
 For other ways to control jobs in your CI/CD pipeline, refer to the [`.gitlab-ci.yml`](../../../ci/yaml/index.md) keyword reference.
 
 ## Example projects

@@ -43,11 +43,6 @@ describe('Container expiration policy project settings', () => {
         GlSprintf,
         SettingsBlock,
       },
-      mocks: {
-        $toast: {
-          show: jest.fn(),
-        },
-      },
       provide,
       ...config,
     });
@@ -98,7 +93,7 @@ describe('Container expiration policy project settings', () => {
     await waitForPromises();
 
     expect(findFormComponent().exists()).toBe(true);
-    expect(findSettingsBlock().props('collapsible')).toBe(false);
+    expect(findSettingsBlock().exists()).toBe(true);
   });
 
   describe('the form is disabled', () => {

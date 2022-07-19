@@ -30,6 +30,11 @@ export default {
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 };
 </script>
@@ -46,5 +51,10 @@ export default {
         {{ option.label }}
       </option>
     </gl-form-select>
+    <template v-if="description" #description>
+      <span data-testid="description" class="gl-text-gray-400">
+        {{ description }}
+      </span>
+    </template>
   </gl-form-group>
 </template>

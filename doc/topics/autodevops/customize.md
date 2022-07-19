@@ -243,29 +243,13 @@ See [Multiple Kubernetes clusters for Auto DevOps](multiple_clusters_auto_devops
 
 ## Customizing the Kubernetes namespace
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
+In GitLab 14.5 and earlier, you could use `environment:kubernetes:namespace`
+to specify a namespace for the environment.
+However, this feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8),
+along with certificate-based integration.
 
-For clusters not managed by GitLab, you can customize the namespace in
-`.gitlab-ci.yml` by specifying
-[`environment:kubernetes:namespace`](../../ci/environments/index.md#configure-kubernetes-deployments-deprecated).
-For example, the following configuration overrides the namespace used for
-`production` deployments:
-
-```yaml
-include:
-  - template: Auto-DevOps.gitlab-ci.yml
-
-production:
-  environment:
-    kubernetes:
-      namespace: production
-```
-
-When deploying to a custom namespace with Auto DevOps, the service account
-provided with the cluster needs at least the `edit` role within the namespace.
-
-- If the service account can create namespaces, then the namespace can be created on-demand.
-- Otherwise, the namespace must exist prior to deployment.
+You should now use the `KUBE_NAMESPACE` environment variable and
+[limit the environments it is available for](../../ci/environments/index.md#scope-environments-with-specs).
 
 ## Using components of Auto DevOps
 

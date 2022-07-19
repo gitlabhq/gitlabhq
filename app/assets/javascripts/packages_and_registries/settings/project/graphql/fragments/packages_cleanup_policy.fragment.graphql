@@ -1,0 +1,4 @@
+fragment PackagesCleanupPolicyFields on PackagesCleanupPolicy {
+  keepNDuplicatedPackageFiles
+  nextRunAt
+}

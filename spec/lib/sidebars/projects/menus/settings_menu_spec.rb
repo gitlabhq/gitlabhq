@@ -135,19 +135,34 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu do
 
     describe 'Packages & Registries' do
       let(:item_id) { :packages_and_registries }
+      let(:packages_enabled) { false }
 
       before do
         stub_container_registry_config(enabled: container_enabled)
+        stub_config(packages: { enabled: packages_enabled })
       end
 
-      describe 'when config registry setting is disabled' do
+      describe 'when container registry setting is disabled' do
         let(:container_enabled) { false }
 
         specify { is_expected.to be_nil }
       end
 
-      describe 'when config registry setting is enabled' do
+      describe 'when container registry setting is enabled' do
         let(:container_enabled) { true }
+
+        specify { is_expected.not_to be_nil }
+
+        describe 'when the user does not have access' do
+          let(:user) { nil }
+
+          specify { is_expected.to be_nil }
+        end
+      end
+
+      describe 'when package registry setting is enabled' do
+        let(:container_enabled) { false }
+        let(:packages_enabled) { true }
 
         specify { is_expected.not_to be_nil }
 

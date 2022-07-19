@@ -37,6 +37,8 @@ module QA
       end
 
       before do
+        Runtime::Feature.disable(:simulate_pipeline)
+
         Flow::Login.sign_in
         project.visit!
         Page::Project::Menu.perform(&:go_to_pipeline_editor)
