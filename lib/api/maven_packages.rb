@@ -43,6 +43,9 @@ module API
         end
       end
 
+      # The sha verification done by the maven api is between:
+      # - the sha256 set by workhorse helpers
+      # - the sha256 of the sha1 of the uploaded package file
       def verify_package_file(package_file, uploaded_file)
         stored_sha256 = Digest::SHA256.hexdigest(package_file.file_sha1)
         expected_sha256 = uploaded_file.sha256
@@ -50,6 +53,16 @@ module API
         if stored_sha256 == expected_sha256
           no_content!
         else
+          # Track sha1 conflicts.
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/367356
+          Gitlab::ErrorTracking.log_exception(
+            ArgumentError.new,
+            message: 'maven package file sha1 conflict',
+            stored_sha1: package_file.file_sha1,
+            received_sha256: uploaded_file.sha256,
+            sha256_hexdigest_of_stored_sha1: stored_sha256
+          )
+
           conflict!
         end
       end

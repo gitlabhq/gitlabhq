@@ -240,6 +240,39 @@ RSpec.describe Key, :mailer do
     end
   end
 
+  describe '#ensure_sha256_fingerprint!' do
+    let_it_be_with_reload(:user_key) { create(:personal_key) }
+
+    context 'with a valid SHA256 fingerprint' do
+      it 'does nothing' do
+        expect(user_key).not_to receive(:generate_fingerprint)
+
+        user_key.ensure_sha256_fingerprint!
+      end
+    end
+
+    context 'with a missing SHA256 fingerprint' do
+      before do
+        user_key.update_column(:fingerprint_sha256, nil)
+        user_key.ensure_sha256_fingerprint!
+      end
+
+      it 'fingerprints are present' do
+        expect(user_key.reload.fingerprint_sha256).to be_present
+      end
+    end
+
+    context 'with an invalid public key' do
+      before do
+        user_key.update_column(:key, 'a')
+      end
+
+      it 'does not throw an exception' do
+        expect { user_key.ensure_sha256_fingerprint! }.not_to raise_error
+      end
+    end
+  end
+
   context 'fingerprint generation' do
     it 'generates both md5 and sha256 fingerprints' do
       key = build(:rsa_key_4096)

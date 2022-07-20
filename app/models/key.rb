@@ -121,6 +121,12 @@ class Key < ApplicationRecord
     @public_key ||= Gitlab::SSHPublicKey.new(key)
   end
 
+  def ensure_sha256_fingerprint!
+    return if self.fingerprint_sha256
+
+    save if generate_fingerprint
+  end
+
   private
 
   def generate_fingerprint

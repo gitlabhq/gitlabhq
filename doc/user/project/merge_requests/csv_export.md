@@ -4,17 +4,25 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Export merge requests to CSV **(FREE)**
+# Export merge requests to CSV**(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3619) in GitLab 13.6.
 
-Exporting merge requests CSV enables you and your team to export all the data collected from merge requests into a comma-separated values (CSV) file, which stores tabular data in plain text.
+Export all the data collected from a project's merge requests into a comma-separated values (CSV) file.
 
-To export merge requests to CSV, navigate to your **Merge requests** from the sidebar of a project and select **Export as CSV**.
+To export merge requests to a CSV file:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests** .
+1. Add any searches or filters. This can help you keep the size of the CSV file under the 15MB limit. The limit ensures
+   the file can be emailed to a variety of email providers.
+1. Select **Export as CSV** (**{export}**).
+1. Confirm the correct number of merge requests are to be exported.
+1. Select **Export merge requests**.
 
 ## CSV Output
 
-The following table shows what attributes will be present in the CSV.
+The following table shows the attributes in the CSV file.
 
 | Column             | Description                                                  |
 |--------------------|--------------------------------------------------------------|
@@ -42,8 +50,3 @@ The following table shows what attributes will be present in the CSV.
 In GitLab 14.7 and earlier, the first two columns were `MR ID` and `URL`,
 which [caused an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/34769)
 when importing back into GitLab.
-
-## Limitations
-
-- Export merge requests to CSV is not available at the Group's merge request list.
-- As the merge request CSV file is sent as an email attachment, the size is limited to 15MB to ensure successful delivery across a range of email providers. If you need to minimize the size of the file, you can narrow the search before export. For example, you can set up exports of open and closed merge requests in separate files.

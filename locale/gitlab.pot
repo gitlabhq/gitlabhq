@@ -42260,6 +42260,9 @@ msgstr ""
 msgid "UserProfile|Contributed projects"
 msgstr ""
 
+msgid "UserProfile|Copy user ID"
+msgstr ""
+
 msgid "UserProfile|Edit profile"
 msgstr ""
 
@@ -42339,6 +42342,9 @@ msgid "UserProfile|This user isn't following other users."
 msgstr ""
 
 msgid "UserProfile|Unconfirmed user"
+msgstr ""
+
+msgid "UserProfile|User ID: %{id}"
 msgstr ""
 
 msgid "UserProfile|View all"

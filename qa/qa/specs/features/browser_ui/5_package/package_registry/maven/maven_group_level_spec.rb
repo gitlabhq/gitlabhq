@@ -135,14 +135,14 @@ module QA
         end
       end
 
-      context 'duplication setting', quarantine: { type: :stale, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/365150' } do
+      context 'duplication setting' do
         before do
           package_project.group.visit!
 
           Page::Group::Menu.perform(&:go_to_package_settings)
         end
 
-        context 'when disabled' do
+        context 'when enabled' do
           where do
             {
               'using a personal access token' => {
@@ -176,7 +176,7 @@ module QA
             end
 
             before do
-              Page::Group::Settings::PackageRegistries.perform(&:set_allow_duplicates_disabled)
+              Page::Group::Settings::PackageRegistries.perform(&:set_reject_duplicates_enabled)
             end
 
             it 'prevents users from publishing group level Maven packages duplicates', testcase: params[:testcase] do
@@ -195,7 +195,7 @@ module QA
           end
         end
 
-        context 'when enabled' do
+        context 'when disabled' do
           where do
             {
               'using a personal access token' => {
@@ -229,7 +229,7 @@ module QA
             end
 
             before do
-              Page::Group::Settings::PackageRegistries.perform(&:set_allow_duplicates_enabled)
+              Page::Group::Settings::PackageRegistries.perform(&:set_reject_duplicates_disabled)
             end
 
             it 'allows users to publish group level Maven packages duplicates', testcase: params[:testcase] do

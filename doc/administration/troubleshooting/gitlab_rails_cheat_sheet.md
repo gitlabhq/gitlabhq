@@ -927,13 +927,13 @@ conflicting_permanent_redirects.destroy_all
 
 ## Merge requests
 
-### Close a merge request properly (if merged but still marked as open)
+### Close a merge request
 
 ```ruby
 u = User.find_by_username('<username>')
 p = Project.find_by_full_path('<namespace/project>')
 m = p.merge_requests.find_by(iid: <iid>)
-MergeRequests::PostMergeService.new(project: p, current_user: u).execute(m)
+MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
 ```
 
 ### Delete a merge request
@@ -952,6 +952,21 @@ u = User.find_by_username('<username>')
 p = Project.find_by_full_path('<namespace/project>')
 m = p.merge_requests.find_by(iid: <iid>)
 MergeRequests::RebaseService.new(project: m.target_project, current_user: u).execute(m)
+```
+
+### Set a merge request as merged
+
+Use when a merge request was accepted and the changes merged into the Git repository,
+but the merge request still shows as open.
+
+If the changes are not merged yet, this action causes the merge request to
+incorrectly show `merged into <branch-name>`.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::PostMergeService.new(project: p, current_user: u).execute(m)
 ```
 
 ## CI

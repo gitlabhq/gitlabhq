@@ -100,8 +100,8 @@ export default {
             :duplicate-exception-regex-error="errors.mavenDuplicateExceptionRegex"
             :model-names="modelNames"
             :loading="isLoading"
-            toggle-qa-selector="allow_duplicates_toggle"
-            label-qa-selector="allow_duplicates_label"
+            toggle-qa-selector="reject_duplicates_toggle"
+            label-qa-selector="reject_duplicates_label"
             @update="updateSettings"
           />
         </template>

@@ -1000,19 +1000,44 @@ RSpec.describe API::MavenPackages do
 
       context 'for sha1 file' do
         let(:dummy_package) { double(Packages::Package) }
+        let(:file_upload) { fixture_file_upload('spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.pom.sha1') }
+        let(:stored_sha1) { File.read(file_upload.path) }
 
-        it 'checks the sha1' do
+        subject(:upload) { upload_file_with_token(params: params, file_extension: 'pom.sha1') }
+
+        before do
           # The sha verification done by the maven api is between:
           # - the sha256 set by workhorse helpers
           # - the sha256 of the sha1 of the uploaded package file
           # We're going to send `file_upload` for the sha1 and stub the sha1 of the package file so that
           # both sha256 being the same
-          expect(::Packages::PackageFileFinder).to receive(:new).and_return(double(execute!: dummy_package))
-          expect(dummy_package).to receive(:file_sha1).and_return(File.read(file_upload.path))
+          allow(::Packages::PackageFileFinder).to receive(:new).and_return(double(execute!: dummy_package))
+          allow(dummy_package).to receive(:file_sha1).and_return(stored_sha1)
+        end
 
-          upload_file_with_token(params: params, file_extension: 'jar.sha1')
+        it 'returns no content' do
+          upload
 
           expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        context 'when the stored sha1 is not the same' do
+          let(:sent_sha1) { File.read(file_upload.path) }
+          let(:stored_sha1) { 'wrong sha1' }
+
+          it 'logs an error and returns conflict' do
+            expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+              instance_of(ArgumentError),
+              message: 'maven package file sha1 conflict',
+              stored_sha1: stored_sha1,
+              received_sha256: Digest::SHA256.hexdigest(sent_sha1),
+              sha256_hexdigest_of_stored_sha1: Digest::SHA256.hexdigest(stored_sha1)
+            )
+
+            upload
+
+            expect(response).to have_gitlab_http_status(:conflict)
+          end
         end
       end
 
