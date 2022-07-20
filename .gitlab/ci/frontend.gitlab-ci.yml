@@ -144,7 +144,7 @@ rspec-all frontend_fixture:
 rspec-all frontend_fixture as-if-foss:
   extends:
     - .frontend-fixtures-base
-    - .frontend:rules:default-frontend-jobs-as-if-foss
+    - .frontend:rules:frontend_fixture-as-if-foss
     - .as-if-foss
   needs:
     - !reference [.frontend-fixtures-base, needs]
@@ -194,7 +194,10 @@ graphql-schema-dump as-if-foss:
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
+    USE_BUNDLE_INSTALL: "false"
+    SETUP_DB: "false"
   before_script:
+    - !reference [.default-before_script, before_script]
     - *yarn-install
   stage: test
 
@@ -226,6 +229,17 @@ jest minimal:
     - .frontend:rules:jest:minimal
   needs:
     - !reference [jest, needs]
+    - "detect-tests"
+  script:
+    - run_timed_command "yarn jest:ci:minimal"
+
+jest minimal as-if-foss:
+  extends:
+    - .jest-base
+    - .frontend:rules:jest:minimal:as-if-foss
+    - .as-if-foss
+  needs:
+    - "rspec-all frontend_fixture as-if-foss"
     - "detect-tests"
   script:
     - run_timed_command "yarn jest:ci:minimal"

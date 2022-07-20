@@ -13,7 +13,7 @@ tools for the triage, response, and remediation of incidents.
 Users with at least Guest [permissions](../../user/permissions.md) can access
 incidents [on public projects](../../user/permissions.md#project-members-permissions).
 
-## Incident Creation
+## Incident creation
 
 You can create an incident manually or automatically.
 
@@ -297,7 +297,7 @@ as a column in the Incidents List, and as a field on newly created Incidents. If
 the incident isn't closed before the SLA period ends, GitLab adds a `missed::SLA`
 label to the incident.
 
-## Incident Actions
+## Incident actions
 
 There are different actions available to help triage and respond to incidents.
 

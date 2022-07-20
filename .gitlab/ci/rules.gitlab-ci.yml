@@ -252,7 +252,7 @@
   - "vendor/assets/**/*"
   - "{,ee/,jh/}app/assets/**/*"
 
-.frontend-patterns: &frontend-patterns
+.frontend-patterns-for-as-if-foss: &frontend-patterns-for-as-if-foss
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
   - "babel.config.js"
@@ -261,7 +261,7 @@
   - "Dockerfile.assets"
   - "config/**/*.js"
   - "vendor/assets/**/*"
-  - "{,ee/,jh/}{app/assets,app/helpers,app/presenters,app/views,locale,public,symbol}/**/*"
+  - "{app/assets,app/helpers,app/presenters,app/views,locale,public,spec/frontend,symbol}/**/*"
 
 .controllers-patterns: &controllers-patterns
   - "{,ee/,jh/}{app/controllers}/**/*"
@@ -369,7 +369,6 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -400,7 +399,6 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -734,6 +732,7 @@
     - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
+    - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
     - changes: *workhorse-patterns
 
@@ -795,6 +794,12 @@
       changes: *ci-patterns
       allow_failure: true
 
+.frontend:rules:frontend_fixture-as-if-foss:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - !reference [".frontend:rules:default-frontend-jobs-as-if-foss", rules]
+    - !reference [".frontend:rules:jest:minimal:as-if-foss", rules]
+
 .frontend:rules:jest:
   rules:
     - <<: *if-fork-merge-request
@@ -828,12 +833,39 @@
     - <<: *if-merge-request
       changes: *code-backstage-patterns
 
+.frontend:rules:jest:minimal:as-if-foss:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+      when: never
+    - <<: *if-merge-request-labels-as-if-foss
+      when: never
+    - <<: *if-merge-request-labels-run-all-jest
+      when: never
+    - <<: *if-merge-request-labels-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *startup-css-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-default-refs
+      changes: *core-frontend-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+
 .frontend:rules:eslint-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request
-      changes: *frontend-patterns
+      changes: *frontend-patterns-for-as-if-foss
 
 .frontend:rules:ee-mr-and-default-branch-only:
   rules:
@@ -1633,7 +1665,7 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-patterns
+      changes: *frontend-build-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
     - <<: *if-dot-com-gitlab-org-merge-request

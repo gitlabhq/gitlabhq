@@ -7,19 +7,20 @@ module WorkItems
   # new work items that were never associated with other work items as expected.
   class CreateAndLinkService
     def initialize(project:, current_user: nil, params: {}, spam_params:, link_params: {})
-      @create_service = CreateService.new(
-        project: project,
-        current_user: current_user,
-        params: params,
-        spam_params: spam_params
-      )
       @project = project
       @current_user = current_user
+      @params = params
       @link_params = link_params
+      @spam_params = spam_params
     end
 
     def execute
-      create_result = @create_service.execute
+      create_result = CreateService.new(
+        project: @project,
+        current_user: @current_user,
+        params: @params.reverse_merge(confidential: confidential_parent),
+        spam_params: @spam_params
+      ).execute
       return create_result if create_result.error?
 
       work_item = create_result[:work_item]
@@ -39,6 +40,10 @@ module WorkItems
     end
 
     private
+
+    def confidential_parent
+      !!@link_params[:parent_work_item]&.confidential
+    end
 
     def payload(work_item)
       { work_item: work_item }

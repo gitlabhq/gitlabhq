@@ -6,7 +6,7 @@ RSpec.describe WorkItems::CreateAndLinkService do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:related_work_item) { create(:work_item, project: project) }
+  let_it_be(:related_work_item, refind: true) { create(:work_item, project: project) }
   let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
   let(:spam_params) { double }
@@ -22,6 +22,26 @@ RSpec.describe WorkItems::CreateAndLinkService do
 
   before_all do
     project.add_developer(user)
+  end
+
+  shared_examples 'successful work item and link creator' do
+    it 'creates a work item successfully with links' do
+      expect do
+        service_result
+      end.to change(WorkItem, :count).by(1).and(
+        change(WorkItems::ParentLink, :count).by(1)
+      )
+    end
+
+    it 'copies confidential status from the parent' do
+      expect do
+        service_result
+      end.to change(WorkItem, :count).by(1)
+
+      created_task = WorkItem.last
+
+      expect(created_task.confidential).to eq(related_work_item.confidential)
+    end
   end
 
   describe '#execute' do
@@ -45,12 +65,16 @@ RSpec.describe WorkItems::CreateAndLinkService do
       context 'when link params are valid' do
         let(:link_params) { { parent_work_item: related_work_item } }
 
-        it 'creates a work item successfully with links' do
-          expect do
-            service_result
-          end.to change(WorkItem, :count).by(1).and(
-            change(WorkItems::ParentLink, :count).by(1)
-          )
+        context 'when parent is not confidential' do
+          it_behaves_like 'successful work item and link creator'
+        end
+
+        context 'when parent is confidential' do
+          before do
+            related_work_item.update!(confidential: true)
+          end
+
+          it_behaves_like 'successful work item and link creator'
         end
       end
 

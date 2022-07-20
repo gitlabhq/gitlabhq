@@ -137,12 +137,13 @@ Example response:
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
 This API cannot retrieve project audit events.
 
-A user with a Owner role (or above) can retrieve group audit events of all users.
-A user with a Developer or Maintainer role is limited to group audit events based on their individual actions.
+A user with:
 
-This endpoint optionally supports [keyset pagination](index.md#keyset-based-pagination):
+- The Owner role can retrieve group audit events of all users.
+- The Developer or Maintainer role is limited to group audit events based on their individual actions.
 
-- When requesting consecutive pages of results, we recommend you use keyset pagination.
+This endpoint supports both offset-based and [keyset-based](index.md#keyset-based-pagination) pagination. Keyset-based
+pagination is recommended when requesting consecutive pages of results.
 
 ### Retrieve all group audit events
 

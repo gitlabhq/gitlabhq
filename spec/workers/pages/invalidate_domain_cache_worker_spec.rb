@@ -42,4 +42,15 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
     event_class: Projects::ProjectCreatedEvent,
     event_data: { project_id: 1, namespace_id: 2, root_namespace_id: 3 },
     caches: { namespace: 3, project: 1 }
+
+  it_behaves_like 'clears caches with',
+    event_class: Projects::ProjectPathChangedEvent,
+    event_data: {
+      project_id: 1,
+      namespace_id: 2,
+      root_namespace_id: 3,
+      old_path: 'old_path',
+      new_path: 'new_path'
+    },
+    caches: { namespace: 3, project: 1 }
 end
