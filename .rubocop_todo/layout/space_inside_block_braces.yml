@@ -191,7 +191,6 @@ Layout/SpaceInsideBlockBraces:
     - 'ee/spec/requests/groups/contribution_analytics_spec.rb'
     - 'ee/spec/requests/lfs_http_spec.rb'
     - 'ee/spec/requests/projects/security/policies_controller_spec.rb'
-    - 'ee/spec/requests/survey_responses_controller_spec.rb'
     - 'ee/spec/serializers/member_user_entity_spec.rb'
     - 'ee/spec/serializers/merge_request_poll_widget_entity_spec.rb'
     - 'ee/spec/serializers/vulnerabilities/finding_reports_comparer_entity_spec.rb'

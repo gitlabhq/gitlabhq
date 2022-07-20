@@ -140,7 +140,6 @@ Style/PercentLiteralDelimiters:
     - 'app/models/resource_timebox_event.rb'
     - 'app/models/user.rb'
     - 'app/models/user_interacted_project.rb'
-    - 'app/models/users/in_product_marketing_email.rb'
     - 'app/policies/identity_provider_policy.rb'
     - 'app/presenters/dev_ops_report/metric_presenter.rb'
     - 'app/presenters/search_service_presenter.rb'

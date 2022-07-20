@@ -854,7 +854,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/controllers/sitemap_controller.rb'
     - 'ee/app/controllers/smartcard_controller.rb'
     - 'ee/app/controllers/subscriptions_controller.rb'
-    - 'ee/app/controllers/survey_responses_controller.rb'
     - 'ee/app/controllers/trial_registrations_controller.rb'
     - 'ee/app/controllers/trials_controller.rb'
     - 'ee/app/finders/audit_event_finder.rb'

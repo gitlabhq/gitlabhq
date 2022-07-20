@@ -99,7 +99,6 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Base do
       :verify       | true
       :trial        | true
       :team         | true
-      :experience   | true
     end
 
     with_them do

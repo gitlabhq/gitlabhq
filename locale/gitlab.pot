@@ -19085,12 +19085,6 @@ msgstr ""
 msgid "Hashed storage can't be disabled anymore for new projects"
 msgstr ""
 
-msgid "Have a quick chat with us about your experience."
-msgstr ""
-
-msgid "Have more to say about GitLab?"
-msgstr ""
-
 msgid "Header logo"
 msgstr ""
 
@@ -19917,9 +19911,6 @@ msgstr ""
 msgid "InProductMarketing|%{strong_start}Multiple approval roles%{strong_end} — including code owners and required merge approvals"
 msgstr ""
 
-msgid "InProductMarketing|%{strong_start}Overall, how difficult or easy was it to get started with GitLab?%{strong_end}"
-msgstr ""
-
 msgid "InProductMarketing|*GitLab*, noun: a synonym for efficient teams"
 msgstr ""
 
@@ -19977,9 +19968,6 @@ msgstr ""
 msgid "InProductMarketing|By enabling code owners and required merge approvals the right person will review the right MR. This is a win-win: cleaner code and a more efficient review process."
 msgstr ""
 
-msgid "InProductMarketing|Click on the number below that corresponds with your answer — 1 being very difficult, 5 being very easy."
-msgstr ""
-
 msgid "InProductMarketing|Code owners"
 msgstr ""
 
@@ -20022,9 +20010,6 @@ msgstr ""
 msgid "InProductMarketing|Did you know teams that use GitLab are far more efficient?"
 msgstr ""
 
-msgid "InProductMarketing|Difficult"
-msgstr ""
-
 msgid "InProductMarketing|Dig in and create a project and a repo"
 msgstr ""
 
@@ -20034,16 +20019,10 @@ msgstr ""
 msgid "InProductMarketing|Discover Premium & Ultimate."
 msgstr ""
 
-msgid "InProductMarketing|Do you have a minute?"
-msgstr ""
-
 msgid "InProductMarketing|Do you have a teammate who would be perfect for this task?"
 msgstr ""
 
 msgid "InProductMarketing|Dynamic application security testing"
-msgstr ""
-
-msgid "InProductMarketing|Easy"
 msgstr ""
 
 msgid "InProductMarketing|Epics"
@@ -20062,9 +20041,6 @@ msgid "InProductMarketing|Explore the power of GitLab CI/CD"
 msgstr ""
 
 msgid "InProductMarketing|Facebook"
-msgstr ""
-
-msgid "InProductMarketing|Feedback from users like you really improves our product. Thanks for your help!"
 msgstr ""
 
 msgid "InProductMarketing|Feel the need for speed?"
@@ -20235,9 +20211,6 @@ msgstr ""
 msgid "InProductMarketing|Need an alternative to importing?"
 msgstr ""
 
-msgid "InProductMarketing|Neutral"
-msgstr ""
-
 msgid "InProductMarketing|No credit card required."
 msgstr ""
 
@@ -20308,9 +20281,6 @@ msgid "InProductMarketing|Stop wondering and use GitLab to answer questions like
 msgstr ""
 
 msgid "InProductMarketing|Streamline code review, know at a glance who's unavailable, communicate in comments or in email and integrate with Slack so everyone's on the same page."
-msgstr ""
-
-msgid "InProductMarketing|Take this 1-question survey!"
 msgstr ""
 
 msgid "InProductMarketing|Take your first steps with GitLab"
@@ -20385,12 +20355,6 @@ msgstr ""
 msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"
 msgstr ""
 
-msgid "InProductMarketing|Very difficult"
-msgstr ""
-
-msgid "InProductMarketing|Very easy"
-msgstr ""
-
 msgid "InProductMarketing|Visualize your epics and milestones in a timeline."
 msgstr ""
 
@@ -20404,9 +20368,6 @@ msgid "InProductMarketing|Watch iOS building in action."
 msgstr ""
 
 msgid "InProductMarketing|We know a thing or two about efficiency and we don't want to keep that to ourselves. Sign up for a free trial of GitLab Ultimate and your teams will be on it from day one."
-msgstr ""
-
-msgid "InProductMarketing|We want your GitLab experience to be great"
 msgstr ""
 
 msgid "InProductMarketing|What does our value stream timeline look like from product to development to review and production?"
@@ -23262,9 +23223,6 @@ msgid "Let's Encrypt does not accept emails on example.com"
 msgstr ""
 
 msgid "Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
-msgstr ""
-
-msgid "Let's talk!"
 msgstr ""
 
 msgid "License Compliance"
@@ -31969,12 +31927,6 @@ msgstr ""
 msgid "Recaptcha verified?"
 msgstr ""
 
-msgid "Receive a $50 gift card as a thank you for your time."
-msgstr ""
-
-msgid "Receive a %{strongOpen}$50 gift card%{strongClose} as a thank you for your time."
-msgstr ""
-
 msgid "Receive any notifications from GitLab."
 msgstr ""
 
@@ -37991,9 +37943,6 @@ msgstr ""
 msgid "Support page URL"
 msgstr ""
 
-msgid "Survey Response"
-msgstr ""
-
 msgid "Surveys|Delighted"
 msgstr ""
 
@@ -38700,9 +38649,6 @@ msgid "Text style"
 msgstr ""
 
 msgid "Thank you for your business."
-msgstr ""
-
-msgid "Thank you for your feedback!"
 msgstr ""
 
 msgid "Thank you for your report. A GitLab administrator will look into it shortly."
@@ -45157,9 +45103,6 @@ msgid "Your requirements are being imported. Once finished, you'll receive a con
 msgstr ""
 
 msgid "Your requirements will be imported in the background. After it's finished, you'll get a confirmation email."
-msgstr ""
-
-msgid "Your response has been recorded."
 msgstr ""
 
 msgid "Your search didn't match any commits."

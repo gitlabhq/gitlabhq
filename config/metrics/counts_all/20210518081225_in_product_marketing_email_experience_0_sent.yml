@@ -8,9 +8,11 @@ product_stage: growth
 product_group: activation
 product_category: onboarding
 value_type: number
-status: active
+status: removed
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61347
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92280
+milestone_removed: "15.2"
 time_frame: all
 data_source: database
 distribution:

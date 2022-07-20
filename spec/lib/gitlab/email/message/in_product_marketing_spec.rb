@@ -17,7 +17,6 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing do
         :verify       | described_class::Verify
         :trial        | described_class::Trial
         :team         | described_class::Team
-        :experience   | described_class::Experience
       end
 
       with_them do

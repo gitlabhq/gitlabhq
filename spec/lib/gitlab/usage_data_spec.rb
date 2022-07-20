@@ -1309,8 +1309,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             "in_product_marketing_email_team_1_sent" => -1,
             "in_product_marketing_email_team_1_cta_clicked" => -1,
             "in_product_marketing_email_team_2_sent" => -1,
-            "in_product_marketing_email_team_2_cta_clicked" => -1,
-            "in_product_marketing_email_experience_0_sent" => -1
+            "in_product_marketing_email_team_2_cta_clicked" => -1
           }
 
           expect(subject).to eq(expected_data)
@@ -1355,8 +1354,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           "in_product_marketing_email_team_1_sent" => 0,
           "in_product_marketing_email_team_1_cta_clicked" => 0,
           "in_product_marketing_email_team_2_sent" => 0,
-          "in_product_marketing_email_team_2_cta_clicked" => 0,
-          "in_product_marketing_email_experience_0_sent" => 0
+          "in_product_marketing_email_team_2_cta_clicked" => 0
         }
 
         expect(subject).to eq(expected_data)

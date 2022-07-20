@@ -41,7 +41,7 @@ module Users
 
     # Tracks we don't send emails for (e.g. unsuccessful experiment). These
     # are kept since we already have DB records that use the enum value.
-    INACTIVE_TRACK_NAMES = %w(invite_team).freeze
+    INACTIVE_TRACK_NAMES = %w[invite_team experience].freeze
     ACTIVE_TRACKS = tracks.except(*INACTIVE_TRACK_NAMES)
 
     scope :for_user_with_track_and_series, -> (user, track, series) do

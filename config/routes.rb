@@ -190,9 +190,6 @@ InitializerConnections.with_disabled_database_connections do
         scope '/push_from_secondary/:geo_node_id' do
           draw :git_http
         end
-
-        # Used for survey responses
-        resources :survey_responses, only: :index
       end
 
       Gitlab.jh do

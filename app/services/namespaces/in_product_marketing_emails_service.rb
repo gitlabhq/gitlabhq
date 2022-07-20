@@ -37,11 +37,6 @@ module Namespaces
         interval_days: [1, 5, 10],
         completed_actions: [:git_write, :pipeline_created, :trial_started],
         incomplete_actions: [:user_added]
-      },
-      experience: {
-        interval_days: [30],
-        completed_actions: [:created, :git_write],
-        incomplete_actions: []
       }
     }.freeze
 
