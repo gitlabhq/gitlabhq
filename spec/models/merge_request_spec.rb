@@ -4660,6 +4660,37 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '#in_locked_state' do
+    let(:merge_request) { create(:merge_request, :opened) }
+
+    context 'when the merge request does not change state' do
+      it 'returns to previous state and has no errors on the object' do
+        expect(merge_request.opened?).to eq(true)
+
+        merge_request.in_locked_state do
+          expect(merge_request.locked?).to eq(true)
+        end
+
+        expect(merge_request.opened?).to eq(true)
+        expect(merge_request.errors).to be_empty
+      end
+    end
+
+    context 'when the merge request is merged while locked' do
+      it 'becomes merged and has no errors on the object' do
+        expect(merge_request.opened?).to eq(true)
+
+        merge_request.in_locked_state do
+          expect(merge_request.locked?).to eq(true)
+          merge_request.mark_as_merged!
+        end
+
+        expect(merge_request.merged?).to eq(true)
+        expect(merge_request.errors).to be_empty
+      end
+    end
+  end
+
   describe '#cleanup_refs' do
     subject { merge_request.cleanup_refs(only: only) }
 

@@ -481,7 +481,11 @@ module API
             .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
         end
 
-        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+        if immediately_mergeable && !merge_request.merged?
+          render_api_error!("Failed to merge branch", 422)
+        else
+          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+        end
       end
 
       desc 'Returns the up to date merge-ref HEAD commit'

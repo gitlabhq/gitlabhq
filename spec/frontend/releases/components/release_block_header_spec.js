@@ -1,8 +1,9 @@
-import { GlLink } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlLink, GlBadge } from '@gitlab/ui';
 import { merge } from 'lodash';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { __ } from '~/locale';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockHeader from '~/releases/components/release_block_header.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
@@ -12,10 +13,11 @@ describe('Release block header', () => {
   let release;
 
   const factory = (releaseUpdates = {}) => {
-    wrapper = shallowMount(ReleaseBlockHeader, {
+    wrapper = shallowMountExtended(ReleaseBlockHeader, {
       propsData: {
         release: merge({}, release, releaseUpdates),
       },
+      stubs: { GlBadge },
     });
   };
 
@@ -30,6 +32,7 @@ describe('Release block header', () => {
   const findHeader = () => wrapper.find('h2');
   const findHeaderLink = () => findHeader().find(GlLink);
   const findEditButton = () => wrapper.find('.js-edit-button');
+  const findBadge = () => wrapper.findComponent(GlBadge);
 
   describe('when _links.self is provided', () => {
     beforeEach(() => {
@@ -82,6 +85,36 @@ describe('Release block header', () => {
 
     it('does not render an edit button', () => {
       expect(findEditButton().exists()).toBe(false);
+    });
+  });
+
+  describe('upcoming release', () => {
+    beforeEach(() => {
+      factory({ upcomingRelease: true, historicalRelease: false });
+    });
+
+    it('shows a badge that the release is upcoming', () => {
+      const badge = findBadge();
+
+      expect(badge.text()).toBe(__('Upcoming Release'));
+      expect(badge.props('variant')).toBe('warning');
+    });
+  });
+
+  describe('historical release', () => {
+    beforeEach(() => {
+      factory({ upcomingRelease: false, historicalRelease: true });
+    });
+
+    it('shows a badge that the release is historical', () => {
+      const badge = findBadge();
+
+      expect(badge.text()).toBe(__('Historical release'));
+      expect(badge.attributes('title')).toBe(
+        __(
+          'This release was created with a date in the past. Evidence collection at the moment of the release is unavailable.',
+        ),
+      );
     });
   });
 });

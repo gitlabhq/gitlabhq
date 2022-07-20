@@ -114,7 +114,7 @@ export default {
       return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
     },
     workItemWeight() {
-      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
+      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
     },
     workItemHierarchy() {
       return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
@@ -142,7 +142,7 @@ export default {
 
 <template>
   <section class="gl-pt-5">
-    <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
+    <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = undefined">
       {{ error }}
     </gl-alert>
 
@@ -236,6 +236,7 @@ export default {
           :weight="workItemWeight.weight"
           :work-item-id="workItem.id"
           :work-item-type="workItemType"
+          @error="error = $event"
         />
       </template>
       <work-item-description

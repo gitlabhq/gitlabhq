@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlTableLite, GlDropdownItem, GlDropdown, GlIcon, GlButton } from '@gitlab/ui';
+import { GlLink, GlTableLite, GlDropdownItem, GlDropdown, GlButton } from '@gitlab/ui';
 import { last } from 'lodash';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
@@ -18,7 +18,6 @@ export default {
   components: {
     GlLink,
     GlTableLite,
-    GlIcon,
     GlDropdown,
     GlDropdownItem,
     GlButton,
@@ -77,7 +76,7 @@ export default {
           label: '',
           hide: !this.canDelete,
           class: 'gl-text-right',
-          tdClass: 'gl-w-4',
+          tdClass: 'gl-w-4 gl-pt-3!',
         },
       ].filter((c) => !c.hide);
     },
@@ -102,6 +101,7 @@ export default {
   },
   i18n: {
     deleteFile: __('Delete file'),
+    moreActionsText: __('More actions'),
   },
 };
 </script>
@@ -156,10 +156,14 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <gl-dropdown category="tertiary" right>
-          <template #button-content>
-            <gl-icon name="ellipsis_v" />
-          </template>
+        <gl-dropdown
+          category="tertiary"
+          icon="ellipsis_v"
+          :text-sr-only="true"
+          :text="$options.i18n.moreActionsText"
+          no-caret
+          right
+        >
           <gl-dropdown-item data-testid="delete-file" @click="$emit('delete-file', item)">
             {{ $options.i18n.deleteFile }}
           </gl-dropdown-item>

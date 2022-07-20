@@ -77,6 +77,7 @@ export const updateWorkItemMutationResponse = {
   data: {
     workItemUpdate: {
       __typename: 'WorkItemUpdatePayload',
+      errors: [],
       workItem: {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
@@ -112,6 +113,7 @@ export const workItemResponseFactory = ({
   canUpdate = false,
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
+  weightWidgetPresent = true,
   parent = null,
 } = {}) => ({
   data: {
@@ -146,6 +148,13 @@ export const workItemResponseFactory = ({
               assignees: {
                 nodes: mockAssignees,
               },
+            }
+          : { type: 'MOCK TYPE' },
+        weightWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetWeight',
+              type: 'WEIGHT',
+              weight: 0,
             }
           : { type: 'MOCK TYPE' },
         {

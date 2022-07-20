@@ -1507,7 +1507,7 @@ class MergeRequest < ApplicationRecord
     lock_mr
     yield
   ensure
-    unlock_mr
+    unlock_mr if locked?
   end
 
   def update_and_mark_in_progress_merge_commit_sha(commit_id)

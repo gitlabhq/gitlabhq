@@ -311,7 +311,7 @@ table.supported-languages ul {
     <p>
       Although Gradle with Java 8 is supported, there are other issues such that Android project builds are not supported at this time.
       Please see the backlog issue <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336866">Android support for Dependency
-      Scanning (gemnasium-maven)</a> for more details. Also, Gradle is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled.
+      Scanning (gemnasium-maven)</a> for more details. Also, Gradle is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>

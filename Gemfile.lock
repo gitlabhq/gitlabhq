@@ -1005,7 +1005,7 @@ GEM
       tty-markdown
       tty-prompt
     public_suffix (4.0.7)
-    puma (5.6.2)
+    puma (5.6.4)
       nio4r (~> 2.0)
     puma_worker_killer (0.3.1)
       get_process_mem (~> 0.2)
@@ -1020,7 +1020,7 @@ GEM
       rack (>= 1.0, < 3)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
-    rack-oauth2 (1.19.0)
+    rack-oauth2 (1.21.2)
       activesupport
       attr_required
       httpclient
@@ -1670,12 +1670,12 @@ DEPENDENCIES
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.5.0)
-  puma (~> 5.6.2)
+  puma (~> 5.6.4)
   puma_worker_killer (~> 0.3.1)
   rack (~> 2.2.4)
   rack-attack (~> 6.6.0)
   rack-cors (~> 1.1.0)
-  rack-oauth2 (~> 1.19.0)
+  rack-oauth2 (~> 1.21.2)
   rack-proxy (~> 0.7.2)
   rack-timeout (~> 0.6.0)
   rails (~> 6.1.4.7)

@@ -56,7 +56,7 @@ gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'gitlab-omniauth-openid-connect', '~> 0.9.0', require: 'omniauth_openid_connect'
 gem 'omniauth-salesforce', '~> 1.0.5'
 gem 'omniauth-atlassian-oauth2', '~> 0.2.0'
-gem 'rack-oauth2', '~> 1.19.0'
+gem 'rack-oauth2', '~> 1.21.2'
 gem 'jwt', '~> 2.1.0'
 
 # Kerberos authentication. EE-only
@@ -187,7 +187,7 @@ gem 'rack', '~> 2.2.4'
 gem 'rack-timeout', '~> 0.6.0', require: 'rack/timeout/base'
 
 group :puma do
-  gem 'puma', '~> 5.6.2', require: false
+  gem 'puma', '~> 5.6.4', require: false
   gem 'puma_worker_killer', '~> 0.3.1', require: false
   gem 'sd_notify', '~> 0.1.0', require: false
 end

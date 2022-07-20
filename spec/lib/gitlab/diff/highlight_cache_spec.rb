@@ -115,6 +115,10 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
         .once
         .and_call_original
 
+      Gitlab::Redis::Cache.with do |redis|
+        expect(redis).to receive(:expire).with(cache.key, described_class::EXPIRATION)
+      end
+
       2.times { cache.write_if_empty }
     end
 
@@ -122,6 +126,20 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       expect(cache).to receive(:read_cache).once.and_call_original
 
       cache.write_if_empty
+    end
+
+    context 'when highlight_diffs_optimize_memory_usage is disabled' do
+      before do
+        stub_feature_flags(highlight_diffs_optimize_memory_usage: false)
+      end
+
+      it 'sets the previous expiration period' do
+        Gitlab::Redis::Cache.with do |redis|
+          expect(redis).to receive(:expire).with(cache.key, described_class::PREVIOUS_EXPIRATION_PERIOD)
+        end
+
+        cache.write_if_empty
+      end
     end
   end
 
@@ -259,8 +277,12 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
   describe '#key' do
     subject { cache.key }
 
+    def options_hash(options_array)
+      OpenSSL::Digest::SHA256.hexdigest(options_array.join)
+    end
+
     it 'returns cache key' do
-      is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:true:true")
+      is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, true, true])}")
     end
 
     context 'when the `use_marker_ranges` feature flag is disabled' do
@@ -269,7 +291,7 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       end
 
       it 'returns the original version of the cache' do
-        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:false:true")
+        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, false, true])}")
       end
     end
 
@@ -279,7 +301,17 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       end
 
       it 'returns the original version of the cache' do
-        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:true:false")
+        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{options_hash([cache.diff_options, true, false])}")
+      end
+    end
+
+    context 'when highlight_diffs_optimize_memory_usage is disabled' do
+      before do
+        stub_feature_flags(highlight_diffs_optimize_memory_usage: false)
+      end
+
+      it 'uses the options hash as a part of the cache key' do
+        is_expected.to eq("highlighted-diff-files:#{cache.diffable.cache_key}:2:#{cache.diff_options}:true:true")
       end
     end
   end

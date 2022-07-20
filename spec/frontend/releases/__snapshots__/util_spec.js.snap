@@ -55,6 +55,7 @@ Object {
       "commitPath": "http://localhost/releases-namespace/releases-project/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0",
       "descriptionHtml": "<p data-sourcepos=\\"1:1-1:23\\" dir=\\"auto\\">An okay release <gl-emoji title=\\"shrug\\" data-name=\\"shrug\\" data-unicode-version=\\"9.0\\">🤷</gl-emoji></p>",
       "evidences": Array [],
+      "historicalRelease": false,
       "milestones": Array [],
       "name": "The second release",
       "releasedAt": 2019-01-10T00:00:00.000Z,
@@ -159,6 +160,7 @@ Object {
           "sha": "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
         },
       ],
+      "historicalRelease": false,
       "milestones": Array [
         Object {
           "__typename": "Milestone",
@@ -373,6 +375,7 @@ Object {
         "sha": "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
       },
     ],
+    "historicalRelease": false,
     "milestones": Array [
       Object {
         "__typename": "Milestone",

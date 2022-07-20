@@ -1,16 +1,21 @@
 import { GlForm, GlFormInput } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { __ } from '~/locale';
 import WorkItemWeight from '~/work_items/components/work_item_weight.vue';
-import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
-import localUpdateWorkItemMutation from '~/work_items/graphql/local_update_work_item.mutation.graphql';
+import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import { updateWorkItemMutationResponse } from 'jest/work_items/mock_data';
 
 describe('WorkItemWeight component', () => {
+  Vue.use(VueApollo);
+
   let wrapper;
 
-  const mutateSpy = jest.fn();
   const workItemId = 'gid://gitlab/WorkItem/1';
   const workItemType = 'Task';
 
@@ -22,8 +27,10 @@ describe('WorkItemWeight component', () => {
     hasIssueWeightsFeature = true,
     isEditing = false,
     weight,
+    mutationHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse),
   } = {}) => {
     wrapper = mountExtended(WorkItemWeight, {
+      apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
       propsData: {
         canUpdate,
         weight,
@@ -32,11 +39,6 @@ describe('WorkItemWeight component', () => {
       },
       provide: {
         hasIssueWeightsFeature,
-      },
-      mocks: {
-        $apollo: {
-          mutate: mutateSpy,
-        },
       },
     });
 
@@ -131,21 +133,61 @@ describe('WorkItemWeight component', () => {
     });
 
     describe('when blurred', () => {
-      it('calls a mutation to update the weight', () => {
-        const weight = 0;
-        createComponent({ isEditing: true, weight });
+      it('calls a mutation to update the weight when the input value is different', () => {
+        const mutationSpy = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
+        createComponent({ isEditing: true, weight: 0, mutationHandler: mutationSpy });
 
-        findInput().trigger('blur');
+        findInput().vm.$emit('blur', { target: { value: 1 } });
 
-        expect(mutateSpy).toHaveBeenCalledWith({
-          mutation: localUpdateWorkItemMutation,
-          variables: {
-            input: {
-              id: workItemId,
-              weight,
+        expect(mutationSpy).toHaveBeenCalledWith({
+          input: {
+            id: workItemId,
+            weightWidget: {
+              weight: 1,
             },
           },
         });
+      });
+
+      it('does not call a mutation to update the weight when the input value is the same', () => {
+        const mutationSpy = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
+        createComponent({ isEditing: true, mutationHandler: mutationSpy });
+
+        findInput().trigger('blur');
+
+        expect(mutationSpy).not.toHaveBeenCalledWith();
+      });
+
+      it('emits an error when there is a GraphQL error', async () => {
+        const response = {
+          data: {
+            workItemUpdate: {
+              errors: ['Error!'],
+              workItem: {},
+            },
+          },
+        };
+        createComponent({
+          isEditing: true,
+          mutationHandler: jest.fn().mockResolvedValue(response),
+        });
+
+        findInput().trigger('blur');
+        await waitForPromises();
+
+        expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
+      });
+
+      it('emits an error when there is a network error', async () => {
+        createComponent({
+          isEditing: true,
+          mutationHandler: jest.fn().mockRejectedValue(new Error()),
+        });
+
+        findInput().trigger('blur');
+        await waitForPromises();
+
+        expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
       });
 
       it('tracks updating the weight', () => {

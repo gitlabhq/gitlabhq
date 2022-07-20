@@ -8,6 +8,7 @@ fragment Release on Release {
   releasedAt
   createdAt
   upcomingRelease
+  historicalRelease
   assets {
     __typename
     count

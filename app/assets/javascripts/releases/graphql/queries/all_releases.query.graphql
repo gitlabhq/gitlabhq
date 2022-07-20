@@ -1,3 +1,5 @@
+#import "../fragments/release.fragment.graphql"
+
 query allReleases(
   $fullPath: ID!
   $first: Int
@@ -12,88 +14,7 @@ query allReleases(
     releases(first: $first, last: $last, before: $before, after: $after, sort: $sort) {
       __typename
       nodes {
-        __typename
-        id
-        name
-        tagName
-        tagPath
-        descriptionHtml
-        releasedAt
-        createdAt
-        upcomingRelease
-        assets {
-          __typename
-          count
-          sources {
-            __typename
-            nodes {
-              __typename
-              format
-              url
-            }
-          }
-          links {
-            __typename
-            nodes {
-              __typename
-              id
-              name
-              url
-              directAssetUrl
-              linkType
-              external
-            }
-          }
-        }
-        evidences {
-          __typename
-          nodes {
-            __typename
-            id
-            filepath
-            collectedAt
-            sha
-          }
-        }
-        links {
-          __typename
-          editUrl
-          selfUrl
-          openedIssuesUrl
-          closedIssuesUrl
-          openedMergeRequestsUrl
-          mergedMergeRequestsUrl
-          closedMergeRequestsUrl
-        }
-        commit {
-          __typename
-          id
-          sha
-          webUrl
-          title
-        }
-        author {
-          __typename
-          id
-          webUrl
-          avatarUrl
-          username
-        }
-        milestones {
-          __typename
-          nodes {
-            __typename
-            id
-            title
-            description
-            webPath
-            stats {
-              __typename
-              totalIssuesCount
-              closedIssuesCount
-            }
-          }
-        }
+        ...Release
       }
       pageInfo {
         __typename

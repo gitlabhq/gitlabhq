@@ -127,7 +127,7 @@ To remove all resources:
       - cleanup
 
     destroy:
-      extends: .destroy
+      extends: .terraform:destroy
       needs: []
     ```
 

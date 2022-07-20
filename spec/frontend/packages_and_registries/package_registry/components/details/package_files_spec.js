@@ -164,6 +164,9 @@ describe('Package Files', () => {
           createComponent();
 
           expect(findFirstActionMenu().exists()).toBe(true);
+          expect(findFirstActionMenu().props('icon')).toBe('ellipsis_v');
+          expect(findFirstActionMenu().props('textSrOnly')).toBe(true);
+          expect(findFirstActionMenu().props('text')).toMatchInterpolatedText('More actions');
         });
 
         describe('menu items', () => {

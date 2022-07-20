@@ -12,10 +12,6 @@ query workItem($id: WorkItemID!) {
           ...Label
         }
       }
-      ... on LocalWorkItemWeight {
-        type
-        weight
-      }
     }
   }
 }

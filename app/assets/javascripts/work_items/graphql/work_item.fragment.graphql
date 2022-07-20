@@ -28,6 +28,10 @@ fragment WorkItem on WorkItem {
         }
       }
     }
+    ... on WorkItemWidgetWeight {
+      type
+      weight
+    }
     ... on WorkItemWidgetHierarchy {
       type
       parent {

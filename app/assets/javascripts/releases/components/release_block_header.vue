@@ -7,6 +7,10 @@ import { BACK_URL_PARAM } from '~/releases/constants';
 export default {
   i18n: {
     editButton: __('Edit this release'),
+    historical: __('Historical release'),
+    historicalTooltip: __(
+      'This release was created with a date in the past. Evidence collection at the moment of the release is unavailable.',
+    ),
   },
   name: 'ReleaseBlockHeader',
   components: {
@@ -65,6 +69,14 @@ export default {
       <gl-badge v-if="release.upcomingRelease" variant="warning" class="align-middle">{{
         __('Upcoming Release')
       }}</gl-badge>
+      <gl-badge
+        v-else-if="release.historicalRelease"
+        v-gl-tooltip
+        :title="$options.i18n.historicalTooltip"
+        class="gl-vertical-align-middle"
+      >
+        {{ $options.i18n.historical }}
+      </gl-badge>
     </h2>
     <gl-button
       v-if="editLink"

@@ -19290,6 +19290,9 @@ msgstr ""
 msgid "HighlightBar|Time to SLA:"
 msgstr ""
 
+msgid "Historical release"
+msgstr ""
+
 msgid "History"
 msgstr ""
 
@@ -40059,6 +40062,9 @@ msgid "This project will be deleted on %{date} since its parent group '%{parent_
 msgstr ""
 
 msgid "This project will live in your group %{strong_open}%{namespace}%{strong_close}. A project is where you store your files (repository), plan your work (issues), publish your documentation (wiki), and so much more."
+msgstr ""
+
+msgid "This release was created with a date in the past. Evidence collection at the moment of the release is unavailable."
 msgstr ""
 
 msgid "This repository"

@@ -1,9 +1,10 @@
 <script>
 import { GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import { TRACKING_CATEGORY_SHOW } from '../constants';
-import localUpdateWorkItemMutation from '../graphql/local_update_work_item.mutation.graphql';
+import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 
 /* eslint-disable @gitlab/require-i18n-strings */
 const allowedKeys = [
@@ -98,16 +99,34 @@ export default {
     },
     updateWeight(event) {
       this.isEditing = false;
+
+      const weight = Number(event.target.value);
+      if (this.weight === weight) {
+        return;
+      }
+
       this.track('updated_weight');
-      this.$apollo.mutate({
-        mutation: localUpdateWorkItemMutation,
-        variables: {
-          input: {
-            id: this.workItemId,
-            weight: event.target.value === '' ? null : Number(event.target.value),
+      this.$apollo
+        .mutate({
+          mutation: updateWorkItemMutation,
+          variables: {
+            input: {
+              id: this.workItemId,
+              weightWidget: {
+                weight: event.target.value === '' ? null : weight,
+              },
+            },
           },
-        },
-      });
+        })
+        .then(({ data }) => {
+          if (data.workItemUpdate.errors.length) {
+            throw new Error(data.workItemUpdate.errors.join('\n'));
+          }
+        })
+        .catch((error) => {
+          this.$emit('error', i18n.updateError);
+          Sentry.captureException(error);
+        });
     },
   },
 };

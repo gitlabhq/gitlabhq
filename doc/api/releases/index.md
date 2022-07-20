@@ -740,4 +740,15 @@ Example response:
 A release with a `released_at` attribute set to a future date is labeled
 as an **Upcoming Release** [in the UI](../../user/project/releases/index.md#upcoming-releases).
 
-Additionally, if a [release is requested from the API](#list-releases), for each release with a `release_at` attribute set to a future date, an additional attribute `upcoming_release` (set to true) will be returned as part of the response.
+Additionally, if a [release is requested from the API](#list-releases), for each release with a `release_at` attribute set to a future date, an additional attribute `upcoming_release` (set to true) is returned as part of the response.
+
+## Historical releases
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
+
+A release with a `released_at` attribute set to a past date is labeled
+as an **Historical release** [in the UI](../../user/project/releases/index.md#historical-releases).
+
+Additionally, if a [release is requested from the API](#list-releases), for each
+release with a `release_at` attribute set to a past date, an additional
+attribute `historical_release` (set to true) is returned as part of the response.

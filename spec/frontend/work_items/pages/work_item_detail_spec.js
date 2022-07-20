@@ -278,12 +278,14 @@ describe('WorkItemDetail component', () => {
   describe('weight widget', () => {
     describe('when work_items_mvc_2 feature flag is enabled', () => {
       describe.each`
-        description                               | includeWidgets | exists
-        ${'when widget is returned from API'}     | ${true}        | ${true}
-        ${'when widget is not returned from API'} | ${false}       | ${false}
-      `('$description', ({ includeWidgets, exists }) => {
-        it(`${includeWidgets ? 'renders' : 'does not render'} weight component`, async () => {
-          createComponent({ includeWidgets, workItemsMvc2Enabled: true });
+        description                               | weightWidgetPresent | exists
+        ${'when widget is returned from API'}     | ${true}             | ${true}
+        ${'when widget is not returned from API'} | ${false}            | ${false}
+      `('$description', ({ weightWidgetPresent, exists }) => {
+        it(`${weightWidgetPresent ? 'renders' : 'does not render'} weight component`, async () => {
+          const response = workItemResponseFactory({ weightWidgetPresent });
+          const handler = jest.fn().mockResolvedValue(response);
+          createComponent({ workItemsMvc2Enabled: true, handler });
           await waitForPromises();
 
           expect(findWorkItemWeight().exists()).toBe(exists);
@@ -293,17 +295,27 @@ describe('WorkItemDetail component', () => {
 
     describe('when work_items_mvc_2 feature flag is disabled', () => {
       describe.each`
-        description                               | includeWidgets | exists
-        ${'when widget is returned from API'}     | ${true}        | ${false}
-        ${'when widget is not returned from API'} | ${false}       | ${false}
-      `('$description', ({ includeWidgets, exists }) => {
-        it(`${includeWidgets ? 'renders' : 'does not render'} weight component`, async () => {
-          createComponent({ includeWidgets, workItemsMvc2Enabled: false });
+        description                               | weightWidgetPresent | exists
+        ${'when widget is returned from API'}     | ${true}             | ${false}
+        ${'when widget is not returned from API'} | ${false}            | ${false}
+      `('$description', ({ weightWidgetPresent, exists }) => {
+        it(`${weightWidgetPresent ? 'renders' : 'does not render'} weight component`, async () => {
+          createComponent({ weightWidgetPresent, workItemsMvc2Enabled: false });
           await waitForPromises();
 
           expect(findWorkItemWeight().exists()).toBe(exists);
         });
       });
+    });
+
+    it('shows an error message when it emits an `error` event', async () => {
+      createComponent({ workItemsMvc2Enabled: true });
+      await waitForPromises();
+
+      findWorkItemWeight().vm.$emit('error', i18n.updateError);
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe(i18n.updateError);
     });
   });
 

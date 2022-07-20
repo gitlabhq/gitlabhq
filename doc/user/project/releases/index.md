@@ -298,6 +298,16 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 
 ![An upcoming release](img/upcoming_release_v12_7.png)
 
+## Historical releases
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
+
+You can create a release in the past using either the
+[Releases API](../../../api/releases/index.md#historical-releases) or the UI. When you set
+a past `released_at` date, an **Historical release** badge is displayed next to
+the release tag. Due to being released in the past, [release evidence](#release-evidence)
+is not available.
+
 ## Edit a release
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26016) in GitLab 12.6.
@@ -828,10 +838,11 @@ keyword. Learn more in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issue
 
 In the API:
 
-- If you specify a future `released_at` date, the release becomes an **Upcoming Release**
+- If you specify a future `released_at` date, the release becomes an **Upcoming release**
   and the evidence is collected on the date of the release. You cannot collect
   release evidence before then.
-- If you use a past `released_at` date, no evidence is collected.
+- If you specify a past `released_at` date, the release becomes an **Historical
+  release** and no evidence is collected.
 - If you do not specify a `released_at` date, release evidence is collected on the
   date the release is created.
 

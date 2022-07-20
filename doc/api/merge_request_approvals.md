@@ -79,12 +79,15 @@ POST /projects/:id/approvals
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
 > - `protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.7.
+> - Pagination support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31011) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default.
 
 You can request information about a project's approval rules using the following endpoint:
 
 ```plaintext
 GET /projects/:id/approval_rules
 ```
+
+Use the `page` and `per_page` [pagination](index.md#offset-based-pagination) parameters to restrict the list of approval rules.
 
 **Parameters:**
 
@@ -684,12 +687,15 @@ This includes additional information about the users who have already approved
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13712) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
+> - Pagination support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31011) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default.
 
 You can request information about a merge request's approval rules using the following endpoint:
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 ```
+
+Use the `page` and `per_page` [pagination](index.md#offset-based-pagination) parameters to restrict the list of approval rules.
 
 **Parameters:**
 

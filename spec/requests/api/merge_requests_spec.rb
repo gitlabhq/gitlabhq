@@ -2482,9 +2482,26 @@ RSpec.describe API::MergeRequests do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
     it "returns merge_request in case of success" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+      expect { put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user) }
+        .to change { merge_request.reload.merged? }
+        .from(false)
+        .to(true)
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when the merge request fails to merge' do
+      it 'returns 422' do
+        expect_next_instance_of(::MergeRequests::MergeService) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        expect { put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user) }
+          .not_to change { merge_request.reload.merged? }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq("Failed to merge branch")
+      end
     end
 
     context 'when change_response_code_merge_status is enabled' do
