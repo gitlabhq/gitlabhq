@@ -30,7 +30,7 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component do
   end
 
   describe "rendered component" do
-    subject { rendered_component }
+    subject { rendered_content }
 
     context "on a commit page" do
       before do

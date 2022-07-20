@@ -14,10 +14,8 @@ module WorkItems
 
       private
 
-      # TODO: Create system notes when work item's parent or children are removed
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/362213
       def create_notes
-        # no-op
+        SystemNoteService.unrelate_work_item(parent, child, current_user)
       end
 
       def not_found_message

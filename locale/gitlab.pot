@@ -28237,6 +28237,18 @@ msgstr ""
 msgid "Personal projects limit:"
 msgstr ""
 
+msgid "PersonalProject|Learn to move a project to a group"
+msgstr ""
+
+msgid "PersonalProject|Some GitLab features, including the ability to upgrade to a paid plan or start a free trial, are only available for groups and projects inside groups. %{projectName} is a personal project, so none of this is available. We recommend you move your project to a group to unlock GitLab's full potential."
+msgstr ""
+
+msgid "PersonalProject|We have some instructions to help you create a group and move your project into it."
+msgstr ""
+
+msgid "PersonalProject|Your project %{projectName} is not in a group"
+msgstr ""
+
 msgid "Phabricator Server Import"
 msgstr ""
 

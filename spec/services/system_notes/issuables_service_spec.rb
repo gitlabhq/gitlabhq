@@ -886,4 +886,43 @@ RSpec.describe ::SystemNotes::IssuablesService do
 
     it { expect(subject.note).to eq "changed issue type to incident" }
   end
+
+  describe '#hierarchy_changed' do
+    let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
+    let_it_be_with_reload(:task) { create(:work_item, :task, project: project) }
+
+    let(:service) { described_class.new(noteable: work_item, project: project, author: author) }
+
+    subject { service.hierarchy_changed(task, hierarchy_change_action) }
+
+    context 'when task is added as a child' do
+      let(:hierarchy_change_action) { 'relate' }
+
+      it_behaves_like 'a system note' do
+        let(:expected_noteable) { task }
+        let(:action) { 'relate_to_parent' }
+      end
+
+      it 'sets the correct note text' do
+        expect { subject }.to change { Note.system.count }.by(2)
+        expect(work_item.notes.last.note).to eq("added ##{task.iid} as child task")
+        expect(task.notes.last.note).to eq("added ##{work_item.iid} as parent issue")
+      end
+    end
+
+    context 'when child task is removed' do
+      let(:hierarchy_change_action) { 'unrelate' }
+
+      it_behaves_like 'a system note' do
+        let(:expected_noteable) { task }
+        let(:action) { 'unrelate_from_parent' }
+      end
+
+      it 'sets the correct note text' do
+        expect { subject }.to change { Note.system.count }.by(2)
+        expect(work_item.notes.last.note).to eq("removed child task ##{task.iid}")
+        expect(task.notes.last.note).to eq("removed parent issue ##{work_item.iid}")
+      end
+    end
+  end
 end

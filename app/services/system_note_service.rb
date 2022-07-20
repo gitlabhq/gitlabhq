@@ -280,6 +280,18 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: mentioned).cross_reference_disallowed?(mentioned_in)
   end
 
+  def relate_work_item(noteable, work_item, user)
+    ::SystemNotes::IssuablesService
+      .new(noteable: noteable, project: noteable.project, author: user)
+      .hierarchy_changed(work_item, 'relate')
+  end
+
+  def unrelate_work_item(noteable, work_item, user)
+    ::SystemNotes::IssuablesService
+      .new(noteable: noteable, project: noteable.project, author: user)
+      .hierarchy_changed(work_item, 'unrelate')
+  end
+
   def zoom_link_added(issue, project, author)
     ::SystemNotes::ZoomService.new(noteable: issue, project: project, author: author).zoom_link_added
   end

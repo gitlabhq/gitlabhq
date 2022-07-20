@@ -60,7 +60,7 @@ export default {
       return this.$options.i18n[`CLEANUP_STATUS_${this.status}`];
     },
     calculatedTimeTilNextRun() {
-      return timeTilRun(this.expirationPolicy?.next_run);
+      return timeTilRun(this.expirationPolicy?.next_run_at);
     },
     expireIconName() {
       return this.failedDelete ? 'expire' : 'clock';
@@ -90,9 +90,9 @@ export default {
       {{ statusText }}
     </span>
     <gl-icon
-      v-if="failedDelete"
+      v-if="failedDelete && calculatedTimeTilNextRun"
       :id="iconId"
-      :size="14"
+      :size="16"
       class="gl-text-gray-500"
       data-testid="extra-info"
       name="information-o"

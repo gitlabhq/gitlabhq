@@ -146,4 +146,10 @@ RSpec.describe DeployKey, :mailer do
       end
     end
   end
+
+  describe '#audit_details' do
+    it "equals to the key's title" do
+      expect(subject.audit_details).to eq(subject.title)
+    end
+  end
 end

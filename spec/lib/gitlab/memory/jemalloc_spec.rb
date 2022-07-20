@@ -52,12 +52,22 @@ RSpec.describe Gitlab::Memory::Jemalloc do
       end
 
       describe '.dump_stats' do
-        it 'writes stats text file' do
-          described_class.dump_stats(path: outdir, format: format)
+        shared_examples 'writes stats text file' do |filename_label, filename_pattern|
+          it do
+            described_class.dump_stats(path: outdir, format: format, filename_label: filename_label)
 
-          file = Dir.entries(outdir).find { |e| e.match(/jemalloc_stats\.#{$$}\.\d+\.txt$/) }
-          expect(file).not_to be_nil
-          expect(File.read(File.join(outdir, file))).to eq(output)
+            file = Dir.entries(outdir).find { |e| e.match(filename_pattern) }
+            expect(file).not_to be_nil
+            expect(File.read(File.join(outdir, file))).to eq(output)
+          end
+        end
+
+        context 'when custom filename label is passed' do
+          include_examples 'writes stats text file', 'puma_0', /jemalloc_stats\.#{$$}\.puma_0\.\d+\.txt$/
+        end
+
+        context 'when custom filename label is not passed' do
+          include_examples 'writes stats text file', nil, /jemalloc_stats\.#{$$}\.\d+\.txt$/
         end
       end
     end

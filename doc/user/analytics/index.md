@@ -124,14 +124,14 @@ To retrieve metrics for change failure rate, use the [GraphQL](../../api/graphql
 
 ### Supported DORA metrics in GitLab
 
-| Metric                    | Level                   | API                                 | UI chart                              | Comments                      |
-|---------------------------|-------------------------|-------------------------------------|---------------------------------------|-------------------------------|
-| `deployment_frequency`    | Project           | [GitLab 13.7 and later](../../api/dora/metrics.md)  | GitLab 14.8 and later                                 | The previous API endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10.                                                                                                                                               |
-| `deployment_frequency`    | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.12 and later                                |                                                |
-| `lead_time_for_changes`   | Project           | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.11 and later                                | Unit in seconds. Aggregation method is median. |
-| `lead_time_for_changes`   | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 14.0 and later                                 | Unit in seconds. Aggregation method is median. |
-| `time_to_restore_service` | Project and group | [GitLab 14.9 and later](../../api/dora/metrics.md)  | GitLab 15.1 and later                                 | Unit in days. Aggregation method is median.    |
-| `change_failure_rate`     | Project and group | [GitLab 14.10 and later](../../api/dora/metrics.md) | GitLab 15.2 and later                                 | Percentage of deployments.                     |                 |
+| Metric                    | Level             | API                                                 | UI chart               | Comments |
+|---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
+| `deployment_frequency`    | Project           | [GitLab 13.7 and later](../../api/dora/metrics.md)  | GitLab 14.8 and later  | The previous API endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
+| `deployment_frequency`    | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.12 and later |          |
+| `lead_time_for_changes`   | Project           | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.11 and later | Unit in seconds. Aggregation method is median. |
+| `lead_time_for_changes`   | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 14.0 and later  | Unit in seconds. Aggregation method is median. |
+| `time_to_restore_service` | Project and group | [GitLab 14.9 and later](../../api/dora/metrics.md)  | GitLab 15.1 and later  | Unit in days. Aggregation method is median. |
+| `change_failure_rate`     | Project and group | [GitLab 14.10 and later](../../api/dora/metrics.md) | GitLab 15.2 and later  | Percentage of deployments. |
 
 ## Definitions
 

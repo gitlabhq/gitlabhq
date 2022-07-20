@@ -5,40 +5,62 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Docker Registry for a secondary site **(PREMIUM SELF)**
+# Container Registry for a secondary site **(PREMIUM SELF)**
 
-You can set up a [Docker Registry](https://docs.docker.com/registry/) on your
+You can set up a Container Registry on your
 **secondary** Geo site that mirrors the one on the **primary** Geo site.
+
+## Registry support
+
+Geo supports the following type of container registries: 
+
+- [Docker](https://docs.docker.com/registry/)
+- [OCI](https://github.com/opencontainers/distribution-spec/blob/main/spec.md)
 
 ## Storage support
 
-Docker Registry currently supports a few types of storage. If you choose a
-distributed storage (`azure`, `gcs`, `s3`, `swift`, or `oss`) for your Docker
+### Docker
+
+[Docker Registry](https://docs.docker.com/registry/) currently supports a few types of storage. If you choose a
+distributed storage (`azure`, `gcs`, `s3`, `swift`, or `oss`) for your Container
 Registry on the **primary** site, you can use the same storage for a **secondary**
-Docker Registry as well. For more information, read the
+Container Registry as well. For more information, read the
 [Load balancing considerations](https://docs.docker.com/registry/deploying/#load-balancing-considerations)
 when deploying the Registry, and how to set up the storage driver for the GitLab
 integrated [Container Registry](../../packages/container_registry.md#use-object-storage).
 
-## Replicating Docker Registry
+### Registries that support OCI artifacts
+
+The following registries support OCI artifacts:
+
+- CNCF Distribution - local/offline verification
+- Azure Container Registry (ACR)
+- Amazon Elastic Container Registry (ECR)
+- Google Artifact Registry (GAR)
+- GitHub Packages container registry (GHCR)
+- Bundle Bar
+
+For more information, see the [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec).
+
+## Configure Container Registry replication
 
 You can enable a storage-agnostic replication so it
 can be used for cloud or local storage. Whenever a new image is pushed to the
 **primary** site, each **secondary** site pulls it to its own container
 repository.
 
-To configure Docker Registry replication:
+To configure Container Registry replication:
 
 1. Configure the [**primary** site](#configure-primary-site).
 1. Configure the [**secondary** site](#configure-secondary-site).
-1. Verify Docker Registry [replication](#verify-replication).
+1. Verify Container Registry [replication](#verify-replication).
 
 ### Configure **primary** site
 
 Make sure that you have Container Registry set up and working on
 the **primary** site before following the next steps.
 
-We need to make Docker Registry send notification events to the
+We need to make Container Registry send notification events to the
 **primary** site.
 
 1. SSH into your GitLab **primary** server and login as root:
@@ -92,7 +114,7 @@ Make sure you have Container Registry set up and working on
 the **secondary** site before following the next steps.
 
 The following steps should be done on each **secondary** site you're
-expecting to see the Docker images replicated.
+expecting to see the container images replicated.
 
 Because we need to allow the **secondary** site to communicate securely with
 the **primary** site Container Registry, we need to have a single key

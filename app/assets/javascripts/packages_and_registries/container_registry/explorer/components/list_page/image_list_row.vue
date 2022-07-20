@@ -95,7 +95,7 @@ export default {
         if (this.showFullPath) {
           return this.item.path;
         }
-        const projectPath = this.item?.project?.path ?? '';
+        const projectPath = this.item?.project?.path?.toLowerCase() ?? '';
         if (this.item.name) {
           return joinPaths(projectPath, this.item.name);
         }

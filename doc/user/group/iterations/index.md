@@ -35,9 +35,21 @@ In GitLab, iterations are similar to milestones, with a few differences:
 
 ## View the iterations list
 
-To view the iterations list, go to **{issues}** **Issues > Iterations**.
+To view the iterations list:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. Select **Issues > Iterations**.
+
 To view all the iterations in a cadence, ordered by descending date, select that iteration cadence.
 From there you can create a new iteration or select an iteration to get a more detailed view.
+
+NOTE:
+If a project has issue tracking
+[turned off](../../project/settings/index.md#configure-project-visibility-features-and-permissions),
+you can view the iterations list
+by going to its URL. To do so, add: `/-/cadences` to your project or group URL.
+For example `https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project/-/cadences`.
+This is tracked in [issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
 
 ## Create an iteration
 

@@ -178,6 +178,24 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
     end
 
+    # Called when the hierarchy of a work item is changed
+    #
+    # noteable  - Noteable object that responds to `work_item_parent` and `work_item_children`
+    # project   - Project owning noteable
+    # author    - User performing the change
+    #
+    # Example Note text:
+    #
+    #   "added #1 as child Task"
+    #
+    # Returns the created Note object
+    def hierarchy_changed(work_item, action)
+      params = hierarchy_note_params(action, noteable, work_item)
+
+      create_note(NoteSummary.new(noteable, project, author, params[:parent_note_body], action: params[:parent_action]))
+      create_note(NoteSummary.new(work_item, project, author, params[:child_note_body], action: params[:child_action]))
+    end
+
     # Called when the description of a Noteable is changed
     #
     # noteable  - Noteable object that responds to `description`
@@ -505,6 +523,29 @@ module SystemNotes
 
     def track_cross_reference_action
       issue_activity_counter.track_issue_cross_referenced_action(author: author) if noteable.is_a?(Issue)
+    end
+
+    def hierarchy_note_params(action, parent, child)
+      return {} unless child && parent
+
+      child_type = child.issue_type.humanize(capitalize: false)
+      parent_type = parent.issue_type.humanize(capitalize: false)
+
+      if action == 'relate'
+        {
+          parent_note_body: "added #{child.to_reference} as child #{child_type}",
+          child_note_body: "added #{parent.to_reference} as parent #{parent_type}",
+          parent_action: 'relate_to_child',
+          child_action: 'relate_to_parent'
+        }
+      else
+        {
+          parent_note_body: "removed child #{child_type} #{child.to_reference}",
+          child_note_body: "removed parent #{parent_type} #{parent.to_reference}",
+          parent_action: 'unrelate_from_child',
+          child_action: 'unrelate_from_parent'
+        }
+      end
     end
   end
 end

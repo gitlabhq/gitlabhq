@@ -742,4 +742,38 @@ RSpec.describe SystemNoteService do
       described_class.delete_timeline_event(noteable, author)
     end
   end
+
+  describe '.relate_work_item' do
+    let(:work_item) { double('work_item', issue_type: :task) }
+    let(:noteable) { double }
+
+    before do
+      allow(noteable).to receive(:project).and_return(double)
+    end
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:hierarchy_changed).with(work_item, 'relate')
+      end
+
+      described_class.relate_work_item(noteable, work_item, double)
+    end
+  end
+
+  describe '.unrelate_wotk_item' do
+    let(:work_item) { double('work_item', issue_type: :task) }
+    let(:noteable) { double }
+
+    before do
+      allow(noteable).to receive(:project).and_return(double)
+    end
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:hierarchy_changed).with(work_item, 'unrelate')
+      end
+
+      described_class.unrelate_work_item(noteable, work_item, double)
+    end
+  end
 end
