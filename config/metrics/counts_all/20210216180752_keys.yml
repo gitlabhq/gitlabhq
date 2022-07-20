@@ -4,7 +4,7 @@ key_path: counts.keys
 description: Number of keys.
 product_section: dev
 product_stage: managed
-product_group: group::authentication and authorization
+product_group: authentication_and_authorization
 product_category: authentication_and_authorization
 value_type: number
 status: active

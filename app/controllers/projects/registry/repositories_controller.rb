@@ -8,6 +8,10 @@ module Projects
 
       before_action :authorize_update_container_image!, only: [:destroy]
 
+      before_action do
+        push_frontend_feature_flag(:container_registry_show_shortened_path, project)
+      end
+
       def index
         respond_to do |format|
           format.html { ensure_root_container_repository! }

@@ -115,9 +115,8 @@ describe('JiraTriggerFields', () => {
 
         const checkbox = findIssueTransitionEnabled();
         expect(checkbox.element.checked).toBe(false);
-        checkbox.trigger('click');
+        await checkbox.setChecked(true);
 
-        await nextTick();
         const [radio1, radio2] = findIssueTransitionModeRadios().wrappers;
         expect(radio1.element.checked).toBe(true);
         expect(radio2.element.checked).toBe(false);

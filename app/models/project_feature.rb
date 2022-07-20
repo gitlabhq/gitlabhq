@@ -69,6 +69,11 @@ class ProjectFeature < ApplicationRecord
   default_value_for :metrics_dashboard_access_level, value: PRIVATE, allows_nil: false
   default_value_for :operations_access_level, value: ENABLED, allows_nil: false
   default_value_for :security_and_compliance_access_level, value: PRIVATE, allows_nil: false
+  default_value_for :monitor_access_level, value: ENABLED, allows_nil: false
+  default_value_for :infrastructure_access_level, value: ENABLED, allows_nil: false
+  default_value_for :feature_flags_access_level, value: ENABLED, allows_nil: false
+  default_value_for :environments_access_level, value: ENABLED, allows_nil: false
+  default_value_for :releases_access_level, value: ENABLED, allows_nil: false
 
   default_value_for(:pages_access_level, allows_nil: false) do |feature|
     if ::Gitlab::Pages.access_control_is_forced?

@@ -475,17 +475,18 @@ end
 Developers can add [feature flags](../development/feature_flags/index.md) to GraphQL
 fields in the following ways:
 
-- Add the `feature_flag` property to a field. This allows the field to be _hidden_
+- Add the [`feature_flag` property](#feature_flag-property) to a field. This allows the field to be _hidden_
   from the GraphQL schema when the flag is disabled.
-- Toggle the return value when resolving the field.
+- [Toggle the return value](#toggle-the-value-of-a-field) when resolving the field.
 
 You can refer to these guidelines to decide which approach to use:
 
 - If your field is experimental, and its name or type is subject to
-  change, use the `feature_flag` property.
+  change, use the [`feature_flag` property](#feature_flag-property).
 - If your field is stable and its definition doesn't change, even after the flag is
-  removed, toggle the return value of the field instead. Note that
+  removed, [toggle the return value](#toggle-the-value-of-a-field) of the field instead. Note that
   [all fields should be nullable](#nullable-fields) anyway.
+- If your field will be accessed from frontend using the `@include` or `@skip` directive, [do not use the `feature_flag` property](#frontend-and-backend-feature-flag-strategies).
 
 ### `feature_flag` property
 
@@ -517,12 +518,32 @@ field :test_field, type: GraphQL::Types::String,
       feature_flag: :my_feature_flag
 ```
 
+### Frontend and Backend feature flag strategies
+
+#### Directives
+
+When feature flags are used in the frontend to control the `@include` and `@skip` directives, do not use the `feature_flag`
+property on the server-side. For the accepted backend workaround, see [Toggle the value of a field](#toggle-the-value-of-a-field). It is recommended that the feature flag used in this approach be the same for frontend and backend.
+
+Even if the frontend directives evaluate to `@include:false` / `@skip:true`, the guarded entity is sent to the backend and matched
+against the GraphQL schema. We would then get an exception due to a schema mismatch. See the [frontend GraphQL guide](../development/fe_guide/graphql.md#the-include-directive) for more guidance.
+
+#### Different versions of a query
+
+See the guide frontend GraphQL guide for [different versions of a query](../development/fe_guide/graphql.md#different-versions-of-a-query), and [why it is not the preferred approach](../development/fe_guide/graphql.md#avoiding-multiple-query-versions)
+
 ### Toggle the value of a field
 
 This method of using feature flags for fields is to toggle the
 return value of the field. This can be done in the resolver, in the
 type, or even in a model method, depending on your preference and
 situation.
+
+Consider also [marking the field as Alpha](#marking-schema-items-as-alpha)
+while the value of the field can be toggled. You can
+[change or remove Alpha fields at any time](#breaking-change-exemptions) without needing to deprecate them.
+This also signals to consumers of the public GraphQL API that the field is not
+meant to be used yet.
 
 When applying a feature flag to toggle the value of a field, the
 `description` of the field must:
@@ -537,6 +558,7 @@ Example:
 ```ruby
 field :foo, GraphQL::Types::String,
       null: true,
+      deprecated: { reason: :alpha, milestone: '10.0' },
       description: 'Some test field. Returns `null`' \
                    'if `my_feature_flag` feature flag is disabled.'
 
@@ -2007,13 +2029,13 @@ end
     .to contain_exactly(a_graphql_entity_for(issue, :iid, :title, created_at: some_time))
   ```
 
-- Use `GraphqlHelpers#empty_schema` to create an empty schema, rather than creating 
+- Use `GraphqlHelpers#empty_schema` to create an empty schema, rather than creating
   one by hand. For example:
-  
+
   ```ruby
   # good
   let(:schema) { empty_schema }
-  
+
   # bad
   let(:query_type) { GraphQL::ObjectType.new }
   let(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
@@ -2024,7 +2046,7 @@ end
   ```ruby
   # good
   let(:query) { query_double(schema: GitlabSchema) }
-  
+
   # bad
   let(:query) { double('Query', schema: GitlabSchema) }
   ```
@@ -2092,9 +2114,9 @@ end
   ```ruby
   type Types::IssueType.connection_type, null: true
   ```
-  
+
   However this might cause a cyclic definition, which can result in errors like:
-  
+
   ```ruby
   NameError: uninitialized constant Resolvers::GroupIssuesResolver
   ```
@@ -2109,7 +2131,7 @@ end
     class IssueConnectionType < CountableConnectionType
     end
   end
-  
+
   Types::IssueConnectionType.prepend_mod_with('Types::IssueConnectionType')
   ```
 
@@ -2120,22 +2142,22 @@ end
   ```ruby
   type "Types::IssueConnection", null: true
   ```
-  
+
   Only use this style if you are having spec failures. This is not intended to be a new
   pattern that we use. This issue may disappear after we've upgraded to `2.x`.
 
-- There can be instances where a spec fails because the class is not loaded correctly. 
-  It relates to the 
+- There can be instances where a spec fails because the class is not loaded correctly.
+  It relates to the
   [circular dependencies problem](https://github.com/rmosolgo/graphql-ruby/issues/1929) and
   [Adding field with resolver on a Type causes "Can't determine the return type " error on a different Type](https://github.com/rmosolgo/graphql-ruby/issues/3974).
 
   Unfortunately, the errors generated don't really indicate what the problem is. For example,
-  remove the quotes from the `Rspec.descrbe` in 
+  remove the quotes from the `Rspec.descrbe` in
   [ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb).
   Then run `rspec ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb`.
-  
+
   This generates errors with the expectations. For example:
-  
+
   ```ruby
   1) Resolvers::ComplianceManagement::MergeRequests::ComplianceViolationResolver#resolve user is authorized filtering the results when given an array of project IDs finds the filtered compliance violations
   Failure/Error: expect(subject).to contain_exactly(compliance_violation)
@@ -2145,10 +2167,10 @@ end
      the extra elements were:        [#<MergeRequests::ComplianceViolation id: 5, violating_user_id: 27, merge_request_id: 5, reason: "approved_by_merge_request_author", severity_level: "high">]
   # ./ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb:55:in `block (6 levels) in <top (required)>'
   ```
-  
+
   However, this is not a case of the wrong result being generated, it's because of the loading order
   of the `ComplianceViolationResolver` class.
-  
+
   The only way we've found to fix this is by quoting the class name in the spec. For example, changing
 
   ```ruby
@@ -2198,7 +2220,7 @@ end
   [removed eventually](https://gitlab.com/gitlab-org/gitlab/-/issues/363121),
   and writing unit tests for resolvers/mutations is
   [already deprecated](#writing-unit-tests-deprecated)
-  
+
 ## Notes about Query flow and GraphQL infrastructure
 
 The GitLab GraphQL infrastructure can be found in `lib/gitlab/graphql`.

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Slash commands in Mattermost and Slack **(FREE)**
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780) from GitLab Ultimate to GitLab Free in 11.9.
+> [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780) from GitLab Ultimate to GitLab Free in 11.9.
 
 If you want to control and view GitLab content while you're
 working in Slack and Mattermost, you can use slash commands.

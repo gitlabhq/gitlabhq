@@ -11,10 +11,4 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::BuildService do
   subject(:execute) { service.execute }
 
   it_behaves_like 'initializes new escalation status with expected attributes'
-
-  context 'with associated alert' do
-    let_it_be(:alert) { create(:alert_management_alert, :acknowledged, project: project, issue: incident) }
-
-    it_behaves_like 'initializes new escalation status with expected attributes', { status_event: :acknowledge }
-  end
 end

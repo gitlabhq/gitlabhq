@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper do
     where(:case, :transformed_blocks, :result) do
       'if transformed diff is empty' | [] | 0
       'if the transformed line does not map to any in the original file' | [{ source_line: nil }] | 0
-      'if the transformed line maps to a line in the source file' | [{ source_line: 2 }] | 3
+      'if the transformed line maps to a line in the source file' | [{ source_line: 3 }] | 3
     end
 
     with_them do
@@ -81,8 +81,8 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper do
 
     let(:blocks) do
       {
-        from: [0, 2, 1, nil, nil, 3].map { |i| { source_line: i } },
-        to: [0, 1, nil, 2, nil, 3].map { |i| { source_line: i } }
+        from: [1, 3, 2, nil, nil, 4].map { |i| { source_line: i } },
+        to: [1, 2, nil, 3, nil, 4].map { |i| { source_line: i } }
       }
     end
 

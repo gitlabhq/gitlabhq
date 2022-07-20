@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import initTodoToggle, { initNavUserDropdownTracking } from '~/header';
 import { loadHTMLFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
@@ -9,11 +8,17 @@ describe('Header', () => {
     const fixtureTemplate = 'issues/open-issue.html';
 
     function isTodosCountHidden() {
-      return $(todosPendingCount).hasClass('hidden');
+      return document.querySelector(todosPendingCount).classList.contains('hidden');
     }
 
     function triggerToggle(newCount) {
-      $(document).trigger('todo:toggle', newCount);
+      const event = new CustomEvent('todo:toggle', {
+        detail: {
+          count: newCount,
+        },
+      });
+
+      document.dispatchEvent(event);
     }
 
     beforeEach(() => {
@@ -28,7 +33,7 @@ describe('Header', () => {
     it('should update todos-count after receiving the todo:toggle event', () => {
       triggerToggle(5);
 
-      expect($(todosPendingCount).text()).toEqual('5');
+      expect(document.querySelector(todosPendingCount).textContent).toEqual('5');
     });
 
     it('should hide todos-count when it is 0', () => {
@@ -53,7 +58,7 @@ describe('Header', () => {
       });
 
       it('should show 99+ for todos-count', () => {
-        expect($(todosPendingCount).text()).toEqual('99+');
+        expect(document.querySelector(todosPendingCount).textContent).toEqual('99+');
       });
     });
   });
@@ -67,7 +72,11 @@ describe('Header', () => {
         <a class="js-buy-pipeline-minutes-link" data-track-action="click_buy_ci_minutes" data-track-label="free" data-track-property="user_dropdown">Buy Pipeline minutes</a>
       </li>`);
 
-      trackingSpy = mockTracking('_category_', $('.js-nav-user-dropdown').element, jest.spyOn);
+      trackingSpy = mockTracking(
+        '_category_',
+        document.querySelector('.js-nav-user-dropdown').element,
+        jest.spyOn,
+      );
       document.body.dataset.page = 'some:page';
 
       initNavUserDropdownTracking();
@@ -79,7 +88,8 @@ describe('Header', () => {
     });
 
     it('sends a tracking event when the dropdown is opened and contains Buy Pipeline minutes link', () => {
-      $('.js-nav-user-dropdown').trigger('shown.bs.dropdown');
+      const event = new CustomEvent('shown.bs.dropdown');
+      document.querySelector('.js-nav-user-dropdown').dispatchEvent(event);
 
       expect(trackingSpy).toHaveBeenCalledWith('some:page', 'show_buy_ci_minutes', {
         label: 'free',

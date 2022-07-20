@@ -3,7 +3,7 @@
 source scripts/utils.sh
 
 function setup_gcp_dependencies() {
-  apk add jq
+  apt-get update && apt-get install -y jq
 
   gcloud auth activate-service-account --key-file="${REVIEW_APPS_GCP_CREDENTIALS}"
   gcloud config set project "${REVIEW_APPS_GCP_PROJECT}"

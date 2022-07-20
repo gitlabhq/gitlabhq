@@ -2477,6 +2477,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   describe '#backfill_iids' do
     include MigrationsHelpers
 
+    let_it_be(:issue_base_type_enum) { 0 }
+    let_it_be(:issue_type) { table(:work_item_types).find_by(base_type: issue_base_type_enum) }
+
     let(:issue_class) do
       Class.new(ActiveRecord::Base) do
         include AtomicInternalId
@@ -2490,6 +2493,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           scope: :project,
           init: ->(s, _scope) { s&.project&.issues&.maximum(:iid) },
           presence: false
+
+        before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
       end
     end
 
@@ -2515,7 +2520,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     it 'generates iids properly for models created after the migration when iids are backfilled' do
       project = setup
-      issue_a = issues.create!(project_id: project.id)
+      issue_a = issues.create!(project_id: project.id, work_item_type_id: issue_type.id)
 
       model.backfill_iids('issues')
 
@@ -2528,14 +2533,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     it 'generates iids properly for models created after the migration across multiple projects' do
       project_a = setup
       project_b = setup
-      issues.create!(project_id: project_a.id)
-      issues.create!(project_id: project_b.id)
-      issues.create!(project_id: project_b.id)
+      issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id)
+      issues.create!(project_id: project_b.id, work_item_type_id: issue_type.id)
+      issues.create!(project_id: project_b.id, work_item_type_id: issue_type.id)
 
       model.backfill_iids('issues')
 
-      issue_a = issue_class.create!(project_id: project_a.id)
-      issue_b = issue_class.create!(project_id: project_b.id)
+      issue_a = issue_class.create!(project_id: project_a.id, work_item_type_id: issue_type.id)
+      issue_b = issue_class.create!(project_id: project_b.id, work_item_type_id: issue_type.id)
 
       expect(issue_a.iid).to eq(2)
       expect(issue_b.iid).to eq(3)
@@ -2545,7 +2550,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'generates an iid' do
         project_a = setup
         project_b = setup
-        issue_a = issues.create!(project_id: project_a.id)
+        issue_a = issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id)
 
         model.backfill_iids('issues')
 
@@ -2559,8 +2564,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     context 'when a row already has an iid set in the database' do
       it 'backfills iids' do
         project = setup
-        issue_a = issues.create!(project_id: project.id, iid: 1)
-        issue_b = issues.create!(project_id: project.id, iid: 2)
+        issue_a = issues.create!(project_id: project.id, work_item_type_id: issue_type.id, iid: 1)
+        issue_b = issues.create!(project_id: project.id, work_item_type_id: issue_type.id, iid: 2)
 
         model.backfill_iids('issues')
 
@@ -2571,9 +2576,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'backfills for multiple projects' do
         project_a = setup
         project_b = setup
-        issue_a = issues.create!(project_id: project_a.id, iid: 1)
-        issue_b = issues.create!(project_id: project_b.id, iid: 1)
-        issue_c = issues.create!(project_id: project_a.id, iid: 2)
+        issue_a = issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id, iid: 1)
+        issue_b = issues.create!(project_id: project_b.id, work_item_type_id: issue_type.id, iid: 1)
+        issue_c = issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id, iid: 2)
 
         model.backfill_iids('issues')
 

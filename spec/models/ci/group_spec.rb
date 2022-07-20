@@ -70,7 +70,7 @@ RSpec.describe Ci::Group do
 
   describe '.fabricate' do
     let(:pipeline) { create(:ci_empty_pipeline) }
-    let(:stage) { create(:ci_stage_entity, pipeline: pipeline) }
+    let(:stage) { create(:ci_stage, pipeline: pipeline) }
 
     before do
       create_build(:ci_build, name: 'rspec 0 2')

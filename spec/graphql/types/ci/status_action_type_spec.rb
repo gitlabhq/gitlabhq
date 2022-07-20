@@ -22,7 +22,7 @@ RSpec.describe Types::Ci::StatusActionType do
 
   describe 'id field' do
     it 'correctly renders the field' do
-      stage = build(:ci_stage_entity, status: :skipped)
+      stage = build(:ci_stage, status: :skipped)
       status = stage.detailed_status(stage.pipeline.user)
 
       expected_id = "#{stage.class.name}-#{status.id}"

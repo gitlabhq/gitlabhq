@@ -26,7 +26,6 @@ module Gitlab
             variables.concat(secret_instance_variables)
             variables.concat(secret_group_variables(environment: environment))
             variables.concat(secret_project_variables(environment: environment))
-            variables.concat(job.trigger_request.user_variables) if job.trigger_request
             variables.concat(pipeline.variables)
             variables.concat(pipeline_schedule_variables)
           end
@@ -52,7 +51,7 @@ module Gitlab
             # https://gitlab.com/groups/gitlab-org/configure/-/epics/8
             # Until then, we need to make both the old and the new KUBECONFIG contexts available
             collection.concat(deployment_variables(environment: environment, job: job))
-            template = ::Ci::GenerateKubeconfigService.new(pipeline, token: job.token).execute
+            template = ::Ci::GenerateKubeconfigService.new(pipeline, token: job.try(:token)).execute
             kubeconfig_yaml = collection['KUBECONFIG']&.value
             template.merge_yaml(kubeconfig_yaml) if kubeconfig_yaml.present?
 

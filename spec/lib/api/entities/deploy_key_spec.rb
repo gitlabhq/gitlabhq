@@ -15,8 +15,15 @@ RSpec.describe API::Entities::DeployKey do
         title: deploy_key.title,
         created_at: deploy_key.created_at,
         expires_at: deploy_key.expires_at,
-        key: deploy_key.key
+        key: deploy_key.key,
+        fingerprint_sha256: deploy_key.fingerprint_sha256
       )
+
+      is_expected.to include(fingerprint: deploy_key.fingerprint) unless Gitlab::FIPS.enabled?
+    end
+
+    context 'when in FIPS mode', :fips_mode do
+      it { is_expected.not_to have_key(:fingerprint) }
     end
   end
 end

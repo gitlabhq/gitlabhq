@@ -1,0 +1,26 @@
+---
+key_path: redis_hll_counters.analytics.p_analytics_ci_cd_time_to_restore_service_monthly
+name: p_analytics_ci_cd_time_to_restore_service_monthly
+description: Count of unique visits to the project level CI/CD Analytics Time to restore service tab
+product_section: dev
+product_stage: manage
+product_group: optimize
+product_category:
+value_type: number
+status: active
+milestone: "15.2"
+introduced_by_url:
+time_frame: 28d
+data_source: redis_hll
+data_category: operational
+instrumentation_class: RedisHLLMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- premium
+- ultimate
+options:
+  events:
+    - p_analytics_ci_cd_time_to_restore_service

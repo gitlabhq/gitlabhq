@@ -738,7 +738,7 @@ describe('GfmAutoComplete', () => {
       $textarea.trigger('focus').val(text).caret('pos', -1);
       $textarea.trigger('keyup');
 
-      return new Promise(window.requestAnimationFrame);
+      jest.runOnlyPendingTimers();
     };
 
     const getDropdownItems = () => {
@@ -747,10 +747,11 @@ describe('GfmAutoComplete', () => {
       return [].map.call(items, (item) => item.textContent.trim());
     };
 
-    const expectLabels = ({ input, output }) =>
-      triggerDropdown(input).then(() => {
-        expect(getDropdownItems()).toEqual(output.map((label) => label.title));
-      });
+    const expectLabels = ({ input, output }) => {
+      triggerDropdown(input);
+
+      expect(getDropdownItems()).toEqual(output.map((label) => label.title));
+    };
 
     describe('with no labels assigned', () => {
       beforeEach(() => {

@@ -5,7 +5,7 @@
     "id": { "type": "integer" },
     "login": { "type": "string" },
     "url": { "type": "string" },
-    "avatar_url": { "type": "string" },
+    "avatar_url": { "type": [ "string", "null" ] },
     "html_url": { "type":  "string" }
   },
   "additionalProperties": false

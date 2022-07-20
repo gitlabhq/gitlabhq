@@ -46,6 +46,8 @@ are very appreciative of the work done by translators and proofreaders!
   - scootergrisen - [GitLab](https://gitlab.com/scootergrisen), [Crowdin](https://crowdin.com/profile/scootergrisen)
 - Dutch
   - Emily Hendle - [GitLab](https://gitlab.com/pundachan), [Crowdin](https://crowdin.com/profile/pandachan)
+- English (UK)
+  - Andrew Smith - [GitLab](https://gitlab.com/espadav8), [Crowdin](https://crowdin.com/profile/espadav8)
 - Esperanto
   - Lyubomir Vasilev - [Crowdin](https://crowdin.com/profile/lyubomirv)
 - Estonian
@@ -54,6 +56,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Andrei Jiroh Halili - [GitLab](https://gitlab.com/ajhalili2006), [Crowdin](https://crowdin.com/profile/AndreiJirohHaliliDev2006)
 - French
   - Davy Defaud - [GitLab](https://gitlab.com/DevDef), [Crowdin](https://crowdin.com/profile/DevDef)
+  - Germain Gorisse - [GitLab](https://gitlab.com/ggorisse), [Crowdin](https://crowdin.com/profile/germaingorisse)
 - Galician
   - Antón Méixome - [Crowdin](https://crowdin.com/profile/meixome)
   - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [Crowdin](https://crowdin.com/profile/breaking_pitt)
@@ -61,6 +64,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Michael Hahnle - [GitLab](https://gitlab.com/mhah), [Crowdin](https://crowdin.com/profile/mhah)
   - Katrin Leinweber - [GitLab](https://gitlab.com/katrinleinweber), [Crowdin](https://crowdin.com/profile/katrinleinweber)
   - Justman10000 - [GitLab](https://gitlab.com/Justman10000), [Crowdin](https://crowdin.com/profile/Justman10000)
+  - Vladislav Wanner - [GitLab](https://gitlab.com/RumBugen), [Crowdin](https://crowdin.com/profile/RumBugen)
 - Greek
   - Proofreaders needed.
 - Hebrew

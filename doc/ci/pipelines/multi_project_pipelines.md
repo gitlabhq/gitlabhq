@@ -188,7 +188,7 @@ Upstream pipelines take precedence over downstream ones. If there are two
 variables with the same name defined in both upstream and downstream projects,
 the ones defined in the upstream project take precedence.
 
-#### Pass CI/CD variables to a downstream pipeline by using variable inheritance
+#### Pass CI/CD variables to a downstream pipeline by using variable inheritance **(PREMIUM)**
 
 You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job) and [`needs:project`](../yaml/index.md#needsproject).
 

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
+  echo "Checking out \$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA ($CI_MERGE_REQUEST_SOURCE_BRANCH_SHA) instead of \$CI_COMMIT_SHA (merge result commit $CI_COMMIT_SHA) so that code is in sync with gitlab images built upstream."
+  echo "See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#with-pipeline-for-merged-results for more details."
+  git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}
+fi

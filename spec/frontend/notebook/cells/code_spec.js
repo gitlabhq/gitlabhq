@@ -1,89 +1,73 @@
-import Vue, { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
 import fixture from 'test_fixtures/blob/notebook/basic.json';
-import CodeComponent from '~/notebook/cells/code.vue';
-
-const Component = Vue.extend(CodeComponent);
+import Code from '~/notebook/cells/code.vue';
 
 describe('Code component', () => {
-  let vm;
-
+  let wrapper;
   let json;
+
+  const mountComponent = (cell) => mount(Code, { propsData: { cell } });
 
   beforeEach(() => {
     // Clone fixture as it could be modified by tests
     json = JSON.parse(JSON.stringify(fixture));
   });
 
-  const setupComponent = (cell) => {
-    const comp = new Component({
-      propsData: {
-        cell,
-      },
-    });
-    comp.$mount();
-    return comp;
-  };
+  afterEach(() => {
+    wrapper.destroy();
+  });
 
   describe('without output', () => {
     beforeEach(() => {
-      vm = setupComponent(json.cells[0]);
-
-      return nextTick();
+      wrapper = mountComponent(json.cells[0]);
     });
 
     it('does not render output prompt', () => {
-      expect(vm.$el.querySelectorAll('.prompt').length).toBe(1);
+      expect(wrapper.findAll('.prompt')).toHaveLength(1);
     });
   });
 
   describe('with output', () => {
     beforeEach(() => {
-      vm = setupComponent(json.cells[2]);
-
-      return nextTick();
+      wrapper = mountComponent(json.cells[2]);
     });
 
     it('does not render output prompt', () => {
-      expect(vm.$el.querySelectorAll('.prompt').length).toBe(2);
+      expect(wrapper.findAll('.prompt')).toHaveLength(2);
     });
 
     it('renders output cell', () => {
-      expect(vm.$el.querySelector('.output')).toBeDefined();
+      expect(wrapper.find('.output').exists()).toBe(true);
     });
   });
 
   describe('with string for output', () => {
     // NBFormat Version 4.1 allows outputs.text to be a string
-    beforeEach(async () => {
+    beforeEach(() => {
       const cell = json.cells[2];
       cell.outputs[0].text = cell.outputs[0].text.join('');
 
-      vm = setupComponent(cell);
-      await nextTick();
+      wrapper = mountComponent(cell);
     });
 
     it('does not render output prompt', () => {
-      expect(vm.$el.querySelectorAll('.prompt').length).toBe(2);
+      expect(wrapper.findAll('.prompt')).toHaveLength(2);
     });
 
     it('renders output cell', () => {
-      expect(vm.$el.querySelector('.output')).toBeDefined();
+      expect(wrapper.find('.output').exists()).toBe(true);
     });
   });
 
   describe('with string for cell.source', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       const cell = json.cells[0];
       cell.source = cell.source.join('');
-
-      vm = setupComponent(cell);
-      await nextTick();
+      wrapper = mountComponent(cell);
     });
 
     it('renders the same input as when cell.source is an array', () => {
-      const expected = "console.log('test')";
-
-      expect(vm.$el.querySelector('.input').innerText).toContain(expected);
+      expect(wrapper.find('.input').text()).toContain("console.log('test')");
     });
   });
 });

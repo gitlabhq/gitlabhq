@@ -29,7 +29,8 @@ module Gitlab
           if next_batched_job = find_or_create_next_batched_job(active_migration)
             migration_wrapper.perform(next_batched_job)
 
-            active_migration.optimize!
+            adjust_migration(active_migration)
+
             active_migration.failure! if next_batched_job.failed? && active_migration.should_stop?
           else
             finish_active_migration(active_migration)
@@ -71,12 +72,17 @@ module Gitlab
           elsif migration.finished?
             Gitlab::AppLogger.warn "Batched background migration for the given configuration is already finished: #{configuration}"
           else
+            migration.reset_attempts_of_blocked_jobs!
+
             migration.finalize!
             migration.batched_jobs.with_status(:pending).each { |job| migration_wrapper.perform(job) }
 
             run_migration_while(migration, :finalizing)
 
-            raise FailedToFinalize unless migration.finished?
+            error_message = "Batched migration #{migration.job_class_name} could not be completed and a manual action is required."\
+                            "Check the admin panel at (`/admin/background_migrations`) for more details."
+
+            raise FailedToFinalize, error_message unless migration.finished?
           end
         end
 
@@ -101,7 +107,8 @@ module Gitlab
             active_migration.column_name,
             batch_min_value: batch_min_value,
             batch_size: active_migration.batch_size,
-            job_arguments: active_migration.job_arguments)
+            job_arguments: active_migration.job_arguments,
+            job_class: active_migration.job_class)
 
           return if next_batch_bounds.nil?
 
@@ -133,6 +140,16 @@ module Gitlab
             run_migration_job(migration)
 
             migration.reload_last_job
+          end
+        end
+
+        def adjust_migration(active_migration)
+          signal = HealthStatus.evaluate(active_migration)
+
+          if signal.is_a?(HealthStatus::Signals::Stop)
+            active_migration.hold!
+          else
+            active_migration.optimize!
           end
         end
       end

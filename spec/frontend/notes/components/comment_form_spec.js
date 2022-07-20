@@ -550,98 +550,74 @@ describe('issue_comment_form component', () => {
     });
 
     describe('confidential notes checkbox', () => {
-      describe('when confidentialNotes feature flag is `false`', () => {
-        const features = { confidentialNotes: false };
+      it('should render checkbox as unchecked by default', () => {
+        mountComponent({
+          mountFunction: mount,
+          initialData: { note: 'confidential note' },
+          noteableData: { ...notableDataMockCanUpdateIssuable },
+        });
 
-        it('should not render checkbox', () => {
+        const checkbox = findConfidentialNoteCheckbox();
+        expect(checkbox.exists()).toBe(true);
+        expect(checkbox.element.checked).toBe(false);
+      });
+
+      it.each`
+        noteableType      | rendered | message
+        ${'Issue'}        | ${true}  | ${'render'}
+        ${'Epic'}         | ${true}  | ${'render'}
+        ${'MergeRequest'} | ${false} | ${'not render'}
+      `(
+        'should $message checkbox when noteableType is $noteableType',
+        ({ noteableType, rendered }) => {
+          mountComponent({
+            mountFunction: mount,
+            noteableType,
+            initialData: { note: 'internal note' },
+            noteableData: { ...notableDataMockCanUpdateIssuable, noteableType },
+          });
+
+          expect(findConfidentialNoteCheckbox().exists()).toBe(rendered);
+        },
+      );
+
+      describe.each`
+        shouldCheckboxBeChecked
+        ${true}
+        ${false}
+      `('when checkbox value is `$shouldCheckboxBeChecked`', ({ shouldCheckboxBeChecked }) => {
+        it(`sets \`confidential\` to \`${shouldCheckboxBeChecked}\``, async () => {
           mountComponent({
             mountFunction: mount,
             initialData: { note: 'confidential note' },
             noteableData: { ...notableDataMockCanUpdateIssuable },
-            features,
           });
 
+          jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue({});
+
           const checkbox = findConfidentialNoteCheckbox();
-          expect(checkbox.exists()).toBe(false);
+
+          // check checkbox
+          checkbox.element.checked = shouldCheckboxBeChecked;
+          checkbox.trigger('change');
+          await nextTick();
+
+          // submit comment
+          findCommentButton().trigger('click');
+
+          const [providedData] = wrapper.vm.saveNote.mock.calls[0];
+          expect(providedData.data.note.confidential).toBe(shouldCheckboxBeChecked);
         });
       });
 
-      describe('when confidentialNotes feature flag is `true`', () => {
-        const features = { confidentialNotes: true };
-
-        it('should render checkbox as unchecked by default', () => {
+      describe('when user cannot update issuable', () => {
+        it('should not render checkbox', () => {
           mountComponent({
             mountFunction: mount,
-            initialData: { note: 'confidential note' },
-            noteableData: { ...notableDataMockCanUpdateIssuable },
-            features,
+            noteableData: { ...notableDataMockCannotUpdateIssuable },
           });
 
-          const checkbox = findConfidentialNoteCheckbox();
-          expect(checkbox.exists()).toBe(true);
-          expect(checkbox.element.checked).toBe(false);
-        });
-
-        it.each`
-          noteableType      | rendered | message
-          ${'Issue'}        | ${true}  | ${'render'}
-          ${'Epic'}         | ${true}  | ${'render'}
-          ${'MergeRequest'} | ${false} | ${'not render'}
-        `(
-          'should $message checkbox when noteableType is $noteableType',
-          ({ noteableType, rendered }) => {
-            mountComponent({
-              mountFunction: mount,
-              noteableType,
-              initialData: { note: 'internal note' },
-              noteableData: { ...notableDataMockCanUpdateIssuable, noteableType },
-              features,
-            });
-
-            expect(findConfidentialNoteCheckbox().exists()).toBe(rendered);
-          },
-        );
-
-        describe.each`
-          shouldCheckboxBeChecked
-          ${true}
-          ${false}
-        `('when checkbox value is `$shouldCheckboxBeChecked`', ({ shouldCheckboxBeChecked }) => {
-          it(`sets \`confidential\` to \`${shouldCheckboxBeChecked}\``, async () => {
-            mountComponent({
-              mountFunction: mount,
-              initialData: { note: 'confidential note' },
-              noteableData: { ...notableDataMockCanUpdateIssuable },
-              features,
-            });
-
-            jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue({});
-
-            const checkbox = findConfidentialNoteCheckbox();
-
-            // check checkbox
-            checkbox.element.checked = shouldCheckboxBeChecked;
-            checkbox.trigger('change');
-            await nextTick();
-
-            // submit comment
-            findCommentButton().trigger('click');
-
-            const [providedData] = wrapper.vm.saveNote.mock.calls[0];
-            expect(providedData.data.note.confidential).toBe(shouldCheckboxBeChecked);
-          });
-        });
-
-        describe('when user cannot update issuable', () => {
-          it('should not render checkbox', () => {
-            mountComponent({
-              mountFunction: mount,
-              noteableData: { ...notableDataMockCannotUpdateIssuable },
-              features,
-            });
-
-            expect(findConfidentialNoteCheckbox().exists()).toBe(false);
-          });
+          expect(findConfidentialNoteCheckbox().exists()).toBe(false);
         });
       });
     });

@@ -3,10 +3,12 @@
 class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
   extend ::Gitlab::Utils::Override
 
+  before_action :check_action_name_in_available_providers
+
   def self.define_providers!
     return unless Gitlab::Auth::Ldap::Config.sign_in_enabled?
 
-    Gitlab::Auth::Ldap::Config.available_servers.each do |server|
+    Gitlab::Auth::Ldap::Config.servers.each do |server|
       alias_method server['provider_name'], :ldap
     end
   end
@@ -35,6 +37,18 @@ class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
     flash[:alert] = _('Access denied for your LDAP account.')
 
     redirect_to new_user_session_path
+  end
+
+  private
+
+  def check_action_name_in_available_providers
+    render_404 unless available_providers.include?(action_name)
+  end
+
+  def available_providers
+    Gitlab::Auth::Ldap::Config.available_servers.map do |server|
+      server['provider_name']
+    end
   end
 end
 

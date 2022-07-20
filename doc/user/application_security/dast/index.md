@@ -90,7 +90,7 @@ deploy:
   services:
   - name: docker:dind
     alias: dind
-  image: docker:19.03.5
+  image: docker:20.10.16
   stage: build
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -99,9 +99,10 @@ deploy:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
 
-services: # use services to link your app container to the dast job
-  - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    alias: yourapp
+dast:
+  services: # use services to link your app container to the dast job
+    - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+      alias: yourapp
 
 variables:
   DAST_FULL_SCAN_ENABLED: "true" # do a full scan
@@ -621,6 +622,11 @@ To enable Mutual TLS:
 #### Available CI/CD variables
 
 These CI/CD variables are specific to DAST. They can be used to customize the behavior of DAST to your requirements.
+
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
 
 | CI/CD variable                                   | Type          | Description                   |
 |:-------------------------------------------------|:--------------|:------------------------------|

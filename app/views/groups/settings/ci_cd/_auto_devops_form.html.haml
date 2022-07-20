@@ -1,5 +1,5 @@
 = gitlab_ui_form_for group, url: update_auto_devops_group_settings_ci_cd_path(group), method: :patch do |f|
-  = form_errors(group)
+  = form_errors(group, pajamas_alert: true)
   %fieldset
     .form-group
       .card.auto-devops-card

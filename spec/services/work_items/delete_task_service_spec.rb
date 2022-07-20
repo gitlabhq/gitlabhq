@@ -67,7 +67,7 @@ RSpec.describe WorkItems::DeleteTaskService do
       it 'removes the task list item with the work item reference' do
         expect do
           service_result
-        end.to change(list_work_item, :description).from(list_work_item.description).to('')
+        end.to change(list_work_item, :description).from(list_work_item.description).to("- [ ] #{task.title}")
       end
     end
 

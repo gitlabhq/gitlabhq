@@ -22,7 +22,7 @@ RSpec.shared_examples 'snippet edit usage data counters' do
 
   context 'when user is not sessionless', :clean_gitlab_redis_sessions do
     before do
-      stub_session('warden.user.user.key' => [[current_user.id], current_user.encrypted_password[0, 29]])
+      stub_session('warden.user.user.key' => [[current_user.id], current_user.authenticatable_salt])
     end
 
     it 'tracks usage data actions', :clean_gitlab_redis_sessions do

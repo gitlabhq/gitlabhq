@@ -5,9 +5,7 @@
 - availability = availability_values
 - custom_emoji = show_status_emoji?(@user.status)
 
-= gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user gl-mt-3 js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
-  = form_errors(@user)
-
+= gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user gl-mt-3 js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
   .row.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0
@@ -46,20 +44,18 @@
       %p= s_("Profiles|This emoji and message will appear on your profile and throughout the interface.")
     .col-lg-8
       = f.fields_for :status, @user.status do |status_form|
-        - emoji_button = button_tag type: :button,
-          class: 'js-toggle-emoji-menu emoji-menu-toggle-button btn gl-button btn-default has-tooltip',
-          title: s_("Profiles|Add status emoji") do
+        - emoji_button = render Pajamas::ButtonComponent.new(button_options: { title: s_("Profiles|Add status emoji"),
+            class: 'js-toggle-emoji-menu emoji-menu-toggle-button has-tooltip' } ) do
           - if custom_emoji
             = emoji_icon(@user.status.emoji, class: 'gl-mr-0!')
           %span#js-no-emoji-placeholder.no-emoji-placeholder{ class: ('hidden' if custom_emoji) }
             = sprite_icon('slight-smile', css_class: 'award-control-icon-neutral')
             = sprite_icon('smiley', css_class: 'award-control-icon-positive')
             = sprite_icon('smile', css_class: 'award-control-icon-super-positive')
-        - reset_message_button = button_tag type: :button,
-          id: 'js-clear-user-status-button',
-          class: 'clear-user-status btn gl-button btn-default has-tooltip',
-          title: s_("Profiles|Clear status") do
-          = sprite_icon("close")
+        - reset_message_button = render Pajamas::ButtonComponent.new(icon: 'close',
+          button_options: { id: 'js-clear-user-status-button',
+            class: 'has-tooltip',
+            title: s_("Profiles|Clear status") } )
 
         = status_form.hidden_field :emoji, id: 'js-status-emoji-field'
         .form-group.gl-form-group
@@ -76,7 +72,7 @@
         .form-group.gl-form-group
           = status_form.gitlab_ui_checkbox_component :availability,
             s_("Profiles|Busy"),
-            help_text: s_('Profiles|An indicator appears next to your name and avatar'),
+            help_text: s_('Profiles|An indicator appears next to your name and avatar.'),
             checkbox_options: { data: { testid: "user-availability-checkbox" } },
             checked_value: availability["busy"],
             unchecked_value: availability["not_set"]
@@ -85,7 +81,7 @@
   .row.user-time-preferences.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0= s_("Profiles|Time settings")
-      %p= s_("Profiles|Set your local time zone")
+      %p= s_("Profiles|Set your local time zone.")
     .col-lg-8
       %h5= _("Time zone")
       = dropdown_tag(_("Select a time zone"), options: { toggle_class: 'gl-button btn js-timezone-dropdown input-lg gl-w-full!', title: _("Select a time zone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
@@ -97,7 +93,7 @@
       %h4.gl-mt-0
         = s_("Profiles|Main settings")
       %p
-        = s_("Profiles|This information will appear on your profile")
+        = s_("Profiles|This information will appear on your profile.")
         - if current_user.ldap_user?
           = s_("Profiles|Some options are unavailable for LDAP accounts")
     .col-lg-8
@@ -111,12 +107,12 @@
         = f.label :pronouns, s_('Profiles|Pronouns')
         = f.text_field :pronouns, class: 'gl-form-input form-control gl-md-form-input-lg'
         %small.form-text.text-gl-muted
-          = s_("Profiles|Enter your pronouns to let people know how to refer to you")
+          = s_("Profiles|Enter your pronouns to let people know how to refer to you.")
       .form-group.gl-form-group
         = f.label :pronunciation, s_('Profiles|Pronunciation')
         = f.text_field :pronunciation, class: 'gl-form-input form-control gl-md-form-input-lg'
         %small.form-text.text-gl-muted
-          = s_("Profiles|Enter how your name is pronounced to help people address you correctly")
+          = s_("Profiles|Enter how your name is pronounced to help people address you correctly.")
       = render_if_exists 'profiles/extra_settings', form: f
       = render_if_exists 'profiles/email_settings', form: f
       .form-group.gl-form-group
@@ -148,17 +144,17 @@
         = f.label :organization, s_('Profiles|Organization')
         = f.text_field :organization, class: 'gl-form-input form-control gl-md-form-input-lg'
         %small.form-text.text-gl-muted
-          = s_("Profiles|Who you represent or work for")
+          = s_("Profiles|Who you represent or work for.")
       .form-group.gl-form-group
         = f.label :bio, s_('Profiles|Bio')
         = f.text_area :bio, class: 'gl-form-input gl-form-textarea form-control', rows: 4, maxlength: 250
         %small.form-text.text-gl-muted
-          = s_("Profiles|Tell us about yourself in fewer than 250 characters")
+          = s_("Profiles|Tell us about yourself in fewer than 250 characters.")
       %hr
       %fieldset.form-group.gl-form-group
         %legend.col-form-label.col-form-label
           = _('Private profile')
-        - private_profile_label = s_("Profiles|Don't display activity-related personal information on your profile")
+        - private_profile_label = s_("Profiles|Don't display activity-related personal information on your profile.")
         - private_profile_help_link = link_to sprite_icon('question-o'), help_page_path('user/profile/index.md', anchor: 'make-your-user-profile-page-private')
         = f.gitlab_ui_checkbox_component :private_profile, '%{private_profile_label} %{private_profile_help_link}'.html_safe % { private_profile_label: private_profile_label, private_profile_help_link: private_profile_help_link.html_safe }
       %fieldset.form-group.gl-form-group
@@ -166,7 +162,7 @@
           = s_("Profiles|Private contributions")
         = f.gitlab_ui_checkbox_component :include_private_contributions,
           s_('Profiles|Include private contributions on my profile'),
-          help_text: s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information")
+          help_text: s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information.")
   %hr
   = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3 js-password-prompt-btn'
   = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-default btn-cancel'

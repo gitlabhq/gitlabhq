@@ -65,7 +65,6 @@ RSpec.describe Emails::InProductMarketing do
       :team         | 0
       :team         | 1
       :team         | 2
-      :experience   | 0
       :team_short   | 0
       :trial_short  | 0
       :admin_verify | 0
@@ -83,12 +82,7 @@ RSpec.describe Emails::InProductMarketing do
           is_expected.to have_subject(message.subject_line)
           is_expected.to have_body_text(message.title)
           is_expected.to have_body_text(message.subtitle)
-
-          if track == :experience
-            is_expected.to have_body_text(CGI.unescapeHTML(message.feedback_link(1)))
-          else
-            is_expected.to have_body_text(CGI.unescapeHTML(message.cta_link))
-          end
+          is_expected.to have_body_text(CGI.unescapeHTML(message.cta_link))
 
           if track =~ /(create|verify)/
             is_expected.to have_body_text(message.invite_text)

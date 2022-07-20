@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Tracking::Destinations::Snowplow do
+RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_by_default do
   let(:emitter) { SnowplowTracker::Emitter.new('localhost', buffer_size: 1) }
   let(:tracker) { SnowplowTracker::Tracker.new(emitter, SnowplowTracker::Subject.new, 'namespace', 'app_id') }
 

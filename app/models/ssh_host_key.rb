@@ -12,7 +12,15 @@ class SshHostKey
     end
 
     def as_json(*)
-      { bits: bits, fingerprint: fingerprint, type: type, index: index }
+      { bits: bits, type: type, index: index }.merge(fingerprint_data)
+    end
+
+    private
+
+    def fingerprint_data
+      data = { fingerprint_sha256: fingerprint_sha256 }
+      data[:fingerprint] = fingerprint unless Gitlab::FIPS.enabled?
+      data
     end
   end
 

@@ -114,6 +114,11 @@ While you cannot directly customize Auto DevOps, you can [include the Auto DevOp
 To enable all GitLab security scanning tools, with the option of customizing settings, add the
 GitLab CI/CD templates to your `.gitlab-ci.yml` file.
 
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
+
 To enable Static Application Security Testing, Dependency Scanning, License Scanning, and Secret
 Detection, add:
 
@@ -217,9 +222,9 @@ From the merge request security widget, select **Expand** to unfold the widget, 
 
 ## View security scan information in the pipeline Security tab
 
-A pipeline's security tab lists all findings in the current branch. It includes new findings introduced by this branch and existing vulnerabilities that were already present when the branch was created. These results likely do not match the findings displayed in the Merge Request security widget as those do not include the existing vulnerabilities (with the exception of showing any existing vulnerabilities that are no longer detected in the feature branch).
-
-For more details, see [security tab](security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+A pipeline's security tab lists all findings in the current branch. It includes new findings introduced by this branch
+and existing vulnerabilities already present when you created the branch. These results likely do not match the findings
+displayed in the Merge Request security widget, as those do not include the existing vulnerabilities. Refer to [View vulnerabilities in a pipeline](vulnerability_report/pipeline.md) for more information.
 
 ## View security scan information in the Security Dashboard
 
@@ -246,15 +251,6 @@ security issues:
 - A security vulnerability. For more details, read [Scan result policies](policies/scan-result-policies.md).
 - A software license compliance violation. For more details, read
   [Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
-
-### Migration of existing Vulnerability-Check rules
-
-If your projects have rules that have a security orchestration project, a new MR with
-the existing rule's content is created automatically against the default branch belonging
-to the security orchestration project. To maintain the same security approval rules you
-had before GitLab 15.0, we recommend merging this new MR.
-
-If your projects have rules without a security orchestration project, a new security orchestration project is created automatically with the content of the existing rule. No additional action is required.
 
 ## Using private Maven repositories
 
@@ -393,48 +389,31 @@ Self managed installations can also run the security scanners on a GitLab Runner
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
 > - Schema validation message [added](https://gitlab.com/gitlab-org/gitlab/-/issues/321730) in GitLab 14.0.
 
-You can enforce validation of the security report artifacts before ingesting the vulnerabilities.
+GitLab 15.0 enforces validation of the security report artifacts before ingesting the vulnerabilities.
 This prevents ingestion of broken vulnerability data into the database. GitLab validates the
-artifacts based on the [report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist).
-When artifact validation is enabled, the pipeline's **Security** tab lists
-any report artifacts that failed validation.
+artifacts against the [report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist),
+according to the schema version declared in the report.
 
-Validation depends on the schema:
+The pipeline's **Security** tab lists any report artifacts that failed validation, and the
+validation error message.
 
-- If your security report does not specify which schema version it uses, GitLab attempts to verify it against the earliest supported schema version for that report type. Validation fails but it's attempted anyway because it may identify other problems present in the report.
-- If your security report uses a version that is not supported, GitLab attempts to validate it against the earliest supported schema version for that report type. Validation fails but will identify the differences between the schema version used and the earliest supported version.
-- If your security report uses a deprecated version, GitLab attempts validation against that version and adds a warning to the validation result.
+Validation depends on the schema version declared in the security report artifact:
 
-You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb#L9).
+- If your security report specifies a supported schema version, GitLab uses this version to validate.
+- If your security report uses a deprecated version, GitLab attempts validation against that version and adds a deprecation warning to the validation result.
+- If your security report uses a version that is not supported, GitLab attempts to validate it against the latest schema version available in GitLab.
+- If your security report does not specify a schema version, GitLab attempts to validate it against the lastest schema version available in GitLab. Since the `version` property is required, validation always fails in this case, but other validation errors may also be present.
 
-### Enable security report validation
+You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb).
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9, and planned for removal in GitLab 15.0.
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
 
-To enable report artifacts validation, set the `VALIDATE_SCHEMA` environment variable to `"true"`
-for the desired jobs in the `.gitlab-ci.yml` file.
+### Enable security report validation (removed)
 
-For example, to enable validation for only the `sast` job:
+   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9
+   and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85400) in GitLab 15.0.
 
-```yaml
-include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/License-Scanning.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
-stages:
-  - security-scan
-dependency_scanning:
-  stage: security-scan
-license_scanning:
-  stage: security-scan
-sast:
-  stage: security-scan
-  variables:
-    VALIDATE_SCHEMA: "true"
-.secret-analyzer:
-  stage: security-scan
-```
+   <!--- end_remove -->
 
 ## Interact with findings and vulnerabilities
 
@@ -488,17 +467,16 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
 - [Compliance framework pipelines](../project/settings/#compliance-pipeline-configuration)
   are recommended when:
 
-  - Scan execution enforcement is required for SAST or Secret Detection scans that use custom rulesets.
-  - Scan execution enforcement is required for SAST IaC, Dependency Scanning,
+  - Scan execution enforcement is required for any scanner that uses a GitLab template, such as SAST IaC, DAST, Dependency Scanning,
     License Compliance, API Fuzzing, or Coverage-guided Fuzzing.
   - Scan execution enforcement is required for scanners external to GitLab.
-  - Enforced execution is required for custom jobs other than security scans.
+  - Scan execution enforcement is required for custom jobs other than security scans.
 
 - [Scan execution policies](policies/scan-execution-policies.md)
   are recommended when:
 
-  - Scan execution enforcement is required for DAST.
-  - Scan execution enforcement is required for Container Scanning with project-specific variable
+  - Scan execution enforcement is required for DAST which uses a DAST site or scan profile.
+  - Scan execution enforcement is required for SAST, Secret Detection, or Container Scanning with project-specific variable
     customizations. To accomplish this, users must create a separate security policy per project.
   - Scans are required to run on a regular, scheduled cadence.
 
@@ -524,6 +502,8 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 
 ## Troubleshooting
 
+<!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, please ensure to update the corresponding URL in the mentioned repository.
+-->
 ### Secure job failing with exit code 1
 
 If a Secure job is failing and it's unclear why, add `SECURE_LOG_LEVEL: "debug"` as a global CI/CD variable for

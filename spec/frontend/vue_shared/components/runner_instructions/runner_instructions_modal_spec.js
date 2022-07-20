@@ -79,7 +79,7 @@ describe('RunnerInstructionsModal component', () => {
     }
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     runnerPlatformsHandler = jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms);
     runnerSetupInstructionsHandler = jest.fn().mockResolvedValue(mockGraphqlInstructions);
   });
@@ -259,11 +259,11 @@ describe('RunnerInstructionsModal component', () => {
   });
 
   describe('when apollo is loading', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('should show a skeleton loader', async () => {
+      createComponent();
+      await nextTick();
+      await nextTick();
+
       expect(findSkeletonLoader().exists()).toBe(true);
       expect(findGlLoadingIcon().exists()).toBe(false);
 
@@ -275,6 +275,8 @@ describe('RunnerInstructionsModal component', () => {
     });
 
     it('once loaded, should not show a loading state', async () => {
+      createComponent();
+
       await waitForPromises();
 
       expect(findSkeletonLoader().exists()).toBe(false);

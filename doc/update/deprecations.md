@@ -45,6 +45,27 @@ sole discretion of GitLab Inc.
 
 <div class="announcement-milestone">
 
+## Announced in 15.2
+
+<div class="deprecation removal-160 breaking-change">
+
+### Remove `job_age` parameter from `POST /jobs/request` Runner endpoint
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
+
+The `job_age` parameter, returned from the `POST /jobs/request` API endpoint used in communication with GitLab Runner, was never used by any GitLab or Runner feature. This parameter will be removed in GitLab 16.0.
+
+This could be a breaking change for anyone that developed their own runner that relies on this parameter being returned by the endpoint. This is not a breaking change for anyone using an officially released version of GitLab Runner, including public shared runners on GitLab.com.
+
+</div>
+</div>
+
+<div class="announcement-milestone">
+
 ## Announced in 15.1
 
 <div class="deprecation removal-160 breaking-change">
@@ -892,11 +913,11 @@ If you have explicitly excluded retire.js using DS_EXCLUDED_ANALYZERS you will n
 
 </div>
 
-<div class="deprecation removal-152 breaking-change">
+<div class="deprecation removal-154 breaking-change">
 
 ### SAST analyzer consolidation and CI/CD template changes
 
-Planned removal: GitLab <span class="removal-milestone">15.2</span> (2022-07-22)
+Planned removal: GitLab <span class="removal-milestone">15.4</span> (2022-09-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
@@ -905,9 +926,9 @@ Review the details carefully before upgrading.
 GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
 
 We are reducing the number of analyzers used in GitLab SAST as part of our long-term strategy to deliver a better and more consistent user experience.
-Streamlining the set of analyzers will also enable faster [iteration](https://about.gitlab.com/handbook/values/#iteration), better [results](https://about.gitlab.com/handbook/values/#results), and greater [efficiency](https://about.gitlab.com/handbook/values/#results) (including a reduction in CI runner usage in most cases).
+Streamlining the set of analyzers will also enable faster [iteration](https://about.gitlab.com/handbook/values/#iteration), better [results](https://about.gitlab.com/handbook/values/#results), and greater [efficiency](https://about.gitlab.com/handbook/values/#efficiency) (including a reduction in CI runner usage in most cases).
 
-In GitLab 15.2, GitLab SAST will no longer use the following analyzers:
+In GitLab 15.4, GitLab SAST will no longer use the following analyzers:
 
 - [ESLint](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (JavaScript, TypeScript, React)
 - [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Go)
@@ -922,7 +943,14 @@ We will not delete container images previously published for these analyzers; an
 
 We will also remove Java from the scope of the [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) analyzer and replace it with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 This change will make it simpler to scan Java code; compilation will no longer be required.
-This change will be reflected in the automatic language detection portion of the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml).
+This change will be reflected in the automatic language detection portion of the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml). Note that the SpotBugs-based analyzer will continue to cover Groovy, Kotlin, and Scala.
+
+If you've already dismissed a vulnerability finding from one of the deprecated analyzers, the replacement attempts to respect your previous dismissal. The system behavior depends on:
+
+- whether you’ve excluded the Semgrep-based analyzer from running in the past.
+- which analyzer first discovered the vulnerabilities shown in the project’s Vulnerability Report.
+
+See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
 
 If you applied customizations to any of the affected analyzers or if you currently disable the Semgrep analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352554#breaking-change).
 
@@ -1453,12 +1481,12 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 
 <div class="deprecation removal-150">
 
-### `artifacts:report:cobertura` keyword
+### `artifacts:reports:cobertura` keyword
 
 Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-05-22)
 
 Currently, test coverage visualizations in GitLab only support Cobertura reports. Starting 15.0, the
-`artifacts:report:cobertura` keyword will be replaced by
+`artifacts:reports:cobertura` keyword will be replaced by
 [`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura will be the
 only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
 

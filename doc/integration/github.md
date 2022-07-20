@@ -218,4 +218,4 @@ To fix this issue, you must activate GitHub sign-in in GitLab:
 1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
-1. In the **Social sign-in** section, select **Connect to GitHub**.
+1. In the **Service sign-in** section, select **Connect to GitHub**.

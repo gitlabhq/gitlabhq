@@ -11,6 +11,8 @@ export default class SidebarMediator {
     if (!SidebarMediator.singleton) {
       this.initSingleton(options);
     }
+
+    // eslint-disable-next-line no-constructor-return
     return SidebarMediator.singleton;
   }
 

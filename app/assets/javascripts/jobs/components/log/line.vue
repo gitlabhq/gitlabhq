@@ -14,9 +14,14 @@ export default {
       type: String,
       required: true,
     },
+    searchResults: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   render(h, { props }) {
-    const { line, path } = props;
+    const { line, path, searchResults } = props;
 
     const chars = line.content.map((content) => {
       return h(
@@ -46,15 +51,33 @@ export default {
       );
     });
 
-    return h('div', { class: 'js-line log-line' }, [
-      h(LineNumber, {
-        props: {
-          lineNumber: line.lineNumber,
-          path,
-        },
-      }),
-      ...chars,
-    ]);
+    let applyHighlight = false;
+
+    if (searchResults.length > 0) {
+      const linesToHighlight = searchResults.map((searchResultLine) => searchResultLine.lineNumber);
+
+      linesToHighlight.forEach((num) => {
+        if (num === line.lineNumber) {
+          applyHighlight = true;
+        }
+      });
+    }
+
+    return h(
+      'div',
+      {
+        class: ['js-line', 'log-line', applyHighlight ? 'gl-bg-gray-500' : ''],
+      },
+      [
+        h(LineNumber, {
+          props: {
+            lineNumber: line.lineNumber,
+            path,
+          },
+        }),
+        ...chars,
+      ],
+    );
   },
 };
 </script>

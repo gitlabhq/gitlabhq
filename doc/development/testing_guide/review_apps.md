@@ -45,7 +45,7 @@ Maintainers can elect to use the [process for merging during broken `master`](ht
 On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage, the
 `review-performance` job is automatically started: this job does basic
 browser performance testing using a
-[Sitespeed.io Container](../../user/project/merge_requests/browser_performance_testing.md).
+[Sitespeed.io Container](../../ci/testing/browser_performance_testing.md).
 
 ## Sample Data for Review Apps
 

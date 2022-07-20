@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlFormCheckbox, GlFormInput, GlFormGroup, GlLink, GlSprintf } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDatepicker,
+  GlFormCheckbox,
+  GlFormInput,
+  GlFormGroup,
+  GlLink,
+  GlSprintf,
+} from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { isSameOriginUrl, getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -7,6 +15,7 @@ import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import AssetLinksForm from './asset_links_form.vue';
+import ConfirmDeleteModal from './confirm_delete_modal.vue';
 import TagField from './tag_field.vue';
 
 export default {
@@ -16,8 +25,10 @@ export default {
     GlFormInput,
     GlFormGroup,
     GlButton,
+    GlDatepicker,
     GlLink,
     GlSprintf,
+    ConfirmDeleteModal,
     MarkdownField,
     AssetLinksForm,
     MilestoneCombobox,
@@ -25,12 +36,14 @@ export default {
   },
   computed: {
     ...mapState('editNew', [
+      'isExistingRelease',
       'isFetchingRelease',
       'isUpdatingRelease',
       'fetchError',
       'markdownDocsPath',
       'markdownPreviewPath',
       'editReleaseDocsPath',
+      'upcomingReleaseDocsPath',
       'releasesPagePath',
       'release',
       'newMilestonePath',
@@ -40,7 +53,7 @@ export default {
       'groupMilestonesAvailable',
       'tagNotes',
     ]),
-    ...mapGetters('editNew', ['isValid', 'isExistingRelease', 'formattedReleaseNotes']),
+    ...mapGetters('editNew', ['isValid', 'formattedReleaseNotes']),
     showForm() {
       return Boolean(!this.isFetchingRelease && !this.fetchError && this.release);
     },
@@ -74,6 +87,14 @@ export default {
       },
       set(includeTagNotes) {
         this.updateIncludeTagNotes(includeTagNotes);
+      },
+    },
+    releasedAt: {
+      get() {
+        return this.release.releasedAt;
+      },
+      set(date) {
+        this.updateReleasedAt(date);
       },
     },
     cancelPath() {
@@ -114,10 +135,12 @@ export default {
     ...mapActions('editNew', [
       'initializeRelease',
       'saveRelease',
+      'deleteRelease',
       'updateReleaseTitle',
       'updateReleaseNotes',
       'updateReleaseMilestones',
       'updateIncludeTagNotes',
+      'updateReleasedAt',
     ]),
     submitForm() {
       if (!this.isFormSubmissionDisabled) {
@@ -165,6 +188,22 @@ export default {
             :extra-links="milestoneComboboxExtraLinks"
           />
         </div>
+      </gl-form-group>
+      <gl-form-group :label="__('Release date')" label-for="release-released-at">
+        <template #label-description>
+          <gl-sprintf
+            :message="
+              __(
+                'The date when the release is ready. A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}.',
+              )
+            "
+          >
+            <template #link="{ content }">
+              <gl-link :href="upcomingReleaseDocsPath">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
+        <gl-datepicker id="release-released-at" v-model="releasedAt" :default-date="releasedAt" />
       </gl-form-group>
       <gl-form-group data-testid="release-notes">
         <label for="release-notes">{{ __('Release notes') }}</label>
@@ -224,6 +263,7 @@ export default {
         >
           {{ saveButtonLabel }}
         </gl-button>
+        <confirm-delete-modal v-if="isExistingRelease" @delete="deleteRelease" />
         <gl-button :href="cancelPath" class="js-cancel-button">{{ __('Cancel') }}</gl-button>
       </div>
     </form>

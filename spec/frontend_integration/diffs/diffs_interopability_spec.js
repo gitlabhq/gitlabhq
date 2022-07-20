@@ -1,6 +1,7 @@
 import { waitFor } from '@testing-library/dom';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import initDiffsApp from '~/diffs';
 import { createStore } from '~/mr_notes/stores';
 import {
@@ -73,6 +74,10 @@ const startDiffsApp = () => {
 
 describe('diffs third party interoperability', () => {
   let vm;
+
+  beforeEach(() => {
+    stubPerformanceWebAPI();
+  });
 
   afterEach(() => {
     vm.$destroy();

@@ -80,6 +80,14 @@ If you're running Omnibus, run the following Rake task:
 gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"
 ```
 
+#### Enable verbose output
+
+To make the import Rake task more verbose, use the `IMPORT_DEBUG` environment variable:
+
+```shell
+IMPORT_DEBUG=true gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"
+```
+
 #### Troubleshooting
 
 Check the common errors listed below, what they mean, and how to fix them.
@@ -132,6 +140,51 @@ The disk has insufficient space to complete the import.
 During import, the tarball is cached in your configured `shared_path` directory. Verify the
 disk has enough free space to accommodate both the cached tarball and the unpacked
 project files on disk.
+
+##### Import is successful, but with a `Total number of not imported relations: XX` message, and issues are not created during the import
+
+If you receive a `Total number of not imported relations: XX` message, and issues
+aren't created during the import, check [exceptions_json.log](../administration/logs.md#exceptions_jsonlog).
+You might see an error like `N is out of range for ActiveModel::Type::Integer with limit 4 bytes`,
+where `N` is the integer exceeding the 4-byte integer limit. If that's the case, you
+are likely hitting the issue with rebalancing of `relative_position` field of the issues.
+
+The feature flag to enable the rebalance automatically was enabled on GitLab.com.
+We intend to enable it by default on self-managed instances when the issue
+[Rebalance issues FF rollout](https://gitlab.com/gitlab-org/gitlab/-/issues/343368)
+is implemented.
+
+If the feature is not enabled by default on your GitLab version, run the following
+commands in the [Rails console](../administration/operations/rails_console.md) as
+a workaround. Replace the ID with the ID of your project you were trying to import:
+
+```ruby
+# Check if the feature is enabled on your instance. If it is, rebalance should work automatically on your instance
+Feature.enabled?(:rebalance_issues,Project.find(ID).root_namespace)
+
+# Check the current maximum value of relative_position
+Issue.where(project_id: Project.find(ID).root_namespace.all_projects).maximum(:relative_position)
+
+# Enable `rebalance_issues` feauture and check that it was successfully enabled
+Feature.enable(:rebalance_issues,Project.find(ID).root_namespace)
+Feature.enabled?(:rebalance_issues,Project.find(ID).root_namespace)
+
+# Run the rebalancing process and check if the maximum value of relative_position has changed
+Issues::RelativePositionRebalancingService.new(Project.find(ID).root_namespace.all_projects).execute
+Issue.where(project_id: Project.find(ID).root_namespace.all_projects).maximum(:relative_position)
+```
+
+Repeat the import attempt after that and check if the issues are imported successfully.
+
+##### Gitaly calls error when importing
+
+If you're attempting to import a large project into a development environment, you may see Gitaly throw an error about too many calls or invocations, for example:
+
+```plaintext
+Error importing repository into qa-perf-testing/gitlabhq - GitalyClient#call called 31 times from single request. Potential n+1?
+```
+
+This is due to a [n+1 calls limit being set for development setups](gitaly.md#toomanyinvocationserror-errors). You can work around this by setting `GITALY_DISABLE_REQUEST_LIMITS=1` as an environment variable, restarting your development environment and importing again.
 
 ### Importing via the Rails console
 
@@ -205,20 +258,6 @@ You can execute the script from the `gdk/gitlab` directory like this:
 ```shell
 bundle exec rails r  /path_to_script/script.rb project_name /path_to_extracted_project request_store_enabled
 ```
-
-## Troubleshooting
-
-This section details known issues we've seen when trying to import a project and how to manage them.
-
-### Gitaly calls error when importing
-
-If you're attempting to import a large project into a development environment, you may see Gitaly throw an error about too many calls or invocations, for example:
-
-```plaintext
-Error importing repository into qa-perf-testing/gitlabhq - GitalyClient#call called 31 times from single request. Potential n+1?
-```
-
-This is due to a [n+1 calls limit being set for development setups](gitaly.md#toomanyinvocationserror-errors). You can work around this by setting `GITALY_DISABLE_REQUEST_LIMITS=1` as an environment variable, restarting your development environment and importing again.
 
 ## Access token setup
 

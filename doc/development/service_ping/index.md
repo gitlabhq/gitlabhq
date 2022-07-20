@@ -1,5 +1,5 @@
 ---
-stage: Growth
+stage: Analytics
 group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -113,15 +113,15 @@ sequenceDiagram
 
 1. Finally, the timing metadata information that is used for diagnostic purposes is submitted to the Versions application. It consists of a list of metric identifiers and the time it took to calculate the metrics:
 
-   > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 15.0 [with a flag(../../user/feature_flags.md), enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `measure_service_ping_metric_collection`.
-On GitLab.com, this feature is available.
+   > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 15.0 [with a flag(../../user/feature_flags.md), enabled by default.
+   > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/295289) in GitLab 15.2. [Feature flag `measure_service_ping_metric_collection`](https://gitlab.com/gitlab-org/gitlab/-/issues/358128) removed.
 
 ```ruby
-    {"metadata"=>
-      {"metrics"=>
+    { 
+      "metadata"=>
+      {
+        "uuid"=>"0000000-0000-0000-0000-000000000000",
+        "metrics"=>
         [{"name"=>"version", "time_elapsed"=>1.1811964213848114e-05},
          {"name"=>"installation_type", "time_elapsed"=>0.00017242692410945892},
          {"name"=>"license_billable_users", "time_elapsed"=>0.009520471096038818},
@@ -133,9 +133,7 @@ On GitLab.com, this feature is available.
          {"name"=>"counts.clusters_platforms_user",
           "time_elapsed"=>0.06410990096628666},
          {"name"=>"counts.clusters_management_project",
-          "time_elapsed"=>0.24020783510059118},
-         {"name"=>"counts.clusters_integrations_elastic_stack",
-          "time_elapsed"=>0.03484998410567641}
+          "time_elapsed"=>0.24020783510059118}
         ]
       }
     }
@@ -163,25 +161,6 @@ We also collect metrics specific to [Geo](../../administration/geo/index.md) sec
    ]
    ```
 
-### Enable or disable service ping metadata reporting
-
-Service Ping timing metadata reporting is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:measure_service_ping_metric_collection)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:measure_service_ping_metric_collection)
-```
-
 ## Implementing Service Ping
 
 See the [implement Service Ping](implement.md) guide.
@@ -200,6 +179,7 @@ The following is example content of the Service Ping payload.
   "recorded_at": "2020-04-17T07:43:54.162+00:00",
   "edition": "EEU",
   "license_md5": "00000000000000000000000000000000",
+  "license_sha256: "0000000000000000000000000000000000000000000000000000000000000000",
   "license_id": null,
   "historical_max_users": 999,
   "licensee": {

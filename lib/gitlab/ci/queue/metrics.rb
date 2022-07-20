@@ -250,11 +250,7 @@ module Gitlab
         end
 
         def running_jobs_relation(job)
-          if ::Feature.enabled?(:ci_pending_builds_maintain_denormalized_data)
-            ::Ci::RunningBuild.instance_type.where(project_id: job.project_id)
-          else
-            job.project.builds.running.where(runner: ::Ci::Runner.instance_type)
-          end
+          ::Ci::RunningBuild.instance_type.where(project_id: job.project_id)
         end
         # rubocop: enable CodeReuse/ActiveRecord
       end

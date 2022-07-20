@@ -3,7 +3,7 @@
     = gl_loading_icon(size: "md", css_class: "gl-my-4")
   .text-center.gl-mt-3.gl-mb-3.stl-controls
     .btn-group
-      %button.gl-button.btn.btn-default.btn-sm.js-material-changer{ data: { type: 'wireframe' } }
-        Wireframe
-      %button.gl-button.btn.btn-default.btn-sm.selected.js-material-changer{ data: { type: 'default' } }
-        Solid
+      = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-material-changer', data: { material: 'wireframe' } }) do
+        = _('Wireframe')
+      = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-material-changer selected', data: { material: 'default' } }) do
+        = _('Solid')

@@ -105,6 +105,62 @@ RSpec.describe 'getting pipeline information nested in a project' do
     end
   end
 
+  context 'when a job has been retried' do
+    let_it_be(:retried) do
+      create(:ci_build, :retried,
+             name: build_job.name,
+             pipeline: pipeline,
+             stage_idx: 0,
+             stage: build_job.stage)
+    end
+
+    let(:fields) do
+      query_graphql_field(:jobs, { retried: retried_argument },
+                          query_graphql_field(:nodes, {}, all_graphql_fields_for('CiJob', max_depth: 3)))
+    end
+
+    context 'when we filter out retried jobs' do
+      let(:retried_argument) { false }
+
+      it 'contains latest jobs' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(*path, :jobs, :nodes)).to include(
+          a_graphql_entity_for(build_job, :name, :duration, :retried)
+        )
+
+        expect(graphql_data_at(*path, :jobs, :nodes)).not_to include(
+          a_graphql_entity_for(retried)
+        )
+      end
+    end
+
+    context 'when we filter to only retried jobs' do
+      let(:retried_argument) { true }
+
+      it 'contains only retried jobs' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(*path, :jobs, :nodes)).to contain_exactly(
+          a_graphql_entity_for(retried)
+        )
+      end
+    end
+
+    context 'when we pass null explicitly' do
+      let(:retried_argument) { nil }
+
+      it 'contains all jobs' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(*path, :jobs, :nodes)).to include(
+          a_graphql_entity_for(build_job),
+          a_graphql_entity_for(retried)
+        )
+      end
+    end
+  end
+
   context 'when requesting only builds with certain statuses' do
     let(:variables) do
       {
@@ -290,8 +346,8 @@ RSpec.describe 'getting pipeline information nested in a project' do
     end
 
     it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
-      build_stage = create(:ci_stage_entity, position: 1, name: 'build', project: project, pipeline: pipeline)
-      test_stage = create(:ci_stage_entity, position: 2, name: 'test', project: project, pipeline: pipeline)
+      build_stage = create(:ci_stage, position: 1, name: 'build', project: project, pipeline: pipeline)
+      test_stage = create(:ci_stage, position: 2, name: 'test', project: project, pipeline: pipeline)
       create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 1 2', stage: build_stage)
       create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 2 2', stage: build_stage)
       create(:ci_build, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 1 2', stage: test_stage)

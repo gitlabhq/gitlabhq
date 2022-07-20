@@ -70,3 +70,36 @@ export const timelineEventsQueryEmptyResponse = {
     },
   },
 };
+
+export const timelineEventsCreateEventResponse = {
+  timelineEvent: {
+    ...mockEvents[0],
+  },
+  errors: [],
+};
+
+export const timelineEventsCreateEventError = {
+  data: {
+    timelineEventCreate: {
+      timelineEvent: {
+        ...mockEvents[0],
+      },
+      errors: ['Create error'],
+    },
+  },
+};
+
+const timelineEventDeleteData = (errors = []) => {
+  return {
+    data: {
+      timelineEventDestroy: {
+        timelineEvent: { ...mockEvents[0] },
+        errors,
+      },
+    },
+  };
+};
+
+export const timelineEventsDeleteEventResponse = timelineEventDeleteData();
+
+export const timelineEventsDeleteEventError = timelineEventDeleteData(['Item does not exist']);

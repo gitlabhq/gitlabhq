@@ -2,6 +2,7 @@
 
 module Mutations
   module WorkItems
+    # TODO: Deprecate in favor of using WorkItemUpdate. See https://gitlab.com/gitlab-org/gitlab/-/issues/366300
     class UpdateWidgets < BaseMutation
       graphql_name 'WorkItemUpdateWidgets'
       description "Updates the attributes of a work item's widgets by global ID." \

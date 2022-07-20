@@ -5,6 +5,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
@@ -29,10 +30,16 @@ import * as Api from '~/pipelines/components/graph_shared/api';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
 import getPipelineHeaderData from '~/pipelines/graphql/queries/get_pipeline_header_data.query.graphql';
+import getPerformanceInsights from '~/pipelines/graphql/queries/get_performance_insights.query.graphql';
 import * as sentryUtils from '~/pipelines/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { mockRunningPipelineHeaderData } from '../mock_data';
-import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
+import {
+  mapCallouts,
+  mockCalloutsResponse,
+  mockPipelineResponse,
+  mockPerformanceInsightsResponse,
+} from './mock_data';
 
 const defaultProvide = {
   graphqlResourceEtag: 'frog/amphibirama/etag/',
@@ -88,11 +95,15 @@ describe('Pipeline graph wrapper', () => {
     const callouts = mapCallouts(calloutsList);
     const getUserCalloutsHandler = jest.fn().mockResolvedValue(mockCalloutsResponse(callouts));
     const getPipelineHeaderDataHandler = jest.fn().mockResolvedValue(mockRunningPipelineHeaderData);
+    const getPerformanceInsightsHandler = jest
+      .fn()
+      .mockResolvedValue(mockPerformanceInsightsResponse);
 
     const requestHandlers = [
       [getPipelineHeaderData, getPipelineHeaderDataHandler],
       [getPipelineDetails, getPipelineDetailsHandler],
       [getUserCallouts, getUserCalloutsHandler],
+      [getPerformanceInsights, getPerformanceInsightsHandler],
     ];
 
     const apolloProvider = createMockApollo(requestHandlers);
@@ -502,9 +513,7 @@ describe('Pipeline graph wrapper', () => {
 
       describe('when no duration is obtained', () => {
         beforeEach(async () => {
-          jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
-            return [];
-          });
+          stubPerformanceWebAPI();
 
           createComponentWithApollo({
             provide: {

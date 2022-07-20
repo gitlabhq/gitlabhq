@@ -8,12 +8,10 @@ export const visibilityOptions = {
 
 export const visibilityLevelDescriptions = {
   [visibilityOptions.PRIVATE]: __(
-    'The project is accessible only by members of the project. Access must be granted explicitly to each user.',
+    `Only accessible by %{membersPageLinkStart}project members%{membersPageLinkEnd}. Membership must be explicitly granted to each user.`,
   ),
-  [visibilityOptions.INTERNAL]: __('The project can be accessed by any user who is logged in.'),
-  [visibilityOptions.PUBLIC]: __(
-    'The project can be accessed by anyone, regardless of authentication.',
-  ),
+  [visibilityOptions.INTERNAL]: __('Accessible by any user who is logged in.'),
+  [visibilityOptions.PUBLIC]: __('Accessible by anyone, regardless of authentication.'),
 };
 
 export const featureAccessLevel = {

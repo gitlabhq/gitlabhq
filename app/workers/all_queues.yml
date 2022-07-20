@@ -219,6 +219,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:ci_runners_reconcile_existing_runner_versions_cron
+  :worker_name: Ci::Runners::ReconcileExistingRunnerVersionsCronWorker
+  :feature_category: :runner_fleet
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_schedule_delete_objects_cron
   :worker_name: Ci::ScheduleDeleteObjectsCronWorker
   :feature_category: :continuous_integration
@@ -948,26 +957,8 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: gcp_cluster:clusters_applications_activate_service
-  :worker_name: Clusters::Applications::ActivateServiceWorker
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: gcp_cluster:clusters_applications_deactivate_integration
   :worker_name: Clusters::Applications::DeactivateIntegrationWorker
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-- :name: gcp_cluster:clusters_applications_deactivate_service
-  :worker_name: Clusters::Applications::DeactivateServiceWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: false
   :urgency: :low
@@ -1031,6 +1022,15 @@
   :tags: []
 - :name: github_importer:github_import_import_issue
   :worker_name: Gitlab::GithubImport::ImportIssueWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: github_importer:github_import_import_issue_event
+  :worker_name: Gitlab::GithubImport::ImportIssueEventWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
@@ -1103,6 +1103,15 @@
   :tags: []
 - :name: github_importer:github_import_stage_import_base_data
   :worker_name: Gitlab::GithubImport::Stage::ImportBaseDataWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: github_importer:github_import_stage_import_issue_events
+  :worker_name: Gitlab::GithubImport::Stage::ImportIssueEventsWorker
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low
@@ -1451,6 +1460,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: package_cleanup:packages_cleanup_execute_policy
+  :worker_name: Packages::Cleanup::ExecutePolicyWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: package_cleanup:packages_cleanup_package_file
   :worker_name: Packages::CleanupPackageFileWorker
@@ -2344,6 +2362,15 @@
   :weight: 2
   :idempotent: false
   :tags: []
+- :name: google_cloud_create_cloudsql_instance
+  :worker_name: GoogleCloud::CreateCloudsqlInstanceWorker
+  :feature_category: :not_owned
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: group_destroy
   :worker_name: GroupDestroyWorker
   :feature_category: :subgroups
@@ -2389,6 +2416,15 @@
   :weight: 2
   :idempotent: true
   :tags: []
+- :name: incident_management_close_incident
+  :worker_name: IncidentManagement::CloseIncidentWorker
+  :feature_category: :incident_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: integrations_create_external_cross_reference
   :worker_name: Integrations::CreateExternalCrossReferenceWorker
   :feature_category: :integrations
@@ -2423,15 +2459,6 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
-  :idempotent: false
-  :tags: []
-- :name: irker
-  :worker_name: IrkerWorker
-  :feature_category: :integrations
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
   :idempotent: false
   :tags: []
 - :name: issuable_export_csv
@@ -2704,14 +2731,14 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: pages_transfer
-  :worker_name: PagesTransferWorker
+- :name: pages_invalidate_domain_cache
+  :worker_name: Pages::InvalidateDomainCacheWorker
   :feature_category: :pages
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: phabricator_import_import_tasks
   :worker_name: Gitlab::PhabricatorImport::ImportTasksWorker
@@ -2764,15 +2791,6 @@
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :memory
-  :weight: 1
-  :idempotent: false
-  :tags: []
-- :name: project_service
-  :worker_name: ProjectServiceWorker
-  :feature_category: :integrations
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
   :tags: []
@@ -3091,15 +3109,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
-- :name: web_hooks_destroy
-  :worker_name: WebHooks::DestroyWorker
-  :feature_category: :integrations
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: web_hooks_log_destroy
   :worker_name: WebHooks::LogDestroyWorker

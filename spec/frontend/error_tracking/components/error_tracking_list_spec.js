@@ -398,6 +398,30 @@ describe('ErrorTrackingList', () => {
   });
 
   describe('When pagination is required', () => {
+    describe('and previous cursor is not available', () => {
+      beforeEach(async () => {
+        store.state.list.loading = false;
+        delete store.state.list.pagination.previous;
+        mountComponent();
+      });
+
+      it('disables Prev button in the pagination', async () => {
+        expect(findPagination().props('prevPage')).toBe(null);
+        expect(findPagination().props('nextPage')).not.toBe(null);
+      });
+    });
+    describe('and next cursor is not available', () => {
+      beforeEach(async () => {
+        store.state.list.loading = false;
+        delete store.state.list.pagination.next;
+        mountComponent();
+      });
+
+      it('disables Next button in the pagination', async () => {
+        expect(findPagination().props('prevPage')).not.toBe(null);
+        expect(findPagination().props('nextPage')).toBe(null);
+      });
+    });
     describe('and the user is not on the first page', () => {
       describe('and the previous button is clicked', () => {
         beforeEach(async () => {

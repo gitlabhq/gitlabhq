@@ -4,9 +4,9 @@ import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue
 import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
 import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
-import { runnersData } from '../../mock_data';
+import { allRunnersData } from '../../mock_data';
 
-const mockRunner = runnersData.data.runners.nodes[0];
+const mockRunner = allRunnersData.data.runners.nodes[0];
 
 describe('RunnerActionsCell', () => {
   let wrapper;

@@ -23,6 +23,7 @@ module Gitlab
         pull_requests_merged_by: Stage::ImportPullRequestsMergedByWorker,
         pull_request_reviews: Stage::ImportPullRequestsReviewsWorker,
         issues_and_diff_notes: Stage::ImportIssuesAndDiffNotesWorker,
+        issue_events: Stage::ImportIssueEventsWorker,
         notes: Stage::ImportNotesWorker,
         lfs_objects: Stage::ImportLfsObjectsWorker,
         finish: Stage::FinishImportWorker

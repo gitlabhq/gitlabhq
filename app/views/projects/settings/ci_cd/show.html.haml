@@ -109,13 +109,15 @@
     = render 'ci/token_access/index'
 
 - if show_secure_files_setting(@project, current_user)
-  %section.settings
+  %section.settings.no-animate#js-secure-files{ class: ('expanded' if expanded) }
     .settings-header
-      %h4.settings-title
+      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
         = _("Secure Files")
-      = button_to project_ci_secure_files_path(@project), method: :get, class: 'btn gl-button btn-default' do
-        = _('Manage')
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+        = expanded ? _('Collapse') : _('Expand')
       %p
         = _("Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
         = link_to _('Learn more'), help_page_path('ci/secure_files/index'), target: '_blank', rel: 'noopener noreferrer'
+    .settings-content
+      #js-ci-secure-files{ data: { project_id: @project.id, admin: can?(current_user, :admin_secure_files, @project).to_s, file_size_limit: Ci::SecureFile::FILE_SIZE_LIMIT.to_mb } }
 

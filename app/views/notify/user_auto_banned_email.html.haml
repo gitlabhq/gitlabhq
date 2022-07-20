@@ -2,7 +2,7 @@
 - link_end = '</a>'.html_safe
 = email_default_heading(_("We've detected some unusual activity"))
 %p
-  = _('We want to let you know %{username} has been banned from your GitLab instance due to them downloading more than %{max_project_downloads} project repositories within %{within_minutes} minutes.') % { username: sanitize_name(@user.name), max_project_downloads: @max_project_downloads, within_minutes: @within_minutes }
+  = _('We want to let you know %{username} has been banned from %{scope} due to them downloading more than %{max_project_downloads} project repositories within %{within_minutes} minutes.') % { username: sanitize_name(@user.name), max_project_downloads: @max_project_downloads, within_minutes: @within_minutes, scope: @ban_scope }
 %p
   = _('If this is a mistake, you can %{link_start}unban them%{link_end}.').html_safe % { link_start: link_start % { url: admin_users_url(filter: 'banned') }, link_end: link_end }
 %p

@@ -54,7 +54,6 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
       :team         | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days, trial_started_at: frozen_time - 2.days }
       :team         | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days, trial_started_at: frozen_time - 6.days }
       :team         | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days, trial_started_at: frozen_time - 11.days }
-      :experience   | 30 | { created_at: frozen_time - 31.days, git_write_at: frozen_time - 31.days }
     end
 
     with_them do

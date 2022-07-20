@@ -34,7 +34,7 @@ module RuboCop
       #
       #   class Gitlab::MyDomain::MyClass
       #   end
-      class NamespacedClass < RuboCop::Cop::Cop
+      class NamespacedClass < RuboCop::Cop::Base
         MSG = 'Classes must be declared inside a module indicating a product domain namespace. For more info: https://gitlab.com/gitlab-org/gitlab/-/issues/321982'
 
         # These namespaces are considered top-level semantically.
@@ -51,7 +51,7 @@ module RuboCop
           # Remove class name because it's not a domain namespace.
           add_potential_domain_namespace(node) { _1.pop }
 
-          add_offense(node) if domain_namespaces.none?
+          add_offense(node.loc.name) if domain_namespaces.none?
         end
 
         private

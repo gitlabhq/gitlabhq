@@ -171,14 +171,14 @@ might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) from GitLab Starter to GitLab Free in 13.2.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) from GitLab Starter to GitLab Free in 13.2.
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run
 static analysis and other code checks on the current code. After creating the
 report, it's uploaded as an artifact which you can later download and check
 out. The merge request widget also displays any
-[differences between the source and target branches](../../user/project/merge_requests/code_quality.md).
+[differences between the source and target branches](../../ci/testing/code_quality.md).
 
 ## Auto SAST
 
@@ -336,7 +336,7 @@ You can disable DAST:
 
 > Introduced in GitLab 10.4.
 
-Auto [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md)
+Auto [Browser Performance Testing](../../ci/testing/browser_performance_testing.md)
 measures the browser performance of a web page with the
 [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/),
 creates a JSON report including the overall performance score for each page, and
@@ -351,13 +351,13 @@ file named `.gitlab-urls.txt` in the root directory, one file per line. For exam
 ```
 
 Any browser performance differences between the source and target branches are also
-[shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
+[shown in the merge request widget](../../ci/testing/browser_performance_testing.md).
 
 ## Auto Load Performance Testing **(PREMIUM)**
 
 > Introduced in GitLab 13.2.
 
-Auto [Load Performance Testing](../../user/project/merge_requests/load_performance_testing.md)
+Auto [Load Performance Testing](../../ci/testing/load_performance_testing.md)
 measures the server performance of an application with the
 [k6 container](https://hub.docker.com/r/loadimpact/k6/),
 creates a JSON report including several key result metrics, and
@@ -368,7 +368,7 @@ written that's tailored to your specific application. The test also needs to be
 configured so it can pick up the environment's dynamic URL via a CI/CD variable.
 
 Any load performance test result differences between the source and target branches are also
-[shown in the merge request widget](../../user/project/merge_requests/load_performance_testing.md).
+[shown in the merge request widget](../../user/project/merge_requests/widgets.md).
 
 ## Auto Deploy
 

@@ -3,6 +3,34 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Gpg::Commit do
+  let_it_be(:project) { create(:project, :repository, path: 'sample-project') }
+
+  let(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
+  let(:committer_email) { GpgHelpers::User1.emails.first }
+  let(:user_email) { committer_email }
+  let(:public_key) { GpgHelpers::User1.public_key }
+  let(:user) { create(:user, email: user_email) }
+  let(:commit) { create(:commit, project: project, sha: commit_sha, committer_email: committer_email) }
+  let(:crypto) { instance_double(GPGME::Crypto) }
+  let(:mock_signature_data?) { true }
+  # gpg_keys must be pre-loaded so that they can be found during signature verification.
+  let!(:gpg_key) { create(:gpg_key, key: public_key, user: user) }
+
+  let(:signature_data) do
+    [
+      GpgHelpers::User1.signed_commit_signature,
+      GpgHelpers::User1.signed_commit_base_data
+    ]
+  end
+
+  before do
+    if mock_signature_data?
+      allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
+        .with(Gitlab::Git::Repository, commit_sha)
+        .and_return(signature_data)
+    end
+  end
+
   describe '#signature' do
     shared_examples 'returns the cached signature on second call' do
       it 'returns the cached signature on second call' do
@@ -17,11 +45,8 @@ RSpec.describe Gitlab::Gpg::Commit do
       end
     end
 
-    let!(:project) { create :project, :repository, path: 'sample-project' }
-    let!(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
-
     context 'unsigned commit' do
-      let!(:commit) { create :commit, project: project, sha: commit_sha }
+      let(:signature_data) { nil }
 
       it 'returns nil' do
         expect(described_class.new(commit).signature).to be_nil
@@ -29,20 +54,12 @@ RSpec.describe Gitlab::Gpg::Commit do
     end
 
     context 'invalid signature' do
-      let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User1.emails.first }
-
-      let!(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
-
-      before do
-        allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-            .with(Gitlab::Git::Repository, commit_sha)
-            .and_return(
-              [
-                # Corrupt the key
-                GpgHelpers::User1.signed_commit_signature.tr('=', 'a'),
-                GpgHelpers::User1.signed_commit_base_data
-              ]
-            )
+      let(:signature_data) do
+        [
+          # Corrupt the key
+          GpgHelpers::User1.signed_commit_signature.tr('=', 'a'),
+          GpgHelpers::User1.signed_commit_base_data
+        ]
       end
 
       it 'returns nil' do
@@ -53,25 +70,6 @@ RSpec.describe Gitlab::Gpg::Commit do
     context 'known key' do
       context 'user matches the key uid' do
         context 'user email matches the email committer' do
-          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User1.emails.first }
-
-          let!(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
-
-          let!(:gpg_key) do
-            create :gpg_key, key: GpgHelpers::User1.public_key, user: user
-          end
-
-          before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-            .with(Gitlab::Git::Repository, commit_sha)
-            .and_return(
-              [
-                GpgHelpers::User1.signed_commit_signature,
-                GpgHelpers::User1.signed_commit_base_data
-              ]
-            )
-          end
-
           it 'returns a valid signature' do
             signature = described_class.new(commit).signature
 
@@ -112,32 +110,13 @@ RSpec.describe Gitlab::Gpg::Commit do
         end
 
         context 'valid key signed using recent version of Gnupg' do
-          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User1.emails.first }
-
-          let!(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
-
-          let!(:gpg_key) do
-            create :gpg_key, key: GpgHelpers::User1.public_key, user: user
-          end
-
-          let!(:crypto) { instance_double(GPGME::Crypto) }
-
           before do
-            fake_signature = [
-              GpgHelpers::User1.signed_commit_signature,
-              GpgHelpers::User1.signed_commit_base_data
-            ]
-
-            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-              .with(Gitlab::Git::Repository, commit_sha)
-              .and_return(fake_signature)
-          end
-
-          it 'returns a valid signature' do
             verified_signature = double('verified-signature', fingerprint: GpgHelpers::User1.fingerprint, valid?: true)
             allow(GPGME::Crypto).to receive(:new).and_return(crypto)
             allow(crypto).to receive(:verify).and_yield(verified_signature)
+          end
 
+          it 'returns a valid signature' do
             signature = described_class.new(commit).signature
 
             expect(signature).to have_attributes(
@@ -153,33 +132,14 @@ RSpec.describe Gitlab::Gpg::Commit do
         end
 
         context 'valid key signed using older version of Gnupg' do
-          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User1.emails.first }
-
-          let!(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
-
-          let!(:gpg_key) do
-            create :gpg_key, key: GpgHelpers::User1.public_key, user: user
-          end
-
-          let!(:crypto) { instance_double(GPGME::Crypto) }
-
           before do
-            fake_signature = [
-              GpgHelpers::User1.signed_commit_signature,
-              GpgHelpers::User1.signed_commit_base_data
-            ]
-
-            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-              .with(Gitlab::Git::Repository, commit_sha)
-              .and_return(fake_signature)
-          end
-
-          it 'returns a valid signature' do
             keyid = GpgHelpers::User1.fingerprint.last(16)
             verified_signature = double('verified-signature', fingerprint: keyid, valid?: true)
             allow(GPGME::Crypto).to receive(:new).and_return(crypto)
             allow(crypto).to receive(:verify).and_yield(verified_signature)
+          end
 
+          it 'returns a valid signature' do
             signature = described_class.new(commit).signature
 
             expect(signature).to have_attributes(
@@ -195,32 +155,13 @@ RSpec.describe Gitlab::Gpg::Commit do
         end
 
         context 'commit with multiple signatures' do
-          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User1.emails.first }
-
-          let!(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
-
-          let!(:gpg_key) do
-            create :gpg_key, key: GpgHelpers::User1.public_key, user: user
-          end
-
-          let!(:crypto) { instance_double(GPGME::Crypto) }
-
           before do
-            fake_signature = [
-              GpgHelpers::User1.signed_commit_signature,
-              GpgHelpers::User1.signed_commit_base_data
-            ]
-
-            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-              .with(Gitlab::Git::Repository, commit_sha)
-              .and_return(fake_signature)
-          end
-
-          it 'returns an invalid signatures error' do
             verified_signature = double('verified-signature', fingerprint: GpgHelpers::User1.fingerprint, valid?: true)
             allow(GPGME::Crypto).to receive(:new).and_return(crypto)
             allow(crypto).to receive(:verify).and_yield(verified_signature).and_yield(verified_signature)
+          end
 
+          it 'returns an invalid signatures error' do
             signature = described_class.new(commit).signature
 
             expect(signature).to have_attributes(
@@ -236,27 +177,18 @@ RSpec.describe Gitlab::Gpg::Commit do
         end
 
         context 'commit signed with a subkey' do
-          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User3.emails.first }
-
-          let!(:user) { create(:user, email: GpgHelpers::User3.emails.first) }
-
-          let!(:gpg_key) do
-            create :gpg_key, key: GpgHelpers::User3.public_key, user: user
-          end
+          let(:committer_email) { GpgHelpers::User3.emails.first }
+          let(:public_key) { GpgHelpers::User3.public_key }
 
           let(:gpg_key_subkey) do
             gpg_key.subkeys.find_by(fingerprint: GpgHelpers::User3.subkey_fingerprints.last)
           end
 
-          before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-            .with(Gitlab::Git::Repository, commit_sha)
-            .and_return(
-              [
-                GpgHelpers::User3.signed_commit_signature,
-                GpgHelpers::User3.signed_commit_base_data
-              ]
-            )
+          let(:signature_data) do
+            [
+              GpgHelpers::User3.signed_commit_signature,
+              GpgHelpers::User3.signed_commit_base_data
+            ]
           end
 
           it 'returns a valid signature' do
@@ -275,27 +207,12 @@ RSpec.describe Gitlab::Gpg::Commit do
         end
 
         context 'user email does not match the committer email, but is the same user' do
-          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User2.emails.first }
+          let(:committer_email) { GpgHelpers::User2.emails.first }
 
           let(:user) do
             create(:user, email: GpgHelpers::User1.emails.first).tap do |user|
               create :email, user: user, email: GpgHelpers::User2.emails.first
             end
-          end
-
-          let!(:gpg_key) do
-            create :gpg_key, key: GpgHelpers::User1.public_key, user: user
-          end
-
-          before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-            .with(Gitlab::Git::Repository, commit_sha)
-            .and_return(
-              [
-                GpgHelpers::User1.signed_commit_signature,
-                GpgHelpers::User1.signed_commit_base_data
-              ]
-            )
           end
 
           it 'returns an invalid signature' do
@@ -314,24 +231,8 @@ RSpec.describe Gitlab::Gpg::Commit do
         end
 
         context 'user email does not match the committer email' do
-          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User2.emails.first }
-
-          let(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
-
-          let!(:gpg_key) do
-            create :gpg_key, key: GpgHelpers::User1.public_key, user: user
-          end
-
-          before do
-            allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-            .with(Gitlab::Git::Repository, commit_sha)
-            .and_return(
-              [
-                GpgHelpers::User1.signed_commit_signature,
-                GpgHelpers::User1.signed_commit_base_data
-              ]
-            )
-          end
+          let(:committer_email) { GpgHelpers::User2.emails.first }
+          let(:user_email) { GpgHelpers::User1.emails.first }
 
           it 'returns an invalid signature' do
             expect(described_class.new(commit).signature).to have_attributes(
@@ -350,24 +251,8 @@ RSpec.describe Gitlab::Gpg::Commit do
       end
 
       context 'user does not match the key uid' do
-        let!(:commit) { create :commit, project: project, sha: commit_sha }
-
-        let(:user) { create(:user, email: GpgHelpers::User2.emails.first) }
-
-        let!(:gpg_key) do
-          create :gpg_key, key: GpgHelpers::User1.public_key, user: user
-        end
-
-        before do
-          allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-          .with(Gitlab::Git::Repository, commit_sha)
-          .and_return(
-            [
-              GpgHelpers::User1.signed_commit_signature,
-              GpgHelpers::User1.signed_commit_base_data
-            ]
-          )
-        end
+        let(:user_email) { GpgHelpers::User2.emails.first }
+        let(:public_key) { GpgHelpers::User1.public_key }
 
         it 'returns an invalid signature' do
           expect(described_class.new(commit).signature).to have_attributes(
@@ -386,18 +271,7 @@ RSpec.describe Gitlab::Gpg::Commit do
     end
 
     context 'unknown key' do
-      let!(:commit) { create :commit, project: project, sha: commit_sha }
-
-      before do
-        allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
-          .with(Gitlab::Git::Repository, commit_sha)
-          .and_return(
-            [
-              GpgHelpers::User1.signed_commit_signature,
-              GpgHelpers::User1.signed_commit_base_data
-            ]
-          )
-      end
+      let(:gpg_key) { nil }
 
       it 'returns an invalid signature' do
         expect(described_class.new(commit).signature).to have_attributes(
@@ -415,15 +289,15 @@ RSpec.describe Gitlab::Gpg::Commit do
     end
 
     context 'multiple commits with signatures' do
-      let(:first_signature) { create(:gpg_signature) }
+      let(:mock_signature_data?) { false }
 
-      let(:gpg_key) { create(:gpg_key, key: GpgHelpers::User2.public_key) }
-      let(:second_signature) { create(:gpg_signature, gpg_key: gpg_key) }
-
+      let!(:first_signature) { create(:gpg_signature) }
+      let!(:gpg_key) { create(:gpg_key, key: GpgHelpers::User2.public_key) }
+      let!(:second_signature) { create(:gpg_signature, gpg_key: gpg_key) }
       let!(:first_commit) { create(:commit, project: project, sha: first_signature.commit_sha) }
       let!(:second_commit) { create(:commit, project: project, sha: second_signature.commit_sha) }
 
-      let(:commits) do
+      let!(:commits) do
         [first_commit, second_commit].map do |commit|
           gpg_commit = described_class.new(commit)
 
@@ -440,6 +314,23 @@ RSpec.describe Gitlab::Gpg::Commit do
 
         expect(recorder.count).to eq(1)
       end
+    end
+  end
+
+  describe '#update_signature!' do
+    let!(:gpg_key) { nil }
+
+    let(:signature) { described_class.new(commit).signature }
+
+    it 'updates signature record' do
+      signature
+
+      create(:gpg_key, key: public_key, user: user)
+
+      stored_signature = CommitSignatures::GpgSignature.find_by_commit_sha(commit_sha)
+      expect { described_class.new(commit).update_signature!(stored_signature) }.to(
+        change { signature.reload.verification_status }.from('unknown_key').to('verified')
+      )
     end
   end
 end

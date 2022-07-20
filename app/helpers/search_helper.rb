@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module SearchHelper
+  # params which should persist when a new tab is selected
   SEARCH_GENERIC_PARAMS = [
     :search,
     :scope,
@@ -129,7 +130,7 @@ module SearchHelper
   end
 
   def search_service
-    @search_service ||= ::SearchService.new(current_user, params.merge(confidential: Gitlab::Utils.to_boolean(params[:confidential])))
+    @search_service ||= ::SearchService.new(current_user, sanitized_search_params)
   end
 
   def search_sort_options
@@ -169,7 +170,7 @@ module SearchHelper
   # search_context exposes a bit too much data to the frontend, this controls what data we share and when.
   def header_search_context
     {}.tap do |hash|
-      hash[:group] = { id: search_context.group.id, name: search_context.group.name } if search_context.for_group?
+      hash[:group] = { id: search_context.group.id, name: search_context.group.name, full_name: search_context.group.full_name } if search_context.for_group?
       hash[:group_metadata] = search_context.group_metadata if search_context.for_group?
 
       hash[:project] = { id: search_context.project.id, name: search_context.project.name } if search_context.for_project?
@@ -207,10 +208,10 @@ module SearchHelper
       { category: "Help", label: _("API Help"),           url: help_page_path("api/index") },
       { category: "Help", label: _("Markdown Help"),      url: help_page_path("user/markdown") },
       { category: "Help", label: _("Permissions Help"),   url: help_page_path("user/permissions") },
-      { category: "Help", label: _("Public Access Help"), url: help_page_path("public_access/public_access") },
+      { category: "Help", label: _("Public Access Help"), url: help_page_path("user/public_access") },
       { category: "Help", label: _("Rake Tasks Help"),    url: help_page_path("raketasks/index") },
-      { category: "Help", label: _("SSH Keys Help"),      url: help_page_path("ssh/index") },
-      { category: "Help", label: _("System Hooks Help"),  url: help_page_path("system_hooks/system_hooks") },
+      { category: "Help", label: _("SSH Keys Help"),      url: help_page_path("user/ssh") },
+      { category: "Help", label: _("System Hooks Help"),  url: help_page_path("administration/system_hooks") },
       { category: "Help", label: _("Webhooks Help"),      url: help_page_path("user/project/integrations/webhooks") }
     ]
   end
@@ -480,6 +481,13 @@ module SearchHelper
 
   def feature_flag_tab_enabled?(flag)
     @group || Feature.enabled?(flag, current_user, type: :ops)
+  end
+
+  def sanitized_search_params
+    sanitized_params = params.dup
+    sanitized_params[:confidential] = Gitlab::Utils.to_boolean(sanitized_params[:confidential]) if sanitized_params.key?(:confidential)
+
+    sanitized_params
   end
 end
 

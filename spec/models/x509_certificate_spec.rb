@@ -73,7 +73,9 @@ RSpec.describe X509Certificate do
     it 'accepts correct subject_key_identifier' do
       subject_key_identifiers = [
         'AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB',
-        'CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD'
+        'CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD',
+        '79:FB:C1:E5:6B:53:8B:0A',
+        '79:fb:c1:e5:6b:53:8b:0a'
       ]
 
       subject_key_identifiers.each do |identifier|
@@ -83,7 +85,6 @@ RSpec.describe X509Certificate do
 
     it 'rejects invalid subject_key_identifier' do
       subject_key_identifiers = [
-        'AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB',
         'CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:GG',
         'random string',
         '12321342545356434523412341245452345623453542345234523453245'

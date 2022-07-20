@@ -4,7 +4,7 @@
 # 1. `Pure Ruby`: `bin/feature-flag`
 # 2. `GitLab Rails`: `lib/feature/definition.rb`
 
-class Feature
+module Feature
   module Shared
     # optional: defines if a on-disk definition is required for this feature flag type
     # rollout_issue: defines if `bin/feature-flag` asks for rollout issue

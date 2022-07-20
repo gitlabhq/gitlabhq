@@ -1,8 +1,0 @@
----
-name: ci_pending_builds_queue_source
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354496
-milestone: '14.0'
-type: development
-group: group::pipeline execution
-default_enabled: true

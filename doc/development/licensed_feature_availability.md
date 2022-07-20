@@ -61,3 +61,12 @@ before_action do
   push_licensed_feature(:feature_symbol, project)
 end
 ```
+
+## Allow use of licensed EE features
+
+To enable plans per namespace turn on the `Allow use of licensed EE features` option from the settings page.
+This will make licensed EE features available to projects only if the project namespace's plan includes the feature
+or if the project is public. To enable it:
+
+1. If you are developing locally, follow the steps in [simulate SaaS](ee_features.md#act-as-saas) to make the option available.
+1. Select Admin > Settings > General > "Account and limit" and enable "Allow use of licensed EE features".

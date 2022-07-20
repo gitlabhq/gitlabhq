@@ -37,6 +37,10 @@ RSpec.shared_examples 'issuable import csv service' do |issuable_type|
   end
 
   describe '#execute' do
+    before do
+      project.add_developer(user)
+    end
+
     context 'invalid file extension' do
       let(:file) { fixture_file_upload('spec/fixtures/banana_sample.gif') }
 

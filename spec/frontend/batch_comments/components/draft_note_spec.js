@@ -33,12 +33,15 @@ describe('Batch comments draft note component', () => {
   const findSubmitReviewButton = () => wrapper.findComponent(PublishButton);
   const findAddCommentButton = () => wrapper.findComponent(GlButton);
 
-  const createComponent = (propsData = { draft }) => {
+  const createComponent = (propsData = { draft }, glFeatures = {}) => {
     wrapper = shallowMount(DraftNote, {
       store,
       propsData,
       stubs: {
         NoteableNote: NoteableNoteStub,
+      },
+      provide: {
+        glFeatures,
       },
     });
 
@@ -95,6 +98,12 @@ describe('Batch comments draft note component', () => {
 
       expect(publishNowButton.props().disabled).toBe(true);
       expect(publishNowButton.props().loading).toBe(false);
+    });
+
+    it('hides button when mr_review_submit_comment is enabled', () => {
+      createComponent({ draft }, { mrReviewSubmitComment: true });
+
+      expect(findAddCommentButton().exists()).toBe(false);
     });
   });
 

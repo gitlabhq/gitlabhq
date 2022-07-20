@@ -43,7 +43,6 @@ Migration/BackgroundMigrationRecord:
     - ee/lib/ee/gitlab/background_migration/backfill_iteration_cadence_id_for_boards.rb
     - ee/lib/ee/gitlab/background_migration/create_security_setting.rb
     - ee/lib/ee/gitlab/background_migration/drop_invalid_remediations.rb
-    - ee/lib/ee/gitlab/background_migration/drop_invalid_remediations.rb
     - ee/lib/ee/gitlab/background_migration/fix_incorrect_max_seats_used.rb
     - ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb
     - ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_in_batch.rb

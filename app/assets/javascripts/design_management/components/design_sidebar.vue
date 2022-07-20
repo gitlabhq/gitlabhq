@@ -1,6 +1,6 @@
 <script>
-import { GlCollapse, GlButton, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
-import { getCookie, setCookie, parseBoolean, isLoggedIn } from '~/lib/utils/common_utils';
+import { GlAccordion, GlAccordionItem, GlSkeletonLoader } from '@gitlab/ui';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 
 import { s__ } from '~/locale';
 import Participants from '~/sidebar/components/participants/participants.vue';
@@ -17,9 +17,8 @@ export default {
     DesignDiscussion,
     DesignNoteSignedOut,
     Participants,
-    GlCollapse,
-    GlButton,
-    GlPopover,
+    GlAccordion,
+    GlAccordionItem,
     GlSkeletonLoader,
     DesignTodoButton,
   },
@@ -58,7 +57,7 @@ export default {
   },
   data() {
     return {
-      isResolvedCommentsPopoverHidden: parseBoolean(getCookie(this.$options.cookieKey)),
+      isResolvedDiscussionsExpanded: this.resolvedDiscussionsExpanded,
       discussionWithOpenForm: '',
       isLoggedIn: isLoggedIn(),
     };
@@ -79,18 +78,22 @@ export default {
     resolvedDiscussions() {
       return this.discussions.filter((discussion) => discussion.resolved);
     },
+    hasResolvedDiscussions() {
+      return this.resolvedDiscussions.length > 0;
+    },
+    resolvedDiscussionsTitle() {
+      return `${this.$options.i18n.resolveCommentsToggleText} (${this.resolvedDiscussions.length})`;
+    },
     unresolvedDiscussions() {
       return this.discussions.filter((discussion) => !discussion.resolved);
     },
-    resolvedCommentsToggleIcon() {
-      return this.resolvedDiscussionsExpanded ? 'chevron-down' : 'chevron-right';
-    },
   },
   watch: {
-    isResolvedCommentsPopoverHidden(newVal) {
-      if (!newVal) {
-        this.$refs.resolvedComments.scrollIntoView();
-      }
+    resolvedDiscussionsExpanded(resolvedDiscussionsExpanded) {
+      this.isResolvedDiscussionsExpanded = resolvedDiscussionsExpanded;
+    },
+    isResolvedDiscussionsExpanded() {
+      this.$emit('toggleResolvedComments');
     },
   },
   mounted() {
@@ -100,8 +103,6 @@ export default {
   },
   methods: {
     handleSidebarClick() {
-      this.isResolvedCommentsPopoverHidden = true;
-      setCookie(this.$options.cookieKey, 'true', { expires: 365 * 10 });
       this.updateActiveDiscussion();
     },
     updateActiveDiscussion(id) {
@@ -121,8 +122,9 @@ export default {
       this.discussionWithOpenForm = id;
     },
   },
-  resolveCommentsToggleText: s__('DesignManagement|Resolved Comments'),
-  cookieKey: 'hide_design_resolved_comments_popover',
+  i18n: {
+    resolveCommentsToggleText: s__('DesignManagement|Resolved Comments'),
+  },
 };
 </script>
 
@@ -181,40 +183,12 @@ export default {
         @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
         @open-form="updateDiscussionWithOpenForm"
       />
-      <template v-if="resolvedDiscussions.length > 0">
-        <gl-button
-          id="resolved-comments"
-          ref="resolvedComments"
-          data-testid="resolved-comments"
-          :icon="resolvedCommentsToggleIcon"
-          variant="link"
-          class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-mb-4"
-          @click="$emit('toggleResolvedComments')"
-          >{{ $options.resolveCommentsToggleText }} ({{ resolvedDiscussions.length }})
-        </gl-button>
-        <gl-popover
-          v-if="!isResolvedCommentsPopoverHidden"
-          :show="!isResolvedCommentsPopoverHidden"
-          target="resolved-comments"
-          container="popovercontainer"
-          placement="top"
-          :title="s__('DesignManagement|Resolved Comments')"
+      <gl-accordion v-if="hasResolvedDiscussions" :header-level="3" class="gl-mb-5">
+        <gl-accordion-item
+          v-model="isResolvedDiscussionsExpanded"
+          :title="resolvedDiscussionsTitle"
+          header-class="gl-mb-5!"
         >
-          <p>
-            {{
-              s__(
-                'DesignManagement|Comments you resolve can be viewed and unresolved by going to the "Resolved Comments" section below',
-              )
-            }}
-          </p>
-          <a
-            href="https://docs.gitlab.com/ee/user/project/issues/design_management.html#resolve-design-threads"
-            rel="noopener noreferrer"
-            target="_blank"
-            >{{ s__('DesignManagement|Learn more about resolving comments') }}</a
-          >
-        </gl-popover>
-        <gl-collapse :visible="resolvedDiscussionsExpanded" class="gl-mt-3">
           <design-discussion
             v-for="discussion in resolvedDiscussions"
             :key="discussion.id"
@@ -232,8 +206,8 @@ export default {
             @open-form="updateDiscussionWithOpenForm"
             @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
           />
-        </gl-collapse>
-      </template>
+        </gl-accordion-item>
+      </gl-accordion>
       <slot name="reply-form"></slot>
     </template>
   </div>

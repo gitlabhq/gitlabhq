@@ -5,7 +5,6 @@ import Vuex from 'vuex';
 import { nextTick } from 'vue';
 import { setTestTimeout } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
-import invalidUrl from '~/lib/utils/invalid_url';
 
 import MonitorAnomalyChart from '~/monitoring/components/charts/anomaly.vue';
 import MonitorBarChart from '~/monitoring/components/charts/bar.vue';
@@ -27,13 +26,7 @@ import {
   heatmapGraphData,
   barGraphData,
 } from '../graph_data';
-import {
-  mockLogsHref,
-  mockLogsPath,
-  mockNamespace,
-  mockNamespacedData,
-  mockTimeRange,
-} from '../mock_data';
+import { mockNamespace, mockNamespacedData, mockTimeRange } from '../mock_data';
 
 const mocks = {
   $toast: {
@@ -65,7 +58,6 @@ describe('Dashboard Panel', () => {
       },
       store,
       mocks,
-      provide: { glFeatures: { monitorLogging: true } },
       ...options,
     });
   };
@@ -335,86 +327,6 @@ describe('Dashboard Panel', () => {
     });
   });
 
-  describe('View Logs dropdown item', () => {
-    const findViewLogsLink = () => wrapper.find({ ref: 'viewLogsLink' });
-
-    beforeEach(async () => {
-      createWrapper();
-      await nextTick();
-    });
-
-    it('is not present by default', async () => {
-      await nextTick();
-      expect(findViewLogsLink().exists()).toBe(false);
-    });
-
-    it('is not present if a time range is not set', async () => {
-      state.logsPath = mockLogsPath;
-      state.timeRange = null;
-
-      await nextTick();
-      expect(findViewLogsLink().exists()).toBe(false);
-    });
-
-    it('is not present if the logs path is default', async () => {
-      state.logsPath = invalidUrl;
-      state.timeRange = mockTimeRange;
-
-      await nextTick();
-      expect(findViewLogsLink().exists()).toBe(false);
-    });
-
-    it('is not present if the logs path is not set', async () => {
-      state.logsPath = null;
-      state.timeRange = mockTimeRange;
-
-      await nextTick();
-      expect(findViewLogsLink().exists()).toBe(false);
-    });
-
-    it('is present when logs path and time a range is present', async () => {
-      state.logsPath = mockLogsPath;
-      state.timeRange = mockTimeRange;
-
-      await nextTick();
-      expect(findViewLogsLink().attributes('href')).toMatch(mockLogsHref);
-    });
-
-    describe(':monitor_logging feature flag', () => {
-      it.each`
-        flagState | logsState  | expected
-        ${true}   | ${'shows'} | ${true}
-        ${false}  | ${'hides'} | ${false}
-      `('$logsState logs when flag state is $flagState', async ({ flagState, expected }) => {
-        createWrapper({}, { provide: { glFeatures: { monitorLogging: flagState } } });
-        state.logsPath = mockLogsPath;
-        state.timeRange = mockTimeRange;
-        await nextTick();
-
-        expect(findViewLogsLink().exists()).toBe(expected);
-      });
-    });
-
-    it('it is overridden when a datazoom event is received', async () => {
-      state.logsPath = mockLogsPath;
-      state.timeRange = mockTimeRange;
-
-      const zoomedTimeRange = {
-        start: '2020-01-01T00:00:00.000Z',
-        end: '2020-01-01T01:00:00.000Z',
-      };
-
-      findTimeChart().vm.$emit('datazoom', zoomedTimeRange);
-
-      await nextTick();
-      const start = encodeURIComponent(zoomedTimeRange.start);
-      const end = encodeURIComponent(zoomedTimeRange.end);
-      expect(findViewLogsLink().attributes('href')).toMatch(
-        `${mockLogsPath}?start=${start}&end=${end}`,
-      );
-    });
-  });
-
   describe('when clipboard data is available', () => {
     const clipboardText = 'A value to copy.';
 
@@ -505,14 +417,6 @@ describe('Dashboard Panel', () => {
       store.state.embedGroup.modules.push(mockNamespace);
 
       createWrapper({ namespace: mockNamespace });
-    });
-
-    it('handles namespaced time range and logs path state', async () => {
-      store.state[mockNamespace].timeRange = mockTimeRange;
-      store.state[mockNamespace].logsPath = mockLogsPath;
-
-      await nextTick();
-      expect(wrapper.find({ ref: 'viewLogsLink' }).attributes().href).toBe(mockLogsHref);
     });
 
     it('handles namespaced deployment data state', async () => {

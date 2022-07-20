@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec::Matchers.define :publish_event do |expected_event_class|
+  include RSpec::Matchers::Composable
+
   supports_block_expectations
 
   match do |proc|
@@ -15,8 +17,15 @@ RSpec::Matchers.define :publish_event do |expected_event_class|
     proc.call
 
     @events.any? do |event|
-      event.instance_of?(expected_event_class) && event.data == @expected_data
+      event.instance_of?(expected_event_class) && match_data?(event.data, @expected_data)
     end
+  end
+
+  def match_data?(actual, expected)
+    values_match?(actual.keys, expected.keys) &&
+      actual.keys.each do |key|
+        values_match?(actual[key], expected[key])
+      end
   end
 
   chain :with do |expected_data|

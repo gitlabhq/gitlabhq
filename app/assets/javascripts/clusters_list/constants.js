@@ -145,8 +145,8 @@ export const AGENT_STATUSES = {
   },
   inactive: {
     name: s__('ClusterAgents|Not connected'),
-    icon: 'severity-critical',
-    class: 'text-danger-800',
+    icon: 'status-alert',
+    class: 'text-danger-500',
     tooltip: {
       title: s__('ClusterAgents|Agent might not be connected to GitLab'),
       body: sprintf(
@@ -159,7 +159,7 @@ export const AGENT_STATUSES = {
   unused: {
     name: s__('ClusterAgents|Never connected'),
     icon: 'status-neutral',
-    class: 'text-secondary-400',
+    class: 'text-secondary-500',
     tooltip: {
       title: s__('ClusterAgents|Agent never connected to GitLab'),
       body: s__('ClusterAgents|Make sure you are using a valid token.'),

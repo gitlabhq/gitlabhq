@@ -104,12 +104,6 @@ module QA
         false
       end
 
-      def api_delete
-        super
-
-        QA::Runtime::Logger.debug("Deleted user '#{username}'")
-      end
-
       def api_delete_path
         "/users/#{id}?hard_delete=#{hard_delete_on_api_removal}"
       rescue NoValueError
@@ -161,6 +155,20 @@ module QA
             user.password = password if password
           end
         end
+      end
+
+      # Get users from the API
+      #
+      # @param [Integer] per_page the number of pages to traverse (used for pagination)
+      # @return [Array<Hash>] parsed response body
+      def self.all(per_page: 100)
+        response = nil
+        Resource::User.init do |user|
+          response = user.get(Runtime::API::Request.new(Runtime::API::Client.as_admin,
+                                                           '/users',
+                                                           per_page: per_page.to_s).url)
+          raise ResourceQueryError unless response.code == 200
+        end.parse_body(response)
       end
 
       def approve!

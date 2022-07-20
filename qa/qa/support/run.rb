@@ -15,6 +15,10 @@ module QA
         def success?
           exitstatus == 0 && !response.include?('Error encountered')
         end
+
+        def to_i
+          response.to_i
+        end
       end
 
       def run(command_str, env: [], max_attempts: 1, log_prefix: '')

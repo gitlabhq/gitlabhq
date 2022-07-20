@@ -106,7 +106,7 @@ describe('Jobs List block', () => {
     });
 
     expect(findJob().text()).toBe(job.name);
-    expect(findJob().text()).not.toContain(job.id);
+    expect(findJob().text()).not.toContain(job.id.toString());
   });
 
   it('renders job id when job name is not available', () => {

@@ -1,9 +1,9 @@
 ---
 key_path: uuid
 description: GitLab instance unique identifier
-product_section: growth
-product_stage: growth
-product_group: group::product intelligence
+product_section: analytics
+product_stage: analytics
+product_group: product_intelligence
 product_category: collection
 value_type: string
 status: active

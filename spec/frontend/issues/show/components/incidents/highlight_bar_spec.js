@@ -74,7 +74,7 @@ describe('Highlight Bar', () => {
     });
 
     it('renders a number of alert events', () => {
-      expect(wrapper.text()).toContain(alert.eventCount);
+      expect(wrapper.text()).toContain(alert.eventCount.toString());
     });
   });
 

@@ -159,7 +159,7 @@ export default {
     introText() {
       return sprintf(this.labelIntroText, { name: this.name });
     },
-    validationState() {
+    exceptionState() {
       return this.invalidFeedbackMessage ? false : null;
     },
     selectLabelId() {
@@ -306,11 +306,11 @@ export default {
           <slot name="intro-text-after"></slot>
         </div>
 
-        <slot name="user-limit-notification"></slot>
+        <slot name="alert"></slot>
 
         <gl-form-group
           :invalid-feedback="invalidFeedbackMessage"
-          :state="validationState"
+          :state="exceptionState"
           data-testid="members-form-group"
         >
           <template #description>
@@ -320,7 +320,7 @@ export default {
 
           <label :id="selectLabelId" :class="selectLabelClass">{{ labelSearchField }}</label>
           <gl-form-input v-if="reachedLimit" data-testid="disabled-input" disabled />
-          <slot v-else name="select" v-bind="{ validationState, labelId: selectLabelId }"></slot>
+          <slot v-else name="select" v-bind="{ exceptionState, labelId: selectLabelId }"></slot>
         </gl-form-group>
 
         <template v-if="!reachedLimit">

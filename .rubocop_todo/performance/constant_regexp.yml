@@ -1,15 +1,13 @@
 ---
 # Cop supports --auto-correct.
 Performance/ConstantRegexp:
-  # Offense count: 46
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
     - 'app/models/commit.rb'
     - 'app/models/commit_range.rb'
     - 'app/models/custom_emoji.rb'
     - 'app/models/gpg_key.rb'
     - 'app/models/merge_request.rb'
+    - 'app/models/packages/package.rb'
     - 'app/models/project.rb'
     - 'app/models/wiki.rb'
     - 'ee/app/models/ee/epic.rb'
@@ -27,5 +25,6 @@ Performance/ConstantRegexp:
     - 'lib/gitlab/regex.rb'
     - 'scripts/perf/query_limiting_report.rb'
     - 'scripts/validate_migration_schema'
+    - 'spec/features/users/email_verification_on_login_spec.rb'
     - 'spec/models/concerns/token_authenticatable_spec.rb'
     - 'spec/services/notes/copy_service_spec.rb'

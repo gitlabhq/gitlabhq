@@ -30,8 +30,6 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   def usage_data
-    return unless Feature.enabled?(:prerecord_service_ping_data)
-
     ServicePing::BuildPayload.new.execute.tap do |payload|
       record = {
         recorded_at: payload[:recorded_at],

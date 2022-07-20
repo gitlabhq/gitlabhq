@@ -409,7 +409,7 @@ RSpec.describe ProjectsController do
 
         before do
           project.update!(visibility: project_visibility.to_s)
-          project.team.add_user(user, :guest) if user_type == :member
+          project.team.add_member(user, :guest) if user_type == :member
           sign_in(user) unless user_type == :anonymous
         end
 
@@ -1432,9 +1432,11 @@ RSpec.describe ProjectsController do
 
     shared_examples 'rate limits project export endpoint' do
       before do
-        allow(Gitlab::ApplicationRateLimiter)
-          .to receive(:increment)
-          .and_return(Gitlab::ApplicationRateLimiter.rate_limits["project_#{action}".to_sym][:threshold].call + 1)
+        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+          allow(strategy)
+            .to receive(:increment)
+            .and_return(Gitlab::ApplicationRateLimiter.rate_limits["project_#{action}".to_sym][:threshold].call + 1)
+        end
       end
 
       it 'prevents requesting project export' do
@@ -1546,9 +1548,11 @@ RSpec.describe ProjectsController do
 
         context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_rate_limiting do
           before do
-            allow(Gitlab::ApplicationRateLimiter)
-              .to receive(:increment)
-              .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_download_export][:threshold].call + 1)
+            allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+              allow(strategy)
+                .to receive(:increment)
+                .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:project_download_export][:threshold].call + 1)
+            end
           end
 
           it 'prevents requesting project export' do

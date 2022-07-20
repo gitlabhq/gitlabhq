@@ -201,10 +201,13 @@ RSpec.configure do |config|
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
   config.include StubSpamServices
+  config.include SnowplowHelpers
   config.include RenderedHelpers
   config.include RSpec::Benchmark::Matchers, type: :benchmark
+  config.include DetailedErrorHelpers
 
   include StubFeatureFlags
+  include StubSnowplow
 
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -273,6 +276,9 @@ RSpec.configure do |config|
       # (ie. ApplicationSetting#auto_devops_enabled)
       stub_feature_flags(force_autodevops_on_by_default: false)
 
+      # The survey popover can block the diffs causing specs to fail
+      stub_feature_flags(mr_experience_survey: false)
+
       # Merge request widget GraphQL requests are disabled in the tests
       # for now whilst we migrate as much as we can over the GraphQL
       # stub_feature_flags(merge_request_widget_graphql: false)
@@ -289,16 +295,16 @@ RSpec.configure do |config|
       stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
       stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
 
+      # It's disabled in specs because we don't support certain features which
+      # cause spec failures.
+      stub_feature_flags(use_click_house_database_for_error_tracking: false)
+
       enable_rugged = example.metadata[:enable_rugged].present?
 
       # Disable Rugged features by default
       Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS.each do |flag|
         stub_feature_flags(flag => enable_rugged)
       end
-
-      # Disable the usage of file_identifier_hash by default until it is ready
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/33867
-      stub_feature_flags(file_identifier_hash: false)
 
       # Disable `main_branch_over_master` as we migrate
       # from `master` to `main` accross our codebase.
@@ -319,6 +325,14 @@ RSpec.configure do |config|
       # Specs should not get a CAPTCHA challenge by default, this makes the sign-in flow simpler in
       # most cases. We do test the CAPTCHA flow in the appropriate specs.
       stub_feature_flags(arkose_labs_login_challenge: false)
+
+      # Specs should not require email verification by default, this makes the sign-in flow simpler in
+      # most cases. We do test the email verification flow in the appropriate specs.
+      stub_feature_flags(require_email_verification: false)
+
+      # This feature flag is for selectively disabling by actor, therefore we don't enable it by default.
+      # See https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
+      stub_feature_flags(legacy_merge_request_state_check_for_merged_result_pipelines: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
@@ -363,6 +377,9 @@ RSpec.configure do |config|
     stub_application_setting(admin_mode: true) unless example.metadata[:do_not_mock_admin_mode_setting]
 
     allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(false)
+
+    # Ensure that Snowplow is enabled by default unless forced to the opposite
+    stub_snowplow unless example.metadata[:do_not_stub_snowplow_by_default]
   end
 
   config.around(:example, :quarantine) do |example|

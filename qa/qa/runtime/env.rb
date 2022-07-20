@@ -263,14 +263,6 @@ module QA
         ENV['GITLAB_QA_PASSWORD_6']
       end
 
-      def gitlab_qa_2fa_owner_username_1
-        ENV['GITLAB_QA_2FA_OWNER_USERNAME_1'] || 'gitlab-qa-2fa-owner-user1'
-      end
-
-      def gitlab_qa_2fa_owner_password_1
-        ENV['GITLAB_QA_2FA_OWNER_PASSWORD_1']
-      end
-
       def gitlab_qa_1p_email
         ENV['GITLAB_QA_1P_EMAIL']
       end
@@ -467,6 +459,29 @@ module QA
 
       def skip_smoke_reliable?
         enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
+      end
+
+      # ENV variables for authenticating against a private container registry
+      # These need to be set if using the
+      # Service::DockerRun::Mixins::ThirdPartyDocker module
+      def third_party_docker_registry
+        ENV['QA_THIRD_PARTY_DOCKER_REGISTRY']
+      end
+
+      def third_party_docker_repository
+        ENV['QA_THIRD_PARTY_DOCKER_REPOSITORY']
+      end
+
+      def third_party_docker_user
+        ENV['QA_THIRD_PARTY_DOCKER_USER']
+      end
+
+      def third_party_docker_password
+        ENV['QA_THIRD_PARTY_DOCKER_PASSWORD']
+      end
+
+      def max_capybara_wait_time
+        ENV.fetch('MAX_CAPYBARA_WAIT_TIME', 10).to_i
       end
 
       private

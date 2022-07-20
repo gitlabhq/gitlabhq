@@ -201,8 +201,9 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/gitlab-elasticsearch-indexer/bin/gitlab-elasticsearch-indexer
       - ${TMP_TEST_FOLDER}/gitlab-shell/
       - ${TMP_TEST_FOLDER}/gitlab-test-fork/
-      - ${TMP_TEST_FOLDER}/gitlab-test-fork_bare/
+      - ${TMP_TEST_FOLDER}/gitlab-test-fork.bundle
       - ${TMP_TEST_FOLDER}/gitlab-test/
+      - ${TMP_TEST_FOLDER}/gitlab-test.bundle
       - ${TMP_TEST_FOLDER}/repositories/
       - ${TMP_TEST_FOLDER}/second_storage/
       - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
@@ -609,17 +610,16 @@ rspec:undercoverage:
   stage: post-test
   needs: ["rspec:coverage"]
   script:
-    - if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
-        echo "Checking out \$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA ($CI_MERGE_REQUEST_SOURCE_BRANCH_SHA) instead of \$CI_COMMIT_SHA (merge result commit $CI_COMMIT_SHA) so we can use $CI_MERGE_REQUEST_DIFF_BASE_SHA for undercoverage in this merged result pipeline";
-        git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA};
-        bundle_install_script;
+    - if [ -n "$CI_MERGE_REQUEST_TARGET_BRANCH_SHA" ]; then
+        echo "HEAD is $(git rev-parse HEAD). \$CI_MERGE_REQUEST_TARGET_BRANCH_SHA is ${CI_MERGE_REQUEST_TARGET_BRANCH_SHA}";
       else
-        echo "Using \$CI_COMMIT_SHA ($CI_COMMIT_SHA) for this non-merge result pipeline.";
+        echo "HEAD is $(git rev-parse HEAD). \$CI_MERGE_REQUEST_DIFF_BASE_SHA is ${CI_MERGE_REQUEST_DIFF_BASE_SHA}";
       fi;
-    - UNDERCOVERAGE_COMPARE="${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$(git merge-base origin/master HEAD)}"
-    - echo "Undercoverage comparing with ${UNDERCOVERAGE_COMPARE}"
+    - UNDERCOVERAGE_COMPARE="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-$CI_MERGE_REQUEST_DIFF_BASE_SHA}"
+    - git diff ${UNDERCOVERAGE_COMPARE} --stat
+    - echo "Undercoverage comparing with ${UNDERCOVERAGE_COMPARE}."
     - if [ -f scripts/undercoverage ]; then
-        run_timed_command "scripts/undercoverage ${UNDERCOVERAGE_COMPARE}";
+        run_timed_command "bundle exec scripts/undercoverage ${UNDERCOVERAGE_COMPARE}";
       fi;
 
 rspec:feature-flags:

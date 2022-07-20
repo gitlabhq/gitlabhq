@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.plan.issues
 description: Count of users creating Issues in last 28 days.
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: issue_tracking
 value_type: number
 status: active

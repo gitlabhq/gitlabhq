@@ -10,6 +10,7 @@ export const initWorkItemsRoot = () => {
 
   return new Vue({
     el,
+    name: 'WorkItemsRoot',
     router: createRouter(el.dataset.fullPath),
     apolloProvider: createApolloProvider(),
     provide: {

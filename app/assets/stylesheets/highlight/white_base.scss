@@ -158,7 +158,8 @@ pre.code,
   }
 
   .diff-line-num {
-    &.old {
+    &.old,
+    &.old-nomappinginraw {
       background-color: $line-number-old;
 
       a {
@@ -166,7 +167,8 @@ pre.code,
       }
     }
 
-    &.new {
+    &.new,
+    &.new-nomappinginraw {
       background-color: $line-number-new;
 
       a {
@@ -204,7 +206,8 @@ pre.code,
   }
 
   .line_content {
-    &.old {
+    &.old,
+    &.old-nomappinginraw {
       background-color: $line-removed;
 
       &::before {
@@ -216,7 +219,8 @@ pre.code,
       }
     }
 
-    &.new {
+    &.new,
+    &.new-nomappinginraw {
       background-color: $line-added;
 
       &::before {
@@ -243,11 +247,13 @@ pre.code,
 
   .line-coverage,
   .line-codequality {
-    &.old {
+    &.old,
+    &.old-nomappinginraw {
       background-color: $line-removed;
     }
 
-    &.new {
+    &.new,
+    &.new-nomappinginraw {
       background-color: $line-added;
     }
 

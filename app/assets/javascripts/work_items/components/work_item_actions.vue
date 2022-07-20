@@ -5,7 +5,7 @@ import Tracking from '~/tracking';
 
 export default {
   i18n: {
-    deleteWorkItem: s__('WorkItem|Delete work item'),
+    deleteTask: s__('WorkItem|Delete task'),
   },
   components: {
     GlDropdown,
@@ -54,7 +54,7 @@ export default {
       right
     >
       <gl-dropdown-item v-gl-modal="'work-item-confirm-delete'">{{
-        $options.i18n.deleteWorkItem
+        $options.i18n.deleteTask
       }}</gl-dropdown-item>
     </gl-dropdown>
     <gl-modal
@@ -66,9 +66,7 @@ export default {
       @hide="handleCancelDeleteWorkItem"
     >
       {{
-        s__(
-          'WorkItem|Are you sure you want to delete the work item? This action cannot be reversed.',
-        )
+        s__('WorkItem|Are you sure you want to delete the task? This action cannot be reversed.')
       }}
     </gl-modal>
   </div>

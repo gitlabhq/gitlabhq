@@ -109,3 +109,5 @@ export const DEFAULT_FIELDS = [
     columnClass: 'gl-w-20p',
   },
 ];
+
+export const performanceModalId = 'performanceInsightsModal';

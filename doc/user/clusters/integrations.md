@@ -28,13 +28,11 @@ You can install your applications manually as shown in the following sections, o
 installation.
 
 Although, the [Cluster management project template](management_project_template.md) still
-requires that you manually do the last steps of these sections,
-[Enable Prometheus integration for your cluster](#enable-prometheus-integration-for-your-cluster)
-or [Enable Elastic Stack integration for your cluster](#enable-elastic-stack-integration-for-your-cluster)
-depending on which application you are installing. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/326565)
+requires that you manually do the last steps of this section,
+[Enable Prometheus integration for your cluster](#enable-prometheus-integration-for-your-cluster). [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/326565)
 to automate this step.
 
-Prometheus and Elastic Stack cluster integrations can only be enabled for clusters [connected through cluster certificates](../project/clusters/add_existing_cluster.md).
+Prometheus cluster integrations can only be enabled for clusters [connected through cluster certificates](../project/clusters/add_existing_cluster.md).
 
 To enable Prometheus for your cluster connected through the [GitLab agent](agent/index.md), you can [integrate it manually](../project/integrations/prometheus.md#manual-configuration-of-prometheus).
 
@@ -98,72 +96,5 @@ To enable the Prometheus integration for your cluster:
       **Kubernetes** page.
 1. Select the **Integrations** tab.
 1. Check the **Enable Prometheus integration** checkbox.
-1. Select **Save changes**.
-1. Go to the **Health** tab to see your cluster's metrics.
-
-## Elastic Stack cluster integration **(FREE SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61077) in GitLab 13.12.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485) in GitLab 14.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/360182) behind a [feature flag](../../administration/feature_flags.md) named `monitor_logging` in GitLab 15.0. Disabled by default.
-
-WARNING:
-This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485)
-in GitLab 14.7.
-It will be removed completely in GitLab 15.2.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `monitor_logging`.
-On GitLab.com, this feature is not available.
-This feature is not recommended for production use.
-
-You can integrate your cluster with [Elastic
-Stack](https://www.elastic.co/elastic-stack/) to index and [query your pod
-logs](../project/clusters/kubernetes_pod_logs.md).
-
-### Elastic Stack Prerequisites
-
-To use this integration:
-
-1. Elasticsearch 7.x or must be installed in your cluster in the
-   `gitlab-managed-apps` namespace.
-1. The `Service` resource must be called `elastic-stack-elasticsearch-master`
-   and expose the Elasticsearch API on port `9200`.
-1. The logs are expected to be [Filebeat container logs](https://www.elastic.co/guide/en/beats/filebeat/7.16/filebeat-input-container.html)
-   following the [7.x log structure](https://www.elastic.co/guide/en/beats/filebeat/7.16/exported-fields-log.html)
-   and include [Kubernetes metadata](https://www.elastic.co/guide/en/beats/filebeat/7.16/add-kubernetes-metadata.html).
-
-You can manage your Elastic Stack however you like, but as an example, you can
-use [this Elastic Stack chart](https://gitlab.com/gitlab-org/charts/elastic-stack) to get up and
-running:
-
-```shell
-# Create the required Kubernetes namespace
-kubectl create namespace gitlab-managed-apps
-
-# Download Helm chart values that is compatible with the requirements above.
-# These are included in the Cluster Management project template.
-wget https://gitlab.com/gitlab-org/project-templates/cluster-management/-/raw/master/applications/elastic-stack/values.yaml
-
-# Add the GitLab Helm chart repository
-helm repo add gitlab https://charts.gitlab.io
-
-# Install Elastic Stack
-helm install elastic-stack gitlab/elastic-stack -n gitlab-managed-apps --values values.yaml
-```
-
-### Enable Elastic Stack integration for your cluster
-
-To enable the Elastic Stack integration for your cluster:
-
-1. Go to the cluster's page:
-      - For a [project-level cluster](../project/clusters/index.md), navigate to your project's
-      **Infrastructure > Kubernetes clusters**.
-      - For a [group-level cluster](../group/clusters/index.md), navigate to your group's
-      **Kubernetes** page.
-      - For an [instance-level cluster](../instance/clusters/index.md), navigate to your instance's
-      **Kubernetes** page.
-1. Select the **Integrations** tab.
-1. Check the **Enable Elastic Stack integration** checkbox.
 1. Select **Save changes**.
 1. Go to the **Health** tab to see your cluster's metrics.

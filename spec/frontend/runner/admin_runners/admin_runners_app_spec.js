@@ -10,9 +10,11 @@ import {
 } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
+import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
+import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
 import { createLocalState } from '~/runner/graphql/list/local_state';
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
@@ -20,6 +22,7 @@ import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
+import RunnerCount from '~/runner/components/stat/runner_count.vue';
 import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
@@ -30,8 +33,6 @@ import {
   CREATED_DESC,
   DEFAULT_SORT,
   INSTANCE_TYPE,
-  GROUP_TYPE,
-  PROJECT_TYPE,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
@@ -40,15 +41,14 @@ import {
   STATUS_STALE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
-import adminRunnersQuery from '~/runner/graphql/list/admin_runners.query.graphql';
-import adminRunnersCountQuery from '~/runner/graphql/list/admin_runners_count.query.graphql';
+import allRunnersQuery from 'ee_else_ce/runner/graphql/list/all_runners.query.graphql';
+import allRunnersCountQuery from '~/runner/graphql/list/all_runners_count.query.graphql';
 import { captureException } from '~/runner/sentry_utils';
-import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 import {
-  runnersData,
+  allRunnersData,
   runnersCountData,
-  runnersDataPaginated,
+  allRunnersDataPaginated,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
   emptyStateSvgPath,
@@ -56,8 +56,11 @@ import {
 } from '../mock_data';
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
-const mockRunners = runnersData.data.runners.nodes;
+const mockRunners = allRunnersData.data.runners.nodes;
 const mockRunnersCount = runnersCountData.data.runners.count;
+
+const mockRunnersHandler = jest.fn();
+const mockRunnersCountHandler = jest.fn();
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -71,8 +74,6 @@ Vue.use(GlToast);
 
 describe('AdminRunnersApp', () => {
   let wrapper;
-  let mockRunnersQuery;
-  let mockRunnersCountQuery;
   let cacheConfig;
   let localMutations;
 
@@ -85,7 +86,6 @@ describe('AdminRunnersApp', () => {
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
-  const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
   const createComponent = ({
     props = {},
@@ -96,8 +96,8 @@ describe('AdminRunnersApp', () => {
     ({ cacheConfig, localMutations } = createLocalState());
 
     const handlers = [
-      [adminRunnersQuery, mockRunnersQuery],
-      [adminRunnersCountQuery, mockRunnersCountQuery],
+      [allRunnersQuery, mockRunnersHandler],
+      [allRunnersCountQuery, mockRunnersCountHandler],
     ];
 
     wrapper = mountFn(AdminRunnersApp, {
@@ -116,110 +116,62 @@ describe('AdminRunnersApp', () => {
       },
       ...options,
     });
+
+    return waitForPromises();
   };
 
-  beforeEach(async () => {
-    setWindowLocation('/admin/runners');
-
-    mockRunnersQuery = jest.fn().mockResolvedValue(runnersData);
-    mockRunnersCountQuery = jest.fn().mockResolvedValue(runnersCountData);
-    createComponent();
-    await waitForPromises();
+  beforeEach(() => {
+    mockRunnersHandler.mockResolvedValue(allRunnersData);
+    mockRunnersCountHandler.mockResolvedValue(runnersCountData);
   });
 
   afterEach(() => {
-    mockRunnersQuery.mockReset();
-    mockRunnersCountQuery.mockReset();
+    mockRunnersHandler.mockReset();
+    mockRunnersCountHandler.mockReset();
     wrapper.destroy();
   });
 
   it('shows the runner tabs with a runner count for each type', async () => {
-    mockRunnersCountQuery.mockImplementation(({ type }) => {
-      let count;
-      switch (type) {
-        case INSTANCE_TYPE:
-          count = 3;
-          break;
-        case GROUP_TYPE:
-          count = 2;
-          break;
-        case PROJECT_TYPE:
-          count = 1;
-          break;
-        default:
-          count = 6;
-          break;
-      }
-      return Promise.resolve({ data: { runners: { count } } });
-    });
-
-    createComponent({ mountFn: mountExtended });
-    await waitForPromises();
+    await createComponent({ mountFn: mountExtended });
 
     expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
-      `All 6 Instance 3 Group 2 Project 1`,
-    );
-  });
-
-  it('shows the runner tabs with a formatted runner count', async () => {
-    mockRunnersCountQuery.mockImplementation(({ type }) => {
-      let count;
-      switch (type) {
-        case INSTANCE_TYPE:
-          count = 3000;
-          break;
-        case GROUP_TYPE:
-          count = 2000;
-          break;
-        case PROJECT_TYPE:
-          count = 1000;
-          break;
-        default:
-          count = 6000;
-          break;
-      }
-      return Promise.resolve({ data: { runners: { count } } });
-    });
-
-    createComponent({ mountFn: mountExtended });
-    await waitForPromises();
-
-    expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
-      `All 6,000 Instance 3,000 Group 2,000 Project 1,000`,
+      `All ${mockRunnersCount} Instance ${mockRunnersCount} Group ${mockRunnersCount} Project ${mockRunnersCount}`,
     );
   });
 
   it('shows the runner setup instructions', () => {
+    createComponent();
+
     expect(findRegistrationDropdown().props('registrationToken')).toBe(mockRegistrationToken);
     expect(findRegistrationDropdown().props('type')).toBe(INSTANCE_TYPE);
   });
 
   it('shows total runner counts', async () => {
-    expect(mockRunnersCountQuery).toHaveBeenCalledWith({
-      status: STATUS_ONLINE,
-    });
-    expect(mockRunnersCountQuery).toHaveBeenCalledWith({
-      status: STATUS_OFFLINE,
-    });
-    expect(mockRunnersCountQuery).toHaveBeenCalledWith({
-      status: STATUS_STALE,
-    });
+    await createComponent({ mountFn: mountExtended });
 
-    expect(findRunnerStats().props()).toMatchObject({
-      onlineRunnersCount: mockRunnersCount,
-      offlineRunnersCount: mockRunnersCount,
-      staleRunnersCount: mockRunnersCount,
-    });
+    expect(mockRunnersCountHandler).toHaveBeenCalledWith({ status: STATUS_ONLINE });
+    expect(mockRunnersCountHandler).toHaveBeenCalledWith({ status: STATUS_OFFLINE });
+    expect(mockRunnersCountHandler).toHaveBeenCalledWith({ status: STATUS_STALE });
+
+    expect(findRunnerStats().text()).toContain(
+      `${s__('Runners|Online runners')} ${mockRunnersCount}`,
+    );
+    expect(findRunnerStats().text()).toContain(
+      `${s__('Runners|Offline runners')} ${mockRunnersCount}`,
+    );
+    expect(findRunnerStats().text()).toContain(
+      `${s__('Runners|Stale runners')} ${mockRunnersCount}`,
+    );
   });
 
-  it('shows the runners list', () => {
+  it('shows the runners list', async () => {
+    await createComponent();
+
     expect(findRunnerList().props('runners')).toEqual(mockRunners);
   });
 
   it('runner item links to the runner admin page', async () => {
-    createComponent({ mountFn: mountExtended });
-
-    await waitForPromises();
+    await createComponent({ mountFn: mountExtended });
 
     const { id, shortSha } = mockRunners[0];
     const numericId = getIdFromGraphQLId(id);
@@ -231,12 +183,9 @@ describe('AdminRunnersApp', () => {
   });
 
   it('renders runner actions for each runner', async () => {
-    createComponent({ mountFn: mountExtended });
-
-    await waitForPromises();
+    await createComponent({ mountFn: mountExtended });
 
     const runnerActions = wrapper.find('tr [data-testid="td-actions"]').find(RunnerActionsCell);
-
     const runner = mockRunners[0];
 
     expect(runnerActions.props()).toEqual({
@@ -245,8 +194,10 @@ describe('AdminRunnersApp', () => {
     });
   });
 
-  it('requests the runners with no filters', () => {
-    expect(mockRunnersQuery).toHaveBeenLastCalledWith({
+  it('requests the runners with no filters', async () => {
+    await createComponent();
+
+    expect(mockRunnersHandler).toHaveBeenLastCalledWith({
       status: undefined,
       type: undefined,
       sort: DEFAULT_SORT,
@@ -255,9 +206,9 @@ describe('AdminRunnersApp', () => {
   });
 
   it('sets tokens in the filtered search', () => {
-    createComponent({ mountFn: mountExtended });
+    createComponent();
 
-    expect(findFilteredSearch().props('tokens')).toEqual([
+    expect(findRunnerFilteredSearchBar().props('tokens')).toEqual([
       expect.objectContaining({
         type: PARAM_KEY_PAUSED,
         options: expect.any(Array),
@@ -270,6 +221,7 @@ describe('AdminRunnersApp', () => {
         type: PARAM_KEY_TAG,
         recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
       }),
+      upgradeStatusTokenConfig,
     ]);
   });
 
@@ -282,12 +234,10 @@ describe('AdminRunnersApp', () => {
     const FILTERED_COUNT_QUERIES = 4; // Smart queries that display a count of runners in tabs
 
     beforeEach(async () => {
-      mockRunnersCountQuery.mockClear();
+      mockRunnersCountHandler.mockClear();
 
-      createComponent({ mountFn: mountExtended });
+      await createComponent({ mountFn: mountExtended });
       showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
-
-      await waitForPromises();
     });
 
     it('Links to the runner page', async () => {
@@ -298,12 +248,11 @@ describe('AdminRunnersApp', () => {
     });
 
     it('When runner is paused or unpaused, some data is refetched', async () => {
-      expect(mockRunnersCountQuery).toHaveBeenCalledTimes(COUNT_QUERIES);
+      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
       findRunnerActionsCell().vm.$emit('toggledPaused');
 
-      expect(mockRunnersCountQuery).toHaveBeenCalledTimes(COUNT_QUERIES + FILTERED_COUNT_QUERIES);
-
+      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES + FILTERED_COUNT_QUERIES);
       expect(showToast).toHaveBeenCalledTimes(0);
     });
 
@@ -319,8 +268,12 @@ describe('AdminRunnersApp', () => {
     beforeEach(async () => {
       setWindowLocation(`?status[]=${STATUS_ONLINE}&runner_type[]=${INSTANCE_TYPE}&tag[]=tag1`);
 
-      createComponent();
-      await waitForPromises();
+      await createComponent({
+        stubs: {
+          RunnerStats,
+          RunnerCount,
+        },
+      });
     });
 
     it('sets the filters in the search bar', () => {
@@ -336,7 +289,7 @@ describe('AdminRunnersApp', () => {
     });
 
     it('requests the runners with filter parameters', () => {
-      expect(mockRunnersQuery).toHaveBeenLastCalledWith({
+      expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         status: STATUS_ONLINE,
         type: INSTANCE_TYPE,
         tagList: ['tag1'],
@@ -346,21 +299,22 @@ describe('AdminRunnersApp', () => {
     });
 
     it('fetches count results for requested status', () => {
-      expect(mockRunnersCountQuery).toHaveBeenCalledWith({
+      expect(mockRunnersCountHandler).toHaveBeenCalledWith({
         type: INSTANCE_TYPE,
         status: STATUS_ONLINE,
         tagList: ['tag1'],
-      });
-
-      expect(findRunnerStats().props()).toMatchObject({
-        onlineRunnersCount: mockRunnersCount,
       });
     });
   });
 
   describe('when a filter is selected by the user', () => {
     beforeEach(() => {
-      mockRunnersCountQuery.mockClear();
+      createComponent({
+        stubs: {
+          RunnerStats,
+          RunnerCount,
+        },
+      });
 
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
@@ -375,12 +329,12 @@ describe('AdminRunnersApp', () => {
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: 'http://test.host/admin/runners?status[]=ONLINE&tag[]=tag1&sort=CREATED_ASC',
+        url: expect.stringContaining('?status[]=ONLINE&tag[]=tag1&sort=CREATED_ASC'),
       });
     });
 
     it('requests the runners with filters', () => {
-      expect(mockRunnersQuery).toHaveBeenLastCalledWith({
+      expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         status: STATUS_ONLINE,
         tagList: ['tag1'],
         sort: CREATED_ASC,
@@ -389,29 +343,9 @@ describe('AdminRunnersApp', () => {
     });
 
     it('fetches count results for requested status', () => {
-      expect(mockRunnersCountQuery).toHaveBeenCalledWith({
+      expect(mockRunnersCountHandler).toHaveBeenCalledWith({
         tagList: ['tag1'],
         status: STATUS_ONLINE,
-      });
-
-      expect(findRunnerStats().props()).toMatchObject({
-        onlineRunnersCount: mockRunnersCount,
-      });
-    });
-
-    it('skips fetching count results for status that were not in filter', () => {
-      expect(mockRunnersCountQuery).not.toHaveBeenCalledWith({
-        tagList: ['tag1'],
-        status: STATUS_OFFLINE,
-      });
-      expect(mockRunnersCountQuery).not.toHaveBeenCalledWith({
-        tagList: ['tag1'],
-        status: STATUS_STALE,
-      });
-
-      expect(findRunnerStats().props()).toMatchObject({
-        offlineRunnersCount: null,
-        staleRunnersCount: null,
       });
     });
   });
@@ -458,14 +392,13 @@ describe('AdminRunnersApp', () => {
 
   describe('when no runners are found', () => {
     beforeEach(async () => {
-      mockRunnersQuery = jest.fn().mockResolvedValue({
+      mockRunnersHandler.mockResolvedValue({
         data: {
           runners: { nodes: [] },
         },
       });
 
-      createComponent();
-      await waitForPromises();
+      await createComponent();
     });
 
     it('shows an empty state', () => {
@@ -490,9 +423,8 @@ describe('AdminRunnersApp', () => {
 
   describe('when runners query fails', () => {
     beforeEach(async () => {
-      mockRunnersQuery = jest.fn().mockRejectedValue(new Error('Error!'));
-      createComponent();
-      await waitForPromises();
+      mockRunnersHandler.mockRejectedValue(new Error('Error!'));
+      await createComponent();
     });
 
     it('error is shown to the user', async () => {
@@ -509,19 +441,18 @@ describe('AdminRunnersApp', () => {
 
   describe('Pagination', () => {
     beforeEach(async () => {
-      mockRunnersQuery = jest.fn().mockResolvedValue(runnersDataPaginated);
+      mockRunnersHandler.mockResolvedValue(allRunnersDataPaginated);
 
-      createComponent({ mountFn: mountExtended });
-      await waitForPromises();
+      await createComponent({ mountFn: mountExtended });
     });
 
     it('navigates to the next page', async () => {
       await findRunnerPaginationNext().trigger('click');
 
-      expect(mockRunnersQuery).toHaveBeenLastCalledWith({
+      expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         sort: CREATED_DESC,
         first: RUNNER_PAGE_SIZE,
-        after: runnersDataPaginated.data.runners.pageInfo.endCursor,
+        after: allRunnersDataPaginated.data.runners.pageInfo.endCursor,
       });
     });
   });

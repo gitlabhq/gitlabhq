@@ -173,7 +173,7 @@ export default {
         :label="issuableCategoryHeaderText"
         label-for="linked-issue-type-radio"
         label-class="label-bold"
-        class="mb-2"
+        class="gl-mb-3"
       >
         <gl-form-radio-group
           id="linked-issue-type-radio"
@@ -216,12 +216,12 @@ export default {
         :disabled="isSubmitButtonDisabled"
         :loading="isSubmitting"
         type="submit"
-        class="float-left"
+        class="gl-float-left"
         data-qa-selector="add_issue_button"
       >
         {{ __('Add') }}
       </gl-button>
-      <gl-button class="float-right" @click="onFormCancel">
+      <gl-button class="gl-float-right" @click="onFormCancel">
         {{ __('Cancel') }}
       </gl-button>
     </div>

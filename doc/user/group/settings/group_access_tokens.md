@@ -78,7 +78,7 @@ or API. However, administrators can use a workaround:
    bot.confirm
 
    # Add the bot to the group with the required role.
-   group.add_user(bot, :maintainer)
+   group.add_member(bot, :maintainer)
 
    # Give the bot a personal access token.
    token = bot.personal_access_tokens.create(scopes:[:api, :write_repository], name: 'group_token')
@@ -141,7 +141,7 @@ To enable or disable group access token creation for all sub-groups in a top-lev
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Permissions**, turn on or off **Allow project and group access token creation**.
+1. Under **Permissions**, turn on or off **Users can create project access tokens and group access tokens in this group**.
 
 Even when creation is disabled, you can still use and revoke existing group access tokens.
 

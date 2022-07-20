@@ -11,7 +11,7 @@
       = _('Fingerprints')
     .fingerprints-list.js-fingerprints-list{ data: { qa_selector: 'fingerprints_list' } }
       - mirror.ssh_known_hosts_fingerprints.each do |fp|
-        %code= fp.fingerprint
+        %code= fp.fingerprint_sha256 || fp.fingerprint
     - if verified_at
       .form-text.text-muted.js-fingerprint-verification
         = sprite_icon('check', css_class: 'gl-text-green-500')

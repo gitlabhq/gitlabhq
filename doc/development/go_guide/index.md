@@ -443,6 +443,43 @@ of the Code Review Comments page on the Go wiki for more details.
 Most editors/IDEs allow you to run commands before/after saving a file, you can set it
 up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every file when saving.
 
+### Initializing slices
+
+If initializing a slice, provide a capacity where possible to avoid extra
+allocations.
+
+<table>
+<tr><th>:white_check_mark: Do</th><th>:x: Don't</th></tr>
+<tr>
+  <td>
+
+  ```golang
+  s2 := make([]string, 0, size)
+  for _, val := range s1 {
+      s2 = append(s2, val)
+  }
+  ```
+
+  </td>
+  <td>
+
+  ```golang
+  var s2 []string
+  for _, val := range s1 {
+      s2 = append(s2, val)
+  }
+  ```
+
+  </td>
+</tr>
+</table>
+
+If no capacity is passed to `make` when creating a new slice, `append`
+will continuously resize the slice's backing array if it cannot hold
+the values. Providing the capacity ensures that allocations are kept
+to a minimum. It is recommended that the [`prealloc`](https://github.com/alexkohler/prealloc)
+golanci-lint rule automatically check for this.
+
 ### Analyzer Tests
 
 The conventional Secure [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/) has a [`convert` function](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/convert.go#L15-17) that converts SAST/DAST scanner reports into [GitLab Security Reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas). When writing tests for the `convert` function, we should make use of [test fixtures](https://dave.cheney.net/2016/05/10/test-fixtures-in-go) using a `testdata` directory at the root of the analyzer's repository. The `testdata` directory should contain two subdirectories: `expect` and `reports`. The `reports` directory should contain sample SAST/DAST scanner reports which are passed into the `convert` function during the test setup. The `expect` directory should contain the expected GitLab Security Report that the `convert` returns. See Secret Detection for an [example](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/160424589ef1eed7b91b59484e019095bc7233bd/convert_test.go#L13-66).

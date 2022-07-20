@@ -1,17 +1,7 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
-import { __ } from '~/locale';
-
-const typeWithPlaceholder = {
-  SLACK: 'slack',
-  MATTERMOST: 'mattermost',
-};
-
-const placeholderForType = {
-  [typeWithPlaceholder.SLACK]: __('#general, #development'),
-  [typeWithPlaceholder.MATTERMOST]: __('my-channel'),
-};
+import { placeholderForType } from 'jh_else_ce/integrations/constants';
 
 export default {
   name: 'TriggerFields',

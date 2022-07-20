@@ -19,6 +19,82 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     # Monday 6th of June
     reference_time = Time.utc(2020, 6, 1)
     travel_to(reference_time) { example.run }
+    described_class.clear_memoization(:known_events)
+  end
+
+  context 'migration to instrumentation classes data collection' do
+    let_it_be(:instrumented_events) do
+      ::Gitlab::Usage::MetricDefinition.all.map do |definition|
+        next unless definition.attributes[:instrumentation_class] == 'RedisHLLMetric' && definition.available?
+
+        definition.attributes.dig(:options, :events)&.sort
+      end.compact.to_set
+    end
+
+    def not_instrumented_events(category)
+      described_class
+        .events_for_category(category)
+        .sort
+        .reject do |event|
+          instrumented_events.include?([event])
+        end
+    end
+
+    def not_instrumented_aggregate(category)
+      events = described_class.events_for_category(category).sort
+
+      return unless described_class::CATEGORIES_FOR_TOTALS.include?(category)
+      return unless described_class.send(:eligible_for_totals?, events)
+      return if instrumented_events.include?(events)
+
+      events
+    end
+
+    describe 'Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS' do
+      it 'includes only fully migrated categories' do
+        wrong_skipped_events = described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS.map do |category|
+          next if not_instrumented_events(category).empty? && not_instrumented_aggregate(category).nil?
+
+          [category, [not_instrumented_events(category), not_instrumented_aggregate(category)].compact]
+        end.compact.to_h
+
+        expect(wrong_skipped_events).to be_empty
+      end
+
+      context 'with not instrumented category' do
+        let(:instrumented_events) { [] }
+
+        it 'can detect not migrated category' do
+          wrong_skipped_events = described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS.map do |category|
+            next if not_instrumented_events(category).empty? && not_instrumented_aggregate(category).nil?
+
+            [category, [not_instrumented_events(category), not_instrumented_aggregate(category)].compact]
+          end.compact.to_h
+
+          expect(wrong_skipped_events).not_to be_empty
+        end
+      end
+    end
+
+    describe '.unique_events_data' do
+      context 'with use_redis_hll_instrumentation_classes feature enabled' do
+        it 'does not include instrumented categories' do
+          stub_feature_flags(use_redis_hll_instrumentation_classes: true)
+
+          expect(described_class.unique_events_data.keys)
+            .not_to include(*described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS)
+        end
+      end
+
+      context 'with use_redis_hll_instrumentation_classes feature disabled' do
+        it 'includes instrumented categories' do
+          stub_feature_flags(use_redis_hll_instrumentation_classes: false)
+
+          expect(described_class.unique_events_data.keys)
+            .to include(*described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS)
+        end
+      end
+    end
   end
 
   describe '.categories' do
@@ -53,8 +129,37 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'growth',
         'work_items',
         'ci_users',
-        'error_tracking'
+        'error_tracking',
+        'manage'
       )
+    end
+  end
+
+  describe '.known_events' do
+    let(:ce_temp_dir) { Dir.mktmpdir }
+    let(:ce_temp_file) { Tempfile.new(%w[common .yml], ce_temp_dir) }
+    let(:ce_event) do
+      {
+        "name" => "ce_event",
+        "redis_slot" => "analytics",
+        "category" => "analytics",
+        "expiry" => 84,
+        "aggregation" => "weekly"
+      }
+    end
+
+    before do
+      stub_const("#{described_class}::KNOWN_EVENTS_PATH", File.expand_path('*.yml', ce_temp_dir))
+      File.open(ce_temp_file.path, "w+b") { |f| f.write [ce_event].to_yaml }
+    end
+
+    it 'returns ce events' do
+      expect(described_class.known_events).to include(ce_event)
+    end
+
+    after do
+      ce_temp_file.unlink
+      FileUtils.remove_entry(ce_temp_dir) if Dir.exist?(ce_temp_dir)
     end
   end
 

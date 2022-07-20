@@ -3,7 +3,7 @@ table_name: ci_job_token_project_scope_links
 classes:
 - Ci::JobToken::ProjectScopeLink
 feature_categories:
-- pipeline_authoring
-description: TODO
+- continuous_integration
+description: The connection between a source project, which defines the job token scope, and a target project, which is the one allowed to be accessed by the job token.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62733
 milestone: '14.0'

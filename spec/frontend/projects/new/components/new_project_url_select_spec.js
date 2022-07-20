@@ -4,6 +4,7 @@ import {
   GlDropdownItem,
   GlDropdownSectionHeader,
   GlSearchBoxByType,
+  GlTruncate,
 } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
@@ -15,7 +16,6 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '~/projects/new/event_hub';
 import NewProjectUrlSelect from '~/projects/new/components/new_project_url_select.vue';
 import searchQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
-import { s__ } from '~/locale';
 
 describe('NewProjectUrlSelect component', () => {
   let wrapper;
@@ -90,6 +90,7 @@ describe('NewProjectUrlSelect component', () => {
 
   const findButtonLabel = () => wrapper.findComponent(GlButton);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findSelectedPath = () => wrapper.findComponent(GlTruncate);
   const findInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findHiddenNamespaceInput = () => wrapper.find('[name="project[namespace_id]"]');
 
@@ -121,14 +122,15 @@ describe('NewProjectUrlSelect component', () => {
 
   describe('when namespaceId is provided', () => {
     beforeEach(() => {
-      wrapper = mountComponent();
+      wrapper = mountComponent({ mountFn: mount });
     });
 
     it('renders a dropdown with the given namespace full path as the text', () => {
-      const dropdownProps = findDropdown().props();
+      expect(findSelectedPath().props('text')).toBe(defaultProvide.namespaceFullPath);
+    });
 
-      expect(dropdownProps.text).toBe(defaultProvide.namespaceFullPath);
-      expect(dropdownProps.toggleClass).not.toContain('gl-text-gray-500!');
+    it('renders a dropdown without the class', () => {
+      expect(findDropdown().props('toggleClass')).not.toContain('gl-text-gray-500!');
     });
 
     it('renders a hidden input with the given namespace id', () => {
@@ -150,14 +152,15 @@ describe('NewProjectUrlSelect component', () => {
     };
 
     beforeEach(() => {
-      wrapper = mountComponent({ provide });
+      wrapper = mountComponent({ provide, mountFn: mount });
     });
 
     it("renders a dropdown with the user's namespace full path as the text", () => {
-      const dropdownProps = findDropdown().props();
+      expect(findSelectedPath().props('text')).toBe('Pick a group or namespace');
+    });
 
-      expect(dropdownProps.text).toBe(s__('ProjectsNew|Pick a group or namespace'));
-      expect(dropdownProps.toggleClass).toContain('gl-text-gray-500!');
+    it('renders a dropdown with the class', () => {
+      expect(findDropdown().props('toggleClass')).toContain('gl-text-gray-500!');
     });
 
     it("renders a hidden input with the user's namespace id", () => {
@@ -236,8 +239,8 @@ describe('NewProjectUrlSelect component', () => {
       expect(listItems.at(2).text()).toBe(data.currentUser.groups.nodes[2].fullPath);
     });
 
-    it('sets the selection to the group', async () => {
-      expect(findDropdown().props('text')).toBe(fullPath);
+    it('sets the selection to the group', () => {
+      expect(findSelectedPath().props('text')).toBe(fullPath);
     });
   });
 

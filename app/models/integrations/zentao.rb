@@ -4,7 +4,28 @@ module Integrations
   class Zentao < Integration
     include Gitlab::Routing
 
-    data_field :url, :api_url, :api_token, :zentao_product_xid
+    self.field_storage = :data_fields
+
+    field :url,
+      title: -> { s_('ZentaoIntegration|ZenTao Web URL') },
+      placeholder: 'https://www.zentao.net',
+      help: -> { s_('ZentaoIntegration|Base URL of the ZenTao instance.') },
+      required: true
+
+    field :api_url,
+      title: -> { s_('ZentaoIntegration|ZenTao API URL (optional)') },
+      help: -> { s_('ZentaoIntegration|If different from Web URL.') }
+
+    field :api_token,
+      type: 'password',
+      title: -> { s_('ZentaoIntegration|ZenTao API token') },
+      non_empty_password_title: -> { s_('ZentaoIntegration|Enter new ZenTao API token') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
+      required: true
+
+    field :zentao_product_xid,
+      title: -> { s_('ZentaoIntegration|ZenTao Product ID') },
+      required: true
 
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
@@ -45,39 +66,6 @@ module Integrations
 
     def self.supported_events
       %w()
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'url',
-          title: s_('ZentaoIntegration|ZenTao Web URL'),
-          placeholder: 'https://www.zentao.net',
-          help: s_('ZentaoIntegration|Base URL of the ZenTao instance.'),
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'api_url',
-          title: s_('ZentaoIntegration|ZenTao API URL (optional)'),
-          help: s_('ZentaoIntegration|If different from Web URL.')
-        },
-        {
-          type: 'password',
-          name: 'api_token',
-          title: s_('ZentaoIntegration|ZenTao API token'),
-          non_empty_password_title: s_('ZentaoIntegration|Enter new ZenTao API token'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'zentao_product_xid',
-          title: s_('ZentaoIntegration|ZenTao Product ID'),
-          required: true
-        }
-      ]
     end
 
     private

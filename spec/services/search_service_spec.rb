@@ -511,7 +511,7 @@ RSpec.describe SearchService do
         end
 
         context 'with :with_api_entity_associations' do
-          it_behaves_like "redaction limits N+1 queries", limit: 13
+          it_behaves_like "redaction limits N+1 queries", limit: 14
         end
       end
 
@@ -599,25 +599,13 @@ RSpec.describe SearchService do
     let(:search_service) { double(:search_service) }
 
     before do
-      stub_feature_flags(prevent_abusive_searches: should_detect_abuse)
       expect(Gitlab::Search::Params).to receive(:new)
-        .with(raw_params, detect_abuse: should_detect_abuse).and_call_original
+        .with(raw_params, detect_abuse: true).and_call_original
 
       allow(subject).to receive(:search_service).and_return search_service
     end
 
-    context 'when abusive search but prevent_abusive_searches FF is disabled' do
-      let(:should_detect_abuse) { false }
-      let(:scope) { '1;drop%20table' }
-
-      it 'executes search even if params are abusive' do
-        expect(search_service).to receive(:execute)
-        subject.search_results
-      end
-    end
-
     context 'a search is abusive' do
-      let(:should_detect_abuse) { true }
       let(:scope) { '1;drop%20table' }
 
       it 'does NOT execute search service' do
@@ -627,7 +615,6 @@ RSpec.describe SearchService do
     end
 
     context 'a search is NOT abusive' do
-      let(:should_detect_abuse) { true }
       let(:scope) { 'issues' }
 
       it 'executes search service' do

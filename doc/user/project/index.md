@@ -150,7 +150,7 @@ There are numerous [APIs](../../api/index.md) to use with your projects:
 - [Traffic](../../api/project_statistics.md)
 - [Variables](../../api/project_level_variables.md)
 - [Aliases](../../api/project_aliases.md)
-- [DORA4 Analytics](../../api/dora4_project_analytics.md)
+- [DORA4 Analytics](../../api/dora/metrics.md)
 
 ## DORA4 analytics overview
 
@@ -158,4 +158,4 @@ Project details include the following analytics:
 
 - Deployment Frequency
 
-For more information, see [DORA4 Project Analytics API](../../api/dora4_project_analytics.md).
+For more information, see [DORA4 Project Analytics API](../../api/dora/metrics.md).

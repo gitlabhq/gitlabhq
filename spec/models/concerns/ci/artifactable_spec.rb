@@ -53,6 +53,15 @@ RSpec.describe Ci::Artifactable do
         expect { |b| artifact.each_blob(&b) }.to raise_error(described_class::NotSupportedAdapterError)
       end
     end
+
+    context 'pushes artifact_size to application context' do
+      let(:artifact) { create(:ci_job_artifact, :junit) }
+
+      it 'logs artifact size', :aggregate_failures do
+        expect { |b| artifact.each_blob(&b) }.to yield_control.once
+        expect(Gitlab::ApplicationContext.current).to include("meta.artifact_size" => artifact.size)
+      end
+    end
   end
 
   context 'ActiveRecord scopes' do

@@ -36,7 +36,6 @@ class ProjectsController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:lazy_load_commits, @project)
-    push_frontend_feature_flag(:refactor_blob_viewer, @project)
     push_frontend_feature_flag(:highlight_js, @project)
     push_frontend_feature_flag(:increase_page_size_exponentially, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)

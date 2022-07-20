@@ -16,7 +16,7 @@ module Gitlab
         # batch_min_value - The minimum value which the next batch will start at
         # batch_size - The size of the next batch
         # job_arguments - The migration job arguments
-        def next_batch(table_name, column_name, batch_min_value:, batch_size:, job_arguments:)
+        def next_batch(table_name, column_name, batch_min_value:, batch_size:, job_arguments:, job_class: nil)
           next_batch_bounds = nil
           model_class = ::Gitlab::BackgroundMigration::ProjectNamespaces::Models::Project
           quoted_column_name = model_class.connection.quote_column_name(column_name)

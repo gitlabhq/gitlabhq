@@ -157,6 +157,27 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '#reset_attempts_of_blocked_jobs!' do
+    let!(:migration) { create(:batched_background_migration) }
+    let(:max_attempts) { Gitlab::Database::BackgroundMigration::BatchedJob::MAX_ATTEMPTS }
+
+    before do
+      create(:batched_background_migration_job, attempts: max_attempts - 1, batched_migration: migration)
+      create(:batched_background_migration_job, attempts: max_attempts + 1, batched_migration: migration)
+      create(:batched_background_migration_job, attempts: max_attempts + 1, batched_migration: migration)
+    end
+
+    it 'sets the number of attempts to zero for blocked jobs' do
+      migration.reset_attempts_of_blocked_jobs!
+
+      expect(migration.batched_jobs.size).to eq(3)
+
+      migration.batched_jobs.blocked_by_max_attempts.each do |job|
+        expect(job.attempts).to be_zero
+      end
+    end
+  end
+
   describe '#interval_elapsed?' do
     context 'when the migration has no last_job' do
       let(:batched_migration) { build(:batched_background_migration) }
@@ -322,6 +343,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
   describe '#retry_failed_jobs!' do
     let(:batched_migration) { create(:batched_background_migration, status: 'failed') }
+    let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
     subject(:retry_failed_jobs) { batched_migration.retry_failed_jobs! }
 
@@ -335,7 +357,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
             anything,
             batch_min_value: 6,
             batch_size: 5,
-            job_arguments: batched_migration.job_arguments
+            job_arguments: batched_migration.job_arguments,
+            job_class: job_class
           ).and_return([6, 10])
         end
       end
@@ -567,6 +590,30 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
     it 'defaults to 10 minutes' do
       expect { subject.hold! }.to change { subject.on_hold_until }.from(nil).to(10.minutes.from_now)
+    end
+  end
+
+  describe '#on_hold?', :freeze_time do
+    subject { migration.on_hold? }
+
+    let(:migration) { create(:batched_background_migration) }
+
+    it 'returns false if no on_hold_until is set' do
+      migration.on_hold_until = nil
+
+      expect(subject).to be_falsey
+    end
+
+    it 'returns false if on_hold_until has passed' do
+      migration.on_hold_until = 1.minute.ago
+
+      expect(subject).to be_falsey
+    end
+
+    it 'returns true if on_hold_until is in the future' do
+      migration.on_hold_until = 1.minute.from_now
+
+      expect(subject).to be_truthy
     end
   end
 

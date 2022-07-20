@@ -5,30 +5,17 @@ module IncidentManagement
     class BuildService < ::BaseProjectService
       def initialize(issue)
         @issue = issue
-        @alert = issue.alert_management_alert
 
         super(project: issue.project)
       end
 
       def execute
-        return issue.escalation_status if issue.escalation_status
-
-        issue.build_incident_management_issuable_escalation_status(alert_params)
+        issue.escalation_status || issue.build_incident_management_issuable_escalation_status
       end
 
       private
 
-      attr_reader :issue, :alert
-
-      def alert_params
-        return {} unless alert
-
-        {
-          status_event: alert.status_event_for(alert.status_name)
-        }
-      end
+      attr_reader :issue
     end
   end
 end
-
-IncidentManagement::IssuableEscalationStatuses::BuildService.prepend_mod

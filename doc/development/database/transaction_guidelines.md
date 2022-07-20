@@ -132,12 +132,12 @@ end
 build_1 = Ci::Build.find(1)
 build_2 = Ci::Build.find(2)
 
-ActiveRecord::Base.transaction do
+ApplicationRecord.transaction do
   build_1.touch
   build_2.touch
 end
 ```
 
-The `ActiveRecord::Base` class uses a different database connection than the `Ci::Build` records.
+The `ApplicationRecord` class uses a different database connection than the `Ci::Build` records.
 The two statements in the transaction block are not part of the transaction and are
 rolled back in case something goes wrong. They act as 3rd part calls.

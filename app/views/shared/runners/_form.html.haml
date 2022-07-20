@@ -1,5 +1,5 @@
 = gitlab_ui_form_for runner, url: runner_form_url do |f|
-  = form_errors(runner)
+  = form_errors(runner, pajamas_alert: true)
   .form-group.row
     = label :active, _("Active"), class: 'col-form-label col-sm-2'
     .col-sm-10

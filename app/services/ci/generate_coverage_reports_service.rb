@@ -32,5 +32,18 @@ module Ci
     def latest?(base_pipeline, head_pipeline, data)
       data&.fetch(:key, nil) == key(base_pipeline, head_pipeline)
     end
+
+    private
+
+    def key(base_pipeline, head_pipeline)
+      [
+        base_pipeline&.id, last_update_timestamp(base_pipeline),
+        head_pipeline&.id, last_update_timestamp(head_pipeline)
+      ]
+    end
+
+    def last_update_timestamp(pipeline_hierarchy)
+      pipeline_hierarchy&.self_and_descendants&.maximum(:updated_at)
+    end
   end
 end

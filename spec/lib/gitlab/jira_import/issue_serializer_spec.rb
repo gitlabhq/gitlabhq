@@ -11,6 +11,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
     let_it_be(:group_label) { create(:group_label, group: group, title: 'dev') }
     let_it_be(:current_user) { create(:user) }
     let_it_be(:user) { create(:user) }
+    let_it_be(:issue_type_id) { WorkItems::Type.default_issue_type.id }
 
     let(:iid) { 5 }
     let(:key) { 'PROJECT-5' }
@@ -54,7 +55,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
 
     let(:params) { { iid: iid } }
 
-    subject { described_class.new(project, jira_issue, current_user.id, params).execute }
+    subject { described_class.new(project, jira_issue, current_user.id, issue_type_id, params).execute }
 
     let(:expected_description) do
       <<~MD
@@ -74,6 +75,7 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
         expect(subject).to eq(
           iid: iid,
           project_id: project.id,
+          namespace_id: project.project_namespace_id,
           description: expected_description.strip,
           title: "[#{key}] #{summary}",
           state_id: 1,
@@ -81,7 +83,8 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
           created_at: created_at,
           author_id: current_user.id,
           assignee_ids: nil,
-          label_ids: [project_label.id, group_label.id] + Label.reorder(id: :asc).last(2).pluck(:id)
+          label_ids: [project_label.id, group_label.id] + Label.reorder(id: :asc).last(2).pluck(:id),
+          work_item_type_id: issue_type_id
         )
       end
 

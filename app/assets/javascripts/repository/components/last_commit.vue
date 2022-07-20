@@ -49,10 +49,11 @@ export default {
         };
       },
       update: (data) => {
-        const pipelines = data.project?.repository?.tree?.lastCommit?.pipelines?.edges;
+        const lastCommit = data.project?.repository?.paginatedTree?.nodes[0]?.lastCommit;
+        const pipelines = lastCommit?.pipelines?.edges;
 
         return {
-          ...data.project?.repository?.tree?.lastCommit,
+          ...lastCommit,
           pipeline: pipelines?.length && pipelines[0].node,
         };
       },
@@ -131,7 +132,9 @@ export default {
         :css-classes="'gl-mr-0!' /* NOTE: this is needed only while we migrate user-avatar-image to GlAvatar (7731 epics) */"
         :size="32"
       />
-      <div class="commit-detail flex-list">
+      <div
+        class="commit-detail flex-list gl-display-flex gl-justify-content-space-between gl-align-items-flex-start gl-flex-grow-1 gl-min-w-0"
+      >
         <div class="commit-content qa-commit-content">
           <gl-link
             v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"

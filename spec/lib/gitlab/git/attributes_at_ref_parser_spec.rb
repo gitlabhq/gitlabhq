@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::AttributesAtRefParser, :seed_helper do
+RSpec.describe Gitlab::Git::AttributesAtRefParser do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 

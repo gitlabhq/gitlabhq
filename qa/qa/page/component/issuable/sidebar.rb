@@ -117,7 +117,7 @@ module QA
               end
             end
 
-            click_element(:title) # to blur dropdown
+            click_element(:title_content) # to blur dropdown
           end
 
           def toggle_more_assignees_link

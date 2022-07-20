@@ -75,7 +75,9 @@
     .line-coverage,
     .line-codequality {
       &.old,
-      &.new {
+      &.new,
+      &.new-nomappinginraw,
+      &.old-nomappinginraw {
         background-color: $white-normal;
       }
     }
@@ -131,7 +133,7 @@
     }
 
     .line_content {
-      &.old {
+      &.old, &.old-nomappinginraw {
         background-color: $white-normal;
 
         &::before {
@@ -144,7 +146,7 @@
         }
       }
 
-      &.new {
+      &.new, &.new-nomappinginraw {
         background-color: $white-normal;
 
         &::before {

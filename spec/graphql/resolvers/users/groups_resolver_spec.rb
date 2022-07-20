@@ -12,6 +12,7 @@ RSpec.describe Resolvers::Users::GroupsResolver do
     let_it_be(:private_maintainer_group) { create(:group, :private, name: 'b private maintainer', path: 'b-private-maintainer') }
     let_it_be(:public_developer_group) { create(:group, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer') }
     let_it_be(:public_maintainer_group) { create(:group, name: 'a public maintainer', path: 'a-public-maintainer') }
+    let_it_be(:public_owner_group) { create(:group, name: 'a public owner', path: 'a-public-owner') }
 
     subject(:resolved_items) { resolve_groups(args: group_arguments, current_user: current_user, obj: resolver_object) }
 
@@ -24,6 +25,7 @@ RSpec.describe Resolvers::Users::GroupsResolver do
       private_maintainer_group.add_maintainer(user)
       public_developer_group.add_developer(user)
       public_maintainer_group.add_maintainer(user)
+      public_owner_group.add_owner(user)
     end
 
     context 'when resolver object is current user' do
@@ -34,8 +36,23 @@ RSpec.describe Resolvers::Users::GroupsResolver do
           is_expected.to match(
             [
               public_maintainer_group,
+              public_owner_group,
               private_maintainer_group,
               public_developer_group
+            ]
+          )
+        end
+      end
+
+      context 'when permission is :transfer_projects' do
+        let(:group_arguments) { { permission_scope: :transfer_projects } }
+
+        specify do
+          is_expected.to match(
+            [
+              public_maintainer_group,
+              public_owner_group,
+              private_maintainer_group
             ]
           )
         end
@@ -45,6 +62,7 @@ RSpec.describe Resolvers::Users::GroupsResolver do
         is_expected.to match(
           [
             public_maintainer_group,
+            public_owner_group,
             private_maintainer_group,
             public_developer_group,
             guest_group
@@ -82,6 +100,7 @@ RSpec.describe Resolvers::Users::GroupsResolver do
           is_expected.to match(
             [
               public_maintainer_group,
+              public_owner_group,
               private_maintainer_group,
               public_developer_group,
               guest_group

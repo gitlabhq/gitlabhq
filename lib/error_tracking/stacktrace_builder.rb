@@ -29,6 +29,10 @@ module ErrorTracking
       exception_entry = payload['exception']
       return unless exception_entry
 
+      # Some SDK send exception payload as Array. For exmple Go lang SDK.
+      # We need to convert it to hash format we expect.
+      exception_entry = { 'values' => exception_entry } if exception_entry.is_a?(Array)
+
       exception_values = exception_entry['values']
       stack_trace_entry = exception_values&.detect { |h| h['stacktrace'].present? }
       stack_trace_entry&.dig('stacktrace', 'frames')

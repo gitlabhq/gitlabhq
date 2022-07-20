@@ -1,4 +1,5 @@
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import { createRouter } from '~/ide/ide_router';
 import { createStore } from '~/ide/stores';
 
@@ -12,6 +13,8 @@ describe('IDE router', () => {
   let router;
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     window.history.replaceState({}, '', '/');
     store = createStore();
     router = createRouter(store, DEFAULT_BRANCH);

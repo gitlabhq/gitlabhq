@@ -6,7 +6,7 @@
     "created_at",
     "expires_at",
     "key",
-    "fingerprint",
+    "fingerprint_sha256",
     "projects_with_write_access"
   ],
   "properties": {
@@ -16,6 +16,7 @@
     "expires_at": { "type": ["string", "null"], "format": "date-time" },
     "key": { "type": "string" },
     "fingerprint": { "type": "string" },
+    "fingerprint_sha256": { "type": "string" },
     "projects_with_write_access": {
       "type": "array",
       "items": { "$ref": "project/identity.json" }

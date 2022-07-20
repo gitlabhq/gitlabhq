@@ -799,11 +799,17 @@ RSpec.describe Integration do
 
     shared_examples '#api_field_names' do
       it 'filters out secret fields' do
-        safe_fields = %w[some_safe_field safe_field url trojan_gift]
+        safe_fields = %w[some_safe_field safe_field url trojan_gift api_only_field]
 
         expect(fake_integration.new).to have_attributes(
           api_field_names: match_array(safe_fields)
         )
+      end
+    end
+
+    shared_examples '#form_fields' do
+      it 'filters out API only fields' do
+        expect(fake_integration.new.form_fields.pluck(:name)).not_to include('api_only_field')
       end
     end
 
@@ -824,7 +830,8 @@ RSpec.describe Integration do
               { name: 'safe_field' },
               { name: 'url' },
               { name: 'trojan_horse', type: 'password' },
-              { name: 'trojan_gift', type: 'gift' }
+              { name: 'trojan_gift', type: 'text' },
+              { name: 'api_only_field', api_only: true }
             ].shuffle
           end
         end
@@ -832,6 +839,7 @@ RSpec.describe Integration do
 
       it_behaves_like '#fields'
       it_behaves_like '#api_field_names'
+      it_behaves_like '#form_fields'
     end
 
     context 'when the class uses the field DSL' do
@@ -849,12 +857,14 @@ RSpec.describe Integration do
           field :safe_field
           field :url
           field :trojan_horse, type: 'password'
-          field :trojan_gift, type: 'gift'
+          field :trojan_gift, type: 'text'
+          field :api_only_field, api_only: true
         end
       end
 
       it_behaves_like '#fields'
       it_behaves_like '#api_field_names'
+      it_behaves_like '#form_fields'
     end
   end
 
@@ -1051,11 +1061,9 @@ RSpec.describe Integration do
         field :bar, type: 'password'
         field :password
 
-        field :with_help,
-              help: -> { 'help' }
-
-        field :a_number,
-              type: 'number'
+        field :with_help, help: -> { 'help' }
+        field :select, type: 'select'
+        field :boolean, type: 'checkbox'
       end
     end
 
@@ -1084,6 +1092,16 @@ RSpec.describe Integration do
       expect(integration).to be_foo_p_changed
     end
 
+    it 'provides boolean accessors for checkbox fields' do
+      expect(integration).to respond_to(:boolean)
+      expect(integration).to respond_to(:boolean?)
+
+      expect(integration).not_to respond_to(:foo?)
+      expect(integration).not_to respond_to(:bar?)
+      expect(integration).not_to respond_to(:password?)
+      expect(integration).not_to respond_to(:select?)
+    end
+
     it 'provides data fields' do
       integration.foo_dt = 3
       expect(integration.foo_dt).to eq 3
@@ -1093,21 +1111,24 @@ RSpec.describe Integration do
 
     it 'registers fields in the fields list' do
       expect(integration.fields.pluck(:name)).to match_array %w[
-        foo foo_p foo_dt bar password with_help a_number
+        foo foo_p foo_dt bar password with_help select boolean
       ]
 
       expect(integration.api_field_names).to match_array %w[
-        foo foo_p foo_dt with_help a_number
+        foo foo_p foo_dt with_help select boolean
       ]
     end
 
     specify 'fields have expected attributes' do
       expect(integration.fields).to include(
         have_attributes(name: 'foo', type: 'text'),
+        have_attributes(name: 'foo_p', type: 'text'),
+        have_attributes(name: 'foo_dt', type: 'text'),
         have_attributes(name: 'bar', type: 'password'),
         have_attributes(name: 'password', type: 'password'),
-        have_attributes(name: 'a_number', type: 'number'),
-        have_attributes(name: 'with_help', help: 'help')
+        have_attributes(name: 'with_help', help: 'help'),
+        have_attributes(name: 'select', type: 'select'),
+        have_attributes(name: 'boolean', type: 'checkbox')
       )
     end
   end
@@ -1115,11 +1136,12 @@ RSpec.describe Integration do
   describe 'boolean_accessor' do
     let(:klass) do
       Class.new(Integration) do
+        prop_accessor :test_value
         boolean_accessor :test_value
       end
     end
 
-    let(:integration) { klass.new(properties: { test_value: input }) }
+    let(:integration) { klass.new(test_value: input) }
 
     where(:input, :method_result, :predicate_method_result) do
       true     | true  | true
@@ -1149,6 +1171,35 @@ RSpec.describe Integration do
           test_value: be(method_result),
           test_value?: be(predicate_method_result)
         )
+
+        # Make sure the original value is stored correctly
+        expect(integration.send(:test_value_before_type_cast)).to eq(input)
+        expect(integration.properties).to include('test_value' => input)
+      end
+
+      context 'when using data fields' do
+        let(:klass) do
+          Class.new(Integration) do
+            field :project_url, storage: :data_fields, type: 'checkbox'
+
+            def data_fields
+              issue_tracker_data || self.build_issue_tracker_data
+            end
+          end
+        end
+
+        let(:integration) { klass.new(project_url: input) }
+
+        it 'has the correct value' do
+          expect(integration).to have_attributes(
+            project_url: be(method_result),
+            project_url?: be(predicate_method_result)
+          )
+
+          # Make sure the original value is stored correctly
+          expect(integration.send(:project_url_before_type_cast)).to eq(input == false ? 'false' : input)
+          expect(integration.properties).not_to include('project_url')
+        end
       end
     end
 
@@ -1159,6 +1210,24 @@ RSpec.describe Integration do
         test_value: be(nil),
         test_value?: be(false)
       )
+    end
+
+    context 'when getter is not defined' do
+      let(:input) { true }
+      let(:klass) do
+        Class.new(Integration) do
+          boolean_accessor :test_value
+        end
+      end
+
+      it 'defines a prop_accessor' do
+        expect(integration).to have_attributes(
+          test_value: true,
+          test_value?: true
+        )
+
+        expect(integration.properties['test_value']).to be(true)
+      end
     end
   end
 
@@ -1218,7 +1287,6 @@ RSpec.describe Integration do
 
     it 'queues a Integrations::ExecuteWorker' do
       expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, data)
-      expect(ProjectServiceWorker).not_to receive(:perform_async)
 
       async_execute
     end
@@ -1227,19 +1295,6 @@ RSpec.describe Integration do
       let(:supported_events) { %w[issue] }
 
       it 'does not queue a worker' do
-        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
-
-        async_execute
-      end
-    end
-
-    context 'when the FF :rename_integration_workers is disabled' do
-      before do
-        stub_feature_flags(rename_integrations_workers: false)
-      end
-
-      it 'queues a ProjectServiceWorker' do
-        expect(ProjectServiceWorker).to receive(:perform_async).with(integration.id, data)
         expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
 
         async_execute

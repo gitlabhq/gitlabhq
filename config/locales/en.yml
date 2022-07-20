@@ -10,6 +10,9 @@ en:
         target: Target issue
       group:
         path: Group URL
+      namespace_setting:
+        unique_project_download_limit: "Number of projects"
+        unique_project_download_limit_interval_in_seconds: "Interval (seconds)"
       member:
         user: "The member's email address"
         invite_email: "The member's email address"

@@ -25,7 +25,11 @@ module WorkItems
       work_item = create_result[:work_item]
       return ::ServiceResponse.success(payload: payload(work_item)) if @link_params.blank?
 
-      result = IssueLinks::CreateService.new(work_item, @current_user, @link_params).execute
+      result = WorkItems::ParentLinks::CreateService.new(
+        @link_params[:parent_work_item],
+        @current_user,
+        { target_issuable: work_item }
+      ).execute
 
       if result[:status] == :success
         ::ServiceResponse.success(payload: payload(work_item))

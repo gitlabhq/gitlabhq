@@ -316,11 +316,12 @@ and [Container Scanning](../../user/application_security/container_scanning/inde
 
 You can find the schemas for these scanners here:
 
-- [SAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
-- [DAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json)
-- [Dependency Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
+- [Cluster Image Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/cluster-image-scanning-report-format.json)
 - [Container Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json)
 - [Coverage Fuzzing](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json)
+- [DAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json)
+- [Dependency Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
+- [SAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
 - [Secret Detection](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
 
 ### Retention period for vulnerabilities
@@ -359,6 +360,41 @@ GitLab uses the
 Ongoing improvements to report validation are tracked [in this epic](https://gitlab.com/groups/gitlab-org/-/epics/6968).
 In the meantime, you can see which versions are supported in the
 [source code](https://gitlab.com/gitlab-org/gitlab/-/blob/08dd756429731a0cca1e27ca9d59eea226398a7d/lib/gitlab/ci/parsers/security/validators/schema_validator.rb#L9-27).
+
+#### Validate locally
+
+Before running your analyzer in GitLab, you should validate the report produced by your analyzer to
+ensure it complies with the declared schema version.
+
+Use the script below to validate JSON files against a given schema.
+
+```ruby
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+  gem 'json_schemer'
+end
+
+require 'json'
+require 'pathname'
+
+raise 'Usage: ruby script.rb <security schema file name> <report file name>' unless ARGV.size == 2
+
+schema = JSONSchemer.schema(Pathname.new(ARGV[0]))
+report = JSON.parse(File.open(ARGV[1]).read)
+schema_validation_errors = schema.validate(report).map { |error| JSONSchemer::Errors.pretty(error) }
+puts(schema_validation_errors)
+```
+
+1. Download the appropriate schema that matches your report type and declared version. For
+   example, you can find version `14.0.6` of the `container_scanning` report schema at
+   `https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/raw/v14.0.6/dist/container-scanning-report-format.json?inline=false`.
+1. Save the Ruby script above in a file, for example, `validate.rb`.
+1. Run the script, passing the schema and report file names as arguments in order. For example:
+   1. Using your local Ruby interpreter: `ruby validate.rb container-scanning-format_14-0-6.json gl-container-scanning-report.json`.
+   1. Using Docker: `docker run -it --rm -v $(pwd):/ci ruby:3-slim ruby /ci/validate.rb /ci/container-scanning-format_14-0-6.json  /ci/gl-container-scanning-report.json`
+1. Validation errors are shown on the screen. You must resolve these errors before GitLab can ingest your report.
 
 ### Report Fields
 
@@ -451,7 +487,7 @@ The `identifiers` array describes the detected vulnerability. An identifier obje
 `value` fields are used to tell if two identifiers are the same. The user interface uses the
 object's `name` and `url` fields to display the identifier.
 
-It is recommended to reuse the identifiers the GitLab scanners already define:
+We recommend that you use the identifiers the GitLab scanners already define:
 
 | Identifier | Type | Example value |
 |------------|------|---------------|
@@ -479,7 +515,7 @@ Not all vulnerabilities have CVEs, and a CVE can be identified multiple times. A
 isn't a stable identifier and you shouldn't assume it as such when tracking vulnerabilities.
 
 The maximum number of identifiers for a vulnerability is set as 20. If a vulnerability has more than 20 identifiers,
-the system saves only the first 20 of them. Note that vulnerabilities in the [Pipeline Security](../../user/application_security/security_dashboard/#view-vulnerabilities-in-a-pipeline)
+the system saves only the first 20 of them. Note that vulnerabilities in the [Pipeline Security](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline)
 tab do not enforce this limit and all identifiers present in the report artifact are displayed.
 
 #### Details

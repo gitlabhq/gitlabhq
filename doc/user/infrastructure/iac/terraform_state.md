@@ -22,6 +22,16 @@ In GitLab, you can:
 - Lock and unlock states.
 - Remotely execute `terraform plan` and `terraform apply` commands.
 
+WARNING:
+**Disaster recovery planning**
+Terraform state files are encrypted with the lockbox Ruby gem when they are at rest on disk and in object storage.
+[To decrypt a state file, GitLab must be available](https://gitlab.com/gitlab-org/gitlab/-/issues/335739).
+If it is offline, and you use GitLab to deploy infrastructure that GitLab requires (like virtual machines,
+Kubernetes clusters, or network components), you cannot access the state file easily or decrypt it.
+Additionally, if GitLab serves up Terraform modules or other dependencies that are required to bootstrap GitLab,
+these will be inaccessible. To work around this issue, make other arrangements to host or back up these dependencies,
+or consider using a separate GitLab instance with no shared points of failure.
+
 ## Prerequisites
 
 For self-managed GitLab, before you can use GitLab for your Terraform state files:
@@ -151,7 +161,8 @@ You can use a GitLab-managed Terraform state backend as a
      a [Personal Access Token](../../profile/personal_access_tokens.md) for
      authentication, this value is your GitLab username. If you are using GitLab CI/CD, this value is `'gitlab-ci-token'`.
    - **password**: The password to authenticate with the data source. If you are using a Personal Access Token for
-     authentication, this value is the token value. If you are using GitLab CI/CD, this value is the contents of the `${CI_JOB_TOKEN}` CI/CD variable.
+     authentication, this value is the token value (the token must have the **API** scope).
+     If you are using GitLab CI/CD, this value is the contents of the `${CI_JOB_TOKEN}` CI/CD variable.
 
 Outputs from the data source can now be referenced in your Terraform resources
 using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.

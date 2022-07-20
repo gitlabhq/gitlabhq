@@ -64,7 +64,7 @@ the status of the flag and the command to enable or disable it.
 
 ### Start the GitLab Rails console
 
-The first thing you need to enable or disable a feature behind a flag is to
+The first thing you must do to enable or disable a feature behind a flag is to
 start a session on GitLab Rails console.
 
 For Omnibus installations:
@@ -83,7 +83,7 @@ For details, see [starting a Rails console session](operations/rails_console.md#
 
 ### Enable or disable the feature
 
-Once the Rails console session has started, run the `Feature.enable` or
+After the Rails console session has started, run the `Feature.enable` or
 `Feature.disable` commands accordingly. The specific flag can be found
 in the feature's documentation itself.
 
@@ -123,11 +123,11 @@ For example, to enable the [`:product_analytics`](../operations/product_analytic
 Feature.enable(:product_analytics, Project.find(1234))
 ```
 
-`Feature.enable` and `Feature.disable` always return `nil`, this is not an indication that the command failed:
+`Feature.enable` and `Feature.disable` always return `true`, even if the application doesn't use the flag:
 
 ```ruby
 irb(main):001:0> Feature.enable(:my_awesome_feature)
-=> nil
+=> true
 ```
 
 When the feature is ready, GitLab removes the feature flag, and the option for
@@ -159,7 +159,7 @@ Feature.all
 
 ### Unset feature flag
 
-You can unset a feature flag so that GitLab will fall back to the current defaults for that flag:
+You can unset a feature flag so that GitLab falls back to the current defaults for that flag:
 
 ```ruby
 Feature.remove(:my_awesome_feature)

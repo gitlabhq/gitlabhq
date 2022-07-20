@@ -11,6 +11,10 @@ export const imagesListResponse = [
     createdAt: '2020-11-03T13:29:21Z',
     expirationPolicyStartedAt: null,
     expirationPolicyCleanupStatus: 'UNSCHEDULED',
+    project: {
+      id: 'gid://gitlab/Project/22',
+      path: 'gitlab-test',
+    },
   },
   {
     __typename: 'ContainerRepository',
@@ -24,6 +28,10 @@ export const imagesListResponse = [
     createdAt: '2020-09-21T06:57:43Z',
     expirationPolicyStartedAt: null,
     expirationPolicyCleanupStatus: 'UNSCHEDULED',
+    project: {
+      id: 'gid://gitlab/Project/22',
+      path: 'gitlab-test',
+    },
   },
 ];
 

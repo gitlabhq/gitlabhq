@@ -193,6 +193,8 @@ module Gitlab
           results = redis.hmget(key, file_paths)
         end
 
+        record_hit_ratio(results)
+
         results.map! do |result|
           Gitlab::Json.parse(gzip_decompress(result), symbolize_names: true) unless result.nil?
         end
@@ -214,6 +216,11 @@ module Gitlab
 
       def current_transaction
         ::Gitlab::Metrics::WebTransaction.current
+      end
+
+      def record_hit_ratio(results)
+        current_transaction&.increment(:gitlab_redis_diff_caching_requests_total)
+        current_transaction&.increment(:gitlab_redis_diff_caching_hits_total) if results.any?(&:present?)
       end
     end
   end

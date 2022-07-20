@@ -5,12 +5,12 @@ require 'spec_helper'
 # See https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#markdown-snapshot-testing
 # for documentation on this spec.
 # rubocop:disable Layout/LineLength
-RSpec.shared_context 'with API::Markdown Snapshot shared context' do |glfm_specification_dir, glfm_example_snapshots_dir|
+RSpec.shared_context 'with API::Markdown Snapshot shared context' do |glfm_specification_dir|
   # rubocop:enable Layout/LineLength
   include ApiHelpers
 
   markdown_examples, html_examples = %w[markdown.yml html.yml].map do |file_name|
-    yaml = File.read("#{glfm_example_snapshots_dir}/#{file_name}")
+    yaml = File.read("#{glfm_specification_dir}/example_snapshots/#{file_name}")
     YAML.safe_load(yaml, symbolize_names: true, aliases: true)
   end
 

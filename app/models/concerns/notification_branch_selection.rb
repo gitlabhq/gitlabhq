@@ -6,13 +6,15 @@
 module NotificationBranchSelection
   extend ActiveSupport::Concern
 
-  def branch_choices
-    [
-      [_('All branches'), 'all'].freeze,
-      [_('Default branch'), 'default'].freeze,
-      [_('Protected branches'), 'protected'].freeze,
-      [_('Default branch and protected branches'), 'default_and_protected'].freeze
-    ].freeze
+  class_methods do
+    def branch_choices
+      [
+        [_('All branches'), 'all'].freeze,
+        [_('Default branch'), 'default'].freeze,
+        [_('Protected branches'), 'protected'].freeze,
+        [_('Default branch and protected branches'), 'default_and_protected'].freeze
+      ].freeze
+    end
   end
 
   def notify_for_branch?(data)

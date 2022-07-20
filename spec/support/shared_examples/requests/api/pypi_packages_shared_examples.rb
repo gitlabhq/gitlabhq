@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'PyPI package creation' do |user_type, status, add_member = true|
+RSpec.shared_examples 'PyPI package creation' do |user_type, status, add_member = true, md5_digest = true|
   RSpec.shared_examples 'creating pypi package files' do
     it 'creates package files' do
       expect { subject }
@@ -14,6 +14,17 @@ RSpec.shared_examples 'PyPI package creation' do |user_type, status, add_member 
       expect(package.name).to eq params[:name]
       expect(package.version).to eq params[:version]
       expect(package.pypi_metadatum.required_python).to eq params[:requires_python]
+
+      if md5_digest
+        expect(package.package_files.first.file_md5).not_to be_nil
+      else
+        expect(package.package_files.first.file_md5).to be_nil
+      end
+    end
+
+    context 'with FIPS mode', :fips_mode do
+      it_behaves_like 'returning response status', :unprocessable_entity if md5_digest
+      it_behaves_like 'returning response status', status unless md5_digest
     end
   end
 

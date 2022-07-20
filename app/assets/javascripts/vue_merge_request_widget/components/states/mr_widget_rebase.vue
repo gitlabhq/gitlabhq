@@ -3,6 +3,7 @@ import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import toast from '~/vue_shared/plugins/global_toast';
 import simplePoll from '~/lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
@@ -120,13 +121,15 @@ export default {
         .poll()
         .then((res) => res.data)
         .then((res) => {
-          if (res.rebase_in_progress) {
+          if (res.rebase_in_progress || res.should_be_rebased) {
             continuePolling();
           } else {
             this.isMakingRequest = false;
 
             if (res.merge_error && res.merge_error.length) {
               this.rebasingError = res.merge_error;
+            } else {
+              toast(__('Rebase completed'));
             }
 
             eventHub.$emit('MRWidgetRebaseSuccess');
@@ -217,6 +220,17 @@ export default {
             @click="rebase"
           >
             {{ __('Rebase') }}
+          </gl-button>
+          <gl-button
+            v-if="glFeatures.restructuredMrWidget && showRebaseWithoutCi"
+            :loading="isMakingRequest"
+            variant="confirm"
+            size="small"
+            category="secondary"
+            data-testid="rebase-without-ci-button"
+            @click="rebaseWithoutCi"
+          >
+            {{ __('Rebase without pipeline') }}
           </gl-button>
         </div>
       </div>

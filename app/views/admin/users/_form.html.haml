@@ -2,41 +2,42 @@
   = gitlab_ui_form_for [:admin, @user], html: { class: 'fieldset-form' } do |f|
     = form_errors(@user, pajamas_alert: true)
 
-    %fieldset
-      %legend.gl-border-bottom-0= _('Account')
-      .form-group.row
-        .col-12
-          = f.label "#{:name} (required)"
-          = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control gl-form-input'
-      .form-group.row
-        .col-12
-          = f.label "#{:username} (required)"
-          = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control gl-form-input'
-      .form-group.row
-        .col-12
-          = f.label "#{:email} (required)"
-          = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control gl-form-input'
+    .gl-border-b.gl-pb-3.gl-mb-6
+      .row
+        .col-lg-4
+          %h4.gl-mt-0
+            = _('Account')
+        .col-lg-8
+          .form-group.gl-form-group{ role: 'group' }
+            = f.label :name, _('Name'), class: 'gl-display-block col-form-label'
+            = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control gl-form-input'
 
-    - if @user.new_record?
-      %fieldset
-        %legend.gl-border-bottom-0= _('Password')
-        .form-group.row
-          .col-12
-            %strong
-              = _('Reset link will be generated and sent to the user. %{break} User will be forced to set the password on first sign in.').html_safe % { break: '<br />'.html_safe }
-    - else
-      %fieldset
-        %legend.gl-border-bottom-0= _('Password')
-        .form-group.row
-          .col-12
-            = f.label :password
-          .col-12
-            = f.password_field :password, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input'
-        .form-group.row
-          .col-12
-            = f.label :password_confirmation
-          .col-12
-            = f.password_field :password_confirmation, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input'
+          .form-group.gl-form-group{ role: 'group' }
+            = f.label :username, _('Username'), class: 'gl-display-block col-form-label'
+            = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control gl-form-input'
+
+          .form-group.gl-form-group{ role: 'group' }
+            = f.label :email, _('Email'), class: 'gl-display-block col-form-label'
+            = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control gl-form-input'
+
+    .gl-border-b.gl-pb-3.gl-mb-6
+      .row
+        .col-lg-4
+          %h4.gl-mt-0
+            = _('Password')
+        .col-lg-8
+          - if @user.new_record?
+            = render Pajamas::AlertComponent.new(variant: :info, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
+              = c.body do
+                = s_('AdminUsers|Reset link will be generated and sent to the user. User will be forced to set the password on first sign in.')
+          - else
+            .form-group.gl-form-group{ role: 'group' }
+              = f.label :password, _('Password'), class: 'gl-display-block col-form-label'
+              = f.password_field :password, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation'
+              = render_if_exists 'shared/password_requirements_list'
+            .form-group.gl-form-group{ role: 'group' }
+              = f.label :password_confirmation, _('Password confirmation'), class: 'gl-display-block col-form-label'
+              = f.password_field :password_confirmation, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input'
 
     = render partial: 'access_levels', locals: { f: f }
 
@@ -44,30 +45,31 @@
 
     = render_if_exists 'admin/users/limits', f: f
 
-    %fieldset
-      %legend.gl-border-bottom-0= _('Profile')
-      .form-group.row
-        .col-12
-          = f.label :avatar
-        .col-12
-          = f.file_field :avatar
+    .gl-border-b.gl-pb-6.gl-mb-6
+      .row
+        .col-lg-4
+          %h4.gl-mt-0
+            = _('Profile')
+        .col-lg-8
+          .form-group.gl-form-group{ role: 'group' }
+            = f.label :avatar, s_('AdminUsers|Avatar'), class: 'gl-display-block col-form-label'
+            = f.file_field :avatar
 
-      .form-group.row
-        .col-12
-          = f.label :skype
-          = f.text_field :skype, class: 'form-control gl-form-input'
-      .form-group.row
-        .col-12
-          = f.label :linkedin
-          = f.text_field :linkedin, class: 'form-control gl-form-input'
-      .form-group.row
-        .col-12
-          = f.label :twitter
-          = f.text_field :twitter, class: 'form-control gl-form-input'
-      .form-group.row
-        .col-12
-          = f.label :website_url
-          = f.text_field :website_url, class: 'form-control gl-form-input'
+          .form-group.gl-form-group{ role: 'group' }
+            = f.label :skype, s_('AdminUsers|Skype'), class: 'gl-display-block col-form-label'
+            = f.text_field :skype, class: 'form-control gl-form-input'
+
+          .form-group.gl-form-group{ role: 'group' }
+            = f.label :linkedin, s_('AdminUsers|Linkedin'), class: 'gl-display-block col-form-label'
+            = f.text_field :linkedin, class: 'form-control gl-form-input'
+
+          .form-group.gl-form-group{ role: 'group' }
+            = f.label :twitter, _('Twitter'), class: 'gl-display-block col-form-label'
+            = f.text_field :twitter, class: 'form-control gl-form-input'
+
+          .form-group.gl-form-group{ role: 'group' }
+            = f.label :website_url, s_('AdminUsers|Website URL'), class: 'gl-display-block col-form-label'
+            = f.text_field :website_url, class: 'form-control gl-form-input'
 
     = render 'admin/users/admin_notes', f: f
 

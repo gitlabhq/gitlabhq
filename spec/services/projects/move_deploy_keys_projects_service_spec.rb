@@ -56,5 +56,22 @@ RSpec.describe Projects::MoveDeployKeysProjectsService do
         expect(project_with_deploy_keys.deploy_keys_projects.count).not_to eq 0
       end
     end
+
+    context 'when SHA256 fingerprint is missing' do
+      before do
+        create(:deploy_keys_project, project: target_project)
+        DeployKey.all.update_all(fingerprint_sha256: nil)
+      end
+
+      it 'moves the user\'s deploy keys from one project to another' do
+        combined_keys = project_with_deploy_keys.deploy_keys + target_project.deploy_keys
+
+        subject.execute(project_with_deploy_keys)
+
+        expect(project_with_deploy_keys.deploy_keys.reload).to be_empty
+        expect(target_project.deploy_keys.reload).to match_array(combined_keys)
+        expect(DeployKey.all.select(:fingerprint_sha256)).to all(be_present)
+      end
+    end
   end
 end

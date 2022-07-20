@@ -80,7 +80,7 @@ export default {
         class="js-pipelines-retry-button"
         data-qa-selector="pipeline_retry_button"
         data-testid="pipelines-retry-button"
-        icon="repeat"
+        icon="retry"
         variant="default"
         category="secondary"
         @click="handleRetryClick"

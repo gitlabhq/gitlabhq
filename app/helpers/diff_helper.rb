@@ -33,6 +33,7 @@ module DiffHelper
     if action_name == 'diff_for_path'
       options[:expanded] = true
       options[:paths] = params.values_at(:old_path, :new_path)
+      options[:use_extra_viewer_as_main] = false
     end
 
     options
@@ -227,6 +228,7 @@ module DiffHelper
 
   def conflicts(allow_tree_conflicts: false)
     return unless options[:merge_ref_head_diff]
+    return unless merge_request.cannot_be_merged?
 
     conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts) # rubocop:disable CodeReuse/ServiceClass
 

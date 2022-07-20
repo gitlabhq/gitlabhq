@@ -8,10 +8,15 @@ module QA
           view 'app/assets/javascripts/integrations/index/components/integrations_table.vue' do
             element :prometheus_link, %q(:data-qa-selector="`${item.name}_link`") # rubocop:disable QA/ElementWithPattern
             element :jira_link, %q(:data-qa-selector="`${item.name}_link`") # rubocop:disable QA/ElementWithPattern
+            element :pipelines_email_link, %q(:data-qa-selector="`${item.name}_link`") # rubocop:disable QA/ElementWithPattern
           end
 
           def click_on_prometheus_integration
             click_element :prometheus_link
+          end
+
+          def click_pipelines_email_link
+            click_element :pipelines_email_link
           end
 
           def click_jira_link

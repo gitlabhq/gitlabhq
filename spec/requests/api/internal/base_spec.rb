@@ -51,64 +51,6 @@ RSpec.describe API::Internal::Base do
     end
   end
 
-  describe 'GET /internal/error_tracking_allowed' do
-    let_it_be(:project) { create(:project) }
-
-    let(:params) { { project_id: project.id, public_key: 'key' } }
-
-    context 'when the secret header is missing' do
-      it 'responds with unauthorized entity' do
-        post api("/internal/error_tracking_allowed"), params: params
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
-    end
-
-    context 'when some params are missing' do
-      it 'responds with unprocessable entity' do
-        post api("/internal/error_tracking_allowed"), params: params.except(:public_key),
-          headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) }
-
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      end
-    end
-
-    context 'when the error tracking is disabled' do
-      it 'returns enabled: false' do
-        create(:error_tracking_client_key, project: project, active: false)
-
-        post api("/internal/error_tracking_allowed"), params: params,
-          headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq({ 'enabled' => false })
-      end
-
-      context 'when the error tracking record does not exist' do
-        it 'returns enabled: false' do
-          post api("/internal/error_tracking_allowed"), params: params,
-            headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to eq({ 'enabled' => false })
-        end
-      end
-    end
-
-    context 'when the error tracking is enabled' do
-      it 'returns enabled: true' do
-        client_key = create(:error_tracking_client_key, project: project, active: true)
-        params[:public_key] = client_key.public_key
-
-        post api("/internal/error_tracking_allowed"), params: params,
-          headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq({ 'enabled' => true })
-      end
-    end
-  end
-
   describe 'GET /internal/two_factor_recovery_codes' do
     let(:key_id) { key.id }
 

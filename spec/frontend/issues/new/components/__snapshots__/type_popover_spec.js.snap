@@ -2,10 +2,11 @@
 
 exports[`Issue type info popover renders 1`] = `
 <span
+  class="gl-ml-2"
   id="popovercontainer"
 >
   <gl-icon-stub
-    class="gl-ml-5 gl-text-gray-500"
+    class="gl-text-blue-600"
     id="issue-type-info"
     name="question-o"
     size="16"

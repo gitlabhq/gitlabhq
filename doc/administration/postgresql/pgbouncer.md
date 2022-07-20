@@ -173,7 +173,7 @@ ote_pid | tls
 Some database changes have to be done directly, and not through PgBouncer.
 
 Read more about the affected tasks: [database restores](../../raketasks/backup_restore.md#back-up-and-restore-for-installations-using-pgbouncer)
-and [GitLab upgrades](../../update/zero_downtime.md#use-postgresql-ha).
+and [GitLab upgrades](../../update/zero_downtime.md#postgresql).
 
 1. To find the primary node, run the following on a database node:
 

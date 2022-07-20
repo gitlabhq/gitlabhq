@@ -1,5 +1,6 @@
 enum LocalWidgetType {
   ASSIGNEES
+  LABELS
   WEIGHT
 }
 
@@ -12,6 +13,12 @@ type LocalWorkItemAssignees implements LocalWorkItemWidget {
   nodes: [UserCore]
 }
 
+type LocalWorkItemLabels implements LocalWorkItemWidget {
+  type: LocalWidgetType!
+  allowScopedLabels: Boolean!
+  nodes: [Label!]
+}
+
 type LocalWorkItemWeight implements LocalWorkItemWidget {
   type: LocalWidgetType!
   weight: Int
@@ -21,9 +28,11 @@ extend type WorkItem {
   mockWidgets: [LocalWorkItemWidget]
 }
 
-type LocalWorkItemAssigneesInput {
+input LocalUpdateWorkItemInput {
   id: WorkItemID!
-  assigneeIds: [ID!]
+  assignees: [UserCore!]
+  labels: [Label]
+  weight: Int
 }
 
 type LocalWorkItemPayload {
@@ -32,5 +41,5 @@ type LocalWorkItemPayload {
 }
 
 extend type Mutation {
-  localUpdateWorkItem(input: LocalWorkItemAssigneesInput!): LocalWorkItemPayload
+  localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
 }

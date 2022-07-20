@@ -80,15 +80,23 @@ RSpec.describe Projects::ServicePingController do
       it_behaves_like 'counter is not increased'
       it_behaves_like 'counter is increased', 'WEB_IDE_PREVIEWS_SUCCESS_COUNT'
 
-      context 'when the user has access to the project' do
+      context 'when the user has access to the project', :snowplow do
         let(:user) { project.owner }
 
         it 'increases the live preview view counter' do
-          expect(Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_live_preview_edit_action).with(author: user)
+          expect(Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_live_preview_edit_action).with(author: user, project: project)
 
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it_behaves_like 'Snowplow event tracking' do
+          let(:project) { create(:project) }
+          let(:category) { 'ide_edit' }
+          let(:action) { 'g_edit_by_live_preview' }
+          let(:namespace) { project.namespace }
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         end
       end
     end

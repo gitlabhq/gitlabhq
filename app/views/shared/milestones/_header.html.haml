@@ -11,23 +11,21 @@
 
   .milestone-buttons
     - if can?(current_user, :admin_milestone, @group || @project)
-      = link_to _('Edit'), edit_milestone_path(milestone), class: 'btn gl-button btn-grouped'
+      = render Pajamas::ButtonComponent.new(href: edit_milestone_path(milestone), button_options: { class: 'btn-grouped' }) do
+        = _('Edit')
 
       - if milestone.project_milestone? && milestone.project.group
-        %button.js-promote-project-milestone-button.btn.gl-button.btn-grouped{ data: { milestone_title: milestone.title,
-          group_name: milestone.project.group.name,
-          url: promote_project_milestone_path(milestone.project, milestone)},
-          disabled: true,
-          type: 'button' }
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-promote-project-milestone-button btn-grouped', data: { milestone_title: milestone.title, group_name: milestone.project.group.name, url: promote_project_milestone_path(milestone.project, milestone) }, disabled: true }) do
           = _('Promote')
         #promote-milestone-modal
 
       - if milestone.active?
-        = link_to _('Close milestone'), update_milestone_path(milestone, { state_event: :close }), method: :put, class: 'btn gl-button btn-grouped btn-close'
+        = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :close }), button_options: { class: 'btn-grouped btn-close', data: { method: 'put' }, rel: 'nofollow' }) do
+          = _('Close milestone')
       - else
-        = link_to _('Reopen milestone'), update_milestone_path(milestone, { state_event: :activate }), method: :put, class: 'btn gl-button btn-grouped'
+        = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :activate }), button_options: { class: 'btn-grouped', data: { method: 'put' }, rel: 'nofollow' }) do
+          = _('Reopen milestone')
 
       = render 'shared/milestones/delete_button'
 
-    %button.btn.gl-button.btn-default.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ type: 'button' }
-      = sprite_icon('chevron-double-lg-left')
+    = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left', button_options: { 'aria-label' => _('Toggle sidebar'), class: 'btn-grouped gl-float-right! gl-sm-display-none js-sidebar-toggle' })

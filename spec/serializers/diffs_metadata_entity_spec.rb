@@ -65,6 +65,7 @@ RSpec.describe DiffsMetadataEntity do
         let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: false) }
 
         before do
+          allow(merge_request).to receive(:cannot_be_merged?).and_return(true)
           allow(MergeRequests::Conflicts::ListService).to receive(:new).and_return(conflicts)
         end
 

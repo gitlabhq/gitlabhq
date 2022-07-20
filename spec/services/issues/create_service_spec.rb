@@ -135,6 +135,14 @@ RSpec.describe Issues::CreateService do
             issue
           end
 
+          it 'calls IncidentManagement::TimelineEvents::CreateService.create_incident' do
+            expect(IncidentManagement::TimelineEvents::CreateService)
+              .to receive(:create_incident)
+              .with(a_kind_of(Issue), reporter)
+
+            issue
+          end
+
           context 'when invalid' do
             before do
               opts.merge!(title: '')
@@ -487,6 +495,23 @@ RSpec.describe Issues::CreateService do
             expect(issue).to be_persisted
             expect(issue.issue_customer_relations_contacts).to be_empty
           end
+        end
+      end
+
+      context 'with alert bot author' do
+        let_it_be(:user) { User.alert_bot }
+        let_it_be(:label) { create(:label, project: project) }
+
+        let(:opts) do
+          {
+            title: 'Title',
+            description: %(/label #{label.to_reference(format: :name)}")
+          }
+        end
+
+        it 'can apply labels' do
+          expect(issue).to be_persisted
+          expect(issue.labels).to eq([label])
         end
       end
     end

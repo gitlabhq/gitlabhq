@@ -11,8 +11,18 @@ module Deployments
       # TODO: Move all buisness logic in `Seed::Deployment` to this class after
       # `create_deployment_in_separate_transaction` feature flag has been removed.
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/348778
+
+      # If build.persisted_environment is a BatchLoader, we need to remove
+      # the method proxy in order to clone into new item here
+      # https://github.com/exAspArk/batch-loader/issues/31
+      environment = if build.persisted_environment.respond_to?(:__sync)
+                      build.persisted_environment.__sync
+                    else
+                      build.persisted_environment
+                    end
+
       deployment = ::Gitlab::Ci::Pipeline::Seed::Deployment
-        .new(build, build.persisted_environment).to_resource
+        .new(build, environment).to_resource
 
       return unless deployment
 

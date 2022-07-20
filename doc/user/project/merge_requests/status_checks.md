@@ -138,7 +138,7 @@ the status check and it **will not** be recoverable.
 
 ## Status checks widget
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
 
 The status checks widget displays in merge requests and shows the status of external
 status checks:

@@ -5,7 +5,7 @@ description: A monthly count of packages published to the registry using a deplo
   token
 product_section: ops
 product_stage: package
-product_group: group::package
+product_group: package
 product_category: package registry
 value_type: number
 status: active

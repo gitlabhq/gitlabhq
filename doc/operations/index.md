@@ -77,29 +77,14 @@ microservices-based distributed systems - and displays results within GitLab.
 
 - [Trace the performance and health](tracing.md) of a deployed application.
 
-## Aggregate and store logs (DEPRECATED) **(FREE SELF)**
+<!--- start_remove The following content will be removed on remove_date: '2022-10-18'--->
 
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485) in GitLab 14.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/360182) behind a [feature flag](../administration/feature_flags.md) named `monitor_logging` in GitLab 15.0. Disabled by default.
+## Aggregate and store logs (removed) **(FREE SELF)**
 
-WARNING:
-This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485)
-in GitLab 14.7.
-It will be removed completely in GitLab 15.2.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485) in GitLab 14.7
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/360193) in GitLab 15.2.
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `monitor_logging`.
-On GitLab.com, this feature is not available.
-This feature is not recommended for production use.
-
-Developers need to troubleshoot application changes in development, and incident
-responders need aggregated, real-time logs when troubleshooting problems with
-production services. GitLab provides centralized, aggregated log storage for your
-distributed application, enabling you to collect logs across multiple services and
-infrastructure.
-
-- [View logs of pods](../user/project/clusters/kubernetes_pod_logs.md)
-  in connected Kubernetes clusters.
+<!--- end_remove -->
 
 ## Manage your infrastructure in code
 

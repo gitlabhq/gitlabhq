@@ -1,12 +1,8 @@
 ---
 Performance/CollectionLiteralInLoop:
-  # Offense count: 45
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
     - 'config/application.rb'
     - 'config/initializers/1_settings.rb'
-    - 'ee/app/models/ee/merge_request.rb'
     - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/support/shared_examples/features/protected_branches_access_control_shared_examples.rb'
     - 'ee/spec/workers/app_sec/dast/profile_schedule_worker_spec.rb'
@@ -20,15 +16,18 @@ Performance/CollectionLiteralInLoop:
     - 'lib/tasks/gitlab/seed/group_seed.rake'
     - 'spec/bin/sidekiq_cluster_spec.rb'
     - 'spec/controllers/groups_controller_spec.rb'
+    - 'spec/finders/ci/runners_finder_spec.rb'
     - 'spec/lib/banzai/reference_parser/base_parser_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers/restrict_gitlab_schema_spec.rb'
     - 'spec/lib/gitlab/file_detector_spec.rb'
     - 'spec/lib/gitlab/search/abuse_detection_spec.rb'
     - 'spec/lib/gitlab/utils/markdown_spec.rb'
+    - 'spec/metrics_server/metrics_server_spec.rb'
     - 'spec/models/analytics/cycle_analytics/aggregation_spec.rb'
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/pipeline_spec.rb'
     - 'spec/models/namespace_statistics_spec.rb'
+    - 'spec/models/project_spec.rb'
     - 'spec/presenters/ci/build_runner_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/packages_metadata_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/service_index_presenter_spec.rb'

@@ -15,12 +15,10 @@ module Resolvers
             description: 'Name of the cluster agent.'
       end
 
-      alias_method :project, :object
-
       def resolve_with_lookahead(**args)
         apply_lookahead(
           ::Clusters::AgentsFinder
-            .new(project, current_user, params: args)
+            .new(object, current_user, params: args)
             .execute
         )
       end
@@ -36,3 +34,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::Clusters::AgentsResolver.prepend_mod_with('Resolvers::Clusters::AgentsResolver')

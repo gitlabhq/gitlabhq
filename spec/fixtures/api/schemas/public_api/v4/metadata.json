@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": [
+    "version",
+    "revision",
+    "kas"
+  ],
+  "properties": {
+    "version": { "type": "string" },
+    "revision": { "type": "string" },
+    "kas": {
+      "type": "object",
+      "required": [
+        "enabled",
+        "externalUrl",
+        "version"
+      ],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "externalUrl": { "type": ["string", "null"] },
+        "version": { "type": ["string", "null"] }
+      }
+    }
+  },
+  "additionalProperties": false
+}

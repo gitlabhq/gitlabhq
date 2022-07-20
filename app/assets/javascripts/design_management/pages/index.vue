@@ -4,16 +4,15 @@ import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import VueDraggable from 'vuedraggable';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
-import createFlash, { FLASH_TYPES } from '~/flash';
 import { getFilename, validateImageName } from '~/lib/utils/file_upload';
-import { __, s__, sprintf } from '~/locale';
+import { __, s__ } from '~/locale';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import DeleteButton from '../components/delete_button.vue';
 import DesignDestroyer from '../components/design_destroyer.vue';
 import Design from '../components/list/item.vue';
 import UploadButton from '../components/upload/button.vue';
 import DesignVersionDropdown from '../components/upload/design_version_dropdown.vue';
-import { VALID_DESIGN_FILE_MIMETYPE } from '../constants';
+import { MAXIMUM_FILE_UPLOAD_LIMIT, VALID_DESIGN_FILE_MIMETYPE } from '../constants';
 import moveDesignMutation from '../graphql/mutations/move_design.mutation.graphql';
 import uploadDesignMutation from '../graphql/mutations/upload_design.mutation.graphql';
 import allDesignsMixin from '../mixins/all_designs';
@@ -35,10 +34,9 @@ import {
   UPLOAD_DESIGN_INVALID_FILETYPE_ERROR,
   designUploadSkippedWarning,
   designDeletionError,
+  MAXIMUM_FILE_UPLOAD_LIMIT_REACHED,
 } from '../utils/error_messages';
 import { trackDesignCreate, trackDesignUpdate } from '../utils/tracking';
-
-const MAXIMUM_FILE_UPLOAD_LIMIT = 10;
 
 export default {
   components: {
@@ -87,6 +85,7 @@ export default {
       isDraggingDesign: false,
       reorderedDesigns: null,
       isReorderingInProgress: false,
+      uploadError: null,
     };
   },
   computed: {
@@ -159,16 +158,7 @@ export default {
       if (!this.canCreateDesign) return false;
 
       if (files.length > MAXIMUM_FILE_UPLOAD_LIMIT) {
-        createFlash({
-          message: sprintf(
-            s__(
-              'DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again.',
-            ),
-            {
-              upload_limit: MAXIMUM_FILE_UPLOAD_LIMIT,
-            },
-          ),
-        });
+        this.uploadError = MAXIMUM_FILE_UPLOAD_LIMIT_REACHED;
 
         return false;
       }
@@ -206,7 +196,7 @@ export default {
       const skippedFiles = res?.data?.designManagementUpload?.skippedDesigns || [];
       const skippedWarningMessage = designUploadSkippedWarning(this.filesToBeSaved, skippedFiles);
       if (skippedWarningMessage) {
-        createFlash({ message: skippedWarningMessage, types: FLASH_TYPES.WARNING });
+        this.uploadError = skippedWarningMessage;
       }
 
       // if this upload resulted in a new version being created, redirect user to the latest version
@@ -229,7 +219,7 @@ export default {
     },
     onUploadDesignError() {
       this.resetFilesToBeSaved();
-      createFlash({ message: UPLOAD_DESIGN_ERROR });
+      this.uploadError = UPLOAD_DESIGN_ERROR;
     },
     changeSelectedDesigns(filename) {
       if (this.isDesignSelected(filename)) {
@@ -260,21 +250,21 @@ export default {
     },
     onDesignDeleteError() {
       const errorMessage = designDeletionError(this.selectedDesigns.length);
-      createFlash({ message: errorMessage });
+      this.uploadError = errorMessage;
     },
     onDesignDropzoneError() {
-      createFlash({ message: UPLOAD_DESIGN_INVALID_FILETYPE_ERROR });
+      this.uploadError = UPLOAD_DESIGN_INVALID_FILETYPE_ERROR;
     },
     onExistingDesignDropzoneChange(files, existingDesignFilename) {
       const filesArr = Array.from(files);
 
       if (filesArr.length > 1) {
-        createFlash({ message: EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE });
+        this.uploadError = EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE;
         return;
       }
 
       if (!filesArr.some(({ name }) => existingDesignFilename === name)) {
-        createFlash({ message: EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE });
+        this.uploadError = EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE;
         return;
       }
 
@@ -329,7 +319,7 @@ export default {
           optimisticResponse: moveDesignOptimisticResponse(this.reorderedDesigns),
         })
         .catch(() => {
-          createFlash({ message: MOVE_DESIGN_ERROR });
+          this.uploadError = MOVE_DESIGN_ERROR;
         })
         .finally(() => {
           this.isReorderingInProgress = false;
@@ -337,6 +327,9 @@ export default {
     },
     onDesignMove(designs) {
       this.reorderedDesigns = designs;
+    },
+    unsetUpdateError() {
+      this.uploadError = null;
     },
   },
   dragOptions: {
@@ -356,6 +349,15 @@ export default {
     @mouseenter="toggleOnPasteListener"
     @mouseleave="toggleOffPasteListener"
   >
+    <gl-alert
+      v-if="uploadError"
+      variant="danger"
+      class="gl-mb-3"
+      data-testid="design-update-alert"
+      @dismiss="unsetUpdateError"
+    >
+      {{ uploadError }}
+    </gl-alert>
     <header
       v-if="showToolbar"
       class="gl-display-flex gl-my-0 gl-text-gray-900"
@@ -371,6 +373,7 @@ export default {
         <div
           v-show="hasDesigns"
           class="qa-selector-toolbar gl-display-flex gl-align-items-center gl-my-2"
+          data-testid="design-selector-toolbar"
         >
           <gl-button
             v-if="isLatestVersion"

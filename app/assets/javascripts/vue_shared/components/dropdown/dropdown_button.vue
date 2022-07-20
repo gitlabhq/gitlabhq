@@ -37,6 +37,7 @@ export default {
     aria-expanded="false"
   >
     <gl-loading-icon v-show="isLoading" size="sm" :inline="true" />
+    <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
     <slot v-if="$slots.default"></slot>
     <span v-else class="dropdown-toggle-text"> {{ toggleText }} </span>
     <gl-icon

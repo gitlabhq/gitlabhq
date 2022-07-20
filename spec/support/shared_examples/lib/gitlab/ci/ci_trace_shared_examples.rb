@@ -265,10 +265,9 @@ RSpec.shared_examples 'common trace features' do
     end
 
     context 'build token' do
-      let(:token) { 'my_secret_token' }
+      let(:token) { build.token }
 
       before do
-        build.update!(token: token)
         trace.append(token, 0)
       end
 

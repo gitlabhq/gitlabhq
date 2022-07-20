@@ -27,6 +27,7 @@ module Types
 
       def coerce_input(string, ctx)
         gid = super
+        return if gid.nil?
         # Always return a WorkItemID even if an Issue Global ID is provided as input
         return work_item_gid(gid) if suitable?(gid)
 

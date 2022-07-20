@@ -544,16 +544,31 @@ RSpec.describe PagesDomain do
       end
     end
 
-    it 'returns the virual domain when there are pages deployed for the project' do
-      project.mark_pages_as_deployed
-      project.update_pages_deployment!(create(:pages_deployment, project: project))
+    context 'when there are pages deployed for the project' do
+      let(:virtual_domain) { pages_domain.pages_virtual_domain }
 
-      expect(Pages::VirtualDomain).to receive(:new).with([project], domain: pages_domain).and_call_original
+      before do
+        project.mark_pages_as_deployed
+        project.update_pages_deployment!(create(:pages_deployment, project: project))
+      end
 
-      virtual_domain = pages_domain.pages_virtual_domain
+      it 'returns the virual domain when there are pages deployed for the project' do
+        expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+        expect(virtual_domain.lookup_paths).not_to be_empty
+        expect(virtual_domain.cache_key).to eq("pages_domain_for_project_#{project.id}")
+      end
 
-      expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-      expect(virtual_domain.lookup_paths).not_to be_empty
+      context 'when :cache_pages_domain_api is disabled' do
+        before do
+          stub_feature_flags(cache_pages_domain_api: false)
+        end
+
+        it 'returns the virual domain when there are pages deployed for the project' do
+          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+          expect(virtual_domain.lookup_paths).not_to be_empty
+          expect(virtual_domain.cache_key).to be_nil
+        end
+      end
     end
   end
 

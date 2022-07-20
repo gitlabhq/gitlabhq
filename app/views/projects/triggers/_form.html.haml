@@ -1,5 +1,5 @@
 = form_for [@project, @trigger], html: { class: 'gl-show-field-errors' } do |f|
-  = form_errors(@trigger)
+  = form_errors(@trigger, pajamas_alert: true)
 
   - if @trigger.token
     .form-group

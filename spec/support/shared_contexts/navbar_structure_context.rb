@@ -83,8 +83,6 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Monitor'),
         nav_sub_items: [
           _('Metrics'),
-          _('Logs'),
-          _('Tracing'),
           _('Error Tracking'),
           _('Alerts'),
           _('Incidents'),
@@ -112,6 +110,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Access Tokens'),
           _('Repository'),
           _('CI/CD'),
+          _('Packages & Registries'),
           _('Monitor'),
           s_('UsageQuota|Usage Quotas')
         ]

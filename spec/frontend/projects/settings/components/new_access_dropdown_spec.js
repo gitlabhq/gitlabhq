@@ -29,9 +29,20 @@ jest.mock('~/projects/settings/api/access_dropdown_api', () => ({
   }),
   getDeployKeys: jest.fn().mockResolvedValue({
     data: [
-      { id: 10, title: 'key10', fingerprint: 'abcdefghijklmnop', owner: { name: 'user1' } },
-      { id: 11, title: 'key11', fingerprint: 'abcdefghijklmnop', owner: { name: 'user2' } },
-      { id: 12, title: 'key12', fingerprint: 'abcdefghijklmnop', owner: { name: 'user3' } },
+      {
+        id: 10,
+        title: 'key10',
+        fingerprint: 'md5-abcdefghijklmnop',
+        fingerprint_sha256: 'sha256-abcdefghijklmnop',
+        owner: { name: 'user1' },
+      },
+      {
+        id: 11,
+        title: 'key11',
+        fingerprint_sha256: 'sha256-abcdefghijklmnop',
+        owner: { name: 'user2' },
+      },
+      { id: 12, title: 'key12', fingerprint: 'md5-abcdefghijklmnop', owner: { name: 'user3' } },
     ],
   }),
 }));
@@ -279,6 +290,7 @@ describe('Access Level Dropdown', () => {
       { id: 115, type: 'group', group_id: 5 },
       { id: 118, type: 'user', user_id: 8, name: 'user2' },
       { id: 121, type: 'deploy_key', deploy_key_id: 11 },
+      { id: 122, type: 'deploy_key', deploy_key_id: 12 },
     ];
 
     const findSelected = (type) =>
@@ -309,8 +321,9 @@ describe('Access Level Dropdown', () => {
 
     it('should set selected deploy keys as intersection between the server response and preselected mapping some keys', () => {
       const selectedDeployKeys = findSelected(LEVEL_TYPES.DEPLOY_KEY);
-      expect(selectedDeployKeys).toHaveLength(1);
-      expect(selectedDeployKeys.at(0).text()).toContain('key11 (abcdefghijklmn...)');
+      expect(selectedDeployKeys).toHaveLength(2);
+      expect(selectedDeployKeys.at(0).text()).toContain('key11 (sha256-abcdefg...)');
+      expect(selectedDeployKeys.at(1).text()).toContain('key12 (md5-abcdefghij...)');
     });
   });
 

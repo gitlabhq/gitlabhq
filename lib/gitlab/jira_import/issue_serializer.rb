@@ -5,10 +5,11 @@ module Gitlab
     class IssueSerializer
       attr_reader :jira_issue, :project, :import_owner_id, :params, :formatter
 
-      def initialize(project, jira_issue, import_owner_id, params = {})
+      def initialize(project, jira_issue, import_owner_id, work_item_type_id, params = {})
         @jira_issue = jira_issue
         @project = project
         @import_owner_id = import_owner_id
+        @work_item_type_id = work_item_type_id
         @params = params
         @formatter = Gitlab::ImportFormatter.new
       end
@@ -17,6 +18,7 @@ module Gitlab
         {
           iid: params[:iid],
           project_id: project.id,
+          namespace_id: project.project_namespace_id,
           description: description,
           title: title,
           state_id: map_status(jira_issue.status.statusCategory),
@@ -24,7 +26,8 @@ module Gitlab
           created_at: jira_issue.created,
           author_id: reporter,
           assignee_ids: assignees,
-          label_ids: label_ids
+          label_ids: label_ids,
+          work_item_type_id: @work_item_type_id
         }
       end
 
@@ -45,9 +48,9 @@ module Gitlab
       def map_status(jira_status_category)
         case jira_status_category["key"].downcase
         when 'done'
-          Issuable::STATE_ID_MAP[:closed]
+          ::Issuable::STATE_ID_MAP[:closed]
         else
-          Issuable::STATE_ID_MAP[:opened]
+          ::Issuable::STATE_ID_MAP[:opened]
         end
       end
 

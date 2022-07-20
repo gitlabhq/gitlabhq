@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 
 export default {
   components: {
@@ -29,7 +30,7 @@ export default {
       return [
         {
           text: s__('Jobs|All'),
-          count: this.allJobsCount,
+          count: limitedCounterWithDelimiter(this.allJobsCount),
           scope: null,
           testId: 'jobs-all-tab',
           showBadge: true,

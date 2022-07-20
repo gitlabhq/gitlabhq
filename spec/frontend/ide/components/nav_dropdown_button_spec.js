@@ -1,81 +1,74 @@
-import Vue, { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import NavDropdownButton from '~/ide/components/nav_dropdown_button.vue';
 import { createStore } from '~/ide/stores';
+import { __ } from '~/locale';
 
-describe('NavDropdown', () => {
+describe('NavDropdownButton component', () => {
   const TEST_BRANCH_ID = 'lorem-ipsum-dolar';
   const TEST_MR_ID = '12345';
-  let store;
-  let vm;
-
-  beforeEach(() => {
-    store = createStore();
-  });
+  let wrapper;
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  const createComponent = (props = {}) => {
-    vm = mountComponentWithStore(Vue.extend(NavDropdownButton), { props, store });
-    vm.$mount();
+  const createComponent = ({ props = {}, state = {} } = {}) => {
+    const store = createStore();
+    store.replaceState(state);
+    wrapper = mountExtended(NavDropdownButton, { propsData: props, store });
   };
 
-  const findIcon = (name) => vm.$el.querySelector(`[data-testid="${name}-icon"]`);
-  const findMRIcon = () => findIcon('merge-request');
-  const findBranchIcon = () => findIcon('branch');
+  const findMRIcon = () => wrapper.findByLabelText(__('Merge request'));
+  const findBranchIcon = () => wrapper.findByLabelText(__('Current Branch'));
 
   describe('normal', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('renders empty placeholders, if state is falsey', () => {
-      expect(trimText(vm.$el.textContent)).toEqual('- -');
+      createComponent();
+
+      expect(trimText(wrapper.text())).toBe('- -');
     });
 
-    it('renders branch name, if state has currentBranchId', async () => {
-      vm.$store.state.currentBranchId = TEST_BRANCH_ID;
+    it('renders branch name, if state has currentBranchId', () => {
+      createComponent({ state: { currentBranchId: TEST_BRANCH_ID } });
 
-      await nextTick();
-      expect(trimText(vm.$el.textContent)).toEqual(`${TEST_BRANCH_ID} -`);
+      expect(trimText(wrapper.text())).toBe(`${TEST_BRANCH_ID} -`);
     });
 
-    it('renders mr id, if state has currentMergeRequestId', async () => {
-      vm.$store.state.currentMergeRequestId = TEST_MR_ID;
+    it('renders mr id, if state has currentMergeRequestId', () => {
+      createComponent({ state: { currentMergeRequestId: TEST_MR_ID } });
 
-      await nextTick();
-      expect(trimText(vm.$el.textContent)).toEqual(`- !${TEST_MR_ID}`);
+      expect(trimText(wrapper.text())).toBe(`- !${TEST_MR_ID}`);
     });
 
-    it('renders branch and mr, if state has both', async () => {
-      vm.$store.state.currentBranchId = TEST_BRANCH_ID;
-      vm.$store.state.currentMergeRequestId = TEST_MR_ID;
+    it('renders branch and mr, if state has both', () => {
+      createComponent({
+        state: { currentBranchId: TEST_BRANCH_ID, currentMergeRequestId: TEST_MR_ID },
+      });
 
-      await nextTick();
-      expect(trimText(vm.$el.textContent)).toEqual(`${TEST_BRANCH_ID} !${TEST_MR_ID}`);
+      expect(trimText(wrapper.text())).toBe(`${TEST_BRANCH_ID} !${TEST_MR_ID}`);
     });
 
     it('shows icons', () => {
-      expect(findBranchIcon()).toBeTruthy();
-      expect(findMRIcon()).toBeTruthy();
+      createComponent();
+
+      expect(findBranchIcon().exists()).toBe(true);
+      expect(findMRIcon().exists()).toBe(true);
     });
   });
 
-  describe('with showMergeRequests false', () => {
+  describe('when showMergeRequests=false', () => {
     beforeEach(() => {
-      createComponent({ showMergeRequests: false });
+      createComponent({ props: { showMergeRequests: false } });
     });
 
     it('shows single empty placeholder, if state is falsey', () => {
-      expect(trimText(vm.$el.textContent)).toEqual('-');
+      expect(trimText(wrapper.text())).toBe('-');
     });
 
     it('shows only branch icon', () => {
-      expect(findBranchIcon()).toBeTruthy();
-      expect(findMRIcon()).toBe(null);
+      expect(findBranchIcon().exists()).toBe(true);
+      expect(findMRIcon().exists()).toBe(false);
     });
   });
 });

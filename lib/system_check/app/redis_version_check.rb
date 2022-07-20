@@ -8,7 +8,7 @@ module SystemCheck
       # Redis 5.x will be deprecated
       # https://gitlab.com/gitlab-org/gitlab/-/issues/331468
       MIN_REDIS_VERSION = '5.0.0'
-      RECOMMENDED_REDIS_VERSION = '5.0.0'
+      RECOMMENDED_REDIS_VERSION = "6.0.0"
       set_name "Redis version >= #{RECOMMENDED_REDIS_VERSION}?"
 
       @custom_error_message = ''

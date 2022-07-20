@@ -44,22 +44,6 @@ describe('note_app', () => {
       .wrappers.map((node) => (node.is(CommentForm) ? TYPE_COMMENT_FORM : TYPE_NOTES_LIST));
   };
 
-  /**
-   * waits for fetchNotes() to complete
-   */
-  const waitForDiscussionsRequest = () =>
-    new Promise((resolve) => {
-      const { vm } = wrapper.find(NotesApp);
-      const unwatch = vm.$watch('isFetching', (isFetching) => {
-        if (isFetching) {
-          return;
-        }
-
-        unwatch();
-        resolve();
-      });
-    });
-
   beforeEach(() => {
     $('body').attr('data-page', 'projects:merge_requests:show');
 
@@ -95,7 +79,7 @@ describe('note_app', () => {
 
       axiosMock.onAny().reply(200, []);
       wrapper = mountComponent();
-      return waitForDiscussionsRequest();
+      return waitForPromises();
     });
 
     afterEach(() => {
@@ -129,7 +113,7 @@ describe('note_app', () => {
 
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       wrapper = mountComponent();
-      return waitForDiscussionsRequest();
+      return waitForPromises();
     });
 
     afterEach(() => {
@@ -172,7 +156,7 @@ describe('note_app', () => {
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       store.state.commentsDisabled = true;
       wrapper = mountComponent();
-      return waitForDiscussionsRequest();
+      return waitForPromises();
     });
 
     afterEach(() => {
@@ -197,7 +181,7 @@ describe('note_app', () => {
       store.state.isTimelineEnabled = true;
 
       wrapper = mountComponent();
-      return waitForDiscussionsRequest();
+      return waitForPromises();
     });
 
     afterEach(() => {
@@ -210,15 +194,13 @@ describe('note_app', () => {
   });
 
   describe('while fetching data', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       setHTMLFixture('<div class="js-discussions-count"></div>');
-      axiosMock.onAny().reply(200, []);
       wrapper = mountComponent();
     });
 
     afterEach(() => {
-      waitForDiscussionsRequest();
-      resetHTMLFixture();
+      return waitForPromises().then(() => resetHTMLFixture());
     });
 
     it('renders skeleton notes', () => {
@@ -242,7 +224,7 @@ describe('note_app', () => {
       beforeEach(() => {
         axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
         wrapper = mountComponent();
-        return waitForDiscussionsRequest().then(() => {
+        return waitForPromises().then(() => {
           wrapper.find('.js-note-edit').trigger('click');
         });
       });
@@ -264,7 +246,7 @@ describe('note_app', () => {
       beforeEach(() => {
         axiosMock.onAny().reply(mockData.getDiscussionNoteResponse);
         wrapper = mountComponent();
-        return waitForDiscussionsRequest().then(() => {
+        return waitForPromises().then(() => {
           wrapper.find('.js-note-edit').trigger('click');
         });
       });
@@ -287,7 +269,7 @@ describe('note_app', () => {
     beforeEach(() => {
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       wrapper = mountComponent();
-      return waitForDiscussionsRequest();
+      return waitForPromises();
     });
 
     it('should render markdown docs url', () => {
@@ -309,7 +291,7 @@ describe('note_app', () => {
     beforeEach(() => {
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       wrapper = mountComponent();
-      return waitForDiscussionsRequest();
+      return waitForPromises();
     });
 
     it('should render markdown docs url', async () => {
@@ -337,7 +319,7 @@ describe('note_app', () => {
     beforeEach(() => {
       axiosMock.onAny().reply(200, []);
       wrapper = mountComponent();
-      return waitForDiscussionsRequest();
+      return waitForPromises();
     });
 
     it('dispatches toggleAward after toggleAward event', () => {
@@ -373,7 +355,7 @@ describe('note_app', () => {
     beforeEach(() => {
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       wrapper = mountComponent();
-      return waitForDiscussionsRequest();
+      return waitForPromises();
     });
 
     it('should listen hashchange event', () => {
@@ -471,7 +453,7 @@ describe('note_app', () => {
         wrapper = shallowMount(NotesApp, { propsData, store: createStore() });
         await waitForPromises();
 
-        expect(axiosMock.history.get[0].params).toBeUndefined();
+        expect(axiosMock.history.get[0].params).toEqual({ per_page: 20 });
       });
     });
 
@@ -496,14 +478,14 @@ describe('note_app', () => {
         wrapper = mountWithNotesFilter(undefined);
         await waitForPromises();
 
-        expect(axiosMock.history.get[0].params).toBeUndefined();
+        expect(axiosMock.history.get[0].params).toEqual({ per_page: 20 });
       });
 
       it('does not include extra query params when filter is already set to default', async () => {
         wrapper = mountWithNotesFilter(constants.DISCUSSION_FILTERS_DEFAULT_VALUE);
         await waitForPromises();
 
-        expect(axiosMock.history.get[0].params).toBeUndefined();
+        expect(axiosMock.history.get[0].params).toEqual({ per_page: 20 });
       });
 
       it('includes extra query params when filter is not set to default', async () => {
@@ -512,6 +494,7 @@ describe('note_app', () => {
 
         expect(axiosMock.history.get[0].params).toEqual({
           notes_filter: constants.DISCUSSION_FILTERS_DEFAULT_VALUE,
+          per_page: 20,
           persist_filter: false,
         });
       });

@@ -221,48 +221,56 @@ RSpec.describe AvatarsHelper do
         stub_application_setting(gravatar_enabled?: true)
       end
 
-      it 'returns a generic avatar when email is blank' do
-        expect(helper.gravatar_icon('')).to match_asset_path(described_class::DEFAULT_AVATAR_PATH)
+      context 'with FIPS not enabled', fips_mode: false do
+        it 'returns a generic avatar when email is blank' do
+          expect(helper.gravatar_icon('')).to match_asset_path(described_class::DEFAULT_AVATAR_PATH)
+        end
+
+        it 'returns a valid Gravatar URL' do
+          stub_config_setting(https: false)
+
+          expect(helper.gravatar_icon(user_email))
+            .to match('https://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
+        end
+
+        it 'uses HTTPs when configured' do
+          stub_config_setting(https: true)
+
+          expect(helper.gravatar_icon(user_email))
+            .to match('https://secure.gravatar.com')
+        end
+
+        it 'returns custom gravatar path when gravatar_url is set' do
+          stub_gravatar_setting(plain_url: 'http://example.local/?s=%{size}&hash=%{hash}')
+
+          expect(gravatar_icon(user_email, 20))
+            .to eq('http://example.local/?s=40&hash=b58c6f14d292556214bd64909bcdb118')
+        end
+
+        it 'accepts a custom size argument' do
+          expect(helper.gravatar_icon(user_email, 64)).to include '?s=128'
+        end
+
+        it 'defaults size to 40@2x when given an invalid size' do
+          expect(helper.gravatar_icon(user_email, nil)).to include '?s=80'
+        end
+
+        it 'accepts a scaling factor' do
+          expect(helper.gravatar_icon(user_email, 40, 3)).to include '?s=120'
+        end
+
+        it 'ignores case and surrounding whitespace' do
+          normal = helper.gravatar_icon('foo@example.com')
+          upcase = helper.gravatar_icon(' FOO@EXAMPLE.COM ')
+
+          expect(normal).to eq upcase
+        end
       end
 
-      it 'returns a valid Gravatar URL' do
-        stub_config_setting(https: false)
-
-        expect(helper.gravatar_icon(user_email))
-          .to match('https://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
-      end
-
-      it 'uses HTTPs when configured' do
-        stub_config_setting(https: true)
-
-        expect(helper.gravatar_icon(user_email))
-          .to match('https://secure.gravatar.com')
-      end
-
-      it 'returns custom gravatar path when gravatar_url is set' do
-        stub_gravatar_setting(plain_url: 'http://example.local/?s=%{size}&hash=%{hash}')
-
-        expect(gravatar_icon(user_email, 20))
-          .to eq('http://example.local/?s=40&hash=b58c6f14d292556214bd64909bcdb118')
-      end
-
-      it 'accepts a custom size argument' do
-        expect(helper.gravatar_icon(user_email, 64)).to include '?s=128'
-      end
-
-      it 'defaults size to 40@2x when given an invalid size' do
-        expect(helper.gravatar_icon(user_email, nil)).to include '?s=80'
-      end
-
-      it 'accepts a scaling factor' do
-        expect(helper.gravatar_icon(user_email, 40, 3)).to include '?s=120'
-      end
-
-      it 'ignores case and surrounding whitespace' do
-        normal = helper.gravatar_icon('foo@example.com')
-        upcase = helper.gravatar_icon(' FOO@EXAMPLE.COM ')
-
-        expect(normal).to eq upcase
+      context 'with FIPS enabled', :fips_mode do
+        it 'returns a generic avatar' do
+          expect(helper.gravatar_icon(user_email)).to match_asset_path(described_class::DEFAULT_AVATAR_PATH)
+        end
       end
     end
   end

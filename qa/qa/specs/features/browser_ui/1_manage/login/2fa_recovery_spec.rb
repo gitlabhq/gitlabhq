@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, :skip_live_env do
+  RSpec.describe 'Manage', :requires_admin, :skip_live_env, :reliable do
     describe '2FA' do
       let(:owner_user) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_2fa_owner_username_1, Runtime::Env.gitlab_qa_2fa_owner_password_1)
+        Resource::User.fabricate_via_api! do |usr|
+          usr.api_client = admin_api_client
+        end
       end
 
       let(:developer_user) do
@@ -32,7 +34,10 @@ module QA
         group.add_member(developer_user, Resource::Members::AccessLevel::DEVELOPER)
       end
 
-      it 'allows using 2FA recovery code once only', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347937' do
+      it(
+        'allows using 2FA recovery code once only',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347937'
+      ) do
         recovery_code = enable_2fa_for_user_and_fetch_recovery_code(developer_user)
 
         Flow::Login.sign_in(as: developer_user, skip_page_validation: true)
@@ -56,13 +61,6 @@ module QA
         expect(page).to have_text('Invalid two-factor code')
       end
 
-      after do
-        group.set_require_two_factor_authentication(value: 'false')
-        group.remove_via_api!
-        sandbox_group.remove_via_api!
-        developer_user.remove_via_api!
-      end
-
       def admin_api_client
         @admin_api_client ||= Runtime::API::Client.as_admin
       end
@@ -74,9 +72,9 @@ module QA
       def enable_2fa_for_user_and_fetch_recovery_code(user)
         Flow::Login.while_signed_in(as: user) do
           Page::Profile::TwoFactorAuth.perform do |two_fa_auth|
-            @otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)
+            otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)
 
-            two_fa_auth.set_pin_code(@otp.fresh_otp)
+            two_fa_auth.set_pin_code(otp.fresh_otp)
             two_fa_auth.set_current_password(user.password)
             two_fa_auth.click_register_2fa_app_button
 

@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Ci::Reports::TestReportsComparer do
   include TestReportsHelper
 
   let(:comparer) { described_class.new(base_reports, head_reports) }
-  let(:base_reports) { Gitlab::Ci::Reports::TestReports.new }
-  let(:head_reports) { Gitlab::Ci::Reports::TestReports.new }
+  let(:base_reports) { Gitlab::Ci::Reports::TestReport.new }
+  let(:head_reports) { Gitlab::Ci::Reports::TestReport.new }
 
   describe '#suite_comparers' do
     subject { comparer.suite_comparers }

@@ -25,8 +25,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
     end
 
-    it 'publishes a ProjectDeleted event with project id and namespace id' do
-      expected_data = { project_id: project.id, namespace_id: project.namespace_id }
+    it 'publishes a ProjectDeletedEvent' do
+      expected_data = {
+        project_id: project.id,
+        namespace_id: project.namespace_id,
+        root_namespace_id: project.root_namespace.id
+      }
 
       expect { destroy_project(project, user, {}) }.to publish_event(Projects::ProjectDeletedEvent).with(expected_data)
     end
@@ -119,14 +123,15 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       allow(project).to receive(:destroy!).and_return(true)
     end
 
-    it "deletes merge request and related records" do
-      merge_request_diffs = merge_request.merge_request_diffs
-      expect(merge_request_diffs.size).to eq(1)
+    [MergeRequestDiffCommit, MergeRequestDiffFile].each do |model|
+      it "deletes #{model} records of the merge request" do
+        merge_request_diffs = merge_request.merge_request_diffs
+        expect(merge_request_diffs.size).to eq(1)
 
-      mrdc_count = MergeRequestDiffCommit.where(merge_request_diff_id: merge_request_diffs.first.id).count
+        records_count = model.where(merge_request_diff_id: merge_request_diffs.first.id).count
 
-      expect { destroy_project(project, user, {}) }
-      .to change { MergeRequestDiffCommit.count }.by(-mrdc_count)
+        expect { destroy_project(project, user, {}) }.to change { model.count }.by(-records_count)
+      end
     end
   end
 
@@ -220,7 +225,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   context 'when flushing caches fail due to Redis' do
     before do
       new_user = create(:user)
-      project.team.add_user(new_user, Gitlab::Access::DEVELOPER)
+      project.team.add_member(new_user, Gitlab::Access::DEVELOPER)
       allow_any_instance_of(described_class).to receive(:flush_caches).and_raise(::Redis::CannotConnectError)
     end
 
@@ -454,10 +459,10 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
     it 'deletes webhooks and logs related to project' do
       expect_next_instance_of(WebHooks::DestroyService, user) do |instance|
-        expect(instance).to receive(:sync_destroy).with(web_hook1).and_call_original
+        expect(instance).to receive(:execute).with(web_hook1).and_call_original
       end
       expect_next_instance_of(WebHooks::DestroyService, user) do |instance|
-        expect(instance).to receive(:sync_destroy).with(web_hook2).and_call_original
+        expect(instance).to receive(:execute).with(web_hook2).and_call_original
       end
 
       expect do
@@ -468,7 +473,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     context 'when an error is raised deleting webhooks' do
       before do
         allow_next_instance_of(WebHooks::DestroyService) do |instance|
-          allow(instance).to receive(:sync_destroy).and_return(message: 'foo', status: :error)
+          allow(instance).to receive(:execute).and_return(message: 'foo', status: :error)
         end
       end
 

@@ -845,6 +845,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
     end
 
     context 'when the draft status is changed' do
+      let(:title) { 'New Title' }
+      let(:draft_title) { "Draft: #{title}" }
       let!(:non_subscriber) { create(:user) }
       let!(:subscriber) do
         create(:user) { |u| merge_request.toggle_subscription(u, project) }
@@ -857,7 +859,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
       context 'removing draft status' do
         before do
-          merge_request.update_attribute(:title, 'Draft: New Title')
+          merge_request.update_attribute(:title, draft_title)
         end
 
         it 'sends notifications for subscribers', :sidekiq_might_not_need_inline do
@@ -870,9 +872,22 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           should_email(subscriber)
           should_not_email(non_subscriber)
         end
+
+        context 'when removing through wip_event param' do
+          it 'removes Draft from the title' do
+            expect { update_merge_request({ wip_event: "ready" }) }
+              .to change { merge_request.title }
+              .from(draft_title)
+              .to(title)
+          end
+        end
       end
 
       context 'adding draft status' do
+        before do
+          merge_request.update_attribute(:title, title)
+        end
+
         it 'does not send notifications', :sidekiq_might_not_need_inline do
           opts = { title: 'Draft: New title' }
 
@@ -882,6 +897,15 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           should_not_email(subscriber)
           should_not_email(non_subscriber)
+        end
+
+        context 'when adding through wip_event param' do
+          it 'adds Draft to the title' do
+            expect { update_merge_request({ wip_event: "draft" }) }
+              .to change { merge_request.title }
+              .from(title)
+              .to(draft_title)
+          end
         end
       end
     end

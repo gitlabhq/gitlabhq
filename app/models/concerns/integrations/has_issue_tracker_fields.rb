@@ -5,26 +5,32 @@ module Integrations
     extend ActiveSupport::Concern
 
     included do
+      self.field_storage = :data_fields
+
       field :project_url,
             required: true,
-            storage: :data_fields,
             title: -> { _('Project URL') },
-            help: -> { s_('IssueTracker|The URL to the project in the external issue tracker.') }
+            help: -> do
+              s_('IssueTracker|The URL to the project in the external issue tracker.')
+            end
 
       field :issues_url,
             required: true,
-            storage: :data_fields,
             title: -> { s_('IssueTracker|Issue URL') },
             help: -> do
-              format s_('IssueTracker|The URL to view an issue in the external issue tracker. Must contain %{colon_id}.'),
+              ERB::Util.html_escape(
+                s_('IssueTracker|The URL to view an issue in the external issue tracker. Must contain %{colon_id}.')
+              ) % {
                 colon_id: '<code>:id</code>'.html_safe
+              }
             end
 
       field :new_issue_url,
             required: true,
-            storage: :data_fields,
             title: -> { s_('IssueTracker|New issue URL') },
-            help: -> { s_('IssueTracker|The URL to create an issue in the external issue tracker.') }
+            help: -> do
+              s_('IssueTracker|The URL to create an issue in the external issue tracker.')
+            end
     end
   end
 end

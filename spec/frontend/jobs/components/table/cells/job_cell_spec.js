@@ -2,15 +2,21 @@ import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import JobCell from '~/jobs/components/table/cells/job_cell.vue';
-import { mockJobsInTable } from '../../../mock_data';
-
-const mockJob = mockJobsInTable[0];
-const mockJobCreatedByTag = mockJobsInTable[1];
-const mockJobLimitedAccess = mockJobsInTable[2];
-const mockStuckJob = mockJobsInTable[3];
+import { mockJobsNodes, mockJobsNodesAsGuest } from '../../../mock_data';
 
 describe('Job Cell', () => {
   let wrapper;
+
+  const findMockJob = (jobName, nodes = mockJobsNodes) => {
+    const job = nodes.find(({ name }) => name === jobName);
+    expect(job).toBeDefined(); // ensure job is present
+    return job;
+  };
+
+  const mockJob = findMockJob('build');
+  const jobCreatedByTag = findMockJob('created_by_tag');
+  const pendingJob = findMockJob('pending');
+  const jobAsGuest = findMockJob('build', mockJobsNodesAsGuest);
 
   const findJobIdLink = () => wrapper.findByTestId('job-id-link');
   const findJobIdNoLink = () => wrapper.findByTestId('job-id-limited-access');
@@ -23,11 +29,11 @@ describe('Job Cell', () => {
 
   const findBadgeById = (id) => wrapper.findByTestId(id);
 
-  const createComponent = (jobData = mockJob) => {
+  const createComponent = (job = mockJob) => {
     wrapper = extendedWrapper(
       shallowMount(JobCell, {
         propsData: {
-          job: jobData,
+          job,
         },
       }),
     );
@@ -49,9 +55,9 @@ describe('Job Cell', () => {
     });
 
     it('display the job id with no link', () => {
-      createComponent(mockJobLimitedAccess);
+      createComponent(jobAsGuest);
 
-      const expectedJobId = `#${getIdFromGraphQLId(mockJobLimitedAccess.id)}`;
+      const expectedJobId = `#${getIdFromGraphQLId(jobAsGuest.id)}`;
 
       expect(findJobIdNoLink().text()).toBe(expectedJobId);
       expect(findJobIdNoLink().exists()).toBe(true);
@@ -75,7 +81,7 @@ describe('Job Cell', () => {
     });
 
     it('displays label icon when job is created by a tag', () => {
-      createComponent(mockJobCreatedByTag);
+      createComponent(jobCreatedByTag);
 
       expect(findLabelIcon().exists()).toBe(true);
       expect(findForkIcon().exists()).toBe(false);
@@ -130,8 +136,8 @@ describe('Job Cell', () => {
       expect(findStuckIcon().exists()).toBe(false);
     });
 
-    it('stuck icon is shown if job is stuck', () => {
-      createComponent(mockStuckJob);
+    it('stuck icon is shown if job is pending', () => {
+      createComponent(pendingJob);
 
       expect(findStuckIcon().exists()).toBe(true);
       expect(findStuckIcon().attributes('name')).toBe('warning');

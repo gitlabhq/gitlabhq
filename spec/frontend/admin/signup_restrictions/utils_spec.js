@@ -14,6 +14,10 @@ describe('utils', () => {
             'domainDenylistEnabled',
             'denylistTypeRawSelected',
             'emailRestrictionsEnabled',
+            'passwordNumberRequired',
+            'passwordLowercaseRequired',
+            'passwordUppercaseRequired',
+            'passwordSymbolRequired',
           ],
         }),
       ).toEqual(mockData);

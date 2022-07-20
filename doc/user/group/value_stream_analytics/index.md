@@ -7,8 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value stream analytics for groups **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196455) in GitLab 12.9 for groups.
-
 Value stream analytics provides metrics about each stage of your software development process.
 
 A **value stream** is the entire work process that delivers value to customers. For example,
@@ -20,14 +18,13 @@ Use value stream analytics to identify:
 - The amount of time it takes to go from an idea to production.
 - The velocity of a given project.
 - Bottlenecks in the development process.
-- Detecting long-running issues or merge requests.
+- Long-running issues or merge requests.
 - Factors that cause your software development lifecycle to slow down.
 
 Value stream analytics is also available for [projects](../../analytics/value_stream_analytics.md).
 
 ## View value stream analytics
 
-> - Date range filter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 12.4
 > - Filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
 > - Horizontal stage path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in 13.0 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in 13.12
 
@@ -40,7 +37,7 @@ To view value stream analytics for your group:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
-1. To view metrics for each stage, above the **Filter results** text box, select a stage.
+1. To view metrics for a particular stage, select a stage below the **Filter results** text box.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
    1. Select a parameter.
@@ -63,83 +60,18 @@ The table shows a list of related workflow items for the selected stage. Based o
 - Merge requests
 - Pipelines
 
-## View metrics for each development stage
+## View DORA metrics and key metrics for a group
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in GitLab 13.12.
 
-Value stream analytics shows the median time spent by issues or merge requests in each development stage.
-
-To view the median time spent in each stage by a group:
-
-1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Value stream**.
-1. Optional. Filter the results:
-   1. Select the **Filter results** text box.
-   1. Select a parameter.
-   1. Select a value or enter text to refine the results.
-   1. To adjust the date range:
-      - In the **From** field, select a start date.
-      - In the **To** field, select an end date.
-1. To view the metrics for each stage, above the **Filter results** text box, hover over a stage.
-
-## View the lead time and cycle time for issues
-
-Value stream analytics shows the lead time and cycle time for issues in your groups:
-
-- Lead time: Median time from when the issue was created to when it was closed.
-- Cycle time: Median time from first commit to issue closed. GitLab measures cycle time from the earliest
-commit of a [linked issue's merge request](../../project/issues/crosslinking_issues.md#from-commit-messages)
-to when that issue is closed. The cycle time approach underestimates the lead time because merge request creation
-is always later than commit time.
-
-To view the lead time and cycle time for issues:
-
-1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Value stream**.
-1. Optional. Filter the results:
-   1. Select the **Filter results** text box.
-   1. Select a parameter.
-   1. Select a value or enter text to refine the results.
-   1. To adjust the date range:
-      - In the **From** field, select a start date.
-      - In the **To** field, select an end date.
-
-The **Lead Time** and **Cycle Time** metrics display below the **Filter results** text box.
-
-## View lead time for changes for merge requests **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5.
-
-Lead time for changes is the median duration between when a merge request is merged and when it's deployed to production.
-
-To view the lead time for changes for merge requests in your group:
-
-1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Value stream**.
-1. Optional. Filter the results:
-   1. Select the **Filter results** text box.
-   1. Select a parameter.
-   1. Select a value or enter text to refine the results.
-   1. To adjust the date range:
-      - In the **From** field, select a start date.
-      - In the **To** field, select an end date.
-
-The **Lead Time for Changes** metrics display below the **Filter results** text box.
-
-## View number of successful deployments **(PREMIUM)**
-
-> DORA API-based deployment metrics for value stream analytics for groups were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in 14.3.
+The **Overview** dashboard in value stream analytics shows key metrics and DORA metrics of group performance. Based on the filter you select,
+the dashboard automatically aggregates DORA metrics and displays the current status of the value stream. Select a DORA metric to view its chart.
 
 To view deployment metrics, you must have a
 [production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
 
-Value stream analytics shows the following deployment metrics for your group:
-
-- Deploys: The number of successful deployments in the date range.
-- Deployment Frequency: The average number of successful deployments per day in the date range.
-
-To view deployment metrics for your group:
+To view the DORA metrics and key metrics:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
@@ -150,19 +82,46 @@ To view deployment metrics for your group:
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
+Key metrics and DORA metrics display below the **Filter results** text box.
 
-NOTE:
-The date range selector filters items by the event time. This is the time when the currently
-selected stage finished for the given item.
+### Key metrics in the value stream
 
-The **Deploys** and **Deployment Frequency** metrics display below the **Filter results** text box.
+The **Overview** dashboard shows the following key metrics that measure team performance:
 
-Deployment metrics are calculated based on data from the
+- Lead time: Median time from when the issue was created to when it was closed.
+- Cycle time: Median time from first commit to issue closed. GitLab measures cycle time from the earliest commit of a
+  [linked issue's merge request](../../project/issues/crosslinking_issues.md#from-commit-messages) to when that issue is closed.
+  The cycle time approach underestimates the lead time because merge request creation is always later than commit time.
+- New issues: Number of new issues created.
+- Deploys: Total number of deployments to production.
+
+### DORA metrics **(ULTIMATE)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) lead time for changes DORA metric in GitLab 14.5.
+> - DORA API-based deployment metrics for value stream analytics for groups were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355304) time to restore service tile in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357071) change failure rate tile in GitLab 15.0.
+
+The value stream analytics **Overview** dashboard displays the following [DORA](../../../user/analytics/index.md) metrics:
+
+- Deployment Frequency.
+- Lead time for changes.
+- Time to restore service.
+- Change failure rate.
+
+DORA metrics are calculated based on data from the
 [DORA API](../../../api/dora/metrics.md#devops-research-and-assessment-dora-key-metrics-api).
 
 NOTE:
-In GitLab 13.9 and later, metrics are calculated based on when the deployment was finished.
-In GitLab 13.8 and earlier, metrics are calculated based on when the deployment was created.
+In GitLab 13.9 and later, deployment frequency metrics are calculated based on when the deployment was finished.
+In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on when the deployment was created.
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/embed/wQU-mWvNSiI">DORA metrics and value stream analytics</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/wQU-mWvNSiI" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
 
 ### How value stream analytics aggregates data
 
@@ -186,6 +145,30 @@ longer than 10 minutes in the following cases:
 
 To view when the data was most recently updated, in the right corner next to **Edit**, hover over the **Last updated** badge.
 
+## View metrics for each development stage
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in GitLab 13.12.
+
+Value stream analytics shows the median time spent by issues or merge requests in each development stage.
+
+To view the median time spent in each stage by a group:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value stream**.
+1. Optional. Filter the results:
+   1. Select the **Filter results** text box.
+   1. Select a parameter.
+   1. Select a value or enter text to refine the results.
+   1. To adjust the date range:
+      - In the **From** field, select a start date.
+      - In the **To** field, select an end date.
+1. To view the metrics for each stage, above the **Filter results** text box, hover over a stage.
+
+NOTE:
+The date range selector filters items by the event time. The event time is when the
+selected stage finished for the given item.
+
 ## How value stream analytics measures stages
 
 Value stream analytics measures each stage from its start event to its end event.
@@ -206,6 +189,8 @@ Each pre-defined stages of value stream analytics is further described in the ta
 | Test      | The median time to run the entire pipeline for that project. It's related to the time GitLab CI/CD takes to run every job for the commits pushed to that merge request. It is basically the start->finish time for all pipelines. |
 | Review    | The median time taken to review a merge request that has a closing issue pattern, between its creation and until it's merged. |
 | Staging   | The median time between merging a merge request that has a closing issue pattern until the very first deployment to a [production environment](#how-value-stream-analytics-identifies-the-production-environment). If there isn't a production environment, this is not tracked. |
+
+For information about how value stream analytics calculates each stage, see the [Value stream analytics development guide](../../../development/value_stream_analytics.md).
 
 ### Example workflow
 
@@ -345,7 +330,6 @@ To delete a custom value stream:
 
 ## View number of days for a cycle to complete
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
 > - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
 > - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.
 
@@ -366,8 +350,6 @@ The chart shows data for the last 500 workflow items.
       - In the **To** field, select an end date.
 
 ## Tasks by type chart
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in GitLab 12.10.
 
 This chart shows a cumulative count of issues and merge requests per day.
 

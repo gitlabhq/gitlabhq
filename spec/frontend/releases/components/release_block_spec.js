@@ -1,7 +1,8 @@
 import { mount } from '@vue/test-utils';
 import $ from 'jquery';
 import { nextTick } from 'vue';
-import originalRelease from 'test_fixtures/api/releases/release.json';
+import originalOneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
+import { convertOneReleaseGraphQLResponse } from '~/releases/util';
 import * as commonUtils from '~/lib/utils/common_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
@@ -34,7 +35,7 @@ describe('Release block', () => {
 
   beforeEach(() => {
     jest.spyOn($.fn, 'renderGFM');
-    release = commonUtils.convertObjectPropsToCamelCase(originalRelease, { deep: true });
+    release = convertOneReleaseGraphQLResponse(originalOneReleaseQueryResponse).data;
   });
 
   afterEach(() => {

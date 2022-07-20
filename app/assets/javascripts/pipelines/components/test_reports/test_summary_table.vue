@@ -19,7 +19,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getTestSuites']),
+    ...mapGetters('testReports', ['getTestSuites']),
     hasSuites() {
       return this.getTestSuites.length > 0;
     },

@@ -6,5 +6,4 @@ fragment TreeEntryCommit on LogTreeCommit {
   commitPath
   fileName
   filePath
-  type
 }

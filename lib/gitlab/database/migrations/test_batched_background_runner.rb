@@ -14,7 +14,7 @@ module Gitlab
         def jobs_by_migration_name
           Gitlab::Database::BackgroundMigration::BatchedMigration
             .executable
-            .created_after(2.days.ago) # Simple way to exclude migrations already running before migration testing
+            .created_after(3.hours.ago) # Simple way to exclude migrations already running before migration testing
             .to_h do |migration|
             batching_strategy = migration.batch_class.new(connection: connection)
 

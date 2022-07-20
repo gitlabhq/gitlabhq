@@ -10,6 +10,7 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter do
   let_it_be(:project) { create(:project) }
   let_it_be(:jira_import) { create(:jira_import_state, project: project, user: current_user) }
   let_it_be(:jira_integration) { create(:jira_integration, project: project) }
+  let_it_be(:default_issue_type_id) { WorkItems::Type.default_issue_type.id }
 
   subject { described_class.new(project) }
 
@@ -47,12 +48,22 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter do
 
         count.times do |i|
           if raise_exception_on_even_mocks && i.even?
-            expect(Gitlab::JiraImport::IssueSerializer).to receive(:new)
-             .with(project, jira_issues[i], current_user.id, { iid: next_iid + 1 }).and_raise('Some error')
+            expect(Gitlab::JiraImport::IssueSerializer).to receive(:new).with(
+              project,
+              jira_issues[i],
+              current_user.id,
+              default_issue_type_id,
+              { iid: next_iid + 1 }
+            ).and_raise('Some error')
           else
             next_iid += 1
-            expect(Gitlab::JiraImport::IssueSerializer).to receive(:new)
-              .with(project, jira_issues[i], current_user.id, { iid: next_iid }).and_return(serializer)
+            expect(Gitlab::JiraImport::IssueSerializer).to receive(:new).with(
+              project,
+              jira_issues[i],
+              current_user.id,
+              default_issue_type_id,
+              { iid: next_iid }
+            ).and_return(serializer)
           end
         end
       end

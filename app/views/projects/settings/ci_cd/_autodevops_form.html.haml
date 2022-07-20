@@ -16,7 +16,7 @@
 .row
   .col-lg-12
     = gitlab_ui_form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'autodevops-settings') do |f|
-      = form_errors(@project)
+      = form_errors(@project, pajamas_alert: true)
       %fieldset.builds-feature.js-auto-devops-settings
         .form-group
           = f.fields_for :auto_devops_attributes, @auto_devops do |form|

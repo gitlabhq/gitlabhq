@@ -11,6 +11,9 @@ namespace :gitlab do
 
         schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
         Gitlab::Database::GitlabSchema.tables_to_schema.each do |table_name, schema_name|
+          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/366834
+          next if schema_name == :gitlab_geo
+
           if schemas_for_connection.include?(schema_name.to_sym)
             drop_write_trigger(database_name, connection, table_name)
           else
@@ -24,6 +27,9 @@ namespace :gitlab do
     task unlock_writes: :environment do
       Gitlab::Database::EachDatabase.each_database_connection do |connection, database_name|
         Gitlab::Database::GitlabSchema.tables_to_schema.each do |table_name, schema_name|
+          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/366834
+          next if schema_name == :gitlab_geo
+
           drop_write_trigger(database_name, connection, table_name)
         end
         drop_write_trigger_function(connection)

@@ -4,7 +4,7 @@ name: symbol_packages_pulled
 description: A count of symbol packages that have been pulled from the package registry
 product_section: ops
 product_stage: package
-product_group: group::package
+product_group: package
 product_category: package registry
 value_type: number
 status: active

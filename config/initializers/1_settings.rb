@@ -241,8 +241,6 @@ end
 #
 Settings['gitlab_ci'] ||= Settingslogic.new({})
 Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['shared_runners_enabled'].nil?
-Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_broken_builds'].nil?
-Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['builds_path']           = Settings.absolute(Settings.gitlab_ci['builds_path'] || "builds/")
 Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci_url)
 
@@ -632,6 +630,9 @@ Settings.cron_jobs['inactive_projects_deletion_cron_worker']['job_class'] = 'Pro
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
+Settings.cron_jobs['ci_runner_versions_reconciliation_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['cron'] ||= '20 * * * *'
+Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['job_class'] = 'Ci::Runners::ReconcileExistingRunnerVersionsCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
@@ -971,6 +972,9 @@ Settings.monitoring.sidekiq_exporter['enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['log_enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'
 Settings.monitoring.sidekiq_exporter['port'] ||= 8082
+Settings.monitoring.sidekiq_exporter['tls_enabled'] ||= false
+Settings.monitoring.sidekiq_exporter['tls_cert_path'] ||= nil
+Settings.monitoring.sidekiq_exporter['tls_key_path'] ||= nil
 
 Settings.monitoring['sidekiq_health_checks'] ||= Settingslogic.new({})
 Settings.monitoring.sidekiq_health_checks['enabled'] ||= false
@@ -981,6 +985,9 @@ Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.web_exporter['enabled'] ||= false
 Settings.monitoring.web_exporter['address'] ||= 'localhost'
 Settings.monitoring.web_exporter['port'] ||= 8083
+Settings.monitoring.web_exporter['tls_enabled'] ||= false
+Settings.monitoring.web_exporter['tls_cert_path'] ||= nil
+Settings.monitoring.web_exporter['tls_key_path'] ||= nil
 
 #
 # Prometheus settings

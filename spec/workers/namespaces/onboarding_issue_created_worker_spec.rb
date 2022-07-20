@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Namespaces::OnboardingIssueCreatedWorker, '#perform' do
   let_it_be(:issue) { create(:issue) }
 
-  let(:namespace) { issue.namespace }
+  let(:namespace) { issue.project.namespace }
 
   it_behaves_like 'records an onboarding progress action', :issue_created do
     subject { described_class.new.perform(namespace.id) }

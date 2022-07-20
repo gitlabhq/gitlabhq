@@ -66,7 +66,8 @@ Supported attributes:
 | `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
 | `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
 
-Response body attributes:
+If successful, returns [`<status_code>`](../../api/index.md#status-codes) and the following
+response attributes:
 
 | Attribute                | Type     | Description           |
 |:-------------------------|:---------|:----------------------|
@@ -103,7 +104,10 @@ for the section. For example:
 > `widget_message` [introduced](<link-to-issue>) in GitLab 14.3.
 ```
 
-## Attribute deprecation
+## Deprecations
+
+To document the deprecation of an API endpoint, follow the steps to
+[deprecate a page or topic](versions.md#deprecate-a-page-or-topic).
 
 To deprecate an attribute:
 
@@ -121,8 +125,8 @@ To deprecate an attribute:
    | `widget_name` | string | **{dotted-circle}** No | [Deprecated](<link-to-issue>) in GitLab 14.7 and is planned for removal in 15.4. Use `widget_id` instead. The name of the widget. |
    ```
 
-1. Optional. To widely announce the change, or if it's a breaking change,
-   [update the deprecations and removals documentation](../deprecation_guidelines/#update-the-deprecations-and-removals-documentation).
+To widely announce a deprecation, or if it's a breaking change,
+[update the deprecations and removals documentation](../deprecation_guidelines/#update-the-deprecations-and-removals-documentation).
 
 ## Method description
 
@@ -150,6 +154,14 @@ Rendered example:
 For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).
 
 ## Response body description
+
+Start the description with the following sentence, replacing `status code` with the
+relevant [HTTP status code](../../api/index.md#status-codes), for example:
+
+```markdown
+If successful, returns [`200 OK`](../../api/index.md#status-codes) and the
+following response attributes:
+```
 
 Use the following table headers to describe the response bodies. Attributes should
 always be in code blocks using backticks (`` ` ``).

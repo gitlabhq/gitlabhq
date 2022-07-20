@@ -6,7 +6,13 @@ import UserAvatar from '../avatars/user_avatar.vue';
 
 export default {
   name: 'MemberAvatar',
-  components: { UserAvatar, InviteAvatar, GroupAvatar, AccessRequestAvatar: UserAvatar },
+  components: {
+    UserAvatar,
+    InviteAvatar,
+    GroupAvatar,
+    AccessRequestAvatar: UserAvatar,
+    BannedAvatar: UserAvatar,
+  },
   props: {
     memberType: {
       type: String,

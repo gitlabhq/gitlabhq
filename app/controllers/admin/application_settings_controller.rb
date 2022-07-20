@@ -28,7 +28,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
             :create_self_monitoring_project,
             :status_create_self_monitoring_project,
             :delete_self_monitoring_project,
-            :status_delete_self_monitoring_project
+            :status_delete_self_monitoring_project,
+            :reset_error_tracking_access_token
           ]
 
   feature_category :source_code_management, [:repository, :clear_repository_check_states]
@@ -37,6 +38,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   feature_category :service_ping, [:usage_data, :service_usage_data]
   feature_category :integrations, [:integrations]
   feature_category :pages, [:lets_encrypt_terms_of_service]
+  feature_category :error_tracking, [:reset_error_tracking_access_token]
 
   VALID_SETTING_PANELS = %w(general repository
                             ci_cd reporting metrics_and_profiling
@@ -94,6 +96,13 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     @application_setting.reset_health_check_access_token!
     flash[:notice] = _('New health check access token has been generated!')
     redirect_back_or_default
+  end
+
+  def reset_error_tracking_access_token
+    @application_setting.reset_error_tracking_access_token!
+
+    redirect_to general_admin_application_settings_path,
+                notice: _('New error tracking access token has been generated!')
   end
 
   def clear_repository_check_states

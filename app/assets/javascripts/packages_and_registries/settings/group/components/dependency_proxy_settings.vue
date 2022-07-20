@@ -1,8 +1,7 @@
 <script>
 import { GlToggle, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
-import SettingsTitles from '~/packages_and_registries/settings/group/components/settings_titles.vue';
+import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import updateDependencyProxySettings from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_settings.mutation.graphql';
 import updateDependencyProxyImageTtlGroupPolicy from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_image_ttl_group_policy.mutation.graphql';
 import { updateGroupPackageSettings } from '~/packages_and_registries/settings/group/graphql/utils/cache_update';
@@ -13,6 +12,7 @@ import {
 
 import {
   DEPENDENCY_PROXY_HEADER,
+  DEPENDENCY_PROXY_DESCRIPTION,
   DEPENDENCY_PROXY_DOCS_PATH,
 } from '~/packages_and_registries/settings/group/constants';
 
@@ -23,15 +23,14 @@ export default {
     GlSprintf,
     GlLink,
     SettingsBlock,
-    SettingsTitles,
   },
   i18n: {
     DEPENDENCY_PROXY_HEADER,
+    DEPENDENCY_PROXY_DESCRIPTION,
     enabledProxyLabel: s__('DependencyProxy|Enable Dependency Proxy'),
     enabledProxyHelpText: s__(
       'DependencyProxy|To see the image prefix and what is in the cache, visit the %{linkStart}Dependency Proxy%{linkEnd}',
     ),
-    storageSettingsTitle: s__('DependencyProxy|Storage settings'),
     ttlPolicyEnabledLabel: s__('DependencyProxy|Clear the Dependency Proxy cache automatically'),
     ttlPolicyEnabledHelpText: s__(
       'DependencyProxy|When enabled, images older than 90 days will be removed from the cache.',
@@ -40,7 +39,7 @@ export default {
   links: {
     DEPENDENCY_PROXY_DOCS_PATH,
   },
-  inject: ['defaultExpanded', 'groupPath', 'groupDependencyProxyPath'],
+  inject: ['groupPath', 'groupDependencyProxyPath'],
   props: {
     dependencyProxySettings: {
       type: Object,
@@ -130,11 +129,9 @@ export default {
 </script>
 
 <template>
-  <settings-block
-    :default-expanded="defaultExpanded"
-    data-qa-selector="dependency_proxy_settings_content"
-  >
+  <settings-block data-qa-selector="dependency_proxy_settings_content">
     <template #title> {{ $options.i18n.DEPENDENCY_PROXY_HEADER }} </template>
+    <template #description> {{ $options.i18n.DEPENDENCY_PROXY_DESCRIPTION }} </template>
     <template #default>
       <div>
         <gl-toggle
@@ -156,13 +153,12 @@ export default {
             </span>
           </template>
         </gl-toggle>
-
-        <settings-titles :title="$options.i18n.storageSettingsTitle" class="gl-my-6" />
         <gl-toggle
           v-model="ttlEnabled"
           :disabled="isLoading"
           :label="$options.i18n.ttlPolicyEnabledLabel"
           :help="$options.i18n.ttlPolicyEnabledHelpText"
+          class="gl-mt-6"
           data-testid="dependency-proxy-ttl-policies-toggle"
         />
       </div>

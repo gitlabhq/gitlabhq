@@ -43,7 +43,11 @@ export default {
   },
   apollo: {
     pipeline: {
+      context() {
+        return getQueryHeaders(this.graphqlResourceEtag);
+      },
       query: getLinkedPipelinesQuery,
+      pollInterval: COMMIT_BOX_POLL_INTERVAL,
       variables() {
         return {
           fullPath: this.fullPath,
@@ -116,6 +120,7 @@ export default {
   },
   mounted() {
     toggleQueryPollingByVisibility(this.$apollo.queries.pipelineStages);
+    toggleQueryPollingByVisibility(this.$apollo.queries.pipeline);
   },
 };
 </script>

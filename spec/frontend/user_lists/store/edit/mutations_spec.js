@@ -35,7 +35,7 @@ describe('User List Edit Mutations', () => {
     });
   });
 
-  describe(types.RECIEVE_USER_LIST_ERROR, () => {
+  describe(types.RECEIVE_USER_LIST_ERROR, () => {
     beforeEach(() => {
       mutations[types.RECEIVE_USER_LIST_ERROR](state, ['network error']);
     });
@@ -44,7 +44,7 @@ describe('User List Edit Mutations', () => {
       expect(state.status).toBe(statuses.ERROR);
     });
 
-    it('sets the error message to the recieved one', () => {
+    it('sets the error message to the received one', () => {
       expect(state.errorMessage).toEqual(['network error']);
     });
   });

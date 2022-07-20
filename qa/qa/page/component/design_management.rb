@@ -54,8 +54,9 @@ module QA
           # We'll check for the annotation in a test, but here we'll at least
           # wait for the "Save comment" button to disappear
           saved = has_no_element?(:save_comment_button)
+          return if saved
 
-          raise RSpec::Expectations::ExpectationNotMetError, %q(There was a problem while adding the annotation) unless saved
+          raise RSpec::Expectations::ExpectationNotMetError, %q(There was a problem while adding the annotation)
         end
 
         def add_design(design_file_path)
@@ -69,15 +70,11 @@ module QA
 
           filename = ::File.basename(design_file_path)
 
-          found = wait_until(reload: false, sleep_interval: 1) do
+          wait_until(reload: false, sleep_interval: 1, message: "Design upload") do
             image = find_element(:design_image, filename: filename)
 
-            has_element?(:design_file_name, text: filename) &&
-              image["complete"] &&
-              image["naturalWidth"].to_i > 0
+            has_element?(:design_file_name, text: filename) && image["complete"] && image["naturalWidth"].to_i > 0
           end
-
-          raise ElementNotFound, %Q(Attempted to attach design "#{filename}" but it did not appear) unless found
         end
 
         def update_design(filename)

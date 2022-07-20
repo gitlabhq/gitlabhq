@@ -32,14 +32,14 @@ RSpec.describe Projects::ForkService do
                                external_authorization_classification_label: 'classification-label')
         @to_user = create(:user)
         @to_namespace = @to_user.namespace
-        @from_project.add_user(@to_user, :developer)
+        @from_project.add_member(@to_user, :developer)
       end
 
       context 'fork project' do
         context 'when forker is a guest' do
           before do
             @guest = create(:user)
-            @from_project.add_user(@guest, :guest)
+            @from_project.add_member(@guest, :guest)
           end
           subject { fork_project(@from_project, @guest, using_service: true) }
 
@@ -68,6 +68,9 @@ RSpec.describe Projects::ForkService do
           it { expect(to_project.avatar.file).to be_exists }
           it { expect(to_project.ci_config_path).to eq(@from_project.ci_config_path) }
           it { expect(to_project.external_authorization_classification_label).to eq(@from_project.external_authorization_classification_label) }
+          it { expect(to_project.suggestion_commit_message).to eq(@from_project.suggestion_commit_message) }
+          it { expect(to_project.merge_commit_template).to eq(@from_project.merge_commit_template) }
+          it { expect(to_project.squash_commit_template).to eq(@from_project.squash_commit_template) }
 
           # This test is here because we had a bug where the from-project lost its
           # avatar after being forked.
@@ -156,16 +159,16 @@ RSpec.describe Projects::ForkService do
       end
 
       context 'repository in legacy storage already exists' do
-        let(:fake_repo_path) { File.join(TestEnv.repos_path, @to_user.namespace.full_path, "#{@from_project.path}.git") }
+        let(:raw_fake_repo) { Gitlab::Git::Repository.new('default', File.join(@to_user.namespace.full_path, "#{@from_project.path}.git"), nil, nil) }
         let(:params) { { namespace: @to_user.namespace, using_service: true } }
 
         before do
           stub_application_setting(hashed_storage_enabled: false)
-          TestEnv.create_bare_repository(fake_repo_path)
+          raw_fake_repo.create_repository
         end
 
         after do
-          FileUtils.rm_rf(fake_repo_path)
+          raw_fake_repo.remove
         end
 
         subject { fork_project(@from_project, @to_user, params) }
@@ -261,10 +264,10 @@ RSpec.describe Projects::ForkService do
                               description: 'Wow, such a cool project!',
                               ci_config_path: 'debian/salsa-ci.yml')
         @group = create(:group)
-        @group.add_user(@group_owner, GroupMember::OWNER)
-        @group.add_user(@developer,   GroupMember::DEVELOPER)
-        @project.add_user(@developer,   :developer)
-        @project.add_user(@group_owner, :developer)
+        @group.add_member(@group_owner, GroupMember::OWNER)
+        @group.add_member(@developer,   GroupMember::DEVELOPER)
+        @project.add_member(@developer,   :developer)
+        @project.add_member(@group_owner, :developer)
         @opts = { namespace: @group, using_service: true }
       end
 

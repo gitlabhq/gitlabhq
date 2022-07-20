@@ -72,7 +72,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
         end
       end
 
-      context 'when invite is sent before account is created - ldap or social sign in for manual acceptance edge case' do
+      context 'when invite is sent before account is created - ldap or service sign in for manual acceptance edge case' do
         let(:user) { create(:user, email: 'user@example.com') }
 
         context 'when invite clicked and not signed in' do
@@ -221,7 +221,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
               category: 'RegistrationsController',
               action: 'accepted',
               label: 'invite_email',
-              property: group_invite.id.to_s
+              property: group_invite.id.to_s,
+              user: group_invite.reload.user
             )
           end
         end

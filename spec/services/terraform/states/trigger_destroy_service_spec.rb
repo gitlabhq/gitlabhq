@@ -9,13 +9,24 @@ RSpec.describe Terraform::States::TriggerDestroyService do
   describe '#execute', :aggregate_failures do
     let_it_be(:state) { create(:terraform_state, project: project) }
 
-    subject { described_class.new(state, current_user: user).execute }
+    let(:service) { described_class.new(state, current_user: user) }
+
+    subject { service.execute }
 
     it 'marks the state as deleted and schedules a cleanup worker' do
       expect(Terraform::States::DestroyWorker).to receive(:perform_async).with(state.id).once
 
       expect(subject).to be_success
       expect(state.deleted_at).to be_like_time(Time.current)
+    end
+
+    context 'within a database transaction' do
+      subject { state.with_lock { service.execute } }
+
+      it 'does not raise an EnqueueFromTransactionError' do
+        expect { subject }.not_to raise_error
+        expect(state.deleted_at).to be_like_time(Time.current)
+      end
     end
 
     shared_examples 'unable to delete state' do

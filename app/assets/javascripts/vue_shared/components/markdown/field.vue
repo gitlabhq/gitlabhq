@@ -248,7 +248,7 @@ export default {
         labels: this.enableAutocomplete,
         snippets: this.enableAutocomplete,
         vulnerabilities: this.enableAutocomplete,
-        contacts: this.enableAutocomplete && this.glFeatures.contactsAutocomplete,
+        contacts: this.enableAutocomplete,
       },
       true,
     );

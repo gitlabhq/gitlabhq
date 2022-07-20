@@ -10,7 +10,7 @@ class PreviewMarkdownService < BaseService
       text: text,
       users: users,
       suggestions: suggestions,
-      commands: commands.join(' ')
+      commands: commands.join('<br>')
     )
   end
 

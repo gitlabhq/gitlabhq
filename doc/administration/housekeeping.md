@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Housekeeping **(FREE SELF)**
 
-GitLab supports and automates housekeeping tasks within your current repository such as:
+GitLab supports and automates housekeeping tasks in your current repository such as:
 
 - Compressing Git objects.
 - Removing unreachable objects.

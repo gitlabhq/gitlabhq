@@ -430,3 +430,24 @@ successful_test_job:
     paths:
       - bin/results
 ```
+
+### Error message `FATAL: invalid argument` when uploading a dotenv artifact on a windows runner
+
+The PowerShell `echo` command writes files with UCS-2 LE BOM (Byte Order Mark) encoding,
+but only UTF-8 is supported. If you try create the dotenv artifact with `echo`, it causes a
+`FATAL: invalid argument` error.
+
+Use PowerShell `Add-Content` instead, which uses UTF-8:
+
+```yaml
+test-job:
+  stage: test
+  tags:
+    - windows
+  script:
+    - echo "test job"
+    - Add-Content -Path build.env -Value "MY_ENV_VAR=true"
+  artifacts:
+    reports:
+      dotenv: build.env
+```

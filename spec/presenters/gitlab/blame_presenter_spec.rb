@@ -8,8 +8,9 @@ RSpec.describe Gitlab::BlamePresenter do
   let(:commit) { project.commit('master') }
   let(:blob) { project.repository.blob_at(commit.id, path) }
   let(:blame) { Gitlab::Blame.new(blob, commit) }
+  let(:page) { 1 }
 
-  subject { described_class.new(blame, project: project, path: path) }
+  subject { described_class.new(blame, project: project, path: path, page: page) }
 
   it 'precalculates necessary data on init' do
     expect_any_instance_of(described_class)

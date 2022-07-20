@@ -16,7 +16,7 @@ module MergeRequests
       mark_pending_todos_as_done(merge_request)
       execute_approval_hooks(merge_request, current_user)
       remove_attention_requested(merge_request)
-      merge_request_activity_counter.track_approve_mr_action(user: current_user)
+      merge_request_activity_counter.track_approve_mr_action(user: current_user, merge_request: merge_request)
 
       success
     end

@@ -51,6 +51,7 @@ module Gitlab
             title: issue.truncated_title,
             author_id: author_id,
             project_id: project.id,
+            namespace_id: project.project_namespace_id,
             description: description,
             milestone_id: milestone_finder.id_for(issue),
             state_id: ::Issue.available_states[issue.state],

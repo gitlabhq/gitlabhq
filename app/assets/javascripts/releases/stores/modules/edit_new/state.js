@@ -1,4 +1,5 @@
 export default ({
+  isExistingRelease,
   projectId,
   groupId,
   groupMilestonesAvailable = false,
@@ -10,10 +11,13 @@ export default ({
   newMilestonePath,
   releasesPagePath,
   editReleaseDocsPath,
+  upcomingReleaseDocsPath,
 
+  deleteReleaseDocsPath = '',
   tagName = null,
   defaultBranch = null,
 }) => ({
+  isExistingRelease,
   projectId,
   groupId,
   groupMilestonesAvailable: Boolean(groupMilestonesAvailable),
@@ -25,12 +29,15 @@ export default ({
   newMilestonePath,
   releasesPagePath,
   editReleaseDocsPath,
+  upcomingReleaseDocsPath,
+  deleteReleaseDocsPath,
 
   /**
    * The name of the tag associated with the release, provided by the backend.
-   * When creating a new release, this value is null.
+   * When creating a new release, this is the default from the URL
    */
   tagName,
+  showCreateFrom: !tagName,
 
   defaultBranch,
   createFrom: defaultBranch,

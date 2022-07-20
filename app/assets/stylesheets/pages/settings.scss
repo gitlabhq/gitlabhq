@@ -28,6 +28,7 @@
 
   &:first-of-type {
     margin-top: 10px;
+    padding-top: 0;
     border: 0;
   }
 
@@ -156,39 +157,33 @@
 }
 
 .visibility-level-setting {
-  .form-check {
-    margin-bottom: 10px;
+  .option-title {
+    font-weight: $gl-font-weight-normal;
+    display: inline-block;
+    color: $gl-text-color;
+    vertical-align: top;
+  }
 
-    .option-title {
-      font-weight: $gl-font-weight-normal;
-      display: inline-block;
-      color: $gl-text-color;
-      vertical-align: top;
+  .option-description,
+  .option-disabled-reason {
+    color: $project-option-descr-color;
+  }
+
+  .option-disabled-reason {
+    display: none;
+  }
+
+  .disabled {
+    svg {
+      opacity: 0.5;
     }
 
-    .option-description,
-    .option-disabled-reason {
-      margin-left: 20px;
-      color: $project-option-descr-color;
-      margin-top: -5px;
-    }
-
-    .option-disabled-reason {
+    .option-description {
       display: none;
     }
 
-    &.disabled {
-      svg {
-        opacity: 0.5;
-      }
-
-      .option-description {
-        display: none;
-      }
-
-      .option-disabled-reason {
-        display: block;
-      }
+    .option-disabled-reason {
+      display: block;
     }
   }
 }
@@ -320,7 +315,8 @@
 }
 
 .ci-variable-table,
-.deploy-freeze-table {
+.deploy-freeze-table,
+.ci-secure-files-table {
   table {
     thead {
       border-bottom: 1px solid $white-normal;

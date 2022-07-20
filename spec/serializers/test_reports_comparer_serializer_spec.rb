@@ -8,8 +8,8 @@ RSpec.describe TestReportsComparerSerializer do
   let(:project) { double(:project) }
   let(:serializer) { described_class.new(project: project).represent(comparer) }
   let(:comparer) { Gitlab::Ci::Reports::TestReportsComparer.new(base_reports, head_reports) }
-  let(:base_reports) { Gitlab::Ci::Reports::TestReports.new }
-  let(:head_reports) { Gitlab::Ci::Reports::TestReports.new }
+  let(:base_reports) { Gitlab::Ci::Reports::TestReport.new }
+  let(:head_reports) { Gitlab::Ci::Reports::TestReport.new }
 
   describe '#to_json' do
     subject { serializer.to_json }

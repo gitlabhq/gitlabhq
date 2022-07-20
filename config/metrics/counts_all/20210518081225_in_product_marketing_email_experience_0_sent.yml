@@ -5,12 +5,14 @@ name: "count_sent_first_email_of_the_experience_track_for_in_product_marketing_e
 description: Total sent emails of the experience track's first email
 product_section: 'TBD'
 product_stage: growth
-product_group: group::activation
+product_group: activation
 product_category: onboarding
 value_type: number
-status: active
+status: removed
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61347
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92280
+milestone_removed: "15.2"
 time_frame: all
 data_source: database
 distribution:

@@ -4,7 +4,7 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_auto_devops_build_month
 description: Count of pipelines using the Auto Build template
 product_section: ops
 product_stage: configure
-product_group: group::configure
+product_group: configure
 product_category: infrastructure_as_code
 value_type: number
 status: removed

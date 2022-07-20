@@ -20,6 +20,11 @@ export default {
       required: true,
     },
   },
+  computed: {
+    hasColor() {
+      return this.selectedColor.color !== '';
+    },
+  },
 };
 </script>
 
@@ -31,13 +36,18 @@ export default {
       class="sidebar-collapsed-icon"
     >
       <gl-icon name="appearance" />
-      <color-item
-        :color="selectedColor.color"
-        :title="selectedColor.title"
-        class="gl-font-base gl-line-height-24"
-      />
+      <color-item :color="selectedColor.color" :title="selectedColor.title" />
     </div>
 
-    <color-item class="hide-collapsed" :color="selectedColor.color" :title="selectedColor.title" />
+    <span v-if="!hasColor" class="no-value hide-collapsed">
+      <slot></slot>
+    </span>
+    <template v-else>
+      <color-item
+        class="hide-collapsed"
+        :color="selectedColor.color"
+        :title="selectedColor.title"
+      />
+    </template>
   </div>
 </template>

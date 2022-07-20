@@ -44,6 +44,12 @@ describe('content_editor/components/bubble_menus/code_block', () => {
     });
   };
 
+  const preTag = ({ language, content = 'test' } = {}) => {
+    const languageAttr = language ? ` lang="${language}"` : '';
+
+    return `<pre class="js-syntax-highlight"${languageAttr}>${content}</pre>`;
+  };
+
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findDropdownItemsData = () =>
     findDropdownItems().wrappers.map((x) => ({
@@ -62,7 +68,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
   });
 
   it('renders bubble menu component', async () => {
-    tiptapEditor.commands.insertContent('<pre>test</pre>');
+    tiptapEditor.commands.insertContent(preTag());
     bubbleMenu = wrapper.findComponent(BubbleMenu);
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
@@ -72,7 +78,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
   });
 
   it('selects plaintext language by default', async () => {
-    tiptapEditor.commands.insertContent('<pre>test</pre>');
+    tiptapEditor.commands.insertContent(preTag());
     bubbleMenu = wrapper.findComponent(BubbleMenu);
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
@@ -81,7 +87,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
   });
 
   it('selects appropriate language based on the code block', async () => {
-    tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
+    tiptapEditor.commands.insertContent(preTag({ language: 'javascript' }));
     bubbleMenu = wrapper.findComponent(BubbleMenu);
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
@@ -90,7 +96,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
   });
 
   it('selects diagram sytnax for mermaid', async () => {
-    tiptapEditor.commands.insertContent('<pre lang="mermaid">test</pre>');
+    tiptapEditor.commands.insertContent(preTag({ language: 'mermaid' }));
     bubbleMenu = wrapper.findComponent(BubbleMenu);
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
@@ -99,7 +105,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
   });
 
   it("selects Custom (syntax) if the language doesn't exist in the list", async () => {
-    tiptapEditor.commands.insertContent('<pre lang="nomnoml">test</pre>');
+    tiptapEditor.commands.insertContent(preTag({ language: 'nomnoml' }));
     bubbleMenu = wrapper.findComponent(BubbleMenu);
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
@@ -109,19 +115,20 @@ describe('content_editor/components/bubble_menus/code_block', () => {
 
   describe('copy button', () => {
     it('copies the text of the code block', async () => {
+      const content = 'var a = Math.PI / 2;';
       jest.spyOn(navigator.clipboard, 'writeText');
 
-      tiptapEditor.commands.insertContent('<pre lang="javascript">var a = Math.PI / 2;</pre>');
+      tiptapEditor.commands.insertContent(preTag({ language: 'javascript', content }));
 
       await wrapper.findByTestId('copy-code-block').vm.$emit('click');
 
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('var a = Math.PI / 2;');
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(content);
     });
   });
 
   describe('delete button', () => {
     it('deletes the code block', async () => {
-      tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
+      tiptapEditor.commands.insertContent(preTag({ language: 'javascript' }));
 
       await wrapper.findByTestId('delete-code-block').vm.$emit('click');
 
@@ -164,7 +171,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
 
   describe('when opened and search is changed', () => {
     beforeEach(async () => {
-      tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
+      tiptapEditor.commands.insertContent(preTag({ language: 'javascript' }));
 
       wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', 'js');
 

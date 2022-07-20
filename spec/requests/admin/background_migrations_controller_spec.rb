@@ -97,6 +97,7 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode do
 
   describe 'POST #retry' do
     let(:migration) { create(:batched_background_migration, :failed) }
+    let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
     before do
       create(:batched_background_migration_job, :failed, batched_migration: migration, batch_size: 10, min_value: 6, max_value: 15, attempts: 3)
@@ -107,7 +108,8 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode do
           anything,
           batch_min_value: 6,
           batch_size: 5,
-          job_arguments: migration.job_arguments
+          job_arguments: migration.job_arguments,
+          job_class: job_class
         ).and_return([6, 10])
       end
     end

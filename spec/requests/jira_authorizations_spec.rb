@@ -27,14 +27,16 @@ RSpec.describe 'Jira authorization requests' do
         redirect_uri: redirect_uri
       })
       oauth_response = json_response
+      oauth_response_access_token, scope, token_type = oauth_response.values_at('access_token', 'scope', 'token_type')
 
       post '/login/oauth/access_token', params: post_data.merge({
         code: generate_access_grant.token
       })
       jira_response = response.body
+      jira_response_access_token = Rack::Utils.parse_nested_query(jira_response)['access_token']
 
-      access_token, scope, token_type = oauth_response.values_at('access_token', 'scope', 'token_type')
-      expect(jira_response).to eq("access_token=#{access_token}&scope=#{scope}&token_type=#{token_type}")
+      expect(jira_response).to include("scope=#{scope}&token_type=#{token_type}")
+      expect(oauth_response_access_token).not_to eql(jira_response_access_token)
     end
 
     context 'when authorization fails' do

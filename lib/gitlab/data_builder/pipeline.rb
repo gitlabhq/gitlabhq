@@ -118,6 +118,7 @@ module Gitlab
           finished_at: build.finished_at,
           duration: build.duration,
           queued_duration: build.queued_duration,
+          failure_reason: (build.failure_reason if build.failed?),
           when: build.when,
           manual: build.action?,
           allow_failure: build.allow_failure,

@@ -3,7 +3,14 @@ import { GlSafeHtmlDirective, GlLoadingIcon } from '@gitlab/ui';
 import LineHighlighter from '~/blob/line_highlighter';
 import eventHub from '~/notes/event_hub';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
-import { ROUGE_TO_HLJS_LANGUAGE_MAP, LINES_PER_CHUNK } from './constants';
+import Tracking from '~/tracking';
+import {
+  EVENT_ACTION,
+  EVENT_LABEL_VIEWER,
+  EVENT_LABEL_FALLBACK,
+  ROUGE_TO_HLJS_LANGUAGE_MAP,
+  LINES_PER_CHUNK,
+} from './constants';
 import Chunk from './components/chunk.vue';
 import { registerPlugins } from './plugins/index';
 
@@ -23,6 +30,7 @@ export default {
   directives: {
     SafeHtml: GlSafeHtmlDirective,
   },
+  mixins: [Tracking.mixin()],
   props: {
     blob: {
       type: Object,
@@ -49,8 +57,22 @@ export default {
     lineNumbers() {
       return this.splitContent.length;
     },
+    unsupportedLanguage() {
+      const supportedLanguages = Object.keys(languageLoader);
+      return (
+        !supportedLanguages.includes(this.language) &&
+        !supportedLanguages.includes(this.blob.language)
+      );
+    },
   },
   async created() {
+    this.trackEvent(EVENT_LABEL_VIEWER);
+
+    if (this.unsupportedLanguage) {
+      this.handleUnsupportedLanguage();
+      return;
+    }
+
     this.generateFirstChunk();
     this.hljs = await this.loadHighlightJS();
 
@@ -70,6 +92,13 @@ export default {
     });
   },
   methods: {
+    trackEvent(label) {
+      this.track(EVENT_ACTION, { label, property: this.blob.language });
+    },
+    handleUnsupportedLanguage() {
+      this.trackEvent(EVENT_LABEL_FALLBACK);
+      this.$emit('error');
+    },
     generateFirstChunk() {
       const lines = this.splitContent.splice(0, LINES_PER_CHUNK);
       this.firstChunk = this.createChunk(lines);
@@ -112,7 +141,7 @@ export default {
       let detectedLanguage = language;
       let highlightedContent;
       if (this.hljs) {
-        registerPlugins(this.hljs);
+        registerPlugins(this.hljs, this.blob.fileType, this.content);
         if (!detectedLanguage) {
           const hljsHighlightAuto = this.hljs.highlightAuto(content);
           highlightedContent = hljsHighlightAuto.value;

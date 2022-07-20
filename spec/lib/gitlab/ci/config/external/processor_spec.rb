@@ -323,11 +323,9 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
       end
 
       context 'when too many includes is included' do
-        before do
-          stub_const('Gitlab::Ci::Config::External::Mapper::MAX_INCLUDES', 1)
-        end
-
         it 'raises an error' do
+          allow(context).to receive(:max_includes).and_return(1)
+
           expect { subject }.to raise_error(Gitlab::Ci::Config::External::Processor::IncludeError, /Maximum of 1 nested/)
         end
       end

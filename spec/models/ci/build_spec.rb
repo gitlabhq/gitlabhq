@@ -43,30 +43,10 @@ RSpec.describe Ci::Build do
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
   shared_examples 'calling proper BuildFinishedWorker' do
-    context 'when ci_build_finished_worker_namespace_changed feature flag enabled' do
-      before do
-        stub_feature_flags(ci_build_finished_worker_namespace_changed: build.project)
-      end
+    it 'calls Ci::BuildFinishedWorker' do
+      expect(Ci::BuildFinishedWorker).to receive(:perform_async)
 
-      it 'calls Ci::BuildFinishedWorker' do
-        expect(Ci::BuildFinishedWorker).to receive(:perform_async)
-        expect(::BuildFinishedWorker).not_to receive(:perform_async)
-
-        subject
-      end
-    end
-
-    context 'when ci_build_finished_worker_namespace_changed feature flag disabled' do
-      before do
-        stub_feature_flags(ci_build_finished_worker_namespace_changed: false)
-      end
-
-      it 'calls ::BuildFinishedWorker' do
-        expect(::BuildFinishedWorker).to receive(:perform_async)
-        expect(Ci::BuildFinishedWorker).not_to receive(:perform_async)
-
-        subject
-      end
+      subject
     end
   end
 
@@ -1364,7 +1344,7 @@ RSpec.describe Ci::Build do
 
     before do
       allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-      allow(deployment).to receive(:execute_hooks)
+      allow(Deployments::HooksWorker).to receive(:perform_async)
     end
 
     it 'has deployments record with created status' do
@@ -1420,7 +1400,7 @@ RSpec.describe Ci::Build do
 
       before do
         allow(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
-        allow(deployment).to receive(:execute_hooks)
+        allow(Deployments::HooksWorker).to receive(:perform_async)
       end
 
       it_behaves_like 'avoid deadlock'
@@ -1506,27 +1486,13 @@ RSpec.describe Ci::Build do
 
         it 'transitions to running and calls webhook' do
           freeze_time do
-            expect(deployment).to receive(:execute_hooks).with(Time.current)
+            expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'running', status_changed_at: Time.current)
 
             subject
           end
 
           expect(deployment).to be_running
-        end
-
-        context 'when `deployment_hooks_skip_worker` flag is disabled' do
-          before do
-            stub_feature_flags(deployment_hooks_skip_worker: false)
-          end
-
-          it 'executes Deployments::HooksWorker asynchronously' do
-            freeze_time do
-              expect(Deployments::HooksWorker)
-                .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
-
-              subject
-            end
-          end
         end
       end
     end
@@ -1567,33 +1533,6 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe 'deployment' do
-    describe '#outdated_deployment?' do
-      subject { build.outdated_deployment? }
-
-      context 'when build succeeded' do
-        let(:build) { create(:ci_build, :success) }
-        let!(:deployment) { create(:deployment, :success, deployable: build) }
-
-        context 'current deployment is latest' do
-          it { is_expected.to be_falsey }
-        end
-
-        context 'current deployment is not latest on environment' do
-          let!(:deployment2) { create(:deployment, :success, environment: deployment.environment) }
-
-          it { is_expected.to be_truthy }
-        end
-      end
-
-      context 'when build failed' do
-        let(:build) { create(:ci_build, :failed) }
-
-        it { is_expected.to be_falsey }
-      end
-    end
-  end
-
   describe 'environment' do
     describe '#has_environment?' do
       subject { build.has_environment? }
@@ -1609,6 +1548,32 @@ RSpec.describe Ci::Build do
       context 'when environment is not defined' do
         before do
           build.update!(environment: nil)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    describe '#count_user_verification?' do
+      subject { build.count_user_verification? }
+
+      context 'when build is the verify action for the environment' do
+        let(:build) do
+          create(:ci_build,
+                 ref: 'master',
+                 environment: 'staging',
+                 options: { environment: { action: 'verify' } })
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build is not the verify action for the environment' do
+        let(:build) do
+          create(:ci_build,
+                 ref: 'master',
+                 environment: 'staging',
+                 options: { environment: { action: 'start' } })
         end
 
         it { is_expected.to be_falsey }
@@ -1975,16 +1940,6 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe '#first_pending' do
-    let!(:first) { create(:ci_build, pipeline: pipeline, status: 'pending', created_at: Date.yesterday) }
-    let!(:second) { create(:ci_build, pipeline: pipeline, status: 'pending') }
-
-    subject { described_class.first_pending }
-
-    it { is_expected.to be_a(described_class) }
-    it('returns with the first pending build') { is_expected.to eq(first) }
-  end
-
   describe '#failed_but_allowed?' do
     subject { build.failed_but_allowed? }
 
@@ -2131,6 +2086,34 @@ RSpec.describe Ci::Build do
 
     context 'when tags are not preloaded' do
       it { expect(described_class.find(build.id).tag_list).to eq(['tag']) }
+    end
+  end
+
+  describe '#save_tags' do
+    let(:build) { create(:ci_build, tag_list: ['tag']) }
+
+    it 'saves tags' do
+      build.save!
+
+      expect(build.tags.count).to eq(1)
+      expect(build.tags.first.name).to eq('tag')
+    end
+
+    it 'strips tags' do
+      build.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+
+      build.save!
+      expect(build.tags.map(&:name)).to match_array(%w[taga tagb tagc])
+    end
+
+    context 'with BulkInsertableTags.with_bulk_insert_tags' do
+      it 'does not save_tags' do
+        Ci::BulkInsertableTags.with_bulk_insert_tags do
+          build.save!
+        end
+
+        expect(build.tags).to be_empty
+      end
     end
   end
 
@@ -2641,7 +2624,7 @@ RSpec.describe Ci::Build do
 
     context 'when token is empty' do
       before do
-        build.update_columns(token: nil, token_encrypted: nil)
+        build.update_columns(token_encrypted: nil)
       end
 
       it { is_expected.to be_nil}
@@ -3294,10 +3277,6 @@ RSpec.describe Ci::Build do
       let(:trigger) { create(:ci_trigger, project: project) }
       let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
 
-      let(:user_trigger_variable) do
-        { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1', public: false, masked: false }
-      end
-
       let(:predefined_trigger_variable) do
         { key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true, masked: false }
       end
@@ -3306,26 +3285,7 @@ RSpec.describe Ci::Build do
         build.trigger_request = trigger_request
       end
 
-      shared_examples 'returns variables for triggers' do
-        it { is_expected.to include(user_trigger_variable) }
-        it { is_expected.to include(predefined_trigger_variable) }
-      end
-
-      context 'when variables are stored in trigger_request' do
-        before do
-          trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
-        end
-
-        it_behaves_like 'returns variables for triggers'
-      end
-
-      context 'when variables are stored in pipeline_variables' do
-        before do
-          create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
-        end
-
-        it_behaves_like 'returns variables for triggers'
-      end
+      it { is_expected.to include(predefined_trigger_variable) }
     end
 
     context 'when pipeline has a variable' do
@@ -3848,7 +3808,7 @@ RSpec.describe Ci::Build do
     end
 
     it 'queues BuildHooksWorker' do
-      expect(BuildHooksWorker).to receive(:perform_async).with(build.id)
+      expect(BuildHooksWorker).to receive(:perform_async).with(build)
 
       build.enqueue
     end
@@ -4321,7 +4281,7 @@ RSpec.describe Ci::Build do
   describe '#collect_test_reports!' do
     subject { build.collect_test_reports!(test_reports) }
 
-    let(:test_reports) { Gitlab::Ci::Reports::TestReports.new }
+    let(:test_reports) { Gitlab::Ci::Reports::TestReport.new }
 
     it { expect(test_reports.get_suite(build.name).total_count).to eq(0) }
 
@@ -4372,7 +4332,7 @@ RSpec.describe Ci::Build do
 
     context 'when build is part of parallel build' do
       let(:build_1) { create(:ci_build, name: 'build 1/2') }
-      let(:test_report) { Gitlab::Ci::Reports::TestReports.new }
+      let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
 
       before do
         build_1.collect_test_reports!(test_report)
@@ -4396,7 +4356,7 @@ RSpec.describe Ci::Build do
     end
 
     context 'when build is part of matrix build' do
-      let(:test_report) { Gitlab::Ci::Reports::TestReports.new }
+      let(:test_report) { Gitlab::Ci::Reports::TestReport.new }
       let(:matrix_build_1) { create(:ci_build, :matrix) }
 
       before do

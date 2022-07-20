@@ -206,6 +206,7 @@ export default {
           <template #features>
             <feature-card
               v-for="feature in augmentedSecurityFeatures"
+              :id="feature.anchor"
               :key="feature.type"
               data-testid="security-testing-card"
               :feature="feature"
@@ -254,7 +255,6 @@ export default {
         </section-layout>
       </gl-tab>
       <gl-tab
-        v-if="securityTrainingEnabled"
         data-testid="vulnerability-management-tab"
         :title="$options.i18n.vulnerabilityManagement"
         query-param-value="vulnerability-management"
@@ -271,7 +271,7 @@ export default {
             </p>
           </template>
           <template #features>
-            <training-provider-list />
+            <training-provider-list :security-training-enabled="securityTrainingEnabled" />
           </template>
         </section-layout>
       </gl-tab>

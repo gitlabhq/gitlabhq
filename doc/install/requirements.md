@@ -26,22 +26,22 @@ For the installation options, see [the main installation page](index.md).
 - macOS
 
 Installation of GitLab on these operating systems is possible, but not supported.
-Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
+See the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
 
-Please see [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported) for Omnibus installs page
+See [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported) for Omnibus installs page
 for a list of supported and unsupported OS versions as well as the last support GitLab version for that OS.
 
 ### Microsoft Windows
 
 GitLab is developed for Linux-based operating systems.
 It does **not** run on Microsoft Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/22337).
-Please consider using a virtual machine to run GitLab.
+Consider using a virtual machine to run GitLab.
 
 ## Software requirements
 
 ### Redis versions
 
-GitLab 13.0 and later requires Redis version 4.0 or higher.
+GitLab 13.0 and later requires Redis version 5.0 or higher.
 
 Redis version 6.0 or higher is recommended, as this is what ships with
 [Omnibus GitLab](https://docs.gitlab.com/omnibus/) packages starting with GitLab 13.9.
@@ -61,7 +61,7 @@ Apart from a local hard drive you can also mount a volume that supports the netw
 If you have enough RAM and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) improves the responsiveness of GitLab.
 
 NOTE:
-Since file system performance may affect the overall performance of GitLab,
+Because file system performance may affect the overall performance of GitLab,
 [we don't recommend using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
 
 NOTE:
@@ -94,6 +94,14 @@ if your available memory changes. We also recommend configuring the kernel's swa
 to a low value like `10` to make the most of your RAM while still having the swap
 available when needed.
 
+NOTE:
+Although excessive swapping is undesired and degrades performance, it is an
+extremely important last resort against out-of-memory conditions. During
+unexpected system load, such as OS updates or other services on the same host,
+peak memory load spikes could be much higher than average. Having plenty of swap
+helps avoid the Linux OOM killer unsafely terminating a potentially critical
+process, such as PostgreSQL, which can have disastrous consequences.
+
 ## Database
 
 PostgreSQL is the only supported database, which is bundled with the Omnibus GitLab package.
@@ -112,7 +120,7 @@ the following table) as these were used for development and testing:
 | GitLab version | Minimum PostgreSQL version |
 |----------------|----------------------------|
 | 13.0           | 11                         |
-| 14.0           | 12.10                      |
+| 14.0           | 12.7                      |
 | 15.0           | 12.10                      |
 | 16.0 (planned) | 13.6                       |
 
@@ -124,6 +132,12 @@ GitLab database. [Read more about this requirement, and troubleshooting](postgre
 | `pg_trgm`    | 8.6                    |
 | `btree_gist` | 13.1                   |
 | `plpgsql`    | 11.7                   |
+
+The following managed PostgreSQL services are known to be incompatible and should not be used:
+
+| GitLab version | Managed service                                       |
+|----------------|-------------------------------------------------------|
+| 14.4+          | Amazon Aurora (see [14.4.0](../update/index.md#1440)) |
 
 NOTE:
 Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning.
@@ -251,9 +265,9 @@ works.
 
 ### Puma per worker maximum memory
 
-By default, each Puma worker will be limited to 1024 MB of memory.
+By default, each Puma worker is limited to 1024 MB of memory.
 This setting [can be adjusted](../administration/operations/puma.md#change-the-memory-limit-setting) and should be considered
-if you need to increase the number of Puma workers.
+if you must increase the number of Puma workers.
 
 ## Redis and Sidekiq
 
@@ -279,7 +293,7 @@ to install GitLab on. Depending on how you decide to configure GitLab Runner and
 what tools you use to exercise your application in the CI environment, GitLab
 Runner can consume significant amount of available memory.
 
-Memory consumption calculations, that are available above, won't be valid if
+Memory consumption calculations, that are available above, are not valid if
 you decide to run GitLab Runner and the GitLab Rails application on the same
 machine.
 
@@ -295,7 +309,7 @@ The GitLab Runner server requirements depend on:
 - Resources required to run build jobs.
 - Job concurrency settings.
 
-Since the nature of the jobs varies for each use case, you need to experiment by adjusting the job concurrency to get the optimum setting.
+Because the nature of the jobs varies for each use case, you must experiment by adjusting the job concurrency to get the optimum setting.
 
 For reference, the [SaaS runners on Linux](../ci/runners/saas/linux_saas_runner.md)
 are configured so that a **single job** runs in a **single instance** with:

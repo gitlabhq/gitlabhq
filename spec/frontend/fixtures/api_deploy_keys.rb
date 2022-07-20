@@ -11,6 +11,7 @@ RSpec.describe API::DeployKeys, '(JavaScript fixtures)', type: :request do
   let_it_be(:project2) { create(:project) }
   let_it_be(:deploy_key) { create(:deploy_key, public: true) }
   let_it_be(:deploy_key2) { create(:deploy_key, public: true) }
+  let_it_be(:deploy_key_without_fingerprint) { create(:deploy_key, :without_md5_fingerprint, public: true) }
   let_it_be(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key) }
   let_it_be(:deploy_keys_project2) { create(:deploy_keys_project, :write_access, project: project2, deploy_key: deploy_key) }
   let_it_be(:deploy_keys_project3) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key2) }

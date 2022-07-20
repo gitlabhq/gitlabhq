@@ -14,11 +14,11 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
     end
 
     it 'renders alert body' do
-      expect(rendered_component).to have_content(body)
+      expect(page).to have_content(body)
     end
 
     it 'renders actions' do
-      expect(rendered_component).to have_content(actions)
+      expect(page).to have_content(actions)
     end
   end
 
@@ -28,20 +28,20 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
     end
 
     it 'does not set a title' do
-      expect(rendered_component).not_to have_selector('.gl-alert-title')
-      expect(rendered_component).to have_selector('.gl-alert-icon-no-title')
+      expect(page).not_to have_selector('.gl-alert-title')
+      expect(page).to have_selector('.gl-alert-icon-no-title')
     end
 
     it 'renders the default variant' do
-      expect(rendered_component).to have_selector('.gl-alert-info')
-      expect(rendered_component).to have_selector("[data-testid='information-o-icon']")
-      expect(rendered_component).not_to have_selector('.gl-alert-no-icon')
+      expect(page).to have_selector('.gl-alert-info')
+      expect(page).to have_selector("[data-testid='information-o-icon']")
+      expect(page).not_to have_selector('.gl-alert-no-icon')
     end
 
     it 'renders a dismiss button' do
-      expect(rendered_component).to have_selector('.gl-dismiss-btn.js-close')
-      expect(rendered_component).to have_selector("[data-testid='close-icon']")
-      expect(rendered_component).not_to have_selector('.gl-alert-not-dismissible')
+      expect(page).to have_selector('.gl-dismiss-btn.js-close')
+      expect(page).to have_selector("[data-testid='close-icon']")
+      expect(page).not_to have_selector('.gl-alert-not-dismissible')
     end
   end
 
@@ -61,17 +61,17 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
       end
 
       it 'sets the title' do
-        expect(rendered_component).to have_selector('.gl-alert-title')
-        expect(rendered_component).to have_content('_title_')
-        expect(rendered_component).not_to have_selector('.gl-alert-icon-no-title')
+        expect(page).to have_selector('.gl-alert-title')
+        expect(page).to have_content('_title_')
+        expect(page).not_to have_selector('.gl-alert-icon-no-title')
       end
 
       it 'sets the alert_class' do
-        expect(rendered_component).to have_selector('._alert_class_')
+        expect(page).to have_selector('._alert_class_')
       end
 
       it 'sets the alert_data' do
-        expect(rendered_component).to have_selector('[data-feature-id="_feature_id_"][data-dismiss-endpoint="_dismiss_endpoint_"]')
+        expect(page).to have_selector('[data-feature-id="_feature_id_"][data-dismiss-endpoint="_dismiss_endpoint_"]')
       end
     end
 
@@ -81,12 +81,12 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
       end
 
       it 'has the "not dismissible" class' do
-        expect(rendered_component).to have_selector('.gl-alert-not-dismissible')
+        expect(page).to have_selector('.gl-alert-not-dismissible')
       end
 
       it 'does not render the dismiss button' do
-        expect(rendered_component).not_to have_selector('.gl-dismiss-btn.js-close')
-        expect(rendered_component).not_to have_selector("[data-testid='close-icon']")
+        expect(page).not_to have_selector('.gl-dismiss-btn.js-close')
+        expect(page).not_to have_selector("[data-testid='close-icon']")
       end
     end
 
@@ -96,12 +96,12 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
       end
 
       it 'has the hidden icon class' do
-        expect(rendered_component).to have_selector('.gl-alert-no-icon')
+        expect(page).to have_selector('.gl-alert-no-icon')
       end
 
       it 'does not render the icon' do
-        expect(rendered_component).not_to have_selector('.gl-alert-icon')
-        expect(rendered_component).not_to have_selector("[data-testid='information-o-icon']")
+        expect(page).not_to have_selector('.gl-alert-icon')
+        expect(page).not_to have_selector("[data-testid='information-o-icon']")
       end
     end
 
@@ -118,13 +118,13 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
       end
 
       it 'does not have "not dismissible" class' do
-        expect(rendered_component).not_to have_selector('.gl-alert-not-dismissible')
+        expect(page).not_to have_selector('.gl-alert-not-dismissible')
       end
 
       it 'renders a dismiss button and data' do
-        expect(rendered_component).to have_selector('.gl-dismiss-btn.js-close._close_button_class_')
-        expect(rendered_component).to have_selector("[data-testid='close-icon']")
-        expect(rendered_component).to have_selector('[data-testid="_close_button_testid_"]')
+        expect(page).to have_selector('.gl-dismiss-btn.js-close._close_button_class_')
+        expect(page).to have_selector("[data-testid='close-icon']")
+        expect(page).to have_selector('[data-testid="_close_button_testid_"]')
       end
     end
 
@@ -137,8 +137,8 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
 
       with_them do
         it 'renders the variant' do
-          expect(rendered_component).to have_selector(".gl-alert-#{variant}")
-          expect(rendered_component).to have_selector("[data-testid='#{described_class::ICONS[variant]}-icon']")
+          expect(page).to have_selector(".gl-alert-#{variant}")
+          expect(page).to have_selector("[data-testid='#{described_class::ICONS[variant]}-icon']")
         end
       end
     end

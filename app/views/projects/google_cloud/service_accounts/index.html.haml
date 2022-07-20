@@ -1,8 +1,8 @@
 - add_to_breadcrumbs _('Google Cloud'), @google_cloud_path
-- breadcrumb_title _('Service Account')
-- page_title _('Service Account')
+- breadcrumb_title s_('CloudSeed|Service Account')
+- page_title s_('CloudSeed|Service Account')
 
 - @content_class = "limit-container-width" unless fluid_layout
 
 = form_tag project_google_cloud_service_accounts_path(@project), method: 'post' do
-  #js-google-cloud{ data: @js_data }
+  #js-google-cloud-service-accounts{ data: @js_data }

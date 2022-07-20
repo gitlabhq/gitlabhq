@@ -5,13 +5,7 @@ include:
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
 
-.bundler_variables:
-  variables:
-    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
-    BUNDLE_SILENCE_ROOT_WARNING: "true"
-    BUNDLE_PATH: vendor
-
-.test_variables:
+.test-variables:
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
     COLORIZED_LOGS: "true"
@@ -22,13 +16,20 @@ include:
     GITLAB_QA_ADMIN_ACCESS_TOKEN: "${REVIEW_APPS_ROOT_TOKEN}"
     GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
 
+.bundle-base:
+  extends:
+    - .qa-cache
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
+  before_script:
+    - export QA_GITLAB_URL="$(cat environment_url.txt)"
+    - cd qa && bundle install
+
 .review-qa-base:
   extends:
     - .use-docker-in-docker
-    - .qa-cache
-    - .test_variables
-    - .bundler_variables
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
+    - .bundle-base
+    - .test-variables
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   stage: qa
   needs:
     - review-deploy
@@ -38,11 +39,13 @@ include:
     DOCKER_TLS_CERTDIR: /certs
     DOCKER_CERT_PATH: /certs/client
     DOCKER_TLS_VERIFY: 1
+    GIT_LFS_SKIP_SMUDGE: 1
+    WD_INSTALL_DIR: /usr/local/bin
   before_script:
-    - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
-    - export QA_GITLAB_URL="$(cat environment_url.txt)"
-    - cd qa && bundle install
+    - scripts/checkout-mr-source-sha
+    - !reference [.bundle-base, before_script]
   script:
+    - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
     - qa_run_status=0
     - |
       bundle exec rake "knapsack:rspec[\
@@ -52,7 +55,6 @@ include:
         --tag ~skip_signup_disabled \
         --tag ~requires_git_protocol_v2 \
         --tag ~requires_praefect \
-        --tag ~sanity_feature_flags \
         --force-color \
         --order random \
         --format documentation \
@@ -82,16 +84,12 @@ include:
 
 # Store knapsack report as artifact so the same report is reused across all jobs
 download-knapsack-report:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-${CHROME_VERSION}
   extends:
-    - .qa-cache
-    - .bundler_variables
+    - .bundle-base
     - .review:rules:review-qa-reliable
   stage: prepare
   variables:
     QA_KNAPSACK_REPORTS: review-qa-reliable,review-qa-all
-  before_script:
-    - cd qa && bundle install
   script:
     - bundle exec rake "knapsack:download"
   allow_failure: true
@@ -99,29 +97,6 @@ download-knapsack-report:
     paths:
       - qa/knapsack/review-qa-*.json
     expire_in: 1 day
-
-review-qa-sanity:
-  extends:
-    - .review-qa-base
-    - .review:rules:review-qa-sanity
-  retry: 1
-  variables:
-    QA_RUN_TYPE: review-qa-sanity
-  script:
-    - qa_run_status=0
-    - |
-      bundle exec rake "knapsack:rspec[\
-        --tag sanity_feature_flags \
-        --force-color \
-        --order random \
-        --format documentation \
-        --format RspecJunitFormatter --out tmp/rspec.xml \
-      ]" || qa_run_status=$?
-    - if [ ${qa_run_status} -ne 0 ]; then
-        release_sha=$(echo "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-${CI_COMMIT_SHA}}" | cut -c1-11);
-        echo "Errors can be found at https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/${release_sha}/all-events/.";
-      fi
-    - exit ${qa_run_status}
 
 review-qa-smoke:
   extends:
@@ -140,7 +115,7 @@ review-qa-reliable:
   parallel: 10
   variables:
     QA_RUN_TYPE: review-qa-reliable
-    RSPEC_TAGS: --tag reliable
+    RSPEC_TAGS: --tag reliable --tag sanity_feature_flags
 
 review-qa-all:
   extends:
@@ -149,7 +124,7 @@ review-qa-all:
   parallel: 5
   variables:
     QA_RUN_TYPE: review-qa-all
-    RSPEC_TAGS: --tag ~reliable --tag ~smoke
+    RSPEC_TAGS: --tag ~reliable --tag ~smoke --tag ~sanity_feature_flags
 
 review-performance:
   extends:
@@ -202,8 +177,21 @@ allure-report-qa-all:
 upload-knapsack-report:
   extends:
     - .generate-knapsack-report-base
+    - .bundle-base
   stage: post-qa
   variables:
-    # knapsack report upload uses gitlab-qa image with code already there
-    GIT_STRATEGY: none
     QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json
+
+delete-test-resources:
+  extends:
+    - .bundle-base
+    - .review:rules:review-qa-cleanup
+  stage: post-qa
+  variables:
+    QA_TEST_RESOURCES_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-resources-*.json
+    GITLAB_QA_ACCESS_TOKEN: $REVIEW_APPS_ROOT_TOKEN
+    COLORIZED_LOGS: "true"
+  script:
+    - export GITLAB_ADDRESS="$QA_GITLAB_URL"
+    - bundle exec rake "test_resources:delete[$QA_TEST_RESOURCES_FILE_PATTERN]"
+  allow_failure: true

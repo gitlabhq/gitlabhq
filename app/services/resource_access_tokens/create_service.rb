@@ -108,7 +108,7 @@ module ResourceAccessTokens
     end
 
     def create_membership(resource, user, access_level)
-      resource.add_user(user, access_level, expires_at: params[:expires_at])
+      resource.add_member(user, access_level, expires_at: params[:expires_at])
     end
 
     def log_event(token)

@@ -37,15 +37,15 @@ module Gitlab
 
         private
 
-        def noteables
-          project.issues.where.not(iid: already_imported_noteables) # rubocop: disable CodeReuse/ActiveRecord
+        def parent_collection
+          project.issues.where.not(iid: already_imported_parents) # rubocop: disable CodeReuse/ActiveRecord
         end
 
         def page_counter_id(issue)
           "issue/#{issue.id}/#{collection_method}"
         end
 
-        def notes_imported_cache_key
+        def parent_imported_cache_key
           "github-importer/issue/notes/already-imported/#{project.id}"
         end
       end

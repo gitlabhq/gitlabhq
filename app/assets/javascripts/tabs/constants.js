@@ -14,3 +14,6 @@ export const ATTR_ROLE = 'role';
 export const ATTR_TABINDEX = 'tabindex';
 
 export const TAB_SHOWN_EVENT = 'gl-tab-shown';
+
+export const HISTORY_TYPE_HASH = 'hash';
+export const ALLOWED_HISTORY_TYPES = [HISTORY_TYPE_HASH];

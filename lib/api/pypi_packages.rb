@@ -217,6 +217,8 @@ module API
 
           track_package_event('push_package', :pypi, project: authorized_user_project, user: current_user, namespace: authorized_user_project.namespace)
 
+          unprocessable_entity! if Gitlab::FIPS.enabled? && declared_params[:md5_digest].present?
+
           ::Packages::Pypi::CreatePackageService
             .new(authorized_user_project, current_user, declared_params.merge(build: current_authenticated_job))
             .execute

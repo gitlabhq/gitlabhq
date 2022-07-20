@@ -154,6 +154,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { reporter }.policy do
     enable :reporter_access
     enable :read_container_image
+    enable :read_harbor_registry
     enable :admin_issue_board
     enable :admin_label
     enable :admin_milestone
@@ -179,6 +180,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_deploy_token
     enable :create_jira_connect_subscription
     enable :maintainer_access
+    enable :maintain_namespace
   end
 
   rule { owner }.policy do

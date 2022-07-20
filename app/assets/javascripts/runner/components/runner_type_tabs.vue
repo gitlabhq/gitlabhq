@@ -1,6 +1,7 @@
 <script>
-import { GlTabs, GlTab } from '@gitlab/ui';
+import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
 import { searchValidator } from '~/runner/runner_search_utils';
+import { formatNumber } from '~/locale';
 import {
   INSTANCE_TYPE,
   GROUP_TYPE,
@@ -10,6 +11,7 @@ import {
   I18N_GROUP_TYPE,
   I18N_PROJECT_TYPE,
 } from '../constants';
+import RunnerCount from './stat/runner_count.vue';
 
 const I18N_TAB_TITLES = {
   [INSTANCE_TYPE]: I18N_INSTANCE_TYPE,
@@ -17,10 +19,14 @@ const I18N_TAB_TITLES = {
   [PROJECT_TYPE]: I18N_PROJECT_TYPE,
 };
 
+const TAB_COUNT_REF = 'tab-count';
+
 export default {
   components: {
+    GlBadge,
     GlTabs,
     GlTab,
+    RunnerCount,
   },
   props: {
     runnerTypes: {
@@ -32,6 +38,14 @@ export default {
       type: Object,
       required: true,
       validator: searchValidator,
+    },
+    countScope: {
+      type: String,
+      required: true,
+    },
+    countVariables: {
+      type: Object,
+      required: true,
     },
   },
   computed: {
@@ -62,7 +76,25 @@ export default {
     isTabActive({ runnerType }) {
       return runnerType === this.value.runnerType;
     },
+    tabBadgeCountVariables(runnerType) {
+      return { ...this.countVariables, type: runnerType };
+    },
+    tabCount(count) {
+      if (typeof count === 'number') {
+        return formatNumber(count);
+      }
+      return '';
+    },
+
+    // Component API
+    refetch() {
+      // Refresh all of the counts here, can be called by parent component
+      this.$refs[TAB_COUNT_REF].forEach((countComponent) => {
+        countComponent.refetch();
+      });
+    },
   },
+  TAB_COUNT_REF,
 };
 </script>
 <template>
@@ -74,7 +106,17 @@ export default {
       @click="onTabSelected(tab)"
     >
       <template #title>
-        <slot name="title" :tab="tab">{{ tab.title }}</slot>
+        {{ tab.title }}
+        <runner-count
+          #default="{ count }"
+          :ref="$options.TAB_COUNT_REF"
+          :scope="countScope"
+          :variables="tabBadgeCountVariables(tab.runnerType)"
+        >
+          <gl-badge v-if="tabCount(count)" class="gl-ml-1" size="sm">
+            {{ tabCount(count) }}
+          </gl-badge>
+        </runner-count>
       </template>
     </gl-tab>
   </gl-tabs>

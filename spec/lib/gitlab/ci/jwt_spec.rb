@@ -48,6 +48,7 @@ RSpec.describe Gitlab::Ci::Jwt do
         expect(payload[:ref_protected]).to eq(build.protected.to_s)
         expect(payload[:environment]).to be_nil
         expect(payload[:environment_protected]).to be_nil
+        expect(payload[:deployment_tier]).to be_nil
       end
     end
 
@@ -96,7 +97,7 @@ RSpec.describe Gitlab::Ci::Jwt do
     end
 
     describe 'environment' do
-      let(:environment) { build_stubbed(:environment, project: project, name: 'production') }
+      let(:environment) { build_stubbed(:environment, project: project, name: 'production', tier: 'production') }
       let(:build) do
         build_stubbed(
           :ci_build,
@@ -114,6 +115,19 @@ RSpec.describe Gitlab::Ci::Jwt do
       it 'has correct values for environment attributes' do
         expect(payload[:environment]).to eq('production')
         expect(payload[:environment_protected]).to eq('false')
+        expect(payload[:deployment_tier]).to eq('production')
+      end
+
+      describe 'deployment_tier' do
+        context 'when build options specifies a different deployment_tier' do
+          before do
+            build.options[:environment] = { name: environment.name, deployment_tier: 'development' }
+          end
+
+          it 'uses deployment_tier from build options' do
+            expect(payload[:deployment_tier]).to eq('development')
+          end
+        end
       end
     end
   end
@@ -121,8 +135,8 @@ RSpec.describe Gitlab::Ci::Jwt do
   describe '.for_build' do
     shared_examples 'generating JWT for build' do
       context 'when signing key is present' do
-        let(:rsa_key) { OpenSSL::PKey::RSA.generate(1024) }
-        let(:rsa_key_data) { rsa_key.to_s }
+        let_it_be(:rsa_key) { OpenSSL::PKey::RSA.generate(3072) }
+        let_it_be(:rsa_key_data) { rsa_key.to_s }
 
         it 'generates JWT with key id' do
           _payload, headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })

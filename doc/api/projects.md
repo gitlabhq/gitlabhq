@@ -15,7 +15,7 @@ The visibility level is determined by the `visibility` field in the project.
 
 Values for the project visibility level are:
 
-- `private`: project access must be granted explicitly for each user.
+- `private`: project access must be granted explicitly to each user.
 - `internal`: the project can be cloned by any signed-in user except [external users](../user/permissions.md#external-users).
 - `public`: the project can be accessed without any authentication.
 
@@ -28,11 +28,10 @@ There are three options for `merge_method` to choose from:
 - `merge`: a merge commit is created for every merge, and merging is allowed if
   there are no conflicts.
 - `rebase_merge`: a merge commit is created for every merge, but merging is only
-  allowed if fast-forward merge is possible. This way you could make sure that
-  if this merge request would build, after merging to target branch it would
-  also build.
-- `ff`: no merge commits are created and all merges are fast-forwarded, which
-  means that merging is only allowed if the branch could be fast-forwarded.
+  allowed if fast-forward merge is possible. You can make sure that the target
+  branch would build after this merge request builds and merges.
+- `ff`: no merge commits are created and all merges are fast-forwarded. Merging
+  is only allowed if the branch could be fast-forwarded.
 
 ## List all projects
 
@@ -68,6 +67,7 @@ GET /projects
 | `starred`                                  | boolean  | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
 | `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
+| `topic_id`                                 | integer  | **{dotted-circle}** No | Limit results to projects with the assigned topic given by the topic ID. |
 | `visibility`                               | string   | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `wiki_checksum_failed` **(PREMIUM)**       | boolean  | **{dotted-circle}** No | Limit projects where the wiki checksum calculation has failed. |
 | `with_custom_attributes`                   | boolean  | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
@@ -80,17 +80,26 @@ for selected `order_by` options.
 
 When `simple=true` or the user is unauthenticated this returns something like:
 
+Example request:
+
+```shell
+curl --request GET "https://gitlab.example.com/api/v4/projects"
+```
+
+Example response:
+
 ```json
 [
   {
     "id": 4,
     "description": null,
-    "default_branch": "master",
-    "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
-    "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
-    "web_url": "http://example.com/diaspora/diaspora-client",
-    "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
-    "tag_list": [ //deprecated, use `topics` instead
+    "name": "Diaspora Client",
+    "name_with_namespace": "Diaspora / Diaspora Client",
+    "path": "diaspora-client",
+    "path_with_namespace": "diaspora/diaspora-client",
+    "created_at": "2013-09-30T13:46:02Z",
+    "default_branch": "main",
+    "tag_list": [
       "example",
       "disapora client"
     ],
@@ -98,21 +107,28 @@ When `simple=true` or the user is unauthenticated this returns something like:
       "example",
       "disapora client"
     ],
-    "name": "Diaspora Client",
-    "name_with_namespace": "Diaspora / Diaspora Client",
-    "path": "diaspora-client",
-    "path_with_namespace": "diaspora/diaspora-client",
-    "created_at": "2013-09-30T13:46:02Z",
-    "last_activity_at": "2013-09-30T13:46:02Z",
+    "ssh_url_to_repo": "git@gitlab.example.com:diaspora/diaspora-client.git",
+    "http_url_to_repo": "https://gitlab.example.com/diaspora/diaspora-client.git",
+    "web_url": "https://gitlab.example.com/diaspora/diaspora-client",
+    "readme_url": "https://gitlab.example.com/diaspora/diaspora-client/blob/master/README.md",
+    "avatar_url": "https://gitlab.example.com/uploads/project/avatar/4/uploads/avatar.png",
     "forks_count": 0,
-    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
-    "star_count": 0
+    "star_count": 0,
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "namespace": {
+      "id": 2,
+      "name": "Diaspora",
+      "path": "diaspora",
+      "kind": "group",
+      "full_path": "diaspora",
+      "parent_id": null,
+      "avatar_url": null,
+      "web_url": "https://gitlab.example.com/diaspora"
+    }    
   },
   {
-    "id": 6,
-    "description": null,
-    "default_branch": "master",
-...
+    ...
+  }
 ```
 
 When the user is authenticated and `simple` is not set this returns something like:
@@ -122,12 +138,12 @@ When the user is authenticated and `simple` is not set this returns something li
   {
     "id": 4,
     "description": null,
-    "default_branch": "master",
-    "visibility": "private",
-    "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
-    "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
-    "web_url": "http://example.com/diaspora/diaspora-client",
-    "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
+    "name": "Diaspora Client",
+    "name_with_namespace": "Diaspora / Diaspora Client",
+    "path": "diaspora-client",
+    "path_with_namespace": "diaspora/diaspora-client",
+    "created_at": "2013-09-30T13:46:02Z",
+    "default_branch": "main",
     "tag_list": [ //deprecated, use `topics` instead
       "example",
       "disapora client"
@@ -136,202 +152,115 @@ When the user is authenticated and `simple` is not set this returns something li
       "example",
       "disapora client"
     ],
-    "owner": {
-      "id": 3,
-      "name": "Diaspora",
-      "created_at": "2013-09-30T13:46:02Z"
-    },
-    "name": "Diaspora Client",
-    "name_with_namespace": "Diaspora / Diaspora Client",
-    "path": "diaspora-client",
-    "path_with_namespace": "diaspora/diaspora-client",
-    "issues_enabled": true,
-    "open_issues_count": 1,
-    "merge_requests_enabled": true,
-    "jobs_enabled": true,
-    "wiki_enabled": true,
-    "snippets_enabled": false,
-    "can_create_merge_request_in": true,
-    "resolve_outdated_diff_discussions": false,
-    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
-    "container_registry_access_level": "disabled",
-    "security_and_compliance_access_level": "disabled",
-    "created_at": "2013-09-30T13:46:02Z",
-    "last_activity_at": "2013-09-30T13:46:02Z",
-    "creator_id": 3,
+    "ssh_url_to_repo": "git@gitlab.example.com:diaspora/diaspora-client.git",
+    "http_url_to_repo": "https://gitlab.example.com/diaspora/diaspora-client.git",
+    "web_url": "https://gitlab.example.com/diaspora/diaspora-client",
+    "readme_url": "https://gitlab.example.com/diaspora/diaspora-client/blob/master/README.md",
+    "avatar_url": "https://gitlab.example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "forks_count": 0,
+    "star_count": 0,
+    "last_activity_at": "2022-06-24T17:11:26.841Z",
     "namespace": {
       "id": 3,
       "name": "Diaspora",
       "path": "diaspora",
       "kind": "group",
-      "full_path": "diaspora"
+      "full_path": "diaspora",
+      "parent_id": null,
+      "avatar_url": "https://gitlab.example.com/uploads/project/avatar/6/uploads/avatar.png",
+      "web_url": "https://gitlab.example.com/diaspora"
     },
-    "import_status": "none",
+    "container_registry_image_prefix": "registry.gitlab.example.com/diaspora/diaspora-client",
+    "_links": {
+      "self": "https://gitlab.example.com/api/v4/projects/4",
+      "issues": "https://gitlab.example.com/api/v4/projects/4/issues",
+      "merge_requests": "https://gitlab.example.com/api/v4/projects/4/merge_requests",
+      "repo_branches": "https://gitlab.example.com/api/v4/projects/4/repository/branches",
+      "labels": "https://gitlab.example.com/api/v4/projects/4/labels",
+      "events": "https://gitlab.example.com/api/v4/projects/4/events",
+      "members": "https://gitlab.example.com/api/v4/projects/4/members",
+      "cluster_agents": "https://gitlab.example.com/api/v4/projects/4/cluster_agents"
+    },
+    "packages_enabled": true,
+    "empty_repo": false,
     "archived": false,
-    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "visibility": "public",
+    "resolve_outdated_diff_discussions": false,
+    "container_expiration_policy": {
+      "cadence": "1month",
+      "enabled": true,
+      "keep_n": 1,
+      "older_than": "14d",
+      "name_regex": "",
+      "name_regex_keep": ".*-main",
+      "next_run_at": "2022-06-25T17:11:26.865Z"
+    },
+    "issues_enabled": true,
+    "merge_requests_enabled": true,
+    "wiki_enabled": true,
+    "jobs_enabled": true,
+    "snippets_enabled": true,
+    "container_registry_enabled": true,
+    "service_desk_enabled": true,
+    "can_create_merge_request_in": true,
+    "issues_access_level": "enabled",
+    "repository_access_level": "enabled",
+    "merge_requests_access_level": "enabled",
+    "forking_access_level": "enabled",
+    "wiki_access_level": "enabled",
+    "builds_access_level": "enabled",
+    "snippets_access_level": "enabled",
+    "pages_access_level": "enabled",
+    "operations_access_level": "enabled",
+    "analytics_access_level": "enabled",
+    "container_registry_access_level": "enabled",
+    "security_and_compliance_access_level": "private",
+    "emails_disabled": null,
     "shared_runners_enabled": true,
-    "forks_count": 0,
-    "star_count": 0,
-    "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "ci_default_git_depth": 50,
+    "lfs_enabled": true,
+    "creator_id": 1,
+    "import_status": "none",
+    "open_issues_count": 0,
+    "ci_default_git_depth": 20,
     "ci_forward_deployment_enabled": true,
+    "ci_job_token_scope_enabled": false,
+    "ci_separated_caches": true,
     "public_jobs": true,
+    "build_timeout": 3600,
+    "auto_cancel_pending_pipelines": "enabled",
+    "build_coverage_regex": null,
+    "ci_config_path": "",
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
-    "allow_merge_on_skipped_pipeline": false,
+    "allow_merge_on_skipped_pipeline": null,
     "restrict_user_defined_variables": false,
+    "request_access_enabled": true,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "remove_source_branch_after_merge": false,
-    "request_access_enabled": false,
+    "remove_source_branch_after_merge": true,
+    "printing_merge_request_link_enabled": true,
     "merge_method": "merge",
-    "squash_option": "default_on",
-    "autoclose_referenced_issues": true,
+    "squash_option": "default_off",
+    "enforce_auth_checks_on_uploads": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
-    "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
-    "marked_for_deletion_on": "2020-04-03",
-    "statistics": {
-      "commit_count": 37,
-      "storage_size": 1038090,
-      "repository_size": 1038090,
-      "wiki_size" : 0,
-      "lfs_objects_size": 0,
-      "job_artifacts_size": 0,
-      "pipeline_artifacts_size": 0,
-      "packages_size": 0,
-      "snippets_size": 0,
-      "uploads_size": 0
-    },
-    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
-    "_links": {
-      "self": "http://example.com/api/v4/projects",
-      "issues": "http://example.com/api/v4/projects/1/issues",
-      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
-      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
-      "labels": "http://example.com/api/v4/projects/1/labels",
-      "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members",
-      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
+    "auto_devops_enabled": false,
+    "auto_devops_deploy_strategy": "continuous",
+    "autoclose_referenced_issues": true,
+    "keep_latest_artifact": true,
+    "runner_token_expiration_interval": null,
+    "external_authorization_classification_label": "",
+    "requirements_enabled": false,
+    "requirements_access_level": "enabled",
+    "security_and_compliance_enabled": false,
+    "compliance_frameworks": [],
+    "permissions": {
+      "project_access": null,
+      "group_access": null
     }
   },
   {
-    "id": 6,
-    "description": null,
-    "default_branch": "master",
-    "visibility": "private",
-    "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
-    "http_url_to_repo": "http://example.com/brightbox/puppet.git",
-    "web_url": "http://example.com/brightbox/puppet",
-    "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
-    "tag_list": [ //deprecated, use `topics` instead
-      "example",
-      "puppet"
-    ],
-    "topics": [
-      "example",
-      "puppet"
-    ],
-    "owner": {
-      "id": 4,
-      "name": "Brightbox",
-      "created_at": "2013-09-30T13:46:02Z"
-    },
-    "name": "Puppet",
-    "name_with_namespace": "Brightbox / Puppet",
-    "path": "puppet",
-    "path_with_namespace": "brightbox/puppet",
-    "issues_enabled": true,
-    "open_issues_count": 1,
-    "merge_requests_enabled": true,
-    "jobs_enabled": true,
-    "wiki_enabled": true,
-    "snippets_enabled": false,
-    "can_create_merge_request_in": true,
-    "resolve_outdated_diff_discussions": false,
-    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
-    "container_registry_access_level": "disabled",
-    "security_and_compliance_access_level": "disabled",
-    "created_at": "2013-09-30T13:46:02Z",
-    "last_activity_at": "2013-09-30T13:46:02Z",
-    "creator_id": 3,
-    "namespace": {
-      "id": 4,
-      "name": "Brightbox",
-      "path": "brightbox",
-      "kind": "group",
-      "full_path": "brightbox"
-    },
-    "import_status": "none",
-    "import_error": null,
-    "permissions": {
-      "project_access": {
-        "access_level": 10,
-        "notification_level": 3
-      },
-      "group_access": {
-        "access_level": 50,
-        "notification_level": 3
-      }
-    },
-    "archived": false,
-    "avatar_url": null,
-    "shared_runners_enabled": true,
-    "forks_count": 0,
-    "star_count": 0,
-    "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "ci_default_git_depth": 0,
-    "ci_forward_deployment_enabled": true,
-    "public_jobs": true,
-    "shared_with_groups": [],
-    "only_allow_merge_if_pipeline_succeeds": false,
-    "allow_merge_on_skipped_pipeline": false,
-    "restrict_user_defined_variables": false,
-    "only_allow_merge_if_all_discussions_are_resolved": false,
-    "remove_source_branch_after_merge": false,
-    "request_access_enabled": false,
-    "merge_method": "merge",
-    "squash_option": "default_on",
-    "auto_devops_enabled": true,
-    "auto_devops_deploy_strategy": "continuous",
-    "repository_storage": "default",
-    "approvals_before_merge": 0,
-    "mirror": false,
-    "mirror_user_id": 45,
-    "mirror_trigger_builds": false,
-    "only_mirror_protected_branches": false,
-    "mirror_overwrites_diverged_branches": false,
-    "external_authorization_classification_label": null,
-    "packages_enabled": true,
-    "service_desk_enabled": false,
-    "service_desk_address": null,
-    "autoclose_referenced_issues": true,
-    "suggestion_commit_message": null,
-    "merge_commit_template": null,
-    "squash_commit_template": null,
-    "statistics": {
-      "commit_count": 12,
-      "storage_size": 2066080,
-      "repository_size": 2066080,
-      "wiki_size" : 0,
-      "lfs_objects_size": 0,
-      "job_artifacts_size": 0,
-      "pipeline_artifacts_size": 0,
-      "packages_size": 0,
-      "snippets_size": 0,
-      "uploads_size": 0
-    },
-    "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
-    "_links": {
-      "self": "http://example.com/api/v4/projects",
-      "issues": "http://example.com/api/v4/projects/1/issues",
-      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
-      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
-      "labels": "http://example.com/api/v4/projects/1/labels",
-      "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members",
-      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
-    }
+    ...
   }
 ]
 ```
@@ -363,6 +292,12 @@ You can filter by [custom attributes](custom_attributes.md) with:
 
 ```plaintext
 GET /projects?custom_attributes[key]=value&custom_attributes[other_key]=other_value
+```
+
+Example request:
+
+```shell
+curl --globoff --request GET "https://gitlab.example.com/api/v4/projects?custom_attributes[location]=Antarctica&custom_attributes[role]=Developer"
 ```
 
 ### Pagination limits
@@ -470,6 +405,7 @@ GET /users/:user_id/projects
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 50,
     "ci_forward_deployment_enabled": true,
+    "ci_separated_caches": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -577,6 +513,7 @@ GET /users/:user_id/projects
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 0,
     "ci_forward_deployment_enabled": true,
+    "ci_separated_caches": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -983,6 +920,7 @@ GET /projects/:id
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_separated_caches": true,
   "public_jobs": true,
   "shared_with_groups": [
     {
@@ -1422,6 +1360,7 @@ Supported attributes:
 | `ci_config_path`                                            | string         | **{dotted-circle}** No | The path to CI configuration file. |
 | `ci_default_git_depth`                                      | integer        | **{dotted-circle}** No | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone). |
 | `ci_forward_deployment_enabled`                             | boolean        | **{dotted-circle}** No | When a new deployment job starts, [skip older deployment jobs](../ci/pipelines/settings.md#skip-outdated-deployment-jobs) that are still pending |
+| `ci_separated_caches`                                       | boolean        | **{dotted-circle}** No | Set whether or not caches should be [separated](../ci/caching/index.md#cache-key-names) by branch protection status. |
 | `container_expiration_policy_attributes`                    | hash           | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_access_level`                           | string         | **{dotted-circle}** No | Set visibility of container registry, for this project, to one of `disabled`, `private` or `enabled`. |
 | `container_registry_enabled`                                | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
@@ -1997,6 +1936,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_separated_caches": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2122,6 +2062,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_separated_caches": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2637,7 +2578,7 @@ PUT /projects/:id/push_rule
 
 ### Delete project push rule
 
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 Removes a push rule from a project. This is an idempotent method and can be
 called multiple times. Either the push rule is available or not.
@@ -2654,7 +2595,7 @@ DELETE /projects/:id/push_rule
 
 > The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
-See the [Project documentation](../user/project/settings/index.md#transferring-an-existing-project-into-another-namespace)
+See the [Project documentation](../user/project/settings/index.md#transfer-a-project-to-another-namespace)
 for prerequisites to transfer a project.
 
 ```plaintext
@@ -2820,7 +2761,7 @@ with the API scope enabled.
 
 ## Start the pull mirroring process for a Project **(PREMIUM)**
 
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 ```plaintext
 POST /projects/:id/mirror/pull

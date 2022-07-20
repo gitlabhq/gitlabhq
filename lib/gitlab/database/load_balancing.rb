@@ -19,7 +19,7 @@ module Gitlab
       ].freeze
 
       def self.base_models
-        @base_models ||= ::Gitlab::Database.database_base_models.values.freeze
+        @base_models ||= ::Gitlab::Database.database_base_models_using_load_balancing.values.freeze
       end
 
       def self.each_load_balancer

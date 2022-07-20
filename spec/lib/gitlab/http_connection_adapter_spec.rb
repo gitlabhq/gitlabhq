@@ -15,18 +15,6 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
       stub_all_dns('https://example.org', ip_address: '93.184.216.34')
     end
 
-    context 'with use_read_total_timeout option' do
-      let(:options) { { use_read_total_timeout: true } }
-
-      it 'sets up the connection using the Gitlab::NetHttpAdapter' do
-        expect(connection).to be_a(Gitlab::NetHttpAdapter)
-        expect(connection.address).to eq('93.184.216.34')
-        expect(connection.hostname_override).to eq('example.org')
-        expect(connection.addr_port).to eq('example.org')
-        expect(connection.port).to eq(443)
-      end
-    end
-
     context 'when local requests are allowed' do
       let(:options) { { allow_local_requests: true } }
 

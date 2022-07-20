@@ -1,0 +1,7 @@
+---
+name: remote_mirror_no_delay
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92093
+milestone: '15.2'
+type: ops
+group: group::scalability
+default_enabled: false

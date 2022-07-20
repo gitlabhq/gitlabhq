@@ -1,11 +1,13 @@
 <script>
 import { GlDropdown } from '@gitlab/ui';
+import ColorItem from './color_item.vue';
 import DropdownContentsColorView from './dropdown_contents_color_view.vue';
 import DropdownHeader from './dropdown_header.vue';
 import { isDropdownVariantSidebar } from './utils';
 
 export default {
   components: {
+    ColorItem,
     DropdownContentsColorView,
     DropdownHeader,
     GlDropdown,
@@ -42,11 +44,14 @@ export default {
   },
   computed: {
     buttonText() {
-      if (!this.localSelectedColor?.title) {
+      if (!this.hasSelectedColor) {
         return this.dropdownButtonText;
       }
 
       return this.localSelectedColor.title;
+    },
+    hasSelectedColor() {
+      return this.localSelectedColor?.title;
     },
   },
   watch: {
@@ -91,7 +96,15 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown ref="dropdown" :text="buttonText" class="gl-w-full" @hide="handleDropdownHide">
+  <gl-dropdown ref="dropdown" class="gl-w-full" @hide="handleDropdownHide">
+    <template #button-text>
+      <color-item
+        v-if="hasSelectedColor"
+        :color="localSelectedColor.color"
+        :title="localSelectedColor.title"
+      />
+      <span v-else data-testid="fallback-button-text">{{ buttonText }}</span>
+    </template>
     <template #header>
       <dropdown-header
         ref="header"

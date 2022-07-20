@@ -52,6 +52,7 @@ RSpec.describe Packages::CleanupPackageFileWorker do
         end
 
         it 'handles the error' do
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(RuntimeError), class: described_class.name)
           expect { subject }.to change { Packages::PackageFile.error.count }.from(0).to(1)
           expect(package_file.reload).to be_error
         end
@@ -71,7 +72,9 @@ RSpec.describe Packages::CleanupPackageFileWorker do
         end
 
         it 'handles the error' do
-          expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(RuntimeError), class: described_class.name)
+          expect { subject }.not_to change { Packages::PackageFile.count }
+          expect(package_file.reload).to be_error
         end
       end
     end

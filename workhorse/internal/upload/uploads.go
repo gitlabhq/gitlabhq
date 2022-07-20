@@ -3,6 +3,7 @@ package upload
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -63,7 +64,11 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 		case exif.ErrRemovingExif:
 			helper.CaptureAndFail(w, r, err, "Failed to process image", http.StatusUnprocessableEntity)
 		default:
-			helper.Fail500(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
+			if errors.Is(err, context.DeadlineExceeded) {
+				helper.CaptureAndFail(w, r, err, "deadline exceeded", http.StatusGatewayTimeout)
+			} else {
+				helper.Fail500(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
+			}
 		}
 		return
 	}

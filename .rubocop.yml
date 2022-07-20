@@ -13,8 +13,6 @@ inherit_from:
     <% end %>
   - '.rubocop_todo.yml'
   <% end %>
-  <%# See https://gitlab.com/gitlab-org/gitlab/-/issues/321982#rubymine-note for context on why namespaced_class has special handling here %>
-  - ./.rubocop_todo/gitlab/namespaced_class.yml
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
@@ -779,3 +777,6 @@ Migration/BackgroundMigrationBaseClass:
 
 Style/ClassAndModuleChildren:
   Enabled: true
+
+Fips/OpenSSL:
+  Enabled: false

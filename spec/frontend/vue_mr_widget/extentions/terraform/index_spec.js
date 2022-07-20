@@ -142,11 +142,11 @@ describe('Terraform extension', () => {
 
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_terraform_click_full_report',
+        'i_code_review_merge_request_widget_terraform_click_full_report',
       );
       expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_terraform_count_click_full_report',
+        'i_code_review_merge_request_widget_terraform_count_click_full_report',
       );
     });
   });

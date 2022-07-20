@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Merged results pipelines **(PREMIUM)**
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merged results` to `merged results pipelines` in GitLab 14.8.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merged results` to `merged results pipelines` in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849) in GitLab 15.1, merged results pipelines also run on [Draft merge requests](../../user/project/merge_requests/drafts.md).
 
 A *merged results pipeline* is a type of [merge request pipeline](merge_request_pipelines.md). It is a pipeline that runs against the results of the source and target branches merged together.
 
@@ -19,10 +20,7 @@ The pipeline runs against the target branch as it exists at the moment you run t
 Over time, while you're working in the source branch, the target branch might change.
 Any time you want to be sure the merged results are accurate, you should re-run the pipeline.
 
-Merged results pipelines can't run when:
-
-- The target branch has changes that conflict with the changes in the source branch.
-- The merge request is a [**Draft** merge request](../../user/project/merge_requests/drafts.md).
+Merged results pipelines can't run when the target branch has changes that conflict with the changes in the source branch.
 
 In these cases, the pipeline runs as a [merge request pipeline](merge_request_pipelines.md)
 and [is labeled as `merge request`](merge_request_pipelines.md#types-of-merge-request-pipelines).

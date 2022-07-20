@@ -13,8 +13,6 @@
  * Mockup is https://gitlab.com/gitlab-org/gitlab/issues/35570
  */
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -23,7 +21,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     /**
      * Represents the status of the pod. Each state is represented with a different
@@ -54,17 +51,11 @@ export default {
       required: false,
       default: '',
     },
-
-    logsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
 
   computed: {
     isLink() {
-      return this.logsPath !== '' && this.podName !== '';
+      return this.podName !== '';
     },
 
     cssClass() {
@@ -74,12 +65,6 @@ export default {
         link: this.isLink,
       };
     },
-
-    computedLogPath() {
-      return this.isLink && this.glFeatures.monitorLogging
-        ? mergeUrlParams({ pod_name: this.podName }, this.logsPath)
-        : null;
-    },
   },
 };
 </script>
@@ -88,7 +73,6 @@ export default {
     v-gl-tooltip
     :class="cssClass"
     :title="tooltipText"
-    :href="computedLogPath"
     class="deployment-instance d-flex justify-content-center align-items-center"
   />
 </template>

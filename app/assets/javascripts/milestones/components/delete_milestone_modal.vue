@@ -1,6 +1,6 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlModal } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { GlSprintf, GlModal } from '@gitlab/ui';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -10,9 +10,7 @@ import eventHub from '../event_hub';
 export default {
   components: {
     GlModal,
-  },
-  directives: {
-    SafeHtml,
+    GlSprintf,
   },
   props: {
     issueCount: {
@@ -38,20 +36,10 @@ export default {
   },
   computed: {
     text() {
-      const milestoneTitle = sprintf('<strong>%{milestoneTitle}</strong>', {
-        milestoneTitle: this.milestoneTitle,
-      });
-
       if (this.issueCount === 0 && this.mergeRequestCount === 0) {
-        return sprintf(
-          s__(`Milestones|
+        return s__(`Milestones|
 You’re about to permanently delete the milestone %{milestoneTitle}.
-This milestone is not currently used in any issues or merge requests.`),
-          {
-            milestoneTitle,
-          },
-          false,
-        );
+This milestone is not currently used in any issues or merge requests.`);
       }
 
       return sprintf(
@@ -59,7 +47,6 @@ This milestone is not currently used in any issues or merge requests.`),
 You’re about to permanently delete the milestone %{milestoneTitle} and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}.
 Once deleted, it cannot be undone or recovered.`),
         {
-          milestoneTitle,
           issuesWithCount: n__('%d issue', '%d issues', this.issueCount),
           mergeRequestsWithCount: n__(
             '%d merge request',
@@ -98,13 +85,13 @@ Once deleted, it cannot be undone or recovered.`),
           });
 
           if (error.response && error.response.status === 404) {
-            createFlash({
+            createAlert({
               message: sprintf(s__('Milestones|Milestone %{milestoneTitle} was not found'), {
                 milestoneTitle: this.milestoneTitle,
               }),
             });
           } else {
-            createFlash({
+            createAlert({
               message: sprintf(s__('Milestones|Failed to delete milestone %{milestoneTitle}'), {
                 milestoneTitle: this.milestoneTitle,
               }),
@@ -132,6 +119,10 @@ Once deleted, it cannot be undone or recovered.`),
     :action-cancel="$options.cancelProps"
     @primary="onSubmit"
   >
-    <p v-safe-html="text"></p>
+    <gl-sprintf :message="text">
+      <template #milestoneTitle>
+        <strong>{{ milestoneTitle }}</strong>
+      </template>
+    </gl-sprintf>
   </gl-modal>
 </template>

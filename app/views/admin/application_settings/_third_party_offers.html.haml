@@ -1,7 +1,7 @@
 - expanded = integration_expanded?('hide_third_party_')
 %section.settings.as-third-party-offers.no-animate#js-third-party-offers-settings{ class: ('expanded' if expanded) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Customer experience improvement and third-party offers')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
@@ -9,7 +9,7 @@
       = _('Control whether to display customer experience improvement content and third-party offers in GitLab.')
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-third-party-offers-settings'), html: { class: 'fieldset-form', id: 'third-party-offers-settings' } do |f|
-      = form_errors(@application_setting) if expanded
+      = form_errors(@application_setting, pajamas_alert: true) if expanded
 
       %fieldset
         .form-group

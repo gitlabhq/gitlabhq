@@ -32,7 +32,7 @@ export default {
     // Status icon to be used next to the summary text
     // Receives the collapsed data as an argument
     statusIcon(count) {
-      return EXTENSION_ICONS.warning;
+      return EXTENSION_ICONS.failed;
     },
     // Tertiary action buttons that will take the user elsewhere
     // in the GitLab app

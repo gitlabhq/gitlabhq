@@ -304,12 +304,15 @@ function retry_failed_rspec_examples() {
   # Disable Crystalball on retry to not overwrite the existing report
   export CRYSTALBALL="false"
 
+  # Disable simplecov so retried tests don't override test coverage report
+  export SIMPLECOV=0
+
   # Retry only the tests that failed on first try
   rspec_simple_job "--only-failures --pattern \"${KNAPSACK_TEST_FILE_PATTERN}\"" "${JUNIT_RETRY_FILE}"
   rspec_run_status=$?
 
   # Merge the JUnit report from retry into the first-try report
-  junit_merge "${JUNIT_RETRY_FILE}" "${JUNIT_RESULT_FILE}"
+  junit_merge "${JUNIT_RETRY_FILE}" "${JUNIT_RESULT_FILE}" --update-only
 
   exit $rspec_run_status
 }

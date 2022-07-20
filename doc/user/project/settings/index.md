@@ -278,24 +278,34 @@ When you disable a feature, the following additional features are also disabled:
 - Metrics dashboard access requires reading project environments and deployments.
   Users with access to the metrics dashboard can also access environments and deployments.
 
-## Disabling the CVE ID request button **(FREE SAAS)**
+## Disable CVE identifier request in issues **(FREE SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
 
-In applicable environments, a [**Create CVE ID Request** button](../../application_security/cve_id_request.md)
-is present in the issue sidebar. The button may be disabled on a per-project basis by toggling the
-setting **Enable CVE ID requests in the issue sidebar**.
+In some environments, users can submit a [CVE identifier request](../../application_security/cve_id_request.md) in an issue.
 
-![CVE ID Request toggle](img/cve_id_request_toggle.png)
+To disable the CVE identifier request option in issues in your project:
 
-## Disabling email notifications
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Visibility, project features, permissions** section.
+1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
+1. Select **Save changes**.
 
-Project owners can disable all [email notifications](../../profile/notifications.md)
-related to the project by selecting the **Disable email notifications** checkbox.
+## Disable project email notifications
+
+Prerequisites:
+
+- You must be an Owner of the project to disable email notifications related to the project.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Visibility, project features, permissions** section.
+1. Clear the **Disable email notifications** checkbox.
 
 ## Configure merge request settings for a project
 
-Set up your project's merge request settings:
+Configure your project's merge request settings:
 
 - Set up the [merge request method](../merge_requests/methods/index.md) (merge commit, fast-forward merge).
 - Add merge request [description templates](../description_templates.md#description-templates).
@@ -317,91 +327,74 @@ Enable [Service Desk](../service_desk.md) for your project to offer customer sup
 
 Learn how to [export a project](import_export.md#import-a-project-and-its-data) in GitLab.
 
-## Advanced settings
+## Advanced project settings
 
-Here you can run housekeeping, archive, rename, transfer,
-[remove a fork relationship](#removing-a-fork-relationship), or delete a project.
+Use the advanced settings to archive, rename, transfer,
+remove a fork relationship, or delete a project.
 
-## Archiving a project
+### Archive a project
 
-Archiving a project makes it read-only for all users and indicates that it's
-no longer actively maintained. Projects that have been archived can also be
-unarchived. Only project owners and administrators have the
-[permissions](../../permissions.md#project-members-permissions) to archive a project.
-
-When a project is archived, the repository, packages, issues, merge requests, and all
-other features are read-only. Archived projects are also hidden
-in project listings.
+When you archive a project, the repository, packages, issues, merge requests, and all
+other features are read-only. Archived projects are also hidden from project listings.
 
 To archive a project:
 
-1. Navigate to your project's **Settings > General**.
-1. Under **Advanced**, select **Expand**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
 1. In the **Archive project** section, select **Archive project**.
-1. Confirm the action when asked to.
+1. To confirm, select **OK**.
 
-## Unarchiving a project
+### Unarchive a project
 
-Unarchiving a project removes the read-only restriction on a project, and makes it
-available in project listings. Only project owners and administrators have the
-[permissions](../../permissions.md#project-members-permissions) to unarchive a project.
-
-To find an archived project:
-
-1. Sign in to GitLab as the project owner or a user with administrator access.
-1. If you:
-   - Have the project's URL, open the project's page in your browser.
-   - Don't have the project's URL:
-     1. On the top bar, select **Menu > Project**.
-     1. Select **Explore projects**.
-     1. In the **Sort projects** dropdown box, select **Show archived projects**.
-     1. In the **Filter by name** field, provide the project's name.
-     1. Select the link to the project to open its **Details** page.
-
-Next, to unarchive the project:
-
-1. Navigate to your project's **Settings > General**.
-1. Under **Advanced**, select **Expand**.
-1. In the **Unarchive project** section, select **Unarchive project**.
-1. Confirm the action when asked to.
-
-## Renaming a repository
-
-NOTE:
-Only project maintainers and administrators have the [permissions](../../permissions.md#project-members-permissions) to rename a
-repository. Not to be confused with a project's name where it can also be
-changed from the [general project settings](#edit-project-name-and-description).
-
-A project's repository name defines its URL (the one you use to access the
-project via a browser) and its place on the file disk where GitLab is installed.
-
-To rename a repository:
-
-1. Navigate to your project's **Settings > General**.
-1. Under **Advanced**, select **Expand**.
-1. Under **Change path**, update the repository's path.
-1. Select **Change path**.
-
-Remember that this can have unintended side effects since everyone with the
-old URL can't push or pull. Read more about what happens with the
-[redirects when renaming repositories](../repository/index.md#what-happens-when-a-repository-path-changes).
-
-## Transferring an existing project into another namespace
-
-NOTE:
-Only project owners and administrators have the [permissions](../../permissions.md#project-members-permissions)
-to transfer a project.
-
-You can transfer an existing project to another [group](../../group/index.md),
-or you can transfer a [personal project](../working_with_projects.md#view-personal-projects) to a group.
+When you unarchive a project, you remove the read-only restriction and make it
+available in project lists.
 
 Prerequisites:
 
-- A group for your project. You can [view your existing groups](../../group/index.md#view-groups)
-  to find a suitable group. If you don't have a group, [create one](../../group/index.md#create-a-group).
-- You must have at least the Maintainer role in that group.
-- You must be the Owner of that project.
-- The group to which the project is being transferred to must allow creation of new projects.
+- To unarchive a project, you must be an administrator or a project Owner.
+
+1. Find the archived project.
+   1. On the top bar, select **Menu > Project**.
+   1. Select **Explore projects**.
+   1. In the **Sort projects** dropdown list, select **Show archived projects**.
+   1. In the **Filter by name** field, enter the project name.
+   1. Select the project link.
+1. On the left sidebar, select **Settings > General**.
+1. Under **Advanced**, select **Expand**.
+1. In the **Unarchive project** section, select **Unarchive project**.
+1. To confirm, select **OK**.
+
+### Rename a repository
+
+A project's repository name defines its URL and its place on the file disk
+where GitLab is installed.
+
+Prerequisites:
+
+You must be a project maintainer or administrator to rename a repository.
+
+NOTE:
+When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
+[redirects when renaming repositories](../repository/index.md#what-happens-when-a-repository-path-changes).
+
+To rename a repository:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Advanced** section.
+1. In the **Change path** text box, edit the path.
+1. Select **Change path**.
+
+## Transfer a project to another namespace
+
+When you transfer a project to another namespace, you move the project to a different group.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the [group](../../group/index.md#create-a-group) to which you are transferring.
+- You must be the Owner of the project you transfer.
+- The group must allow creation of new projects.
 - The project must not contain any [container images](../../packages/container_registry/index.md#limitations).
   - If you transfer a project to a different root namespace,
     the project must not contain any
@@ -416,19 +409,18 @@ To transfer a project:
 1. Select **Transfer project**.
 1. Enter the project's name and select **Confirm**.
 
-You are redirected to the project's new URL. Read what happens with the
-[redirects from the old URL to the new one](../repository/index.md#what-happens-when-a-repository-path-changes).
+You are redirected to the project's new page and GitLab applies a redirect. For more information about repository redirects, see [What happens when a repository path changes](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 NOTE:
-GitLab administrators can use the [administration interface](../../admin_area/index.md#administering-projects)
-to move any project to any namespace if needed.
+If you are an administrator, you can also use the [administration interface](../../admin_area/index.md#administering-projects)
+to move any project to any namespace.
 
-## Transferring a GitLab.com project to a different subscription tier
+### Transferring a GitLab SaaS project to a different subscription tier
 
-When you transfer a project from a namespace that's licensed for GitLab SaaS Premium or Ultimate to Free, some data related to the paid features is deleted.
+When you transfer a project from a namespace licensed for GitLab SaaS Premium or Ultimate to GitLab Free, the following paid feature data is deleted:
 
-For example, [project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked, and
-[pipeline subscriptions](../../../ci/pipelines/multi_project_pipelines.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
+- [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked
+- [Pipeline subscriptions](../../../ci/pipelines/multi_project_pipelines.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
 and [test cases](../../../ci/test_cases/index.md) are deleted.
 
 ## Delete a project
@@ -460,7 +452,7 @@ in GitLab 12.6, and then to [immediate deletion](https://gitlab.com/gitlab-org/g
 Projects can be deleted after a delay period. Multiple settings can affect whether
 delayed project deletion is enabled for a particular project:
 
-- Self-managed instance [settings](../../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+- Self-managed instance [settings](../../admin_area/settings/visibility_and_access_controls.md#delayed-project-deletion).
   You can enable delayed project deletion as the default setting for new groups, and configure the number of days for the
   delay. For GitLab.com, see the [GitLab.com settings](../../gitlab_com/index.md#delayed-project-deletion).
 - Group [settings](../../group/index.md#enable-delayed-project-deletion) to enabled delayed project deletion for all
@@ -499,27 +491,23 @@ To restore a project marked for deletion:
 1. Navigate to your project, and select **Settings > General > Advanced**.
 1. In the Restore project section, select **Restore project**.
 
-## Removing a fork relationship
+## Remove a fork relationship
 
-Forking is a great way to [contribute to a project](../repository/forking_workflow.md)
-of which you're not a member.
-If you want to use the fork for yourself and don't need to send
-[merge requests](../merge_requests/index.md) to the upstream project,
-you can safely remove the fork relationship.
+Prerequisites:
+
+- You must be a project owner to remove a fork relationship.
 
 WARNING:
-Once removed, you can't send merge requests to the source, and if anyone has forked your project, their fork also loses the relationship.
+If you remove a fork relationship, you can't send merge requests to the source. If anyone has forked your project, their fork also loses the relationship.
 To restore the fork relationship, [use the API](../../../api/projects.md#create-a-forked-fromto-relation-between-existing-projects).
 
-To do so:
+To remove a fork relationship:
 
-1. Navigate to your project's **Settings > General > Advanced**.
-1. Under **Remove fork relationship**, select the likewise-labeled button.
-1. Confirm the action by typing the project's path as instructed.
-
-NOTE:
-Only project owners have the [permissions](../../permissions.md#project-members-permissions)
-to remove a fork relationship.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Remove fork relationship** section, select **Remove fork relationship**.
+1. To confirm, enter the project path and select **Confirm**.
 
 ## Monitor settings
 

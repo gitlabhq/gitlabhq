@@ -70,7 +70,11 @@ module Gitlab
               batch = batch.preload(key_preloads) if key_preloads
 
               batch.each do |record|
+                before_read_callback(record)
+
                 items << Raw.new(record.to_json(options))
+
+                after_read_callback(record)
               end
             end
           end
@@ -167,6 +171,20 @@ module Gitlab
 
         def read_from_replica_if_available(&block)
           ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries(&block)
+        end
+
+        def before_read_callback(record)
+          remove_cached_external_diff(record)
+        end
+
+        def after_read_callback(record)
+          remove_cached_external_diff(record)
+        end
+
+        def remove_cached_external_diff(record)
+          return unless record.is_a?(MergeRequest)
+
+          record.merge_request_diff&.remove_cached_external_diff
         end
       end
     end

@@ -9,6 +9,7 @@ module Mutations
 
       include Mutations::SpamProtection
       include Mutations::WorkItems::UpdateArguments
+      include Mutations::WorkItems::Widgetable
 
       authorize :update_work_item
 
@@ -24,19 +25,21 @@ module Mutations
         end
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
+        widget_params = extract_widget_params!(work_item.work_item_type, attributes)
 
-        ::WorkItems::UpdateService.new(
+        update_result = ::WorkItems::UpdateService.new(
           project: work_item.project,
           current_user: current_user,
           params: attributes,
+          widget_params: widget_params,
           spam_params: spam_params
         ).execute(work_item)
 
         check_spam_action_response!(work_item)
 
         {
-          work_item: work_item.valid? ? work_item : nil,
-          errors: errors_on_object(work_item)
+          work_item: (update_result[:work_item] if update_result[:status] == :success),
+          errors: Array.wrap(update_result[:message])
         }
       end
 

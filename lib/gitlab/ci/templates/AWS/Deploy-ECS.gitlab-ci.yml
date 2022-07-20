@@ -7,6 +7,7 @@ stages:
   - build
   - test
   - review
+  - dast
   - deploy
   - production
   - cleanup

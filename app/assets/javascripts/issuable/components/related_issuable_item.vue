@@ -84,7 +84,7 @@ export default {
           <gl-icon
             v-if="hasState"
             ref="iconElementXL"
-            class="mr-2 d-block"
+            class="gl-mr-3"
             :class="iconClasses"
             :name="iconName"
             :title="stateTitle"

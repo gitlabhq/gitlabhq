@@ -172,7 +172,7 @@ module CacheMarkdownField
     refs = all_references(self.author)
 
     references = {}
-    references[:mentioned_users_ids] = refs.mentioned_user_ids.presence
+    references[:mentioned_users_ids] = mentioned_filtered_user_ids_for(refs)
     references[:mentioned_groups_ids] = refs.mentioned_group_ids.presence
     references[:mentioned_projects_ids] = refs.mentioned_project_ids.presence
 
@@ -183,6 +183,13 @@ module CacheMarkdownField
     end
 
     true
+  end
+
+  # Overriden on objects that needs to filter
+  # mentioned users that cannot read them, for example,
+  # guest users that are referenced on a confidential note.
+  def mentioned_filtered_user_ids_for(refs)
+    refs.mentioned_user_ids.presence
   end
 
   def mentionable_attributes_changed?(changes = saved_changes)

@@ -53,7 +53,6 @@ module UsageDataHelpers
       clusters_platforms_eks
       clusters_platforms_gke
       clusters_platforms_user
-      clusters_integrations_elastic_stack
       clusters_integrations_prometheus
       clusters_management_project
       in_review_folder
@@ -91,7 +90,6 @@ module UsageDataHelpers
       projects_with_repositories_enabled
       projects_with_error_tracking_enabled
       projects_with_enabled_alert_integrations
-      projects_with_tracing_enabled
       projects_with_expiration_policy_enabled
       projects_with_expiration_policy_disabled
       projects_with_expiration_policy_enabled_with_keep_n_unset

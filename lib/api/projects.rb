@@ -134,6 +134,7 @@ module API
         optional :last_activity_before, type: DateTime, desc: 'Limit results to projects with last_activity before specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :topic, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of topics. Limit results to projects having all topics'
+        optional :topic_id, type: Integer, desc: 'Limit results to projects with the assigned topic given by the topic ID'
 
         use :optional_filter_params_ee
       end

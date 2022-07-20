@@ -23,7 +23,7 @@ For a video walkthrough of this process, see [Offline GitLab Installation: Downl
 
 You should [manually download the GitLab package](../../update/package/index.md#upgrade-using-a-manually-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet.
 
-If your offline environment has no local network access, you must manually transport across the relevant package files through physical media, such as a USB drive or writable DVD.
+If your offline environment has no local network access, you must manually transport across the relevant package files through physical media, such as a USB drive, or writable DVD.
 
 In Ubuntu, this can be performed on a server with Internet access using the following commands:
 
@@ -70,7 +70,7 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
 
 ## Enabling SSL
 
-Follow these steps to enable SSL for your fresh instance. Note that these steps reflect those for
+Follow these steps to enable SSL for your fresh instance. These steps reflect those for
 [manually configuring SSL in Omnibus's NGINX configuration](https://docs.gitlab.com/omnibus/settings/nginx.html#manually-configuring-https):
 
 1. Make the following changes to `/etc/gitlab/gitlab.rb`:
@@ -100,7 +100,7 @@ Follow these steps to enable SSL for your fresh instance. Note that these steps 
 
 ## Enabling the GitLab Container Registry
 
-Follow these steps to enable the container registry. Note that these steps reflect those for
+Follow these steps to enable the container registry. These steps reflect those for
 [configuring the container registry under an existing domain](../../administration/packages/container_registry.md#configure-container-registry-under-an-existing-gitlab-domain):
 
 1. Make the following changes to `/etc/gitlab/gitlab.rb`:
@@ -180,7 +180,7 @@ sudo docker run -d --restart always --name gitlab-runner -v /etc/gitlab-runner:/
 
 ### Authenticating the registry against the host OS
 
-As noted in [Docker's registry authentication documentation](https://docs.docker.com/registry/insecure/#docker-still-complains-about-the-certificate-when-using-authentication),
+As noted in [Docker registry authentication documentation](https://docs.docker.com/registry/insecure/#docker-still-complains-about-the-certificate-when-using-authentication),
 certain versions of Docker require trusting the certificate chain at the OS level.
 
 In the case of Ubuntu, this involves using `update-ca-certificates`:

@@ -8,8 +8,8 @@ module QA
 
           view 'app/assets/javascripts/packages_and_registries/settings/group/components/packages_settings.vue' do
             element :package_registry_settings_content
-            element :allow_duplicates_toggle
-            element :allow_duplicates_label
+            element :reject_duplicates_toggle
+            element :reject_duplicates_label
           end
 
           view 'app/assets/javascripts/packages_and_registries/settings/group/components/dependency_proxy_settings.vue' do
@@ -17,39 +17,39 @@ module QA
             element :dependency_proxy_setting_toggle
           end
 
-          def set_allow_duplicates_disabled
-            expand_content :package_registry_settings_content do
-              click_on_allow_duplicates_button if duplicates_enabled?
+          def set_reject_duplicates_disabled
+            within_element :package_registry_settings_content do
+              click_on_reject_duplicates_button if duplicates_disabled?
             end
           end
 
-          def set_allow_duplicates_enabled
-            expand_content :package_registry_settings_content do
-              click_on_allow_duplicates_button unless duplicates_enabled?
+          def set_reject_duplicates_enabled
+            within_element :package_registry_settings_content do
+              click_on_reject_duplicates_button unless duplicates_disabled?
             end
           end
 
-          def click_on_allow_duplicates_button
-            with_allow_duplicates_button do |button|
+          def click_on_reject_duplicates_button
+            with_reject_duplicates_button do |button|
               button.click
             end
           end
 
-          def duplicates_enabled?
-            with_allow_duplicates_button do |button|
+          def duplicates_disabled?
+            with_reject_duplicates_button do |button|
               button[:class].include?('is-checked')
             end
           end
 
-          def with_allow_duplicates_button
-            within_element :allow_duplicates_toggle do
+          def with_reject_duplicates_button
+            within_element :reject_duplicates_toggle do
               toggle = find('button.gl-toggle:not(.is-disabled)')
               yield(toggle)
             end
           end
 
           def has_dependency_proxy_enabled?
-            expand_content :dependency_proxy_settings_content do
+            within_element :dependency_proxy_settings_content do
               within_element :dependency_proxy_setting_toggle do
                 toggle = find('button.gl-toggle')
                 toggle[:class].include?('is-checked')

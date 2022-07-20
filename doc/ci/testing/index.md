@@ -9,18 +9,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use GitLab CI/CD to test the changes included in a feature branch. You can also
 display reports or link to important information directly from [merge requests](../../user/project/merge_requests/index.md).
 
-| Feature                                                                                         | Description |
-|-------------------------------------------------------------------------------------------------|-------------|
-| [Accessibility Testing](../../user/project/merge_requests/accessibility_testing.md)             | Automatically report A11y violations for changed pages in merge requests. |
-| [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the browser performance impact of pending code changes. |
-| [Load Performance Testing](../../user/project/merge_requests/load_performance_testing.md)       | Quickly determine the server performance impact of pending code changes. |
-| [Code Quality](../../user/project/merge_requests/code_quality.md)                               | Analyze your source code quality using the [Code Climate](https://codeclimate.com/) analyzer and show the Code Climate report right in the merge request widget area. |
-| [Display arbitrary job artifacts](../yaml/index.md#artifactsexpose_as)                          | Configure CI pipelines with the `artifacts:expose_as` parameter to directly link to selected [artifacts](../pipelines/job_artifacts.md) in merge requests. |
-| [Unit test reports](unit_test_reports.md)                                                       | Configure your CI jobs to use Unit test reports, and let GitLab display a report on the merge request so that it's easier and faster to identify the failure without having to check the entire job log. |
-| [License Compliance](../../user/compliance/license_compliance/index.md)                         | Manage the licenses of your dependencies. |
-| [Metrics Reports](../metrics_reports.md)                                                        | Display the Metrics Report on the merge request so that it's fast and easier to identify changes to important metrics. |
-| [Test Coverage visualization](../../user/project/merge_requests/test_coverage_visualization.md) | See test coverage results for merge requests, in the file diff. |
-| [Fail fast testing](../../user/project/merge_requests/fail_fast_testing.md#fail-fast-testing)   | Run a subset of your RSpec test suite, so failed tests stop the pipeline before the full suite of tests run, saving resources. |
+| Feature                                                                 | Description |
+|-------------------------------------------------------------------------|-------------|
+| [Accessibility Testing](accessibility_testing.md)                       | Automatically report A11y violations for changed pages in merge requests. |
+| [Browser Performance Testing](browser_performance_testing.md)           | Quickly determine the browser performance impact of pending code changes. |
+| [Load Performance Testing](load_performance_testing.md)                 | Quickly determine the server performance impact of pending code changes. |
+| [Code Quality](code_quality.md)                                         | Analyze your source code quality using the [Code Climate](https://codeclimate.com/) analyzer and show the Code Climate report right in the merge request widget area. |
+| [Display arbitrary job artifacts](../yaml/index.md#artifactsexpose_as)  | Configure CI pipelines with the `artifacts:expose_as` parameter to directly link to selected [artifacts](../pipelines/job_artifacts.md) in merge requests. |
+| [Unit test reports](unit_test_reports.md)                               | Configure your CI jobs to use Unit test reports, and let GitLab display a report on the merge request so that it's easier and faster to identify the failure without having to check the entire job log. |
+| [License Compliance](../../user/compliance/license_compliance/index.md) | Manage the licenses of your dependencies. |
+| [Metrics Reports](metrics_reports.md)                                   | Display the Metrics Report on the merge request so that it's fast and easier to identify changes to important metrics. |
+| [Test Coverage visualization](test_coverage_visualization.md)           | See test coverage results for merge requests, in the file diff. |
+| [Fail fast testing](fail_fast_testing.md)                               | Run a subset of your RSpec test suite, so failed tests stop the pipeline before the full suite of tests run, saving resources. |
 
 ## Security Reports **(ULTIMATE)**
 

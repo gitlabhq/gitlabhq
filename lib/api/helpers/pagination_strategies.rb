@@ -49,6 +49,7 @@ module API
         offset_limit = limit_for_scope(request_scope)
         if (Gitlab::Pagination::Keyset.available_for_type?(relation) ||
             cursor_based_keyset_pagination_supported?(relation)) &&
+            cursor_based_keyset_pagination_enforced?(relation) &&
             offset_limit_exceeded?(offset_limit)
 
           return error!("Offset pagination has a maximum allowed offset of #{offset_limit} " \
@@ -61,6 +62,10 @@ module API
 
       def cursor_based_keyset_pagination_supported?(relation)
         Gitlab::Pagination::CursorBasedKeyset.available_for_type?(relation)
+      end
+
+      def cursor_based_keyset_pagination_enforced?(relation)
+        Gitlab::Pagination::CursorBasedKeyset.enforced_for_type?(relation)
       end
 
       def keyset_pagination_enabled?

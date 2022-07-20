@@ -5,7 +5,7 @@ module Graphql
     delegate :blank?, :empty?, to: :to_h
 
     def initialize(values)
-      @values = values.compact
+      @values = values
     end
 
     def to_h
@@ -42,7 +42,7 @@ module Graphql
       when Integer, Float, Symbol then value.to_s
       when String, GlobalID then "\"#{value.to_s.gsub(/"/, '\\"')}\""
       when Time, Date then "\"#{value.iso8601}\""
-      when nil then 'null'
+      when NilClass then 'null'
       when true then 'true'
       when false then 'false'
       else

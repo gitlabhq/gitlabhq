@@ -7,12 +7,13 @@ import {
   GlSprintf,
   GlFormCheckboxGroup,
 } from '@gitlab/ui';
-import { partition, isString, uniqueId } from 'lodash';
+import { partition, isString, uniqueId, isEmpty } from 'lodash';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { getParameterValues } from '~/lib/utils/url_utility';
+import { n__ } from '~/locale';
 import {
   CLOSE_TO_LIMIT_COUNT,
   USERS_FILTER_ALL,
@@ -21,7 +22,8 @@ import {
   LEARN_GITLAB,
 } from '../constants';
 import eventHub from '../event_hub';
-import { responseMessageFromSuccess } from '../utils/response_message_parser';
+import { responseFromSuccess } from '../utils/response_message_parser';
+import { memberName } from '../utils/member_utils';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import ModalConfetti from './confetti.vue';
 import MembersTokenSelect from './members_token_select.vue';
@@ -101,6 +103,7 @@ export default {
       isLoading: false,
       modalId: uniqueId('invite-members-modal-'),
       newUsersToInvite: [],
+      invalidMembers: {},
       selectedTasksToBeDone: [],
       selectedTaskProject: this.projects[0],
       source: 'unknown',
@@ -124,6 +127,16 @@ export default {
     },
     inviteDisabled() {
       return this.newUsersToInvite.length === 0;
+    },
+    hasInvalidMembers() {
+      return !isEmpty(this.invalidMembers);
+    },
+    memberErrorTitle() {
+      return n__(
+        "InviteMembersModal|The following member couldn't be invited",
+        "InviteMembersModal|The following %d members couldn't be invited",
+        Object.keys(this.invalidMembers).length,
+      );
     },
     tasksToBeDoneEnabled() {
       return (
@@ -218,7 +231,7 @@ export default {
     },
     sendInvite({ accessLevel, expiresAt }) {
       this.isLoading = true;
-      this.invalidFeedbackMessage = '';
+      this.clearValidation();
 
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
 
@@ -242,12 +255,10 @@ export default {
         ...userId,
       })
         .then((response) => {
-          const message = responseMessageFromSuccess(response);
+          const { error, message } = responseFromSuccess(response);
 
-          if (message) {
-            this.showInvalidFeedbackMessage({
-              response: { data: { message } },
-            });
+          if (error) {
+            this.showMemberErrors(message);
           } else {
             this.showSuccessMessage();
           }
@@ -257,6 +268,13 @@ export default {
           this.isLoading = false;
         });
     },
+    showMemberErrors(message) {
+      this.invalidMembers = message;
+    },
+    tokenName(username) {
+      // initial token creation hits this and nothing is found... so safe navigation
+      return this.newUsersToInvite.find((member) => memberName(member) === username)?.name;
+    },
     trackinviteMembersForTask() {
       const label = 'selected_tasks_to_be_done';
       const property = this.selectedTasksToBeDone.join(',');
@@ -264,8 +282,8 @@ export default {
       tracking.event(INVITE_MEMBERS_FOR_TASK.submit);
     },
     resetFields() {
+      this.clearValidation();
       this.isLoading = false;
-      this.invalidFeedbackMessage = '';
       this.newUsersToInvite = [];
       this.selectedTasksToBeDone = [];
       [this.selectedTaskProject] = this.projects;
@@ -287,6 +305,11 @@ export default {
     },
     clearValidation() {
       this.invalidFeedbackMessage = '';
+      this.invalidMembers = {};
+    },
+    removeToken(token) {
+      delete this.invalidMembers[memberName(token)];
+      this.invalidMembers = { ...this.invalidMembers };
     },
   },
   labels: MEMBER_MODAL_LABELS,
@@ -324,23 +347,40 @@ export default {
       <modal-confetti v-if="isCelebration" />
     </template>
 
-    <template #user-limit-notification>
+    <template #alert>
+      <gl-alert
+        v-if="hasInvalidMembers"
+        variant="danger"
+        :dismissible="false"
+        :title="memberErrorTitle"
+        data-testid="alert-member-error"
+      >
+        {{ $options.labels.memberErrorListText }}
+        <ul class="gl-pl-5">
+          <li v-for="(error, member) in invalidMembers" :key="member">
+            <strong>{{ tokenName(member) }}:</strong> {{ error }}
+          </li>
+        </ul>
+      </gl-alert>
       <user-limit-notification
+        v-else
         :close-to-limit="closeToLimit"
         :reached-limit="reachedLimit"
         :users-limit-dataset="usersLimitDataset"
       />
     </template>
 
-    <template #select="{ validationState, labelId }">
+    <template #select="{ exceptionState, labelId }">
       <members-token-select
         v-model="newUsersToInvite"
         class="gl-mb-2"
-        :validation-state="validationState"
+        :exception-state="exceptionState"
         :aria-labelledby="labelId"
         :users-filter="usersFilter"
         :filter-id="filterId"
+        :invalid-members="invalidMembers"
         @clear="clearValidation"
+        @token-remove="removeToken"
       />
     </template>
     <template #form-after>

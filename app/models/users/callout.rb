@@ -49,11 +49,14 @@ module Users
       storage_enforcement_banner_fourth_enforcement_threshold: 46,
       attention_requests_top_nav: 47,
       attention_requests_side_nav: 48,
-      minute_limit_banner: 49,
+      # 49 was removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91533
+      # because the banner was no longer relevant.
+      # Records will be migrated with https://gitlab.com/gitlab-org/gitlab/-/issues/367293
       preview_user_over_limit_free_plan_alert: 50, # EE-only
       user_reached_limit_free_plan_alert: 51, # EE-only
       submit_license_usage_data_banner: 52, # EE-only
-      personal_project_limitations_banner: 53  # EE-only
+      personal_project_limitations_banner: 53,  # EE-only
+      mr_experience_survey: 54
     }
 
     validates :feature_name,

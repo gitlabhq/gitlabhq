@@ -16,8 +16,8 @@ export default ({ render }) => {
    *    document. The dom property contains the HTML generated from the Markdown Source.
    */
   return {
-    deserialize: async ({ schema, content }) => {
-      const html = await render(content);
+    deserialize: async ({ schema, markdown }) => {
+      const html = await render(markdown);
 
       if (!html) return {};
 
@@ -25,7 +25,7 @@ export default ({ render }) => {
       const { body } = parser.parseFromString(html, 'text/html');
 
       // append original source as a comment that nodes can access
-      body.append(document.createComment(content));
+      body.append(document.createComment(markdown));
 
       return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body) };
     },

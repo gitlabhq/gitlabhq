@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import discussionWithTwoUnresolvedNotes from 'test_fixtures/merge_requests/resolved_diff_discussion.json';
 import { trimText } from 'helpers/text_helper';
-import mockDiffFile from 'jest/diffs/mock_data/diff_file';
+import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
@@ -45,7 +45,7 @@ describe('noteable_discussion component', () => {
 
   it('should render thread header', async () => {
     const discussion = { ...discussionMock };
-    discussion.diff_file = mockDiffFile;
+    discussion.diff_file = getDiffFileMock();
     discussion.diff_discussion = true;
     discussion.expanded = false;
 
@@ -57,7 +57,7 @@ describe('noteable_discussion component', () => {
 
   it('should hide actions when diff refs do not exists', async () => {
     const discussion = { ...discussionMock };
-    discussion.diff_file = { ...mockDiffFile, diff_refs: null };
+    discussion.diff_file = { ...getDiffFileMock(), diff_refs: null };
     discussion.diff_discussion = true;
     discussion.expanded = false;
 

@@ -254,7 +254,7 @@ describe('InviteModalBase', () => {
     expect(wrapper.findComponent(GlModal).props('actionPrimary').attributes.loading).toBe(true);
   });
 
-  it('with invalidFeedbackMessage, set members form group validation state', () => {
+  it('with invalidFeedbackMessage, set members form group exception state', () => {
     createComponent({
       invalidFeedbackMessage: 'invalid message!',
     });

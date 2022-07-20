@@ -47,7 +47,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
       modalId: 'confirm-canary-change',
       actionPrimary: {
         text: 'Change ratio',
-        attributes: [{ variant: 'info' }],
+        attributes: [{ variant: 'confirm' }],
       },
       actionCancel: { text: 'Cancel' },
     });

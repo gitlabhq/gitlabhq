@@ -66,4 +66,30 @@ RSpec.describe API::Ci::Helpers::Runner do
       expect(helper.current_runner).to eq(runner)
     end
   end
+
+  describe '#track_runner_authentication', :prometheus do
+    subject { helper.track_runner_authentication }
+
+    let(:runner) { create(:ci_runner, token: 'foo') }
+
+    it 'increments gitlab_ci_runner_authentication_success_total' do
+      allow(helper).to receive(:params).and_return(token: runner.token)
+
+      success_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_success_counter
+      failure_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_failure_counter
+      expect { subject }.to change { success_counter.get(runner_type: 'instance_type') }.by(1)
+        .and not_change { success_counter.get(runner_type: 'project_type') }
+        .and not_change { failure_counter.get }
+    end
+
+    it 'increments gitlab_ci_runner_authentication_failure_total' do
+      allow(helper).to receive(:params).and_return(token: 'invalid')
+
+      success_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_success_counter
+      failure_counter = ::Gitlab::Ci::Runner::Metrics.runner_authentication_failure_counter
+      expect { subject }.to change { failure_counter.get }.by(1)
+        .and not_change { success_counter.get(runner_type: 'instance_type') }
+        .and not_change { success_counter.get(runner_type: 'project_type') }
+    end
+  end
 end

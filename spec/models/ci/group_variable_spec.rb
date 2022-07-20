@@ -56,4 +56,10 @@ RSpec.describe Ci::GroupVariable do
 
     let!(:parent) { model.group }
   end
+
+  describe '#audit_details' do
+    it "equals to the group variable's key" do
+      expect(subject.audit_details).to eq(subject.key)
+    end
+  end
 end

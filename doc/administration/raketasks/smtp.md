@@ -55,7 +55,7 @@ bundle exec rake gitlab:smtp:secret:edit RAILS_ENV=production EDITOR=vim
 
 ### Write raw secret
 
-Write new secret content by providing it on STDIN.
+Write new secret content by providing it on `STDIN`.
 
 **Omnibus Installation**
 

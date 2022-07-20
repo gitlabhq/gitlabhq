@@ -18,7 +18,7 @@ module Gitlab
         # SAST and Secret Detection are always available, but this isn't
         # reflected by our license model yet.
         # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/333113
-        %i[sast sast_iac secret_detection].include?(type)
+        %i[sast sast_iac secret_detection container_scanning].include?(type)
       end
 
       def can_enable_by_merge_request?

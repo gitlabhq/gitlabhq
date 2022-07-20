@@ -45,7 +45,7 @@ docker run --name gitlab_saml -p 8080:8080 -p 8443:8443 \
 -d jamedjo/test-saml-idp
 ```
 
-The following will also need to go in your `/etc/gitlab/gitlab.rb`. See [our SAML docs](../../integration/saml.md)
+The following must also go in your `/etc/gitlab/gitlab.rb`. See [our SAML docs](../../integration/saml.md)
 for more, as well as the list of [default usernames, passwords, and emails](https://hub.docker.com/r/jamedjo/test-saml-idp/#usage).
 
 ```ruby

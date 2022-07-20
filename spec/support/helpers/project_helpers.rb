@@ -13,7 +13,7 @@ module ProjectHelpers
     when :admin
       create(:user, :admin, name: 'admin')
     else
-      create(:user, name: membership).tap { |u| target.add_user(u, membership) }
+      create(:user, name: membership).tap { |u| target.add_member(u, membership) }
     end
   end
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::StageMethods do
   let_it_be(:project) { create(:project, :import_started, import_url: 'https://t0ken@github.com/repo/repo.git') }
+  let_it_be(:project2) { create(:project, :import_canceled) }
 
   let(:worker) do
     Class.new do
@@ -20,6 +21,37 @@ RSpec.describe Gitlab::GithubImport::StageMethods do
       expect(worker).not_to receive(:try_import)
 
       worker.perform(-1)
+    end
+
+    it 'returns if the import state is canceled' do
+      allow(worker)
+        .to receive(:find_project)
+        .with(project2.id)
+        .and_return(project2)
+
+      expect(worker).not_to receive(:try_import)
+
+      expect(Gitlab::GithubImport::Logger)
+          .to receive(:info)
+          .with(
+            {
+              message: 'starting stage',
+              project_id: project2.id,
+              import_stage: 'DummyStage'
+            }
+          )
+
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          {
+            message: 'project import canceled',
+            project_id: project2.id,
+            import_stage: 'DummyStage'
+          }
+        )
+
+      worker.perform(project2.id)
     end
 
     it 'imports the data when the project exists' do

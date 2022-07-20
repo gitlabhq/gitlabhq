@@ -68,4 +68,4 @@ changes are added to the repository and branch you're merging into.
 
 ## Removing a fork relationship
 
-You can unlink your fork from its upstream project in the [advanced settings](../settings/index.md#removing-a-fork-relationship).
+You can unlink your fork from its upstream project in the [advanced settings](../settings/index.md#remove-a-fork-relationship).

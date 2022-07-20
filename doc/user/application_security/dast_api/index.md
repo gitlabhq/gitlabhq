@@ -808,6 +808,9 @@ Optionally:
 
 - `DAST_API_PRE_SCRIPT`: Script to install runtimes or dependencies before the scan starts.
 
+WARNING:
+To execute scripts in Alpine Linux you must first use the command [`chmod`](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) to set the [execution permission](https://www.gnu.org/software/coreutils/manual/html_node/Setting-Permissions.html). For example, to set the execution permission of `script.py` for everyone, use the command: `chmod a+x script.py`. If needed, you can version your `script.py` with the execution permission already set.
+
 ```yaml
 stages:
   - dast
@@ -856,7 +859,9 @@ import requests
 import backoff
 
 # [1] Store log file in directory indicated by env var CI_PROJECT_DIR
-working_directory = os.environ['CI_PROJECT_DIR']
+working_directory = os.environ.get( 'CI_PROJECT_DIR')
+overrides_file_name = os.environ.get('DAST_API_OVERRIDES_FILE', 'dast-api-overrides.json')
+overrides_file_path = os.path.join(working_directory, overrides_file_name)
 
 # [2] File name should match the pattern: gl-*.log
 log_file_path = os.path.join(working_directory, 'gl-user-overrides.log')
@@ -870,7 +875,11 @@ logging.basicConfig(filename=log_file_path, level=logging.DEBUG)
                        requests.exceptions.ConnectionError),
                        max_time=30)
 def get_auth_response():
-    return requests.get('https://authorization.service/api/get_api_token', auth=(os.environ['AUTH_USER'], os.environ['AUTH_PWD']))
+    authorization_url = 'https://authorization.service/api/get_api_token'
+    return requests.get(
+        f'{authorization_url}',
+        auth=(os.environ.get('AUTH_USER'), os.environ.get('AUTH_PWD'))
+    )
 
 # In our example, access token is retrieved from a given endpoint
 try:
@@ -892,13 +901,13 @@ try:
 # requests.ReadTimeout                      : The server did not send any data in the allotted amount of time.
 # requests.TooManyRedirects                 : The request exceeds the configured number of maximum redirections
 # requests.exceptions.RequestException      : All exceptions that related to Requests
+except json.JSONDecodeError as json_decode_error:
+    # logs errors related decoding JSON response
+    logging.error(f'Error, failed while decoding JSON response. Error message: {json_decode_error}')
+    raise
 except requests.exceptions.RequestException as requests_error:
     # logs  exceptions  related to `Requests`
     logging.error(f'Error, failed while performing HTTP request. Error message: {requests_error}')
-    raise
-except requests.exceptions.JSONDecodeError as json_decode_error:
-    # logs errors related decoding JSON response
-    logging.error(f'Error, failed while decoding JSON response. Error message: {json_decode_error}')
     raise
 except Exception as e:
     # logs any other error
@@ -914,9 +923,6 @@ overrides_data = {
 }
 
 # log entry informing about the file override computation
-# the location of the overrides json file is also CI_PROJECT_DIR
-overrides_file_path = os.path.join(
-    working_directory, "dast-api-overrides.json")
 logging.info("Creating overrides file: %s" % overrides_file_path)
 
 # attempts to overwrite the file
@@ -929,7 +935,7 @@ try:
         fd.write(json.dumps(overrides_data).encode('utf-8'))
 except Exception as e:
     # logs any other error
-    logging.error(f'Error, unkown error when overwritng file {overrides_file_path}. Error message: {e}')
+    logging.error(f'Error, unknown error when overwriting file {overrides_file_path}. Error message: {e}')
     raise
 
 # logs informing override has finished successfully

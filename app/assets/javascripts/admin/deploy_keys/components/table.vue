@@ -35,8 +35,12 @@ export default {
       label: __('Title'),
     },
     {
+      key: 'fingerprint_sha256',
+      label: __('Fingerprint (SHA256)'),
+    },
+    {
       key: 'fingerprint',
-      label: __('Fingerprint'),
+      label: __('Fingerprint (MD5)'),
     },
     {
       key: 'projects',
@@ -130,10 +134,18 @@ export default {
         }
 
         this.items = items.map(
-          ({ id, title, fingerprint, projects_with_write_access, created_at }) => ({
+          ({
             id,
             title,
             fingerprint,
+            fingerprint_sha256,
+            projects_with_write_access,
+            created_at,
+          }) => ({
+            id,
+            title,
+            fingerprint,
+            fingerprint_sha256,
             projects: projects_with_write_access,
             created: created_at,
           }),
@@ -196,8 +208,12 @@ export default {
           >
         </template>
 
+        <template #cell(fingerprint_sha256)="{ item: { fingerprint_sha256 } }">
+          <span v-if="fingerprint_sha256" class="monospace">{{ fingerprint_sha256 }}</span>
+        </template>
+
         <template #cell(fingerprint)="{ item: { fingerprint } }">
-          <code>{{ fingerprint }}</code>
+          <span v-if="fingerprint" class="monospace">{{ fingerprint }}</span>
         </template>
 
         <template #cell(created)="{ item: { created } }">

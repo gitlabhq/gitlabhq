@@ -9,16 +9,21 @@ module API
 
     feature_category :integrations
 
+    helpers ::API::Helpers::WebHooksHelpers
+
     helpers do
-      params :project_hook_properties do
-        requires :url, type: String, desc: "The URL to send the request to"
+      def hook_scope
+        user_project.hooks
+      end
+
+      params :common_hook_parameters do
         optional :push_events, type: Boolean, desc: "Trigger hook on push events"
         optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
         optional :confidential_issues_events, type: Boolean, desc: "Trigger hook on confidential issues events"
         optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
         optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
-        optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
-        optional :confidential_note_events, type: Boolean, desc: "Trigger hook on confidential note(comment) events"
+        optional :note_events, type: Boolean, desc: "Trigger hook on note (comment) events"
+        optional :confidential_note_events, type: Boolean, desc: "Trigger hook on confidential note (comment) events"
         optional :job_events, type: Boolean, desc: "Trigger hook on job events"
         optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
         optional :wiki_page_events, type: Boolean, desc: "Trigger hook on wiki events"
@@ -27,6 +32,7 @@ module API
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
         optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
         optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
+        use :url_variables
       end
     end
 
@@ -34,6 +40,10 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      namespace ':id/hooks' do
+        mount ::API::Hooks::UrlVariables
+      end
+
       desc 'Get project hooks' do
         success Entities::ProjectHook
       end
@@ -59,43 +69,26 @@ module API
         success Entities::ProjectHook
       end
       params do
-        use :project_hook_properties
+        use :requires_url
+        use :common_hook_parameters
       end
       post ":id/hooks" do
-        hook_params = declared_params(include_missing: false)
-
+        hook_params = create_hook_params
         hook = user_project.hooks.new(hook_params)
 
-        if hook.save
-          present hook, with: Entities::ProjectHook
-        else
-          error!("Invalid url given", 422) if hook.errors[:url].present?
-          error!("Invalid branch filter given", 422) if hook.errors[:push_events_branch_filter].present?
-
-          not_found!("Project hook #{hook.errors.messages}")
-        end
+        save_hook(hook, Entities::ProjectHook)
       end
 
-      desc 'Update an existing project hook' do
+      desc 'Update an existing hook' do
         success Entities::ProjectHook
       end
       params do
         requires :hook_id, type: Integer, desc: "The ID of the hook to update"
-        use :project_hook_properties
+        use :optional_url
+        use :common_hook_parameters
       end
       put ":id/hooks/:hook_id" do
-        hook = user_project.hooks.find(params.delete(:hook_id))
-
-        update_params = declared_params(include_missing: false)
-
-        if hook.update(update_params)
-          present hook, with: Entities::ProjectHook
-        else
-          error!("Invalid url given", 422) if hook.errors[:url].present?
-          error!("Invalid branch filter given", 422) if hook.errors[:push_events_branch_filter].present?
-
-          not_found!("Project hook #{hook.errors.messages}")
-        end
+        update_hook(entity: Entities::ProjectHook)
       end
 
       desc 'Deletes project hook' do
@@ -105,7 +98,7 @@ module API
         requires :hook_id, type: Integer, desc: 'The ID of the hook to delete'
       end
       delete ":id/hooks/:hook_id" do
-        hook = user_project.hooks.find(params.delete(:hook_id))
+        hook = find_hook
 
         destroy_conditionally!(hook) do
           WebHooks::DestroyService.new(current_user).execute(hook)

@@ -223,7 +223,7 @@ These variables are injected into the pipeline jobs and can access the ECS API.
    |`AWS_SECRET_ACCESS_KEY`|`<Secret access key of the deployer>`| For authenticating `aws` CLI. |
    |`AWS_DEFAULT_REGION`|`us-east-2`| For authenticating `aws` CLI. |
    |`CI_AWS_ECS_CLUSTER`|`ecs-demo`| The ECS cluster is accessed by `production_ecs` job. |
-   |`CI_AWS_ECS_SERVICE`|`ecs_demo`| The ECS service of the cluster is updated by `production_ecs` job. |
+   |`CI_AWS_ECS_SERVICE`|`ecs_demo`| The ECS service of the cluster is updated by `production_ecs` job. Ensure that this variable is scoped to the appropriate environment (`production`, `staging`, `review/*`). |
    |`CI_AWS_ECS_TASK_DEFINITION`|`ecs_demo`| The ECS task definition is updated by `production_ecs` job. |
 
 ### Make a change to the demo application
@@ -245,6 +245,55 @@ Congratulations! You successfully set up continuous deployment to ECS.
 NOTE:
 ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
 set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
+
+## Set up Review Apps
+
+To use [Review Apps](../../../development/testing_guide/review_apps.md) with ECS:
+
+1. Set up a new [service](#create-an-ecs-service).
+1. Use the `CI_AWS_ECS_SERVICE` variable to set the name.
+1. Set the environment scope to `review/*`.
+
+Only one Review App at a time can be deployed because this service is shared by all review apps.
+
+## Set up Security Testing
+
+### Configure SAST
+
+To use [SAST](../../../user/application_security/sast/index.md) with ECS, add the following to your `.gitlab-ci.yml` file:
+
+```yaml
+include:
+   - template: Security/SAST.gitlab-ci.yml
+```
+
+For more details and configuration options, see the [SAST documentation](../../../user/application_security/sast/index.md#configuration).
+
+### Configure DAST
+
+To use [DAST](../../../user/application_security/dast/index.md) on non-default branches, [set up review apps](#set-up-review-apps)
+and add the following to your `.gitlab-ci.yml` file:
+
+```yaml
+include:
+  - template: Security/DAST.gitlab-ci.yml
+```
+
+To use DAST on the default branch:
+
+1. Set up a new [service](#create-an-ecs-service). This service will be used to deploy a temporary
+DAST environment.
+1. Use the `CI_AWS_ECS_SERVICE` variable to set the name.
+1. Set the scope to the `dast-default` environment.
+1. Add the following to your `.gitlab-ci.yml` file:
+
+```yaml
+include:
+  - template: Security/DAST.gitlab-ci.yml
+  - template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
+```
+
+For more details and configuration options, see the [DAST documentation](../../../user/application_security/dast/index.md).
 
 ## Further reading
 

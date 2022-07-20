@@ -81,6 +81,8 @@ module Git
       branch_update_hooks if updating_branch?
       branch_change_hooks if creating_branch? || updating_branch?
       branch_remove_hooks if removing_branch?
+
+      track_process_commit_limit_overflow
     end
 
     def branch_create_hooks
@@ -121,6 +123,12 @@ module Git
           'o_pipeline_authoring_unique_users_committing_ciconfigfile', values: commit.author&.id
         )
       end
+    end
+
+    def track_process_commit_limit_overflow
+      return if threshold_commits.count <= PROCESS_COMMIT_LIMIT
+
+      Gitlab::Metrics.add_event(:process_commit_limit_overflow)
     end
 
     # Schedules processing of commit messages

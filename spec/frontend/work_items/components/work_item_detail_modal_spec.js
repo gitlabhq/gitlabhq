@@ -66,6 +66,7 @@ describe('WorkItemDetailModal component', () => {
     createComponent();
 
     expect(findWorkItemDetail().props()).toEqual({
+      isModal: true,
       workItemId: '1',
       workItemParentId: '2',
     });
@@ -96,6 +97,15 @@ describe('WorkItemDetailModal component', () => {
     findModal().vm.$emit('hide');
 
     expect(wrapper.emitted('close')).toBeTruthy();
+  });
+
+  it('hides the modal when WorkItemDetail emits `close` event', () => {
+    createComponent();
+    const closeSpy = jest.spyOn(wrapper.vm.$refs.modal, 'hide');
+
+    findWorkItemDetail().vm.$emit('close');
+
+    expect(closeSpy).toHaveBeenCalled();
   });
 
   describe('delete work item', () => {

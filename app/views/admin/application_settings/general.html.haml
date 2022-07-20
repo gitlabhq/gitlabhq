@@ -4,18 +4,18 @@
 
 %section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Visibility and access controls')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Set default and restrict visibility levels. Configure import sources and git access protocol.')
+      = _('Set visibility of project contents. Configure import sources and Git access protocols.')
   .settings-content
     = render 'visibility_and_access'
 
 %section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'account_and_limit_settings_content' } }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Account and limit')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -26,7 +26,7 @@
 
 %section.settings.as-diff-limits.no-animate#js-merge-request-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Diff limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -37,7 +37,7 @@
 
 %section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'sign_up_restrictions_settings_content' } }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Sign-up restrictions')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -48,7 +48,7 @@
 
 %section.settings.as-signin.no-animate#js-signin-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Sign-in restrictions')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -60,7 +60,7 @@
 
 %section.settings.as-terms.no-animate#js-terms-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Terms of Service and Privacy Policy')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -74,7 +74,7 @@
 
 %section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Web terminal')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -86,7 +86,7 @@
 
 %section.settings.no-animate#js-web-ide-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Web IDE')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -94,7 +94,7 @@
       = _('Manage Web IDE features.')
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: "js-web-ide-settings"), html: { class: 'fieldset-form', id: 'web-ide-settings' } do |f|
-      = form_errors(@application_setting)
+      = form_errors(@application_setting, pajamas_alert: true)
 
       %fieldset
         .form-group
@@ -113,8 +113,11 @@
 = render_if_exists 'admin/application_settings/slack'
 -# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417
 = render_if_exists 'admin/application_settings/dingtalk_integration'
+-# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/640
+= render_if_exists 'admin/application_settings/feishu_integration'
 = render 'admin/application_settings/third_party_offers'
 = render 'admin/application_settings/snowplow'
+= render 'admin/application_settings/error_tracking' if Feature.enabled?(:gitlab_error_tracking)
 = render 'admin/application_settings/eks'
 = render 'admin/application_settings/floc'
 = render_if_exists 'admin/application_settings/add_license'

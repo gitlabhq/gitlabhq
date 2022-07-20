@@ -19,7 +19,7 @@ Before you begin:
 - [Install Git on your local machine](../topics/git/how_to_install_git/index.md).
 - Ensure you can sign in to an instance of GitLab. If your organization doesn't
   have GitLab, create an account on GitLab.com.
-- [Create SSH keys and add them to GitLab](../ssh/index.md). SSH keys are how you
+- [Create SSH keys and add them to GitLab](../user/ssh.md). SSH keys are how you
   securely communicate between your computer and GitLab.
 
 ## What is Git?

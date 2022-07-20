@@ -117,7 +117,7 @@ dashboard is visible to authenticated and non-authenticated users.
 
 ## Adding custom metrics
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28527) from GitLab Premium to GitLab Free in 12.10.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28527) from GitLab Premium to GitLab Free in 12.10.
 
 Custom metrics can be monitored by adding them on the monitoring dashboard page.
 After saving them, they display on the environment metrics dashboard provided that either:

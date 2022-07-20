@@ -81,7 +81,7 @@ export default {
 </script>
 
 <template>
-  <settings-block :collapsible="false">
+  <settings-block data-testid="container-expiration-policy-project-settings">
     <template #title> {{ $options.i18n.CONTAINER_CLEANUP_POLICY_TITLE }}</template>
     <template #description>
       <span>

@@ -112,3 +112,12 @@ job that returned the error:
 
 1. Configure the [CI/CD environment scope](../../../ci/variables/#add-a-cicd-variable-to-a-project) for the job.
 1. Set the job's [environment](../../../ci/yaml/#environment), matching the environment scope from the previous step.
+
+### Error refreshing state: HTTP remote state endpoint requires auth
+
+To resolve this, ensure that:
+
+- The access token you use has `api` scope.
+- If you have set the `TF_HTTP_PASSWORD` CI/CD variable, make sure that you either:
+  - Set the same value as `TF_PASSWORD`
+  - Remove `TF_HTTP_PASSWORD` variable if your CI/CD job does not explicitly use it.

@@ -4,8 +4,21 @@ require 'asana'
 
 module Integrations
   class Asana < Integration
-    prop_accessor :api_key, :restrict_to_branch
     validates :api_key, presence: true, if: :activated?
+
+    field :api_key,
+      type: 'password',
+      title: 'API key',
+      help: -> { s_('AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user.') },
+      non_empty_password_title: -> { s_('ProjectService|Enter new API key') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current API key.') },
+      # Example Personal Access Token from Asana docs
+      placeholder: '0/68a9e79b868c6789e79a124c30b0',
+      required: true
+
+    field :restrict_to_branch,
+      title: -> { s_('Integrations|Restrict to branch (optional)') },
+      help: -> { s_('AsanaService|Comma-separated list of branches to be automatically inspected. Leave blank to include all branches.') }
 
     def title
       'Asana'
@@ -22,28 +35,6 @@ module Integrations
 
     def self.to_param
       'asana'
-    end
-
-    def fields
-      [
-        {
-          type: 'password',
-          name: 'api_key',
-          title: 'API key',
-          help: s_('AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user.'),
-          non_empty_password_title: s_('ProjectService|Enter new API key'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current API key.'),
-          # Example Personal Access Token from Asana docs
-          placeholder: '0/68a9e79b868c6789e79a124c30b0',
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'restrict_to_branch',
-          title: 'Restrict to branch (optional)',
-          help: s_('AsanaService|Comma-separated list of branches to be automatically inspected. Leave blank to include all branches.')
-        }
-      ]
     end
 
     def self.supported_events

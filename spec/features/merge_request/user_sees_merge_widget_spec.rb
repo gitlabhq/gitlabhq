@@ -591,14 +591,14 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
       context 'when a new failures exists' do
         let(:base_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
             reports.get_suite('junit').add_test_case(create_test_case_java_success)
           end
         end
 
         let(:head_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
             reports.get_suite('junit').add_test_case(create_test_case_java_failed)
           end
@@ -639,14 +639,14 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
       context 'when an existing failure exists' do
         let(:base_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_failed)
             reports.get_suite('junit').add_test_case(create_test_case_java_success)
           end
         end
 
         let(:head_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_failed)
             reports.get_suite('junit').add_test_case(create_test_case_java_success)
           end
@@ -686,14 +686,14 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
       context 'when a resolved failure exists' do
         let(:base_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
             reports.get_suite('junit').add_test_case(create_test_case_java_failed)
           end
         end
 
         let(:head_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
             reports.get_suite('junit').add_test_case(create_test_case_java_success)
           end
@@ -732,14 +732,14 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
       context 'when a new error exists' do
         let(:base_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
             reports.get_suite('junit').add_test_case(create_test_case_java_success)
           end
         end
 
         let(:head_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
             reports.get_suite('junit').add_test_case(create_test_case_java_error)
           end
@@ -779,14 +779,14 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
       context 'when an existing error exists' do
         let(:base_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_error)
             reports.get_suite('junit').add_test_case(create_test_case_java_success)
           end
         end
 
         let(:head_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_error)
             reports.get_suite('junit').add_test_case(create_test_case_java_success)
           end
@@ -825,14 +825,14 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
       context 'when a resolved error exists' do
         let(:base_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
             reports.get_suite('junit').add_test_case(create_test_case_java_error)
           end
         end
 
         let(:head_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
             reports.get_suite('junit').add_test_case(create_test_case_java_success)
           end
@@ -871,7 +871,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
       context 'properly truncates the report' do
         let(:base_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             10.times do |index|
               reports.get_suite('rspec').add_test_case(
                 create_test_case_rspec_failed(index))
@@ -882,7 +882,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
         end
 
         let(:head_reports) do
-          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+          Gitlab::Ci::Reports::TestReport.new.tap do |reports|
             10.times do |index|
               reports.get_suite('rspec').add_test_case(
                 create_test_case_rspec_failed(index))

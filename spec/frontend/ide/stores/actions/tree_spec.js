@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import { createRouter } from '~/ide/ide_router';
@@ -24,6 +25,8 @@ describe('Multi-file store tree actions', () => {
   };
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     store = createStore();
     router = createRouter(store);
     jest.spyOn(router, 'push').mockImplementation();

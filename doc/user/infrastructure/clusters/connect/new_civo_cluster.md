@@ -64,7 +64,7 @@ Use CI/CD environment variables to configure your project.
 
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
-1. Set the variable `BASE64_CIVO_CREDENTIALS` to the [token](https://www.civo.com/account/security) from your Civo account.
+1. Set the variable `BASE64_CIVO_TOKEN` to the [token](https://www.civo.com/account/security) from your Civo account.
 1. Set the variable `TF_VAR_agent_token` to the agent token you received in the previous task.
 1. Set the variable `TF_VAR_kas_address` to the agent server address in the previous task.
 
@@ -78,8 +78,8 @@ contains other variables that you can override according to your needs:
 - `TF_VAR_civo_region`: Set your cluster's region.
 - `TF_VAR_cluster_name`: Set your cluster's name.
 - `TF_VAR_cluster_description`: Set a description for the cluster. To create a reference to your GitLab project on your Civo cluster detail page, set this value to `$CI_PROJECT_URL`. This value helps you determine which project was responsible for provisioning the cluster you see on the Civo dashboard.
-- `TF_VAR_machine_type`: Set the machine type for the Kubernetes nodes.
-- `TF_VAR_node_count`: Set the number of Kubernetes nodes.
+- `TF_VAR_target_nodes_size`: Set the size of the nodes to use for the cluster
+- `TF_VAR_num_target_nodes`: Set the number of Kubernetes nodes.
 - `TF_VAR_agent_version`: Set the version of the GitLab agent.
 - `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent.
 

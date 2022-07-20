@@ -5,7 +5,8 @@ module Gitlab
     module Deployment
       extend self
 
-      def build(deployment, status_changed_at)
+      # NOTE: Time-sensitive attributes should be explicitly passed as argument instead of reading from database.
+      def build(deployment, status, status_changed_at)
         # Deployments will not have a deployable when created using the API.
         deployable_url =
           if deployment.deployable
@@ -22,9 +23,13 @@ module Gitlab
             Gitlab::UrlBuilder.build(deployment.deployed_by)
           end
 
+        # `status` argument could be `nil` during the upgrade. We can remove `deployment.status` in GitLab 15.5.
+        # See https://docs.gitlab.com/ee/development/multi_version_compatibility.html for more info.
+        deployment_status = status || deployment.status
+
         {
           object_kind: 'deployment',
-          status: deployment.status,
+          status: deployment_status,
           status_changed_at: status_changed_at,
           deployment_id: deployment.id,
           deployable_id: deployment.deployable_id,

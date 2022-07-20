@@ -13,7 +13,7 @@ RSpec.describe Groups::VariablesController do
 
   before do
     sign_in(user)
-    group.add_user(user, access_level)
+    group.add_member(user, access_level)
   end
 
   describe 'GET #show' do

@@ -111,7 +111,7 @@ To change the worker timeout to 600 seconds:
 WARNING:
 This is an experimental [Alpha feature](../../policy/alpha-beta-support.md#alpha-features) and subject to change without notice. The feature
 is not ready for production use. If you want to use this feature, we recommend testing
-with non-production data first. See the [known issues](#puma-single-mode-known-issues)
+outside of production first. See the [known issues](#puma-single-mode-known-issues)
 for additional details.
 
 In a memory-constrained environment with less than 4GB of RAM available, consider disabling Puma
@@ -136,6 +136,10 @@ For details on Puma worker and thread settings, see the [Puma requirements](../.
 
 The downside of running Puma in this configuration is the reduced throughput, which can be
 considered a fair tradeoff in a memory-constrained environment.
+
+Remember to have sufficient swap available to avoid out of memory (OOM)
+conditions. View the [Memory requirements](../../install/requirements.md#memory)
+for details.
 
 ### Puma single mode known issues
 
@@ -278,6 +282,124 @@ To switch from Unicorn to Puma:
 
 1. Optional. For multi-node deployments, configure the load balancer to use the
    [readiness check](../load_balancer.md#readiness-check).
+
+## Troubleshooting Puma
+
+### 502 Gateway Timeout after Puma spins at 100% CPU
+
+This error occurs when the Web server times out (default: 60 s) after not
+hearing back from the Puma worker. If the CPU spins to 100% while this is in
+progress, there may be something taking longer than it should.
+
+To fix this issue, we first need to figure out what is happening. The
+following tips are only recommended if you do not mind users being affected by
+downtime. Otherwise, skip to the next section.
+
+1. Load the problematic URL
+1. Run `sudo gdb -p <PID>` to attach to the Puma process.
+1. In the GDB window, type:
+
+   ```plaintext
+   call (void) rb_backtrace()
+   ```
+
+1. This forces the process to generate a Ruby backtrace. Check
+   `/var/log/gitlab/puma/puma_stderr.log` for the backtrace. For example, you may see:
+
+   ```plaintext
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `block in start'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `loop'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:36:in `block (2 levels) in start'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:44:in `sample'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:68:in `sample_objects'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:68:in `each_with_object'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:68:in `each'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:69:in `block in sample_objects'
+   from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:69:in `name'
+   ```
+
+1. To see the current threads, run:
+
+   ```plaintext
+   thread apply all bt
+   ```
+
+1. Once you're done debugging with `gdb`, be sure to detach from the process and exit:
+
+   ```plaintext
+   detach
+   exit
+   ```
+
+GDB reports an error if the Puma process terminates before you can run these commands.
+To buy more time, you can always raise the
+Puma worker timeout. For omnibus users, you can edit `/etc/gitlab/gitlab.rb` and
+increase it from 60 seconds to 600:
+
+```ruby
+gitlab_rails['env'] = {
+        'GITLAB_RAILS_RACK_TIMEOUT' => 600
+}
+```
+
+For source installations, set the environment variable.
+Refer to [Puma Worker timeout](../operations/puma.md#change-the-worker-timeout).
+
+[Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
+
+#### Troubleshooting without affecting other users
+
+The previous section attached to a running Puma process, which may have
+undesirable effects on users trying to access GitLab during this time. If you
+are concerned about affecting others during a production system, you can run a
+separate Rails process to debug the issue:
+
+1. Log in to your GitLab account.
+1. Copy the URL that is causing problems (for example, `https://gitlab.com/ABC`).
+1. Create a Personal Access Token for your user (User Settings -> Access Tokens).
+1. Bring up the [GitLab Rails console.](../operations/rails_console.md#starting-a-rails-console-session)
+1. At the Rails console, run:
+
+   ```ruby
+   app.get '<URL FROM STEP 2>/?private_token=<TOKEN FROM STEP 3>'
+   ```
+
+   For example:
+
+   ```ruby
+   app.get 'https://gitlab.com/gitlab-org/gitlab-foss/-/issues/1?private_token=123456'
+   ```
+
+1. In a new window, run `top`. It should show this Ruby process using 100% CPU. Write down the PID.
+1. Follow step 2 from the previous section on using GDB.
+
+### GitLab: API is not accessible
+
+This often occurs when GitLab Shell attempts to request authorization via the
+[internal API](../../development/internal_api/index.md) (for example, `http://localhost:8080/api/v4/internal/allowed`), and
+something in the check fails. There are many reasons why this may happen:
+
+1. Timeout connecting to a database (for example, PostgreSQL or Redis)
+1. Error in Git hooks or push rules
+1. Error accessing the repository (for example, stale NFS handles)
+
+To diagnose this problem, try to reproduce the problem and then see if there
+is a Puma worker that is spinning via `top`. Try to use the `gdb`
+techniques above. In addition, using `strace` may help isolate issues:
+
+```shell
+strace -ttTfyyy -s 1024 -p <PID of puma worker> -o /tmp/puma.txt
+```
+
+If you cannot isolate which Puma worker is the issue, try to run `strace`
+on all the Puma workers to see where the
+[`/internal/allowed`](../../development/internal_api/index.md) endpoint gets stuck:
+
+```shell
+ps auwx | grep puma | awk '{ print " -p " $2}' | xargs  strace -ttTfyyy -s 1024 -o /tmp/puma.txt
+```
+
+The output in `/tmp/puma.txt` may help diagnose the root cause.
 
 ## Related topics
 

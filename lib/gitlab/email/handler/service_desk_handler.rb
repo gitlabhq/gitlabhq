@@ -98,7 +98,10 @@ module Gitlab
               title: mail.subject,
               description: message_including_template,
               confidential: true,
-              external_author: from_address
+              external_author: from_address,
+              extra_params: {
+                cc: mail.cc
+              }
             },
             spam_params: nil
           ).execute

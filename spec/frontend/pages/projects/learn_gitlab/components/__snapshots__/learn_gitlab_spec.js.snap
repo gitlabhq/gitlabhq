@@ -85,8 +85,6 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <!---->
-             
             <div
               class="flex align-items-center"
             >
@@ -105,7 +103,8 @@ exports[`Learn GitLab renders correctly 1`] = `
                 </svg>
                 
       Invite your colleagues
-    
+      
+                <!---->
               </span>
                
               <!---->
@@ -114,8 +113,6 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <!---->
-             
             <div
               class="flex align-items-center"
             >
@@ -133,8 +130,9 @@ exports[`Learn GitLab renders correctly 1`] = `
                   />
                 </svg>
                 
-      Create or import a repository
-    
+      Create a repository
+      
+                <!---->
               </span>
                
               <!---->
@@ -143,48 +141,23 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <!---->
-             
             <div
               class="flex align-items-center"
             >
-              <a
-                class="gl-link"
-                data-testid="uncompleted-learn-gitlab-link"
-                data-track-action="click_link"
-                data-track-label="Set up CI/CD"
-                href="http://example.com/"
-                target="_self"
-              >
-                
-      Set up CI/CD
-    
-              </a>
-               
-              <!---->
-            </div>
-          </div>
-          <div
-            class="gl-mb-4"
-          >
-            <!---->
-             
-            <div
-              class="flex align-items-center"
-            >
-              <a
-                class="gl-link"
-                data-testid="uncompleted-learn-gitlab-link"
-                data-track-action="click_link"
-                data-track-label="Start a free Ultimate trial"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Start a free Ultimate trial
-    
-              </a>
+              <div>
+                <a
+                  class="gl-link"
+                  data-testid="uncompleted-learn-gitlab-link"
+                  data-track-action="click_link"
+                  data-track-label="set_up_your_first_project_s_ci_cd"
+                  href="http://example.com/"
+                  target="_self"
+                >
+                  Set up your first project's CI/CD
+                </a>
+                 
+                <!---->
+              </div>
                
               <!---->
             </div>
@@ -193,30 +166,23 @@ exports[`Learn GitLab renders correctly 1`] = `
             class="gl-mb-4"
           >
             <div
-              class="gl-font-style-italic gl-text-gray-500"
-              data-testid="trial-only"
-            >
-              
-    Trial only
-  
-            </div>
-             
-            <div
               class="flex align-items-center"
             >
-              <a
-                class="gl-link"
-                data-testid="uncompleted-learn-gitlab-link"
-                data-track-action="click_link"
-                data-track-label="Add code owners"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Add code owners
-    
-              </a>
+              <div>
+                <a
+                  class="gl-link"
+                  data-testid="uncompleted-learn-gitlab-link"
+                  data-track-action="click_link"
+                  data-track-label="start_a_free_trial_of_gitlab_ultimate"
+                  href="http://example.com/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Start a free trial of GitLab Ultimate
+                </a>
+                 
+                <!---->
+              </div>
                
               <!---->
             </div>
@@ -225,30 +191,62 @@ exports[`Learn GitLab renders correctly 1`] = `
             class="gl-mb-4"
           >
             <div
-              class="gl-font-style-italic gl-text-gray-500"
-              data-testid="trial-only"
+              class="flex align-items-center"
             >
-              
-    Trial only
-  
+              <div>
+                <a
+                  class="gl-link"
+                  data-testid="uncompleted-learn-gitlab-link"
+                  data-track-action="click_link"
+                  data-track-label="add_code_owners"
+                  href="http://example.com/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Add code owners
+                </a>
+                 
+                <span
+                  class="gl-font-style-italic gl-text-gray-500"
+                  data-testid="trial-only"
+                >
+                  
+  - Included in trial
+
+                </span>
+              </div>
+               
+              <!---->
             </div>
-             
+          </div>
+          <div
+            class="gl-mb-4"
+          >
             <div
               class="flex align-items-center"
             >
-              <a
-                class="gl-link"
-                data-testid="uncompleted-learn-gitlab-link"
-                data-track-action="click_link"
-                data-track-label="Add merge request approval"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Add merge request approval
-    
-              </a>
+              <div>
+                <a
+                  class="gl-link"
+                  data-testid="uncompleted-learn-gitlab-link"
+                  data-track-action="click_link"
+                  data-track-label="enable_require_merge_approvals"
+                  href="http://example.com/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Enable require merge approvals
+                </a>
+                 
+                <span
+                  class="gl-font-style-italic gl-text-gray-500"
+                  data-testid="trial-only"
+                >
+                  
+  - Included in trial
+
+                </span>
+              </div>
                
               <!---->
             </div>
@@ -290,23 +288,23 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <!---->
-             
             <div
               class="flex align-items-center"
             >
-              <a
-                class="gl-link"
-                data-testid="uncompleted-learn-gitlab-link"
-                data-track-action="click_link"
-                data-track-label="Create an issue"
-                href="http://example.com/"
-                target="_self"
-              >
-                
-      Create an issue
-    
-              </a>
+              <div>
+                <a
+                  class="gl-link"
+                  data-testid="uncompleted-learn-gitlab-link"
+                  data-track-action="click_link"
+                  data-track-label="create_an_issue"
+                  href="http://example.com/"
+                  target="_self"
+                >
+                  Create an issue
+                </a>
+                 
+                <!---->
+              </div>
                
               <!---->
             </div>
@@ -314,23 +312,23 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <!---->
-             
             <div
               class="flex align-items-center"
             >
-              <a
-                class="gl-link"
-                data-testid="uncompleted-learn-gitlab-link"
-                data-track-action="click_link"
-                data-track-label="Submit a merge request"
-                href="http://example.com/"
-                target="_self"
-              >
-                
-      Submit a merge request
-    
-              </a>
+              <div>
+                <a
+                  class="gl-link"
+                  data-testid="uncompleted-learn-gitlab-link"
+                  data-track-action="click_link"
+                  data-track-label="submit_a_merge_request_mr"
+                  href="http://example.com/"
+                  target="_self"
+                >
+                  Submit a merge request (MR)
+                </a>
+                 
+                <!---->
+              </div>
                
               <!---->
             </div>
@@ -372,24 +370,24 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <!---->
-             
             <div
               class="flex align-items-center"
             >
-              <a
-                class="gl-link"
-                data-testid="uncompleted-learn-gitlab-link"
-                data-track-action="click_link"
-                data-track-label="Run a Security scan using CI/CD"
-                href="https://docs.gitlab.com/ee/foobar/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Run a Security scan using CI/CD
-    
-              </a>
+              <div>
+                <a
+                  class="gl-link"
+                  data-testid="uncompleted-learn-gitlab-link"
+                  data-track-action="click_link"
+                  data-track-label="run_a_security_scan_using_ci_cd"
+                  href="https://docs.gitlab.com/ee/foobar/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Run a Security scan using CI/CD
+                </a>
+                 
+                <!---->
+              </div>
                
               <!---->
             </div>

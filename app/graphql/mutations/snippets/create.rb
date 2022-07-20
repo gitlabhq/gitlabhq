@@ -54,7 +54,7 @@ module Mutations
 
         # Only when the user is not an api user and the operation was successful
         if !api_user? && service_response.success?
-          ::Gitlab::UsageDataCounters::EditorUniqueCounter.track_snippet_editor_edit_action(author: current_user)
+          ::Gitlab::UsageDataCounters::EditorUniqueCounter.track_snippet_editor_edit_action(author: current_user, project: project)
         end
 
         snippet = service_response.payload[:snippet]

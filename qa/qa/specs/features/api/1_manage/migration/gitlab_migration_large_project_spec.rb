@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
+# Lifesize project import test executed from https://gitlab.com/gitlab-org/manage/import/import-metrics
+
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
-  RSpec.describe "Manage", requires_admin: 'uses admin API client for resource creation',
-                           feature_flag: { name: 'bulk_import_projects', scope: :global },
-                           only: { job: 'large-gitlab-import' } do
+  RSpec.describe "Manage", requires_admin: 'creates users', only: { job: 'large-gitlab-import' } do
     describe "Gitlab migration" do
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
       let(:gitlab_group) { ENV['QA_LARGE_IMPORT_GROUP'] || 'gitlab-migration' }
       let(:gitlab_project) { ENV['QA_LARGE_IMPORT_REPO'] || 'dri' }
-      let(:gitlab_source_address) { 'https://staging.gitlab.com' }
+      let(:gitlab_source_address) { ENV['QA_LARGE_IMPORT_SOURCE_URL'] || 'https://staging.gitlab.com' }
 
       let(:import_wait_duration) do
         {
@@ -99,8 +99,6 @@ module QA
       let(:issues) { fetch_issues(imported_project, target_api_client) }
 
       before do
-        Runtime::Feature.enable(:bulk_import_projects)
-
         destination_group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
       end
 
@@ -114,6 +112,7 @@ module QA
           {
             importer: :gitlab,
             import_time: @import_time,
+            errors: imported_group.import_details.sum([]) { |details| details[:failures] },
             source: {
               name: "GitLab Source",
               project_name: source_project.path_with_namespace,
@@ -146,7 +145,7 @@ module QA
                 issue_comments: issues.sum { |_k, v| v[:comments].length }
               }
             },
-            not_imported: {
+            diff: {
               mrs: @mr_diff,
               issues: @issue_diff
             }
@@ -256,11 +255,12 @@ module QA
         count_msg = "Expected to contain same amount of #{type}s. Source: #{expected.length}, Target: #{actual.length}"
         expect(actual.length).to eq(expected.length), count_msg
 
-        missing_comments = verify_comments(type, actual, expected)
+        comment_diff = verify_comments(type, actual, expected)
 
         {
-          "#{type}s": (expected.keys - actual.keys).map { |it| actual[it]&.slice(:title, :url) }.compact,
-          "#{type}_comments": missing_comments
+          "missing_#{type}s": (expected.keys - actual.keys).map { |it| actual[it]&.slice(:title, :url) }.compact,
+          "extra_#{type}s": (actual.keys - expected.keys).map { |it| expected[it]&.slice(:title, :url) }.compact,
+          "#{type}_comments": comment_diff
         }
       end
 
@@ -271,7 +271,7 @@ module QA
       # @param [Hash] expected
       # @return [Hash]
       def verify_comments(type, actual, expected)
-        actual.each_with_object([]) do |(key, actual_item), missing_comments|
+        actual.each_with_object([]) do |(key, actual_item), diff|
           expected_item = expected[key]
           title = actual_item[:title]
           msg = "expected #{type} with title '#{title}' to have"
@@ -305,16 +305,18 @@ module QA
           expect(actual_comments.length).to eq(expected_comments.length), comment_count_msg
           expect(actual_comments).to match_array(expected_comments)
 
-          # Save missing comments
+          # Save comment diff
           #
-          comment_diff = expected_comments - actual_comments
-          next if comment_diff.empty?
+          missing_comments = expected_comments - actual_comments
+          extra_comments = actual_comments - expected_comments
+          next if missing_comments.empty? && extra_comments.empty?
 
-          missing_comments << {
+          diff << {
             title: title,
             target_url: actual_item[:url],
             source_url: expected_item[:url],
-            missing_comments: comment_diff
+            missing_comments: missing_comments,
+            extra_comments: extra_comments
           }
         end
       end
@@ -379,10 +381,17 @@ module QA
       #
       # @return [Regex]
       def created_by_pattern
-        @created_by_pattern ||= /\n\n \*By gitlab-migration on \S+ \(imported from GitLab\)\*/
+        @created_by_pattern ||= /\n\n \*By #{importer_username_pattern} on \S+ \(imported from GitLab\)\*/
       end
 
-      # Remove added prefixes and legacy diff format from comments
+      # Username of importer user for removal from comments and descriptions
+      #
+      # @return [String]
+      def importer_username_pattern
+        @importer_username_pattern ||= ENV['QA_LARGE_IMPORT_USER_PATTERN'] || "(gitlab-migration|GitLab QA Bot)"
+      end
+
+      # Remove added prefixes from comments
       #
       # @param [String] body
       # @return [String]

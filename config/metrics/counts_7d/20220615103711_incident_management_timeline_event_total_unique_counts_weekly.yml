@@ -4,7 +4,7 @@ name: count_unique_users_interacting_with_timeline_events_weekly
 description: Counts unique users for timeline events create, edit and delete events per month
 product_section: ops
 product_stage: monitor
-product_group: group::respond
+product_group: respond
 product_category: incident_management
 value_type: number
 status: active

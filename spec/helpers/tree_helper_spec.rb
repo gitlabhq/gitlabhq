@@ -3,62 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe TreeHelper do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:sha) { 'c1c67abbaf91f624347bb3ae96eabe3a1b742478' }
 
   let_it_be(:user) { create(:user) }
-
-  def create_file(filename)
-    project.repository.create_file(
-      project.creator,
-      filename,
-      'test this',
-      message: "Automatically created file #{filename}",
-      branch_name: 'master'
-    )
-  end
-
-  describe 'flatten_tree' do
-    let(:tree) { repository.tree(sha, 'files') }
-    let(:root_path) { 'files' }
-    let(:tree_item) { tree.entries.find { |entry| entry.path == path } }
-
-    subject { flatten_tree(root_path, tree_item) }
-
-    context "on a directory containing more than one file/directory" do
-      let(:path) { 'files/html' }
-
-      it "returns the directory name" do
-        expect(subject).to match('html')
-      end
-    end
-
-    context "on a directory containing only one directory" do
-      let(:path) { 'files/flat' }
-
-      it "returns the flattened path" do
-        expect(subject).to match('flat/path/correct')
-      end
-
-      context "with a nested root path" do
-        let(:root_path) { 'files/flat' }
-
-        it "returns the flattened path with the root path suffix removed" do
-          expect(subject).to match('path/correct')
-        end
-      end
-    end
-
-    context 'when the root path contains a plus character' do
-      let(:root_path) { 'gtk/C++' }
-      let(:tree_item) { double(flat_path: 'gtk/C++/glade') }
-
-      it 'returns the flattened path' do
-        expect(subject).to eq('glade')
-      end
-    end
-  end
 
   describe '#commit_in_single_accessible_branch' do
     it 'escapes HTML from the branch name' do
@@ -163,6 +112,7 @@ RSpec.describe TreeHelper do
     context 'user does not have write access but a personal fork exists' do
       include ProjectForksHelper
 
+      let(:project) { create(:project, :repository) }
       let(:forked_project) { create(:project, :repository, namespace: user.namespace) }
 
       before do

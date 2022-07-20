@@ -23,6 +23,7 @@ import initNotesApp from '~/notes';
 import { store } from '~/notes/stores';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
+import initLinkedResources from '~/linked_resources';
 import FilteredSearchServiceDesk from './filtered_search_service_desk';
 
 export function initFilteredSearchServiceDesk() {
@@ -59,6 +60,7 @@ export function initShow() {
   if (issueType === IssueType.Incident) {
     initIncidentApp({ ...issuableData, issuableId: el.dataset.issuableId });
     initHeaderActions(store, IssueType.Incident);
+    initLinkedResources();
     initRelatedIssues(IssueType.Incident);
   } else {
     initIssueApp(issuableData, store);

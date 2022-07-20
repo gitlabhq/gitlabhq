@@ -90,4 +90,27 @@ RSpec.describe 'User browses a job', :js do
       end
     end
   end
+
+  context 'job log search' do
+    before do
+      visit(project_job_path(project, build))
+      wait_for_all_requests
+    end
+
+    it 'searches for supplied substring' do
+      find('[data-testid="job-log-search-box"] input').set('GroupsHelper')
+
+      find('[data-testid="search-button"]').click
+
+      expect(page).to have_content('26 results found for GroupsHelper')
+    end
+
+    it 'shows no results for supplied substring' do
+      find('[data-testid="job-log-search-box"] input').set('YouWontFindMe')
+
+      find('[data-testid="search-button"]').click
+
+      expect(page).to have_content('No search results found')
+    end
+  end
 end

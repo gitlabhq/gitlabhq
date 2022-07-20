@@ -40,8 +40,14 @@ module QA
         sign_in(as: Runtime::User.admin, address: address, admin: true)
       end
 
-      def sign_in_unless_signed_in(as: nil, address: :gitlab)
-        sign_in(as: as, address: address) unless Page::Main::Menu.perform(&:signed_in?)
+      def sign_in_unless_signed_in(user: nil, address: :gitlab)
+        if user
+          sign_in(as: user, address: address) unless Page::Main::Menu.perform do |menu|
+            menu.signed_in_as_user?(user)
+          end
+        else
+          sign_in(address: address) unless Page::Main::Menu.perform(&:signed_in?)
+        end
       end
     end
   end

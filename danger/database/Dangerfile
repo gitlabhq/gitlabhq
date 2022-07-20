@@ -30,6 +30,12 @@ If you no longer require a database review, you can remove this suggestion
 by removing the ~database label and re-running the [`danger-review` job](#{ENV['CI_JOB_URL']}).
 MSG
 
+DB_MIGRATION_TESTING_REQUIRED_MESSAGE = <<~MSG
+1. If this is not a ~"Community contribution" or from a Fork, kick off the 
+   `db:gitlabcom-database-testing` manual job.
+
+MSG
+
 DATABASE_APPROVED_LABEL = 'database::approved'
 
 non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/structure\.sql}).empty?
@@ -58,9 +64,10 @@ if helper.mr_labels.include?('database') || db_paths_to_review.any?
     'review from the [Database team](https://gitlab.com/groups/gl-database/-/group_members).'
 
   markdown(DB_MESSAGE)
+  markdown(DB_MIGRATION_TESTING_REQUIRED_MESSAGE) if non_geo_migration_created
 
   if db_paths_to_review.any?
-    markdown(DB_FILES_MESSAGE + helper.markdown_list(db_paths_to_review))
+    markdown(DB_FILES_MESSAGE + helper.markdown_list(db_paths_to_review.to_set))
   else
     markdown(DB_REMOVE_MESSAGE)
   end

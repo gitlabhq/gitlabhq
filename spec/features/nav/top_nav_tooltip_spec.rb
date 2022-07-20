@@ -15,10 +15,10 @@ RSpec.describe 'top nav tooltips', :js do
 
     page.find(btn).hover
 
-    expect(page).to have_content('Create new')
+    expect(page).to have_content('Create new...')
 
     page.find(btn).click
 
-    expect(page).not_to have_content('Create new')
+    expect(page).not_to have_content('Create new...')
   end
 end

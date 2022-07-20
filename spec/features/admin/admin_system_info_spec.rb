@@ -24,7 +24,7 @@ RSpec.describe 'Admin System Info' do
         expect(page).to have_content 'CPU 2 cores'
         expect(page).to have_content 'Memory Usage 4 GB / 16 GB'
         expect(page).to have_content 'Disk Usage'
-        expect(page).to have_content 'Uptime'
+        expect(page).to have_content 'System started'
       end
     end
 
@@ -39,7 +39,7 @@ RSpec.describe 'Admin System Info' do
         expect(page).to have_content 'CPU Unable to collect CPU info'
         expect(page).to have_content 'Memory Usage 4 GB / 16 GB'
         expect(page).to have_content 'Disk Usage'
-        expect(page).to have_content 'Uptime'
+        expect(page).to have_content 'System started'
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe 'Admin System Info' do
         expect(page).to have_content 'CPU 2 cores'
         expect(page).to have_content 'Memory Usage Unable to collect memory info'
         expect(page).to have_content 'Disk Usage'
-        expect(page).to have_content 'Uptime'
+        expect(page).to have_content 'System started'
       end
     end
   end

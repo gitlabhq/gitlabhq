@@ -17,6 +17,12 @@ RSpec.describe API::ConanInstancePackages do
     let_it_be(:url) { '/packages/conan/v1/conans/search' }
 
     it_behaves_like 'conan search endpoint'
+
+    it_behaves_like 'conan FIPS mode' do
+      let(:params) { { q: package.conan_recipe } }
+
+      subject { get api(url), params: params }
+    end
   end
 
   describe 'GET /api/v4/packages/conan/v1/users/authenticate' do

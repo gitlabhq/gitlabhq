@@ -14,5 +14,10 @@ FactoryBot.define do
       issue_type { :task }
       association :work_item_type, :default, :task
     end
+
+    trait :incident do
+      issue_type { :incident }
+      association :work_item_type, :default, :incident
+    end
   end
 end

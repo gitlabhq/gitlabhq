@@ -4,17 +4,11 @@ query GetTimelineEvents($fullPath: ID!, $incidentId: IssueID!) {
     incidentManagementTimelineEvents(incidentId: $incidentId) {
       nodes {
         id
-        author {
-          id
-          name
-          username
-        }
         note
         noteHtml
         action
         occurredAt
         createdAt
-        updatedAt
       }
     }
   }

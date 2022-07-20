@@ -61,7 +61,7 @@ RSpec.describe 'getting the packages cleanup policy linked to a project' do
     with_them do
       before do
         project.update!(visibility: visibility.to_s)
-        project.add_user(current_user, role) unless role == :anonymous
+        project.add_member(current_user, role) unless role == :anonymous
       end
 
       it 'return the proper response' do

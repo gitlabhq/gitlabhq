@@ -11,7 +11,11 @@ RSpec.describe Projects::PipelineHelper do
   let_it_be(:pipeline) { Ci::PipelinePresenter.new(raw_pipeline, current_user: user)}
 
   describe '#js_pipeline_tabs_data' do
-    subject(:pipeline_tabs_data) { helper.js_pipeline_tabs_data(project, pipeline) }
+    before do
+      project.add_developer(user)
+    end
+
+    subject(:pipeline_tabs_data) { helper.js_pipeline_tabs_data(project, pipeline, user) }
 
     it 'returns pipeline tabs data' do
       expect(pipeline_tabs_data).to include({

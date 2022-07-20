@@ -47,7 +47,7 @@ module BulkImports
     end
 
     def non_patch_source_version
-      Gitlab::VersionInfo.new(source_version.major, source_version.minor, 0)
+      source_version.without_patch
     end
 
     def log_skipped_pipeline(pipeline, minimum_version, maximum_version)

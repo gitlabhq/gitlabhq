@@ -48,6 +48,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "ci-config-path": project.ci_config_path_or_default,
           "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
           "ci-help-page-path" => help_page_path('ci/index'),
+          "ci-lint-path" => project_ci_lint_path(project),
           "default-branch" => project.default_branch_or_main,
           "empty-state-illustration-path" => 'illustrations/empty.svg',
           "initial-branch-name" => nil,
@@ -62,6 +63,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/index'),
+          "simulate-pipeline-help-page-path" => help_page_path('ci/lint', anchor: 'simulate-a-pipeline'),
           "total-branches" => project.repository.branches.length,
           "validate-tab-illustration-path" => 'illustrations/validate.svg',
           "yml-help-page-path" => help_page_path('ci/yaml/index')
@@ -77,6 +79,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "ci-config-path": project.ci_config_path_or_default,
           "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
           "ci-help-page-path" => help_page_path('ci/index'),
+          "ci-lint-path" => project_ci_lint_path(project),
           "default-branch" => project.default_branch_or_main,
           "empty-state-illustration-path" => 'illustrations/empty.svg',
           "initial-branch-name" => nil,
@@ -91,6 +94,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/index'),
+          "simulate-pipeline-help-page-path" => help_page_path('ci/lint', anchor: 'simulate-a-pipeline'),
           "total-branches" => 0,
           "validate-tab-illustration-path" => 'illustrations/validate.svg',
           "yml-help-page-path" => help_page_path('ci/yaml/index')

@@ -40,18 +40,27 @@ module Glfm
 
       add_example_names(all_examples)
 
+      reject_disabled_examples(all_examples)
+
       write_snapshot_example_files(all_examples, skip_static_and_wysiwyg: skip_static_and_wysiwyg)
     end
 
     private
 
     def add_example_names(all_examples)
-      # NOTE: This method assumes:
+      # NOTE: This method and the parse_examples method assume:
       # 1. Section 2 is the first section which contains examples
-      # 2. Examples are always nested exactly than 2 levels deep in an H2
-      # 3. We assume that the Appendix doesn't ever contain any examples, so it doesn't show up
+      # 2. Examples are always nested exactly 2 levels deep in an H2
+      # 3. There may exist H3 headings with no examples (e.g. "Motivation" in the GLFM spec.txt)
+      # 4. The Appendix doesn't ever contain any examples, so it doesn't show up
       #    in the H1 header count. So, even though due to the concatenation it appears before the
       #    GitLab examples sections, it doesn't result in their header counts being off by +1.
+      # 5. If an example contains the 'disabled' string extension, it is skipped (and will thus
+      #    result in a skip in the `spec_txt_example_position`). This behavior is taken from the
+      #    GFM `spec_test.py` script (but it's NOT in the original CommonMark `spec_test.py`).
+      # 6. If a section contains ONLY disabled examples, the section numbering will still be
+      #    incremented to match the rendered HTML specification section numbering.
+      # 7. Every H2 must contain at least one example, but it is allowed that they are all disabled.
 
       h1_count = 1 # examples start in H1 section 2; section 1 is the overview with no examples.
       h2_count = 0
@@ -84,6 +93,10 @@ module Glfm
         converted_name = name.tr('(', '').tr(')', '') # remove any parens from the name
         example[:name] = converted_name
       end
+    end
+
+    def reject_disabled_examples(all_examples)
+      all_examples.reject! { |example| example[:disabled] }
     end
 
     def write_snapshot_example_files(all_examples, skip_static_and_wysiwyg:)
@@ -231,7 +244,7 @@ module Glfm
         name = example.fetch(:name)
 
         json = if glfm_examples_statuses.dig(name, 'skip_update_example_snapshot_prosemirror_json')
-                 existing_hash.dig(name)
+                 existing_hash[name]
                else
                  wysiwyg_html_and_json_hash.dig(name, 'json')
                end

@@ -44,9 +44,13 @@ module API
           requires :user_xids, type: String, desc: 'A comma separated list of external user ids'
         end
         post do
+          # TODO: Move the business logic to a service class in app/services/feature_flags.
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/367021
           list = user_project.operations_feature_flags_user_lists.create(declared_params)
 
           if list.save
+            update_last_feature_flag_updated_at!
+
             present list, with: ::API::Entities::FeatureFlag::UserList
           else
             render_api_error!(list.errors.full_messages, :bad_request)
@@ -76,9 +80,13 @@ module API
           optional :user_xids, type: String, desc: 'A comma separated list of external user ids'
         end
         put do
+          # TODO: Move the business logic to a service class in app/services/feature_flags.
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/367021
           list = user_project.operations_feature_flags_user_lists.find_by_iid!(params[:iid])
 
           if list.update(declared_params(include_missing: false))
+            update_last_feature_flag_updated_at!
+
             present list, with: ::API::Entities::FeatureFlag::UserList
           else
             render_api_error!(list.errors.full_messages, :bad_request)
@@ -89,8 +97,14 @@ module API
           detail 'This feature was introduced in GitLab 12.10'
         end
         delete do
+          # TODO: Move the business logic to a service class in app/services/feature_flags.
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/367021
           list = user_project.operations_feature_flags_user_lists.find_by_iid!(params[:iid])
-          unless list.destroy
+          if list.destroy
+            update_last_feature_flag_updated_at!
+
+            nil
+          else
             render_api_error!(list.errors.full_messages, :conflict)
           end
         end
@@ -100,6 +114,10 @@ module API
     helpers do
       def authorize_admin_feature_flags_user_lists!
         authorize! :admin_feature_flags_user_lists, user_project
+      end
+
+      def update_last_feature_flag_updated_at!
+        Operations::FeatureFlagsClient.update_last_feature_flag_updated_at!(user_project)
       end
     end
   end

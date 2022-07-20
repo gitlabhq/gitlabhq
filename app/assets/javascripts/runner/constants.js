@@ -81,6 +81,7 @@ export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
 
 // Runner details
 
+export const I18N_DETAILS = s__('Runners|Details');
 export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
 export const I18N_NONE = __('None');
 export const I18N_NO_JOBS_FOUND = s__('Runners|This runner has not run any jobs.');

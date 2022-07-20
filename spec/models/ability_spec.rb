@@ -151,6 +151,38 @@ RSpec.describe Ability do
     end
   end
 
+  describe '.users_that_can_read_internal_note' do
+    shared_examples 'filtering users that can read internal note' do
+      let_it_be(:guest) { create(:user) }
+      let_it_be(:reporter) { create(:user) }
+
+      let(:users) { [reporter, guest] }
+
+      before do
+        parent.add_guest(guest)
+        parent.add_reporter(reporter)
+      end
+
+      it 'returns users that can read internal notes' do
+        result = described_class.users_that_can_read_internal_notes(users, parent)
+
+        expect(result).to match_array([reporter])
+      end
+    end
+
+    context 'for groups' do
+      it_behaves_like 'filtering users that can read internal note' do
+        let(:parent) { create(:group) }
+      end
+    end
+
+    context 'for projects' do
+      it_behaves_like 'filtering users that can read internal note' do
+        let(:parent) { create(:project) }
+      end
+    end
+  end
+
   describe '.merge_requests_readable_by_user' do
     context 'with an admin when admin mode is enabled', :enable_admin_mode do
       it 'returns all merge requests' do

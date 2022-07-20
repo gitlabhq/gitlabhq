@@ -379,9 +379,13 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     end
   end
 
-  describe 'design events' do
+  describe 'design events', :snowplow do
     let_it_be(:design) { create(:design, project: project) }
     let_it_be(:author) { user }
+
+    before do
+      allow(Gitlab::Tracking).to receive(:event) # rubocop:disable RSpec/ExpectGitlabTracking
+    end
 
     describe '#save_designs' do
       let_it_be(:updated) { create_list(:design, 5) }
@@ -411,6 +415,44 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       it_behaves_like "it records the event in the event counter" do
         let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION }
       end
+
+      it 'records correct create payload with Snowplow event' do
+        service.save_designs(author, create: [design])
+
+        expect_snowplow_event(
+          category:  Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s,
+          action: 'create',
+          namespace:  design.project.namespace,
+          user: author,
+          project: design.project,
+          label: 'design_users'
+        )
+      end
+
+      it 'records correct update payload with Snowplow event' do
+        service.save_designs(author, update: [design])
+
+        expect_snowplow_event(
+          category:  Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s,
+          action: 'update',
+          namespace:  design.project.namespace,
+          user: author,
+          project: design.project,
+          label: 'design_users'
+        )
+      end
+
+      context 'when FF is disabled' do
+        before do
+          stub_feature_flags(route_hll_to_snowplow_phase2: false)
+        end
+
+        it 'doesnt emit snowwplow events', :snowplow do
+          subject
+
+          expect_no_snowplow_event
+        end
+      end
     end
 
     describe '#destroy_designs' do
@@ -433,6 +475,31 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
 
       it_behaves_like "it records the event in the event counter" do
         let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION }
+      end
+
+      it 'records correct payload with Snowplow event' do
+        service.destroy_designs([design], author)
+
+        expect_snowplow_event(
+          category:  Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION.to_s,
+          action: 'destroy',
+          namespace:  design.project.namespace,
+          user: author,
+          project: design.project,
+          label: 'design_users'
+        )
+      end
+
+      context 'when FF is disabled' do
+        before do
+          stub_feature_flags(route_hll_to_snowplow_phase2: false)
+        end
+
+        it 'doesnt emit snowwplow events', :snowplow do
+          subject
+
+          expect_no_snowplow_event
+        end
       end
     end
   end

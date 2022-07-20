@@ -44,4 +44,31 @@ RSpec.describe AuthenticationEvent do
       expect(described_class.providers).to match_array %w(ldapmain google_oauth2 standard two-factor two-factor-via-u2f-device two-factor-via-webauthn-device)
     end
   end
+
+  describe '.initial_login_or_known_ip_address?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:ip_address) { '127.0.0.1' }
+
+    subject { described_class.initial_login_or_known_ip_address?(user, ip_address) }
+
+    context 'on first login, when no record exists yet' do
+      it { is_expected.to eq(true) }
+    end
+
+    context 'on second login from the same ip address' do
+      before do
+        create(:authentication_event, :successful, user: user, ip_address: ip_address)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'on second login from another ip address' do
+      before do
+        create(:authentication_event, :successful, user: user, ip_address: '1.2.3.4')
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

@@ -9,6 +9,7 @@ class User < ApplicationRecord
   include Gitlab::SQL::Pattern
   include AfterCommitQueue
   include Avatarable
+  include Awareness
   include Referable
   include Sortable
   include CaseSensitivity
@@ -80,7 +81,7 @@ class User < ApplicationRecord
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
-         :validatable, :omniauthable, :confirmable, :registerable
+         :validatable, :omniauthable, :confirmable, :registerable, :pbkdf2_encryptable
 
   include AdminChangedPasswordNotifier
 
@@ -88,6 +89,7 @@ class User < ApplicationRecord
   # and should be added after Devise modules are initialized.
   include AsyncDeviseEmail
   include ForcedEmailConfirmation
+  include RequireEmailVerification
 
   MINIMUM_INACTIVE_DAYS = 90
   MINIMUM_DAYS_CREATED = 7
@@ -220,6 +222,7 @@ class User < ApplicationRecord
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'Users::Callout'
   has_many :group_callouts, class_name: 'Users::GroupCallout'
+  has_many :namespace_callouts, class_name: 'Users::NamespaceCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
@@ -476,8 +479,8 @@ class User < ApplicationRecord
   end
   scope :order_recent_sign_in, -> { reorder(arel_table[:current_sign_in_at].desc.nulls_last) }
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
-  scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last) }
-  scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first) }
+  scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last, arel_table[:id].asc) }
+  scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first, arel_table[:id].desc) }
   scope :by_id_and_login, ->(id, login) { where(id: id).where('username = LOWER(:login) OR email = LOWER(:login)', login: login) }
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
@@ -687,7 +690,33 @@ class User < ApplicationRecord
       scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
       scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
 
-      scope.reorder(sanitized_order_sql, :name)
+      if Feature.enabled?(:use_keyset_aware_user_search_query)
+        order = Gitlab::Pagination::Keyset::Order.build([
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'users_match_priority',
+            order_expression: sanitized_order_sql.asc,
+            add_to_projections: true,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'users_name',
+            order_expression: arel_table[:name].asc,
+            add_to_projections: true,
+            nullable: :not_nullable,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'users_id',
+            order_expression: arel_table[:id].asc,
+            add_to_projections: true,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
+        scope.reorder(order)
+      else
+        scope.reorder(sanitized_order_sql, :name)
+      end
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.
@@ -894,21 +923,59 @@ class User < ApplicationRecord
     reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
-  # See https://gitlab.com/gitlab-org/security/gitlab/-/issues/638
-  DISALLOWED_PASSWORDS = %w[123qweQWE!@#000000000].freeze
+  def authenticatable_salt
+    return encrypted_password[0, 29] unless Feature.enabled?(:pbkdf2_password_encryption)
+    return super if password_strategy == :pbkdf2_sha512
+
+    encrypted_password[0, 29]
+  end
 
   # Overwrites valid_password? from Devise::Models::DatabaseAuthenticatable
   # In constant-time, check both that the password isn't on a denylist AND
   # that the password is the user's password
   def valid_password?(password)
+    return false unless password_allowed?(password)
+    return super if Feature.enabled?(:pbkdf2_password_encryption)
+
+    Devise::Encryptor.compare(self.class, encrypted_password, password)
+  rescue Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
+    validate_and_migrate_bcrypt_password(password)
+  rescue ::BCrypt::Errors::InvalidHash
+    false
+  end
+
+  # This method should be removed once the :pbkdf2_password_encryption feature flag is removed.
+  def password=(new_password)
+    if Feature.enabled?(:pbkdf2_password_encryption) && Feature.enabled?(:pbkdf2_password_encryption_write, self)
+      super
+    else
+      # Copied from Devise DatabaseAuthenticatable.
+      @password = new_password
+      self.encrypted_password = Devise::Encryptor.digest(self.class, new_password) if new_password.present?
+    end
+  end
+
+  def password_strategy
+    super
+  rescue Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
+    begin
+      return :bcrypt if BCrypt::Password.new(encrypted_password)
+    rescue BCrypt::Errors::InvalidHash
+      :unknown
+    end
+  end
+
+  # See https://gitlab.com/gitlab-org/security/gitlab/-/issues/638
+  DISALLOWED_PASSWORDS = %w[123qweQWE!@#000000000].freeze
+
+  def password_allowed?(password)
     password_allowed = true
+
     DISALLOWED_PASSWORDS.each do |disallowed_password|
       password_allowed = false if Devise.secure_compare(password, disallowed_password)
     end
 
-    original_result = super
-
-    password_allowed && original_result
+    password_allowed
   end
 
   def remember_me!
@@ -1570,6 +1637,10 @@ class User < ApplicationRecord
     self.followees.exists?(user.id)
   end
 
+  def followed_by?(user)
+    self.followers.include?(user)
+  end
+
   def follow(user)
     return false if self.id == user.id
 
@@ -1625,7 +1696,7 @@ class User < ApplicationRecord
   end
 
   def oauth_authorized_tokens
-    Doorkeeper::AccessToken.where(resource_owner_id: id, revoked_at: nil)
+    OauthAccessToken.where(resource_owner_id: id, revoked_at: nil)
   end
 
   # Returns the projects a user contributed to in the last year.
@@ -1899,7 +1970,7 @@ class User < ApplicationRecord
   end
 
   # override, from Devise
-  def lock_access!
+  def lock_access!(opts = {})
     Gitlab::AppLogger.info("Account Locked: username=#{username}")
     super
   end
@@ -2015,6 +2086,13 @@ class User < ApplicationRecord
     callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
+  def dismissed_callout_for_namespace?(feature_name:, namespace:, ignore_dismissal_earlier_than: nil)
+    source_feature_name = "#{feature_name}_#{namespace.id}"
+    callout = namespace_callouts_by_feature_name[source_feature_name]
+
+    callout_dismissed?(callout, ignore_dismissal_earlier_than)
+  end
+
   # Load the current highest access by looking directly at the user's memberships
   def current_highest_access_level
     members.non_request.maximum(:access_level)
@@ -2039,6 +2117,11 @@ class User < ApplicationRecord
   def find_or_initialize_group_callout(feature_name, group_id)
     group_callouts
       .find_or_initialize_by(feature_name: ::Users::GroupCallout.feature_names[feature_name], group_id: group_id)
+  end
+
+  def find_or_initialize_namespace_callout(feature_name, namespace_id)
+    namespace_callouts
+      .find_or_initialize_by(feature_name: ::Users::NamespaceCallout.feature_names[feature_name], namespace_id: namespace_id)
   end
 
   def can_trigger_notifications?
@@ -2156,6 +2239,10 @@ class User < ApplicationRecord
 
   def group_callouts_by_feature_name
     @group_callouts_by_feature_name ||= group_callouts.index_by(&:source_feature_name)
+  end
+
+  def namespace_callouts_by_feature_name
+    @namespace_callouts_by_feature_name ||= namespace_callouts.index_by(&:source_feature_name)
   end
 
   def authorized_groups_without_shared_membership
@@ -2317,6 +2404,15 @@ class User < ApplicationRecord
       .shortest_traversal_ids_prefixes
 
     Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
+  end
+
+  def validate_and_migrate_bcrypt_password(password)
+    return false unless Devise::Encryptor.compare(self.class, encrypted_password, password)
+    return true unless Feature.enabled?(:pbkdf2_password_encryption_write, self)
+
+    update_attribute(:password, password)
+  rescue ::BCrypt::Errors::InvalidHash
+    false
   end
 end
 

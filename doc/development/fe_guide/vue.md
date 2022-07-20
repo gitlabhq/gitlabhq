@@ -19,8 +19,8 @@ What is described in the following sections can be found in these examples:
 ## Vue architecture
 
 All new features built with Vue.js must follow a [Flux architecture](https://facebook.github.io/flux/).
-The main goal we are trying to achieve is to have only one data flow and only one data entry.
-In order to achieve this goal we use [Vuex](#vuex).
+The main goal we are trying to achieve is to have only one data flow, and only one data entry.
+To achieve this goal we use [Vuex](#vuex).
 
 You can also read about this architecture in Vue documentation about
 [state management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
@@ -48,8 +48,8 @@ Let's look into each of them:
 
 ### An `index.js` file
 
-This is the index file of your new feature. This is where the root Vue instance
-of the new feature should be.
+This file is the index file of your new feature. The root Vue instance
+of the new feature should be here.
 
 The Store and the Service should be imported and initialized in this file and
 provided as a prop to the main component.
@@ -62,17 +62,16 @@ Be sure to read about [page-specific JavaScript](performance.md#page-specific-ja
 
 While mounting a Vue application, you might need to provide data from Rails to JavaScript.
 To do that, you can use the `data` attributes in the HTML element and query them while mounting the application.
-
 You should only do this while initializing the application, because the mounted element is replaced
 with a Vue-generated DOM.
 
 The advantage of providing data from the DOM to the Vue instance through `props` or
 `provide` in the `render` function, instead of querying the DOM inside the main Vue
-component, is that you avoid the need to create a fixture or an HTML element in the unit test.
+component, is that you avoid creating a fixture or an HTML element in the unit test.
 
-##### provide/inject
+##### `provide` and `inject`
 
-Vue supports dependency injection through [provide/inject](https://vuejs.org/v2/api/#provide-inject).
+Vue supports dependency injection through [`provide` and `inject`](https://vuejs.org/v2/api/#provide-inject).
 In the component the `inject` configuration accesses the values `provide` passes down.
 This example of a Vue app initialization shows how the `provide` configuration passes a value from HAML to the component:
 
@@ -119,13 +118,16 @@ Using dependency injection to provide values from HAML is ideal when:
 
 - The injected value doesn't need an explicit validation against its data type or contents.
 - The value doesn't need to be reactive.
-- There are multiple components in the hierarchy that need access to this value where
+- Multiple components exist in the hierarchy that need access to this value where
   prop-drilling becomes an inconvenience. Prop-drilling when the same prop is passed
   through all components in the hierarchy until the component that is genuinely using it.
 
-Dependency injection can potentially break a child component (either an immediate child or multiple levels deep) if the value declared in the `inject` configuration doesn't have defaults defined and the parent component has not provided the value using the `provide` configuration.
+Dependency injection can potentially break a child component (either an immediate child or multiple levels deep) if both conditions are true:
 
-- A [default value](https://vuejs.org/guide/components/provide-inject.html#injection-default-values) might be useful in contexts where it makes sense.
+- The value declared in the `inject` configuration doesn't have defaults defined.
+- The parent component has not provided the value using the `provide` configuration.
+
+A [default value](https://vuejs.org/guide/components/provide-inject.html#injection-default-values) might be useful in contexts where it makes sense.
 
 ##### props
 
@@ -155,7 +157,8 @@ return new Vue({
 });
 ```
 
-> When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique
+NOTE:
+When adding an `id` attribute to mount a Vue application, make sure this `id` is unique
 across the codebase.
 
 For more information on why we explicitly declare the data being passed into the Vue app,
@@ -165,9 +168,9 @@ refer to our [Vue style guide](style/vue.md#basic-rules).
 
 When composing a form with Rails, the `name`, `id`, and `value` attributes of form inputs are generated
 to match the backend. It can be helpful to have access to these generated attributes when converting
-a Rails form to Vue, or when [integrating components (datepicker, project selector, etc)](https://gitlab.com/gitlab-org/gitlab/-/blob/8956ad767d522f37a96e03840595c767de030968/app/assets/javascripts/access_tokens/index.js#L15) into it.
+a Rails form to Vue, or when [integrating components](https://gitlab.com/gitlab-org/gitlab/-/blob/8956ad767d522f37a96e03840595c767de030968/app/assets/javascripts/access_tokens/index.js#L15) (such as a date picker or project selector) into it.
 The [`parseRailsFormFields`](https://gitlab.com/gitlab-org/gitlab/-/blob/fe88797f682c7ff0b13f2c2223a3ff45ada751c1/app/assets/javascripts/lib/utils/forms.js#L107) utility can be used to parse the generated form input attributes so they can be passed to the Vue application.
-This allows us to easily integrate Vue components without changing how the form submits.
+This enables us to integrate Vue components without changing how the form submits.
 
 ```haml
 -# form.html.haml
@@ -245,7 +248,7 @@ export default {
 
 We query the `gl` object for data that doesn't change during the application's life
 cycle in the same place we query the DOM. By following this practice, we can
-avoid the need to mock the `gl` object, which makes tests easier. It should be done while
+avoid mocking the `gl` object, which makes tests easier. It should be done while
 initializing our Vue instance, and the data should be provided as `props` to the main component:
 
 ```javascript
@@ -263,8 +266,8 @@ return new Vue({
 
 #### Accessing feature flags
 
-Use Vue's [provide/inject](https://vuejs.org/v2/api/#provide-inject) mechanism
-to make feature flags available to any descendant components in a Vue
+Use the [`provide` and `inject`](https://vuejs.org/v2/api/#provide-inject) mechanisms
+in Vue to make feature flags available to any descendant components in a Vue
 application. The `glFeatures` object is already provided in `commons/vue.js`, so
 only the mixin is required to use the flags:
 
@@ -303,14 +306,14 @@ This approach has a few benefits:
   });
   ```
 
-- No need to access a global variable, except in the application's
+- Accessing a global variable is not required, except in the application's
   [entry point](#accessing-the-gl-object).
 
 ### A folder for Components
 
 This folder holds all components that are specific to this new feature.
-If you need to use or create a component that is likely to be used somewhere
-else, please refer to `vue_shared/components`.
+To use or create a component that is likely to be used somewhere
+else, refer to `vue_shared/components`.
 
 A good guideline to know when you should create a component is to think if
 it could be reusable elsewhere.
@@ -330,7 +333,7 @@ Check this [page](vuex.md) for more details.
 ### Mixing Vue and jQuery
 
 - Mixing Vue and jQuery is not recommended.
-- If you need to use a specific jQuery plugin in Vue, [create a wrapper around it](https://vuejs.org/v2/examples/select2.html).
+- To use a specific jQuery plugin in Vue, [create a wrapper around it](https://vuejs.org/v2/examples/select2.html).
 - It is acceptable for Vue to listen to existing jQuery events using jQuery event listeners.
 - It is not recommended to add new jQuery events for Vue to interact with jQuery.
 
@@ -356,22 +359,171 @@ cannot use primitives or objects.
 
 #### Why
 
-There are additional reasons why having a JavaScript class presents maintainability issues on a huge codebase:
+Additional reasons why having a JavaScript class presents maintainability issues on a huge codebase:
 
 - After a class is created, it can be extended in a way that can infringe Vue reactivity and best practices.
 - A class adds a layer of abstraction, which makes the component API and its inner workings less clear.
 - It makes it harder to test. Because the class is instantiated by the component data function, it is
 harder to 'manage' component and class separately.
-- Adding Object Oriented Principles (OOP) to a functional codebase adds yet another way of writing code, reducing consistency and clarity.
+- Adding Object Oriented Principles (OOP) to a functional codebase adds another way of writing code, reducing consistency and clarity.
 
 ## Style guide
 
-Please refer to the Vue section of our [style guide](style/vue.md)
+Refer to the Vue section of our [style guide](style/vue.md)
 for best practices while writing and testing your Vue components and templates.
+
+## Composition API
+
+With Vue 2.7 it is possible to use [Composition API](https://vuejs.org/guide/introduction.html#api-styles) in Vue components and as standalone composables.
+
+### Prefer `<script>` over `<script setup>`
+
+Composition API allows you to place the logic in the `<script>` section of the component or to have a dedicated `<script setup>` section. We should use `<script>` and add Composition API to components using `setup()` property:
+
+```html
+<script>
+  import { computed } from 'vue';
+
+  export default {
+    name: 'MyComponent',
+    setup(props) {
+      const doubleCount = computed(() => props.count*2)
+    }
+  }
+</script>
+```
+
+### Aim to have one API style per component
+
+When adding `setup()` property to Vue component, consider refactoring it to Composition API entirely. It's not always feasible, especially for large components, but we should aim to have one API style per component for readability and maintainability.
+
+### Composables
+
+With Composition API, we have a new way of abstracting logic including reactive state to _composables_. Composable is the function that can accept parameters and return reactive properties and methods to be used in Vue component.
+
+```javascript
+// useCount.js
+import { ref } from 'vue';
+
+export function useCount(initialValue) {
+  const count = ref(initialValue)
+
+  function incrementCount() {
+    ref.value += 1
+  }
+
+  function decrementCount() {
+    ref.value -= 1
+  }
+
+  return { count, incrementCount, decrementCount }
+}
+```
+
+```javascript
+// MyComponent.vue
+import { useCount } from 'useCount'
+
+export default {
+  name: 'MyComponent',
+  setup() {
+    const { count, incrementCount, decrementCount } = useCount(5)
+
+    return { count, incrementCount, decrementCount }
+  }
+}
+```
+
+#### Prefix function and file names with `use`
+
+Common naming convention in Vue for composables is to prefix them with `use` and then refer to composable functionality briefly (`useBreakpoints`, `useGeolocation` etc). The same rule applies to the `.js` files containing composables - they should start with `use_` even if the file contains more than one composable.
+
+#### Avoid lifecycle pitfalls
+
+When building a composable, we should aim to keep it as simple as possible. Lifecycle hooks add complexity to composables and might lead to unexpected side effects. To avoid that we should follow these principles:
+
+- Minimize lifecycle hooks usage whenever possible, prefer accepting/returning callbacks instead.
+- If your composable needs lifecycle hooks, make sure it also performs a cleanup. If we add a listener on `onMounted`, we should remove it on `onUnmounted` within the same composable.
+- Always set up lifecycle hooks immediately:
+
+```javascript
+// bad
+const useAsyncLogic = () => {
+  const action = async () => {
+    await doSomething();
+    onMounted(doSomethingElse);
+  };
+  return { action };
+};
+
+// OK
+const useAsyncLogic = () => {
+  const done = ref(false);
+  onMounted(() => {
+    watch(
+      done,
+      () => done.value && doSomethingElse(),
+      { immediate: true },
+    );
+  });
+  const action = async () => {
+    await doSomething();
+    done.value = true;
+  };
+  return { action };
+};
+```
+
+#### Avoid escape hatches
+
+It might be tempting to write a composable that does everything as a black box, using some of the escape hatches that Vue provides. But for most of the cases this makes them too complex and hard to maintain. One escape hatch is the `getCurrentInstance` method. This method returns an instance of a current rendering component. Instead of using that method, you should prefer passing down the data or methods to a composable via arguments.
+
+```javascript
+const useSomeLogic = () => {
+  doSomeLogic();
+  getCurrentInstance().emit('done'); // bad
+};
+```
+
+```javascript
+const done = () => emit('done');
+
+const useSomeLogic = (done) => {
+  doSomeLogic();
+  done(); // good, composable doesn't try to be too smart
+}
+```
+
+#### Composables and Vuex
+
+We should always prefer to avoid using Vuex state in composables. In case it's not possible, we should use props to receive that state, and emit events from the `setup` to update the Vuex state. A parent component should be responsible to get that state from Vuex, and mutate it on events emitted from a child. You should **never mutate a state that's coming down from a prop**. If a composable must mutate a Vuex state, it should use a callback to emit an event.
+
+```javascript
+const useAsyncComposable = ({ state, update }) => {
+  const start = async () => {
+    const newState = await doSomething(state);
+    update(newState);
+  };
+  return { start };
+};
+
+const ComponentWithComposable = {
+  setup(props, { emit }) {
+    const update = (data) => emit('update', data);
+    const state = computed(() => props.state); // state from Vuex
+    const { start } = useAsyncComposable({ state, update });
+    start();
+  },
+};
+```
+
+#### Testing composables
+
+<!-- TBD -->
 
 ## Testing Vue Components
 
-Please refer to the [Vue testing style guide](style/vue.md#vue-testing)
+Refer to the [Vue testing style guide](style/vue.md#vue-testing)
 for guidelines and best practices for testing your Vue components.
 
 Each Vue component has a unique output. This output is always present in the render function.
@@ -500,8 +652,8 @@ component under test, with the `computed` property, for example). Remember to us
 
 ### Events
 
-We should test for events emitted in response to an action in our component. This is used to
-verify the correct events are being fired with the correct arguments.
+We should test for events emitted in response to an action in our component. This testing
+verifies the correct events are being fired with the correct arguments.
 
 For any DOM events we should use [`trigger`](https://v1.test-utils.vuejs.org/api/wrapper/#trigger)
 to fire out event.
@@ -519,8 +671,7 @@ it('should fire the click event', () => {
 })
 ```
 
-When we need to fire a Vue event, we should use [`emit`](https://vuejs.org/v2/guide/components-custom-events.html)
-to fire our event.
+When firing a Vue event, use [`emit`](https://vuejs.org/v2/guide/components-custom-events.html).
 
 ```javascript
 wrapper = shallowMount(DropdownItem);

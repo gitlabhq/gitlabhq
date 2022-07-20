@@ -32,9 +32,9 @@ RSpec.describe API::GroupExport do
 
     context 'when export file exists' do
       before do
-        allow(Gitlab::ApplicationRateLimiter)
-          .to receive(:increment)
-          .and_return(0)
+        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+          allow(strategy).to receive(:increment).and_return(0)
+        end
 
         upload.export_file = fixture_file_upload('spec/fixtures/group_export.tar.gz', "`/tar.gz")
         upload.save!
@@ -149,9 +149,11 @@ RSpec.describe API::GroupExport do
       before do
         group.add_owner(user)
 
-        allow(Gitlab::ApplicationRateLimiter)
-          .to receive(:increment)
-          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold].call + 1)
+        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+          allow(strategy)
+            .to receive(:increment)
+            .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold].call + 1)
+        end
       end
 
       it 'throttles the endpoint' do

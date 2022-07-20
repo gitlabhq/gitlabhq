@@ -118,41 +118,27 @@ RSpec.describe Ci::PendingBuild do
         project.shared_runners_enabled = true
       end
 
-      context 'when ci_pending_builds_maintain_denormalized_data is enabled' do
-        it 'sets instance_runners_enabled to true' do
+      it 'sets instance_runners_enabled to true' do
+        described_class.upsert_from_build!(build)
+
+        expect(described_class.last.instance_runners_enabled).to be_truthy
+      end
+
+      context 'when project is about to be deleted' do
+        before do
+          build.project.update!(pending_delete: true)
+        end
+
+        it 'sets instance_runners_enabled to false' do
           described_class.upsert_from_build!(build)
 
-          expect(described_class.last.instance_runners_enabled).to be_truthy
-        end
-
-        context 'when project is about to be deleted' do
-          before do
-            build.project.update!(pending_delete: true)
-          end
-
-          it 'sets instance_runners_enabled to false' do
-            described_class.upsert_from_build!(build)
-
-            expect(described_class.last.instance_runners_enabled).to be_falsey
-          end
-        end
-
-        context 'when builds are disabled' do
-          before do
-            build.project.project_feature.update!(builds_access_level: false)
-          end
-
-          it 'sets instance_runners_enabled to false' do
-            described_class.upsert_from_build!(build)
-
-            expect(described_class.last.instance_runners_enabled).to be_falsey
-          end
+          expect(described_class.last.instance_runners_enabled).to be_falsey
         end
       end
 
-      context 'when ci_pending_builds_maintain_denormalized_data is disabled' do
+      context 'when builds are disabled' do
         before do
-          stub_feature_flags(ci_pending_builds_maintain_denormalized_data: false)
+          build.project.project_feature.update!(builds_access_level: false)
         end
 
         it 'sets instance_runners_enabled to false' do
@@ -168,24 +154,10 @@ RSpec.describe Ci::PendingBuild do
 
       subject(:ci_pending_build) { described_class.last }
 
-      context 'when ci_pending_builds_maintain_denormalized_data is enabled' do
-        it 'sets tag_ids' do
-          described_class.upsert_from_build!(build)
+      it 'sets tag_ids' do
+        described_class.upsert_from_build!(build)
 
-          expect(ci_pending_build.tag_ids).to eq(build.tags_ids)
-        end
-      end
-
-      context 'when ci_pending_builds_maintain_denormalized_data is disabled' do
-        before do
-          stub_feature_flags(ci_pending_builds_maintain_denormalized_data: false)
-        end
-
-        it 'does not set tag_ids' do
-          described_class.upsert_from_build!(build)
-
-          expect(ci_pending_build.tag_ids).to be_empty
-        end
+        expect(ci_pending_build.tag_ids).to eq(build.tags_ids)
       end
     end
 

@@ -12,13 +12,13 @@ RSpec.describe Ci::AbortPipelinesService do
 
   let_it_be(:cancelable_build, reload: true) { create(:ci_build, :running, pipeline: cancelable_pipeline) }
   let_it_be(:non_cancelable_build, reload: true) { create(:ci_build, :success, pipeline: cancelable_pipeline) }
-  let_it_be(:cancelable_stage, reload: true) { create(:ci_stage_entity, name: 'stageA', status: :running, pipeline: cancelable_pipeline, project: project) }
-  let_it_be(:non_cancelable_stage, reload: true) { create(:ci_stage_entity, name: 'stageB', status: :success, pipeline: cancelable_pipeline, project: project) }
+  let_it_be(:cancelable_stage, reload: true) { create(:ci_stage, name: 'stageA', status: :running, pipeline: cancelable_pipeline, project: project) }
+  let_it_be(:non_cancelable_stage, reload: true) { create(:ci_stage, name: 'stageB', status: :success, pipeline: cancelable_pipeline, project: project) }
 
   let_it_be(:manual_pipeline_cancelable_build, reload: true) { create(:ci_build, :created, pipeline: manual_pipeline) }
   let_it_be(:manual_pipeline_non_cancelable_build, reload: true) { create(:ci_build, :manual, pipeline: manual_pipeline) }
-  let_it_be(:manual_pipeline_cancelable_stage, reload: true) { create(:ci_stage_entity, name: 'stageA', status: :created, pipeline: manual_pipeline, project: project) }
-  let_it_be(:manual_pipeline_non_cancelable_stage, reload: true) { create(:ci_stage_entity, name: 'stageB', status: :success, pipeline: manual_pipeline, project: project) }
+  let_it_be(:manual_pipeline_cancelable_stage, reload: true) { create(:ci_stage, name: 'stageA', status: :created, pipeline: manual_pipeline, project: project) }
+  let_it_be(:manual_pipeline_non_cancelable_stage, reload: true) { create(:ci_stage, name: 'stageB', status: :success, pipeline: manual_pipeline, project: project) }
 
   describe '#execute' do
     def expect_correct_pipeline_cancellations

@@ -269,6 +269,9 @@ control over how the Pages daemon runs and serves content in your environment.
 | `max_uri_length`                        | The maximum length of URIs accepted by GitLab Pages. Set to 0 for unlimited length. [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/659) in GitLab 14.5.
 | `metrics_address`                       | The address to listen on for metrics requests. |
 | `redirect_http`                         | Redirect pages from HTTP to HTTPS, true/false. |
+| `redirects_max_config_size`             | The maximum size of the _redirects file, in bytes (default: 65536). |
+| `redirects_max_path_segments`           | The maximum number of path segments allowed in _redirects rules URLs (default: 25). |
+| `redirects_max_rule_count`              | The maximum number of rules allowed in _redirects (default: 1000). |
 | `sentry_dsn`                            | The address for sending Sentry crash reporting to. |
 | `sentry_enabled`                        | Enable reporting and logging with Sentry, true/false. |
 | `sentry_environment`                    | The environment for Sentry crash reporting. |
@@ -489,11 +492,6 @@ To do that:
 1. Select the **Disable public access to Pages sites** checkbox.
 1. Select **Save changes**.
 
-WARNING:
-For self-managed installations, all public websites remain private until they are
-redeployed. Resolve this issue by
-[sourcing domain configuration from the GitLab API](https://gitlab.com/gitlab-org/gitlab/-/issues/218357).
-
 ### Running behind a proxy
 
 Like the rest of GitLab, Pages can be used in those environments where external
@@ -580,6 +578,19 @@ HTTP Strict Transport Security (HSTS) can be enabled through the `gitlab_pages['
 
 ```ruby
 gitlab_pages['headers'] = ['Strict-Transport-Security: max-age=63072000']
+```
+
+### Pages project redirects limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/778) in GitLab 15.2.
+
+GitLab Pages comes with a set of default limits for the [`_redirects` file](../../user/project/pages/redirects.md)
+to minimize the impact on performance. You can configure these limits if you'd like to increase or decrease the limits.
+
+```ruby
+gitlab_pages['redirects_max_config_size'] = 131072
+gitlab_pages['redirects_max_path_segments'] = 50
+gitlab_pages['redirects_max_rule_count'] = 2000
 ```
 
 ## Activate verbose logging for daemon
@@ -1400,7 +1411,7 @@ this setting needs to be configured on the main GitLab server.
 
 If the wildcard DNS [prerequisite](#prerequisites) can't be met, you can still use GitLab Pages in a limited fashion:
 
-1. [Move](../../user/project/settings/index.md#transferring-an-existing-project-into-another-namespace)
+1. [Move](../../user/project/settings/index.md#transfer-a-project-to-another-namespace)
    all projects you need to use Pages with into a single group namespace, for example `pages`.
 1. Configure a [DNS entry](#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
 1. Configure `pages_external_url http://example.io/` in your `gitlab.rb` file.

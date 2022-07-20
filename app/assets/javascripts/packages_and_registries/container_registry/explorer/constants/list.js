@@ -43,6 +43,13 @@ export const EMPTY_RESULT_MESSAGE = s__(
 
 export const COPY_IMAGE_PATH_TITLE = s__('ContainerRegistry|Copy image path');
 
+export const IMAGE_FULL_PATH_LABEL = s__('ContainerRegistry|Show full path');
+
+// Tracking
+
+export const TRACKING_LABEL_REGISTRY_IMAGE_LIST = 'registry_image_list';
+export const TRACKING_ACTION_CLICK_SHOW_FULL_PATH = 'click_show_full_path';
+
 // Parameters
 
 export const IMAGE_DELETE_SCHEDULED_STATUS = 'DELETE_SCHEDULED';

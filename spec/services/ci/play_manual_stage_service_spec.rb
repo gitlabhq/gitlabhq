@@ -11,7 +11,7 @@ RSpec.describe Ci::PlayManualStageService, '#execute' do
   let(:stage_status) { 'manual' }
 
   let(:stage) do
-    create(:ci_stage_entity,
+    create(:ci_stage,
            pipeline: pipeline,
            project: project,
            name: 'test')

@@ -400,10 +400,6 @@ describe('ForkForm component', () => {
       );
     };
 
-    beforeEach(() => {
-      setupComponent();
-    });
-
     const selectedMockNamespaceIndex = 1;
     const namespaceId = MOCK_NAMESPACES_RESPONSE[selectedMockNamespaceIndex].id;
 
@@ -425,10 +421,14 @@ describe('ForkForm component', () => {
       it('does not make POST request', async () => {
         jest.spyOn(axios, 'post');
 
+        setupComponent();
+
         expect(axios.post).not.toHaveBeenCalled();
       });
 
       it('does not redirect the current page', async () => {
+        setupComponent();
+
         await submitForm();
 
         expect(urlUtility.redirectTo).not.toHaveBeenCalled();
@@ -452,13 +452,10 @@ describe('ForkForm component', () => {
     });
 
     describe('with valid form', () => {
-      beforeEach(() => {
-        fillForm();
-      });
-
       it('make POST request with project param', async () => {
         jest.spyOn(axios, 'post');
 
+        setupComponent();
         await submitForm();
 
         const {
@@ -486,6 +483,7 @@ describe('ForkForm component', () => {
         const webUrl = `new/fork-project`;
         jest.spyOn(axios, 'post').mockResolvedValue({ data: { web_url: webUrl } });
 
+        setupComponent();
         await submitForm();
 
         expect(urlUtility.redirectTo).toHaveBeenCalledWith(webUrl);
@@ -496,6 +494,7 @@ describe('ForkForm component', () => {
 
         jest.spyOn(axios, 'post').mockRejectedValue(dummyError);
 
+        setupComponent();
         await submitForm();
 
         expect(urlUtility.redirectTo).not.toHaveBeenCalled();

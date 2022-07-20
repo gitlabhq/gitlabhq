@@ -1,5 +1,5 @@
 ---
-stage: Growth
+stage: Analytics
 group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -25,6 +25,16 @@ You can use [this query](https://gitlab.com/gitlab-org/gitlab/-/issues/347298#no
 ### Troubleshoot the GitLab application layer
 
 For results about an investigation conducted into an unexpected drop in Service ping Payload events volume, see [this issue](https://gitlab.com/gitlab-data/analytics/-/issues/11071).
+
+### Troubleshoot VersionApp layer
+
+Check if the [export jobs](https://gitlab.com/gitlab-services/version-gitlab-com#data-export-using-pipeline-schedules) are successful.
+
+Check [Service Ping errors](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health?widget=14609989&udv=0) in the [Service Ping Health Dahsboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
+
+### Troubleshoot Google Storage layer
+
+Check if the files are present in [Google Storage](https://console.cloud.google.com/storage/browser/cloudsql-gs-production-efd5e8-cloudsql-exports;tab=objects?project=gs-production-efd5e8&prefix=&forceOnObjectsSortingFiltering=false).
 
 ### Troubleshoot the data warehouse layer
 

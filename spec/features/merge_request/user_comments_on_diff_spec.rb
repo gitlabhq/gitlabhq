@@ -253,7 +253,7 @@ RSpec.describe 'User comments on a diff', :js do
       end
 
       page.within('.modal') do
-        click_button('Delete Comment', match: :first)
+        click_button('Delete comment', match: :first)
       end
 
       page.within('.merge-request-tabs') do

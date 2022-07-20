@@ -77,7 +77,7 @@ module Gitlab
 
         def add_group_members(result)
           group = result[:group]
-          members = group.add_users(members_to_add(group), Gitlab::Access::MAINTAINER)
+          members = group.add_members(members_to_add(group), Gitlab::Access::MAINTAINER)
           errors = members.flat_map { |member| member.errors.full_messages }
 
           if errors.any?
@@ -112,7 +112,7 @@ module Gitlab
 
         def members_to_add(group)
           # Exclude admins who are already members of group because
-          # `group.add_users(users)` returns an error if the users parameter contains
+          # `group.add_members(users)` returns an error if the users parameter contains
           # users who are already members of the group.
           instance_admins - group.members.collect(&:user)
         end

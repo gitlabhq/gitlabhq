@@ -172,9 +172,6 @@ export default {
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
     },
-    internalNotesEnabled() {
-      return Boolean(this.glFeatures.confidentialNotes);
-    },
     disableSubmitButton() {
       return this.note.length === 0 || this.isSubmitting;
     },
@@ -414,7 +411,7 @@ export default {
               </template>
               <template v-else>
                 <gl-form-checkbox
-                  v-if="internalNotesEnabled && canSetInternalNote"
+                  v-if="canSetInternalNote"
                   v-model="noteIsInternal"
                   class="gl-mb-2"
                   data-testid="internal-note-checkbox"

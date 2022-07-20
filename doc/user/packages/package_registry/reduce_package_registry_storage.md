@@ -50,3 +50,39 @@ To delete package files in the UI, from your group or project:
 1. Expand the ellipsis and select **Delete file**.
 
 The package files are permanently deleted.
+
+## Cleanup policy
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346153) in GitLab 15.2.
+
+Depending on the number of packages to remove, the process of manually deleting the packages can take a long time to finish.
+A cleanup policy defines a set of rules that, applied to a project, defines which package files you can automatically delete.
+
+### Enable the cleanup policy
+
+By default, the packages cleanup policy is disabled. To enable it:
+
+1. Go to your project **Settings > Packages & Registries**.
+1. Expand **Manage storage used by package assets**.
+1. Set the rules appropriately.
+
+NOTE:
+To access these project settings, you must be at least a maintainer on the related project.
+
+### Available rules
+
+- `Number of duplicated assets to keep`. The number of duplicated assets to keep. Some package formats allow you
+  to upload more than one copy of an asset. You can limit the number of duplicated assets to keep and automatically
+  delete the oldest files once the limit is reached.
+
+### Set cleanup limits to conserve resources
+
+A background process executes the package-cleanup policies. This process can take a long time to finish and consumes
+server resources while it is running.
+
+You can use the following setting to limit the number of cleanup workers:
+
+- `package_registry_cleanup_policies_worker_capacity`: the maximum number of cleanup workers running concurrently.
+  This number must be greater than or equal to `0`.
+  We recommend starting with a low number and increasing it after monitoring the resources used by the background workers.
+  To remove all workers and not execute the cleanup policies, set this to `0`. The default value is `2`.

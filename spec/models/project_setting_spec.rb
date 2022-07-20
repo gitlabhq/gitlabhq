@@ -6,6 +6,17 @@ RSpec.describe ProjectSetting, type: :model do
   using RSpec::Parameterized::TableSyntax
   it { is_expected.to belong_to(:project) }
 
+  describe 'scopes' do
+    let_it_be(:project_1) { create(:project) }
+    let_it_be(:project_2) { create(:project) }
+    let_it_be(:project_setting_1) { create(:project_setting, project: project_1) }
+    let_it_be(:project_setting_2) { create(:project_setting, project: project_2) }
+
+    it 'returns project setting for the given projects' do
+      expect(described_class.for_projects(project_1)).to contain_exactly(project_setting_1)
+    end
+  end
+
   describe 'validations' do
     it { is_expected.not_to allow_value(nil).for(:target_platforms) }
     it { is_expected.to allow_value([]).for(:target_platforms) }

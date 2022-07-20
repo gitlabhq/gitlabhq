@@ -9,9 +9,9 @@ RSpec.describe API::Snippets, factory_default: :keep do
   let_it_be(:user)             { create(:user) }
   let_it_be(:other_user)       { create(:user) }
 
-  let_it_be(:public_snippet)   { create(:personal_snippet, :repository, :public, author: user) }
-  let_it_be(:private_snippet)  { create(:personal_snippet, :repository, :private, author: user) }
-  let_it_be(:internal_snippet) { create(:personal_snippet, :repository, :internal, author: user) }
+  let_it_be(:public_snippet)              { create(:personal_snippet, :repository, :public, author: user) }
+  let_it_be_with_refind(:private_snippet) { create(:personal_snippet, :repository, :private, author: user) }
+  let_it_be(:internal_snippet)            { create(:personal_snippet, :repository, :internal, author: user) }
 
   let_it_be(:user_token)       { create(:personal_access_token, user: user) }
   let_it_be(:other_user_token) { create(:personal_access_token, user: other_user) }
@@ -63,6 +63,23 @@ RSpec.describe API::Snippets, factory_default: :keep do
         expect(snippet["id"]).not_to eq(public_snippet.id)
       end
     end
+
+    context 'filtering snippets by created_after/created_before' do
+      let_it_be(:private_snippet_before_time_range) { create(:personal_snippet, :repository, :private, author: user, created_at: Time.parse("2021-08-20T00:00:00Z")) }
+      let_it_be(:private_snippet_in_time_range1)    { create(:personal_snippet, :repository, :private, author: user, created_at: Time.parse("2021-08-22T00:00:00Z")) }
+      let_it_be(:private_snippet_in_time_range2)    { create(:personal_snippet, :repository, :private, author: user, created_at: Time.parse("2021-08-24T00:00:00Z")) }
+      let_it_be(:private_snippet_after_time_range)  { create(:personal_snippet, :repository, :private, author: user, created_at: Time.parse("2021-08-26T00:00:00Z")) }
+
+      let(:path) { "/snippets?created_after=2021-08-21T00:00:00Z&created_before=2021-08-25T00:00:00Z" }
+
+      it 'returns snippets available for user in given time range' do
+        get api(path, personal_access_token: user_token)
+
+        expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
+          private_snippet_in_time_range1.id,
+          private_snippet_in_time_range2.id)
+      end
+    end
   end
 
   describe 'GET /snippets/public' do
@@ -97,6 +114,21 @@ RSpec.describe API::Snippets, factory_default: :keep do
       get api(path, nil)
 
       expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    context 'filtering public snippets by created_after/created_before' do
+      let_it_be(:public_snippet_before_time_range) { create(:personal_snippet, :repository, :public, author: other_user, created_at: Time.parse("2021-08-20T00:00:00Z")) }
+      let_it_be(:public_snippet_in_time_range)     { create(:personal_snippet, :repository, :public, author: other_user, created_at: Time.parse("2021-08-22T00:00:00Z")) }
+      let_it_be(:public_snippet_after_time_range)  { create(:personal_snippet, :repository, :public, author: other_user, created_at: Time.parse("2021-08-24T00:00:00Z")) }
+
+      let(:path) { "/snippets/public?created_after=2021-08-21T00:00:00Z&created_before=2021-08-23T00:00:00Z" }
+
+      it 'returns public snippets available to user in given time range' do
+        get api(path, personal_access_token: user_token)
+
+        expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
+          public_snippet_in_time_range.id)
+      end
     end
   end
 

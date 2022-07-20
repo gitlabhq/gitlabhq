@@ -54,6 +54,7 @@ export const SOURCE_EDITOR_DEBOUNCE = 500;
 export const FILE_TREE_DISPLAY_KEY = 'pipeline_editor_file_tree_display';
 export const FILE_TREE_POPOVER_DISMISSED_KEY = 'pipeline_editor_file_tree_popover_dismissed';
 export const FILE_TREE_TIP_DISMISSED_KEY = 'pipeline_editor_file_tree_tip_dismissed';
+export const VALIDATE_TAB_BADGE_DISMISSED_KEY = 'pipeline_editor_validate_tab_badge_dismissed';
 
 export const STARTER_TEMPLATE_NAME = 'Getting-Started';
 
@@ -81,6 +82,7 @@ export const pipelineEditorTrackingOptions = {
 
 export const TEMPLATE_REPOSITORY_URL =
   'https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates';
+export const VALIDATE_TAB_FEEDBACK_URL = 'https://gitlab.com/gitlab-org/gitlab/-/issues/346687';
 
 export const COMMIT_SHA_POLL_INTERVAL = 1000;
 

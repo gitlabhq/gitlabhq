@@ -36,8 +36,8 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-form>
-    <div>
+  <gl-dropdown-form class="js-colors-list">
+    <div data-testid="dropdown-content">
       <gl-dropdown-item
         v-for="color in colors"
         :key="color.color"

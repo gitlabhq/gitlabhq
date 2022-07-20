@@ -136,6 +136,7 @@ describe('Blob content viewer component', () => {
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
   const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
   const findCodeIntelligence = () => wrapper.findComponent(CodeIntelligence);
+  const findSourceViewer = () => wrapper.findComponent(SourceViewer);
 
   beforeEach(() => {
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
@@ -192,6 +193,16 @@ describe('Blob content viewer component', () => {
         await createComponent({
           blob: { ...simpleViewerMock, fileType, highlightJs },
         });
+
+        expect(mockAxios.history.get).toHaveLength(1);
+        expect(mockAxios.history.get[0].url).toBe(legacyViewerUrl);
+      });
+
+      it('loads a legacy viewer when the source viewer emits an error', async () => {
+        loadViewer.mockReturnValueOnce(SourceViewer);
+        await createComponent();
+        findSourceViewer().vm.$emit('error');
+        await waitForPromises();
 
         expect(mockAxios.history.get).toHaveLength(1);
         expect(mockAxios.history.get[0].url).toBe(legacyViewerUrl);

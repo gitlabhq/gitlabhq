@@ -358,11 +358,7 @@ RSpec.describe Gitlab::GitalyClient do
       end
     end
 
-    context 'when RequestStore is enabled and the maximum number of calls is not enforced by a feature flag', :request_store do
-      before do
-        stub_feature_flags(gitaly_enforce_requests_limits: false)
-      end
-
+    shared_examples 'enforces maximum allowed Gitaly calls' do
       it 'allows up the maximum number of allowed calls' do
         expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS) }.not_to raise_error
       end
@@ -406,6 +402,18 @@ RSpec.describe Gitlab::GitalyClient do
           expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.to raise_error(Gitlab::GitalyClient::TooManyInvocationsError)
         end
       end
+    end
+
+    context 'when RequestStore is enabled and the maximum number of calls is enforced by a feature flag', :request_store do
+      include_examples 'enforces maximum allowed Gitaly calls'
+    end
+
+    context 'when RequestStore is enabled and the maximum number of calls is not enforced by a feature flag', :request_store do
+      before do
+        stub_feature_flags(gitaly_enforce_requests_limits: false)
+      end
+
+      include_examples 'enforces maximum allowed Gitaly calls'
     end
 
     context 'in production and when RequestStore is enabled', :request_store do
@@ -534,6 +542,46 @@ RSpec.describe Gitlab::GitalyClient do
         gitaly_server.server_version
 
         expect(described_class.list_call_details).to be_empty
+      end
+    end
+  end
+
+  describe '.decode_detailed_error' do
+    let(:detailed_error) do
+      new_detailed_error(GRPC::Core::StatusCodes::INVALID_ARGUMENT,
+                         "error message",
+                         Gitaly::InvalidRefFormatError.new)
+    end
+
+    let(:error_without_details) do
+      error_code = GRPC::Core::StatusCodes::INVALID_ARGUMENT
+      error_message = "error message"
+
+      status_error = Google::Rpc::Status.new(
+        code: error_code,
+        message: error_message,
+        details: nil
+      )
+
+      GRPC::BadStatus.new(
+        error_code,
+        error_message,
+        { "grpc-status-details-bin" => Google::Rpc::Status.encode(status_error) })
+    end
+
+    context 'decodes a structured error' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:error, :result) do
+        detailed_error | Gitaly::InvalidRefFormatError.new
+        error_without_details | nil
+        StandardError.new | nil
+      end
+
+      with_them do
+        it 'returns correct detailed error' do
+          expect(described_class.decode_detailed_error(error)).to eq(result)
+        end
       end
     end
   end

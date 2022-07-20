@@ -22,6 +22,18 @@ export default {
   computed: {
     ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
   },
+  mounted() {
+    // We override the Bootstrap Vue click outside behaviour
+    // to allow for clicking in the autocomplete dropdowns
+    // without this override the submit dropdown will close
+    // whenever a item in the autocomplete dropdown is clicked
+    const originalClickOutHandler = this.$refs.dropdown.$refs.dropdown.clickOutHandler;
+    this.$refs.dropdown.$refs.dropdown.clickOutHandler = (e) => {
+      if (!e.target.closest('.atwho-container')) {
+        originalClickOutHandler(e);
+      }
+    };
+  },
   methods: {
     ...mapActions('batchComments', ['publishReview']),
     async submitReview() {
@@ -52,7 +64,13 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown right class="submit-review-dropdown" variant="info" category="secondary">
+  <gl-dropdown
+    ref="dropdown"
+    right
+    class="submit-review-dropdown"
+    variant="info"
+    category="secondary"
+  >
     <template #button-content>
       {{ __('Finish review') }}
       <gl-icon class="dropdown-chevron" name="chevron-up" />

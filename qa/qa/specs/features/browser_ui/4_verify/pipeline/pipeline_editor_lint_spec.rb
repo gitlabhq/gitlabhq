@@ -2,7 +2,12 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Pipeline editor', :reliable do
+    # TODO: Remove this test when feature flag is removed
+    # Flag rollout issue https://gitlab.com/gitlab-org/gitlab/-/issues/364257
+    describe 'Pipeline editor', :reliable, feature_flag: {
+      name: :simulate_pipeline,
+      scope: :global
+    } do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pipeline-editor-project'
@@ -37,6 +42,8 @@ module QA
       end
 
       before do
+        Runtime::Feature.disable(:simulate_pipeline) if Runtime::Feature.enabled?(:simulate_pipeline)
+
         Flow::Login.sign_in
         project.visit!
         Page::Project::Menu.perform(&:go_to_pipeline_editor)
@@ -50,7 +57,7 @@ module QA
         it 'shows valid validations', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349128' do
           Page::Project::PipelineEditor::Show.perform do |show|
             aggregate_failures do
-              expect(show.ci_syntax_validate_message).to have_content('CI configuration is valid')
+              expect(show.ci_syntax_validate_message).to have_content('Pipeline syntax is correct')
 
               show.go_to_visualize_tab
               { stage1: 'job1', stage2: 'job2' }.each_pair do |stage, job|

@@ -7,6 +7,7 @@ module Projects
 
       before_action :authorize_read_build!
       before_action :builds, only: [:show]
+      before_action :validate_test_reports!, only: [:show]
 
       feature_category :code_testing
 
@@ -23,18 +24,20 @@ module Projects
       def show
         respond_to do |format|
           format.json do
-            if pipeline.has_expired_test_reports?
-              render json: { errors: 'Test report artifacts have expired' }, status: :not_found
-            else
-              render json: TestSuiteSerializer
-                .new(project: project, current_user: @current_user)
-                .represent(test_suite, details: true)
-            end
+            render json: TestSuiteSerializer
+              .new(project: project, current_user: @current_user)
+              .represent(test_suite, details: true)
           end
         end
       end
 
       private
+
+      def validate_test_reports!
+        unless pipeline.has_test_reports?
+          render json: { errors: 'Test report artifacts not found' }, status: :not_found
+        end
+      end
 
       def builds
         @builds ||= pipeline.latest_builds.id_in(build_ids).presence || render_404
@@ -48,7 +51,7 @@ module Projects
 
       def test_suite
         suite = builds.sum do |build|
-          build.collect_test_reports!(Gitlab::Ci::Reports::TestReports.new)
+          build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new)
         end
 
         Gitlab::Ci::Reports::TestFailureHistory.new(suite.failed.values, project).load!

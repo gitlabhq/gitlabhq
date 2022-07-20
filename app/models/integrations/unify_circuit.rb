@@ -19,9 +19,6 @@ module Integrations
       s_('Integrations|Send notifications about project events to a Unify Circuit conversation. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
-    def event_field(event)
-    end
-
     def default_channel_placeholder
     end
 
@@ -38,7 +35,7 @@ module Integrations
           type: 'select',
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: branch_choices
+          choices: self.class.branch_choices
         }
       ]
     end
@@ -49,8 +46,7 @@ module Integrations
       response = Gitlab::HTTP.post(webhook, body: {
         subject: message.project_name,
         text: message.summary,
-        markdown: true,
-        use_read_total_timeout: true
+        markdown: true
       }.to_json)
 
       response if response.success?

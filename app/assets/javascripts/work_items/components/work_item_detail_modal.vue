@@ -80,12 +80,15 @@ export default {
         .catch((e) => {
           this.error =
             e.message ||
-            s__('WorkItem|Something went wrong when deleting the work item. Please try again.');
+            s__('WorkItem|Something went wrong when deleting the task. Please try again.');
         });
     },
     closeModal() {
       this.error = '';
       this.$emit('close');
+    },
+    hide() {
+      this.$refs.modal.hide();
     },
     setErrorMessage(message) {
       this.error = message;
@@ -104,7 +107,6 @@ export default {
     size="lg"
     modal-id="work-item-detail-modal"
     header-class="gl-p-0 gl-pb-2!"
-    body-class="gl-pb-6!"
     @hide="closeModal"
   >
     <gl-alert v-if="error" variant="danger" @dismiss="error = false">
@@ -112,9 +114,11 @@ export default {
     </gl-alert>
 
     <work-item-detail
+      is-modal
       :work-item-parent-id="issueGid"
       :work-item-id="workItemId"
       class="gl-p-5 gl-mt-n3"
+      @close="hide"
       @deleteWorkItem="deleteWorkItem"
     />
   </gl-modal>

@@ -25,7 +25,7 @@ RSpec.describe 'Profile > Password' do
         it 'shows an error message' do
           fill_passwords('mypassword', 'mypassword2')
 
-          page.within('.alert-danger') do
+          page.within('.gl-alert-danger') do
             expect(page).to have_content("Password confirmation doesn't match Password")
           end
         end

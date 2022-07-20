@@ -13,8 +13,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         interval: 2.minutes
       },
       another_action: {
-        threshold: 2,
-        interval: 3.minutes
+        threshold: -> { 2 },
+        interval: -> { 3.minutes }
       }
     }
   end
@@ -70,6 +70,44 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
     end
 
+    describe 'counting actions once per unique resource' do
+      let(:scope) { [user, project] }
+
+      let(:start_time) { Time.current.beginning_of_hour }
+      let(:project1) { instance_double(Project, id: '1') }
+      let(:project2) { instance_double(Project, id: '2') }
+
+      it 'returns true when unique actioned resources count exceeds threshold' do
+        travel_to(start_time) do
+          expect(subject.throttled?(:test_action, scope: scope, resource: project1)).to eq(false)
+        end
+
+        travel_to(start_time + 1.minute) do
+          expect(subject.throttled?(:test_action, scope: scope, resource: project2)).to eq(true)
+        end
+      end
+
+      it 'returns false when unique actioned resource count does not exceed threshold' do
+        travel_to(start_time) do
+          expect(subject.throttled?(:test_action, scope: scope, resource: project1)).to eq(false)
+        end
+
+        travel_to(start_time + 1.minute) do
+          expect(subject.throttled?(:test_action, scope: scope, resource: project1)).to eq(false)
+        end
+      end
+
+      it 'returns false when interval has elapsed' do
+        travel_to(start_time) do
+          expect(subject.throttled?(:test_action, scope: scope, resource: project1)).to eq(false)
+        end
+
+        travel_to(start_time + 2.minutes) do
+          expect(subject.throttled?(:test_action, scope: scope, resource: project2)).to eq(false)
+        end
+      end
+    end
+
     shared_examples 'throttles based on key and scope' do
       let(:start_time) { Time.current.beginning_of_hour }
 
@@ -91,7 +129,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         travel_to(start_time) do
           expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
 
-          # another_action has a threshold of 3 so we simulate 2 requests
+          # another_action has a threshold of 2 so we simulate 2 requests
           expect(subject.throttled?(:another_action, scope: scope)).to eq(false)
           expect(subject.throttled?(:another_action, scope: scope)).to eq(false)
         end
@@ -186,6 +224,22 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once
 
         subject.log_request(request, type, current_user)
+      end
+    end
+  end
+
+  context 'when interval is 0' do
+    let(:rate_limits) { { test_action: { threshold: 1, interval: 0 } } }
+    let(:scope) { user }
+    let(:start_time) { Time.current.beginning_of_hour }
+
+    it 'returns false' do
+      travel_to(start_time) do
+        expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
+      end
+
+      travel_to(start_time + 1.minute) do
+        expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
       end
     end
   end

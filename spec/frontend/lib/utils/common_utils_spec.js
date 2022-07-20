@@ -88,6 +88,28 @@ describe('common_utils', () => {
       expectGetElementIdToHaveBeenCalledWith('user-content-definição');
     });
 
+    it(`does not scroll when ${commonUtils.NO_SCROLL_TO_HASH_CLASS} is set on target`, () => {
+      jest.spyOn(window, 'scrollBy');
+
+      document.body.innerHTML += `
+        <div id="parent">
+          <a href="#test">Link</a>
+          <div style="height: 2000px;"></div>
+          <div id="test" style="height: 2000px;" class="${commonUtils.NO_SCROLL_TO_HASH_CLASS}"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+      jest.runOnlyPendingTimers();
+
+      try {
+        expect(window.scrollBy).not.toHaveBeenCalled();
+      } finally {
+        document.getElementById('parent').remove();
+      }
+    });
+
     it('scrolls element into view', () => {
       document.body.innerHTML += `
         <div id="parent">

@@ -274,6 +274,9 @@ export default {
             v-if="$options.showCodequalityLeft(props)"
             :codequality="props.line.left.codequality"
             :file-path="props.filePath"
+            @showCodeQualityFindings="
+              listeners.toggleCodeQualityFindings(props.line.left.codequality[0].line)
+            "
           />
         </div>
         <div
@@ -395,6 +398,9 @@ export default {
             :codequality="props.line.right.codequality"
             :file-path="props.filePath"
             data-testid="codeQualityIcon"
+            @showCodeQualityFindings="
+              listeners.toggleCodeQualityFindings(props.line.right.codequality[0].line)
+            "
           />
         </div>
         <div

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Integrate LDAP with GitLab **(FREE SELF)**
 
-GitLab integrates with [LDAP](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol)
+GitLab integrates with [LDAP - Lightweight Directory Access Protocol](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol)
 to support user authentication.
 
 This integration works with most LDAP-compliant directory servers, including:
@@ -274,7 +274,7 @@ gitlab_rails['ldap_servers'] = {
 
 This example results in the following sign-in page:
 
-![Multiple LDAP servers sign in](img/multi_login.gif)
+![Multiple LDAP servers sign in](img/multi_login.png)
 
 ### Set up LDAP user filter
 

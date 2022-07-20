@@ -222,7 +222,7 @@ module QA
         def has_pipeline_status?(text)
           # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
           wait_until(max_duration: 120, sleep_interval: 5, reload: true) do
-            has_element?(:merge_request_pipeline_info_content, text: text, wait: 15 )
+            has_element?(:merge_request_pipeline_info_content, text: text, wait: 15)
           end
         end
 
@@ -277,6 +277,11 @@ module QA
           has_element?(:merge_button, disabled: false)
         end
 
+        # Waits up 10 seconds and returns false if the Revert button is not enabled
+        def revertible?
+          has_element?(:revert_button, disabled: false, wait: 10)
+        end
+
         # Waits up 60 seconds and raises an error if unable to merge.
         #
         # If a state is encountered in which a user would typically refresh the page, this will refresh the page and
@@ -318,11 +323,15 @@ module QA
         end
 
         def merge_immediately!
-          if has_element?(:merge_moment_dropdown)
-            click_element(:merge_moment_dropdown, skip_finished_loading_check: true)
-            click_element(:merge_immediately_menu_item, skip_finished_loading_check: true)
-          else
-            click_element(:merge_button, skip_finished_loading_check: true)
+          retry_until(reload: true, sleep_interval: 1, max_attempts: 12) do
+            if has_element?(:merge_moment_dropdown)
+              click_element(:merge_moment_dropdown, skip_finished_loading_check: true)
+              click_element(:merge_immediately_menu_item, skip_finished_loading_check: true)
+            else
+              click_element(:merge_button, skip_finished_loading_check: true)
+            end
+
+            merged?
           end
         end
 

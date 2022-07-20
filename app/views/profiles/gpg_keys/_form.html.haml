@@ -1,6 +1,6 @@
 %div
   = form_for [:profile, @gpg_key], html: { class: 'js-requires-input' } do |f|
-    = form_errors(@gpg_key)
+    = form_errors(@gpg_key, pajamas_alert: true)
 
     .form-group
       = f.label :key, s_('Profiles|Key'), class: 'label-bold'

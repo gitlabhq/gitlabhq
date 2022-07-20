@@ -1818,7 +1818,7 @@ RSpec.describe Projects::IssuesController do
 
         context 'user is allowed access' do
           before do
-            project.add_user(user, :maintainer)
+            project.add_member(user, :maintainer)
           end
 
           it 'displays all available notes' do

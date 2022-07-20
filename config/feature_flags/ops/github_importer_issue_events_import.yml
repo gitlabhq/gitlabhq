@@ -1,0 +1,8 @@
+---
+name: github_importer_issue_events_import
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89134
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365977
+milestone: '15.2'
+type: ops
+group: group::import
+default_enabled: false

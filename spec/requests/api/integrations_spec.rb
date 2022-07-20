@@ -55,25 +55,20 @@ RSpec.describe API::Integrations do
       describe "PUT /projects/:id/#{endpoint}/#{integration.dasherize}" do
         include_context integration
 
-        # NOTE: Some attributes are not supported for PUT requests, even though in most cases they should be.
-        # For some of them the problem is somewhere else, i.e. most chat integrations don't support the `*_channel`
-        # fields but they're incorrectly included in `#fields`.
-        #
+        # NOTE: Some attributes are not supported for PUT requests, even though they probably should be.
         # We can fix these manually, or with a generic approach like https://gitlab.com/gitlab-org/gitlab/-/issues/348208
-        let(:missing_channel_attributes) { %i[push_channel issue_channel confidential_issue_channel merge_request_channel note_channel confidential_note_channel tag_push_channel pipeline_channel wiki_page_channel] }
         let(:missing_attributes) do
           {
             datadog: %i[archive_trace_events],
-            discord: missing_channel_attributes + %i[branches_to_be_notified notify_only_broken_pipelines],
-            hangouts_chat: missing_channel_attributes + %i[notify_only_broken_pipelines],
+            discord: %i[branches_to_be_notified notify_only_broken_pipelines],
+            hangouts_chat: %i[notify_only_broken_pipelines],
             jira: %i[issues_enabled project_key vulnerabilities_enabled vulnerabilities_issuetype],
             mattermost: %i[deployment_channel labels_to_be_notified],
-            microsoft_teams: missing_channel_attributes,
             mock_ci: %i[enable_ssl_verification],
             prometheus: %i[manual_configuration],
             slack: %i[alert_events alert_channel deployment_channel labels_to_be_notified],
-            unify_circuit: missing_channel_attributes + %i[branches_to_be_notified notify_only_broken_pipelines],
-            webex_teams: missing_channel_attributes + %i[branches_to_be_notified notify_only_broken_pipelines]
+            unify_circuit: %i[branches_to_be_notified notify_only_broken_pipelines],
+            webex_teams: %i[branches_to_be_notified notify_only_broken_pipelines]
           }
         end
 
@@ -365,6 +360,31 @@ RSpec.describe API::Integrations do
         put api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user), params: { webhook: 'https://hook.example.com' }
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    describe 'Jira integration' do
+      let(:integration_name) { 'jira' }
+      let(:params) do
+        { url: 'https://jira.example.com', username: 'username', password: 'password' }
+      end
+
+      before do
+        project.create_jira_integration(active: true, properties: params)
+      end
+
+      it 'returns the jira_issue_transition_id for get request' do
+        get api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['properties']).to include('jira_issue_transition_id' => nil)
+      end
+
+      it 'returns the jira_issue_transition_id for put request' do
+        put api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user), params: params.merge(jira_issue_transition_id: '1')
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['properties']['jira_issue_transition_id']).to eq('1')
       end
     end
 

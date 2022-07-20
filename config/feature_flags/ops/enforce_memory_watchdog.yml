@@ -1,0 +1,8 @@
+---
+name: enforce_memory_watchdog
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91910
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/367534
+milestone: '15.2'
+type: ops
+group: group::memory
+default_enabled: false

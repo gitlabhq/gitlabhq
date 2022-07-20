@@ -26,6 +26,13 @@ class Ability
       end
     end
 
+    # A list of users that can read confidential notes in a project
+    def users_that_can_read_internal_notes(users, note_parent)
+      DeclarativePolicy.subject_scope do
+        users.select { |u| allowed?(u, :reporter_access, note_parent) }
+      end
+    end
+
     # Returns an Array of Issues that can be read by the given user.
     #
     # issues - The issues to reduce down to those readable by the user.

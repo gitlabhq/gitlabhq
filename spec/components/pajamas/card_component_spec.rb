@@ -16,15 +16,15 @@ RSpec.describe Pajamas::CardComponent, :aggregate_failures, type: :component do
     end
 
     it 'renders card header' do
-      expect(rendered_component).to have_content(header)
+      expect(page).to have_content(header)
     end
 
     it 'renders card body' do
-      expect(rendered_component).to have_content(body)
+      expect(page).to have_content(body)
     end
 
     it 'renders footer' do
-      expect(rendered_component).to have_content(footer)
+      expect(page).to have_content(footer)
     end
   end
 
@@ -34,13 +34,13 @@ RSpec.describe Pajamas::CardComponent, :aggregate_failures, type: :component do
     end
 
     it 'does not have a header or footer' do
-      expect(rendered_component).not_to have_selector('.gl-card-header')
-      expect(rendered_component).not_to have_selector('.gl-card-footer')
+      expect(page).not_to have_selector('.gl-card-header')
+      expect(page).not_to have_selector('.gl-card-footer')
     end
 
     it 'renders the card and body' do
-      expect(rendered_component).to have_selector('.gl-card')
-      expect(rendered_component).to have_selector('.gl-card-body')
+      expect(page).to have_selector('.gl-card')
+      expect(page).to have_selector('.gl-card-body')
     end
   end
 
@@ -58,23 +58,23 @@ RSpec.describe Pajamas::CardComponent, :aggregate_failures, type: :component do
     end
 
     it 'renders card options' do
-      expect(rendered_component).to have_selector('._card_class_')
-      expect(rendered_component).to have_selector('[data-testid="_card_testid_"]')
+      expect(page).to have_selector('._card_class_')
+      expect(page).to have_selector('[data-testid="_card_testid_"]')
     end
 
     it 'renders header options' do
-      expect(rendered_component).to have_selector('._header_class_')
-      expect(rendered_component).to have_selector('[data-testid="_header_testid_"]')
+      expect(page).to have_selector('._header_class_')
+      expect(page).to have_selector('[data-testid="_header_testid_"]')
     end
 
     it 'renders body options' do
-      expect(rendered_component).to have_selector('._body_class_')
-      expect(rendered_component).to have_selector('[data-testid="_body_testid_"]')
+      expect(page).to have_selector('._body_class_')
+      expect(page).to have_selector('[data-testid="_body_testid_"]')
     end
 
     it 'renders footer options' do
-      expect(rendered_component).to have_selector('._footer_class_')
-      expect(rendered_component).to have_selector('[data-testid="_footer_testid_"]')
+      expect(page).to have_selector('._footer_class_')
+      expect(page).to have_selector('[data-testid="_footer_testid_"]')
     end
   end
 end

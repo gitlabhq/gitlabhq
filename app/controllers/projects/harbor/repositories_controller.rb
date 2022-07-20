@@ -3,8 +3,12 @@
 module Projects
   module Harbor
     class RepositoriesController < ::Projects::Harbor::ApplicationController
-      def show
-        render :index
+      include ::Harbor::Repository
+
+      private
+
+      def container
+        @project
       end
     end
   end

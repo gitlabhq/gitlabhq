@@ -20,6 +20,7 @@ export default {
 
   computed: {
     allSlotNames() {
+      // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
       return Object.keys(this.$slots);
     },
   },

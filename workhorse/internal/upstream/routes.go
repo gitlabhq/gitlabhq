@@ -3,7 +3,6 @@ package upstream
 import (
 	"net/http"
 	"net/url"
-	"path"
 	"regexp"
 
 	"github.com/gorilla/websocket"
@@ -222,8 +221,7 @@ func configureRoutes(u *upstream) {
 	requestBodyUploader := upload.RequestBody(api, signingProxy, preparer)
 	mimeMultipartUploader := upload.Multipart(api, signingProxy, preparer)
 
-	uploadPath := path.Join(u.DocumentRoot, "uploads/tmp")
-	tempfileMultipartProxy := upload.SkipRailsPreAuthMultipart(uploadPath, api, proxy, preparer)
+	tempfileMultipartProxy := upload.FixedPreAuthMultipart(api, proxy, preparer)
 	ciAPIProxyQueue := queueing.QueueRequests("ci_api_job_requests", tempfileMultipartProxy, u.APILimit, u.APIQueueLimit, u.APIQueueTimeout)
 	ciAPILongPolling := builds.RegisterHandler(ciAPIProxyQueue, redis.WatchKey, u.APICILongPollingDuration)
 

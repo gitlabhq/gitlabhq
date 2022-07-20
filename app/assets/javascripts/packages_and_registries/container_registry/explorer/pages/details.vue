@@ -24,7 +24,6 @@ import {
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   UNFINISHED_STATUS,
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
-  ROOT_IMAGE_TEXT,
   GRAPHQL_PAGE_SIZE,
   MISSING_OR_DELETED_IMAGE_TITLE,
   MISSING_OR_DELETED_IMAGE_MESSAGE,
@@ -111,7 +110,7 @@ export default {
   methods: {
     updateBreadcrumb() {
       const name = this.containerRepository?.id
-        ? this.containerRepository?.name || ROOT_IMAGE_TEXT
+        ? this.containerRepository?.name || this.containerRepository?.project?.path
         : MISSING_OR_DELETED_IMAGE_BREADCRUMB;
       this.breadCrumbState.updateName(name);
     },

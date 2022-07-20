@@ -39,6 +39,7 @@ const i18n = {
   primaryTrainingDescription: s__(
     'SecurityTraining|Training from this partner takes precedence when more than one training partner is enabled.',
   ),
+  unavailableText: s__('SecurityConfiguration|Available with Ultimate'),
 };
 
 export default {
@@ -73,6 +74,13 @@ export default {
       },
     },
   },
+  props: {
+    securityTrainingEnabled: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
   data() {
     return {
       errorMessage: '',
@@ -232,12 +240,13 @@ export default {
     </div>
     <ul v-else class="gl-list-style-none gl-m-0 gl-p-0">
       <li v-for="provider in securityTrainingProviders" :key="provider.id" class="gl-mb-6">
-        <gl-card>
+        <gl-card :body-class="{ 'gl-bg-gray-10': !securityTrainingEnabled }">
           <div class="gl-display-flex">
             <gl-toggle
               :value="provider.isEnabled"
               :label="__('Training mode')"
               label-position="hidden"
+              :disabled="!securityTrainingEnabled"
               @change="toggleProvider(provider)"
             />
             <div v-if="$options.TEMP_PROVIDER_LOGOS[provider.name]" class="gl-ml-4">
@@ -249,7 +258,18 @@ export default {
               ></div>
             </div>
             <div class="gl-ml-3">
-              <h3 class="gl-font-lg gl-m-0 gl-mb-2">{{ provider.name }}</h3>
+              <div class="gl-display-flex gl-justify-content-space-between">
+                <h3 class="gl-font-lg gl-m-0 gl-mb-2">
+                  {{ provider.name }}
+                </h3>
+                <span
+                  v-if="!securityTrainingEnabled"
+                  data-testid="unavailable-text"
+                  class="gl-text-gray-600"
+                >
+                  {{ $options.i18n.unavailableText }}
+                </span>
+              </div>
               <p>
                 {{ provider.description }}
                 <gl-link
@@ -263,7 +283,7 @@ export default {
               </p>
               <gl-form-radio
                 :checked="primaryProviderId"
-                :disabled="!provider.isEnabled"
+                :disabled="!securityTrainingEnabled || !provider.isEnabled"
                 :value="provider.id"
                 @change="setPrimaryProvider(provider)"
               >

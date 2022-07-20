@@ -61,7 +61,7 @@ export default {
         },
       });
 
-      return document.dispatchEvent(headerTodoEvent);
+      document.dispatchEvent(headerTodoEvent);
     },
     addToDo() {
       this.isUpdating = true;
@@ -75,9 +75,10 @@ export default {
         })
         .then(({ data: { errors = [] } }) => {
           if (errors[0]) {
-            return this.throwError(errors[0]);
+            this.throwError(errors[0]);
+            return;
           }
-          return this.updateToDoCount(true);
+          this.updateToDoCount(true);
         })
         .catch(() => {
           this.throwError();
@@ -98,9 +99,10 @@ export default {
         })
         .then(({ data: { errors = [] } }) => {
           if (errors[0]) {
-            return this.throwError(errors[0]);
+            this.throwError(errors[0]);
+            return;
           }
-          return this.updateToDoCount(false);
+          this.updateToDoCount(false);
         })
         .catch(() => {
           this.throwError();

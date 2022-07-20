@@ -240,4 +240,20 @@ RSpec.describe Integrations::Datadog do
       end
     end
   end
+
+  describe '#fields' do
+    it 'includes the archive_trace_events field' do
+      expect(instance.fields).to include(have_attributes(name: 'archive_trace_events'))
+    end
+
+    context 'when the FF :datadog_integration_logs_collection is disabled' do
+      before do
+        stub_feature_flags(datadog_integration_logs_collection: false)
+      end
+
+      it 'does not include the archive_trace_events field' do
+        expect(instance.fields).not_to include(have_attributes(name: 'archive_trace_events'))
+      end
+    end
+  end
 end

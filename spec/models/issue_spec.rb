@@ -14,7 +14,6 @@ RSpec.describe Issue do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to belong_to(:iteration) }
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to have_one(:namespace).through(:project) }
     it { is_expected.to belong_to(:work_item_type).class_name('WorkItems::Type') }
     it { is_expected.to belong_to(:moved_to).class_name('Issue') }
     it { is_expected.to have_one(:moved_from).class_name('Issue') }
@@ -130,6 +129,37 @@ RSpec.describe Issue do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_created_action)
 
         create(:issue)
+      end
+    end
+
+    context 'issue namespace' do
+      let(:issue) { build(:issue, project: reusable_project) }
+
+      it 'sets the namespace_id' do
+        expect(issue).to be_valid
+        expect(issue.namespace).to eq(reusable_project.project_namespace)
+      end
+
+      context 'when issue is created' do
+        it 'sets the namespace_id' do
+          issue.save!
+
+          expect(issue.reload.namespace).to eq(reusable_project.project_namespace)
+        end
+      end
+
+      context 'when existing issue is saved' do
+        let(:issue) { create(:issue) }
+
+        before do
+          issue.update!(namespace_id: nil)
+        end
+
+        it 'sets the namespace id' do
+          issue.update!(title: "#{issue.title} and something extra")
+
+          expect(issue.namespace).to eq(issue.project.project_namespace)
+        end
       end
     end
   end
@@ -651,28 +681,6 @@ RSpec.describe Issue do
     end
   end
 
-  describe '#has_related_branch?' do
-    let(:issue) { create(:issue, project: reusable_project, title: "Blue Bell Knoll") }
-
-    subject { issue.has_related_branch? }
-
-    context 'branch found' do
-      before do
-        allow(issue.project.repository).to receive(:branch_names).and_return(["iceblink-luck", issue.to_branch_name])
-      end
-
-      it { is_expected.to eq true }
-    end
-
-    context 'branch not found' do
-      before do
-        allow(issue.project.repository).to receive(:branch_names).and_return(["lazy-calm"])
-      end
-
-      it { is_expected.to eq false }
-    end
-  end
-
   it_behaves_like 'an editable mentionable' do
     subject { create(:issue, project: create(:project, :repository)) }
 
@@ -744,25 +752,11 @@ RSpec.describe Issue do
   end
 
   describe '#participants' do
-    context 'using a public project' do
-      let_it_be(:public_project) { create(:project, :public) }
-      let_it_be(:issue) { create(:issue, project: public_project) }
+    it_behaves_like 'issuable participants' do
+      let_it_be(:issuable_parent) { create(:project, :public) }
+      let_it_be_with_refind(:issuable) { create(:issue, project: issuable_parent) }
 
-      let!(:note1) do
-        create(:note_on_issue, noteable: issue, project: public_project, note: 'a')
-      end
-
-      let!(:note2) do
-        create(:note_on_issue, noteable: issue, project: public_project, note: 'b')
-      end
-
-      it 'includes the issue author' do
-        expect(issue.participants).to include(issue.author)
-      end
-
-      it 'includes the authors of the notes' do
-        expect(issue.participants).to include(note1.author, note2.author)
-      end
+      let(:params) { { noteable: issuable, project: issuable_parent } }
     end
 
     context 'using a private project' do

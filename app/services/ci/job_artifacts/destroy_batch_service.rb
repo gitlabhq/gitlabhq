@@ -184,10 +184,12 @@ module Ci
           project_ids << artifact.project_id
         end
 
-        Gitlab::ProjectStatsRefreshConflictsLogger.warn_skipped_artifact_deletion_during_stats_refresh(
-          method: 'Ci::JobArtifacts::DestroyBatchService#execute',
-          project_ids: project_ids
-        )
+        if project_ids.any?
+          Gitlab::ProjectStatsRefreshConflictsLogger.warn_skipped_artifact_deletion_during_stats_refresh(
+            method: 'Ci::JobArtifacts::DestroyBatchService#execute',
+            project_ids: project_ids
+          )
+        end
       end
     end
   end

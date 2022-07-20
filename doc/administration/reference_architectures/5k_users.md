@@ -44,7 +44,7 @@ costly-to-operate environment by using the
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
@@ -156,13 +156,14 @@ As a general guidance, GitLab should run on most infrastructure such as reputabl
 
 Be aware of the following specific call outs:
 
+- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible. See [14.4.0](../../update/index.md#1440) for more details.
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/#:~:text=Azure%20Database%20for%20PostgreSQL%20is,high%20availability%2C%20and%20dynamic%20scalability.) is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to known performance issues or missing features.
 - [Azure Blob Storage](https://docs.microsoft.com/en-us/azure/storage/blobs/) is recommended to be configured with [Premium accounts](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium) to ensure consistent performance.
 
 ### Praefect PostgreSQL
 
 It's worth noting that at this time [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
-that to achieve full High Availability a third-party PostgreSQL database solution will be required.
+that to achieve full High Availability a third-party PostgreSQL database solution is required.
 We hope to offer a built in solutions for these restrictions in the future but in the meantime a non HA PostgreSQL server
 can be set up via Omnibus GitLab, which the above specs reflect. Refer to the following issues for more information: [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919) & [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).
 
@@ -232,7 +233,7 @@ The following list includes descriptions of each server and its assigned IP:
 
 ## Configure the external load balancer
 
-In a multi-node GitLab configuration, you'll need a load balancer to route
+In a multi-node GitLab configuration, you need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use
 or its exact configuration is beyond the scope of GitLab documentation. We assume
 that if you're managing multi-node systems like GitLab, you already have a load
@@ -245,7 +246,7 @@ This architecture has been tested and validated with [HAProxy](https://www.hapro
 as the load balancer. Although other load balancers with similar feature sets
 could also be used, those load balancers have not been validated.
 
-The next question is how you will handle SSL in your environment.
+The next question is how you handle SSL in your environment.
 There are several different options:
 
 - [The application node terminates SSL](#application-node-terminates-ssl).
@@ -257,8 +258,8 @@ There are several different options:
 ### Application node terminates SSL
 
 Configure your load balancer to pass connections on port 443 as `TCP` rather
-than `HTTP(S)` protocol. This will pass the connection to the application node's
-NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
+than `HTTP(S)` protocol. This passes the connection to the application node's
+NGINX service untouched. NGINX has the SSL certificate and listen on port 443.
 
 See the [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
 for details on managing SSL certificates and configuring NGINX.
@@ -266,10 +267,10 @@ for details on managing SSL certificates and configuring NGINX.
 ### Load balancer terminates SSL without backend SSL
 
 Configure your load balancer to use the `HTTP(S)` protocol rather than `TCP`.
-The load balancer will then be responsible for managing SSL certificates and
+The load balancer is then responsible for managing SSL certificates and
 terminating SSL.
 
-Since communication between the load balancer and GitLab will not be secure,
+Since communication between the load balancer and GitLab is not secure,
 there is some additional configuration needed. See the
 [NGINX proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
 for details.
@@ -277,12 +278,12 @@ for details.
 ### Load balancer terminates SSL with backend SSL
 
 Configure your load balancers to use the 'HTTP(S)' protocol rather than 'TCP'.
-The load balancers will be responsible for managing SSL certificates that
-end users will see.
+The load balancers are responsible for managing SSL certificates that
+end users see.
 
-Traffic will also be secure between the load balancers and NGINX in this
+Traffic is also secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
-connection will be secure all the way. However, configuration will need to be
+connection is secure all the way. However, configuration needs to be
 added to GitLab to configure SSL certificates. See
 [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
 for details on managing SSL certificates and configuring NGINX.
@@ -292,7 +293,7 @@ for details on managing SSL certificates and configuring NGINX.
 Ensure the external load balancer only routes to working services with built
 in monitoring endpoints. The [readiness checks](../../user/admin_area/monitoring/health_check.md)
 all require [additional configuration](../monitoring/ip_whitelist.md)
-on the nodes being checked, otherwise, the external load balancer will not be able to
+on the nodes being checked, otherwise, the external load balancer is not able to
 connect.
 
 ### Ports
@@ -311,11 +312,11 @@ The basic ports to be used are shown in the table below.
   to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
   [web terminal](../integration/terminal.md) integration guide for
   more details.
-- (*2*): When using HTTPS protocol for port 443, you will need to add an SSL
+- (*2*): When using HTTPS protocol for port 443, you need to add an SSL
   certificate to the load balancers. If you wish to terminate SSL at the
   GitLab application server instead, use TCP protocol.
 
-If you're using GitLab Pages with custom domain support you will need some
+If you're using GitLab Pages with custom domain support you need some
 additional port configurations.
 GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 `pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
@@ -337,7 +338,7 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 
 Some organizations have policies against opening SSH port 22. In this case,
 it may be helpful to configure an alternate SSH hostname that allows users
-to use SSH on port 443. An alternate SSH hostname will require a new virtual IP address
+to use SSH on port 443. An alternate SSH hostname requires a new virtual IP address
 compared to the other GitLab HTTP configuration above.
 
 Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
@@ -359,7 +360,7 @@ such as connections to [PgBouncer](#configure-pgbouncer) and [Praefect](#configu
 
 It's a separate node from the External Load Balancer and shouldn't have any access externally.
 
-The following IP will be used as an example:
+The following IP is used as an example:
 
 - `10.6.0.40`: Internal Load Balancer
 
@@ -433,8 +434,8 @@ You are highly encouraged to read the [Redis Sentinel](https://redis.io/topics/s
 before configuring Redis with GitLab to fully understand the topology and
 architecture.
 
-In this section, you'll be guided through configuring an external Redis instance
-to be used with GitLab. The following IPs will be used as an example:
+In this section, you are guided through configuring an external Redis instance
+to be used with GitLab. The following IPs are used as an example:
 
 - `10.6.0.61`: Redis Primary
 - `10.6.0.62`: Redis Replica 1
@@ -442,7 +443,7 @@ to be used with GitLab. The following IPs will be used as an example:
 
 ### Provide your own Redis instance
 
-Managed Redis from cloud providers such as AWS ElastiCache will work. If these
+Managed Redis from cloud providers such as AWS ElastiCache works. If these
 services support high availability, be sure it is **not** the Redis Cluster type.
 
 Redis version 5.0 or higher is required, as this is what ships with
@@ -451,7 +452,7 @@ do not support an optional count argument to SPOP which is now required for
 [Merge Trains](../../ci/pipelines/merge_trains.md).
 
 Note the Redis node's IP address or hostname, port, and password (if required).
-These will be necessary when configuring the
+These are necessary when configuring the
 [GitLab application servers](#configure-gitlab-rails) later.
 
 ### Standalone Redis using Omnibus GitLab
@@ -617,8 +618,8 @@ You can specify multiple roles, like sentinel and Redis, as:
 [roles](https://docs.gitlab.com/omnibus/roles/).
 
 These values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
-a failover, as the nodes will be managed by the [Sentinels](#configure-consul-and-sentinel), and even after a
-`gitlab-ctl reconfigure`, they will get their configuration restored by
+a failover, as the nodes are managed by the [Sentinels](#configure-consul-and-sentinel), and even after a
+`gitlab-ctl reconfigure`, they get their configuration restored by
 the same Sentinels.
 
 Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
@@ -633,7 +634,7 @@ are supported and can be added if needed.
 ## Configure Consul and Sentinel
 
 Now that the Redis servers are all set up, let's configure the Sentinel
-servers. The following IPs will be used as an example:
+servers. The following IPs are used as an example:
 
 - `10.6.0.11`: Consul/Sentinel 1
 - `10.6.0.12`: Consul/Sentinel 2
@@ -647,7 +648,7 @@ clients to report `NOAUTH Authentication required.`.
 
 To configure the Sentinel:
 
-1. SSH in to the server that will host Consul/Sentinel.
+1. SSH in to the server that hosts Consul/Sentinel.
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to both follow _only_ installation steps 1 and 2
    on the page, and to select the correct Omnibus GitLab package, with the same version
@@ -776,7 +777,7 @@ run: sentinel: (pid 30098) 76832s; run: log: (pid 29704) 76850s
 
 ## Configure PostgreSQL
 
-In this section, you'll be guided through configuring a highly available PostgreSQL
+In this section, you are guided through configuring a highly available PostgreSQL
 cluster to be used with GitLab.
 
 ### Provide your own PostgreSQL instance
@@ -784,7 +785,7 @@ cluster to be used with GitLab.
 If you're hosting GitLab on a cloud provider, you can optionally use a
 managed service for PostgreSQL.
 
-A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
+A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
 
 If you use a cloud-managed service, or provide your own PostgreSQL:
 
@@ -813,7 +814,7 @@ replication and failover requires:
 
   A local PgBouncer service to be configured on each PostgreSQL node. Note that this is separate from the main PgBouncer cluster that tracks the primary.
 
-The following IPs will be used as an example:
+The following IPs are used as an example:
 
 - `10.6.0.31`: PostgreSQL primary
 - `10.6.0.32`: PostgreSQL secondary 1
@@ -828,8 +829,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 #### PostgreSQL nodes
 
 1. SSH in to one of the PostgreSQL nodes.
-1. Generate a password hash for the PostgreSQL username/password pair. This assumes you will use the default
-   username of `gitlab` (recommended). The command will request a password
+1. Generate a password hash for the PostgreSQL username/password pair. This assumes you use the default
+   username of `gitlab` (recommended). The command requests a password
    and confirmation. Use the value that is output by this command in the next
    step as the value of `<postgresql_password_hash>`:
 
@@ -837,8 +838,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    sudo gitlab-ctl pg-password-md5 gitlab
    ```
 
-1. Generate a password hash for the PgBouncer username/password pair. This assumes you will use the default
-   username of `pgbouncer` (recommended). The command will request a password
+1. Generate a password hash for the PgBouncer username/password pair. This assumes you use the default
+   username of `pgbouncer` (recommended). The command requests a password
    and confirmation. Use the value that is output by this command in the next
    step as the value of `<pgbouncer_password_hash>`:
 
@@ -846,8 +847,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    sudo gitlab-ctl pg-password-md5 pgbouncer
    ```
 
-1. Generate a password hash for the PostgreSQL replication username/password pair. This assumes you will use the default
-   username of `gitlab_replicator` (recommended). The command will request a password
+1. Generate a password hash for the PostgreSQL replication username/password pair. This assumes you use the default
+   username of `gitlab_replicator` (recommended). The command requests a password
    and a confirmation. Use the value that is output by this command in the next step
    as the value of `<postgresql_replication_password_hash>`:
 
@@ -855,8 +856,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    sudo gitlab-ctl pg-password-md5 gitlab_replicator
    ```
 
-1. Generate a password hash for the Consul database username/password pair. This assumes you will use the default
-   username of `gitlab-consul` (recommended). The command will request a password
+1. Generate a password hash for the Consul database username/password pair. This assumes you use the default
+   username of `gitlab-consul` (recommended). The command requests a password
    and confirmation. Use the value that is output by this command in the next
    step as the value of `<consul_password_hash>`:
 
@@ -935,7 +936,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    # END user configuration
    ```
 
-PostgreSQL, with Patroni managing its failover, will default to use `pg_rewind` by default to handle conflicts.
+PostgreSQL, with Patroni managing its failover, defaults to use `pg_rewind` by default to handle conflicts.
 Like most failover handling methods, this has a small chance of leading to data loss.
 Learn more about the various [Patroni replication methods](../postgresql/replication_and_failover.md#selecting-the-appropriate-patroni-replication-method).
 
@@ -987,7 +988,7 @@ If the 'State' column for any node doesn't say "running", check the
 Now that the PostgreSQL servers are all set up, let's configure PgBouncer
 for tracking and handling reads/writes to the primary database.
 
-The following IPs will be used as an example:
+The following IPs are used as an example:
 
 - `10.6.0.21`: PgBouncer 1
 - `10.6.0.22`: PgBouncer 2
@@ -1111,9 +1112,9 @@ The recommended cluster setup includes the following components:
 - 1 Praefect PostgreSQL node: Database server for Praefect. A third-party solution
   is required for Praefect database connections to be made highly available.
 - 1 load balancer: A load balancer is required for Praefect. The
-  [internal load balancer](#configure-the-internal-load-balancer) will be used.
+  [internal load balancer](#configure-the-internal-load-balancer) is used.
 
-This section will detail how to configure the recommended standard setup in order.
+This section details how to configure the recommended standard setup in order.
 For more advanced setups refer to the [standalone Gitaly Cluster documentation](../gitaly/praefect.md).
 
 ### Configure Praefect PostgreSQL
@@ -1125,7 +1126,7 @@ A built-in solution is being [worked on](https://gitlab.com/gitlab-org/omnibus-g
 
 #### Praefect non-HA PostgreSQL standalone using Omnibus GitLab
 
-The following IPs will be used as an example:
+The following IPs are used as an example:
 
 - `10.6.0.141`: Praefect PostgreSQL
 
@@ -1137,8 +1138,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
 1. SSH in to the Praefect PostgreSQL node.
 1. Create a strong password to be used for the Praefect PostgreSQL user. Take note of this password as `<praefect_postgresql_password>`.
-1. Generate the password hash for the Praefect PostgreSQL username/password pair. This assumes you will use the default
-   username of `praefect` (recommended). The command will request the password `<praefect_postgresql_password>`
+1. Generate the password hash for the Praefect PostgreSQL username/password pair. This assumes you use the default
+   username of `praefect` (recommended). The command requests the password `<praefect_postgresql_password>`
    and confirmation. Use the value that is output by this command in the next
    step as the value of `<praefect_postgresql_password_hash>`:
 
@@ -1215,13 +1216,13 @@ you are using Geo, where separate database instances are required for handling r
 In this setup, the specs of the main database setup shouldn't need to be changed as the impact should be
 minimal.
 
-A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
+A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
 
 Once the database is set up, follow the [post configuration](#praefect-postgresql-post-configuration).
 
 #### Praefect PostgreSQL post-configuration
 
-After the Praefect PostgreSQL server has been set up, you'll then need to configure the user and database for Praefect to use.
+After the Praefect PostgreSQL server has been set up, you then need to configure the user and database for Praefect to use.
 
 We recommend the user be named `praefect` and the database `praefect_production`, and these can be configured as standard in PostgreSQL.
 The password for the user is the same as the one you configured earlier as `<praefect_postgresql_password>`.
@@ -1274,12 +1275,12 @@ Praefect requires several secret tokens to secure communications across the Clus
 
 Gitaly Cluster nodes are configured in Praefect via a `virtual storage`. Each storage contains
 the details of each Gitaly node that makes up the cluster. Each storage is also given a name
-and this name is used in several areas of the configuration. In this guide, the name of the storage will be
+and this name is used in several areas of the configuration. In this guide, the name of the storage is
 `default`. Also, this guide is geared towards new installs, if upgrading an existing environment
 to use Gitaly Cluster, you may need to use a different name.
 Refer to the [Praefect documentation](../gitaly/praefect.md#praefect) for more information.
 
-The following IPs will be used as an example:
+The following IPs are used as an example:
 
 - `10.6.0.131`: Praefect 1
 - `10.6.0.132`: Praefect 2
@@ -1292,6 +1293,9 @@ To configure the Praefect nodes, on each one:
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Edit the `/etc/gitlab/gitlab.rb` file to configure Praefect:
+
+   NOTE:
+   You can't remove the `default` entry from `virtual_storages` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
 <!--
 Updates to example must be made at:
@@ -1429,7 +1433,7 @@ For configuring Gitaly you should note the following:
 - `git_data_dirs` should be configured to reflect the storage path for the specific Gitaly node
 - `auth_token` should be the same as `praefect_internal_token`
 
-The following IPs will be used as an example:
+The following IPs are used as an example:
 
 - `10.6.0.91`: Gitaly 1
 - `10.6.0.92`: Gitaly 2
@@ -1811,7 +1815,7 @@ On each node perform the following:
       ```
 
    1. Specify the necessary NFS mounts in `/etc/fstab`.
-      The exact contents of `/etc/fstab` will depend on how you chose
+      The exact contents of `/etc/fstab` depends on how you chose
       to configure your NFS server. See the [NFS documentation](../nfs.md)
       for examples and the various options.
 
@@ -1827,9 +1831,9 @@ On each node perform the following:
    on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
-   on the application server should point to the external URL that users will use
+   on the application server should point to the external URL that users use
    to access GitLab. This would be the URL of the [external load balancer](#configure-the-external-load-balancer)
-   which will route traffic to the GitLab application server:
+   which routes traffic to the GitLab application server:
 
    ```ruby
    external_url 'https://gitlab.example.com'
@@ -1999,7 +2003,7 @@ On each node perform the following:
 
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
-certificates aren't present, NGINX will fail to start. For more information, see
+certificates aren't present, NGINX fails to start. For more information, see
 the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
 
 ### GitLab Rails post-configuration
@@ -2141,7 +2145,7 @@ on what features you intend to use:
 
 |Object storage type|Supported by consolidated configuration?|
 |-------------------|----------------------------------------|
-| [Backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage) | No |
+| [Backups](../../raketasks/backup_gitlab.md#uploading-backups-to-a-remote-cloud-storage) | No |
 | [Job artifacts](../job_artifacts.md#using-object-storage) including archived job logs | Yes |
 | [LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage) | Yes |
 | [Uploads](../uploads.md#using-object-storage) | Yes |
@@ -2260,7 +2264,7 @@ services where applicable):
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.

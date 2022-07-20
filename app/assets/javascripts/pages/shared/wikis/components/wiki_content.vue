@@ -3,6 +3,7 @@ import { GlSkeletonLoader, GlSafeHtmlDirective, GlAlert } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { handleLocationHash } from '~/lib/utils/common_utils';
 import { renderGFM } from '../render_gfm_facade';
 
 export default {
@@ -43,6 +44,7 @@ export default {
         this.$nextTick()
           .then(() => {
             renderGFM(this.$refs.content);
+            handleLocationHash();
           })
           .catch(() =>
             createFlash({

@@ -2,6 +2,7 @@ import { basename } from 'path';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { getMergeRequests, getMergeRequestWithChanges } from 'test_helpers/fixtures';
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import * as ideHelper from './helpers/ide_helper';
 import startWebIDE from './helpers/start';
 
@@ -16,6 +17,8 @@ describe('IDE: User opens Merge Request', () => {
   let changes;
 
   beforeEach(async () => {
+    stubPerformanceWebAPI();
+
     const [{ iid: mrId }] = getMergeRequests();
 
     changes = getRelevantChanges();

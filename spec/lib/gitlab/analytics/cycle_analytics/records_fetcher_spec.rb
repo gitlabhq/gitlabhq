@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
   describe '#serialized_records' do
     shared_context 'when records are loaded by maintainer' do
       before do
-        project.add_user(user, Gitlab::Access::DEVELOPER)
+        project.add_member(user, Gitlab::Access::DEVELOPER)
       end
 
       it 'returns all records' do
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
 
       context 'when records are loaded by guest' do
         before do
-          project.add_user(user, Gitlab::Access::GUEST)
+          project.add_member(user, Gitlab::Access::GUEST)
         end
 
         it 'filters out confidential issues' do
@@ -124,7 +124,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
     end
 
     before do
-      project.add_user(user, Gitlab::Access::DEVELOPER)
+      project.add_member(user, Gitlab::Access::DEVELOPER)
 
       stub_const('Gitlab::Analytics::CycleAnalytics::RecordsFetcher::MAX_RECORDS', 2)
     end

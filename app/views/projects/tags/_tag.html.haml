@@ -40,6 +40,5 @@
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
 
     - if can?(current_user, :admin_tag, @project)
-      = link_to edit_project_tag_release_path(@project, tag.name), class: 'btn gl-button btn-default btn-icon btn-edit has-tooltip', title: s_('TagsPage|Edit release notes'), data: { container: "body" } do
-        = sprite_icon('pencil', css_class: 'gl-icon')
+      = render 'edit_release_button', tag: tag, project: @project, release: release
       = render 'projects/buttons/remove_tag', project: @project, tag: tag

@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.verify.ci_triggers
 description: Total configured Triggers in project
 product_section: ops
 product_stage: verify
-product_group: group::pipeline execution
+product_group: pipeline_execution
 product_category: continuous_integration
 value_type: number
 status: active

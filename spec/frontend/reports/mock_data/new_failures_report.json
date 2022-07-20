@@ -8,12 +8,14 @@
         {
           "result": "failure",
           "name": "Test#sum when a is 1 and b is 2 returns summary",
+          "file": "spec/file_1.rb",
           "execution_time": 0.009411,
           "system_output": "Failure/Error: is_expected.to eq(3)\n\n  expected: 3\n       got: -1\n\n  (compared using ==)\n./spec/test_spec.rb:12:in `block (4 levels) in <top (required)>'"
         },
         {
           "result": "failure",
           "name": "Test#sum when a is 100 and b is 200 returns summary",
+          "file": "spec/file_2.rb",
           "execution_time": 0.000162,
           "system_output": "Failure/Error: is_expected.to eq(300)\n\n  expected: 300\n       got: -100\n\n  (compared using ==)\n./spec/test_spec.rb:21:in `block (4 levels) in <top (required)>'"
         }

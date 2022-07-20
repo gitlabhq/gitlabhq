@@ -125,7 +125,7 @@ module API
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
 
         if entity == Entities::UserWithAdmin
-          users = users.preload(:identities, :u2f_registrations, :webauthn_registrations, :namespace)
+          users = users.preload(:identities, :u2f_registrations, :webauthn_registrations, :namespace, :followers, :followees, :user_preference)
         end
 
         users, options = with_custom_attributes(users, { with: entity, current_user: current_user })
@@ -324,6 +324,30 @@ module API
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      desc "Disable two factor authentication for a user. Available only for admins" do
+        detail 'This feature was added in GitLab 15.2'
+        success Entities::UserWithAdmin
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      patch ":id/disable_two_factor", feature_category: :authentication_and_authorization do
+        authenticated_as_admin!
+
+        user = User.find_by_id(params[:id])
+        not_found!('User') unless user
+
+        forbidden!('Two-factor authentication for admins cannot be disabled via the API. Use the Rails console') if user.admin?
+
+        result = TwoFactor::DestroyService.new(current_user, user: user).execute
+
+        if result[:status] == :success
+          no_content!
+        else
+          bad_request!(result[:message])
+        end
+      end
 
       desc "Delete a user's identity. Available only for admins" do
         success Entities::UserWithAdmin
@@ -1260,3 +1284,5 @@ module API
     end
   end
 end
+
+API::Users.prepend_mod

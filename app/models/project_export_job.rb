@@ -2,6 +2,7 @@
 
 class ProjectExportJob < ApplicationRecord
   belongs_to :project
+  has_many :relation_exports, class_name: 'Projects::ImportExport::RelationExport'
 
   validates :project, :jid, :status, presence: true
 

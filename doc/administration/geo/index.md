@@ -123,7 +123,7 @@ The following are required to run Geo:
   - PostgreSQL 13 is not supported for Geo, see [epic 3832](https://gitlab.com/groups/gitlab-org/-/epics/3832)
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
-- All sites must run the same GitLab version.
+- All sites must run [the same GitLab and PostgreSQL versions](setup/database.md#postgresql-replication).
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
 and we recommend you use the latest version of GitLab for a better experience.

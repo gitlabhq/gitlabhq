@@ -7,7 +7,7 @@ module Gitlab
 
       LIMITED_ARRAY_SENTINEL = { key: 'truncated', value: '...' }.freeze
       IGNORE_PARAMS = Set.new(%w(controller action format)).freeze
-      KNOWN_PAYLOAD_PARAMS = [:remote_ip, :user_id, :username, :ua, :queue_duration_s,
+      KNOWN_PAYLOAD_PARAMS = [:remote_ip, :user_id, :username, :ua, :queue_duration_s, :response_bytes,
                               :etag_route, :request_urgency, :target_duration_s] + CLOUDFLARE_CUSTOM_HEADERS.values
 
       def self.call(event)
@@ -34,6 +34,10 @@ module Gitlab
 
         if Feature.enabled?(:feature_flag_state_logs, type: :ops)
           payload[:feature_flag_states] = Feature.logged_states.map { |key, state| "#{key}:#{state ? 1 : 0}" }
+        end
+
+        if Feature.disabled?(:log_response_length)
+          payload.delete(:response_bytes)
         end
 
         payload

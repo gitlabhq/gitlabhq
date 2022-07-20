@@ -18,7 +18,7 @@ The access levels are defined in the `Gitlab::Access` module. Currently, these l
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
-- Owner (`50`) - Only valid to set for groups
+- Owner (`50`). Valid for projects in [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/21432).
 
 NOTE:
 In [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects in personal namespaces have an `access_level` of `50`(Owner).

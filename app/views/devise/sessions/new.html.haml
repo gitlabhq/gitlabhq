@@ -1,7 +1,9 @@
 - page_title _("Sign in")
 - content_for :page_specific_javascripts do
+  = render "layouts/google_tag_manager_head"
   = render "layouts/one_trust"
   = render "layouts/bizible"
+= render "layouts/google_tag_manager_body"
 
 #signin-container
   - if any_form_based_providers_enabled?

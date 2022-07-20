@@ -12,7 +12,10 @@ class Admin::SystemInfoController < Admin::ApplicationController
   EXCLUDED_MOUNT_TYPES = [
     'autofs',
     'binfmt_misc',
+    'bpf',
     'cgroup',
+    'cgroup2',
+    'configfs',
     'debugfs',
     'devfs',
     'devpts',

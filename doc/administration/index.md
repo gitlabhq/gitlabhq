@@ -207,15 +207,14 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Troubleshooting
 
-- [Debugging tips](troubleshooting/debug.md): Tips to debug problems when things go wrong.
 - [Log system](logs.md): Where to look for logs.
 - [Sidekiq Troubleshooting](troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
 - [Troubleshooting Elasticsearch](troubleshooting/elasticsearch.md)
-- [Navigating GitLab via Rails console](troubleshooting/navigating_gitlab_via_rails_console.md)
+- [Navigating GitLab via Rails console](operations/rails_console.md)
 - [GitLab application limits](instance_limits.md)
 - [Responding to security incidents](../security/responding_to_security_incidents.md)
 
-### Support Team Docs
+### Support Team Documentation
 
 The GitLab Support Team has collected a lot of information about troubleshooting GitLab.
 The following documents are used by the Support Team or by customers
@@ -231,7 +230,7 @@ who are aware of the risks.
 
 - [Diagnostics tools](troubleshooting/diagnostics_tools.md)
 - [Linux commands](troubleshooting/linux_cheat_sheet.md)
-- [Troubleshooting Kubernetes](troubleshooting/kubernetes_cheat_sheet.md)
+- [Troubleshooting Kubernetes](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
 - [Troubleshooting PostgreSQL](troubleshooting/postgresql.md)
 - [Guide to test environments](troubleshooting/test_environments.md) (for Support Engineers)
 - [GitLab Rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)

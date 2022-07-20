@@ -56,6 +56,19 @@ RSpec.describe Banzai::Filter::FootnoteFilter do
     it 'properly adds the necessary ids and classes' do
       expect(doc.to_html).to eq filtered_footnote.strip
     end
+
+    context 'when GITLAB_TEST_FOOTNOTE_ID is set' do
+      let(:test_footnote_id) { '42' }
+      let(:identifier) { test_footnote_id }
+
+      before do
+        stub_env('GITLAB_TEST_FOOTNOTE_ID', test_footnote_id)
+      end
+
+      it 'uses the test footnote ID instead of a random number' do
+        expect(doc.to_html).to eq filtered_footnote.strip
+      end
+    end
   end
 
   context 'when detecting footnotes' do

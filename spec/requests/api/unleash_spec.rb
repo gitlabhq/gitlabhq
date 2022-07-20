@@ -168,13 +168,53 @@ RSpec.describe API::Unleash do
   end
 
   %w(/feature_flags/unleash/:project_id/features /feature_flags/unleash/:project_id/client/features).each do |features_endpoint|
-    describe "GET #{features_endpoint}" do
+    describe "GET #{features_endpoint}", :use_clean_rails_redis_caching do
       let(:features_url) { features_endpoint.sub(':project_id', project_id.to_s) }
       let(:client) { create(:operations_feature_flags_client, project: project) }
 
       subject { get api(features_url), params: params, headers: headers }
 
       it_behaves_like 'authenticated request'
+
+      context 'when a client fetches feature flags several times' do
+        let(:headers) { { 'UNLEASH-INSTANCEID' => client.token, 'UNLEASH-APPNAME' => 'production' } }
+
+        before do
+          create_list(:operations_feature_flag, 3, project: project)
+        end
+
+        it 'serializes feature flags for the first time and read cached data from the second time' do
+          expect(API::Entities::Unleash::ClientFeatureFlags)
+            .to receive(:represent).with(instance_of(Operations::FeatureFlagsClient), any_args)
+            .once
+
+          5.times { get api(features_url), params: params, headers: headers }
+        end
+
+        it 'increments the cache key when feature flags are modified' do
+          expect(API::Entities::Unleash::ClientFeatureFlags)
+            .to receive(:represent).with(instance_of(Operations::FeatureFlagsClient), any_args)
+            .twice
+
+          2.times { get api(features_url), params: params, headers: headers }
+
+          ::FeatureFlags::CreateService.new(project, project.owner, name: 'feature_flag').execute
+
+          3.times { get api(features_url), params: params, headers: headers }
+        end
+
+        context 'when cache_unleash_client_api is disabled' do
+          before do
+            stub_feature_flags(cache_unleash_client_api: false)
+          end
+
+          it 'serializes feature flags every time' do
+            expect(::API::Entities::UnleashFeature).to receive(:represent).exactly(5).times
+
+            5.times { get api(features_url), params: params, headers: headers }
+          end
+        end
+      end
 
       context 'with version 2 feature flags' do
         it 'does not return a flag without any strategies' do

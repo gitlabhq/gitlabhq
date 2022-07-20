@@ -55,6 +55,31 @@ export const EXPIRATION_POLICY_FOOTER_NOTE = s__(
   'ContainerRegistry|Note: Any policy update will result in a change to the scheduled run date and time',
 );
 
+export const PACKAGES_CLEANUP_POLICY_TITLE = s__(
+  'PackageRegistry|Manage storage used by package assets',
+);
+export const PACKAGES_CLEANUP_POLICY_DESCRIPTION = s__(
+  'PackageRegistry|When a package with same name and version is uploaded to the registry, more assets are added to the package. To save storage space, keep only the most recent assets.',
+);
+export const KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL = s__(
+  'PackageRegistry|Number of duplicate assets to keep',
+);
+export const KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION = s__(
+  'PackageRegistry|Examples of assets include .pom & .jar files',
+);
+
+export const KEEP_N_DUPLICATED_PACKAGE_FILES_FIELDNAME = 'keepNDuplicatedPackageFiles';
+
+export const KEEP_N_DUPLICATED_PACKAGE_FILES_OPTIONS = [
+  { key: 'ONE_PACKAGE_FILE', label: 1, default: false },
+  { key: 'TEN_PACKAGE_FILES', label: 10, default: false },
+  { key: 'TWENTY_PACKAGE_FILES', label: 20, default: false },
+  { key: 'THIRTY_PACKAGE_FILES', label: 30, default: false },
+  { key: 'FORTY_PACKAGE_FILES', label: 40, default: false },
+  { key: 'FIFTY_PACKAGE_FILES', label: 50, default: false },
+  { key: 'ALL_PACKAGE_FILES', label: __('All'), default: true },
+];
+
 export const KEEP_N_OPTIONS = [
   { key: 'ONE_TAG', variable: 1, default: false },
   { key: 'FIVE_TAGS', variable: 5, default: false },

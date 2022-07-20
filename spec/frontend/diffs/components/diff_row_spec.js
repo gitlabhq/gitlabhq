@@ -6,7 +6,7 @@ import DiffRow from '~/diffs/components/diff_row.vue';
 import { mapParallel } from '~/diffs/components/diff_row_utils';
 import diffsModule from '~/diffs/store/modules';
 import { findInteropAttributes } from '../find_interop_attributes';
-import diffFileMockData from '../mock_data/diff_file';
+import { getDiffFileMock } from '../mock_data/diff_file';
 
 const showCommentForm = jest.fn();
 const enterdragging = jest.fn();
@@ -210,6 +210,7 @@ describe('DiffRow', () => {
   });
 
   describe('sets coverage title and class', () => {
+    const diffFileMockData = getDiffFileMock();
     const thisLine = diffFileMockData.parallel_diff_lines[2];
     const rightLine = diffFileMockData.parallel_diff_lines[2].right;
 

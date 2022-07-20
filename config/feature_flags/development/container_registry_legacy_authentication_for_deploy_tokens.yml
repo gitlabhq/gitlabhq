@@ -1,0 +1,8 @@
+---
+name: container_registry_legacy_authentication_for_deploy_tokens
+introduced_by_url: https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/2470
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365968
+milestone: '15.1'
+type: development
+group: group::package
+default_enabled: false

@@ -104,6 +104,9 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_numericality_of(:packages_cleanup_package_file_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.not_to allow_value(nil).for(:packages_cleanup_package_file_worker_capacity) }
 
+    it { is_expected.to validate_numericality_of(:package_registry_cleanup_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.not_to allow_value(nil).for(:package_registry_cleanup_policies_worker_capacity) }
+
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
     it { is_expected.to validate_presence_of(:max_artifacts_size) }
@@ -305,18 +308,20 @@ RSpec.describe ApplicationSetting do
       end
     end
 
-    context 'when snowplow is enabled' do
-      before do
-        setting.snowplow_enabled = true
+    describe 'snowplow settings', :do_not_stub_snowplow_by_default do
+      context 'when snowplow is enabled' do
+        before do
+          setting.snowplow_enabled = true
+        end
+
+        it { is_expected.not_to allow_value(nil).for(:snowplow_collector_hostname) }
+        it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
+        it { is_expected.not_to allow_value('/example').for(:snowplow_collector_hostname) }
       end
 
-      it { is_expected.not_to allow_value(nil).for(:snowplow_collector_hostname) }
-      it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
-      it { is_expected.not_to allow_value('/example').for(:snowplow_collector_hostname) }
-    end
-
-    context 'when snowplow is not enabled' do
-      it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
+      context 'when snowplow is not enabled' do
+        it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
+      end
     end
 
     context 'when mailgun_events_enabled is enabled' do
@@ -1064,6 +1069,35 @@ RSpec.describe ApplicationSetting do
       it { is_expected.to allow_value('track').for(:sidekiq_job_limiter_mode) }
       it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_compression_threshold_bytes).only_integer.is_greater_than_or_equal_to(0) }
       it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_limit_bytes).only_integer.is_greater_than_or_equal_to(0) }
+    end
+
+    context 'prometheus settings' do
+      it 'validates metrics_method_call_threshold' do
+        allow(subject).to receive(:prometheus_metrics_enabled).and_return(true)
+
+        is_expected.to validate_numericality_of(:metrics_method_call_threshold).is_greater_than_or_equal_to(0)
+      end
+    end
+
+    context 'error tracking settings' do
+      context 'with error tracking disabled' do
+        before do
+          setting.error_tracking_enabled = false
+        end
+
+        it { is_expected.to allow_value(nil).for(:error_tracking_api_url) }
+      end
+
+      context 'with error tracking enabled' do
+        before do
+          setting.error_tracking_enabled = true
+        end
+
+        it { is_expected.to allow_value(http).for(:error_tracking_api_url) }
+        it { is_expected.to allow_value(https).for(:error_tracking_api_url) }
+        it { is_expected.not_to allow_value(ftp).for(:error_tracking_api_url) }
+        it { is_expected.to validate_presence_of(:error_tracking_api_url) }
+      end
     end
   end
 

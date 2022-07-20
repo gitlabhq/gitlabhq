@@ -102,10 +102,4 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateServ
       it_behaves_like 'successful response', { status_event: :acknowledge }
     end
   end
-
-  context 'with status_change_reason param' do
-    let(:params) { { status_change_reason: ' by changing the incident status' } }
-
-    it_behaves_like 'successful response', { status_change_reason: ' by changing the incident status' }
-  end
 end

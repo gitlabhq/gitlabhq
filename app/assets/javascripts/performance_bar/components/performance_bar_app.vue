@@ -216,7 +216,7 @@ export default {
         v-if="currentRequest"
         :current-request="currentRequest"
         :requests="requests"
-        class="ml-auto"
+        class="gl-ml-auto"
         @change-current-request="changeCurrentRequest"
       />
       <add-request v-on="$listeners" />

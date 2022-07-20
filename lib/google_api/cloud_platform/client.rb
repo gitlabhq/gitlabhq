@@ -8,6 +8,7 @@ require 'google/apis/cloudbilling_v1'
 require 'google/apis/cloudresourcemanager_v1'
 require 'google/apis/iam_v1'
 require 'google/apis/serviceusage_v1'
+require 'google/apis/sqladmin_v1beta4'
 
 module GoogleApi
   module CloudPlatform
@@ -152,6 +153,22 @@ module GoogleApi
         Gitlab::HTTP.post(uri, body: { 'token' => access_token })
       end
 
+      def create_cloudsql_database(gcp_project_id, instance_name, database_name)
+        database = Google::Apis::SqladminV1beta4::Database.new(name: database_name)
+        sql_admin_service.insert_database(gcp_project_id, instance_name, database)
+      end
+
+      def create_cloudsql_user(gcp_project_id, instance_name, username, password)
+        user = Google::Apis::SqladminV1beta4::User.new
+        user.name = username
+        user.password = password
+        sql_admin_service.insert_user(gcp_project_id, instance_name, user)
+      end
+
+      def get_cloudsql_instance(gcp_project_id, instance_name)
+        sql_admin_service.get_instance(gcp_project_id, instance_name)
+      end
+
       private
 
       def enable_service(gcp_project_id, service_name)
@@ -218,6 +235,10 @@ module GoogleApi
 
       def cloud_resource_manager_service
         @gpc_service ||= Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new.tap { |s| s.authorization = access_token }
+      end
+
+      def sql_admin_service
+        @sql_admin_service ||= Google::Apis::SqladminV1beta4::SQLAdminService.new.tap { |s| s.authorization = access_token }
       end
     end
   end

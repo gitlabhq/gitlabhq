@@ -20,6 +20,11 @@
 .review_ecs_base:
   stage: review
   extends: .deploy_to_ecs
+  after_script:
+    - echo "http://$(ecs get-task-hostname)" > environment_url.txt
+  artifacts:
+    paths:
+      - environment_url.txt
 
 .production_ecs_base:
   stage: production

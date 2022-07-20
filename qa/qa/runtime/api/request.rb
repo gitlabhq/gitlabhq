@@ -46,7 +46,7 @@ module QA
 
           if query_string.any?
             full_path << (path.include?('?') ? '&' : '?')
-            full_path << query_string.map { |k, v| "#{k}=#{CGI.escape(v)}" }.join('&')
+            full_path << query_string.map { |k, v| "#{k}=#{CGI.escape(v.to_s)}" }.join('&')
           end
 
           full_path

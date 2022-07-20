@@ -13,6 +13,7 @@ RSpec.describe IssuePolicy do
   let(:reporter_from_group_link) { create(:user) }
   let(:non_member) { create(:user) }
   let(:support_bot) { User.support_bot }
+  let(:alert_bot) { User.alert_bot }
 
   def permissions(user, issue)
     described_class.new(user, issue)
@@ -38,6 +39,14 @@ RSpec.describe IssuePolicy do
       expect(permissions(support_bot, issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
       expect(permissions(support_bot, issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
       expect(permissions(support_bot, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata, :set_confidentiality)
+    end
+  end
+
+  shared_examples 'alert bot' do
+    it 'allows alert_bot to read and set metadata on issues' do
+      expect(permissions(alert_bot, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
+      expect(permissions(alert_bot, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
+      expect(permissions(alert_bot, new_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
     end
   end
 
@@ -106,6 +115,7 @@ RSpec.describe IssuePolicy do
       expect(permissions(non_member, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata, :set_confidentiality)
     end
 
+    it_behaves_like 'alert bot'
     it_behaves_like 'support bot with service desk disabled'
     it_behaves_like 'support bot with service desk enabled'
 
@@ -270,6 +280,7 @@ RSpec.describe IssuePolicy do
       expect(permissions(support_bot, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata, :set_confidentiality)
     end
 
+    it_behaves_like 'alert bot'
     it_behaves_like 'support bot with service desk enabled'
 
     context 'when issues are private' do
@@ -326,6 +337,7 @@ RSpec.describe IssuePolicy do
         expect(permissions(non_member, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata, :set_confidentiality)
       end
 
+      it_behaves_like 'alert bot'
       it_behaves_like 'support bot with service desk disabled'
       it_behaves_like 'support bot with service desk enabled'
     end

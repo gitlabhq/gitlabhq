@@ -4,7 +4,7 @@ key_path: counts.projects_with_terraform_states
 description: Count of projects with GitLab Managed Terraform State
 product_section: ops
 product_stage: configure
-product_group: group::configure
+product_group: configure
 product_category: infrastructure_as_code
 value_type: number
 status: active

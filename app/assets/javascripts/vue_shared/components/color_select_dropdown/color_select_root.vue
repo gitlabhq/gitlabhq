@@ -1,4 +1,5 @@
 <script>
+import { isString } from 'lodash';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
@@ -52,13 +53,23 @@ export default {
       required: false,
       default: s__('ColorWidget|Assign epic color'),
     },
+    defaultColor: {
+      type: Object,
+      required: false,
+      validator(value) {
+        return isString(value?.color) && isString(value?.title);
+      },
+      default() {
+        return {
+          color: '',
+          title: '',
+        };
+      },
+    },
   },
   data() {
     return {
-      issuableColor: {
-        color: '',
-        title: '',
-      },
+      issuableColor: this.defaultColor,
       colorUpdateInProgress: false,
       oldIid: null,
       sidebarExpandedOnClick: false,
@@ -106,9 +117,9 @@ export default {
   methods: {
     handleDropdownClose(color) {
       if (this.iid !== '') {
-        this.updateSelectedColor(this.getUpdateVariables(color));
+        this.updateSelectedColor(color);
       } else {
-        this.$emit('updateSelectedColor', color);
+        this.$emit('updateSelectedColor', { color });
       }
 
       this.collapseEditableItem();
@@ -129,13 +140,15 @@ export default {
         color: color.color,
       };
     },
-    updateSelectedColor(inputVariables) {
+    updateSelectedColor(color) {
       this.colorUpdateInProgress = true;
+
+      const input = this.getUpdateVariables(color);
 
       this.$apollo
         .mutate({
           mutation: updateEpicColorMutation,
-          variables: { input: inputVariables },
+          variables: { input },
         })
         .then(({ data }) => {
           if (data.updateIssuableColor?.errors?.length) {
@@ -144,7 +157,7 @@ export default {
 
           this.$emit('updateSelectedColor', {
             id: data.updateIssuableColor?.issuable?.id,
-            color: data.updateIssuableColor?.issuable?.color,
+            color,
           });
         })
         .catch((error) =>

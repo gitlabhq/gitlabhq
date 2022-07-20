@@ -2,7 +2,7 @@
 
 module Clusters
   class IntegrationPresenter < Gitlab::View::Presenter::Delegated
-    presents ::Clusters::Integrations::Prometheus, ::Clusters::Integrations::ElasticStack, as: :integration
+    presents ::Clusters::Integrations::Prometheus, as: :integration
 
     def application_type
       integration.class.name.demodulize.underscore

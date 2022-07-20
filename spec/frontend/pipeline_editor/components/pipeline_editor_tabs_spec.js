@@ -1,6 +1,8 @@
-import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { GlAlert, GlBadge, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
@@ -15,9 +17,21 @@ import {
   EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_VALID,
   TAB_QUERY_PARAM,
+  VALIDATE_TAB,
+  VALIDATE_TAB_BADGE_DISMISSED_KEY,
 } from '~/pipeline_editor/constants';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
-import { mockLintResponse, mockLintResponseWithoutMerged, mockCiYml } from '../mock_data';
+import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.query.graphql';
+import {
+  mockBlobContentQueryResponse,
+  mockCiLintPath,
+  mockCiYml,
+  mockLintResponse,
+  mockLintResponseWithoutMerged,
+} from '../mock_data';
+
+const localVue = createLocalVue();
+localVue.use(VueApollo);
 
 Vue.config.ignoredElements = ['gl-emoji'];
 
@@ -33,11 +47,13 @@ describe('Pipeline editor tabs component', () => {
     provide = {},
     appStatus = EDITOR_APP_STATUS_VALID,
     mountFn = shallowMount,
+    options = {},
   } = {}) => {
     wrapper = mountFn(PipelineEditorTabs, {
       propsData: {
         ciConfigData: mockLintResponse,
         ciFileContent: mockCiYml,
+        currentTab: CREATE_TAB,
         isNewCiConfigFile: true,
         showDrawer: false,
         ...props,
@@ -47,12 +63,34 @@ describe('Pipeline editor tabs component', () => {
           appStatus,
         };
       },
-      provide: { ...provide },
+      provide: {
+        ciLintPath: mockCiLintPath,
+        ...provide,
+      },
       stubs: {
         TextEditor: MockTextEditor,
         EditorTab,
       },
       listeners,
+      ...options,
+    });
+  };
+
+  let mockBlobContentData;
+  let mockApollo;
+
+  const createComponentWithApollo = ({ props, provide = {}, mountFn = shallowMount } = {}) => {
+    const handlers = [[getBlobContent, mockBlobContentData]];
+    mockApollo = createMockApollo(handlers);
+
+    createComponent({
+      props,
+      provide,
+      mountFn,
+      options: {
+        localVue,
+        apolloProvider: mockApollo,
+      },
     });
   };
 
@@ -63,6 +101,7 @@ describe('Pipeline editor tabs component', () => {
   const findVisualizationTab = () => wrapper.find('[data-testid="visualization-tab"]');
 
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findBadge = () => wrapper.findComponent(GlBadge);
   const findCiLint = () => wrapper.findComponent(CiLint);
   const findCiValidate = () => wrapper.findComponent(CiValidate);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
@@ -71,6 +110,10 @@ describe('Pipeline editor tabs component', () => {
   const findTextEditor = () => wrapper.findComponent(MockTextEditor);
   const findMergedPreview = () => wrapper.findComponent(CiConfigMergedPreview);
   const findWalkthroughPopover = () => wrapper.findComponent(WalkthroughPopover);
+
+  beforeEach(() => {
+    mockBlobContentData = jest.fn();
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -114,27 +157,6 @@ describe('Pipeline editor tabs component', () => {
 
   describe('validate tab', () => {
     describe('with simulatePipeline feature flag ON', () => {
-      describe('while loading', () => {
-        beforeEach(() => {
-          createComponent({
-            appStatus: EDITOR_APP_STATUS_LOADING,
-            provide: {
-              glFeatures: {
-                simulatePipeline: true,
-              },
-            },
-          });
-        });
-
-        it('displays a loading icon if the lint query is loading', () => {
-          expect(findLoadingIcon().exists()).toBe(true);
-        });
-
-        it('does not display the validate component', () => {
-          expect(findCiValidate().exists()).toBe(false);
-        });
-      });
-
       describe('after loading', () => {
         beforeEach(() => {
           createComponent({
@@ -145,6 +167,63 @@ describe('Pipeline editor tabs component', () => {
         it('displays the tab and the validate component', () => {
           expect(findValidateTab().exists()).toBe(true);
           expect(findCiValidate().exists()).toBe(true);
+        });
+      });
+
+      describe('NEW badge', () => {
+        describe('default', () => {
+          beforeEach(() => {
+            mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
+            createComponentWithApollo({
+              mountFn: mount,
+              props: {
+                currentTab: VALIDATE_TAB,
+              },
+              provide: {
+                glFeatures: { simulatePipeline: true },
+                ciConfigPath: '/path/to/ci-config',
+                currentBranch: 'main',
+                projectFullPath: '/path/to/project',
+                simulatePipelineHelpPagePath: 'path/to/help/page',
+                validateTabIllustrationPath: 'path/to/svg',
+              },
+            });
+          });
+
+          it('renders badge by default', () => {
+            expect(findBadge().exists()).toBe(true);
+            expect(findBadge().text()).toBe(wrapper.vm.$options.i18n.new);
+          });
+
+          it('hides badge when moving away from the validate tab', async () => {
+            expect(findBadge().exists()).toBe(true);
+
+            await findEditorTab().vm.$emit('click');
+
+            expect(findBadge().exists()).toBe(false);
+          });
+        });
+
+        describe('if badge has been dismissed before', () => {
+          beforeEach(() => {
+            localStorage.setItem(VALIDATE_TAB_BADGE_DISMISSED_KEY, 'true');
+            mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
+            createComponentWithApollo({
+              mountFn: mount,
+              provide: {
+                glFeatures: { simulatePipeline: true },
+                ciConfigPath: '/path/to/ci-config',
+                currentBranch: 'main',
+                projectFullPath: '/path/to/project',
+                simulatePipelineHelpPagePath: 'path/to/help/page',
+                validateTabIllustrationPath: 'path/to/svg',
+              },
+            });
+          });
+
+          it('does not render badge if it has been dismissed before', () => {
+            expect(findBadge().exists()).toBe(false);
+          });
         });
       });
     });
@@ -181,7 +260,6 @@ describe('Pipeline editor tabs component', () => {
         expect(findCiLint().exists()).toBe(false);
       });
     });
-
     describe('after loading', () => {
       beforeEach(() => {
         createComponent();

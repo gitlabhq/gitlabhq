@@ -14,6 +14,9 @@ The Conan package registry for GitLab is under development and isn't ready for p
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6816) details the remaining
 work and timelines to make it production ready.
 
+NOTE:
+The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../../development/fips_compliance.md) is enabled.
+
 Publish Conan packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 
@@ -105,7 +108,7 @@ For more details about creating and managing Conan packages, see the
 
 #### Package without a username and a channel
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345055) in GitLab 14.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345055) in GitLab 14.6.
 
 Even though they are [recommended](https://docs.conan.io/en/latest/reference/conanfile/attributes.html#user-channel)
 to distinguish your package from a similarly named existing package,

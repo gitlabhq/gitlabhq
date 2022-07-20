@@ -56,9 +56,10 @@ usage data monthly.
 To submit the data, [export your license usage](../../subscriptions/self_managed/index.md#export-your-license-usage)
 and send it by email to the renewals service, `renewals-service@customers.gitlab.com`.
 
-If you don't submit your data each month after your subscription start date, a banner displays to remind you to
-submit your data. The banner displays in the **Admin Area** on the **Dashboard** and on the **Subscription**
-pages. You can only dismiss it until the following month after you submit your license usage data.
+If you don't submit your data each month after your subscription start date, an email is sent to the address
+associated with your subscription and a banner displays to remind you to submit your data. The banner displays
+in the **Admin Area** on the **Dashboard** and on the **Subscription** pages. You can only dismiss it until the
+following month after you submit your license usage data.
 
 ## What happens when your license expires
 

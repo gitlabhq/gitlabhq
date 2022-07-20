@@ -361,6 +361,29 @@ When you visit the job log page for a running job, there could be a delay of up 
 60 seconds before the log updates. The default refresh time is 60 seconds, but after
 the log is viewed in the UI, the following log updates should occur every 3 seconds.
 
+## Disaster recovery
+
+You can disable some important but computationally expensive parts of the application
+to relieve stress on the database during ongoing downtime.
+
+### Disable fair scheduling on shared runners
+
+When clearing a large backlog of jobs, you can temporarily enable the `ci_queueing_disaster_recovery_disable_fair_scheduling`
+[feature flag](../administration/feature_flags.md). This flag disables fair scheduling
+on shared runners, which reduces system resource usage on the `jobs/request` endpoint.
+
+When enabled, jobs are processed in the order they were put in the system, instead of
+balanced across many projects.
+
+### Disable CI/CD minutes quota enforcement
+
+To disable the enforcement of CI/CD minutes quotas on shared runners, you can temporarily
+enable the `ci_queueing_disaster_recovery_disable_quota` [feature flag](../administration/feature_flags.md).
+This flag reduces system resource usage on the `jobs/request` endpoint.
+
+When enabled, jobs created in the last hour can run in projects which are out of quota.
+Earlier jobs are already canceled by a periodic background worker (`StuckCiJobsWorker`).
+
 ## How to get help
 
 If you are unable to resolve pipeline issues, you can get help from:

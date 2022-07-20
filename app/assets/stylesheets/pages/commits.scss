@@ -95,8 +95,14 @@
   }
 }
 
-.commits-row + .commits-row {
-  border-top: 1px solid $white-normal;
+.commits-row {
+  + .commits-row {
+    border-top: 1px solid $white-normal;
+  }
+
+  + .commits-empty {
+    display: none;
+  }
 }
 
 .text-expander {
@@ -130,18 +136,6 @@
 .avatar-cell {
   img {
     margin-right: 0;
-  }
-}
-
-.commit-detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  flex-grow: 1;
-  min-width: 0;
-
-  .project-namespace {
-    color: $gl-text-color-tertiary;
   }
 }
 

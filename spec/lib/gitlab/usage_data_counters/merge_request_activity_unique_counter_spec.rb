@@ -82,10 +82,42 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
   end
 
   describe '.track_approve_mr_action' do
-    subject { described_class.track_approve_mr_action(user: user) }
+    include ProjectForksHelper
+
+    let(:merge_request) { create(:merge_request, target_project: target_project, source_project: source_project) }
+    let(:source_project) { fork_project(target_project) }
+    let(:target_project) { create(:project) }
+
+    subject { described_class.track_approve_mr_action(user: user, merge_request: merge_request) }
 
     it_behaves_like 'a tracked merge request unique event' do
       let(:action) { described_class::MR_APPROVE_ACTION }
+    end
+
+    it 'records correct payload with Snowplow event', :snowplow do
+      stub_feature_flags(route_hll_to_snowplow_phase2: true)
+
+      subject
+
+      expect_snowplow_event(
+        category:  'merge_requests',
+        action: 'i_code_review_user_approve_mr',
+        namespace:  target_project.namespace,
+        user: user,
+        project: target_project
+      )
+    end
+
+    context 'when FF is disabled' do
+      before do
+        stub_feature_flags(route_hll_to_snowplow_phase2: false)
+      end
+
+      it 'doesnt emit snowplow events', :snowplow do
+        subject
+
+        expect_no_snowplow_event
+      end
     end
   end
 

@@ -1278,3 +1278,31 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 - Avoid sending credentials in URL parameters, as these can be more easily logged inadvertently during transit.
 
 In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://about.gitlab.com/handbook/engineering/security/security-operations/sirt/#-engaging-sirt).
+
+## Serialization
+
+Serialization of active record models can leak sensitive attributes if they are not protected.
+
+Using the [`prevent_from_serialization`](https://gitlab.com/gitlab-org/gitlab/-/blob/d7b85128c56cc3e669f72527d9f9acc36a1da95c/app/models/concerns/sensitive_serializable_hash.rb#L11)
+method protects the attributes when the object is serialized with `serializable_hash`.
+When an attribute is protected with `prevent_from_serialization`, it is not included with
+`serializable_hash`, `to_json`, or `as_json`.
+
+For more guidance on serialization:
+
+- [Why using a serializer is important](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/serializers/README.md#why-using-a-serializer-is-important).
+- Always use [Grape entities](../../ee/development/api_styleguide.md#entities) for the API.
+
+To `serialize` an `ActiveRecord` column:
+
+- You can use `app/serializers`.
+- You cannot use `to_json / as_json`.
+- You cannot use `serialize :some_colum`.
+
+### Serialization example
+
+The following is an example used for the [`TokenAuthenticatable`](https://gitlab.com/gitlab-org/gitlab/-/blob/9b15c6621588fce7a80e0438a39eeea2500fa8cd/app/models/concerns/token_authenticatable.rb#L30) class:
+
+```ruby
+prevent_from_serialization(*strategy.token_fields) if respond_to?(:prevent_from_serialization)
+```

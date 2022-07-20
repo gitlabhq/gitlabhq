@@ -26,10 +26,10 @@ consistent performance of GitLab. Refer to the [Index](#performance-documentatio
 - Frontend:
   - [Performance guidelines](../development/fe_guide/performance.md)
   - [Performance dashboards and monitoring guidelines](../development/new_fe_guide/development/performance.md)
-  - [Browser performance testing guidelines](../user/project/merge_requests/browser_performance_testing.md)
+  - [Browser performance testing guidelines](../ci/testing/browser_performance_testing.md)
   - [`gdk measure` and `gdk measure-workflow`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_commands.md#measure-performance)
 - QA:
-  - [Load performance testing](../user/project/merge_requests/load_performance_testing.md)
+  - [Load performance testing](../ci/testing/load_performance_testing.md)
   - [GitLab Performance Tool project](https://gitlab.com/gitlab-org/quality/performance)
   - [Review apps performance metrics](../development/testing_guide/review_apps.md#performance-metrics)
 - Monitoring & Overview:
@@ -581,7 +581,7 @@ called `memory-on-boot`. ([Read an example job.](https://gitlab.com/gitlab-org/g
 You may find the results:
 
 - On the merge request **Overview** tab, in the merge request reports area, in the
-  **Metrics Reports** [dropdown list](../ci/metrics_reports.md).
+  **Metrics Reports** [dropdown list](../ci/testing/metrics_reports.md).
 - In the `memory-on-boot` artifacts for a full report and a dependency breakdown.
 
 `derailed_benchmarks` also provides other methods to investigate memory. To learn more,

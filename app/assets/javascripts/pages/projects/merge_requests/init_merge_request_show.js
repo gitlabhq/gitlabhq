@@ -9,6 +9,7 @@ import initSourcegraph from '~/sourcegraph';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
 import MrWidgetHowToMergeModal from '~/vue_merge_request_widget/components/mr_widget_how_to_merge_modal.vue';
+import { initMrExperienceSurvey } from '~/surveys/merge_request_experience';
 import getStateQuery from './queries/get_state.query.graphql';
 
 export default function initMergeRequestShow() {
@@ -18,6 +19,7 @@ export default function initMergeRequestShow() {
   initSourcegraph();
   initIssuableSidebar();
   initAwardsApp(document.getElementById('js-vue-awards-block'));
+  initMrExperienceSurvey();
 
   const el = document.querySelector('.js-mr-status-box');
   const { iid, issuableType, projectPath } = el.dataset;

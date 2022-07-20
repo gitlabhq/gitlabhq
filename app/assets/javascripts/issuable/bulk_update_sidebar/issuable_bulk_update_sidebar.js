@@ -54,24 +54,23 @@ export default class IssuableBulkUpdateSidebar {
     new MilestoneSelect();
     subscriptionSelect();
 
+    // Checking IS_EE and using ee_else_ce is odd, but we do it here to satisfy
+    // the import/no-unresolved lint rule when FOSS_ONLY=1, even though at
+    // runtime this block won't execute.
     if (IS_EE) {
-      import('ee/vue_shared/components/sidebar/health_status_select/health_status_bundle')
+      import('ee_else_ce/vue_shared/components/sidebar/health_status_select/health_status_bundle')
         .then(({ default: HealthStatusSelect }) => {
           HealthStatusSelect();
         })
         .catch(() => {});
-    }
 
-    if (IS_EE) {
-      import('ee/vue_shared/components/sidebar/epics_select/epics_select_bundle')
+      import('ee_else_ce/vue_shared/components/sidebar/epics_select/epics_select_bundle')
         .then(({ default: EpicSelect }) => {
           EpicSelect();
         })
         .catch(() => {});
-    }
 
-    if (IS_EE) {
-      import('ee/vue_shared/components/sidebar/iterations_dropdown_bundle')
+      import('ee_else_ce/vue_shared/components/sidebar/iterations_dropdown_bundle')
         .then(({ default: iterationsDropdown }) => {
           iterationsDropdown();
         })

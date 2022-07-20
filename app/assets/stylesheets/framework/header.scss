@@ -506,8 +506,7 @@
     max-width: unset;
   }
 
-  .no-emoji-placeholder,
-  .clear-user-status {
+  .no-emoji-placeholder {
     svg {
       fill: var(--gray-500, $gray-500);
     }

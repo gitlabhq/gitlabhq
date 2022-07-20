@@ -1,0 +1,5 @@
+mutation deleteRelease($input: ReleaseDeleteInput!) {
+  releaseDelete(input: $input) {
+    errors
+  }
+}

@@ -8,6 +8,7 @@ module API
           expose :name, :entrypoint
           expose :ports, using: Entities::Ci::JobRequest::Port
 
+          expose :pull_policy, if: ->(_) { ::Feature.enabled?(:ci_docker_image_pull_policy) }
           expose :alias, :command
           expose :variables
         end

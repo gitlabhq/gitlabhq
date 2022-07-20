@@ -168,7 +168,7 @@ module QA
 
         def select_filter_with_text(text)
           retry_on_exception do
-            click_element(:title)
+            click_element(:title_content)
             click_element :discussion_filter_dropdown
             find_element(:filter_menu_item, text: text).click
 

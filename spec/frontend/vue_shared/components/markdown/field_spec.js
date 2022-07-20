@@ -67,11 +67,6 @@ describe('Markdown field component', () => {
           enablePreview,
           restrictedToolBarItems,
         },
-        provide: {
-          glFeatures: {
-            contactsAutocomplete: true,
-          },
-        },
       },
     );
   }

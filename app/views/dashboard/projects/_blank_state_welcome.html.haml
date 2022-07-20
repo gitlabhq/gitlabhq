@@ -39,7 +39,7 @@
       %p
         = _('Public projects are an easy way to allow everyone to have read-only access.')
 
-  = link_to "https://docs.gitlab.com/", class: link_classes do
+  = link_to Gitlab::Saas::doc_url, class: link_classes do
     .blank-state-icon
       = custom_icon("lightbulb", size: 50)
     .blank-state-body.gl-sm-pl-0.gl-pl-6

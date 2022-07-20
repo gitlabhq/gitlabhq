@@ -3,8 +3,13 @@
 FactoryBot.define do
   factory :key do
     title
-    key { SSHData::PrivateKey::RSA.generate(1024, unsafe_allow_small_key: true).public_key.openssh(comment: 'dummy@gitlab.com') }
-
+    key do
+      # Larger keys take longer to generate, and since this factory gets called frequently,
+      # let's only create the smallest one we need.
+      SSHData::PrivateKey::RSA.generate(
+        ::Gitlab::SSHPublicKey.supported_sizes(:rsa).min, unsafe_allow_small_key: true
+      ).public_key.openssh(comment: 'dummy@gitlab.com')
+    end
     trait :expired do
       to_create { |key| key.save!(validate: false) }
       expires_at { 2.days.ago }
@@ -15,8 +20,14 @@ FactoryBot.define do
       expires_at { Date.today.beginning_of_day + 3.hours }
     end
 
+    trait :without_md5_fingerprint do
+      after(:create) do |key|
+        key.update_column(:fingerprint, nil)
+      end
+    end
+
     factory :key_without_comment do
-      key { SSHData::PrivateKey::RSA.generate(1024, unsafe_allow_small_key: true).public_key.openssh }
+      key { SSHData::PrivateKey::RSA.generate(3072, unsafe_allow_small_key: true).public_key.openssh }
     end
 
     factory :deploy_key, class: 'DeployKey'

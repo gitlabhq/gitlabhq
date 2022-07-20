@@ -31,8 +31,8 @@ module Members
 
       return if params[:email].blank?
 
-      # we need the below due to add_users hitting Members::CreatorService.parse_users_list and ignoring invalid emails
-      # ideally we wouldn't need this, but we can't really change the add_users method
+      # we need the below due to add_member hitting Members::CreatorService.parse_users_list and ignoring invalid emails
+      # ideally we wouldn't need this, but we can't really change the add_members method
       invalid_emails.each { |email| errors[email] = s_('AddMember|Invite email is invalid') }
     end
 

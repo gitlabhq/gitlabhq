@@ -25,6 +25,7 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
 
   before_action :allow_rendering_in_iframe, only: :index
   before_action :verify_qsh_claim!, only: :index
+  before_action :allow_self_managed_content_security_policy, only: :index
   before_action :authenticate_user!, only: :create
 
   def index
@@ -61,6 +62,13 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   end
 
   private
+
+  def allow_self_managed_content_security_policy
+    return unless current_jira_installation.instance_url?
+
+    request.content_security_policy.directives['connect-src'] ||= []
+    request.content_security_policy.directives['connect-src'] << Gitlab::Utils.append_path(current_jira_installation.instance_url, '/-/jira_connect/oauth_application_ids')
+  end
 
   def create_service
     JiraConnectSubscriptions::CreateService.new(current_jira_installation, current_user, namespace_path: params['namespace_path'], jira_user: jira_user)

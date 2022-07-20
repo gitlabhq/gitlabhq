@@ -12,7 +12,6 @@ module AlertManagement
         @alert = alert
         @param_errors = []
         @status = params.delete(:status)
-        @status_change_reason = params.delete(:status_change_reason)
 
         super(project: alert.project, current_user: current_user, params: params)
       end
@@ -37,7 +36,7 @@ module AlertManagement
 
       private
 
-      attr_reader :alert, :param_errors, :status, :status_change_reason
+      attr_reader :alert, :param_errors, :status
 
       def allowed?
         current_user&.can?(:update_alert_management_alert, alert)
@@ -130,35 +129,14 @@ module AlertManagement
       def handle_status_change
         add_status_change_system_note
         resolve_todos if alert.resolved?
-        sync_to_incident if should_sync_to_incident?
       end
 
       def add_status_change_system_note
-        SystemNoteService.change_alert_status(alert, current_user, status_change_reason)
+        SystemNoteService.change_alert_status(alert, current_user)
       end
 
       def resolve_todos
         todo_service.resolve_todos_for_target(alert, current_user)
-      end
-
-      def sync_to_incident
-        ::Issues::UpdateService.new(
-          project: project,
-          current_user: current_user,
-          params: {
-            escalation_status: {
-              status: status,
-              status_change_reason: " by changing the status of #{alert.to_reference(project)}"
-            }
-          }
-        ).execute(alert.issue)
-      end
-
-      def should_sync_to_incident?
-        alert.issue &&
-          alert.issue.supports_escalation? &&
-          alert.issue.escalation_status &&
-          alert.issue.escalation_status.status != alert.status
       end
 
       def filter_duplicate

@@ -612,6 +612,24 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'create_task' do
+    context 'when user is member of the project' do
+      let(:current_user) { developer }
+
+      context 'when work_items feature flag is enabled' do
+        it { expect_allowed(:create_task) }
+      end
+
+      context 'when work_items feature flag is disabled' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        it { expect_disallowed(:create_task) }
+      end
+    end
+  end
+
   describe 'update_max_artifacts_size' do
     context 'when no user' do
       let(:current_user) { anonymous }
@@ -1462,43 +1480,142 @@ RSpec.describe ProjectPolicy do
   end
 
   describe 'view_package_registry_project_settings' do
-    context 'with registry enabled' do
+    context 'with packages disabled and' do
       before do
-        stub_config(registry: { enabled: true })
+        stub_config(packages: { enabled: false })
       end
 
-      context 'with an admin user' do
-        let(:current_user) { admin }
-
-        context 'when admin mode enabled', :enable_admin_mode do
-          it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+      context 'with registry enabled' do
+        before do
+          stub_config(registry: { enabled: true })
         end
 
-        context 'when admin mode disabled' do
-          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        context 'with an admin user' do
+          let(:current_user) { admin }
+
+          context 'when admin mode enabled', :enable_admin_mode do
+            it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+          end
+
+          context 'when admin mode disabled' do
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
+        end
+
+        %i[owner maintainer].each do |role|
+          context "with #{role}" do
+            let(:current_user) { public_send(role) }
+
+            it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+          end
+        end
+
+        %i[developer reporter guest non_member anonymous].each do |role|
+          context "with #{role}" do
+            let(:current_user) { public_send(role) }
+
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
         end
       end
 
-      %i[owner maintainer].each do |role|
-        context "with #{role}" do
-          let(:current_user) { public_send(role) }
-
-          it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+      context 'with registry disabled' do
+        before do
+          stub_config(registry: { enabled: false })
         end
-      end
 
-      %i[developer reporter guest non_member anonymous].each do |role|
-        context "with #{role}" do
-          let(:current_user) { public_send(role) }
+        context 'with admin user' do
+          let(:current_user) { admin }
 
-          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          context 'when admin mode enabled', :enable_admin_mode do
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
+
+          context 'when admin mode disabled' do
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
+        end
+
+        %i[owner maintainer developer reporter guest non_member anonymous].each do |role|
+          context "with #{role}" do
+            let(:current_user) { public_send(role) }
+
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
         end
       end
     end
 
-    context 'with registry disabled' do
+    context 'with registry disabled and' do
       before do
         stub_config(registry: { enabled: false })
+      end
+
+      context 'with packages enabled' do
+        before do
+          stub_config(packages: { enabled: true })
+        end
+
+        context 'with an admin user' do
+          let(:current_user) { admin }
+
+          context 'when admin mode enabled', :enable_admin_mode do
+            it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+          end
+
+          context 'when admin mode disabled' do
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
+        end
+
+        %i[owner maintainer].each do |role|
+          context "with #{role}" do
+            let(:current_user) { public_send(role) }
+
+            it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+          end
+        end
+
+        %i[developer reporter guest non_member anonymous].each do |role|
+          context "with #{role}" do
+            let(:current_user) { public_send(role) }
+
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
+        end
+      end
+
+      context 'with packages disabled' do
+        before do
+          stub_config(packages: { enabled: false })
+        end
+
+        context 'with admin user' do
+          let(:current_user) { admin }
+
+          context 'when admin mode enabled', :enable_admin_mode do
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
+
+          context 'when admin mode disabled' do
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
+        end
+
+        %i[owner maintainer developer reporter guest non_member anonymous].each do |role|
+          context "with #{role}" do
+            let(:current_user) { public_send(role) }
+
+            it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+          end
+        end
+      end
+    end
+
+    context 'with registry & packages both disabled' do
+      before do
+        stub_config(registry: { enabled: false })
+        stub_config(packages: { enabled: false })
       end
 
       context 'with admin user' do
@@ -1718,7 +1835,7 @@ RSpec.describe ProjectPolicy do
           %w(guest reporter developer maintainer).each do |role|
             context role do
               before do
-                project.add_user(current_user, role.to_sym)
+                project.add_member(current_user, role.to_sym)
               end
 
               if role == 'guest'
@@ -1752,7 +1869,7 @@ RSpec.describe ProjectPolicy do
           %w(guest reporter developer maintainer).each do |role|
             context role do
               before do
-                project.add_user(current_user, role.to_sym)
+                project.add_member(current_user, role.to_sym)
               end
 
               it { is_expected.to be_allowed(:read_ci_cd_analytics) }
@@ -1782,7 +1899,7 @@ RSpec.describe ProjectPolicy do
         %w(guest reporter developer maintainer).each do |role|
           context role do
             before do
-              project.add_user(current_user, role.to_sym)
+              project.add_member(current_user, role.to_sym)
             end
 
             if role == 'guest'

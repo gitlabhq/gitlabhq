@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -148,6 +149,7 @@ describe('custom metrics form fields component', () => {
       it('expect loading message to display', async () => {
         const queryInput = wrapper.find(`input[name="${queryInputName}"]`);
         queryInput.setValue('query');
+        await nextTick();
 
         expect(wrapper.text()).toContain('Validating query');
       });

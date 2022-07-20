@@ -10,12 +10,14 @@ This tutorial guides you through writing a consumer test from scratch. To start,
 
 ## Create the skeleton
 
-Start by creating the skeleton of a consumer test. Create a file under `spec/contracts/consumer/specs` called `discussions.spec.js`.
+Start by creating the skeleton of a consumer test. Create a file under `spec/contracts/consumer/specs/project/merge_request` called `discussions.spec.js`.
 Then, populate it with the following function and parameters:
 
 - [`pactWith`](#the-pactwith-function)
 - [`PactOptions`](#the-pactoptions-parameter)
 - [`PactFn`](#the-pactfn-parameter)
+
+To learn more about how the contract test directory is structured, see the contract testing [test suite folder structure](index.md#test-suite-folder-structure).
 
 ### The `pactWith` function
 
@@ -36,14 +38,16 @@ const { pactWith } = require('jest-pact');
 
 pactWith(
   {
-    consumer: 'Merge Request Page',
+    consumer: 'MergeRequest#show',
     provider: 'Merge Request Discussions Endpoint',
     log: '../logs/consumer.log',
-    dir: '../contracts',
+    dir: '../contracts/project/merge_request/show',
   },
   PactFn
 );
 ```
+
+To learn more about how to name the consumers and providers, see contract testing [naming conventions](index.md#naming-conventions).
 
 ### The `PactFn` parameter
 
@@ -54,20 +58,20 @@ const { pactWith } = require('jest-pact');
 
 pactWith(
   {
-    consumer: 'Merge Request Page',
+    consumer: 'MergeRequest#show',
     provider: 'Merge Request Discussions Endpoint',
     log: '../logs/consumer.log',
     dir: '../contracts',
   },
 
   (provider) => {
-    describe('Discussions Endpoint', () => {
+    describe('Merge Request Discussions Endpoint', () => {
       beforeEach(() => {
-        
+
       });
 
       it('return a successful body', () => {
-        
+
       });
     });
   },
@@ -93,14 +97,14 @@ const { Matchers } = require('@pact-foundation/pact');
 
 pactWith(
   {
-    consumer: 'Merge Request Page',
+    consumer: 'MergeRequest#show',
     provider: 'Merge Request Discussions Endpoint',
     log: '../logs/consumer.log',
-    dir: '../contracts',
+    dir: '../contracts/project/merge_request/show',
   },
 
   (provider) => {
-    describe('Discussions Endpoint', () => {
+    describe('Merge Request Discussions Endpoint', () => {
       beforeEach(() => {
         const interaction = {
           state: 'a merge request with discussions exists',
@@ -144,7 +148,7 @@ Notice how we use `Matchers` in the `body` of the expected response. This allows
 
 After the mock provider is set up, you can write the test. For this test, you make a request and expect a particular response.
 
-First, set up the client that makes the API request. To do that, either create or find an existing file under `spec/contracts/consumer/endpoints` and add the following API request.
+First, set up the client that makes the API request. To do that, create `spec/contracts/consumer/endpoints/project/merge_requests.js` and add the following API request.
 
 ```javascript
 const axios = require('axios');
@@ -169,18 +173,18 @@ After that's set up, import it to the test file and call it to make the request.
 const { pactWith } = require('jest-pact');
 const { Matchers } = require('@pact-foundation/pact');
 
-const { getDiscussions } = require('../endpoints/merge_requests');
+const { getDiscussions } = require('../endpoints/project/merge_requests');
 
 pactWith(
   {
-    consumer: 'Merge Request Page',
+    consumer: 'MergeRequest#show',
     provider: 'Merge Request Discussions Endpoint',
     log: '../logs/consumer.log',
-    dir: '../contracts',
+    dir: '../contracts/project/merge_request/show',
   },
 
   (provider) => {
-    describe('Discussions Endpoint', () => {
+    describe('Merge Request Discussions Endpoint', () => {
       beforeEach(() => {
         const interaction = {
           state: 'a merge request with discussions exists',
@@ -230,7 +234,7 @@ There we have it! The consumer test is now set up. You can now try [running this
 
 As you may have noticed, the request and response definitions can get large. This results in the test being difficult to read, with a lot of scrolling to find what you want. You can make the test easier to read by extracting these out to a `fixture`.
 
-Create a file under `spec/contracts/consumer/fixtures` called `discussions.fixture.js`. You place the `request` and `response` definitions here.
+Create a file under `spec/contracts/consumer/fixtures/project/merge_request` called `discussions.fixture.js` where you will place the `request` and `response` definitions.
 
 ```javascript
 const { Matchers } = require('@pact-foundation/pact');
@@ -274,18 +278,18 @@ With all of that moved to the `fixture`, you can simplify the test to the follow
 const { pactWith } = require('jest-pact');
 
 const { Discussions } = require('../fixtures/discussions.fixture');
-const { getDiscussions } = require('../endpoints/merge_requests');
+const { getDiscussions } = require('../endpoints/project/merge_requests');
 
 pactWith(
   {
-    consumer: 'Merge Request Page',
+    consumer: 'MergeRequest#show',
     provider: 'Merge Request Discussions Endpoint',
     log: '../logs/consumer.log',
-    dir: '../contracts',
+    dir: '../contracts/project/merge_request/show',
   },
 
   (provider) => {
-    describe('Discussions Endpoint', () => {
+    describe('Merge Request Discussions Endpoint', () => {
       beforeEach(() => {
         const interaction = {
           state: 'a merge request with discussions exists',

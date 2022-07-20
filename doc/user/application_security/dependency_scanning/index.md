@@ -63,18 +63,19 @@ possible, we encourage you to use all of our security scanning tools:
 
 The following table summarizes which types of dependencies each scanning tool can detect:
 
-| Feature                                                                                      | Dependency Scanning | Container Scanning          |
-| -----------------------------------------------------------                                  | ------------------- | ------------------          |
-| Identify the manifest, lock file, or static file that introduced the dependency              | **{check-circle}**      | **{dotted-circle}**             |
-| Development dependencies                                                                     | **{check-circle}**      | **{dotted-circle}**             |
-| Dependencies in a lock file committed to your repository                                     | **{check-circle}**      | **{check-circle}** <sup>1</sup> |
-| Binaries built by Go                                                                         | **{dotted-circle}**     | **{check-circle}** <sup>2</sup> |
-| Dynamically-linked language-specific dependencies installed by the Operating System          | **{dotted-circle}**     | **{check-circle}**              |
-| Operating system dependencies                                                                | **{dotted-circle}**     | **{check-circle}**              |
-| Language-specific dependencies installed on the operating system (not built by your project) | **{dotted-circle}**     | **{check-circle}**              |
+| Feature                                                                                      | Dependency Scanning | Container Scanning  |
+| -----------------------------------------------------------                                  | ------------------- | ------------------- |
+| Identify the manifest, lock file, or static file that introduced the dependency              | **{check-circle}**  | **{dotted-circle}** |
+| Development dependencies                                                                     | **{check-circle}**  | **{dotted-circle}** |
+| Dependencies in a lock file committed to your repository                                     | **{check-circle}**  | **{check-circle}** <sup>1</sup> |
+| Binaries built by Go                                                                         | **{dotted-circle}** | **{check-circle}** <sup>2</sup> <sup>3</sup> |
+| Dynamically-linked language-specific dependencies installed by the Operating System          | **{dotted-circle}** | **{check-circle}** <sup>3</sup> |
+| Operating system dependencies                                                                | **{dotted-circle}** | **{check-circle}**  |
+| Language-specific dependencies installed on the operating system (not built by your project) | **{dotted-circle}** | **{check-circle}**  |
 
 1. Lock file must be present in the image to be detected.
 1. Binary file must be present in the image to be detected.
+1. Only when using Trivy
 
 ## Requirements
 
@@ -310,7 +311,7 @@ table.supported-languages ul {
     <p>
       Although Gradle with Java 8 is supported, there are other issues such that Android project builds are not supported at this time.
       Please see the backlog issue <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336866">Android support for Dependency
-      Scanning (gemnasium-maven)</a> for more details.
+      Scanning (gemnasium-maven)</a> for more details. Also, Gradle is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled.
     </p>
   </li>
   <li>
@@ -396,11 +397,10 @@ To support the following package managers, the GitLab analyzers proceed in two s
           If your project <i>does not use</i> a <code>gradlew</code> file, then the analyzer automatically switches to one of the
           pre-installed Gradle versions, based on the version of Java specified by the
           <a href="#configuring-specific-analyzers-used-by-dependency-scanning"><code>DS_JAVA_VERSION</code></a> variable.
+          By default, the analyzer uses Java 17 and Gradle 7.3.3.
         </p>
-        <p>You can view the
-          <a href="https://docs.gradle.org/current/userguide/compatibility.html#java">Gradle Java compatibility matrix</a> to see which version
-          of Gradle is selected for each Java version. Note that we only support switching to one of these pre-installed Gradle versions
-          for Java versions 13 to 17.
+        <p>
+          For Java versions <code>8</code> and <code>11</code>, Gradle <code>6.7.1</code> is automatically selected, and for Java versions <code>13</code> to <code>17</code>, Gradle <code>7.3.3</code> is automatically selected.
         </p>
       </li>
       <li>
@@ -587,6 +587,11 @@ gemnasium-dependency_scanning:
 Dependency scanning can be [configured](#customizing-the-dependency-scanning-settings)
 using environment variables.
 
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
+
 #### Configuring dependency scanning
 
 The following variables allow configuration of global dependency scanning settings.
@@ -611,7 +616,7 @@ The following variables are used for configuring specific analyzers (used for a 
 | `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database (For usage see: [examples](#hosting-a-copy-of-the-gemnasium_db-advisory-database))|
 | `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the Gemnasium database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
-| `DS_REMEDIATE`                       | `gemnasium`        | `"true"`                     | Enable automatic remediation of vulnerable dependencies. |
+| `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries. For now, `gemnasium` leverages [`Retire.js`](https://github.com/RetireJS/retire.js) to do this job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350512) in GitLab 14.8. |
 | `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`, `15`, `16`, `17`. Available versions in FIPS-enabled image: `8`, `11`, `17`. |
 | `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
@@ -622,7 +627,7 @@ The following variables are used for configuring specific analyzers (used for a 
 | `PIP_REQUIREMENTS_FILE`              | `gemnasium-python` |                              | Pip requirements file to be scanned. |
 | `DS_PIP_VERSION`                     | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12811) in GitLab 12.7) |
 | `DS_PIP_DEPENDENCY_PATH`             | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12412) in GitLab 12.2) |
-| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only NPM projects are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
+| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only NPM and Poetry projects are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
 
 #### Other variables
 
@@ -687,6 +692,8 @@ To manually switch to FIPS-enabled images, set the variable `DS_IMAGE_SUFFIX` to
 
 To ensure compliance with FIPS, the FIPS-enabled image of `gemnasium-maven` uses the OpenJDK packages for RedHat UBI.
 As a result, it only supports Java 8, 11, and 17.
+
+Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
 
 ## Interacting with the vulnerabilities
 
@@ -834,10 +841,16 @@ Here's an example dependency scanning report:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/alpha-beta-support.md#beta-features).
 
+NOTE:
+CycloneDX SBOMs are a [Beta](../../../policy/alpha-beta-support.md#beta-features) feature,
+and the reports are subject to change during the beta period. Do not build integrations
+that rely on the format of these SBOMs staying consistent, as the format might change
+before the feature is made generally available.
+
 In addition to the [JSON report file](#reports-json-format), the [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
 Dependency Scanning tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for
 each supported lock or build file it detects. These CycloneDX SBOMs are named
-`cyclonedx-<package-type>-<package-manager>.json`, and are saved in the same directory
+`gl-sbom-<package-type>-<package-manager>.cdx.json`, and are saved in the same directory
 as the detected lock or build files.
 
 For example, if your project has the following structure:
@@ -860,16 +873,16 @@ Then the Gemnasium scanner generates the following CycloneDX SBOMs:
 .
 ├── ruby-project/
 │   ├── Gemfile.lock
-│   └── cyclonedx-gem-bundler.json
+│   └── gl-sbom-gem-bundler.cdx.json
 ├── ruby-project-2/
 │   ├── Gemfile.lock
-│   └── cyclonedx-gem-bundler.json
+│   └── gl-sbom-gem-bundler.cdx.json
 ├── php-project/
 │   ├── composer.lock
-│   └── cyclonedx-packagist-composer.json
+│   └── gl-sbom-packagist-composer.cdx.json
 └── go-project/
     ├── go.sum
-    └── cyclonedx-go-go.json
+    └── gl-sbom-go-go.cdx.json
 ```
 
 The CycloneDX SBOMs can be downloaded [the same way as other job artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
@@ -894,22 +907,16 @@ merge cyclonedx sboms:
     - wget https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.22.0/cyclonedx-linux-musl-x64 -O /usr/local/bin/cyclonedx-cli
     - chmod 755 /usr/local/bin/cyclonedx-cli
     - apk --update add --no-cache icu-dev libstdc++
-    - find * -name "cyclonedx-*.json" -exec cyclonedx-cli merge --input-files {} --output-file cyclonedx-all.json +
+    - find * -name "gl-sbom-*.cdx.json" -exec cyclonedx-cli merge --input-files {} --output-file gl-sbom-all.cdx.json +
   artifacts:
     paths:
-      - cyclonedx-all.json
+      - gl-sbom-all.cdx.json
 ```
 
 GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
 to store implementation-specific details in the metadata of each CycloneDX SBOM,
 such as the location of build and lock files. If multiple CycloneDX SBOMs are merged together,
 this information is removed from the resulting merged file.
-
-NOTE:
-CycloneDX SBOMs are a [Beta](../../../policy/alpha-beta-support.md#beta-features) feature,
-and the reports are subject to change during the beta period. Do not build integrations
-that rely on the format of these SBOMs staying consistent, as the format might change
-before the feature is made generally available.
 
 ## Versioning and release process
 

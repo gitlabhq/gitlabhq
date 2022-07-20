@@ -13,7 +13,11 @@
 # 1. Capture all nested headers, not just the most recent.
 # 2. Raise an exception if an unexpected state is encountered.
 #
-# Comments indicate where changes or additions were made.
+# Comments indicate where changes, deletions, or additions were made.
+#
+# See more detailed documentation of rules regarding the handling of headers
+# in the comments at the top of `Glfm::UpdateExampleSnapshots#add_example_names`,
+# in `scripts/lib/glfm/update_example_snapshots.rb`
 module Glfm
   module ParseExamples
     REGULAR_TEXT = 0
@@ -51,22 +55,29 @@ module Glfm
           state = REGULAR_TEXT
           example_number += 1
           end_line = line_number
-          unless extensions.include?('disabled')
-            tests <<
-              {
-                markdown: markdown_lines.join.tr('→', "\t"),
-                html: html_lines.join.tr('→', "\t"),
-                example: example_number,
-                start_line: start_line,
-                end_line: end_line,
-                section: headertext,
-                extensions: extensions,
-                headers: headers.dup # new logic compared to original Python code
-              }
-            start_line = 0
-            markdown_lines = []
-            html_lines = []
-          end
+
+          # NOTE: The original implementation completely excludes disabled examples, but we need
+          # to include them in order to correctly count the header numbering, so we set a flag
+          # instead. This will need to be accounted for when we run conformance testing.
+
+          # unless extensions.include?('disabled') # commented logic compared to original Python code
+          tests <<
+            {
+              markdown: markdown_lines.join.tr('→', "\t"),
+              html: html_lines.join.tr('→', "\t"),
+              example: example_number,
+              start_line: start_line,
+              end_line: end_line,
+              section: headertext,
+              extensions: extensions,
+              headers: headers.dup, # new logic compared to original Python code
+              disabled: extensions.include?('disabled') # new logic compared to original Python code
+            }
+          # end # commented logic compared to original Python code
+
+          start_line = 0
+          markdown_lines = []
+          html_lines = []
         elsif stripped_line == "."
           # Else if the example divider line...
           state = HTML_OUTPUT
@@ -80,19 +91,23 @@ module Glfm
           html_lines.append(line)
         elsif state == REGULAR_TEXT && line =~ header_regex
           # Else if we are in regular text and it is a header line
-          # NOTE: This assumes examples are only nested up to 2 levels deep (H2)
+          # NOTE: This assumes examples are within the section under
+          # Heading level 2 with Heading levels above 2 ignored
 
           # Extract the header text from the line
           headertext = line.gsub(header_regex, '').strip
 
-          # reset the headers array if we found a new H1
-          headers = [] if line =~ h1_regex # new logic compared to original Python code
+          # The 'headers' array is new logic compared to the original Python code
 
-          # pop the last entry from the headers array if we found a new H2
-          headers.pop if headers.length == 2 && line =~ h2_regex # new logic compared to original Python code
+          # reset the headers array if we found a new H1
+          headers = [] if line =~ h1_regex
+
+          # headers should be size 2 or less [<H1_headertext>, <H2_headertext>]
+          # pop the last entry from the headers array if we are in an H2 and found a new H2
+          headers.pop if headers.length == 2 && line =~ h2_regex
 
           # push the new header text to the headers array
-          headers << headertext # New logic compared to original Python code
+          headers << headertext if line =~ h1_regex || line =~ h2_regex
         else
           # Else if we are in regular text...
 

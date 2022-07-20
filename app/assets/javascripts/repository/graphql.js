@@ -9,7 +9,7 @@ Vue.use(VueApollo);
 const defaultClient = createDefaultClient(
   {
     Query: {
-      commit(_, { path, fileName, type, maxOffset }) {
+      commit(_, { path, fileName, maxOffset }) {
         return new Promise((resolve) => {
           fetchLogsTree(
             defaultClient,
@@ -19,7 +19,6 @@ const defaultClient = createDefaultClient(
               resolve,
               entry: {
                 name: fileName,
-                type,
               },
             },
             maxOffset,

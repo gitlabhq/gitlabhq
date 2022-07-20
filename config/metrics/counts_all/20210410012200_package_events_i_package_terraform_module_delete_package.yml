@@ -4,7 +4,7 @@ key_path: counts.package_events_i_package_terraform_module_delete_package
 description: Total count of Terraform Module packages delete events
 product_section: ops
 product_stage: configure
-product_group: group::configure
+product_group: configure
 product_category: infrastructure_as_code
 value_type: number
 status: active

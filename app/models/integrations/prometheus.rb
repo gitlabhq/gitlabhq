@@ -4,11 +4,30 @@ module Integrations
   class Prometheus < BaseMonitoring
     include PrometheusAdapter
 
-    #  Access to prometheus is directly through the API
-    prop_accessor :api_url
-    prop_accessor :google_iap_service_account_json
-    prop_accessor :google_iap_audience_client_id
-    boolean_accessor :manual_configuration
+    field :manual_configuration,
+      type: 'checkbox',
+      title: -> { s_('PrometheusService|Active') },
+      help: -> { s_('PrometheusService|Select this checkbox to override the auto configuration settings with your own settings.') },
+      required: true
+
+    field :api_url,
+      title: 'API URL',
+      placeholder: -> { s_('PrometheusService|https://prometheus.example.com/') },
+      help: -> { s_('PrometheusService|The Prometheus API base URL.') },
+      required: true
+
+    field :google_iap_audience_client_id,
+      title: 'Google IAP Audience Client ID',
+      placeholder: -> { s_('PrometheusService|IAP_CLIENT_ID.apps.googleusercontent.com') },
+      help: -> { s_('PrometheusService|The ID of the IAP-secured resource.') },
+      required: false
+
+    field :google_iap_service_account_json,
+      type: 'textarea',
+      title: 'Google IAP Service Account JSON',
+      placeholder: -> { s_('PrometheusService|{ "type": "service_account", "project_id": ... }') },
+      help: -> { s_('PrometheusService|The contents of the credentials.json file of your service account.') },
+      required: false
 
     # We need to allow the self-monitoring project to connect to the internal
     # Prometheus instance.
@@ -43,43 +62,6 @@ module Integrations
 
     def self.to_param
       'prometheus'
-    end
-
-    def fields
-      [
-        {
-          type: 'checkbox',
-          name: 'manual_configuration',
-          title: s_('PrometheusService|Active'),
-          help: s_('PrometheusService|Select this checkbox to override the auto configuration settings with your own settings.'),
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'api_url',
-          title: 'API URL',
-          placeholder: s_('PrometheusService|https://prometheus.example.com/'),
-          help: s_('PrometheusService|The Prometheus API base URL.'),
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'google_iap_audience_client_id',
-          title: 'Google IAP Audience Client ID',
-          placeholder: s_('PrometheusService|IAP_CLIENT_ID.apps.googleusercontent.com'),
-          help: s_('PrometheusService|The ID of the IAP-secured resource.'),
-          autocomplete: 'off',
-          required: false
-        },
-        {
-          type: 'textarea',
-          name: 'google_iap_service_account_json',
-          title: 'Google IAP Service Account JSON',
-          placeholder: s_('PrometheusService|{ "type": "service_account", "project_id": ... }'),
-          help: s_('PrometheusService|The contents of the credentials.json file of your service account.'),
-          required: false
-        }
-      ]
     end
 
     # Check we can connect to the Prometheus API

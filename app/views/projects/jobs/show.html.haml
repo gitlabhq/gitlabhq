@@ -7,7 +7,4 @@
 
 = render_if_exists "shared/shared_runners_minutes_limit_flash_message"
 
-- if @build.is_a? ::Ci::Build
-  #js-job-page{ data: jobs_data }
-- else
-  #js-bridge-page{ data: bridge_data(@build, @project) }
+#js-job-page{ data: jobs_data }

@@ -101,12 +101,6 @@ RSpec.describe Integrations::IrkerWorker, '#perform' do
         subject.perform(*arguments)
       end
     end
-
-    context 'when using the old worker class' do
-      let(:described_class) { ::IrkerWorker }
-
-      it { expect(subject.perform(*arguments)).to be_truthy }
-    end
   end
 
   def wrap_message(text)

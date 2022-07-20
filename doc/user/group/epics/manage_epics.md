@@ -34,6 +34,7 @@ To create an epic in the group you're in:
    - To [make the epic confidential](#make-an-epic-confidential), select the checkbox under **Confidentiality**.
    - Choose labels.
    - Select a start and due date, or [inherit](#start-and-due-date-inheritance) them.
+   - Select a [color](#epic-color).
 1. Select **Create epic**.
 
 The newly created epic opens.
@@ -62,6 +63,18 @@ Because the epic's dates can inherit dates from its children, the start date and
 If the start date of a child epic on the lowest level changes, that becomes the earliest possible start date for its parent epic.
 The parent epic's start date then reflects this change and propagates upwards to the top epic.
 
+### Epic color
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
+On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+The feature is not ready for production use.
+
+When you create or edit an epic, you can select its color.
+An epic's color is shown in [roadmaps](../roadmap/index.md), and [epic boards](epic_boards.md).
+
 ## Edit an epic
 
 After you create an epic, you can edit the following details:
@@ -71,6 +84,7 @@ After you create an epic, you can edit the following details:
 - Start date
 - Due date
 - Labels
+- [Color](#epic-color)
 
 Prerequisites:
 

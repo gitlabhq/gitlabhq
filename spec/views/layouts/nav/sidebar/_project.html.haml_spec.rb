@@ -419,50 +419,6 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       end
     end
 
-    describe 'Logs' do
-      it 'has a link to the pod logs page' do
-        render
-
-        expect(rendered).to have_link('Logs', href: project_logs_path(project))
-      end
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
-        it 'does not have a link to the pod logs page' do
-          render
-
-          expect(rendered).not_to have_link('Logs')
-        end
-      end
-    end
-
-    describe 'Tracing' do
-      it 'has a link to the tracing page' do
-        render
-
-        expect(rendered).to have_link('Tracing', href: project_tracing_path(project))
-      end
-
-      context 'without project.tracing_external_url' do
-        it 'has a link to the tracing page' do
-          render
-
-          expect(rendered).to have_link('Tracing', href: project_tracing_path(project))
-        end
-      end
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
-        it 'does not have a link to the tracing page' do
-          render
-
-          expect(rendered).not_to have_text 'Tracing'
-        end
-      end
-    end
-
     describe 'Error Tracking' do
       it 'has a link to the error tracking page' do
         render
@@ -576,7 +532,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     describe 'Google Cloud' do
       it 'has a link to the google cloud page' do
         render
-        expect(rendered).to have_link('Google Cloud', href: project_google_cloud_index_path(project))
+        expect(rendered).to have_link('Google Cloud', href: project_google_cloud_configuration_path(project))
       end
 
       describe 'when the user does not have access' do
@@ -953,8 +909,11 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
 
     describe 'Packages & Registries' do
+      let(:packages_enabled) { false }
+
       before do
         stub_container_registry_config(enabled: registry_enabled)
+        stub_config(packages: { enabled: packages_enabled })
       end
 
       context 'when registry is enabled' do
@@ -974,6 +933,17 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
           render
 
           expect(rendered).not_to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
+        end
+      end
+
+      context 'when packages config is enabled' do
+        let(:registry_enabled) { false }
+        let(:packages_enabled) { true }
+
+        it 'has a link to the Packages & Registries settings' do
+          render
+
+          expect(rendered).to have_link('Packages & Registries', href: project_settings_packages_and_registries_path(project))
         end
       end
     end

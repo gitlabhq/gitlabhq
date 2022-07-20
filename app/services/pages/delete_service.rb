@@ -21,7 +21,8 @@ module Pages
     def publish_deleted_event
       event = Pages::PageDeletedEvent.new(data: {
         project_id: project.id,
-        namespace_id: project.namespace_id
+        namespace_id: project.namespace_id,
+        root_namespace_id: project.root_namespace.id
       })
 
       Gitlab::EventStore.publish(event)

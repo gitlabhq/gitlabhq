@@ -58,7 +58,7 @@ itself, increasing visibility.
 
 ## Development guidelines
 
-Danger code is Ruby code, so all our [usual backend guidelines](index.md#backend-guides)
+Danger code is Ruby code, so all our [usual backend guidelines](feature_development.md#backend-guides)
 continue to apply. However, there are a few things that deserve special emphasis.
 
 ### When to use Danger
@@ -175,15 +175,7 @@ at GitLab so far:
 - Database review
 - Documentation review
 - Merge request metrics
-- Reviewer roulette. Reviewers and maintainers are chosen based on:
-  - Their roles (backend, frontend, database, etc).
-  - Their availability:
-    - No "OOO"/"PTO"/"Parental Leave" in their GitLab or Slack status.
-    - No `:red_circle:`/`:palm_tree:`/`:beach:`/`:beach_umbrella:`/`:beach_with_umbrella:` emojis in GitLab or Slack status.
-  - (Experimental) Their time zone: people for which the local hour is between
-    6 AM and 2 PM are eligible to be picked. This is to ensure they have a good
-    chance to get to perform a review during their current work day. The experimentation is tracked in
-    [this issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/563)
+- [Reviewer roulette](code_review.md#reviewer-roulette)
 - Single codebase effort
 
 ## Limitations

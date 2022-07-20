@@ -6,10 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Scan execution policies **(ULTIMATE)**
 
-Project owners can use scan execution policies to require that security scans run on a specified
-schedule or with the project pipeline. Required scans are injected into the CI pipeline as new jobs
+> Group-level security policies were [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `group_level_security_policies`. Enabled by default.
+
+Group, sub-group, or project owners can use scan execution policies to require that security scans run on a specified
+schedule or with the project (or multiple projects if the policy is defined at a group or sub-group level) pipeline. Required scans are injected into the CI pipeline as new jobs
 with a long, random job name. In the unlikely event of a job name collision, the security policy job overwrites
-any pre-existing job in the pipeline.
+any pre-existing job in the pipeline. If a policy is created at the group-level, it will apply to every child
+project or sub-group. A group-level policy cannot be edited from a child project or sub-group.
 
 This feature has some overlap with [compliance framework pipelines](../../project/settings/#compliance-pipeline-configuration),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
@@ -25,7 +28,7 @@ an error appears that states `chosen stage does not exist`.
 ## Scan execution policy editor
 
 NOTE:
-Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
+Only group, sub-group, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to select Security Policy Project.
 
 Once your policy is complete, save it by selecting **Create via merge request**
@@ -62,7 +65,7 @@ the following sections and tables provide an alternative.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `name` | `string` |  | Name of the policy. |
+| `name` | `string` |  | Name of the policy. Maximum of 255 characters.|
 | `description` (optional) | `string` |  | Description of the policy. |
 | `enabled` | `boolean` | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules` | `array` of rules |  | List of rules that the policy applies. |
@@ -85,9 +88,8 @@ This rule enforces the defined actions and schedules a scan on the provided date
 |------------|------|-----------------|-------------|
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
-| `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
-| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. <!--- start_remove The following content will be removed on remove_date: '2022-08-22' --> |
-| `clusters` (removed) | `object` | | This field was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in 15.0. Use the `agents` field instead. The cluster where the given policy enforces running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. <!--- end_remove --> |
+| `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. <!--- start_remove The following content will be removed on remove_date: '2022-08-22' --> |
+| `clusters` (removed) | `object` | | This field was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in 15.0. The cluster where the given policy enforces running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. <!--- end_remove --> |
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
@@ -96,20 +98,11 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 
 It is possible that other elements of the CRON syntax will work in the cadence field, however, GitLab does not officially test or support them.
 
-### `agent` schema
-
-Use this schema to define `agents` objects in the [`schedule` rule type](#schedule-rule-type).
-
-| Field        | Type                | Possible values          | Description |
-|--------------|---------------------|--------------------------|-------------|
-| `namespaces` | `array` of `string` | | The namespace that is scanned. If empty, all namespaces will be scanned. |
-
 <!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
 
 ### `cluster` schema (removed)
 
 This schema was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in 15.0.
-Use the [`agent` schema](#agent-schema) instead.
 
 Use this schema to define `clusters` objects in the [`schedule` rule type](#schedule-rule-type).
 
@@ -200,24 +193,6 @@ scan_execution_policy:
     variables:
       SAST_EXCLUDED_ANALYZERS: brakeman
   - scan: container_scanning
-- name: Enforce Cluster Image Scanning on production-cluster every 24h
-  description: This policy enforces Cluster Image Scanning scan to run every 24 hours
-  enabled: true
-  rules:
-  - type: schedule
-    cadence: "15 3 * * *"
-    clusters:
-      production-cluster:
-        containers:
-        - database
-        resources:
-        - production-application
-        namespaces:
-        - production-namespace
-        kinds:
-        - deployment
-  actions:
-  - scan: cluster_image_scanning
 ```
 
 In this example:

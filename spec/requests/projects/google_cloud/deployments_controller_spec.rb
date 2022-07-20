@@ -9,10 +9,9 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
   let_it_be(:user_guest) { create(:user) }
   let_it_be(:user_developer) { create(:user) }
   let_it_be(:user_maintainer) { create(:user) }
-  let_it_be(:user_creator) { project.creator }
 
   let_it_be(:unauthorized_members) { [user_guest, user_developer] }
-  let_it_be(:authorized_members) { [user_maintainer, user_creator] }
+  let_it_be(:authorized_members) { [user_maintainer] }
 
   let_it_be(:urls_list) { %W[#{project_google_cloud_deployments_cloud_run_path(project)} #{project_google_cloud_deployments_cloud_storage_path(project)}] }
 
@@ -32,7 +31,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
           expect_snowplow_event(
             category: 'Projects::GoogleCloud',
             action: 'admin_project_google_cloud!',
-            label: 'access_denied',
+            label: 'error_access_denied',
             property: 'invalid_user',
             project: project,
             user: nil
@@ -51,7 +50,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
             expect_snowplow_event(
               category: 'Projects::GoogleCloud',
               action: 'admin_project_google_cloud!',
-              label: 'access_denied',
+              label: 'error_access_denied',
               property: 'invalid_user',
               project: project,
               user: nil
@@ -87,15 +86,15 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
       end
     end
 
-    it 'redirects to google_cloud home on enable service error' do
+    it 'redirects to google cloud deployments on enable service error' do
       get url
 
-      expect(response).to redirect_to(project_google_cloud_index_path(project))
+      expect(response).to redirect_to(project_google_cloud_deployments_path(project))
       # since GPC_PROJECT_ID is not set, enable cloud run service should return an error
       expect_snowplow_event(
         category: 'Projects::GoogleCloud',
         action: 'deployments#cloud_run',
-        label: 'enable_cloud_run_error',
+        label: 'error_enable_cloud_run',
         extra: { message: 'No GCP projects found. Configure a service account or GCP_PROJECT_ID ci variable.',
                  status: :error },
         project: project,
@@ -103,7 +102,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
       )
     end
 
-    it 'redirects to gcp_error' do
+    it 'redirects to google cloud deployments with error' do
       mock_gcp_error = Google::Apis::ClientError.new('some_error')
 
       allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |service|
@@ -112,11 +111,11 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
 
       get url
 
-      expect(response).to render_template(:gcp_error)
+      expect(response).to redirect_to(project_google_cloud_deployments_path(project))
       expect_snowplow_event(
         category: 'Projects::GoogleCloud',
         action: 'deployments#cloud_run',
-        label: 'gcp_error',
+        label: 'error_gcp',
         extra: mock_gcp_error,
         project: project,
         user: user_maintainer
@@ -124,7 +123,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
     end
 
     context 'GCP_PROJECT_IDs are defined' do
-      it 'redirects to google_cloud home on generate pipeline error' do
+      it 'redirects to google_cloud deployments on generate pipeline error' do
         allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |enable_cloud_run_service|
           allow(enable_cloud_run_service).to receive(:execute).and_return({ status: :success })
         end
@@ -135,11 +134,11 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
 
         get url
 
-        expect(response).to redirect_to(project_google_cloud_index_path(project))
+        expect(response).to redirect_to(project_google_cloud_deployments_path(project))
         expect_snowplow_event(
           category: 'Projects::GoogleCloud',
           action: 'deployments#cloud_run',
-          label: 'generate_pipeline_error',
+          label: 'error_generate_pipeline',
           extra: { status: :error },
           project: project,
           user: user_maintainer
@@ -162,7 +161,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
         expect_snowplow_event(
           category: 'Projects::GoogleCloud',
           action: 'deployments#cloud_run',
-          label: 'cloud_run_success',
+          label: 'success',
           extra: { "title": "Enable deployments to Cloud Run",
                    "description": "This merge request includes a Cloud Run deployment job in the pipeline definition (.gitlab-ci.yml).\n\nThe `deploy-to-cloud-run` job:\n* Requires the following environment variables\n    * `GCP_PROJECT_ID`\n    * `GCP_SERVICE_ACCOUNT_KEY`\n* Job definition can be found at: https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/library\n\nThis pipeline definition has been committed to the branch ``.\nYou may modify the pipeline definition further or accept the changes as-is if suitable.\n",
                    "source_project_id": project.id,

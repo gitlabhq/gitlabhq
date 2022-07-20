@@ -9,7 +9,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
   def update
     group_link = @project.project_group_links.find(params[:id])
-    Projects::GroupLinks::UpdateService.new(group_link).execute(group_link_params)
+    Projects::GroupLinks::UpdateService.new(group_link, current_user).execute(group_link_params)
 
     if group_link.expires?
       render json: {

@@ -20,26 +20,23 @@ WHERE user_id = 2;
 Here we are filtering by the `user_id` column and as such a developer may decide
 to index this column.
 
-While in certain cases indexing columns using the above approach may make sense
-it can actually have a negative impact. Whenever you write data to a table any
-existing indexes need to be updated. The more indexes there are the slower this
-can potentially become. Indexes can also take up quite some disk space depending
+While in certain cases indexing columns using the above approach may make sense,
+it can actually have a negative impact. Whenever you write data to a table, any
+existing indexes must also be updated. The more indexes there are, the slower this
+can potentially become. Indexes can also take up significant disk space, depending
 on the amount of data indexed and the index type. For example, PostgreSQL offers
-"GIN" indexes which can be used to index certain data types that can not be
-indexed by regular B-tree indexes. These indexes however generally take up more
+`GIN` indexes which can be used to index certain data types that cannot be
+indexed by regular B-tree indexes. These indexes, however, generally take up more
 data and are slower to update compared to B-tree indexes.
 
-Because of all this one should not blindly add a new index for every column used
-to filter data by. Instead one should ask themselves the following questions:
+Because of all this, it's important make the following considerations
+when adding a new index:
 
-1. Can you write your query in such a way that it re-uses as many existing indexes
-   as possible?
-1. Is the data large enough that using an index is actually
-   faster than just iterating over the rows in the table?
+1. Do the new queries re-use as many existing indexes as possible?
+1. Is there enough data that using an index is faster than iterating over
+   rows in the table?
 1. Is the overhead of maintaining the index worth the reduction in query
    timings?
-
-We explore every question in detail below.
 
 ## Re-using Queries
 
@@ -59,10 +56,8 @@ unindexed. In reality the query may perform just fine given the index on
 `user_id` can filter out enough rows.
 
 The best way to determine if indexes are re-used is to run your query using
-`EXPLAIN ANALYZE`. Depending on any extra tables that may be joined and
-other columns being used for filtering you may find an extra index is not going
-to make much (if any) difference. On the other hand you may determine that the
-index _may_ make a difference.
+`EXPLAIN ANALYZE`. Depending on the joined tables and the columns being used for filtering,
+you may find an extra index doesn't make much, if any, difference.
 
 In short:
 
@@ -73,28 +68,24 @@ In short:
 
 ## Data Size
 
-A database may decide not to use an index despite it existing in case a regular
-sequence scan (= simply iterating over all existing rows) is faster. This is
-especially the case for small tables.
+A database may not use an index even when a regular sequence scan
+(iterating over all rows) is faster, especially for small tables.
 
-If a table is expected to grow in size and you expect your query has to filter
-out a lot of rows you may want to consider adding an index. If the table size is
-very small (for example, fewer than `1,000` records) or any existing indexes filter out
-enough rows you may _not_ want to add a new index.
+Consider adding an index if a table is expected to grow, and your query has to filter a lot of rows.
+You may _not_ want to add an index if the table size is small (<`1,000` records),
+or if existing indexes already filter out enough rows.
 
 ## Maintenance Overhead
 
-Indexes have to be updated on every table write. In case of PostgreSQL _all_
+Indexes have to be updated on every table write. In the case of PostgreSQL, _all_
 existing indexes are updated whenever data is written to a table. As a
-result of this having many indexes on the same table slows down writes.
+result, having many indexes on the same table slows down writes. It's therefore important
+to balance query performance with the overhead of maintaining an extra index.
 
-Because of this one should ask themselves: is the reduction in query performance
-worth the overhead of maintaining an extra index?
-
-If adding an index reduces SELECT timings by 5 milliseconds but increases
-INSERT/UPDATE/DELETE timings by 10 milliseconds then the index may not be worth
-it. On the other hand, if SELECT timings are reduced but INSERT/UPDATE/DELETE
-timings are not affected you may want to add the index after all.
+Let's say that adding an index reduces SELECT timings by 5 milliseconds but increases
+INSERT/UPDATE/DELETE timings by 10 milliseconds. In this case, the new index may not be worth
+it. A new index is more valuable when SELECT timings are reduced and INSERT/UPDATE/DELETE
+timings are unaffected.
 
 ## Finding Unused Indexes
 
@@ -111,26 +102,32 @@ ORDER BY pg_relation_size(indexrelname::regclass) desc;
 ```
 
 This query outputs a list containing all indexes that are never used and sorts
-them by indexes sizes in descending order. This query can be useful to
-determine if any previously indexes are useful after all. More information on
+them by indexes sizes in descending order. This query helps in
+determining whether existing indexes are still required. More information on
 the meaning of the various columns can be found at
 <https://www.postgresql.org/docs/current/monitoring-stats.html>.
 
-Because the output of this query relies on the actual usage of your database it
-may be affected by factors such as (but not limited to):
+To determine if an index is still being used on production, use the following
+Thanos query with your index name:
+
+```sql
+sum(rate(pg_stat_user_indexes_idx_tup_read{env="gprd", indexrelname="index_ci_name", type="patroni-ci"}[5m]))
+```
+
+Because the query output relies on the actual usage of your database, it
+may be affected by factors such as:
 
 - Certain queries never being executed, thus not being able to use certain
   indexes.
 - Certain tables having little data, resulting in PostgreSQL using sequence
   scans instead of index scans.
 
-In other words, this data is only reliable for a frequently used database with
-plenty of data and with as many GitLab features enabled (and being used) as
-possible.
+This data is only reliable for a frequently used database with
+plenty of data, and using as many GitLab features as possible.
 
 ## Requirements for naming indexes
 
-Indexes with complex definitions need to be explicitly named rather than
+Indexes with complex definitions must be explicitly named rather than
 relying on the implicit naming behavior of migration methods. In short,
 that means you **must** provide an explicit name argument for an index
 created with one or more of the following options:
@@ -144,16 +141,7 @@ created with one or more of the following options:
 
 ### Considerations for index names
 
-Index names don't have any significance in the database, so they should
-attempt to communicate intent to others. The most important rule to
-remember is that generic names are more likely to conflict or be duplicated,
-and should not be used. Some other points to consider:
-
-- For general indexes, use a template, like: `index_{table}_{column}_{options}`.
-- For indexes added to solve a very specific problem, it may make sense
-  for the name to reflect their use.
-- Identifiers in PostgreSQL have a maximum length of 63 bytes.
-- Check `db/structure.sql` for conflicts and ideas.
+Check our [Constraints naming conventions](database/constraint_naming_convention.md) page.
 
 ### Why explicit names are required
 
@@ -172,7 +160,7 @@ end
 Creation of the second index would fail, because Rails would generate
 the same name for both indexes.
 
-This is further complicated by the behavior of the `index_exists?` method.
+This naming issue is further complicated by the behavior of the `index_exists?` method.
 It considers only the table name, column names, and uniqueness specification
 of the index when making a comparison. Consider:
 
@@ -188,7 +176,7 @@ The call to `index_exists?` returns true if **any** index exists on
 `:my_table` and `:my_column`, and index creation is bypassed.
 
 The `add_concurrent_index` helper is a requirement for creating indexes
-on populated tables. Since it cannot be used inside a transactional
+on populated tables. Because it cannot be used inside a transactional
 migration, it has a built-in check that detects if the index already
 exists. In the event a match is found, index creation is skipped.
 Without an explicit name argument, Rails can return a false positive
@@ -201,14 +189,14 @@ chance of error is greatly reduced.
 There may be times when an index is only needed temporarily.
 
 For example, in a migration, a column of a table might be conditionally
-updated. To query which columns need to be updated within the
-[query performance guidelines](query_performance.md), an index is needed that would otherwise
-not be used.
+updated. To query which columns must be updated in the
+[query performance guidelines](query_performance.md), an index is needed
+that would otherwise not be used.
 
-In these cases, a temporary index should be considered. To specify a
+In these cases, consider a temporary index. To specify a
 temporary index:
 
-1. Prefix the index name with `tmp_` and follow the [naming conventions](database/constraint_naming_convention.md) and [requirements for naming indexes](#requirements-for-naming-indexes) for the rest of the name.
+1. Prefix the index name with `tmp_` and follow the [naming conventions](database/constraint_naming_convention.md).
 1. Create a follow-up issue to remove the index in the next (or future) milestone.
 1. Add a comment in the migration mentioning the removal issue.
 
@@ -237,10 +225,10 @@ on GitLab.com, the deployment process is blocked waiting for index
 creation to finish.
 
 To limit impact on GitLab.com, a process exists to create indexes
-asynchronously during weekend hours. Due to generally lower levels of
-traffic and lack of regular deployments, this process allows the
-creation of indexes to proceed with a lower level of risk. The below
-sections describe the steps required to use these features:
+asynchronously during weekend hours. Due to generally lower traffic and fewer deployments,
+index creation can proceed at a lower level of risk.
+
+### Schedule index creation for a low-impact time
 
 1. [Schedule the index to be created](#schedule-the-index-to-be-created).
 1. [Verify the MR was deployed and the index exists in production](#verify-the-mr-was-deployed-and-the-index-exists-in-production).
@@ -291,12 +279,10 @@ migration as expected for other installations. The below block
 demonstrates how to create the second migration for the previous
 asynchronous example.
 
-WARNING:
-The responsibility lies on the individual writing the migrations to verify
-the index exists in production before merging a second migration that
-adds the index using `add_concurrent_index`. If the second migration is
-deployed and the index has not yet been created, the index is created
-synchronously when the second migration executes.
+**WARNING:**
+Verify that the index exists in production before merging a second migration with `add_concurrent_index`.
+If the second migration is deployed before the index has been created,
+the index is created synchronously when the second migration executes.
 
 ```ruby
 # in db/post_migrate/

@@ -313,11 +313,11 @@ run:
 
 ```shell
 # Validate all queries
-bundle exec rake gitlab::graphql:validate
+bundle exec rake gitlab:graphql:validate
 # Validate one query
-bundle exec rake gitlab::graphql:validate[path/to/query.graphql]
+bundle exec rake gitlab:graphql:validate[path/to/query.graphql]
 # Validate a directory
-bundle exec rake gitlab::graphql:validate[path/to/queries]
+bundle exec rake gitlab:graphql:validate[path/to/queries]
 ```
 
 This prints out a report with an entry for each query, explaining why
@@ -335,11 +335,11 @@ Usage:
 
 ```shell
 # Analyze all queries
-bundle exec rake gitlab::graphql:analyze
+bundle exec rake gitlab:graphql:analyze
 # Analyze one query
-bundle exec rake gitlab::graphql:analyze[path/to/query.graphql]
+bundle exec rake gitlab:graphql:analyze[path/to/query.graphql]
 # Analyze a directory
-bundle exec rake gitlab::graphql:analyze[path/to/queries]
+bundle exec rake gitlab:graphql:analyze[path/to/queries]
 ```
 
 This prints out a report for each query, including the complexity
@@ -392,4 +392,22 @@ The following command combines the intent of [Update GraphQL documentation and s
 
 ```shell
 bundle exec rake gitlab:graphql:update_all
+```
+
+## Update OpenAPI client for Error Tracking feature
+
+NOTE:
+This Rake task needs `docker` to be installed.
+
+To update generated code for OpenAPI client located in
+`vendor/gems/error_tracking_open_api` run the following commands:
+
+```shell
+# Run rake task
+bundle exec rake gems:error_tracking_open_api:generate
+
+# Review and test the changes
+
+# Commit the changes
+git commit -m 'Update ErrorTrackingOpenAPI from OpenAPI definition' vendor/gems/error_tracking_open_api
 ```

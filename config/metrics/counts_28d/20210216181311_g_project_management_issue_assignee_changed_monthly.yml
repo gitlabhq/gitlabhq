@@ -4,7 +4,7 @@ key_path: redis_hll_counters.issues_edit.g_project_management_issue_assignee_cha
 description: Count of MAU changing issue assignees
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: issue_tracking
 value_type: number
 status: active

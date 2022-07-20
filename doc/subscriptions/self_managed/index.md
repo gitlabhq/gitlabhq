@@ -117,36 +117,34 @@ GitLab has several features which can help you manage the number of users:
   users manually.
 - View a breakdown of users by role in the [Users statistics](../../user/admin_area/index.md#users-statistics) page.
 
-## Cloud licensing
+## Sync your subscription data with GitLab
 
 > Introduced in GitLab 14.1.
 
-Cloud licensing manages licenses for self-managed GitLab subscription plans. Cloud licensing includes:
+Prerequisites:
 
-- Activation: Unlock plan features and activate your self-managed instance by using an activation code.
-- License sync: Sync subscription data between your self-managed instance and GitLab.
+- You must be running GitLab Enterprise Edition (EE).
+- You must have GitLab 14.1 or later.
+- Your instance must be connected to the internet, and not be in an offline environment.
 
-### How cloud licensing works
+To sync subscription data between your self-managed instance and GitLab, you must [activate your instance](../../user/admin_area/license.md) with an
+activation code.
 
-#### Add your license
+After you activate your instance, the following processes are automated:
 
-1. When you purchase a GitLab self-managed plan, an activation code is generated.
-   This activation code is sent to the email address associated with the Customers Portal account.
-1. In GitLab, on the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Subscription** and paste the activation code in the text field.
-1. Select **Add license**.
+- [Quarterly subscription reconciliation](../quarterly_reconciliation.md).
+- Subscription renewals.
+- Subscription updates, such as adding more seats or upgrading a GitLab tier.
 
-The page displays the details of the subscription.
+At approximately 03:00 UTC, a daily sync job sends subscription data to the Customers Portal. For this reason, updates and renewals may not
+apply immediately.
 
-#### License sync
+The data is sent securely through an encrypted HTTPS connection to `customers.gitlab.com` on port `443`.
+If the job fails, it retries up to 12 times over approximately 17 hours.
 
-Once a day, a job sends license data to the Customers Portal. This information automates activation,
-provisioning, co-terms, and renewals. The data is sent securely through an encrypted HTTPS connection
-to `customers.gitlab.com` on port `443`.
+### Subscription data that GitLab receives
 
-This sync job runs daily around 3AM UTC. If the job fails, it is retried up to 12 times over approximately 17 hours.
-
-The daily job provides **only** the following information to the Customers Portal:
+The daily sync job sends **only** the following information to the Customers Portal:
 
 - Date
 - Timestamp
@@ -159,9 +157,8 @@ The daily job provides **only** the following information to the Customers Porta
 - GitLab version
 - Hostname
 - Instance ID
-- MD5 hash of license
 
-Example of a cloud licensing sync request:
+Example of a license sync request:
 
 ```json
 {
@@ -208,12 +205,16 @@ Example of a cloud licensing sync request:
   "max_historical_user_count": 75,
   "billable_users_count": 75,
   "hostname": "gitlab.example.com",
-  "instance_id": "9367590b-82ad-48cb-9da7-938134c29088",
-  "license_md5": "002f02470fe45ef6a333a4282aca6222"
+  "instance_id": "9367590b-82ad-48cb-9da7-938134c29088"
 }
 ```
 
-#### Sync subscription details
+### Troubleshoot automatic subscription sync
+
+If the sync job is not working, ensure you allow network traffic from your GitLab instance
+to IP address `104.18.26.123:443` (`customers.gitlab.com`).
+
+## Manually sync your subscription details
 
 You can manually sync your subscription details at any time.
 
@@ -222,11 +223,6 @@ You can manually sync your subscription details at any time.
 1. In the **Subscription details** section, select **Sync subscription details**.
 
 A job is queued. When the job finishes, the subscription details are updated.
-
-#### Troubleshooting cloud licensing sync
-
-If the sync job is not working, ensure you allow network traffic from your GitLab instance
-to IP address `104.18.26.123:443` (`customers.gitlab.com`).
 
 ## Obtain a subscription
 
@@ -273,7 +269,7 @@ If you are an administrator, you can export your license usage into a CSV:
 1. On the left sidebar, select **Subscription**.
 1. In the top right, select **Export license usage file**.
 
-This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or in an offline environment, you must provide GitLab with this information.
+This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or an offline environment, you must provide GitLab with this information.
 
 The **License Usage** CSV includes the following details:
 
@@ -293,6 +289,8 @@ NOTES:
 - A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
 
 ## Renew your subscription
+
+You can renew your subscription starting from 15 days before your subscription expires.
 
 To renew your subscription,
 [prepare for renewal by reviewing your account](#prepare-for-renewal-by-reviewing-your-account),
@@ -364,7 +362,8 @@ to your instance.
 
 ### Renew a subscription
 
-Starting 30 days before a subscription expires, GitLab notifies administrators of the date of expiry with a banner in the GitLab user interface.
+Starting 30 days before a subscription expires, a banner with the expiry date displays for administrators in the GitLab user interface.
+You can renew your subscription starting from 15 days before your subscription expires.
 
 We recommend following these steps during renewal:
 
@@ -375,7 +374,7 @@ The **Renew** button remains disabled (grayed-out) until 15 days before a subscr
 You can hover your mouse on the **Renew** button to see the date when it will become active.
 
    NOTE:
-   If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team via [the sales contact form](https://about.gitlab.com/sales/) for assistance as this can't be done in the Customers Portal.
+   If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team with [the sales contact form](https://about.gitlab.com/sales/) for assistance as this can't be done in the Customers Portal.
 
 1. In the first box, enter the total number of user licenses you'll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.

@@ -129,6 +129,14 @@ RSpec.describe Gitlab::Diff::File do
         expect(diff_file.rendered).to be_kind_of(Gitlab::Diff::Rendered::Notebook::DiffFile)
       end
 
+      context 'when collapsed' do
+        it 'is nil' do
+          expect(diff).to receive(:collapsed?).and_return(true)
+
+          expect(diff_file.rendered).to be_nil
+        end
+      end
+
       context 'when too large' do
         it 'is nil' do
           expect(diff).to receive(:too_large?).and_return(true)

@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Database::Migrations::ReestablishedConnectionStack do
   end
 
   describe '#with_restored_connection_stack' do
-    Gitlab::Database.database_base_models.each do |db_config_name, _|
+    Gitlab::Database.database_base_models_with_gitlab_shared.each do |db_config_name, _|
       context db_config_name do
         it_behaves_like "reconfigures connection stack", db_config_name do
           it 'does restore connection hierarchy' do

@@ -194,6 +194,7 @@ export const securityFeatures = [
     helpPath: DAST_HELP_PATH,
     configurationHelpPath: DAST_CONFIG_HELP_PATH,
     type: REPORT_TYPE_DAST,
+    anchor: 'dast',
   },
   {
     name: DEPENDENCY_SCANNING_NAME,
@@ -201,6 +202,7 @@ export const securityFeatures = [
     helpPath: DEPENDENCY_SCANNING_HELP_PATH,
     configurationHelpPath: DEPENDENCY_SCANNING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_DEPENDENCY_SCANNING,
+    anchor: 'dependency-scanning',
   },
   {
     name: CONTAINER_SCANNING_NAME,

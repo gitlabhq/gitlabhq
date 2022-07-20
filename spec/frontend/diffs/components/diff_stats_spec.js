@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import DiffStats from '~/diffs/components/diff_stats.vue';
-import mockDiffFile from '../mock_data/diff_file';
+import { getDiffFileMock } from '../mock_data/diff_file';
 
 const TEST_ADDED_LINES = 100;
 const TEST_REMOVED_LINES = 200;
@@ -48,6 +48,7 @@ describe('diff_stats', () => {
     const getBytesContainer = () => wrapper.find('.diff-stats > div:first-child');
 
     beforeEach(() => {
+      const mockDiffFile = getDiffFileMock();
       file = {
         ...mockDiffFile,
         viewer: {

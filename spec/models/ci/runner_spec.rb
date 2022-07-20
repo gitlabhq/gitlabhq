@@ -12,7 +12,7 @@ RSpec.describe Ci::Runner do
   end
 
   describe 'groups association' do
-    # Due to other assoctions such as projects this whole spec is allowed to
+    # Due to other associations such as projects this whole spec is allowed to
     # generate cross-database queries. So we have this temporary spec to
     # validate that at least groups association does not generate cross-DB
     # queries.
@@ -31,6 +31,46 @@ RSpec.describe Ci::Runner do
     it 'does not create a cross-database query' do
       with_cross_joins_prevented do
         expect(runner.projects.count).to eq(1)
+      end
+    end
+  end
+
+  describe 'acts_as_taggable' do
+    let(:tag_name) { 'tag123' }
+
+    context 'on save' do
+      let_it_be_with_reload(:runner) { create(:ci_runner) }
+
+      before do
+        runner.tag_list = [tag_name]
+      end
+
+      context 'tag does not exist' do
+        it 'creates a tag' do
+          expect { runner.save! }.to change(ActsAsTaggableOn::Tag, :count).by(1)
+        end
+
+        it 'creates an association to the tag' do
+          runner.save!
+
+          expect(described_class.tagged_with(tag_name)).to include(runner)
+        end
+      end
+
+      context 'tag already exists' do
+        before do
+          ActsAsTaggableOn::Tag.create!(name: tag_name)
+        end
+
+        it 'does not create a tag' do
+          expect { runner.save! }.not_to change(ActsAsTaggableOn::Tag, :count)
+        end
+
+        it 'creates an association to the tag' do
+          runner.save!
+
+          expect(described_class.tagged_with(tag_name)).to include(runner)
+        end
       end
     end
   end
@@ -1062,18 +1102,6 @@ RSpec.describe Ci::Runner do
           end
         end
       end
-
-      context 'with updated version' do
-        before do
-          runner.version = '1.2.3'
-        end
-
-        it 'updates version components with new version' do
-          heartbeat
-
-          expect(runner.reload.read_attribute(:semver)).to eq '15.0.1'
-        end
-      end
     end
 
     def expect_redis_update
@@ -1088,7 +1116,6 @@ RSpec.describe Ci::Runner do
         .and change { runner.reload.read_attribute(:architecture) }
         .and change { runner.reload.read_attribute(:config) }
         .and change { runner.reload.read_attribute(:executor_type) }
-        .and change { runner.reload.read_attribute(:semver) }
     end
   end
 
@@ -1189,6 +1216,47 @@ RSpec.describe Ci::Runner do
 
       it 'returns false' do
         expect(runner.belongs_to_more_than_one_project?).to be_falsey
+      end
+    end
+  end
+
+  describe '#save_tags' do
+    let(:runner) { build(:ci_runner, tag_list: ['tag']) }
+
+    it 'saves tags' do
+      runner.save!
+
+      expect(runner.tags.count).to eq(1)
+      expect(runner.tags.first.name).to eq('tag')
+    end
+
+    it 'strips tags' do
+      runner.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+
+      runner.save!
+      expect(runner.tags.map(&:name)).to match_array(%w[taga tagb tagc])
+    end
+
+    context 'with BulkInsertableTags.with_bulk_insert_tags' do
+      it 'does not save_tags' do
+        Ci::BulkInsertableTags.with_bulk_insert_tags do
+          runner.save!
+        end
+
+        expect(runner.tags).to be_empty
+      end
+
+      context 'over TAG_LIST_MAX_LENGTH' do
+        let(:tag_list) { (1..described_class::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" } }
+        let(:runner) { build(:ci_runner, tag_list: tag_list) }
+
+        it 'fails validation if over tag limit' do
+          Ci::BulkInsertableTags.with_bulk_insert_tags do
+            expect { runner.save! }.to raise_error(ActiveRecord::RecordInvalid)
+          end
+
+          expect(runner.tags).to be_empty
+        end
       end
     end
   end
@@ -1700,40 +1768,37 @@ RSpec.describe Ci::Runner do
     end
   end
 
-  describe '.save' do
-    context 'with initial value' do
-      let(:runner) { create(:ci_runner, version: 'v1.2.3') }
+  describe '#with_upgrade_status' do
+    subject { described_class.with_upgrade_status(upgrade_status) }
 
-      it 'updates semver column' do
-        expect(runner.semver).to eq '1.2.3'
+    let_it_be(:runner_14_0_0) { create(:ci_runner, version: '14.0.0') }
+    let_it_be(:runner_14_1_0) { create(:ci_runner, version: '14.1.0') }
+    let_it_be(:runner_14_1_1) { create(:ci_runner, version: '14.1.1') }
+    let_it_be(:runner_version_14_0_0) { create(:ci_runner_version, version: '14.0.0', status: :available) }
+    let_it_be(:runner_version_14_1_0) { create(:ci_runner_version, version: '14.1.0', status: :recommended) }
+    let_it_be(:runner_version_14_1_1) { create(:ci_runner_version, version: '14.1.1', status: :not_available) }
+
+    context ':not_available' do
+      let(:upgrade_status) { :not_available }
+
+      it 'returns runners whose version is assigned :not_available' do
+        is_expected.to contain_exactly(runner_14_1_1)
       end
     end
 
-    context 'with no initial version value' do
-      let(:runner) { build(:ci_runner) }
+    context ':available' do
+      let(:upgrade_status) { :available }
 
-      context 'with version change' do
-        subject(:update_version) { runner.update!(version: new_version) }
+      it 'returns runners whose version is assigned :available' do
+        is_expected.to contain_exactly(runner_14_0_0)
+      end
+    end
 
-        context 'to invalid version' do
-          let(:new_version) { 'invalid version' }
+    context ':recommended' do
+      let(:upgrade_status) { :recommended}
 
-          it 'updates semver column to nil' do
-            update_version
-
-            expect(runner.reload.semver).to be_nil
-          end
-        end
-
-        context 'to v14.10.1' do
-          let(:new_version) { 'v14.10.1' }
-
-          it 'updates semver column' do
-            update_version
-
-            expect(runner.reload.semver).to eq '14.10.1'
-          end
-        end
+      it 'returns runners whose version is assigned :recommended' do
+        is_expected.to contain_exactly(runner_14_1_0)
       end
     end
   end

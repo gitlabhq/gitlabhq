@@ -43,7 +43,6 @@ export default {
       variables() {
         return {
           fileName: this.name,
-          type: this.type,
           path: this.currentPath,
           projectPath: this.projectPath,
           maxOffset: this.totalEntries,
@@ -135,14 +134,11 @@ export default {
     commitData() {
       return this.glFeatures.lazyLoadCommits ? this.commitInfo : this.commit;
     },
-    refactorBlobViewerEnabled() {
-      return this.glFeatures.refactorBlobViewer;
-    },
     routerLinkTo() {
       const blobRouteConfig = { path: `/-/blob/${this.escapedRef}/${escapeFileUrl(this.path)}` };
       const treeRouteConfig = { path: `/-/tree/${this.escapedRef}/${escapeFileUrl(this.path)}` };
 
-      if (this.refactorBlobViewerEnabled && this.isBlob) {
+      if (this.isBlob) {
         return blobRouteConfig;
       }
 
@@ -158,7 +154,7 @@ export default {
       return this.type === 'commit';
     },
     linkComponent() {
-      return this.isFolder || (this.refactorBlobViewerEnabled && this.isBlob) ? 'router-link' : 'a';
+      return this.isFolder || this.isBlob ? 'router-link' : 'a';
     },
     fullPath() {
       return this.path.replace(new RegExp(`^${escapeRegExp(this.currentPath)}/`), '');
@@ -187,10 +183,6 @@ export default {
       });
     },
     loadBlob() {
-      if (!this.refactorBlobViewerEnabled) {
-        return;
-      }
-
       this.apolloQuery(blobInfoQuery, {
         projectPath: this.projectPath,
         filePath: this.path,

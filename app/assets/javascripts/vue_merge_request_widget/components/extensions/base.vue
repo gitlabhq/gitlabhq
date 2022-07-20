@@ -194,6 +194,24 @@ export default {
 
       poll.makeRequest();
     },
+    initExtensionFullDataPolling() {
+      const poll = new Poll({
+        resource: {
+          fetchData: () => this.fetchFullData(this),
+        },
+        method: 'fetchData',
+        successCallback: (response) => {
+          this.headerCheck(response, (data) => {
+            this.setFullData(data);
+          });
+        },
+        errorCallback: (e) => {
+          this.setExpandedError(e);
+        },
+      });
+
+      poll.makeRequest();
+    },
     headerCheck(response, callback) {
       const headers = normalizeHeaders(response.headers);
 
@@ -220,6 +238,10 @@ export default {
           });
       }
     },
+    setFullData(data) {
+      this.loadingState = null;
+      this.fullData = data.map((x, i) => ({ id: i, ...x }));
+    },
     setCollapsedData(data) {
       this.collapsedData = data;
       this.loadingState = null;
@@ -229,21 +251,26 @@ export default {
 
       Sentry.captureException(e);
     },
+    setExpandedError(e) {
+      this.loadingState = LOADING_STATES.expandedError;
+      Sentry.captureException(e);
+    },
     loadAllData() {
       if (this.hasFullData) return;
 
       this.loadingState = LOADING_STATES.expandedLoading;
 
-      this.fetchFullData(this)
-        .then((data) => {
-          this.loadingState = null;
-          this.fullData = data.map((x, i) => ({ id: i, ...x }));
-        })
-        .catch((e) => {
-          this.loadingState = LOADING_STATES.expandedError;
-
-          Sentry.captureException(e);
-        });
+      if (this.$options.enableExpandedPolling) {
+        this.initExtensionFullDataPolling();
+      } else {
+        this.fetchFullData(this)
+          .then((data) => {
+            this.setFullData(data);
+          })
+          .catch((e) => {
+            this.setExpandedError(e);
+          });
+      }
     },
     appear(index) {
       if (index === this.fullData.length - 1) {
@@ -288,6 +315,7 @@ export default {
       @mouseup="onRowMouseUp"
     >
       <status-icon
+        :level="1"
         :name="$options.label || $options.name"
         :is-loading="isLoadingSummary"
         :icon-name="statusIconName"

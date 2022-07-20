@@ -512,6 +512,11 @@ RSpec.describe Feature, stub_feature_flags: false do
       let(:expected_extra) { { "extra.thing" => "true" } }
     end
 
+    # This is documented to return true, modify doc/administration/feature_flags.md if it changes
+    it 'returns true' do
+      expect(subject).to be true
+    end
+
     context 'when thing is an actor' do
       let(:thing) { create(:project) }
 
@@ -531,6 +536,11 @@ RSpec.describe Feature, stub_feature_flags: false do
     it_behaves_like 'logging' do
       let(:expected_action) { :disable }
       let(:expected_extra) { { "extra.thing" => "false" } }
+    end
+
+    # This is documented to return true, modify doc/administration/feature_flags.md if it changes
+    it 'returns true' do
+      expect(subject).to be true
     end
 
     context 'when thing is an actor' do

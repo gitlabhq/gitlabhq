@@ -86,8 +86,8 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
   describe '.stages' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
-    let_it_be(:stage) { create(:ci_stage_entity, pipeline: pipeline, project: project) }
-    let_it_be(:other_stage) { create(:ci_stage_entity, pipeline: pipeline, project: project, name: 'other') }
+    let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, project: project) }
+    let_it_be(:other_stage) { create(:ci_stage, pipeline: pipeline, project: project, name: 'other') }
 
     let(:first_n) { var('Int') }
     let(:query_path) do

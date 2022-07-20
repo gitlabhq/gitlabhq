@@ -321,6 +321,19 @@ export const issueSubscriptionsResponse = (subscribed = false, emailsDisabled = 
   },
 });
 
+export const mergeRequestSubscriptionMutationResponse = {
+  data: {
+    updateIssuableSubscription: {
+      issuable: {
+        __typename: 'MergeRequest',
+        id: 'gid://gitlab/MergeRequest/4',
+        subscribed: true,
+      },
+      errors: [],
+    },
+  },
+};
+
 export const issuableQueryResponse = {
   data: {
     workspace: {

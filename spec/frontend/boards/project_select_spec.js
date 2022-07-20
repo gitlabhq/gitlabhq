@@ -1,16 +1,16 @@
 import {
   GlDropdown,
   GlDropdownItem,
+  GlFormInput,
   GlSearchBoxByType,
   GlLoadingIcon,
-  GlFormInput,
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import waitForPromises from 'helpers/wait_for_promises';
 import ProjectSelect from '~/boards/components/project_select.vue';
 import defaultState from '~/boards/stores/state';
+import waitForPromises from 'helpers/wait_for_promises';
 
 import { mockList, mockActiveGroupProjects } from './mock_data';
 
@@ -21,7 +21,7 @@ describe('ProjectSelect component', () => {
   let store;
 
   const findLabel = () => wrapper.find("[data-testid='header-label']");
-  const findGlDropdown = () => wrapper.find(GlDropdown);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
   const findGlDropdownLoadingIcon = () =>
     findGlDropdown().find('button:first-child').find(GlLoadingIcon);
   const findGlSearchBoxByType = () => wrapper.find(GlSearchBoxByType);
@@ -137,7 +137,7 @@ describe('ProjectSelect component', () => {
         await nextTick();
 
         const searchInput = findGlDropdown().findComponent(GlFormInput).element;
-        expect(document.activeElement).toEqual(searchInput);
+        expect(document.activeElement).toBe(searchInput);
       });
     });
 

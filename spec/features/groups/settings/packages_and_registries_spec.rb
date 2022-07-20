@@ -15,7 +15,7 @@ RSpec.describe 'Group Packages & Registries settings' do
     sign_in(user)
   end
 
-  context 'when packges feature is disabled on the group' do
+  context 'when packages feature is disabled on the group' do
     before do
       stub_packages_setting(enabled: false)
     end
@@ -56,26 +56,26 @@ RSpec.describe 'Group Packages & Registries settings' do
       expect(sidebar).to have_link _('Packages & Registries')
     end
 
-    it 'has a Package Registry section', :js do
+    it 'has a Duplicate packages section', :js do
       visit_settings_page
 
-      expect(page).to have_content('Package Registry')
-      expect(page).to have_button('Collapse')
+      expect(page).to have_content('Duplicate packages')
     end
 
     it 'automatically saves changes to the server', :js do
       visit_settings_page
 
       within '[data-testid="maven-settings"]' do
-        expect(page).to have_content('Allow duplicates')
+        expect(page).to have_content('Reject packages with the same name and version')
+        expect(page).not_to have_content('Exceptions')
 
         find('.gl-toggle').click
 
-        expect(page).to have_content('Do not allow duplicates')
+        expect(page).to have_content('Exceptions')
 
         visit_settings_page
 
-        expect(page).to have_content('Do not allow duplicates')
+        expect(page).to have_content('Exceptions')
       end
     end
 
@@ -83,11 +83,9 @@ RSpec.describe 'Group Packages & Registries settings' do
       visit_settings_page
 
       within '[data-testid="maven-settings"]' do
-        expect(page).to have_content('Allow duplicates')
+        expect(page).to have_content('Reject packages with the same name and version')
 
         find('.gl-toggle').click
-
-        expect(page).to have_content('Do not allow duplicates')
 
         fill_in 'Exceptions', with: ')'
 
@@ -103,11 +101,11 @@ RSpec.describe 'Group Packages & Registries settings' do
         visit_sub_group_settings_page
 
         within '[data-testid="maven-settings"]' do
-          expect(page).to have_content('Allow duplicates')
+          expect(page).to have_content('Reject packages with the same name and version')
 
           find('.gl-toggle').click
 
-          expect(page).to have_content('Do not allow duplicates')
+          expect(page).to have_content('Exceptions')
         end
       end
     end

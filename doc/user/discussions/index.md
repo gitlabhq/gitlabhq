@@ -98,8 +98,6 @@ This comment can also be a thread.
 
 An icon is displayed on the image and a comment field is displayed.
 
-![Start image thread](img/start_image_discussion.gif)
-
 ## Reply to a comment by sending email
 
 If you have ["reply by email"](../../administration/reply_by_email.md) configured,
@@ -156,11 +154,7 @@ If an issue or merge request is locked and closed, you cannot reopen it.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/351143) in GitLab 14.10: you can only mark comments in issues and epics as confidential. Previously, it was also possible for comments in merge requests and snippets.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `confidential_notes`.
-On GitLab.com, this feature is available.
+> - [Feature flag `confidential_notes`](https://gitlab.com/gitlab-org/gitlab/-/issues/362712) removed in GitLab 15.2.
 
 You can add an internal note **to an issue or an epic**. It's then visible only to the following people:
 
@@ -229,7 +223,7 @@ To change the activity sort order:
 
 ## Assign an issue to the commenting user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191455) in GitLab 13.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191455) in GitLab 13.1.
 
 You can assign an issue to a user who made a comment.
 

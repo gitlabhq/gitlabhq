@@ -5,7 +5,7 @@ name: "count_sent_third_email_of_the_create_track_for_in_product_marketing_email
 description: Total sent emails of the create track's third email
 product_section: 'TBD'
 product_stage: growth
-product_group: group::activation
+product_group: activation
 product_category: onboarding
 value_type: number
 status: active

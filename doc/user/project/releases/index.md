@@ -210,7 +210,7 @@ In the second workflow, the `release` job runs in multiple pipelines. To prevent
 ```yaml
 release_job:
   rules:
-    - if: $CI_COMMIT_TAG  
+    - if: $CI_COMMIT_TAG
       when: never                                  # Do not run this job in a tag pipeline
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run this job when commits are pushed or merged to the default branch
   script:
@@ -316,6 +316,25 @@ To edit the details of a release:
 You can edit the release title, notes, associated milestones, and asset links.
 To change the release date use the
 [Releases API](../../../api/releases/index.md#update-a-release).
+
+## Delete a release
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213862) in GitLab 15.2
+
+When you delete a release, its assets are also deleted. However, the associated
+Git tag is not deleted.
+
+Prerequisites:
+
+- You must have at least the Developer role. Read more about [Release permissions](#release-permissions).
+
+To delete a release in the UI:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Releases**.
+1. In the top-right corner of the release you want to delete, select **Edit this release** (**{pencil}**).
+1. On the **Edit Release** page, select **Delete**.
+1. Select **Delete release**.
 
 ## Associate milestones with a release
 

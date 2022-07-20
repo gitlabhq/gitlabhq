@@ -36,6 +36,8 @@ RSpec.describe FeatureFlags::DestroyService do
       expect(audit_event_message).to eq("Deleted feature flag #{feature_flag.name}.")
     end
 
+    it_behaves_like 'update feature flag client'
+
     context 'when user is reporter' do
       let(:user) { reporter }
 
@@ -57,6 +59,8 @@ RSpec.describe FeatureFlags::DestroyService do
       it 'does not create audit log' do
         expect { subject }.not_to change { AuditEvent.count }
       end
+
+      it_behaves_like 'does not update feature flag client'
     end
   end
 end

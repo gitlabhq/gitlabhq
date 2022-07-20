@@ -117,7 +117,7 @@ function launchPopover(el, mountPopover) {
   mountPopover(popoverInstance);
 }
 
-const userLinkSelector = 'a.js-user-link, a.gfm-project_member';
+const userLinkSelector = 'a.js-user-link[data-user], a.js-user-link[data-user-id]';
 
 const getUserLinkNode = (node) => node.closest(userLinkSelector);
 

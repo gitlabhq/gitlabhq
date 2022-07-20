@@ -17,12 +17,12 @@ class Import::FogbugzController < Import::BaseController
       res = Gitlab::FogbugzImport::Client.new(import_params.to_h.symbolize_keys)
     rescue StandardError
       # If the URI is invalid various errors can occur
-      return redirect_to new_import_fogbugz_path, alert: _('Could not connect to FogBugz, check your URL')
+      return redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id]), alert: _('Could not connect to FogBugz, check your URL')
     end
     session[:fogbugz_token] = res.get_token
     session[:fogbugz_uri] = params[:uri]
 
-    redirect_to new_user_map_import_fogbugz_path
+    redirect_to new_user_map_import_fogbugz_path(namespace_id: params[:namespace_id])
   end
 
   def new_user_map
@@ -41,12 +41,12 @@ class Import::FogbugzController < Import::BaseController
 
     flash[:notice] = _('The user map has been saved. Continue by selecting the projects you want to import.')
 
-    redirect_to status_import_fogbugz_path
+    redirect_to status_import_fogbugz_path(namespace_id: params[:namespace_id])
   end
 
   def status
     unless client.valid?
-      return redirect_to new_import_fogbugz_path
+      return redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id])
     end
 
     super
@@ -106,7 +106,7 @@ class Import::FogbugzController < Import::BaseController
   end
 
   def fogbugz_unauthorized(exception)
-    redirect_to new_import_fogbugz_path, alert: exception.message
+    redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id]), alert: exception.message
   end
 
   def import_params

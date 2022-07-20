@@ -31,6 +31,25 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 15.2
+
+### Support for older browsers
+
+In GitLab 15.2, we are cleaning up and [removing old code](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86003) that was specific for browsers that we no longer support. This has no impact on users if they use one of our [supported web browsers](https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers).
+
+Most notably, support for the following browsers has been removed:
+
+- Apple Safari 14 and older.
+- Mozilla Firefox 78.
+
+The minimum supported browser versions are:
+
+- Apple Safari 14.1.
+- Mozilla Firefox 91.
+- Google Chrome 92.
+- Chromium 92.
+- Microsoft Edge 92.
+
 ## Removed in 15.0
 
 ### API: `stale` status returned instead of `offline` or `not_connected`
@@ -66,13 +85,44 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/
 Review the details carefully before upgrading.
 
 To reduce the overall complexity and maintenance burden of GitLab's [object storage feature](https://docs.gitlab.com/ee/administration/object_storage.html), support for using `background_upload` has been removed in GitLab 15.0.
+By default [direct upload](https://docs.gitlab.com/ee/development/uploads/index.html#direct-upload) will be used.
 
-This impacts a small subset of object storage providers, including but not limited to:
+This impacts a subset of object storage providers, including but not limited to:
 
 - **OpenStack** Customers using OpenStack need to change their configuration to use the S3 API instead of Swift.
 - **RackSpace** Customers using RackSpace-based object storage need to migrate data to a different provider.
 
 If your object storage provider does not support `background_upload`, please [migrate objects to a supported object storage provider](https://docs.gitlab.com/ee/administration/object_storage.html#migrate-objects-to-a-different-object-storage-provider).
+
+#### Encrypted S3 buckets
+
+Additionally, this also breaks the use of [encrypted S3 buckets](https://docs.gitlab.com/ee/administration/object_storage.html#encrypted-s3-buckets) with [storage-specific configuration form](https://docs.gitlab.com/ee/administration/object_storage.html#storage-specific-configuration).
+
+If your S3 buckets have [SSE-S3 or SSE-KMS encryption enabled](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html), please [migrate your configuration to use consolidated object storage form](https://docs.gitlab.com/ee/administration/object_storage.html#transition-to-consolidated-form) before upgrading to GitLab 15.0. Otherwise, you may start getting `ETag mismatch` errors during objects upload.
+
+#### 403 errors
+
+If you see 403 errors when uploading to object storage after
+upgrading to GitLab 15.0, check that the [correct permissions](https://docs.gitlab.com/ee/administration/object_storage.html#iam-permissions)
+are assigned to the bucket. Direct upload needs the ability to delete an
+object (example: `s3:DeleteObject`), but background uploads do not.
+
+#### `remote_directory` with a path prefix
+
+If the object storage `remote_directory` configuration contains a slash (`/`) after the bucket (example: `gitlab/uploads`), be aware that this [was never officially supported](https://gitlab.com/gitlab-org/gitlab/-/issues/292958).
+Some users found that they could specify a path prefix to the bucket. In direct upload mode, object storage uploads will fail if a slash is present in GitLab 15.0.
+
+If you have set a prefix, you can use a workaround to revert to background uploads:
+
+1. Continue to use [storage-specific configuration](https://docs.gitlab.com/ee/administration/object_storage.html#storage-specific-configuration).
+1. In Omnibus GitLab, set the `GITLAB_LEGACY_BACKGROUND_UPLOADS` to re-enable background uploads:
+
+    ```ruby
+    gitlab_rails['env'] = { 'GITLAB_LEGACY_BACKGROUND_UPLOADS' => 'artifacts,external_diffs,lfs,uploads,packages,dependency_proxy,terraform_state,pages' }
+    ```
+
+Prefixes will be supported officially in [GitLab 15.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91307).
+This workaround will be dropped, so we encourage migrating to consolidated object storage.
 
 ### Container Network and Host Security
 
@@ -443,6 +493,22 @@ You can still customize the behavior of the Secret Detection analyzer using the 
 
 For further details, see [the deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352565).
 
+### Self-managed certificate-based integration with Kubernetes feature flagged
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
+
+In 15.0 the certificate-based integration with Kubernetes will be disabled by default.
+
+After 15.0, you should use the [agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. The agent for Kubernetes is a more robust, secure, and reliable integration with Kubernetes. [How do I migrate to the agent?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
+
+If you need more time to migrate, you can enable the `certificate_based_clusters` [feature flag](https://docs.gitlab.com/ee/administration/feature_flags.html), which re-enables the certificate-based integration.
+
+In GitLab 16.0, we will [remove the feature, its related code, and the feature flag](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). GitLab will continue to fix any security or critical issues until 16.0.
+
+For updates and details, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
 ### Sidekiq configuration for metrics and health checks
 
 WARNING:
@@ -553,9 +619,9 @@ Review the details carefully before upgrading.
 
 The `Managed-Cluster-Applications.gitlab-ci.yml` CI/CD template is being removed. If you need an  alternative, try the [Cluster Management project template](https://gitlab.com/gitlab-org/gitlab/-/issues/333610) instead. If your are not ready to move, you can copy the [last released version](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/v14.10.1/lib/gitlab/ci/templates/Managed-Cluster-Applications.gitlab-ci.yml) of the template into your project.
 
-### `artifacts:report:cobertura` keyword
+### `artifacts:reports:cobertura` keyword
 
-As of GitLab 15.0, the [`artifacts:report:cobertura`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura-removed)
+As of GitLab 15.0, the [`artifacts:reports:cobertura`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura-removed)
 keyword has been [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) by
 [`artifacts:reports:coverage_report`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscoverage_report).
 Cobertura is the only supported report file, but this is the first step towards GitLab supporting other report types.

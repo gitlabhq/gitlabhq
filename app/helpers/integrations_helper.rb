@@ -216,7 +216,7 @@ module IntegrationsHelper
   end
 
   def fields_for_integration(integration)
-    Integrations::FieldSerializer.new(integration: integration).represent(integration.global_fields).to_json
+    Integrations::FieldSerializer.new(integration: integration).represent(integration.form_fields).to_json
   end
 
   def integration_level(integration)

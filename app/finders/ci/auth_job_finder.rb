@@ -29,7 +29,7 @@ module Ci
 
     private
 
-    attr_reader :token, :require_running, :raise_on_missing
+    attr_reader :token
 
     def find_job_by_token
       ::Ci::Build.find_by_token(token)

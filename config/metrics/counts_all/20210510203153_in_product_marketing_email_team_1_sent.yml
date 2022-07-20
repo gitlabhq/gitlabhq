@@ -5,7 +5,7 @@ name: "count_sent_second_email_of_the_team_track_for_in_product_marketing_emails
 description: Total sent emails of the team track's second email
 product_section: 'TBD'
 product_stage: growth
-product_group: group::activation
+product_group: activation
 product_category: onboarding
 value_type: number
 status: active

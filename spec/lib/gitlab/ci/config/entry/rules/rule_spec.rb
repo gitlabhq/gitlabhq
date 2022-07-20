@@ -115,7 +115,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
       it { is_expected.not_to be_valid }
 
       it 'reports an error about invalid policy' do
-        expect(subject.errors).to include(/should be an array of strings/)
+        expect(subject.errors).to include(/should be an array or a hash/)
       end
     end
 
@@ -411,7 +411,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
     context 'when using a changes: clause' do
       let(:config) { { changes: %w[app/ lib/ spec/ other/* paths/**/*.rb] } }
 
-      it { is_expected.to eq(config) }
+      it { is_expected.to eq(changes: { paths: %w[app/ lib/ spec/ other/* paths/**/*.rb] }) }
+
+      context 'when using changes with paths' do
+        let(:config) { { changes: { paths: %w[app/ lib/ spec/ other/* paths/**/*.rb] } } }
+
+        it { is_expected.to eq(config) }
+      end
     end
 
     context 'when default value has been provided' do
@@ -426,7 +432,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
       end
 
       it 'does not add to provided configuration' do
-        expect(entry.value).to eq(config)
+        expect(entry.value).to eq(changes: { paths: %w[app/**/*.rb] })
       end
     end
 

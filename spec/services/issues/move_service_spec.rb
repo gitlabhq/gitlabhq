@@ -47,6 +47,7 @@ RSpec.describe Issues::MoveService do
 
         it 'creates a new issue in a new project' do
           expect(new_issue.project).to eq new_project
+          expect(new_issue.namespace_id).to eq new_project.project_namespace_id
         end
 
         it 'copies issue title' do

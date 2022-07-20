@@ -35,7 +35,7 @@ module Groups
     attr_reader :current_user, :target_user, :params
 
     def sort(items)
-      items.order(path: :asc, id: :asc) # rubocop: disable CodeReuse/ActiveRecord
+      items.order(Group.arel_table[:path].asc, Group.arel_table[:id].asc) # rubocop: disable CodeReuse/ActiveRecord
     end
 
     def by_search(items)
@@ -47,6 +47,8 @@ module Groups
     def by_permission_scope
       if permission_scope_create_projects?
         target_user.manageable_groups(include_groups_with_developer_maintainer_access: true)
+      elsif permission_scope_transfer_projects?
+        target_user.manageable_groups(include_groups_with_developer_maintainer_access: false)
       else
         target_user.groups
       end
@@ -54,6 +56,10 @@ module Groups
 
     def permission_scope_create_projects?
       params[:permission_scope] == :create_projects
+    end
+
+    def permission_scope_transfer_projects?
+      params[:permission_scope] == :transfer_projects
     end
   end
 end

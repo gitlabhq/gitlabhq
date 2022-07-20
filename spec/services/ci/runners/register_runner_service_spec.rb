@@ -13,7 +13,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
     stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
   end
 
-  subject { described_class.new.execute(token, args) }
+  subject(:runner) { described_class.new.execute(token, args) }
 
   context 'when no token is provided' do
     let(:token) { '' }
@@ -83,6 +83,9 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
           expect(subject.platform).to eq args[:platform]
           expect(subject.architecture).to eq args[:architecture]
           expect(subject.ip_address).to eq args[:ip_address]
+
+          expect(Ci::Runner.tagged_with('tag1')).to include(subject)
+          expect(Ci::Runner.tagged_with('tag2')).to include(subject)
         end
       end
 
@@ -227,6 +230,42 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
             expect(subject.errors).to be_empty
             expect(subject.active).to be true
           end
+        end
+      end
+    end
+
+    context 'when tags are provided' do
+      let(:token) { registration_token }
+
+      let(:args) do
+        { tag_list: %w(tag1 tag2) }
+      end
+
+      it 'creates runner with tags' do
+        expect(runner).to be_persisted
+
+        expect(runner.tags).to contain_exactly(
+          an_object_having_attributes(name: 'tag1'),
+          an_object_having_attributes(name: 'tag2')
+        )
+      end
+
+      it 'creates tags in bulk' do
+        expect(Gitlab::Ci::Tags::BulkInsert).to receive(:bulk_insert_tags!).and_call_original
+
+        expect(runner).to be_persisted
+      end
+
+      context 'and tag list exceeds limit' do
+        let(:args) do
+          { tag_list: (1..Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" } }
+        end
+
+        it 'does not create any tags' do
+          expect(Gitlab::Ci::Tags::BulkInsert).not_to receive(:bulk_insert_tags!)
+
+          expect(runner).not_to be_persisted
+          expect(runner.tags).to be_empty
         end
       end
     end

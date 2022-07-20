@@ -420,6 +420,8 @@ project:
 - zentao_integration
 # dingtalk_integration JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417
 - dingtalk_integration
+# dingtalk_integration JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/640
+- feishu_integration
 - redmine_integration
 - youtrack_integration
 - custom_issue_tracker_integration
@@ -557,7 +559,6 @@ project:
 - packages
 - package_files
 - packages_cleanup_policy
-- tracing_setting
 - alerting_setting
 - project_setting
 - webide_pipelines
@@ -604,6 +605,7 @@ project:
 - incident_management_oncall_schedules
 - incident_management_oncall_rotations
 - incident_management_escalation_policies
+- incident_management_issuable_escalation_statuses
 - debian_distributions
 - merge_request_metrics
 - security_orchestration_policy_configuration
@@ -695,8 +697,6 @@ epic_issues:
 feature_flag_issues:
 - issue
 - feature_flag
-tracing_setting:
-- project
 reviews:
 - project
 - merge_request

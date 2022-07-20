@@ -18,7 +18,6 @@ import {
   CLEANUP_SCHEDULED_TOOLTIP,
   CLEANUP_ONGOING_TOOLTIP,
   CLEANUP_UNFINISHED_TOOLTIP,
-  ROOT_IMAGE_TEXT,
   ROOT_IMAGE_TOOLTIP,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import getContainerRepositoryMetadata from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_metadata.query.graphql';
@@ -35,6 +34,7 @@ describe('Details Header', () => {
     canDelete: true,
     project: {
       visibility: 'public',
+      path: 'path',
       containerExpirationPolicy: {
         enabled: false,
       },
@@ -98,8 +98,8 @@ describe('Details Header', () => {
         return waitForPromises();
       });
 
-      it('root image ', () => {
-        expect(findTitle().text()).toBe(ROOT_IMAGE_TEXT);
+      it('root image shows project path name', () => {
+        expect(findTitle().text()).toBe('path');
       });
 
       it('has an icon', () => {

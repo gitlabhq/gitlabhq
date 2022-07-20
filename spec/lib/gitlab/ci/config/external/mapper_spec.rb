@@ -232,11 +232,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           image: 'image:1.0' }
       end
 
-      before do
-        stub_const("#{described_class}::MAX_INCLUDES", 2)
-      end
-
       it 'does not raise an exception' do
+        allow(context).to receive(:max_includes).and_return(2)
+
         expect { subject }.not_to raise_error
       end
     end
@@ -250,11 +248,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           image: 'image:1.0' }
       end
 
-      before do
-        stub_const("#{described_class}::MAX_INCLUDES", 1)
-      end
-
       it 'raises an exception' do
+        allow(context).to receive(:max_includes).and_return(1)
+
         expect { subject }.to raise_error(described_class::TooManyIncludesError)
       end
 
@@ -264,6 +260,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
         end
 
         it 'raises an exception' do
+          allow(context).to receive(:max_includes).and_return(1)
+
           expect { subject }.to raise_error(described_class::TooManyIncludesError)
         end
       end

@@ -383,21 +383,52 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           end
         end
 
-        it 'restores releases with links & milestones' do
-          release = @project.releases.last
-          link = release.links.last
+        context 'restores releases' do
+          it 'with links & milestones' do
+            release = @project.releases.last
+            link = release.links.last
 
-          aggregate_failures do
-            expect(release.tag).to eq('release-1.1')
-            expect(release.description).to eq('Some release notes')
-            expect(release.name).to eq('release-1.1')
-            expect(release.sha).to eq('901de3a8bd5573f4a049b1457d28bc1592ba6bf9')
-            expect(release.released_at).to eq('2019-12-26T10:17:14.615Z')
-            expect(release.milestone_releases.count).to eq(1)
-            expect(release.milestone_releases.first.milestone.title).to eq('test milestone')
+            aggregate_failures do
+              expect(release.tag).to eq('release-1.2')
+              expect(release.description).to eq('Some release notes')
+              expect(release.name).to eq('release-1.2')
+              expect(release.sha).to eq('903de3a8bd5573f4a049b1457d28bc1592ba6bf9')
+              expect(release.released_at).to eq('2019-12-27T10:17:14.615Z')
+              expect(release.milestone_releases.count).to eq(1)
+              expect(release.milestone_releases.first.milestone.title).to eq('test milestone')
 
-            expect(link.url).to eq('http://localhost/namespace6/project6/-/jobs/140463678/artifacts/download')
-            expect(link.name).to eq('release-1.1.dmg')
+              expect(link.url).to eq('http://localhost/namespace6/project6/-/jobs/140463678/artifacts/download')
+              expect(link.name).to eq('release-1.2.dmg')
+            end
+          end
+
+          context 'with author' do
+            it 'as ghost user when imported release author is empty' do
+              release = @project.releases.first
+
+              aggregate_failures do
+                expect(release.tag).to eq('release-1.0')
+                expect(release.author_id).to eq(User.select(:id).ghost.id)
+              end
+            end
+
+            it 'as existing member when imported release author is matched with existing user' do
+              release = @project.releases.second
+
+              aggregate_failures do
+                expect(release.tag).to eq('release-1.1')
+                expect(release.author_id).to eq(@existing_members.first.id)
+              end
+            end
+
+            it 'as import user when imported release author cannot be matched' do
+              release = @project.releases.last
+
+              aggregate_failures do
+                expect(release.tag).to eq('release-1.2')
+                expect(release.author_id).to eq(@user.id)
+              end
+            end
           end
         end
 
@@ -441,7 +472,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           end
 
           it 'has a new CI build token' do
-            expect(Ci::Build.where(token: 'abcd')).to be_empty
+            expect(Ci::Build.find_by_token('abcd')).to be_nil
           end
         end
 
@@ -568,20 +599,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
 
         context 'when there is an existing build with build token' do
           before do
-            create(:ci_build, token: 'abcd')
-          end
-
-          it_behaves_like 'restores project successfully',
-            issues: 1,
-            labels: 2,
-            label_with_priorities: 'A project label',
-            milestones: 1,
-            first_issue_labels: 1
-        end
-
-        context 'when there is an existing build with build token' do
-          before do
-            create(:ci_build, token: 'abcd')
+            create(:ci_build).tap do |job|
+              job.set_token('abcd')
+              job.save!
+            end
           end
 
           it_behaves_like 'restores project successfully',
@@ -885,7 +906,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
       context 'with group visibility' do
         before do
           group = create(:group, visibility_level: group_visibility)
-          group.add_users([user], GroupMember::MAINTAINER)
+          group.add_members([user], GroupMember::MAINTAINER)
           project.update!(group: group)
         end
 

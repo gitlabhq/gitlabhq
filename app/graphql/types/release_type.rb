@@ -40,6 +40,8 @@ module Types
           authorize: :download_code
     field :upcoming_release, GraphQL::Types::Boolean, null: true, method: :upcoming_release?,
           description: 'Indicates the release is an upcoming release.'
+    field :historical_release, GraphQL::Types::Boolean, null: true, method: :historical_release?,
+          description: 'Indicates the release is an historical release.'
 
     field :author, Types::UserType, null: true,
           description: 'User that created the release.'

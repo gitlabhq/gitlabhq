@@ -2,10 +2,16 @@
 // Please see the feedback issue for more details and help:
 // https://gitlab.com/gitlab-org/gitlab/-/issues/331812
 @charset "UTF-8";
+:root {
+  color-scheme: dark;
+}
 body.gl-dark {
+  --gray-10: #1f1f1f;
   --gray-50: #303030;
   --gray-100: #404040;
+  --gray-200: #525252;
   --gray-600: #bfbfbf;
+  --gray-700: #dbdbdb;
   --gray-900: #fafafa;
   --green-100: #0d532a;
   --green-700: #91d4a8;
@@ -61,6 +67,11 @@ a:not([href]):not([class]) {
   color: inherit;
   text-decoration: none;
 }
+kbd {
+  font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
+    "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
+  font-size: 1em;
+}
 img {
   vertical-align: middle;
   border-style: none;
@@ -104,6 +115,18 @@ button::-moz-focus-inner,
 .list-unstyled {
   padding-left: 0;
   list-style: none;
+}
+kbd {
+  padding: 0.2rem 0.4rem;
+  font-size: 90%;
+  color: #333;
+  background-color: #fafafa;
+  border-radius: 0.2rem;
+}
+kbd kbd {
+  padding: 0;
+  font-size: 100%;
+  font-weight: 600;
 }
 .container-fluid {
   width: 100%;
@@ -739,6 +762,22 @@ input {
 }
 .form-control::placeholder {
   color: #868686;
+}
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 0.6875rem;
+  line-height: 10px;
+  color: var(--gray-700, #dbdbdb);
+  vertical-align: middle;
+  background-color: var(--gray-10, #1f1f1f);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--gray-100, #404040) var(--gray-100, #404040)
+    var(--gray-200, #525252);
+  border-image: none;
+  border-radius: 3px;
+  box-shadow: 0 -1px 0 var(--gray-200, #525252) inset;
 }
 .navbar-gitlab {
   padding: 0 16px;
@@ -1504,7 +1543,7 @@ svg.s16 {
   vertical-align: -3px;
 }
 .header-content .header-search-new {
-  max-width: 600px;
+  max-width: 640px;
 }
 .header-search {
   min-width: 320px;
@@ -1514,29 +1553,10 @@ svg.s16 {
     min-width: 200px;
   }
 }
-.header-search.is-not-active::after {
-  content: "/";
-  display: inline-block;
-  position: absolute;
-  top: 0;
-  right: 8px;
-  transform: translateY(calc(50% - 4px));
-  padding: 4px 5px;
-  font-size: 12px;
-  font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
-    "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
-  line-height: 1;
-  vertical-align: middle;
-  border-width: 0;
-  border-style: solid;
-  border-image: none;
-  border-radius: 3px;
+.header-search .keyboard-shortcut-helper {
+  transform: translateY(calc(50% - 2px));
   box-shadow: none;
-  white-space: pre-wrap;
-  box-sizing: border-box;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  word-break: keep-all;
+  border-color: transparent;
 }
 .search {
   margin: 0 8px;
@@ -1696,6 +1716,9 @@ svg.s16 {
 }
 .rect-avatar.s32 {
   border-radius: 4px;
+}
+:root {
+  color-scheme: dark;
 }
 body.gl-dark {
   --gray-10: #1f1f1f;
@@ -1884,7 +1907,7 @@ body.gl-dark .header-search input::placeholder {
 body.gl-dark .header-search input:active::placeholder {
   color: #868686;
 }
-body.gl-dark .header-search.is-not-active::after {
+body.gl-dark .header-search.is-not-active .keyboard-shortcut-helper {
   color: #fafafa;
   background-color: rgba(250, 250, 250, 0.2);
 }
@@ -1938,6 +1961,9 @@ body.gl-dark .navbar-gitlab .search form .search-input {
   color: var(--gl-text-color);
 }
 
+:root {
+  color-scheme: dark;
+}
 body.gl-dark {
   --gray-10: #1f1f1f;
   --gray-50: #303030;
@@ -2030,7 +2056,6 @@ body.gl-dark {
   --nav-active-bg: rgba(255, 255, 255, 0.08);
 }
 .tab-width-8 {
-  -moz-tab-size: 8;
   tab-size: 8;
 }
 .gl-sr-only {
@@ -2084,6 +2109,12 @@ body.gl-dark {
 .gl-absolute {
   position: absolute;
 }
+.gl-top-0 {
+  top: 0;
+}
+.gl-right-3 {
+  right: 0.5rem;
+}
 .gl-w-full {
   width: 100%;
 }
@@ -2118,6 +2149,9 @@ body.gl-dark {
 }
 .gl-font-weight-bold {
   font-weight: 600;
+}
+.gl-z-index-1 {
+  z-index: 1;
 }
 
 @import "startup/cloaking";

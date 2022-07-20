@@ -23,7 +23,7 @@ After completing the integration, Mailgun `temporary_failure` and `permanent_fai
 
 Before you can enable Mailgun in GitLab, set up your own Mailgun endpoints to receive the webhooks.
 
-Using the [Mailgun webhook guide](https://www.mailgun.com/blog/a-guide-to-using-mailguns-webhooks/):
+Using the [Mailgun webhook guide](https://www.mailgun.com/blog/product/a-guide-to-using-mailguns-webhooks/):
 
 1. Add a webhook with the **Event type** set to **Permanent Failure**.
 1. Enter the URL of your instance and include the `/-/mailgun/webhooks` path.

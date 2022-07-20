@@ -15,8 +15,8 @@
         - '/{,ee/}lib/**/*%{keyword}*{,/**/*}'
     deny:
       keywords:
-        - '*author.*'
-        - '*author_*'
+        - '*author{,s}.*'
+        - '*author{,s}_*'
         - '*authored*'
         - '*authoring*'
         - '*.png'

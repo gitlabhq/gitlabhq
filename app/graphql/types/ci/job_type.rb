@@ -70,6 +70,8 @@ module Types
             description: 'Downstream pipeline for a bridge.'
       field :manual_job, GraphQL::Types::Boolean, null: true,
             description: 'Whether the job has a manual action.'
+      field :manual_variables, VariableType.connection_type, null: true,
+            description: 'Variables added to a manual job when the job is triggered.'
       field :playable, GraphQL::Types::Boolean, null: false, method: :playable?,
             description: 'Indicates the job can be played.'
       field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type, null: true,
@@ -78,6 +80,8 @@ module Types
             description: 'Ref name of the job.'
       field :ref_path, GraphQL::Types::String, null: true,
             description: 'Path to the ref.'
+      field :retried, GraphQL::Types::Boolean, null: true,
+            description: 'Indicates that the job has been retried.'
       field :retryable, GraphQL::Types::Boolean, null: false, method: :retryable?,
             description: 'Indicates the job can be retried.'
       field :scheduling_type, GraphQL::Types::String, null: true,
@@ -187,6 +191,14 @@ module Types
 
       def triggered
         object.try(:trigger_request)
+      end
+
+      def manual_variables
+        if object.manual? && object.respond_to?(:job_variables)
+          object.job_variables
+        else
+          []
+        end
       end
     end
   end

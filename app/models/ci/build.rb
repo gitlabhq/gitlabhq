@@ -2,6 +2,7 @@
 
 module Ci
   class Build < Ci::Processable
+    prepend Ci::BulkInsertableTags
     include Ci::Metadatable
     include Ci::Contextable
     include TokenAuthenticatable
@@ -13,8 +14,6 @@ module Ci
     include HasDeploymentName
 
     extend ::Gitlab::Utils::Override
-
-    BuildArchivedError = Class.new(StandardError)
 
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
@@ -28,10 +27,6 @@ module Ci
       artifacts_exclude: -> (build) { build.supports_artifacts_exclude? },
       multi_build_steps: -> (build) { build.multi_build_steps? },
       return_exit_code: -> (build) { build.exit_codes_defined? }
-    }.freeze
-
-    DEFAULT_RETRIES = {
-      scheduler_failure: 2
     }.freeze
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
@@ -172,7 +167,6 @@ module Ci
     end
 
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }
-    scope :with_expired_artifacts, -> { with_downloadable_artifacts.where('artifacts_expire_at < ?', Time.current) }
     scope :with_pipeline_locked_artifacts, -> { joins(:pipeline).where('pipeline.locked': Ci::Pipeline.lockeds[:artifacts_locked]) }
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
@@ -185,13 +179,6 @@ module Ci
 
     scope :with_secure_reports_from_config_options, -> (job_types) do
       joins(:metadata).where("ci_builds_metadata.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
-    end
-
-    scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
-
-    scope :preload_project_and_pipeline_project, -> do
-      preload(Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
-              pipeline: Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE)
     end
 
     scope :with_coverage, -> { where.not(coverage: nil) }
@@ -207,7 +194,7 @@ module Ci
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
-      run_after_commit { BuildHooksWorker.perform_async(build.id) }
+      run_after_commit { BuildHooksWorker.perform_async(build) }
     end
 
     class << self
@@ -215,10 +202,6 @@ module Ci
       # as the controller is JobsController
       def model_name
         ActiveModel::Name.new(self, nil, 'job')
-      end
-
-      def first_pending
-        pending.unstarted.order('created_at ASC').first
       end
 
       def with_preloads
@@ -302,7 +285,7 @@ module Ci
 
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
-          BuildHooksWorker.perform_async(id)
+          BuildHooksWorker.perform_async(build)
         end
       end
 
@@ -330,7 +313,7 @@ module Ci
         build.run_after_commit do
           build.ensure_persistent_ref
 
-          BuildHooksWorker.perform_async(id)
+          BuildHooksWorker.perform_async(build)
         end
       end
 
@@ -338,11 +321,7 @@ module Ci
         build.run_after_commit do
           build.run_status_commit_hooks!
 
-          if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project)
-            Ci::BuildFinishedWorker.perform_async(id)
-          else
-            ::BuildFinishedWorker.perform_async(id)
-          end
+          Ci::BuildFinishedWorker.perform_async(id)
         end
       end
 
@@ -444,10 +423,6 @@ module Ci
 
     def runnable?
       true
-    end
-
-    def save_tags
-      super unless Thread.current['ci_bulk_insert_tags']
     end
 
     def archived?
@@ -554,10 +529,6 @@ module Ci
 
     def environment_deployment_tier
       self.options.dig(:environment, :deployment_tier) if self.options
-    end
-
-    def outdated_deployment?
-      success? && !deployment.try(:last?)
     end
 
     def triggered_by?(current_user)
@@ -1160,6 +1131,14 @@ module Ci
 
     def track_deployment_usage
       Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_deployment_job', user_id) if user_id.present? && count_user_deployment?
+    end
+
+    def track_verify_usage
+      Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_verify_environment_job', user_id) if user_id.present? && count_user_verification?
+    end
+
+    def count_user_verification?
+      has_environment? && environment_action == 'verify'
     end
 
     def each_report(report_types)

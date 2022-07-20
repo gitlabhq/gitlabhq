@@ -92,11 +92,11 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
     context 'when sentry is configured' do
       before do
         stub_sentry_settings
-        stub_config_setting(host: 'example.com')
+        stub_config_setting(host: 'gitlab.example.com')
       end
 
       it 'adds sentry path to CSP without user' do
-        expect(directives['connect_src']).to eq("'self' ws://example.com dummy://example.com/43")
+        expect(directives['connect_src']).to eq("'self' ws://gitlab.example.com dummy://example.com")
       end
     end
 
@@ -146,7 +146,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       let(:snowplow_micro_url) { "http://#{snowplow_micro_hostname}/" }
 
       before do
-        stub_env('SNOWPLOW_MICRO_ENABLE', 1)
+        stub_config(snowplow_micro: { enabled: true })
         allow(Gitlab::Tracking).to receive(:collector_hostname).and_return(snowplow_micro_hostname)
       end
 
@@ -169,9 +169,9 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
           expect(directives['connect_src']).to match(Regexp.new(snowplow_micro_url))
         end
 
-        context 'when not enabled using ENV[SNOWPLOW_MICRO_ENABLE]' do
+        context 'when not enabled using config' do
           before do
-            stub_env('SNOWPLOW_MICRO_ENABLE', nil)
+            stub_config(snowplow_micro: { enabled: false })
           end
 
           it 'does not add Snowplow Micro URL to connect-src' do
@@ -220,10 +220,11 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       expect(policy.directives['base-uri']).to be_nil
     end
 
-    it 'returns default values for directives not defined by the user' do
+    it 'returns default values for directives not defined by the user or with <default_value> and disables directives set to false' do
       # Explicitly disabling script_src and setting report_uri
       csp_config[:directives] = {
         script_src: false,
+        style_src: '<default_value>',
         report_uri: 'https://example.org'
       }
 

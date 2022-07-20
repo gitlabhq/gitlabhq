@@ -48,7 +48,7 @@ module Gitlab
               {
                 name: @config[:name],
                 entrypoint: @config[:entrypoint],
-                ports: ports_value,
+                ports: (ports_value if ports_defined?),
                 pull_policy: (ci_docker_image_pull_policy_enabled? ? pull_policy_value : nil)
               }.compact
             else

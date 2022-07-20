@@ -54,7 +54,7 @@ There are also instructions when you want to
   Editions.
 
 In the past we used separate documents for the upgrading instructions, but we
-have since switched to using a single document. The old upgrading guidelines
+have switched to using a single document. The old upgrading guidelines
 can still be found in the Git repository:
 
 - [Old upgrading guidelines for Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/tree/11-8-stable/doc/update)
@@ -63,8 +63,8 @@ can still be found in the Git repository:
 ### Installation using Docker
 
 GitLab provides official Docker images for both Community and Enterprise
-editions. They are based on the Omnibus package and instructions on how to
-update them are in [a separate document](https://docs.gitlab.com/omnibus/docker/README.html).
+editions, and they are based on the Omnibus package. See how to
+[install GitLab using Docker](../install/docker.md).
 
 ### Installation using Helm
 
@@ -179,7 +179,7 @@ Expected batched background migration for the given configuration to be marked a
 
 If you get this error, [check the batched background migration options](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished) to complete the upgrade.
 
-### What do I do if my background migrations are stuck?
+### What do you do if your background migrations are stuck?
 
 WARNING:
 The following operations can disrupt your GitLab performance. They run a number of Sidekiq jobs that perform various database or file updates.
@@ -331,11 +331,11 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 ```
 
-### What do I do if my Advanced Search migrations are stuck?
+### What do you do if your Advanced Search migrations are stuck?
 
 See [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
-### What do I do for the error `Elasticsearch version not compatible`
+### What do you do for the error `Elasticsearch version not compatible`
 
 Confirm that your version of Elasticsearch or OpenSearch is [compatible with your version of GitLab](../integration/advanced_search/elasticsearch.md#version-requirements).
 
@@ -361,7 +361,7 @@ It's also important to ensure that any [background migrations have been fully co
 before upgrading to a new major version.
 
 If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**, then
-[ensure all Advanced Search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version within
+[ensure all Advanced Search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version in
 your current version
 before proceeding with the major version upgrade.
 
@@ -379,7 +379,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.3.6`](#1430) -> [`14.9.5`](#1490) -> [`14.10.Z`](#1410) -> [`15.0.Z`](#1500) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.3.6`](#1430) -> [`14.9.5`](#1490) -> [`14.10.Z`](#14100) -> [`15.0.Z`](#1500) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -387,8 +387,8 @@ Additional steps between the mentioned versions are possible. We list the minima
 
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.4` -> `15.0.2` -> `15.1.0`                                            | Three intermediate versions are required: `14.9` and `14.10`, `15.0`, then `15.1.0`.                                              |
-| `15.0.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.4` -> `15.0.2`                                                        | Two intermediate versions are required: `14.9` and `14.10`, then `15.0.0`.                                                        |
+| `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.5` -> `15.0.2` -> `15.1.0`                                            | Three intermediate versions are required: `14.9` and `14.10`, `15.0`, then `15.1.0`.                                              |
+| `15.0.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.5` -> `15.0.2`                                                        | Two intermediate versions are required: `14.9` and `14.10`, then `15.0.0`.                                                        |
 | `14.6.2`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.12` -> `14.3.6` => `14.6.2`                                         | Three intermediate versions are required: `13.12` and `14.0`, `14.3`, then `14.6.2`.                                                        |
 | `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.15` -> `14.0.12` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
 | `13.12.15`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.15`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.15`.                                   |
@@ -425,7 +425,7 @@ Edition, follow the guides below based on the installation method:
 
 ### Enterprise to Community Edition
 
-If you need to downgrade your Enterprise Edition installation back to Community
+To downgrade your Enterprise Edition installation back to Community
 Edition, you can follow [this guide](../downgrade_ee_to_ce/index.md) to make the process as smooth as
 possible.
 
@@ -442,7 +442,7 @@ At the end of major and minor release posts, there are three sections to look fo
 
 These include:
 
-- Steps you need to perform as part of an upgrade.
+- Steps you must perform as part of an upgrade.
   For example [8.12](https://about.gitlab.com/releases/2016/09/22/gitlab-8-12-released/#upgrade-barometer)
   required the Elasticsearch index to be recreated. Any older version of GitLab upgrading to 8.12 or later would require this.
 - Changes to the versions of software we support such as
@@ -458,11 +458,28 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.2.0 (unreleased)
+
+- GitLab installations that have multiple web nodes should be
+  [upgraded to 15.1](#1510) before upgrading to 15.2 (and later) due to a
+  configuration change in Rails that can result in inconsistent ETag key
+  generation.
+- Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../raketasks/sidekiq_job_migration.md#future-jobs) before starting the upgrade to GitLab 15.2.0.
+
 ### 15.1.0
 
 - If you run external PostgreSQL, particularly AWS RDS,
   [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
   to avoid the database crashing.
+- In GitLab 15.1.0, we are switching Rails `ActiveSupport::Digest` to use SHA256 instead of MD5.
+  This affects ETag key generation for resources such as raw Snippet file
+  downloads. To ensure consistent ETag key generation across multiple
+  web nodes when upgrading, all servers must first be upgraded to 15.1.Z before
+  upgrading to 15.2.0 or later:
+
+  1. Ensure all GitLab web nodes are running GitLab 15.1.Z.
+  1. [Enable the `active_support_hash_digest_sha256` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to switch `ActiveSupport::Digest` to use SHA256:
+  1. Only then, continue to upgrade to later versions of GitLab.
 - Unauthenticated requests to the [`ciConfig` GraphQL field](../api/graphql/reference/index.md#queryciconfig) are no longer supported.
   Before you upgrade to GitLab 15.1, add an [access token](../api/index.md#authentication) to your requests.
   The user creating the token must have [permission](../user/permissions.md) to create pipelines in the project.
@@ -473,6 +490,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - If you run external PostgreSQL, particularly AWS RDS,
   [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
   to avoid the database crashing.
+- The use of encrypted S3 buckets with storage-specific configuration is no longer supported after [removing support for using `background_upload`](removals.md#background-upload-for-object-storage).
+- The [certificate-based Kubernetes integration (DEPRECATED)](../user/infrastructure/clusters/index.md#certificate-based-kubernetes-integration-deprecated) is disabled by default, but you can be re-enable it through the [`certificate_based_clusters` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) until GitLab 16.0.
+- When you use the GitLab Helm Chart project with a custom `serviceAccount`, ensure it has `get` and `list` permissions for the `serviceAccount` and `secret` resources.
 
 ### 14.10.0
 
@@ -634,7 +654,7 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   All merge request diff commits automatically incorporate these changes, and there are no
   additional requirements to perform the upgrade.
   Existing data in the `merge_request_diff_commits` table remains unpacked until you run `VACUUM FULL merge_request_diff_commits`.
-  But note that the `VACUUM FULL` operation locks and rewrites the entire `merge_request_diff_commits` table,
+  However, the `VACUUM FULL` operation locks and rewrites the entire `merge_request_diff_commits` table,
   so the operation takes some time to complete and it blocks access to this table until the end of the process.
   We advise you to only run this command while GitLab is not actively used or it is taken offline for the duration of the process.
   The time it takes to complete depends on the size of the table, which can be obtained by using `select pg_size_pretty(pg_total_relation_size('merge_request_diff_commits'));`.
@@ -684,6 +704,10 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   as Sidekiq would continue using a bad connection. Geo and other features that rely on
   cron jobs running regularly do not work until Sidekiq is restarted. We recommend
   upgrading to GitLab 14.4.3 and later if this issue affects you.
+- After enabling database load balancing by default in 14.4.0, we found an issue where
+  [Database load balancing does not work with an AWS Aurora cluster](https://gitlab.com/gitlab-org/gitlab/-/issues/220617).
+  We recommend moving your databases from Aurora to RDS for PostgreSQL before
+  upgrading. Refer to [Moving GitLab databases to a different PostgreSQL instance](../administration/postgresql/moving.md).
 - GitLab 14.4.0 includes a
 [background migration `PopulateTopicsTotalProjectsCountCache`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71033)
 that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
@@ -750,7 +774,7 @@ for how to proceed.
   - [`geo_job_artifact_deleted_events`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66763)
   - [`push_event_payloads`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67299)
   - `ci_job_artifacts`:
-    - [Finalize job_id conversion to `bigint` for `ci_job_artifacts`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67774)
+    - [Finalize `job_id` conversion to `bigint` for `ci_job_artifacts`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67774)
     - [Finalize `ci_job_artifacts` conversion to `bigint`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65601)
 
   If the migrations are executed as part of a no-downtime deployment, there's a risk of failure due to lock conflicts with the application logic, resulting in lock timeout or deadlocks. In each case, these migrations are safe to re-run until successful:
@@ -992,10 +1016,10 @@ GitLab 13.2.0 [remediates](https://gitlab.com/gitlab-org/gitlab/-/merge_requests
 After upgrading, if some of your users are unexpectedly encountering 404 or 422 errors when signing in,
 or "blocked" messages when using the command line,
 their accounts may have been un-confirmed.
-In that case, please ask them to check their email for a re-confirmation link.
+In that case, ask them to check their email for a re-confirmation link.
 For more information, see our discussion of [Email confirmation issues](../user/upgrade_email_bypass.md).
 
-GitLab 13.2.0 relies on the `btree_gist` extension for PostgreSQL. For installations with an externally managed PostgreSQL setup, please make sure to
+GitLab 13.2.0 relies on the `btree_gist` extension for PostgreSQL. For installations with an externally managed PostgreSQL setup, make sure to
 [install the extension manually](https://www.postgresql.org/docs/11/sql-createextension.html) before upgrading GitLab if the database user for GitLab
 is not a superuser. This is not necessary for installations using a GitLab managed PostgreSQL database.
 
@@ -1042,7 +1066,7 @@ If you persist your own Rack Attack initializers between upgrades, you might
 
 - The final patch release (12.10.14)
   [has a regression affecting maven package uploads](https://about.gitlab.com/releases/2020/07/06/critical-security-release-gitlab-13-1-3-released/#maven-package-upload-broken-in-121014).
-  If you use this feature and need to stay on 12.10 while preparing to upgrade to 13.0:
+  If you use this feature and must stay on 12.10 while preparing to upgrade to 13.0:
 
   - Upgrade to 12.10.13 instead.
   - Upgrade to 13.0.14 as soon as possible.
@@ -1103,7 +1127,7 @@ When Geo is enabled, LFS objects fail to be saved for imported or mirrored proje
 ### PostgreSQL segmentation fault issue
 
 If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you upgrade PostgreSQL
-to patch levels to a minimum of 12.10 or 13.3 before upgrading to GitLab 14.8 or later.
+to patch levels to a minimum of 12.7 or 13.3 before upgrading to GitLab 14.8 or later.
 
 [In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
 for GitLab Enterprise Edition and [in 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)

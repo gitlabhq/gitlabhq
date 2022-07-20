@@ -98,7 +98,9 @@ FactoryBot.define do
         project.add_owner(project.first_owner)
       end
 
-      project.group&.refresh_members_authorized_projects
+      if project.group
+        AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
+      end
 
       # assign the delegated `#ci_cd_settings` attributes after create
       project.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
@@ -149,6 +151,10 @@ FactoryBot.define do
 
     trait :import_failed do
       import_status { :failed }
+    end
+
+    trait :import_canceled do
+      import_status { :canceled }
     end
 
     trait :jira_dvcs_cloud do
@@ -328,9 +334,10 @@ FactoryBot.define do
 
     trait :test_repo do
       after :create do |project|
-        TestEnv.copy_repo(project,
-          bare_repo: TestEnv.factory_repo_path_bare,
-          refs: TestEnv::BRANCH_SHA)
+        # There are various tests that rely on there being no repository cache.
+        # Using raw avoids caching.
+        repo = Gitlab::GlRepository::PROJECT.repository_for(project).raw
+        repo.create_from_bundle(TestEnv.factory_repo_bundle_path)
       end
     end
 
@@ -428,9 +435,10 @@ FactoryBot.define do
     path { 'forked-gitlabhq' }
 
     after :create do |project|
-      TestEnv.copy_repo(project,
-        bare_repo: TestEnv.forked_repo_path_bare,
-        refs: TestEnv::FORKED_BRANCH_SHA)
+      # There are various tests that rely on there being no repository cache.
+      # Using raw avoids caching.
+      repo = Gitlab::GlRepository::PROJECT.repository_for(project).raw
+      repo.create_from_bundle(TestEnv.forked_repo_bundle_path)
     end
   end
 

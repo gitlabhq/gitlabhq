@@ -1,0 +1,25 @@
+---
+description: Triggered from backend layer Search controller performs search operation
+category: SearchController
+action: i_search_total
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+  - project
+  - user
+  - namespace
+product_section: enablement
+product_stage: enablement
+product_group: group::global search
+product_category: global_search
+milestone: "15.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90224
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

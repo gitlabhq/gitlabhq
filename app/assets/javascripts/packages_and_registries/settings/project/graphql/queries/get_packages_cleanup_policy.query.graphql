@@ -1,0 +1,10 @@
+#import "../fragments/packages_cleanup_policy.fragment.graphql"
+
+query getProjectPackagesCleanupPolicy($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    packagesCleanupPolicy {
+      ...PackagesCleanupPolicyFields
+    }
+  }
+}

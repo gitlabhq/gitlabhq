@@ -158,7 +158,6 @@ const alias = {
   images: path.join(ROOT_PATH, 'app/assets/images'),
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   jquery$: 'jquery/dist/jquery.slim.js',
-  jest: path.join(ROOT_PATH, 'spec/frontend'),
   shared_queries: path.join(ROOT_PATH, 'app/graphql/queries'),
 
   // the following resolves files which are different between CE and EE
@@ -175,6 +174,16 @@ const alias = {
     ROOT_PATH,
     'app/assets/javascripts/lib/utils/icons_path.js',
   ),
+
+  // test-environment-only aliases duplicated from Jest config
+  'spec/test_constants$': path.join(ROOT_PATH, 'spec/frontend/__helpers__/test_constants'),
+  ee_else_ce_jest: path.join(ROOT_PATH, 'spec/frontend'),
+  helpers: path.join(ROOT_PATH, 'spec/frontend/__helpers__'),
+  jest: path.join(ROOT_PATH, 'spec/frontend'),
+  test_fixtures: path.join(ROOT_PATH, 'tmp/tests/frontend/fixtures'),
+  test_fixtures_static: path.join(ROOT_PATH, 'spec/frontend/fixtures/static'),
+  test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
+  public: path.join(ROOT_PATH, 'public'),
 };
 
 if (IS_EE) {
@@ -184,10 +193,14 @@ if (IS_EE) {
     ee_empty_states: path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
     ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
     ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
-    ee_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     jh_else_ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     any_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+
+    // test-environment-only aliases duplicated from Jest config
+    ee_else_ce_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
+    ee_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
+    test_fixtures: path.join(ROOT_PATH, 'tmp/tests/frontend/fixtures-ee'),
   });
 }
 
@@ -198,21 +211,13 @@ if (IS_JH) {
     jh_empty_states: path.join(ROOT_PATH, 'jh/app/views/shared/empty_states'),
     jh_icons: path.join(ROOT_PATH, 'jh/app/views/shared/icons'),
     jh_images: path.join(ROOT_PATH, 'jh/app/assets/images'),
-    jh_jest: path.join(ROOT_PATH, 'jh/spec/frontend'),
     // jh path alias https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74305#note_732793956
     jh_else_ce: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
     jh_else_ee: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
     any_else_ce: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
-  });
-}
 
-if (!IS_PRODUCTION) {
-  const fixtureDir = IS_EE ? 'fixtures-ee' : 'fixtures';
-
-  Object.assign(alias, {
-    test_fixtures: path.join(ROOT_PATH, `tmp/tests/frontend/${fixtureDir}`),
-    test_fixtures_static: path.join(ROOT_PATH, 'spec/frontend/fixtures/static'),
-    test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
+    // test-environment-only aliases duplicated from Jest config
+    jh_jest: path.join(ROOT_PATH, 'jh/spec/frontend'),
   });
 }
 

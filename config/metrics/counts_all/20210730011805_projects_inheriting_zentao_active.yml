@@ -4,7 +4,7 @@ name: count_all_projects_inheriting_zentao_active
 description: Count of projects that inherit active Zentao integrations
 product_section: dev
 product_stage: ecosystem
-product_group: group::integrations
+product_group: integrations
 product_category: integrations
 value_type: number
 status: active

@@ -22,6 +22,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
   end
 
   let_it_be(:project) { create(:project, :import_started) }
+  let_it_be(:project2) { create(:project, :import_canceled) }
 
   let(:importer_class) { double(:importer_class, name: 'klass_name') }
   let(:importer_instance) { double(:importer_instance) }
@@ -108,6 +109,27 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
         'fetched' => {},
         'imported' => { 'dummy' => 1 }
       })
+    end
+
+    it 'logs info if the import state is canceled' do
+      expect(project2.import_state.status).to eq('canceled')
+
+      expect(importer_class).not_to receive(:new)
+
+      expect(importer_instance).not_to receive(:execute)
+
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          {
+            github_identifiers: nil,
+            message: 'project import canceled',
+            project_id: project2.id,
+            importer: 'klass_name'
+          }
+        )
+
+      worker.import(project2, client, { 'number' => 11, 'github_id' => 2 } )
     end
 
     it 'logs error when the import fails' do

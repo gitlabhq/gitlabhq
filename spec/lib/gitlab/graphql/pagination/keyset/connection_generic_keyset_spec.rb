@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         let(:nodes) { Project.all.order(Gitlab::Pagination::Keyset::Order.build([column_order_updated_at, column_order_created_at, column_order_id])) }
 
         it 'returns the encoded value of the order' do
-          expect(decoded_cursor(cursor)).to include('updated_at' => project.updated_at.strftime('%Y-%m-%d %H:%M:%S.%N %Z'))
+          expect(decoded_cursor(cursor)).to include('updated_at' => project.updated_at.to_s(:inspect))
         end
       end
     end

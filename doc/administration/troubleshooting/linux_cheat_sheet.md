@@ -9,7 +9,7 @@ type: reference
 
 This is the GitLab Support Team's collection of information regarding Linux, that they
 sometimes use while troubleshooting. It is listed here for transparency,
-and it may be useful for users with experience with Linux. If you are currently
+and for users with experience with Linux. If you are currently
 having an issue with GitLab, you may want to check your [support options](https://about.gitlab.com/support/)
 first, before attempting to use this information.
 
@@ -107,6 +107,9 @@ grep -2 search_term <filename>
 # Search on all files in directory (recursively)
 grep -r search_term <directory>
 
+# Grep namespace/project/name of a GitLab repository
+grep 'fullpath' /var/opt/gitlab/git-data/repositories/@hashed/<repo hash>/.git/config
+
 # search through *.gz files is the same except with zgrep
 zgrep search_term <filename>
 
@@ -125,6 +128,7 @@ history
 
 # Search through command history
 <ctrl>-R
+
 
 # Execute last command with sudo
 sudo !!

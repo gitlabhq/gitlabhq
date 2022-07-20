@@ -5,9 +5,6 @@ class DeployToken < ApplicationRecord
   include TokenAuthenticatable
   include PolicyActor
   include Gitlab::Utils::StrongMemoize
-  include IgnorableColumns
-
-  ignore_column :token, remove_with: '15.2', remove_after: '2022-07-22'
 
   add_authentication_token_field :token, encrypted: :required
 

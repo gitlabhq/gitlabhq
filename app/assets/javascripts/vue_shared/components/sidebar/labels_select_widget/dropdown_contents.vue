@@ -193,7 +193,7 @@ export default {
   <gl-dropdown
     ref="dropdown"
     :text="buttonText"
-    class="gl-w-full gl-mt-2"
+    class="gl-w-full"
     data-testid="labels-select-dropdown-contents"
     data-qa-selector="labels_dropdown_content"
     @hide="handleDropdownHide"

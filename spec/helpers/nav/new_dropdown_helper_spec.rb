@@ -55,7 +55,7 @@ RSpec.describe Nav::NewDropdownHelper do
     end
 
     it 'has title' do
-      expect(subject[:title]).to eq('Create new')
+      expect(subject[:title]).to eq('Create new...')
     end
 
     context 'when current_user is nil (anonymous)' do

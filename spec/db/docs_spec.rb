@@ -4,8 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'Database Documentation' do
   context 'for each table' do
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/366834
+    let(:database_base_models) { Gitlab::Database.database_base_models.select { |k, _| k != 'geo' } }
+
     let(:all_tables) do
-      Gitlab::Database.database_base_models.flat_map { |_, m| m.connection.tables }.sort.uniq
+      database_base_models.flat_map { |_, m| m.connection.tables }.sort.uniq
     end
 
     let(:metadata_required_fields) do

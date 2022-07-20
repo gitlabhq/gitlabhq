@@ -12,17 +12,12 @@ import JobRetryMutation from '~/jobs/components/table/graphql/mutations/job_retr
 import JobUnscheduleMutation from '~/jobs/components/table/graphql/mutations/job_unschedule.mutation.graphql';
 import JobCancelMutation from '~/jobs/components/table/graphql/mutations/job_cancel.mutation.graphql';
 import {
-  playableJob,
-  retryableJob,
-  cancelableJob,
-  scheduledJob,
-  cannotRetryJob,
-  cannotPlayJob,
-  cannotPlayScheduledJob,
-  retryMutationResponse,
+  mockJobsNodes,
+  mockJobsNodesAsGuest,
   playMutationResponse,
-  cancelMutationResponse,
+  retryMutationResponse,
   unscheduleMutationResponse,
+  cancelMutationResponse,
 } from '../../../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -31,6 +26,22 @@ Vue.use(VueApollo);
 
 describe('Job actions cell', () => {
   let wrapper;
+
+  const findMockJob = (jobName, nodes = mockJobsNodes) => {
+    const job = nodes.find(({ name }) => name === jobName);
+    expect(job).toBeDefined(); // ensure job is present
+    return job;
+  };
+
+  const mockJob = findMockJob('build');
+  const cancelableJob = findMockJob('cancelable');
+  const playableJob = findMockJob('playable');
+  const retryableJob = findMockJob('retryable');
+  const scheduledJob = findMockJob('scheduled');
+  const jobWithArtifact = findMockJob('with_artifact');
+  const cannotPlayJob = findMockJob('playable', mockJobsNodesAsGuest);
+  const cannotRetryJob = findMockJob('retryable', mockJobsNodesAsGuest);
+  const cannotPlayScheduledJob = findMockJob('scheduled', mockJobsNodesAsGuest);
 
   const findRetryButton = () => wrapper.findByTestId('retry');
   const findPlayButton = () => wrapper.findByTestId('play');
@@ -55,10 +66,10 @@ describe('Job actions cell', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (jobType, requestHandlers, props = {}) => {
+  const createComponent = (job, requestHandlers, props = {}) => {
     wrapper = shallowMountExtended(ActionsCell, {
       propsData: {
-        job: jobType,
+        job,
         ...props,
       },
       apolloProvider: createMockApolloProvider(requestHandlers),
@@ -73,15 +84,15 @@ describe('Job actions cell', () => {
   });
 
   it('displays the artifacts download button with correct link', () => {
-    createComponent(playableJob);
+    createComponent(jobWithArtifact);
 
     expect(findDownloadArtifactsButton().attributes('href')).toBe(
-      playableJob.artifacts.nodes[0].downloadPath,
+      jobWithArtifact.artifacts.nodes[0].downloadPath,
     );
   });
 
   it('does not display an artifacts download button', () => {
-    createComponent(retryableJob);
+    createComponent(mockJob);
 
     expect(findDownloadArtifactsButton().exists()).toBe(false);
   });
@@ -101,7 +112,7 @@ describe('Job actions cell', () => {
     button                         | action                  | jobType
     ${findPlayButton}              | ${'play'}               | ${playableJob}
     ${findRetryButton}             | ${'retry'}              | ${retryableJob}
-    ${findDownloadArtifactsButton} | ${'download artifacts'} | ${playableJob}
+    ${findDownloadArtifactsButton} | ${'download artifacts'} | ${jobWithArtifact}
     ${findCancelButton}            | ${'cancel'}             | ${cancelableJob}
   `('displays the $action button', ({ button, jobType }) => {
     createComponent(jobType);

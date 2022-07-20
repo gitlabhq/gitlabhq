@@ -128,13 +128,8 @@ module MergeRequests
       if draft_event = params.delete(:wip_event)
         # We update the title that is provided in the params or we use the mr title
         title = params[:title] || merge_request.title
-        # Supports both `wip` and `draft` permutations of draft_event
-        # This support can be removed >= %15.2
-        #
         params[:title] = case draft_event
-                         when 'wip' then MergeRequest.draft_title(title)
                          when 'draft' then MergeRequest.draft_title(title)
-                         when 'unwip' then MergeRequest.draftless_title(title)
                          when 'ready' then MergeRequest.draftless_title(title)
                          end
       end
@@ -190,8 +185,11 @@ module MergeRequests
 
     def create_pipeline_for(merge_request, user, async: false)
       if async
-        # TODO: pass push_options to worker
-        MergeRequests::CreatePipelineWorker.perform_async(project.id, user.id, merge_request.id)
+        MergeRequests::CreatePipelineWorker.perform_async(
+          project.id,
+          user.id,
+          merge_request.id,
+          params.slice(:push_options).deep_stringify_keys)
       else
         MergeRequests::CreatePipelineService
           .new(project: project, current_user: user, params: params.slice(:push_options))

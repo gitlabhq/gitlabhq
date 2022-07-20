@@ -125,11 +125,11 @@ RSpec.describe Repository do
       let(:latest_tag) { 'v0.0.0' }
 
       before do
-        rugged_repo(repository).tags.create(latest_tag, repository.commit.id)
+        repository.add_tag(user, latest_tag, repository.commit.id)
       end
 
       after do
-        rugged_repo(repository).tags.delete(latest_tag)
+        repository.rm_tag(user, latest_tag)
       end
 
       context 'desc' do
@@ -150,16 +150,13 @@ RSpec.describe Repository do
         subject { repository.tags_sorted_by('updated_asc').map(&:name) & (tags_to_compare + [annotated_tag_name]) }
 
         before do
-          options = { message: 'test tag message\n',
-                      tagger: { name: 'John Smith', email: 'john@gmail.com' } }
-
-          rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', **options)
+          repository.add_tag(user, annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', 'test tag message\n')
         end
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
 
         after do
-          rugged_repo(repository).tags.delete(annotated_tag_name)
+          repository.rm_tag(user, annotated_tag_name)
         end
       end
     end
@@ -258,21 +255,10 @@ RSpec.describe Repository do
     end
 
     context 'with a commit with invalid UTF-8 path' do
-      def create_commit_with_invalid_utf8_path
-        rugged = rugged_repo(repository)
-        blob_id = Rugged::Blob.from_buffer(rugged, "some contents")
-        tree_builder = Rugged::Tree::Builder.new(rugged)
-        tree_builder.insert({ oid: blob_id, name: "hello\x80world", filemode: 0100644 })
-        tree_id = tree_builder.write
-        user = { email: "jcai@gitlab.com", time: Time.current.to_time, name: "John Cai" }
-
-        Rugged::Commit.create(rugged, message: 'some commit message', parents: [rugged.head.target.oid], tree: tree_id, committer: user, author: user)
-      end
-
       it 'does not raise an error' do
-        commit = create_commit_with_invalid_utf8_path
+        response = create_file_in_repo(project, 'master', 'master', "hello\x80world", 'some contents')
 
-        expect { repository.list_last_commits_for_tree(commit, '.', offset: 0) }.not_to raise_error
+        expect { repository.list_last_commits_for_tree(response[:result], '.', offset: 0) }.not_to raise_error
       end
     end
   end
@@ -2262,20 +2248,12 @@ RSpec.describe Repository do
   describe '#branch_count' do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
-
-      rugged_count = rugged_repo(repository).branches.count
-
-      expect(repository.branch_count).to eq(rugged_count)
     end
   end
 
   describe '#tag_count' do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
-
-      rugged_count = rugged_repo(repository).tags.count
-
-      expect(repository.tag_count).to eq(rugged_count)
     end
   end
 
@@ -2757,6 +2735,33 @@ RSpec.describe Repository do
     end
   end
 
+  describe '#changelog_config' do
+    let(:user) { create(:user) }
+    let(:changelog_config_path) { Gitlab::Changelog::Config::DEFAULT_FILE_PATH }
+
+    before do
+      repository.create_file(
+        user,
+        changelog_config_path,
+        'CONTENT',
+        message: '...',
+        branch_name: 'master'
+      )
+    end
+
+    context 'when there is a changelog_config_path at the commit' do
+      it 'returns the content' do
+        expect(repository.changelog_config(repository.commit.sha, changelog_config_path)).to eq('CONTENT')
+      end
+    end
+
+    context 'when there is no changelog_config_path at the commit' do
+      it 'returns nil' do
+        expect(repository.changelog_config(repository.commit.parent.sha, changelog_config_path)).to be_nil
+      end
+    end
+  end
+
   describe '#route_map_for' do
     before do
       repository.create_file(User.last, '.gitlab/route-map.yml', 'CONTENT', message: 'Add .gitlab/route-map.yml', branch_name: 'master')
@@ -2776,8 +2781,7 @@ RSpec.describe Repository do
   end
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = rugged_repo(repository)
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
+    repository.write_ref("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
   shared_examples '#ancestor?' do

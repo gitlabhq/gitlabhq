@@ -34,6 +34,13 @@ module Gitlab
           return {} unless definition.present?
 
           Gitlab::Usage::Metric.new(definition).method(output_method).call
+        rescue StandardError => error
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+          metric_fallback(key_path)
+        end
+
+        def metric_fallback(key_path)
+          ::Gitlab::Usage::Metrics::KeyPathProcessor.process(key_path, ::Gitlab::Utils::UsageData::FALLBACK)
         end
       end
     end

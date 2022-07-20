@@ -52,7 +52,7 @@ RSpec.describe Graphql::Arguments do
       float: 2.7,
       string: %q[he said "no"],
       enum: :OFF,
-      null: nil, # we expect this to be omitted - absence is the same as explicit nullness
+      null: nil,
       bool_true: true,
       bool_false: false,
       var: ::Graphql::Var.new('x', 'Int')
@@ -64,6 +64,7 @@ RSpec.describe Graphql::Arguments do
       'int: 42, float: 2.7',
       %q(string: "he said \\"no\\""),
       'enum: OFF',
+      'null: null',
       'boolTrue: true, boolFalse: false',
       'var: $x'
     ].join(', '))

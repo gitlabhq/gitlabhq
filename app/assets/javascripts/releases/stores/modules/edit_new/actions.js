@@ -3,16 +3,21 @@ import createFlash from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';
+import deleteReleaseMutation from '~/releases/graphql/mutations/delete_release.mutation.graphql';
 import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_release_link.mutation.graphql';
 import deleteReleaseAssetLinkMutation from '~/releases/graphql/mutations/delete_release_link.mutation.graphql';
 import updateReleaseMutation from '~/releases/graphql/mutations/update_release.mutation.graphql';
 import oneReleaseForEditingQuery from '~/releases/graphql/queries/one_release_for_editing.query.graphql';
-import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
+import {
+  gqClient,
+  convertOneReleaseGraphQLResponse,
+  deleteReleaseSessionKey,
+} from '~/releases/util';
 
 import * as types from './mutation_types';
 
-export const initializeRelease = ({ commit, dispatch, getters }) => {
-  if (getters.isExistingRelease) {
+export const initializeRelease = ({ commit, dispatch, state }) => {
+  if (state.isExistingRelease) {
     // When editing an existing release,
     // fetch the release object from the API
     return dispatch('fetchRelease');
@@ -53,6 +58,9 @@ export const updateReleaseTagName = ({ commit }, tagName) =>
 export const updateCreateFrom = ({ commit }, createFrom) =>
   commit(types.UPDATE_CREATE_FROM, createFrom);
 
+export const updateShowCreateFrom = ({ commit }, showCreateFrom) =>
+  commit(types.UPDATE_SHOW_CREATE_FROM, showCreateFrom);
+
 export const updateReleaseTitle = ({ commit }, title) => commit(types.UPDATE_RELEASE_TITLE, title);
 
 export const updateReleaseNotes = ({ commit }, notes) => commit(types.UPDATE_RELEASE_NOTES, notes);
@@ -88,10 +96,10 @@ export const receiveSaveReleaseSuccess = ({ commit }, urlToRedirectTo) => {
   redirectTo(urlToRedirectTo);
 };
 
-export const saveRelease = ({ commit, dispatch, getters }) => {
+export const saveRelease = ({ commit, dispatch, state }) => {
   commit(types.REQUEST_SAVE_RELEASE);
 
-  dispatch(getters.isExistingRelease ? 'updateRelease' : 'createRelease');
+  dispatch(state.isExistingRelease ? 'updateRelease' : 'createRelease');
 };
 
 /**
@@ -245,4 +253,31 @@ export const fetchTagNotes = ({ commit, state }, tagName) => {
 
 export const updateIncludeTagNotes = ({ commit }, includeTagNotes) => {
   commit(types.UPDATE_INCLUDE_TAG_NOTES, includeTagNotes);
+};
+
+export const updateReleasedAt = ({ commit }, releasedAt) => {
+  commit(types.UPDATE_RELEASED_AT, releasedAt);
+};
+
+export const deleteRelease = ({ commit, getters, dispatch, state }) => {
+  commit(types.REQUEST_SAVE_RELEASE);
+  return gqClient
+    .mutate({
+      mutation: deleteReleaseMutation,
+      variables: getters.releaseDeleteMutationVariables,
+    })
+    .then((response) => checkForErrorsAsData(response, 'releaseDelete', ''))
+    .then(() => {
+      window.sessionStorage.setItem(
+        deleteReleaseSessionKey(state.projectPath),
+        state.originalRelease.name,
+      );
+      return dispatch('receiveSaveReleaseSuccess', state.releasesPagePath);
+    })
+    .catch((error) => {
+      commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
+      createFlash({
+        message: s__('Release|Something went wrong while deleting the release.'),
+      });
+    });
 };

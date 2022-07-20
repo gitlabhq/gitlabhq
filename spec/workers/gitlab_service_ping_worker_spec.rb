@@ -21,29 +21,12 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state do
     subject.perform
   end
 
-  context 'with prerecord_service_ping_data feature enabled' do
-    it 'delegates to ServicePing::SubmitService' do
-      stub_feature_flags(prerecord_service_ping_data: true)
-
-      expect_next_instance_of(ServicePing::SubmitService, payload: payload) do |service|
-        expect(service).to receive(:execute)
-      end
-
-      subject.perform
+  it 'delegates to ServicePing::SubmitService' do
+    expect_next_instance_of(ServicePing::SubmitService, payload: payload) do |service|
+      expect(service).to receive(:execute)
     end
-  end
 
-  context 'with prerecord_service_ping_data feature disabled' do
-    it 'does not prerecord ServicePing, and calls SubmitService', :aggregate_failures do
-      stub_feature_flags(prerecord_service_ping_data: false)
-
-      expect(ServicePing::BuildPayload).not_to receive(:new)
-      expect(ServicePing::BuildPayload).not_to receive(:new)
-      expect_next_instance_of(ServicePing::SubmitService, payload: nil) do |service|
-        expect(service).to receive(:execute)
-      end
-      expect { subject.perform }.not_to change { RawUsageData.count }
-    end
+    subject.perform
   end
 
   context 'payload computation' do

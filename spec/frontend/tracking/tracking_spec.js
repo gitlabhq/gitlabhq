@@ -412,7 +412,7 @@ describe('Tracking', () => {
         Tracking.setAnonymousUrls();
 
         expect(snowplowSpy).not.toHaveBeenCalledWith('setReferrerUrl', testUrl);
-        expect(localStorage.getItem(URLS_CACHE_STORAGE_KEY)).not.toContain(oldTimestamp);
+        expect(localStorage.getItem(URLS_CACHE_STORAGE_KEY)).not.toContain(oldTimestamp.toString());
       });
     });
   });

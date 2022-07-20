@@ -53,12 +53,14 @@ module ReleasesHelper
   def data_for_edit_release_page
     new_edit_pages_shared_data.merge(
       tag_name: @release.tag,
-      releases_page_path: project_releases_path(@project, anchor: @release.tag)
+      releases_page_path: project_releases_path(@project, anchor: @release.tag),
+      delete_release_docs_path: releases_help_page_path(anchor: 'delete-a-release')
     )
   end
 
   def data_for_new_release_page
     new_edit_pages_shared_data.merge(
+      tag_name: params[:tag_name],
       default_branch: @project.default_branch,
       releases_page_path: project_releases_path(@project)
     )
@@ -81,7 +83,8 @@ module ReleasesHelper
       release_assets_docs_path: releases_help_page_path(anchor: 'release-assets'),
       manage_milestones_path: project_milestones_path(@project),
       new_milestone_path: new_project_milestone_path(@project),
-      edit_release_docs_path: releases_help_page_path(anchor: 'edit-a-release')
+      edit_release_docs_path: releases_help_page_path(anchor: 'edit-a-release'),
+      upcoming_release_docs_path: releases_help_page_path(anchor: 'upcoming-releases')
     }
   end
 end

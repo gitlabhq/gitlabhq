@@ -21,6 +21,10 @@ class MergeRequestDiff < ApplicationRecord
   # from the database if this sentinel is seen
   FILES_COUNT_SENTINEL = 2**15 - 1
 
+  # External diff cache key used by diffs export
+  EXTERNAL_DIFFS_CACHE_TMPDIR = 'project-%{project_id}-external-mr-%{mr_id}-diff-%{id}-cache'
+  EXTERNAL_DIFF_CACHE_CHUNK_SIZE = 8.megabytes
+
   belongs_to :merge_request
 
   manual_inverse_association :merge_request, :merge_request_diff
@@ -545,6 +549,28 @@ class MergeRequestDiff < ApplicationRecord
     merge_request_diff_files.reset
   end
 
+  # Yields locally cached external diff if it's externally stored.
+  # Used during Project Export to speed up externally
+  # stored merge request diffs export
+  def cached_external_diff
+    return yield(nil) unless stored_externally?
+
+    cache_external_diff unless File.exist?(external_diff_cache_filepath)
+
+    File.open(external_diff_cache_filepath) do |file|
+      yield(file)
+    end
+  end
+
+  def remove_cached_external_diff
+    Gitlab::Utils.check_path_traversal!(external_diff_cache_dir)
+    Gitlab::Utils.check_allowed_absolute_path!(external_diff_cache_dir, [Dir.tmpdir])
+
+    return unless Dir.exist?(external_diff_cache_dir)
+
+    FileUtils.rm_rf(external_diff_cache_dir)
+  end
+
   private
 
   def convert_external_diffs_to_database
@@ -790,6 +816,31 @@ class MergeRequestDiff < ApplicationRecord
 
   def sort_diffs(diffs)
     Gitlab::Diff::FileCollectionSorter.new(diffs).sort
+  end
+
+  # Downloads external diff to a temp storage location.
+  def cache_external_diff
+    return unless stored_externally?
+    return if File.exist?(external_diff_cache_filepath)
+
+    Dir.mkdir(external_diff_cache_dir) unless Dir.exist?(external_diff_cache_dir)
+
+    opening_external_diff do |external_diff|
+      File.open(external_diff_cache_filepath, 'wb') do |file|
+        file.write(external_diff.read(EXTERNAL_DIFF_CACHE_CHUNK_SIZE)) until external_diff.eof?
+      end
+    end
+  end
+
+  def external_diff_cache_filepath
+    File.join(external_diff_cache_dir, "diff-#{id}")
+  end
+
+  def external_diff_cache_dir
+    File.join(
+      Dir.tmpdir,
+      EXTERNAL_DIFFS_CACHE_TMPDIR % { project_id: project.id, mr_id: merge_request_id, id: id }
+    )
   end
 end
 

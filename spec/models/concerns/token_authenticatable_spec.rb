@@ -94,6 +94,7 @@ RSpec.describe ApplicationSetting, 'TokenAuthenticatable' do
     end
 
     it { is_expected.to respond_to(:ensure_runners_registration_token) }
+    it { is_expected.to respond_to(:ensure_error_tracking_access_token) }
     it { is_expected.to respond_to(:ensure_yet_another_token) }
   end
 

@@ -15,15 +15,13 @@ import {
 } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
-import invalidUrl from '~/lib/utils/invalid_url';
-import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
+import { isSafeURL } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { panelTypes } from '../constants';
 
 import { graphDataToCsv } from '../csv_export';
-import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
+import { downloadCSVOptions, generateLinkToChartOptions } from '../utils';
 import MonitorAnomalyChart from './charts/anomaly.vue';
 import MonitorBarChart from './charts/bar.vue';
 import MonitorColumnChart from './charts/column.vue';
@@ -58,7 +56,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     TrackEvent: TrackEventDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     clipboardText: {
       type: String,
@@ -106,9 +103,6 @@ export default {
       projectPath(state) {
         return state[this.namespace].projectPath;
       },
-      logsPath(state) {
-        return state[this.namespace].logsPath;
-      },
       timeRange(state) {
         return state[this.namespace].timeRange;
       },
@@ -141,17 +135,6 @@ export default {
     graphDataIsLoading() {
       const metrics = this.graphData?.metrics || [];
       return metrics.some(({ loading }) => loading);
-    },
-    logsPathWithTimeRange() {
-      if (!this.glFeatures.monitorLogging) {
-        return null;
-      }
-      const timeRange = this.zoomedTimeRange || this.timeRange;
-
-      if (this.logsPath && this.logsPath !== invalidUrl && timeRange) {
-        return timeRangeToUrl(timeRange, this.logsPath);
-      }
-      return null;
     },
     csvText() {
       if (this.graphData) {
@@ -278,16 +261,6 @@ export default {
     safeUrl(url) {
       return isSafeURL(url) ? url : '#';
     },
-    visitLogsPage() {
-      if (this.logsPathWithTimeRange) {
-        visitUrl(relativePathToAbsolute(this.logsPathWithTimeRange, getBaseURL()));
-      }
-    },
-    visitLogsPageFromKeyboardShortcut() {
-      if (this.isContextualMenuShown) {
-        this.visitLogsPage();
-      }
-    },
     downloadCsvFromKeyboardShortcut() {
       if (this.csvText && this.isContextualMenuShown) {
         this.$refs.downloadCsvLink.$el.firstChild.click();
@@ -350,13 +323,6 @@ export default {
               :href="editCustomMetricLink"
             >
               {{ editCustomMetricLinkText }}
-            </gl-dropdown-item>
-            <gl-dropdown-item
-              v-if="logsPathWithTimeRange"
-              ref="viewLogsLink"
-              :href="logsPathWithTimeRange"
-            >
-              {{ s__('Metrics|View logs') }}
             </gl-dropdown-item>
 
             <gl-dropdown-item

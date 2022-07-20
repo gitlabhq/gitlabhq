@@ -38,6 +38,29 @@ RSpec.describe Gitlab::UsageMetricDefinition::RedisHllGenerator, :silence_stdout
     expect(monthly_metric_definition["instrumentation_class"]).to eq('RedisHLLMetric')
   end
 
+  context 'with multiple events', :aggregate_failures do
+    let(:event_2) { 'i_test_event_2' }
+    let(:args) { [category, event, event_2] }
+
+    it 'creates metric definition files' do
+      described_class.new(args).invoke_all
+
+      [event, event_2].each do |event|
+        weekly_metric_definition_path = Dir.glob(File.join(temp_dir, "metrics/counts_7d/*#{event}_weekly.yml")).first
+        monthly_metric_definition_path = Dir.glob(File.join(temp_dir, "metrics/counts_28d/*#{event}_monthly.yml")).first
+
+        weekly_metric_definition = YAML.safe_load(File.read(weekly_metric_definition_path))
+        monthly_metric_definition = YAML.safe_load(File.read(monthly_metric_definition_path))
+
+        expect(weekly_metric_definition).to include("key_path" => "redis_hll_counters.test_category.#{event}_weekly")
+        expect(monthly_metric_definition).to include("key_path" => "redis_hll_counters.test_category.#{event}_monthly")
+
+        expect(weekly_metric_definition["instrumentation_class"]).to eq('RedisHLLMetric')
+        expect(monthly_metric_definition["instrumentation_class"]).to eq('RedisHLLMetric')
+      end
+    end
+  end
+
   context 'with ee option' do
     let(:weekly_metric_definition_path) { Dir.glob(File.join(temp_dir, 'ee/config/metrics/counts_7d/*i_test_event_weekly.yml')).first }
     let(:monthly_metric_definition_path) { Dir.glob(File.join(temp_dir, 'ee/config/metrics/counts_28d/*i_test_event_monthly.yml')).first }

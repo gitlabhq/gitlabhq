@@ -70,10 +70,4 @@ RSpec.describe Ci::BuildReportResult do
       expect(build_report_result.tests_skipped).to eq(0)
     end
   end
-
-  describe '#tests_total' do
-    it 'returns the total count' do
-      expect(build_report_result.tests_total).to eq(2)
-    end
-  end
 end

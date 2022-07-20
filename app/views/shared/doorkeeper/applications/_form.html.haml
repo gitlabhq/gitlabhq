@@ -1,5 +1,5 @@
 = gitlab_ui_form_for @application, url: url, html: { role: 'form', class: 'doorkeeper-app-form' } do |f|
-  = form_errors(@application)
+  = form_errors(@application, pajamas_alert: true)
 
   .form-group
     = f.label :name, class: 'label-bold'

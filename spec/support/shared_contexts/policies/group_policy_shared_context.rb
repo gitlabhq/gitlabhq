@@ -31,6 +31,7 @@ RSpec.shared_context 'GroupPolicy context' do
         admin_milestone
         admin_issue_board
         read_container_image
+        read_harbor_registry
         read_metrics_dashboard_annotation
         read_prometheus
         read_crm_contact

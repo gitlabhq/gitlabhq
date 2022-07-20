@@ -39,6 +39,8 @@ describe('IssuableItem', () => {
   const originalUrl = gon.gitlab_url;
   let wrapper;
 
+  const findTimestampWrapper = () => wrapper.find('[data-testid="issuable-timestamp"]');
+
   beforeEach(() => {
     gon.gitlab_url = MOCK_GITLAB_URL;
   });
@@ -150,12 +152,54 @@ describe('IssuableItem', () => {
       });
     });
 
-    describe('updatedAt', () => {
-      it('returns string containing timeago string based on `issuable.updatedAt`', () => {
+    describe('timestamp', () => {
+      it('returns timestamp based on `issuable.updatedAt` when the issue is open', () => {
         wrapper = createComponent();
 
-        expect(wrapper.vm.updatedAt).toContain('updated');
-        expect(wrapper.vm.updatedAt).toContain('ago');
+        expect(findTimestampWrapper().attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
+      });
+
+      it('returns timestamp based on `issuable.closedAt` when the issue is closed', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, closedAt: '2020-06-18T11:30:00Z', state: 'closed' },
+        });
+
+        expect(findTimestampWrapper().attributes('title')).toBe('Jun 18, 2020 11:30am UTC');
+      });
+
+      it('returns timestamp based on `issuable.updatedAt` when the issue is closed but `issuable.closedAt` is undefined', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, closedAt: undefined, state: 'closed' },
+        });
+
+        expect(findTimestampWrapper().attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
+      });
+    });
+
+    describe('formattedTimestamp', () => {
+      it('returns timeago string based on `issuable.updatedAt` when the issue is open', () => {
+        wrapper = createComponent();
+
+        expect(findTimestampWrapper().text()).toContain('updated');
+        expect(findTimestampWrapper().text()).toContain('ago');
+      });
+
+      it('returns timeago string based on `issuable.closedAt` when the issue is closed', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, closedAt: '2020-06-18T11:30:00Z', state: 'closed' },
+        });
+
+        expect(findTimestampWrapper().text()).toContain('closed');
+        expect(findTimestampWrapper().text()).toContain('ago');
+      });
+
+      it('returns timeago string based on `issuable.updatedAt` when the issue is closed but `issuable.closedAt` is undefined', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, closedAt: undefined, state: 'closed' },
+        });
+
+        expect(findTimestampWrapper().text()).toContain('updated');
+        expect(findTimestampWrapper().text()).toContain('ago');
       });
     });
 
@@ -456,17 +500,30 @@ describe('IssuableItem', () => {
     it('renders issuable updatedAt info', () => {
       wrapper = createComponent();
 
-      const updatedAtEl = wrapper.find('[data-testid="issuable-updated-at"]');
+      const timestampEl = wrapper.find('[data-testid="issuable-timestamp"]');
 
-      expect(updatedAtEl.attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
-      expect(updatedAtEl.text()).toBe(wrapper.vm.updatedAt);
+      expect(timestampEl.attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
+      expect(timestampEl.text()).toBe(wrapper.vm.formattedTimestamp);
     });
 
     describe('when issuable is closed', () => {
       it('renders issuable card with a closed style', () => {
-        wrapper = createComponent({ issuable: { ...mockIssuable, closedAt: '2020-12-10' } });
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, closedAt: '2020-12-10', state: 'closed' },
+        });
 
         expect(wrapper.classes()).toContain('closed');
+      });
+
+      it('renders issuable closedAt info and does not render updatedAt info', () => {
+        wrapper = createComponent({
+          issuable: { ...mockIssuable, closedAt: '2022-06-18T11:30:00Z', state: 'closed' },
+        });
+
+        const timestampEl = wrapper.find('[data-testid="issuable-timestamp"]');
+
+        expect(timestampEl.attributes('title')).toBe('Jun 18, 2022 11:30am UTC');
+        expect(timestampEl.text()).toBe(wrapper.vm.formattedTimestamp);
       });
     });
 

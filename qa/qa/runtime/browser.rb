@@ -16,7 +16,7 @@ module QA
 
       NotRespondingError = Class.new(RuntimeError)
 
-      CAPYBARA_MAX_WAIT_TIME = 10
+      CAPYBARA_MAX_WAIT_TIME = Env.max_capybara_wait_time
 
       def self.blank_page?
         ['', 'about:blank', 'data:,'].include?(Capybara.current_session.driver.browser.current_url)

@@ -36,6 +36,10 @@ module Resolvers
                required: false,
                description: 'Sort order of results.'
 
+      argument :upgrade_status, ::Types::Ci::RunnerUpgradeStatusTypeEnum,
+               required: false,
+               description: 'Filter by upgrade status.'
+
       def resolve_with_lookahead(**args)
         apply_lookahead(
           ::Ci::RunnersFinder
@@ -54,6 +58,7 @@ module Resolvers
           status_status: params[:status]&.to_s,
           type_type: params[:type],
           tag_name: params[:tag_list],
+          upgrade_status: params[:upgrade_status],
           search: params[:search],
           sort: params[:sort]&.to_s,
           preload: {

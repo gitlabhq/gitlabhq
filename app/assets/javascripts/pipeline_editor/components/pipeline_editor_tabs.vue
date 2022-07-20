@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
@@ -16,6 +16,7 @@ import {
   TAB_QUERY_PARAM,
   TABS_INDEX,
   VALIDATE_TAB,
+  VALIDATE_TAB_BADGE_DISMISSED_KEY,
   VISUALIZE_TAB,
 } from '../constants';
 import getAppStatus from '../graphql/queries/client/app_status.query.graphql';
@@ -29,6 +30,7 @@ import WalkthroughPopover from './popovers/walkthrough_popover.vue';
 
 export default {
   i18n: {
+    new: __('NEW'),
     tabEdit: s__('Pipelines|Edit'),
     tabGraph: s__('Pipelines|Visualize'),
     tabLint: s__('Pipelines|Lint'),
@@ -87,6 +89,10 @@ export default {
       required: false,
       default: '',
     },
+    currentTab: {
+      type: String,
+      required: true,
+    },
     isNewCiConfigFile: {
       type: Boolean,
       required: true,
@@ -103,6 +109,11 @@ export default {
         return data.app.status;
       },
     },
+  },
+  data() {
+    return {
+      showValidateNewBadge: false,
+    };
   },
   computed: {
     isMergedYamlAvailable() {
@@ -123,6 +134,16 @@ export default {
     isLoading() {
       return this.appStatus === EDITOR_APP_STATUS_LOADING;
     },
+    validateTabBadgeTitle() {
+      if (this.showValidateNewBadge) {
+        return this.$options.i18n.new;
+      }
+
+      return '';
+    },
+  },
+  mounted() {
+    this.showValidateNewBadge = !JSON.parse(localStorage.getItem(VALIDATE_TAB_BADGE_DISMISSED_KEY));
   },
   created() {
     const [tabQueryParam] = getParameterValues(TAB_QUERY_PARAM);
@@ -134,6 +155,11 @@ export default {
   },
   methods: {
     setCurrentTab(tabName) {
+      if (this.currentTab === VALIDATE_TAB) {
+        localStorage.setItem(VALIDATE_TAB_BADGE_DISMISSED_KEY, 'true');
+        this.showValidateNewBadge = false;
+      }
+
       this.$emit('set-current-tab', tabName);
     },
     setDefaultTab(tabName) {
@@ -189,11 +215,11 @@ export default {
       v-if="glFeatures.simulatePipeline"
       class="gl-mb-3"
       data-testid="validate-tab"
+      :badge-title="validateTabBadgeTitle"
       :title="$options.i18n.tabValidate"
       @click="setCurrentTab($options.tabConstants.VALIDATE_TAB)"
     >
-      <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
-      <ci-validate v-else />
+      <ci-validate :ci-file-content="ciFileContent" />
     </editor-tab>
     <editor-tab
       v-else

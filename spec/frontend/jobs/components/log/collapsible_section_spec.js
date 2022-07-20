@@ -5,7 +5,6 @@ import { collapsibleSectionClosed, collapsibleSectionOpened } from './mock_data'
 
 describe('Job Log Collapsible Section', () => {
   let wrapper;
-  let origGon;
 
   const jobLogEndpoint = 'jobs/335';
 
@@ -20,16 +19,8 @@ describe('Job Log Collapsible Section', () => {
     });
   };
 
-  beforeEach(() => {
-    origGon = window.gon;
-
-    window.gon = { features: { infinitelyCollapsibleSections: false } }; // NOTE: This also works with true
-  });
-
   afterEach(() => {
     wrapper.destroy();
-
-    window.gon = origGon;
   });
 
   describe('with closed section', () => {

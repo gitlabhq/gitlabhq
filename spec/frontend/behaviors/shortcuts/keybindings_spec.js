@@ -11,9 +11,7 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 
 describe('~/behaviors/shortcuts/keybindings', () => {
-  beforeAll(() => {
-    useLocalStorageSpy();
-  });
+  useLocalStorageSpy();
 
   const setupCustomizations = (customizationsAsString) => {
     localStorage.clear();

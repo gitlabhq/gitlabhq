@@ -189,7 +189,9 @@ with the notes below for consideration.
 | GitLab single sign-on URL            | Start URL              |
 | Identity provider single sign-on URL | SSO URL                |
 
-You must download the certificate to get the SHA1 certificate fingerprint.
+NOTE:
+Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint required by GitLab for [configuring SAML](#configure-gitlab), download the certificate and calculate
+the SHA1 certificate fingerprint.
 
 The recommended attributes and claims settings are:
 
@@ -396,9 +398,7 @@ For example, to unlink the `MyOrg` account:
 1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
-1. In the **Social sign-in** section, select **Disconnect** next to the connected account.
-
-![Unlink Group SAML](img/unlink_group_saml.png)
+1. In the **Service sign-in** section, select **Disconnect** next to the connected account.
 
 ## Group Sync
 
@@ -511,7 +511,7 @@ Alternatively, the SAML response may be missing the `InResponseTo` attribute in 
 The identity provider administrator should ensure that the login is
 initiated by the service provider and not the identity provider.
 
-### Message: "Login to a GitLab account to link with your SAML identity"
+### Message: "Sign in to GitLab to connect your organization's account"
 
 A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](#linking-saml-to-your-existing-gitlabcom-account).
 

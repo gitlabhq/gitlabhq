@@ -18,6 +18,7 @@ import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
@@ -79,6 +80,7 @@ describe('diffs/components/app', () => {
   }
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
     // setup globals (needed for component to mount :/)
     window.mrTabs = {
       resetViewContainer: jest.fn(),

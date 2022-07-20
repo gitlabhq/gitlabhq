@@ -70,10 +70,10 @@ module Types
           description: 'Indicates if shared runners are enabled for the project.'
 
     field :service_desk_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if the project has service desk enabled.'
+          description: 'Indicates if the project has Service Desk enabled.'
 
     field :service_desk_address, GraphQL::Types::String, null: true,
-          description: 'E-mail address of the service desk.'
+          description: 'E-mail address of the Service Desk.'
 
     field :avatar_url, GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'URL to avatar image file of the project.'
@@ -219,6 +219,13 @@ module Types
           null: true,
           description: 'Build pipeline counts of the project.',
           resolver: Resolvers::Ci::ProjectPipelineCountsResolver
+
+    field :ci_variables,
+          Types::Ci::VariableType.connection_type,
+          null: true,
+          description: "List of the project's CI/CD variables.",
+          authorize: :admin_build,
+          method: :variables
 
     field :ci_cd_settings,
           Types::Ci::CiCdSettingType,

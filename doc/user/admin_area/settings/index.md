@@ -162,6 +162,7 @@ The **Reporting** settings contain:
 - [Spam and Anti-bot Protection](../../../integration/recaptcha.md) -
   Enable anti-spam services, like reCAPTCHA, Akismet, or [Spamcheck](../reporting/spamcheck.md), and set IP limits.
 - [Abuse reports](../review_abuse_reports.md) - Set notification email for abuse reports.
+- [Git abuse rate limit](../reporting/git_abuse_rate_limit.md) - Configure Git abuse rate limit settings. **(ULTIMATE SELF)**
 
 ### Repository
 

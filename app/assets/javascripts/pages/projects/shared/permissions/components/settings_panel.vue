@@ -61,6 +61,10 @@ export default {
     GlFormCheckbox,
     GlToggle,
     ConfirmDanger,
+    otherProjectSettings: () =>
+      import(
+        'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
+      ),
   },
   mixins: [settingsMixin, glFeatureFlagsMixin()],
 
@@ -181,6 +185,10 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    membersPagePath: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -521,12 +529,22 @@ export default {
             />
           </div>
         </div>
-        <span v-if="!visibilityAllowed(visibilityLevel)" class="form-text text-muted">{{
-          s__(
-            'ProjectSettings|Visibility options for this fork are limited by the current visibility of the source project.',
-          )
-        }}</span>
-        <span class="form-text text-muted">{{ visibilityLevelDescription }}</span>
+        <span
+          v-if="!visibilityAllowed(visibilityLevel)"
+          class="gl-display-block gl-text-gray-500 gl-mt-2"
+          >{{
+            s__(
+              'ProjectSettings|Visibility options for this fork are limited by the current visibility of the source project.',
+            )
+          }}</span
+        >
+        <span class="gl-display-block gl-text-gray-500 gl-mt-2">
+          <gl-sprintf :message="visibilityLevelDescription">
+            <template #membersPageLink="{ content }">
+              <gl-link class="gl-link" :href="membersPagePath">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </span>
         <div v-if="showAdditonalSettings" class="gl-mt-4">
           <strong class="gl-display-block">{{ s__('ProjectSettings|Additional options') }}</strong>
           <label
@@ -891,6 +909,7 @@ export default {
         <template #help>{{ $options.i18n.pucWarningHelpText }}</template>
       </gl-form-checkbox>
     </project-setting-row>
+    <other-project-settings />
     <confirm-danger
       v-if="isVisibilityReduced"
       button-variant="confirm"

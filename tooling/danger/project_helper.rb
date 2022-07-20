@@ -26,7 +26,7 @@ module Tooling
         %r{\Adoc/.*(\.(md|png|gif|jpg|yml))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
-        %r{\Adb/docs/.yml\z} => :docs,
+        %r{\Adb/docs/.+\.yml\z} => :docs,
         %r{\Adata/deprecations/} => :none,
         %r{\Adata/removals/} => :none,
 
@@ -57,6 +57,7 @@ module Tooling
           spec/frontend/tracking/.*\.js |
           spec/frontend/tracking_spec\.js
         )\z}x => [:frontend, :product_intelligence],
+        [%r{\.(vue|js)\z}, %r{trackRedis}] => [:frontend, :product_intelligence],
         %r{\A((ee|jh)/)?app/assets/} => :frontend,
         %r{\A((ee|jh)/)?app/views/.*\.svg} => :frontend,
         %r{\A((ee|jh)/)?app/views/} => [:frontend, :backend],
@@ -111,6 +112,7 @@ module Tooling
         %r{\Atooling/} => :tooling,
         %r{(CODEOWNERS)} => :tooling,
         %r{(tests.yml)} => :tooling,
+        %r{\A\.gitpod\.yml} => :tooling,
 
         %r{\Alib/gitlab/ci/templates} => :ci_template,
 

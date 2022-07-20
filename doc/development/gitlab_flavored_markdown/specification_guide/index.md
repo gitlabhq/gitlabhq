@@ -69,11 +69,11 @@ serve as input to automated conformance tests. It is
 > This document attempts to specify Markdown syntax unambiguously. It contains many
 > examples with side-by-side Markdown and HTML. These examples are intended to double as conformance tests.
 
-The HTML-rendered versions of the specifications:
+Here are the HTML-rendered versions of the specifications:
 
 - [GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output/spec.html), which extends the:
-- [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/), which extends the:
-- [CommonMark specification](https://spec.commonmark.org/0.30/)
+- [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/) (rendered from the [source `spec.txt` for GFM specification](https://github.com/github/cmark-gfm/blob/master/test/spec.txt)), which extends the:
+- [CommonMark specification](https://spec.commonmark.org/0.30/) (rendered from the [source `spec.txt` for CommonMark specification](https://github.com/commonmark/commonmark-spec/blob/master/spec.txt))
 
 NOTE:
 The creation of the
@@ -136,10 +136,10 @@ NOTE:
 #### Markdown snapshot testing
 
 _Markdown snapshot testing_ refers to the automated testing performed in
-the GitLab codebase, which is driven by snapshot fixture data derived from the
-GLFM specification. It consists of both backend RSpec tests and frontend Jest tests
-which use the fixture data. This fixture data is contained in YAML files. These files
-can be generated and updated based on the Markdown examples in the specification,
+the GitLab codebase, which is driven by "example_snapshots" fixture data derived from all of
+the examples in the GLFM specification. It consists of both backend RSpec tests and frontend Jest
+tests which use the fixture data. This fixture data is contained in YAML files. These files
+are generated and updated based on the Markdown examples in the specification,
 and the existing GLFM parser and render implementations. They may also be
 manually updated as necessary to test-drive incomplete implementations.
 Regarding the terminology used here:
@@ -159,7 +159,7 @@ Regarding the terminology used here:
    [Jest snapshot testing](https://jestjs.io/docs/snapshot-testing), as used elsewhere
    in the GitLab frontend testing suite. However, the Markdown snapshot testing does
    follow the same philosophy and patterns as Jest snapshot testing:
-   1. Snapshot fixture data is represented as files which are checked into source control.
+   1. Snapshot example fixture data is represented as files which are checked into source control.
    1. The files can be automatically generated and updated based on the implementation
       of the code under tests.
    1. The files can also be manually updated when necessary, for example, to test-drive
@@ -168,9 +168,15 @@ Regarding the terminology used here:
    [Rails database fixture files](https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html).
    It instead refers to _test fixtures_ in the
    [more generic definition](https://en.wikipedia.org/wiki/Test_fixture#Software),
-   as input data to support automated testing. However, fixture files still exist, so
-   they are colocated under the `spec/fixtures` directory with the rest of
-   the fixture data for the GitLab Rails application.
+   as input data to support automated testing.
+1. These example snapshots fixture files are generated from and closely related to the rest of the
+   GLFM specification. Therefore, the `example_snapshots` directory is colocated under the
+   `glfm_specification` directory with the rest of the
+   GLFM [specification files](#specification-files). They are intentionally _not_
+   located under the `spec/fixtures` directory with the rest of
+   the fixture data for the GitLab Rails application. In practice, developers have found
+   it simpler and more understandable to have everything under the `glfm_specification` directory
+   rather than splitting these files into the `spec/fixtures` directory.
 
 <!-- vale gitlab.InclusionCultural = YES -->
 
@@ -395,9 +401,10 @@ The documentation on the implementation is split into three sections:
 
 1. [Scripts](#scripts).
 1. [Specification files](#specification-files).
-1. Example snapshot files: These YAML files are used as input data
+1. [Example snapshot files](#example-snapshot-files):
+   These YAML files are used as input data
    or fixtures to drive the various tests, and are located under
-   `spec/fixtures/glfm/example_snapshots`. All example snapshot files are automatically
+   `glfm_specification/example_snapshots`. All example snapshot files are automatically
    generated based on the specification files and the implementation of the parsers and renderers.
    However, they can also be directly edited if necessary, such as to
    test-drive an incomplete implementation.
@@ -662,16 +669,16 @@ controls the behavior of the [scripts](#scripts) and [tests](#types-of-markdown-
 The following optional entries are supported for each example. They all default to `false`:
 
 - `skip_update_example_snapshots`: When true, skips any addition or update of any this example's entries
-  in the [`spec/fixtures/glfm/example_snapshots/html.yml`](#specfixturesglfmexample_snapshotshtmlyml) file
-  or the [`spec/fixtures/glfm/example_snapshots/prosemirror_json.yml`](#specfixturesglfmexample_snapshotsprosemirror_jsonyml) file.
+  in the [`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) file
+  or the [`glfm_specification/example_snapshots/prosemirror_json.yml`](#glfm_specificationexample_snapshotsprosemirror_jsonyml) file.
   If this value is truthy, then no other `skip_update_example_snapshot_*` entries can be truthy,
   and an error is raised if any of them are.
 - `skip_update_example_snapshot_html_static`: When true, skips addition or update of this example's [static HTML](#static-html)
-  entry in the [`spec/fixtures/glfm/example_snapshots/html.yml`](#specfixturesglfmexample_snapshotshtmlyml) file.
+  entry in the [`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) file.
 - `skip_update_example_snapshot_html_wysiwyg`: When true, skips addition or update of this example's [WYSIWYG HTML](#wysiwyg-html)
-  entry in the [`spec/fixtures/glfm/example_snapshots/html.yml`](#specfixturesglfmexample_snapshotshtmlyml) file.
+  entry in the [`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) file.
 - `skip_update_example_snapshot_prosemirror_json`: When true, skips addition or update of this example's
-  entry in the [`spec/fixtures/glfm/example_snapshots/prosemirror_json.yml`](#specfixturesglfmexample_snapshotsprosemirror_jsonyml) file.
+  entry in the [`glfm_specification/example_snapshots/prosemirror_json.yml`](#glfm_specificationexample_snapshotsprosemirror_jsonyml) file.
 - `skip_running_conformance_static_tests`: When true, skips running the [Markdown conformance tests](#markdown-conformance-testing)
   of the [static HTML](#static-html) for this example.
 - `skip_running_conformance_wysiwyg_tests`: When true, skips running the [Markdown conformance tests](#markdown-conformance-testing)
@@ -681,7 +688,7 @@ The following optional entries are supported for each example. They all default 
 - `skip_running_snapshot_wysiwyg_html_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
   of the [WYSIWYG HTML](#wysiwyg-html) for this example.
 - `skip_running_snapshot_prosemirror_json_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
-  of the [ProseMirror JSON](#specfixturesglfmexample_snapshotsprosemirror_jsonyml) for this example.
+  of the [ProseMirror JSON](#glfm_specificationexample_snapshotsprosemirror_jsonyml) for this example.
 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` sample entry:
 
@@ -808,9 +815,9 @@ key in `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.ym
 can be used to disable automatic generation of some examples. They can instead
 be manually edited as necessary to help drive the implementations.
 
-#### `spec/fixtures/glfm/example_snapshots/examples_index.yml`
+#### `glfm_specification/example_snapshots/examples_index.yml`
 
-[`spec/fixtures/glfm/example_snapshots/examples_index.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/fixtures/glfm/example_snapshots/examples_index.yml)
+[`glfm_specification/example_snapshots/examples_index.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/example_snapshots/examples_index.yml)
 is the main list of all
 CommonMark, GFM, and GLFM example names, each with a unique canonical name.
 
@@ -836,7 +843,7 @@ CommonMark, GFM, and GLFM example names, each with a unique canonical name.
     examples where multiple examples exist for the same Section 7 subsection are
     added to the end of the sub-section.
 
-`spec/fixtures/glfm/example_snapshots/examples_index.yml` sample entries:
+`glfm_specification/example_snapshots/examples_index.yml` sample entries:
 
 ```yaml
 02_01_preliminaries_characters_and_lines_1:
@@ -856,10 +863,10 @@ CommonMark, GFM, and GLFM example names, each with a unique canonical name.
   source_specification: gitlab
 ```
 
-#### `spec/fixtures/glfm/example_snapshots/markdown.yml`
+#### `glfm_specification/example_snapshots/markdown.yml`
 
-[`spec/fixtures/glfm/example_snapshots/markdown.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/fixtures/glfm/example_snapshots/markdown.yml) contains the original Markdown
-for each entry in `spec/fixtures/glfm/example_snapshots/examples_index.yml`
+[`glfm_specification/example_snapshots/markdown.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/example_snapshots/markdown.yml) contains the original Markdown
+for each entry in `glfm_specification/example_snapshots/examples_index.yml`
 
 - For CommonMark and GFM Markdown,
   it is generated (or updated) from the standard GFM
@@ -868,17 +875,17 @@ for each entry in `spec/fixtures/glfm/example_snapshots/examples_index.yml`
   `glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt`
   input specification file.
 
-`spec/fixtures/glfm/example_snapshots/markdown.yml` sample entry:
+`glfm_specification/example_snapshots/markdown.yml` sample entry:
 
 ```yaml
 06_04_inlines_emphasis_and_strong_emphasis_1: |
   *foo bar*
 ```
 
-#### `spec/fixtures/glfm/example_snapshots/html.yml`
+#### `glfm_specification/example_snapshots/html.yml`
 
-[`spec/fixtures/glfm/example_snapshots/html.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/fixtures/glfm/example_snapshots/html.yml)
-contains the HTML for each entry in `spec/fixtures/glfm/example_snapshots/examples_index.yml`
+[`glfm_specification/example_snapshots/html.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/example_snapshots/html.yml)
+contains the HTML for each entry in `glfm_specification/example_snapshots/examples_index.yml`
 
 Three types of entries exist, with different HTML for each:
 
@@ -889,13 +896,13 @@ Three types of entries exist, with different HTML for each:
     `glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt`.
 - **Static**
   - This is the static (backend (Ruby)-generated) HTML for each entry in
-    `spec/fixtures/glfm/example_snapshots/examples_index.yml`.
+    `glfm_specification/example_snapshots/examples_index.yml`.
   - It is generated/updated from backend [Markdown API](../../../api/markdown.md)
     (or the underlying internal classes) via the `update-example-snapshots.rb` script,
     but can be manually updated for static examples with incomplete implementations.
 - **WYSIWYG**
   - The WYSIWYG (frontend, JavaScript-generated) HTML for each entry in
-    `spec/fixtures/glfm/example_snapshots/examples_index.yml`.
+    `glfm_specification/example_snapshots/examples_index.yml`.
   - It is generated (or updated) from the frontend Content Editor implementation via the
     `update-example-snapshots.rb` script. It can be manually updated for WYSIWYG
     examples with incomplete implementations.
@@ -903,7 +910,7 @@ Three types of entries exist, with different HTML for each:
 Any exceptions or failures which occur when generating HTML are replaced with an
 `Error - check implementation` value.
 
-`spec/fixtures/glfm/example_snapshots/html.yml` sample entry:
+`glfm_specification/example_snapshots/html.yml` sample entry:
 
 ```yaml
 06_04_inlines_emphasis_and_strong_emphasis_1:
@@ -919,16 +926,16 @@ NOTE:
 The actual `static` or `WYSIWYG` entries may differ from the example `html.yml`,
 depending on how the implementations evolve.
 
-#### `spec/fixtures/glfm/example_snapshots/prosemirror_json.yml`
+#### `glfm_specification/example_snapshots/prosemirror_json.yml`
 
-[`spec/fixtures/glfm/example_snapshots/prosemirror_json.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/fixtures/glfm/example_snapshots/prosemirror_json.yml)
-contains the ProseMirror JSON for each entry in `spec/fixtures/glfm/example_snapshots/examples_index.yml`
+[`glfm_specification/example_snapshots/prosemirror_json.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/example_snapshots/prosemirror_json.yml)
+contains the ProseMirror JSON for each entry in `glfm_specification/example_snapshots/examples_index.yml`
 
 - It is generated (or updated) from the frontend code via the `update-example-snapshots.rb`
   script, but can be manually updated for examples with incomplete implementations.
 - Any exceptions or failures when generating are replaced with a `Error - check implementation` value.
 
-`spec/fixtures/glfm/example_snapshots/prosemirror_json.yml` sample entry:
+`glfm_specification/example_snapshots/prosemirror_json.yml` sample entry:
 
 ```yaml
 06_04_inlines_emphasis_and_strong_emphasis_1: |-

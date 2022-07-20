@@ -316,6 +316,17 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
 
       it { is_expected.to eq(nil) }
     end
+
+    context 'with uppercase path' do
+      let(:path) { 'foo/Bar' }
+
+      before do
+        expect(Auth::ContainerRegistryAuthenticationService).to receive(:pull_nested_repositories_access_token).with(path.downcase).and_return(token)
+        stub_repository_details(path, sizing: :self_with_descendants, status_code: 200, respond_with: response)
+      end
+
+      it { is_expected.to eq(555) }
+    end
   end
 
   def stub_pre_import(path, status_code, pre:)

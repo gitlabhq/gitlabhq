@@ -230,6 +230,10 @@ class Todo < ApplicationRecord
     target_type == AlertManagement::Alert.name
   end
 
+  def for_issue_or_work_item?
+    [Issue.name, WorkItem.name].any? { |klass_name| target_type == klass_name }
+  end
+
   # override to return commits, which are not active record
   def target
     if for_commit?

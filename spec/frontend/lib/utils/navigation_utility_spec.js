@@ -81,8 +81,6 @@ describe('initPrefetchLinks', () => {
     const mouseOverEvent = new Event('mouseover');
 
     beforeEach(() => {
-      jest.useFakeTimers();
-
       jest.spyOn(global, 'setTimeout');
       jest.spyOn(newLink, 'removeEventListener');
     });

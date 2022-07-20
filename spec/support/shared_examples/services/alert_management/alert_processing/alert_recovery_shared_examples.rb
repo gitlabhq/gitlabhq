@@ -56,7 +56,7 @@ RSpec.shared_examples 'processes recovery alert' do
   context 'seen for the first time' do
     let(:alert) { AlertManagement::Alert.last }
 
-    include_examples 'processes never-before-seen recovery alert'
+    it_behaves_like 'alerts service responds with an error and takes no actions', :bad_request
   end
 
   context 'for an existing alert with the same fingerprint' do
@@ -107,7 +107,7 @@ RSpec.shared_examples 'processes recovery alert' do
     context 'which is resolved' do
       let_it_be(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: gitlab_fingerprint, monitoring_tool: source) }
 
-      include_examples 'processes never-before-seen recovery alert'
+      it_behaves_like 'alerts service responds with an error and takes no actions', :bad_request
     end
   end
 end

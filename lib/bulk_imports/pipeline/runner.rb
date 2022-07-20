@@ -56,12 +56,16 @@ module BulkImports
           pipeline_step: step,
           step_class: class_name
         )
+      rescue BulkImports::NetworkError => e
+        if e.retriable?(context.tracker)
+          raise BulkImports::RetryPipelineError.new(e.message, e.retry_delay)
+        else
+          log_and_fail(e, step)
+        end
+      rescue BulkImports::RetryPipelineError
+        raise
       rescue StandardError => e
-        log_import_failure(e, step)
-
-        mark_as_failed if abort_on_failure?
-
-        nil
+        log_and_fail(e, step)
       end
 
       def extracted_data_from
@@ -74,11 +78,17 @@ module BulkImports
         run if extracted_data.has_next_page?
       end
 
-      def mark_as_failed
-        warn(message: 'Pipeline failed')
+      def log_and_fail(exception, step)
+        log_import_failure(exception, step)
 
-        context.entity.fail_op!
         tracker.fail_op!
+
+        if abort_on_failure?
+          warn(message: 'Aborting entity migration due to pipeline failure')
+          context.entity.fail_op!
+        end
+
+        nil
       end
 
       def skip!(message, extra = {})

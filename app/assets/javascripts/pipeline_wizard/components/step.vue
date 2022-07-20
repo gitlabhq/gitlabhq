@@ -31,10 +31,7 @@ export default {
     inputs: {
       type: Array,
       required: true,
-      validator: (value) =>
-        value.every((i) => {
-          return i?.target && i?.widget;
-        }),
+      validator: (value) => value.every((i) => i?.widget),
     },
     template: {
       type: null,
@@ -131,7 +128,7 @@ export default {
       :template="template"
       :validate="validate"
       :widget="input.widget"
-      class="gl-mb-2"
+      class="gl-mb-8"
       v-bind="input"
       @highlight="onHighlight"
       @update:valid="(validationState) => onInputValidationStateChange(i, validationState)"

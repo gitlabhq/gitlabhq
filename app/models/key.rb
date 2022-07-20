@@ -28,7 +28,7 @@ class Key < ApplicationRecord
 
   validate :key_meets_restrictions
   validate :expiration, on: :create
-  validate :banned_key, if: :should_check_for_banned_key?
+  validate :banned_key, if: :key_changed?
 
   delegate :name, :email, to: :user, prefix: true
 
@@ -121,6 +121,12 @@ class Key < ApplicationRecord
     @public_key ||= Gitlab::SSHPublicKey.new(key)
   end
 
+  def ensure_sha256_fingerprint!
+    return if self.fingerprint_sha256
+
+    save if generate_fingerprint
+  end
+
   private
 
   def generate_fingerprint
@@ -141,12 +147,6 @@ class Key < ApplicationRecord
     elsif public_key.bits < restriction
       errors.add(:key, "must be at least #{restriction} bits")
     end
-  end
-
-  def should_check_for_banned_key?
-    return false unless user
-
-    key_changed? && Feature.enabled?(:ssh_banned_key, user)
   end
 
   def banned_key

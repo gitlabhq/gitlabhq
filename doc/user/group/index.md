@@ -45,16 +45,19 @@ the immediate parent group.
 
 ### Namespaces
 
-In GitLab, a namespace is a unique name for a user, a group, or subgroup under
-which a project can be created.
+In GitLab, a *namespace* organizes related projects together.
+GitLab has two types of namespaces:
 
-For example, consider a user named Alex:
+- A *personal* namespace, which is based on your username. Projects under a personal namespace must be configured one at a time.
+- A *group* or *subgroup* namespace. In these namespaces, you can manage multiple projects at once.
 
-| GitLab URL | Namespace |
-| ---------- | --------- |
-| Alex creates an account with the username `alex`: `https://gitlab.example.com/alex`. | The namespace in this case is `alex`. |
-| Alex creates a group for their team with the group name `alex-team`. The group and its projects are available at: `https://gitlab.example.com/alex-team`. | The namespace in this case is `alex-team`. |
-| Alex creates a subgroup of `alex-team` with the subgroup name `marketing`. The subgroup and its projects are available at: `https://gitlab.example.com/alex-team/marketing`. | The namespace in this case is `alex-team/marketing`. |
+To determine whether you're viewing a group or personal namespace, you can view the URL. For example:
+
+| Namespace for | URL | Namespace |
+| ------------- | --- | --------- |
+| A user named `alex`. | `https://gitlab.example.com/alex` | `alex` |
+| A group named `alex-team`. | `https://gitlab.example.com/alex-team` | `alex-team` |
+| A group named `alex-team` with a subgroup named `marketing`. |  `https://gitlab.example.com/alex-team/marketing` | `alex-team/marketing` |
 
 ## Create a group
 
@@ -240,7 +243,7 @@ To change this setting for a specific group:
 1. Find the group and select it.
 1. From the left menu, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select the desired option in the **Allowed to create projects** dropdown list.
+1. Select the desired option in the **Roles allowed to create projects** dropdown list.
 1. Select **Save changes**.
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
@@ -478,7 +481,7 @@ To prevent sharing outside of the group's hierarchy:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Select **Prevent members from sending invitations to groups outside of `<group_name>` and its subgroups**.
+1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.
 1. Select **Save changes**.
 
 ## Prevent a project from being shared with groups
@@ -490,7 +493,7 @@ To prevent a project from being shared with other groups:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Select **Prevent sharing a project in `<group_name>` with other groups**.
+1. Select **Projects in `<group_name>` cannot be shared with other groups**.
 1. Select **Save changes**.
 
 This setting applies to all subgroups unless overridden by a group owner. Groups already
@@ -582,7 +585,7 @@ To prevent members from being added to projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Under **Membership**, select **Prevent adding new members to projects within this group**.
+1. Under **Membership**, select **Users cannot be added to projects in this group**.
 1. Select **Save changes**.
 
 All users who previously had permissions can no longer add members to a group.
@@ -608,15 +611,14 @@ To ensure only people from your organization can access particular
 resources, you can restrict access to groups by IP address. This group-level setting
 applies to:
 
-- The GitLab UI, including subgroups, projects, and issues.
+- The GitLab UI, including subgroups, projects, issues, and pages.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
+- Using Git over SSH on GitLab.com.
 
 ### Security implications
 
 You should consider some security implications before configuring IP address restrictions.
 
-- Restricting HTTP traffic on GitLab.com with IP address restrictions causes SSH requests (including Git operations over
-  SSH) to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
 - Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
   - Groups owners cannot access projects belonging to the group when accessing from a disallowed IP address.
   - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
@@ -629,6 +631,8 @@ You should consider some security implications before configuring IP address res
   restricted IP address, the IP restriction prevents code from being cloned.
 - Users may still see some events from the IP restricted groups and projects on their dashboard. Activity may include
   push, merge, issue, or comment events.
+- IP access restrictions for Git operations via SSH are supported only on GitLab SaaS.
+  IP access restrictions applied to self-managed instances block SSH completely.
 
 ### Restrict group access by IP address
 
@@ -636,7 +640,7 @@ To restrict group access by IP address:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. In the **Allow access to the following IP addresses** field, enter IPv4 or IPv6 address ranges in CIDR notation.
+1. In the **Restrict access by IP address** field, enter IPv4 or IPv6 address ranges in CIDR notation.
 1. Select **Save changes**.
 
 In self-managed installations of GitLab 15.1 and later, you can also configure
@@ -670,6 +674,26 @@ The most popular public email domains cannot be restricted, such as:
 - `msn.com`, `live.com`, `outlook.com`
 
 When you share a group, both the source and target namespaces must allow the domains of the members' email addresses.
+
+## Restrict Git access protocols
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `group_level_git_protocol_control`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
+[enable the feature flag](../../administration/feature_flags.md) named `group_level_git_protocol_control`. On GitLab.com,
+this feature is available.
+
+You can set the permitted protocols used to access a group's repositories to either SSH, HTTPS, or both. This setting
+is disabled when the [instance setting](../admin_area/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols) is
+configured by an administrator.
+
+To change the permitted Git access protocols for a group:
+
+1. Go to the group's **Settings > General** page.
+1. Expand the **Permissions and group features** section.
+1. Choose the permitted protocols from **Enabled Git access protocols**.
+1. Select **Save changes**.
 
 ## Group file templates **(PREMIUM)**
 
@@ -712,7 +736,7 @@ To disable email notifications:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Select **Disable email notifications**.
+1. Select **Email notifications are disabled**.
 1. Select **Save changes**.
 
 ## Disable group mentions
@@ -731,7 +755,7 @@ To disable group mentions:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Select **Disable group mentions**.
+1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
 ## Enable delayed project deletion **(PREMIUM)**
@@ -743,7 +767,7 @@ To disable group mentions:
 > - [User interface changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352961) in GitLab 15.1.
 
 [Delayed project deletion](../project/settings/index.md#delayed-project-deletion) is locked and disabled unless the instance-level settings for
-[deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) is enabled for either groups only or groups and projects.
+[deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) are enabled for either groups only or groups and projects.
 When enabled on groups, projects in the group are deleted after a period of delay. During this period, projects are in a read-only state and can be restored.
 The default period is seven days but [is configurable at the instance level](../admin_area/settings/visibility_and_access_controls.md#retention-period).
 
@@ -848,12 +872,12 @@ Support for group-level settings for merge request approval rules is tracked in 
 - [Audit Events](../../administration/audit_events.md#group-events).
 - [CI/CD minutes quota](../../ci/pipelines/cicd_minutes.md): Keep track of the CI/CD minute quota for the group.
 - [Integrations](../admin_area/settings/project_integration_management.md).
-- [Transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
+- [Transfer a project into a group](../project/settings/index.md#transfer-a-project-to-another-namespace).
 - [Share a project with a group](../project/members/share_project_with_groups.md): Give all group members access to the project at once.
 - [Lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
 - [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
-- Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md).
+- Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/index.md).
 - [Control access and visibility](../admin_area/settings/visibility_and_access_controls.md).
 
 ## Troubleshooting

@@ -97,7 +97,7 @@ assigned when you set up pull mirroring.
 
 Pull mirroring uses polling to detect new branches and commits added upstream,
 often minutes afterwards. You can notify GitLab using an
-[API call](../../../../api/projects.md#start-the-pull-mirroring-process-for-a-project), 
+[API call](../../../../api/projects.md#start-the-pull-mirroring-process-for-a-project),
 but the [minimum interval for pull mirroring limits](index.md#force-an-update) is still enforced.
 
 For more information, read

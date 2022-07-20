@@ -90,6 +90,13 @@ RSpec.describe API::Tags do
           let(:request) { get api(route, current_user) }
         end
       end
+
+      context 'when repository does not exist' do
+        it_behaves_like '404 response' do
+          let(:project) { create(:project, creator: user) }
+          let(:request) { get api(route, current_user) }
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is public' do

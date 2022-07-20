@@ -18,9 +18,9 @@ RSpec.describe JwksController do
   end
 
   describe 'GET /-/jwks' do
-    let(:ci_jwt_signing_key) { OpenSSL::PKey::RSA.generate(1024) }
-    let(:ci_jwk) { ci_jwt_signing_key.to_jwk }
-    let(:oidc_jwk) { OpenSSL::PKey::RSA.new(Rails.application.secrets.openid_connect_signing_key).to_jwk }
+    let_it_be(:ci_jwt_signing_key) { OpenSSL::PKey::RSA.generate(3072) }
+    let_it_be(:ci_jwk) { ci_jwt_signing_key.to_jwk }
+    let_it_be(:oidc_jwk) { OpenSSL::PKey::RSA.new(Rails.application.secrets.openid_connect_signing_key).to_jwk }
 
     before do
       stub_application_setting(ci_jwt_signing_key: ci_jwt_signing_key.to_s)

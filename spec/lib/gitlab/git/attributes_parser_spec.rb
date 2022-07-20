@@ -2,9 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::AttributesParser, :seed_helper do
-  let(:attributes_path) { File.join(SEED_STORAGE_PATH, 'with-git-attributes.git', 'info', 'attributes') }
-  let(:data) { File.read(attributes_path) }
+RSpec.describe Gitlab::Git::AttributesParser do
+  let(:data) { fixture_file('gitlab/git/gitattributes') }
 
   subject { described_class.new(data) }
 
@@ -141,11 +140,12 @@ RSpec.describe Gitlab::Git::AttributesParser, :seed_helper do
       expect { |b| subject.each_line(&b) }.to yield_successive_args(*args)
     end
 
-    it 'does not yield when the attributes file has an unsupported encoding' do
-      path = File.join(SEED_STORAGE_PATH, 'with-invalid-git-attributes.git', 'info', 'attributes')
-      attrs = described_class.new(File.read(path))
+    context 'unsupported encoding' do
+      let(:data) { fixture_file('gitlab/git/gitattributes_invalid') }
 
-      expect { |b| attrs.each_line(&b) }.not_to yield_control
+      it 'does not yield' do
+        expect { |b| subject.each_line(&b) }.not_to yield_control
+      end
     end
   end
 end

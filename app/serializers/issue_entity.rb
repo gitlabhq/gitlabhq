@@ -73,7 +73,7 @@ class IssueEntity < IssuableEntity
   end
 
   expose :archived_project_docs_path, if: -> (issue) { issue.project.archived? } do |issue|
-    help_page_path('user/project/settings/index.md', anchor: 'archiving-a-project')
+    help_page_path('user/project/settings/index.md', anchor: 'archive-a-project')
   end
 
   expose :issue_email_participants do |issue|

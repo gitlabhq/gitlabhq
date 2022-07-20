@@ -26,6 +26,6 @@ class SystemHook < WebHook
   end
 
   def help_path
-    'system_hooks/system_hooks'
+    'administration/system_hooks'
   end
 end

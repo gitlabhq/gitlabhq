@@ -1,4 +1,4 @@
-- add_page_startup_api_call Feature.enabled?(:paginated_issue_discussions, @project) ? discussions_path(@issue, per_page: 20) : discussions_path(@issue)
+- add_page_startup_api_call discussions_path(@issue, per_page: 20)
 
 - @gfm_form = true
 

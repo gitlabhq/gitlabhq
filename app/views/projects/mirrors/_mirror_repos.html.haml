@@ -17,7 +17,7 @@
       = gitlab_ui_form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
         .panel.panel-default
           .panel-body
-            %div= form_errors(@project)
+            %div= form_errors(@project, pajamas_alert: true)
 
             .form-group.has-feedback
               = label_tag :url, _('Git repository URL'), class: 'label-light'

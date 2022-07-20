@@ -46,18 +46,21 @@ module QA
           total = mailhog_data.dig('total')
           subjects = mailhog_data.dig('items')
             .map(&method(:mailhog_item_subject))
-            .join("\n")
 
           Runtime::Logger.debug(%Q[Total number of emails: #{total}])
-          Runtime::Logger.debug(%Q[Subjects:\n#{subjects}])
+          Runtime::Logger.debug(%Q[Subjects:\n#{subjects.join("\n")}])
 
           # Expect at least two invitation messages: group and project
-          mailhog_data if total >= 2
+          mailhog_data if mailhog_project_message_count(subjects) >= 1
         end
       end
 
       def mailhog_item_subject(item)
         item.dig('Content', 'Headers', 'Subject', 0)
+      end
+
+      def mailhog_project_message_count(subjects)
+        subjects.count { |subject| subject.include?('project was granted') }
       end
     end
   end

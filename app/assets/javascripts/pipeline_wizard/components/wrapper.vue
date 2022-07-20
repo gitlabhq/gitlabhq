@@ -128,6 +128,7 @@ export default {
           :filename="filename"
           :project-path="projectPath"
           @back="currentStepIndex--"
+          @done="$emit('done')"
         />
         <wizard-step
           v-for="(step, i) in stepList"

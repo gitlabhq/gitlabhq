@@ -2,14 +2,16 @@ import { GlLink, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import { nextTick } from 'vue';
-import originalRelease from 'test_fixtures/api/releases/release.json';
+import originalOneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
+import { convertOneReleaseGraphQLResponse } from '~/releases/util';
 import { trimText } from 'helpers/text_helper';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 
 // TODO: Encapsulate date helpers https://gitlab.com/gitlab-org/gitlab/-/issues/320883
 const MONTHS_IN_MS = 1000 * 60 * 60 * 24 * 31;
-const mockFutureDate = new Date(new Date().getTime() + MONTHS_IN_MS).toISOString();
+const mockFutureDate = new Date(new Date().getTime() + MONTHS_IN_MS);
+
+const originalRelease = convertOneReleaseGraphQLResponse(originalOneReleaseQueryResponse).data;
 
 describe('Release block footer', () => {
   let wrapper;
@@ -18,7 +20,7 @@ describe('Release block footer', () => {
   const factory = async (props = {}) => {
     wrapper = mount(ReleaseBlockFooter, {
       propsData: {
-        ...convertObjectPropsToCamelCase(release, { deep: true }),
+        ...originalRelease,
         ...props,
       },
     });
@@ -55,8 +57,8 @@ describe('Release block footer', () => {
       const commitLink = commitInfoSectionLink();
 
       expect(commitLink.exists()).toBe(true);
-      expect(commitLink.text()).toBe(release.commit.short_id);
-      expect(commitLink.attributes('href')).toBe(release.commit_path);
+      expect(commitLink.text()).toBe(release.commit.shortId);
+      expect(commitLink.attributes('href')).toBe(release.commitPath);
     });
 
     it('renders the tag icon', () => {
@@ -70,8 +72,8 @@ describe('Release block footer', () => {
       const commitLink = tagInfoSection().find(GlLink);
 
       expect(commitLink.exists()).toBe(true);
-      expect(commitLink.text()).toBe(release.tag_name);
-      expect(commitLink.attributes('href')).toBe(release.tag_path);
+      expect(commitLink.text()).toBe(release.tagName);
+      expect(commitLink.attributes('href')).toBe(release.tagPath);
     });
 
     it('renders the author and creation time info', () => {
@@ -114,14 +116,14 @@ describe('Release block footer', () => {
       const avatarImg = authorDateInfoSection().find('img');
 
       expect(avatarImg.exists()).toBe(true);
-      expect(avatarImg.attributes('src')).toBe(release.author.avatar_url);
+      expect(avatarImg.attributes('src')).toBe(release.author.avatarUrl);
     });
 
     it("renders a link to the author's profile", () => {
       const authorLink = authorDateInfoSection().find(GlLink);
 
       expect(authorLink.exists()).toBe(true);
-      expect(authorLink.attributes('href')).toBe(release.author.web_url);
+      expect(authorLink.attributes('href')).toBe(release.author.webUrl);
     });
   });
 
@@ -138,7 +140,7 @@ describe('Release block footer', () => {
 
     it('renders the commit SHA as plain text (instead of a link)', () => {
       expect(commitInfoSectionLink().exists()).toBe(false);
-      expect(commitInfoSection().text()).toBe(release.commit.short_id);
+      expect(commitInfoSection().text()).toBe(release.commit.shortId);
     });
   });
 
@@ -155,7 +157,7 @@ describe('Release block footer', () => {
 
     it('renders the tag name as plain text (instead of a link)', () => {
       expect(tagInfoSectionLink().exists()).toBe(false);
-      expect(tagInfoSection().text()).toBe(release.tag_name);
+      expect(tagInfoSection().text()).toBe(release.tagName);
     });
   });
 

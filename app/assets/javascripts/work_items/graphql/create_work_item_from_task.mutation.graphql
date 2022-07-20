@@ -1,8 +1,12 @@
+#import "./work_item.fragment.graphql"
+
 mutation workItemCreateFromTask($input: WorkItemCreateFromTaskInput!) {
   workItemCreateFromTask(input: $input) {
     workItem {
-      id
-      descriptionHtml
+      ...WorkItem
+    }
+    newWorkItem {
+      ...WorkItem
     }
     errors
   }

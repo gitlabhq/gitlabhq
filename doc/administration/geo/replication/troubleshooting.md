@@ -183,7 +183,7 @@ This machine's Geo node name matches a database record ... no
 ```
 
 Learn more about recommended site names in the description of the Name field in
-[Geo Admin Area Common Settings](../../../user/admin_area/geo_nodes.md#common-settings).
+[Geo Admin Area Common Settings](../../../user/admin_area/geo_sites.md#common-settings).
 
 ### Message: `WARNING: oldest xmin is far in the past` and `pg_wal` size growing
 
@@ -519,7 +519,7 @@ To solve this:
    curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<first_failed_geo_sync_ID>"
    ```
 
-1. Enter the [Rails console](../../troubleshooting/navigating_gitlab_via_rails_console.md) and run:
+1. Enter the [Rails console](../../operations/rails_console.md) and run:
 
    ```ruby
    failed_geo_syncs = Geo::ProjectRegistry.failed.pluck(:id)
@@ -651,8 +651,11 @@ to start again from scratch, there are a few steps that can help you:
 
 1. Reset the Tracking Database.
 
+   WARNING:
+   If you skipped the optional step 3, be sure both `geo-postgresql` and `postgresql` services are running.
+
    ```shell
-   gitlab-rake db:drop:geo    # on a secondary app node
+   gitlab-rake db:drop:geo DISABLE_DATABASE_ENVIRONMENT_CHECK=1   # on a secondary app node
    gitlab-ctl reconfigure     # on the tracking database node
    gitlab-rake db:migrate:geo # on a secondary app node
    ```
@@ -805,7 +808,7 @@ You can work around this by marking the objects as synced and succeeded verifica
 be aware that can also mark objects that may be
 [missing from the primary](#missing-files-on-the-geo-primary-site).
 
-To do that, enter the [Rails console](../../troubleshooting/navigating_gitlab_via_rails_console.md)
+To do that, enter the [Rails console](../../operations/rails_console.md)
 and run:
 
 ```ruby
@@ -817,16 +820,16 @@ end
 
 ### Message: curl 18 transfer closed with outstanding read data remaining & fetch-pack: unexpected disconnect while reading sideband packet
 
-Unstable networking conditions can cause Gitaly to fail when trying to fetch large repository 
+Unstable networking conditions can cause Gitaly to fail when trying to fetch large repository
 data from the primary site. This is more likely to happen if a repository has to be
 replicated from scratch between sites.
 
 Geo retries several times, but if the transmission is consistently interrupted
-by network hiccups, an alternative method such as `rsync` can be used to circumvent `git` and 
+by network hiccups, an alternative method such as `rsync` can be used to circumvent `git` and
 create the initial copy of any repository that fails to be replicated by Geo.
 
 We recommend transferring each failing repository individually and checking for consistency
-after each transfer. Follow the [single target `rsync` instructions](../../operations/moving_repositories.md#single-rsync-to-another-server) 
+after each transfer. Follow the [single target `rsync` instructions](../../operations/moving_repositories.md#single-rsync-to-another-server)
 to transfer each affected repository from the primary to the secondary site.
 
 ## Fixing errors during a failover or when promoting a secondary to a primary node

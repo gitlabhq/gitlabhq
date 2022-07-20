@@ -4,8 +4,9 @@ module WorkItems
   class TaskListReferenceReplacementService
     STALE_OBJECT_MESSAGE = 'Stale work item. Check lock version'
 
-    def initialize(work_item:, work_item_reference:, line_number_start:, line_number_end:, title:, lock_version:)
+    def initialize(work_item:, current_user:, work_item_reference:, line_number_start:, line_number_end:, title:, lock_version:)
       @work_item = work_item
+      @current_user = current_user
       @work_item_reference = work_item_reference
       @line_number_start = line_number_start
       @line_number_end = line_number_end
@@ -32,7 +33,11 @@ module WorkItems
       source_lines[@line_number_start - 1] = markdown_task_first_line
       remove_additional_lines!(source_lines)
 
-      @work_item.update!(description: source_lines.join("\n"))
+      ::WorkItems::UpdateService.new(
+        project: @work_item.project,
+        current_user: @current_user,
+        params: { description: source_lines.join("\n"), lock_version: @lock_version }
+      ).execute(@work_item)
 
       ::ServiceResponse.success
     rescue ActiveRecord::StaleObjectError

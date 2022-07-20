@@ -4,7 +4,7 @@ key_path: analytics_unique_visits.analytics_unique_visits_for_any_target_monthly
 description: Unique visitors to any analytics feature by month
 product_section: dev
 product_stage: manage
-product_group: group::optimize
+product_group: optimize
 product_category:
 value_type: number
 status: active
@@ -33,6 +33,13 @@ options:
   - p_analytics_ci_cd_pipelines
   - p_analytics_ci_cd_deployment_frequency
   - p_analytics_ci_cd_lead_time
+  - p_analytics_ci_cd_time_to_restore_service
+  - p_analytics_ci_cd_change_failure_rate
+  - g_analytics_ci_cd_release_statistics
+  - g_analytics_ci_cd_deployment_frequency
+  - g_analytics_ci_cd_lead_time
+  - g_analytics_ci_cd_time_to_restore_service
+  - g_analytics_ci_cd_change_failure_rate
 distribution:
 - ce
 - ee

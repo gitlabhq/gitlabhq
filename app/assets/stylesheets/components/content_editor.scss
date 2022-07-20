@@ -106,11 +106,14 @@
   }
 }
 
-.table-dropdown .dropdown-menu {
-  @include gl-min-w-0;
-  @include gl-w-auto;
+.content-editor-dropdown .dropdown-menu {
+  width: auto !important;
 
-  @include gl-white-space-nowrap;
+  @include gl-min-w-0;
+
+  button {
+    @include gl-white-space-nowrap;
+  }
 }
 
 

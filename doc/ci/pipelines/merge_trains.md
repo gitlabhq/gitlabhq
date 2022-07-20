@@ -69,7 +69,6 @@ To enable merge trains:
 
 - You must have the Maintainer role.
 - You must be using [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or later.
-- In GitLab 13.0 and later, you need [Redis](https://redis.io/) 5.0 or later.
 - Your repository must be a GitLab repository, not an
   [external repository](../ci_cd_for_external_repos/index.md).
 

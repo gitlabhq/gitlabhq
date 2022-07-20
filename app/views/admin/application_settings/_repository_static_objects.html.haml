@@ -1,5 +1,5 @@
 = form_for @application_setting, url: repository_admin_application_settings_path(anchor: 'js-repository-static-objects-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting)
+  = form_errors(@application_setting, pajamas_alert: true)
 
   %fieldset
     .form-group

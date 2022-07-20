@@ -11,7 +11,7 @@ RSpec.describe Members::CreatorService do
   describe '#execute' do
     it 'raises error for new member on authorization check implementation' do
       expect do
-        described_class.add_user(source, user, :maintainer, current_user: current_user)
+        described_class.add_member(source, user, :maintainer, current_user: current_user)
       end.to raise_error(NotImplementedError)
     end
 
@@ -19,7 +19,7 @@ RSpec.describe Members::CreatorService do
       source.add_developer(user)
 
       expect do
-        described_class.add_user(source, user, :maintainer, current_user: current_user)
+        described_class.add_member(source, user, :maintainer, current_user: current_user)
       end.to raise_error(NotImplementedError)
     end
   end

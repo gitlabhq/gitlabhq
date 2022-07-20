@@ -62,7 +62,7 @@ RSpec.describe Autocomplete::UsersFinder do
       let_it_be(:group) { create(:group, :public) }
 
       before_all do
-        group.add_users([user1], GroupMember::DEVELOPER)
+        group.add_members([user1], GroupMember::DEVELOPER)
       end
 
       it { is_expected.to match_array([user1]) }

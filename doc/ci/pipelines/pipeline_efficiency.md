@@ -75,7 +75,7 @@ The [Pipeline success and duration charts](index.md#pipeline-success-and-duratio
 give information about pipeline runtime and failed job counts.
 
 Tests like [unit tests](../testing/unit_test_reports.md), integration tests, end-to-end tests,
-[code quality](../../user/project/merge_requests/code_quality.md) tests, and others
+[code quality](../testing/code_quality.md) tests, and others
 ensure that problems are automatically found by the CI/CD pipeline. There could be many
 pipeline stages involved causing long runtimes.
 
@@ -174,7 +174,7 @@ to stop them from running:
 Ensure that errors are detected early in the CI/CD pipeline. A job that takes a very long
 time to complete keeps a pipeline from returning a failed status until the job completes.
 
-Design pipelines so that jobs that can [fail fast](../../user/project/merge_requests/fail_fast_testing.md)
+Design pipelines so that jobs that can [fail fast](../testing/fail_fast_testing.md)
 run earlier. For example, add an early stage and move the syntax, style linting,
 Git commit message verification, and similar jobs in there.
 

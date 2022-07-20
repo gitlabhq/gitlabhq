@@ -385,8 +385,6 @@ To close an issue, you can do the following:
 - At the top of the issue, select **Close issue**.
 - In an [issue board](../issue_board.md), drag an issue card from its list into the **Closed** list.
 
-  ![close issue from the issue board](img/close_issue_from_board.gif)
-
 ### Reopen a closed issue
 
 Prerequisites:

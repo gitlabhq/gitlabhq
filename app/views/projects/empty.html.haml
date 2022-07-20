@@ -21,10 +21,10 @@
     = _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
 .project-buttons.qa-quick-actions
-  .project-clone-holder.d-block.d-md-none.mt-2.mr-2
+  .project-clone-holder.d-block.d-md-none.gl-mt-3.gl-mr-3
     = render "shared/mobile_clone_panel"
 
-  .project-clone-holder.d-none.d-md-inline-block.mb-2.mr-2.float-left
+  .project-clone-holder.d-none.d-md-inline-block.gl-mb-3.gl-mr-3.float-left
     = render "projects/buttons/clone"
   = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
 

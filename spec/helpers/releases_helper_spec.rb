@@ -64,7 +64,9 @@ RSpec.describe ReleasesHelper do
                   release_assets_docs_path
                   manage_milestones_path
                   new_milestone_path
-                  edit_release_docs_path)
+                  upcoming_release_docs_path
+                  edit_release_docs_path
+                  delete_release_docs_path)
 
         expect(helper.data_for_edit_release_page.keys).to match_array(keys)
       end
@@ -76,6 +78,7 @@ RSpec.describe ReleasesHelper do
                   group_id
                   group_milestones_available
                   project_path
+                  tag_name
                   releases_page_path
                   markdown_preview_path
                   markdown_docs_path
@@ -83,6 +86,7 @@ RSpec.describe ReleasesHelper do
                   manage_milestones_path
                   new_milestone_path
                   default_branch
+                  upcoming_release_docs_path
                   edit_release_docs_path)
 
         expect(helper.data_for_new_release_page.keys).to match_array(keys)

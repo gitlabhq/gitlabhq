@@ -329,7 +329,7 @@ export default {
     </div>
 
     <p class="gl-mt-n5 gl-text-gray-500">
-      {{ s__('ForkProject|Want to house several dependent projects under the same namespace?') }}
+      {{ s__('ForkProject|Want to organize several dependent projects under the same namespace?') }}
       <gl-link :href="newGroupPath" target="_blank">
         {{ s__('ForkProject|Create a group') }}
       </gl-link>

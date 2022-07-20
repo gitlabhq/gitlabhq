@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/366839',
+    type: :test_environment,
+    only: { job: 'review-qa-*' }
+  } do
     context 'Design Management' do
       let(:first_design) { Resource::Design.fabricate! }
 
@@ -13,7 +17,7 @@ module QA
       end
 
       let(:third_design) do
-        Resource::Design.fabricate! do |design|
+        Resource::Design.fabricate_via_browser_ui! do |design|
           design.issue = second_design.issue
           design.filename = 'testfile.png'
         end

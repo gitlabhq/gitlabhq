@@ -35,6 +35,7 @@ import {
   user2,
   user3,
   user4,
+  user5,
   GlEmoji,
 } from '../mock_data/member_modal';
 
@@ -93,6 +94,11 @@ describe('InviteMembersModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findBase = () => wrapper.findComponent(InviteModalBase);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
+  const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
+  const findMemberErrorMessage = (element) =>
+    `${Object.keys(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[element]}: ${
+      Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[element]
+    }`;
   const emitEventFromModal = (eventName) => () =>
     findModal().vm.$emit(eventName, { preventDefault: jest.fn() });
   const clickInviteButton = emitEventFromModal('primary');
@@ -121,6 +127,10 @@ describe('InviteMembersModal', () => {
   };
   const triggerAccessLevel = async (val) => {
     findBase().vm.$emit('access-level', val);
+    await nextTick();
+  };
+  const removeMembersToken = async (val) => {
+    findMembersSelect().vm.$emit('token-remove', val);
     await nextTick();
   };
 
@@ -431,17 +441,20 @@ describe('InviteMembersModal', () => {
           });
 
           it('clears the error when the list of members to invite is cleared', async () => {
-            expect(membersFormGroupInvalidFeedback()).toBe(
+            expect(findMemberErrorAlert().exists()).toBe(true);
+            expect(findMemberErrorAlert().text()).toContain(
               Object.values(invitationsApiResponse.EMAIL_TAKEN.message)[0],
             );
-            expect(findMembersSelect().props('validationState')).toBe(false);
+            expect(membersFormGroupInvalidFeedback()).toBe('');
+            expect(findMembersSelect().props('exceptionState')).not.toBe(false);
 
             findMembersSelect().vm.$emit('clear');
 
             await nextTick();
 
+            expect(findMemberErrorAlert().exists()).toBe(false);
             expect(membersFormGroupInvalidFeedback()).toBe('');
-            expect(findMembersSelect().props('validationState')).not.toBe(false);
+            expect(findMembersSelect().props('exceptionState')).not.toBe(false);
           });
 
           it('clears the error when the cancel button is clicked', async () => {
@@ -450,7 +463,7 @@ describe('InviteMembersModal', () => {
             await nextTick();
 
             expect(membersFormGroupInvalidFeedback()).toBe('');
-            expect(findMembersSelect().props('validationState')).not.toBe(false);
+            expect(findMembersSelect().props('exceptionState')).not.toBe(false);
           });
 
           it('clears the error when the modal is hidden', async () => {
@@ -458,31 +471,10 @@ describe('InviteMembersModal', () => {
 
             await nextTick();
 
+            expect(findMemberErrorAlert().exists()).toBe(false);
             expect(membersFormGroupInvalidFeedback()).toBe('');
-            expect(findMembersSelect().props('validationState')).not.toBe(false);
+            expect(findMembersSelect().props('exceptionState')).not.toBe(false);
           });
-        });
-
-        it('clears the invalid state and message once the list of members to invite is cleared', async () => {
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EMAIL_TAKEN);
-
-          clickInviteButton();
-
-          await waitForPromises();
-
-          expect(membersFormGroupInvalidFeedback()).toBe(
-            Object.values(invitationsApiResponse.EMAIL_TAKEN.message)[0],
-          );
-          expect(findMembersSelect().props('validationState')).toBe(false);
-          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
-
-          findMembersSelect().vm.$emit('clear');
-
-          await waitForPromises();
-
-          expect(membersFormGroupInvalidFeedback()).toBe('');
-          expect(findMembersSelect().props('validationState')).toBe(null);
-          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
         });
 
         it('displays the generic error for http server error', async () => {
@@ -496,6 +488,7 @@ describe('InviteMembersModal', () => {
           await waitForPromises();
 
           expect(membersFormGroupInvalidFeedback()).toBe('Something went wrong');
+          expect(findMembersSelect().props('exceptionState')).toBe(false);
         });
 
         it('displays the restricted user api message for response with bad request', async () => {
@@ -505,20 +498,31 @@ describe('InviteMembersModal', () => {
 
           await waitForPromises();
 
-          expect(membersFormGroupInvalidFeedback()).toBe(expectedEmailRestrictedError);
+          expect(findMemberErrorAlert().exists()).toBe(true);
+          expect(findMemberErrorAlert().text()).toContain(expectedEmailRestrictedError);
+          expect(membersFormGroupInvalidFeedback()).toBe('');
+          expect(findMembersSelect().props('exceptionState')).not.toBe(false);
         });
 
-        it('displays the first part of the error when multiple existing users are restricted by email', async () => {
+        it('displays all errors when there are multiple existing users that are restricted by email', async () => {
           mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
           clickInviteButton();
 
           await waitForPromises();
 
-          expect(membersFormGroupInvalidFeedback()).toBe(
-            "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.",
+          expect(findMemberErrorAlert().exists()).toBe(true);
+          expect(findMemberErrorAlert().text()).toContain(
+            Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[0],
           );
-          expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findMemberErrorAlert().text()).toContain(
+            Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[1],
+          );
+          expect(findMemberErrorAlert().text()).toContain(
+            Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[2],
+          );
+          expect(membersFormGroupInvalidFeedback()).toBe('');
+          expect(findMembersSelect().props('exceptionState')).not.toBe(false);
         });
       });
     });
@@ -573,8 +577,28 @@ describe('InviteMembersModal', () => {
           await waitForPromises();
 
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
-          expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findMembersSelect().props('exceptionState')).toBe(false);
           expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
+        });
+
+        it('clears the error when the modal is hidden', async () => {
+          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
+
+          clickInviteButton();
+
+          await waitForPromises();
+
+          expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
+          expect(findMembersSelect().props('exceptionState')).toBe(false);
+          expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
+
+          findModal().vm.$emit('hidden');
+
+          await nextTick();
+
+          expect(findMemberErrorAlert().exists()).toBe(false);
+          expect(membersFormGroupInvalidFeedback()).toBe('');
+          expect(findMembersSelect().props('exceptionState')).not.toBe(false);
         });
 
         it('displays the restricted email error when restricted email is invited', async () => {
@@ -584,20 +608,32 @@ describe('InviteMembersModal', () => {
 
           await waitForPromises();
 
-          expect(membersFormGroupInvalidFeedback()).toContain(expectedEmailRestrictedError);
-          expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findMemberErrorAlert().exists()).toBe(true);
+          expect(findMemberErrorAlert().text()).toContain(expectedEmailRestrictedError);
+          expect(membersFormGroupInvalidFeedback()).toBe('');
+          expect(findMembersSelect().props('exceptionState')).not.toBe(false);
           expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
         });
 
-        it('displays the first error message when multiple emails return a restricted error message', async () => {
+        it('displays all errors when there are multiple emails that return a restricted error message', async () => {
           mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
           clickInviteButton();
 
           await waitForPromises();
 
-          expect(membersFormGroupInvalidFeedback()).toContain(expectedEmailRestrictedError);
-          expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findMemberErrorAlert().exists()).toBe(true);
+          expect(findMemberErrorAlert().text()).toContain(
+            Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[0],
+          );
+          expect(findMemberErrorAlert().text()).toContain(
+            Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[1],
+          );
+          expect(findMemberErrorAlert().text()).toContain(
+            Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[2],
+          );
+          expect(membersFormGroupInvalidFeedback()).toBe('');
+          expect(findMembersSelect().props('exceptionState')).not.toBe(false);
         });
 
         it('displays the invalid syntax error for bad request', async () => {
@@ -608,7 +644,7 @@ describe('InviteMembersModal', () => {
           await waitForPromises();
 
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
-          expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findMembersSelect().props('exceptionState')).toBe(false);
         });
       });
 
@@ -617,14 +653,51 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper();
 
           await triggerMembersTokenSelect([user3, user4]);
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.ERROR_EMAIL_INVALID);
+          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.ERROR_EMAIL_INVALID);
 
           clickInviteButton();
 
           await waitForPromises();
 
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
-          expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findMembersSelect().props('exceptionState')).toBe(false);
+        });
+
+        it('displays errors for multiple and allows clearing', async () => {
+          createInviteMembersToGroupWrapper();
+
+          await triggerMembersTokenSelect([user3, user4, user5]);
+          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
+
+          clickInviteButton();
+
+          await waitForPromises();
+
+          expect(findMemberErrorAlert().exists()).toBe(true);
+          expect(findMemberErrorAlert().props('title')).toContain(
+            "The following 3 members couldn't be invited",
+          );
+          expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(0));
+          expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(1));
+          expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(2));
+
+          await removeMembersToken(user3);
+
+          expect(findMemberErrorAlert().props('title')).toContain(
+            "The following 2 members couldn't be invited",
+          );
+          expect(findMemberErrorAlert().text()).not.toContain(findMemberErrorMessage(0));
+
+          await removeMembersToken(user4);
+
+          expect(findMemberErrorAlert().props('title')).toContain(
+            "The following member couldn't be invited",
+          );
+          expect(findMemberErrorAlert().text()).not.toContain(findMemberErrorMessage(1));
+
+          await removeMembersToken(user5);
+
+          expect(findMemberErrorAlert().exists()).toBe(false);
         });
       });
     });
@@ -673,24 +746,6 @@ describe('InviteMembersModal', () => {
             ...postData,
             invite_source: '_invite_source_',
           });
-        });
-      });
-
-      describe('when any invite failed for any reason', () => {
-        beforeEach(async () => {
-          createInviteMembersToGroupWrapper();
-
-          await triggerMembersTokenSelect([user1, user3]);
-
-          mockInvitationsApi(httpStatus.BAD_REQUEST, invitationsApiResponse.EMAIL_INVALID);
-
-          clickInviteButton();
-        });
-
-        it('displays the first error message', async () => {
-          await waitForPromises();
-
-          expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
         });
       });
     });

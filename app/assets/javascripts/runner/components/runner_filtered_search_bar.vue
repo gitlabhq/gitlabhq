@@ -45,7 +45,7 @@ export default {
     },
   },
   data() {
-    // filtered_search_bar_root.vue may mutate the inital
+    // filtered_search_bar_root.vue may mutate the initial
     // filters. Use `cloneDeep` to prevent those mutations
     // from affecting this component
     const { filters, sort } = cloneDeep(this.value);
@@ -53,6 +53,14 @@ export default {
       initialFilterValue: filters,
       initialSortBy: sort,
     };
+  },
+  computed: {
+    validTokens() {
+      // Some filters are only available in EE
+      // EE-only tokens are represented by `null` or `undefined`
+      // values when in CE
+      return this.tokens.filter(Boolean);
+    },
   },
   methods: {
     onFilter(filters) {
@@ -83,7 +91,7 @@ export default {
     recent-searches-storage-key="runners-search"
     :sort-options="$options.sortOptions"
     :initial-filter-value="initialFilterValue"
-    :tokens="tokens"
+    :tokens="validTokens"
     :initial-sort-by="initialSortBy"
     :search-input-placeholder="__('Search or filter results...')"
     data-testid="runners-filtered-search"

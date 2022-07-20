@@ -14,7 +14,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
-	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v15/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
@@ -65,11 +65,13 @@ func NewAPI(myURL *url.URL, version string, roundTripper http.RoundTripper) *API
 type GeoProxyEndpointResponse struct {
 	GeoProxyURL       string `json:"geo_proxy_url"`
 	GeoProxyExtraData string `json:"geo_proxy_extra_data"`
+	GeoEnabled        bool   `json:"geo_enabled"`
 }
 
 type GeoProxyData struct {
 	GeoProxyURL       *url.URL
 	GeoProxyExtraData string
+	GeoEnabled        bool
 }
 
 type HandleFunc func(http.ResponseWriter, *http.Request, *Response)
@@ -109,7 +111,7 @@ type RemoteObject struct {
 	// ID is a unique identifier of object storage upload
 	ID string
 	// Timeout is a number that represents timeout in seconds for sending data to StoreURL
-	Timeout int
+	Timeout float32
 	// MultipartUpload contains presigned URLs for S3 MultipartUpload
 	MultipartUpload *MultipartUploadParams
 	// Object storage config for Workhorse client
@@ -306,6 +308,7 @@ func (api *API) PreAuthorizeFixedPath(r *http.Request, method string, path strin
 		return nil, fmt.Errorf("construct auth request: %w", err)
 	}
 	authReq.Header = helper.HeaderClone(r.Header)
+	authReq.URL.RawQuery = r.URL.RawQuery
 
 	failureResponse, apiResponse, err := api.PreAuthorize(path, authReq)
 	if err != nil {
@@ -457,5 +460,6 @@ func (api *API) GetGeoProxyData() (*GeoProxyData, error) {
 	return &GeoProxyData{
 		GeoProxyURL:       geoProxyURL,
 		GeoProxyExtraData: response.GeoProxyExtraData,
+		GeoEnabled:        response.GeoEnabled,
 	}, nil
 }

@@ -15,7 +15,7 @@ module QA
         end
 
         def set_visibility(visibility)
-          choose_element("#{visibility.downcase}_radio", false, true)
+          find('label', text: visibility.capitalize).click
         end
       end
     end

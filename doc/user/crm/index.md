@@ -39,7 +39,7 @@ To enable customer relations management in a group or subgroup:
 1. On the top bar, select **Menu > Groups** and find your group or subgroup.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select **Enable customer relations**.
+1. Select **Customer relations is enabled**.
 1. Select **Save changes**.
 
 ## Contacts
@@ -118,6 +118,9 @@ organizations using the GraphQL API.
 
 ## Issues
 
+If you use [Service Desk](../project/service_desk.md) and create issues from emails,
+issues are linked to contacts matching the email addresses in the sender and CC of the email.
+
 ### View issues linked to a contact
 
 To view a contact's issues, select a contact from the issue sidebar, or:
@@ -170,10 +173,7 @@ API.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `contacts_autocomplete`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) in GitLab 15.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `contacts_autocomplete`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) in GitLab 15.2. [Feature flag `contacts_autocomplete`](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) removed.
 
 When you use the `/add_contacts` or `/remove_contacts` quick actions, follow them with `[contact:` and an autocomplete list appears:
 

@@ -1,7 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import DiffView from '~/diffs/components/diff_view.vue';
+import DiffCodeQuality from '~/diffs/components/diff_code_quality.vue';
+import { diffCodeQuality } from '../mock_data/diff_code_quality';
 
 describe('DiffView', () => {
   const DiffExpansionCell = { template: `<div/>` };
@@ -12,7 +14,7 @@ describe('DiffView', () => {
   const setSelectedCommentPosition = jest.fn();
   const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
 
-  const createWrapper = (props) => {
+  const createWrapper = (props, provide = {}) => {
     Vue.use(Vuex);
 
     const batchComments = {
@@ -46,8 +48,32 @@ describe('DiffView', () => {
       ...props,
     };
     const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell, DraftNote };
-    return shallowMount(DiffView, { propsData, store, stubs });
+    return shallowMount(DiffView, { propsData, store, stubs, provide });
   };
+
+  it('does not render a codeQuality diff view when there is no finding', () => {
+    const wrapper = createWrapper();
+    expect(wrapper.findComponent(DiffCodeQuality).exists()).toBe(false);
+  });
+
+  it('does render a codeQuality diff view with the correct props  when there is a finding & refactorCodeQualityInlineFindings flag is true ', async () => {
+    const wrapper = createWrapper(diffCodeQuality, {
+      glFeatures: { refactorCodeQualityInlineFindings: true },
+    });
+    wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
+    await nextTick();
+    expect(wrapper.findComponent(DiffCodeQuality).exists()).toBe(true);
+    expect(wrapper.findComponent(DiffCodeQuality).props().codeQuality.length).not.toBe(0);
+  });
+
+  it('does not render a codeQuality diff view when there is a finding & refactorCodeQualityInlineFindings flag is false ', async () => {
+    const wrapper = createWrapper(diffCodeQuality, {
+      glFeatures: { refactorCodeQualityInlineFindings: false },
+    });
+    wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
+    await nextTick();
+    expect(wrapper.findComponent(DiffCodeQuality).exists()).toBe(false);
+  });
 
   it.each`
     type          | side       | container | sides                                                                                                    | total

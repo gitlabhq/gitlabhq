@@ -49,6 +49,9 @@
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
   if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
 
+.if-merge-request-labels-run-in-ruby3: &if-merge-request-labels-run-in-ruby3
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
+
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
 
@@ -91,11 +94,11 @@
 .if-fork-merge-request: &if-fork-merge-request
   if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
-.if-default-branch-schedule-2-hourly: &if-default-branch-schedule-2-hourly
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
+.if-default-branch-schedule-maintenance: &if-default-branch-schedule-maintenance
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
 .if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
 .if-security-schedule: &if-security-schedule
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
@@ -106,17 +109,14 @@
 .if-dot-com-ee-schedule: &if-dot-com-ee-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
 
-.if-dot-com-ee-schedule-child-pipeline: &if-dot-com-ee-schedule-child-pipeline
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $FREQUENCY'
+.if-dot-com-ee-schedule-maintenance: &if-dot-com-ee-schedule-maintenance
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
-.if-dot-com-ee-2-hourly-schedule: &if-dot-com-ee-2-hourly-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
+.if-dot-com-ee-schedule-nightly: &if-dot-com-ee-schedule-nightly
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
-.if-dot-com-ee-nightly-schedule: &if-dot-com-ee-nightly-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
-
-.if-dot-com-ee-nightly-schedule-child-pipeline: &if-dot-com-ee-nightly-schedule-child-pipeline
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $FREQUENCY == "nightly"'
+.if-dot-com-ee-schedule-nightly-child-pipeline: &if-dot-com-ee-schedule-nightly-child-pipeline
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $SCHEDULE_TYPE == "nightly"'
 
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
@@ -126,6 +126,9 @@
 
 .if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID'
+
+.if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified: &if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID && $QA_TESTS'
 
 .if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa: &if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID && $QA_MANUAL_FF_PACKAGE_AND_QA'
@@ -325,7 +328,6 @@
   - "danger/**/*"
   - "{,ee/,jh/}fixtures/**/*"
   - "{,ee/,jh/}rubocop/**/*"
-  - ".rubocop_todo/**/*.yml"
   - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
 
@@ -343,8 +345,7 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo}.yml"
-  - ".rubocop_todo/**/*.yml"
+  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -368,8 +369,7 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo}.yml"
-  - ".rubocop_todo/**/*.yml"
+  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -400,8 +400,7 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo}.yml"
-  - ".rubocop_todo/**/*.yml"
+  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -428,8 +427,7 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo}.yml"
-  - ".rubocop_todo/**/*.yml"
+  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -463,8 +461,7 @@
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo}.yml"
-  - ".rubocop_todo/**/*.yml"
+  - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -493,6 +490,12 @@
   # CI Templates changes
   - "scripts/lint_templates_bash.rb"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
+
+.static-analysis-patterns: &static-analysis-patterns
+  - ".{codeclimate,eslintrc,haml-lint,haml-lint_todo}.yml"
+  - ".rubocop.yml"
+  - ".rubocop_todo.yml"
+  - ".rubocop_todo/**/*.yml"
 
 .danger-patterns: &danger-patterns
   - "Dangerfile"
@@ -622,7 +625,7 @@
 ################
 .shared:rules:update-cache:
   rules:
-    - <<: *if-default-branch-schedule-2-hourly
+    - <<: *if-default-branch-schedule-maintenance
     - <<: *if-security-schedule
     - <<: *if-merge-request-labels-update-caches
 
@@ -828,9 +831,7 @@
 .frontend:rules:eslint-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    # We already have `static-analysis as-if-foss` which already runs `lint:eslint:all` if the `pipeline:run-as-if-foss` label is set.
     - <<: *if-merge-request-labels-as-if-foss
-      when: never
     - <<: *if-merge-request
       changes: *frontend-patterns
 
@@ -881,7 +882,7 @@
 ###############
 .pages:rules:
   rules:
-    - <<: *if-dot-com-ee-2-hourly-schedule
+    - <<: *if-dot-com-ee-schedule-maintenance
 
 ############
 # QA rules #
@@ -942,6 +943,9 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *qa-patterns
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
+      changes: *code-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
@@ -1378,7 +1382,7 @@
     - <<: *if-merge-request
       changes: *code-backstage-patterns
       when: always
-    - <<: *if-default-branch-schedule-2-hourly
+    - <<: *if-default-branch-schedule-maintenance
     - <<: *if-merge-request-labels-run-all-rspec
       when: always
 
@@ -1434,16 +1438,19 @@
 .static-analysis:rules:ee-and-foss:
   rules:
     - changes: *code-backstage-qa-patterns
+    - changes: *static-analysis-patterns
 
 .static-analysis:rules:ee-and-foss-qa:
   rules:
     - changes: *qa-patterns
+    - changes: *static-analysis-patterns
 
 .static-analysis:rules:ee:
   rules:
     - <<: *if-not-ee
       when: never
     - changes: *code-backstage-qa-patterns
+    - changes: *static-analysis-patterns
 
 .static-analysis:rules:as-if-foss:
   rules:
@@ -1455,6 +1462,8 @@
       changes: *code-backstage-qa-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
+    - <<: *if-merge-request
+      changes: *static-analysis-patterns
 
 #######################
 # Vendored gems rules #
@@ -1464,6 +1473,31 @@
   rules:
     - <<: *if-merge-request
       changes: ["vendor/gems/mail-smtp_pool/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
+.vendor:rules:ipynbdiff:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/ipynbdiff/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
+.vendor:rules:omniauth_crowd:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/omniauth_crowd/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
+
+.vendor:rules:omniauth-gitlab:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/omniauth-gitlab/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
+.vendor:rules:devise-pbkdf2-encryptable:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/devise-pbkdf2-encryptable/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
 ##################
@@ -1524,6 +1558,7 @@
         - '**/*.tsx'
         - '**/*.c'
         - '**/*.go'
+        - '**/*.rb'
 
 .reports:rules:secret_detection:
   rules:
@@ -1561,13 +1596,13 @@
   rules:
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
       when: never
-    - <<: *if-dot-com-ee-nightly-schedule-child-pipeline
+    - <<: *if-dot-com-ee-schedule-nightly-child-pipeline
 
 .reports:rules:package_hunter-yarn:
   rules:
     - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
       when: never
-    - <<: *if-default-branch-schedule-2-hourly
+    - <<: *if-default-branch-schedule-maintenance
     - <<: *if-merge-request
       changes: ["yarn.lock"]
 
@@ -1575,7 +1610,7 @@
   rules:
     - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
       when: never
-    - <<: *if-default-branch-schedule-2-hourly
+    - <<: *if-default-branch-schedule-maintenance
     - <<: *if-merge-request
       changes: ["Gemfile.lock"]
 
@@ -1612,6 +1647,7 @@
       when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
       variables:
         KNAPSACK_GENERATE_REPORT: "true"
 
@@ -1634,10 +1670,6 @@
       allow_failure: true
 
 .review:rules:review-delete-deployment:
-  rules:
-    - when: on_success
-
-.review:rules:review-qa-sanity:
   rules:
     - when: on_success
 
@@ -1680,10 +1712,17 @@
     - when: on_success
     - when: on_failure
 
+.review:rules:review-qa-cleanup:
+  rules:
+    - when: always
+
 .review:rules:review-cleanup:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
@@ -1747,6 +1786,10 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+.setup:rules:verify-ruby-2.7:
+  rules:
+    - <<: *if-merge-request-labels-run-in-ruby3
+
 .setup:rules:verify-tests-yml:
   rules:
     - <<: *if-not-ee
@@ -1760,12 +1803,11 @@
       when: never
     - <<: *if-merge-request-labels-jh-contribution
 
-
 .setup:rules:generate-frontend-fixtures-mapping:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-ee-2-hourly-schedule
+    - <<: *if-dot-com-ee-schedule-maintenance
     - changes:
         - ".gitlab/ci/setup.gitlab-ci.yml"
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
@@ -1797,7 +1839,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-ee-2-hourly-schedule
+    - <<: *if-dot-com-ee-schedule-maintenance
     - changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"

@@ -35,7 +35,7 @@ export default {
       isEditing: false,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
-      desc: '',
+      descriptionText: '',
     };
   },
   apollo: {
@@ -71,16 +71,17 @@ export default {
     descriptionHtml() {
       return this.workItemDescription?.descriptionHtml;
     },
-    descriptionText: {
-      get() {
-        return this.desc;
-      },
-      set(desc) {
-        this.desc = desc;
-      },
+    descriptionEmpty() {
+      return this.descriptionHtml?.trim() === '';
     },
     workItemDescription() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
+      const descriptionWidget = this.workItem?.widgets?.find(
+        (widget) => widget.type === WIDGET_TYPE_DESCRIPTION,
+      );
+      return {
+        ...descriptionWidget,
+        description: descriptionWidget?.description || '',
+      };
     },
     workItemType() {
       return this.workItem?.workItemType?.name;
@@ -95,14 +96,14 @@ export default {
     async startEditing() {
       this.isEditing = true;
 
-      this.desc = getDraft(this.autosaveKey) || this.workItemDescription?.description || '';
+      this.descriptionText = getDraft(this.autosaveKey) || this.workItemDescription?.description;
 
       await this.$nextTick();
 
       this.$refs.textarea.focus();
     },
     async cancelEditing() {
-      const isDirty = this.desc !== this.workItemDescription?.description;
+      const isDirty = this.descriptionText !== this.workItemDescription?.description;
 
       if (isDirty) {
         const msg = s__('WorkItem|Are you sure you want to cancel editing?');
@@ -125,7 +126,7 @@ export default {
         return;
       }
 
-      updateDraft(this.autosaveKey, this.desc);
+      updateDraft(this.autosaveKey, this.descriptionText);
     },
     async updateWorkItem(event) {
       if (event.key) {
@@ -171,25 +172,10 @@ export default {
 <template>
   <gl-form-group
     v-if="isEditing"
-    class="gl-pt-5 gl-mb-5 gl-mt-0! gl-border-t! gl-border-b"
+    class="gl-my-5"
     :label="__('Description')"
     label-for="work-item-description"
-    label-class="gl-float-left"
   >
-    <div class="gl-display-flex gl-justify-content-flex-end">
-      <gl-button class="gl-ml-auto" data-testid="cancel" @click="cancelEditing">{{
-        __('Cancel')
-      }}</gl-button>
-      <gl-button
-        class="js-no-auto-disable gl-ml-4"
-        category="primary"
-        variant="confirm"
-        :loading="isSubmitting"
-        data-testid="save-description"
-        @click="updateWorkItem"
-        >{{ __('Save') }}</gl-button
-      >
-    </div>
     <markdown-field
       can-attach-file
       :textarea-value="descriptionText"
@@ -216,19 +202,35 @@ export default {
         ></textarea>
       </template>
     </markdown-field>
-  </gl-form-group>
-  <div v-else class="gl-pt-5 gl-mb-5 gl-border-t gl-border-b">
+
     <div class="gl-display-flex">
-      <h3 class="gl-font-base gl-mt-0">{{ __('Description') }}</h3>
+      <gl-button
+        category="primary"
+        variant="confirm"
+        :loading="isSubmitting"
+        data-testid="save-description"
+        @click="updateWorkItem"
+        >{{ __('Save') }}</gl-button
+      >
+      <gl-button category="tertiary" class="gl-ml-3" data-testid="cancel" @click="cancelEditing">{{
+        __('Cancel')
+      }}</gl-button>
+    </div>
+  </gl-form-group>
+  <div v-else class="gl-mb-5">
+    <div class="gl-display-flex gl-align-items-center gl-mb-5">
+      <h3 class="gl-font-base gl-my-0">{{ __('Description') }}</h3>
       <gl-button
         v-if="canEdit"
         class="gl-ml-auto"
         icon="pencil"
         data-testid="edit-description"
+        :aria-label="__('Edit')"
         @click="startEditing"
-        >{{ __('Edit') }}</gl-button
-      >
+      />
     </div>
-    <div v-safe-html="descriptionHtml" class="md gl-mb-5"></div>
+
+    <div v-if="descriptionEmpty" class="gl-text-secondary gl-mb-5">{{ __('None') }}</div>
+    <div v-else v-safe-html="descriptionHtml" class="md gl-mb-5 gl-min-h-8"></div>
   </div>
 </template>

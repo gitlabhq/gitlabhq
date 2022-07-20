@@ -163,7 +163,7 @@ module QA
           ssh
         end
 
-        env_vars << %(GIT_SSH_COMMAND="ssh -i #{ssh.private_key_file.path} -o UserKnownHostsFile=#{ssh.known_hosts_file.path}")
+        env_vars << %(GIT_SSH_COMMAND="ssh -i #{ssh.private_key_file.path} -o UserKnownHostsFile=#{ssh.known_hosts_file.path} -o IdentitiesOnly=yes")
       end
 
       def delete_ssh_key
@@ -216,6 +216,31 @@ module QA
         # When executed on a fresh repo it returns the default branch name
 
         run_git('git --no-pager branch --list --remotes --format="%(refname:lstrip=3)"').to_s.split("\n")
+      end
+
+      # Gets the size of the repository using `git rev-list --all --objects --use-bitmap-index --disk-usage` as
+      # Gitaly does (see https://gitlab.com/gitlab-org/gitlab/-/issues/357680)
+      def local_size
+        internal_refs = %w[
+          refs/keep-around/
+          refs/merge-requests/
+          refs/pipelines/
+          refs/remotes/
+          refs/tmp/
+          refs/environments/
+        ]
+        cmd = <<~CMD
+          git rev-list #{internal_refs.map { |r| "--exclude='#{r}*'" }.join(' ')} \
+          --not --alternate-refs --not \
+          --all --objects --use-bitmap-index --disk-usage
+        CMD
+
+        run_git(cmd).to_i
+      end
+
+      # Performs garbage collection
+      def run_gc
+        run_git('git gc')
       end
 
       private

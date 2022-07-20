@@ -78,6 +78,11 @@ export default {
       type: String,
       required: true,
     },
+    defaultTargetNamespace: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
 
   data() {
@@ -433,7 +438,15 @@ export default {
         return this.importTargets[group.id];
       }
 
-      const defaultTargetNamespace = this.availableNamespaces[0] ?? ROOT_NAMESPACE;
+      // If we've reached this Vue application we have at least one potential import destination
+      const defaultTargetNamespace =
+        // first option: namespace id was explicitly provided
+        this.availableNamespaces.find((ns) => ns.id === this.defaultTargetNamespace) ??
+        // second option: first available namespace
+        this.availableNamespaces[0] ??
+        // last resort: if no namespaces are available - suggest creating new namespace at root
+        ROOT_NAMESPACE;
+
       let importTarget;
       if (group.lastImportTarget) {
         const targetNamespace = [ROOT_NAMESPACE, ...this.availableNamespaces].find(

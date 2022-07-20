@@ -73,21 +73,20 @@ To create a subgroup:
 To create a subgroup, you must have at least the Maintainer role on the group, depending on the group's setting. By
 default:
 
-- In GitLab 12.2 or later, users with at least the Maintainer role can create subgroups.
-- In GitLab 12.1 or earlier, only users with the Owner role can create subgroups.
-
 To change who can create subgroups on a group:
 
 - As a user with the Owner role on the group:
-  1. On the top bar, select **Menu > Groups** and find the group.
+  1. On the top bar, select **Menu > Groups** and find your group.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Permissions and group features**.
-  1. Select a role from the **Allowed to create subgroups** dropdown.
+  1. Select a role from **Roles allowed to create subgroups**.
+  1. Select **Save changes**.
 - As an administrator:
   1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Overview > Groups**.
-  1. Select the group, and select **Edit**.
-  1. Select a role from the **Allowed to create subgroups** dropdown.
+  1. In the group's row select **Edit**.
+  1. Select a role from **Allowed to create subgroups**.
+  1. Select **Save changes**.
 
 For more information, view the [permissions table](../../permissions.md#group-members-permissions).
 

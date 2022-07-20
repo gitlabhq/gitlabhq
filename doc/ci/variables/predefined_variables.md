@@ -29,7 +29,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_API_V4_URL`                          | 11.7   | all    | The GitLab API v4 root URL. |
 | `CI_BUILDS_DIR`                          | all    | 11.10  | The top-level directory where builds are executed. |
 | `CI_COMMIT_AUTHOR`                       | 13.11  | all    | The author of the commit in `Name <email>` format. |
-| `CI_COMMIT_BEFORE_SHA`                   | 11.2   | all    | The previous latest commit present on a branch. Is always `0000000000000000000000000000000000000000` in merge request pipelines. |
+| `CI_COMMIT_BEFORE_SHA`                   | 11.2   | all    | The previous latest commit present on a branch or tag. Is always `0000000000000000000000000000000000000000` in merge request pipelines and for the first commit in pipelines for branches or tags. |
 | `CI_COMMIT_BRANCH`                       | 12.6   | 0.5    | The commit branch name. Available in branch pipelines, including pipelines for the default branch. Not available in merge request pipelines or tag pipelines. |
 | `CI_COMMIT_DESCRIPTION`                  | 10.8   | all    | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
 | `CI_COMMIT_MESSAGE`                      | 10.8   | all    | The full commit message. |
@@ -139,29 +139,30 @@ These variables are available when:
 - The pipelines [are merge request pipelines](../pipelines/merge_request_pipelines.md).
 - The merge request is open.
 
-| Variable                               | GitLab | Runner | Description |
-|----------------------------------------|--------|--------|-------------|
-| `CI_MERGE_REQUEST_APPROVED`            | 14.1   | all    | Approval status of the merge request. `true` when [merge request approvals](../../user/project/merge_requests/approvals/index.md) is available and the merge request has been approved. |
-| `CI_MERGE_REQUEST_ASSIGNEES`           | 11.9   | all    | Comma-separated list of usernames of assignees for the merge request. |
-| `CI_MERGE_REQUEST_ID`                  | 11.6   | all    | The instance-level ID of the merge request. This is a unique ID across all projects on GitLab. |
-| `CI_MERGE_REQUEST_IID`                 | 11.6   | all    | The project-level IID (internal ID) of the merge request. This ID is unique for the current project. |
-| `CI_MERGE_REQUEST_LABELS`              | 11.9   | all    | Comma-separated label names of the merge request. |
-| `CI_MERGE_REQUEST_MILESTONE`           | 11.9   | all    | The milestone title of the merge request. |
-| `CI_MERGE_REQUEST_PROJECT_ID`          | 11.6   | all    | The ID of the project of the merge request. |
-| `CI_MERGE_REQUEST_PROJECT_PATH`        | 11.6   | all    | The path of the project of the merge request. For example `namespace/awesome-project`. |
-| `CI_MERGE_REQUEST_PROJECT_URL`         | 11.6   | all    | The URL of the project of the merge request. For example, `http://192.168.10.15:3000/namespace/awesome-project`. |
-| `CI_MERGE_REQUEST_REF_PATH`            | 11.6   | all    | The ref path of the merge request. For example, `refs/merge-requests/1/head`. |
-| `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME`  | 11.6   | all    | The source branch name of the merge request. |
-| `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the source branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
-| `CI_MERGE_REQUEST_SOURCE_PROJECT_ID`   | 11.6   | all    | The ID of the source project of the merge request. |
-| `CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` | 11.6   | all    | The path of the source project of the merge request. |
-| `CI_MERGE_REQUEST_SOURCE_PROJECT_URL`  | 11.6   | all    | The URL of the source project of the merge request. |
-| `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`  | 11.6   | all    | The target branch name of the merge request. |
-| `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the target branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
-| `CI_MERGE_REQUEST_TITLE`               | 11.9   | all    | The title of the merge request. |
-| `CI_MERGE_REQUEST_EVENT_TYPE`          | 12.3   | all    | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |
-| `CI_MERGE_REQUEST_DIFF_ID`             | 13.7   | all    | The version of the merge request diff. |
-| `CI_MERGE_REQUEST_DIFF_BASE_SHA`       | 13.7   | all    | The base SHA of the merge request diff. |
+| Variable                                    | GitLab | Runner | Description |
+|---------------------------------------------|--------|--------|-------------|
+| `CI_MERGE_REQUEST_APPROVED`                 | 14.1   | all    | Approval status of the merge request. `true` when [merge request approvals](../../user/project/merge_requests/approvals/index.md) is available and the merge request has been approved. |
+| `CI_MERGE_REQUEST_ASSIGNEES`                | 11.9   | all    | Comma-separated list of usernames of assignees for the merge request. |
+| `CI_MERGE_REQUEST_ID`                       | 11.6   | all    | The instance-level ID of the merge request. This is a unique ID across all projects on GitLab. |
+| `CI_MERGE_REQUEST_IID`                      | 11.6   | all    | The project-level IID (internal ID) of the merge request. This ID is unique for the current project. |
+| `CI_MERGE_REQUEST_LABELS`                   | 11.9   | all    | Comma-separated label names of the merge request. |
+| `CI_MERGE_REQUEST_MILESTONE`                | 11.9   | all    | The milestone title of the merge request. |
+| `CI_MERGE_REQUEST_PROJECT_ID`               | 11.6   | all    | The ID of the project of the merge request. |
+| `CI_MERGE_REQUEST_PROJECT_PATH`             | 11.6   | all    | The path of the project of the merge request. For example `namespace/awesome-project`. |
+| `CI_MERGE_REQUEST_PROJECT_URL`              | 11.6   | all    | The URL of the project of the merge request. For example, `http://192.168.10.15:3000/namespace/awesome-project`. |
+| `CI_MERGE_REQUEST_REF_PATH`                 | 11.6   | all    | The ref path of the merge request. For example, `refs/merge-requests/1/head`. |
+| `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME`       | 11.6   | all    | The source branch name of the merge request. |
+| `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`        | 11.9   | all    | The HEAD SHA of the source branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
+| `CI_MERGE_REQUEST_SOURCE_PROJECT_ID`        | 11.6   | all    | The ID of the source project of the merge request. |
+| `CI_MERGE_REQUEST_SOURCE_PROJECT_PATH`      | 11.6   | all    | The path of the source project of the merge request. |
+| `CI_MERGE_REQUEST_SOURCE_PROJECT_URL`       | 11.6   | all    | The URL of the source project of the merge request. |
+| `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`       | 11.6   | all    | The target branch name of the merge request. |
+| `CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED`  | 15.2   | all    | The protection status for the target branch of the merge request. |
+| `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`        | 11.9   | all    | The HEAD SHA of the target branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
+| `CI_MERGE_REQUEST_TITLE`                    | 11.9   | all    | The title of the merge request. |
+| `CI_MERGE_REQUEST_EVENT_TYPE`               | 12.3   | all    | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |
+| `CI_MERGE_REQUEST_DIFF_ID`                  | 13.7   | all    | The version of the merge request diff. |
+| `CI_MERGE_REQUEST_DIFF_BASE_SHA`            | 13.7   | all    | The base SHA of the merge request diff. |
 
 ## Predefined variables for external pull request pipelines
 

@@ -1,5 +1,5 @@
 = gitlab_ui_form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-prometheus-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting)
+  = form_errors(@application_setting, pajamas_alert: true)
 
   %fieldset
     .form-group

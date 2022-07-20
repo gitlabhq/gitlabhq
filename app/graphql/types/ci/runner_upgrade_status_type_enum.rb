@@ -5,10 +5,15 @@ module Types
     class RunnerUpgradeStatusTypeEnum < BaseEnum
       graphql_name 'CiRunnerUpgradeStatusType'
 
-      value 'UNKNOWN', description: 'Upgrade status is unknown.', value: :unknown
+      ::Ci::RunnerVersion::STATUS_DESCRIPTIONS.each do |status, description|
+        status_name_src =
+          if status == :invalid_version
+            :invalid
+          else
+            status
+          end
 
-      Gitlab::Ci::RunnerUpgradeCheck::STATUSES.each do |status, description|
-        value status.to_s.upcase, description: description, value: status
+        value status_name_src.to_s.upcase, description: description, value: status
       end
     end
   end

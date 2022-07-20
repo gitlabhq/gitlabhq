@@ -27,7 +27,6 @@ The following Rake tasks are available for use with GitLab:
 | [Clean up](cleanup.md)                                | Clean up unneeded items from GitLab instances. |
 | [Development](../development/rake_tasks.md)           | Tasks for GitLab contributors. |
 | [Elasticsearch](../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks) | Maintain Elasticsearch in a GitLab instance. |
-| [Enable namespaces](features.md)                      | Enable usernames and namespaces for user projects. |
 | [General maintenance](../administration/raketasks/maintenance.md) | General maintenance and self-check tasks. |
 | [Geo maintenance](../administration/raketasks/geo.md) | [Geo](../administration/geo/index.md)-related maintenance. |
 | [GitHub import](../administration/raketasks/github_import.md) | Retrieve and import repositories from GitHub. |

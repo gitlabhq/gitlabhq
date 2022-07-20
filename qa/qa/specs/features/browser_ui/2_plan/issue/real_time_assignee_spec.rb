@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/293699', type: :bug } do
+  RSpec.describe 'Plan' do
     describe 'Assignees' do
       let(:user1) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
       let(:user2) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2) }

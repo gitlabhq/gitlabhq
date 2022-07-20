@@ -352,12 +352,30 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
           repository.create_branch('left-branch')
           repository.create_branch('right-branch')
 
-          left.times do
-            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
+          left.times do |i|
+            repository.multi_action(
+              user,
+              branch_name: 'left-branch',
+              message: 'some more content for a',
+              actions: [{
+                action: i == 0 ? :create : :update,
+                file_path: 'encoding/CHANGELOG',
+                content: 'some stuff'
+              }]
+            )
           end
 
-          right.times do
-            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'right-branch', 'some more content for b', 'some stuff')
+          right.times do |i|
+            repository.multi_action(
+              user,
+              branch_name: 'right-branch',
+              message: 'some more content for b',
+              actions: [{
+                action: i == 0 ? :create : :update,
+                file_path: 'encoding/CHANGELOG',
+                content: 'some stuff'
+              }]
+            )
           end
         end
 
@@ -367,8 +385,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         end
 
         it 'returns the correct count bounding at max_count' do
-          branch_a_sha = repository_rugged.branches['left-branch'].target.oid
-          branch_b_sha = repository_rugged.branches['right-branch'].target.oid
+          branch_a_sha = repository.find_branch('left-branch').dereferenced_target.sha
+          branch_b_sha = repository.find_branch('right-branch').dereferenced_target.sha
 
           count = repository.diverging_commit_count(branch_a_sha, branch_b_sha, max_count: 1000)
 
@@ -392,12 +410,30 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
           repository.create_branch('left-branch')
           repository.create_branch('right-branch')
 
-          left.times do
-            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
+          left.times do |i|
+            repository.multi_action(
+              user,
+              branch_name: 'left-branch',
+              message: 'some more content for a',
+              actions: [{
+                action: i == 0 ? :create : :update,
+                file_path: 'encoding/CHANGELOG',
+                content: 'some stuff'
+              }]
+            )
           end
 
-          right.times do
-            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'right-branch', 'some more content for b', 'some stuff')
+          right.times do |i|
+            repository.multi_action(
+              user,
+              branch_name: 'right-branch',
+              message: 'some more content for b',
+              actions: [{
+                action: i == 0 ? :create : :update,
+                file_path: 'encoding/CHANGELOG',
+                content: 'some stuff'
+              }]
+            )
           end
         end
 
@@ -407,8 +443,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         end
 
         it 'returns the correct count bounding at max_count' do
-          branch_a_sha = repository_rugged.branches['left-branch'].target.oid
-          branch_b_sha = repository_rugged.branches['right-branch'].target.oid
+          branch_a_sha = repository.find_branch('left-branch').dereferenced_target.sha
+          branch_b_sha = repository.find_branch('right-branch').dereferenced_target.sha
 
           results = repository.diverging_commit_count(branch_a_sha, branch_b_sha, max_count: max_count)
 
@@ -469,16 +505,14 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     it 'deletes the ref' do
       repository.delete_refs('refs/heads/feature')
 
-      expect(repository_rugged.references['refs/heads/feature']).to be_nil
+      expect(repository.find_branch('feature')).to be_nil
     end
 
     it 'deletes all refs' do
       refs = %w[refs/heads/wip refs/tags/v1.1.0]
       repository.delete_refs(*refs)
 
-      refs.each do |ref|
-        expect(repository_rugged.references[ref]).to be_nil
-      end
+      expect(repository.list_refs(refs)).to be_empty
     end
 
     it 'does not fail when deleting an empty list of refs' do
@@ -491,7 +525,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#branch_names_contains_sha' do
-    let(:head_id) { repository_rugged.head.target.oid }
+    let(:head_id) { repository.commit.id }
     let(:new_branch) { head_id }
     let(:utf8_branch) { 'branch-é' }
 
@@ -525,7 +559,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
     it 'does not error when dereferenced_target is nil' do
       blob_id = repository.blob_at('master', 'README.md').id
-      repository_rugged.tags.create("refs/tags/blob-tag", blob_id)
+      repository.add_tag("refs/tags/blob-tag", user: user, target: blob_id)
 
       expect { subject }.not_to raise_error
     end
@@ -559,14 +593,31 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
   describe '#search_files_by_content' do
     let(:repository) { mutable_repository }
-    let(:repository_rugged) { mutable_repository_rugged }
     let(:ref) { 'search-files-by-content-branch' }
     let(:content) { 'foobarbazmepmep' }
 
     before do
       repository.create_branch(ref)
-      new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', ref, 'committing something', content)
-      new_commit_edit_new_file_on_branch(repository_rugged, 'anotherfile', ref, 'committing something', content)
+      repository.multi_action(
+        user,
+        branch_name: ref,
+        message: 'committing something',
+        actions: [{
+          action: :create,
+          file_path: 'encoding/CHANGELOG',
+          content: content
+        }]
+      )
+      repository.multi_action(
+        user,
+        branch_name: ref,
+        message: 'committing something',
+        actions: [{
+          action: :create,
+          file_path: 'anotherfile',
+          content: content
+        }]
+      )
     end
 
     after do
@@ -669,14 +720,42 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
       before do
         # Add new commits so that there's a renamed file in the commit history
-        @commit_with_old_name_id = new_commit_edit_old_file(repository_rugged).oid
-        @rename_commit_id = new_commit_move_file(repository_rugged).oid
-        @commit_with_new_name_id = new_commit_edit_new_file(repository_rugged, "encoding/CHANGELOG", "Edit encoding/CHANGELOG", "I'm a new changelog with different text").oid
+        @commit_with_old_name_id = repository.multi_action(
+          user,
+          branch_name: repository.root_ref,
+          message: 'Update CHANGELOG',
+          actions: [{
+            action: :update,
+            file_path: 'CHANGELOG',
+            content: 'CHANGELOG'
+          }]
+        ).newrev
+        @rename_commit_id = repository.multi_action(
+          user,
+          branch_name: repository.root_ref,
+          message: 'Move CHANGELOG to encoding/',
+          actions: [{
+            action: :move,
+            previous_path: 'CHANGELOG',
+            file_path: 'encoding/CHANGELOG',
+            content: 'CHANGELOG'
+          }]
+        ).newrev
+        @commit_with_new_name_id = repository.multi_action(
+          user,
+          branch_name: repository.root_ref,
+          message: 'Edit encoding/CHANGELOG',
+          actions: [{
+            action: :update,
+            file_path: 'encoding/CHANGELOG',
+            content: "I'm a new changelog with different text"
+          }]
+        ).newrev
       end
 
       after do
         # Erase our commits so other tests get the original repo
-        repository_rugged.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
+        repository.write_ref(repository.root_ref, SeedRepo::LastCommit::ID)
       end
 
       context "where 'follow' == true" do
@@ -1649,27 +1728,28 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#gitattribute' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_GITATTRIBUTES_REPO_PATH, '', 'group/project') }
+    let(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
 
-    after do
-      ensure_seeds
+    context 'with gitattributes' do
+      before do
+        repository.copy_gitattributes('gitattributes')
+      end
+
+      it 'returns matching language attribute' do
+        expect(repository.gitattribute("custom-highlighting/test.gitlab-custom", 'gitlab-language')).to eq('ruby')
+      end
+
+      it 'returns matching language attribute with additional options' do
+        expect(repository.gitattribute("custom-highlighting/test.gitlab-cgi", 'gitlab-language')).to eq('erb?parent=json')
+      end
+
+      it 'returns nil if nothing matches' do
+        expect(repository.gitattribute("report.xslt", 'gitlab-language')).to eq(nil)
+      end
     end
 
-    it 'returns matching language attribute' do
-      expect(repository.gitattribute("custom-highlighting/test.gitlab-custom", 'gitlab-language')).to eq('ruby')
-    end
-
-    it 'returns matching language attribute with additional options' do
-      expect(repository.gitattribute("custom-highlighting/test.gitlab-cgi", 'gitlab-language')).to eq('erb?parent=json')
-    end
-
-    it 'returns nil if nothing matches' do
-      expect(repository.gitattribute("report.xslt", 'gitlab-language')).to eq(nil)
-    end
-
-    context 'without gitattributes file' do
-      let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
-
+    context 'without gitattributes' do
       it 'returns nil' do
         expect(repository.gitattribute("README.md", 'gitlab-language')).to eq(nil)
       end
@@ -1760,25 +1840,13 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   describe '#languages' do
     it 'returns exactly the expected results' do
       languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')
-      expected_languages = [
-        { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
-        { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-        { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-        { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
-      ]
 
-      expect(languages.size).to eq(expected_languages.size)
-
-      expected_languages.size.times do |i|
-        a = expected_languages[i]
-        b = languages[i]
-
-        expect(a.keys.sort).to eq(b.keys.sort)
-        expect(a[:value]).to be_within(0.1).of(b[:value])
-
-        non_float_keys = a.keys - [:value]
-        expect(a.values_at(*non_float_keys)).to eq(b.values_at(*non_float_keys))
-      end
+      expect(languages).to match_array([
+        { value: a_value_within(0.1).of(66.7), label: "Ruby", color: "#701516", highlight: "#701516" },
+        { value: a_value_within(0.1).of(22.96), label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+        { value: a_value_within(0.1).of(7.9), label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+        { value: a_value_within(0.1).of(2.51), label: "CoffeeScript", color: "#244776", highlight: "#244776" }
+      ])
     end
 
     it "uses the repository's HEAD when no ref is passed" do
@@ -1818,12 +1886,18 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     context 'when the branch exists' do
       context 'when the commit does not exist locally' do
         let(:source_branch) { 'new-branch-for-fetch-source-branch' }
-        let(:source_path) { File.join(TestEnv.repos_path, source_repository.relative_path) }
-        let(:source_rugged) { Rugged::Repository.new(source_path) }
-        let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
 
-        before do
-          source_rugged.branches.create(source_branch, new_oid)
+        let!(:new_oid) do
+          source_repository.multi_action(
+            user,
+            branch_name: source_branch,
+            message: 'Add a file',
+            actions: [{
+              action: :create,
+              file_path: 'a.file',
+              content: 'This is a file.'
+            }]
+          ).newrev
         end
 
         it 'writes the ref' do
@@ -1869,7 +1943,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     it "removes the branch from the repo" do
       repository.rm_branch(branch_name, user: user)
 
-      expect(repository_rugged.branches[branch_name]).to be_nil
+      expect(repository.find_branch(branch_name)).to be_nil
     end
   end
 
@@ -2290,11 +2364,23 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       end
 
       context 'when the diff contains a rename' do
-        let(:end_sha) { new_commit_move_file(repository_rugged).oid }
+        let(:end_sha) do
+          repository.multi_action(
+            user,
+            branch_name: repository.root_ref,
+            message: 'Move CHANGELOG to encoding/',
+            actions: [{
+              action: :move,
+              previous_path: 'CHANGELOG',
+              file_path: 'encoding/CHANGELOG',
+              content: 'CHANGELOG'
+            }]
+          ).newrev
+        end
 
         after do
           # Erase our commits so other tests get the original repo
-          repository_rugged.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
+          repository.write_ref(repository.root_ref, SeedRepo::LastCommit::ID)
         end
 
         it 'does not include the renamed file in the sparse checkout' do
@@ -2342,24 +2428,15 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   def create_remote_branch(remote_name, branch_name, source_branch_name)
-    source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
-    repository_rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
-  end
-
-  def refs(dir)
-    IO.popen(%W[git -C #{dir} for-each-ref], &:read).split("\n").map do |line|
-      line.split("\t").last
-    end
+    source_branch = repository.find_branch(source_branch_name)
+    repository.write_ref("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
   end
 
   describe '#disconnect_alternates' do
     let(:project) { create(:project, :repository) }
     let(:pool_repository) { create(:pool_repository) }
     let(:repository) { project.repository }
-    let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
     let(:object_pool) { pool_repository.object_pool }
-    let(:object_pool_path) { File.join(TestEnv.repos_path, object_pool.repository.relative_path) }
-    let(:object_pool_rugged) { Rugged::Repository.new(object_pool_path) }
 
     before do
       object_pool.create # rubocop:disable Rails/SaveBang
@@ -2369,25 +2446,24 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       expect { repository.disconnect_alternates }.not_to raise_error
     end
 
-    it 'removes the alternates file' do
-      object_pool.link(repository)
-
-      alternates_file = File.join(repository_path, "objects", "info", "alternates")
-      expect(File.exist?(alternates_file)).to be_truthy
-
-      repository.disconnect_alternates
-
-      expect(File.exist?(alternates_file)).to be_falsey
-    end
-
     it 'can still access objects in the object pool' do
       object_pool.link(repository)
-      new_commit = new_commit_edit_old_file(object_pool_rugged)
-      expect(repository.commit(new_commit.oid).id).to eq(new_commit.oid)
+      new_commit_id = object_pool.repository.multi_action(
+        project.owner,
+        branch_name: object_pool.repository.root_ref,
+        message: 'Add a file',
+        actions: [{
+          action: :create,
+          file_path: 'a.file',
+          content: 'This is a file.'
+        }]
+      ).newrev
+
+      expect(repository.commit(new_commit_id).id).to eq(new_commit_id)
 
       repository.disconnect_alternates
 
-      expect(repository.commit(new_commit.oid).id).to eq(new_commit.oid)
+      expect(repository.commit(new_commit_id).id).to eq(new_commit_id)
     end
   end
 
@@ -2483,7 +2559,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       it 'mirrors the source repository' do
         subject
 
-        expect(refs(new_repository_path)).to eq(refs(repository_path))
+        expect(new_repository.list_refs(['refs/'])).to eq(repository.list_refs(['refs/']))
       end
     end
 
@@ -2495,7 +2571,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       it 'mirrors the source repository' do
         subject
 
-        expect(refs(new_repository_path)).to eq(refs(repository_path))
+        expect(new_repository.list_refs(['refs/'])).to eq(repository.list_refs(['refs/']))
       end
 
       context 'with keep-around refs' do
@@ -2511,8 +2587,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         it 'includes the temporary and keep-around refs' do
           subject
 
-          expect(refs(new_repository_path)).to include(keep_around_ref)
-          expect(refs(new_repository_path)).to include(tmp_ref)
+          expect(new_repository.list_refs([keep_around_ref]).map(&:name)).to match_array([keep_around_ref])
+          expect(new_repository.list_refs([tmp_ref]).map(&:name)).to match_array([tmp_ref])
         end
       end
     end

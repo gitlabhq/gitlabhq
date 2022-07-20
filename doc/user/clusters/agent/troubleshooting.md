@@ -186,3 +186,25 @@ Alternatively, you can mount the certificate file at a different location and sp
 
 This error occurs when the project where you keep your manifests is not public. To fix it, make sure your project is public or your manifest files
 are stored in the repository where the agent is configured.
+
+## Failed to perform vulnerability scan on workload: jobs.batch already exists
+
+```json
+{
+  "level": "error",
+  "time": "2022-06-22T21:03:04.769Z",
+  "msg": "Failed to perform vulnerability scan on workload",
+  "mod_name": "starboard_vulnerability",
+  "error": "running scan job: creating job: jobs.batch \"scan-vulnerabilityreport-b8d497769\" already exists"
+}
+```
+
+The GitLab agent performs vulnerability scans by creating a job to scan each workload. If a scan
+is interrupted, these jobs may be left behind and will need to be cleaned up before more jobs can
+be run. You can clean up these jobs by running:
+
+```shell
+kubectl delete jobs -l app.kubernetes.io/managed-by=starboard -n gitlab-agent
+```
+
+[We're working on making the cleanup of these jobs more robust.](https://gitlab.com/gitlab-org/gitlab/-/issues/362016)

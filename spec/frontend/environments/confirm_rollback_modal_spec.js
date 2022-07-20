@@ -2,6 +2,7 @@ import { GlModal, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { trimText } from 'helpers/text_helper';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import eventHub from '~/environments/event_hub';
@@ -76,9 +77,9 @@ describe('Confirm Rollback Modal Component', () => {
 
         expect(modal.attributes('title')).toContain('Rollback');
         expect(modal.attributes('title')).toContain('test');
-        expect(modal.props('actionPrimary').text).toBe('Rollback');
+        expect(modal.props('actionPrimary').text).toBe('Rollback environment');
         expect(modal.props('actionPrimary').attributes).toEqual(primaryPropsAttrs);
-        expect(modal.text()).toContain('commit abc0123');
+        expect(trimText(modal.text())).toContain('commit abc0123');
         expect(modal.text()).toContain('Are you sure you want to continue?');
       });
 
@@ -95,8 +96,8 @@ describe('Confirm Rollback Modal Component', () => {
 
         expect(modal.attributes('title')).toContain('Re-deploy');
         expect(modal.attributes('title')).toContain('test');
-        expect(modal.props('actionPrimary').text).toBe('Re-deploy');
-        expect(modal.text()).toContain('commit abc0123');
+        expect(modal.props('actionPrimary').text).toBe('Re-deploy environment');
+        expect(trimText(modal.text())).toContain('commit abc0123');
         expect(modal.text()).toContain('Are you sure you want to continue?');
       });
 
@@ -156,7 +157,7 @@ describe('Confirm Rollback Modal Component', () => {
           );
           const modal = component.find(GlModal);
 
-          expect(modal.text()).toContain('commit abc0123');
+          expect(trimText(modal.text())).toContain('commit abc0123');
           expect(modal.text()).toContain('Are you sure you want to continue?');
         });
 
@@ -180,7 +181,7 @@ describe('Confirm Rollback Modal Component', () => {
 
           expect(modal.attributes('title')).toContain('Rollback');
           expect(modal.attributes('title')).toContain('test');
-          expect(modal.props('actionPrimary').text).toBe('Rollback');
+          expect(modal.props('actionPrimary').text).toBe('Rollback environment');
           expect(modal.props('actionPrimary').attributes).toEqual(primaryPropsAttrs);
         });
 
@@ -204,7 +205,7 @@ describe('Confirm Rollback Modal Component', () => {
 
           expect(modal.attributes('title')).toContain('Re-deploy');
           expect(modal.attributes('title')).toContain('test');
-          expect(modal.props('actionPrimary').text).toBe('Re-deploy');
+          expect(modal.props('actionPrimary').text).toBe('Re-deploy environment');
         });
 
         it('should commit the "rollback" mutation when "ok" is clicked', async () => {

@@ -43,6 +43,7 @@ module API
           end
 
           before do
+            not_found! if Gitlab::FIPS.enabled?
             require_packages_enabled!
 
             # Personal access token will be extracted from Bearer or Basic authorization

@@ -52,10 +52,10 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   end
 
   def set_index_vars
-    @applications = current_user.oauth_applications
+    @applications = current_user.oauth_applications.load
     @authorized_tokens = current_user.oauth_authorized_tokens
-    @authorized_anonymous_tokens = @authorized_tokens.reject(&:application)
-    @authorized_apps = @authorized_tokens.map(&:application).uniq.reject(&:nil?)
+                                     .latest_per_application
+                                     .preload_application
 
     # Don't overwrite a value possibly set by `create`
     @application ||= Doorkeeper::Application.new

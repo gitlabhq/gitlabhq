@@ -2,15 +2,13 @@
 - selected_level = snippets_selected_visibility_level(available_visibility_levels, selected_level)
 
 - available_visibility_levels.each do |level|
-  .form-check
-    = form.radio_button model_method, level, checked: (selected_level == level), class: 'form-check-input', data: { track_label: "blank_project", track_action: "activate_form_input", track_property: "#{model_method}_#{level}", track_value: "", qa_selector: "#{visibility_level_label(level).downcase}_radio" }
-    = form.label "#{model_method}_#{level}", class: 'form-check-label' do
-      = visibility_level_icon(level)
-      .option-title
-        = visibility_level_label(level)
-      .option-description
-        = visibility_level_description(level, form_model)
-      .option-disabled-reason
+
+  = form.gitlab_ui_radio_component model_method, level,
+     "#{visibility_level_icon(level)} #{visibility_level_label(level)}".html_safe,
+     help_text: '<span class="option-description">%{visibility_level_description}</span><span class="option-disabled-reason"></span>'.html_safe % { visibility_level_description: visibility_level_description(level, form_model)},
+     radio_options: { checked: (selected_level == level), data: { track_label: "blank_project", track_action: "activate_form_input", track_property: "#{model_method}_#{level}", track_value: "", qa_selector: "#{visibility_level_label(level).downcase}_radio" } },
+     label_options: { class: 'js-visibility-level-radio' }
+
 
 .text-muted
   - if all_visibility_levels_restricted?

@@ -17,10 +17,16 @@ require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 require 'rainbow/refinement'
 
+require_relative 'qa/support/fips'
+
 module QA
   root = "#{__dir__}/qa"
 
   loader = Zeitwerk::Loader.new
+
+  # require jh/qa/qa.rb first, to load JH module make prepend module works
+  require '../jh/qa/qa' if GitlabEdition.jh?
+
   loader.push_dir(root, namespace: QA)
 
   loader.ignore("#{root}/specs/features")

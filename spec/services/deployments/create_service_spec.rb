@@ -21,32 +21,9 @@ RSpec.describe Deployments::CreateService do
 
       expect(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
       expect(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-      expect_next_instance_of(Deployment) do |deployment|
-        expect(deployment).to receive(:execute_hooks)
-      end
+      expect(Deployments::HooksWorker).to receive(:perform_async)
 
       expect(service.execute).to be_persisted
-    end
-
-    context 'when `deployment_hooks_skip_worker` flag is disabled' do
-      before do
-        stub_feature_flags(deployment_hooks_skip_worker: false)
-      end
-
-      it 'executes Deployments::HooksWorker asynchronously' do
-        service = described_class.new(
-          environment,
-          user,
-          sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
-          ref: 'master',
-          tag: false,
-          status: 'success'
-        )
-
-        expect(Deployments::HooksWorker).to receive(:perform_async)
-
-        service.execute
-      end
     end
 
     it 'does not change the status if no status is given' do
@@ -60,9 +37,7 @@ RSpec.describe Deployments::CreateService do
 
       expect(Deployments::UpdateEnvironmentWorker).not_to receive(:perform_async)
       expect(Deployments::LinkMergeRequestWorker).not_to receive(:perform_async)
-      expect_next_instance_of(Deployment) do |deployment|
-        expect(deployment).not_to receive(:execute_hooks)
-      end
+      expect(Deployments::HooksWorker).not_to receive(:perform_async)
 
       expect(service.execute).to be_persisted
     end
@@ -80,9 +55,11 @@ RSpec.describe Deployments::CreateService do
       it 'does not create a new deployment' do
         described_class.new(environment, user, params).execute
 
-        expect do
-          described_class.new(environment.reload, user, params).execute
-        end.not_to change { Deployment.count }
+        expect(Deployments::UpdateEnvironmentWorker).not_to receive(:perform_async)
+        expect(Deployments::LinkMergeRequestWorker).not_to receive(:perform_async)
+        expect(Deployments::HooksWorker).not_to receive(:perform_async)
+
+        described_class.new(environment.reload, user, params).execute
       end
     end
   end

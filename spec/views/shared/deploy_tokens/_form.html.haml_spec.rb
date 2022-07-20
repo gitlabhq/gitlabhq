@@ -10,7 +10,7 @@ RSpec.describe 'shared/deploy_tokens/_form.html.haml' do
 
   RSpec.shared_examples "display deploy token settings" do |role, shows_package_registry_permissions|
     before do
-      subject.add_user(user, role)
+      subject.add_member(user, role)
       allow(view).to receive(:current_user).and_return(user)
       stub_config(packages: { enabled: packages_enabled })
     end

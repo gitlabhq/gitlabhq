@@ -59,22 +59,6 @@ RSpec.describe Projects::AfterRenameService do
         end
       end
 
-      context 'gitlab pages' do
-        before do
-          allow(project_storage).to receive(:rename_repo) { true }
-        end
-
-        context 'when the project does not have pages deployed' do
-          it 'does nothing with the pages directory' do
-            allow(project).to receive(:pages_deployed?).and_return(false)
-
-            expect(PagesTransferWorker).not_to receive(:perform_async)
-
-            service_execute
-          end
-        end
-      end
-
       context 'attachments' do
         before do
           expect(project_storage).to receive(:rename_repo) { true }
@@ -202,6 +186,22 @@ RSpec.describe Projects::AfterRenameService do
           disk_path: project.disk_path,
           shard_name: project.repository_storage
         )
+      end
+    end
+
+    context 'EventStore' do
+      let(:project) { create(:project, :repository, skip_disk_validation: true) }
+
+      it 'publishes a ProjectPathChangedEvent' do
+        expect { service_execute }
+          .to publish_event(Projects::ProjectPathChangedEvent)
+          .with(
+            project_id: project.id,
+            namespace_id: project.namespace_id,
+            root_namespace_id: project.root_namespace.id,
+            old_path: full_path_before_rename,
+            new_path: full_path_after_rename
+          )
       end
     end
   end

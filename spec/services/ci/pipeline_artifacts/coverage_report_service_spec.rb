@@ -2,16 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::PipelineArtifacts::CoverageReportService do
+RSpec.describe Ci::PipelineArtifacts::CoverageReportService do
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository) }
 
     subject { described_class.new(pipeline).execute }
 
-    shared_examples 'creating a pipeline coverage report' do
+    shared_examples 'creating or updating a pipeline coverage report' do
       context 'when pipeline is finished' do
-        it 'creates a pipeline artifact' do
-          expect { subject }.to change { Ci::PipelineArtifact.count }.from(0).to(1)
+        it 'creates or updates a pipeline artifact' do
+          subject
+
+          expect(pipeline.reload.pipeline_artifacts.count).to eq(1)
         end
 
         it 'persists the default file name' do
@@ -22,7 +24,7 @@ RSpec.describe ::Ci::PipelineArtifacts::CoverageReportService do
           expect(file.filename).to eq('code_coverage.json')
         end
 
-        it 'sets expire_at to 1 week' do
+        it 'sets expire_at to 1 week from now' do
           freeze_time do
             subject
 
@@ -31,13 +33,16 @@ RSpec.describe ::Ci::PipelineArtifacts::CoverageReportService do
             expect(pipeline_artifact.expire_at).to eq(1.week.from_now)
           end
         end
-      end
 
-      context 'when pipeline artifact has already been created' do
-        it 'does not raise an error and does not persist the same artifact twice' do
-          expect { 2.times { described_class.new(pipeline).execute } }.not_to raise_error
+        it 'logs relevant information' do
+          expect(Gitlab::AppLogger).to receive(:info).with({
+                                                             project_id: project.id,
+                                                             pipeline_id: pipeline.id,
+                                                             pipeline_artifact_id: kind_of(Numeric),
+                                                             message: kind_of(String)
+                                                           })
 
-          expect(Ci::PipelineArtifact.count).to eq(1)
+          subject
         end
       end
     end
@@ -45,21 +50,32 @@ RSpec.describe ::Ci::PipelineArtifacts::CoverageReportService do
     context 'when pipeline has coverage report' do
       let!(:pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project) }
 
-      it_behaves_like 'creating a pipeline coverage report'
+      it_behaves_like 'creating or updating a pipeline coverage report'
     end
 
     context 'when pipeline has coverage report from child pipeline' do
       let!(:pipeline) { create(:ci_pipeline, :success, project: project) }
       let!(:child_pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project, child_of: pipeline) }
 
-      it_behaves_like 'creating a pipeline coverage report'
+      it_behaves_like 'creating or updating a pipeline coverage report'
+    end
+
+    context 'when pipeline has existing pipeline artifact for coverage report' do
+      let!(:pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project) }
+      let!(:child_pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project, child_of: pipeline) }
+
+      let!(:pipeline_artifact) do
+        create(:ci_pipeline_artifact, :with_coverage_report, pipeline: pipeline, expire_at: 1.day.from_now)
+      end
+
+      it_behaves_like 'creating or updating a pipeline coverage report'
     end
 
     context 'when pipeline is running and coverage report does not exist' do
       let(:pipeline) { create(:ci_pipeline, :running) }
 
       it 'does not persist data' do
-        expect { subject }.not_to change { Ci::PipelineArtifact.count }
+        expect { subject }.not_to change { Ci::PipelineArtifact.count }.from(0)
       end
     end
   end

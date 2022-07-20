@@ -70,41 +70,6 @@ $system-note-svg-size: 16px;
     }
   }
 
-  .replies-toggle {
-    background-color: $gray-light;
-    padding: $gl-padding-8 $gl-padding;
-    border-top: 1px solid $gray-100;
-    border-bottom: 1px solid $gray-100;
-
-    .collapse-replies-btn:hover {
-      color: $blue-600;
-    }
-
-    &.collapsed {
-      color: $gl-text-color-secondary;
-      border-radius: 0 0 $border-radius-default $border-radius-default;
-
-      img {
-        margin: -2px 4px 0 0;
-      }
-
-      .author-link {
-        color: $gl-text-color;
-      }
-    }
-
-    .user-avatar-link {
-      &:last-child img {
-        margin-right: $gl-padding-8;
-      }
-    }
-
-    .btn-link {
-      border: 0;
-      vertical-align: baseline;
-    }
-  }
-
   .discussion-toggle-replies {
     border-top: 0;
     border-radius: 4px 4px 0 0;

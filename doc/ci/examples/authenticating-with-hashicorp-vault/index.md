@@ -33,29 +33,30 @@ Each job has JSON Web Token (JWT) provided as CI/CD variable named `CI_JOB_JWT`.
 
 The following fields are included in the JWT:
 
-| Field                   | When   | Description |
-| ----------------------- | ------ | ----------- |
-| `jti`                   | Always | Unique identifier for this token |
-| `iss`                   | Always | Issuer, the domain of your GitLab instance |
-| `iat`                   | Always | Issued at |
-| `nbf`                   | Always | Not valid before |
-| `exp`                   | Always | Expires at |
-| `sub`                   | Always | Subject (job ID) |
-| `namespace_id`          | Always | Use this to scope to group or user level namespace by ID |
-| `namespace_path`        | Always | Use this to scope to group or user level namespace by path |
-| `project_id`            | Always | Use this to scope to project by ID |
-| `project_path`          | Always | Use this to scope to project by path |
-| `user_id`               | Always | ID of the user executing the job |
-| `user_login`            | Always | Username of the user executing the job |
-| `user_email`            | Always | Email of the user executing the job |
-| `pipeline_id`           | Always | ID of this pipeline |
-| `pipeline_source`       | Always | [Pipeline source](../../jobs/job_control.md#common-if-clauses-for-rules) |
-| `job_id`                | Always | ID of this job |
-| `ref`                   | Always | Git ref for this job |
-| `ref_type`              | Always | Git ref type, either `branch` or `tag` |
-| `ref_protected`         | Always | `true` if this Git ref is protected, `false` otherwise |
-| `environment`           | Job is creating a deployment | Environment this job deploys to ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
-| `environment_protected` | Job is creating a deployment |`true` if deployed environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
+| Field                   | When                         | Description                                                                                                                                                                                          |
+|-------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `jti`                   | Always                       | Unique identifier for this token                                                                                                                                                                     |
+| `iss`                   | Always                       | Issuer, the domain of your GitLab instance                                                                                                                                                           |
+| `iat`                   | Always                       | Issued at                                                                                                                                                                                            |
+| `nbf`                   | Always                       | Not valid before                                                                                                                                                                                     |
+| `exp`                   | Always                       | Expires at                                                                                                                                                                                           |
+| `sub`                   | Always                       | Subject (job ID)                                                                                                                                                                                     |
+| `namespace_id`          | Always                       | Use this to scope to group or user level namespace by ID                                                                                                                                             |
+| `namespace_path`        | Always                       | Use this to scope to group or user level namespace by path                                                                                                                                           |
+| `project_id`            | Always                       | Use this to scope to project by ID                                                                                                                                                                   |
+| `project_path`          | Always                       | Use this to scope to project by path                                                                                                                                                                 |
+| `user_id`               | Always                       | ID of the user executing the job                                                                                                                                                                     |
+| `user_login`            | Always                       | Username of the user executing the job                                                                                                                                                               |
+| `user_email`            | Always                       | Email of the user executing the job                                                                                                                                                                  |
+| `pipeline_id`           | Always                       | ID of this pipeline                                                                                                                                                                                  |
+| `pipeline_source`       | Always                       | [Pipeline source](../../jobs/job_control.md#common-if-clauses-for-rules)                                                                                                                             |
+| `job_id`                | Always                       | ID of this job                                                                                                                                                                                       |
+| `ref`                   | Always                       | Git ref for this job                                                                                                                                                                                 |
+| `ref_type`              | Always                       | Git ref type, either `branch` or `tag`                                                                                                                                                               |
+| `ref_protected`         | Always                       | `true` if this Git ref is protected, `false` otherwise                                                                                                                                               |
+| `environment`           | Job specifies an environment | Environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                                                   |
+| `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                  |
+| `deployment_tier`       | Job specifies an environment | [Deployment tier](../../environments/index.md#deployment-tier-of-environments) of environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2) |
 
 Example JWT payload:
 

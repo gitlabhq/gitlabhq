@@ -58,14 +58,6 @@ module TreeHelper
     "#{username}-#{ref}-patch-#{epoch}"
   end
 
-  def tree_edit_project(project = @project)
-    if can?(current_user, :push_code, project)
-      project
-    elsif current_user && current_user.already_forked?(project)
-      current_user.fork_of(project)
-    end
-  end
-
   def edit_in_new_fork_notice_now
     _("You're not allowed to make changes to this project directly. "\
       "A fork of this project is being created that you can make changes in, so you can submit a merge request.")
@@ -109,16 +101,6 @@ module TreeHelper
         yield(part, part_path)
       end
     end
-  end
-
-  def up_dir_path
-    file = File.join(@path, "..")
-    tree_join(@ref, file)
-  end
-
-  # returns the relative path of the first subdir that doesn't have only one directory descendant
-  def flatten_tree(root_path, tree)
-    tree.flat_path.sub(%r{\A#{Regexp.escape(root_path)}/}, '')
   end
 
   def selected_branch

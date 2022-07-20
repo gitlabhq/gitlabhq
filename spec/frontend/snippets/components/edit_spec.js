@@ -5,6 +5,7 @@ import { merge } from 'lodash';
 import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
@@ -96,6 +97,8 @@ describe('Snippet Edit app', () => {
   const originalRelativeUrlRoot = gon.relative_url_root;
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     getSpy = jest.fn().mockResolvedValue(createQueryResponse());
 
     // See `mutateSpy` declaration comment for why we send a key

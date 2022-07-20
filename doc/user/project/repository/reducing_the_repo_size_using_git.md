@@ -1,8 +1,7 @@
 ---
-stage: Create
+stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Reduce repository size **(FREE)**
@@ -20,7 +19,7 @@ over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
 
 WARNING:
 Rewriting repository history is a destructive operation. Make sure to back up your repository before
-you begin. The best way back up a repository is to
+you begin. The best way to back up a repository is to
 [export the project](../settings/import_export.md#export-a-project-and-its-data).
 
 ## Purge files from repository history
@@ -35,6 +34,11 @@ other internal references (refs) that are automatically created by GitLab. These
 - `refs/keep-around/*` are created as hidden refs to prevent commits referenced in the database from being removed
 
 These refs are not automatically downloaded and hidden refs are not advertised, but we can remove these refs using a project export.
+
+WARNING:
+This process is not suitable for removing sensitive data like password or keys from your repository.
+Information about commits, including file content, is cached in the database, and remain
+visible even after they have been removed from the repository.
 
 To purge files from a GitLab repository:
 
@@ -247,11 +251,6 @@ increased, your only option is to:
 
 1. Prune all the unneeded stuff locally.
 1. Create a new project on GitLab and start using that instead.
-
-WARNING:
-This process is not suitable for removing sensitive data like password or keys from your repository.
-Information about commits, including file content, is cached in the database, and remain
-visible even after they have been removed from the repository.
 
 ## Troubleshooting
 

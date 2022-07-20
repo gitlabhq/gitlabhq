@@ -1,0 +1,10 @@
+dast:
+  stage: dast
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION"
+  variables:
+    GIT_STRATEGY: none
+  allow_failure: true
+  dast_configuration:
+    site_profile: "site_profile_name_included"
+    scanner_profile: "scanner_profile_name_included"

@@ -1,6 +1,5 @@
 - if bizible_enabled?
   <!-- Bizible -->
-  = javascript_include_tag "https://cdn.bizible.com/scripts/bizible.js"
   = javascript_tag nonce: content_security_policy_nonce do
     :plain
       const bizibleScript = document.createElement('script');

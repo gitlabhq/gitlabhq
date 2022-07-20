@@ -20,11 +20,13 @@ module QA
 
     describe 'feature flag definition files' do
       let(:file) do
-        path = Pathname.new('../config/feature_flags/development').expand_path(Runtime::Path.qa_root)
+        path = Pathname.new("#{root}/config/feature_flags/development").expand_path(Runtime::Path.qa_root)
+        path.mkpath
         Tempfile.new(%w[ff-test .yml], path)
       end
 
       let(:flag) { Pathname.new(file.path).basename('.yml').to_s }
+      let(:root) { '..'}
 
       before do
         definition = <<~YAML
@@ -39,32 +41,46 @@ module QA
         file.close!
       end
 
-      context 'with a default disabled feature flag' do
-        let(:flag_enabled) { 'false' }
+      shared_examples 'gets flag value' do
+        context 'with a default disabled feature flag' do
+          let(:flag_enabled) { 'false' }
 
-        it 'reads the flag as disabled' do
-          expect(QA::Runtime::Feature.enabled?(flag)).to be false
+          it 'reads the flag as disabled' do
+            expect(QA::Runtime::Feature.enabled?(flag)).to be false
+          end
+
+          it 'reads as enabled after the flag is enabled' do
+            QA::Runtime::Feature.enable(flag)
+
+            expect { QA::Runtime::Feature.enabled?(flag) }.to eventually_be_truthy
+                                                                .within(max_duration: 60, sleep_interval: 5)
+          end
         end
 
-        it 'reads as enabled after the flag is enabled' do
-          QA::Runtime::Feature.enable(flag)
+        context 'with a default enabled feature flag' do
+          let(:flag_enabled) { 'true' }
 
-          expect { QA::Runtime::Feature.enabled?(flag) }.to eventually_be_truthy
+          it 'reads the flag as enabled' do
+            expect(QA::Runtime::Feature.enabled?(flag)).to be true
+          end
+
+          it 'reads as disabled after the flag is disabled' do
+            QA::Runtime::Feature.disable(flag)
+
+            expect { QA::Runtime::Feature.enabled?(flag) }.to eventually_be_falsey
+                                                                .within(max_duration: 60, sleep_interval: 5)
+          end
         end
       end
 
-      context 'with a default enabled feature flag' do
-        let(:flag_enabled) { 'true' }
+      context 'with a CE feature flag' do
+        include_examples 'gets flag value'
+      end
 
-        it 'reads the flag as enabled' do
-          expect(QA::Runtime::Feature.enabled?(flag)).to be true
-        end
+      context 'with an EE feature flag' do
+        let(:root) { '../ee'}
 
-        it 'reads as disabled after the flag is disabled' do
-          QA::Runtime::Feature.disable(flag)
-
-          expect { QA::Runtime::Feature.enabled?(flag) }.to eventually_be_falsey
-        end
+        include_examples 'gets flag value'
       end
     end
   end

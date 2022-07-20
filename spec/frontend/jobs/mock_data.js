@@ -1,7 +1,17 @@
+import mockJobsEmpty from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.empty.json';
+import mockJobsPaginated from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.paginated.json';
+import mockJobs from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.json';
+import mockJobsAsGuest from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.as_guest.json';
 import { TEST_HOST } from 'spec/test_constants';
 
 const threeWeeksAgo = new Date();
 threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+
+// Fixtures generated at spec/frontend/fixtures/jobs.rb
+export const mockJobsResponsePaginated = mockJobsPaginated;
+export const mockJobsResponseEmpty = mockJobsEmpty;
+export const mockJobsNodes = mockJobs.data.project.jobs.nodes;
+export const mockJobsNodesAsGuest = mockJobsAsGuest.data.project.jobs.nodes;
 
 export const stages = [
   {
@@ -924,7 +934,7 @@ export default {
   created_at: threeWeeksAgo.toISOString(),
   updated_at: threeWeeksAgo.toISOString(),
   finished_at: threeWeeksAgo.toISOString(),
-  queued: 9.54,
+  queued_duration: 9.54,
   status: {
     icon: 'status_success',
     text: 'passed',
@@ -1283,602 +1293,6 @@ export const mockPipelineDetached = {
   },
 };
 
-export const mockJobsInTable = [
-  {
-    detailedStatus: {
-      icon: 'status_manual',
-      label: 'manual play action',
-      text: 'manual',
-      tooltip: 'manual action',
-      action: {
-        buttonTitle: 'Trigger this manual action',
-        icon: 'play',
-        method: 'post',
-        path: '/root/ci-project/-/jobs/2004/play',
-        title: 'Play',
-        __typename: 'StatusAction',
-      },
-      detailsPath: '/root/ci-project/-/jobs/2004',
-      __typename: 'DetailedStatus',
-    },
-    id: 'gid://gitlab/Ci::Build/2004',
-    refName: 'main',
-    refPath: '/root/ci-project/-/commits/main',
-    tags: [],
-    shortSha: '2d5d8323',
-    commitPath: '/root/ci-project/-/commit/2d5d83230bdea0e003d83ef4c16d2bf9a8808ebe',
-    pipeline: {
-      id: 'gid://gitlab/Ci::Pipeline/423',
-      path: '/root/ci-project/-/pipelines/423',
-      user: {
-        webPath: '/root',
-        avatarUrl:
-          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-        __typename: 'User',
-      },
-      __typename: 'Pipeline',
-    },
-    stage: { name: 'test', __typename: 'CiStage' },
-    name: 'test_manual_job',
-    duration: null,
-    finishedAt: null,
-    coverage: null,
-    createdByTag: false,
-    retryable: false,
-    playable: true,
-    cancelable: false,
-    active: false,
-    stuck: false,
-    userPermissions: { readBuild: true, __typename: 'JobPermissions' },
-    __typename: 'CiJob',
-  },
-  {
-    detailedStatus: {
-      icon: 'status_skipped',
-      label: 'skipped',
-      text: 'skipped',
-      tooltip: 'skipped',
-      action: null,
-      __typename: 'DetailedStatus',
-    },
-    id: 'gid://gitlab/Ci::Build/2021',
-    refName: 'main',
-    refPath: '/root/ci-project/-/commits/main',
-    tags: [],
-    shortSha: '2d5d8323',
-    commitPath: '/root/ci-project/-/commit/2d5d83230bdea0e003d83ef4c16d2bf9a8808ebe',
-    pipeline: {
-      id: 'gid://gitlab/Ci::Pipeline/425',
-      path: '/root/ci-project/-/pipelines/425',
-      user: {
-        webPath: '/root',
-        avatarUrl:
-          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-        __typename: 'User',
-      },
-      __typename: 'Pipeline',
-    },
-    stage: { name: 'test', __typename: 'CiStage' },
-    name: 'coverage_job',
-    duration: null,
-    finishedAt: null,
-    coverage: null,
-    createdByTag: true,
-    retryable: false,
-    playable: false,
-    cancelable: false,
-    active: false,
-    stuck: false,
-    userPermissions: { readBuild: true, __typename: 'JobPermissions' },
-    __typename: 'CiJob',
-  },
-  {
-    detailedStatus: {
-      icon: 'status_success',
-      label: 'passed',
-      text: 'passed',
-      tooltip: 'passed',
-      action: {
-        buttonTitle: 'Retry this job',
-        icon: 'retry',
-        method: 'post',
-        path: '/root/ci-project/-/jobs/2015/retry',
-        title: 'Retry',
-        __typename: 'StatusAction',
-      },
-      __typename: 'DetailedStatus',
-    },
-    id: 'gid://gitlab/Ci::Build/2015',
-    refName: 'main',
-    refPath: '/root/ci-project/-/commits/main',
-    tags: [],
-    shortSha: '2d5d8323',
-    commitPath: '/root/ci-project/-/commit/2d5d83230bdea0e003d83ef4c16d2bf9a8808ebe',
-    pipeline: {
-      id: 'gid://gitlab/Ci::Pipeline/424',
-      path: '/root/ci-project/-/pipelines/424',
-      user: {
-        webPath: '/root',
-        avatarUrl:
-          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-        __typename: 'User',
-      },
-      __typename: 'Pipeline',
-    },
-    stage: { name: 'deploy', __typename: 'CiStage' },
-    name: 'artifact_job',
-    duration: 2,
-    finishedAt: '2021-04-01T17:36:18Z',
-    coverage: 82.71,
-    createdByTag: false,
-    retryable: true,
-    playable: false,
-    cancelable: false,
-    active: false,
-    stuck: false,
-    userPermissions: { readBuild: false, __typename: 'JobPermissions' },
-    __typename: 'CiJob',
-  },
-  {
-    artifacts: { nodes: [], __typename: 'CiJobArtifactConnection' },
-    allowFailure: false,
-    status: 'PENDING',
-    scheduledAt: null,
-    manualJob: false,
-    triggered: null,
-    createdByTag: false,
-    detailedStatus: {
-      detailsPath: '/root/ci-project/-/jobs/2391',
-      group: 'pending',
-      icon: 'status_pending',
-      label: 'pending',
-      text: 'pending',
-      tooltip: 'pending',
-      action: {
-        buttonTitle: 'Cancel this job',
-        icon: 'cancel',
-        method: 'post',
-        path: '/root/ci-project/-/jobs/2391/cancel',
-        title: 'Cancel',
-        __typename: 'StatusAction',
-      },
-      __typename: 'DetailedStatus',
-    },
-    id: 'gid://gitlab/Ci::Build/2391',
-    refName: 'master',
-    refPath: '/root/ci-project/-/commits/master',
-    tags: [],
-    shortSha: '916330b4',
-    commitPath: '/root/ci-project/-/commit/916330b4fda5dae226524ceb51c756c0ed26679d',
-    pipeline: {
-      id: 'gid://gitlab/Ci::Pipeline/482',
-      path: '/root/ci-project/-/pipelines/482',
-      user: {
-        webPath: '/root',
-        avatarUrl:
-          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-        __typename: 'UserCore',
-      },
-      __typename: 'Pipeline',
-    },
-    stage: { name: 'build', __typename: 'CiStage' },
-    name: 'build_job',
-    duration: null,
-    finishedAt: null,
-    coverage: null,
-    retryable: false,
-    playable: false,
-    cancelable: true,
-    active: true,
-    stuck: true,
-    userPermissions: { readBuild: true, __typename: 'JobPermissions' },
-    __typename: 'CiJob',
-  },
-];
-
-export const mockJobsQueryResponse = {
-  data: {
-    project: {
-      id: '1',
-      jobs: {
-        count: 1,
-        pageInfo: {
-          endCursor: 'eyJpZCI6IjIzMTcifQ',
-          hasNextPage: true,
-          hasPreviousPage: false,
-          startCursor: 'eyJpZCI6IjIzMzYifQ',
-          __typename: 'PageInfo',
-        },
-        nodes: [
-          {
-            artifacts: {
-              nodes: [
-                {
-                  downloadPath: '/root/ci-project/-/jobs/2336/artifacts/download?file_type=trace',
-                  fileType: 'TRACE',
-                  __typename: 'CiJobArtifact',
-                },
-                {
-                  downloadPath:
-                    '/root/ci-project/-/jobs/2336/artifacts/download?file_type=metadata',
-                  fileType: 'METADATA',
-                  __typename: 'CiJobArtifact',
-                },
-                {
-                  downloadPath: '/root/ci-project/-/jobs/2336/artifacts/download?file_type=archive',
-                  fileType: 'ARCHIVE',
-                  __typename: 'CiJobArtifact',
-                },
-              ],
-              __typename: 'CiJobArtifactConnection',
-            },
-            allowFailure: false,
-            status: 'SUCCESS',
-            scheduledAt: null,
-            manualJob: false,
-            triggered: null,
-            createdByTag: false,
-            detailedStatus: {
-              id: 'status-1',
-              detailsPath: '/root/ci-project/-/jobs/2336',
-              group: 'success',
-              icon: 'status_success',
-              label: 'passed',
-              text: 'passed',
-              tooltip: 'passed',
-              action: {
-                id: 'action-1',
-                buttonTitle: 'Retry this job',
-                icon: 'retry',
-                method: 'post',
-                path: '/root/ci-project/-/jobs/2336/retry',
-                title: 'Retry',
-                __typename: 'StatusAction',
-              },
-              __typename: 'DetailedStatus',
-            },
-            id: 'gid://gitlab/Ci::Build/2336',
-            refName: 'main',
-            refPath: '/root/ci-project/-/commits/main',
-            tags: [],
-            shortSha: '4408fa2a',
-            commitPath: '/root/ci-project/-/commit/4408fa2a27aaadfdf42d8dda3d6a9c01ce6cad78',
-            pipeline: {
-              id: 'gid://gitlab/Ci::Pipeline/473',
-              path: '/root/ci-project/-/pipelines/473',
-              user: {
-                id: 'user-1',
-                webPath: '/root',
-                avatarUrl:
-                  'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-                __typename: 'UserCore',
-              },
-              __typename: 'Pipeline',
-            },
-            stage: {
-              id: 'stage-1',
-              name: 'deploy',
-              __typename: 'CiStage',
-            },
-            name: 'artifact_job',
-            duration: 3,
-            finishedAt: '2021-04-29T14:19:50Z',
-            coverage: null,
-            retryable: true,
-            playable: false,
-            cancelable: false,
-            active: false,
-            stuck: false,
-            userPermissions: {
-              readBuild: true,
-              readJobArtifacts: true,
-              updateBuild: true,
-              __typename: 'JobPermissions',
-            },
-            __typename: 'CiJob',
-          },
-        ],
-        __typename: 'CiJobConnection',
-      },
-      __typename: 'Project',
-    },
-  },
-};
-
-export const mockJobsQueryEmptyResponse = {
-  data: {
-    project: {
-      id: '1',
-      jobs: [],
-    },
-  },
-};
-
-export const retryableJob = {
-  artifacts: {
-    nodes: [
-      {
-        downloadPath: '/root/ci-project/-/jobs/847/artifacts/download?file_type=trace',
-        fileType: 'TRACE',
-        __typename: 'CiJobArtifact',
-      },
-    ],
-    __typename: 'CiJobArtifactConnection',
-  },
-  allowFailure: false,
-  status: 'SUCCESS',
-  scheduledAt: null,
-  manualJob: false,
-  triggered: null,
-  createdByTag: false,
-  detailedStatus: {
-    detailsPath: '/root/test-job-artifacts/-/jobs/1981',
-    group: 'success',
-    icon: 'status_success',
-    label: 'passed',
-    text: 'passed',
-    tooltip: 'passed',
-    action: {
-      buttonTitle: 'Retry this job',
-      icon: 'retry',
-      method: 'post',
-      path: '/root/test-job-artifacts/-/jobs/1981/retry',
-      title: 'Retry',
-      __typename: 'StatusAction',
-    },
-    __typename: 'DetailedStatus',
-  },
-  id: 'gid://gitlab/Ci::Build/1981',
-  refName: 'main',
-  refPath: '/root/test-job-artifacts/-/commits/main',
-  tags: [],
-  shortSha: '75daf01b',
-  commitPath: '/root/test-job-artifacts/-/commit/75daf01b465e7eab5a04a315e44660c9a17c8055',
-  pipeline: {
-    id: 'gid://gitlab/Ci::Pipeline/288',
-    path: '/root/test-job-artifacts/-/pipelines/288',
-    user: {
-      webPath: '/root',
-      avatarUrl:
-        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-      __typename: 'UserCore',
-    },
-    __typename: 'Pipeline',
-  },
-  stage: { name: 'test', __typename: 'CiStage' },
-  name: 'hello_world',
-  duration: 7,
-  finishedAt: '2021-08-30T20:33:56Z',
-  coverage: null,
-  retryable: true,
-  playable: false,
-  cancelable: false,
-  active: false,
-  stuck: false,
-  userPermissions: { readBuild: true, updateBuild: true, __typename: 'JobPermissions' },
-  __typename: 'CiJob',
-};
-
-export const cancelableJob = {
-  artifacts: {
-    nodes: [],
-    __typename: 'CiJobArtifactConnection',
-  },
-  allowFailure: false,
-  status: 'PENDING',
-  scheduledAt: null,
-  manualJob: false,
-  triggered: null,
-  createdByTag: false,
-  detailedStatus: {
-    id: 'pending-1305-1305',
-    detailsPath: '/root/lots-of-jobs-project/-/jobs/1305',
-    group: 'pending',
-    icon: 'status_pending',
-    label: 'pending',
-    text: 'pending',
-    tooltip: 'pending',
-    action: {
-      id: 'Ci::Build-pending-1305',
-      buttonTitle: 'Cancel this job',
-      icon: 'cancel',
-      method: 'post',
-      path: '/root/lots-of-jobs-project/-/jobs/1305/cancel',
-      title: 'Cancel',
-      __typename: 'StatusAction',
-    },
-    __typename: 'DetailedStatus',
-  },
-  id: 'gid://gitlab/Ci::Build/1305',
-  refName: 'main',
-  refPath: '/root/lots-of-jobs-project/-/commits/main',
-  tags: [],
-  shortSha: '750605f2',
-  commitPath: '/root/lots-of-jobs-project/-/commit/750605f29530778cf0912779eba6d073128962a5',
-  stage: {
-    id: 'gid://gitlab/Ci::Stage/181',
-    name: 'deploy',
-    __typename: 'CiStage',
-  },
-  name: 'job_212',
-  duration: null,
-  finishedAt: null,
-  coverage: null,
-  retryable: false,
-  playable: false,
-  cancelable: true,
-  active: true,
-  stuck: false,
-  userPermissions: {
-    readBuild: true,
-    readJobArtifacts: true,
-    updateBuild: true,
-    __typename: 'JobPermissions',
-  },
-  __typename: 'CiJob',
-};
-
-export const cannotRetryJob = {
-  ...retryableJob,
-  userPermissions: { readBuild: true, updateBuild: false, __typename: 'JobPermissions' },
-};
-
-export const playableJob = {
-  artifacts: {
-    nodes: [
-      {
-        downloadPath: '/root/ci-project/-/jobs/621/artifacts/download?file_type=archive',
-        fileType: 'ARCHIVE',
-        __typename: 'CiJobArtifact',
-      },
-      {
-        downloadPath: '/root/ci-project/-/jobs/621/artifacts/download?file_type=metadata',
-        fileType: 'METADATA',
-        __typename: 'CiJobArtifact',
-      },
-      {
-        downloadPath: '/root/ci-project/-/jobs/621/artifacts/download?file_type=trace',
-        fileType: 'TRACE',
-        __typename: 'CiJobArtifact',
-      },
-    ],
-    __typename: 'CiJobArtifactConnection',
-  },
-  allowFailure: false,
-  status: 'SUCCESS',
-  scheduledAt: null,
-  manualJob: true,
-  triggered: null,
-  createdByTag: false,
-  detailedStatus: {
-    detailsPath: '/root/test-job-artifacts/-/jobs/1982',
-    group: 'success',
-    icon: 'status_success',
-    label: 'manual play action',
-    text: 'passed',
-    tooltip: 'passed',
-    action: {
-      buttonTitle: 'Trigger this manual action',
-      icon: 'play',
-      method: 'post',
-      path: '/root/test-job-artifacts/-/jobs/1982/play',
-      title: 'Play',
-      __typename: 'StatusAction',
-    },
-    __typename: 'DetailedStatus',
-  },
-  id: 'gid://gitlab/Ci::Build/1982',
-  refName: 'main',
-  refPath: '/root/test-job-artifacts/-/commits/main',
-  tags: [],
-  shortSha: '75daf01b',
-  commitPath: '/root/test-job-artifacts/-/commit/75daf01b465e7eab5a04a315e44660c9a17c8055',
-  pipeline: {
-    id: 'gid://gitlab/Ci::Pipeline/288',
-    path: '/root/test-job-artifacts/-/pipelines/288',
-    user: {
-      webPath: '/root',
-      avatarUrl:
-        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-      __typename: 'UserCore',
-    },
-    __typename: 'Pipeline',
-  },
-  stage: { name: 'test', __typename: 'CiStage' },
-  name: 'hello_world_delayed',
-  duration: 6,
-  finishedAt: '2021-08-30T20:36:12Z',
-  coverage: null,
-  retryable: true,
-  playable: true,
-  cancelable: false,
-  active: false,
-  stuck: false,
-  userPermissions: {
-    readBuild: true,
-    readJobArtifacts: true,
-    updateBuild: true,
-    __typename: 'JobPermissions',
-  },
-  __typename: 'CiJob',
-};
-
-export const cannotPlayJob = {
-  ...playableJob,
-  userPermissions: {
-    readBuild: true,
-    readJobArtifacts: true,
-    updateBuild: false,
-    __typename: 'JobPermissions',
-  },
-};
-
-export const scheduledJob = {
-  artifacts: { nodes: [], __typename: 'CiJobArtifactConnection' },
-  allowFailure: false,
-  status: 'SCHEDULED',
-  scheduledAt: '2021-08-31T22:36:05Z',
-  manualJob: true,
-  triggered: null,
-  createdByTag: false,
-  detailedStatus: {
-    detailsPath: '/root/test-job-artifacts/-/jobs/1986',
-    group: 'scheduled',
-    icon: 'status_scheduled',
-    label: 'unschedule action',
-    text: 'delayed',
-    tooltip: 'delayed manual action (%{remainingTime})',
-    action: {
-      buttonTitle: 'Unschedule job',
-      icon: 'time-out',
-      method: 'post',
-      path: '/root/test-job-artifacts/-/jobs/1986/unschedule',
-      title: 'Unschedule',
-      __typename: 'StatusAction',
-    },
-    __typename: 'DetailedStatus',
-  },
-  id: 'gid://gitlab/Ci::Build/1986',
-  refName: 'main',
-  refPath: '/root/test-job-artifacts/-/commits/main',
-  tags: [],
-  shortSha: '75daf01b',
-  commitPath: '/root/test-job-artifacts/-/commit/75daf01b465e7eab5a04a315e44660c9a17c8055',
-  pipeline: {
-    id: 'gid://gitlab/Ci::Pipeline/290',
-    path: '/root/test-job-artifacts/-/pipelines/290',
-    user: {
-      webPath: '/root',
-      avatarUrl:
-        'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-      __typename: 'UserCore',
-    },
-    __typename: 'Pipeline',
-  },
-  stage: { name: 'test', __typename: 'CiStage' },
-  name: 'hello_world_delayed',
-  duration: null,
-  finishedAt: null,
-  coverage: null,
-  retryable: false,
-  playable: true,
-  cancelable: false,
-  active: false,
-  stuck: false,
-  userPermissions: { readBuild: true, updateBuild: true, __typename: 'JobPermissions' },
-  __typename: 'CiJob',
-};
-
-export const cannotPlayScheduledJob = {
-  ...scheduledJob,
-  userPermissions: {
-    readBuild: true,
-    readJobArtifacts: true,
-    updateBuild: false,
-    __typename: 'JobPermissions',
-  },
-};
-
 export const CIJobConnectionIncomingCache = {
   __typename: 'CiJobConnection',
   pageInfo: {
@@ -2000,3 +1414,167 @@ export const unscheduleMutationResponse = {
     },
   },
 };
+
+export const mockJobLog = [
+  { offset: 0, content: [{ text: 'Running with gitlab-runner 15.0.0 (febb2a09)' }], lineNumber: 0 },
+  { offset: 54, content: [{ text: '  on colima-docker EwM9WzgD' }], lineNumber: 1 },
+  {
+    isClosed: false,
+    isHeader: true,
+    line: {
+      offset: 91,
+      content: [{ text: 'Resolving secrets', style: 'term-fg-l-cyan term-bold' }],
+      section: 'resolve-secrets',
+      section_header: true,
+      lineNumber: 2,
+      section_duration: '00:00',
+    },
+    lines: [],
+  },
+  {
+    isClosed: false,
+    isHeader: true,
+    line: {
+      offset: 218,
+      content: [{ text: 'Preparing the "docker" executor', style: 'term-fg-l-cyan term-bold' }],
+      section: 'prepare-executor',
+      section_header: true,
+      lineNumber: 4,
+      section_duration: '00:01',
+    },
+    lines: [
+      {
+        offset: 317,
+        content: [{ text: 'Using Docker executor with image ruby:2.7 ...' }],
+        section: 'prepare-executor',
+        lineNumber: 5,
+      },
+      {
+        offset: 372,
+        content: [{ text: 'Pulling docker image ruby:2.7 ...' }],
+        section: 'prepare-executor',
+        lineNumber: 6,
+      },
+      {
+        offset: 415,
+        content: [
+          {
+            text:
+              'Using docker image sha256:55106bf6ba7f452c38d01ea760affc6ceb67d4b60068ffadab98d1b7b007668c for ruby:2.7 with digest ruby@sha256:23d08a4bae1a12ee3fce017f83204fcf9a02243443e4a516e65e5ff73810a449 ...',
+          },
+        ],
+        section: 'prepare-executor',
+        lineNumber: 7,
+      },
+    ],
+  },
+  {
+    isClosed: false,
+    isHeader: true,
+    line: {
+      offset: 665,
+      content: [{ text: 'Preparing environment', style: 'term-fg-l-cyan term-bold' }],
+      section: 'prepare-script',
+      section_header: true,
+      lineNumber: 9,
+      section_duration: '00:01',
+    },
+    lines: [
+      {
+        offset: 752,
+        content: [
+          { text: 'Running on runner-ewm9wzgd-project-20-concurrent-0 via 8ea689ec6969...' },
+        ],
+        section: 'prepare-script',
+        lineNumber: 10,
+      },
+    ],
+  },
+  {
+    isClosed: false,
+    isHeader: true,
+    line: {
+      offset: 865,
+      content: [{ text: 'Getting source from Git repository', style: 'term-fg-l-cyan term-bold' }],
+      section: 'get-sources',
+      section_header: true,
+      lineNumber: 12,
+      section_duration: '00:01',
+    },
+    lines: [
+      {
+        offset: 962,
+        content: [
+          {
+            text: 'Fetching changes with git depth set to 20...',
+            style: 'term-fg-l-green term-bold',
+          },
+        ],
+        section: 'get-sources',
+        lineNumber: 13,
+      },
+      {
+        offset: 1019,
+        content: [
+          { text: 'Reinitialized existing Git repository in /builds/root/ci-project/.git/' },
+        ],
+        section: 'get-sources',
+        lineNumber: 14,
+      },
+      {
+        offset: 1090,
+        content: [{ text: 'Checking out e0f63d76 as main...', style: 'term-fg-l-green term-bold' }],
+        section: 'get-sources',
+        lineNumber: 15,
+      },
+      {
+        offset: 1136,
+        content: [{ text: 'Skipping Git submodules setup', style: 'term-fg-l-green term-bold' }],
+        section: 'get-sources',
+        lineNumber: 16,
+      },
+    ],
+  },
+  {
+    isClosed: false,
+    isHeader: true,
+    line: {
+      offset: 1217,
+      content: [
+        {
+          text: 'Executing "step_script" stage of the job script',
+          style: 'term-fg-l-cyan term-bold',
+        },
+      ],
+      section: 'step-script',
+      section_header: true,
+      lineNumber: 18,
+      section_duration: '00:00',
+    },
+    lines: [
+      {
+        offset: 1327,
+        content: [
+          {
+            text:
+              'Using docker image sha256:55106bf6ba7f452c38d01ea760affc6ceb67d4b60068ffadab98d1b7b007668c for ruby:2.7 with digest ruby@sha256:23d08a4bae1a12ee3fce017f83204fcf9a02243443e4a516e65e5ff73810a449 ...',
+          },
+        ],
+        section: 'step-script',
+        lineNumber: 19,
+      },
+      {
+        offset: 1533,
+        content: [{ text: '$ echo "82.71"', style: 'term-fg-l-green term-bold' }],
+        section: 'step-script',
+        lineNumber: 20,
+      },
+      { offset: 1560, content: [{ text: '82.71' }], section: 'step-script', lineNumber: 21 },
+    ],
+  },
+  {
+    offset: 1605,
+    content: [{ text: 'Job succeeded', style: 'term-fg-l-green term-bold' }],
+    lineNumber: 23,
+  },
+];

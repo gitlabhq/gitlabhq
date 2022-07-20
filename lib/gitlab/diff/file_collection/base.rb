@@ -68,20 +68,12 @@ module Gitlab
           end
         end
 
-        def diff_file_with_old_path(old_path, a_mode = nil)
-          if Feature.enabled?(:file_identifier_hash) && a_mode.present?
-            diff_files.find { |diff_file| diff_file.old_path == old_path && diff_file.a_mode == a_mode }
-          else
-            diff_files.find { |diff_file| diff_file.old_path == old_path }
-          end
+        def diff_file_with_old_path(old_path)
+          diff_files.find { |diff_file| diff_file.old_path == old_path }
         end
 
-        def diff_file_with_new_path(new_path, b_mode = nil)
-          if Feature.enabled?(:file_identifier_hash) && b_mode.present?
-            diff_files.find { |diff_file| diff_file.new_path == new_path && diff_file.b_mode == b_mode }
-          else
-            diff_files.find { |diff_file| diff_file.new_path == new_path }
-          end
+        def diff_file_with_new_path(new_path)
+          diff_files.find { |diff_file| diff_file.new_path == new_path }
         end
 
         def clear_cache

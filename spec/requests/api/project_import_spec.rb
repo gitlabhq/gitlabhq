@@ -462,6 +462,16 @@ RSpec.describe API::ProjectImport, :aggregate_failures do
       expect(json_response).to include('import_status' => 'failed',
                                        'import_error' => 'error')
     end
+
+    it 'returns the import status if canceled' do
+      project = create(:project, :import_canceled)
+      project.add_maintainer(user)
+
+      get api("/projects/#{project.id}/import", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to include('import_status' => 'canceled')
+    end
   end
 
   describe 'POST /projects/import/authorize' do

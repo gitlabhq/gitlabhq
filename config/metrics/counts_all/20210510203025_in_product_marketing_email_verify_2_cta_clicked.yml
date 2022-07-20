@@ -5,7 +5,7 @@ name: "count_clicks_on_the_third_email_of_the_verify_track_for_in_product_market
 description: Total clicks on the verify track's third email
 product_section: 'TBD'
 product_stage: growth
-product_group: group::activation
+product_group: activation
 product_category: onboarding
 value_type: number
 status: active

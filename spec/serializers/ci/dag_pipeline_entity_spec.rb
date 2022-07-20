@@ -43,9 +43,9 @@ RSpec.describe Ci::DagPipelineEntity do
     end
 
     context 'when pipeline has parallel jobs, DAG needs and GenericCommitStatus' do
-      let!(:stage_build)  { create(:ci_stage_entity, name: 'build',  position: 1, pipeline: pipeline) }
-      let!(:stage_test)   { create(:ci_stage_entity, name: 'test',   position: 2, pipeline: pipeline) }
-      let!(:stage_deploy) { create(:ci_stage_entity, name: 'deploy', position: 3, pipeline: pipeline) }
+      let!(:stage_build)  { create(:ci_stage, name: 'build',  position: 1, pipeline: pipeline) }
+      let!(:stage_test)   { create(:ci_stage, name: 'test',   position: 2, pipeline: pipeline) }
+      let!(:stage_deploy) { create(:ci_stage, name: 'deploy', position: 3, pipeline: pipeline) }
 
       let!(:job_build_1)   { create(:ci_build, name: 'build 1', stage: 'build', pipeline: pipeline) }
       let!(:job_build_2)   { create(:ci_build, name: 'build 2', stage: 'build', pipeline: pipeline) }

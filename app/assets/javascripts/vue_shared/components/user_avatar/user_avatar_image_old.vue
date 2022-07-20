@@ -100,7 +100,10 @@ export default {
       class="avatar"
     />
     <gl-tooltip
-      v-if="tooltipText || $slots.default"
+      v-if="
+        tooltipText ||
+        $slots.default /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
+      "
       :target="() => $refs.userAvatarImage"
       :placement="tooltipPlacement"
       boundary="window"

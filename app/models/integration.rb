@@ -13,8 +13,6 @@ class Integration < ApplicationRecord
   include IgnorableColumns
   extend ::Gitlab::Utils::Override
 
-  ignore_column :properties, remove_with: '15.1', remove_after: '2022-05-22'
-
   UnknownType = Class.new(StandardError)
 
   self.inheritance_column = :type_new
@@ -154,6 +152,8 @@ class Integration < ApplicationRecord
     else
       raise ArgumentError, "Unknown field storage: #{storage}"
     end
+
+    boolean_accessor(name) if attrs[:type] == 'checkbox'
   end
   # :nocov:
 
@@ -200,14 +200,21 @@ class Integration < ApplicationRecord
   # Provide convenient boolean accessor methods for each serialized property.
   # Also keep track of updated properties in a similar way as ActiveModel::Dirty
   def self.boolean_accessor(*args)
-    prop_accessor(*args)
-
     args.each do |arg|
-      class_eval <<~RUBY, __FILE__, __LINE__ + 1
-        def #{arg}
-          return if properties.blank?
+      # TODO: Allow legacy usage of `.boolean_accessor`, once all integrations
+      # are converted to the field DSL we can remove this and only call
+      # `.boolean_accessor` through `.field`.
+      #
+      # See https://gitlab.com/groups/gitlab-org/-/epics/7652
+      prop_accessor(arg) unless method_defined?(arg)
 
-          Gitlab::Utils.to_boolean(properties['#{arg}'])
+      class_eval <<~RUBY, __FILE__, __LINE__ + 1
+        # Make the original getter available as a private method.
+        alias_method :#{arg}_before_type_cast, :#{arg}
+        private(:#{arg}_before_type_cast)
+
+        def #{arg}
+          Gitlab::Utils.to_boolean(#{arg}_before_type_cast)
         end
 
         def #{arg}?
@@ -494,16 +501,12 @@ class Integration < ApplicationRecord
     self.class.event_names
   end
 
-  def event_field(event)
-    nil
-  end
-
   def api_field_names
     fields.reject { _1[:type] == 'password' }.pluck(:name)
   end
 
-  def global_fields
-    fields
+  def form_fields
+    fields.reject { _1[:api_only] == true }
   end
 
   def configurable_events
@@ -574,11 +577,7 @@ class Integration < ApplicationRecord
   def async_execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    if Feature.enabled?(:rename_integrations_workers)
-      Integrations::ExecuteWorker.perform_async(id, data)
-    else
-      ProjectServiceWorker.perform_async(id, data)
-    end
+    Integrations::ExecuteWorker.perform_async(id, data)
   end
 
   # override if needed

@@ -24,10 +24,9 @@ printf "\nStarting GLFM snapshot example tests. See https://docs.gitlab.com/ee/d
 printf "Set 'FOCUSED_MARKDOWN_EXAMPLES=example_name_1[,...]' for focused examples, with example name(s) from https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#glfm_specificationexample_snapshotsexamples_indexyml.\n"
 printf "${Color_Off}"
 
-# This section can be uncommented as soon as this is merged: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89953
-#printf "\n${BBlue}Running frontend 'yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js'...${Color_Off}\n\n"
-#yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js
-#printf "\n${BBlue}'yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js' passed!${Color_Off}\n\n"
+printf "\n${BBlue}Running frontend 'yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js'...${Color_Off}\n\n"
+yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js
+printf "\n${BBlue}'yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js' passed!${Color_Off}\n\n"
 
 printf "\n${BBlue}Running backend 'bundle exec rspec spec/requests/api/markdown_snapshot_spec.rb'...${Color_Off}\n\n"
 bundle exec rspec spec/requests/api/markdown_snapshot_spec.rb

@@ -45,9 +45,6 @@ Clicking an individual job shows you its job log, and allows you to:
 
 ### View all jobs in a project
 
-> - An improved view was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293862) in GitLab 14.10, [with a flag](../../administration/feature_flags.md) named `jobs_table_vue`. Disabled by default.
-> - The job status filter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82539) in GitLab 14.10, [with a flag](../../administration/feature_flags.md) named `jobs_table_vue_search`. Disabled by default.
-
 To view the full list of jobs that ran in a project:
 
 1. On the top bar, select **Menu > Projects** and find the project.
@@ -136,9 +133,9 @@ jobs. Select to expand them.
 To create a group of jobs, in the [CI/CD pipeline configuration file](../yaml/index.md),
 separate each job name with a number and one of the following:
 
-- A slash (`/`), for example, `test 1/3`, `test 2/3`, `test 3/3`.
-- A colon (`:`), for example, `test 1:3`, `test 2:3`, `test 3:3`.
-- A space, for example `test 0 3`, `test 1 3`, `test 2 3`.
+- A slash (`/`), for example, `slash-test 1/3`, `slash-test 2/3`, `slash-test 3/3`.
+- A colon (`:`), for example, `colon-test 1:3`, `colon-test 2:3`, `colon-test 3:3`.
+- A space, for example `space-test 0 3`, `space-test 1 3`, `space-test 2 3`.
 
 You can use these symbols interchangeably.
 
@@ -358,7 +355,7 @@ Add `[collapsed=true]` after the section name and before the `\r`. The section e
 remains unchanged:
 
 - Section start marker with `[collapsed=true]`: `\e[0Ksection_start:UNIX_TIMESTAMP:SECTION_NAME[collapsed=true]\r\e[0K` + `TEXT_OF_SECTION_HEADER`
-- Section end marker: `section_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
+- Section end marker: `\e[0Ksection_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
 
 Add the updated section start text to the CI configuration. For example,
 using `echo`:

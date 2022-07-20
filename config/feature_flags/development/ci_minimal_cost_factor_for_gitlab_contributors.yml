@@ -1,0 +1,8 @@
+---
+name: ci_minimal_cost_factor_for_gitlab_contributors
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89742
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365862
+milestone: '15.2'
+type: development
+group: group::pipeline execution
+default_enabled: false

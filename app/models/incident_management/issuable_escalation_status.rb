@@ -7,7 +7,7 @@ module IncidentManagement
     self.table_name = 'incident_management_issuable_escalation_statuses'
 
     belongs_to :issue
-    has_one :project, through: :issue, inverse_of: :incident_management_issuable_escalation_status
+    has_one :project, through: :issue, inverse_of: :incident_management_issuable_escalation_statuses
 
     validates :issue, presence: true, uniqueness: true
 

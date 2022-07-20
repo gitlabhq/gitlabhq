@@ -6,6 +6,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import toast from '~/vue_shared/plugins/global_toast';
 import { subscribedQueries, Tracking } from '~/sidebar/constants';
 
 const ICON_ON = 'notifications';
@@ -139,6 +140,10 @@ export default {
               createFlash({
                 message: errors[0],
               });
+            }
+
+            if (this.isMergeRequest) {
+              toast(subscribed ? __('Notifications turned on.') : __('Notifications turned off.'));
             }
           },
         )

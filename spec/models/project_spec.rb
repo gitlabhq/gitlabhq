@@ -27,6 +27,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
     it { is_expected.to have_many(:issues) }
+    it { is_expected.to have_many(:incident_management_issuable_escalation_statuses).through(:issues).inverse_of(:project).class_name('IncidentManagement::IssuableEscalationStatus') }
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:iterations) }
     it { is_expected.to have_many(:project_members).dependent(:delete_all) }
@@ -81,7 +82,6 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:fork_network_member) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
-    it { is_expected.to have_one(:tracing_setting).class_name('ProjectTracingSetting') }
     it { is_expected.to have_one(:error_tracking_setting).class_name('ErrorTracking::ProjectErrorTrackingSetting') }
     it { is_expected.to have_one(:project_setting) }
     it { is_expected.to have_one(:alerting_setting).class_name('Alerting::ProjectAlertingSetting') }
@@ -821,31 +821,38 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe 'delegation' do
-    [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_user, :add_users].each do |method|
+    [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
-    it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
-    it { is_expected.to delegate_method(:root_ancestor).to(:namespace).with_arguments(allow_nil: true) }
-    it { is_expected.to delegate_method(:certificate_based_clusters_enabled?).to(:namespace).with_arguments(allow_nil: true) }
-    it { is_expected.to delegate_method(:last_pipeline).to(:commit).with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).allow_nil }
+    it { is_expected.to delegate_method(:root_ancestor).to(:namespace).allow_nil }
+    it { is_expected.to delegate_method(:certificate_based_clusters_enabled?).to(:namespace).allow_nil }
+    it { is_expected.to delegate_method(:last_pipeline).to(:commit).allow_nil }
     it { is_expected.to delegate_method(:container_registry_enabled?).to(:project_feature) }
     it { is_expected.to delegate_method(:container_registry_access_level).to(:project_feature) }
 
-    describe 'project settings' do
+    describe 'read project settings' do
       %i(
         show_default_award_emojis
-        show_default_award_emojis=
         show_default_award_emojis?
         warn_about_potentially_unwanted_characters
-        warn_about_potentially_unwanted_characters=
         warn_about_potentially_unwanted_characters?
         enforce_auth_checks_on_uploads
-        enforce_auth_checks_on_uploads=
         enforce_auth_checks_on_uploads?
       ).each do |method|
-        it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(allow_nil: true) }
+        it { is_expected.to delegate_method(method).to(:project_setting).allow_nil }
+      end
+    end
+
+    describe 'write project settings' do
+      %i(
+        show_default_award_emojis=
+        warn_about_potentially_unwanted_characters=
+        enforce_auth_checks_on_uploads=
+      ).each do |method|
+        it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(:args).allow_nil }
       end
     end
 
@@ -1855,7 +1862,7 @@ RSpec.describe Project, factory_default: :keep do
 
     describe 'when a user has access to a project' do
       before do
-        project.add_user(user, Gitlab::Access::MAINTAINER)
+        project.add_member(user, Gitlab::Access::MAINTAINER)
       end
 
       it { is_expected.to eq([project]) }
@@ -3585,6 +3592,14 @@ RSpec.describe Project, factory_default: :keep do
 
         expect(project.emails_disabled?).to be_truthy
       end
+    end
+  end
+
+  describe '#emails_enabled?' do
+    let(:project) { build(:project, emails_disabled: false) }
+
+    it "is the opposite of emails_disabled" do
+      expect(project.emails_enabled?).to be_truthy
     end
   end
 
@@ -8379,6 +8394,27 @@ RSpec.describe Project, factory_default: :keep do
         end
 
         it { is_expected.to eq(true) }
+      end
+    end
+  end
+
+  describe '#group_group_links' do
+    context 'with group project' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      it 'returns group links of group' do
+        expect(group).to receive_message_chain(:shared_with_group_links, :of_ancestors_and_self)
+
+        project.group_group_links
+      end
+    end
+
+    context 'with personal project' do
+      let_it_be(:project) { create(:project) }
+
+      it 'returns none' do
+        expect(project.group_group_links).to eq(GroupGroupLink.none)
       end
     end
   end

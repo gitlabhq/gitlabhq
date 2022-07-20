@@ -59,7 +59,7 @@ RSpec.describe Integrations::Slack do
       context 'deployment notification' do
         let_it_be(:deployment) { create(:deployment, user: user) }
 
-        let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, Time.current) }
+        let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.current) }
 
         it_behaves_like 'increases the usage data counter', 'i_ecosystem_slack_service_deployment_notification'
       end

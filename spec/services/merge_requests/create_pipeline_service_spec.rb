@@ -13,7 +13,6 @@ RSpec.describe MergeRequests::CreatePipelineService do
   let(:params) { {} }
 
   before do
-    stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: false)
     project.add_developer(user)
   end
 
@@ -90,16 +89,6 @@ RSpec.describe MergeRequests::CreatePipelineService do
             it 'creates a pipeline in the target project' do
               expect(response.payload.project).to eq(project)
             end
-          end
-        end
-
-        context 'when ci_disallow_to_create_merge_request_pipelines_in_target_project feature flag is enabled' do
-          before do
-            stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: true)
-          end
-
-          it 'creates a pipeline in the source project' do
-            expect(response.payload.project).to eq(source_project)
           end
         end
       end

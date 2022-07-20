@@ -11,6 +11,7 @@ module WorkItems
       @line_number_end = line_number_end
       @lock_version = lock_version
       @current_user = current_user
+      @task_reference = /#{Regexp.escape(@task.to_reference)}(?!\d)\+/
     end
 
     def execute
@@ -26,7 +27,9 @@ module WorkItems
       line_matches_reference = (@line_number_start..@line_number_end).any? do |line_number|
         markdown_line = source_lines[line_number - 1]
 
-        /#{Regexp.escape(@task.to_reference)}(?!\d)/.match?(markdown_line)
+        if @task_reference.match?(markdown_line)
+          markdown_line.sub!(@task_reference, @task.title)
+        end
       end
 
       unless line_matches_reference
@@ -34,8 +37,6 @@ module WorkItems
           message: "Unable to detect a task on lines #{@line_number_start}-#{@line_number_end}"
         )
       end
-
-      remove_task_lines!(source_lines)
 
       ::WorkItems::UpdateService.new(
         project: @work_item.project,
@@ -50,14 +51,6 @@ module WorkItems
       end
     rescue ActiveRecord::StaleObjectError
       ::ServiceResponse.error(message: STALE_OBJECT_MESSAGE)
-    end
-
-    private
-
-    def remove_task_lines!(source_lines)
-      source_lines.delete_if.each_with_index do |_line, index|
-        index >= @line_number_start - 1 && index < @line_number_end
-      end
     end
   end
 end

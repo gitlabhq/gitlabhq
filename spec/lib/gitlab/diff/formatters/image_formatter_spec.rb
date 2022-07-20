@@ -10,7 +10,6 @@ RSpec.describe Gitlab::Diff::Formatters::ImageFormatter do
       head_sha: 789,
       old_path: 'old_image.png',
       new_path: 'new_image.png',
-      file_identifier_hash: '777',
       position_type: 'image'
     }
   end

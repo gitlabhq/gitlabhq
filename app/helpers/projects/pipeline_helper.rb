@@ -4,7 +4,7 @@ module Projects
   module PipelineHelper
     extend ::Ci::BuildsHelper
 
-    def js_pipeline_tabs_data(project, pipeline)
+    def js_pipeline_tabs_data(project, pipeline, _user)
       {
         can_generate_codequality_reports: pipeline.can_generate_codequality_reports?.to_json,
         failed_jobs_count: pipeline.failed_builds.count,

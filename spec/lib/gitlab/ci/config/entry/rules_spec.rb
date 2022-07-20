@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'support/helpers/stub_feature_flags'
 require_dependency 'active_model'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Rules do
@@ -12,13 +11,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
   end
 
   let(:metadata) { { allowed_when: %w[always never] } }
-  let(:entry)    { factory.create! }
+
+  subject(:entry) { factory.create! }
 
   describe '.new' do
-    subject { entry }
-
     before do
-      subject.compose!
+      entry.compose!
     end
 
     context 'with a list of rule rule' do
@@ -73,7 +71,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
   end
 
   describe '#value' do
-    subject { entry.value }
+    subject(:value) { entry.value }
+
+    before do
+      entry.compose!
+    end
 
     context 'with a list of rule rule' do
       let(:config) do
@@ -99,7 +101,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
         { if: '$SKIP', when: 'never' }
       end
 
-      it { is_expected.to eq([config]) }
+      it { is_expected.to eq([]) }
     end
 
     context 'with nested rules' do

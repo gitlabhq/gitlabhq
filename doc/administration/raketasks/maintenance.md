@@ -186,7 +186,7 @@ Checking GitLab ... Finished
 ## Rebuild `authorized_keys` file
 
 In some cases it is necessary to rebuild the `authorized_keys` file,
-for example, if after an upgrade you receive `Permission denied (publickey)` when pushing [via SSH](../../ssh/index.md)
+for example, if after an upgrade you receive `Permission denied (publickey)` when pushing [via SSH](../../user/ssh.md)
 and find `404 Key Not Found` errors in [the `gitlab-shell.log` file](../logs.md#gitlab-shelllog).
 To rebuild `authorized_keys`, run:
 
@@ -234,7 +234,7 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 Sometimes during version upgrades you might end up with some wrong CSS or
 missing some icons. In that case, try to precompile the assets again.
 
-This only applies to source installations and does NOT apply to
+This only applies to source installations and does not apply to
 Omnibus packages.
 
 **Source Installation**

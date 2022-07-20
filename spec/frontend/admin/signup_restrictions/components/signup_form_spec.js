@@ -1,6 +1,6 @@
 import { GlButton, GlModal } from '@gitlab/ui';
-import { within, fireEvent } from '@testing-library/dom';
-import { shallowMount, mount } from '@vue/test-utils';
+import { within } from '@testing-library/dom';
+import { shallowMount, mount, createWrapper } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import SignupForm from '~/pages/admin/application_settings/general/components/signup_form.vue';
@@ -121,7 +121,7 @@ describe('Signup Form', () => {
 
       describe('when user clicks on file radio', () => {
         beforeEach(() => {
-          fireEvent.click(findDenyListFileRadio());
+          createWrapper(findDenyListFileRadio()).setChecked(true);
         });
 
         it('has raw list not selected', () => {
@@ -165,7 +165,7 @@ describe('Signup Form', () => {
 
       describe('when user clicks on raw list radio', () => {
         beforeEach(() => {
-          fireEvent.click(findDenyListRawRadio());
+          createWrapper(findDenyListRawRadio()).setChecked(true);
         });
 
         it('has raw list selected', () => {

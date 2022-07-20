@@ -70,7 +70,7 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 
   .timeline-header-blank,
   .timeline-header-item {
-    @include float-left;
+    @include gl-float-left;
     height: $header-item-height;
     border-bottom: $border-style;
     background-color: var(--white, $white);
@@ -150,7 +150,7 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 
 .details-cell,
 .timeline-cell {
-  @include float-left;
+  @include gl-float-left;
   height: $item-height;
 }
 

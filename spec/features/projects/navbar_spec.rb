@@ -49,10 +49,20 @@ RSpec.describe 'Project navbar' do
       stub_config(pages: { enabled: true })
 
       insert_after_sub_nav_item(
-        _('CI/CD'),
+        _('Packages & Registries'),
         within: _('Settings'),
         new_sub_nav_item_name: _('Pages')
       )
+
+      visit project_path(project)
+    end
+
+    it_behaves_like 'verified navigation bar'
+  end
+
+  context 'when package registry is available' do
+    before do
+      stub_config(packages: { enabled: true })
 
       visit project_path(project)
     end
@@ -65,12 +75,6 @@ RSpec.describe 'Project navbar' do
       stub_config(registry: { enabled: true })
 
       insert_container_nav
-
-      insert_after_sub_nav_item(
-        _('CI/CD'),
-        within: _('Settings'),
-        new_sub_nav_item_name: _('Packages & Registries')
-      )
 
       visit project_path(project)
     end

@@ -83,8 +83,8 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [ChatOps](chatops/index.md)                                                                  | Trigger CI jobs from chat, with results sent back to the channel. |
 | [Connect to cloud services](cloud_services/index.md)                                         | Connect to cloud providers using OpenID Connect (OIDC) to retrieve temporary credentials to access services or secrets. |
 | **Verify**                                                                                   |             |
-| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the browser performance impact of pending code changes. |
-| [Load Performance Testing](../user/project/merge_requests/load_performance_testing.md)       | Quickly determine the server performance impact of pending code changes. |
+| [Browser Performance Testing](testing/browser_performance_testing.md)                        | Quickly determine the browser performance impact of pending code changes. |
+| [Load Performance Testing](testing/load_performance_testing.md)                              | Quickly determine the server performance impact of pending code changes. |
 | [CI services](services/index.md)                                                             | Link Docker containers with your base image. |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md)                  | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
 | [Interactive Web Terminals](interactive_web_terminal/index.md)                               | Open an interactive web terminal to debug the running jobs. |
@@ -101,7 +101,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [GitLab Releases](../user/project/releases/index.md)                                         | Add release notes to Git tags. |
 | [Cloud deployment](cloud_deployment/index.md)                                                | Deploy your application to a main cloud provider. |
 | **Secure**                                                                                   |             |
-| [Code Quality](../user/project/merge_requests/code_quality.md)                               | Analyze your source code quality. |
+| [Code Quality](testing/code_quality.md)                                                      | Analyze your source code quality. |
 | [Container Scanning](../user/application_security/container_scanning/index.md)               | Check your Docker containers for known vulnerabilities. |
 | [Dependency Scanning](../user/application_security/dependency_scanning/index.md)             | Analyze your dependencies for known vulnerabilities. |
 | [License Compliance](../user/compliance/license_compliance/index.md)                         | Search your project dependencies for their licenses. |

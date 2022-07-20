@@ -2,7 +2,6 @@
 import { GlAlert, GlSkeletonLoader, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import JobsFilteredSearch from '../filtered_search/jobs_filtered_search.vue';
 import eventHub from './event_hub';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
@@ -28,7 +27,6 @@ export default {
     GlIntersectionObserver,
     GlLoadingIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     fullPath: {
       default: '',
@@ -93,7 +91,7 @@ export default {
       return this.loading && !this.showLoadingSpinner;
     },
     showFilteredSearch() {
-      return this.glFeatures?.jobsTableVueSearch && !this.scope;
+      return !this.scope;
     },
     jobsCount() {
       return this.jobs.count;

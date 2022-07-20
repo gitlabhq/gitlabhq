@@ -172,7 +172,7 @@ module QA
             Page::Project::Menu.perform(&:go_to_container_registry)
 
             Page::Project::Registry::Show.perform do |registry|
-              expect(registry).to have_registry_repository(project.path_with_namespace)
+              expect(registry).to have_registry_repository(project.name)
 
               registry.click_on_image(project.path_with_namespace)
               expect(registry).to have_tag('master')
@@ -230,7 +230,7 @@ module QA
           Page::Project::Menu.perform(&:go_to_container_registry)
 
           Page::Project::Registry::Show.perform do |registry|
-            expect(registry).to have_registry_repository(project.path_with_namespace)
+            expect(registry).to have_registry_repository(project.name)
 
             registry.click_on_image(project.path_with_namespace)
 

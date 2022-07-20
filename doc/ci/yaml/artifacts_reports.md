@@ -36,9 +36,9 @@ The `accessibility` report uses [pa11y](https://pa11y.org/) to report on the acc
 of changes introduced in merge requests.
 
 GitLab can display the results of one or more reports in the merge request
-[accessibility widget](../../user/project/merge_requests/accessibility_testing.md#accessibility-merge-request-widget).
+[accessibility widget](../testing/accessibility_testing.md#accessibility-merge-request-widget).
 
-For more information, see [Accessibility testing](../../user/project/merge_requests/accessibility_testing.md).
+For more information, see [Accessibility testing](../testing/accessibility_testing.md).
 
 ## `artifacts:reports:api_fuzzing` **(ULTIMATE)**
 
@@ -52,18 +52,18 @@ GitLab can display the results of one or more reports in:
 
 - The merge request [security widget](../../user/application_security/api_fuzzing/index.md#view-details-of-an-api-fuzzing-vulnerability).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/api_fuzzing/index.md#security-dashboard).
 
 ## `artifacts:reports:browser_performance` **(PREMIUM)**
 
 > [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
 
-The `browser_performance` report collects [Browser Performance Testing metrics](../../user/project/merge_requests/browser_performance_testing.md)
+The `browser_performance` report collects [Browser Performance Testing metrics](../testing/browser_performance_testing.md)
 as artifacts.
 
 GitLab can display the results of one report in the merge request
-[browser performance testing widget](../../user/project/merge_requests/browser_performance_testing.md#how-browser-performance-testing-works).
+[browser performance testing widget](../testing/browser_performance_testing.md#how-browser-performance-testing-works).
 
 GitLab cannot display the combined results of multiple `browser_performance` reports.
 
@@ -100,7 +100,7 @@ instead.
 
 Use `coverage_report` to collect coverage report in Cobertura format.
 
-The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).
+The `cobertura` report collects [Cobertura coverage XML files](../testing/test_coverage_visualization.md).
 
 Cobertura was originally developed for Java, but there are many third-party ports for other languages such as
 JavaScript, Python, and Ruby.
@@ -116,22 +116,22 @@ artifacts:
 The collected coverage report is uploaded to GitLab as an artifact.
 
 GitLab can display the results of coverage report in the merge request
-[diff annotations](../../user/project/merge_requests/test_coverage_visualization.md).
+[diff annotations](../testing/test_coverage_visualization.md).
 
 ## `artifacts:reports:codequality`
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
 
-The `codequality` report collects [code quality issues](../../user/project/merge_requests/code_quality.md). The
+The `codequality` report collects [code quality issues](../testing/code_quality.md). The
 collected code quality report uploads to GitLab as an artifact.
 
 GitLab can display the results of:
 
-- One or more reports in the merge request [code quality widget](../../user/project/merge_requests/code_quality.md#code-quality-widget).
+- One or more reports in the merge request [code quality widget](../testing/code_quality.md#code-quality-widget).
 - Only one report in:
-  - The merge request [diff annotations](../../user/project/merge_requests/code_quality.md#code-quality-in-diff-view).
+  - The merge request [diff annotations](../testing/code_quality.md#code-quality-in-diff-view).
     Track progress on adding support for multiple reports in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328257).
-  - The [full report](../metrics_reports.md). Track progress on adding support for multiple reports in
+  - The [full report](../testing/metrics_reports.md). Track progress on adding support for multiple reports in
     [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/9014).
 
 ## `artifacts:reports:container_scanning` **(ULTIMATE)**
@@ -142,7 +142,7 @@ The collected Container Scanning report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [container scanning widget](../../user/application_security/container_scanning/index.md).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
@@ -156,7 +156,7 @@ The collected coverage fuzzing report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [coverage fuzzing widget](../../user/application_security/coverage_fuzzing/index.md#interacting-with-the-vulnerabilities).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
@@ -168,7 +168,7 @@ report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [security widget](../../user/application_security/dast/index.md#view-details-of-a-vulnerability-detected-by-dast).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
@@ -180,7 +180,7 @@ The collected Dependency Scanning report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [dependency scanning widget](../../user/application_security/dependency_scanning/index.md).
-- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [dependency list](../../user/application_security/dependency_list/).
@@ -213,6 +213,7 @@ The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv
 - The `.env` file can't have empty lines or comments (starting with `#`).
 - Key values in the `env` file cannot have spaces or newline characters (`\n`), including when using single or double quotes.
 - Quote escaping during parsing (`key = 'value'` -> `{key: "value"}`) is not supported.
+- Only UTF-8 encoding is [supported](../pipelines/job_artifacts.md#error-message-fatal-invalid-argument-when-uploading-a-dotenv-artifact-on-a-windows-runner).
 
 ## `artifacts:reports:junit`
 
@@ -263,25 +264,25 @@ GitLab can display the results of one or more reports in:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35260) in GitLab 13.2.
 > - Requires GitLab Runner 11.5 and above.
 
-The `load_performance` report collects [Load Performance Testing metrics](../../user/project/merge_requests/load_performance_testing.md).
+The `load_performance` report collects [Load Performance Testing metrics](../testing/load_performance_testing.md).
 The report is uploaded to GitLab as an artifact.
 
 GitLab can display the results of only one report in the merge request
-[load testing widget](../../user/project/merge_requests/load_performance_testing.md#how-load-performance-testing-works).
+[load testing widget](../testing/load_performance_testing.md#how-load-performance-testing-works).
 
 GitLab cannot display the combined results of multiple `load_performance` reports.
 
 ## `artifacts:reports:metrics` **(PREMIUM)**
 
-The `metrics` report collects [Metrics](../metrics_reports.md). The collected Metrics report uploads to GitLab as an
+The `metrics` report collects [Metrics](../testing/metrics_reports.md). The collected Metrics report uploads to GitLab as an
 artifact.
 
 GitLab can display the results of one or more reports in the merge request
-[metrics reports widget](../../ci/metrics_reports.md#metrics-reports).
+[metrics reports widget](../testing/metrics_reports.md#metrics-reports).
 
 ## `artifacts:reports:requirements` **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
 
 The `requirements` report collects `requirements.json` files. The collected Requirements report uploads to GitLab as an
 artifact and existing [requirements](../../user/project/requirements/index.md) are marked as Satisfied.
@@ -291,7 +292,7 @@ GitLab can display the results of one or more reports in the
 
 ## `artifacts:reports:sast`
 
-> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
+> [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
 The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md). The collected SAST
 report uploads to GitLab as an artifact.

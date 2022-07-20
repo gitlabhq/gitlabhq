@@ -15,8 +15,8 @@ RSpec.describe 'Visual tokens', :js do
   let_it_be(:issue) { create(:issue, project: project) }
 
   before do
-    project.add_user(user, :maintainer)
-    project.add_user(user_rock, :maintainer)
+    project.add_member(user, :maintainer)
+    project.add_member(user_rock, :maintainer)
     sign_in(user)
 
     visit project_issues_path(project)

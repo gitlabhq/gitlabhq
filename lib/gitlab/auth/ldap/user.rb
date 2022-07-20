@@ -31,7 +31,11 @@ module Gitlab
         end
 
         def valid_sign_in?
-          allowed? && super
+          # The order is important here: we need to ensure the
+          # associated GitLab user entry is valid and persisted in the
+          # database. Otherwise, the LDAP access check will fail since
+          # the user doesn't have an associated LDAP identity.
+          super && allowed?
         end
 
         def ldap_config

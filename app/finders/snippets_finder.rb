@@ -41,6 +41,7 @@
 class SnippetsFinder < UnionFinder
   include FinderMethods
   include Gitlab::Utils::StrongMemoize
+  include CreatedAtFilter
 
   attr_reader :current_user, :params
 
@@ -69,6 +70,7 @@ class SnippetsFinder < UnionFinder
     items = init_collection
     items = by_ids(items)
     items = items.with_optional_visibility(visibility_from_scope)
+    items = by_created_at(items)
 
     items.order_by(sort_param)
   end

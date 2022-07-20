@@ -38,21 +38,47 @@ RSpec.describe Import::GitlabController do
 
       expect(controller.send(:importable_repos)).to be_an_instance_of(Array)
     end
+
+    it "passes namespace_id query param to status if provided" do
+      namespace_id = 30
+
+      allow_next_instance_of(Gitlab::GitlabImport::Client) do |instance|
+        allow(instance).to receive(:get_token).and_return(token)
+      end
+
+      get :callback, params: { namespace_id: namespace_id }
+
+      expect(controller).to redirect_to(status_import_gitlab_url(namespace_id: namespace_id))
+    end
   end
 
   describe "GET status" do
     let(:repo_fake) { Struct.new(:id, :path, :path_with_namespace, :web_url, keyword_init: true) }
     let(:repo) { repo_fake.new(id: 1, path: 'vim', path_with_namespace: 'asd/vim', web_url: 'https://gitlab.com/asd/vim') }
 
-    before do
-      assign_session_token
+    context 'when session contains access token' do
+      before do
+        assign_session_token
+      end
+
+      it_behaves_like 'import controller status' do
+        let(:repo_id) { repo.id }
+        let(:import_source) { repo.path_with_namespace }
+        let(:provider_name) { 'gitlab' }
+        let(:client_repos_field) { :projects }
+      end
     end
 
-    it_behaves_like 'import controller status' do
-      let(:repo_id) { repo.id }
-      let(:import_source) { repo.path_with_namespace }
-      let(:provider_name) { 'gitlab' }
-      let(:client_repos_field) { :projects }
+    it 'redirects to auth if session does not contain access token' do
+      remote_gitlab_url = 'https://test.host/auth/gitlab'
+
+      allow(Gitlab::GitlabImport::Client)
+        .to receive(:new)
+        .and_return(double(authorize_url: remote_gitlab_url))
+
+      get :status
+
+      expect(response).to redirect_to(remote_gitlab_url)
     end
   end
 

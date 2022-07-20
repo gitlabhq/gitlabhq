@@ -90,7 +90,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js do
     with_them do
       before do
         project.project_feature.update!({ merge_requests_access_level: merge_requests_access_level })
-        project.add_user(user, user_level)
+        project.add_member(user, user_level)
         visit project_path(project)
       end
 

@@ -4,7 +4,7 @@ key_path: redis_hll_counters.quickactions.i_quickactions_close_weekly
 description: Count of WAU using the `/close` quick action to close an issuable
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: issue_tracking
 value_type: number
 status: active

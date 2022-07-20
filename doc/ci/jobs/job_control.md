@@ -547,25 +547,29 @@ You can use [protected branches](../../user/project/protected_branches.md) to mo
 
 ### Types of manual jobs
 
-Manual jobs can be either optional or blocking:
+Manual jobs can be either optional or blocking.
 
-- **Optional**: The default setting for manual jobs.
-  - They have [`allow_failure: true`](../yaml/index.md#allow_failure) by default.
-  - The status does not contribute to the overall pipeline status. A pipeline can
-    succeed even if all of its manual jobs fail.
-- **Blocking**: An optional setting for manual jobs.
-  - Add `allow_failure: false` to the job configuration.
-  - The pipeline stops at the stage where the job is defined. To let the pipeline
-    continue running, [run the manual job](#run-a-manual-job).
-  - Merge requests in projects with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
-    enabled can't be merged with a blocked pipeline. Blocked pipelines show a status
-    of **blocked**.
+In optional manual jobs:
+
+- [`allow_failure`](../yaml/index.md#allow_failure) is `true`, which is the default
+  setting for jobs that have `when: manual` and no [`rules`](../yaml/index.md#rules),
+  or `when: manual` defined outside of `rules`.
+- The status does not contribute to the overall pipeline status. A pipeline can
+  succeed even if all of its manual jobs fail.
+
+In blocking manual jobs:
+
+- `allow_failure` is `false`, which is the default setting for jobs that have `when: manual`
+  defined inside [`rules`](../yaml/index.md#rules).
+- The pipeline stops at the stage where the job is defined. To let the pipeline
+  continue running, [run the manual job](#run-a-manual-job).
+- Merge requests in projects with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
+  enabled can't be merged with a blocked pipeline.
+- The pipeline shows a status of **blocked**.
 
 ### Run a manual job
 
-To run a manual job, you must have permission to merge to the assigned branch.
-
-To run a manual job:
+To run a manual job, you must have permission to merge to the assigned branch:
 
 1. Go to the pipeline, job, [environment](../environments/index.md#configure-manual-deployments),
    or deployment view.

@@ -9,6 +9,12 @@ RSpec.describe 'User page' do
 
   subject(:visit_profile) { visit(user_path(user)) }
 
+  it 'shows user id' do
+    subject
+
+    expect(page).to have_content("User ID: #{user.id}")
+  end
+
   context 'with public profile' do
     it 'shows all the tabs' do
       subject

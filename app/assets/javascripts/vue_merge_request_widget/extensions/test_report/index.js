@@ -1,4 +1,5 @@
 import { uniqueId } from 'lodash';
+import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 import { EXTENSION_ICONS } from '../../constants';
@@ -19,6 +20,20 @@ export default {
   props: ['testResultsPath', 'headBlobPath', 'pipeline'],
   modalComponent: TestCaseDetails,
   computed: {
+    failedTestNames() {
+      if (!this.collapsedData?.suites) {
+        return '';
+      }
+
+      const newFailures = this.collapsedData?.suites.flatMap((suite) => [suite.new_failures || []]);
+      const fileNames = newFailures.flatMap((newFailure) => {
+        return newFailure.map((failure) => {
+          return failure.file;
+        });
+      });
+
+      return fileNames.join(' ');
+    },
     summary(data) {
       if (data.parsingInProgress) {
         return this.$options.i18n.loading;
@@ -32,9 +47,6 @@ export default {
       };
     },
     statusIcon(data) {
-      if (data.parsingInProgress) {
-        return null;
-      }
       if (data.status === TESTS_FAILED_STATUS) {
         return EXTENSION_ICONS.warning;
       }
@@ -44,30 +56,46 @@ export default {
       return EXTENSION_ICONS.success;
     },
     tertiaryButtons() {
-      return [
-        {
-          text: this.$options.i18n.fullReport,
-          href: `${this.pipeline.path}/test_report`,
-          target: '_blank',
-          fullReport: true,
-        },
-      ];
+      const actionButtons = [];
+
+      if (this.failedTestNames().length > 0) {
+        actionButtons.push({
+          dataClipboardText: this.failedTestNames(),
+          id: uniqueId('copy-to-clipboard'),
+          icon: 'copy-to-clipboard',
+          testId: 'copy-failed-specs-btn',
+          text: this.$options.i18n.copyFailedSpecs,
+          tooltipText: this.$options.i18n.copyFailedSpecsTooltip,
+          tooltipOnClick: __('Copied'),
+        });
+      }
+
+      actionButtons.push({
+        text: this.$options.i18n.fullReport,
+        href: `${this.pipeline.path}/test_report`,
+        target: '_blank',
+        fullReport: true,
+        testId: 'full-report-link',
+      });
+
+      return actionButtons;
     },
   },
   methods: {
     fetchCollapsedData() {
-      return axios.get(this.testResultsPath).then((res) => {
-        const { data = {}, status } = res;
+      return axios.get(this.testResultsPath).then((response) => {
+        const { data = {}, status } = response;
+        const { suites = [], summary = {} } = data;
 
         return {
-          ...res,
+          ...response,
           data: {
-            hasSuiteError: data.suites?.some((suite) => suite.status === ERROR_STATUS),
+            hasSuiteError: suites.some((suite) => suite.status === ERROR_STATUS),
             parsingInProgress: status === 204,
             ...data,
             summary: {
-              recentlyFailed: countRecentlyFailedTests(data.suites),
-              ...data.summary,
+              recentlyFailed: countRecentlyFailedTests(suites),
+              ...summary,
             },
           },
         };

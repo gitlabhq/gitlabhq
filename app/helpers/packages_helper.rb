@@ -53,4 +53,14 @@ module PackagesHelper
     project.container_expiration_policy.nil? &&
     project.container_repositories.exists?
   end
+
+  def show_container_registry_settings(project)
+    Gitlab.config.registry.enabled &&
+    Ability.allowed?(current_user, :admin_container_image, project)
+  end
+
+  def show_package_registry_settings(project)
+    Gitlab.config.packages.enabled &&
+    Ability.allowed?(current_user, :admin_package, project)
+  end
 end

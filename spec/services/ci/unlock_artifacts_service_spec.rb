@@ -130,7 +130,7 @@ RSpec.describe Ci::UnlockArtifactsService do
                     WHERE
                         "ci_pipelines"."ci_ref_id" = #{ci_ref.id}
                         AND "ci_pipelines"."locked" = 1
-                        AND (ci_pipelines.id < #{before_pipeline.id})
+                        AND "ci_pipelines"."id" < #{before_pipeline.id}
                         AND "ci_pipelines"."id" NOT IN
                             (WITH RECURSIVE
                                 "base_and_descendants"

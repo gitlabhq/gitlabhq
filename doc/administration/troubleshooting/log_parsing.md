@@ -47,7 +47,7 @@ grep <TERM> <FILE> | jq .
 jq -cR 'fromjson?' file.json | jq <COMMAND>
 ```
 
-By default `jq` will error out when it encounters a line that is not valid JSON.
+By default `jq` errors out when it encounters a line that is not valid JSON.
 This skips over all invalid lines and parses the rest.
 
 #### Print a JSON log's time range
@@ -152,6 +152,51 @@ CT: 297  ROUTE: /api/:version/projects/:id/repository/tags       DURS: 731.39,  
 CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02,  979.68,  958.21
 ```
 
+### Print top API user agents
+
+```shell
+jq --raw-output '[.route, .ua] | @tsv' api_json.log | sort | uniq -c | sort -n
+```
+
+**Example output**:
+
+```plaintext
+  89 /api/:version/usage_data/increment_unique_users  # plus browser details
+ 567 /api/:version/jobs/:id/trace       gitlab-runner # plus version details
+1234 /api/:version/internal/allowed     GitLab-Shell
+```
+
+This sample response seems normal. A custom tool or script might be causing a high load
+if the output contains many:
+
+- Third party libraries like `python-requests` or `curl`.
+- [GitLab CLI clients](https://about.gitlab.com/partners/technology-partners/#cli-clients).
+
+You can also [use `fast-stats top`](#parsing-gitlab-logs-with-jq) to extract performance statistics.
+
+### Parsing `gitlab-workhorse/current`
+
+### Print top Workhorse user agents
+
+```shell
+jq --raw-output '[.uri, .user_agent] | @tsv' current | sort | uniq -c | sort -n
+```
+
+**Example output**:
+
+```plaintext
+  89 /api/graphql # plus browser details
+ 567 /api/v4/internal/allowed   GitLab-Shell
+1234 /api/v4/jobs/request       gitlab-runner # plus version details
+```
+
+Similar to the [API `ua` data](#print-top-api-user-agents),
+deviations from this common order might indicate scripts that could be optimized.
+
+The performance impact of runners checking for new jobs can be reduced by increasing
+[the `check_interval` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section),
+for example.
+
 ### Parsing `gitlab-rails/geo.log`
 
 #### Find most common Geo sync errors
@@ -166,7 +211,7 @@ jq --raw-output 'select(.severity == "ERROR") | [.project_path, .message] | @tsv
 
 ### Parsing `gitaly/current`
 
-The following examples are useful to [troubleshoot Gitaly](../gitaly/troubleshooting.md).
+Use the following examples to [troubleshoot Gitaly](../gitaly/troubleshooting.md).
 
 #### Find all Gitaly requests sent from web UI
 

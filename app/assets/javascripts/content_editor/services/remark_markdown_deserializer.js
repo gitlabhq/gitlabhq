@@ -1,11 +1,10 @@
-import { isString } from 'lodash';
 import { render } from '~/lib/gfm';
 import { createProseMirrorDocFromMdastTree } from './hast_to_prosemirror_converter';
 
 const wrappableTags = ['img', 'br', 'code', 'i', 'em', 'b', 'strong', 'a', 'strike', 's', 'del'];
 
 const isTaskItem = (hastNode) => {
-  const { className } = hastNode.properties;
+  const className = hastNode.properties?.className;
 
   return (
     hastNode.tagName === 'li' && Array.isArray(className) && className.includes('task-list-item')
@@ -23,16 +22,16 @@ const factorySpecs = {
   listItem: {
     type: 'block',
     wrapInParagraph: true,
-    selector: (hastNode) => hastNode.tagName === 'li' && !hastNode.properties.className,
+    selector: (hastNode) => hastNode.tagName === 'li' && !hastNode.properties?.className,
     processText: (text) => text.trimRight(),
   },
   orderedList: {
     type: 'block',
-    selector: (hastNode) => hastNode.tagName === 'ol' && !hastNode.properties.className,
+    selector: (hastNode) => hastNode.tagName === 'ol' && !hastNode.properties?.className,
   },
   bulletList: {
     type: 'block',
-    selector: (hastNode) => hastNode.tagName === 'ul' && !hastNode.properties.className,
+    selector: (hastNode) => hastNode.tagName === 'ul' && !hastNode.properties?.className,
   },
   heading: {
     type: 'block',
@@ -45,15 +44,8 @@ const factorySpecs = {
   },
   codeBlock: {
     type: 'block',
-    skipChildren: true,
-    selector: 'pre',
-    getContent: ({ hastNodeText }) => hastNodeText.replace(/\n$/, ''),
-    getAttrs: (hastNode) => {
-      const languageClass = hastNode.children[0]?.properties.className?.[0];
-      const language = isString(languageClass) ? languageClass.replace('language-', '') : null;
-
-      return { language };
-    },
+    selector: 'codeblock',
+    getAttrs: (hastNode) => ({ ...hastNode.properties }),
   },
   horizontalRule: {
     type: 'block',
@@ -62,7 +54,7 @@ const factorySpecs = {
   taskList: {
     type: 'block',
     selector: (hastNode) => {
-      const { className } = hastNode.properties;
+      const className = hastNode.properties?.className;
 
       return (
         ['ul', 'ol'].includes(hastNode.tagName) &&
@@ -87,6 +79,11 @@ const factorySpecs = {
     type: 'ignore',
     selector: (hastNode, ancestors) =>
       hastNode.tagName === 'input' && isTaskItem(ancestors[ancestors.length - 1]),
+  },
+  div: {
+    type: 'block',
+    selector: 'div',
+    wrapInParagraph: true,
   },
   table: {
     type: 'block',
@@ -117,6 +114,11 @@ const factorySpecs = {
     type: 'block',
     selector: 'footnotedefinition',
     getAttrs: (hastNode) => hastNode.properties,
+  },
+  pre: {
+    type: 'block',
+    selector: 'pre',
+    wrapInParagraph: true,
   },
   image: {
     type: 'inline',
@@ -160,11 +162,19 @@ const factorySpecs = {
     type: 'mark',
     selector: (hastNode) => ['strike', 's', 'del'].includes(hastNode.tagName),
   },
+  /* TODO
+   * Implement proper editing support for HTML comments in the Content Editor
+   * https://gitlab.com/gitlab-org/gitlab/-/issues/342173
+   */
+  comment: {
+    type: 'ignore',
+    selector: (hastNode) => hastNode.type === 'comment',
+  },
 };
 
 export default () => {
   return {
-    deserialize: async ({ schema, content: markdown }) => {
+    deserialize: async ({ schema, markdown }) => {
       const document = await render({
         markdown,
         renderer: (tree) =>
@@ -173,8 +183,9 @@ export default () => {
             factorySpecs,
             tree,
             wrappableTags,
-            source: markdown,
+            markdown,
           }),
+        skipRendering: ['footnoteReference', 'footnoteDefinition', 'code'],
       });
 
       return { document };

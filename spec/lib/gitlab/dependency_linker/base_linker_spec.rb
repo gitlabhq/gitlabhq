@@ -33,7 +33,7 @@ RSpec.describe Gitlab::DependencyLinker::BaseLinker do
     it 'only converts valid links' do
       expect(subject).to eq(
         <<~CONTENT
-          <span><span>#{link('http://')}</span><span>#{link('\n', url: '%5Cn')}</span><span>#{link('javascript:alert(1)', url: nil)}</span></span>
+          <span><span>#{link('http://', url: nil)}</span><span>#{link('\n', url: nil)}</span><span>#{link('javascript:alert(1)', url: nil)}</span></span>
           <span><span>#{link('https://gitlab.com/gitlab-org/gitlab')}</span></span>
         CONTENT
       )

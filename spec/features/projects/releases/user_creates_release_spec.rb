@@ -111,6 +111,27 @@ RSpec.describe 'User creates release', :js do
     end
   end
 
+  context 'when tag name supplied in the parameters' do
+    let(:new_page_url) { new_project_release_path(project, tag_name: 'v1.1.0') }
+
+    it 'creates release with preselected tag' do
+      page.within '[data-testid="tag-name-field"]' do
+        expect(page).to have_text('v1.1.0')
+      end
+
+      expect(page).not_to have_selector('[data-testid="create-from-field"]')
+
+      fill_release_title("test release")
+      click_button('Create release')
+
+      wait_for_all_requests
+
+      release = project.releases.last
+
+      expect(release.tag).to eq('v1.1.0')
+    end
+  end
+
   def fill_out_form_and_submit
     select_new_tag_name(tag_name)
 

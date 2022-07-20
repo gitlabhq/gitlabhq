@@ -181,6 +181,26 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
       end
     end
 
+    context 'when artifact belongs to a project not undergoing refresh' do
+      context 'and skip_projects_on_refresh is set to false (default)' do
+        it 'does not log any warnings', :aggregate_failures do
+          expect(Gitlab::ProjectStatsRefreshConflictsLogger).not_to receive(:warn_artifact_deletion_during_stats_refresh)
+
+          expect { subject }.to change { Ci::JobArtifact.count }.by(-2)
+        end
+      end
+
+      context 'and skip_projects_on_refresh is set to true' do
+        let(:skip_projects_on_refresh) { true }
+
+        it 'does not log any warnings', :aggregate_failures do
+          expect(Gitlab::ProjectStatsRefreshConflictsLogger).not_to receive(:warn_skipped_artifact_deletion_during_stats_refresh)
+
+          expect { subject }.to change { Ci::JobArtifact.count }.by(-2)
+        end
+      end
+    end
+
     context 'ProjectStatistics' do
       it 'resets project statistics' do
         expect(ProjectStatistics).to receive(:increment_statistic).once

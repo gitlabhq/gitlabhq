@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe API::ProtectedTags do
-  let(:user) { create(:user) }
-  let!(:project) { create(:project, :repository) }
-  let(:project2) { create(:project, path: 'project2', namespace: user.namespace) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project2) { create(:project, path: 'project2', namespace: user.namespace) }
+
   let(:protected_name) { 'feature' }
   let(:tag_name) { protected_name }
   let!(:protected_tag) do

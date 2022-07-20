@@ -230,7 +230,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     context 'deployment events' do
       let_it_be(:deployment) { create(:deployment) }
 
-      let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, Time.current) }
+      let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, 'created', Time.current) }
 
       it_behaves_like 'calls the integration API with the event message', /Deploy to (.*?) created/
     end
@@ -677,7 +677,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
       create(:deployment, :success, project: project, sha: project.commit.sha, ref: project.default_branch)
     end
 
-    let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, Time.now) }
+    let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.now) }
 
     before do
       allow(chat_integration).to receive_messages(

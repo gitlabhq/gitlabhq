@@ -14,7 +14,6 @@ RSpec/InstanceVariable:
     - ee/spec/graphql/types/vulnerability_request_type_spec.rb
     - ee/spec/graphql/types/vulnerability_response_type_spec.rb
     - ee/spec/helpers/ee/issuables_helper_spec.rb
-    - ee/spec/helpers/ee/namespace_storage_limit_alert_helper_spec.rb
     - ee/spec/helpers/ee/wiki_helper_spec.rb
     - ee/spec/helpers/notes_helper_spec.rb
     - ee/spec/helpers/search_helper_spec.rb
@@ -72,7 +71,6 @@ RSpec/InstanceVariable:
     - qa/qa/specs/features/ee/browser_ui/2_plan/multiple_assignees_for_issues/more_than_four_assignees_spec.rb
     - qa/qa/specs/features/ee/browser_ui/3_create/repository/code_owners_spec.rb
     - qa/qa/specs/features/ee/browser_ui/3_create/repository/push_rules_spec.rb
-    - qa/qa/specs/features/ee/browser_ui/4_verify/cancelling_merge_request_in_merge_train_spec.rb
     - qa/spec/support/repeater_spec.rb
     - spec/commands/metrics_server/metrics_server_spec.rb
     - spec/controllers/admin/clusters_controller_spec.rb
@@ -89,7 +87,6 @@ RSpec/InstanceVariable:
     - spec/controllers/profiles/avatars_controller_spec.rb
     - spec/controllers/projects/clusters_controller_spec.rb
     - spec/controllers/sessions_controller_spec.rb
-    - spec/features/admin/admin_runners_spec.rb
     - spec/features/calendar_spec.rb
     - spec/features/issues/user_filters_issues_spec.rb
     - spec/features/markdown/copy_as_gfm_spec.rb

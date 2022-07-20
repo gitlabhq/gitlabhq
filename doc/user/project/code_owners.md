@@ -85,6 +85,12 @@ Inviting **Subgroup Y** to a parent group of **Project A**
 [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/288851). To set **Subgroup Y** as
 Code Owners, add this group directly to the project itself.
 
+NOTE:
+For approval to be required, groups as Code Owners must have a direct membership
+(not inherited membership) in the project. Approval can only be optional for groups
+that inherit membership. Members in the Code Owners group also must be direct members,
+and not inherit membership from any parent groups.
+
 ### Add a group as a Code Owner
 
 To set a group as a Code Owner:

@@ -1,5 +1,11 @@
 import { n__ } from '~/locale';
-import { KEEP_N_OPTIONS, CADENCE_OPTIONS, OLDER_THAN_OPTIONS } from './constants';
+import {
+  KEEP_N_OPTIONS,
+  CADENCE_OPTIONS,
+  OLDER_THAN_OPTIONS,
+  KEEP_N_DUPLICATED_PACKAGE_FILES_FIELDNAME,
+  KEEP_N_DUPLICATED_PACKAGE_FILES_OPTIONS,
+} from './constants';
 
 export const findDefaultOption = (options) => {
   const item = options.find((o) => o.default);
@@ -25,5 +31,6 @@ export const formOptionsGenerator = () => {
     olderThan: optionLabelGenerator(OLDER_THAN_OPTIONS, olderThanTranslationGenerator),
     cadence: CADENCE_OPTIONS,
     keepN: optionLabelGenerator(KEEP_N_OPTIONS, keepNTranslationGenerator),
+    [KEEP_N_DUPLICATED_PACKAGE_FILES_FIELDNAME]: KEEP_N_DUPLICATED_PACKAGE_FILES_OPTIONS,
   };
 };

@@ -119,7 +119,7 @@ describe('Learn GitLab Section Link', () => {
       findUncompletedLink().trigger('click');
 
       expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_link', {
-        label: 'Run a Security scan using CI/CD',
+        label: 'run_a_security_scan_using_ci_cd',
       });
 
       unmockTracking();
@@ -164,7 +164,7 @@ describe('Learn GitLab Section Link', () => {
       triggerEvent(openInviteMembesrModalLink().element);
 
       expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_link', {
-        label: 'Invite your colleagues',
+        label: 'invite_your_colleagues',
         property: 'Growth::Activation::Experiment::InviteForHelpContinuousOnboarding',
       });
 
@@ -203,7 +203,7 @@ describe('Learn GitLab Section Link', () => {
         videoTutorialLink().trigger('click');
 
         expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_video_link', {
-          label: 'Add code owners',
+          label: 'add_code_owners',
           property: 'Growth::Conversion::Experiment::LearnGitLab',
           context: {
             data: {

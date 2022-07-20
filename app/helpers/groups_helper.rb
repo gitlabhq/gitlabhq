@@ -126,7 +126,7 @@ module GroupsHelper
     group.root? && current_user.can?(:admin_setting_to_allow_project_access_token_creation, group)
   end
 
-  def show_thanks_for_purchase_banner?
+  def show_thanks_for_purchase_alert?
     params.key?(:purchased_quantity) && params[:purchased_quantity].to_i > 0
   end
 

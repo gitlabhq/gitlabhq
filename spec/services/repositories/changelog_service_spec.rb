@@ -194,6 +194,25 @@ RSpec.describe Repositories::ChangelogService do
         end
       end
     end
+
+    context 'with specified changelog config file path' do
+      it 'return specified changelog content' do
+        config = Gitlab::Changelog::Config.from_hash(project, { 'template' => 'specified_changelog_content' }, creator)
+
+        allow(Gitlab::Changelog::Config)
+          .to receive(:from_git)
+          .with(project, creator, 'specified_changelog_config.yml')
+          .and_return(config)
+
+        described_class
+          .new(project, creator, version: '1.0.0', from: sha1, config_file: 'specified_changelog_config.yml')
+          .execute(commit_to_changelog: commit_to_changelog)
+
+        changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
+
+        expect(changelog).to include('specified_changelog_content')
+      end
+    end
   end
 
   describe '#start_of_commit_range' do

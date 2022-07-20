@@ -1,17 +1,13 @@
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 
-export const PACKAGE_SETTINGS_HEADER = s__('PackageRegistry|Package Registry');
+export const PACKAGE_SETTINGS_HEADER = s__('PackageRegistry|Duplicate packages');
 export const PACKAGE_SETTINGS_DESCRIPTION = s__(
-  'PackageRegistry|Use GitLab as a private registry for common package formats. %{linkStart}Learn more.%{linkEnd}',
+  'PackageRegistry|Allow packages with the same name and version to be uploaded to the registry. The newest version of a package is always used when installing.',
 );
 
-export const DUPLICATES_TOGGLE_LABEL = s__('PackageRegistry|Allow duplicates');
-export const DUPLICATES_ALLOWED_DISABLED = s__(
-  'PackageRegistry|%{boldStart}Do not allow duplicates%{boldEnd} - Reject packages with the same name and version.',
-);
-export const DUPLICATES_ALLOWED_ENABLED = s__(
-  'PackageRegistry|%{boldStart}Allow duplicates%{boldEnd} - Accept packages with the same name and version.',
+export const DUPLICATES_TOGGLE_LABEL = s__(
+  'PackageRegistry|Reject packages with the same name and version',
 );
 export const DUPLICATES_SETTING_EXCEPTION_TITLE = __('Exceptions');
 export const DUPLICATES_SETTINGS_EXCEPTION_LEGEND = s__(
@@ -19,6 +15,9 @@ export const DUPLICATES_SETTINGS_EXCEPTION_LEGEND = s__(
 );
 
 export const DEPENDENCY_PROXY_HEADER = s__('DependencyProxy|Dependency Proxy');
+export const DEPENDENCY_PROXY_DESCRIPTION = s__(
+  'DependencyProxy|Enable the Dependency Proxy and settings for clearing the cache.',
+);
 
 // Parameters
 

@@ -65,5 +65,42 @@ RSpec.describe Profiles::PersonalAccessTokensController do
         scopes: contain_exactly(:api, :read_user)
       )
     end
+
+    context "access_token_pagination feature flag is enabled" do
+      before do
+        stub_feature_flags(access_token_pagination: true)
+        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+        create(:personal_access_token, user: user)
+      end
+
+      it "returns paginated response" do
+        get :index, params: { page: 1 }
+        expect(assigns(:active_personal_access_tokens).count).to eq(1)
+      end
+
+      it 'adds appropriate headers' do
+        get :index, params: { page: 1 }
+        expect_header('X-Per-Page', '1')
+        expect_header('X-Page', '1')
+        expect_header('X-Next-Page', '2')
+        expect_header('X-Total', '2')
+      end
+    end
+
+    context "access_token_pagination feature flag is disabled" do
+      before do
+        stub_feature_flags(access_token_pagination: false)
+        create(:personal_access_token, user: user)
+      end
+
+      it "returns all tokens in system" do
+        get :index, params: { page: 1 }
+        expect(assigns(:active_personal_access_tokens).count).to eq(2)
+      end
+    end
+  end
+
+  def expect_header(header_name, header_val)
+    expect(response.headers[header_name]).to eq(header_val)
   end
 end

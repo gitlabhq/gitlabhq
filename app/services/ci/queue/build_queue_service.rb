@@ -24,25 +24,7 @@ module Ci
 
       # rubocop:disable CodeReuse/ActiveRecord
       def builds_for_group_runner
-        if strategy.use_denormalized_data_strategy?
-          strategy.builds_for_group_runner
-        else
-          # Workaround for weird Rails bug, that makes `runner.groups.to_sql` to return `runner_id = NULL`
-          groups = ::Group.joins(:runner_namespaces).merge(runner.runner_namespaces)
-
-          hierarchy_groups = Gitlab::ObjectHierarchy
-            .new(groups)
-            .base_and_descendants
-
-          projects = Project.where(namespace_id: hierarchy_groups)
-            .with_group_runners_enabled
-            .with_builds_enabled
-            .without_deleted
-
-          relation = new_builds.where(project: projects)
-
-          order(relation)
-        end
+        strategy.builds_for_group_runner
       end
 
       def builds_for_project_runner
@@ -80,11 +62,7 @@ module Ci
 
       def strategy
         strong_memoize(:strategy) do
-          if ::Feature.enabled?(:ci_pending_builds_queue_source, runner)
-            Queue::PendingBuildsStrategy.new(runner)
-          else
-            Queue::BuildsTableStrategy.new(runner)
-          end
+          Queue::PendingBuildsStrategy.new(runner)
         end
       end
 

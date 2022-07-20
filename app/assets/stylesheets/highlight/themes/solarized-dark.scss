@@ -103,6 +103,8 @@ $solarized-dark-il: #2aa198;
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
     @include hljs-override('string', $solarized-dark-s);
     @include hljs-override('attr', $solarized-dark-na);
+    @include hljs-override('attribute', $solarized-dark-n);
+    @include hljs-override('selector-tag', $solarized-dark-nt);
     @include hljs-override('keyword', $solarized-dark-k);
     @include hljs-override('variable', $solarized-dark-nv);
     @include hljs-override('variable.language_', $solarized-dark-k);
@@ -117,7 +119,8 @@ $solarized-dark-il: #2aa198;
     @include hljs-override('bullet', $solarized-dark-n);
     @include hljs-override('subst', $solarized-dark-p);
     @include hljs-override('symbol', $solarized-dark-ni);
-    
+    @include hljs-override('title.class_.inherited__', $solarized-dark-no);
+
   // Line numbers
   .file-line-num {
     @include line-number-link($solarized-dark-line-color);
@@ -189,7 +192,11 @@ $solarized-dark-il: #2aa198;
     .diff-line-num.new,
     .line-coverage.new,
     .line-codequality.new,
-    .line_content.new {
+    .line_content.new,
+    .diff-line-num.new-nomappinginraw,
+    .line-coverage.new-nomappinginraw,
+    .line-codequality.new-nomappinginraw,
+    .line_content.new-nomappinginraw {
       @include diff-background($solarized-dark-new-bg, $solarized-dark-new-idiff, $solarized-dark-border);
 
       &::before,
@@ -201,7 +208,11 @@ $solarized-dark-il: #2aa198;
     .diff-line-num.old,
     .line-coverage.old,
     .line-codequality.old,
-    .line_content.old {
+    .line_content.old,
+    .diff-line-num.old-nomappinginraw,
+    .line-coverage.old-nomappinginraw,
+    .line-codequality.old-nomappinginraw,
+    .line_content.old-nomappinginraw {
       @include diff-background($solarized-dark-old-bg, $solarized-dark-old-idiff, $solarized-dark-border);
 
       &::before,

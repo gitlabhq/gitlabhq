@@ -74,6 +74,9 @@ export const INVITE_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Manage member
 export const CANCEL_BUTTON_TEXT = s__('InviteMembersModal|Cancel');
 export const CANCEL_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Explore paid plans');
 export const HEADER_CLOSE_LABEL = s__('InviteMembersModal|Close invite team members');
+export const MEMBER_ERROR_LIST_TEXT = s__(
+  'InviteMembersModal|Review the invite errors and try again:',
+);
 
 export const MEMBER_MODAL_LABELS = {
   modal: {
@@ -109,6 +112,7 @@ export const MEMBER_MODAL_LABELS = {
     title: MEMBERS_TASKS_PROJECTS_TITLE,
   },
   toastMessageSuccessful: TOAST_MESSAGE_SUCCESSFUL,
+  memberErrorListText: MEMBER_ERROR_LIST_TEXT,
 };
 
 export const GROUP_MODAL_LABELS = {

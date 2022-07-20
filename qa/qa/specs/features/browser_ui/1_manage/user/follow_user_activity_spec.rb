@@ -24,6 +24,7 @@ module QA
       let(:group) do
         group = QA::Resource::Group.fabricate_via_api! do |group|
           group.path = "group_for_follow_user_activity_#{SecureRandom.hex(8)}"
+          group.api_client = admin_api_client
         end
         group.add_member(followed_user, Resource::Members::AccessLevel::MAINTAINER)
         group

@@ -175,6 +175,7 @@ Example response:
   "container_registry_expiration_policies_caching": true,
   "container_registry_expiration_policies_worker_capacity": 4,
   "container_registry_token_expire_delay": 5,
+  "package_registry_cleanup_policies_worker_capacity": 2,
   "repository_storages": ["default"],
   "plantuml_enabled": false,
   "plantuml_url": null,
@@ -271,6 +272,7 @@ listed in the descriptions of the relevant settings.
 | `container_registry_expiration_policies_caching`  | boolean | no                                   | Caching during the execution of [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
 | `container_registry_expiration_policies_worker_capacity`  | integer          | no                  | Number of workers for [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
+| `package_registry_cleanup_policies_worker_capacity`  | integer          | no                  | Number of workers assigned to the packages cleanup policies. |
 | `deactivate_dormant_users`               | boolean          | no                                   | Enable [automatic deactivation of dormant users](../user/admin_area/moderate_users.md#automatically-deactivate-dormant-users). |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
 | `default_branch_name`                    | string           | no                                   | [Instance-level custom initial branch name](../user/project/repository/branches/default.md#instance-level-custom-initial-branch-name) ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225258) in GitLab 13.2). |
@@ -379,6 +381,9 @@ listed in the descriptions of the relevant settings.
 | `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                                   | Maximum allowable lifetime for access tokens in days. |
 | `max_ssh_key_lifetime` **(ULTIMATE SELF)** | integer        | no                                   | Maximum allowable lifetime for SSH keys in days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6. |
 | `metrics_method_call_threshold`          | integer          | no                                   | A method call is only tracked when it takes longer than the given amount of milliseconds. |
+| `max_number_of_repository_downloads` **(ULTIMATE SELF)**                             | integer          | no | Maximum number of unique repositories a user can download in the specified time period before they are banned. Default: 0, Maximum: 10,000 repositories. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87980) in GitLab 15.1. |
+| `max_number_of_repository_downloads_within_time_period` **(ULTIMATE SELF)**          | integer          | no | Reporting time period (in seconds). Default: 0, Maximum: 864000 seconds (10 days). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87980) in GitLab 15.1. |
+| `git_rate_limit_users_allowlist` **(ULTIMATE SELF)**          | array of strings          | no                                   | List of usernames excluded from Git anti-abuse rate limits. Default: `[]`, Maximum: 100 usernames. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90815) in GitLab 15.2. |
 | `mirror_available`                       | boolean          | no                                   | Allow repository mirroring to configured by project Maintainers. If disabled, only Administrators can configure repository mirroring. |
 | `mirror_capacity_threshold` **(PREMIUM)** | integer          | no                                   | Minimum capacity to be available before scheduling more mirrors preemptively. |
 | `mirror_max_capacity` **(PREMIUM)**      | integer          | no                                   | Maximum number of mirrors that can be synchronizing at the same time. |

@@ -7,22 +7,33 @@ type: reference
 
 # CI/CD minutes quota **(PREMIUM)**
 
-[Shared runners](../runners/runners_scope.md#shared-runners) are shared with every project and group in a GitLab instance.
-When jobs run on shared runners, CI/CD minutes are used.
+Administrators can limit the amount of time that projects can use to run jobs on
+[shared runners](../runners/runners_scope.md#shared-runners) each month. This limit
+is tracked with a quota of CI/CD minutes.
 
-You can set limits on the number of CI/CD minutes that are used each month.
+By default, one minute of execution time by a single job uses
+one CI/CD minute. The total amount of CI/CD minutes used by a pipeline is
+[the sum of all its jobs' durations](#how-cicd-minute-usage-is-calculated).
+Jobs can run concurrently, so the total CI/CD minute usage can be higher than the
+end-to-end duration of a pipeline.
 
-- On GitLab.com, the quota of CI/CD minutes is set for each [namespace](../../user/group/index.md#namespaces),
-  and is determined by [your license tier](https://about.gitlab.com/pricing/).
-- On self-managed GitLab instances, the quota of CI/CD minutes for each namespace is set by administrators.
+On GitLab.com:
 
-In addition to the monthly quota, you can add more CI/CD minutes when needed.
+- CI/CD minutes quotas are enabled for both public and private projects, but public
+  projects [consume CI/CD minutes at a slower rate](#cost-factor).
+- The base monthly CI/CD minutes quota for a GitLab.com [namespace](../../user/group/index.md#namespaces)
+  is determined by its [license tier](https://about.gitlab.com/pricing/).
+- You can [purchase additional CI/CD minutes](#purchase-additional-cicd-minutes)
+  if you need more than the number of CI/CD minutes in your monthly quota.
 
-- On GitLab.com, you can [purchase additional CI/CD minutes](#purchase-additional-cicd-minutes).
-- On self-managed GitLab instances, administrators can [assign more CI/CD minutes](#set-the-quota-of-cicd-minutes-for-a-specific-namespace).
+On self-managed GitLab instances:
 
-[Specific runners](../runners/runners_scope.md#specific-runners)
-are not subject to a quota of CI/CD minutes.
+- CI/CD minutes quotas are disabled by default.
+- When enabled, CI/CD minutes quotas apply to private projects only.
+- Administrators can [assign more CI/CD minutes](#set-the-quota-of-cicd-minutes-for-a-specific-namespace)
+  if a namespace uses all the CI/CD minutes in its monthly quota.
+
+[Specific runners](../runners/runners_scope.md#specific-runners) are not subject to a quota of CI/CD minutes.
 
 ## Set the quota of CI/CD minutes for all namespaces
 
@@ -160,46 +171,43 @@ To purchase additional minutes for your personal namespace:
 After your payment is processed, the additional CI/CD minutes are added to your personal
 namespace.
 
-## How CI/CD minutes are calculated
+## How CI/CD minute usage is calculated
 
-CI/CD minutes for individual jobs are calculated based on:
-
-- The duration the job runs.
-- The visibility of the projects where the job runs.
-
-GitLab uses this formula to calculate CI/CD minutes consumed by a job:
+GitLab uses this formula to calculate the CI/CD minute usage of a job:
 
 ```plaintext
 Job duration * Cost factor
 ```
 
-- **Job duration**: The time, in seconds, that a job took to run on a shared runner.
-  It does not include time spent in `created` or `pending` status.
-- **Cost factor**: A number based on project visibility.
+- **Job duration**: The time, in seconds, that a job took to run on a shared runner,
+  not including time spent in the `created` or `pending` statuses.
+- [**Cost factor**](#cost-factor): A number based on project visibility.
 
-The number is transformed into minutes and added to the overall quota in the job's top-level namespace.
+The value is transformed into minutes and added to the count of used CI/CD minutes
+in the job's top-level namespace.
 
-For example:
+For example, if a user `alice` runs a pipeline:
 
-- A user, `alice`, runs a pipeline under the `gitlab-org` namespace.
-- The CI/CD minutes consumed by each job in the pipeline are added to the
-  overall consumption for the `gitlab-org` namespace, not the `alice` namespace.
-- If a pipeline runs for one of the personal projects for `alice`, the CI/CD minutes
-  are added to the overall consumption for the `alice` namespace.
+- Under the `gitlab-org` namespace, the CI/CD minutes used by each job in the pipeline are
+  added to the overall consumption for the `gitlab-org` namespace, not the `alice` namespace.
+- For one of the personal projects in their namespace, the CI/CD minutes are added
+  to the overall consumption for the `alice` namespace.
 
 The CI/CD minutes used by one pipeline is the total CI/CD minutes used by all the jobs
-that ran in the pipeline. The CI/CD minute usage for a pipeline can be higher than
-the duration of the pipeline if many jobs ran at the same time.
+that ran in the pipeline. Jobs can run concurrently, so the total CI/CD minutes usage
+can be higher than the end-to-end duration of a pipeline.
 
 ### Cost factor
 
-The cost factor for a job running on a shared runner is:
+The cost factors for jobs running on shared runners on GitLab.com are:
 
-- `0.008` for public projects on GitLab SaaS, if [created 2021-07-17 or later](https://gitlab.com/gitlab-org/gitlab/-/issues/332708).
-  (For every 125 minutes of job time, you accrue 1 CI/CD minute.)
-- `0.008` for projects members of GitLab [Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
-  (For every 125 minutes of job time, you accrue 1 CI/CD minute.)
-- `0` for public projects on GitLab self-managed instances, and for GitLab SaaS public projects created before 2021-07-17.
+- `0.008` for public projects, and projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
+  For every 125 minutes of job execution time, you use 1 CI/CD minute.
+- `1` for internal and private projects.
+
+The cost factors on self-managed instances are:
+
+- `0` for public projects, so they do not consume CI/CD minutes.
 - `1` for internal and private projects.
 
 ### Additional costs on GitLab SaaS

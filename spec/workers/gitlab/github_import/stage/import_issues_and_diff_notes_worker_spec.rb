@@ -26,7 +26,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker do
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2 }, :notes)
+        .with(project.id, { '123' => 2 }, :issue_events)
 
       worker.import(client, project)
     end

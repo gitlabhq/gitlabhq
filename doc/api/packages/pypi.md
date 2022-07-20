@@ -20,6 +20,10 @@ These endpoints do not adhere to the standard API authentication methods.
 See the [PyPI package registry documentation](../../user/packages/pypi_repository/index.md)
 for details on which headers and token types are supported.
 
+NOTE:
+[Twine 3.4.2](https://twine.readthedocs.io/en/stable/changelog.html?highlight=FIPS#id28) or greater
+is recommended when [FIPS mode](../../development/fips_compliance.md) is enabled.
+
 ## Download a package file from a group
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.

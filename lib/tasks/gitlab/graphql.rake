@@ -15,10 +15,8 @@ namespace :gitlab do
   # Also avoids pipeline failures in case developer
   # dumps schema with flags disabled locally before pushing
   task enable_feature_flags: :environment do
-    class Feature
-      def self.enabled?(*args)
-        true
-      end
+    def Feature.enabled?(*args)
+      true
     end
   end
 

@@ -7,13 +7,35 @@ RSpec.describe "Admin::Projects" do
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:user) { create :user }
-  let(:project) { create(:project, :with_namespace_settings) }
-  let(:current_user) { create(:admin) }
+  let_it_be_with_reload(:user) { create :user }
+  let_it_be_with_reload(:project) { create(:project, :with_namespace_settings) }
+  let_it_be_with_reload(:current_user) { create(:admin) }
 
   before do
     sign_in(current_user)
     gitlab_enable_admin_mode_sign_in(current_user)
+  end
+
+  describe 'when membership is set to expire', :js do
+    it 'renders relative time' do
+      expire_time = Time.current + 2.days
+      current_user.update!(time_display_relative: true)
+      project.add_member(user, Gitlab::Access::REPORTER, expires_at: expire_time)
+
+      visit admin_project_path(project)
+
+      expect(page).to have_content(/Expires in \d day/)
+    end
+
+    it 'renders absolute time' do
+      expire_time = Time.current.tomorrow.middle_of_day
+      current_user.update!(time_display_relative: false)
+      project.add_member(user, Gitlab::Access::REPORTER, expires_at: expire_time)
+
+      visit admin_project_path(project)
+
+      expect(page).to have_content("Expires on #{expire_time.strftime('%b %-d')}")
+    end
   end
 
   describe "GET /admin/projects" do

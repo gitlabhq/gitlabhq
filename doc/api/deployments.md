@@ -345,7 +345,7 @@ POST /projects/:id/deployments
 | `sha`         | string         | yes      | The SHA of the commit that is deployed.                                                                         |
 | `ref`         | string         | yes      | The name of the branch or tag that is deployed.                                                                 |
 | `tag`         | boolean        | yes      | A boolean that indicates if the deployed ref is a tag (`true`) or not (`false`).                                |
-| `status`      | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, or `canceled`.           |
+| `status`      | string         | yes      | The status to filter deployments by. One of `running`, `success`, `failed`, or `canceled`.                      |
 
 ```shell
 curl --data "environment=production&sha=a91957a858320c0e17f3a0eca7cfacbff50ea29a&ref=main&tag=false&status=success" \
@@ -400,7 +400,7 @@ PUT /projects/:id/deployments/:deployment_id
 |------------------|----------------|----------|---------------------|
 | `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `deployment_id`  | integer        | yes      | The ID of the deployment to update. |
-| `status`         | string         | no       | The new status of the deployment. One of `created`, `running`, `success`, `failed`, or `canceled`.           |
+| `status`         | string         | yes      | The new status of the deployment. One of `running`, `success`, `failed`, or `canceled`.                         |
 
 ```shell
 curl --request PUT --data "status=success" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42"

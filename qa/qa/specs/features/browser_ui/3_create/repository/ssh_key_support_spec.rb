@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'SSH keys support', :smoke, :skip_fips_env do
+    describe 'SSH keys support', :smoke do
       key_title = "key for ssh tests #{Time.now.to_f}"
       key = nil
 
@@ -16,7 +16,7 @@ module QA
         end
 
         expect(page).to have_content(key.title)
-        expect(page).to have_content(key.md5_fingerprint)
+        expect(page).to have_content(key.sha256_fingerprint)
       end
 
       # Note this context ensures that the example it contains is executed after the example above. Be aware of the order of execution if you add new examples in either context.
@@ -29,7 +29,7 @@ module QA
           end
 
           expect(page).not_to have_content("Title: #{key.title}")
-          expect(page).not_to have_content(key.md5_fingerprint)
+          expect(page).not_to have_content(key.sha256_fingerprint)
         end
       end
     end

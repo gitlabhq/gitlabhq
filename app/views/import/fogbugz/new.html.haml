@@ -8,7 +8,7 @@
   = _('Import projects from FogBugz')
 %hr
 
-= form_tag callback_import_fogbugz_path do
+= form_tag callback_import_fogbugz_path(namespace_id: params[:namespace_id]) do
   %p
     = _("To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import.")
   .form-group.row

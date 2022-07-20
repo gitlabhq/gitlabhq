@@ -65,7 +65,7 @@ function simplifyWidgetName(componentName) {
 function baseRedisEventName(extensionName) {
   const redisEventName = extensionName.replace(/([A-Z])/g, '_$1').toLowerCase();
 
-  return `i_merge_request_widget_${redisEventName}`;
+  return `i_code_review_merge_request_widget_${redisEventName}`;
 }
 
 function whenable(bus) {

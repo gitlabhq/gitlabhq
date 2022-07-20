@@ -7,7 +7,7 @@ type: reference
 
 # Syntax Highlighting **(FREE)**
 
-GitLab provides syntax highlighting on all files through the
+GitLab provides syntax highlighting on all files through [Highlight.js](https://github.com/highlightjs/highlight.js/) and the
 [Rouge](https://rubygems.org/gems/rouge) Ruby gem. It attempts to guess what language
 to use based on the file extension, which most of the time is sufficient.
 

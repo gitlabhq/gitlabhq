@@ -34,22 +34,32 @@ describe('Test reports suite table', () => {
 
   const createComponent = ({ suite = testSuite, perPage = 20, errorMessage } = {}) => {
     store = new Vuex.Store({
-      state: {
-        blobPath,
+      modules: {
         testReports: {
-          test_suites: [suite],
+          namespaced: true,
+          state: {
+            blobPath,
+            testReports: {
+              test_suites: [suite],
+            },
+            selectedSuiteIndex: 0,
+            pageInfo: {
+              page: 1,
+              perPage,
+            },
+            errorMessage,
+          },
+          getters,
         },
-        selectedSuiteIndex: 0,
-        pageInfo: {
-          page: 1,
-          perPage,
-        },
-        errorMessage,
       },
-      getters,
     });
 
     wrapper = shallowMountExtended(SuiteTable, {
+      provide: {
+        blobPath: '/blob/path',
+        summaryEndpoint: '/summary.json',
+        suiteEndpoint: '/suite.json',
+      },
       store,
       stubs: { GlFriendlyWrap },
     });

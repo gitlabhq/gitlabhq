@@ -1,6 +1,9 @@
-%fieldset
-  %legend.gl-border-bottom-0= _('Admin notes')
-  .form-group.row
-    .col-12
-      = f.label :note, s_('Admin|Note')
-      = f.text_area :note, class: 'form-control gl-form-input gl-form-textarea'
+.gl-mb-3
+  .row
+    .col-lg-4
+      %h4.gl-mt-0
+        = _('Admin notes')
+    .col-lg-8
+      .form-group.gl-form-group{ role: 'group' }
+        = f.label :note, s_('Admin|Note')
+        = f.text_area :note, class: 'form-control gl-form-input gl-form-textarea'

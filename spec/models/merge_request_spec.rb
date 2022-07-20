@@ -658,7 +658,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     before do
-      project.add_user(user, :developer)
+      project.add_member(user, :developer)
     end
 
     describe '.total_time_to_merge' do
@@ -4286,6 +4286,18 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
+    describe 'transition to closed' do
+      context 'with merge error' do
+        subject { create(:merge_request, merge_error: 'merge error') }
+
+        it 'clears merge error' do
+          subject.close!
+
+          expect(subject.reload.merge_error).to eq(nil)
+        end
+      end
+    end
+
     describe 'transition to cannot_be_merged' do
       let(:notification_service) { double(:notification_service) }
       let(:todo_service) { double(:todo_service) }
@@ -4903,7 +4915,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
         .to delegate_method(:builds_with_coverage)
         .to(:head_pipeline)
         .with_prefix
-        .with_arguments(allow_nil: true)
+        .allow_nil
     end
   end
 

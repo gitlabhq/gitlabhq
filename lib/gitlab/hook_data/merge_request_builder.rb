@@ -62,7 +62,8 @@ module Gitlab
           assignee_id: merge_request.assignee_ids.first, # This key is deprecated
           labels: merge_request.labels_hook_attrs,
           state: merge_request.state, # This key is deprecated
-          blocking_discussions_resolved: merge_request.mergeable_discussions_state?
+          blocking_discussions_resolved: merge_request.mergeable_discussions_state?,
+          first_contribution: merge_request.first_contribution?
         }
 
         merge_request.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)

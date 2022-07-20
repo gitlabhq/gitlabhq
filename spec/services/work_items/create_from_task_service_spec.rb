@@ -32,7 +32,7 @@ RSpec.describe WorkItems::CreateFromTaskService do
       expect do
         service_result
       end.to not_change(WorkItem, :count).and(
-        not_change(IssueLink, :count)
+        not_change(WorkItems::ParentLink, :count)
       )
     end
   end
@@ -47,12 +47,14 @@ RSpec.describe WorkItems::CreateFromTaskService do
     context 'when work item params are valid' do
       it { is_expected.to be_success }
 
-      it 'creates a work item and links it to the original work item successfully' do
+      it 'creates a work item and creates parent link to the original work item' do
         expect do
           service_result
         end.to change(WorkItem, :count).by(1).and(
-          change(IssueLink, :count)
+          change(WorkItems::ParentLink, :count).by(1)
         )
+
+        expect(work_item_to_update.reload.work_item_children).not_to be_empty
       end
 
       it 'replaces the original issue markdown description with new work item reference' do
@@ -73,7 +75,7 @@ RSpec.describe WorkItems::CreateFromTaskService do
         expect do
           service_result
         end.to not_change(WorkItem, :count).and(
-          not_change(IssueLink, :count)
+          not_change(WorkItems::ParentLink, :count)
         )
       end
 

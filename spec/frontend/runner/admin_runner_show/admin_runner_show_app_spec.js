@@ -9,6 +9,7 @@ import { redirectTo } from '~/lib/utils/url_utility';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/runner/components/runner_header.vue';
+import RunnerDetails from '~/runner/components/runner_details.vue';
 import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
@@ -37,6 +38,7 @@ describe('AdminRunnerShowApp', () => {
   let mockRunnerQuery;
 
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
+  const findRunnerDetails = () => wrapper.findComponent(RunnerDetails);
   const findRunnerDeleteButton = () => wrapper.findComponent(RunnerDeleteButton);
   const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
   const findRunnerPauseButton = () => wrapper.findComponent(RunnerPauseButton);
@@ -179,10 +181,30 @@ describe('AdminRunnerShowApp', () => {
     });
   });
 
+  describe('When loading', () => {
+    beforeEach(() => {
+      mockRunnerQueryResult();
+
+      createComponent();
+    });
+
+    it('does not show runner details', () => {
+      expect(findRunnerDetails().exists()).toBe(false);
+    });
+
+    it('does not show runner jobs', () => {
+      expect(findRunnersJobs().exists()).toBe(false);
+    });
+  });
+
   describe('When there is an error', () => {
     beforeEach(async () => {
       mockRunnerQuery = jest.fn().mockRejectedValueOnce(new Error('Error!'));
       await createComponent();
+    });
+
+    it('does not show runner details', () => {
+      expect(findRunnerDetails().exists()).toBe(false);
     });
 
     it('error is reported to sentry', () => {
@@ -201,13 +223,6 @@ describe('AdminRunnerShowApp', () => {
     const stubs = {
       GlTab,
       GlTabs,
-      RunnerDetails: {
-        template: `
-          <div>
-            <slot name="jobs-tab"></slot>
-          </div>
-        `,
-      },
     };
 
     it('without a runner, shows no jobs', () => {

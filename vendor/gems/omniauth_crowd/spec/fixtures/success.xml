@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<user name="foo" expand="attributes">
+	<link rel="self" href="http://crowd.example.org/crowd/rest/usermanagement/latest/user?username=foo"/>
+	<first-name>Foo</first-name>
+	<last-name>Foobaz</last-name>
+	<display-name>Foo Foobaz</display-name>
+	<email>foo@example.org</email>
+	<password><link rel="edit" href="http://crowd.example.org/crowd/rest/usermanagement/latest/user/password?username=foo"/></password>
+	<active>true</active>
+	<attributes><link rel="self" href="http://crowd.example.org/crowd/rest/usermanagement/latest/user/attribute?username=foo"/></attributes>
+</user>

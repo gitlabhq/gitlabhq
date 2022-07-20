@@ -1,0 +1,9 @@
+---
+table_name: project_relation_exports
+classes:
+- Projects::ImportExport::RelationExport
+feature_categories:
+- importers
+description: Used to track the generation of relation export files for projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90624
+milestone: '15.2'

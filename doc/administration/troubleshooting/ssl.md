@@ -9,7 +9,7 @@ type: reference
 
 This page contains a list of common SSL-related errors and scenarios that you
 may encounter while working with GitLab. It should serve as an addition to the
-main SSL docs available here:
+main SSL documentation:
 
 - [Omnibus SSL Configuration](https://docs.gitlab.com/omnibus/settings/ssl.html).
 - [Self-signed certificates or custom Certification Authorities for GitLab Runner](https://docs.gitlab.com/runner/configuration/tls-self-signed.html).
@@ -110,8 +110,7 @@ https://gitlab.domain.tld/api/v4/jobs/request: Post https://gitlab.domain.tld/ap
 x509: certificate signed by unknown authority
 ```
 
-If you encounter a similar problem, add your certificate to `/etc/gitlab-runner/certs`,
-and the restart the runner by running `gitlab-runner restart`.
+Follow the details in [Self-signed certificates or custom Certification Authorities for GitLab Runner](https://docs.gitlab.com/runner/configuration/tls-self-signed.html).
 
 ## Mirroring a remote GitLab repository that uses a self-signed SSL certificate
 
@@ -237,7 +236,7 @@ remote server that is serving only HTTP.
 
 One scenario is that you're using [object storage](../object_storage.md), which
 isn't served under HTTPS. GitLab is misconfigured and attempts a TLS handshake,
-but the object storage will respond with plain HTTP.
+but the object storage responds with plain HTTP.
 
 ## `schannel: SEC_E_UNTRUSTED_ROOT`
 
@@ -247,7 +246,7 @@ If you're on Windows and get the following error:
 Fatal: unable to access 'https://gitlab.domain.tld/group/project.git': schannel: SEC_E_UNTRUSTED_ROOT (0x80090325) - The certificate chain was issued by an authority that is not trusted."
 ```
 
-You may need to specify that Git should use OpenSSL:
+You must specify that Git should use OpenSSL:
 
 ```shell
 git config --system http.sslbackend openssl

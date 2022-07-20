@@ -100,6 +100,7 @@ ci_cd_settings:
     forward_deployment_enabled: ci_forward_deployment_enabled
     job_token_scope_enabled: ci_job_token_scope_enabled
     separated_caches: ci_separated_caches
+    opt_in_jwt: ci_opt_in_jwt
 
 build_import_state: # import_state
   unexposed_attributes:
@@ -123,6 +124,11 @@ project_feature:
     - created_at
     - metrics_dashboard_access_level
     - package_registry_access_level
+    - monitor_access_level
+    - infrastructure_access_level
+    - feature_flags_access_level
+    - environments_access_level
+    - releases_access_level
     - project_id
     - updated_at
   computed_attributes:

@@ -10,11 +10,11 @@ RSpec.describe Gitlab::Tracking do
     stub_application_setting(snowplow_cookie_domain: '.gitfoo.com')
     stub_application_setting(snowplow_app_id: '_abc123_')
 
-    described_class.instance_variable_set("@snowplow", nil)
+    described_class.instance_variable_set("@tracker", nil)
   end
 
   after do
-    described_class.instance_variable_set("@snowplow", nil)
+    described_class.instance_variable_set("@tracker", nil)
   end
 
   describe '.options' do
@@ -31,6 +31,26 @@ RSpec.describe Gitlab::Tracking do
         end
 
         subject.options(nil)
+      end
+    end
+
+    shared_examples 'delegates to SnowplowMicro destination with proper options' do
+      it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::SnowplowMicro
+
+      it 'returns useful client options' do
+        expected_fields = {
+          namespace: 'gl',
+          hostname: 'localhost:9090',
+          cookieDomain: '.gitlab.com',
+          appId: '_abc123_',
+          protocol: 'http',
+          port: 9090,
+          forceSecureTracker: false,
+          formTracking: true,
+          linkClickTracking: true
+        }
+
+        expect(subject.options(nil)).to match(expected_fields)
       end
     end
 
@@ -53,26 +73,31 @@ RSpec.describe Gitlab::Tracking do
 
     context 'when destination is SnowplowMicro' do
       before do
-        stub_env('SNOWPLOW_MICRO_ENABLE', '1')
         allow(Rails.env).to receive(:development?).and_return(true)
       end
 
-      it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::SnowplowMicro
+      context "enabled with yml config" do
+        let(:snowplow_micro_settings) do
+          {
+            enabled: true,
+            address: "localhost:9090"
+          }
+        end
 
-      it 'returns useful client options' do
-        expected_fields = {
-          namespace: 'gl',
-          hostname: 'localhost:9090',
-          cookieDomain: '.gitlab.com',
-          appId: '_abc123_',
-          protocol: 'http',
-          port: 9090,
-          forceSecureTracker: false,
-          formTracking: true,
-          linkClickTracking: true
-        }
+        before do
+          stub_config(snowplow_micro: snowplow_micro_settings)
+        end
 
-        expect(subject.options(nil)).to match(expected_fields)
+        it_behaves_like 'delegates to SnowplowMicro destination with proper options'
+      end
+
+      context "enabled with env variable" do
+        before do
+          allow(Gitlab.config).to receive(:snowplow_micro).and_raise(Settingslogic::MissingSetting)
+          stub_env('SNOWPLOW_MICRO_ENABLE', '1')
+        end
+
+        it_behaves_like 'delegates to SnowplowMicro destination with proper options'
       end
     end
 

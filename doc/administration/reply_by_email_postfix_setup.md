@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Set up Postfix for incoming email **(FREE SELF)**
 
-This document will take you through the steps of setting up a basic Postfix mail
+This document takes you through the steps of setting up a basic Postfix mail
 server with IMAP authentication on Ubuntu, to be used with [incoming email](incoming_email.md).
 
 The instructions make the assumption that you are using the email address `incoming@gitlab.example.com`, that is, username `incoming` on host `gitlab.example.com`. Don't forget to change it to your actual host when executing the example code snippets.
@@ -46,7 +46,7 @@ The instructions make the assumption that you are using the email address `incom
    sudo passwd incoming
    ```
 
-   Be sure not to forget this, you'll need it later.
+   Be sure not to forget this, you will need it later.
 
 ## Test the out-of-the-box setup
 

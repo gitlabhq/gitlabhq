@@ -128,7 +128,7 @@ class RemoteMirror < ApplicationRecord
   def sync
     return unless sync?
 
-    if recently_scheduled?
+    if schedule_with_delay?
       RepositoryUpdateRemoteMirrorWorker.perform_in(backoff_delay, self.id, Time.current)
     else
       RepositoryUpdateRemoteMirrorWorker.perform_async(self.id, Time.current)
@@ -261,7 +261,8 @@ class RemoteMirror < ApplicationRecord
     super
   end
 
-  def recently_scheduled?
+  def schedule_with_delay?
+    return false if Feature.enabled?(:remote_mirror_no_delay, project, type: :ops)
     return false unless self.last_update_started_at
 
     self.last_update_started_at >= Time.current - backoff_delay

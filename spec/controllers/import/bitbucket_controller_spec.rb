@@ -45,24 +45,27 @@ RSpec.describe Import::BitbucketController do
     end
 
     context "when auth state param is valid" do
+      let(:expires_at) { Time.current + 1.day }
+      let(:expires_in) { 1.day }
+      let(:access_token) do
+        double(token: token,
+          secret: secret,
+          expires_at: expires_at,
+          expires_in: expires_in,
+          refresh_token: refresh_token)
+      end
+
       before do
         session[:bitbucket_auth_state] = 'state'
       end
 
       it "updates access token" do
-        expires_at = Time.current + 1.day
-        expires_in = 1.day
-        access_token = double(token: token,
-                              secret: secret,
-                              expires_at: expires_at,
-                              expires_in: expires_in,
-                              refresh_token: refresh_token)
         allow_any_instance_of(OAuth2::Client)
           .to receive(:get_token)
           .with(hash_including(
                   'grant_type' => 'authorization_code',
                   'code' => code,
-                  redirect_uri: users_import_bitbucket_callback_url),
+                  'redirect_uri' => users_import_bitbucket_callback_url),
                 {})
           .and_return(access_token)
         stub_omniauth_provider('bitbucket')
@@ -75,6 +78,18 @@ RSpec.describe Import::BitbucketController do
         expect(session[:bitbucket_expires_in]).to eq(expires_in)
         expect(controller).to redirect_to(status_import_bitbucket_url)
       end
+
+      it "passes namespace_id query param to status if provided" do
+        namespace_id = 30
+
+        allow_any_instance_of(OAuth2::Client)
+          .to receive(:get_token)
+          .and_return(access_token)
+
+        get :callback, params: { code: code, state: 'state', namespace_id: namespace_id }
+
+        expect(controller).to redirect_to(status_import_bitbucket_url(namespace_id: namespace_id))
+      end
     end
   end
 
@@ -82,7 +97,6 @@ RSpec.describe Import::BitbucketController do
     before do
       @repo = double(name: 'vim', slug: 'vim', owner: 'asd', full_name: 'asd/vim', clone_url: 'http://test.host/demo/url.git', 'valid?' => true)
       @invalid_repo = double(name: 'mercurialrepo', slug: 'mercurialrepo', owner: 'asd', full_name: 'asd/mercurialrepo', clone_url: 'http://test.host/demo/mercurialrepo.git', 'valid?' => false)
-      allow(controller).to receive(:provider_url).and_return('http://demobitbucket.org')
     end
 
     context "when token does not exists" do
@@ -109,10 +123,6 @@ RSpec.describe Import::BitbucketController do
       end
 
       it_behaves_like 'import controller status' do
-        before do
-          allow(controller).to receive(:provider_url).and_return('http://demobitbucket.org')
-        end
-
         let(:repo) { @repo }
         let(:repo_id) { @repo.full_name }
         let(:import_source) { @repo.full_name }

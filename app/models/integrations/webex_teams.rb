@@ -19,9 +19,6 @@ module Integrations
       s_("WebexTeamsService|Send notifications about project events to a Webex Teams conversation. %{docs_link}") % { docs_link: docs_link.html_safe }
     end
 
-    def event_field(event)
-    end
-
     def default_channel_placeholder
     end
 
@@ -38,7 +35,7 @@ module Integrations
           type: 'select',
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: branch_choices
+          choices: self.class.branch_choices
         }
       ]
     end
@@ -47,7 +44,7 @@ module Integrations
 
     def notify(message, opts)
       header = { 'Content-Type' => 'application/json' }
-      response = Gitlab::HTTP.post(webhook, headers: header, body: { markdown: message.summary }.to_json, use_read_total_timeout: true)
+      response = Gitlab::HTTP.post(webhook, headers: header, body: { markdown: message.summary }.to_json)
 
       response if response.success?
     end

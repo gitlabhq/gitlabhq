@@ -377,7 +377,7 @@ module ProjectsHelper
       canDisableEmails: can_disable_emails?(project, current_user),
       canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
-      visibilityHelpPath: help_page_path('public_access/public_access'),
+      visibilityHelpPath: help_page_path('user/public_access'),
       registryAvailable: Gitlab.config.registry.enabled,
       registryHelpPath: help_page_path('user/packages/container_registry/index'),
       lfsAvailable: Gitlab.config.lfs.enabled,
@@ -388,7 +388,8 @@ module ProjectsHelper
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
       pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control'),
-      issuesHelpPath: help_page_path('user/project/issues/index')
+      issuesHelpPath: help_page_path('user/project/issues/index'),
+      membersPagePath: project_project_members_path(project)
     }
   end
 
@@ -684,7 +685,6 @@ module ProjectsHelper
       product_analytics
       metrics_dashboard
       feature_flags
-      tracings
       terraform
     ]
   end

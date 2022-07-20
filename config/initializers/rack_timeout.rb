@@ -20,3 +20,7 @@ if Gitlab::Runtime.puma? && !Rails.env.test?
   observer = Gitlab::Cluster::RackTimeoutObserver.new
   Rack::Timeout.register_state_change_observer(:gitlab_rack_timeout, &observer.callback)
 end
+
+unless Gitlab::Utils.to_boolean(ENV['GITLAB_RAILS_RACK_TIMEOUT_ENABLE_LOGGING'], default: true)
+  Rack::Timeout::Logger.disable
+end

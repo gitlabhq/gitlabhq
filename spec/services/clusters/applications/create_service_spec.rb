@@ -168,29 +168,6 @@ RSpec.describe Clusters::Applications::CreateService do
           subject
         end
       end
-
-      context 'elastic stack application' do
-        let(:params) do
-          {
-            application: 'elastic_stack'
-          }
-        end
-
-        before do
-          create(:clusters_applications_ingress, :installed, external_ip: "127.0.0.0", cluster: cluster)
-          expect_any_instance_of(Clusters::Applications::ElasticStack)
-            .to receive(:make_scheduled!)
-            .and_call_original
-        end
-
-        it 'creates the application' do
-          expect do
-            subject
-
-            cluster.reload
-          end.to change(cluster, :application_elastic_stack)
-        end
-      end
     end
 
     context 'invalid application' do

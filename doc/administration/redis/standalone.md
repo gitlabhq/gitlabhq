@@ -44,7 +44,7 @@ Omnibus GitLab:
 
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Note the Redis node's IP address or hostname, port, and
-   Redis password. These will be necessary when [configuring the GitLab application servers](#set-up-the-gitlab-rails-application-instance).
+   Redis password. These are necessary when [configuring the GitLab application servers](#set-up-the-gitlab-rails-application-instance).
 
 [Advanced configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
 are supported and can be added if needed.

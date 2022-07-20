@@ -84,8 +84,74 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
       Gitlab::WebHooks::RecursionDetection.set_request_uuid(uuid)
     end
 
+    context 'when there is an interpolation error' do
+      let(:error) { ::WebHook::InterpolationError.new('boom') }
+
+      before do
+        stub_full_request(project_hook.url, method: :post)
+        allow(project_hook).to receive(:interpolated_url).and_raise(error)
+      end
+
+      it 'logs the error' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(error)
+
+        expect(service_instance).to receive(:log_execution).with(
+          execution_duration: (be > 0),
+          response: have_attributes(code: 200)
+        )
+
+        service_instance.execute
+      end
+    end
+
+    context 'when there are URL variables' do
+      before do
+        project_hook.update!(
+          url: 'http://example.com/{one}/{two}',
+          url_variables: { 'one' => 'a', 'two' => 'b' }
+        )
+      end
+
+      it 'POSTs to the interpolated URL, and logs the hook.url' do
+        stub_full_request(project_hook.interpolated_url, method: :post)
+
+        expect(service_instance).to receive(:queue_log_execution_with_retry).with(
+          include(url: project_hook.url),
+          :ok
+        )
+
+        service_instance.execute
+
+        expect(WebMock)
+          .to have_requested(:post, stubbed_hostname(project_hook.interpolated_url)).once
+      end
+
+      context 'there is userinfo' do
+        before do
+          project_hook.update!(url: 'http://{one}:{two}@example.com')
+          stub_full_request('http://example.com', method: :post)
+        end
+
+        it 'POSTs to the interpolated URL, and logs the hook.url' do
+          expect(service_instance).to receive(:queue_log_execution_with_retry).with(
+            include(url: project_hook.url),
+            :ok
+          )
+
+          service_instance.execute
+
+          expect(WebMock)
+            .to have_requested(:post, stubbed_hostname('http://example.com'))
+            .with(headers: headers.merge('Authorization' => 'Basic YTpi'))
+            .once
+        end
+      end
+    end
+
     context 'when token is defined' do
-      let_it_be(:project_hook) { create(:project_hook, :token) }
+      before do
+        project_hook.token = generate(:token)
+      end
 
       it 'POSTs to the webhook URL' do
         stub_full_request(project_hook.url, method: :post)

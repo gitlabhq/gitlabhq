@@ -55,5 +55,10 @@ module Integrations
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(key, values: user_id)
     end
+
+    override :configurable_channels?
+    def configurable_channels?
+      true
+    end
   end
 end

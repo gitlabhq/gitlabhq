@@ -54,7 +54,7 @@ This section is for links to information elsewhere in the GitLab documentation.
   - Including [troubleshooting](../postgresql/replication_and_failover.md#troubleshooting)
     `gitlab-ctl patroni check-leader` and PgBouncer errors.
 
-- [Developer database documentation](../../development/index.md#database-guides),
+- [Developer database documentation](../../development/feature_development.md#database-guides),
   some of which is absolutely not for production use. Including:
   - Understanding EXPLAIN plans.
 

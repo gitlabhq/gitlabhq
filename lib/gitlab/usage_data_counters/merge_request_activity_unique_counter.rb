@@ -76,8 +76,19 @@ module Gitlab
           track_unique_action_by_user(MR_REOPEN_ACTION, user)
         end
 
-        def track_approve_mr_action(user:)
+        def track_approve_mr_action(user:, merge_request:)
           track_unique_action_by_user(MR_APPROVE_ACTION, user)
+
+          project = merge_request.target_project
+          return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
+
+          Gitlab::Tracking.event(
+            'merge_requests',
+            MR_APPROVE_ACTION,
+            project: project,
+            namespace: project.namespace,
+            user: user
+          )
         end
 
         def track_unapprove_mr_action(user:)

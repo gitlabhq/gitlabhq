@@ -2,7 +2,7 @@
 
 %section.settings.no-animate#js-gitpod-settings{ class: ('expanded' if expanded) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Gitpod')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
@@ -13,7 +13,7 @@
 
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-gitpod-settings'), html: { class: 'fieldset-form', id: 'gitpod-settings' } do |f|
-      = form_errors(@application_setting)
+      = form_errors(@application_setting, pajamas_alert: true)
 
       %fieldset
         .form-group

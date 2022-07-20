@@ -82,7 +82,7 @@ module Gitlab
         private
 
         def counter_name(suffix)
-          :"#{COUNTER_PREFIX}:#{name}_apdex:#{suffix}"
+          [COUNTER_PREFIX, "#{name}_apdex", suffix].join('_').to_sym
         end
 
         def numerator_counter
@@ -100,7 +100,7 @@ module Gitlab
         private
 
         def counter_name(suffix)
-          :"#{COUNTER_PREFIX}:#{name}:#{suffix}"
+          [COUNTER_PREFIX, name, suffix].join('_').to_sym
         end
 
         def numerator_counter

@@ -97,6 +97,33 @@ module API
               present presenter, with: ::API::Entities::Terraform::ModuleVersions
             end
 
+            get 'download' do
+              latest_version = packages.order_version.last&.version
+
+              render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found) if latest_version.nil?
+
+              download_path = api_v4_packages_terraform_modules_v1_module_version_download_path(
+                {
+                  module_namespace: params[:module_namespace],
+                  module_name: params[:module_name],
+                  module_system: params[:module_system],
+                  module_version: latest_version
+                },
+                true
+              )
+
+              redirect(download_path)
+            end
+
+            get do
+              latest_package = packages.order_version.last
+
+              render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found) if latest_package&.version.nil?
+
+              presenter = ::Terraform::ModuleVersionPresenter.new(latest_package, params[:module_system])
+              present presenter, with: ::API::Entities::Terraform::ModuleVersion
+            end
+
             params do
               includes :module_version
             end
@@ -132,6 +159,16 @@ module API
 
                   present_carrierwave_file!(package_file.file)
                 end
+              end
+
+              # This endpoint has to be the last within namespace '*module_version' block
+              # due to how the route matching works in grape
+              # format: false is required, otherwise grape splits the semver version into 2 params:
+              # params[:module_version] and params[:format],
+              # thus leading to an invalid/not found module version
+              get format: false do
+                presenter = ::Terraform::ModuleVersionPresenter.new(package, params[:module_system])
+                present presenter, with: ::API::Entities::Terraform::ModuleVersion
               end
             end
           end

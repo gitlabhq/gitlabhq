@@ -2,9 +2,6 @@
 
 require 'spec_helper'
 
-require 'google/rpc/status_pb'
-require 'google/protobuf/well_known_types'
-
 RSpec.describe Gitlab::GitalyClient::OperationService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
@@ -188,7 +185,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       end
 
       shared_examples 'a failed branch deletion' do
-        it 'raises a PreRecieveError' do
+        it 'raises a PreReceiveError' do
           expect_any_instance_of(Gitaly::OperationService::Stub)
             .to receive(:user_delete_branch).with(request, kind_of(Hash))
             .and_raise(custom_hook_error)
@@ -288,7 +285,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       end
 
       shared_examples 'a failed merge' do
-        it 'raises a PreRecieveError' do
+        it 'raises a PreReceiveError' do
           expect_any_instance_of(Gitaly::OperationService::Stub)
             .to receive(:user_merge_branch).with(kind_of(Enumerator), kind_of(Hash))
             .and_raise(custom_hook_error)
@@ -815,15 +812,5 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         expect { commit_patches }.to raise_error(GRPC::FailedPrecondition)
       end
     end
-  end
-
-  def new_detailed_error(error_code, error_message, details)
-    status_error = Google::Rpc::Status.new(
-      code: error_code,
-      message: error_message,
-      details: [Google::Protobuf::Any.pack(details)]
-    )
-
-    GRPC::BadStatus.new(error_code, error_message, { "grpc-status-details-bin" => Google::Rpc::Status.encode(status_error) })
   end
 end

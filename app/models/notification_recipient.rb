@@ -125,6 +125,10 @@ class NotificationRecipient
     @project ? @project.emails_disabled? : @group&.emails_disabled?
   end
 
+  def emails_enabled?
+    !emails_disabled?
+  end
+
   def read_ability
     return if @skip_read_ability
     return @read_ability if instance_variable_defined?(:@read_ability)

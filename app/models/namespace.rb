@@ -74,6 +74,8 @@ class Namespace < ApplicationRecord
   has_many :sync_events, class_name: 'Namespaces::SyncEvent'
 
   has_one :cluster_enabled_grant, inverse_of: :namespace, class_name: 'Clusters::ClusterEnabledGrant'
+  has_many :work_items, inverse_of: :namespace
+  has_many :issues, inverse_of: :namespace
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
@@ -341,6 +343,10 @@ class Namespace < ApplicationRecord
     end
   end
 
+  def emails_enabled?
+    !emails_disabled?
+  end
+
   def lfs_enabled?
     # User namespace will always default to the global setting
     Gitlab.config.lfs.enabled
@@ -450,9 +456,14 @@ class Namespace < ApplicationRecord
   end
 
   def pages_virtual_domain
+    cache = if Feature.enabled?(:cache_pages_domain_api, root_ancestor)
+              ::Gitlab::Pages::CacheControl.for_namespace(root_ancestor.id)
+            end
+
     Pages::VirtualDomain.new(
-      all_projects_with_pages.includes(:route, :project_feature, pages_metadatum: :pages_deployment),
-      trim_prefix: full_path
+      projects: all_projects_with_pages.includes(:route, :project_feature, pages_metadatum: :pages_deployment),
+      trim_prefix: full_path,
+      cache: cache
     )
   end
 

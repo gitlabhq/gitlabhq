@@ -23,7 +23,7 @@ RSpec.describe 'dev rake tasks' do
 
     subject(:setup_task) { run_rake_task('dev:setup') }
 
-    let(:connections) { Gitlab::Database.database_base_models.values.map(&:connection) }
+    let(:connections) { Gitlab::Database.database_base_models_with_gitlab_shared.values.map(&:connection) }
 
     it 'sets up the development environment', :aggregate_failures do
       expect(Rake::Task['gitlab:setup']).to receive(:invoke)
@@ -50,8 +50,12 @@ RSpec.describe 'dev rake tasks' do
   end
 
   describe 'terminate_all_connections' do
+    before do
+      allow(ActiveRecord::Base).to receive(:clear_all_connections!)
+    end
+
     let(:connections) do
-      Gitlab::Database.database_base_models.values.filter_map do |model|
+      Gitlab::Database.database_base_models_with_gitlab_shared.values.filter_map do |model|
         model.connection if Gitlab::Database.db_config_share_with(model.connection_db_config).nil?
       end
     end
@@ -75,6 +79,8 @@ RSpec.describe 'dev rake tasks' do
     it 'terminates all connections' do
       expect_connections_to_be_terminated
 
+      expect(ActiveRecord::Base).to receive(:clear_all_connections!)
+
       terminate_task
     end
 
@@ -82,6 +88,7 @@ RSpec.describe 'dev rake tasks' do
       it 'does not terminate connections' do
         expect(Rails.env).to receive(:production?).and_return(true)
         expect_connections_not_to_be_terminated
+        expect(ActiveRecord::Base).not_to receive(:clear_all_connections!)
 
         terminate_task
       end

@@ -223,6 +223,7 @@ RSpec.describe 'getting an issue list for a project' do
   end
 
   describe 'sorting and pagination' do
+    let_it_be(:sort_project) { create(:project, :public) }
     let_it_be(:data_path) { [:project, :issues] }
 
     def pagination_query(params)
@@ -237,8 +238,38 @@ RSpec.describe 'getting an issue list for a project' do
       data.map { |issue| issue['iid'].to_i }
     end
 
+    context 'when sorting by severity' do
+      let_it_be(:severty_issue1) { create(:issue, project: sort_project) }
+      let_it_be(:severty_issue2) { create(:issue, project: sort_project) }
+      let_it_be(:severty_issue3) { create(:issue, project: sort_project) }
+      let_it_be(:severty_issue4) { create(:issue, project: sort_project) }
+      let_it_be(:severty_issue5) { create(:issue, project: sort_project) }
+
+      before(:all) do
+        create(:issuable_severity, issue: severty_issue1, severity: :unknown)
+        create(:issuable_severity, issue: severty_issue2, severity: :low)
+        create(:issuable_severity, issue: severty_issue4, severity: :critical)
+        create(:issuable_severity, issue: severty_issue5, severity: :high)
+      end
+
+      context 'when ascending' do
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param)       { :SEVERITY_ASC }
+          let(:first_param)      { 2 }
+          let(:all_records) { [severty_issue3.iid, severty_issue1.iid, severty_issue2.iid, severty_issue5.iid, severty_issue4.iid] }
+        end
+      end
+
+      context 'when descending' do
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param)       { :SEVERITY_DESC }
+          let(:first_param)      { 2 }
+          let(:all_records) { [severty_issue4.iid, severty_issue5.iid, severty_issue2.iid, severty_issue1.iid, severty_issue3.iid] }
+        end
+      end
+    end
+
     context 'when sorting by due date' do
-      let_it_be(:sort_project) { create(:project, :public) }
       let_it_be(:due_issue1) { create(:issue, project: sort_project, due_date: 3.days.from_now) }
       let_it_be(:due_issue2) { create(:issue, project: sort_project, due_date: nil) }
       let_it_be(:due_issue3) { create(:issue, project: sort_project, due_date: 2.days.ago) }
@@ -263,7 +294,6 @@ RSpec.describe 'getting an issue list for a project' do
     end
 
     context 'when sorting by relative position' do
-      let_it_be(:sort_project) { create(:project, :public) }
       let_it_be(:relative_issue1) { create(:issue, project: sort_project, relative_position: 2000) }
       let_it_be(:relative_issue2) { create(:issue, project: sort_project, relative_position: nil) }
       let_it_be(:relative_issue3) { create(:issue, project: sort_project, relative_position: 1000) }
@@ -285,7 +315,6 @@ RSpec.describe 'getting an issue list for a project' do
     end
 
     context 'when sorting by priority' do
-      let_it_be(:sort_project) { create(:project, :public) }
       let_it_be(:on_project) { { project: sort_project } }
       let_it_be(:early_milestone) { create(:milestone, **on_project, due_date: 10.days.from_now) }
       let_it_be(:late_milestone) { create(:milestone, **on_project, due_date: 30.days.from_now) }
@@ -321,7 +350,6 @@ RSpec.describe 'getting an issue list for a project' do
     end
 
     context 'when sorting by label priority' do
-      let_it_be(:sort_project) { create(:project, :public) }
       let_it_be(:label1) { create(:label, project: sort_project, priority: 1) }
       let_it_be(:label2) { create(:label, project: sort_project, priority: 5) }
       let_it_be(:label3) { create(:label, project: sort_project, priority: 10) }
@@ -348,7 +376,6 @@ RSpec.describe 'getting an issue list for a project' do
     end
 
     context 'when sorting by milestone due date' do
-      let_it_be(:sort_project)     { create(:project, :public) }
       let_it_be(:early_milestone)  { create(:milestone, project: sort_project, due_date: 10.days.from_now) }
       let_it_be(:late_milestone)   { create(:milestone, project: sort_project, due_date: 30.days.from_now) }
       let_it_be(:milestone_issue1) { create(:issue, project: sort_project) }

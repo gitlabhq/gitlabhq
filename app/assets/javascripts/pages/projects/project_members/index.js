@@ -1,4 +1,5 @@
-import initImportAProjectModal from '~/invite_members/init_import_a_project_modal';
+import initImportProjectMembersTrigger from '~/invite_members/init_import_project_members_trigger';
+import initImportProjectMembersModal from '~/invite_members/init_import_project_members_modal';
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteGroupsModal from '~/invite_members/init_invite_groups_modal';
@@ -9,11 +10,12 @@ import { MEMBER_TYPES } from '~/members/constants';
 import { groupLinkRequestFormatter } from '~/members/utils';
 import { projectMemberRequestFormatter } from '~/projects/members/utils';
 
-initImportAProjectModal();
+initImportProjectMembersModal();
 initInviteMembersModal();
 initInviteGroupsModal();
 initInviteMembersTrigger();
 initInviteGroupTrigger();
+initImportProjectMembersTrigger();
 
 const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
 initMembersApp(document.querySelector('.js-project-members-list-app'), {
@@ -38,7 +40,7 @@ initMembersApp(document.querySelector('.js-project-members-list-app'), {
     },
   },
   [MEMBER_TYPES.group]: {
-    tableFields: SHARED_FIELDS.concat('granted'),
+    tableFields: SHARED_FIELDS.concat(['source', 'granted']),
     tableAttrs: {
       table: { 'data-qa-selector': 'groups_list' },
       tr: { 'data-qa-selector': 'group_row' },
@@ -46,7 +48,7 @@ initMembersApp(document.querySelector('.js-project-members-list-app'), {
     requestFormatter: groupLinkRequestFormatter,
     filteredSearchBar: {
       show: true,
-      tokens: [],
+      tokens: ['groups_with_inherited_permissions'],
       searchParam: 'search_groups',
       placeholder: s__('Members|Search groups'),
       recentSearchesStorageKey: 'project_group_links',

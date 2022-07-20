@@ -12,7 +12,7 @@
             - if todo.author
               = link_to_author(todo, self_added: todo.self_added?)
             - else
-              (removed)
+              = _('(removed)')
 
         %span.title-item.action-name{ data: { qa_selector: "todo_action_name_content" } }
           = todo_action_name(todo)
@@ -45,17 +45,17 @@
         .todo-body
           .todo-note.break-word
             .md
-              = first_line_in_markdown(todo, :body, 150, project: todo.project)
+              = first_line_in_markdown(todo, :body, 150, project: todo.project, group: todo.group)
 
     .todo-actions.gl-ml-3
       - if todo.pending?
         = link_to dashboard_todo_path(todo), method: :delete, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-done-todo', data: { href: dashboard_todo_path(todo) } do
           = gl_loading_icon(inline: true)
-          Done
+          = _('Done')
         = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-undo-todo hidden', data: { href: restore_dashboard_todo_path(todo) } do
           = gl_loading_icon(inline: true)
-          Undo
+          = _('Undo')
       - else
         = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button btn btn-default btn-loading d-flex align-items-center js-add-todo', data: { href: restore_dashboard_todo_path(todo) } do
           = gl_loading_icon(inline: true)
-          Add a to do
+          = _('Add a to do')

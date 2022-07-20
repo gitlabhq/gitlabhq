@@ -1,17 +1,33 @@
 <script>
-import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon, GlToggle } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlButtonGroup,
+  GlLoadingIcon,
+  GlToggle,
+  GlModalDirective,
+} from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import Tracking from '~/tracking';
+import PerformanceInsightsModal from '../performance_insights_modal.vue';
+import { performanceModalId } from '../../constants';
 import { STAGE_VIEW, LAYER_VIEW } from './constants';
 
 export default {
   name: 'GraphViewSelector',
+  performanceModalId,
   components: {
     GlAlert,
     GlButton,
     GlButtonGroup,
     GlLoadingIcon,
     GlToggle,
+    PerformanceInsightsModal,
   },
+  directives: {
+    GlModal: GlModalDirective,
+  },
+  mixins: [Tracking.mixin()],
   props: {
     showLinks: {
       type: Boolean,
@@ -23,6 +39,10 @@ export default {
     },
     type: {
       type: String,
+      required: true,
+    },
+    isPipelineComplete: {
+      type: Boolean,
       required: true,
     },
   },
@@ -39,6 +59,7 @@ export default {
     hoverTipText: __('Tip: Hover over a job to see the jobs it depends on to run.'),
     linksLabelText: s__('GraphViewType|Show dependencies'),
     viewLabelText: __('Group jobs by'),
+    performanceBtnText: __('Performance insights'),
   },
   views: {
     [STAGE_VIEW]: {
@@ -129,6 +150,9 @@ export default {
         this.$emit('updateShowLinksState', val);
       });
     },
+    trackInsightsClick() {
+      this.track('click_insights_button', { label: 'performance_insights' });
+    },
   },
 };
 </script>
@@ -154,6 +178,15 @@ export default {
         </gl-button>
       </gl-button-group>
 
+      <gl-button
+        v-if="isPipelineComplete"
+        v-gl-modal="$options.performanceModalId"
+        data-testid="pipeline-insights-btn"
+        @click="trackInsightsClick"
+      >
+        {{ $options.i18n.performanceBtnText }}
+      </gl-button>
+
       <div v-if="showLinksToggle" class="gl-display-flex gl-align-items-center">
         <gl-toggle
           v-model="showLinksActive"
@@ -169,5 +202,7 @@ export default {
     <gl-alert v-if="showTip" class="gl-my-5" variant="tip" @dismiss="dismissTip">
       {{ $options.i18n.hoverTipText }}
     </gl-alert>
+
+    <performance-insights-modal />
   </div>
 </template>

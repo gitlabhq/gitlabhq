@@ -824,6 +824,11 @@ The available values for `object_attributes.action` in the payload are:
 - `unapproval`
 - `merge`
 
+The field `object_attributes.oldrev` is only available when there are actual code changes, like:
+
+- New code is pushed.
+- A [suggestion](../merge_requests/reviews/suggestions.md) is applied.
+
 Request header:
 
 ```plaintext
@@ -868,6 +873,7 @@ Payload example:
   },
   "object_attributes": {
     "id": 99,
+    "iid": 1,
     "target_branch": "master",
     "source_branch": "ms-viewport",
     "source_project_id": 14,
@@ -879,10 +885,12 @@ Payload example:
     "milestone_id": null,
     "state": "opened",
     "blocking_discussions_resolved": true,
+    "work_in_progress": false,
+    "first_contribution": true,
     "merge_status": "unchecked",
     "target_project_id": 14,
-    "iid": 1,
     "description": "",
+    "url": "http://example.com/diaspora/merge_requests/1",
     "source": {
       "name":"Awesome Project",
       "description":"Aut reprehenderit ut est.",
@@ -925,8 +933,18 @@ Payload example:
         "email": "gitlabdev@dv6700.(none)"
       }
     },
-    "work_in_progress": false,
-    "url": "http://example.com/diaspora/merge_requests/1",
+    "labels": [{
+      "id": 206,
+      "title": "API",
+      "color": "#ffffff",
+      "project_id": 14,
+      "created_at": "2013-12-03T17:15:43Z",
+      "updated_at": "2013-12-03T17:15:43Z",
+      "template": false,
+      "description": "API related issues",
+      "type": "ProjectLabel",
+      "group_id": 41
+    }],
     "action": "open",
     "assignee": {
       "name": "User1",
@@ -984,6 +1002,9 @@ Payload example:
   }
 }
 ```
+
+NOTE:
+The fields `assignee_id`, and `state` are deprecated.
 
 ## Wiki page events
 
@@ -1147,6 +1168,9 @@ Payload example:
          "created_at": "2016-08-12 15:23:28 UTC",
          "started_at": null,
          "finished_at": null,
+         "duration": null,
+         "queued_duration": null,
+         "failure_reason": null,
          "when": "manual",
          "manual": true,
          "allow_failure": false,
@@ -1175,7 +1199,10 @@ Payload example:
          "status": "success",
          "created_at": "2016-08-12 15:23:28 UTC",
          "started_at": "2016-08-12 15:26:12 UTC",
-         "finished_at": null,
+         "finished_at": "2016-08-12 15:26:29 UTC",
+         "duration": 17.0,
+         "queued_duration": 196.0,
+         "failure_reason": null,
          "when": "on_success",
          "manual": false,
          "allow_failure": false,
@@ -1208,10 +1235,13 @@ Payload example:
          "id": 378,
          "stage": "test",
          "name": "test-build",
-         "status": "success",
+         "status": "failed",
          "created_at": "2016-08-12 15:23:28 UTC",
          "started_at": "2016-08-12 15:26:12 UTC",
          "finished_at": "2016-08-12 15:26:29 UTC",
+         "duration": 17.0,
+         "queued_duration": 196.0,
+         "failure_reason": "script_failure",
          "when": "on_success",
          "manual": false,
          "allow_failure": false,
@@ -1247,6 +1277,9 @@ Payload example:
          "created_at": "2016-08-12 15:23:28 UTC",
          "started_at": "2016-08-12 15:24:56 UTC",
          "finished_at": "2016-08-12 15:25:26 UTC",
+         "duration": 17.0,
+         "queued_duration": 196.0,
+         "failure_reason": null,
          "when": "on_success",
          "manual": false,
          "allow_failure": false,
@@ -1282,6 +1315,9 @@ Payload example:
          "created_at": "2016-08-12 15:23:28 UTC",
          "started_at": null,
          "finished_at": null,
+         "duration": null,
+         "queued_duration": null,
+         "failure_reason": null,
          "when": "on_success",
          "manual": false,
          "allow_failure": false,

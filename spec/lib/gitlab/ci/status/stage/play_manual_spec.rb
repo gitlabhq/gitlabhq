@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::PlayManual do
   end
 
   describe '#action_path' do
-    let(:stage) { create(:ci_stage_entity, status: 'manual') }
+    let(:stage) { create(:ci_stage, status: 'manual') }
     let(:pipeline) { stage.pipeline }
     let(:play_manual) { stage.detailed_status(create(:user)) }
 
@@ -46,25 +46,25 @@ RSpec.describe Gitlab::Ci::Status::Stage::PlayManual do
     subject { described_class.matches?(stage, user) }
 
     context 'when stage is skipped' do
-      let(:stage) { create(:ci_stage_entity, status: :skipped) }
+      let(:stage) { create(:ci_stage, status: :skipped) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when stage is manual' do
-      let(:stage) { create(:ci_stage_entity, status: :manual) }
+      let(:stage) { create(:ci_stage, status: :manual) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when stage is scheduled' do
-      let(:stage) { create(:ci_stage_entity, status: :scheduled) }
+      let(:stage) { create(:ci_stage, status: :scheduled) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when stage is success' do
-      let(:stage) { create(:ci_stage_entity, status: :success) }
+      let(:stage) { create(:ci_stage, status: :success) }
 
       context 'and does not have manual builds' do
         it { is_expected.to be_falsy }

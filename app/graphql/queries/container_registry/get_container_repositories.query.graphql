@@ -32,6 +32,10 @@ query getProjectContainerRepositories(
         createdAt
         expirationPolicyStartedAt
         expirationPolicyCleanupStatus
+        project {
+          id
+          path
+        }
         __typename
       }
       pageInfo {
@@ -67,6 +71,10 @@ query getProjectContainerRepositories(
         createdAt
         expirationPolicyStartedAt
         expirationPolicyCleanupStatus
+        project {
+          id
+          path
+        }
         __typename
       }
       pageInfo {

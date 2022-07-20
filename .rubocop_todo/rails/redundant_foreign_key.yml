@@ -19,7 +19,6 @@ Rails/RedundantForeignKey:
     - 'app/models/ci/unit_test_failure.rb'
     - 'app/models/clusters/applications/runner.rb'
     - 'app/models/clusters/concerns/application_core.rb'
-    - 'app/models/clusters/integrations/elastic_stack.rb'
     - 'app/models/clusters/integrations/prometheus.rb'
     - 'app/models/commit_signatures/x509_commit_signature.rb'
     - 'app/models/concerns/analytics/cycle_analytics/stage.rb'

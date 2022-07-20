@@ -23,7 +23,7 @@ RSpec.describe GitlabSchema.types['Group'] do
       dependency_proxy_blob_count dependency_proxy_total_size
       dependency_proxy_image_prefix dependency_proxy_image_ttl_policy
       shared_runners_setting timelogs organizations contacts work_item_types
-      recent_issue_boards
+      recent_issue_boards ci_variables
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

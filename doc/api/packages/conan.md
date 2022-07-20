@@ -19,6 +19,10 @@ NOTE:
 These endpoints do not adhere to the standard API authentication methods.
 See each route for details on how credentials are expected to be passed.
 
+NOTE:
+The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
+These endpoints will all return 404 Not Found.
+
 ## Route prefix
 
 There are two sets of identical routes that each make requests in different scopes:

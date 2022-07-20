@@ -1,30 +1,34 @@
+import { pick } from 'lodash';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype, { all } from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
 
-const createParser = () => {
+const skipRenderingHandlers = {
+  footnoteReference: (h, node) =>
+    h(node.position, 'footnoteReference', { identifier: node.identifier, label: node.label }, []),
+  footnoteDefinition: (h, node) =>
+    h(
+      node.position,
+      'footnoteDefinition',
+      { identifier: node.identifier, label: node.label },
+      all(h, node),
+    ),
+  code: (h, node) =>
+    h(node.position, 'codeBlock', { language: node.lang, meta: node.meta }, [
+      { type: 'text', value: node.value },
+    ]),
+};
+
+const createParser = ({ skipRendering = [] }) => {
   return unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkRehype, {
       allowDangerousHtml: true,
       handlers: {
-        footnoteReference: (h, node) =>
-          h(
-            node.position,
-            'footnoteReference',
-            { identifier: node.identifier, label: node.label },
-            [],
-          ),
-        footnoteDefinition: (h, node) =>
-          h(
-            node.position,
-            'footnoteDefinition',
-            { identifier: node.identifier, label: node.label },
-            all(h, node),
-          ),
+        ...pick(skipRenderingHandlers, skipRendering),
       },
     })
     .use(rehypeRaw);
@@ -54,8 +58,10 @@ const compilerFactory = (renderer) =>
  * @returns {Promise<any>} Returns a promise with the result of rendering
  * the MDast tree
  */
-export const render = async ({ markdown, renderer }) => {
-  const { result } = await createParser().use(compilerFactory(renderer)).process(markdown);
+export const render = async ({ markdown, renderer, skipRendering = [] }) => {
+  const { result } = await createParser({ skipRendering })
+    .use(compilerFactory(renderer))
+    .process(markdown);
 
   return result;
 };

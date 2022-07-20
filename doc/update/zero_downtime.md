@@ -27,14 +27,14 @@ If you meet all the requirements above, follow these instructions in order. Ther
 | Deployment type                                                 | Description                                       |
 | --------------------------------------------------------------- | ------------------------------------------------  |
 | [Gitaly or Gitaly Cluster](#gitaly-or-gitaly-cluster)           | GitLab CE/EE using HA architecture for Gitaly or Gitaly Cluster |
-| [Multi-node / PostgreSQL HA](#use-postgresql-ha)                | GitLab CE/EE using HA architecture for PostgreSQL |
-| [Multi-node / Redis HA](#use-redis-ha-using-sentinel)           | GitLab CE/EE using HA architecture for Redis |
+| [Multi-node / PostgreSQL HA](#postgresql)                | GitLab CE/EE using HA architecture for PostgreSQL |
+| [Multi-node / Redis HA](#redis-ha-using-sentinel)           | GitLab CE/EE using HA architecture for Redis |
 | [Geo](#geo-deployment)                                          | GitLab EE with Geo enabled                        |
 | [Multi-node / HA with Geo](#multi-node--ha-deployment-with-geo) | GitLab CE/EE on multiple nodes                    |
 
 Each type of deployment requires that you hot reload the `puma` and `sidekiq` processes on all nodes running these
 services after you've upgraded. The reason for this is that those processes each load the GitLab Rails application which reads and loads
-the database schema into memory when starting up. Each of these processes needs to be reloaded (or restarted in the case of `sidekiq`)
+the database schema into memory when starting up. Each of these processes must be reloaded (or restarted in the case of `sidekiq`)
 to re-read any database changes that have been made by post-deployment migrations.
 
 Most of the time you can safely upgrade from a patch release to the next minor
@@ -260,7 +260,7 @@ node first and run database migrations.
       sudo gitlab-ctl reconfigure
       ```
 
-### Use PostgreSQL HA
+### PostgreSQL
 
 Pick a node to be the `Deploy Node`. It can be any application node, but it must be the same
 node throughout the process.
@@ -277,7 +277,7 @@ node throughout the process.
 
 - To prevent `reconfigure` from automatically running database migrations, ensure that `gitlab_rails['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb`.
 
-**Gitaly only nodes**
+**PostgreSQL only nodes**
 
 - Update the GitLab package
 
@@ -313,7 +313,7 @@ node throughout the process.
 
 - If you're using PgBouncer:
 
-  You need to bypass PgBouncer and connect directly to the database leader
+  You must bypass PgBouncer and connect directly to the database leader
   before running migrations.
 
   Rails uses an advisory lock when attempting to run a migration to prevent
@@ -385,7 +385,7 @@ sure you remove `/etc/gitlab/skip-auto-reconfigure` and revert
 setting `gitlab_rails['auto_migrate'] = false` in
 `/etc/gitlab/gitlab.rb` after you've completed these steps.
 
-### Use Redis HA (using Sentinel) **(PREMIUM SELF)**
+### Redis HA (using Sentinel) **(PREMIUM SELF)**
 
 Package upgrades may involve version updates to the bundled Redis service. On
 instances using [Redis for scaling](../administration/redis/index.md),
@@ -395,11 +395,11 @@ HA.
 
 #### In the application node
 
-According to [official Redis docs](https://redis.io/topics/admin#upgrading-or-restarting-a-redis-instance-without-downtime),
+According to [official Redis documentation](https://redis.io/topics/admin#upgrading-or-restarting-a-redis-instance-without-downtime),
 the easiest way to update an HA instance using Sentinel is to upgrade the
 secondaries one after the other, perform a manual failover from current
 primary (running old version) to a recently upgraded secondary (running a new
-version), and then upgrade the original primary. For this, we need to know
+version), and then upgrade the original primary. For this, we must know
 the address of the current Redis primary.
 
 - If your application node is running GitLab 12.7.0 or later, you can use the
@@ -416,7 +416,7 @@ following command to get address of current Redis primary
   1. Get the address of one of the sentinel nodes specified as
      `gitlab_rails['redis_sentinels']` in `/etc/gitlab/gitlab.rb`
 
-  1. Get the Redis master name specified as `redis['master_name']` in
+  1. Get the Redis main name specified as `redis['master_name']` in
      `/etc/gitlab/gitlab.rb`
 
   1. Run the following command
@@ -426,6 +426,8 @@ following command to get address of current Redis primary
      ```
 
 #### In the Redis secondary nodes
+
+1. Set `gitlab_rails['rake_cache_clear'] = false` in `gitlab.rb` if you haven't already. If not, you might receive the error `Redis::CommandError: READONLY You can't write against a read only replica.` during the reconfigure post installation of new package.
 
 1. Install package for new version.
 
@@ -442,8 +444,8 @@ following command to get address of current Redis primary
 
 #### In the Redis primary node
 
-Before upgrading the Redis primary node, we need to perform a failover so that
-one of the recently upgraded secondary nodes becomes the new primary. Once the
+Before upgrading the Redis primary node, we must perform a failover so that
+one of the recently upgraded secondary nodes becomes the new primary. After the
 failover is complete, we can go ahead and upgrade the original primary node.
 
 1. Stop Redis service in Redis primary node so that it fails over to a secondary
@@ -623,7 +625,7 @@ Updates must be performed in the following order:
 
 ### Step 1: Choose a "deploy node" for each deployment
 
-You now need to choose:
+You now must choose:
 
 - One instance for use as the **primary** "deploy node" on the Geo **primary** multi-node deployment.
 - One instance for use as the **secondary** "deploy node" on each Geo **secondary** multi-node deployment.
@@ -696,7 +698,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 1. If you're using PgBouncer:
 
-   You need to bypass PgBouncer and connect directly to the database leader
+   You must bypass PgBouncer and connect directly to the database leader
    before running migrations.
 
    Rails uses an advisory lock when attempting to run a migration to prevent

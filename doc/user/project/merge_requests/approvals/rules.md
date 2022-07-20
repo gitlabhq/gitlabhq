@@ -152,9 +152,9 @@ become eligible approvers in the project. To enable this merge request approval 
 
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
-1. Locate **Eligible users** and select the number of approvals required:
+1. Locate **All eligible users** and select the number of approvals required:
 
-   ![MR approvals by Code Owners](img/mr_approvals_by_code_owners_v12_7.png)
+![MR approvals by Code Owners](img/mr_approvals_by_code_owners_v15_2.png)
 
 You can also
 [require code owner approval](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch)

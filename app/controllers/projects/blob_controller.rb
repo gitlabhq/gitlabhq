@@ -42,7 +42,6 @@ class Projects::BlobController < Projects::ApplicationController
   urgency :low, [:create, :show, :edit, :update, :diff]
 
   before_action do
-    push_frontend_feature_flag(:refactor_blob_viewer, @project)
     push_frontend_feature_flag(:highlight_js, @project)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
   end

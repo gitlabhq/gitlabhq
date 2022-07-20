@@ -70,8 +70,8 @@ module Sidebars
 
           ::Sidebars::MenuItem.new(
             title: _('Harbor Registry'),
-            link: project_harbor_registry_index_path(context.project),
-            active_routes: { controller: 'projects/harbor/repositories' },
+            link: project_harbor_repositories_path(context.project),
+            active_routes: { controller: :harbor_registry },
             item_id: :harbor_registry
           )
         end

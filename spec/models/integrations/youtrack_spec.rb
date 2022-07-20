@@ -37,4 +37,10 @@ RSpec.describe Integrations::Youtrack do
       expect(described_class.reference_pattern.match('yt-123')[:issue]).to eq('yt-123')
     end
   end
+
+  describe '#fields' do
+    it 'only returns the project_url and issues_url fields' do
+      expect(subject.fields.pluck(:name)).to eq(%w[project_url issues_url])
+    end
+  end
 end

@@ -6,18 +6,24 @@
 # - `alert`, alert for which related incidents should be closed
 # - `project`, project of the alert
 RSpec.shared_examples 'closes related incident if enabled' do
-  context 'with issue' do
+  context 'with incident' do
     before do
-      alert.update!(issue: create(:issue, project: project))
+      alert.update!(issue: create(:incident, project: project))
     end
 
-    it { expect { subject }.to change { alert.issue.reload.closed? }.from(false).to(true) }
-    it { expect { subject }.to change(ResourceStateEvent, :count).by(1) }
+    specify do
+      expect { Sidekiq::Testing.inline! { subject } }
+        .to change { alert.issue.reload.closed? }.from(false).to(true)
+        .and change(ResourceStateEvent, :count).by(1)
+    end
   end
 
-  context 'without issue' do
-    it { expect { subject }.not_to change { alert.reload.issue } }
-    it { expect { subject }.not_to change(ResourceStateEvent, :count) }
+  context 'without incident' do
+    specify do
+      expect(::IncidentManagement::CloseIncidentWorker).not_to receive(:perform_async)
+
+      subject
+    end
   end
 
   context 'with incident setting disabled' do
@@ -28,17 +34,23 @@ RSpec.shared_examples 'closes related incident if enabled' do
 end
 
 RSpec.shared_examples 'does not close related incident' do
-  context 'with issue' do
+  context 'with incident' do
     before do
-      alert.update!(issue: create(:issue, project: project))
+      alert.update!(issue: create(:incident, project: project))
     end
 
-    it { expect { subject }.not_to change { alert.issue.reload.state } }
-    it { expect { subject }.not_to change(ResourceStateEvent, :count) }
+    specify do
+      expect { Sidekiq::Testing.inline! { subject } }
+        .to not_change { alert.issue.reload.state }
+        .and not_change(ResourceStateEvent, :count)
+    end
   end
 
-  context 'without issue' do
-    it { expect { subject }.not_to change { alert.reload.issue } }
-    it { expect { subject }.not_to change(ResourceStateEvent, :count) }
+  context 'without incident' do
+    specify do
+      expect(::IncidentManagement::CloseIncidentWorker).not_to receive(:perform_async)
+
+      subject
+    end
   end
 end

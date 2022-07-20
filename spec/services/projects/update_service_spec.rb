@@ -289,6 +289,42 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
+    context 'when changing operations feature visibility' do
+      let(:feature_params) { { operations_access_level: ProjectFeature::DISABLED } }
+
+      it 'does not sync the changes to the related fields' do
+        result = update_project(project, user, project_feature_attributes: feature_params)
+
+        expect(result).to eq({ status: :success })
+        feature = project.project_feature
+
+        expect(feature.operations_access_level).to eq(ProjectFeature::DISABLED)
+        expect(feature.monitor_access_level).not_to eq(ProjectFeature::DISABLED)
+        expect(feature.infrastructure_access_level).not_to eq(ProjectFeature::DISABLED)
+        expect(feature.feature_flags_access_level).not_to eq(ProjectFeature::DISABLED)
+        expect(feature.environments_access_level).not_to eq(ProjectFeature::DISABLED)
+      end
+
+      context 'when split_operations_visibility_permissions feature is disabled' do
+        before do
+          stub_feature_flags(split_operations_visibility_permissions: false)
+        end
+
+        it 'syncs the changes to the related fields' do
+          result = update_project(project, user, project_feature_attributes: feature_params)
+
+          expect(result).to eq({ status: :success })
+          feature = project.project_feature
+
+          expect(feature.operations_access_level).to eq(ProjectFeature::DISABLED)
+          expect(feature.monitor_access_level).to eq(ProjectFeature::DISABLED)
+          expect(feature.infrastructure_access_level).to eq(ProjectFeature::DISABLED)
+          expect(feature.feature_flags_access_level).to eq(ProjectFeature::DISABLED)
+          expect(feature.environments_access_level).to eq(ProjectFeature::DISABLED)
+        end
+      end
+    end
+
     context 'when updating a project that contains container images' do
       before do
         stub_container_registry_config(enabled: true)
@@ -312,17 +348,17 @@ RSpec.describe Projects::UpdateService do
     end
 
     context 'when renaming a project' do
-      let(:fake_repo_path) { File.join(TestEnv.repos_path, user.namespace.full_path, 'existing.git') }
+      let(:raw_fake_repo) { Gitlab::Git::Repository.new('default', File.join(user.namespace.full_path, 'existing.git'), nil, nil) }
 
       context 'with legacy storage' do
         let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }
 
         before do
-          TestEnv.create_bare_repository(fake_repo_path)
+          raw_fake_repo.create_repository
         end
 
         after do
-          FileUtils.rm_rf(fake_repo_path)
+          raw_fake_repo.remove
         end
 
         it 'does not allow renaming when new path matches existing repository on disk' do
@@ -388,7 +424,7 @@ RSpec.describe Projects::UpdateService do
 
       it 'does not update when not project owner' do
         maintainer = create(:user)
-        project.add_user(maintainer, :maintainer)
+        project.add_member(maintainer, :maintainer)
 
         expect { update_project(project, maintainer, emails_disabled: true) }
           .not_to change { project.emails_disabled }

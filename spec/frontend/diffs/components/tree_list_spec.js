@@ -50,6 +50,19 @@ describe('Diffs tree list component', () => {
         type: 'blob',
         parentPath: 'app',
       },
+      'test.rb': {
+        addedLines: 0,
+        changed: true,
+        deleted: false,
+        fileHash: 'test',
+        key: 'test.rb',
+        name: 'test.rb',
+        path: 'app/test.rb',
+        removedLines: 0,
+        tempFile: true,
+        type: 'blob',
+        parentPath: 'app',
+      },
       app: {
         key: 'app',
         path: 'app',
@@ -83,6 +96,23 @@ describe('Diffs tree list component', () => {
     beforeEach(() => {
       setupFilesInState();
       createComponent();
+    });
+
+    describe('search by file extension', () => {
+      it.each`
+        extension       | itemSize
+        ${'*.md'}       | ${0}
+        ${'*.js'}       | ${1}
+        ${'index.js'}   | ${1}
+        ${'app/*.js'}   | ${1}
+        ${'*.js, *.rb'} | ${2}
+      `('it returns $itemSize item for $extension', async ({ extension, itemSize }) => {
+        wrapper.find('[data-testid="diff-tree-search"]').setValue(extension);
+
+        await nextTick();
+
+        expect(getFileRows()).toHaveLength(itemSize);
+      });
     });
 
     it('renders tree', () => {
@@ -120,7 +150,7 @@ describe('Diffs tree list component', () => {
       wrapper.vm.$store.state.diffs.renderTreeList = false;
 
       await nextTick();
-      expect(getFileRows()).toHaveLength(1);
+      expect(getFileRows()).toHaveLength(2);
     });
 
     it('renders file paths when renderTreeList is false', async () => {

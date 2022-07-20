@@ -57,7 +57,6 @@ Migration/BackgroundMigrationBaseClass:
     - 'lib/gitlab/background_migration/migrate_project_taggings_context_from_tags_to_topics.rb'
     - 'lib/gitlab/background_migration/migrate_requirements_to_work_items.rb'
     - 'lib/gitlab/background_migration/migrate_shimo_confluence_integration_category.rb'
-    - 'lib/gitlab/background_migration/migrate_stage_status.rb'
     - 'lib/gitlab/background_migration/migrate_u2f_webauthn.rb'
     - 'lib/gitlab/background_migration/move_container_registry_enabled_to_project_feature.rb'
     - 'lib/gitlab/background_migration/nullify_orphan_runner_id_on_ci_builds.rb'

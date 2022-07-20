@@ -1,10 +1,11 @@
 import { GlModal, GlFormCheckbox } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import createFlash from '~/flash';
+import stubChildren from 'helpers/stub_children';
 import SetStatusModalWrapper, {
   AVAILABILITY_STATUS,
 } from '~/set_status_modal/set_status_modal_wrapper.vue';
@@ -26,11 +27,22 @@ describe('SetStatusModalWrapper', () => {
     defaultEmoji,
   };
 
+  const EmojiPickerStub = {
+    props: EmojiPicker.props,
+    template: '<div></div>',
+  };
+
   const createComponent = (props = {}) => {
-    return shallowMount(SetStatusModalWrapper, {
+    return mount(SetStatusModalWrapper, {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      stubs: {
+        ...stubChildren(SetStatusModalWrapper),
+        GlFormInput: false,
+        GlFormInputGroup: false,
+        EmojiPicker: EmojiPickerStub,
       },
       mocks: {
         $toast,
@@ -43,7 +55,7 @@ describe('SetStatusModalWrapper', () => {
   const findClearStatusButton = () => wrapper.find('.js-clear-user-status-button');
   const findAvailabilityCheckbox = () => wrapper.find(GlFormCheckbox);
   const findClearStatusAtMessage = () => wrapper.find('[data-testid="clear-status-at-message"]');
-  const getEmojiPicker = () => wrapper.findComponent(EmojiPicker);
+  const getEmojiPicker = () => wrapper.findComponent(EmojiPickerStub);
 
   const initModal = async ({ mockOnUpdateSuccess = true, mockOnUpdateFailure = true } = {}) => {
     const modal = findModal();
@@ -88,7 +100,7 @@ describe('SetStatusModalWrapper', () => {
     });
 
     it('has a clear status button', () => {
-      expect(findClearStatusButton().isVisible()).toBe(true);
+      expect(findClearStatusButton().exists()).toBe(true);
     });
 
     it('displays the clear status at dropdown', () => {
@@ -125,7 +137,7 @@ describe('SetStatusModalWrapper', () => {
     });
 
     it('hides the clear status button', () => {
-      expect(findClearStatusButton().isVisible()).toBe(false);
+      expect(findClearStatusButton().exists()).toBe(false);
     });
   });
 

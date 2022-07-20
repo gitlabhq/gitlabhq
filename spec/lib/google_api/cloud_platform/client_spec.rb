@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'google/apis/sqladmin_v1beta4'
 
 RSpec.describe GoogleApi::CloudPlatform::Client do
   let(:token) { 'token' }
@@ -8,6 +9,7 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
   let(:user_agent_options) { client.instance_eval { user_agent_header } }
   let(:gcp_project_id) { String('gcp_proj_id') }
   let(:operation) { true }
+  let(:database_instance) { Google::Apis::SqladminV1beta4::DatabaseInstance.new(state: 'RUNNABLE') }
 
   describe '.session_key_for_redirect_uri' do
     let(:state) { 'random_string' }
@@ -348,6 +350,42 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
             'User-Agent' => 'Ruby'
           })
         .to_return(status: 200, body: "", headers: {})
+    end
+  end
+
+  describe '#create_cloudsql_database' do
+    subject { client.create_cloudsql_database(:gcp_project_id, :instance_name, :database_name) }
+
+    it 'calls Google Api SQLAdminService#insert_database' do
+      expect_any_instance_of(Google::Apis::SqladminV1beta4::SQLAdminService)
+        .to receive(:insert_database)
+              .with(any_args)
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
+
+  describe '#create_cloudsql_user' do
+    subject { client.create_cloudsql_user(:gcp_project_id, :instance_name, :database_name, :user_name) }
+
+    it 'calls Google Api SQLAdminService#insert_user' do
+      expect_any_instance_of(Google::Apis::SqladminV1beta4::SQLAdminService)
+        .to receive(:insert_user)
+              .with(any_args)
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
+
+  describe '#get_cloudsql_instance' do
+    subject { client.get_cloudsql_instance(:gcp_project_id, :instance_name) }
+
+    it 'calls Google Api SQLAdminService#get_instance' do
+      expect_any_instance_of(Google::Apis::SqladminV1beta4::SQLAdminService)
+        .to receive(:get_instance)
+              .with(any_args)
+              .and_return(database_instance)
+      is_expected.to eq(database_instance)
     end
   end
 end

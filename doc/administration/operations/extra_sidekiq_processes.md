@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab allows you to start multiple Sidekiq processes.
 These processes can be used to consume a dedicated set
 of queues. This can be used to ensure certain queues always have dedicated
-workers, no matter the number of jobs that need to be processed.
+workers, no matter the number of jobs to be processed.
 
 NOTE:
 The information in this page applies only to Omnibus GitLab.
@@ -325,17 +325,16 @@ you'd use the following:
 
 The `sidekiq-cluster` command does not terminate once it has started the desired
 amount of Sidekiq processes. Instead, the process continues running and
-forward any signals to the child processes. This makes it easy to stop all
-Sidekiq processes as you simply send a signal to the `sidekiq-cluster` process,
+forwards any signals to the child processes. This allows you to stop all
+Sidekiq processes as you send a signal to the `sidekiq-cluster` process,
 instead of having to send it to the individual processes.
 
 If the `sidekiq-cluster` process crashes or receives a `SIGKILL`, the child
 processes terminate themselves after a few seconds. This ensures you don't
 end up with zombie Sidekiq processes.
 
-All of this makes monitoring the processes fairly easy. Simply hook up
-`sidekiq-cluster` to your supervisor of choice (for example, runit) and you're good to
-go.
+This allows you to monitor the processes by hooking up
+`sidekiq-cluster` to your supervisor of choice (for example, runit).
 
 If a child process died the `sidekiq-cluster` command signals all remaining
 process to terminate, then terminate itself. This removes the need for

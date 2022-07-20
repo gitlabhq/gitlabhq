@@ -230,11 +230,23 @@ also load certain page content directly from common public CDN hostnames.
 
 ## Webhooks
 
-The following limits apply for [webhooks](../project/integrations/webhooks.md):
+The following limits apply for [webhooks](../project/integrations/webhooks.md).
+
+### Rate limits
+
+The number of times a webhook can be called per minute, per top-level namespace.
+The limit varies depending on your plan and the number of seats in your subscription.
+
+| Plan              | Default for GitLab.com  |
+|----------------------|-------------------------|
+| Free    | `500` |
+| Premium | `99` seats or fewer: `1,600`<br>`100-399` seats: `2,800`<br>`400` seats or more: `4,000` |
+| Ultimate and open source |`999` seats or fewer: `6,000`<br>`1,000-4,999` seats: `9,000`<br>`5,000` seats or more: `13,000` |
+
+### Other limits
 
 | Setting              | Default for GitLab.com  |
 |----------------------|-------------------------|
-| Webhook rate limit   | `500` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate. Webhook rate limits are applied per top-level namespace. |
 | Number of webhooks   | `100` per project, `50` per group |
 | Maximum payload size | 25 MB                   |
 
@@ -344,6 +356,7 @@ after the limits change in January, 2021:
 | **GitLab Pages** requests (for a given **IP address**)                     |                               | **1000** requests per **50 seconds**    |
 | **GitLab Pages** requests (for a given **GitLab Pages domain**)            |                               | **5000** requests per **10 seconds**    |
 | **Pipeline creation** requests (for a given **project, user, and commit**) |                               | **25** requests per minute              |
+| **Alert integration endpoint** requests (for a given **project**)          |                               | **3600** requests per hour |
 
 More details are available on the rate limits for [protected
 paths](#protected-paths-throttle) and [raw
@@ -407,12 +420,7 @@ No response headers are provided.
 
 ### Pagination response headers
 
-For performance reasons, if a query returns more than 10,000 records, GitLab
-doesn't return the following headers:
-
-- `x-total`.
-- `x-total-pages`.
-- `rel="last"` `link`.
+For performance reasons, if a query returns more than 10,000 records, [GitLab excludes some headers](../../api/index.md#pagination-response-headers).
 
 ### Visibility settings
 

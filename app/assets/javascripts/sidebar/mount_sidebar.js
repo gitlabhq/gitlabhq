@@ -73,12 +73,14 @@ function mountSidebarToDoWidget() {
         props: {
           fullPath: projectPath,
           issuableId:
-            isInIssuePage() || isInDesignPage()
+            isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? convertToGraphQLId(TYPE_ISSUE, id)
               : convertToGraphQLId(TYPE_MERGE_REQUEST, id),
           issuableIid: iid,
           issuableType:
-            isInIssuePage() || isInDesignPage() ? IssuableType.Issue : IssuableType.MergeRequest,
+            isInIssuePage() || isInIncidentPage() || isInDesignPage()
+              ? IssuableType.Issue
+              : IssuableType.MergeRequest,
         },
       }),
   });

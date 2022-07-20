@@ -22,9 +22,6 @@ module Integrations
       'https://outlook.office.com/webhook/…'
     end
 
-    def event_field(event)
-    end
-
     def default_channel_placeholder
     end
 
@@ -47,7 +44,7 @@ module Integrations
           section: SECTION_TYPE_CONFIGURATION,
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: branch_choices
+          choices: self.class.branch_choices
         }
       ]
     end

@@ -70,12 +70,9 @@ module ProjectForksHelper
   def fork_project_with_submodules(project, user = nil, params = {})
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       forked_project = fork_project_direct(project, user, params)
-      TestEnv.copy_repo(
-        forked_project,
-        bare_repo: TestEnv.forked_repo_path_bare,
-        refs: TestEnv::FORKED_BRANCH_SHA
-      )
-      forked_project.repository.expire_content_cache
+      repo = Gitlab::GlRepository::PROJECT.repository_for(forked_project)
+      repo.create_from_bundle(TestEnv.forked_repo_bundle_path)
+      repo.expire_content_cache
 
       forked_project
     end

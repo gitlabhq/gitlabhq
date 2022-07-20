@@ -3,4 +3,7 @@
     @#{@user.username}
   - if can?(current_user, :read_user_profile, @user)
     = render 'middle_dot_divider' do
+      = s_('UserProfile|User ID: %{id}') % { id: @user.id }
+      = clipboard_button(title: s_('UserProfile|Copy user ID'), text: @user.id)
+    = render 'middle_dot_divider' do
       = s_('Member since %{date}') % { date: @user.created_at.to_date.to_s(:long) }

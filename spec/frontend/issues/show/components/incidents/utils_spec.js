@@ -1,4 +1,9 @@
-import { displayAndLogError, getEventIcon } from '~/issues/show/components/incidents/utils';
+import timezoneMock from 'timezone-mock';
+import {
+  displayAndLogError,
+  getEventIcon,
+  getUtcShiftedDateNow,
+} from '~/issues/show/components/incidents/utils';
 import { createAlert } from '~/flash';
 
 jest.mock('~/flash');
@@ -19,13 +24,31 @@ describe('incident utils', () => {
 
   describe('get event icon', () => {
     it('should display a matching event icon name', () => {
-      const name = 'comment';
-
-      expect(getEventIcon(name)).toBe(name);
+      ['comment', 'issues', 'status'].forEach((name) => {
+        expect(getEventIcon(name)).toBe(name);
+      });
     });
 
     it('should return a default icon name', () => {
       expect(getEventIcon('non-existent-icon-name')).toBe('comment');
+    });
+  });
+
+  describe('getUtcShiftedDateNow', () => {
+    beforeEach(() => {
+      timezoneMock.register('US/Pacific');
+    });
+
+    afterEach(() => {
+      timezoneMock.unregister();
+    });
+
+    it('should shift the date by the timezone offset', () => {
+      const date = new Date();
+
+      const shiftedDate = getUtcShiftedDateNow();
+
+      expect(shiftedDate > date).toBe(true);
     });
   });
 });

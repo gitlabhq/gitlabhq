@@ -8,15 +8,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [HAML](https://haml.info/) is the [Ruby on Rails](https://rubyonrails.org/) template language that GitLab uses.
 
-## GitLab UI form builder
+## HAML and our Pajamas Design System
 
 [GitLab UI](https://gitlab-org.gitlab.io/gitlab-ui/) is a Vue component library that conforms
-to the [Pajamas design system](https://design.gitlab.com/). Most of these components
+to the [Pajamas design system](https://design.gitlab.com/). Many of these components
 rely on JavaScript and therefore can only be used in Vue.
 
-However, some of the simpler components (checkboxes, radio buttons, form inputs) can be
-used in HAML by applying the correct CSS classes to the elements. A custom
-[Ruby on Rails form builder](https://gitlab.com/gitlab-org/gitlab/-/blob/7c108df101e86d8a27d69df2b5b1ff1fc24133c5/lib/gitlab/form_builders/gitlab_ui_form_builder.rb) exists to help use GitLab UI components in HAML.
+However, some of the simpler components (such as buttons, checkboxes, or form inputs) can be
+used in HAML:
+
+- Some of the Pajamas components are available as a [ViewComponent](view_component.md#pajamas-components). Use these when possible.
+- If no ViewComponent exists, why not go ahead and create it? Talk to the Foundations team if you need help.
+- As a fallback, this can be done by applying the correct CSS classes to the elements.
+- A custom
+[Ruby on Rails form builder](https://gitlab.com/gitlab-org/gitlab/-/blob/7c108df101e86d8a27d69df2b5b1ff1fc24133c5/lib/gitlab/form_builders/gitlab_ui_form_builder.rb) exists to help use GitLab UI components in HAML forms.
 
 ### Use the GitLab UI form builder
 
@@ -100,7 +105,7 @@ Currently only the listed components are available but more components are plann
 
 This component supports [ViewComponent slots](https://viewcomponent.org/guide/slots.html).
 
-| Slot | Description 
+| Slot | Description
 |---|---|
 | `label` | Checkbox label content. This slot can be used instead of the `label` argument. |
 | `help_text` | Help text content displayed below the checkbox. This slot can be used instead of the `help_text` argument. |
@@ -128,7 +133,7 @@ This component supports [ViewComponent slots](https://viewcomponent.org/guide/sl
 
 This component supports [ViewComponent slots](https://viewcomponent.org/guide/slots.html).
 
-| Slot | Description 
+| Slot | Description
 |---|---|
 | `label` | Checkbox label content. This slot can be used instead of the `label` argument. |
 | `help_text` | Help text content displayed below the radio button. This slot can be used instead of the `help_text` argument. |

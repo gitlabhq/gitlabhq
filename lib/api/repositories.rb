@@ -238,6 +238,10 @@ module API
       end
       params do
         use :release_params
+
+        optional :config_file,
+          type: String,
+          desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
       end
       get ':id/repository/changelog' do
         service = ::Repositories::ChangelogService.new(
@@ -261,6 +265,10 @@ module API
         optional :branch,
           type: String,
           desc: 'The branch to commit the changelog changes to'
+
+        optional :config_file,
+          type: String,
+          desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
 
         optional :file,
           type: String,

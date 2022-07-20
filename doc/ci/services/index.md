@@ -353,7 +353,7 @@ while only booting up the tested service once.
 ```yaml
 access-service:
   stage: build
-  image: docker:19.03.1
+  image: docker:20.10.16
   services:
     - docker:dind                    # necessary for docker run
     - tutum/wordpress:latest

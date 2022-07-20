@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module GoogleCloud
-  class CreateServiceAccountsService < :: BaseService
+  class CreateServiceAccountsService < ::GoogleCloud::BaseService
     def execute
       service_account = google_api_client.create_service_account(gcp_project_id, service_account_name, service_account_desc)
       service_account_key = google_api_client.create_service_account_key(gcp_project_id, service_account.unique_id)
@@ -22,22 +22,6 @@ module GoogleCloud
     end
 
     private
-
-    def google_oauth2_token
-      @params[:google_oauth2_token]
-    end
-
-    def gcp_project_id
-      @params[:gcp_project_id]
-    end
-
-    def environment_name
-      @params[:environment_name]
-    end
-
-    def google_api_client
-      @google_api_client_instance ||= GoogleApi::CloudPlatform::Client.new(google_oauth2_token, nil)
-    end
 
     def service_accounts_service
       GoogleCloud::ServiceAccountsService.new(project)

@@ -20,7 +20,6 @@ import {
   UNSCHEDULED_STATUS,
   SCHEDULED_STATUS,
   ONGOING_STATUS,
-  ROOT_IMAGE_TEXT,
   ROOT_IMAGE_TOOLTIP,
 } from '../../constants/index';
 
@@ -100,7 +99,7 @@ export default {
       return !this.imageDetails.name ? ROOT_IMAGE_TOOLTIP : '';
     },
     imageName() {
-      return this.imageDetails.name || ROOT_IMAGE_TEXT;
+      return this.imageDetails.name || this.imageDetails.project?.path;
     },
     formattedSize() {
       const { size } = this.imageDetails;

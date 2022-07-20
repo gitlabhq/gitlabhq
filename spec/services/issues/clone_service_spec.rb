@@ -82,12 +82,14 @@ RSpec.describe Issues::CloneService do
           expect(new_issue.iid).to be_present
         end
 
-        it 'preserves create time' do
-          expect(old_issue.created_at.strftime('%D')).to eq new_issue.created_at.strftime('%D')
-        end
+        it 'sets created_at of new issue to the time of clone' do
+          future_time = 5.days.from_now
 
-        it 'does not copy system notes' do
-          expect(new_issue.notes.count).to eq(1)
+          travel_to(future_time) do
+            new_issue = clone_service.execute(old_issue, new_project, with_notes: with_notes)
+
+            expect(new_issue.created_at).to be_like_time(future_time)
+          end
         end
 
         it 'does not set moved_issue' do
@@ -102,6 +104,24 @@ RSpec.describe Issues::CloneService do
 
             expect(new_issue.notes.count).to eq(old_issue.notes.count)
           end
+        end
+      end
+
+      context 'issue with system notes and resource events' do
+        before do
+          create(:note, :system, noteable: old_issue, project: old_project)
+          create(:resource_label_event, label: create(:label, project: old_project), issue: old_issue)
+          create(:resource_state_event, issue: old_issue, state: :reopened)
+          create(:resource_milestone_event, issue: old_issue, action: 'remove', milestone_id: nil)
+        end
+
+        it 'does not copy system notes and resource events' do
+          new_issue = clone_service.execute(old_issue, new_project)
+
+          # 1 here is for the "cloned from" system note
+          expect(new_issue.notes.count).to eq(1)
+          expect(new_issue.resource_state_events).to be_empty
+          expect(new_issue.resource_milestone_events).to be_empty
         end
       end
 
@@ -124,14 +144,27 @@ RSpec.describe Issues::CloneService do
           create(:issue, title: title, description: description, project: old_project, author: author, milestone: milestone)
         end
 
-        before do
-          create(:resource_milestone_event, issue: old_issue, milestone: milestone, action: :add)
-        end
-
-        it 'does not create extra milestone events' do
+        it 'copies the milestone and creates a resource_milestone_event' do
           new_issue = clone_service.execute(old_issue, new_project)
 
-          expect(new_issue.resource_milestone_events.count).to eq(old_issue.resource_milestone_events.count)
+          expect(new_issue.milestone).to eq(milestone)
+          expect(new_issue.resource_milestone_events.count).to eq(1)
+        end
+      end
+
+      context 'issue with label' do
+        let(:label) { create(:group_label, group: sub_group_1) }
+        let(:new_project) { create(:project, namespace: sub_group_1) }
+
+        let(:old_issue) do
+          create(:issue, project: old_project, labels: [label])
+        end
+
+        it 'copies the label and creates a resource_label_event' do
+          new_issue = clone_service.execute(old_issue, new_project)
+
+          expect(new_issue.labels).to contain_exactly(label)
+          expect(new_issue.resource_label_events.count).to eq(1)
         end
       end
 

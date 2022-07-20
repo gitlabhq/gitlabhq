@@ -328,6 +328,45 @@ RSpec.describe API::Projects do
         end
       end
 
+      context 'filter by topic_id' do
+        let_it_be(:topic1) { create(:topic) }
+        let_it_be(:topic2) { create(:topic) }
+
+        let(:current_user) { user }
+
+        before do
+          project.topics << topic1
+        end
+
+        context 'with id of assigned topic' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { topic_id: topic1.id } }
+            let(:projects) { [project] }
+          end
+        end
+
+        context 'with id of unassigned topic' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { topic_id: topic2.id } }
+            let(:projects) { [] }
+          end
+        end
+
+        context 'with non-existing topic id' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { topic_id: non_existing_record_id } }
+            let(:projects) { [] }
+          end
+        end
+
+        context 'with empty topic id' do
+          it_behaves_like 'projects response' do
+            let(:filter) { { topic_id: '' } }
+            let(:projects) { user_projects }
+          end
+        end
+      end
+
       context 'and with_issues_enabled=true' do
         it 'only returns projects with issues enabled' do
           project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
@@ -2388,6 +2427,7 @@ RSpec.describe API::Projects do
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['ci_default_git_depth']).to eq(project.ci_default_git_depth)
         expect(json_response['ci_forward_deployment_enabled']).to eq(project.ci_forward_deployment_enabled)
+        expect(json_response['ci_separated_caches']).to eq(project.ci_separated_caches)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
         expect(json_response['squash_option']).to eq(project.squash_option.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
@@ -3199,7 +3239,7 @@ RSpec.describe API::Projects do
       measure_project.add_developer(create(:user))
       measure_project.add_developer(create(:user)) # make this 2nd one to find any n+1
 
-      unresolved_n_plus_ones = 21 # 21 queries added per member
+      unresolved_n_plus_ones = 27 # 27 queries added per member
 
       expect do
         post api("/projects/#{project.id}/import_project_members/#{measure_project.id}", user)
@@ -3652,6 +3692,7 @@ RSpec.describe API::Projects do
                           merge_method: 'ff',
                           ci_default_git_depth: 20,
                           ci_forward_deployment_enabled: false,
+                          ci_separated_caches: false,
                           description: 'new description' }
 
         put api("/projects/#{project3.id}", user4), params: project_param

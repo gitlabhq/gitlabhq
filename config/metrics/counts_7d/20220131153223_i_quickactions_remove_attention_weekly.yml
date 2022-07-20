@@ -3,7 +3,7 @@ key_path: redis_hll_counters.quickactions.i_quickactions_remove_attention_weekly
 description: Count of WAU using the `/remove_attention` quick action
 product_section: dev
 product_stage: create
-product_group: group::code review
+product_group: code_review
 product_category: code_review
 value_type: number
 status: active

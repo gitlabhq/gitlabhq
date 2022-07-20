@@ -42,6 +42,7 @@ exports[`RunnerAwsDeploymentsModal renders the modal 1`] = `
         >
           <gl-accordion-item-stub
             class="gl-font-weight-normal"
+            headerclass=""
             title="More Details"
             titlevisible="Less Details"
           >
@@ -76,6 +77,7 @@ exports[`RunnerAwsDeploymentsModal renders the modal 1`] = `
         >
           <gl-accordion-item-stub
             class="gl-font-weight-normal"
+            headerclass=""
             title="More Details"
             titlevisible="Less Details"
           >
@@ -110,6 +112,7 @@ exports[`RunnerAwsDeploymentsModal renders the modal 1`] = `
         >
           <gl-accordion-item-stub
             class="gl-font-weight-normal"
+            headerclass=""
             title="More Details"
             titlevisible="Less Details"
           >
@@ -144,6 +147,7 @@ exports[`RunnerAwsDeploymentsModal renders the modal 1`] = `
         >
           <gl-accordion-item-stub
             class="gl-font-weight-normal"
+            headerclass=""
             title="More Details"
             titlevisible="Less Details"
           >

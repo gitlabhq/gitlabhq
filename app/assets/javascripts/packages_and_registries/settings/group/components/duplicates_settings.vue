@@ -1,11 +1,9 @@
 <script>
-import { GlSprintf, GlToggle, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { GlToggle, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 
 import {
   DUPLICATES_TOGGLE_LABEL,
-  DUPLICATES_ALLOWED_DISABLED,
-  DUPLICATES_ALLOWED_ENABLED,
   DUPLICATES_SETTING_EXCEPTION_TITLE,
   DUPLICATES_SETTINGS_EXCEPTION_LEGEND,
 } from '~/packages_and_registries/settings/group/constants';
@@ -18,7 +16,6 @@ export default {
     DUPLICATES_SETTINGS_EXCEPTION_LEGEND,
   },
   components: {
-    GlSprintf,
     GlToggle,
     GlFormGroup,
     GlFormInput,
@@ -63,9 +60,6 @@ export default {
     },
   },
   computed: {
-    enabledButtonLabel() {
-      return this.duplicatesAllowed ? DUPLICATES_ALLOWED_ENABLED : DUPLICATES_ALLOWED_DISABLED;
-    },
     isExceptionRegexValid() {
       return !this.duplicateExceptionRegexError;
     },
@@ -80,41 +74,30 @@ export default {
 
 <template>
   <form>
-    <div class="gl-display-flex">
-      <gl-toggle
-        :data-qa-selector="toggleQaSelector"
-        :label="$options.i18n.DUPLICATES_TOGGLE_LABEL"
-        label-position="hidden"
-        :value="duplicatesAllowed"
+    <gl-toggle
+      :data-qa-selector="toggleQaSelector"
+      :label="$options.i18n.DUPLICATES_TOGGLE_LABEL"
+      :value="!duplicatesAllowed"
+      :disabled="loading"
+      @change="update(modelNames.allowed, !$event)"
+    />
+    <gl-form-group
+      v-if="!duplicatesAllowed"
+      class="gl-mt-4"
+      :label="$options.i18n.DUPLICATES_SETTING_EXCEPTION_TITLE"
+      label-size="sm"
+      :state="isExceptionRegexValid"
+      :invalid-feedback="duplicateExceptionRegexError"
+      :description="$options.i18n.DUPLICATES_SETTINGS_EXCEPTION_LEGEND"
+      label-for="maven-duplicated-settings-regex-input"
+    >
+      <gl-form-input
+        id="maven-duplicated-settings-regex-input"
         :disabled="loading"
-        @change="update(modelNames.allowed, $event)"
+        size="lg"
+        :value="duplicateExceptionRegex"
+        @change="update(modelNames.exception, $event)"
       />
-      <div class="gl-ml-5">
-        <div data-testid="toggle-label" :data-qa-selector="labelQaSelector">
-          <gl-sprintf :message="enabledButtonLabel">
-            <template #bold="{ content }">
-              <strong>{{ content }}</strong>
-            </template>
-          </gl-sprintf>
-        </div>
-        <gl-form-group
-          v-if="!duplicatesAllowed"
-          class="gl-mt-4"
-          :label="$options.i18n.DUPLICATES_SETTING_EXCEPTION_TITLE"
-          label-size="sm"
-          :state="isExceptionRegexValid"
-          :invalid-feedback="duplicateExceptionRegexError"
-          :description="$options.i18n.DUPLICATES_SETTINGS_EXCEPTION_LEGEND"
-          label-for="maven-duplicated-settings-regex-input"
-        >
-          <gl-form-input
-            id="maven-duplicated-settings-regex-input"
-            :disabled="loading"
-            :value="duplicateExceptionRegex"
-            @change="update(modelNames.exception, $event)"
-          />
-        </gl-form-group>
-      </div>
-    </div>
+    </gl-form-group>
   </form>
 </template>

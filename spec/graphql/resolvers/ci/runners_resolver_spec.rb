@@ -52,6 +52,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
           {
             active: true,
             status: 'active',
+            upgrade_status: 'recommended',
             type: :instance_type,
             tag_list: ['active_runner'],
             search: 'abc',
@@ -63,6 +64,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
           {
             active: true,
             status_status: 'active',
+            upgrade_status: 'recommended',
             type_type: :instance_type,
             tag_name: ['active_runner'],
             preload: { tag_name: nil },

@@ -193,6 +193,8 @@
   - 2
 - - gitlab_subscriptions_notify_seats_exceeded
   - 1
+- - google_cloud_create_cloudsql_instance
+  - 1
 - - group_destroy
   - 1
 - - group_export
@@ -221,6 +223,8 @@
   - 2
 - - incident_management_apply_incident_sla_exceeded_label
   - 1
+- - incident_management_close_incident
+  - 1
 - - incident_management_oncall_rotations_persist_shifts_job
   - 1
 - - incident_management_pending_escalations_alert_check
@@ -239,8 +243,6 @@
   - 1
 - - invalid_gpg_signature_update
   - 2
-- - irker
-  - 1
 - - issuable_export_csv
   - 1
 - - issuable_label_links_destroy
@@ -327,7 +329,7 @@
   - 1
 - - pages_domain_verification
   - 1
-- - pages_transfer
+- - pages_invalidate_domain_cache
   - 1
 - - personal_access_tokens
   - 1
@@ -354,8 +356,6 @@
 - - project_export
   - 1
 - - project_import_schedule
-  - 1
-- - project_service
   - 1
 - - project_template_export
   - 1
@@ -468,8 +468,6 @@
 - - vulnerability_exports_export_deletion
   - 1
 - - web_hook
-  - 1
-- - web_hooks_destroy
   - 1
 - - web_hooks_log_destroy
   - 1

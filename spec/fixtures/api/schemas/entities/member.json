@@ -62,7 +62,7 @@
       "required": ["email", "avatar_url", "can_resend", "user_state"],
       "properties": {
         "email": { "type": "string" },
-        "avatar_url": { "type": "string" },
+        "avatar_url": { "type": [ "string", "null" ] },
         "can_resend": { "type": "boolean" },
         "user_state": { "type": "string" }
       },

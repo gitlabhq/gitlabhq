@@ -146,12 +146,14 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   end
 
   context 'when passing an existing invite user id' do
-    let(:user_id) { create(:project_member, :invited, project: source).invite_email }
+    let(:invited_member) { create(:project_member, :guest, :invited, project: source) }
+    let(:user_id) { invited_member.invite_email }
+    let(:access_level) { ProjectMember::MAINTAINER }
 
-    it 'does not add a member' do
-      expect(execute_service[:status]).to eq(:error)
-      expect(execute_service[:message]).to eq("The member's email address has already been taken")
-      expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(false)
+    it 'allows already invited members to be re-invited by email and updates the member access' do
+      expect(execute_service[:status]).to eq(:success)
+      expect(invited_member.reset.access_level).to eq ProjectMember::MAINTAINER
+      expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(true)
     end
   end
 

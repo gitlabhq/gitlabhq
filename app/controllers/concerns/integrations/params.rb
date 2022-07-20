@@ -6,7 +6,6 @@ module Integrations
 
     ALLOWED_PARAMS_CE = [
       :active,
-      :add_pusher,
       :alert_events,
       :api_key,
       :api_token,

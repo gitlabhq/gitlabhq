@@ -71,26 +71,34 @@ It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
 page, with these behaviors:
 
-1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-    - Contains the string `OOO`, `PTO`, `Parental Leave`, or `Friends and Family`.
-    - GitLab user **Busy** indicator is set to `True`.
-    - Emoji is from one of these categories:
-      - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`
-      - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
-      - **At capacity** - 🔴 `:red_circle:`
-      - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
-1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
-   are three times as likely to be picked as other reviewers.
-1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
-   is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
-   - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.
-   - Trainee maintainers with 🔵 `:large_blue_circle:` are four times as likely to be picked as other reviewers.
-1. People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
-   is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked.
-1. It always picks the same reviewers and maintainers for the same
-   branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
-   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
-   that it can be stable for backport branches.
+- It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
+  - Contains the string `OOO`, `PTO`, `Parental Leave`, or `Friends and Family`.
+  - GitLab user **Busy** indicator is set to `True`.
+  - Emoji is from one of these categories:
+    - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`
+    - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
+    - **At capacity** - 🔴 `:red_circle:`
+    - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
+- It doesn't pick people who are already assigned a number of reviews that is equal to
+  or greater than their chosen "review limit". The review limit is the maximum number of
+  reviews people are ready to handle at a time. Set a review limit by using one of the following
+  as a Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
+  - 0️⃣ - `:zero:` (similar to `:red_circle:`)
+  - 1️⃣ - `:one:`
+  - 2️⃣ - `:two:`
+  - 3️⃣ - `:three:`
+  - 4️⃣ - `:four:`
+  - 5️⃣ - `:five:`
+- Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
+  is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
+  - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.
+  - [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer) with 🔵 `:large_blue_circle:` are three times as likely to be picked as other reviewers.
+- People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
+  is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked.
+- It always picks the same reviewers and maintainers for the same
+  branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
+  removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
+  that it can be stable for backport branches.
 
 The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette) contains:
 
@@ -131,7 +139,7 @@ with [domain expertise](#domain-experts).
 1. If your merge request includes documentation changes, it must be **approved
    by a [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)**,
    based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
-1. If your merge request includes changes to development guidelines, follow the [review process](index.md#development-guidelines-review) and get the approvals accordingly.
+1. If your merge request includes changes to development guidelines, follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly.
 1. If your merge request includes end-to-end **and** non-end-to-end changes (*4*), it must be **approved
    by a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors)**.
 1. If your merge request only includes end-to-end changes (*4*) **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors), it must be **approved by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa)**
@@ -275,7 +283,7 @@ This saves reviewers time and helps authors catch mistakes earlier.
 Verify that the merge request meets all [contribution acceptance criteria](contributing/merge_request_workflow.md#contribution-acceptance-criteria).
 
 If a merge request is too large, fixes more than one issue, or implements more
-than one feature, you should guide the author towards spltting the merge request
+than one feature, you should guide the author towards splitting the merge request
 into smaller merge requests.
 
 When you are confident
@@ -300,11 +308,18 @@ Because a maintainer's job only depends on their knowledge of the overall GitLab
 codebase, and not that of any specific domain, they can review, approve, and merge
 merge requests from any team and in any product area.
 
-If a merge request is too large, fixes more than one issue, or implements more
-than one feature, the maintainer can ask the author to make the merge request
-smaller. Request the previous reviewer, or a merge request coach to help guide
-the author on how to split the merge request, and to review the resulting
-changes.
+A maintainer should ask the author to make a merge request smaller if it is:
+
+- Too large.
+- Fixes more than one issue.
+- Implements more than one feature.
+- Has a high complexity resulting in additional risk.
+
+The maintainer, any of the
+reviewers, or a merge request coach can step up to help the author to divide work
+into smaller iterations, and guide the author on how to split the merge request.
+The author may choose to request that the current maintainers and reviewers review the split MRs
+or request a new group of maintainers and reviewers.
 
 Maintainers do their best to also review the specifics of the chosen solution
 before merging, but as they are not necessarily [domain experts](#domain-experts), they may be poorly

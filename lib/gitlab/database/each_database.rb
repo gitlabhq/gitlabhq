@@ -36,8 +36,7 @@ module Gitlab
         private
 
         def select_base_models(names)
-          base_models = Gitlab::Database.database_base_models
-
+          base_models = Gitlab::Database.database_base_models_with_gitlab_shared
           return base_models if names.empty?
 
           names.each_with_object(HashWithIndifferentAccess.new) do |name, hash|
@@ -48,7 +47,7 @@ module Gitlab
         end
 
         def with_shared_model_connections(shared_model, selected_databases, &blk)
-          Gitlab::Database.database_base_models.each_pair do |connection_name, connection_model|
+          Gitlab::Database.database_base_models_with_gitlab_shared.each_pair do |connection_name, connection_model|
             if shared_model.limit_connection_names
               next unless shared_model.limit_connection_names.include?(connection_name.to_sym)
             end

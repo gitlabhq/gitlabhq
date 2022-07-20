@@ -353,15 +353,16 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
   context 'when member already exists' do
     context 'with email' do
-      let!(:invited_member) { create(:project_member, :invited, project: project) }
-      let(:params) { { email: "#{invited_member.invite_email},#{project_user.email}" } }
+      let!(:invited_member) { create(:project_member, :guest, :invited, project: project) }
+      let(:params) do
+        { email: "#{invited_member.invite_email},#{project_user.email}", access_level: ProjectMember::MAINTAINER }
+      end
 
-      it 'adds new email and returns an error for the already invited email' do
+      it 'adds new email and allows already invited members to be re-invited by email and updates the member access' do
         expect_to_create_members(count: 1)
-        expect(result[:status]).to eq(:error)
-        expect(result[:message][invited_member.invite_email])
-          .to eq("The member's email address has already been taken")
+        expect(result[:status]).to eq(:success)
         expect(project.users).to include project_user
+        expect(invited_member.reset.access_level).to eq ProjectMember::MAINTAINER
       end
     end
 

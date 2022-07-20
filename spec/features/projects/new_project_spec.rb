@@ -61,15 +61,15 @@ RSpec.describe 'New project', :js do
       expect(page).to have_link('GitLab export')
     end
 
-    describe 'github import option' do
+    shared_examples 'renders importer link' do |params|
       context 'with user namespace' do
         before do
           visit new_project_path
           click_link 'Import project'
         end
 
-        it 'renders link to github importer' do
-          expect(page).to have_link(href: new_import_github_path)
+        it "renders link to #{params[:name]} importer" do
+          expect(page).to have_link(href: Rails.application.routes.url_helpers.send(params[:route]))
         end
       end
 
@@ -82,21 +82,56 @@ RSpec.describe 'New project', :js do
           click_link 'Import project'
         end
 
-        it 'renders link to github importer including namespace id' do
-          expect(page).to have_link(href: new_import_github_path(namespace_id: group.id))
+        it "renders link to #{params[:name]} importer including namespace id" do
+          expect(page).to have_link(href: Rails.application.routes.url_helpers.send(params[:route], namespace_id: group.id))
         end
       end
     end
 
-    describe 'manifest import option' do
-      before do
-        visit new_project_path
+    describe 'importer links' do
+      shared_examples 'link to importers' do
+        let(:importer_routes) do
+          {
+            'github': :new_import_github_path,
+            'bitbucket': :status_import_bitbucket_path,
+            'bitbucket server': :status_import_bitbucket_server_path,
+            'gitlab.com': :status_import_gitlab_path,
+            'fogbugz': :new_import_fogbugz_path,
+            'gitea': :new_import_gitea_path,
+            'manifest': :new_import_manifest_path,
+            'phabricator': :new_import_phabricator_path
+          }
+        end
 
-        click_link 'Import project'
+        it 'renders links to several importers', :aggregate_failures do
+          importer_routes.each_value do |route|
+            expect(page).to have_link(href: Rails.application.routes.url_helpers.send(route, link_params))
+          end
+        end
       end
 
-      it 'has Manifest file' do
-        expect(page).to have_link('Manifest file')
+      context 'with user namespace' do
+        let(:link_params) { {} }
+
+        before do
+          visit new_project_path
+          click_link 'Import project'
+        end
+
+        include_examples 'link to importers'
+      end
+
+      context 'with group namespace' do
+        let(:group) { create(:group, :private) }
+        let(:link_params) { { namespace_id: group.id } }
+
+        before do
+          group.add_owner(user)
+          visit new_project_path(namespace_id: group.id)
+          click_link 'Import project'
+        end
+
+        include_examples 'link to importers'
       end
     end
 

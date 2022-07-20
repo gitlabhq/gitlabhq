@@ -32,10 +32,17 @@ module Issues
     end
 
     def perform_incident_management_actions(issue)
+      return unless issue.incident?
+
+      create_timeline_event(issue)
     end
 
     def create_note(issue, state = issue.state)
       SystemNoteService.change_status(issue, issue.project, current_user, state, nil)
+    end
+
+    def create_timeline_event(issue)
+      IncidentManagement::TimelineEvents::CreateService.reopen_incident(issue, current_user)
     end
   end
 end

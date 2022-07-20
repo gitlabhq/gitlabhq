@@ -18,12 +18,12 @@ module Integrations
       IntegrationsHelper.integration_event_description(integration, event)
     end
 
-    expose :field, if: ->(_, _) { event_field } do
+    expose :field, if: ->(_, _) { integration.try(:configurable_channels?) } do
       expose :name do |event|
-        event_field[:name]
+        integration.event_channel_name(event)
       end
       expose :value do |event|
-        integration.public_send(event_field[:name]) # rubocop:disable GitlabSecurity/PublicSend
+        integration.event_channel_value(event)
       end
     end
 
@@ -33,10 +33,6 @@ module Integrations
 
     def event_field_name
       IntegrationsHelper.integration_event_field_name(event)
-    end
-
-    def event_field
-      @event_field ||= integration.event_field(event)
     end
 
     def integration

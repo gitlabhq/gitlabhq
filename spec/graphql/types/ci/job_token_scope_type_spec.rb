@@ -38,7 +38,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'] do
 
     context 'with access to scope' do
       before do
-        project.add_user(current_user, :maintainer)
+        project.add_member(current_user, :maintainer)
       end
 
       context 'when multiple projects in the allow list' do
@@ -46,7 +46,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'] do
 
         context 'when linked projects are readable' do
           before do
-            link.target_project.add_user(current_user, :developer)
+            link.target_project.add_member(current_user, :developer)
           end
 
           it 'returns readable projects in scope' do

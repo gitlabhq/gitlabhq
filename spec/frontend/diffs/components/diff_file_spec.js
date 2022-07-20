@@ -20,7 +20,7 @@ import axios from '~/lib/utils/axios_utils';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import httpStatus from '~/lib/utils/http_status';
 import createNotesStore from '~/notes/stores/modules';
-import diffFileMockDataReadable from '../mock_data/diff_file';
+import { getDiffFileMock } from '../mock_data/diff_file';
 import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 
 jest.mock('~/lib/utils/common_utils');
@@ -106,7 +106,7 @@ const findLoader = (wrapper) => wrapper.find('[data-testid="loader-icon"]');
 const findToggleButton = (wrapper) => wrapper.find('[data-testid="expand-button"]');
 
 const toggleFile = (wrapper) => findDiffHeader(wrapper).vm.$emit('toggleFile');
-const getReadableFile = () => JSON.parse(JSON.stringify(diffFileMockDataReadable));
+const getReadableFile = () => getDiffFileMock();
 const getUnreadableFile = () => JSON.parse(JSON.stringify(diffFileMockDataUnreadable));
 
 const makeFileAutomaticallyCollapsed = (store, index = 0) =>

@@ -149,7 +149,7 @@ To extract the HTML files of the Docs site:
    docker cp gitlab-docs:/usr/share/nginx/html /srv/gitlab/
    ```
 
-   You will end up with a `/srv/gitlab/html/` directory that holds the documentation website.
+   You end up with a `/srv/gitlab/html/` directory that holds the documentation website.
 
 1. Remove the container:
 

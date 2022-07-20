@@ -293,7 +293,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
           it 'can be collapsed' do
             submit_reply('another text')
 
-            find('.js-collapse-replies').click
+            click_button s_('Notes|Collapse replies'), match: :first
             expect(page).to have_css('.discussion-notes .note', count: 1)
             expect(page).to have_content '1 reply'
           end

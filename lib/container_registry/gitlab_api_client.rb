@@ -28,7 +28,7 @@ module ContainerRegistry
     end
 
     def self.deduplicated_size(path)
-      with_dummy_client(token_config: { type: :nested_repositories_token, path: path }) do |client|
+      with_dummy_client(token_config: { type: :nested_repositories_token, path: path&.downcase }) do |client|
         client.repository_details(path, sizing: :self_with_descendants)['size_bytes']
       end
     end

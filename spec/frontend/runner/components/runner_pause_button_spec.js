@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -16,9 +16,9 @@ import {
 } from '~/runner/constants';
 
 import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
-import { runnersData } from '../mock_data';
+import { allRunnersData } from '../mock_data';
 
-const mockRunner = runnersData.data.runners.nodes[0];
+const mockRunner = allRunnersData.data.runners.nodes[0];
 
 Vue.use(VueApollo);
 
@@ -115,15 +115,20 @@ describe('RunnerPauseButton', () => {
       });
 
       describe(`Immediately after the ${icon} button is clicked`, () => {
-        beforeEach(async () => {
+        const setup = async () => {
           findBtn().vm.$emit('click');
-        });
+          await nextTick();
+        };
 
         it('The button has a loading state', async () => {
+          await setup();
+
           expect(findBtn().props('loading')).toBe(true);
         });
 
         it('The stale tooltip is removed', async () => {
+          await setup();
+
           expect(getTooltip()).toBe('');
         });
       });
@@ -237,15 +242,20 @@ describe('RunnerPauseButton', () => {
     });
 
     describe('Immediately after the button is clicked', () => {
-      beforeEach(async () => {
+      const setup = async () => {
         findBtn().vm.$emit('click');
-      });
+        await nextTick();
+      };
 
       it('The button has a loading state', async () => {
+        await setup();
+
         expect(findBtn().props('loading')).toBe(true);
       });
 
       it('The stale tooltip is removed', async () => {
+        await setup();
+
         expect(getTooltip()).toBe('');
       });
     });

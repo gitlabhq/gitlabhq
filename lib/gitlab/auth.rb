@@ -217,7 +217,7 @@ module Gitlab
         return unless valid_scoped_token?(token, all_available_scopes)
 
         if project && token.user.project_bot?
-          return unless token_bot_in_resource?(token.user, project)
+          return unless can_read_project?(token.user, project)
         end
 
         if token.user.can_log_in_with_non_expired_password? || token.user.project_bot?
@@ -225,22 +225,8 @@ module Gitlab
         end
       end
 
-      def token_bot_in_project?(user, project)
-        project.bots.include?(user)
-      end
-
-      # rubocop: disable CodeReuse/ActiveRecord
-
-      # A workaround for adding group-level automation is to add the bot user of a project access token as a group member.
-      # In order to make project access tokens work this way during git authentication, we need to add an additional check for group membership.
-      # This is a temporary workaround until service accounts are implemented.
-      def token_bot_in_group?(user, project)
-        project.group && project.group.members_with_parents.where(user_id: user.id).exists?
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
-      def token_bot_in_resource?(user, project)
-        token_bot_in_project?(user, project) || token_bot_in_group?(user, project)
+      def can_read_project?(user, project)
+        user.can?(:read_project, project)
       end
 
       def valid_oauth_token?(token)
@@ -323,7 +309,7 @@ module Gitlab
         return unless build.project.builds_enabled?
 
         if build.user
-          return unless build.user.can_log_in_with_non_expired_password? || (build.user.project_bot? && token_bot_in_resource?(build.user, build.project))
+          return unless build.user.can_log_in_with_non_expired_password? || (build.user.project_bot? && can_read_project?(build.user, build.project))
 
           # If user is assigned to build, use restricted credentials of user
           Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)

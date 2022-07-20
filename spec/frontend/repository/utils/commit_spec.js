@@ -10,7 +10,6 @@ const mockData = [
     commit_path: `https://test.com`,
     commit_title_html: 'testing message',
     file_name: 'index.js',
-    type: 'blob',
   },
 ];
 
@@ -24,7 +23,6 @@ describe('normalizeData', () => {
         commitPath: 'https://test.com',
         fileName: 'index.js',
         filePath: '/index.js',
-        type: 'blob',
         titleHtml: 'testing message',
         __typename: 'LogTreeCommit',
       },

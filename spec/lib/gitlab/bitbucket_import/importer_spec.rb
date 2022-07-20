@@ -328,6 +328,7 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
 
       expect(project.issues.where(state_id: Issue.available_states[:closed]).size).to eq(5)
       expect(project.issues.where(state_id: Issue.available_states[:opened]).size).to eq(2)
+      expect(project.issues.map(&:namespace_id).uniq).to match_array([project.project_namespace_id])
     end
 
     describe 'wiki import' do
@@ -361,6 +362,14 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
         expect(project.issues.where("description LIKE ?", '%reporter2%').size).to eq(1)
         expect(project.issues.where("description LIKE ?", '%reporter3%').size).to eq(1)
         expect(importer.errors).to be_empty
+      end
+
+      it 'sets work item type on new issues' do
+        allow(importer).to receive(:import_wiki)
+
+        importer.execute
+
+        expect(project.issues.map(&:work_item_type_id).uniq).to contain_exactly(WorkItems::Type.default_issue_type.id)
       end
     end
 

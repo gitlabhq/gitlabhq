@@ -107,6 +107,7 @@ describe('SidebarDropdownWidget', () => {
     currentMilestoneSpy = jest.fn().mockResolvedValue(noCurrentMilestoneResponse),
   } = {}) => {
     Vue.use(VueApollo);
+
     mockApollo = createMockApollo([
       [projectMilestonesQuery, projectMilestonesSpy],
       [projectIssueMilestoneQuery, currentMilestoneSpy],
@@ -415,11 +416,9 @@ describe('SidebarDropdownWidget', () => {
 
         describe('when currentAttribute is not equal to attribute id', () => {
           describe('when update is successful', () => {
-            beforeEach(() => {
-              findDropdownItemWithText(mockMilestone2.title).vm.$emit('click');
-            });
-
             it('calls setIssueAttribute mutation', () => {
+              findDropdownItemWithText(mockMilestone2.title).vm.$emit('click');
+
               expect(milestoneMutationSpy).toHaveBeenCalledWith({
                 iid: mockIssue.iid,
                 attributeId: getIdFromGraphQLId(mockMilestone2.id),
@@ -428,6 +427,8 @@ describe('SidebarDropdownWidget', () => {
             });
 
             it('sets the value returned from the mutation to currentAttribute', async () => {
+              findDropdownItemWithText(mockMilestone2.title).vm.$emit('click');
+              await nextTick();
               expect(findSelectedAttribute().text()).toBe(mockMilestone2.title);
             });
           });

@@ -13,8 +13,8 @@ RSpec.describe 'Query.project(fullPath).pipelines.job(id)' do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let_it_be(:prepare_stage) { create(:ci_stage_entity, pipeline: pipeline, project: project, name: 'prepare') }
-  let_it_be(:test_stage) { create(:ci_stage_entity, pipeline: pipeline, project: project, name: 'test') }
+  let_it_be(:prepare_stage) { create(:ci_stage, pipeline: pipeline, project: project, name: 'prepare') }
+  let_it_be(:test_stage) { create(:ci_stage, pipeline: pipeline, project: project, name: 'test') }
 
   let_it_be(:job_1) { create(:ci_build, pipeline: pipeline, stage: 'prepare', name: 'Job 1') }
   let_it_be(:job_2) { create(:ci_build, pipeline: pipeline, stage: 'test', name: 'Job 2') }

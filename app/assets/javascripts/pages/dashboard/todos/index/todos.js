@@ -28,20 +28,32 @@ export default class Todos {
   }
 
   unbindEvents() {
-    $('.js-done-todo, .js-undo-todo, .js-add-todo').off('click', this.updateRowStateClickedWrapper);
-    $('.js-todos-mark-all', '.js-todos-undo-all').off('click', this.updateallStateClickedWrapper);
-    $('.todo').off('click', this.goToTodoUrl);
-    $('.todo').off('auxclick', this.goToTodoUrl);
+    document.querySelectorAll('.js-done-todo, .js-undo-todo, .js-add-todo').forEach((el) => {
+      el.removeEventListener('click', this.updateRowStateClickedWrapper);
+    });
+    document.querySelectorAll('.js-todos-mark-all, .js-todos-undo-all').forEach((el) => {
+      el.removeEventListener('click', this.updateallStateClickedWrapper);
+    });
+    document.querySelectorAll('.todo').forEach((el) => {
+      el.removeEventListener('click', this.goToTodoUrl);
+      el.removeEventListener('auxclick', this.goToTodoUrl);
+    });
   }
 
   bindEvents() {
     this.updateRowStateClickedWrapper = this.updateRowStateClicked.bind(this);
     this.updateAllStateClickedWrapper = this.updateAllStateClicked.bind(this);
 
-    $('.js-done-todo, .js-undo-todo, .js-add-todo').on('click', this.updateRowStateClickedWrapper);
-    $('.js-todos-mark-all, .js-todos-undo-all').on('click', this.updateAllStateClickedWrapper);
-    $('.todo').on('click', this.goToTodoUrl);
-    $('.todo').on('auxclick', this.goToTodoUrl);
+    document.querySelectorAll('.js-done-todo, .js-undo-todo, .js-add-todo').forEach((el) => {
+      el.addEventListener('click', this.updateRowStateClickedWrapper);
+    });
+    document.querySelectorAll('.js-todos-mark-all, .js-todos-undo-all').forEach((el) => {
+      el.addEventListener('click', this.updateAllStateClickedWrapper);
+    });
+    document.querySelectorAll('.todo').forEach((el) => {
+      el.addEventListener('click', this.goToTodoUrl);
+      el.addEventListener('auxclick', this.goToTodoUrl);
+    });
   }
 
   initFilters() {
@@ -181,7 +193,13 @@ export default class Todos {
   }
 
   updateBadges(data) {
-    $(document).trigger('todo:toggle', data.count);
+    const event = new CustomEvent('todo:toggle', {
+      detail: {
+        count: data.count,
+      },
+    });
+
+    document.dispatchEvent(event);
     document.querySelector('.js-todos-pending .js-todos-badge').innerHTML = addDelimiter(
       data.count,
     );

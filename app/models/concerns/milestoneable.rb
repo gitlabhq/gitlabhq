@@ -16,7 +16,7 @@ module Milestoneable
 
     scope :any_milestone, -> { where.not(milestone_id: nil) }
     scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
-    scope :without_particular_milestone, ->(title) { left_outer_joins(:milestone).where("milestones.title != ? OR milestone_id IS NULL", title) }
+    scope :without_particular_milestones, ->(titles) { left_outer_joins(:milestone).where("milestones.title NOT IN (?) OR milestone_id IS NULL", titles) }
     scope :any_release, -> { joins_milestone_releases }
     scope :with_release, -> (tag, project_id) { joins_milestone_releases.where( milestones: { releases: { tag: tag, project_id: project_id } } ) }
     scope :without_particular_release, -> (tag, project_id) { joins_milestone_releases.where.not(milestones: { releases: { tag: tag, project_id: project_id } }) }

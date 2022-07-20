@@ -4,7 +4,7 @@ RSpec.shared_examples 'multiple assignees widget merge request' do |action, save
   it "#{action} a MR with multiple assignees", :js do
     find('.js-assignee-search').click
     page.within '.dropdown-menu-user' do
-      click_link user.name unless action == 'creates'
+      click_link user.name
       click_link user2.name
     end
 

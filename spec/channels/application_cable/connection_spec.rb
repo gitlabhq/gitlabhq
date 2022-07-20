@@ -12,7 +12,7 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
 
     context 'when user is logged in' do
       let(:user) { create(:user) }
-      let(:session_hash) { { 'warden.user.user.key' => [[user.id], user.encrypted_password[0, 29]] } }
+      let(:session_hash) { { 'warden.user.user.key' => [[user.id], user.authenticatable_salt] } }
 
       it 'sets current_user' do
         connect
@@ -21,7 +21,7 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
       end
 
       context 'with a stale password' do
-        let(:partial_password_hash) { build(:user, password: 'some_old_password').encrypted_password[0, 29] }
+        let(:partial_password_hash) { build(:user, password: 'some_old_password').authenticatable_salt }
         let(:session_hash) { { 'warden.user.user.key' => [[user.id], partial_password_hash] } }
 
         it 'sets current_user to nil' do

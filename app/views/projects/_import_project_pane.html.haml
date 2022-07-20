@@ -24,21 +24,21 @@
 
       - if bitbucket_import_enabled?
         %div
-          = link_to status_import_bitbucket_path, class: "gl-button btn-default btn import_bitbucket js-import-project-btn #{'js-how-to-import-link' unless bitbucket_import_configured?}",
+          = link_to status_import_bitbucket_path(namespace_id: namespace_id), class: "gl-button btn-default btn import_bitbucket js-import-project-btn #{'js-how-to-import-link' unless bitbucket_import_configured?}",
           data: { modal_title: _("Import projects from Bitbucket"), modal_message: import_from_bitbucket_message, platform: 'bitbucket_cloud', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_cloud') } do
             .gl-button-icon
               = sprite_icon('bitbucket')
             Bitbucket Cloud
       - if bitbucket_server_import_enabled?
         %div
-          = link_to status_import_bitbucket_server_path, class: "gl-button btn-default btn import_bitbucket js-import-project-btn", data: { platform: 'bitbucket_server', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_server') } do
+          = link_to status_import_bitbucket_server_path(namespace_id: namespace_id), class: "gl-button btn-default btn import_bitbucket js-import-project-btn", data: { platform: 'bitbucket_server', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_server') } do
             .gl-button-icon
               = sprite_icon('bitbucket')
             Bitbucket Server
         %div
       - if gitlab_import_enabled?
         %div
-          = link_to status_import_gitlab_path, class: "gl-button btn-default btn import_gitlab js-import-project-btn #{'js-how-to-import-link' unless gitlab_import_configured?}",
+          = link_to status_import_gitlab_path(namespace_id: namespace_id), class: "gl-button btn-default btn import_gitlab js-import-project-btn #{'js-how-to-import-link' unless gitlab_import_configured?}",
             data: { modal_title: _("Import projects from GitLab.com"), modal_message: import_from_gitlab_message, platform: 'gitlab_com', **tracking_attrs_data(track_label, 'click_button', 'gitlab_com') } do
             .gl-button-icon
               = sprite_icon('tanuki')
@@ -46,7 +46,7 @@
 
       - if fogbugz_import_enabled?
         %div
-          = link_to new_import_fogbugz_path, class: 'gl-button btn-default btn import_fogbugz js-import-project-btn', data: { platform: 'fogbugz', **tracking_attrs_data(track_label, 'click_button', 'fogbugz') } do
+          = link_to new_import_fogbugz_path(namespace_id: namespace_id), class: 'gl-button btn-default btn import_fogbugz js-import-project-btn', data: { platform: 'fogbugz', **tracking_attrs_data(track_label, 'click_button', 'fogbugz') } do
             .gl-button-icon
               = sprite_icon('bug')
             FogBugz

@@ -180,11 +180,6 @@ describe('Monitoring mutations', () => {
     });
 
     it('should not remove previously set properties', () => {
-      const defaultLogsPath = stateCopy.logsPath;
-
-      mutations[types.SET_INITIAL_STATE](stateCopy, {
-        logsPath: defaultLogsPath,
-      });
       mutations[types.SET_INITIAL_STATE](stateCopy, {
         dashboardEndpoint: 'dashboard.json',
       });
@@ -196,7 +191,6 @@ describe('Monitoring mutations', () => {
       });
 
       expect(stateCopy).toMatchObject({
-        logsPath: defaultLogsPath,
         dashboardEndpoint: 'dashboard.json',
         projectPath: '/gitlab-org/gitlab-foss',
         currentEnvironmentName: 'canary',
@@ -227,11 +221,6 @@ describe('Monitoring mutations', () => {
     });
 
     it('should not remove previously set properties', () => {
-      const defaultLogsPath = stateCopy.logsPath;
-
-      mutations[types.SET_ENDPOINTS](stateCopy, {
-        logsPath: defaultLogsPath,
-      });
       mutations[types.SET_ENDPOINTS](stateCopy, {
         dashboardEndpoint: 'dashboard.json',
       });
@@ -240,7 +229,6 @@ describe('Monitoring mutations', () => {
       });
 
       expect(stateCopy).toMatchObject({
-        logsPath: defaultLogsPath,
         dashboardEndpoint: 'dashboard.json',
         projectPath: '/gitlab-org/gitlab-foss',
       });

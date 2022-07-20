@@ -146,7 +146,8 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
           create(:incident_management_timeline_event, :non_editable, project: project, incident: incident)
         end
 
-        it_behaves_like 'error response', 'You cannot edit this timeline event.'
+        it_behaves_like 'error response',
+          'You have insufficient permissions to manage timeline events for this incident'
       end
     end
 
@@ -155,7 +156,8 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
         project.add_reporter(user)
       end
 
-      it_behaves_like 'error response', 'You have insufficient permissions to manage timeline events for this incident'
+      it_behaves_like 'error response',
+        'You have insufficient permissions to manage timeline events for this incident'
     end
   end
 end

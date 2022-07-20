@@ -109,5 +109,4 @@ Style/RedundantRegexpEscape:
     - 'spec/support_specs/matchers/exceed_query_limit_helpers_spec.rb'
     - 'spec/uploaders/personal_file_uploader_spec.rb'
     - 'spec/views/help/index.html.haml_spec.rb'
-    - 'tooling/bin/qa/check_if_qa_only_spec_changes'
     - 'tooling/danger/project_helper.rb'

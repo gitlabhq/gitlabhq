@@ -118,9 +118,16 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     end
 
     resources :container_registries, only: [:index, :show], controller: 'registry/repositories'
-    resources :harbor_registries, only: [:index, :show], controller: 'harbor/repositories'
     resource :dependency_proxy, only: [:show, :update]
     resources :email_campaigns, only: :index
+
+    namespace :harbor do
+      resources :repositories, only: [:index] do
+        resources :artifacts, only: [:index] do
+          resources :tags, only: [:index]
+        end
+      end
+    end
 
     resources :autocomplete_sources, only: [] do
       collection do

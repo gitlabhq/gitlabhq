@@ -14,6 +14,37 @@ RSpec.describe ::Integrations::Field do
     end
   end
 
+  describe '#initialize' do
+    it 'sets type password for secret names' do
+      attrs[:name] = 'token'
+      attrs[:type] = 'text'
+
+      expect(field[:type]).to eq('password')
+    end
+
+    it 'uses the given type for other names' do
+      attrs[:name] = 'field'
+      attrs[:type] = 'select'
+
+      expect(field[:type]).to eq('select')
+    end
+
+    it 'raises an error if an invalid attribute is given' do
+      attrs[:foo] = 'foo'
+      attrs[:bar] = 'bar'
+      attrs[:name] = 'name'
+      attrs[:type] = 'text'
+
+      expect { field }.to raise_error(ArgumentError, "Invalid attributes [:foo, :bar]")
+    end
+
+    it 'raises an error if an invalid type is given' do
+      attrs[:type] = 'other'
+
+      expect { field }.to raise_error(ArgumentError, 'Invalid type "other"')
+    end
+  end
+
   describe '#name' do
     before do
       attrs[:name] = :foo
@@ -59,7 +90,7 @@ RSpec.describe ::Integrations::Field do
 
         it 'has the correct default' do
           expect(field[name]).to have_correct_default
-          expect(field.send(name)).to have_correct_default
+          expect(field.public_send(name)).to have_correct_default
         end
       end
 
@@ -69,28 +100,62 @@ RSpec.describe ::Integrations::Field do
         end
 
         it 'is known' do
+          next if name == :type
+
           expect(field[name]).to eq(:known)
-          expect(field.send(name)).to eq(:known)
+          expect(field.public_send(name)).to eq(:known)
         end
       end
 
       context 'when set to a dynamic value' do
         it 'is computed' do
+          next if name == :type
+
           attrs[name] = -> { Time.current }
           start = Time.current
 
           travel_to(start + 1.minute) do
             expect(field[name]).to be_after(start)
-            expect(field.send(name)).to be_after(start)
+            expect(field.public_send(name)).to be_after(start)
           end
         end
 
         it 'is executed in the class scope' do
+          next if name == :type
+
           attrs[name] = -> { default_placeholder }
 
           expect(field[name]).to eq('my placeholder')
-          expect(field.send(name)).to eq('my placeholder')
+          expect(field.public_send(name)).to eq('my placeholder')
         end
+      end
+    end
+  end
+
+  described_class::BOOLEAN_ATTRIBUTES.each do |name|
+    describe "##{name}?" do
+      it 'returns true if the value is truthy' do
+        attrs[name] = ''
+        expect(field.public_send("#{name}?")).to be(true)
+      end
+
+      it 'returns false if the value is falsey' do
+        attrs[name] = nil
+        expect(field.public_send("#{name}?")).to be(false)
+      end
+    end
+  end
+
+  described_class::TYPES.each do |type|
+    describe "##{type}?" do
+      it 'returns true if the type matches' do
+        attrs[:type] = type
+        expect(field.public_send("#{type}?")).to be(true)
+      end
+
+      it 'returns false if the type does not match' do
+        attrs[:type] = (described_class::TYPES - [type]).first
+        expect(field.public_send("#{type}?")).to be(false)
       end
     end
   end

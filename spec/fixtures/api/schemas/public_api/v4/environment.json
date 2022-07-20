@@ -25,10 +25,7 @@
     "state": { "type": "string" },
     "created_at": { "type": "string", "format": "date-time" },
     "updated_at": { "type": "string", "format": "date-time" },
-    "project": { "$ref": "project.json" },
-    "enable_advanced_logs_querying": { "type": "boolean" },
-    "logs_api_path": { "type": "string" },
-    "gitlab_managed_apps_logs_path": { "type": "string" }
+    "project": { "$ref": "project.json" }
   },
   "additionalProperties": false
 }

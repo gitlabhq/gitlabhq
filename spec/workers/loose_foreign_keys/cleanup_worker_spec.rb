@@ -169,7 +169,7 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
       let(:expected_connection) { expected_connection_model.constantize.connection }
 
       before do
-        allow(Gitlab::Database).to receive(:database_base_models).and_return(database_base_models)
+        allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(database_base_models)
 
         if database_base_models.has_key?(:ci)
           Gitlab::Database::SharedModel.using_connection(database_base_models[:ci].connection) do

@@ -131,7 +131,9 @@
     "VulnerabilityLocationSecretDetection"
   ],
   "WorkItemWidget": [
+    "WorkItemWidgetAssignees",
     "WorkItemWidgetDescription",
-    "WorkItemWidgetHierarchy"
+    "WorkItemWidgetHierarchy",
+    "WorkItemWidgetWeight"
   ]
 }

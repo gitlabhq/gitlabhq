@@ -20,7 +20,10 @@ module Gitlab
       ::Gitlab::ErrorTracking::Processor::SidekiqProcessor,
       ::Gitlab::ErrorTracking::Processor::GrpcErrorProcessor,
       ::Gitlab::ErrorTracking::Processor::ContextPayloadProcessor,
-      ::Gitlab::ErrorTracking::Processor::SanitizeErrorMessageProcessor
+      ::Gitlab::ErrorTracking::Processor::SanitizeErrorMessageProcessor,
+      # IMPORTANT: this processor must stay at the bottom, right before
+      # sending the event to Sentry.
+      ::Gitlab::ErrorTracking::Processor::SanitizerProcessor
     ].freeze
 
     class << self

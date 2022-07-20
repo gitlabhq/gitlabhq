@@ -1,11 +1,11 @@
-- name: "`artifacts:report:cobertura` keyword"
+- name: "`artifacts:reports:cobertura` keyword"
   announcement_milestone: "14.7"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"
   removal_date: "2022-05-22"
   breaking_change: false
   body: |
-     As of GitLab 15.0, the [`artifacts:report:cobertura`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura-removed)
+     As of GitLab 15.0, the [`artifacts:reports:cobertura`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura-removed)
      keyword has been [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) by
      [`artifacts:reports:coverage_report`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscoverage_report).
      Cobertura is the only supported report file, but this is the first step towards GitLab supporting other report types.

@@ -28,6 +28,7 @@ Disallow: /-/ide/
 Disallow: /-/experiment
 # Restrict allowed routes to avoid very ugly search results
 Allow: /users/sign_in
+Allow: /users/sign_up
 Allow: /users/*/snippets
 
 # Generic resource routes like new, edit, raw

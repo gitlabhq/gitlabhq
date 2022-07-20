@@ -439,6 +439,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         before do
           TestEnv.clean_test_path
           create(:group_member, :owner, group: new_parent_group, user: user)
+          allow(transfer_service).to receive(:update_project_settings)
           transfer_service.execute(new_parent_group)
         end
 
@@ -476,6 +477,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
             group.projects.each do |project|
               expect(project.private?).to be_truthy
             end
+          end
+
+          it 'invokes #update_project_settings' do
+            expect(transfer_service).to have_received(:update_project_settings)
+                                          .with(group.projects.pluck(:id))
           end
 
           it_behaves_like 'project namespace path is in sync with project path' do
@@ -601,8 +607,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
             }.from(0).to(1)
           end
 
-          it 'performs authorizations job immediately' do
-            expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_inline)
+          it 'performs authorizations job' do
+            expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_async)
 
             transfer_service.execute(new_parent_group)
           end
@@ -659,7 +665,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
 
             it 'schedules authorizations job' do
               expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_async)
-                .with(array_including(group.all_projects.ids.map { |id| [id, anything] }))
+                .with(array_including(group.all_projects.ids.map { |id| [id] }))
 
               transfer_service.execute(new_parent_group)
             end

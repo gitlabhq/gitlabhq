@@ -23,7 +23,26 @@ merge requests are merged into an existing branch.
 This setting is the default. It always creates a separate merge commit,
 even when using [squash](../squash_and_merge.md). An example commit graph generated using this merge method:
 
-![Commit graph for merge commits](../img/merge_method_merge_commit_v15_0.png)
+```mermaid
+gitGraph
+  commit id: "Init"
+  branch mr-branch-1
+  commit
+  checkout main
+  commit
+  branch mr-branch-2
+  commit
+  checkout mr-branch-1
+  commit
+  checkout main
+  branch squash-mr
+  commit id: "Squashed commits"
+  checkout main
+  merge squash-mr
+  merge mr-branch-1
+  commit
+  merge mr-branch-2
+```
 
 - For regular merges, it is equivalent to the command `git merge --no-ff <source-branch>`.
 - For squash merges, it squashes all commits in the source branch before merging it normally. It performs actions similar to:
@@ -42,7 +61,25 @@ A merge commit is created for every merge, but the branch is only merged if
 a fast-forward merge is possible. This ensures that if the merge request build
 succeeded, the target branch build also succeeds after the merge. An example commit graph generated using this merge method:
 
-![Commit graph for merge commit with semi-linear history](../img/merge_method_merge_commit_with_semi_linear_history_v15_0.png)
+```mermaid
+gitGraph
+  commit id: "Init"
+  branch mr-branch-1
+  commit
+  commit
+  checkout main
+  merge mr-branch-1
+  branch mr-branch-2
+  commit
+  commit
+  checkout main
+  merge mr-branch-2
+  commit
+  branch squash-mr
+  commit id: "Squashed commits"
+  checkout main
+  merge squash-mr
+```
 
 When you visit the merge request page with `Merge commit with semi-linear history`
 method selected, you can accept it **only if a fast-forward merge is possible**.
@@ -63,7 +100,14 @@ fast-forward merge requests, you can retain a linear Git history and a way
 to accept merge requests without creating merge commits. An example commit graph
 generated using this merge method:
 
-![Commit graph for fast-forward merge](../img/merge_method_ff_v15_0.png)
+```mermaid
+gitGraph
+  commit id: "Init"
+  commit id: "Merge mr-branch-1"
+  commit id: "Merge mr-branch-2"
+  commit id: "Commit on main"
+  commit id: "Merge squash-mr"
+```
 
 This method is equivalent to `git merge --ff <source-branch>` for regular merges, and to
 `git merge -squash <source-branch>` for squash merges.

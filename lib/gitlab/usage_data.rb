@@ -105,7 +105,6 @@ module Gitlab
             clusters_platforms_gke: count(::Clusters::Cluster.gcp_installed.enabled),
             clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
             clusters_management_project: count(::Clusters::Cluster.with_management_project),
-            clusters_integrations_elastic_stack: count(::Clusters::Integrations::ElasticStack.enabled),
             clusters_integrations_prometheus: count(::Clusters::Integrations::Prometheus.enabled),
             kubernetes_agents: count(::Clusters::Agent),
             kubernetes_agents_with_token: distinct_count(::Clusters::AgentToken, :agent_id),
@@ -135,7 +134,6 @@ module Gitlab
             projects_creating_incidents: distinct_count(Issue.incident, :project_id),
             projects_imported_from_github: count(Project.where(import_type: 'github')),
             projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
-            projects_with_tracing_enabled: count(ProjectTracingSetting),
             projects_with_error_tracking_enabled: count(::ErrorTracking::ProjectErrorTrackingSetting.where(enabled: true)),
             projects_with_alerts_created: distinct_count(::AlertManagement::Alert, :project_id),
             projects_with_enabled_alert_integrations: distinct_count(::AlertManagement::HttpIntegration.active, :project_id),
@@ -558,7 +556,6 @@ module Gitlab
           operations_dashboard_default_dashboard: count(::User.active.with_dashboard('operations').where(time_period),
                                                         start: minimum_id(User),
                                                         finish: maximum_id(User)),
-          projects_with_tracing_enabled: distinct_count(::Project.with_tracing_enabled.where(time_period), :creator_id),
           projects_with_error_tracking_enabled: distinct_count(::Project.with_enabled_error_tracking.where(time_period), :creator_id),
           projects_with_incidents: distinct_count(::Issue.incident.where(time_period), :project_id),
           projects_with_alert_incidents: distinct_count(::Issue.incident.with_alert_management_alerts.where(time_period), :project_id),
@@ -654,8 +651,6 @@ module Gitlab
       end
 
       def with_duration
-        return yield unless Feature.enabled?(:measure_service_ping_metric_collection)
-
         result = nil
         duration = Benchmark.realtime do
           result = yield

@@ -441,8 +441,6 @@ This label now appears at the top of the label list, under **Prioritized Labels*
 To change the relative priority of these labels, drag them up and down the list.
 The labels higher in the list get higher priority.
 
-![Drag to change label priority](img/labels_drag_priority_v12_1.gif)
-
 To learn what happens when you sort by priority or label priority, see
 [Sorting and ordering issue lists](issues/sorting_issue_lists.md).
 

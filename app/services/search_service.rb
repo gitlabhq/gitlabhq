@@ -11,7 +11,7 @@ class SearchService
 
   def initialize(current_user, params = {})
     @current_user = current_user
-    @params = Gitlab::Search::Params.new(params, detect_abuse: prevent_abusive_searches?)
+    @params = Gitlab::Search::Params.new(params, detect_abuse: true)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -91,11 +91,18 @@ class SearchService
     end
   end
 
-  private
-
-  def prevent_abusive_searches?
-    Feature.enabled?(:prevent_abusive_searches, current_user)
+  def level
+    @level ||=
+      if project
+        'project'
+      elsif group
+        'group'
+      else
+        'global'
+      end
   end
+
+  private
 
   def page
     [1, params[:page].to_i].max

@@ -219,7 +219,23 @@ class Member < ApplicationRecord
 
   class << self
     def search(query)
-      joins(:user).merge(User.search(query, use_minimum_char_limit: false))
+      scope = joins(:user).merge(User.search(query, use_minimum_char_limit: false))
+
+      return scope unless Gitlab::Pagination::Keyset::Order.keyset_aware?(scope)
+
+      # If the User.search method returns keyset pagination aware AR scope then we
+      # need call apply_cursor_conditions which adds the ORDER BY columns from the scope
+      # to the SELECT clause.
+      #
+      # Why is this needed:
+      # When using keyset pagination, the next page is loaded using the ORDER BY
+      # values of the last record (cursor). This query selects `members.*` and
+      # orders by a custom SQL expression on `users` and `users.name`. The values
+      # will not be part of `members.*`.
+      #
+      # Result: `SELECT members.*, users.column1, users.column2 FROM members ...`
+      order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(scope)
+      order.apply_cursor_conditions(scope).reorder(order)
     end
 
     def search_invite_email(query)

@@ -3,10 +3,8 @@ import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
 import DeployBoard from '~/environments/components/deploy_board.vue';
-import { deployBoardMockData, environment } from './mock_data';
+import { deployBoardMockData } from './mock_data';
 import { rolloutStatus } from './graphql/mock_data';
-
-const logsPath = `gitlab-org/gitlab-test/-/logs?environment_name=${environment.name}`;
 
 describe('Deploy Board', () => {
   let wrapper;
@@ -17,7 +15,6 @@ describe('Deploy Board', () => {
         deployBoardData: deployBoardMockData,
         isLoading: false,
         isEmpty: false,
-        logsPath,
         ...props,
       },
     });
@@ -132,7 +129,6 @@ describe('Deploy Board', () => {
         deployBoardData: {},
         isLoading: false,
         isEmpty: true,
-        logsPath,
       });
       return nextTick();
     });
@@ -151,7 +147,6 @@ describe('Deploy Board', () => {
         deployBoardData: {},
         isLoading: true,
         isEmpty: false,
-        logsPath,
       });
       return nextTick();
     });
@@ -167,7 +162,6 @@ describe('Deploy Board', () => {
       wrapper = createComponent({
         isLoading: false,
         isEmpty: false,
-        logsPath: environment.log_path,
         deployBoardData: deployBoardMockData,
       });
       ({ statuses } = wrapper.vm);

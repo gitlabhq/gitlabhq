@@ -21,7 +21,7 @@ For public and internal projects, you can change who can see your:
 - Pipelines
 - Job output logs
 - Job artifacts
-- [Pipeline security dashboard](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline)
+- [Pipeline security dashboard](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline)
 
 To change the visibility of your pipelines and related features:
 
@@ -287,6 +287,9 @@ regular expression displayed in the settings. Available in GitLab 14.10 and earl
 1. Expand **General pipelines**.
 
 The regular expression you need is in the **Test coverage parsing** field.
+
+If you need to retrieve the project coverage setting from many projects, you can
+[use the API to programmatically retrieve the setting](https://gitlab.com/gitlab-org/gitlab/-/issues/17633#note_945941397).
 
 <!-- end_remove -->
 

@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -219,6 +219,12 @@ To fix this problem, confirm that your [`gitlab-secrets.json` file](configure_gi
 on the Gitaly server matches the one on Gitaly client. If it doesn't match,
 update the secrets file on the Gitaly server to match the Gitaly client, then
 [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+If you've confirmed that your `gitlab-secrets.json` file is the same on all Gitaly servers and clients,
+the application might be fetching this secret from a different file. Your Gitaly server's
+`config.toml file` indicates the secrets file in use.
+If that setting is missing, GitLab defaults to using `.gitlab_shell_secret` under
+`/opt/gitlab/embedded/service/gitlab-rails/.gitlab_shell_secret`.
 
 ### Repository pushes fail with a `deny updating a hidden ref` error
 

@@ -220,7 +220,7 @@ For example, if you encapsulate some actions and expectations in a private metho
 it "has Owner role with Owner permissions" do
   Page::Dashboard::Projects.perform do |projects|
     projects.filter_by_name(project.name)
-    
+
     expect(projects).to have_project_with_access_role(project.name, 'Owner')
   end
 

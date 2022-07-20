@@ -25,11 +25,12 @@ describe('Release edit/new mutations', () => {
       mutations[types.INITIALIZE_EMPTY_RELEASE](state);
 
       expect(state.release).toEqual({
-        tagName: null,
+        tagName: 'v1.3',
         name: '',
         description: '',
         milestones: [],
         groupMilestones: [],
+        releasedAt: new Date(),
         assets: {
           links: [],
         },
@@ -82,6 +83,16 @@ describe('Release edit/new mutations', () => {
     });
   });
 
+  describe(`${types.UPDATE_RELEASED_AT}`, () => {
+    it("updates the release's released at date", () => {
+      state.release = release;
+      const newDate = new Date();
+      mutations[types.UPDATE_RELEASED_AT](state, newDate);
+
+      expect(state.release.releasedAt).toBe(newDate);
+    });
+  });
+
   describe(`${types.UPDATE_CREATE_FROM}`, () => {
     it('updates the ref that the ref will be created from', () => {
       state.createFrom = 'main';
@@ -89,6 +100,16 @@ describe('Release edit/new mutations', () => {
       mutations[types.UPDATE_CREATE_FROM](state, newRef);
 
       expect(state.createFrom).toBe(newRef);
+    });
+  });
+
+  describe(`${types.UPDATE_SHOW_CREATE_FROM}`, () => {
+    it('updates the ref that the ref will be created from', () => {
+      state.showCreateFrom = true;
+      const newValue = false;
+      mutations[types.UPDATE_SHOW_CREATE_FROM](state, newValue);
+
+      expect(state.showCreateFrom).toBe(newValue);
     });
   });
 

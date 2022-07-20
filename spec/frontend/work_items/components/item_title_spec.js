@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { escape } from 'lodash';
 import ItemTitle from '~/work_items/components/item_title.vue';
 
 jest.mock('lodash/escape', () => jest.fn((fn) => fn));
@@ -51,6 +50,5 @@ describe('ItemTitle', () => {
     await findInputEl().trigger(sourceEvent);
 
     expect(wrapper.emitted(eventName)).toBeTruthy();
-    expect(escape).toHaveBeenCalledWith(mockUpdatedTitle);
   });
 });

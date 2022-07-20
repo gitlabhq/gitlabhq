@@ -38,7 +38,7 @@ module AlertManagement
       if alert.resolve(incoming_payload.ends_at)
         SystemNoteService.change_alert_status(alert, User.alert_bot)
 
-        close_issue(alert.issue) if auto_close_incident?
+        close_issue(alert.issue_id) if auto_close_incident?
       else
         logger.warn(
           message: 'Unable to update AlertManagement::Alert status to resolved',
@@ -52,22 +52,18 @@ module AlertManagement
       alert.register_new_event!
     end
 
-    def close_issue(issue)
-      return if issue.blank? || issue.closed?
+    def close_issue(issue_id)
+      return unless issue_id
 
-      ::Issues::CloseService
-        .new(project: project, current_user: User.alert_bot)
-        .execute(issue, system_note: false)
-
-      SystemNoteService.auto_resolve_prometheus_alert(issue, project, User.alert_bot) if issue.reset.closed?
+      ::IncidentManagement::CloseIncidentWorker.perform_async(issue_id)
     end
 
     def process_new_alert
+      return if resolving_alert?
+
       if alert.save
         alert.execute_integrations
         SystemNoteService.create_new_alert(alert, alert_source)
-
-        process_resolved_alert if resolving_alert?
       else
         logger.warn(
           message: "Unable to create AlertManagement::Alert from #{alert_source}",
@@ -78,7 +74,7 @@ module AlertManagement
     end
 
     def process_incident_issues
-      return if alert.issue || alert.resolved?
+      return if alert.issue_id || alert.resolved?
 
       ::IncidentManagement::ProcessAlertWorkerV2.perform_async(alert.id)
     end

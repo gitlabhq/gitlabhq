@@ -12,6 +12,7 @@ module API
         JOB_TOKEN_PARAM = :token
 
         def authenticate_runner!
+          track_runner_authentication
           forbidden! unless current_runner
 
           current_runner
@@ -39,6 +40,14 @@ module API
 
           strong_memoize(:current_runner) do
             ::Ci::Runner.find_by_token(token.to_s)
+          end
+        end
+
+        def track_runner_authentication
+          if current_runner
+            metrics.increment_runner_authentication_success_counter(runner_type: current_runner.runner_type)
+          else
+            metrics.increment_runner_authentication_failure_counter
           end
         end
 
@@ -148,6 +157,10 @@ module API
 
         def request_using_running_job_token?
           current_job.present? && current_authenticated_job.present? && current_job != current_authenticated_job
+        end
+
+        def metrics
+          strong_memoize(:metrics) { ::Gitlab::Ci::Runner::Metrics.new }
         end
       end
     end

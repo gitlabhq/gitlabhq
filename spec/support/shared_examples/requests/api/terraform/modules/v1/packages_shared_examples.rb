@@ -52,6 +52,24 @@ RSpec.shared_examples 'an unimplemented route' do
   it_behaves_like 'when package feature is disabled'
 end
 
+RSpec.shared_examples 'redirects to version download' do |user_type, status, add_member = true|
+  context "for user type #{user_type}" do
+    before do
+      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    end
+
+    it_behaves_like 'returning response status', status
+
+    it 'returns a valid response' do
+      subject
+
+      expect(request.url).to include 'module-1/system/download'
+      expect(response.headers).to include 'Location'
+      expect(response.headers['Location']).to include 'module-1/system/1.0.1/download'
+    end
+  end
+end
+
 RSpec.shared_examples 'grants terraform module download' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
@@ -80,6 +98,22 @@ RSpec.shared_examples 'returns terraform module packages' do |user_type, status,
       subject
 
       expect(json_response).to match_schema('public_api/v4/packages/terraform/modules/v1/versions')
+    end
+  end
+end
+
+RSpec.shared_examples 'returns terraform module version' do |user_type, status, add_member = true|
+  context "for user type #{user_type}" do
+    before do
+      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    end
+
+    it_behaves_like 'returning response status', status
+
+    it 'returning a valid response' do
+      subject
+
+      expect(json_response).to match_schema('public_api/v4/packages/terraform/modules/v1/single_version')
     end
   end
 end

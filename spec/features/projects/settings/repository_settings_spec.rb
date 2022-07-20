@@ -179,7 +179,6 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         expect(page).to have_css(".js-mirror-url-hidden[value=\"#{ssh_url}\"]", visible: false)
 
         select 'SSH public key', from: 'Authentication method'
-
         select_direction
 
         Sidekiq::Testing.fake! do

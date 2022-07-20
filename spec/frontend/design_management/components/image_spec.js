@@ -1,6 +1,7 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import DesignImage from '~/design_management/components/image.vue';
 
 describe('Design management large image component', () => {
@@ -14,6 +15,10 @@ describe('Design management large image component', () => {
     // eslint-disable-next-line no-restricted-syntax
     wrapper.setData(data);
   }
+
+  beforeEach(() => {
+    stubPerformanceWebAPI();
+  });
 
   afterEach(() => {
     wrapper.destroy();

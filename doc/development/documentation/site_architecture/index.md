@@ -59,6 +59,19 @@ product, and all together are pulled to generate the docs website:
 
 Learn more about [the docs folder structure](folder_structure.md).
 
+### Documentation in other repositories
+
+If you have code and documentation in a repository other than the [primary repositories](#architecture),
+you should keep the documentation with the code in that repository.
+
+Then you can either:
+
+- [Add the repository to the list of products](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/development.md#add-a-new-product)
+  published at <https://docs.gitlab.com>.
+- [Add an entry in the global navigation](global_nav.md#add-a-navigation-entry) for
+  <https://docs.gitlab.com> that links to the documentation in that repository.
+  View [an example](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fedb6378a3c92274ba3b6031df0d34455594e4cc/content/_data/navigation.yaml#L2944-L2946).
+
 ## Assets
 
 To provide an optimized site structure, design, and a search-engine friendly

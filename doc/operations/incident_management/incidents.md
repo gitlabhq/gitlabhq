@@ -53,7 +53,8 @@ GitLab to create incident automatically whenever an alert is triggered:
 1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
 1. Check the **Create an incident** checkbox.
 1. To customize the incident, select an
-   [issue template](../../user/project/description_templates.md#create-an-issue-template).
+   [issue template](../../user/project/description_templates.md#create-an-issue-template),
+   to include in the [incident summary](#summary).
 1. To send [an email notification](paging.md#email-notifications-for-alerts) to users
    with the Developer role, select
    **Send a separate email notification to Developers**. Email notifications are
@@ -153,9 +154,9 @@ Select any incident in the list to display its incident details page.
 
 ### Summary
 
-The summary section for incidents provides both critical details about and the
-contents of the issue template (if one was used). The highlighted bar at the top
-of the incident displays from left to right:
+The summary section for incidents provides both critical details about the
+incident and the contents of the issue template (if applicable). The highlighted
+bar at the top of the incident displays from left to right:
 
 - The link to the original alert.
 - The alert start time.
@@ -167,6 +168,13 @@ Beneath the highlight bar, GitLab displays a summary that includes the following
 - Severity
 - `full_query`
 - Monitoring tool
+
+The incident summary can be further customized using
+[GitLab Flavored Markdown](../../user/markdown.md). If the corresponding alert
+[provided Markdown for the incident](../metrics/alerts.md#trigger-actions-from-alerts),
+then the Markdown is appended to the summary after the above alert fields. If an
+[incident template](#create-incidents-automatically) is configured for the
+project, then the template content is appended at the end.
 
 Comments are displayed in threads, but can be displayed chronologically
 [by toggling on the recent updates view](#recent-updates-view).
@@ -194,6 +202,67 @@ created automatically from alerts have this
 field populated.
 
 ![Incident alert details](img/incident_alert_details_v13_4.png)
+
+### Timeline events
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344059) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `incident_timeline`. Enabled on GitLab.com. Disabled on self-managed.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline`.
+On GitLab.com, this feature is available.
+
+Incident timelines are an important part of record keeping for incidents.
+They give a high-level overview, to executives and external viewers, of what happened during the incident,
+and the steps that were taken for it to be resolved.
+
+#### View the event timeline
+
+Incident timeline events are listed in ascending order of the date and time.
+They are grouped with dates and are listed in ascending order of the time when they occured:
+
+![Incident timeline events list](img/timeline_events_v15_1.png)
+
+To view the event timeline of an incident:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Incidents**.
+1. Select an incident.
+1. Select the **Timeline** tab.
+
+#### Create a timeline event
+
+Create a timeline event manually using the form.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To create a timeline event:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Incidents**.
+1. Select an incident.
+1. Select the **Timeline** tab.
+1. Select **Add new timeline event**.
+1. Complete the required fields.
+1. Select **Save** or **Save and add another event**.
+
+#### Delete a timeline event
+
+You can also delete timeline events.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To delete a timeline event:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Incidents**.
+1. Select an incident.
+1. Select the **Timeline** tab.
+1. On the right of a timeline event, select **More actions** (**{ellipsis_v}**) and then select **Delete**.
+1. To confirm, select **Delete Event**.
 
 ### Recent updates view **(PREMIUM)**
 
@@ -270,8 +339,9 @@ by changing the status. Setting the status to:
 - **Acknowledged** limits on-call pages based on the selected [escalation policy](#change-escalation-policy).
 - **Triggered** from **Resolved** restarts the incident escalating from the beginning.
 
-For [incidents created from alerts](alerts.md#create-an-incident-from-an-alert),
-updating the incident status also updates the alert status.
+In GitLab 15.1 and earlier, updating the status of an [incident created from an alert](alerts.md#create-an-incident-from-an-alert)
+also updates the alert status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
+the alert status is independent and does not update when the incident status changes.
 
 ### Change escalation policy **(PREMIUM)**
 
@@ -288,8 +358,9 @@ Selecting an escalation policy updates the incident status to **Triggered** and 
 Deselecting an escalation policy halts escalation. Refer to the [incident status](#change-incident-status)
 to manage on-call paging once escalation has begun.
 
-For [incidents created from alerts](alerts.md#create-an-incident-from-an-alert),
-the incident's escalation policy reflects the alert's escalation policy and cannot be changed.
+In GitLab 15.1 and earlier, the escalation policy for [incidents created from alerts](alerts.md#create-an-incident-from-an-alert)
+reflects the alert's escalation policy and cannot be changed. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
+the incident escalation policy is independent and can be changed.
 
 ### Manage incidents from Slack
 

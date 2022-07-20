@@ -9,17 +9,11 @@ module Ci
       end
 
       def execute
-        return if pipeline.has_coverage_reports?
         return if report.empty?
 
-        pipeline.pipeline_artifacts.create!(
-          project_id: pipeline.project_id,
-          file_type: :code_coverage,
-          file_format: Ci::PipelineArtifact::REPORT_TYPES.fetch(:code_coverage),
-          size: carrierwave_file["tempfile"].size,
-          file: carrierwave_file,
-          expire_at: Ci::PipelineArtifact::EXPIRATION_DATE.from_now
-        )
+        Ci::PipelineArtifact.create_or_replace_for_pipeline!(**pipeline_artifact_params).tap do |pipeline_artifact|
+          Gitlab::AppLogger.info(log_params(pipeline_artifact))
+        end
       end
 
       private
@@ -32,6 +26,15 @@ module Ci
         end
       end
 
+      def pipeline_artifact_params
+        {
+          pipeline: pipeline,
+          file_type: :code_coverage,
+          file: carrierwave_file,
+          size: carrierwave_file['tempfile'].size
+        }
+      end
+
       def carrierwave_file
         strong_memoize(:carrier_wave_file) do
           CarrierWaveStringFile.new_file(
@@ -40,6 +43,15 @@ module Ci
             content_type: 'application/json'
           )
         end
+      end
+
+      def log_params(pipeline_artifact)
+        {
+          project_id: pipeline.project_id,
+          pipeline_id: pipeline.id,
+          pipeline_artifact_id: pipeline_artifact.id,
+          message: "Created code coverage for pipeline."
+        }
       end
     end
   end

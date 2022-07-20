@@ -96,7 +96,10 @@ export default {
     />
 
     <gl-tooltip
-      v-if="tooltipText || $slots.default"
+      v-if="
+        tooltipText ||
+        $slots.default /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
+      "
       :target="() => $refs.userAvatar.$el"
       :placement="tooltipPlacement"
       boundary="window"

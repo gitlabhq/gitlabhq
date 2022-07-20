@@ -23,7 +23,7 @@ module Gitlab
           _('Closed this %{quick_action_target}.') %
             { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted? &&
             quick_action_target.open? &&
@@ -45,7 +45,7 @@ module Gitlab
           _('Reopened this %{quick_action_target}.') %
             { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted? &&
             quick_action_target.closed? &&
@@ -63,7 +63,7 @@ module Gitlab
           _('Changed the title to "%{title_param}".') % { title_param: title_param }
         end
         params '<New title>'
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted? &&
             current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target)
@@ -82,7 +82,7 @@ module Gitlab
           end
         end
         params '~label1 ~"label 2"'
-        types Issuable
+        types ::Issuable
         condition do
           current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target) &&
             find_labels.any?
@@ -102,7 +102,7 @@ module Gitlab
           end
         end
         params '~label1 ~"label 2"'
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted? &&
             quick_action_target.labels.any? &&
@@ -134,7 +134,7 @@ module Gitlab
           "Replaces all labels with #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?
         end
         params '~label1 ~"label 2"'
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted? &&
             quick_action_target.labels.any? &&
@@ -147,7 +147,7 @@ module Gitlab
         desc { _('Add a to do') }
         explanation { _('Adds a to do.') }
         execution_message { _('Added a to do.') }
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted? &&
             !TodoService.new.todo_exist?(quick_action_target, current_user)
@@ -159,7 +159,7 @@ module Gitlab
         desc { _('Mark to do as done') }
         explanation { _('Marks to do as done.') }
         execution_message { _('Marked to do as done.') }
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted? &&
             TodoService.new.todo_exist?(quick_action_target, current_user)
@@ -177,7 +177,7 @@ module Gitlab
           _('Subscribed to this %{quick_action_target}.') %
             { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted? &&
             !quick_action_target.subscribed?(current_user, project)
@@ -195,7 +195,7 @@ module Gitlab
           _('Unsubscribed from this %{quick_action_target}.') %
             { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted? &&
             quick_action_target.subscribed?(current_user, project)
@@ -212,7 +212,7 @@ module Gitlab
           _("Toggled :%{name}: emoji award.") % { name: name } if name
         end
         params ':emoji:'
-        types Issuable
+        types ::Issuable
         condition do
           quick_action_target.persisted?
         end
@@ -228,14 +228,14 @@ module Gitlab
 
         desc { _("Append the comment with %{shrug}") % { shrug: SHRUG } }
         params '<Comment>'
-        types Issuable
+        types ::Issuable
         substitution :shrug do |comment|
           "#{comment} #{SHRUG}"
         end
 
         desc { _("Append the comment with %{tableflip}") % { tableflip: TABLEFLIP } }
         params '<Comment>'
-        types Issuable
+        types ::Issuable
         substitution :tableflip do |comment|
           "#{comment} #{TABLEFLIP}"
         end

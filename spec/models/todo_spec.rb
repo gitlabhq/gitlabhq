@@ -114,6 +114,26 @@ RSpec.describe Todo do
     end
   end
 
+  describe '#for_issue_or_work_item?' do
+    it 'returns true when target is an Issue' do
+      subject.target_type = 'Issue'
+
+      expect(subject.for_issue_or_work_item?).to be_truthy
+    end
+
+    it 'returns true when target is a WorkItem' do
+      subject.target_type = 'WorkItem'
+
+      expect(subject.for_issue_or_work_item?).to be_truthy
+    end
+
+    it 'returns false when target is not an Issue' do
+      subject.target_type = 'DesignManagement::Design'
+
+      expect(subject.for_issue_or_work_item?).to be_falsey
+    end
+  end
+
   describe '#target' do
     context 'for commits' do
       let(:project) { create(:project, :repository) }

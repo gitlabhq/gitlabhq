@@ -23,6 +23,18 @@ module Gitlab
         include ::Gitlab::Utils::StrongMemoize
       end
 
+      def self.default_cert_dir
+        strong_memoize(:default_cert_dir) do
+          ENV.fetch('SSL_CERT_DIR', OpenSSL::X509::DEFAULT_CERT_DIR)
+        end
+      end
+
+      def self.default_cert_file
+        strong_memoize(:default_cert_file) do
+          ENV.fetch('SSL_CERT_FILE', OpenSSL::X509::DEFAULT_CERT_FILE)
+        end
+      end
+
       def self.from_strings(key_string, cert_string, ca_certs_string = nil)
         key = OpenSSL::PKey::RSA.new(key_string)
         cert = OpenSSL::X509::Certificate.new(cert_string)
@@ -39,10 +51,10 @@ module Gitlab
 
       # Returns all top-level, readable files in the default CA cert directory
       def self.ca_certs_paths
-        cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"].select do |path|
+        cert_paths = Dir["#{default_cert_dir}/*"].select do |path|
           !File.directory?(path) && File.readable?(path)
         end
-        cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
+        cert_paths << default_cert_file if File.exist? default_cert_file
         cert_paths
       end
 
@@ -59,6 +71,11 @@ module Gitlab
 
       def self.reset_ca_certs_bundle
         clear_memoization(:ca_certs_bundle)
+      end
+
+      def self.reset_default_cert_paths
+        clear_memoization(:default_cert_dir)
+        clear_memoization(:default_cert_file)
       end
 
       # Returns an array of OpenSSL::X509::Certificate objects, empty array if none found

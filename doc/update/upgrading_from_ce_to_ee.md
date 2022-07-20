@@ -21,7 +21,7 @@ GitLab edition you are using (Community or Enterprise), see the
 
 This guide assumes you have a correctly configured and tested installation of
 GitLab Community Edition. If you run into any trouble or if you have any
-questions please contact us at `support@gitlab.com`.
+questions contact us at `support@gitlab.com`.
 
 In all examples, replace `EE_BRANCH` with the Enterprise Edition branch for the
 version you are using, and `CE_BRANCH` with the Community Edition branch.
@@ -41,7 +41,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
-For installations using MySQL, this may require granting "LOCK TABLES"
+For installations using MySQL, this may require granting `LOCK TABLES`
 privileges to the GitLab user on the database version.
 
 ### 1. Stop server
@@ -88,7 +88,7 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 
 ### 4. Install `gitlab-elasticsearch-indexer` **(PREMIUM SELF)**
 
-Please follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
+Follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
 
 ### 5. Start application
 

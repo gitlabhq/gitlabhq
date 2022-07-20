@@ -1,8 +1,0 @@
----
-name: ci_pending_builds_maintain_denormalized_data
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75425
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354496
-milestone: '14.6'
-type: development
-group: group::pipeline execution
-default_enabled: true

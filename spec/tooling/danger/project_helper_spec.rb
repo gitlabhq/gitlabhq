@@ -229,7 +229,6 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'app/serializers/jira_connect/app_data_serializer.rb' | [:integrations_be, :backend]
       'lib/api/github/entities.rb' | [:integrations_be, :backend]
       'lib/api/v3/github.rb' | [:integrations_be, :backend]
-      'app/models/clusters/integrations/elastic_stack.rb' | [:backend]
       'app/controllers/clusters/integrations_controller.rb' | [:backend]
       'app/services/clusters/integrations/prometheus_health_check_service.rb' | [:backend]
       'app/graphql/types/alert_management/integration_type.rb' | [:backend]
@@ -271,6 +270,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
         [:integrations_be, :backend]                 | '+ Integrations::Foo'                          | ['app/foo/bar.rb']
         [:integrations_be, :backend]                 | '+ project.execute_hooks(foo, :bar)'           | ['ee/lib/ee/foo.rb']
         [:integrations_be, :backend]                 | '+ project.execute_integrations(foo, :bar)'    | ['app/foo.rb']
+        [:frontend, :product_intelligence]           | '+ api.trackRedisCounterEvent("foo")'          | ['app/assets/javascripts/telemetry.js', 'ee/app/assets/javascripts/mr_widget.vue']
+        [:frontend, :product_intelligence]           | '+ api.trackRedisHllUserEvent("bar")'          | ['app/assets/javascripts/telemetry.js', 'ee/app/assets/javascripts/mr_widget.vue']
       end
 
       with_them do

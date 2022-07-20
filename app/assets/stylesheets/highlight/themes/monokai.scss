@@ -100,6 +100,8 @@ $monokai-gh: #75715e;
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
   @include hljs-override('string', $monokai-s);
   @include hljs-override('attr', $monokai-na);
+  @include hljs-override('attribute', $monokai-n);
+  @include hljs-override('selector-tag', $monokai-nt);
   @include hljs-override('keyword', $monokai-k);
   @include hljs-override('variable', $monokai-nv);
   @include hljs-override('variable.language_', $monokai-k);
@@ -113,7 +115,8 @@ $monokai-gh: #75715e;
   @include hljs-override('section', $monokai-gh);
   @include hljs-override('bullet', $monokai-n);
   @include hljs-override('subst', $monokai-p);
-  @include hljs-override('symbol', $monokai-ni);
+  @include hljs-override('symbol', $monokai-ss);
+  @include hljs-override('title.class_.inherited__', $monokai-no);
 
   // Line numbers
   .file-line-num {
@@ -178,7 +181,11 @@ $monokai-gh: #75715e;
     .diff-line-num.new,
     .line-coverage.new,
     .line-codequality.new,
-    .line_content.new {
+    .line_content.new,
+    .diff-line-num.new-nomappinginraw,
+    .line-coverage.new-nomappinginraw,
+    .line-codequality.new-nomappinginraw,
+    .line_content.new-nomappinginraw {
       @include diff-background($monokai-new-bg, $monokai-new-idiff, $monokai-diff-border);
 
       &::before,
@@ -190,7 +197,11 @@ $monokai-gh: #75715e;
     .diff-line-num.old,
     .line-coverage.old,
     .line-codequality.old,
-    .line_content.old {
+    .line_content.old,
+    .diff-line-num.old-nomappinginraw,
+    .line-coverage.old-nomappinginraw,
+    .line-codequality.old-nomappinginraw,
+    .line_content.old-nomappinginraw {
       @include diff-background($monokai-old-bg, $monokai-old-idiff, $monokai-diff-border);
 
       &::before,

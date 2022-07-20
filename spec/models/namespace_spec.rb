@@ -32,6 +32,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
     it { is_expected.to have_one :cluster_enabled_grant }
+    it { is_expected.to have_many(:work_items) }
 
     it do
       is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)
@@ -337,16 +338,13 @@ RSpec.describe Namespace do
   end
 
   describe 'delegate' do
-    it { is_expected.to delegate_method(:name).to(:owner).with_prefix.with_arguments(allow_nil: true) }
-    it { is_expected.to delegate_method(:avatar_url).to(:owner).with_arguments(allow_nil: true) }
-    it do
-      is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy)
-                       .to(:namespace_settings).with_arguments(allow_nil: true)
-    end
+    it { is_expected.to delegate_method(:name).to(:owner).with_prefix.allow_nil }
+    it { is_expected.to delegate_method(:avatar_url).to(:owner).allow_nil }
+    it { is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy).to(:namespace_settings).allow_nil }
 
     it do
-      is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=)
-                       .to(:namespace_settings).with_arguments(allow_nil: true)
+      is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)
+                       .with_arguments(:args).allow_nil
     end
   end
 
@@ -1886,17 +1884,39 @@ RSpec.describe Namespace do
     end
   end
 
+  describe '#emails_enabled?' do
+    it "is the opposite of emails_disabled" do
+      group = create(:group, emails_disabled: false)
+
+      expect(group.emails_enabled?).to be_truthy
+    end
+  end
+
   describe '#pages_virtual_domain' do
     let(:project) { create(:project, namespace: namespace) }
+    let(:virtual_domain) { namespace.pages_virtual_domain }
 
-    it 'returns the virual domain' do
+    before do
       project.mark_pages_as_deployed
       project.update_pages_deployment!(create(:pages_deployment, project: project))
+    end
 
-      virtual_domain = namespace.pages_virtual_domain
-
+    it 'returns the virual domain' do
       expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
       expect(virtual_domain.lookup_paths).not_to be_empty
+      expect(virtual_domain.cache_key).to eq("pages_domain_for_namespace_#{namespace.root_ancestor.id}")
+    end
+
+    context 'when :cache_pages_domain_api is disabled' do
+      before do
+        stub_feature_flags(cache_pages_domain_api: false)
+      end
+
+      it 'returns the virual domain' do
+        expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+        expect(virtual_domain.lookup_paths).not_to be_empty
+        expect(virtual_domain.cache_key).to be_nil
+      end
     end
   end
 

@@ -106,6 +106,22 @@ RSpec.describe Note do
       end
     end
 
+    describe 'created_at in the past' do
+      let_it_be(:noteable) { create(:issue) }
+
+      context 'when creating a note not too much in the past' do
+        subject { build(:note, project: noteable.project, noteable: noteable, created_at: '1990-05-06') }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when creating a note too much in the past' do
+        subject { build(:note, project: noteable.project, noteable: noteable, created_at: '1600-05-06') }
+
+        it { is_expected.not_to be_valid }
+      end
+    end
+
     describe 'confidentiality' do
       context 'for existing public note' do
         let_it_be(:existing_note) { create(:note) }

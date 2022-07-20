@@ -31,8 +31,6 @@ module Clusters
           case params[:application_type]
           when 'prometheus'
             cluster.find_or_build_integration_prometheus
-          when 'elastic_stack'
-            cluster.find_or_build_integration_elastic_stack
           else
             raise ArgumentError, "invalid application_type: #{params[:application_type]}"
           end

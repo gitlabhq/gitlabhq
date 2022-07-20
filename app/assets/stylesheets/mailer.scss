@@ -2,8 +2,6 @@
 
 // Do not use 3-letter hex codes, bgcolor vs css background-color is problematic in emails
 //
-// stylelint-disable color-hex-length
-
 $mailer-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $mailer-text-color: #333;
 $mailer-bg-color: #fafafa;

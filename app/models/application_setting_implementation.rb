@@ -217,6 +217,7 @@ module ApplicationSettingImplementation
         user_show_add_ssh_key_message: true,
         valid_runner_registrars: VALID_RUNNER_REGISTRAR_TYPES,
         wiki_page_max_content_bytes: 50.megabytes,
+        package_registry_cleanup_policies_worker_capacity: 2,
         container_registry_delete_tags_service_timeout: 250,
         container_registry_expiration_policies_worker_capacity: 4,
         container_registry_cleanup_tags_service_max_list_size: 200,
@@ -443,6 +444,10 @@ module ApplicationSettingImplementation
 
   def health_check_access_token
     ensure_health_check_access_token!
+  end
+
+  def error_tracking_access_token
+    ensure_error_tracking_access_token!
   end
 
   def usage_ping_can_be_configured?

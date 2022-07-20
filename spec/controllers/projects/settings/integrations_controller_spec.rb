@@ -138,7 +138,7 @@ RSpec.describe Projects::Settings::IntegrationsController do
       end
     end
 
-    context 'when unsuccessful' do
+    context 'when unsuccessful', :clean_gitlab_redis_rate_limiting do
       it 'returns an error response when the integration test fails' do
         stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
           .to_return(status: 404)
@@ -148,7 +148,7 @@ RSpec.describe Projects::Settings::IntegrationsController do
         expect(response).to be_successful
         expect(json_response).to eq(
           'error' => true,
-          'message' => 'Connection failed. Please check your settings.',
+          'message' => 'Connection failed. Check your integration settings.',
           'service_response' => '',
           'test_failed' => true
         )
@@ -163,7 +163,7 @@ RSpec.describe Projects::Settings::IntegrationsController do
           expect(response).to be_successful
           expect(json_response).to eq(
             'error' => true,
-            'message' => 'Connection failed. Please check your settings.',
+            'message' => 'Connection failed. Check your integration settings.',
             'service_response' => "URL 'http://127.0.0.1' is blocked: Requests to localhost are not allowed",
             'test_failed' => true
           )
@@ -177,11 +177,31 @@ RSpec.describe Projects::Settings::IntegrationsController do
           expect(response).to be_successful
           expect(json_response).to eq(
             'error' => true,
-            'message' => 'Connection failed. Please check your settings.',
+            'message' => 'Connection failed. Check your integration settings.',
             'service_response' => 'Connection refused',
             'test_failed' => true
           )
         end
+      end
+    end
+
+    context 'when the endpoint receives requests above the limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
+      before do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
+          .and_return(project_testing_integration: { threshold: 1, interval: 1.minute })
+      end
+
+      it 'prevents making test requests' do
+        stub_jira_integration_test
+
+        expect_next_instance_of(::Integrations::Test::ProjectService) do |service|
+          expect(service).to receive(:execute).and_return(http_status: 200)
+        end
+
+        2.times { post :test, params: project_params(service: integration_params) }
+
+        expect(response.body).to eq(_('This endpoint has been requested too many times. Try again later.'))
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
   end

@@ -1,10 +1,35 @@
 <script>
-import { GlTokenSelector, GlIcon, GlAvatar, GlLink } from '@gitlab/ui';
+import {
+  GlTokenSelector,
+  GlIcon,
+  GlAvatar,
+  GlLink,
+  GlSkeletonLoader,
+  GlButton,
+  GlDropdownItem,
+  GlDropdownDivider,
+} from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
+import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
+import { n__, s__ } from '~/locale';
+import Tracking from '~/tracking';
+import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import localUpdateWorkItemMutation from '../graphql/local_update_work_item.mutation.graphql';
+import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 
-function isClosingIcon(el) {
-  return el?.classList.contains('gl-token-close');
+function isTokenSelectorElement(el) {
+  return el?.classList.contains('gl-token-close') || el?.classList.contains('dropdown-item');
+}
+
+function addClass(el) {
+  return {
+    ...el,
+    class: 'gl-bg-transparent',
+  };
 }
 
 export default {
@@ -13,7 +38,15 @@ export default {
     GlIcon,
     GlAvatar,
     GlLink,
+    GlSkeletonLoader,
+    GlButton,
+    SidebarParticipant,
+    InviteMembersTrigger,
+    GlDropdownItem,
+    GlDropdownDivider,
   },
+  mixins: [Tracking.mixin()],
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
@@ -23,67 +56,188 @@ export default {
       type: Array,
       required: true,
     },
+    allowsMultipleAssignees: {
+      type: Boolean,
+      required: true,
+    },
+    workItemType: {
+      type: String,
+      required: true,
+    },
+    canUpdate: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       isEditing: false,
-      localAssignees: this.assignees.map((assignee) => ({
-        ...assignee,
-        class: 'gl-bg-transparent!',
-      })),
+      searchStarted: false,
+      localAssignees: this.assignees.map(addClass),
+      searchKey: '',
+      searchUsers: [],
+      currentUser: null,
     };
   },
+  apollo: {
+    searchUsers: {
+      query() {
+        return userSearchQuery;
+      },
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          search: this.searchKey,
+        };
+      },
+      skip() {
+        return !this.searchStarted;
+      },
+      update(data) {
+        return data.workspace?.users?.nodes.map((node) => addClass({ ...node, ...node.user }));
+      },
+      error() {
+        this.$emit('error', i18n.fetchError);
+      },
+    },
+    currentUser: {
+      query: currentUserQuery,
+    },
+  },
   computed: {
-    assigneeIds() {
-      return this.localAssignees.map((assignee) => assignee.id);
+    tracking() {
+      return {
+        category: TRACKING_CATEGORY_SHOW,
+        label: 'item_assignees',
+        property: `type_${this.workItemType}`,
+      };
     },
     assigneeListEmpty() {
       return this.assignees.length === 0;
     },
     containerClass() {
-      return !this.isEditing ? 'gl-shadow-none! gl-bg-transparent!' : '';
+      return !this.isEditing ? 'gl-shadow-none!' : '';
     },
+    isLoadingUsers() {
+      return this.$apollo.queries.searchUsers.loading;
+    },
+    assigneeText() {
+      return n__('WorkItem|Assignee', 'WorkItem|Assignees', this.localAssignees.length);
+    },
+    dropdownItems() {
+      if (this.currentUser && this.searchEmpty) {
+        if (this.searchUsers.some((user) => user.username === this.currentUser.username)) {
+          return this.moveCurrentUserToStart(this.searchUsers);
+        }
+        return [this.currentUser, ...this.searchUsers];
+      }
+      return this.searchUsers;
+    },
+    searchEmpty() {
+      return this.searchKey.length === 0;
+    },
+    addAssigneesText() {
+      return this.allowsMultipleAssignees
+        ? s__('WorkItem|Add assignees')
+        : s__('WorkItem|Add assignee');
+    },
+  },
+  watch: {
+    assignees(newVal) {
+      if (!this.isEditing) {
+        this.localAssignees = newVal.map(addClass);
+      }
+    },
+  },
+  created() {
+    this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   methods: {
     getUserId(id) {
       return getIdFromGraphQLId(id);
     },
-    setAssignees(e) {
-      if (isClosingIcon(e.relatedTarget) || !this.isEditing) return;
+    handleAssigneesInput(assignees) {
+      if (!this.allowsMultipleAssignees) {
+        this.localAssignees = assignees.length > 0 ? [assignees[assignees.length - 1]] : [];
+        this.isEditing = false;
+        return;
+      }
+      this.localAssignees = assignees;
+      this.focusTokenSelector();
+    },
+    handleBlur(e) {
+      if (isTokenSelectorElement(e.relatedTarget) || !this.isEditing) return;
       this.isEditing = false;
+      this.setAssignees(this.localAssignees);
+    },
+    setAssignees(assignees) {
       this.$apollo.mutate({
         mutation: localUpdateWorkItemMutation,
         variables: {
           input: {
             id: this.workItemId,
-            assigneeIds: this.assigneeIds,
+            assignees,
           },
         },
       });
+      this.track('updated_assignees');
+    },
+    handleFocus() {
+      this.isEditing = true;
+      this.searchStarted = true;
     },
     async focusTokenSelector() {
-      this.isEditing = true;
+      this.handleFocus();
       await this.$nextTick();
       this.$refs.tokenSelector.focusTextInput();
+    },
+    handleMouseOver() {
+      this.timeout = setTimeout(() => {
+        this.searchStarted = true;
+      }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    },
+    handleMouseOut() {
+      clearTimeout(this.timeout);
+    },
+    setSearchKey(value) {
+      this.searchKey = value;
+    },
+    moveCurrentUserToStart(users = []) {
+      if (this.currentUser) {
+        return [this.currentUser, ...users.filter((user) => user.id !== this.currentUser.id)];
+      }
+      return users;
+    },
+    closeDropdown() {
+      this.$refs.tokenSelector.closeDropdown();
     },
   },
 };
 </script>
 
 <template>
-  <div class="gl-display-flex gl-mb-4 work-item-assignees gl-relative">
-    <span class="gl-font-weight-bold gl-w-15 gl-pt-2" data-testid="assignees-title">{{
-      __('Assignee(s)')
-    }}</span>
+  <div class="form-row gl-mb-5 work-item-assignees gl-relative">
+    <span
+      class="gl-font-weight-bold col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
+      data-testid="assignees-title"
+      >{{ assigneeText }}</span
+    >
     <gl-token-selector
       ref="tokenSelector"
-      v-model="localAssignees"
-      hide-dropdown-with-no-items
+      :selected-tokens="localAssignees"
       :container-class="containerClass"
-      class="gl-w-full gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base"
-      @token-remove="focusTokenSelector"
-      @focus="isEditing = true"
-      @blur="setAssignees"
+      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0!"
+      :class="{ 'gl-hover-border-gray-200': canUpdate }"
+      :dropdown-items="dropdownItems"
+      :loading="isLoadingUsers"
+      :view-only="!canUpdate"
+      @input="handleAssigneesInput"
+      @text-input="debouncedSearchKeyUpdate"
+      @focus="handleFocus"
+      @blur="handleBlur"
+      @mouseover.native="handleMouseOver"
+      @mouseout.native="handleMouseOut"
     >
       <template #empty-placeholder>
         <div
@@ -91,7 +245,15 @@ export default {
           data-testid="empty-state"
         >
           <gl-icon name="profile" />
-          <span class="gl-ml-2">{{ __('Add assignees') }}</span>
+          <span class="gl-ml-2 gl-mr-4">{{ addAssigneesText }}</span>
+          <gl-button
+            v-if="currentUser"
+            size="small"
+            class="assign-myself"
+            data-testid="assign-self"
+            @click.stop="setAssignees([currentUser])"
+            >{{ __('Assign myself') }}</gl-button
+          >
         </div>
       </template>
       <template #token-content="{ token }">
@@ -105,6 +267,29 @@ export default {
           <gl-avatar :size="24" :src="token.avatarUrl" />
           <span class="gl-pl-2">{{ token.name }}</span>
         </gl-link>
+      </template>
+      <template #dropdown-item-content="{ dropdownItem }">
+        <sidebar-participant :user="dropdownItem" />
+      </template>
+      <template #loading-content>
+        <gl-skeleton-loader :height="170">
+          <rect width="380" height="20" x="10" y="15" rx="4" />
+          <rect width="280" height="20" x="10" y="50" rx="4" />
+          <rect width="380" height="20" x="10" y="95" rx="4" />
+          <rect width="280" height="20" x="10" y="130" rx="4" />
+        </gl-skeleton-loader>
+      </template>
+      <template #dropdown-footer>
+        <gl-dropdown-divider />
+        <gl-dropdown-item @click="closeDropdown">
+          <invite-members-trigger
+            :display-text="__('Invite members')"
+            trigger-element="side-nav"
+            icon="plus"
+            trigger-source="work-item-assignees-dropdown"
+            classes="gl-display-block gl-text-body! gl-hover-text-decoration-none gl-pb-2"
+          />
+        </gl-dropdown-item>
       </template>
     </gl-token-selector>
   </div>

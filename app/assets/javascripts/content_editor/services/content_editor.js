@@ -39,12 +39,12 @@ export class ContentEditor {
     this._eventHub.dispose();
   }
 
-  deserialize(serializedContent) {
+  deserialize(markdown) {
     const { _tiptapEditor: editor, _deserializer: deserializer } = this;
 
     return deserializer.deserialize({
       schema: editor.schema,
-      content: serializedContent,
+      markdown,
     });
   }
 

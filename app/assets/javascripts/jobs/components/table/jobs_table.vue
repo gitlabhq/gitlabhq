@@ -45,6 +45,7 @@ export default {
     :fields="tableFields"
     :tbody-tr-attr="{ 'data-testid': 'jobs-table-row' }"
     :empty-text="$options.i18n.emptyText"
+    data-testid="jobs-table"
     show-empty
     stacked="lg"
     fixed

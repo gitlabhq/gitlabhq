@@ -19,7 +19,7 @@ export default {
       id="issuable-title"
       ref="input"
       :value="value"
-      class="form-control qa-title-input gl-border-gray-200"
+      class="form-control gl-border-gray-200"
       dir="auto"
       type="text"
       :placeholder="__('Title')"

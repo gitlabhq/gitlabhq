@@ -130,7 +130,7 @@ describe('Markdown component', () => {
       expect(columns[0].innerHTML).toContain('<img src="data:image/jpeg;base64');
       expect(columns[1].innerHTML).toContain('<img src="data:image/png;base64');
       expect(columns[2].innerHTML).toContain('<img src="data:image/jpeg;base64');
-      expect(columns[3].innerHTML).toContain('<img>');
+      expect(columns[3].innerHTML).toContain('<img src="attachment:bogus">');
       expect(columns[4].innerHTML).toContain('<img src="https://www.google.com/');
     });
   });

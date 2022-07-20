@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Tracking::IncidentManagement do
       described_class.track_from_params(params)
     end
 
-    context 'known params' do
+    context 'known params', :do_not_stub_snowplow_by_default do
       known_params = described_class.tracking_keys
 
       known_params.each do |key, values|

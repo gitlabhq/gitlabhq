@@ -887,7 +887,7 @@ administrators can clean up image tags
 and [run garbage collection](#container-registry-garbage-collection).
 
 To remove image tags by running the cleanup policy, run the following commands in the
-[GitLab Rails console](../troubleshooting/navigating_gitlab_via_rails_console.md):
+[GitLab Rails console](../operations/rails_console.md):
 
 ```ruby
 # Numeric ID of the project whose container registry should be cleaned up
@@ -927,9 +927,9 @@ these controls should migrate to the GitLab interface.
 
 Users who have the [Maintainer role](../../user/permissions.md) for the project can
 [delete Container Registry tags in bulk](../../api/container_registry.md#delete-registry-repository-tags-in-bulk)
-periodically based on their own criteria, however, this alone does not recycle data,
+periodically based on their own criteria. However, deleting the tags alone does not recycle data,
 it only unlinks tags from manifests and image blobs. To recycle the Container
-Registry data in the whole GitLab instance, you can use the built-in command
+Registry data in the whole GitLab instance, you can use the built-in garbage collection command
 provided by `gitlab-ctl`.
 
 Prerequisites:
@@ -938,7 +938,7 @@ Prerequisites:
   [cloud native chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
 - You must set the Registry to [read-only mode](#performing-garbage-collection-without-downtime).
   Running garbage collection causes downtime for the Container Registry. When you run this command
-  on an instance in an environment where another instances is still writing to the Registry storage,
+  on an instance in an environment where another instance is still writing to the Registry storage,
   referenced manifests are removed.
 
 ### Understanding the content-addressable layers
@@ -1389,7 +1389,7 @@ project or branch name. Special characters can include:
 - Double hyphen/dash
 
 To get around this, you can [change the group path](../../user/group/index.md#change-a-groups-path),
-[change the project path](../../user/project/settings/index.md#renaming-a-repository) or change the
+[change the project path](../../user/project/settings/index.md#rename-a-repository) or change the
 branch name. Another option is to create a [push rule](../../user/project/repository/push_rules.md) to prevent
 this at the instance level.
 
@@ -1452,7 +1452,7 @@ curl "localhost:5001/debug/vars"
 
 ### Access old schema v1 Docker images
 
-Support for the [Docker registry v1 API](https://www.docker.com/blog/registry-v1-api-deprecation/),
+Support for the Docker registry API V1,
 including [schema V1 image manifests](https://docs.docker.com/registry/spec/manifest-v2-1/),
 was:
 
@@ -1738,7 +1738,7 @@ In this case, follow these steps:
 1. Try the removal again.
 
 If you still can't remove the repository using the common methods, you can use the
-[GitLab Rails console](../troubleshooting/navigating_gitlab_via_rails_console.md)
+[GitLab Rails console](../operations/rails_console.md)
 to remove the project by force:
 
 ```ruby

@@ -58,7 +58,9 @@ class UsersController < ApplicationController
   # Get all keys of a user(params[:username]) in a text format
   # Helpful for sysadmins to put in respective servers
   def ssh_keys
-    render plain: user.all_ssh_keys.join("\n")
+    keys = user.all_ssh_keys.join("\n")
+    keys << "\n" unless keys.empty?
+    render plain: keys
   end
 
   def activity
@@ -74,7 +76,9 @@ class UsersController < ApplicationController
 
   # Get all gpg keys of a user(params[:username]) in a text format
   def gpg_keys
-    render plain: user.gpg_keys.select(&:verified?).map(&:key).join("\n")
+    keys = user.gpg_keys.filter_map { |gpg_key| gpg_key.key if gpg_key.verified? }.join("\n")
+    keys << "\n" unless keys.empty?
+    render plain: keys
   end
 
   def groups

@@ -14,15 +14,3 @@
                 s_('ClusterIntegration|Enable Prometheus integration'),
                 help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
           = prometheus_form.submit _('Save changes'), class: 'btn gl-button btn-confirm'
-
-      - if Feature.enabled?(:monitor_logging, @project)
-        .sub-section.form-group
-          = gitlab_ui_form_for @elastic_stack_integration, as: :integration, namespace: :elastic_stack, url: @cluster.integrations_path, method: :post, html: { class: 'js-cluster-integrations-form' } do |elastic_stack_form|
-            = elastic_stack_form.hidden_field :application_type
-            .form-group.gl-form-group
-              - help_text = s_('ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Elasticsearch for pod logs.')
-              - help_link = link_to(_('More information.'), help_page_path("user/clusters/integrations", anchor: "elastic-stack-cluster-integration"), target: '_blank', rel: 'noopener noreferrer')
-              = elastic_stack_form.gitlab_ui_checkbox_component :enabled,
-                  s_('ClusterIntegration|Enable Elastic Stack integration'),
-                  help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
-            = elastic_stack_form.submit _('Save changes'), class: 'btn gl-button btn-confirm'

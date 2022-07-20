@@ -1,5 +1,5 @@
 ---
-stage: Growth
+stage: Analytics
 group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -464,7 +464,7 @@ Page titles are hardcoded as `GitLab` for the same reason.
 
 #### Snowplow Inspector Chrome Extension
 
-Snowplow Inspector Chrome Extension is a browser extension for testing frontend events. This works in production, staging, and local development environments. 
+Snowplow Inspector Chrome Extension is a browser extension for testing frontend events. This works in production, staging, and local development environments.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video tutorial, see the [Snowplow plugin walk through](https://www.youtube.com/watch?v=g4rqnIZ1Mb4).
@@ -505,16 +505,22 @@ To install and run Snowplow Micro, complete these steps to modify the
 
 1. Set the environment variable to tell the GDK to use Snowplow Micro in development. This overrides two `application_settings` options:
    - `snowplow_enabled` setting will instead return `true` from `Gitlab::Tracking.enabled?`
-   - `snowplow_collector_hostname` setting will instead always return `localhost:9090` (or whatever is set for `SNOWPLOW_MICRO_URI`) from `Gitlab::Tracking.collector_hostname`.
+   - `snowplow_collector_hostname` setting will instead always return `localhost:9090` (or whatever port is set for `snowplow_micro.port` GDK setting) from `Gitlab::Tracking.collector_hostname`.
 
    ```shell
-   export SNOWPLOW_MICRO_ENABLE=1
+   gdk config set snowplow_micro.enabled true
    ```
 
-   Optionally, you can set the URI for you Snowplow Micro instance as well (the default value is `http://localhost:9090`):
+   Optionally, you can set the port for you Snowplow Micro instance as well (the default value is `9090`):
 
    ```shell
-   export SNOWPLOW_MICRO_URI=https://127.0.0.1:8080
+   gdk config set snowplow_micro.port 8080
+   ```
+
+1. Regenerate the project YAML config:
+
+   ```shell
+   gdk reconfigure
    ```
 
 1. Restart GDK:

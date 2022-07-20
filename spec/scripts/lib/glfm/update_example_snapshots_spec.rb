@@ -14,7 +14,7 @@ require_relative '../../../../scripts/lib/glfm/update_example_snapshots'
 # This is because the invocation of the full script is slow, because it executes
 # two subshells for processing, one which runs a full Rails environment, and one
 # which runs a jest test environment. This results in each full run of the script
-# taking between 30-60 seconds. The majority of this is spent loading the Rails environmnent.
+# taking between 30-60 seconds. The majority of this is spent loading the Rails environment.
 #
 # However, only the `writing html.yml and prosemirror_json.yml` context is used
 # to test these slow sub-processes, and it only contains a single example.
@@ -78,6 +78,31 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       ````````````````````````````````
 
       <div class="extension">
+
+      ### Motivation
+
+      This is a third-level heading with no examples, as exists in the actual GHFM
+      specification. It exists to drive a fix for a bug where this caused the
+      indexing and ordering to in examples_index.yml to be incorrect.
+
+      ### Another H3
+
+      This is a second consecutive third-level heading. It exists to drive full code coverage
+      for this scenario, although it doesn't (yet) exist in the actual spec.txt.
+
+      ## An H2 with all disabled examples
+
+      In the GHFM specification, the 'Task list items (extension)' contains only "disabled"
+      examples, which are ignored by the GitHub fork of `spec_test.py`, and thus not part of the
+      Markdown conformance tests, but are part of the HTML-rendered version of the specification.
+      We also exclude them from our GLFM specification for consistency, but we may add
+      GitLab-specific examples for the behavior instead.
+
+      ```````````````````````````````` example disabled
+      this example is disabled during conformance testing
+      .
+      <p>this example is disabled during conformance testing</p>
+      ````````````````````````````````
 
       ## Strikethrough (extension)
 
@@ -202,7 +227,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
           "existing": "This entry is existing, but not skipped, so it will be overwritten."
         }
       # 02_01__inlines__strong__002: is omitted from the existing file and skipped, to test that scenario.
-      02_02__inlines__strikethrough_extension__001: |-
+      02_03__inlines__strikethrough_extension__001: |-
         {
           "type": "doc",
           "content": [
@@ -314,20 +339,20 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
         02_01__inlines__strong__002:
           spec_txt_example_position: 2
           source_specification: github
-        02_02__inlines__strikethrough_extension__001:
-          spec_txt_example_position: 3
+        02_03__inlines__strikethrough_extension__001:
+          spec_txt_example_position: 4
           source_specification: github
         03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
-          spec_txt_example_position: 4
-          source_specification: gitlab
-        04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
           spec_txt_example_position: 5
           source_specification: gitlab
-        05_01__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
+        04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
           spec_txt_example_position: 6
           source_specification: gitlab
-        05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+        05_01__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
           spec_txt_example_position: 7
+          source_specification: gitlab
+        05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+          spec_txt_example_position: 8
           source_specification: gitlab
       ES_EXAMPLES_INDEX_YML_CONTENTS
     end
@@ -349,7 +374,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
           __bold__
         02_01__inlines__strong__002: |
           __bold with more text__
-        02_02__inlines__strikethrough_extension__001: |
+        02_03__inlines__strikethrough_extension__001: |
           ~~Hi~~ Hello, world!
         03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001: |
           **bold**
@@ -413,7 +438,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
             <p data-sourcepos="1:1-1:23" dir="auto"><strong>bold with more text</strong></p>
           wysiwyg: |-
             <p><strong>bold with more text</strong></p>
-        02_02__inlines__strikethrough_extension__001:
+        02_03__inlines__strikethrough_extension__001:
           canonical: |
             <p><del>Hi</del> Hello, world!</p>
           static: |-
@@ -468,7 +493,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
               }
             ]
           }
-        02_02__inlines__strikethrough_extension__001: |-
+        02_03__inlines__strikethrough_extension__001: |-
           {
             "type": "doc",
             "content": [

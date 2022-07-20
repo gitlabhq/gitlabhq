@@ -6,8 +6,6 @@ module API
 
     helpers ::API::Helpers::AwardEmoji
 
-    before { authenticate! }
-
     Helpers::AwardEmoji.awardables.each do |awardable_params|
       resource awardable_params[:resource], requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         awardable_string = awardable_params[:type].pluralize
@@ -82,7 +80,7 @@ module API
           delete "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             award = awardable.award_emoji.find(params[:award_id])
 
-            unauthorized! unless award.user == current_user || current_user.admin?
+            unauthorized! unless award.user == current_user || current_user&.admin?
 
             destroy_conditionally!(award)
           end

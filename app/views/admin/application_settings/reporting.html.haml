@@ -4,7 +4,7 @@
 
 %section.settings.as-spam.no-animate#js-spam-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Spam and Anti-bot Protection')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -18,7 +18,7 @@
 
 %section.settings.as-abuse.no-animate#js-abuse-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Abuse reports')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -27,3 +27,5 @@
       = link_to _('Learn more.'), help_page_path('user/admin_area/review_abuse_reports.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'abuse'
+
+= render_if_exists 'admin/application_settings/git_abuse_rate_limit'

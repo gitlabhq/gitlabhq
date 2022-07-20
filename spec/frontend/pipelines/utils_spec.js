@@ -8,10 +8,14 @@ import {
   removeOrphanNodes,
   getMaxNodes,
 } from '~/pipelines/components/parsing_utils';
-import { createNodeDict } from '~/pipelines/utils';
+import { createNodeDict, calculateJobStats, calculateSlowestFiveJobs } from '~/pipelines/utils';
 
 import { mockParsedGraphQLNodes, missingJob } from './components/dag/mock_data';
-import { generateResponse, mockPipelineResponse } from './graph/mock_data';
+import {
+  generateResponse,
+  mockPipelineResponse,
+  mockPerformanceInsightsResponse,
+} from './graph/mock_data';
 
 describe('DAG visualization parsing utilities', () => {
   const nodeDict = createNodeDict(mockParsedGraphQLNodes);
@@ -156,6 +160,42 @@ describe('DAG visualization parsing utilities', () => {
     */
     it('matches the snapshot', () => {
       expect(columns).toMatchSnapshot();
+    });
+  });
+
+  describe('performance insights', () => {
+    const {
+      data: {
+        project: {
+          pipeline: { jobs },
+        },
+      },
+    } = mockPerformanceInsightsResponse;
+
+    describe('calculateJobStats', () => {
+      const expectedJob = jobs.nodes[0];
+
+      it('returns the job that spent this longest time queued', () => {
+        expect(calculateJobStats(jobs, 'queuedDuration')).toEqual(expectedJob);
+      });
+
+      it('returns the job that was executed last', () => {
+        expect(calculateJobStats(jobs, 'startedAt')).toEqual(expectedJob);
+      });
+    });
+
+    describe('calculateSlowestFiveJobs', () => {
+      it('returns the slowest five jobs of the pipeline', () => {
+        const expectedJobs = [
+          jobs.nodes[9],
+          jobs.nodes[1],
+          jobs.nodes[5],
+          jobs.nodes[7],
+          jobs.nodes[8],
+        ];
+
+        expect(calculateSlowestFiveJobs(jobs)).toEqual(expectedJobs);
+      });
     });
   });
 });

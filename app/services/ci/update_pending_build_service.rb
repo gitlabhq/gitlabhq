@@ -15,8 +15,6 @@ module Ci
     end
 
     def execute
-      return unless ::Ci::PendingBuild.maintain_denormalized_data?
-
       @model.pending_builds.each_batch do |relation|
         relation.update_all(@update_params)
       end

@@ -26,7 +26,6 @@ describe('Group Settings App', () => {
   let show;
 
   const defaultProvide = {
-    defaultExpanded: false,
     groupPath: 'foo_group_path',
   };
 

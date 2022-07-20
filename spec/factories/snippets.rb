@@ -9,6 +9,10 @@ FactoryBot.define do
     file_name { generate(:filename) }
     secret { false }
 
+    transient do
+      repository_storage { 'default' }
+    end
+
     trait :public do
       visibility_level { Snippet::PUBLIC }
     end
@@ -23,12 +27,13 @@ FactoryBot.define do
 
     # Test repository - https://gitlab.com/gitlab-org/gitlab-test
     trait :repository do
-      after :create do |snippet|
-        TestEnv.copy_repo(snippet,
-          bare_repo: TestEnv.factory_repo_path_bare,
-          refs: TestEnv::BRANCH_SHA)
+      after :create do |snippet, evaluator|
+        snippet.track_snippet_repository(evaluator.repository_storage)
 
-        snippet.track_snippet_repository(snippet.repository.storage)
+        # There are various tests that rely on there being no repository cache.
+        # Using raw avoids caching.
+        repo = Gitlab::GlRepository::SNIPPET.repository_for(snippet).raw
+        repo.create_from_bundle(TestEnv.factory_repo_bundle_path)
       end
     end
 

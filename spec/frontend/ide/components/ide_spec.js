@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import CannotPushCodeAlert from '~/ide/components/cannot_push_code_alert.vue';
 import ErrorMessage from '~/ide/components/error_message.vue';
 import Ide from '~/ide/components/ide.vue';
@@ -40,6 +41,8 @@ describe('WebIDE', () => {
   const findAlert = () => wrapper.findComponent(CannotPushCodeAlert);
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     store = createStore();
   });
 

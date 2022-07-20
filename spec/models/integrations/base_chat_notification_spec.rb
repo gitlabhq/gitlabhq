@@ -285,4 +285,22 @@ RSpec.describe Integrations::BaseChatNotification do
       expect { subject.webhook_placeholder }.to raise_error(NotImplementedError)
     end
   end
+
+  describe '#event_channel_name' do
+    it 'returns the channel field name for the given event' do
+      expect(subject.event_channel_name(:event)).to eq('event_channel')
+    end
+  end
+
+  describe '#event_channel_value' do
+    it 'returns the channel field value for the given event' do
+      subject.push_channel = '#pushes'
+
+      expect(subject.event_channel_value(:push)).to eq('#pushes')
+    end
+
+    it 'raises an error for unsupported events' do
+      expect { subject.event_channel_value(:foo) }.to raise_error(NoMethodError)
+    end
+  end
 end

@@ -10,9 +10,31 @@ export default {
     GlTooltip,
   },
   inject: ['tiptapEditor'],
+  data() {
+    return {
+      isActive: {},
+    };
+  },
   methods: {
-    execute(contentType, attrs) {
-      this.tiptapEditor.chain().focus().setNode(contentType, attrs).run();
+    insert(contentType, ...args) {
+      this.tiptapEditor
+        .chain()
+        .focus()
+        .setNode(contentType, ...args)
+        .run();
+
+      this.$emit('execute', { contentType });
+    },
+
+    insertList(listType, listItemType) {
+      if (!this.tiptapEditor.isActive(listType))
+        this.tiptapEditor.chain().focus().toggleList(listType, listItemType).run();
+
+      this.$emit('execute', { contentType: listType });
+    },
+
+    execute(command, contentType) {
+      this.tiptapEditor.chain().focus()[command]().run();
 
       this.$emit('execute', { contentType });
     },
@@ -20,15 +42,30 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown size="small" category="tertiary" icon="plus">
-    <gl-dropdown-item @click="execute('diagram', { language: 'mermaid' })">
+  <gl-dropdown size="small" category="tertiary" icon="plus" class="content-editor-dropdown" right>
+    <gl-dropdown-item @click="insert('codeBlock')">
+      {{ __('Code block') }}
+    </gl-dropdown-item>
+    <gl-dropdown-item @click="insertList('details', 'detailsContent')">
+      {{ __('Details block') }}
+    </gl-dropdown-item>
+    <gl-dropdown-item class="gl-sm-display-none!" @click="insertList('bulletList', 'listItem')">
+      {{ __('Bullet list') }}
+    </gl-dropdown-item>
+    <gl-dropdown-item class="gl-sm-display-none!" @click="insertList('orderedList', 'listItem')">
+      {{ __('Ordered list') }}
+    </gl-dropdown-item>
+    <gl-dropdown-item class="gl-sm-display-none!" @click="insertList('taskList', 'taskItem')">
+      {{ __('Task list') }}
+    </gl-dropdown-item>
+    <gl-dropdown-item @click="execute('setHorizontalRule', 'horizontalRule')">
+      {{ __('Horizontal rule') }}
+    </gl-dropdown-item>
+    <gl-dropdown-item @click="insert('diagram', { language: 'mermaid' })">
       {{ __('Mermaid diagram') }}
     </gl-dropdown-item>
-    <gl-dropdown-item @click="execute('diagram', { language: 'plantuml' })">
+    <gl-dropdown-item @click="insert('diagram', { language: 'plantuml' })">
       {{ __('PlantUML diagram') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item @click="execute('horizontalRule')">
-      {{ __('Horizontal rule') }}
     </gl-dropdown-item>
   </gl-dropdown>
 </template>

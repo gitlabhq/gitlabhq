@@ -34,6 +34,8 @@ module Users
       return unless lease.try_obtain
 
       @user.update_attribute(:last_activity_on, today)
+
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event('unique_active_user', values: @user.id)
     end
   end
 end

@@ -126,4 +126,34 @@ RSpec.describe DeviseMailer do
       is_expected.to have_link("Reset password", href: "#{Gitlab.config.gitlab.url}/users/password/edit?reset_password_token=faketoken")
     end
   end
+
+  describe '#email_changed' do
+    subject { described_class.email_changed(user, {}) }
+
+    let_it_be(:user) { create(:user) }
+
+    it_behaves_like 'an email sent from GitLab'
+
+    it 'is sent to the user' do
+      is_expected.to deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      is_expected.to have_subject 'Email Changed'
+    end
+
+    it 'greets the user' do
+      is_expected.to have_body_text /Hello, #{user.name}!/
+    end
+
+    context "email contains updated id" do
+      before do
+        user.update!(email: "new_email@test.com")
+      end
+
+      it 'includes changed email id' do
+        is_expected.to have_body_text /email is being changed to new_email@test.com./
+      end
+    end
+  end
 end

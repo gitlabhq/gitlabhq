@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
-  let(:merge_request) { create(:merge_request_with_diffs) }
+  let_it_be(:merge_request) { create(:merge_request_with_diffs) }
+
   let(:diff_hash) do
     { ".gitignore-false-false-false" =>
       [{ line_code: nil, rich_text: nil, text: "@@ -17,3 +17,4 @@ rerun.txt", type: "match", index: 0, old_pos: 17, new_pos: 17 },
@@ -229,10 +230,10 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
   end
 
   describe 'metrics' do
-    let(:transaction) { Gitlab::Metrics::WebTransaction.new({} ) }
+    let(:transaction) { Gitlab::Metrics::WebTransaction.new({}) }
 
     before do
-      allow(cache).to receive(:current_transaction).and_return(transaction)
+      allow(::Gitlab::Metrics::WebTransaction).to receive(:current).and_return(transaction)
     end
 
     it 'observes :gitlab_redis_diff_caching_memory_usage_bytes' do
@@ -240,6 +241,18 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
         .to receive(:observe).with(:gitlab_redis_diff_caching_memory_usage_bytes, a_kind_of(Numeric))
 
       cache.write_if_empty
+    end
+
+    it 'records hit ratio metrics' do
+      expect(transaction)
+        .to receive(:increment).with(:gitlab_redis_diff_caching_requests_total).exactly(5).times
+      expect(transaction)
+        .to receive(:increment).with(:gitlab_redis_diff_caching_hits_total).exactly(4).times
+
+      5.times do
+        cache = described_class.new(merge_request.diffs)
+        cache.write_if_empty
+      end
     end
   end
 

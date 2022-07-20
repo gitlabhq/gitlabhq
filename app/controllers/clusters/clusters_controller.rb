@@ -50,7 +50,6 @@ class Clusters::ClustersController < Clusters::BaseController
   def show
     if params[:tab] == 'integrations'
       @prometheus_integration = Clusters::IntegrationPresenter.new(@cluster.find_or_build_integration_prometheus)
-      @elastic_stack_integration = Clusters::IntegrationPresenter.new(@cluster.find_or_build_integration_elastic_stack)
     end
   end
 

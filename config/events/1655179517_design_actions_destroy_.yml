@@ -1,0 +1,25 @@
+---
+description: Triggered from backend layer when design is deleted
+category: design_actions
+action: destroy
+label_description: Constant string that match with ServicePing metric name of action_monthly_active_users_design_management
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- project
+- user
+- namespace
+product_section: dev
+product_stage: plan
+product_group: group::product_planning
+product_category: design_management
+milestone: "15.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90107
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

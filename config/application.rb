@@ -20,6 +20,8 @@ module Gitlab
 
     config.view_component.preview_route = "/-/view_component/previews"
 
+    config.active_support.hash_digest_class = ::OpenSSL::Digest::SHA256
+
     # This section contains configuration from Rails upgrades to override the new defaults so that we
     # keep existing behavior.
     #
@@ -38,7 +40,6 @@ module Gitlab
     # Rails 5.2
     config.action_dispatch.use_authenticated_cookie_encryption = false
     config.active_support.use_authenticated_message_encryption = false
-    config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
     config.action_controller.default_protect_from_forgery = false
     config.action_view.form_with_generates_ids = false
 
@@ -303,6 +304,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/terms.css"
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/wiki.css"
+    config.assets.precompile << "page_bundles/work_items.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
     config.assets.precompile << "lazy_bundles/select2.css"
@@ -404,6 +406,16 @@ module Gitlab
         end
       end
 
+      # Cross-origin requests must be enabled to fetch the self-managed application oauth application ID
+      # for the GitLab for Jira app.
+      allow do
+        origins '*'
+        resource '/-/jira_connect/oauth_application_id',
+          headers: :any,
+          methods: %i(get options),
+          credentials: false
+      end
+
       # These are routes from doorkeeper-openid_connect:
       # https://github.com/doorkeeper-gem/doorkeeper-openid_connect#routes
       allow do
@@ -490,19 +502,6 @@ module Gitlab
       Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].sort.each do |initializer|
         load_config_initializer(initializer)
       end
-    end
-
-    # We know Rails closes database connections in the
-    # active_record.clear_active_connections initializer, so only log database
-    # connections opened after that.
-    initializer :start_logging_new_postgresql_connections, after: :finisher_hook do
-      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.warn_on_new_connection = true
-    end
-
-    # It is legitimate to open database connections after initializers so stop
-    # logging
-    initializer :stop_logging_new_postgresql_connections, after: :set_routes_reloader_hook do
-      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.warn_on_new_connection = false
     end
 
     # Add assets for variants of GitLab. They should take precedence over CE.

@@ -41,6 +41,9 @@ module Repositories
     # The `trailer` argument is the Git trailer to use for determining what
     # commits to include in the changelog.
     #
+    # The `config_file` arguments specifies the path to the configuration file as
+    # stored in the project's Git repository.
+    #
     # The `file` arguments specifies the name/path of the file to commit the
     # changes to. If the file doesn't exist, it's created automatically.
     #
@@ -57,6 +60,7 @@ module Repositories
       to: branch,
       date: DateTime.now,
       trailer: DEFAULT_TRAILER,
+      config_file: Gitlab::Changelog::Config::DEFAULT_FILE_PATH,
       file: DEFAULT_FILE,
       message: "Add changelog for version #{version}"
     )
@@ -68,13 +72,14 @@ module Repositories
       @date = date
       @branch = branch
       @trailer = trailer
+      @config_file = config_file
       @file = file
       @message = message
     end
     # rubocop: enable Metrics/ParameterLists
 
     def execute(commit_to_changelog: true)
-      config = Gitlab::Changelog::Config.from_git(@project, @user)
+      config = Gitlab::Changelog::Config.from_git(@project, @user, @config_file)
       from = start_of_commit_range(config)
 
       # For every entry we want to only include the merge request that

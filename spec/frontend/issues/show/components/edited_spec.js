@@ -1,49 +1,50 @@
-import Vue from 'vue';
-import edited from '~/issues/show/components/edited.vue';
+import { shallowMount } from '@vue/test-utils';
+import Edited from '~/issues/show/components/edited.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-function formatText(text) {
-  return text.trim().replace(/\s\s+/g, ' ');
-}
+describe('Edited component', () => {
+  let wrapper;
 
-describe('edited', () => {
-  const EditedComponent = Vue.extend(edited);
+  const findAuthorLink = () => wrapper.find('a');
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
+  const formatText = (text) => text.trim().replace(/\s\s+/g, ' ');
 
-  it('should render an edited at+by string', () => {
-    const editedComponent = new EditedComponent({
-      propsData: {
-        updatedAt: '2017-05-15T12:31:04.428Z',
-        updatedByName: 'Some User',
-        updatedByPath: '/some_user',
-      },
-    }).$mount();
+  const mountComponent = (propsData) => shallowMount(Edited, { propsData });
 
-    expect(formatText(editedComponent.$el.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
-    expect(editedComponent.$el.querySelector('.author-link').href).toMatch(/\/some_user$/);
-    expect(editedComponent.$el.querySelector('time')).toBeTruthy();
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  it('renders an edited at+by string', () => {
+    wrapper = mountComponent({
+      updatedAt: '2017-05-15T12:31:04.428Z',
+      updatedByName: 'Some User',
+      updatedByPath: '/some_user',
+    });
+
+    expect(formatText(wrapper.text())).toBe('Edited by Some User');
+    expect(findAuthorLink().attributes('href')).toBe('/some_user');
+    expect(findTimeAgoTooltip().exists()).toBe(true);
   });
 
   it('if no updatedAt is provided, no time element will be rendered', () => {
-    const editedComponent = new EditedComponent({
-      propsData: {
-        updatedByName: 'Some User',
-        updatedByPath: '/some_user',
-      },
-    }).$mount();
+    wrapper = mountComponent({
+      updatedByName: 'Some User',
+      updatedByPath: '/some_user',
+    });
 
-    expect(formatText(editedComponent.$el.innerText)).toMatch(/Edited by Some User/);
-    expect(editedComponent.$el.querySelector('.author-link').href).toMatch(/\/some_user$/);
-    expect(editedComponent.$el.querySelector('time')).toBeFalsy();
+    expect(formatText(wrapper.text())).toBe('Edited by Some User');
+    expect(findAuthorLink().attributes('href')).toBe('/some_user');
+    expect(findTimeAgoTooltip().exists()).toBe(false);
   });
 
   it('if no updatedByName and updatedByPath is provided, no user element will be rendered', () => {
-    const editedComponent = new EditedComponent({
-      propsData: {
-        updatedAt: '2017-05-15T12:31:04.428Z',
-      },
-    }).$mount();
+    wrapper = mountComponent({
+      updatedAt: '2017-05-15T12:31:04.428Z',
+    });
 
-    expect(formatText(editedComponent.$el.innerText)).not.toMatch(/by Some User/);
-    expect(editedComponent.$el.querySelector('.author-link')).toBeFalsy();
-    expect(editedComponent.$el.querySelector('time')).toBeTruthy();
+    expect(formatText(wrapper.text())).toBe('Edited');
+    expect(findAuthorLink().exists()).toBe(false);
+    expect(findTimeAgoTooltip().exists()).toBe(true);
   });
 });

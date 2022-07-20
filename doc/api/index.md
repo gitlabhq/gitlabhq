@@ -441,7 +441,7 @@ GitLab also returns the following additional pagination headers:
 | `x-next-page`   | The index of the next page. |
 | `x-page`        | The index of the current page (starting at 1). |
 | `x-per-page`    | The number of items per page. |
-| `X-prev-page`   | The index of the previous page. |
+| `x-prev-page`   | The index of the previous page. |
 | `x-total`       | The total number of items. |
 | `x-total-pages` | The total number of pages. |
 
@@ -453,12 +453,14 @@ Keyset-pagination allows for more efficient retrieval of pages and - in contrast
 to offset-based pagination - runtime is independent of the size of the
 collection.
 
-This method is controlled by the following parameters:
+This method is controlled by the following parameters. `order_by` and `sort` are both mandatory.
 
-| Parameter    | Description |
-|--------------| ------------|
-| `pagination` | `keyset` (to enable keyset pagination). |
-| `per_page`   | Number of items to list per page (default: `20`, max: `100`). |
+| Parameter    | Required | Description |
+|--------------| ------------ | --------- |
+| `pagination` | yes | `keyset` (to enable keyset pagination). |
+| `per_page`   | no | Number of items to list per page (default: `20`, max: `100`). |
+| `order_by`   | yes | Column by which to order by. |
+| `sort`       | yes | Sort order (`asc` or `desc`) |
 
 In the following example, we list 50 [projects](projects.md) per page, ordered
 by `id` ascending.
@@ -520,10 +522,20 @@ pagination headers.
 Keyset-based pagination is supported only for selected resources and ordering
 options:
 
-| Resource                 | Options                          | Availability                            |
-|:-------------------------|:---------------------------------|:----------------------------------------|
-| [Projects](projects.md)  | `order_by=id` only               | Authenticated and unauthenticated users |
-| [Groups](groups.md)      | `order_by=name`, `sort=asc` only | Unauthenticated users only              |
+| Resource                                                 | Options                          | Availability                                                                                                |
+|:---------------------------------------------------------|:---------------------------------|:------------------------------------------------------------------------------------------------------------|
+| [Projects](projects.md)                                  | `order_by=id` only               | Authenticated and unauthenticated users                                                                     |
+| [Groups](groups.md)                                      | `order_by=name`, `sort=asc` only | Unauthenticated users only                                                                                  |
+| [Group audit events](audit_events.md#group-audit-events) | `order_by=id`, `sort=desc` only  | Authenticated users only ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2 |
+
+### Pagination response headers
+
+For performance reasons, if a query returns more than 10,000 records, GitLab
+doesn't return the following headers:
+
+- `x-total`.
+- `x-total-pages`.
+- `rel="last"` `link`
 
 ## Path parameters
 

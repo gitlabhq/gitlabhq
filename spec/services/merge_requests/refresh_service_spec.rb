@@ -243,6 +243,25 @@ RSpec.describe MergeRequests::RefreshService do
           end
         end
 
+        context 'when ci.skip push_options are passed' do
+          let(:params) { { push_options: { ci: { skip: true } } } }
+          let(:service_instance) { service.new(project: project, current_user: @user, params: params) }
+
+          subject { service_instance.execute(@oldrev, @newrev, ref) }
+
+          it 'creates a skipped detached merge request pipeline with commits' do
+            expect { subject }
+              .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
+              .and change { @another_merge_request.pipelines_for_merge_request.count }.by(0)
+
+            expect(@merge_request.has_commits?).to be_truthy
+            expect(@another_merge_request.has_commits?).to be_falsy
+
+            pipeline = @merge_request.pipelines_for_merge_request.last
+            expect(pipeline).to be_skipped
+          end
+        end
+
         it 'does not create detached merge request pipeline for forked project' do
           expect { subject }
             .not_to change { @fork_merge_request.pipelines_for_merge_request.count }
@@ -266,10 +285,6 @@ RSpec.describe MergeRequests::RefreshService do
 
         context 'when service runs on forked project' do
           let(:project) { @fork_project }
-
-          before do
-            stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: false)
-          end
 
           it 'creates detached merge request pipeline for fork merge request' do
             expect { subject }

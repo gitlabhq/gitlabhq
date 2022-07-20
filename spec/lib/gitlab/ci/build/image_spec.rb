@@ -98,9 +98,11 @@ RSpec.describe Gitlab::Ci::Build::Image do
         let(:service_entrypoint) { '/bin/sh' }
         let(:service_alias) { 'db' }
         let(:service_command) { 'sleep 30' }
+        let(:pull_policy) { %w[always if-not-present] }
         let(:job) do
           create(:ci_build, options: { services: [{ name: service_image_name, entrypoint: service_entrypoint,
-                                                    alias: service_alias, command: service_command, ports: [80] }] })
+                                                    alias: service_alias, command: service_command, ports: [80],
+                                                    pull_policy: pull_policy }] })
         end
 
         it 'fabricates an non-empty array of objects' do
@@ -114,6 +116,7 @@ RSpec.describe Gitlab::Ci::Build::Image do
           expect(subject.first.entrypoint).to eq(service_entrypoint)
           expect(subject.first.alias).to eq(service_alias)
           expect(subject.first.command).to eq(service_command)
+          expect(subject.first.pull_policy).to eq(pull_policy)
 
           port = subject.first.ports.first
           expect(port.number).to eq 80

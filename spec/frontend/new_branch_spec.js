@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import NewBranchForm from '~/new_branch_form';
 
@@ -11,17 +10,19 @@ describe('Branch', () => {
 
   describe('create a new branch', () => {
     function fillNameWith(value) {
-      $('.js-branch-name').val(value).trigger('blur');
+      document.querySelector('.js-branch-name').value = value;
+      const event = new CustomEvent('blur');
+      document.querySelector('.js-branch-name').dispatchEvent(event);
     }
 
     function expectToHaveError(error) {
-      expect($('.js-branch-name-error span').text()).toEqual(error);
+      expect(document.querySelector('.js-branch-name-error').textContent).toEqual(error);
     }
 
     beforeEach(() => {
       loadHTMLFixture('branches/new_branch.html');
-      $('form').on('submit', (e) => e.preventDefault());
-      testContext.form = new NewBranchForm($('.js-create-branch-form'), []);
+      document.querySelector('form').addEventListener('submit', (e) => e.preventDefault());
+      testContext.form = new NewBranchForm(document.querySelector('.js-create-branch-form'), []);
     });
 
     afterEach(() => {
@@ -171,34 +172,34 @@ describe('Branch', () => {
     it('removes the error message when is a valid name', () => {
       fillNameWith('foo?bar');
 
-      expect($('.js-branch-name-error span').length).toEqual(1);
+      expect(document.querySelector('.js-branch-name-error').textContent).not.toEqual('');
       fillNameWith('foobar');
 
-      expect($('.js-branch-name-error span').length).toEqual(0);
+      expect(document.querySelector('.js-branch-name-error').textContent).toEqual('');
     });
 
     it('can have dashes anywhere', () => {
       fillNameWith('-foo-bar-zoo-');
 
-      expect($('.js-branch-name-error span').length).toEqual(0);
+      expect(document.querySelector('.js-branch-name-error').textContent).toEqual('');
     });
 
     it('can have underscores anywhere', () => {
       fillNameWith('_foo_bar_zoo_');
 
-      expect($('.js-branch-name-error span').length).toEqual(0);
+      expect(document.querySelector('.js-branch-name-error').textContent).toEqual('');
     });
 
     it('can have numbers anywhere', () => {
       fillNameWith('1foo2bar3zoo4');
 
-      expect($('.js-branch-name-error span').length).toEqual(0);
+      expect(document.querySelector('.js-branch-name-error').textContent).toEqual('');
     });
 
     it('can be only letters', () => {
       fillNameWith('foo');
 
-      expect($('.js-branch-name-error span').length).toEqual(0);
+      expect(document.querySelector('.js-branch-name-error').textContent).toEqual('');
     });
   });
 });

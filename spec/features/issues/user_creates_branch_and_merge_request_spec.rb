@@ -20,23 +20,9 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
 
   context 'when signed in' do
     before do
-      project.add_user(user, membership_level)
+      project.add_member(user, membership_level)
 
       sign_in(user)
-    end
-
-    context 'when ’Create merge request’ button is clicked' do
-      before do
-        visit project_issue_path(project, issue)
-
-        wait_for_requests
-
-        click_button('Create merge request')
-
-        wait_for_requests
-      end
-
-      it_behaves_like 'merge request author auto assign'
     end
 
     context 'when interacting with the dropdown' do

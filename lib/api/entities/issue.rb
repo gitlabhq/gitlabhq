@@ -31,9 +31,7 @@ module API
         end
 
         expose :closed_as_duplicate_of do |issue|
-          if ::Feature.enabled?(:closed_as_duplicate_of_issues_api, issue.project) &&
-            issue.duplicated? &&
-            options[:current_user]&.can?(:read_issue, issue.duplicated_to)
+          if issue.duplicated? && options[:current_user]&.can?(:read_issue, issue.duplicated_to)
             expose_url(
               api_v4_project_issue_path(id: issue.duplicated_to.project_id, issue_iid: issue.duplicated_to.iid)
             )

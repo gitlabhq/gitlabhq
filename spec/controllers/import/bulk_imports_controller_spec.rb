@@ -48,15 +48,25 @@ RSpec.describe Import::BulkImportsController do
           expect(session[:bulk_import_gitlab_access_token]).to eq(token)
           expect(controller).to redirect_to(status_import_bulk_imports_url)
         end
+
+        it 'passes namespace_id to status' do
+          namespace_id = 5
+          token = 'token'
+          url = 'https://gitlab.example'
+
+          post :configure, params: { bulk_import_gitlab_access_token: token, bulk_import_gitlab_url: url, namespace_id: namespace_id }
+
+          expect(controller).to redirect_to(status_import_bulk_imports_url(namespace_id: namespace_id))
+        end
       end
 
       describe 'GET status' do
-        def get_status(params_override = {})
+        def get_status(params_override = {}, format = :json)
           params = { page: 1, per_page: 20, filter: '' }.merge(params_override)
 
           get :status,
               params: params,
-              format: :json,
+              format: format,
               session: {
                 bulk_import_gitlab_url: 'https://gitlab.example.com',
                 bulk_import_gitlab_access_token: 'demo-pat'
@@ -167,6 +177,25 @@ RSpec.describe Import::BulkImportsController do
 
                 expect(response).to have_gitlab_http_status(:ok)
               end
+            end
+          end
+
+          context 'when namespace_id is provided' do
+            let_it_be(:group) { create(:group) }
+
+            it 'renders 404 if user does not have access to namespace' do
+              get_status({ namespace_id: group.id }, :html)
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+
+            it 'passes namespace to template' do
+              group.add_owner(user)
+
+              get_status({ namespace_id: group.id }, :html)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(assigns(:namespace)).to eq(group)
             end
           end
         end

@@ -4,6 +4,8 @@ class ProtectedBranch < ApplicationRecord
   include ProtectedRef
   include Gitlab::SQL::Pattern
 
+  CACHE_EXPIRE_IN = 1.hour
+
   scope :requiring_code_owner_approval,
         -> { where(code_owner_approval_required: true) }
 
@@ -29,7 +31,7 @@ class ProtectedBranch < ApplicationRecord
     return true if project.empty_repo? && project.default_branch_protected?
     return false if ref_name.blank?
 
-    Rails.cache.fetch(protected_ref_cache_key(project, ref_name)) do
+    Rails.cache.fetch(protected_ref_cache_key(project, ref_name), expires_in: CACHE_EXPIRE_IN) do
       self.matching(ref_name, protected_refs: protected_refs(project)).present?
     end
   end

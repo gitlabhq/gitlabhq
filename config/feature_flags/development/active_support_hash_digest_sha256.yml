@@ -1,8 +1,0 @@
----
-name: active_support_hash_digest_sha256
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90098
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365314
-milestone: '15.1'
-type: development
-group: group::sharding
-default_enabled: false

@@ -28,7 +28,8 @@ module API
                     Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
                     Gitlab::GrapeLogging::Loggers::ContextLogger.new,
                     Gitlab::GrapeLogging::Loggers::ContentLogger.new,
-                    Gitlab::GrapeLogging::Loggers::UrgencyLogger.new
+                    Gitlab::GrapeLogging::Loggers::UrgencyLogger.new,
+                    Gitlab::GrapeLogging::Loggers::ResponseLogger.new
                   ]
 
     allow_access_with_scope :api
@@ -242,6 +243,7 @@ module API
       mount ::API::MergeRequestApprovals
       mount ::API::MergeRequestDiffs
       mount ::API::MergeRequests
+      mount ::API::Metadata
       mount ::API::Metrics::Dashboard::Annotations
       mount ::API::Metrics::UserStarredDashboards
       mount ::API::Namespaces
@@ -313,6 +315,7 @@ module API
     mount ::API::Internal::Lfs
     mount ::API::Internal::Pages
     mount ::API::Internal::Kubernetes
+    mount ::API::Internal::ErrorTracking
     mount ::API::Internal::MailRoom
     mount ::API::Internal::ContainerRegistry::Migration
     mount ::API::Internal::Workhorse

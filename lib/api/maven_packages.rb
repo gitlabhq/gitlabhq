@@ -35,6 +35,8 @@ module API
         name, _, format = file_name.rpartition('.')
 
         if %w(md5 sha1).include?(format)
+          unprocessable_entity! if Gitlab::FIPS.enabled? && format == 'md5'
+
           [name, format]
         else
           [file_name, format]
@@ -109,6 +111,7 @@ module API
     route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
     get 'packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
       # return a similar failure to authorize_read_package!(project)
+
       forbidden! unless path_exists?(params[:path])
 
       file_name, format = extract_format(params[:file_name])
@@ -241,6 +244,7 @@ module API
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       put ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
+        unprocessable_entity! if Gitlab::FIPS.enabled? && params['file.md5']
         authorize_upload!
         bad_request!('File is too large') if user_project.actual_limits.exceeded?(:maven_max_file_size, params[:file].size)
 

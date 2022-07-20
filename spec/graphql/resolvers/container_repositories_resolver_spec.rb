@@ -62,7 +62,7 @@ RSpec.describe Resolvers::ContainerRepositoriesResolver do
 
     context 'with authorized user' do
       before do
-        group.add_user(user, :maintainer)
+        group.add_member(user, :maintainer)
       end
 
       context 'when the object is a project' do

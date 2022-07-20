@@ -81,7 +81,7 @@ module API
           delete do
             authorize! :admin_terraform_state, user_project
 
-            remote_state_handler.handle_with_lock do |state|
+            remote_state_handler.find_with_lock do |state|
               ::Terraform::States::TriggerDestroyService.new(state, current_user: current_user).execute
             end
 

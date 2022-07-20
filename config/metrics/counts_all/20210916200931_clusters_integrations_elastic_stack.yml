@@ -4,10 +4,10 @@ key_path: counts.clusters_integrations_elastic_stack
 description: Total clusters with Clusters::Integrations::ElasticStack enabled
 product_section: ops
 product_stage: configure
-product_group: group::configure
+product_group: configure
 product_category: kubernetes_management
 value_type: number
-status: active
+status: removed
 time_frame: all
 data_source: database
 distribution:
@@ -19,3 +19,5 @@ tier:
 - ultimate
 performance_indicator_type: []
 milestone: "14.4"
+milestone_removed: "15.2"
+removed_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90699"

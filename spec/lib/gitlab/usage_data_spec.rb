@@ -249,7 +249,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       )
     end
 
-    it 'includes imports usage data' do
+    it 'includes imports usage data', :clean_gitlab_redis_cache do
       for_defined_days_back do
         user = create(:user)
 
@@ -347,7 +347,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         cluster = create(:cluster, user: user)
         project = create(:project, creator: user)
         create(:clusters_integrations_prometheus, cluster: cluster)
-        create(:project_tracing_setting)
         create(:project_error_tracking_setting)
         create(:incident)
         create(:incident, alert_management_alert: create(:alert_management_alert))
@@ -358,7 +357,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         clusters: 2,
         clusters_integrations_prometheus: 2,
         operations_dashboard_default_dashboard: 2,
-        projects_with_tracing_enabled: 2,
         projects_with_error_tracking_enabled: 2,
         projects_with_incidents: 4,
         projects_with_alert_incidents: 2,
@@ -370,7 +368,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         clusters: 1,
         clusters_integrations_prometheus: 1,
         operations_dashboard_default_dashboard: 1,
-        projects_with_tracing_enabled: 1,
         projects_with_error_tracking_enabled: 1,
         projects_with_incidents: 2,
         projects_with_alert_incidents: 1
@@ -535,7 +532,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:groups_inheriting_slack_active]).to eq(1)
       expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
-      expect(count_data[:projects_with_tracing_enabled]).to eq(1)
       expect(count_data[:projects_with_enabled_alert_integrations]).to eq(1)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)
       expect(count_data[:projects_with_terraform_states]).to eq(2)
@@ -564,7 +560,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:clusters_platforms_eks]).to eq(1)
       expect(count_data[:clusters_platforms_gke]).to eq(1)
       expect(count_data[:clusters_platforms_user]).to eq(1)
-      expect(count_data[:clusters_integrations_elastic_stack]).to eq(1)
       expect(count_data[:clusters_integrations_prometheus]).to eq(1)
       expect(count_data[:grafana_integrated_projects]).to eq(2)
       expect(count_data[:clusters_management_project]).to eq(1)
@@ -1157,35 +1152,36 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     let(:user2) { build(:user, id: 2) }
     let(:user3) { build(:user, id: 3) }
     let(:user4) { build(:user, id: 4) }
+    let(:project) { build(:project) }
 
     before do
       counter = Gitlab::UsageDataCounters::TrackUniqueEvents
-      project = Event::TARGET_TYPES[:project]
+      project_type = Event::TARGET_TYPES[:project]
       wiki = Event::TARGET_TYPES[:wiki]
       design = Event::TARGET_TYPES[:design]
 
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 1)
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 2)
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 3)
-      counter.track_event(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 1)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 1)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 2)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 3)
+      counter.track_event(event_action: :pushed, event_target: project_type, author_id: 4, time: time - 3.days)
       counter.track_event(event_action: :created, event_target: wiki, author_id: 3)
       counter.track_event(event_action: :created, event_target: design, author_id: 3)
       counter.track_event(event_action: :created, event_target: design, author_id: 4)
 
       counter = Gitlab::UsageDataCounters::EditorUniqueCounter
 
-      counter.track_web_ide_edit_action(author: user1)
-      counter.track_web_ide_edit_action(author: user1)
-      counter.track_sfe_edit_action(author: user1)
-      counter.track_snippet_editor_edit_action(author: user1)
-      counter.track_snippet_editor_edit_action(author: user1, time: time - 3.days)
+      counter.track_web_ide_edit_action(author: user1, project: project)
+      counter.track_web_ide_edit_action(author: user1, project: project)
+      counter.track_sfe_edit_action(author: user1, project: project)
+      counter.track_snippet_editor_edit_action(author: user1, project: project)
+      counter.track_snippet_editor_edit_action(author: user1, time: time - 3.days, project: project)
 
-      counter.track_web_ide_edit_action(author: user2)
-      counter.track_sfe_edit_action(author: user2)
+      counter.track_web_ide_edit_action(author: user2, project: project)
+      counter.track_sfe_edit_action(author: user2, project: project)
 
-      counter.track_web_ide_edit_action(author: user3, time: time - 3.days)
-      counter.track_snippet_editor_edit_action(author: user3)
+      counter.track_web_ide_edit_action(author: user3, time: time - 3.days, project: project)
+      counter.track_snippet_editor_edit_action(author: user3, project: project)
     end
 
     it 'returns the distinct count of user actions within the specified time period' do
@@ -1212,6 +1208,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     let(:ignored_metrics) { ["i_package_composer_deploy_token_weekly"] }
 
     it 'has all known_events' do
+      stub_feature_flags(use_redis_hll_instrumentation_classes: false)
       expect(subject).to have_key(:redis_hll_counters)
 
       expect(subject[:redis_hll_counters].keys).to match_array(categories)
@@ -1312,8 +1309,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             "in_product_marketing_email_team_1_sent" => -1,
             "in_product_marketing_email_team_1_cta_clicked" => -1,
             "in_product_marketing_email_team_2_sent" => -1,
-            "in_product_marketing_email_team_2_cta_clicked" => -1,
-            "in_product_marketing_email_experience_0_sent" => -1
+            "in_product_marketing_email_team_2_cta_clicked" => -1
           }
 
           expect(subject).to eq(expected_data)
@@ -1358,8 +1354,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           "in_product_marketing_email_team_1_sent" => 0,
           "in_product_marketing_email_team_1_cta_clicked" => 0,
           "in_product_marketing_email_team_2_sent" => 0,
-          "in_product_marketing_email_team_2_cta_clicked" => 0,
-          "in_product_marketing_email_experience_0_sent" => 0
+          "in_product_marketing_email_team_2_cta_clicked" => 0
         }
 
         expect(subject).to eq(expected_data)
@@ -1368,29 +1363,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   end
 
   describe ".with_duration" do
-    context 'with feature flag measure_service_ping_metric_collection turned off' do
-      before do
-        stub_feature_flags(measure_service_ping_metric_collection: false)
-      end
+    it 'records duration' do
+      expect(::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator)
+        .to receive(:new).with(2, kind_of(Float))
 
-      it 'does NOT record duration and return block response' do
-        expect(::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator).not_to receive(:new)
-
-        expect(described_class.with_duration { 1 + 1 }).to be 2
-      end
-    end
-
-    context 'with feature flag measure_service_ping_metric_collection turned off' do
-      before do
-        stub_feature_flags(measure_service_ping_metric_collection: true)
-      end
-
-      it 'records duration' do
-        expect(::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator)
-          .to receive(:new).with(2, kind_of(Float))
-
-        described_class.with_duration { 1 + 1 }
-      end
+      described_class.with_duration { 1 + 1 }
     end
   end
 

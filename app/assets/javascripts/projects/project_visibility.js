@@ -10,7 +10,7 @@ const visibilityLevel = {
 };
 
 function setVisibilityOptions({ name, visibility, showPath, editPath }) {
-  document.querySelectorAll('.visibility-level-setting .form-check').forEach((option) => {
+  document.querySelectorAll('.visibility-level-setting .gl-form-radio').forEach((option) => {
     // Don't change anything if the option is restricted by admin
     if (option.classList.contains('restricted')) {
       return;
@@ -24,7 +24,7 @@ function setVisibilityOptions({ name, visibility, showPath, editPath }) {
       optionInput.disabled = true;
       const reason = option.querySelector('.option-disabled-reason');
       if (reason) {
-        const optionTitle = option.querySelector('.option-title');
+        const optionTitle = option.querySelector('.js-visibility-level-radio span');
         const optionName = optionTitle ? optionTitle.innerText.toLowerCase() : '';
         reason.innerHTML = sprintf(
           __(

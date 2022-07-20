@@ -34,6 +34,14 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
 
+  describe 'validation' do
+    it 'does not become invalid record when external_url is empty' do
+      environment = build(:environment, external_url: nil)
+
+      expect(environment).to be_valid
+    end
+  end
+
   describe '.before_save' do
     it 'ensures environment tier when a new object is created' do
       environment = build(:environment, name: 'gprd', tier: nil)
@@ -1672,6 +1680,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       'abcdef'   | ChronicDuration::DurationParseError
       ''         | nil
       nil        | nil
+      'never'    | nil
     end
     with_them do
       it 'sets correct auto_stop_in' do
@@ -1708,25 +1717,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       expect(env).to be_an_instance_of(described_class)
       expect(env).to be_persisted
-    end
-  end
-
-  describe '#elastic_stack_available?' do
-    let!(:cluster) { create(:cluster, :project, :provided_by_user, projects: [project]) }
-    let!(:deployment) { create(:deployment, :success, environment: environment, project: project, cluster: cluster) }
-
-    context 'when integration does not exist' do
-      it 'returns false' do
-        expect(environment.elastic_stack_available?).to be(false)
-      end
-    end
-
-    context 'when integration is enabled' do
-      let!(:integration) { create(:clusters_integrations_elastic_stack, cluster: cluster) }
-
-      it 'returns true' do
-        expect(environment.elastic_stack_available?).to be(true)
-      end
     end
   end
 

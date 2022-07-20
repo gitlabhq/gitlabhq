@@ -45,7 +45,7 @@ RSpec.describe ::Packages::Conan::PackageFinder do
 
       before do
         project.update_column(:visibility_level, Gitlab::VisibilityLevel.string_options[visibility.to_s])
-        project.add_user(user, role) unless role == :anonymous
+        project.add_member(user, role) unless role == :anonymous
       end
 
       it { is_expected.to eq(expected_packages) }

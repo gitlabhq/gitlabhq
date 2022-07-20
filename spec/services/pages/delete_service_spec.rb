@@ -45,7 +45,11 @@ RSpec.describe Pages::DeleteService do
   end
 
   it 'publishes a ProjectDeleted event with project id and namespace id' do
-    expected_data = { project_id: project.id, namespace_id: project.namespace_id }
+    expected_data = {
+      project_id: project.id,
+      namespace_id: project.namespace_id,
+      root_namespace_id: project.root_namespace.id
+    }
 
     expect { service.execute }.to publish_event(Pages::PageDeletedEvent).with(expected_data)
   end

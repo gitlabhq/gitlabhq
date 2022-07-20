@@ -18,7 +18,7 @@ module Gitlab
           user: user.hook_attrs,
           project: issuable.project.hook_attrs,
           object_attributes: issuable_builder.new(issuable).build,
-          labels: issuable.labels.map(&:hook_attrs),
+          labels: issuable.labels_hook_attrs,
           changes: final_changes(changes.slice(*safe_keys)),
           # DEPRECATED
           repository: issuable.project.hook_attrs.slice(:name, :url, :description, :homepage)

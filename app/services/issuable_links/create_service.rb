@@ -8,6 +8,7 @@ module IssuableLinks
       @issuable = issuable
       @current_user = user
       @params = params.dup
+      @errors = []
     end
 
     def execute
@@ -22,7 +23,6 @@ module IssuableLinks
         return error(issuables_not_found_message, 404)
       end
 
-      @errors = []
       references = create_links
 
       if @errors.present?

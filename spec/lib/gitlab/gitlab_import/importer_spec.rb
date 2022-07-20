@@ -21,8 +21,8 @@ RSpec.describe Gitlab::GitlabImport::Importer do
             'name' => 'John Doe'
           }
         }
-      ])
-      stub_request('issues/3/notes', [])
+      ].to_json)
+      stub_request('issues/3/notes', [].to_json)
     end
 
     it 'persists issues' do

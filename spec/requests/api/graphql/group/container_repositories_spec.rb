@@ -82,7 +82,7 @@ RSpec.describe 'getting container repositories in a group' do
         group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility.to_s.upcase, false))
         project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility.to_s.upcase, false))
 
-        group.add_user(user, role) unless role == :anonymous
+        group.add_member(user, role) unless role == :anonymous
       end
 
       it 'return the proper response' do

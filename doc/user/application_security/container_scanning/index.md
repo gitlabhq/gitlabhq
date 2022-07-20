@@ -178,6 +178,8 @@ include:
     DOCKER_PASSWORD: "$AWS_ECR_PASSWORD"
 ```
 
+Authenticating to a remote registry is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled.
+
 #### Dependency list
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6.
@@ -231,7 +233,12 @@ between GitLab Dependency Scanning and Container Scanning for more details on wh
 
 #### Available CI/CD variables
 
-You can [configure](#customizing-the-container-scanning-settings) analyzers by using the following CI/CD variables:
+You can [configure](#customizing-the-container-scanning-settings) analyzers by using the following CI/CD variables.
+
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
 
 | CI/CD Variable                 | Default       | Description | Scanner |
 | ------------------------------ | ------------- | ----------- | ------------ |
@@ -248,8 +255,8 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are Unknown, Low, Medium, High, and Critical. | Trivy |
 | `DOCKER_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
-| `DOCKER_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). | All |
-| `DOCKER_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). | All |
+| `DOCKER_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
+| `DOCKER_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
 | `DOCKERFILE_PATH`              | `Dockerfile`  | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. | All |
 | `SECURE_LOG_LEVEL`             | `info`        | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. | All |
 
@@ -295,6 +302,10 @@ support `-fips`.
 
 Starting with GitLab 14.10, `-fips` is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is
 enabled in the GitLab instance.
+
+Container scanning of images in authenticated registries is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode)
+is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `DOCKER_USER` or `DOCKER_PASSWORD` is set,
+the analyzer exits with an error and does not perform the scan.
 
 ### Enable Container Scanning through an automatic merge request
 
@@ -660,6 +671,8 @@ Also:
 - Scans may not run in unprotected feature branches if you select the **Protect variable** option.
 - Consider creating credentials with read-only permissions and rotating them regularly if the
   options aren't selected.
+
+Scanning images in external private registries is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled.
 
 ## Running the standalone container scanning tool
 

@@ -125,6 +125,7 @@ colocated
 colocating
 compilable
 composable
+composables
 Conda
 Consul
 Contentful
@@ -239,6 +240,7 @@ Fortinet
 Fugit
 fuzzer
 Gantt
+Gbps
 Gemfile
 Gemnasium
 Gemojione

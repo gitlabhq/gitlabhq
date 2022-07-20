@@ -21,7 +21,7 @@ RSpec.describe "Admin Runners" do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, namespace: namespace, creator: user) }
 
-    context "runners registration" do
+    describe "runners registration" do
       before do
         visit admin_runners_path
       end
@@ -164,7 +164,9 @@ RSpec.describe "Admin Runners" do
       end
 
       describe 'filter by status' do
-        let!(:never_contacted) { create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil) }
+        let!(:never_contacted) do
+          create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil)
+        end
 
         before do
           create(:ci_runner, :instance, description: 'runner-1', contacted_at: Time.zone.now)
@@ -326,12 +328,14 @@ RSpec.describe "Admin Runners" do
             visit admin_runners_path
             page.within('[data-testid="runner-type-tabs"]') do
               click_on 'Instance'
-
-              expect(page).to have_link('Instance', class: 'active')
             end
           end
 
           it_behaves_like 'shows no runners found'
+
+          it 'shows active tab' do
+            expect(page).to have_link('Instance', class: 'active')
+          end
 
           it 'shows no runner' do
             expect(page).not_to have_content 'runner-project'
@@ -402,8 +406,8 @@ RSpec.describe "Admin Runners" do
       end
 
       it 'sorts by last contact date' do
-        create(:ci_runner, :instance, description: 'runner-1', created_at: '2018-07-12 15:37', contacted_at: '2018-07-12 15:37')
-        create(:ci_runner, :instance, description: 'runner-2', created_at: '2018-07-12 16:37', contacted_at: '2018-07-12 16:37')
+        create(:ci_runner, :instance, description: 'runner-1', contacted_at: '2018-07-12')
+        create(:ci_runner, :instance, description: 'runner-2', contacted_at: '2018-07-13')
 
         visit admin_runners_path
 
@@ -448,13 +452,13 @@ RSpec.describe "Admin Runners" do
       it 'updates ACTIVE runner status to paused=false' do
         visit admin_runners_path('status[]': 'ACTIVE')
 
-        expect(page).to have_current_path(admin_runners_path('paused[]': 'false') )
+        expect(page).to have_current_path(admin_runners_path('paused[]': 'false'))
       end
 
       it 'updates PAUSED runner status to paused=true' do
         visit admin_runners_path('status[]': 'PAUSED')
 
-        expect(page).to have_current_path(admin_runners_path('paused[]': 'true') )
+        expect(page).to have_current_path(admin_runners_path('paused[]': 'true'))
       end
     end
   end
@@ -477,7 +481,9 @@ RSpec.describe "Admin Runners" do
     describe 'runner show page breadcrumbs' do
       it 'contains the current runner id and token' do
         page.within '[data-testid="breadcrumb-links"]' do
-          expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_link("##{runner.id} (#{runner.short_sha})")
+          expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_link(
+            "##{runner.id} (#{runner.short_sha})"
+          )
         end
       end
     end
@@ -515,16 +521,16 @@ RSpec.describe "Admin Runners" do
 
   describe "Runner edit page" do
     let(:runner) { create(:ci_runner, :project) }
+    let!(:project1) { create(:project) }
+    let!(:project2) { create(:project) }
 
     before do
-      @project1 = create(:project)
-      @project2 = create(:project)
       visit edit_admin_runner_path(runner)
 
       wait_for_requests
     end
 
-    describe 'runner edit page breadcrumbs' do
+    describe 'breadcrumbs' do
       it 'contains the current runner id and token' do
         page.within '[data-testid="breadcrumb-links"]' do
           expect(page).to have_link("##{runner.id} (#{runner.short_sha})")
@@ -539,7 +545,7 @@ RSpec.describe "Admin Runners" do
       end
     end
 
-    describe 'when a runner is updated', :js do
+    context 'when a runner is updated', :js do
       before do
         click_on _('Save changes')
         wait_for_requests
@@ -556,21 +562,21 @@ RSpec.describe "Admin Runners" do
 
     describe 'projects' do
       it 'contains project names' do
-        expect(page).to have_content(@project1.full_name)
-        expect(page).to have_content(@project2.full_name)
+        expect(page).to have_content(project1.full_name)
+        expect(page).to have_content(project2.full_name)
       end
     end
 
     describe 'search' do
       before do
         search_form = find('#runner-projects-search')
-        search_form.fill_in 'search', with: @project1.name
+        search_form.fill_in 'search', with: project1.name
         search_form.click_button 'Search'
       end
 
       it 'contains name of correct project' do
-        expect(page).to have_content(@project1.full_name)
-        expect(page).not_to have_content(@project2.full_name)
+        expect(page).to have_content(project1.full_name)
+        expect(page).not_to have_content(project2.full_name)
       end
     end
 
@@ -584,12 +590,12 @@ RSpec.describe "Admin Runners" do
           assigned_project = page.find('[data-testid="assigned-projects"]')
 
           expect(page).to have_content('Runner assigned to project.')
-          expect(assigned_project).to have_content(@project2.path)
+          expect(assigned_project).to have_content(project2.path)
         end
       end
 
       context 'with specific runner' do
-        let(:runner) { create(:ci_runner, :project, projects: [@project1]) }
+        let(:runner) { create(:ci_runner, :project, projects: [project1]) }
 
         before do
           visit edit_admin_runner_path(runner)
@@ -599,7 +605,7 @@ RSpec.describe "Admin Runners" do
       end
 
       context 'with locked runner' do
-        let(:runner) { create(:ci_runner, :project, projects: [@project1], locked: true) }
+        let(:runner) { create(:ci_runner, :project, projects: [project1], locked: true) }
 
         before do
           visit edit_admin_runner_path(runner)
@@ -610,7 +616,7 @@ RSpec.describe "Admin Runners" do
     end
 
     describe 'disable/destroy' do
-      let(:runner) { create(:ci_runner, :project, projects: [@project1]) }
+      let(:runner) { create(:ci_runner, :project, projects: [project1]) }
 
       before do
         visit edit_admin_runner_path(runner)
@@ -624,7 +630,7 @@ RSpec.describe "Admin Runners" do
         new_runner_project = page.find('[data-testid="unassigned-projects"]')
 
         expect(page).to have_content('Runner unassigned from project.')
-        expect(new_runner_project).to have_content(@project1.path)
+        expect(new_runner_project).to have_content(project1.path)
       end
     end
   end

@@ -2,7 +2,7 @@
 - project_buttons = local_assigns.fetch(:project_buttons, false)
 
 - return unless anchors.any?
-%ul.nav
+%ul.nav.gl-gap-3
   - anchors.each do |anchor|
     %li.nav-item
       = link_to_if(anchor.link, anchor.label, anchor.link, stat_anchor_attrs(anchor)) do

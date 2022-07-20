@@ -158,7 +158,7 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
 
           expect(worker).to receive(:handle_next_migration).exactly(3).times.and_call_original
 
-          expect { subject }.to make_queries_matching(/LIMIT 2/)
+          expect { subject }.to make_queries_matching(/LIMIT 25/)
 
           expect(container_repository.reload).to be_pre_importing
           expect(container_repository2.reload).to be_pre_importing

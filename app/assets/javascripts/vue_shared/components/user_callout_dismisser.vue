@@ -56,7 +56,13 @@ import getUserCalloutsQuery from '~/graphql_shared/queries/get_user_callouts.que
  *  - shouldShowCallout: boolean
  *    - A combination of the above which should cover 95% of use cases: `true`
  *      if the query has loaded without error, and the user is logged in, and
- *      the callout has not been dismissed yet; `false` otherwise.
+ *      the callout has not been dismissed yet; `false` otherwise
+ *
+ * The component emits a `queryResult` event when the GraphQL query
+ * completes. The payload is a combination of the ApolloQueryResult object and
+ * this component's `slotProps` computed property. This is useful for things
+ * like cleaning up/unmounting the component if the callout shouldn't be
+ * displayed.
  */
 export default {
   name: 'UserCalloutDismisser',
@@ -85,6 +91,9 @@ export default {
       query: getUserCalloutsQuery,
       update(data) {
         return data?.currentUser;
+      },
+      result(data) {
+        this.$emit('queryResult', { ...data, ...this.slotProps });
       },
       error(err) {
         this.queryError = err;

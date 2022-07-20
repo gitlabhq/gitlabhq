@@ -3,6 +3,8 @@
 - page_title _("Merge requests")
 
 - if issuables_count_for_state(:merge_requests, :all) == 0
+  = render 'shared/issuable/search_bar', type: :merge_requests
+
   = render 'shared/empty_states/merge_requests', project_select_button: true
 - else
   .top-area

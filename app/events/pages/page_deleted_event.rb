@@ -7,7 +7,8 @@ module Pages
         'type' => 'object',
         'properties' => {
           'project_id' => { 'type' => 'integer' },
-          'namespace_id' => { 'type' => 'integer' }
+          'namespace_id' => { 'type' => 'integer' },
+          'root_namespace_id' => { 'type' => 'integer' }
         },
         'required' => %w[project_id namespace_id]
       }

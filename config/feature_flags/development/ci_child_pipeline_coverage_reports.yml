@@ -1,8 +1,0 @@
----
-name: ci_child_pipeline_coverage_reports
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88626
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363557
-milestone: '15.1'
-type: development
-group: group::pipeline insights
-default_enabled: false

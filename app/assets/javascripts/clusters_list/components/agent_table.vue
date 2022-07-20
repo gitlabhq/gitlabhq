@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     fields() {
-      const tdClass = 'gl-py-5!';
+      const tdClass = 'gl-pt-3! gl-pb-4! gl-vertical-align-middle!';
       return [
         {
           key: 'name',
@@ -184,7 +184,7 @@ export default {
         data-testid="cluster-agent-connection-status"
       >
         <span :class="$options.AGENT_STATUSES[item.status].class" class="gl-mr-3">
-          <gl-icon :name="$options.AGENT_STATUSES[item.status].icon" :size="12" /></span
+          <gl-icon :name="$options.AGENT_STATUSES[item.status].icon" :size="16" /></span
         >{{ $options.AGENT_STATUSES[item.status].name }}
       </span>
       <gl-tooltip v-if="item.status === 'active'" :target="getStatusCellId(item)" placement="right">

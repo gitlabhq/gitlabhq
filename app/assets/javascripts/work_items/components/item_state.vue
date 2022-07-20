@@ -54,7 +54,7 @@ export default {
     :label-for="$options.labelId"
     label-cols="3"
     label-cols-lg="2"
-    label-class="gl-pb-0!"
+    label-class="gl-pb-0! gl-overflow-wrap-break"
     class="gl-align-items-center"
   >
     <gl-form-select

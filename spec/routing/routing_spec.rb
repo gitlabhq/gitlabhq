@@ -310,6 +310,26 @@ RSpec.describe "Authentication", "routing" do
         expect(post("/users/auth/ldapmain/callback")).not_to be_routable
       end
     end
+
+    context 'with multiple LDAP providers configured' do
+      let(:ldap_settings) do
+        {
+          enabled: true,
+          servers: {
+            main: { 'provider_name' => 'ldapmain' },
+            secondary: { 'provider_name' => 'ldapsecondary' }
+          }
+        }
+      end
+
+      it 'POST /users/auth/ldapmain/callback' do
+        expect(post("/users/auth/ldapmain/callback")).to route_to('ldap/omniauth_callbacks#ldapmain')
+      end
+
+      it 'POST /users/auth/ldapsecondary/callback' do
+        expect(post("/users/auth/ldapsecondary/callback")).to route_to('ldap/omniauth_callbacks#ldapsecondary')
+      end
+    end
   end
 end
 

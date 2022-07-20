@@ -151,7 +151,7 @@ RSpec.describe Emails::Profile do
       end
 
       it 'includes the email reason' do
-        is_expected.to have_body_text /You're receiving this email because of your account on localhost/
+        is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost<\/a>}
       end
     end
   end
@@ -187,7 +187,7 @@ RSpec.describe Emails::Profile do
     end
 
     it 'includes the email reason' do
-      is_expected.to have_body_text /You're receiving this email because of your account on localhost/
+      is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost<\/a>}
     end
 
     context 'with User does not exist' do
@@ -222,7 +222,7 @@ RSpec.describe Emails::Profile do
       end
 
       it 'includes the email reason' do
-        is_expected.to have_body_text /You're receiving this email because of your account on localhost/
+        is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost<\/a>}
       end
     end
 
@@ -266,7 +266,7 @@ RSpec.describe Emails::Profile do
     end
 
     shared_examples 'includes the email reason' do
-      it { is_expected.to have_body_text /You're receiving this email because of your account on localhost/ }
+      it { is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost<\/a>} }
     end
 
     shared_examples 'valid use case' do

@@ -7,11 +7,9 @@ module Gitlab
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
       def initialize(namespace: nil, project: nil, user: nil, **extra)
-        if Feature.enabled?(:standard_context_type_check)
-          check_argument_type(:namespace, namespace, [Namespace])
-          check_argument_type(:project, project, [Project, Integer])
-          check_argument_type(:user, user, [User, DeployToken])
-        end
+        check_argument_type(:namespace, namespace, [Namespace])
+        check_argument_type(:project, project, [Project, Integer])
+        check_argument_type(:user, user, [User, DeployToken])
 
         @namespace = namespace
         @plan = namespace&.actual_plan_name

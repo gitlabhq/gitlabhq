@@ -174,7 +174,7 @@ See [Review Apps](../review_apps.md) for more details about Review Apps.
 
 To run tests in parallel on CI, the [Knapsack](https://github.com/KnapsackPro/knapsack)
 gem is used. Knapsack reports are generated automatically and stored in the `GCS` bucket
-`knapsack-reports` in the `gitlab-qa-resources` project. The [`KnapsackReport`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/tools/knapsack_report.rb)
+`knapsack-reports` in the `gitlab-qa-resources` project. The [`KnapsackReport`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/support/knapsack_report.rb)
 helper handles automated report generation and upload.
 
 ## Test metrics

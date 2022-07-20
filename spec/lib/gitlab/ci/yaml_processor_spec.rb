@@ -70,7 +70,7 @@ module Gitlab
               options: { script: ['rspec'] },
               rules: [
                 { if: '$CI_COMMIT_REF_NAME == "master"' },
-                { changes: %w[README.md] }
+                { changes: { paths: %w[README.md] } }
               ],
               allow_failure: false,
               when: 'on_success',
@@ -980,7 +980,7 @@ module Gitlab
 
           it { is_expected.to be_valid }
 
-          it "returns image and service when defined" do
+          it "returns with image" do
             expect(processor.stage_builds_attributes("test")).to contain_exactly({
               stage: "test",
               stage_idx: 2,
@@ -989,6 +989,51 @@ module Gitlab
               options: {
                 script: ["exit 0"],
                 image: { name: "ruby:2.7", pull_policy: ["if-not-present"] }
+              },
+              allow_failure: false,
+              when: "on_success",
+              job_variables: [],
+              root_variables_inheritance: true,
+              scheduling_type: :stage
+            })
+          end
+
+          context 'when the feature flag ci_docker_image_pull_policy is disabled' do
+            before do
+              stub_feature_flags(ci_docker_image_pull_policy: false)
+            end
+
+            it { is_expected.not_to be_valid }
+
+            it "returns no job" do
+              expect(processor.jobs).to eq({})
+            end
+          end
+        end
+
+        context 'when a service has pull_policy' do
+          let(:config) do
+            <<~YAML
+            services:
+              - name: postgres:11.9
+                pull_policy: if-not-present
+
+            test:
+              script: exit 0
+            YAML
+          end
+
+          it { is_expected.to be_valid }
+
+          it "returns with service" do
+            expect(processor.stage_builds_attributes("test")).to contain_exactly({
+              stage: "test",
+              stage_idx: 2,
+              name: "test",
+              only: { refs: %w[branches tags] },
+              options: {
+                script: ["exit 0"],
+                services: [{ name: "postgres:11.9", pull_policy: ["if-not-present"] }]
               },
               allow_failure: false,
               when: "on_success",
@@ -2845,6 +2890,51 @@ module Gitlab
           end
 
           it_behaves_like 'returns errors', 'The pipeline has circular dependencies'
+        end
+      end
+
+      describe 'Rules' do
+        context 'changes' do
+          let(:config) do
+            <<~YAML
+            rspec:
+              script: exit 0
+              rules:
+                - changes: [README.md]
+            YAML
+          end
+
+          it 'returns builds with correct rules' do
+            expect(processor.builds.size).to eq(1)
+            expect(processor.builds[0]).to match(
+              hash_including(
+                name: "rspec",
+                rules: [{ changes: { paths: ["README.md"] } }]
+              )
+            )
+          end
+
+          context 'with paths' do
+            let(:config) do
+              <<~YAML
+              rspec:
+                script: exit 0
+                rules:
+                  - changes:
+                      paths: [README.md]
+              YAML
+            end
+
+            it 'returns builds with correct rules' do
+              expect(processor.builds.size).to eq(1)
+              expect(processor.builds[0]).to match(
+                hash_including(
+                  name: "rspec",
+                  rules: [{ changes: { paths: ["README.md"] } }]
+                )
+              )
+            end
+          end
         end
       end
 

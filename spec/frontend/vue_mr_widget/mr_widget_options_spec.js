@@ -32,6 +32,7 @@ import {
   fullReportExtension,
   noTelemetryExtension,
   pollingExtension,
+  pollingFullDataExtension,
   pollingErrorExtension,
   multiPollingExtension,
 } from './test_extensions';
@@ -41,6 +42,13 @@ jest.mock('~/api.js');
 jest.mock('~/smart_interval');
 
 jest.mock('~/lib/utils/favicon');
+
+jest.mock('@sentry/browser', () => ({
+  setExtra: jest.fn(),
+  setExtras: jest.fn(),
+  captureMessage: jest.fn(),
+  captureException: jest.fn(),
+}));
 
 Vue.use(VueApollo);
 
@@ -66,23 +74,15 @@ describe('MrWidgetOptions', () => {
   afterEach(() => {
     mock.restore();
     wrapper.destroy();
-    wrapper = null;
 
     gl.mrWidgetData = {};
     gon.features = {};
   });
 
-  const createComponent = (mrData = mockData, options = {}, glFeatures = {}) => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-
+  const createComponent = (mrData = mockData, options = {}) => {
     wrapper = mount(MrWidgetOptions, {
       propsData: {
         mrData: { ...mrData },
-      },
-      provide: {
-        glFeatures,
       },
       ...options,
     });
@@ -521,7 +521,7 @@ describe('MrWidgetOptions', () => {
 
     describe('rendering relatedLinks', () => {
       beforeEach(() => {
-        createComponent({
+        return createComponent({
           ...mockData,
           issues_links: {
             closing: `
@@ -531,8 +531,10 @@ describe('MrWidgetOptions', () => {
             `,
           },
         });
+      });
 
-        return nextTick();
+      afterEach(() => {
+        wrapper.destroy();
       });
 
       it('renders if there are relatedLinks', () => {
@@ -875,8 +877,8 @@ describe('MrWidgetOptions', () => {
     });
 
     describe('given feature flag is enabled', () => {
-      beforeEach(() => {
-        createComponent();
+      beforeEach(async () => {
+        await createComponent();
 
         wrapper.vm.mr.hasCI = false;
       });
@@ -905,6 +907,19 @@ describe('MrWidgetOptions', () => {
     });
   });
 
+  describe('merge error', () => {
+    it.each`
+      state       | show     | showText
+      ${'closed'} | ${false} | ${'hides'}
+      ${'merged'} | ${true}  | ${'shows'}
+      ${'open'}   | ${true}  | ${'shows'}
+    `('it $showText merge error when state is $state', ({ state, show }) => {
+      createComponent({ ...mockData, state, merge_error: 'Error!' });
+
+      expect(wrapper.find('[data-testid="merge_error"]').exists()).toBe(show);
+    });
+  });
+
   describe('mock extension', () => {
     let pollRequest;
 
@@ -917,8 +932,6 @@ describe('MrWidgetOptions', () => {
     });
 
     afterEach(() => {
-      pollRequest.mockRestore();
-
       registeredExtensions.extensions = [];
     });
 
@@ -970,16 +983,14 @@ describe('MrWidgetOptions', () => {
   describe('expansion', () => {
     it('hides collapse button', async () => {
       registerExtension(workingExtension(false));
-      createComponent();
-      await waitForPromises();
+      await createComponent();
 
       expect(findExtensionToggleButton().exists()).toBe(false);
     });
 
     it('shows collapse button', async () => {
       registerExtension(workingExtension(true));
-      createComponent();
-      await waitForPromises();
+      await createComponent();
 
       expect(findExtensionToggleButton().exists()).toBe(true);
     });
@@ -997,17 +1008,7 @@ describe('MrWidgetOptions', () => {
     });
 
     afterEach(() => {
-      pollRequest.mockRestore();
-
       registeredExtensions.extensions = [];
-
-      // Clear all left-over timeouts that may be registered in the poll class
-      let id = window.setTimeout(() => {}, 0);
-
-      while (id > 0) {
-        window.clearTimeout(id);
-        id -= 1;
-      }
     });
 
     describe('success - multi polling', () => {
@@ -1058,87 +1059,81 @@ describe('MrWidgetOptions', () => {
     describe('success', () => {
       it('does not make additional requests after poll is successful', async () => {
         registerExtension(pollingExtension);
-        await createComponent();
-        // called two times due to parent component polling (mount) and extension polling
-        expect(pollRequest).toHaveBeenCalledTimes(2);
-      });
 
-      it('keeps polling when poll-interval header is provided', async () => {
-        registerExtension({
-          ...pollingExtension,
-          methods: {
-            ...pollingExtension.methods,
-            fetchCollapsedData() {
-              return Promise.resolve({
-                data: {},
-                headers: { 'poll-interval': 1 },
-                status: 204,
-              });
-            },
-          },
-        });
         await createComponent();
-        expect(findWidgetTestExtension().html()).toContain('Test extension loading...');
+
+        expect(pollRequest).toHaveBeenCalledTimes(6);
+      });
+    });
+
+    describe('success - full data polling', () => {
+      it('sets data when polling is complete', async () => {
+        registerExtension(pollingFullDataExtension);
+
+        await createComponent();
+
+        api.trackRedisHllUserEvent.mockClear();
+        api.trackRedisCounterEvent.mockClear();
+
+        findExtensionToggleButton().trigger('click');
+
+        // The default working extension is a "warning" type, which generates a second - more specific - telemetry event for expansions
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(2);
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_expand',
+        );
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_expand_warning',
+        );
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(2);
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_count_expand',
+        );
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_count_expand_warning',
+        );
       });
     });
 
     describe('error', () => {
-      let captureException;
-
-      beforeEach(() => {
-        captureException = jest.spyOn(Sentry, 'captureException');
-
+      it('does not make additional requests after poll has failed', async () => {
         registerExtension(pollingErrorExtension);
+        await createComponent();
 
-        createComponent();
+        expect(pollRequest).toHaveBeenCalledTimes(6);
       });
 
-      it('does not make additional requests after poll has failed', () => {
-        // called two times due to parent component polling (mount) and extension polling
-        expect(pollRequest).toHaveBeenCalledTimes(2);
-      });
+      it('captures sentry error and displays error when poll has failed', async () => {
+        registerExtension(pollingErrorExtension);
+        await createComponent();
 
-      it('captures sentry error and displays error when poll has failed', () => {
-        expect(captureException).toHaveBeenCalledTimes(1);
-        expect(captureException).toHaveBeenCalledWith(new Error('Fetch error'));
+        expect(Sentry.captureException).toHaveBeenCalledTimes(5);
+        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
         expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
       });
     });
   });
 
   describe('mock extension errors', () => {
-    let captureException;
-
-    const itHandlesTheException = () => {
-      expect(captureException).toHaveBeenCalledTimes(1);
-      expect(captureException).toHaveBeenCalledWith(new Error('Fetch error'));
-      expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
-    };
-
-    beforeEach(() => {
-      captureException = jest.spyOn(Sentry, 'captureException');
-    });
-
     afterEach(() => {
       registeredExtensions.extensions = [];
-      captureException = null;
     });
 
     it('handles collapsed data fetch errors', async () => {
       registerExtension(collapsedDataErrorExtension);
-      createComponent();
-      await waitForPromises();
+      await createComponent();
 
       expect(
         wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]').exists(),
       ).toBe(false);
-      itHandlesTheException();
+      expect(Sentry.captureException).toHaveBeenCalledTimes(5);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
+      expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
     });
 
     it('handles full data fetch errors', async () => {
       registerExtension(fullDataErrorExtension);
-      createComponent();
-      await waitForPromises();
+      await createComponent();
 
       expect(wrapper.findComponent(StatusIcon).props('iconName')).not.toBe('error');
       wrapper
@@ -1148,7 +1143,9 @@ describe('MrWidgetOptions', () => {
       await nextTick();
       await waitForPromises();
 
-      itHandlesTheException();
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
+      expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
     });
   });
 
@@ -1163,11 +1160,11 @@ describe('MrWidgetOptions', () => {
 
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_test_extension_view',
+        'i_code_review_merge_request_widget_test_extension_view',
       );
       expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_test_extension_count_view',
+        'i_code_review_merge_request_widget_test_extension_count_view',
       );
     });
 
@@ -1186,17 +1183,17 @@ describe('MrWidgetOptions', () => {
         // The default working extension is a "warning" type, which generates a second - more specific - telemetry event for expansions
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(2);
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_expand',
+          'i_code_review_merge_request_widget_test_extension_expand',
         );
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_expand_warning',
+          'i_code_review_merge_request_widget_test_extension_expand_warning',
         );
         expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(2);
         expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_count_expand',
+          'i_code_review_merge_request_widget_test_extension_count_expand',
         );
         expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_merge_request_widget_test_extension_count_expand_warning',
+          'i_code_review_merge_request_widget_test_extension_count_expand_warning',
         );
       });
 
@@ -1239,11 +1236,11 @@ describe('MrWidgetOptions', () => {
 
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_test_extension_click_full_report',
+        'i_code_review_merge_request_widget_test_extension_click_full_report',
       );
       expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-        'i_merge_request_widget_test_extension_count_click_full_report',
+        'i_code_review_merge_request_widget_test_extension_count_click_full_report',
       );
     });
 

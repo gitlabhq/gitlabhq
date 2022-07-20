@@ -34,6 +34,17 @@ const unsafeUrls = [
   `${absoluteGon.sprite_file_icons}/../../https://evil.url`,
 ];
 
+/* eslint-disable no-script-url */
+const invalidProtocolUrls = [
+  'javascript:alert(1)',
+  'jAvascript:alert(1)',
+  'data:text/html,<script>alert(1);</script>',
+  ' javascript:',
+  'javascript :',
+];
+/* eslint-enable no-script-url */
+const validProtocolUrls = ['slack://open', 'x-devonthink-item://90909', 'x-devonthink-item:90909'];
+
 const forbiddenDataAttrs = ['data-remote', 'data-url', 'data-type', 'data-method'];
 const acceptedDataAttrs = ['data-random', 'data-custom'];
 
@@ -148,6 +159,18 @@ describe('~/lib/dompurify', () => {
       const attrWithValue = `${attr}="true"`;
       const htmlHref = `<a ${attrWithValue}>hello</a>`;
       expect(sanitize(htmlHref)).toBe(`<a ${attrWithValue}>hello</a>`);
+    });
+  });
+
+  describe('with non-http links', () => {
+    it.each(validProtocolUrls)('should allow %s', (url) => {
+      const html = `<a href="${url}">internal link</a>`;
+      expect(sanitize(html)).toBe(`<a href="${url}">internal link</a>`);
+    });
+
+    it.each(invalidProtocolUrls)('should not allow %s', (url) => {
+      const html = `<a href="${url}">internal link</a>`;
+      expect(sanitize(html)).toBe(`<a>internal link</a>`);
     });
   });
 });

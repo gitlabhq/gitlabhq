@@ -60,7 +60,7 @@ RSpec.describe 'getting dependency proxy image ttl policy for a group' do
     with_them do
       before do
         group.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(group_visibility.to_s.upcase, false))
-        group.add_user(user, role) unless role == :anonymous
+        group.add_member(user, role) unless role == :anonymous
       end
 
       it 'return the proper response' do

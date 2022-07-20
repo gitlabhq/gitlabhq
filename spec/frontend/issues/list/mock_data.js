@@ -32,6 +32,7 @@ export const getIssuesQueryResponse = {
             state: 'opened',
             title: 'Issue title',
             updatedAt: '2021-05-22T04:08:01Z',
+            closedAt: null,
             upvotes: 3,
             userDiscussionsCount: 4,
             webPath: 'project/-/issues/789',

@@ -4,12 +4,12 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
   describe '#transform' do
-    let_it_be(:user) { create(:user) }
     let_it_be(:parent) { create(:group) }
-    let_it_be(:bulk_import) { create(:bulk_import, user: user) }
 
-    let_it_be(:entity) do
-      create(
+    let(:bulk_import) { build_stubbed(:bulk_import) }
+
+    let(:entity) do
+      build_stubbed(
         :bulk_import_entity,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
@@ -18,8 +18,8 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
       )
     end
 
-    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let(:tracker) { build_stubbed(:bulk_import_tracker, entity: entity) }
+    let(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
     let(:data) do
       {
@@ -87,12 +87,61 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
       end
 
       context 'when destination namespace is empty' do
-        it 'does not set parent id' do
-          entity.update!(destination_namespace: '')
+        before do
+          entity.destination_namespace = ''
+        end
 
+        it 'does not set parent id' do
           transformed_data = subject.transform(context, data)
 
           expect(transformed_data).not_to have_key('parent_id')
+        end
+      end
+    end
+
+    describe 'group name transformation' do
+      context 'when destination namespace is empty' do
+        before do
+          entity.destination_namespace = ''
+        end
+
+        it 'does not transform name' do
+          transformed_data = subject.transform(context, data)
+
+          expect(transformed_data['name']).to eq('Source Group Name')
+        end
+      end
+
+      context 'when destination namespace is present' do
+        context 'when destination namespace does not have a group with same name' do
+          it 'does not transform name' do
+            transformed_data = subject.transform(context, data)
+
+            expect(transformed_data['name']).to eq('Source Group Name')
+          end
+        end
+
+        context 'when destination namespace already have a group with the same name' do
+          before do
+            create(:group, parent: parent, name: 'Source Group Name', path: 'group_1')
+            create(:group, parent: parent, name: 'Source Group Name(1)', path: 'group_2')
+            create(:group, parent: parent, name: 'Source Group Name(2)', path: 'group_3')
+            create(:group, parent: parent, name: 'Source Group Name(1)(1)', path: 'group_4')
+          end
+
+          it 'makes the name unique by appeding a counter', :aggregate_failures do
+            transformed_data = subject.transform(context, data.merge('name' => 'Source Group Name'))
+            expect(transformed_data['name']).to eq('Source Group Name(3)')
+
+            transformed_data = subject.transform(context, data.merge('name' => 'Source Group Name(2)'))
+            expect(transformed_data['name']).to eq('Source Group Name(2)(1)')
+
+            transformed_data = subject.transform(context, data.merge('name' => 'Source Group Name(1)'))
+            expect(transformed_data['name']).to eq('Source Group Name(1)(2)')
+
+            transformed_data = subject.transform(context, data.merge('name' => 'Source Group Name(1)(1)'))
+            expect(transformed_data['name']).to eq('Source Group Name(1)(1)(1)')
+          end
         end
       end
     end

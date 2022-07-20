@@ -13,9 +13,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def index
     @sort = params[:sort].presence || sort_value_name
-
-    @group_links = @project.project_group_links
-    @group_links = @group_links.search(params[:search_groups]) if params[:search_groups].present?
+    @include_relations ||= requested_relations(:groups_with_inherited_permissions)
 
     if can?(current_user, :admin_project_member, @project)
       @invited_members = present_members(invited_members)

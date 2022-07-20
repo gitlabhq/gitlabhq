@@ -4,7 +4,7 @@ key_path: counts.instances_confluence_active
 description: Count of active instance-level integrations for Confluence
 product_section: dev
 product_stage: ecosystem
-product_group: group::integrations
+product_group: integrations
 product_category: integrations
 value_type: number
 status: active

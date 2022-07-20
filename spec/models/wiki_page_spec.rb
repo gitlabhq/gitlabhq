@@ -24,6 +24,14 @@ RSpec.describe WikiPage do
     container.wiki
   end
 
+  def disable_front_matter
+    stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => false)
+  end
+
+  def enable_front_matter_for(thing)
+    stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => thing)
+  end
+
   # Use for groups of tests that do not modify their `subject`.
   #
   #   include_context 'subject is persisted page', title: 'my title'
@@ -40,6 +48,12 @@ RSpec.describe WikiPage do
       it { expect(wiki_page).to have_attributes(front_matter: {}, content: content) }
     end
 
+    shared_examples 'a page with front-matter' do
+      let(:front_matter) { { title: 'Foo', slugs: %w[slug_a slug_b] } }
+
+      it { expect(wiki_page.front_matter).to eq(front_matter) }
+    end
+
     context 'the wiki page has front matter' do
       let(:content) do
         <<~MD
@@ -54,12 +68,26 @@ RSpec.describe WikiPage do
         MD
       end
 
-      it 'has front-matter' do
-        expect(wiki_page.front_matter).to eq({ title: 'Foo', slugs: %w[slug_a slug_b] })
-      end
+      it_behaves_like 'a page with front-matter'
 
       it 'strips the front matter from the content' do
         expect(wiki_page.content.strip).to eq('My actual content')
+      end
+
+      context 'the feature flag is off' do
+        before do
+          disable_front_matter
+        end
+
+        it_behaves_like 'a page without front-matter'
+
+        context 'but enabled for the container' do
+          before do
+            enable_front_matter_for(container)
+          end
+
+          it_behaves_like 'a page with front-matter'
+        end
       end
     end
 
@@ -440,6 +468,29 @@ RSpec.describe WikiPage do
 
           it 'raises an error' do
             expect { subject.update(front_matter: new_front_matter) }.to raise_error(described_class::FrontMatterTooLong)
+          end
+        end
+
+        context 'the front-matter feature flag is not enabled' do
+          before do
+            disable_front_matter
+          end
+
+          it 'does not update the front-matter' do
+            content = subject.content
+            subject.update(front_matter: { slugs: ['x'] })
+
+            page = wiki.find_page(subject.title)
+
+            expect([subject, page]).to all(have_attributes(front_matter: be_empty, content: content))
+          end
+
+          context 'but it is enabled for the container' do
+            before do
+              enable_front_matter_for(container)
+            end
+
+            it_behaves_like 'able to update front-matter'
           end
         end
 

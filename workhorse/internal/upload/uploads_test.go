@@ -24,6 +24,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 )
@@ -99,7 +100,6 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 		require.Equal(t, "4", r.FormValue("file.size"), "Expected to receive the file size")
 
 		hashes := map[string]string{
-			"md5":    "098f6bcd4621d373cade4e832627b4f6",
 			"sha1":   "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3",
 			"sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
 			"sha512": "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff",
@@ -109,7 +109,16 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 			require.Equal(t, hash, r.FormValue("file."+algo), "file hash %s", algo)
 		}
 
-		require.Len(t, r.MultipartForm.Value, 12, "multipart form values")
+		expectedLen := 12
+
+		if destination.FIPSEnabled() {
+			expectedLen--
+			require.Empty(t, r.FormValue("file.md5"), "file hash md5")
+		} else {
+			require.Equal(t, "098f6bcd4621d373cade4e832627b4f6", r.FormValue("file.md5"), "file hash md5")
+		}
+
+		require.Len(t, r.MultipartForm.Value, expectedLen, "multipart form values")
 
 		w.WriteHeader(202)
 		fmt.Fprint(w, "RESPONSE")

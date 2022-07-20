@@ -37,4 +37,16 @@ RSpec.describe 'groups/group_members/index', :aggregate_failures do
       expect(rendered).not_to have_content('You can invite a new member')
     end
   end
+
+  context 'when @banned is nil' do
+    before do
+      assign(:banned, nil)
+    end
+
+    it 'calls group_members_app_data with { banned: [] }' do
+      expect(view).to receive(:group_members_app_data).with(group, a_hash_including(banned: []))
+
+      render
+    end
+  end
 end

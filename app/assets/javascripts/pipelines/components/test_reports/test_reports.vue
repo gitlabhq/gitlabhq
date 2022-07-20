@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import createTestReportsStore from '../../stores/test_reports';
 import EmptyState from './empty_state.vue';
 import TestSuiteTable from './test_suite_table.vue';
 import TestSummary from './test_summary.vue';
@@ -15,9 +16,10 @@ export default {
     TestSummary,
     TestSummaryTable,
   },
+  inject: ['blobPath', 'summaryEndpoint', 'suiteEndpoint'],
   computed: {
-    ...mapState(['isLoading', 'selectedSuiteIndex', 'testReports']),
-    ...mapGetters(['getSelectedSuite']),
+    ...mapState('testReports', ['isLoading', 'selectedSuiteIndex', 'testReports']),
+    ...mapGetters('testReports', ['getSelectedSuite']),
     showSuite() {
       return this.selectedSuiteIndex !== null;
     },
@@ -27,10 +29,19 @@ export default {
     },
   },
   created() {
+    this.$store.registerModule(
+      'testReports',
+      createTestReportsStore({
+        blobPath: this.blobPath,
+        summaryEndpoint: this.summaryEndpoint,
+        suiteEndpoint: this.suiteEndpoint,
+      }),
+    );
+
     this.fetchSummary();
   },
   methods: {
-    ...mapActions([
+    ...mapActions('testReports', [
       'fetchTestSuite',
       'fetchSummary',
       'setSelectedSuiteIndex',

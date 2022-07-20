@@ -8,8 +8,8 @@ RSpec.describe 'getting project members information' do
   let_it_be(:parent_group) { create(:group, :public) }
   let_it_be(:parent_project) { create(:project, :public, group: parent_group) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:user_1) { create(:user, username: 'user') }
-  let_it_be(:user_2) { create(:user, username: 'test') }
+  let_it_be(:user_1) { create(:user, username: 'user', name: 'Same Name') }
+  let_it_be(:user_2) { create(:user, username: 'test', name: 'Same Name') }
 
   before_all do
     [user_1, user_2].each { |user| parent_group.add_guest(user) }
@@ -29,11 +29,44 @@ RSpec.describe 'getting project members information' do
       expect_array_response(user_1, user_2)
     end
 
-    it 'returns members that match the search query' do
-      fetch_members(project: parent_project, args: { search: 'test' })
+    describe 'search argument' do
+      it 'returns members that match the search query' do
+        fetch_members(project: parent_project, args: { search: 'test' })
 
-      expect(graphql_errors).to be_nil
-      expect_array_response(user_2)
+        expect(graphql_errors).to be_nil
+        expect_array_response(user_2)
+      end
+
+      context 'when paginating' do
+        it 'returns correct results' do
+          fetch_members(project: parent_project, args: { search: 'Same Name', first: 1 })
+
+          expect_array_response(user_1)
+
+          next_cursor = graphql_data_at(:project, :projectMembers, :pageInfo, :endCursor)
+          fetch_members(project: parent_project, args: { search: 'Same Name', first: 1, after: next_cursor })
+
+          expect_array_response(user_2)
+        end
+
+        context 'when the use_keyset_aware_user_search_query FF is off' do
+          before do
+            stub_feature_flags(use_keyset_aware_user_search_query: false)
+          end
+
+          it 'raises error on the 2nd page due to missing cursor data' do
+            fetch_members(project: parent_project, args: { search: 'Same Name', first: 1 })
+
+            # user_2 because the "old" order was undeterministic (insert order), no tie-breaker column
+            expect_array_response(user_2)
+
+            next_cursor = graphql_data_at(:project, :projectMembers, :pageInfo, :endCursor)
+            fetch_members(project: parent_project, args: { search: 'Same Name', first: 1, after: next_cursor })
+
+            expect(graphql_errors.first['message']).to include('PG::UndefinedColumn')
+          end
+        end
+      end
     end
   end
 
@@ -230,6 +263,9 @@ RSpec.describe 'getting project members information' do
           id
         }
       }
+    }
+    pageInfo {
+      endCursor
     }
     NODE
 

@@ -9,11 +9,15 @@ end
 if log_deprecations?
   # Log deprecation warnings emitted through Kernel#warn, such as from gems or
   # the Ruby VM.
-  Warning.process(/.+is deprecated$/) do |warning|
-    Gitlab::DeprecationJsonLogger.info(message: warning.strip, source: 'ruby')
-    # Returning :default means we continue emitting this to stderr as well.
-    :default
-  end
+  actions = {
+    /.+is deprecated$/ => lambda do |warning|
+      Gitlab::DeprecationJsonLogger.info(message: warning.strip, source: 'ruby')
+      # Returning :default means we continue emitting this to stderr as well.
+      :default
+    end
+  }
+
+  Warning.process('', actions)
 
   # Log deprecation warnings emitted from Rails (see ActiveSupport::Deprecation).
   ActiveSupport::Notifications.subscribe('deprecation.rails') do |name, start, finish, id, payload|

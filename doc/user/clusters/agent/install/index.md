@@ -89,8 +89,12 @@ You must register an agent before you can install the agent in your cluster. To 
    - If you want to create a configuration with CI/CD defaults, type a name.
    - If you already have an [agent configuration file](#create-an-agent-configuration-file), select it from the list.
 1. Select **Register an agent**.
-1. GitLab generates an access token for the agent. Securely store this token. You need it to install the agent
+1. GitLab generates an access token for the agent. You need this token to install the agent
    in your cluster and to [update the agent](#update-the-agent-version) to another version.
+
+   WARNING:
+   Securely store the agent access token. A bad actor can use this token to access source code in the agent's configuration project, access source code in any public project on the GitLab instance, or even, under very specific conditions, obtain a Kubernetes manifest.
+
 1. Copy the command under **Recommended installation method**. You need it when you use
    the one-liner installation method to install the agent in your cluster.
 
@@ -154,8 +158,9 @@ GitLab also provides a [KPT package for the agent](https://gitlab.com/gitlab-org
 
 To configure your agent, add content to the `config.yaml` file:
 
-- [View the configuration reference](../gitops.md#gitops-configuration-reference) for a GitOps workflow.
-- [View the configuration reference](../ci_cd_workflow.md) for a GitLab CI/CD workflow.
+- For a GitOps workflow, [view the configuration reference](../gitops.md#gitops-configuration-reference).
+- For a GitLab CI/CD workflow, [authorize the agent to access your projects](../ci_cd_workflow.md#authorize-the-agent). Then
+  [add `kubectl` commands to your `.gitlab-ci.yml` file](../ci_cd_workflow.md#update-your-gitlab-ciyml-file-to-run-kubectl-commands).
 
 ## Install multiple agents in your cluster
 

@@ -34,8 +34,7 @@ See [Object storage replication tests](geo_validation_tests.md#object-storage-re
 
 ## Enabling GitLab-managed object storage replication
 
-> The beta feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10586) in GitLab 12.4.
-> The feature was made [generally available] in GitLab 15.1.
+> The feature was made [generally available](https://gitlab.com/groups/gitlab-org/-/epics/5551) in GitLab 15.1.
 
 **Secondary** sites can replicate files stored on the **primary** site regardless of
 whether they are stored on the local file system or in object storage.
@@ -79,7 +78,7 @@ the bucket used by **secondary** sites.
 
 If you are using Google Cloud Storage, consider using
 [Multi-Regional Storage](https://cloud.google.com/storage/docs/storage-classes#multi-regional).
-Or you can use the [Storage Transfer Service](https://cloud.google.com/storage-transfer/docs/),
+Or you can use the [Storage Transfer Service](https://cloud.google.com/storage-transfer/docs/overview),
 although this only supports daily synchronization.
 
 For manual synchronization, or scheduled by `cron`, see:

@@ -39,8 +39,8 @@ export default {
           </template>
         </gl-sprintf>
       </div>
-      <div class="discussion-filter-actions mt-2">
-        <gl-button variant="default" @click="selectFilter(0)">
+      <div class="discussion-filter-actions gl-mt-3 gl-display-flex">
+        <gl-button variant="default" class="gl-mr-3" @click="selectFilter(0)">
           {{ __('Show all activity') }}
         </gl-button>
         <gl-button variant="default" @click="selectFilter(1)">

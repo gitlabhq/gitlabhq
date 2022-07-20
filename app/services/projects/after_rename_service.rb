@@ -46,6 +46,7 @@ module Projects
       update_repository_configuration
       rename_transferred_documents
       log_completion
+      publish_event
     end
 
     def first_ensure_no_registry_tags_are_present
@@ -131,6 +132,18 @@ module Projects
       log_error(error)
 
       raise RenameFailedError, error
+    end
+
+    def publish_event
+      event = Projects::ProjectPathChangedEvent.new(data: {
+        project_id: project.id,
+        namespace_id: project.namespace_id,
+        root_namespace_id: project.root_namespace.id,
+        old_path: full_path_before,
+        new_path: full_path_after
+      })
+
+      Gitlab::EventStore.publish(event)
     end
   end
 end

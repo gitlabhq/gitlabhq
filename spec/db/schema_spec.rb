@@ -114,11 +114,17 @@ RSpec.describe 'Database schema' do
         context 'all foreign keys' do
           # for index to be effective, the FK constraint has to be at first place
           it 'are indexed' do
-            first_indexed_column = indexes.map(&:columns).map do |columns|
+            first_indexed_column = indexes.filter_map do |index|
+              columns = index.columns
+
               # In cases of complex composite indexes, a string is returned eg:
               # "lower((extern_uid)::text), group_id"
               columns = columns.split(',') if columns.is_a?(String)
-              columns.first.chomp
+              column = columns.first.chomp
+
+              # A partial index is not suitable for a foreign key column, unless
+              # the only condition is for the presence of the foreign key itself
+              column if index.where.nil? || index.where == "(#{column} IS NOT NULL)"
             end
             foreign_keys_columns = all_foreign_keys.map(&:column)
             required_indexed_columns = foreign_keys_columns - ignored_index_columns(table)

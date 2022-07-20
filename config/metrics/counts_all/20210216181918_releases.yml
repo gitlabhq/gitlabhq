@@ -3,8 +3,8 @@ data_category: optional
 key_path: counts.releases
 description: Count of releases
 product_section: ops
-product_stage: releases
-product_group: group::release
+product_stage: release
+product_group: release
 product_category: release_orchestration
 value_type: number
 status: active

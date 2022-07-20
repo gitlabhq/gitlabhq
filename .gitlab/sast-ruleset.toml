@@ -1,0 +1,10 @@
+[semgrep]
+  description = 'semgrep custom rules configuration'
+  targetdir = "/sgrules"
+  validate = true
+
+  [[semgrep.passthrough]]
+    type  = "git"
+    value = "https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules.git"
+    ref = "refs/heads/main"
+    subdir = "appsec-pings"

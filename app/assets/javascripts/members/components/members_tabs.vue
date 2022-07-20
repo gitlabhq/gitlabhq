@@ -1,40 +1,48 @@
 <script>
 import { GlTabs, GlTab, GlBadge, GlButton } from '@gitlab/ui';
 import { mapState } from 'vuex';
-import { queryToObject } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import { MEMBER_TYPES, TAB_QUERY_PARAM_VALUES, ACTIVE_TAB_QUERY_PARAM_NAME } from '../constants';
+import { queryToObject } from '~/lib/utils/url_utility';
+import {
+  MEMBER_TYPES,
+  ACTIVE_TAB_QUERY_PARAM_NAME,
+  TAB_QUERY_PARAM_VALUES,
+  EE_TABS,
+} from 'ee_else_ce/members/constants';
 import MembersApp from './app.vue';
 
 const countComputed = (state, namespace) => state[namespace]?.pagination?.totalItems || 0;
 
+export const TABS = [
+  {
+    namespace: MEMBER_TYPES.user,
+    title: __('Members'),
+  },
+  {
+    namespace: MEMBER_TYPES.group,
+    title: __('Groups'),
+    attrs: { 'data-qa-selector': 'groups_list_tab' },
+    queryParamValue: TAB_QUERY_PARAM_VALUES.group,
+  },
+  {
+    namespace: MEMBER_TYPES.invite,
+    title: __('Invited'),
+    canManageMembersPermissionsRequired: true,
+    queryParamValue: TAB_QUERY_PARAM_VALUES.invite,
+  },
+  {
+    namespace: MEMBER_TYPES.accessRequest,
+    title: __('Access requests'),
+    canManageMembersPermissionsRequired: true,
+    queryParamValue: TAB_QUERY_PARAM_VALUES.accessRequest,
+  },
+  ...EE_TABS,
+];
+
 export default {
   name: 'MembersTabs',
   ACTIVE_TAB_QUERY_PARAM_NAME,
-  TABS: [
-    {
-      namespace: MEMBER_TYPES.user,
-      title: __('Members'),
-    },
-    {
-      namespace: MEMBER_TYPES.group,
-      title: __('Groups'),
-      attrs: { 'data-qa-selector': 'groups_list_tab' },
-      queryParamValue: TAB_QUERY_PARAM_VALUES.group,
-    },
-    {
-      namespace: MEMBER_TYPES.invite,
-      title: __('Invited'),
-      canManageMembersPermissionsRequired: true,
-      queryParamValue: TAB_QUERY_PARAM_VALUES.invite,
-    },
-    {
-      namespace: MEMBER_TYPES.accessRequest,
-      title: __('Access requests'),
-      canManageMembersPermissionsRequired: true,
-      queryParamValue: TAB_QUERY_PARAM_VALUES.accessRequest,
-    },
-  ],
+  TABS,
   components: { MembersApp, GlTabs, GlTab, GlBadge, GlButton },
   inject: ['canManageMembers', 'canExportMembers', 'exportCsvPath'],
   data() {
@@ -43,20 +51,17 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      userCount(state) {
-        return countComputed(state, MEMBER_TYPES.user);
-      },
-      groupCount(state) {
-        return countComputed(state, MEMBER_TYPES.group);
-      },
-      inviteCount(state) {
-        return countComputed(state, MEMBER_TYPES.invite);
-      },
-      accessRequestCount(state) {
-        return countComputed(state, MEMBER_TYPES.accessRequest);
-      },
-    }),
+    ...mapState(
+      Object.values(MEMBER_TYPES).reduce((getters, memberType) => {
+        return {
+          ...getters,
+          // eslint-disable-next-line @gitlab/require-i18n-strings
+          [`${memberType}Count`](state) {
+            return countComputed(state, memberType);
+          },
+        };
+      }, {}),
+    ),
     urlParams() {
       return Object.keys(queryToObject(window.location.search, { gatherArrays: true }));
     },

@@ -39,11 +39,12 @@ module Gitlab
           handle_exceptions(e)
         end
 
-        def list_errors(filters:, sort:, limit:, cursor:)
+        def list_errors(filters:, query:, sort:, limit:, cursor:)
           errors = project_errors
           errors = filter_by_status(errors, filters[:status])
           errors = sort(errors, sort)
           errors = errors.keyset_paginate(cursor: cursor, per_page: limit)
+          # query is not supported
 
           pagination = ErrorRepository::Pagination.new(errors.cursor_for_next_page, errors.cursor_for_previous_page)
 
@@ -58,6 +59,24 @@ module Gitlab
 
         def update_error(id, **attributes)
           project_error(id).update(attributes)
+        end
+
+        def dsn_url(public_key)
+          gitlab = Settings.gitlab
+
+          custom_port = Settings.gitlab_on_standard_port? ? nil : ":#{gitlab.port}"
+
+          base_url = [
+            gitlab.protocol,
+            "://",
+            public_key,
+            '@',
+            gitlab.host,
+            custom_port,
+            gitlab.relative_url_root
+          ].join('')
+
+          "#{base_url}/api/v4/error_tracking/collector/#{project.id}"
         end
 
         private

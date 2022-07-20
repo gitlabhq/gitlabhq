@@ -67,5 +67,5 @@
           %ul.list-unstyled.mr_target_commit
 
   - if @merge_request.errors.any?
-    = form_errors(@merge_request)
+    = form_errors(@merge_request, pajamas_alert: true)
   = f.submit 'Compare branches and continue', class: "gl-button btn btn-confirm mr-compare-btn gl-mt-4", data: { qa_selector: "compare_branches_button" }

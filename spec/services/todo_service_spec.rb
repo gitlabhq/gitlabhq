@@ -186,8 +186,8 @@ RSpec.describe TodoService do
 
         before do
           group.add_owner(author)
-          group.add_user(member, Gitlab::Access::DEVELOPER)
-          group.add_user(john_doe, Gitlab::Access::DEVELOPER)
+          group.add_member(member, Gitlab::Access::DEVELOPER)
+          group.add_member(john_doe, Gitlab::Access::DEVELOPER)
 
           service.new_issue(issue, author)
         end

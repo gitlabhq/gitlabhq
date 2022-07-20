@@ -16,9 +16,7 @@ function setNextOffset(offset) {
 }
 
 export function resolveCommit(commits, path, { resolve, entry }) {
-  const commit = commits.find(
-    (c) => c.filePath === `${path}/${entry.name}` && c.type === entry.type,
-  );
+  const commit = commits.find((c) => c.filePath === `${path}/${entry.name}`);
 
   if (commit) {
     resolve(commit);

@@ -97,7 +97,10 @@ module Issues
 
       status = issue.incident_management_issuable_escalation_status || issue.build_incident_management_issuable_escalation_status
 
-      SystemNoteService.change_incident_status(issue, current_user, ' by closing the incident') if status.resolve
+      return unless status.resolve
+
+      SystemNoteService.change_incident_status(issue, current_user, ' by closing the incident')
+      IncidentManagement::TimelineEvents::CreateService.resolve_incident(issue, current_user)
     end
 
     def store_first_mentioned_in_commit_at(issue, merge_request, max_commit_lookup: 100)

@@ -1,5 +1,7 @@
 openapi: 3.0.0
 tags:
+  - name: metadata
+    description: Metadata of the GitLab instance
   - name: version
     description: Version
   - name: access_requests
@@ -39,6 +41,10 @@ components:
       name: Private-Token
 
 paths:
+  # METADATA
+  /v4/metadata:
+    $ref: 'v4/metadata.yaml'
+
   # VERSION
   /v4/version:
     $ref: 'v4/version.yaml'
@@ -49,7 +55,7 @@ paths:
 
   /v4/projects/{id}/access_requests/{user_id}/approve:
     $ref: 'v4/access_requests.yaml#/accessRequestsProjectsApprove'
-  
+
   /v4/projects/{id}/access_requests/{user_id}:
     $ref: 'v4/access_requests.yaml#/accessRequestsProjectsDeny'
 
@@ -59,7 +65,7 @@ paths:
 
   /v4/groups/{id}/access_requests/{user_id}/approve:
     $ref: 'v4/access_requests.yaml#/accessRequestsGroupsApprove'
-  
+
   /v4/groups/{id}/access_requests/{user_id}:
     $ref: 'v4/access_requests.yaml#/accessRequestsGroupsDeny'
 

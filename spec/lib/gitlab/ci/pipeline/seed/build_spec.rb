@@ -858,14 +858,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         context 'with an explicit `when: never`' do
           where(:rule_set) do
             [
-              [[{ changes: %w[*/**/*.rb],                 when: 'never' }, { changes: %w[*/**/*.rb],                 when: 'always' }]],
-              [[{ changes: %w[app/models/ci/pipeline.rb], when: 'never' }, { changes: %w[app/models/ci/pipeline.rb], when: 'always' }]],
-              [[{ changes: %w[spec/**/*.rb],              when: 'never' }, { changes: %w[spec/**/*.rb],              when: 'always' }]],
-              [[{ changes: %w[*.yml],                     when: 'never' }, { changes: %w[*.yml],                     when: 'always' }]],
-              [[{ changes: %w[.*.yml],                    when: 'never' }, { changes: %w[.*.yml],                    when: 'always' }]],
-              [[{ changes: %w[**/*],                      when: 'never' }, { changes: %w[**/*],                      when: 'always' }]],
-              [[{ changes: %w[*/**/*.rb *.yml],           when: 'never' }, { changes: %w[*/**/*.rb *.yml],           when: 'always' }]],
-              [[{ changes: %w[.*.yml **/*],               when: 'never' }, { changes: %w[.*.yml **/*],               when: 'always' }]]
+              [[{ changes: { paths: %w[*/**/*.rb] },                 when: 'never' }, { changes: { paths: %w[*/**/*.rb] },                 when: 'always' }]],
+              [[{ changes: { paths: %w[app/models/ci/pipeline.rb] }, when: 'never' }, { changes: { paths: %w[app/models/ci/pipeline.rb] }, when: 'always' }]],
+              [[{ changes: { paths: %w[spec/**/*.rb] },              when: 'never' }, { changes: { paths: %w[spec/**/*.rb] },              when: 'always' }]],
+              [[{ changes: { paths: %w[*.yml] },                     when: 'never' }, { changes: { paths: %w[*.yml] },                     when: 'always' }]],
+              [[{ changes: { paths: %w[.*.yml] },                    when: 'never' }, { changes: { paths: %w[.*.yml] },                    when: 'always' }]],
+              [[{ changes: { paths: %w[**/*] },                      when: 'never' }, { changes: { paths: %w[**/*] },                      when: 'always' }]],
+              [[{ changes: { paths: %w[*/**/*.rb *.yml] },           when: 'never' }, { changes: { paths: %w[*/**/*.rb *.yml] },           when: 'always' }]],
+              [[{ changes: { paths: %w[.*.yml **/*] },               when: 'never' }, { changes: { paths: %w[.*.yml **/*] },               when: 'always' }]]
             ]
           end
 
@@ -881,14 +881,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         context 'with an explicit `when: always`' do
           where(:rule_set) do
             [
-              [[{ changes: %w[*/**/*.rb],                 when: 'always' }, { changes: %w[*/**/*.rb],                 when: 'never' }]],
-              [[{ changes: %w[app/models/ci/pipeline.rb], when: 'always' }, { changes: %w[app/models/ci/pipeline.rb], when: 'never' }]],
-              [[{ changes: %w[spec/**/*.rb],              when: 'always' }, { changes: %w[spec/**/*.rb],              when: 'never' }]],
-              [[{ changes: %w[*.yml],                     when: 'always' }, { changes: %w[*.yml],                     when: 'never' }]],
-              [[{ changes: %w[.*.yml],                    when: 'always' }, { changes: %w[.*.yml],                    when: 'never' }]],
-              [[{ changes: %w[**/*],                      when: 'always' }, { changes: %w[**/*],                      when: 'never' }]],
-              [[{ changes: %w[*/**/*.rb *.yml],           when: 'always' }, { changes: %w[*/**/*.rb *.yml],           when: 'never' }]],
-              [[{ changes: %w[.*.yml **/*],               when: 'always' }, { changes: %w[.*.yml **/*],               when: 'never' }]]
+              [[{ changes: { paths: %w[*/**/*.rb] },                 when: 'always' }, { changes: { paths: %w[*/**/*.rb] },                 when: 'never' }]],
+              [[{ changes: { paths: %w[app/models/ci/pipeline.rb] }, when: 'always' }, { changes: { paths: %w[app/models/ci/pipeline.rb] }, when: 'never' }]],
+              [[{ changes: { paths: %w[spec/**/*.rb] },              when: 'always' }, { changes: { paths: %w[spec/**/*.rb] },              when: 'never' }]],
+              [[{ changes: { paths: %w[*.yml] },                     when: 'always' }, { changes: { paths: %w[*.yml] },                     when: 'never' }]],
+              [[{ changes: { paths: %w[.*.yml] },                    when: 'always' }, { changes: { paths: %w[.*.yml] },                    when: 'never' }]],
+              [[{ changes: { paths: %w[**/*] },                      when: 'always' }, { changes: { paths: %w[**/*] },                      when: 'never' }]],
+              [[{ changes: { paths: %w[*/**/*.rb *.yml] },           when: 'always' }, { changes: { paths: %w[*/**/*.rb *.yml] },           when: 'never' }]],
+              [[{ changes: { paths: %w[.*.yml **/*] },               when: 'always' }, { changes: { paths: %w[.*.yml **/*] },               when: 'never' }]]
             ]
           end
 
@@ -904,14 +904,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         context 'without an explicit when: value' do
           where(:rule_set) do
             [
-              [[{ changes: %w[*/**/*.rb]                 }]],
-              [[{ changes: %w[app/models/ci/pipeline.rb] }]],
-              [[{ changes: %w[spec/**/*.rb]              }]],
-              [[{ changes: %w[*.yml]                     }]],
-              [[{ changes: %w[.*.yml]                    }]],
-              [[{ changes: %w[**/*]                      }]],
-              [[{ changes: %w[*/**/*.rb *.yml]           }]],
-              [[{ changes: %w[.*.yml **/*]               }]]
+              [[{ changes:  { paths: %w[*/**/*.rb] }                 }]],
+              [[{ changes:  { paths: %w[app/models/ci/pipeline.rb] } }]],
+              [[{ changes:  { paths: %w[spec/**/*.rb] }              }]],
+              [[{ changes:  { paths: %w[*.yml] }                     }]],
+              [[{ changes:  { paths: %w[.*.yml] }                    }]],
+              [[{ changes:  { paths: %w[**/*] }                      }]],
+              [[{ changes:  { paths: %w[*/**/*.rb *.yml] }           }]],
+              [[{ changes:  { paths: %w[.*.yml **/*] }               }]]
             ]
           end
 

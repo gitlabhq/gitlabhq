@@ -1,8 +1,7 @@
 ---
-stage: Create
+stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Moving repositories managed by GitLab **(FREE SELF)**
@@ -189,9 +188,9 @@ should be used. Git repositories are accessed, managed, and stored on GitLab ser
 can result from directly accessing and copying Gitaly's files using tools like `rsync`.
 
 - From GitLab 13.3, backup performance can be improved by
-  [processing multiple repositories concurrently](../../raketasks/backup_restore.md#back-up-git-repositories-concurrently).
+  [processing multiple repositories concurrently](../../raketasks/backup_gitlab.md#back-up-git-repositories-concurrently).
 - Backups can be created of just the repositories using the
-  [skip feature](../../raketasks/backup_restore.md#excluding-specific-directories-from-the-backup).
+  [skip feature](../../raketasks/backup_gitlab.md#excluding-specific-directories-from-the-backup).
 
 No other method works for Gitaly Cluster targets.
 
@@ -385,6 +384,6 @@ See the following for information on troubleshooting repository moves.
 ### Repository move fails for archived projects
 
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/363670),
-[archived projects](../../user/project/settings/index.md#advanced-settings) fail to move even though the data is cloned
+[archived projects](../../user/project/settings/index.md#advanced-project-settings) fail to move even though the data is cloned
 by Gitaly. Make sure archived projects are
-[unarchived](../../user/project/settings/index.md#unarchiving-a-project) before initiating a move. 
+[unarchived](../../user/project/settings/index.md#unarchive-a-project) before initiating a move.

@@ -30,7 +30,7 @@ module QA
                      fabricate!
                    end
 
-        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, token)
+        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, token) if @user
         resource
       end
 
@@ -61,7 +61,7 @@ module QA
       end
 
       def fabricate!
-        Flow::Login.sign_in_unless_signed_in(as: user)
+        Flow::Login.sign_in_unless_signed_in(user: user)
 
         Page::Main::Menu.perform(&:click_edit_profile_link)
         Page::Profile::Menu.perform(&:click_access_tokens)

@@ -406,8 +406,11 @@ When you stop an environment:
   to the list of **Stopped** environments.
 - An [`on_stop` action](../yaml/index.md#environmenton_stop), if defined, is executed.
 
-Dynamic environments stop automatically when their associated branch is
-deleted.
+There are multiple ways to clean up [dynamic environments](#create-a-dynamic-environment):
+
+- If you use [merge request pipelines](../pipelines/merge_request_pipelines.md), GitLab stops an environment [when a merge request is merged or closed](#stop-an-environment-when-a-merge-request-is-merged-or-closed).
+- If you do _NOT_ use [merge request pipelines](../pipelines/merge_request_pipelines.md), GitLab stops an environment [when the associated feature branch is deleted](#stop-an-environment-when-a-branch-is-deleted).
+- If you set [an expiry period to an environment](../yaml/index.md#environmentauto_stop_in), GitLab stops an environment [when it's expired](#stop-an-environment-after-a-certain-time-period).
 
 #### Stop an environment when a branch is deleted
 
@@ -425,8 +428,6 @@ deploy_review:
     name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
 
 stop_review:
   stage: deploy
@@ -435,9 +436,7 @@ stop_review:
   environment:
     name: review/$CI_COMMIT_REF_SLUG
     action: stop
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
-      when: manual
+  when: manual
 ```
 
 Both jobs must have the same [`rules`](../yaml/index.md#rules)
@@ -454,6 +453,39 @@ set the [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy) to `none`
 try to check out the code after the branch is deleted.
 
 Read more in the [`.gitlab-ci.yml` reference](../yaml/index.md#environmenton_stop).
+
+#### Stop an environment when a merge request is merged or closed
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60885) in GitLab 11.10.
+
+You can configure environments to stop when a merge request is merged or closed.
+This stop trigger is automatically enabled when you use [merge request pipelines](../pipelines/merge_request_pipelines.md).
+
+The following example shows a `deploy_review` job that calls a `stop_review` job
+to clean up and stop the environment.
+
+```yaml
+deploy_review:
+  stage: deploy
+  script:
+    - echo "Deploy a review app"
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    on_stop: stop_review
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+stop_review:
+  stage: deploy
+  script:
+    - echo "Remove review app"
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: manual
+```
 
 #### Stop an environment when another job is finished
 
@@ -641,6 +673,18 @@ To delete a stopped environment in the GitLab UI:
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog box, select **Delete environment**.
+
+#### Delete an active environment without running a stop job
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225794) in GitLab 15.1.
+
+You can delete an active environment without running a stop job.
+This is useful when you have an active environment, but the corresponding `action: stop` job can't run or succeed for some reason.
+
+To delete an active environment:
+
+1. Execute the [Stop an environment API](../../api/environments.md#stop-an-environment) while specifying `force=true`.
+1. Execute the [Delete an environment API](../../api/environments.md#delete-an-environment).
 
 ### Access an environment for preparation or verification purposes
 

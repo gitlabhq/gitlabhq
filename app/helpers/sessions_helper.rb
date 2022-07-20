@@ -39,4 +39,16 @@ module SessionsHelper
     # 2. https://github.com/redis-store/redis-store/blob/3acfa95f4eb6260c714fdb00a3d84be8eedc13b2/lib/redis/store/ttl.rb#L32
     request.env['rack.session.options'][:expire_after] = expiry_s
   end
+
+  def send_rate_limited?(user)
+    Gitlab::ApplicationRateLimiter.peek(:email_verification_code_send, scope: user)
+  end
+
+  def obfuscated_email(email)
+    regex = ::Gitlab::UntrustedRegexp.new('^(..?)(.*)(@.?)(.*)(\..*)$')
+    match = regex.match(email)
+    return email unless match
+
+    match[1] + '*' * match[2].length + match[3] + '*' * match[4].length + match[5]
+  end
 end

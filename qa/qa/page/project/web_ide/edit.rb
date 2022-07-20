@@ -192,7 +192,7 @@ module QA
             find_element(:commit_sha_content).text
           end
 
-          def commit_changes(commit_message = nil, open_merge_request: false)
+          def commit_changes(commit_message = nil, open_merge_request: false, wait_for_success: true)
             # Clicking :begin_commit_button switches from the
             # edit to the commit view
             click_element(:begin_commit_button)
@@ -226,13 +226,17 @@ module QA
                 end
                 click_element(:commit_button) if has_element?(:commit_button)
 
+                break unless wait_for_success
+
                 # If this is the first commit, the commit SHA only appears after reloading
                 wait_until(reload: true) do
                   active_element?(:edit_mode_tab) && commit_sha != original_commit
                 end
               end
 
-              raise "The changes do not appear to have been committed successfully." unless commit_success
+              if wait_for_success
+                raise "The changes do not appear to have been committed successfully." unless commit_success
+              end
             end
           end
 

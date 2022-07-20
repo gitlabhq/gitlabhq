@@ -69,7 +69,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def find_file_path
-    url_helpers.project_find_file_path(project, ref_qualified_path)
+    url_helpers.project_find_file_path(project, blob.commit_id)
   end
 
   def blame_path

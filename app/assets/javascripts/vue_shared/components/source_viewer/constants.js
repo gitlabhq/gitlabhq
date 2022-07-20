@@ -45,6 +45,7 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   haskell: 'haskell',
   haxe: 'haxe',
   http: 'http',
+  html: 'xml',
   hylang: 'hy',
   ini: 'ini',
   isbl: 'isbl',
@@ -90,7 +91,7 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   scala: 'scala',
   scheme: 'scheme',
   scss: 'scss',
-  shell: 'shell',
+  shell: 'sh',
   smalltalk: 'smalltalk',
   sml: 'sml',
   sqf: 'sqf',
@@ -111,6 +112,12 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   xquery: 'xquery',
   yaml: 'yaml',
 };
+
+export const EVENT_ACTION = 'view_source';
+
+export const EVENT_LABEL_VIEWER = 'source_viewer';
+
+export const EVENT_LABEL_FALLBACK = 'legacy_fallback';
 
 export const LINES_PER_CHUNK = 70;
 
@@ -138,3 +145,5 @@ export const BIDI_CHAR_TOOLTIP = __(
 export const HLJS_COMMENT_SELECTOR = 'hljs-comment';
 
 export const HLJS_ON_AFTER_HIGHLIGHT = 'after:highlight';
+
+export const NPM_URL = 'https://npmjs.com/package';

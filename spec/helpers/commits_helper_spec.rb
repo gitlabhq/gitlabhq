@@ -94,7 +94,7 @@ RSpec.describe CommitsHelper do
       it 'renders the correct select-rendered button' do
         expect(node[:title]).to eq('Display rendered diff')
         expect(node['data-file-hash']).to eq('abc')
-        expect(node['data-diff-toggle-entity']).to eq('toShowBtn')
+        expect(node['data-diff-toggle-entity']).to eq('renderedButton')
         expect(node.xpath("//a/svg")[0]["data-testid"]).to eq('doc-text-icon')
       end
     end
@@ -105,7 +105,7 @@ RSpec.describe CommitsHelper do
       it 'renders the correct select-raw button' do
         expect(node[:title]).to eq('Display raw diff')
         expect(node['data-file-hash']).to eq('abc')
-        expect(node['data-diff-toggle-entity']).to eq('toHideBtn')
+        expect(node['data-diff-toggle-entity']).to eq('rawButton')
         expect(node.xpath("//a/svg")[0]["data-testid"]).to eq('doc-code-icon')
       end
     end

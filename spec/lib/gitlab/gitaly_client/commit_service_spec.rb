@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::CommitService do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
   let(:repository) { project.repository }

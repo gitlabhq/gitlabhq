@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import { highCountTrim } from '~/lib/utils/text_utility';
 import Tracking from '~/tracking';
@@ -12,12 +11,18 @@ import Translate from '~/vue_shared/translate';
  * @param {String} count
  */
 export default function initTodoToggle() {
-  $(document).on('todo:toggle', (e, count) => {
-    const updatedCount = count || e?.detail?.count || 0;
-    const $todoPendingCount = $('.js-todos-count');
+  document.addEventListener('todo:toggle', (e) => {
+    const updatedCount = e.detail.count || 0;
+    const todoPendingCount = document.querySelector('.js-todos-count');
 
-    $todoPendingCount.text(highCountTrim(updatedCount));
-    $todoPendingCount.toggleClass('hidden', updatedCount === 0);
+    if (todoPendingCount) {
+      todoPendingCount.textContent = highCountTrim(updatedCount);
+      if (updatedCount === 0) {
+        todoPendingCount.classList.add('hidden');
+      } else {
+        todoPendingCount.classList.remove('hidden');
+      }
+    }
   });
 }
 
@@ -85,7 +90,7 @@ function initStatusTriggers() {
 function trackShowUserDropdownLink(trackEvent, elToTrack, el) {
   const { trackLabel, trackProperty } = elToTrack.dataset;
 
-  $(el).on('shown.bs.dropdown', () => {
+  el.addEventListener('shown.bs.dropdown', () => {
     Tracking.event(document.body.dataset.page, trackEvent, {
       label: trackLabel,
       property: trackProperty,

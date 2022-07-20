@@ -233,7 +233,7 @@ FactoryBot.define do
   factory :harbor_integration, class: 'Integrations::Harbor' do
     project
     active { true }
-    type { 'HarborService' }
+    type { 'Integrations::Harbor' }
 
     url { 'https://demo.goharbor.io' }
     project_name { 'testproject' }

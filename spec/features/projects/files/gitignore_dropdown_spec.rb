@@ -26,7 +26,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitignore file', :js do
     wait_for_requests
 
     expect(page).to have_css('.gitignore-selector .dropdown-toggle-text', text: 'Apply a template')
-    expect(editor_get_value).to have_content('/.bundle')
-    expect(editor_get_value).to have_content('config/initializers/secret_token.rb')
+    expect(find('.monaco-editor')).to have_content('/.bundle')
+    expect(find('.monaco-editor')).to have_content('config/initializers/secret_token.rb')
   end
 end

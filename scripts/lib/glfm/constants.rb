@@ -21,7 +21,7 @@ module Glfm
     GLFM_SPEC_TXT_PATH = specification_path.join('output/spec.txt')
 
     # Example Snapshot (ES) files
-    es_fixtures_path = File.expand_path("../../../spec/fixtures/glfm/example_snapshots", __dir__)
+    es_fixtures_path = File.expand_path("../../../glfm_specification/example_snapshots", __dir__)
     ES_EXAMPLES_INDEX_YML_PATH = File.join(es_fixtures_path, 'examples_index.yml')
     ES_MARKDOWN_YML_PATH = File.join(es_fixtures_path, 'markdown.yml')
     ES_HTML_YML_PATH = File.join(es_fixtures_path, 'html.yml')

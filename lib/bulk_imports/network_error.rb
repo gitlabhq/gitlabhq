@@ -7,9 +7,9 @@ module BulkImports
     RETRIABLE_EXCEPTIONS = Gitlab::HTTP::HTTP_TIMEOUT_ERRORS
     RETRIABLE_HTTP_CODES = [429].freeze
 
-    DEFAULT_RETRY_DELAY_SECONDS = 60
+    DEFAULT_RETRY_DELAY_SECONDS = 30
 
-    MAX_RETRIABLE_COUNT = 3
+    MAX_RETRIABLE_COUNT = 10
 
     def initialize(message = nil, response: nil)
       raise ArgumentError, 'message or response required' if message.blank? && response.blank?

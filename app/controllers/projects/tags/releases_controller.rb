@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: remove this file together with FF https://gitlab.com/gitlab-org/gitlab/-/issues/366244
+# also delete view/routes
 class Projects::Tags::ReleasesController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project

@@ -43,12 +43,13 @@ RSpec.describe QA::Runtime::API::Request do
         .to eq '/api/v4/users?access_token=otoken'
     end
 
-    it 'respects query parameters' do
+    it 'respects query parameters', :aggregate_failures do
       expect(request.request_path('/users?page=1')).to eq '/api/v4/users?page=1'
       expect(request.request_path('/users', private_token: 'token', foo: 'bar/baz'))
         .to eq '/api/v4/users?private_token=token&foo=bar%2Fbaz'
       expect(request.request_path('/users?page=1', private_token: 'token', foo: 'bar/baz'))
         .to eq '/api/v4/users?page=1&private_token=token&foo=bar%2Fbaz'
+      expect(request.request_path('/users', per_page: 100)).to eq '/api/v4/users?per_page=100'
     end
 
     it 'uses a different api version' do

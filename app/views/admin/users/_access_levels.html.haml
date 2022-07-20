@@ -1,52 +1,48 @@
-%fieldset
-  %legend.gl-border-bottom-0
-    = s_('AdminUsers|Access')
-  .form-group.row
-    .col-12
-      = f.label :projects_limit
-      = f.number_field :projects_limit, min: 0, max: Gitlab::Database::MAX_INT_VALUE, class: 'form-control gl-form-input'
+.gl-border-b.gl-pb-3.gl-mb-6
+  .row
+    .col-lg-4
+      %h4.gl-mt-0
+        = s_('AdminUsers|Access')
+    .col-lg-8
+      .form-group.gl-form-group{ role: 'group' }
+        = f.label :projects_limit, class: 'gl-display-block col-form-label'
+        = f.number_field :projects_limit, min: 0, max: Gitlab::Database::MAX_INT_VALUE, class: 'form-control gl-form-input'
 
-  .form-group.row
-    .col-12.gl-pt-0
-      = f.label :can_create_group
-      = f.gitlab_ui_checkbox_component :can_create_group, ''
+      .form-group.gl-form-group{ role: 'group' }
+        = f.gitlab_ui_checkbox_component :can_create_group, s_('AdminUsers|Can create group')
 
-  .form-group.row
-    .col-12.gl-pt-0
-      = f.label :access_level
-      - editing_current_user = (current_user == @user)
+      %fieldset.form-group.gl-form-group
+        %legend.col-form-label.col-form-label
+          = s_('AdminUsers|Access level')
+        - editing_current_user = (current_user == @user)
 
-      = f.gitlab_ui_radio_component :access_level, :regular,
-          s_('AdminUsers|Regular'),
-          radio_options: { disabled: editing_current_user },
-          help_text: s_('AdminUsers|Regular users have access to their groups and projects.')
+        = f.gitlab_ui_radio_component :access_level, :regular,
+            s_('AdminUsers|Regular'),
+            radio_options: { disabled: editing_current_user },
+            help_text: s_('AdminUsers|Regular users have access to their groups and projects.')
 
-      = render_if_exists 'admin/users/auditor_access_level_radio', f: f, disabled: editing_current_user
+        = render_if_exists 'admin/users/auditor_access_level_radio', f: f, disabled: editing_current_user
 
-      - help_text = s_('AdminUsers|The user has unlimited access to all groups, projects, users, and features.')
-      - help_text += ' ' + s_('AdminUsers|You cannot remove your own administrator access.') if editing_current_user
-      = f.gitlab_ui_radio_component :access_level, :admin,
-          s_('AdminUsers|Administrator'),
-          radio_options: { disabled: editing_current_user },
-          help_text: help_text
+        - help_text = s_('AdminUsers|The user has unlimited access to all groups, projects, users, and features.')
+        - help_text += ' ' + s_('AdminUsers|You cannot remove your own administrator access.') if editing_current_user
+        = f.gitlab_ui_radio_component :access_level, :admin,
+            s_('AdminUsers|Administrator'),
+            radio_options: { disabled: editing_current_user },
+            help_text: help_text
 
+      .form-group.gl-form-group{ role: 'group' }
+        = f.gitlab_ui_checkbox_component :external,
+          s_('AdminUsers|External'),
+          help_text: s_('AdminUsers|External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects, groups, or personal snippets.')
+        .hidden{ data: user_internal_regex_data }
+        .gl-display-flex.gl-align-items-baseline
+          %row.hidden#warning_external_automatically_set
+            = gl_badge_tag s_('AdminUsers|Automatically marked as default internal user'), variant: :warning
 
-  .form-group.row
-    .col-12.gl-pt-0
-      = f.label :external
-    .hidden{ data: user_internal_regex_data }
-    .col-12.gl-display-flex.gl-align-items-baseline
-      = f.gitlab_ui_checkbox_component :external, s_('AdminUsers|External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects, groups, or personal snippets.')
-      %row.hidden#warning_external_automatically_set
-        = gl_badge_tag s_('AdminUsers|Automatically marked as default internal user'), variant: :warning
-
-  .form-group.row
-    - @user.credit_card_validation || @user.build_credit_card_validation
-    = f.fields_for :credit_card_validation do |ff|
-      .col-12.gl-pt-0
-        = ff.label s_('AdminUsers|Validate user account')
-      .col-12.gl-display-flex.gl-align-items-baseline
-        = ff.gitlab_ui_checkbox_component :credit_card_validated_at,
-          s_('AdminUsers|User is validated and can use free CI minutes on shared runners.'),
-          help_text: s_('AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user.'),
-          checkbox_options: { checked: @user.credit_card_validated_at.present? }
+      .form-group.gl-form-group{ role: 'group' }
+        - @user.credit_card_validation || @user.build_credit_card_validation
+        = f.fields_for :credit_card_validation do |ff|
+          = ff.gitlab_ui_checkbox_component :credit_card_validated_at,
+            s_('AdminUsers|Validate user account'),
+            help_text: s_('AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free CI minutes on shared runners.'),
+            checkbox_options: { checked: @user.credit_card_validated_at.present? }

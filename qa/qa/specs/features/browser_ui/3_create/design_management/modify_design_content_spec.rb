@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/366839',
+    type: :test_environment,
+    only: { job: 'review-qa-*' }
+  } do
     context 'Design Management' do
       let(:design) do
-        Resource::Design.fabricate! do |design|
+        Resource::Design.fabricate_via_browser_ui! do |design|
           design.filename = 'testfile.png'
         end
       end
@@ -13,7 +17,10 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'user adds a design and modifies it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347712' do
+      it(
+        'user adds a design and modifies it',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347712'
+      ) do
         design.issue.visit!
 
         Page::Project::Issue::Show.perform do |issue|

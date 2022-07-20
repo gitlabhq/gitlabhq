@@ -16,19 +16,18 @@ const mockData = [
     commit_path: `https://test.com`,
     commit_title_html: 'commit title',
     file_name: 'index.js',
-    type: 'blob',
   },
 ];
 
 describe('resolveCommit', () => {
   it('calls resolve when commit found', () => {
     const resolver = {
-      entry: { name: 'index.js', type: 'blob' },
+      entry: { name: 'index.js' },
       resolve: jest.fn(),
     };
     const commits = [
-      { fileName: 'index.js', filePath: '/index.js', type: 'blob' },
-      { fileName: 'index.js', filePath: '/app/assets/index.js', type: 'blob' },
+      { fileName: 'index.js', filePath: '/index.js' },
+      { fileName: 'index.js', filePath: '/app/assets/index.js' },
     ];
 
     resolveCommit(commits, '', resolver);
@@ -36,7 +35,6 @@ describe('resolveCommit', () => {
     expect(resolver.resolve).toHaveBeenCalledWith({
       fileName: 'index.js',
       filePath: '/index.js',
-      type: 'blob',
     });
   });
 });
@@ -56,7 +54,7 @@ describe('fetchLogsTree', () => {
     global.gon = { relative_url_root: '' };
 
     resolver = {
-      entry: { name: 'index.js', type: 'blob' },
+      entry: { name: 'index.js' },
       resolve: jest.fn(),
     };
 
@@ -119,7 +117,6 @@ describe('fetchLogsTree', () => {
           filePath: '/index.js',
           message: 'testing message',
           sha: '123',
-          type: 'blob',
         }),
       );
     }));
@@ -136,7 +133,6 @@ describe('fetchLogsTree', () => {
           message: 'testing message',
           sha: '123',
           titleHtml: 'commit title',
-          type: 'blob',
         }),
       ],
     });

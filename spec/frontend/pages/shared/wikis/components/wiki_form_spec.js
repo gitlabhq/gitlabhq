@@ -1,12 +1,14 @@
 import { nextTick } from 'vue';
-import { GlAlert, GlButton } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { mockTracking } from 'helpers/tracking_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WikiForm from '~/pages/shared/wikis/components/wiki_form.vue';
 import {
   CONTENT_EDITOR_LOADED_ACTION,
@@ -37,6 +39,7 @@ describe('WikiForm', () => {
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
   const findContentEditor = () => wrapper.findComponent(ContentEditor);
   const findClassicEditor = () => wrapper.findComponent(MarkdownField);
+  const findLocalStorageSync = () => wrapper.find(LocalStorageSync);
 
   const setFormat = (value) => {
     const format = findFormat();
@@ -103,6 +106,9 @@ describe('WikiForm', () => {
           MarkdownField,
           GlAlert,
           GlButton,
+          LocalStorageSync: stubComponent(LocalStorageSync),
+          GlFormInput,
+          GlFormGroup,
         },
       }),
     );
@@ -128,7 +134,7 @@ describe('WikiForm', () => {
   `(
     'updates the commit message to $message when title is $title and persisted=$persisted',
     async ({ title, message, persisted }) => {
-      createWrapper({ persisted });
+      createWrapper({ persisted, mountFn: mount });
 
       await findTitle().setValue(title);
 
@@ -137,7 +143,7 @@ describe('WikiForm', () => {
   );
 
   it('sets the commit message to "Update My page" when the page first loads when persisted', async () => {
-    createWrapper({ persisted: true });
+    createWrapper({ persisted: true, mountFn: mount });
 
     await nextTick();
 
@@ -157,7 +163,7 @@ describe('WikiForm', () => {
     ${'asciidoc'} | ${false} | ${'hides'}
     ${'org'}      | ${false} | ${'hides'}
   `('$action preview in the markdown field when format is $format', async ({ format, enabled }) => {
-    createWrapper();
+    createWrapper({ mountFn: mount });
 
     await setFormat(format);
 
@@ -254,7 +260,7 @@ describe('WikiForm', () => {
     `(
       "when title='$title', content='$content', then the button is $buttonState'",
       async ({ title, content, disabledAttr }) => {
-        createWrapper();
+        createWrapper({ mountFn: mount });
 
         await findTitle().setValue(title);
         await findContent().setValue(content);
@@ -291,7 +297,7 @@ describe('WikiForm', () => {
 
   describe('toggle editing mode control', () => {
     beforeEach(() => {
-      createWrapper();
+      createWrapper({ mountFn: mount });
     });
 
     it.each`
@@ -327,6 +333,19 @@ describe('WikiForm', () => {
         it('hides the content editor', () => {
           expect(findContentEditor().exists()).toBe(true);
         });
+      });
+    });
+
+    describe('markdown editor type persistance', () => {
+      it('loads content editor by default if it is persisted in local storage', async () => {
+        expect(findClassicEditor().exists()).toBe(true);
+        expect(findContentEditor().exists()).toBe(false);
+
+        // enable content editor
+        await findLocalStorageSync().vm.$emit('input', true);
+
+        expect(findContentEditor().exists()).toBe(true);
+        expect(findClassicEditor().exists()).toBe(false);
       });
     });
 
@@ -374,7 +393,7 @@ describe('WikiForm', () => {
   });
 
   describe('wiki content editor', () => {
-    describe('clicking "use new editor": editor fails to load', () => {
+    describe('clicking "Edit rich text": editor fails to load', () => {
       beforeEach(async () => {
         createWrapper({ mountFn: mount });
         mock.onPost(/preview-markdown/).reply(400);
@@ -401,7 +420,7 @@ describe('WikiForm', () => {
       });
     });
 
-    describe('clicking "use new editor": editor loads successfully', () => {
+    describe('clicking "Edit rich text": editor loads successfully', () => {
       beforeEach(async () => {
         createWrapper({ persisted: true, mountFn: mount });
 

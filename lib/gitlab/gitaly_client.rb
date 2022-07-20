@@ -285,6 +285,8 @@ module Gitlab
     end
 
     def self.enforce_gitaly_request_limits?
+      return false if ENV["GITALY_DISABLE_REQUEST_LIMITS"]
+
       # We typically don't want to enforce request limits in production
       # However, we have some production-like test environments, i.e., ones
       # where `Rails.env.production?` returns `true`. We do want to be able to
@@ -293,7 +295,7 @@ module Gitlab
       # enforce request limits.
       return true if Feature::Gitaly.enabled?('enforce_requests_limits')
 
-      !(Rails.env.production? || ENV["GITALY_DISABLE_REQUEST_LIMITS"])
+      !Rails.env.production?
     end
     private_class_method :enforce_gitaly_request_limits?
 
@@ -483,6 +485,22 @@ module Gitlab
 
       stack_counter.select { |_, v| v == max }.keys
     end
+
+    def self.decode_detailed_error(err)
+      # details could have more than one in theory, but we only have one to worry about for now.
+      detailed_error = err.to_rpc_status&.details&.first
+
+      return unless detailed_error.present?
+
+      prefix = %r{type\.googleapis\.com\/gitaly\.(?<error_type>.+)}
+      error_type = prefix.match(detailed_error.type_url)[:error_type]
+
+      Gitaly.const_get(error_type, false).decode(detailed_error.value)
+    rescue NameError, NoMethodError
+      # Error Class might not be known to ruby yet
+      nil
+    end
+
     private_class_method :max_stacks
   end
 end

@@ -52,6 +52,11 @@ export default {
       required: false,
       default: false,
     },
+    hideAlert: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isValid: {
       type: Boolean,
       required: true,
@@ -63,7 +68,8 @@ export default {
     },
     lintHelpPagePath: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     warnings: {
       type: Array,
@@ -96,6 +102,7 @@ export default {
 <template>
   <div>
     <gl-alert
+      v-if="!hideAlert"
       class="gl-mb-5"
       :variant="status.variant"
       :title="__('Status:')"

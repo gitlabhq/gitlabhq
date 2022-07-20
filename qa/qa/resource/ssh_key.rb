@@ -10,7 +10,7 @@ module QA
 
       attribute :id
 
-      def_delegators :key, :private_key, :public_key, :md5_fingerprint
+      def_delegators :key, :private_key, :public_key, :md5_fingerprint, :sha256_fingerprint
 
       def initialize
         self.title = Time.now.to_f
@@ -39,7 +39,7 @@ module QA
       end
 
       def api_delete
-        QA::Runtime::Logger.debug("Deleting SSH key with title '#{title}' and fingerprint '#{md5_fingerprint}'")
+        QA::Runtime::Logger.debug("Deleting SSH key with title '#{title}' and fingerprint '#{sha256_fingerprint}'")
 
         super
       end

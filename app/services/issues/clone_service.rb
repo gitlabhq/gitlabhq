@@ -41,9 +41,12 @@ module Issues
     def update_new_entity
       # we don't call `super` because we want to be able to decide whether or not to copy all comments over.
       update_new_entity_description
-      update_new_entity_attributes
       copy_award_emoji
-      copy_notes if with_notes
+
+      if with_notes
+        copy_notes
+        copy_resource_events
+      end
     end
 
     def update_old_entity
@@ -62,14 +65,18 @@ module Issues
       }
 
       new_params = original_entity.serializable_hash.symbolize_keys.merge(new_params)
+      new_params = new_params.merge(rewritten_old_entity_attributes)
+      new_params.delete(:created_at)
+      new_params.delete(:updated_at)
 
       # spam checking is not necessary, as no new content is being created. Passing nil for
       # spam_params will cause SpamActionService to skip checking and return a success response.
       spam_params = nil
 
-      # Skip creation of system notes for existing attributes of the issue. The system notes of the old
-      # issue are copied over so we don't want to end up with duplicate notes.
-      CreateService.new(project: target_project, current_user: current_user, params: new_params, spam_params: spam_params).execute(skip_system_notes: true)
+      # Skip creation of system notes for existing attributes of the issue when cloning with notes.
+      # The system notes of the old issue are copied over so we don't want to end up with duplicate notes.
+      # When cloning without notes, we want to generate system notes for the attributes that were copied.
+      CreateService.new(project: target_project, current_user: current_user, params: new_params, spam_params: spam_params).execute(skip_system_notes: with_notes)
     end
 
     def queue_copy_designs

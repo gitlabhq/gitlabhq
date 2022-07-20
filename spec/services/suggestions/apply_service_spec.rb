@@ -581,8 +581,7 @@ RSpec.describe Suggestions::ApplyService do
       let(:project) { create(:project, :public, :repository) }
 
       let(:forked_project) do
-        fork_project_with_submodules(project,
-                                     user, repository: project.repository)
+        fork_project_with_submodules(project, user)
       end
 
       let(:merge_request) do

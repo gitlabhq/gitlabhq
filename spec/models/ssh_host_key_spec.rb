@@ -26,6 +26,9 @@ RSpec.describe SshHostKey do
     'Ebi86VjJRi2sOuYoXQU1'
   end
 
+  let(:ssh_key1) { Gitlab::SSHPublicKey.new(key1) }
+  let(:ssh_key2) { Gitlab::SSHPublicKey.new(key2) }
+
   # Purposefully ordered so that `sort` will make changes
   let(:known_hosts) do
     <<~EOF
@@ -88,10 +91,17 @@ RSpec.describe SshHostKey do
     it 'returns an array of indexed fingerprints when the cache is filled' do
       stub_reactive_cache(ssh_host_key, known_hosts: known_hosts)
 
-      expected = [key1, key2]
-        .map { |data| Gitlab::SSHPublicKey.new(data) }
+      expected = [ssh_key1, ssh_key2]
         .each_with_index
-        .map { |key, i| { bits: key.bits, fingerprint: key.fingerprint, type: key.type, index: i } }
+        .map do |key, i|
+          {
+            bits: key.bits,
+            fingerprint: key.fingerprint,
+            fingerprint_sha256: key.fingerprint_sha256,
+            type: key.type,
+            index: i
+          }
+        end
 
       expect(ssh_host_key.fingerprints.as_json).to eq(expected)
     end
@@ -107,14 +117,35 @@ RSpec.describe SshHostKey do
 
       expect(ssh_host_key.fingerprints.as_json).to eq(
         [
-          { bits: 2048, fingerprint: Gitlab::SSHPublicKey.new(key1).fingerprint, type: :rsa, index: 0 },
-          { bits: 2048, fingerprint: Gitlab::SSHPublicKey.new(key2).fingerprint, type: :rsa, index: 1 }
+          { bits: 2048,
+            fingerprint: ssh_key1.fingerprint,
+            fingerprint_sha256: ssh_key1.fingerprint_sha256,
+            type: :rsa,
+            index: 0 },
+          { bits: 2048,
+            fingerprint: ssh_key2.fingerprint,
+            fingerprint_sha256: ssh_key2.fingerprint_sha256,
+            type: :rsa,
+            index: 1 }
         ]
       )
     end
 
     it 'returns an empty array when the cache is empty' do
       expect(ssh_host_key.fingerprints).to eq([])
+    end
+
+    context 'when FIPS is enabled', :fips_mode do
+      it 'only includes SHA256 fingerprint' do
+        stub_reactive_cache(ssh_host_key, known_hosts: known_hosts)
+
+        expect(ssh_host_key.fingerprints.as_json).to eq(
+          [
+            { bits: 2048, fingerprint_sha256: ssh_key1.fingerprint_sha256, type: :rsa, index: 0 },
+            { bits: 2048, fingerprint_sha256: ssh_key2.fingerprint_sha256, type: :rsa, index: 1 }
+          ]
+        )
+      end
     end
   end
 

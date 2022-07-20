@@ -13,7 +13,7 @@ module Groups
       remove_unallowed_params
       set_visibility_level
 
-      @group = Group.new(params.except(*::NamespaceSetting::NAMESPACE_SETTINGS_PARAMS))
+      @group = Group.new(params.except(*::NamespaceSetting.allowed_namespace_settings_params))
 
       @group.build_namespace_settings
       handle_namespace_settings

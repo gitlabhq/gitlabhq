@@ -3,6 +3,7 @@
 module LearnGitlab
   class Onboarding
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::Experiment::Dsl
 
     ACTION_ISSUE_IDS = {
       pipeline_created: 7,
@@ -15,12 +16,12 @@ module LearnGitlab
       :issue_created,
       :git_write,
       :merge_request_created,
-      :user_added,
-      :security_scan_enabled
+      :user_added
     ].freeze
 
-    def initialize(namespace)
+    def initialize(namespace, current_user = nil)
       @namespace = namespace
+      @current_user = current_user
     end
 
     def completed_percentage
@@ -49,9 +50,20 @@ module LearnGitlab
     end
 
     def tracked_actions
-      ACTION_ISSUE_IDS.keys + ACTION_PATHS
+      ACTION_ISSUE_IDS.keys + ACTION_PATHS + deploy_section_tracked_actions
     end
 
-    attr_reader :namespace
+    def deploy_section_tracked_actions
+      experiment(:security_actions_continuous_onboarding,
+        namespace: namespace,
+        user: current_user,
+        sticky_to: current_user
+      ) do |e|
+        e.control { [:security_scan_enabled] }
+        e.candidate { [:license_scanning_run, :secure_dependency_scanning_run, :secure_dast_run] }
+      end.run
+    end
+
+    attr_reader :namespace, :current_user
   end
 end

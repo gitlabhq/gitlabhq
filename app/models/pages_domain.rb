@@ -209,7 +209,15 @@ class PagesDomain < ApplicationRecord
   def pages_virtual_domain
     return unless pages_deployed?
 
-    Pages::VirtualDomain.new([project], domain: self)
+    cache = if Feature.enabled?(:cache_pages_domain_api, project.root_namespace)
+              ::Gitlab::Pages::CacheControl.for_project(project.id)
+            end
+
+    Pages::VirtualDomain.new(
+      projects: [project],
+      domain: self,
+      cache: cache
+    )
   end
 
   def clear_auto_ssl_failure

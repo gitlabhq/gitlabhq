@@ -1,8 +1,0 @@
----
-name: ci_queuing_use_denormalized_data_strategy
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76543
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354496
-milestone: '14.6'
-type: development
-group: group::pipeline execution
-default_enabled: true

@@ -52,6 +52,7 @@ describe('Work items root component', () => {
     createComponent();
 
     expect(findWorkItemDetail().props()).toEqual({
+      isModal: false,
       workItemId: 'gid://gitlab/WorkItem/1',
       workItemParentId: null,
     });

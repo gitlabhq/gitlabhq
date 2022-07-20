@@ -45,25 +45,13 @@ RSpec.describe 'Merge request > Batch comments', :js do
     expect(page).to have_selector('.note:not(.draft-note)', text: 'Line is wrong')
   end
 
-  it 'publishes single comment' do
-    write_diff_comment
-
-    click_button 'Add comment now'
-
-    wait_for_requests
-
-    expect(page).not_to have_selector('.draft-note-component', text: 'Line is wrong')
-
-    expect(page).to have_selector('.note:not(.draft-note)', text: 'Line is wrong')
-  end
-
   it 'deletes draft note' do
     write_diff_comment
 
     find('.js-note-delete').click
 
     page.within('.modal') do
-      click_button('Delete Comment', match: :first)
+      click_button('Delete comment', match: :first)
     end
 
     wait_for_requests

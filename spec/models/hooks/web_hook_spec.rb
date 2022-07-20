@@ -78,6 +78,32 @@ RSpec.describe WebHook do
 
         expect(hook.url).to eq('https://example.com')
       end
+
+      context 'when there are URL variables' do
+        subject { hook }
+
+        before do
+          hook.url_variables = { 'one' => 'a', 'two' => 'b' }
+        end
+
+        it { is_expected.to allow_value('http://example.com').for(:url) }
+        it { is_expected.to allow_value('http://example.com/{one}/{two}').for(:url) }
+        it { is_expected.to allow_value('http://example.com/{one}').for(:url) }
+        it { is_expected.to allow_value('http://example.com/{two}').for(:url) }
+        it { is_expected.to allow_value('http://user:s3cret@example.com/{two}').for(:url) }
+        it { is_expected.to allow_value('http://{one}:{two}@example.com').for(:url) }
+
+        it { is_expected.not_to allow_value('http://example.com/{one}/{two}/{three}').for(:url) }
+        it { is_expected.not_to allow_value('http://example.com/{foo}').for(:url) }
+        it { is_expected.not_to allow_value('http:{user}:{pwd}//example.com/{foo}').for(:url) }
+
+        it 'mentions all missing variable names' do
+          hook.url = 'http://example.com/{one}/{foo}/{two}/{three}'
+
+          expect(hook).to be_invalid
+          expect(hook.errors[:url].to_sentence).to eq "Invalid URL template. Missing keys: [\"foo\", \"three\"]"
+        end
+      end
     end
 
     describe 'token' do
@@ -161,8 +187,8 @@ RSpec.describe WebHook do
     end
   end
 
-  describe '.executable' do
-    let(:not_executable) do
+  describe '.executable/.disabled' do
+    let!(:not_executable) do
       [
         [0, Time.current],
         [0, 1.minute.from_now],
@@ -176,7 +202,7 @@ RSpec.describe WebHook do
       end
     end
 
-    let(:executables) do
+    let!(:executables) do
       [
         [0, nil],
         [0, 1.day.ago],
@@ -191,6 +217,7 @@ RSpec.describe WebHook do
 
     it 'finds the correct set of project hooks' do
       expect(described_class.where(project_id: project.id).executable).to match_array executables
+      expect(described_class.where(project_id: project.id).disabled).to match_array not_executable
     end
 
     context 'when the feature flag is not enabled' do
@@ -198,7 +225,7 @@ RSpec.describe WebHook do
         stub_feature_flags(web_hooks_disable_failed: false)
       end
 
-      it 'is the same as all' do
+      specify 'enabled is the same as all' do
         expect(described_class.where(project_id: project.id).executable).to match_array(executables + not_executable)
       end
     end
@@ -557,6 +584,62 @@ RSpec.describe WebHook do
 
     it 'does not contain binary attributes, even when serializing unsafe attributes' do
       expect(hook.to_json(unsafe_serialization_hash: true)).not_to include('encrypted_url_variables')
+    end
+  end
+
+  describe '#interpolated_url' do
+    subject(:hook) { build(:project_hook, project: project) }
+
+    context 'when the hook URL does not contain variables' do
+      before do
+        hook.url = 'http://example.com'
+      end
+
+      it { is_expected.to have_attributes(interpolated_url: hook.url) }
+    end
+
+    it 'is not vulnerable to malicious input' do
+      hook.url = 'something%{%<foo>2147483628G}'
+      hook.url_variables = { 'foo' => '1234567890.12345678' }
+
+      expect(hook).to have_attributes(interpolated_url: hook.url)
+    end
+
+    context 'when the hook URL contains variables' do
+      before do
+        hook.url = 'http://example.com/{path}/resource?token={token}'
+        hook.url_variables = { 'path' => 'abc', 'token' => 'xyz' }
+      end
+
+      it { is_expected.to have_attributes(interpolated_url: 'http://example.com/abc/resource?token=xyz') }
+
+      context 'when a variable is missing' do
+        before do
+          hook.url_variables = { 'path' => 'present' }
+        end
+
+        it 'raises an error' do
+          # We expect validations to prevent this entirely - this is not user-error
+          expect { hook.interpolated_url }
+            .to raise_error(described_class::InterpolationError, include('Missing key token'))
+        end
+      end
+
+      context 'when the URL appears to include percent formatting' do
+        before do
+          hook.url = 'http://example.com/%{path}/resource?token=%{token}'
+        end
+
+        it 'succeeds, interpolates correctly' do
+          expect(hook.interpolated_url).to eq 'http://example.com/%abc/resource?token=%xyz'
+        end
+      end
+    end
+  end
+
+  describe '#update_last_failure' do
+    it 'is a method of this class' do
+      expect { described_class.new.update_last_failure }.not_to raise_error
     end
   end
 end

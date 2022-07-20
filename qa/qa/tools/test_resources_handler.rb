@@ -31,7 +31,8 @@ module QA
         'QA::Resource::CiVariable',
         'QA::Resource::Repository::Commit',
         'QA::EE::Resource::GroupIteration',
-        'QA::EE::Resource::Settings::Elasticsearch'
+        'QA::EE::Resource::Settings::Elasticsearch',
+        'QA::EE::Resource::VulnerabilityItem'
       ].freeze
 
       PROJECT = 'gitlab-qa-resources'

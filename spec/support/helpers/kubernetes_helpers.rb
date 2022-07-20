@@ -126,24 +126,6 @@ module KubernetesHelpers
     WebMock.stub_request(:get, pod_url).to_return(response || kube_pod_response)
   end
 
-  def stub_kubeclient_logs(pod_name, namespace, container: nil, status: nil, message: nil)
-    stub_kubeclient_discover(service.api_url)
-
-    if container
-      container_query_param = "container=#{container}&"
-    end
-
-    logs_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods/#{pod_name}" \
-    "/log?#{container_query_param}tailLines=#{::PodLogs::KubernetesService::LOGS_LIMIT}&timestamps=true"
-
-    if status
-      response = { status: status }
-      response[:body] = { message: message }.to_json if message
-    end
-
-    WebMock.stub_request(:get, logs_url).to_return(response || kube_logs_response)
-  end
-
   def stub_kubeclient_deployments(namespace, status: nil)
     stub_kubeclient_discover(service.api_url)
     deployments_url = service.api_url + "/apis/apps/v1/namespaces/#{namespace}/deployments"

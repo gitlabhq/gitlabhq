@@ -23,10 +23,12 @@ For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.
 
 To configure SAML Group Sync:
 
-1. Configure SAML authentication:
-   - For GitLab self-managed, see [SAML OmniAuth Provider](../../../integration/saml.md).
-   - For GitLab.com, see [SAML SSO for GitLab.com groups](index.md).
-1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`.
+- For GitLab self-managed:
+  1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
+  1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting.
+- For GitLab.com:
+  1. See [SAML SSO for GitLab.com groups](index.md).
+  1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`. 
 
 NOTE:
 The value for `Groups` or `groups` in the SAML response can be either the group name or the group ID.

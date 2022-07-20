@@ -12,6 +12,8 @@ module Preloaders
     def execute
       return unless @projects.present? && @users.present?
 
+      preload_users_namespace_bans(@users)
+
       access_levels.each do |(project_id, user_id), access_level|
         project = projects_by_id[project_id]
 
@@ -42,5 +44,11 @@ module Preloaders
     def projects_by_id
       @projects_by_id ||= @projects.index_by(&:id)
     end
+
+    def preload_users_namespace_bans(_users)
+      # overridden in EE
+    end
   end
 end
+
+# Preloaders::UsersMaxAccessLevelInProjectsPreloader.prepend_mod

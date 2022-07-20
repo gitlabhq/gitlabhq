@@ -189,7 +189,7 @@ RSpec.describe BulkImports::PipelineWorker do
       end
     end
 
-    context 'when network error is raised' do
+    context 'when retry pipeline error is raised' do
       let(:pipeline_tracker) do
         create(
           :bulk_import_tracker,
@@ -200,7 +200,7 @@ RSpec.describe BulkImports::PipelineWorker do
       end
 
       let(:exception) do
-        BulkImports::NetworkError.new(response: instance_double(HTTParty::Response, code: 429, headers: {}))
+        BulkImports::RetryPipelineError.new('Error!', 60)
       end
 
       before do
@@ -213,54 +213,36 @@ RSpec.describe BulkImports::PipelineWorker do
         end
       end
 
-      context 'when error is retriable' do
-        it 'reenqueues the worker' do
-          expect_any_instance_of(BulkImports::Tracker) do |tracker|
-            expect(tracker).to receive(:retry).and_call_original
-          end
+      it 'reenqueues the worker' do
+        expect_any_instance_of(BulkImports::Tracker) do |tracker|
+          expect(tracker).to receive(:retry).and_call_original
+        end
 
-          expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-            expect(logger)
-              .to receive(:info)
-              .with(
-                hash_including(
-                  'pipeline_name' => 'FakePipeline',
-                  'entity_id' => entity.id
-                )
-              )
-          end
-
-          expect(described_class)
-            .to receive(:perform_in)
+        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          expect(logger)
+            .to receive(:info)
             .with(
-              60.seconds,
-              pipeline_tracker.id,
-              pipeline_tracker.stage,
-              pipeline_tracker.entity.id
+              hash_including(
+                'pipeline_name' => 'FakePipeline',
+                'entity_id' => entity.id
+              )
             )
-
-          subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-          pipeline_tracker.reload
-
-          expect(pipeline_tracker.enqueued?).to be_truthy
         end
 
-        context 'when error is not retriable' do
-          let(:exception) do
-            BulkImports::NetworkError.new(response: instance_double(HTTParty::Response, code: 503, headers: {}))
-          end
+        expect(described_class)
+          .to receive(:perform_in)
+          .with(
+            60.seconds,
+            pipeline_tracker.id,
+            pipeline_tracker.stage,
+            pipeline_tracker.entity.id
+          )
 
-          it 'marks tracker as failed and logs the error' do
-            expect(described_class).not_to receive(:perform_in)
+        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
-            subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+        pipeline_tracker.reload
 
-            pipeline_tracker.reload
-
-            expect(pipeline_tracker.failed?).to eq(true)
-          end
-        end
+        expect(pipeline_tracker.enqueued?).to be_truthy
       end
     end
   end

@@ -10,6 +10,8 @@ module API
 
     feature_category :source_code_management
 
+    helpers Helpers::ProtectedTagsHelpers
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -50,14 +52,15 @@ module API
       end
       params do
         requires :name, type: String, desc: 'The name of the protected tag'
-        optional :create_access_level, type: Integer, default: Gitlab::Access::MAINTAINER,
+        optional :create_access_level, type: Integer,
                                        values: ProtectedTag::CreateAccessLevel.allowed_access_levels,
                                        desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)'
+        use :optional_params_ee
       end
       post ':id/protected_tags' do
         protected_tags_params = {
           name: params[:name],
-          create_access_levels_attributes: [{ access_level: params[:create_access_level] }]
+          create_access_levels_attributes: ::ProtectedRefs::AccessLevelParams.new(:create, params).access_levels
         }
 
         protected_tag = ::ProtectedTags::CreateService.new(user_project,

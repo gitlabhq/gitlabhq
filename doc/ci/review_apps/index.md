@@ -287,6 +287,9 @@ can supply the ID by either:
 - Dynamically adding the `data-merge-request-id` value during the build of the app.
 - Supplying it manually through the visual review form in the app.
 
+If the ID is missing from the `script`, the visual review tool prompts you to enter the
+merge request ID before you can provide feedback.
+
 ### Authentication for Visual Reviews
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42750#note_317271120) in GitLab 12.10.

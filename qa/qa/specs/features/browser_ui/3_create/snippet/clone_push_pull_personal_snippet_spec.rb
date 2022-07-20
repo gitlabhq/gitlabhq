@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Version control for personal snippets', :skip_fips_env do
+    describe 'Version control for personal snippets' do
       let(:new_file) { 'new_snippet_file' }
       let(:changed_content) { 'changes' }
       let(:commit_message) { 'Changes to snippets' }

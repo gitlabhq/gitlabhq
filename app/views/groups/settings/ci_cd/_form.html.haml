@@ -1,7 +1,6 @@
 .row.gl-mt-3
   .col-lg-12
     = form_for group, url: group_settings_ci_cd_path(group, anchor: 'js-general-pipeline-settings') do |f|
-      = form_errors(group)
       %fieldset.builds-feature
         .form-group
           = f.label :max_artifacts_size, _('Maximum artifacts size'), class: 'label-bold'

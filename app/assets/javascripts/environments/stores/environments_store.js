@@ -15,8 +15,6 @@ export default class EnvironmentsStore {
     this.state.availableCounter = 0;
     this.state.paginationInformation = {};
     this.state.reviewAppDetails = {};
-
-    return this;
   }
 
   /**

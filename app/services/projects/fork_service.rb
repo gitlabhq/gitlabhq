@@ -5,7 +5,10 @@ module Projects
     def execute(fork_to_project = nil)
       forked_project = fork_to_project ? link_existing_project(fork_to_project) : fork_new_project
 
-      refresh_forks_count if forked_project&.saved?
+      if forked_project&.saved?
+        refresh_forks_count
+        stream_audit_event(forked_project)
+      end
 
       forked_project
     end
@@ -62,7 +65,10 @@ module Projects
         # exception.
         relations_block:           -> (project) { build_fork_network_member(project) },
         skip_disk_validation:      skip_disk_validation,
-        external_authorization_classification_label: @project.external_authorization_classification_label
+        external_authorization_classification_label: @project.external_authorization_classification_label,
+        suggestion_commit_message: @project.suggestion_commit_message,
+        merge_commit_template: @project.merge_commit_template,
+        squash_commit_template: @project.squash_commit_template
       }
 
       if @project.avatar.present? && @project.avatar.image?
@@ -133,5 +139,11 @@ module Projects
     def target_mr_default_target_self
       @target_mr_default_target_self ||= params[:mr_default_target_self]
     end
+
+    def stream_audit_event(forked_project)
+      # Defined in EE
+    end
   end
 end
+
+Projects::ForkService.prepend_mod

@@ -53,3 +53,5 @@ module Clusters
     end
   end
 end
+
+Clusters::Agent.prepend_mod_with('Clusters::Agent')

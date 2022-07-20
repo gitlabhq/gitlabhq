@@ -11,6 +11,8 @@ class SessionsController < Devise::SessionsController
   include Gitlab::Utils::StrongMemoize
   include OneTrustCSP
   include BizibleCSP
+  include VerifiesWithEmail
+  include GoogleAnalyticsCSP
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   skip_before_action :check_password_expiration, only: [:destroy]

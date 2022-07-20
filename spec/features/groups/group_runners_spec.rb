@@ -17,7 +17,7 @@ RSpec.describe "Group Runners" do
   describe "Group runners page", :js do
     let!(:group_registration_token) { group.runners_token }
 
-    context "runners registration" do
+    describe "runners registration" do
       before do
         visit group_runners_path(group)
       end
@@ -128,7 +128,7 @@ RSpec.describe "Group Runners" do
       end
     end
 
-    context 'filtered search' do
+    describe 'filtered search' do
       before do
         visit group_runners_path(group)
       end
@@ -179,6 +179,46 @@ RSpec.describe "Group Runners" do
           click_button 'Save changes'
 
           expect(page).to have_content 'Can run untagged jobs No'
+        end
+      end
+    end
+
+    context 'when group_runner_view_ui is enabled' do
+      before do
+        stub_feature_flags(group_runner_view_ui: true)
+      end
+
+      it 'user views runner details' do
+        visit group_runner_path(group, runner)
+
+        expect(page).to have_content "#{s_('Runners|Description')} runner-foo"
+      end
+
+      it 'user edits the runner to be protected' do
+        visit edit_group_runner_path(group, runner)
+
+        expect(page.find_field('runner[access_level]')).not_to be_checked
+
+        check 'runner_access_level'
+        click_button _('Save changes')
+
+        expect(page).to have_content "#{s_('Runners|Configuration')} #{s_('Runners|Protected')}"
+      end
+
+      context 'when a runner has a tag' do
+        before do
+          runner.update!(tag_list: ['tag'])
+        end
+
+        it 'user edits runner not to run untagged jobs' do
+          visit edit_group_runner_path(group, runner)
+
+          page.find_field('runner[tag_list]').set('tag, tag2')
+
+          uncheck 'runner_run_untagged'
+          click_button _('Save changes')
+
+          expect(page).to have_content "#{s_('Runners|Tags')} tag tag2"
         end
       end
     end

@@ -1,11 +1,12 @@
 import { render } from '~/lib/gfm';
 
 describe('gfm', () => {
-  const markdownToAST = async (markdown) => {
+  const markdownToAST = async (markdown, skipRendering = []) => {
     let result;
 
     await render({
       markdown,
+      skipRendering,
       renderer: (tree) => {
         result = tree;
       },
@@ -58,36 +59,62 @@ describe('gfm', () => {
       expect(result).toEqual(rendered);
     });
 
-    it('transforms footnotes into footnotedefinition and footnotereference tags', async () => {
-      const result = await markdownToAST(
-        `footnote reference [^footnote]
+    describe('when skipping the rendering of footnote reference and definition nodes', () => {
+      it('transforms footnotes into footnotedefinition and footnotereference tags', async () => {
+        const result = await markdownToAST(
+          `footnote reference [^footnote]
 
 [^footnote]: Footnote definition`,
+          ['footnoteReference', 'footnoteDefinition'],
+        );
+
+        expectInRoot(
+          result,
+          expect.objectContaining({
+            children: expect.arrayContaining([
+              expect.objectContaining({
+                type: 'element',
+                tagName: 'footnotereference',
+                properties: {
+                  identifier: 'footnote',
+                  label: 'footnote',
+                },
+              }),
+            ]),
+          }),
+        );
+
+        expectInRoot(
+          result,
+          expect.objectContaining({
+            tagName: 'footnotedefinition',
+            properties: {
+              identifier: 'footnote',
+              label: 'footnote',
+            },
+          }),
+        );
+      });
+    });
+  });
+
+  describe('when skipping the rendering of code blocks', () => {
+    it('transforms code nodes into codeblock html tags', async () => {
+      const result = await markdownToAST(
+        `
+\`\`\`javascript
+console.log('Hola');
+\`\`\`\
+          `,
+        ['code'],
       );
 
       expectInRoot(
         result,
         expect.objectContaining({
-          children: expect.arrayContaining([
-            expect.objectContaining({
-              type: 'element',
-              tagName: 'footnotereference',
-              properties: {
-                identifier: 'footnote',
-                label: 'footnote',
-              },
-            }),
-          ]),
-        }),
-      );
-
-      expectInRoot(
-        result,
-        expect.objectContaining({
-          tagName: 'footnotedefinition',
+          tagName: 'codeblock',
           properties: {
-            identifier: 'footnote',
-            label: 'footnote',
+            language: 'javascript',
           },
         }),
       );

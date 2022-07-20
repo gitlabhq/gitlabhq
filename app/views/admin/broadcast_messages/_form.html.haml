@@ -2,7 +2,7 @@
   = render 'preview'
 
 = gitlab_ui_form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form js-quick-submit js-requires-input'} do |f|
-  = form_errors(@broadcast_message)
+  = form_errors(@broadcast_message, pajamas_alert: true)
 
   .form-group.row.mt-4
     .col-sm-2.col-form-label

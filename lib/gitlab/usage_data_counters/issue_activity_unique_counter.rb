@@ -149,6 +149,19 @@ module Gitlab
 
           Gitlab::UsageDataCounters::HLLRedisCounter.track_event(action, values: author.id)
         end
+
+        def track_snowplow_action(action, author, project)
+          return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project&.namespace)
+          return unless author
+
+          Gitlab::Tracking.event(
+            ISSUE_CATEGORY,
+            action.to_s,
+            project: project,
+            namespace: project&.namespace,
+            user: author
+          )
+        end
       end
     end
   end

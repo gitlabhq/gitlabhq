@@ -88,57 +88,26 @@ exports[`Design management design index page renders design index 1`] = `
       signinpath=""
     />
      
-    <gl-button-stub
-      buttontextclasses=""
-      category="primary"
-      class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-mb-4"
-      data-testid="resolved-comments"
-      icon="chevron-right"
-      id="resolved-comments"
-      size="medium"
-      variant="link"
+    <gl-accordion-stub
+      class="gl-mb-5"
+      headerlevel="3"
     >
-      Resolved Comments (1)
-      
-    </gl-button-stub>
-     
-    <gl-popover-stub
-      container="popovercontainer"
-      cssclasses=""
-      placement="top"
-      show="true"
-      target="resolved-comments"
-      title="Resolved Comments"
-    >
-      <p>
-        
-          Comments you resolve can be viewed and unresolved by going to the "Resolved Comments" section below
-        
-      </p>
-       
-      <a
-        href="https://docs.gitlab.com/ee/user/project/issues/design_management.html#resolve-design-threads"
-        rel="noopener noreferrer"
-        target="_blank"
+      <gl-accordion-item-stub
+        headerclass="gl-mb-5!"
+        title="Resolved Comments (1)"
       >
-        Learn more about resolving comments
-      </a>
-    </gl-popover-stub>
-     
-    <gl-collapse-stub
-      class="gl-mt-3"
-    >
-      <design-discussion-stub
-        data-testid="resolved-discussion"
-        designid="gid::/gitlab/Design/1"
-        discussion="[object Object]"
-        discussionwithopenform=""
-        markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
-        noteableid="gid::/gitlab/Design/1"
-        registerpath=""
-        signinpath=""
-      />
-    </gl-collapse-stub>
+        <design-discussion-stub
+          data-testid="resolved-discussion"
+          designid="gid::/gitlab/Design/1"
+          discussion="[object Object]"
+          discussionwithopenform=""
+          markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
+          noteableid="gid::/gitlab/Design/1"
+          registerpath=""
+          signinpath=""
+        />
+      </gl-accordion-item-stub>
+    </gl-accordion-stub>
      
   </div>
 </div>

@@ -51,7 +51,7 @@ RSpec.describe MemberUserEntity do
     shared_examples 'correctly exposes user two_factor_enabled' do
       context 'when the current_user has a role lower than minimum manage member role' do
         before do
-          source.add_user(current_user, Gitlab::Access::DEVELOPER)
+          source.add_member(current_user, Gitlab::Access::DEVELOPER)
         end
 
         it 'does not expose user two_factor_enabled' do
@@ -65,7 +65,7 @@ RSpec.describe MemberUserEntity do
 
       context 'when the current user has a minimum manage member role or higher' do
         before do
-          source.add_user(current_user, minimum_manage_member_role)
+          source.add_member(current_user, minimum_manage_member_role)
         end
 
         it 'matches json schema' do

@@ -139,6 +139,7 @@ export default {
         />
       </template>
     </gl-form-input-group>
+    <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
     <template v-for="slot in Object.keys($slots)" #[slot]>
       <slot :name="slot"></slot>
     </template>

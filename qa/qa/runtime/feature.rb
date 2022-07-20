@@ -59,10 +59,15 @@ module QA
               feature['state'] == 'conditional' && scopes.present? && enabled_scope?(feature['gates'], **scopes)
           else
             # The feature wasn't found via the API so we check for a default value.
-            file = Pathname.new('../config/feature_flags')
-              .expand_path(Runtime::Path.qa_root)
-              .glob("**/#{key}.yml")
-              .first
+            # We expand the path include both ee and jh.
+
+            pattern = if GitlabEdition.jh?
+                        "#{File.expand_path('../{ee/,jh/,}config/feature_flags', QA::Runtime::Path.qa_root)}/**/#{key}.yml"
+                      else
+                        "#{File.expand_path('../{ee/,}config/feature_flags', QA::Runtime::Path.qa_root)}/**/#{key}.yml"
+                      end
+
+            file = Dir.glob(pattern).first
 
             raise UnknownFeatureFlagError, "No feature flag found named '#{key}'" unless file
 

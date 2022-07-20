@@ -25,14 +25,22 @@ module API
 
           desc 'Get a list of features (deprecated, v2 client support)'
           get 'features' do
-            present :version, 1
-            present :features, feature_flags, with: ::API::Entities::UnleashFeature
+            if ::Feature.enabled?(:cache_unleash_client_api, project)
+              present_feature_flags
+            else
+              present :version, 1
+              present :features, feature_flags, with: ::API::Entities::UnleashFeature
+            end
           end
 
           desc 'Get a list of features'
           get 'client/features' do
-            present :version, 1
-            present :features, feature_flags, with: ::API::Entities::UnleashFeature
+            if ::Feature.enabled?(:cache_unleash_client_api, project)
+              present_feature_flags
+            else
+              present :version, 1
+              present :features, feature_flags, with: ::API::Entities::UnleashFeature
+            end
           end
 
           post 'client/register' do
@@ -49,8 +57,22 @@ module API
     end
 
     helpers do
+      def present_feature_flags
+        present_cached feature_flags_client,
+          with: ::API::Entities::Unleash::ClientFeatureFlags,
+          cache_context: -> (client) { client.unleash_api_cache_key }
+      end
+
       def project
         @project ||= find_project(params[:project_id])
+      end
+
+      def feature_flags_client
+        strong_memoize(:feature_flags_client) do
+          client = Operations::FeatureFlagsClient.find_for_project_and_token(project, unleash_instance_id)
+          client.unleash_app_name = unleash_app_name if client
+          client
+        end
       end
 
       def unleash_instance_id
@@ -62,8 +84,7 @@ module API
       end
 
       def authorize_by_unleash_instance_id!
-        unauthorized! unless Operations::FeatureFlagsClient
-          .find_for_project_and_token(project, unleash_instance_id)
+        unauthorized! unless feature_flags_client
       end
 
       def feature_flags

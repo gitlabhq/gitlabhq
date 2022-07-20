@@ -32,7 +32,7 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
   end
 
   it 'changes expiration date' do
-    project.team.add_users([new_member.id], :developer, expires_at: three_days_from_now)
+    project.team.add_members([new_member.id], :developer, expires_at: three_days_from_now)
     visit project_project_members_path(project)
 
     page.within find_member_row(new_member) do
@@ -46,7 +46,7 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
   end
 
   it 'clears expiration date' do
-    project.team.add_users([new_member.id], :developer, expires_at: five_days_from_now)
+    project.team.add_members([new_member.id], :developer, expires_at: five_days_from_now)
     visit project_project_members_path(project)
 
     page.within find_member_row(new_member) do

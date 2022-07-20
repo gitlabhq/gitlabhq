@@ -178,7 +178,8 @@ RSpec.describe RegistrationsController do
                     category: 'RegistrationsController',
                     action: 'accepted',
                     label: 'invite_email',
-                    property: member.id.to_s
+                    property: member.id.to_s,
+                    user: member.reload.user
                   )
                 end
               end

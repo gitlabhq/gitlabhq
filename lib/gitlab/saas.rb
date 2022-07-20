@@ -48,6 +48,10 @@ module Gitlab
     def self.about_pricing_faq_url
       "https://about.gitlab.com/pricing#faq"
     end
+
+    def self.doc_url
+      'https://docs.gitlab.com'
+    end
   end
 end
 

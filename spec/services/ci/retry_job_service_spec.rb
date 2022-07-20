@@ -12,7 +12,7 @@ RSpec.describe Ci::RetryJobService do
   end
 
   let_it_be(:stage) do
-    create(:ci_stage_entity, project: project,
+    create(:ci_stage, project: project,
                              pipeline: pipeline,
                              name: 'test')
   end
@@ -154,7 +154,7 @@ RSpec.describe Ci::RetryJobService do
     end
 
     context 'when the pipeline has other jobs' do
-      let!(:stage2) { create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'deploy') }
+      let!(:stage2) { create(:ci_stage, project: project, pipeline: pipeline, name: 'deploy') }
       let!(:build2) { create(:ci_build, pipeline: pipeline, stage_id: stage.id ) }
       let!(:deploy) { create(:ci_build, pipeline: pipeline, stage_id: stage2.id) }
       let!(:deploy_needs_build2) { create(:ci_build_need, build: deploy, name: build2.name) }

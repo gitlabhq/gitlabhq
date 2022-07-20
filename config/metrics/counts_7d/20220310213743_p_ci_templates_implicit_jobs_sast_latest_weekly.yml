@@ -3,7 +3,7 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_jobs_sast_late
 description: Weekly counts for implicit use of SAST CI Latest template (Jobs folder)
 product_section: sec
 product_stage: secure
-product_group: group::static analysis
+product_group: static_analysis
 product_category: static_application_security_testing
 value_type: number
 status: active

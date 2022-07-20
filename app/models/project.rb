@@ -247,7 +247,6 @@ class Project < ApplicationRecord
   has_many :export_jobs, class_name: 'ProjectExportJob'
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :project
   has_one :project_repository, inverse_of: :project
-  has_one :tracing_setting, class_name: 'ProjectTracingSetting'
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
   has_one :metrics_setting, inverse_of: :project, class_name: 'ProjectMetricsSetting'
@@ -261,6 +260,7 @@ class Project < ApplicationRecord
   has_many :merge_request_metrics, foreign_key: 'target_project', class_name: 'MergeRequest::Metrics', inverse_of: :target_project
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
+  has_many :incident_management_issuable_escalation_statuses, through: :issues, inverse_of: :project, class_name: 'IncidentManagement::IssuableEscalationStatus'
   has_many :labels, class_name: 'ProjectLabel'
   has_many :integrations
   has_many :events
@@ -434,7 +434,6 @@ class Project < ApplicationRecord
                                 allow_destroy: true,
                                 reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
-  accepts_nested_attributes_for :tracing_setting, update_only: true, allow_destroy: true
   accepts_nested_attributes_for :incident_management_setting, update_only: true
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
   accepts_nested_attributes_for :metrics_setting, update_only: true, allow_destroy: true
@@ -442,33 +441,29 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :prometheus_integration, update_only: true
   accepts_nested_attributes_for :alerting_setting, update_only: true
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
-    :merge_requests_enabled?, :forking_enabled?, :issues_enabled?,
-    :pages_enabled?, :analytics_enabled?, :snippets_enabled?, :public_pages?, :private_pages?,
-    :merge_requests_access_level, :forking_access_level, :issues_access_level,
-    :wiki_access_level, :snippets_access_level, :builds_access_level,
-    :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level,
-    :operations_enabled?, :operations_access_level, :security_and_compliance_access_level,
-    :container_registry_access_level, :container_registry_enabled?,
-    to: :project_feature, allow_nil: true
-  alias_method :container_registry_enabled, :container_registry_enabled?
-  delegate :show_default_award_emojis, :show_default_award_emojis=, :show_default_award_emojis?,
-    :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=, :enforce_auth_checks_on_uploads?,
-    :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=, :warn_about_potentially_unwanted_characters?,
-    to: :project_setting, allow_nil: true
-  delegate :scheduled?, :started?, :in_progress?, :failed?, :finished?,
-    prefix: :import, to: :import_state, allow_nil: true
+  delegate :merge_requests_access_level, :forking_access_level, :issues_access_level,
+           :wiki_access_level, :snippets_access_level, :builds_access_level,
+           :repository_access_level, :package_registry_access_level, :pages_access_level,
+           :metrics_dashboard_access_level, :analytics_access_level,
+           :operations_access_level, :security_and_compliance_access_level,
+           :container_registry_access_level,
+           to: :project_feature, allow_nil: true
+
+  delegate :show_default_award_emojis, :show_default_award_emojis=,
+           :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=,
+           :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=,
+           to: :project_setting, allow_nil: true
+
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :project_setting
   delegate :squash_option, :squash_option=, to: :project_setting
   delegate :mr_default_target_self, :mr_default_target_self=, to: :project_setting
   delegate :previous_default_branch, :previous_default_branch=, to: :project_setting
-  delegate :no_import?, to: :import_state, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
-  delegate :add_user, :add_users, to: :team
+  delegate :add_member, :add_members, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role, to: :team
   delegate :group_runners_enabled, :group_runners_enabled=, to: :ci_cd_settings, allow_nil: true
-  delegate :root_ancestor, :certificate_based_clusters_enabled?, to: :namespace, allow_nil: true
+  delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
   delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :dashboard_timezone, to: :metrics_setting, allow_nil: true, prefix: true
@@ -476,6 +471,7 @@ class Project < ApplicationRecord
   delegate :forward_deployment_enabled, :forward_deployment_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
+  delegate :opt_in_jwt, :opt_in_jwt=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
   delegate :separated_caches, :separated_caches=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :ci_cd_settings, allow_nil: true
@@ -483,7 +479,6 @@ class Project < ApplicationRecord
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
     :allow_merge_on_skipped_pipeline=, :has_confluence?, :has_shimo?,
     to: :project_setting
-  delegate :active?, to: :prometheus_integration, allow_nil: true, prefix: true
   delegate :merge_commit_template, :merge_commit_template=, to: :project_setting, allow_nil: true
   delegate :squash_commit_template, :squash_commit_template=, to: :project_setting, allow_nil: true
 
@@ -667,7 +662,6 @@ class Project < ApplicationRecord
   scope :created_by, -> (user) { where(creator: user) }
   scope :imported_from, -> (type) { where(import_type: type) }
   scope :imported, -> { where.not(import_type: nil) }
-  scope :with_tracing_enabled, -> { joins(:tracing_setting) }
   scope :with_enabled_error_tracking, -> { joins(:error_tracking_setting).where(project_error_tracking_settings: { enabled: true }) }
 
   scope :with_service_desk_key, -> (key) do
@@ -676,10 +670,12 @@ class Project < ApplicationRecord
     joins(:service_desk_setting).where('service_desk_settings.project_key' => key)
   end
 
-  scope :with_topic, ->(topic_name) do
+  scope :with_topic, ->(topic) { where(id: topic.project_topics.select(:project_id)) }
+
+  scope :with_topic_by_name, ->(topic_name) do
     topic = Projects::Topic.find_by_name(topic_name)
 
-    topic ? where(id: topic.project_topics.select(:project_id)) : none
+    topic ? with_topic(topic) : none
   end
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
@@ -917,6 +913,14 @@ class Project < ApplicationRecord
     association(:namespace).loaded?
   end
 
+  def certificate_based_clusters_enabled?
+    !!namespace&.certificate_based_clusters_enabled?
+  end
+
+  def prometheus_integration_active?
+    !!prometheus_integration&.active?
+  end
+
   def personal_namespace_holder?(user)
     return false unless personal?
     return false unless user
@@ -931,6 +935,42 @@ class Project < ApplicationRecord
 
   def project_setting
     super.presence || build_project_setting
+  end
+
+  def show_default_award_emojis?
+    !!project_setting&.show_default_award_emojis?
+  end
+
+  def enforce_auth_checks_on_uploads?
+    !!project_setting&.enforce_auth_checks_on_uploads?
+  end
+
+  def warn_about_potentially_unwanted_characters?
+    !!project_setting&.warn_about_potentially_unwanted_characters?
+  end
+
+  def no_import?
+    !!import_state&.no_import?
+  end
+
+  def import_scheduled?
+    !!import_state&.scheduled?
+  end
+
+  def import_started?
+    !!import_state&.started?
+  end
+
+  def import_in_progress?
+    !!import_state&.in_progress?
+  end
+
+  def import_failed?
+    !!import_state&.failed?
+  end
+
+  def import_finished?
+    !!import_state&.finished?
   end
 
   def all_pipelines
@@ -998,6 +1038,9 @@ class Project < ApplicationRecord
     end
   end
 
+  def emails_enabled?
+    !emails_disabled?
+  end
   override :lfs_enabled?
   def lfs_enabled?
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?
@@ -1839,6 +1882,59 @@ class Project < ApplicationRecord
       latest_successful_pipeline_for_default_branch
     end
   end
+
+  def feature_available?(feature, user = nil)
+    !!project_feature&.feature_available?(feature, user)
+  end
+
+  def builds_enabled?
+    !!project_feature&.builds_enabled?
+  end
+
+  def wiki_enabled?
+    !!project_feature&.wiki_enabled?
+  end
+
+  def merge_requests_enabled?
+    !!project_feature&.merge_requests_enabled?
+  end
+
+  def forking_enabled?
+    !!project_feature&.forking_enabled?
+  end
+
+  def issues_enabled?
+    !!project_feature&.issues_enabled?
+  end
+
+  def pages_enabled?
+    !!project_feature&.pages_enabled?
+  end
+
+  def analytics_enabled?
+    !!project_feature&.analytics_enabled?
+  end
+
+  def snippets_enabled?
+    !!project_feature&.snippets_enabled?
+  end
+
+  def public_pages?
+    !!project_feature&.public_pages?
+  end
+
+  def private_pages?
+    !!project_feature&.private_pages?
+  end
+
+  def operations_enabled?
+    !!project_feature&.operations_enabled?
+  end
+
+  def container_registry_enabled?
+    !!project_feature&.container_registry_enabled?
+  end
+  alias_method :container_registry_enabled, :container_registry_enabled?
 
   def enable_ci
     project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
@@ -2762,10 +2858,6 @@ class Project < ApplicationRecord
     instance.token
   end
 
-  def tracing_external_url
-    tracing_setting&.external_url
-  end
-
   override :git_garbage_collect_worker_klass
   def git_garbage_collect_worker_klass
     Projects::GitGarbageCollectWorker
@@ -2905,6 +2997,10 @@ class Project < ApplicationRecord
 
   def refreshing_build_artifacts_size?
     build_artifacts_size_refresh&.started?
+  end
+
+  def group_group_links
+    group&.shared_with_group_links&.of_ancestors_and_self || GroupGroupLink.none
   end
 
   def security_training_available?

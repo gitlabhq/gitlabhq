@@ -4,7 +4,7 @@ class Admin::TopicsController < Admin::ApplicationController
   include SendFileUpload
   include PreviewMarkdown
 
-  before_action :topic, only: [:edit, :update]
+  before_action :topic, only: [:edit, :update, :destroy]
 
   feature_category :projects
 
@@ -35,6 +35,14 @@ class Admin::TopicsController < Admin::ApplicationController
     else
       render "edit"
     end
+  end
+
+  def destroy
+    @topic.destroy!
+
+    redirect_to admin_topics_path,
+                status: :found,
+                notice: _('Topic %{topic_name} was successfully removed.') % { topic_name: @topic.title_or_name }
   end
 
   private

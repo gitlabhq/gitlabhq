@@ -372,16 +372,16 @@ RSpec.describe Projects::TransferService do
   end
 
   context 'namespace which contains orphan repository with same projects path name' do
-    let(:fake_repo_path) { File.join(TestEnv.repos_path, group.full_path, "#{project.path}.git") }
+    let(:raw_fake_repo) { Gitlab::Git::Repository.new('default', File.join(group.full_path, "#{project.path}.git"), nil, nil) }
 
     before do
       group.add_owner(user)
 
-      TestEnv.create_bare_repository(fake_repo_path)
+      raw_fake_repo.create_repository
     end
 
     after do
-      FileUtils.rm_rf(fake_repo_path)
+      raw_fake_repo.remove
     end
 
     it 'does not allow the project transfer' do
@@ -712,20 +712,6 @@ RSpec.describe Projects::TransferService do
           )
         end
       end
-    end
-  end
-
-  context 'moving pages' do
-    let_it_be(:project) { create(:project, namespace: user.namespace) }
-
-    before do
-      group.add_owner(user)
-    end
-
-    it 'does not schedule a job when no pages are deployed' do
-      expect(PagesTransferWorker).not_to receive(:perform_async)
-
-      execute_transfer
     end
   end
 

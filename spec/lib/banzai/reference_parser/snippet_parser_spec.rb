@@ -24,7 +24,7 @@ RSpec.describe Banzai::ReferenceParser::SnippetParser do
   end
 
   before do
-    project.add_user(project_member, :developer)
+    project.add_member(project_member, :developer)
   end
 
   describe '#nodes_visible_to_user' do

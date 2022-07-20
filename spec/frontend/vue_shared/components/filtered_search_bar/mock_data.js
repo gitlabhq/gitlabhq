@@ -8,6 +8,8 @@ import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
+import CrmContactToken from '~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue';
+import CrmOrganizationToken from '~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue';
 
 export const mockAuthor1 = {
   id: 1,
@@ -61,6 +63,128 @@ export const mockMilestones = [
   mockRegularMilestone,
   mockEscapedMilestone,
 ];
+
+export const mockCrmContacts = [
+  {
+    id: 'gid://gitlab/CustomerRelations::Contact/1',
+    firstName: 'John',
+    lastName: 'Smith',
+    email: 'john@smith.com',
+  },
+  {
+    id: 'gid://gitlab/CustomerRelations::Contact/2',
+    firstName: 'Andy',
+    lastName: 'Green',
+    email: 'andy@green.net',
+  },
+];
+
+export const mockCrmOrganizations = [
+  {
+    id: 'gid://gitlab/CustomerRelations::Organization/1',
+    name: 'First Org Ltd.',
+  },
+  {
+    id: 'gid://gitlab/CustomerRelations::Organization/2',
+    name: 'Organizer S.p.a.',
+  },
+];
+
+export const mockProjectCrmContactsQueryResponse = {
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 1,
+      group: {
+        __typename: 'Group',
+        id: 1,
+        contacts: {
+          __typename: 'CustomerRelationsContactConnection',
+          nodes: [
+            {
+              __typename: 'CustomerRelationsContact',
+              ...mockCrmContacts[0],
+            },
+            {
+              __typename: 'CustomerRelationsContact',
+              ...mockCrmContacts[1],
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const mockProjectCrmOrganizationsQueryResponse = {
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 1,
+      group: {
+        __typename: 'Group',
+        id: 1,
+        organizations: {
+          __typename: 'CustomerRelationsOrganizationConnection',
+          nodes: [
+            {
+              __typename: 'CustomerRelationsOrganization',
+              ...mockCrmOrganizations[0],
+            },
+            {
+              __typename: 'CustomerRelationsOrganization',
+              ...mockCrmOrganizations[1],
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const mockGroupCrmContactsQueryResponse = {
+  data: {
+    group: {
+      __typename: 'Group',
+      id: 1,
+      contacts: {
+        __typename: 'CustomerRelationsContactConnection',
+        nodes: [
+          {
+            __typename: 'CustomerRelationsContact',
+            ...mockCrmContacts[0],
+          },
+          {
+            __typename: 'CustomerRelationsContact',
+            ...mockCrmContacts[1],
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const mockGroupCrmOrganizationsQueryResponse = {
+  data: {
+    group: {
+      __typename: 'Group',
+      id: 1,
+      organizations: {
+        __typename: 'CustomerRelationsOrganizationConnection',
+        nodes: [
+          {
+            __typename: 'CustomerRelationsOrganization',
+            ...mockCrmOrganizations[0],
+          },
+          {
+            __typename: 'CustomerRelationsOrganization',
+            ...mockCrmOrganizations[1],
+          },
+        ],
+      },
+    },
+  },
+};
 
 export const mockEmoji1 = {
   name: 'thumbsup',
@@ -132,6 +256,28 @@ export const mockReactionEmojiToken = {
   token: EmojiToken,
   operators: OPERATOR_IS_ONLY,
   fetchEmojis: () => Promise.resolve(mockEmojis),
+};
+
+export const mockCrmContactToken = {
+  type: 'crm_contact',
+  title: 'Contact',
+  icon: 'user',
+  token: CrmContactToken,
+  isProject: false,
+  fullPath: 'group',
+  operators: OPERATOR_IS_ONLY,
+  unique: true,
+};
+
+export const mockCrmOrganizationToken = {
+  type: 'crm_contact',
+  title: 'Organization',
+  icon: 'user',
+  token: CrmOrganizationToken,
+  isProject: false,
+  fullPath: 'group',
+  operators: OPERATOR_IS_ONLY,
+  unique: true,
 };
 
 export const mockMembershipToken = {

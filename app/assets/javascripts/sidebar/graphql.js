@@ -2,7 +2,7 @@ import produce from 'immer';
 import VueApollo from 'vue-apollo';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
-import { temporaryConfig } from '~/work_items/graphql/provider';
+import { temporaryConfig, resolvers as workItemResolvers } from '~/work_items/graphql/provider';
 
 const resolvers = {
   Mutation: {
@@ -13,6 +13,7 @@ const resolvers = {
       });
       cache.writeQuery({ query: getIssueStateQuery, data });
     },
+    ...workItemResolvers.Mutation,
   },
 };
 

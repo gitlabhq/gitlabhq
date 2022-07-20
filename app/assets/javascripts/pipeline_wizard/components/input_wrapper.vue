@@ -3,10 +3,12 @@ import { isNode, isDocument, isSeq, visit } from 'yaml';
 import { capitalize } from 'lodash';
 import TextWidget from '~/pipeline_wizard/components/widgets/text.vue';
 import ListWidget from '~/pipeline_wizard/components/widgets/list.vue';
+import ChecklistWidget from '~/pipeline_wizard/components/widgets/checklist.vue';
 
 const widgets = {
   TextWidget,
   ListWidget,
+  ChecklistWidget,
 };
 
 function isNullOrUndefined(v) {
@@ -30,8 +32,9 @@ export default {
     },
     target: {
       type: String,
-      required: true,
+      required: false,
       validator: (v) => /^\$.*/g.test(v),
+      default: null,
     },
     widget: {
       type: String,
@@ -48,6 +51,7 @@ export default {
   },
   computed: {
     path() {
+      if (!this.target) return null;
       let res;
       visit(this.template, (seqKey, node, path) => {
         if (node && node.value === this.target) {

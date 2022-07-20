@@ -357,6 +357,10 @@ RSpec.describe 'Pipelines', :js do
           end
 
           it 'enqueues the delayed job', :js do
+            find('[data-testid="mini-pipeline-graph-dropdown"]').click
+
+            within('[data-testid="mini-pipeline-graph-dropdown"]') { find('.ci-status-icon-pending') }
+
             expect(delayed_job.reload).to be_pending
           end
         end

@@ -63,6 +63,7 @@ export function initIncidentApp(issueData = {}) {
       return createElement(IssueApp, {
         props: {
           ...issueData,
+          issueId: Number(issuableId),
           issuableStatus: state,
           descriptionComponent: IncidentTabs,
           showTitleBorder: false,

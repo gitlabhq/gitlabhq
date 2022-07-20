@@ -1,7 +1,6 @@
-import { GlCollapse, GlPopover } from '@gitlab/ui';
+import { GlAccordionItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import Cookies from '~/lib/utils/cookies';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
@@ -27,8 +26,6 @@ const $route = {
   },
 };
 
-const cookieKey = 'hide_design_resolved_comments_popover';
-
 const mutate = jest.fn().mockResolvedValue();
 
 describe('Design management design sidebar component', () => {
@@ -40,9 +37,7 @@ describe('Design management design sidebar component', () => {
   const findUnresolvedDiscussions = () => wrapper.findAll('[data-testid="unresolved-discussion"]');
   const findResolvedDiscussions = () => wrapper.findAll('[data-testid="resolved-discussion"]');
   const findParticipants = () => wrapper.find(Participants);
-  const findCollapsible = () => wrapper.find(GlCollapse);
-  const findToggleResolvedCommentsButton = () => wrapper.find('[data-testid="resolved-comments"]');
-  const findPopover = () => wrapper.find(GlPopover);
+  const findResolvedCommentsToggle = () => wrapper.find(GlAccordionItem);
   const findNewDiscussionDisclaimer = () =>
     wrapper.find('[data-testid="new-discussion-disclaimer"]');
 
@@ -61,7 +56,6 @@ describe('Design management design sidebar component', () => {
           mutate,
         },
       },
-      stubs: { GlPopover },
       provide: {
         registerPath: '/users/sign_up?redirect_to_referer=yes',
         signInPath: '/users/sign_in?redirect_to_referer=yes',
@@ -119,7 +113,6 @@ describe('Design management design sidebar component', () => {
 
   describe('when has discussions', () => {
     beforeEach(() => {
-      Cookies.set(cookieKey, true);
       createComponent();
     });
 
@@ -131,26 +124,23 @@ describe('Design management design sidebar component', () => {
       expect(findResolvedDiscussions()).toHaveLength(1);
     });
 
-    it('has resolved comments collapsible collapsed', () => {
-      expect(findCollapsible().attributes('visible')).toBeUndefined();
+    it('has resolved comments accordion item collapsed', () => {
+      expect(findResolvedCommentsToggle().props('visible')).toBe(false);
     });
 
-    it('emits toggleResolveComments event on resolve comments button click', () => {
-      findToggleResolvedCommentsButton().vm.$emit('click');
+    it('emits toggleResolveComments event on resolve comments button click', async () => {
+      findResolvedCommentsToggle().vm.$emit('input', true);
+      await nextTick();
       expect(wrapper.emitted('toggleResolvedComments')).toHaveLength(1);
     });
 
-    it('opens a collapsible when resolvedDiscussionsExpanded prop changes to true', async () => {
-      expect(findCollapsible().attributes('visible')).toBeUndefined();
+    it('opens the accordion item when resolvedDiscussionsExpanded prop changes to true', async () => {
+      expect(findResolvedCommentsToggle().props('visible')).toBe(false);
       wrapper.setProps({
         resolvedDiscussionsExpanded: true,
       });
       await nextTick();
-      expect(findCollapsible().attributes('visible')).toBe('true');
-    });
-
-    it('does not popover about resolved comments', () => {
-      expect(findPopover().exists()).toBe(false);
+      expect(findResolvedCommentsToggle().props('visible')).toBe(true);
     });
 
     it('sends a mutation to set an active discussion when clicking on a discussion', () => {
@@ -232,36 +222,6 @@ describe('Design management design sidebar component', () => {
     });
   });
 
-  describe('when showing resolved discussions for the first time', () => {
-    beforeEach(() => {
-      Cookies.set(cookieKey, false);
-      createComponent();
-    });
-
-    it('renders a popover if we show resolved comments collapsible for the first time', () => {
-      expect(findPopover().exists()).toBe(true);
-    });
-
-    it('scrolls to resolved threads link', () => {
-      expect(scrollIntoViewMock).toHaveBeenCalled();
-    });
-
-    it('dismisses a popover on the outside click', async () => {
-      wrapper.trigger('click');
-      await nextTick();
-      expect(findPopover().exists()).toBe(false);
-    });
-
-    it(`sets a ${cookieKey} cookie on clicking outside the popover`, () => {
-      jest.spyOn(Cookies, 'set');
-      wrapper.trigger('click');
-      expect(Cookies.set).toHaveBeenCalledWith(cookieKey, 'true', {
-        expires: 365 * 10,
-        secure: false,
-      });
-    });
-  });
-
   describe('when user is not logged in', () => {
     const findDesignNoteSignedOut = () => wrapper.findComponent(DesignNoteSignedOut);
 
@@ -292,7 +252,6 @@ describe('Design management design sidebar component', () => {
 
     describe('design has discussions', () => {
       beforeEach(() => {
-        Cookies.set(cookieKey, true);
         createComponent();
       });
 

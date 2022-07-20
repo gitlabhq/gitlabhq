@@ -96,7 +96,7 @@ Our criteria for the separation of duties is as follows:
 
 The Chain of Custody report allows customers to export a list of merge commits within the group.
 The data provides a comprehensive view with respect to merge commits. It includes the merge commit SHA,
-merge request author, merge request ID, merge user, pipeline ID, group name, project name, and merge request approvers.
+merge request author, merge request ID, merge user, date merged, pipeline ID, group name, project name, and merge request approvers.
 Depending on the merge strategy, the merge commit SHA can be a merge commit, squash commit, or a diff head commit.
 
 To download the Chain of Custody report:

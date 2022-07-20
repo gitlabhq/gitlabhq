@@ -418,8 +418,6 @@ describe('BaseToken', () => {
         });
 
         it('does not emit `fetch-suggestions` event on component after a delay when component emits `input` event', async () => {
-          jest.useFakeTimers();
-
           findGlFilteredSearchToken().vm.$emit('input', { data: 'foo' });
           await nextTick();
 
@@ -437,8 +435,6 @@ describe('BaseToken', () => {
         });
 
         it('emits `fetch-suggestions` event on component after a delay when component emits `input` event', async () => {
-          jest.useFakeTimers();
-
           findGlFilteredSearchToken().vm.$emit('input', { data: 'foo' });
           await nextTick();
 

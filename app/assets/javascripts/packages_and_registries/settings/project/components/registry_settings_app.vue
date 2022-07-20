@@ -1,15 +1,19 @@
 <script>
 import ContainerExpirationPolicy from './container_expiration_policy.vue';
+import PackagesCleanupPolicy from './packages_cleanup_policy.vue';
 
 export default {
   components: {
     ContainerExpirationPolicy,
+    PackagesCleanupPolicy,
   },
+  inject: ['showContainerRegistrySettings', 'showPackageRegistrySettings'],
 };
 </script>
 
 <template>
-  <section data-testid="registry-settings-app">
-    <container-expiration-policy />
-  </section>
+  <div>
+    <packages-cleanup-policy v-if="showPackageRegistrySettings" />
+    <container-expiration-policy v-if="showContainerRegistrySettings" />
+  </div>
 </template>

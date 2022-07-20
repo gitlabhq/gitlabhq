@@ -98,9 +98,9 @@ export default class Renderer {
     requestAnimationFrame(this.renderWrapper);
   }
 
-  changeObjectMaterials(type) {
+  changeObjectMaterials(material) {
     this.objects.forEach((obj) => {
-      obj.changeMaterial(type);
+      obj.changeMaterial(material);
     });
   }
 

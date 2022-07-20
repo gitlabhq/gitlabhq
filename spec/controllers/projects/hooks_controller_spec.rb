@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::HooksController do
+  include AfterNextHelpers
+
   let_it_be(:project) { create(:project) }
 
   let(:user) { project.first_owner }
@@ -17,6 +19,36 @@ RSpec.describe Projects::HooksController do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
+    end
+  end
+
+  describe '#update' do
+    let_it_be(:hook) { create(:project_hook, project: project) }
+
+    let(:params) do
+      { namespace_id: project.namespace, project_id: project, id: hook.id }
+    end
+
+    it 'adds, updates and deletes URL variables' do
+      hook.update!(url_variables: { 'a' => 'bar', 'b' => 'woo' })
+
+      params[:hook] = {
+        url_variables: [
+          { key: 'a', value: 'updated' },
+          { key: 'b', value: nil },
+          { key: 'c', value: 'new' }
+        ]
+      }
+
+      put :update, params: params
+
+      expect(response).to have_gitlab_http_status(:found)
+      expect(flash[:notice]).to include('successfully updated')
+
+      expect(hook.reload.url_variables).to eq(
+        'a' => 'updated',
+        'c' => 'new'
+      )
     end
   end
 
@@ -87,14 +119,30 @@ RSpec.describe Projects::HooksController do
         job_events: true,
         pipeline_events: true,
         wiki_page_events: true,
-        deployment_events: true
+        deployment_events: true,
+
+        url_variables: [{ key: 'token', value: 'some secret value' }]
       }
 
       post :create, params: { namespace_id: project.namespace, project_id: project, hook: hook_params }
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(ProjectHook.all.size).to eq(1)
-      expect(ProjectHook.first).to have_attributes(hook_params)
+      expect(flash[:alert]).to be_blank
+      expect(ProjectHook.count).to eq(1)
+      expect(ProjectHook.first).to have_attributes(hook_params.except(:url_variables))
+      expect(ProjectHook.first).to have_attributes(url_variables: { 'token' => 'some secret value' })
+    end
+
+    it 'alerts the user if the new hook is invalid' do
+      hook_params = {
+        token: "TEST\nTOKEN",
+        url: "http://example.com"
+      }
+
+      post :create, params: { namespace_id: project.namespace, project_id: project, hook: hook_params }
+
+      expect(flash[:alert]).to be_present
+      expect(ProjectHook.count).to eq(0)
     end
   end
 
@@ -108,6 +156,45 @@ RSpec.describe Projects::HooksController do
 
   describe '#test' do
     let(:hook) { create(:project_hook, project: project) }
+
+    context 'when the hook executes successfully' do
+      before do
+        stub_request(:post, hook.url).to_return(status: 200)
+      end
+
+      it 'informs the user' do
+        post :test, params: { namespace_id: project.namespace, project_id: project, id: hook }
+
+        expect(flash[:notice]).to include('executed successfully')
+        expect(flash[:notice]).to include('HTTP 200')
+      end
+    end
+
+    context 'when the hook runs, but fails' do
+      before do
+        stub_request(:post, hook.url).to_return(status: 400)
+      end
+
+      it 'informs the user' do
+        post :test, params: { namespace_id: project.namespace, project_id: project, id: hook }
+
+        expect(flash[:alert]).to include('executed successfully but')
+        expect(flash[:alert]).to include('HTTP 400')
+      end
+    end
+
+    context 'when the hook fails completely' do
+      before do
+        allow_next(::TestHooks::ProjectService)
+          .to receive(:execute).and_return({ message: 'All is woe' })
+      end
+
+      it 'informs the user' do
+        post :test, params: { namespace_id: project.namespace, project_id: project, id: hook }
+
+        expect(flash[:alert]).to include('failed: All is woe')
+      end
+    end
 
     context 'when the endpoint receives requests above the limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
       before do

@@ -49,7 +49,7 @@ module Integrations
     #   # => 'running'
     #
     def commit_status(sha, ref)
-      response = Gitlab::HTTP.get(commit_status_path(sha), verify: enable_ssl_verification, use_read_total_timeout: true)
+      response = Gitlab::HTTP.get(commit_status_path(sha), verify: enable_ssl_verification)
       read_commit_status(response)
     rescue Errno::ECONNREFUSED
       :error

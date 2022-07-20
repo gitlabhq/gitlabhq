@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Rake tasks are available to import bare repositories into a GitLab instance.
 When migrating from an existing GitLab instance,
 and to preserve ownership by users and their namespaces,
-please use [our project-based import/export](../user/project/settings/import_export.md).
+use [our project-based import/export](../user/project/settings/import_export.md).
 
 Note that:
 
@@ -39,7 +39,7 @@ To import bare repositories into a GitLab instance:
    - Groups are created as needed, these could be nested folders.
 
    For example, if we copy the repositories to `/var/opt/gitlab/git-data/repository-import-2020-08-22`,
-   and repository `A` needs to be under the groups `G1` and `G2`, it must be created under those folders:
+   and repository `A` must be under the groups `G1` and `G2`, it must be created under those folders:
    `/var/opt/gitlab/git-data/repository-import-2020-08-22/G1/G2/A.git`.
 
    ```shell
@@ -49,7 +49,7 @@ To import bare repositories into a GitLab instance:
    sudo chown -R git:git /var/opt/gitlab/git-data/repository-import-$(date "+%Y-%m-%d")
    ```
 
-   `foo.git` needs to be owned by the `git` user and `git` users group.
+   `foo.git` must be owned by the `git` user and `git` users group.
 
    If you are using an installation from source, replace `/var/opt/gitlab/` with `/home/git`.
 
@@ -61,7 +61,7 @@ To import bare repositories into a GitLab instance:
    sudo gitlab-rake gitlab:import:repos["/var/opt/gitlab/git-data/repository-import-$(date "+%Y-%m-%d")"]
    ```
 
-   - Installation from source. Before running this command you need to change to the directory where
+   - Installation from source. Before running this command you must change to the directory where
      your GitLab installation is located:
 
    ```shell

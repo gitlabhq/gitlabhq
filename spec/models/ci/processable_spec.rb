@@ -24,7 +24,7 @@ RSpec.describe Ci::Processable do
       new_proc
     end
 
-    let_it_be(:stage) { create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'test') }
+    let_it_be(:stage) { create(:ci_stage, project: project, pipeline: pipeline, name: 'test') }
 
     shared_context 'processable bridge' do
       let_it_be(:downstream_project) { create(:project, :repository) }
@@ -57,7 +57,7 @@ RSpec.describe Ci::Processable do
       let(:clone_accessors) { ::Ci::Build.clone_accessors.without(::Ci::Build.extra_accessors) }
 
       let(:reject_accessors) do
-        %i[id status user token token_encrypted coverage trace runner
+        %i[id status user token_encrypted coverage trace runner
            artifacts_expire_at
            created_at updated_at started_at finished_at queued_at erased_by
            erased_at auto_canceled_by job_artifacts job_artifacts_archive

@@ -16,7 +16,6 @@ import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
 import Diagram from '../extensions/diagram';
-import Division from '../extensions/division';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
 import Emoji from '../extensions/emoji';
@@ -32,6 +31,7 @@ import Heading from '../extensions/heading';
 import History from '../extensions/history';
 import HorizontalRule from '../extensions/horizontal_rule';
 import HTMLMarks from '../extensions/html_marks';
+import HTMLNodes from '../extensions/html_nodes';
 import Image from '../extensions/image';
 import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
@@ -103,7 +103,6 @@ export const createContentEditor = ({
     DetailsContent,
     Document,
     Diagram,
-    Division,
     Dropcursor,
     Emoji,
     Figure,
@@ -118,6 +117,7 @@ export const createContentEditor = ({
     History,
     HorizontalRule,
     ...HTMLMarks,
+    ...HTMLNodes,
     Image,
     InlineDiff,
     Italic,

@@ -1,4 +1,5 @@
 import { uniqueId } from 'lodash';
+import { historyReplaceState, NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/common_utils';
 import {
   ACTIVE_TAB_CLASSES,
   ATTR_ROLE,
@@ -12,9 +13,11 @@ import {
   KEY_CODE_RIGHT,
   KEY_CODE_DOWN,
   TAB_SHOWN_EVENT,
+  HISTORY_TYPE_HASH,
+  ALLOWED_HISTORY_TYPES,
 } from './constants';
 
-export { TAB_SHOWN_EVENT };
+export { TAB_SHOWN_EVENT, HISTORY_TYPE_HASH };
 
 /**
  * The `GlTabsBehavior` class adds interactivity to tabs created by the `gl_tabs_nav` and
@@ -88,9 +91,13 @@ export class GlTabsBehavior {
   /**
    * Create a GlTabsBehavior instance.
    *
-   * @param {HTMLElement} el The element created by the Rails `gl_tabs_nav` helper.
+   * @param {HTMLElement} el - The element created by the Rails `gl_tabs_nav` helper.
+   * @param {Object} [options]
+   * @param {'hash' | null} [options.history=null] - Sets the type of routing GlTabs will use when navigating between tabs.
+   *    'hash': Updates the URL hash with the current tab ID.
+   *    null: No routing mechanism will be used.
    */
-  constructor(el) {
+  constructor(el, { history = null } = {}) {
     if (!el) {
       throw new Error('Cannot instantiate GlTabsBehavior without an element');
     }
@@ -100,8 +107,11 @@ export class GlTabsBehavior {
     this.tabs = this.getTabs();
     this.activeTab = null;
 
+    this.history = ALLOWED_HISTORY_TYPES.includes(history) ? history : null;
+
     this.setAccessibilityAttrs();
     this.bindEvents();
+    if (this.history === HISTORY_TYPE_HASH) this.loadInitialTab();
   }
 
   setAccessibilityAttrs() {
@@ -128,6 +138,7 @@ export class GlTabsBehavior {
         tab.setAttribute(ATTR_ARIA_CONTROLS, tabPanel.id);
       }
 
+      tabPanel.classList.add(NO_SCROLL_TO_HASH_CLASS);
       tabPanel.setAttribute(ATTR_ROLE, 'tabpanel');
       tabPanel.setAttribute(ATTR_ARIA_LABELLEDBY, tab.id);
     });
@@ -162,6 +173,11 @@ export class GlTabsBehavior {
     this.destroyFns.push(() => {
       el.removeEventListener(...args);
     });
+  }
+
+  loadInitialTab() {
+    const tab = this.tabList.querySelector(`a[href="${CSS.escape(window.location.hash)}"]`);
+    this.activateTab(tab || this.activeTab);
   }
 
   activatePreviousTab() {
@@ -216,6 +232,7 @@ export class GlTabsBehavior {
     const tabPanel = this.getPanelForTab(tabToActivate);
     tabPanel.classList.add(ACTIVE_PANEL_CLASS);
 
+    if (this.history === HISTORY_TYPE_HASH) historyReplaceState(tabToActivate.getAttribute('href'));
     this.activeTab = tabToActivate;
 
     this.dispatchTabShown(tabToActivate, tabPanel);

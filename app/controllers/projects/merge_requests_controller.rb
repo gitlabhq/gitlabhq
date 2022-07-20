@@ -32,10 +32,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   before_action only: [:show] do
-    push_frontend_feature_flag(:file_identifier_hash)
     push_frontend_feature_flag(:merge_request_widget_graphql, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:confidential_notes, project)
     push_frontend_feature_flag(:restructured_mr_widget, project)
     push_frontend_feature_flag(:refactor_mr_widgets_extensions, project)
     push_frontend_feature_flag(:refactor_code_quality_extension, project)
@@ -44,10 +42,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:realtime_labels, project)
     push_frontend_feature_flag(:refactor_security_extension, @project)
+    push_frontend_feature_flag(:refactor_code_quality_inline_findings, project)
     push_frontend_feature_flag(:mr_attention_requests, current_user)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:paginated_mr_discussions, project)
     push_frontend_feature_flag(:mr_review_submit_comment, project)
+    push_frontend_feature_flag(:mr_experience_survey, project)
   end
 
   before_action do
@@ -86,6 +86,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :rebase,
     :discussions,
     :pipelines,
+    :coverage_reports,
     :test_reports,
     :codequality_mr_diff_reports,
     :codequality_reports,

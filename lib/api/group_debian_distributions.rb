@@ -6,6 +6,10 @@ module API
       requires :id, type: String, desc: 'The ID of a group'
     end
 
+    before do
+      not_found! if Gitlab::FIPS.enabled?
+    end
+
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       after_validation do
         require_packages_enabled!

@@ -108,13 +108,9 @@ class Deployment < ApplicationRecord
       end
     end
 
-    after_transition any => :running do |deployment|
+    after_transition any => :running do |deployment, transition|
       deployment.run_after_commit do
-        if Feature.enabled?(:deployment_hooks_skip_worker, deployment.project)
-          deployment.execute_hooks(Time.current)
-        else
-          Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
-        end
+        Deployments::HooksWorker.perform_async(deployment_id: id, status: transition.to, status_changed_at: Time.current)
       end
     end
 
@@ -126,13 +122,9 @@ class Deployment < ApplicationRecord
       end
     end
 
-    after_transition any => FINISHED_STATUSES do |deployment|
+    after_transition any => FINISHED_STATUSES do |deployment, transition|
       deployment.run_after_commit do
-        if Feature.enabled?(:deployment_hooks_skip_worker, deployment.project)
-          deployment.execute_hooks(Time.current)
-        else
-          Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
-        end
+        Deployments::HooksWorker.perform_async(deployment_id: id, status: transition.to, status_changed_at: Time.current)
       end
     end
 
@@ -193,7 +185,7 @@ class Deployment < ApplicationRecord
   def self.last_deployment_group_for_environment(env)
     return self.none unless env.last_deployment_pipeline&.latest_successful_builds&.present?
 
-    BatchLoader.for(env).batch do |environments, loader|
+    BatchLoader.for(env).batch(default_value: self.none) do |environments, loader|
       latest_successful_build_ids = []
       environments_hash = {}
 
@@ -269,8 +261,8 @@ class Deployment < ApplicationRecord
     Commit.truncate_sha(sha)
   end
 
-  def execute_hooks(status_changed_at)
-    deployment_data = Gitlab::DataBuilder::Deployment.build(self, status_changed_at)
+  def execute_hooks(status, status_changed_at)
+    deployment_data = Gitlab::DataBuilder::Deployment.build(self, status, status_changed_at)
     project.execute_hooks(deployment_data, :deployment_hooks)
     project.execute_integrations(deployment_data, :deployment_hooks)
   end

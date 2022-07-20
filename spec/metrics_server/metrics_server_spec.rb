@@ -171,6 +171,29 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
               described_class.spawn(target, metrics_dir: metrics_dir)
             end
           end
+
+          context 'when TLS settings are present' do
+            before do
+              %w(web_exporter sidekiq_exporter).each do |key|
+                settings[key]['tls_enabled'] = true
+                settings[key]['tls_cert_path'] = '/path/to/cert.pem'
+                settings[key]['tls_key_path'] = '/path/to/key.pem'
+              end
+            end
+
+            it 'sets the correct environment variables' do
+              expect(Process).to receive(:spawn).with(
+                expected_env.merge(
+                  'GME_CERT_FILE' => '/path/to/cert.pem',
+                  'GME_CERT_KEY' => '/path/to/key.pem'
+                ),
+                '/path/to/gme/gitlab-metrics-exporter',
+                hash_including(pgroup: true)
+              ).and_return(99)
+
+              described_class.spawn(target, metrics_dir: metrics_dir, path: '/path/to/gme/')
+            end
+          end
         end
       end
     end

@@ -108,10 +108,12 @@ ci_resource_groups: :gitlab_ci
 ci_resources: :gitlab_ci
 ci_runner_namespaces: :gitlab_ci
 ci_runner_projects: :gitlab_ci
+ci_runner_versions: :gitlab_ci
 ci_runners: :gitlab_ci
 ci_running_builds: :gitlab_ci
 ci_sources_pipelines: :gitlab_ci
 ci_secure_files: :gitlab_ci
+ci_secure_file_states: :gitlab_ci
 ci_sources_projects: :gitlab_ci
 ci_stages: :gitlab_ci
 ci_subscriptions_projects: :gitlab_ci
@@ -131,7 +133,6 @@ cluster_providers_gcp: :gitlab_main
 clusters_applications_cert_managers: :gitlab_main
 clusters_applications_cilium: :gitlab_main
 clusters_applications_crossplane: :gitlab_main
-clusters_applications_elastic_stacks: :gitlab_main
 clusters_applications_helm: :gitlab_main
 clusters_applications_ingress: :gitlab_main
 clusters_applications_jupyter: :gitlab_main
@@ -139,7 +140,6 @@ clusters_applications_knative: :gitlab_main
 clusters_applications_prometheus: :gitlab_main
 clusters_applications_runners: :gitlab_main
 clusters: :gitlab_main
-clusters_integration_elasticstack: :gitlab_main
 clusters_integration_prometheus: :gitlab_main
 clusters_kubernetes_namespaces: :gitlab_main
 commit_user_mentions: :gitlab_main
@@ -325,6 +325,7 @@ milestone_releases: :gitlab_main
 milestones: :gitlab_main
 namespace_admin_notes: :gitlab_main
 namespace_aggregation_schedules: :gitlab_main
+namespace_bans: :gitlab_main
 namespace_limits: :gitlab_main
 namespace_package_settings: :gitlab_main
 namespace_root_storage_statistics: :gitlab_main
@@ -423,6 +424,8 @@ project_incident_management_settings: :gitlab_main
 project_metrics_settings: :gitlab_main
 project_mirror_data: :gitlab_main
 project_pages_metadata: :gitlab_main
+project_relation_export_uploads: :gitlab_main
+project_relation_exports: :gitlab_main
 project_repositories: :gitlab_main
 project_repository_states: :gitlab_main
 project_repository_storage_moves: :gitlab_main
@@ -432,7 +435,6 @@ projects: :gitlab_main
 projects_sync_events: :gitlab_main
 project_statistics: :gitlab_main
 project_topics: :gitlab_main
-project_tracing_settings: :gitlab_main
 prometheus_alert_events: :gitlab_main
 prometheus_alerts: :gitlab_main
 prometheus_metrics: :gitlab_main
@@ -467,6 +469,10 @@ routes: :gitlab_main
 saml_group_links: :gitlab_main
 saml_providers: :gitlab_main
 saved_replies: :gitlab_main
+sbom_components: :gitlab_main
+sbom_occurrences: :gitlab_main
+sbom_component_versions: :gitlab_main
+sbom_sources: :gitlab_main
 schema_migrations: :gitlab_internal
 scim_identities: :gitlab_main
 scim_oauth_access_tokens: :gitlab_main
@@ -547,6 +553,7 @@ vulnerability_flags: :gitlab_main
 vulnerability_historical_statistics: :gitlab_main
 vulnerability_identifiers: :gitlab_main
 vulnerability_issue_links: :gitlab_main
+vulnerability_merge_request_links: :gitlab_main
 vulnerability_occurrence_identifiers: :gitlab_main
 vulnerability_occurrence_pipelines: :gitlab_main
 vulnerability_occurrences: :gitlab_main
@@ -571,3 +578,4 @@ zentao_tracker_data: :gitlab_main
 dingtalk_tracker_data: :gitlab_main
 zoom_meetings: :gitlab_main
 batched_background_migration_job_transition_logs: :gitlab_shared
+user_namespace_callouts: :gitlab_main

@@ -33,7 +33,7 @@ The Admin Area is made up of the following sections:
 | **{license}** License                          | Add, display, and remove [licenses](license.md). |
 | **{cloud-gear}** Kubernetes                    | Create and manage instance-level [Kubernetes clusters](../instance/clusters/index.md). |
 | **{push-rules}** Push rules | Configure pre-defined Git [push rules](../project/repository/push_rules.md) for projects. Also, configure [merge requests approvers rules](merge_requests_approvals.md). |
-| **{location-dot}** Geo                         | Configure and maintain [Geo nodes](geo_nodes.md). |
+| **{location-dot}** Geo                         | Configure and maintain [Geo sites](geo_sites.md). |
 | **{key}** Deploy keys                          | Create instance-wide [SSH deploy keys](../project/deploy_keys/index.md). |
 | **{lock}** Credentials                         | View [credentials](credentials_inventory.md) that can be used to access your instance. |
 | **{template}** Integrations                    | Manage [instance-level default settings](settings/project_integration_management.md) for a project integration. |
@@ -184,7 +184,7 @@ The following data is included in the export:
 - Type
 - Path
 - Access level ([Project](../permissions.md#project-members-permissions) and [Group](../permissions.md#group-members-permissions))
-- Date of last activity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345388) in GitLab 14.6). For a list of activities that populate this column, see the [Users API documentation](../../api/users.md#get-user-activities-administrator-only).
+- Date of last activity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345388) in GitLab 14.6). For a list of activities that populate this column, see the [Users API documentation](../../api/users.md#get-user-activities).
 
 Only the first 100,000 user accounts are exported.
 
@@ -269,6 +269,8 @@ For each topic, the page displays its name and the number of projects labeled wi
 To create a new topic, select **New topic**.
 
 To edit a topic, select **Edit** in that topic's row.
+
+To remove a topic, select **Remove** in that topic's row.
 
 To search for topics by name, enter your criteria in the search box. The topic search is case
 insensitive and applies partial matching.
@@ -370,14 +372,16 @@ The following topics document the **Monitoring** section of the Admin Area.
 
 ### System Information
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2, support for relative time. "Uptime" statistic was renamed to "System started".
+
 The **System Info** page provides the following statistics:
 
-| Field        | Description |
-|:-------------|:------------|
-| CPU          | Number of CPU cores available |
-| Memory Usage | Memory in use, and total memory available |
-| Disk Usage   | Disk space in use, and total disk space available |
-| Uptime       | Approximate uptime of the GitLab instance |
+| Field          | Description                                       |
+|:---------------|:--------------------------------------------------|
+| CPU            | Number of CPU cores available                     |
+| Memory Usage   | Memory in use, and total memory available         |
+| Disk Usage     | Disk space in use, and total disk space available |
+| System started | When the system hosting GitLab was started. In GitLab 15.1 and earlier, this was an uptime statistic. |
 
 These statistics are updated only when you navigate to the **System Info** page, or you refresh the page in your browser.
 

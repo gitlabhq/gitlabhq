@@ -76,7 +76,7 @@ module QA
         end
 
         def set_visibility(visibility)
-          choose visibility.capitalize
+          find('label', text: visibility.capitalize).click
         end
 
         # Disable experiment for SAST at project creation https://gitlab.com/gitlab-org/gitlab/-/issues/333196

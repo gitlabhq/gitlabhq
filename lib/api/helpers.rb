@@ -225,7 +225,11 @@ module API
     def find_project_issue(iid, project_id = nil)
       project = project_id ? find_project!(project_id) : user_project
 
-      ::IssuesFinder.new(current_user, project_id: project.id).find_by!(iid: iid)
+      ::IssuesFinder.new(
+        current_user,
+        project_id: project.id,
+        issue_types: WorkItems::Type.allowed_types_for_issues
+      ).find_by!(iid: iid)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -476,9 +480,9 @@ module API
       render_api_error!('202 Accepted', 202)
     end
 
-    def render_validation_error!(model)
+    def render_validation_error!(model, status = 400)
       if model.errors.any?
-        render_api_error!(model_error_messages(model) || '400 Bad Request', 400)
+        render_api_error!(model_error_messages(model) || '400 Bad Request', status)
       end
     end
 
@@ -637,6 +641,7 @@ module API
                  :last_activity_after,
                  :last_activity_before,
                  :topic,
+                 :topic_id,
                  :repository_storage)
           .symbolize_keys
           .compact

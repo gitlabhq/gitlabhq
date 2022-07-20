@@ -107,7 +107,7 @@ RSpec.describe Gitlab::X509::Signature do
             f.print certificate.to_pem
           end
 
-          stub_const("OpenSSL::X509::DEFAULT_CERT_FILE", file_path)
+          allow(Gitlab::X509::Certificate).to receive(:default_cert_file).and_return(file_path)
 
           allow(OpenSSL::X509::Store).to receive(:new).and_return(store)
         end

@@ -1,29 +1,29 @@
 = form_for [@project, @protected_branch], html: { class: 'new-protected-branch js-new-protected-branch' } do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-protected-branches-settings' }
   .card
-    .card-header
+    .card-header.gl-font-weight-bold
       = s_("ProtectedBranch|Protect a branch")
     .card-body
-      = form_errors(@protected_branch)
+      = form_errors(@protected_branch, pajamas_alert: true)
       .form-group.row
-        = f.label :name, s_('ProtectedBranch|Branch:'), class: 'col-md-2 text-left text-md-right'
-        .col-md-10
-          = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f }
+        = f.label :name, s_('ProtectedBranch|Branch:'), class: 'col-sm-12'
+        .col-sm-12
+          = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f, toggle_classes: 'gl-w-full! gl-form-input-lg' }
           .form-text.text-muted
             - wildcards_url = help_page_url('user/project/protected_branches', anchor: 'configure-multiple-protected-branches-by-using-a-wildcard')
             - wildcards_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wildcards_url }
             = (s_("ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported.") % { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>', code_tag_start: '<code>', code_tag_end: '</code>' }).html_safe
       .form-group.row
-        = f.label :merge_access_levels_attributes, s_("ProtectedBranch|Allowed to merge:"), class: 'col-md-2 text-left text-md-right'
-        .col-md-10
+        = f.label :merge_access_levels_attributes, s_("ProtectedBranch|Allowed to merge:"), class: 'col-sm-12'
+        .col-sm-12
           = yield :merge_access_levels
       .form-group.row
-        = f.label :push_access_levels_attributes, s_("ProtectedBranch|Allowed to push:"), class: 'col-md-2 text-left text-md-right'
-        .col-md-10
+        = f.label :push_access_levels_attributes, s_("ProtectedBranch|Allowed to push:"), class: 'col-sm-12'
+        .col-sm-12
           = yield :push_access_levels
       .form-group.row
-        = f.label :allow_force_push, s_("ProtectedBranch|Allowed to force push:"), class: 'col-md-2 gl-text-left text-md-right'
-        .col-md-10
+        = f.label :allow_force_push, s_("ProtectedBranch|Allowed to force push:"), class: 'col-sm-12'
+        .col-sm-12
           = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',
             label: s_("ProtectedBranch|Allowed to force push"),
             label_position: :hidden) do

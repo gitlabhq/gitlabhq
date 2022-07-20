@@ -31,22 +31,19 @@
             %ul
               - if label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
                 %li
-                  %button.js-promote-project-label-button.gl-button.btn.btn-default-tertiary{ disabled: true, type: 'button',
-                    data: { url: promote_project_label_path(label.project, label),
-                            label_title: label.title,
-                            label_color: label.color,
-                            label_text_color: label.text_color,
-                            group_name: label.project.group.name } }
+                  = render Pajamas::ButtonComponent.new(category: :tertiary,
+                    button_options: { class: 'js-promote-project-label-button', data: { url: promote_project_label_path(label.project, label), label_title: label.title, label_color: label.color, label_text_color: label.text_color, group_name: label.project.group.name } } ) do
                     = _('Promote to group label')
               %li
                 %span
-                  %button.text-danger.js-delete-label-modal-button{ type: 'button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }
+                  = render Pajamas::ButtonComponent.new(category: :tertiary,
+                    button_options: { class: 'text-danger js-delete-label-modal-button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } } ) do
                     = _('Delete')
     - if current_user
       %li.gl-display-inline-block.label-subscription.js-label-subscription.gl-ml-3
         - if label.can_subscribe_to_label_in_different_levels?
-          %button.js-unsubscribe-button.gl-button.btn.btn-default.gl-w-full{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
-            %span.gl-button-text= _('Unsubscribe')
+          = render Pajamas::ButtonComponent.new(button_options: { class: "js-unsubscribe-button #{('hidden' if status.unsubscribed?)}", data: { url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title } ) do
+            = _('Unsubscribe')
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
             = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-w-full', data: { toggle: 'dropdown' } }) do
               = _('Subscribe')
@@ -54,11 +51,11 @@
             .dropdown-menu.dropdown-open-left
               %ul
                 %li
-                  %button.js-subscribe-button{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }
-                    %span.gl-button-text= _('Subscribe at project level')
+                  = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: "js-subscribe-button #{('hidden' unless status.unsubscribed?)}", data: { status: status, url: toggle_subscription_project_label_path(@project, label) } } ) do
+                    = _('Subscribe at project level')
                 %li
-                  %button.js-subscribe-button.js-group-level{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
-                    %span.gl-button-text= _('Subscribe at group level')
+                  = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: "js-subscribe-button js-group-level #{('hidden' unless status.unsubscribed?)}", data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } } ) do
+                    = _('Subscribe at group level')
         - else
-          %button.gl-button.js-subscribe-button.btn.btn-default.gl-w-full{ data: { status: status, url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
-            %span.gl-button-text= label_subscription_toggle_button_text(label, @project)
+          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-subscribe-button gl-w-full', data: { status: status, url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title } ) do
+            = label_subscription_toggle_button_text(label, @project)

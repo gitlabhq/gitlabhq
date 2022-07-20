@@ -25,14 +25,18 @@ class EventCreateService
   def open_mr(merge_request, current_user)
     create_record_event(merge_request, current_user, :created).tap do
       track_event(event_action: :created, event_target: MergeRequest, author_id: current_user.id)
-      track_mr_snowplow_event(merge_request, current_user, :create)
+      track_snowplow_event(merge_request, current_user,
+                           Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION,
+                           :create, 'merge_requests_users')
     end
   end
 
   def close_mr(merge_request, current_user)
     create_record_event(merge_request, current_user, :closed).tap do
       track_event(event_action: :closed, event_target: MergeRequest, author_id: current_user.id)
-      track_mr_snowplow_event(merge_request, current_user, :close)
+      track_snowplow_event(merge_request, current_user,
+                           Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION,
+                           :close, 'merge_requests_users')
     end
   end
 
@@ -43,7 +47,9 @@ class EventCreateService
   def merge_mr(merge_request, current_user)
     create_record_event(merge_request, current_user, :merged).tap do
       track_event(event_action: :merged, event_target: MergeRequest, author_id: current_user.id)
-      track_mr_snowplow_event(merge_request, current_user, :merge)
+      track_snowplow_event(merge_request, current_user,
+                           Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION,
+                           :merge, 'merge_requests_users')
     end
   end
 
@@ -67,7 +73,9 @@ class EventCreateService
     create_record_event(note, current_user, :commented).tap do
       if note.is_a?(DiffNote) && note.for_merge_request?
         track_event(event_action: :commented, event_target: MergeRequest, author_id: current_user.id)
-        track_mr_snowplow_event(note, current_user, :comment)
+        track_snowplow_event(note, current_user,
+                             Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION,
+                             :comment, 'merge_requests_users')
       end
     end
   end
@@ -100,12 +108,27 @@ class EventCreateService
     records = create.zip([:created].cycle) + update.zip([:updated].cycle)
     return [] if records.empty?
 
+    if create.any?
+      track_snowplow_event(create.first, current_user,
+                           Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION,
+                           :create, 'design_users')
+    end
+
+    if update.any?
+      track_snowplow_event(update.first, current_user,
+                           Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION,
+                           :update, 'design_users')
+    end
+
     create_record_events(records, current_user)
   end
 
   def destroy_designs(designs, current_user)
     return [] unless designs.present?
 
+    track_snowplow_event(designs.first, current_user,
+                         Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION,
+                         :destroy, 'design_users')
     create_record_events(designs.zip([:destroyed].cycle), current_user)
   end
 
@@ -230,14 +253,14 @@ class EventCreateService
     Gitlab::UsageDataCounters::TrackUniqueEvents.track_event(**params)
   end
 
-  def track_mr_snowplow_event(record, current_user, action)
+  def track_snowplow_event(record, current_user, category, action, label)
     return unless Feature.enabled?(:route_hll_to_snowplow_phase2)
 
     project = record.project
     Gitlab::Tracking.event(
-      Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION.to_s,
+      category.to_s,
       action.to_s,
-      label: 'merge_requests_users',
+      label: label,
       project: project,
       namespace: project.namespace,
       user: current_user

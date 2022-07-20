@@ -59,11 +59,12 @@ To enable 2FA with a one-time password:
    1. Select **Enable Two-factor Authentication**.
 1. **On your device (usually your phone):**
    1. Install a compatible application. For example:
+      - [Aegis](https://getaegis.app/)
+      - [Raivo OTP](https://apps.apple.com/us/app/raivo-otp/id1459042137#platform=iphone)
       - [Authy](https://authy.com/)
       - [Duo Mobile](https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app)
       - [LastPass Authenticator](https://lastpass.com/auth/)
       - [Authenticator](https://mattrubin.me/authenticator/)
-      - [andOTP](https://github.com/andOTP/andOTP)
       - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
       - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app)
       - [SailOTP](https://openrepos.net/content/seiichiro0185/sailotp)

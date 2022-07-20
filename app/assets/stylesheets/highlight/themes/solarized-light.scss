@@ -106,6 +106,7 @@ $solarized-light-il: #2aa198;
 }
 
 .code.solarized-light {
+  @include hljs-override('title.class_.inherited__', $solarized-light-no);
   // Line numbers
   .file-line-num {
     @include line-number-link($solarized-light-line-color);
@@ -169,7 +170,11 @@ $solarized-light-il: #2aa198;
     .diff-line-num.new,
     .line-coverage.new,
     .line-codequality.new,
-    .line_content.new {
+    .line_content.new,
+    .diff-line-num.new-nomappinginraw,
+    .line-coverage.new-nomappinginraw,
+    .line-codequality.new-nomappinginraw,
+    .line_content.new-nomappinginraw {
       @include diff-background($solarized-light-new-bg,
       $solarized-light-new-idiff, $solarized-light-border);
 
@@ -190,7 +195,11 @@ $solarized-light-il: #2aa198;
     .diff-line-num.old,
     .line-coverage.old,
     .line-codequality.old,
-    .line_content.old {
+    .line_content.old,
+    .diff-line-num.old-nomappinginraw,
+    .line-coverage.old-nomappinginraw,
+    .line-codequality.old-nomappinginraw,
+    .line_content.old-nomappinginraw {
       @include diff-background($solarized-light-old-bg, $solarized-light-old-idiff, $solarized-light-border);
 
       &::before,

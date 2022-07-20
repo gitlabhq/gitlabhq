@@ -42,13 +42,10 @@ export default {
         this.job.duration ||
           this.job.finished_at ||
           this.job.erased_at ||
-          this.job.queued ||
+          this.job.queued_duration ||
           this.job.runner ||
           this.job.coverage,
       );
-    },
-    queued() {
-      return timeIntervalInWords(this.job.queued);
     },
     runnerHelpUrl() {
       return helpPagePath('ci/runners/configure_runners.html', {
@@ -59,6 +56,9 @@ export default {
       const { id, short_sha: token, description } = this.job.runner;
 
       return `#${id} (${token}) ${description}`;
+    },
+    queuedDuration() {
+      return timeIntervalInWords(this.job.queued_duration);
     },
     shouldRenderBlock() {
       return Boolean(this.hasAnyDetail || this.hasTimeout || this.hasTags);
@@ -98,7 +98,7 @@ export default {
       :title="$options.i18n.FINISHED"
     />
     <detail-row v-if="job.erased_at" :value="erasedAt" :title="$options.i18n.ERASED" />
-    <detail-row v-if="job.queued" :value="queued" :title="$options.i18n.QUEUED" />
+    <detail-row v-if="job.queued_duration" :value="queuedDuration" :title="$options.i18n.QUEUED" />
     <detail-row
       v-if="hasTimeout"
       :help-url="runnerHelpUrl"

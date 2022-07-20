@@ -23,7 +23,10 @@ See [Award Emoji on Comments](#award-emoji-on-comments) for information on using
 
 ### List an awardable's award emojis
 
-Get a list of all award emojis for a specified awardable.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+
+Get a list of all award emojis for a specified awardable. This endpoint can
+be accessed without authentication if the awardable is publicly accessible.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/award_emoji
@@ -85,7 +88,10 @@ Example response:
 
 ### Get single award emoji
 
-Get a single award emoji from an issue, snippet, or merge request.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+
+Get a single award emoji from an issue, snippet, or merge request. This endpoint can
+be accessed without authentication if the awardable is publicly accessible.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/award_emoji/:award_id
@@ -206,7 +212,10 @@ adapted to comments on merge requests and snippets. Therefore, you have to repla
 
 ### List a comment's award emojis
 
-Get all award emojis for a comment (note).
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+
+Get all award emojis for a comment (note). This endpoint can
+be accessed without authentication if the comment is publicly accessible.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
@@ -251,7 +260,10 @@ Example response:
 
 ### Get an award emoji for a comment
 
-Get a single award emoji for a comment (note).
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+
+Get a single award emoji for a comment (note). This endpoint can
+be accessed without authentication if the comment is publicly accessible.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id

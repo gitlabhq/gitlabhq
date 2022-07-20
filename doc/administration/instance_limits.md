@@ -7,7 +7,7 @@ type: reference
 
 # GitLab application limits **(FREE SELF)**
 
-GitLab, like most large applications, enforces limits within certain features to maintain a
+GitLab, like most large applications, enforces limits in certain features to maintain a
 minimum quality of performance. Allowing some features to be limitless could affect security,
 performance, data, or could even exhaust the allocated resources for the application.
 
@@ -156,7 +156,7 @@ Set the limit to `0` to disable it.
 
 ### Search rate limit
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9.
 
 This setting limits global search requests.
 
@@ -309,7 +309,7 @@ Blocked recursive webhook calls are logged in `auth.log` with the message `"Recu
 The [minimum wait time between pull refreshes](../user/project/repository/mirror/index.md)
 defaults to 300 seconds (5 minutes). For example, a pull refresh only runs once in a given 300 second period, regardless of how many times you trigger it.
 
-This setting applies in the context of pull refreshes invoked via the [projects API](../api/projects.md#start-the-pull-mirroring-process-for-a-project), or when forcing an update by selecting the **Update now** (**{retry}**) button within **Settings > Repository > Mirroring repositories**. This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/mirror/pull.md).
+This setting applies in the context of pull refreshes invoked via the [projects API](../api/projects.md#start-the-pull-mirroring-process-for-a-project), or when forcing an update by selecting **Update now** (**{retry}**) in **Settings > Repository > Mirroring repositories**. This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/mirror/pull.md).
 
 To change this limit for a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -342,7 +342,7 @@ and to limit memory consumption.
 When using offset-based pagination in the REST API, there is a limit to the maximum
 requested offset into the set of results. This limit is only applied to endpoints that
 support keyset-based pagination. More information about pagination options can be
-found in the [API docs section on pagination](../api/index.md#pagination).
+found in the [API documentation section on pagination](../api/index.md#pagination).
 
 To set this limit for a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -793,19 +793,9 @@ Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17859) in GitLab 12.5.
 
-You can limit the number of inbound alerts for [incidents](../operations/incident_management/incidents.md)
-that can be created in a period of time. The inbound [incident management](../operations/incident_management/index.md)
-alert limit can help prevent overloading your incident responders by reducing the
-number of alerts or duplicate issues.
+This setting limits the number of inbound alert payloads over a period of time.
 
-To set inbound incident management alert limits:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > Network**.
-1. Expand General **Incident Management Limits**.
-1. Select the **Enable Incident Management inbound alert limit** checkbox.
-1. Optional. Input a custom value for **Maximum requests per project per rate limit period**. Default is 3600.
-1. Optional. Input a custom value for **Rate limit period**. Default is 3600 seconds.
+Read more about [incident management rate limits](../user/admin_area/settings/rate_limit_on_pipelines_creation.md).
 
 ### Prometheus Alert JSON payloads
 
@@ -954,7 +944,7 @@ The maximum allowed [push size](../user/admin_area/settings/account_and_limit_se
 Total number of changes (branches or tags) in a single push. If changes are more
 than the specified limit, hooks are not executed.
 
-More information can be found in these docs:
+More information can be found in these documentations:
 
 - [Webhooks push events](../user/project/integrations/webhook_events.md#push-events)
 - [Project services push hooks limit](../user/project/integrations/index.md#push-hooks-limit)
@@ -1050,7 +1040,7 @@ In addition to application-based limits, GitLab.com is configured to use Cloudfl
 
 ## Container Repository tag deletion limit
 
-Container repository tags are in the Container Registry and, as such, each tag deletion will trigger network requests to the Container Registry. Because of this, we limit the number of tags that a single API call can delete to 20.
+Container repository tags are in the Container Registry and, as such, each tag deletion triggers network requests to the Container Registry. Because of this, we limit the number of tags that a single API call can delete to 20.
 
 ## Project-level Secure Files API limits
 

@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-properties, camelcase,
+/* eslint-disable camelcase,
 no-unused-expressions, default-case,
 consistent-return, no-param-reassign,
 no-shadow, no-useless-escape,
@@ -10,7 +10,7 @@ class-methods-use-this */
 deprecated_notes_spec.js is the spec for the legacy, jQuery notes application. It has nothing to do with the new, fancy Vue notes app.
  */
 
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import Autosize from 'autosize';
 import $ from 'jquery';
 import { escape, uniqueId } from 'lodash';
@@ -357,7 +357,7 @@ export default class Notes {
     if (shouldReset == null) {
       shouldReset = true;
     }
-    const nthInterval = this.basePollingInterval * Math.pow(2, this.maxPollingSteps - 1);
+    const nthInterval = this.basePollingInterval * 2 ** (this.maxPollingSteps - 1);
     if (shouldReset) {
       this.pollingInterval = this.basePollingInterval;
     } else if (this.pollingInterval < nthInterval) {
@@ -1233,10 +1233,10 @@ export default class Notes {
     new Vue({
       el,
       components: {
-        GlSkeletonLoading,
+        GlSkeletonLoader,
       },
       render(createElement) {
-        return createElement('gl-skeleton-loading');
+        return createElement('gl-skeleton-loader');
       },
     });
   }

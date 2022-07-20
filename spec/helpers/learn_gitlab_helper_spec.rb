@@ -92,38 +92,6 @@ RSpec.describe LearnGitlabHelper do
 
     it_behaves_like 'has all data'
 
-    it 'sets correct paths' do
-      expect(onboarding_actions_data).to match({
-                                                 trial_started: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/2\z})
-                                                 ),
-                                                 pipeline_created: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/7\z})
-                                                 ),
-                                                 code_owners_enabled: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/10\z})
-                                                 ),
-                                                 required_mr_approvals_enabled: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/11\z})
-                                                 ),
-                                                 issue_created: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/issues\z})
-                                                 ),
-                                                 git_write: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab\z})
-                                                 ),
-                                                 user_added: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/project_members\z})
-                                                 ),
-                                                 merge_request_created: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/merge_requests\z})
-                                                 ),
-                                                 security_scan_enabled: a_hash_including(
-                                                   url: a_string_matching(%r{/learn_gitlab/-/security/configuration\z})
-                                                 )
-                                               })
-    end
-
     it 'sets correct completion statuses' do
       expect(onboarding_actions_data).to match({
                                                  issue_created: a_hash_including(completed: false),
@@ -136,6 +104,59 @@ RSpec.describe LearnGitlabHelper do
                                                  code_owners_enabled: a_hash_including(completed: false),
                                                  security_scan_enabled: a_hash_including(completed: false)
                                                })
+    end
+
+    describe 'security_actions_continuous_onboarding experiment' do
+      let(:base_paths) do
+        {
+          trial_started: a_hash_including(url: %r{/learn_gitlab/-/issues/2\z}),
+          pipeline_created: a_hash_including(url: %r{/learn_gitlab/-/issues/7\z}),
+          code_owners_enabled: a_hash_including(url: %r{/learn_gitlab/-/issues/10\z}),
+          required_mr_approvals_enabled: a_hash_including(url: %r{/learn_gitlab/-/issues/11\z}),
+          issue_created: a_hash_including(url: %r{/learn_gitlab/-/issues\z}),
+          git_write: a_hash_including(url: %r{/learn_gitlab\z}),
+          user_added: a_hash_including(url: %r{/learn_gitlab/-/project_members\z}),
+          merge_request_created: a_hash_including(url: %r{/learn_gitlab/-/merge_requests\z})
+        }
+      end
+
+      context 'when control' do
+        before do
+          stub_experiments(security_actions_continuous_onboarding: :control)
+        end
+
+        it 'sets correct paths' do
+          expect(onboarding_actions_data).to match(
+            base_paths.merge(
+              security_scan_enabled: a_hash_including(
+                url: %r{/learn_gitlab/-/security/configuration\z}
+              )
+            )
+          )
+        end
+      end
+
+      context 'when candidate' do
+        before do
+          stub_experiments(security_actions_continuous_onboarding: :candidate)
+        end
+
+        it 'sets correct paths' do
+          expect(onboarding_actions_data).to match(
+            base_paths.merge(
+              license_scanning_run: a_hash_including(
+                url: described_class::LICENSE_SCANNING_RUN_URL
+              ),
+              secure_dependency_scanning_run: a_hash_including(
+                url: project_security_configuration_path(project, anchor: 'dependency-scanning')
+              ),
+              secure_dast_run: a_hash_including(
+                url: project_security_configuration_path(project, anchor: 'dast')
+              )
+            )
+          )
+        end
+      end
     end
   end
 end

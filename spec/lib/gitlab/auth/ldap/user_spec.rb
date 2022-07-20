@@ -49,6 +49,24 @@ RSpec.describe Gitlab::Auth::Ldap::User do
     end
   end
 
+  describe '#valid_sign_in?' do
+    before do
+      gl_user.save!
+    end
+
+    it 'returns true' do
+      expect(Gitlab::Auth::Ldap::Access).to receive(:allowed?).and_return(true)
+      expect(ldap_user.valid_sign_in?).to be true
+    end
+
+    it 'returns false if the GitLab user is not valid' do
+      gl_user.update_column(:username, nil)
+
+      expect(Gitlab::Auth::Ldap::Access).not_to receive(:allowed?)
+      expect(ldap_user.valid_sign_in?).to be false
+    end
+  end
+
   describe 'find or create' do
     it "finds the user if already existing" do
       create(:omniauth_user, extern_uid: 'uid=john smith,ou=people,dc=example,dc=com', provider: 'ldapmain')

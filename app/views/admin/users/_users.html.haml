@@ -64,6 +64,6 @@
         = gl_redirect_listbox_tag admin_users_sort_options(filter: params[:filter], search_query: params[:search_query]), @sort, data: { right: true }
 
 #js-admin-users-app{ data: admin_users_data_attributes(@users) }
-  = gl_loading_icon(size: 'lg', css_class: 'gl-my-7')
+  = render Pajamas::SpinnerComponent.new(size: :lg, class: 'gl-my-7')
 
 = paginate_collection @users

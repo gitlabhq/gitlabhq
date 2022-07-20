@@ -133,6 +133,8 @@ export default {
           signal: this.activeApiRequestAbortController.signal,
         });
 
+        this.apiLoading = false;
+
         if (exists) {
           if (suggests.length) {
             return Promise.resolve({ exists, suggests });
@@ -148,14 +150,14 @@ export default {
         return Promise.resolve({ exists, suggests });
       } catch (error) {
         if (!axios.isCancel(error)) {
+          this.apiLoading = false;
+
           createAlert({
             message: this.$options.i18n.apiErrorMessage,
           });
         }
 
         return Promise.reject();
-      } finally {
-        this.apiLoading = false;
       }
     },
     handlePathInput(value) {

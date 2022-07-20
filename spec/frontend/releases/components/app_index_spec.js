@@ -8,6 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
 import createFlash from '~/flash';
 import { historyPushState } from '~/lib/utils/common_utils';
+import { sprintf, __ } from '~/locale';
 import ReleasesIndexApp from '~/releases/components/app_index.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
@@ -15,6 +16,7 @@ import ReleasesEmptyState from '~/releases/components/releases_empty_state.vue';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
 import { PAGE_SIZE, CREATED_ASC, DEFAULT_SORT } from '~/releases/constants';
+import { deleteReleaseSessionKey } from '~/releases/util';
 
 Vue.use(VueApollo);
 
@@ -44,6 +46,7 @@ describe('app_index.vue', () => {
   let singleRelease;
   let noReleases;
   let queryMock;
+  let toast;
 
   const createComponent = ({
     singleResponse = Promise.resolve(singleRelease),
@@ -58,11 +61,16 @@ describe('app_index.vue', () => {
       ],
     ]);
 
+    toast = jest.fn();
+
     wrapper = shallowMountExtended(ReleasesIndexApp, {
       apolloProvider,
       provide: {
         newReleasePath,
         projectPath,
+      },
+      mocks: {
+        $toast: { show: toast },
       },
     });
   };
@@ -394,5 +402,28 @@ describe('app_index.vue', () => {
         });
       },
     );
+  });
+
+  describe('after deleting', () => {
+    const release = 'fake release';
+    const key = deleteReleaseSessionKey(projectPath);
+
+    beforeEach(async () => {
+      window.sessionStorage.setItem(key, release);
+
+      await createComponent();
+    });
+
+    it('shows a toast', async () => {
+      expect(toast).toHaveBeenCalledWith(
+        sprintf(__('Release %{release} has been successfully deleted.'), {
+          release,
+        }),
+      );
+    });
+
+    it('clears session storage', async () => {
+      expect(window.sessionStorage.getItem(key)).toBe(null);
+    });
   });
 });

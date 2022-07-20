@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'support/helpers/stubbed_feature'
+require 'support/helpers/stub_feature_flags'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Service do
-  let(:entry) { described_class.new(config) }
+  include StubFeatureFlags
 
   before do
+    stub_feature_flags(ci_docker_image_pull_policy: true)
     entry.compose!
   end
+
+  subject(:entry) { described_class.new(config) }
 
   context 'when configuration is a string' do
     let(:config) { 'postgresql:9.5' }
@@ -90,6 +95,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
       end
     end
 
+    describe '#pull_policy' do
+      it "returns nil" do
+        expect(entry.pull_policy).to be_nil
+      end
+    end
+
     context 'when configuration has ports' do
       let(:ports) { [{ number: 80, protocol: 'http', name: 'foobar' }] }
       let(:config) do
@@ -130,6 +141,49 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
         describe '#ports' do
           it "returns image's ports" do
             expect(entry.ports).to eq ports
+          end
+        end
+      end
+    end
+
+    context 'when configuration has pull_policy' do
+      let(:config) { { name: 'postgresql:9.5', pull_policy: 'if-not-present' } }
+
+      describe '#valid?' do
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+
+        context 'when the feature flag ci_docker_image_pull_policy is disabled' do
+          before do
+            stub_feature_flags(ci_docker_image_pull_policy: false)
+            entry.compose!
+          end
+
+          it 'is not valid' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include('service config contains unknown keys: pull_policy')
+          end
+        end
+      end
+
+      describe '#value' do
+        it "returns value" do
+          expect(entry.value).to eq(
+            name: 'postgresql:9.5',
+            pull_policy: ['if-not-present']
+          )
+        end
+
+        context 'when the feature flag ci_docker_image_pull_policy is disabled' do
+          before do
+            stub_feature_flags(ci_docker_image_pull_policy: false)
+          end
+
+          it 'is not valid' do
+            expect(entry.value).to eq(
+              name: 'postgresql:9.5'
+            )
           end
         end
       end

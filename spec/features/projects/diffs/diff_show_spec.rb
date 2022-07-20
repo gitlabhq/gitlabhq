@@ -169,8 +169,8 @@ RSpec.describe 'Diff file viewer', :js, :with_clean_rails_cache do
         wait_for_requests
       end
 
-      it 'shows there is no preview' do
-        expect(page).to have_content('No preview for this file type')
+      it 'shows that file was added' do
+        expect(page).to have_content('File added')
       end
     end
   end

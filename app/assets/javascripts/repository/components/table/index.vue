@@ -103,14 +103,12 @@ export default {
 
       return this.rowNumbers[key];
     },
-    getCommit(fileName, type) {
+    getCommit(fileName) {
       if (!this.glFeatures.lazyLoadCommits) {
         return {};
       }
 
-      return this.commits.find(
-        (commitEntry) => commitEntry.fileName === fileName && commitEntry.type === type,
-      );
+      return this.commits.find((commitEntry) => commitEntry.fileName === fileName);
     },
   },
 };
@@ -152,7 +150,7 @@ export default {
               :loading-path="loadingPath"
               :total-entries="totalEntries"
               :row-number="generateRowNumber(entry.flatPath, entry.id, index)"
-              :commit-info="getCommit(entry.name, entry.type)"
+              :commit-info="getCommit(entry.name)"
               v-on="$listeners"
             />
           </template>

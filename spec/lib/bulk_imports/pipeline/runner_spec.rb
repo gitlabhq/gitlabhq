@@ -15,7 +15,7 @@ RSpec.describe BulkImports::Pipeline::Runner do
     Class.new do
       def initialize(options = {}); end
 
-      def transform(context); end
+      def transform(context, data); end
     end
   end
 
@@ -23,7 +23,7 @@ RSpec.describe BulkImports::Pipeline::Runner do
     Class.new do
       def initialize(options = {}); end
 
-      def load(context); end
+      def load(context, data); end
     end
   end
 
@@ -44,10 +44,72 @@ RSpec.describe BulkImports::Pipeline::Runner do
   end
 
   let_it_be_with_reload(:entity) { create(:bulk_import_entity) }
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker, extra: :data) }
+
+  let(:tracker) { create(:bulk_import_tracker, entity: entity) }
+  let(:context) { BulkImports::Pipeline::Context.new(tracker, extra: :data) }
 
   subject { BulkImports::MyPipeline.new(context) }
+
+  shared_examples 'failed pipeline' do |exception_class, exception_message|
+    it 'logs import failure' do
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger).to receive(:error)
+          .with(
+            log_params(
+              context,
+              pipeline_step: :extractor,
+              pipeline_class: 'BulkImports::MyPipeline',
+              exception_class: exception_class,
+              exception_message: exception_message
+            )
+          )
+      end
+
+      expect { subject.run }
+        .to change(entity.failures, :count).by(1)
+
+      failure = entity.failures.first
+
+      expect(failure).to be_present
+      expect(failure.pipeline_class).to eq('BulkImports::MyPipeline')
+      expect(failure.pipeline_step).to eq('extractor')
+      expect(failure.exception_class).to eq(exception_class)
+      expect(failure.exception_message).to eq(exception_message)
+    end
+
+    context 'when pipeline is marked to abort on failure' do
+      before do
+        BulkImports::MyPipeline.abort_on_failure!
+      end
+
+      it 'logs a warn message and marks entity and tracker as failed' do
+        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          expect(logger).to receive(:warn)
+            .with(
+              log_params(
+                context,
+                message: 'Aborting entity migration due to pipeline failure',
+                pipeline_class: 'BulkImports::MyPipeline'
+              )
+            )
+        end
+
+        subject.run
+
+        expect(entity.failed?).to eq(true)
+        expect(tracker.failed?).to eq(true)
+      end
+    end
+
+    context 'when pipeline is not marked to abort on failure' do
+      it 'does not mark entity as failed' do
+        subject.run
+
+        expect(tracker.failed?).to eq(true)
+        expect(entity.failed?).to eq(false)
+      end
+    end
+  end
 
   describe 'pipeline runner' do
     context 'when entity is not marked as failed' do
@@ -145,70 +207,65 @@ RSpec.describe BulkImports::Pipeline::Runner do
         end
       end
 
-      context 'when exception is raised' do
+      context 'when the exception BulkImports::NetworkError is raised' do
+        before do
+          allow_next_instance_of(BulkImports::Extractor) do |extractor|
+            allow(extractor).to receive(:extract).with(context).and_raise(
+              BulkImports::NetworkError.new(
+                'Net::ReadTimeout',
+                response: instance_double(HTTParty::Response, code: reponse_status_code, headers: {})
+              )
+            )
+          end
+        end
+
+        context 'when exception is retriable' do
+          let(:reponse_status_code) { 429 }
+
+          it 'raises the exception BulkImports::RetryPipelineError' do
+            expect { subject.run }.to raise_error(BulkImports::RetryPipelineError)
+          end
+        end
+
+        context 'when exception is not retriable' do
+          let(:reponse_status_code) { 503 }
+
+          it_behaves_like 'failed pipeline', 'BulkImports::NetworkError', 'Net::ReadTimeout'
+        end
+      end
+
+      context 'when a retriable BulkImports::NetworkError exception is raised while extracting the next page' do
+        before do
+          call_count = 0
+          allow_next_instance_of(BulkImports::Extractor) do |extractor|
+            allow(extractor).to receive(:extract).with(context).twice do
+              if call_count.zero?
+                call_count += 1
+                extracted_data(has_next_page: true)
+              else
+                raise(
+                  BulkImports::NetworkError.new(
+                    response: instance_double(HTTParty::Response, code: 429, headers: {})
+                  )
+                )
+              end
+            end
+          end
+        end
+
+        it 'raises the exception BulkImports::RetryPipelineError' do
+          expect { subject.run }.to raise_error(BulkImports::RetryPipelineError)
+        end
+      end
+
+      context 'when the exception StandardError is raised' do
         before do
           allow_next_instance_of(BulkImports::Extractor) do |extractor|
             allow(extractor).to receive(:extract).with(context).and_raise(StandardError, 'Error!')
           end
         end
 
-        it 'logs import failure' do
-          expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-            expect(logger).to receive(:error)
-              .with(
-                log_params(
-                  context,
-                  pipeline_step: :extractor,
-                  pipeline_class: 'BulkImports::MyPipeline',
-                  exception_class: 'StandardError',
-                  exception_message: 'Error!'
-                )
-              )
-          end
-
-          expect { subject.run }
-            .to change(entity.failures, :count).by(1)
-
-          failure = entity.failures.first
-
-          expect(failure).to be_present
-          expect(failure.pipeline_class).to eq('BulkImports::MyPipeline')
-          expect(failure.pipeline_step).to eq('extractor')
-          expect(failure.exception_class).to eq('StandardError')
-          expect(failure.exception_message).to eq('Error!')
-        end
-
-        context 'when pipeline is marked to abort on failure' do
-          before do
-            BulkImports::MyPipeline.abort_on_failure!
-          end
-
-          it 'logs a warn message and marks entity as failed' do
-            expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-              expect(logger).to receive(:warn)
-                .with(
-                  log_params(
-                    context,
-                    message: 'Pipeline failed',
-                    pipeline_class: 'BulkImports::MyPipeline'
-                  )
-                )
-            end
-
-            subject.run
-
-            expect(entity.status_name).to eq(:failed)
-            expect(tracker.status_name).to eq(:failed)
-          end
-        end
-
-        context 'when pipeline is not marked to abort on failure' do
-          it 'does not mark entity as failed' do
-            subject.run
-
-            expect(entity.failed?).to eq(false)
-          end
-        end
+        it_behaves_like 'failed pipeline', 'StandardError', 'Error!'
       end
     end
 

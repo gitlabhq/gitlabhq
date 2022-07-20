@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -71,7 +71,7 @@ the current status of these issues, please refer to the referenced issues and ep
 | Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
 |:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
 | Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. Work is in-progress to update Gitaly Cluster to [identify repositories with a unique and persistent identifier](https://gitlab.com/gitlab-org/gitaly/-/issues/3485), which is expected to resolve the issue.                                                                                                                                                                                                                                          | No known solution at this time. |
-| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting live upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
+| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
 | Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind will result in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup, it's best to snapshot all Gitaly Cluster nodes at the same time and take a database dump of the Praefect database. |
 
 ### Snapshot backup and recovery limitations
@@ -522,6 +522,48 @@ For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluste
 
 To upgrade a Gitaly Cluster, follow the documentation for
 [zero downtime upgrades](../../update/zero_downtime.md#gitaly-or-gitaly-cluster).
+
+### Downgrade Gitaly Cluster to a previous version
+
+If you need to roll back a Gitaly Cluster to an earlier version, some Praefect database migrations may need to be reverted. In a cluster with:
+
+- A single Praefect node, this happens when GitLab itself is downgraded.
+- Multiple Praefect nodes, additional steps are required.
+
+To downgrade a Gitaly Cluster with multiple Praefect nodes:
+
+1. Stop the Praefect service on all Praefect nodes:
+
+   ```shell
+   gitlab-ctl stop praefect
+   ```
+
+1. Downgrade the GitLab package to the older version on one of the Praefect nodes.
+1. On the downgraded node, check the state of Praefect migrations:
+
+   ```shell
+   /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status
+   ```
+
+1. Count the number of migrations with `unknown migration` in the `APPLIED` column.
+1. On a Praefect node that has **not** been downgraded, perform a dry run of the rollback to validate which migrations to revert. `<CT_UNKNOWN>`
+   is the number of unknown migrations reported by the downgraded node.
+
+   ```shell
+   /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate <CT_UNKNOWN>
+   ```
+
+1. If the results look correct, run the same command with the `-f` option to revert the migrations:
+
+   ```shell
+   /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate -f <CT_UNKNOWN>
+   ```
+
+1. Downgrade the GitLab package on the remaining Praefect nodes and start the Praefect service again:
+
+   ```shell
+   gitlab-ctl start praefect
+   ```
 
 ## Migrate to Gitaly Cluster
 

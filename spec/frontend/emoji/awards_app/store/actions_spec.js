@@ -8,10 +8,6 @@ jest.mock('@sentry/browser');
 jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('Awards app actions', () => {
-  afterEach(() => {
-    window.gon = {};
-  });
-
   describe('setInitialData', () => {
     it('commits SET_INITIAL_DATA', async () => {
       await testAction(
@@ -52,8 +48,6 @@ describe('Awards app actions', () => {
         });
 
         it('commits FETCH_AWARDS_SUCCESS', async () => {
-          window.gon.current_user_id = 1;
-
           await testAction(
             actions.fetchAwards,
             '1',
@@ -61,10 +55,6 @@ describe('Awards app actions', () => {
             [{ type: 'FETCH_AWARDS_SUCCESS', payload: ['thumbsup'] }],
             [{ type: 'fetchAwards', payload: '2' }],
           );
-        });
-
-        it('does not commit FETCH_AWARDS_SUCCESS when user signed out', async () => {
-          await testAction(actions.fetchAwards, '1', { path: '/awards' }, [], []);
         });
       });
     });
@@ -75,8 +65,6 @@ describe('Awards app actions', () => {
       });
 
       it('calls Sentry.captureException', async () => {
-        window.gon = { current_user_id: 1 };
-
         await testAction(actions.fetchAwards, null, { path: '/awards' }, [], [], () => {
           expect(Sentry.captureException).toHaveBeenCalled();
         });

@@ -1,5 +1,5 @@
 = link_to root_path do
-  = render 'shared/logo.svg'
+  = render partial: 'shared/logo', formats: :svg
 %h1= _('Offline')
 .container
   %h3= _('You are currently offline, or the GitLab instance is not reachable.')

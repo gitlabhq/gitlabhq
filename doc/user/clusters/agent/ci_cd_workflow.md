@@ -42,17 +42,19 @@ If you have multiple GitLab projects that contain Kubernetes manifests:
 1. [Install the GitLab agent](install/index.md) in its own project, or in one of the
    GitLab projects where you keep Kubernetes manifests.
 1. [Authorize the agent](#authorize-the-agent) to access your GitLab projects.
-1. Optional. For added security, [use impersonation](#use-impersonation-to-restrict-project-and-group-access).
+1. Optional. For added security, [use impersonation](#restrict-project-and-group-access-by-using-impersonation).
 1. [Update your `.gitlab-ci.yml` file](#update-your-gitlab-ciyml-file-to-run-kubectl-commands) to
    select the agent's Kubernetes context and run the Kubernetes API commands.
 1. Run your pipeline to deploy to or update the cluster.
 
 ## Authorize the agent
 
-You must authorize the agent to access the project where you keep your Kubernetes manifests.
+If you have multiple GitLab projects, you must authorize the agent to access the project where you keep your Kubernetes manifests.
 You can authorize the agent to access individual projects, or authorize a group or subgroup,
 so all projects within have access. For added security, you can also
-[use impersonation](#use-impersonation-to-restrict-project-and-group-access).
+[use impersonation](#restrict-project-and-group-access-by-using-impersonation).
+
+Authorization configuration can take one or two minutes to propagate.
 
 ### Authorize the agent to access your projects
 
@@ -60,7 +62,7 @@ so all projects within have access. For added security, you can also
 
 To authorize the agent to access the GitLab project where you keep Kubernetes manifests:
 
-1. On the top bar, select **Menu > Projects** and find the project that contains the agent configuration file (`config.yaml`).
+1. On the top bar, select **Menu > Projects** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `projects` attribute.
 1. For the `id`, add the path:
 
@@ -83,7 +85,7 @@ Choose the context to run `kubectl` commands from your CI/CD scripts.
 
 To authorize the agent to access all of the GitLab projects in a group or subgroup:
 
-1. On the top bar, select **Menu > Projects** and find the project that contains the agent configuration file (`config.yaml`).
+1. On the top bar, select **Menu > Projects** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `groups` attribute.
 1. For the `id`, add the path:
 
@@ -154,7 +156,7 @@ deploy:
   # ... rest of your job configuration
 ```
 
-## Use impersonation to restrict project and group access **(PREMIUM)**
+## Restrict project and group access by using impersonation **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
 
@@ -169,6 +171,8 @@ You can impersonate:
 - The agent itself (default).
 - The CI/CD job that accesses the cluster.
 - A specific user or system account defined within the cluster.
+
+Authorization configuration can take one or two minutes to propagate.
 
 ### Impersonate the agent
 
@@ -218,6 +222,24 @@ ci_access:
     - id: path/to/project
       access_as:
         ci_job: {}
+```
+
+#### Example RBAC to restrict CI/CD jobs
+
+The following `RoleBinding` resource restricts all CI/CD jobs to view rights only.
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ci-job-view
+roleRef:
+  name: view
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - name: gitlab:ci_job
+    kind: Group
 ```
 
 ### Impersonate a static identity

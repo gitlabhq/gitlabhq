@@ -198,7 +198,7 @@ GitLab creates your project in your chosen namespace.
 You cannot use `git push` to create projects with project paths that:
 
 - Have previously been used.
-- Have been [renamed](settings/index.md#renaming-a-repository).
+- Have been [renamed](settings/index.md#rename-a-repository).
 
 Previously used project paths have a redirect. The redirect causes push attempts to redirect requests
 to the renamed project location, instead of creating a new project. To create a new project for a previously
@@ -391,7 +391,7 @@ To use a project as a Go package, use the `go get` and `godoc.org` discovery req
 Prerequisites:
 
 - Your GitLab instance must be accessible with HTTPS.
-- You must have a [personal access token](../profile/personal_access_tokens.md).
+- You must have a [personal access token](../profile/personal_access_tokens.md) with `read_api` scope.
 
 To authenticate Go requests, create a [`.netrc`](https://everything.curl.dev/usingcurl/netrc) file with the following information:
 
@@ -423,7 +423,7 @@ Configure Git to either:
 - Use SSH instead of HTTPS:
 
     ```shell
-    git config --global url."git@gitlab.example.com".insteadOf "https://gitlab.example.com"
+    git config --global url."git@gitlab.example.com:".insteadOf "https://gitlab.example.com/"
     ```
 
 ### Disable Go module fetching for private projects

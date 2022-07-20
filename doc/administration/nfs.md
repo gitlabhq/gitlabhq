@@ -24,7 +24,7 @@ file system performance, see
 
 Starting with GitLab version 14.0, support for NFS to store Git repository data is deprecated. Technical customer support and engineering support is available for the 14.x releases. Engineering is fixing bugs and security vulnerabilities consistent with our [release and maintenance policy](../policy/maintenance.md#security-releases).
 
-Upon the release of GitLab 15.6 technical and engineering support for using NFS to store Git repository data will be officially at end-of-life. There will be no product changes or troubleshooting provided via Engineering, Security or Paid Support channels after the release date of 15.6, regardless of your GitLab version.
+Upon the release of GitLab 15.6 technical and engineering support for using NFS to store Git repository data is officially at end-of-life. There are no product changes or troubleshooting provided via Engineering, Security or Paid Support channels after the release date of 15.6, regardless of your GitLab version.
 
 Until the release of 15.6, for customers running 14.x releases, we continue to help with Git related tickets from customers running one or more Gitaly servers with its data stored on NFS. Examples may include:
 
@@ -268,9 +268,9 @@ version of a directory.
 
 From the [Linux man page](https://linux.die.net/man/5/nfs), the important parts:
 
-> If the nocto option is specified, the client uses a non-standard heuristic to determine when files on the server have changed.
+> If the `nocto` option is specified, the client uses a non-standard heuristic to determine when files on the server have changed.
 >
-> Using the nocto option may improve performance for read-only mounts, but should be used only if the data on the server changes only occasionally.
+> Using the `nocto` option may improve performance for read-only mounts, but should be used only if the data on the server changes only occasionally.
 
 We have noticed this behavior in an issue about [refs not found after a push](https://gitlab.com/gitlab-org/gitlab/-/issues/326066),
 where newly added loose refs can be seen as missing on a different client with a local dentry cache, as

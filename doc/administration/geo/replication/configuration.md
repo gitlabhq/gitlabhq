@@ -12,7 +12,9 @@ type: howto
 NOTE:
 This is the final step in setting up a **secondary** Geo site. Stages of the
 setup process must be completed in the documented order.
-Before attempting the steps in this stage, [complete all prior stages](../setup/index.md#using-omnibus-gitlab).
+If not, [complete all prior stages](../setup/index.md#using-omnibus-gitlab) before procceed.
+
+Make sure you [set up the database replication](../setup/database.md), and [configured fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md) in **both primary and secondary sites**.
 
 The basic steps of configuring a **secondary** site are to:
 
@@ -318,7 +320,7 @@ the **primary** site. After you sign in:
 1. Verify that it's correctly identified as a **secondary** Geo site, and that
    Geo is enabled.
 
-The initial replication, or 'backfill', is probably still in progress. You
+The initial replication may take some time. The status of the site or the ‘backfill’ may still in progress. You
 can monitor the synchronization process on each Geo site from the **primary**
 site's **Geo Sites** dashboard in your browser.
 

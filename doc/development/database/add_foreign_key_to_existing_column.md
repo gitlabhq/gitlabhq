@@ -64,18 +64,14 @@ emails = Email.where(user_id: 1) # returns emails for the deleted user
 
 Add a `NOT VALID` foreign key constraint to the table, which enforces consistency on the record changes.
 
-[Using the `with_lock_retries` helper method is advised when performing operations on high-traffic tables](../migration_style_guide.md#when-to-use-the-helper-method),
-in this case, if the table or the foreign table is a high-traffic table, we should use the helper method.
-
 In the example above, you'd be still able to update records in the `emails` table. However, when you'd try to update the `user_id` with non-existent value, the constraint causes a database error.
 
 Migration file for adding `NOT VALID` foreign key:
 
 ```ruby
-class AddNotValidForeignKeyToEmailsUser < Gitlab::Database::Migration[1.0]
+class AddNotValidForeignKeyToEmailsUser < Gitlab::Database::Migration[2.0]
   def up
-    # safe to use: it requires short lock on the table since we don't validate the foreign key
-    add_foreign_key :emails, :users, on_delete: :cascade, validate: false
+    add_concurrent_foreign_key :emails, :users, on_delete: :cascade, validate: false
   end
 
   def down
@@ -84,8 +80,14 @@ class AddNotValidForeignKeyToEmailsUser < Gitlab::Database::Migration[1.0]
 end
 ```
 
+Adding a foreign key without validating it is a fast operation. It only requires a
+short lock on the table before being able to enforce the constraint on new data.
+We do still want to enable lock retries for high traffic and large tables.
+`add_concurrent_foreign_key` does this for us, and also checks if the foreign key already exists.
+
 WARNING:
-Avoid using the `add_foreign_key` constraint more than once per migration file, unless the source and target tables are identical.
+Avoid using `add_foreign_key` or `add_concurrent_foreign_key` constraints more than
+once per migration file, unless the source and target tables are identical.
 
 #### Data migration to fix existing records
 
@@ -98,7 +100,7 @@ In case the data volume is higher (>1000 records), it's better to create a backg
 Example for cleaning up records in the `emails` table in a database migration:
 
 ```ruby
-class RemoveRecordsWithoutUserFromEmailsTable < Gitlab::Database::Migration[1.0]
+class RemoveRecordsWithoutUserFromEmailsTable < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   class Email < ActiveRecord::Base
@@ -121,6 +123,7 @@ end
 ### Validate the foreign key
 
 Validating the foreign key scans the whole table and makes sure that each relation is correct.
+Fortunately, this does not lock the source table (`users`) while running.
 
 NOTE:
 When using [background migrations](background_migrations.md), foreign key validation should happen in the next GitLab release.
@@ -130,7 +133,7 @@ Migration file for validating the foreign key:
 ```ruby
 # frozen_string_literal: true
 
-class ValidateForeignKeyOnEmailUsers < Gitlab::Database::Migration[1.0]
+class ValidateForeignKeyOnEmailUsers < Gitlab::Database::Migration[2.0]
   def up
     validate_foreign_key :emails, :user_id
   end

@@ -105,7 +105,7 @@ export default {
         :disabled="formState.updateLoading || !isSubmitEnabled"
         category="primary"
         variant="confirm"
-        class="qa-save-button gl-mr-3"
+        class="gl-mr-3"
         data-testid="issuable-save-button"
         type="submit"
         @click.prevent="updateIssuable"
@@ -123,7 +123,6 @@ export default {
         :disabled="deleteLoading"
         category="secondary"
         variant="danger"
-        class="qa-delete-button"
         data-testid="issuable-delete-button"
         @click="track('click_button')"
       >

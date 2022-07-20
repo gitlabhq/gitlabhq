@@ -3,14 +3,13 @@
 # https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers
 # with the following reasoning:
 #
-# - We should support the latest ESR of Firefox: 78, because it used quite a lot.
-# - We use Edge/Chrome >= 84 because 83 had an annoying bug which would mean we
-#   need to polyfill Array.reduce: https://bugs.chromium.org/p/chromium/issues/detail?id=1049982
-# - Safari 13.1 because it is the current minor version of the previous major version
+# - We should support the latest ESR of Firefox: 91, because it used quite a lot.
+# - We use Edge/Chrome >= 92 because they are about as old as the Firefox ESR
+# - Safari 14.1 because it is the current minor version of the previous major version
 #
 # See also this epic: https://gitlab.com/groups/gitlab-org/-/epics/3957
 #
-chrome >= 84
-edge >= 84
-firefox >= 78
-safari >= 13.1
+chrome >= 92
+edge >= 92
+firefox >= 91
+safari >= 14.1

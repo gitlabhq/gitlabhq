@@ -5,7 +5,7 @@ description: Count of total projects that do not disable overriding approvers pe
   discrete merge request
 product_section: dev
 product_stage: create
-product_group: group::source code
+product_group: source_code
 product_category: source_code_management
 value_type: number
 status: active

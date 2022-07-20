@@ -12,6 +12,7 @@ import {
   SNIPPET_VISIBILITY_PUBLIC,
 } from '~/snippets/constants';
 import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 
 describe('Snippet view app', () => {
   let wrapper;
@@ -44,6 +45,10 @@ describe('Snippet view app', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findEmbedDropdown = () => wrapper.findComponent(EmbedDropdown);
+
+  beforeEach(() => {
+    stubPerformanceWebAPI();
+  });
 
   afterEach(() => {
     wrapper.destroy();

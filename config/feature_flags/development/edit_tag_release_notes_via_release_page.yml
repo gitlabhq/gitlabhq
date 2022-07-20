@@ -1,0 +1,8 @@
+---
+name: edit_tag_release_notes_via_release_page
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88832
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366244
+milestone: '15.2'
+type: development
+group: group::release
+default_enabled: false

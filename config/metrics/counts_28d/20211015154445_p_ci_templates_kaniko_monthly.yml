@@ -3,7 +3,7 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_kaniko_monthly
 description: ''
 product_section: ops
 product_stage: verify
-product_group: group::pipeline authoring
+product_group: pipeline_authoring
 product_category: pipeline_authoring
 value_type: number
 status: active

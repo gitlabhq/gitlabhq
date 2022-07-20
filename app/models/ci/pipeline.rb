@@ -27,8 +27,6 @@ module Ci
     DEFAULT_CONFIG_PATH = CONFIG_EXTENSION
     CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
 
-    BridgeStatusError = Class.new(StandardError)
-
     paginates_per 15
 
     sha_attribute :source_sha
@@ -133,6 +131,7 @@ module Ci
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
+    after_find :observe_age_in_minutes, unless: :importing?
 
     use_fast_destroy :job_artifacts
     use_fast_destroy :build_trace_chunks
@@ -241,6 +240,13 @@ module Ci
 
         pipeline.run_after_commit do
           unless pipeline.user&.blocked?
+            Gitlab::AppLogger.info(
+              message: "Enqueuing hooks for Pipeline #{pipeline.id}: #{pipeline.status}",
+              class: self.class.name,
+              pipeline_id: pipeline.id,
+              project_id: pipeline.project_id,
+              pipeline_status: pipeline.status)
+
             PipelineHooksWorker.perform_async(pipeline.id)
           end
 
@@ -332,8 +338,8 @@ module Ci
     scope :for_id, -> (id) { where(id: id) }
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_project, -> (project_id) { where(project_id: project_id) }
-    scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
-    scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
+    scope :created_after, -> (time) { where(arel_table[:created_at].gt(time)) }
+    scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
     scope :with_pipeline_source, -> (source) { where(source: source) }
 
@@ -490,38 +496,14 @@ module Ci
         .pluck(:stage, :stage_idx).map(&:first)
     end
 
-    def legacy_stage(name)
-      stage = Ci::LegacyStage.new(self, name: name)
-      stage unless stage.statuses_count == 0
-    end
-
     def ref_exists?
       project.repository.ref_exists?(git_ref)
     rescue Gitlab::Git::Repository::NoRepository
       false
     end
 
-    def legacy_stages_using_composite_status
-      stages = latest_statuses_ordered_by_stage.group_by(&:stage)
-
-      stages.map do |stage_name, jobs|
-        composite_status = Gitlab::Ci::Status::Composite
-          .new(jobs)
-
-        Ci::LegacyStage.new(self,
-          name: stage_name,
-          status: composite_status.status,
-          warnings: composite_status.warnings?)
-      end
-    end
-
     def triggered_pipelines_with_preloads
       triggered_pipelines.preload(:source_job)
-    end
-
-    # TODO: Remove usage of this method in templates
-    def legacy_stages
-      legacy_stages_using_composite_status
     end
 
     def valid_commit_sha
@@ -1004,6 +986,10 @@ module Ci
       object_hierarchy(project_condition: :same).base_and_descendants
     end
 
+    def self_and_descendants_complete?
+      self_and_descendants.all?(&:complete?)
+    end
+
     # Follow the parent-child relationships and return the top-level parent
     def root_ancestor
       return self unless child?
@@ -1078,7 +1064,11 @@ module Ci
     end
 
     def has_reports?(reports_scope)
-      complete? && latest_report_builds(reports_scope).exists?
+      if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
+        latest_report_builds(reports_scope).exists?
+      else
+        complete? && latest_report_builds(reports_scope).exists?
+      end
     end
 
     def has_coverage_reports?
@@ -1100,7 +1090,7 @@ module Ci
     end
 
     def test_reports
-      Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
+      Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
         latest_test_report_builds.find_each do |build|
           build.collect_test_reports!(test_reports)
         end
@@ -1222,6 +1212,10 @@ module Ci
       Gitlab::Utils.slugify(source_ref.to_s)
     end
 
+    def stage(name)
+      stages.find_by(name: name)
+    end
+
     def find_stage_by_name!(name)
       stages.find_by!(name: name)
     end
@@ -1307,10 +1301,20 @@ module Ci
       end
     end
 
-    def has_expired_test_reports?
-      strong_memoize(:has_expired_test_reports) do
-        has_reports?(::Ci::JobArtifact.test_reports.expired)
+    def has_test_reports?
+      strong_memoize(:has_test_reports) do
+        has_reports?(::Ci::JobArtifact.test_reports)
       end
+    end
+
+    def age_in_minutes
+      return 0 unless persisted?
+
+      unless has_attribute?(:created_at)
+        raise ArgumentError, 'pipeline not fully loaded'
+      end
+
+      (Time.current - created_at).ceil / 60
     end
 
     private
@@ -1361,6 +1365,21 @@ module Ci
       return unless project
 
       project.repository.keep_around(self.sha, self.before_sha)
+    end
+
+    def observe_age_in_minutes
+      return unless age_metric_enabled?
+      return unless persisted? && has_attribute?(:created_at)
+
+      ::Gitlab::Ci::Pipeline::Metrics
+        .pipeline_age_histogram
+        .observe({}, age_in_minutes)
+    end
+
+    def age_metric_enabled?
+      ::Gitlab::SafeRequestStore.fetch(:age_metric_enabled) do
+        ::Feature.enabled?(:ci_pipeline_age_histogram, type: :ops)
+      end
     end
 
     # Without using `unscoped`, caller scope is also included into the query.

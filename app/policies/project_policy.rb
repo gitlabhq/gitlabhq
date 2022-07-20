@@ -195,6 +195,8 @@ class ProjectPolicy < BasePolicy
   with_scope :subject
   condition(:packages_disabled) { !@subject.packages_enabled }
 
+  condition(:work_items_enabled, scope: :subject) { project&.work_items_feature_flag_enabled? }
+
   features = %w[
     merge_requests
     issues
@@ -221,6 +223,10 @@ class ProjectPolicy < BasePolicy
 
   condition :registry_enabled do
     Gitlab.config.registry.enabled
+  end
+
+  condition :packages_enabled do
+    Gitlab.config.packages.enabled
   end
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
@@ -290,10 +296,9 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
 
-  rule { can?(:create_issue) }.policy do
-    enable :create_task
-    enable :create_work_item
-  end
+  rule { can?(:create_issue) }.enable :create_work_item
+
+  rule { can?(:create_issue) & work_items_enabled }.enable :create_task
 
   # These abilities are not allowed to admins that are not members of the project,
   # that's why they are defined separately.
@@ -317,6 +322,7 @@ class ProjectPolicy < BasePolicy
     enable :read_commit_status
     enable :read_build
     enable :read_container_image
+    enable :read_harbor_registry
     enable :read_deploy_board
     enable :read_pipeline
     enable :read_pipeline_schedule
@@ -490,6 +496,7 @@ class ProjectPolicy < BasePolicy
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_secure_files
+    enable :read_web_hooks
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do
@@ -789,6 +796,10 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { registry_enabled & can?(:admin_container_image) }.policy do
+    enable :view_package_registry_project_settings
+  end
+
+  rule { packages_enabled & can?(:admin_package) }.policy do
     enable :view_package_registry_project_settings
   end
 

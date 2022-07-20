@@ -12,9 +12,11 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 
+	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 )
 
 const (
@@ -72,6 +74,54 @@ func TestRouting(t *testing.T) {
 	runTestCases(t, ts, testCases)
 }
 
+func TestPollGeoProxyApiStopsWhenExplicitlyDisabled(t *testing.T) {
+	up := upstream{
+		enableGeoProxyFeature: false,
+		geoProxyPollSleep:     func(time.Duration) {},
+		geoPollerDone:         make(chan struct{}),
+	}
+
+	go up.pollGeoProxyAPI()
+
+	select {
+	case <-up.geoPollerDone:
+		// happy
+	case <-time.After(10 * time.Second):
+		t.Fatal("timeout")
+	}
+}
+
+func TestPollGeoProxyApiStopsWhenGeoNotEnabled(t *testing.T) {
+	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
+	defer rsDeferredClose()
+
+	geoProxyEndpointResponseBody := `{"geo_enabled":false}`
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
+	defer deferredClose()
+
+	cfg := newUpstreamConfig(railsServer.URL)
+	roundTripper := roundtripper.NewBackendRoundTripper(cfg.Backend, "", 1*time.Minute, true)
+	remoteServerUrl := helper.URLMustParse(remoteServer.URL)
+
+	up := upstream{
+		Config:                *cfg,
+		RoundTripper:          roundTripper,
+		APIClient:             apipkg.NewAPI(remoteServerUrl, "", roundTripper),
+		enableGeoProxyFeature: true,
+		geoProxyPollSleep:     func(time.Duration) {},
+		geoPollerDone:         make(chan struct{}),
+	}
+
+	go up.pollGeoProxyAPI()
+
+	select {
+	case <-up.geoPollerDone:
+		// happy
+	case <-time.After(10 * time.Second):
+		t.Fatal("timeout")
+	}
+}
+
 // This test can be removed when the environment variable `GEO_SECONDARY_PROXY` is removed
 func TestGeoProxyFeatureDisabledOnGeoSecondarySite(t *testing.T) {
 	// We could just not set up the primary, but then we'd have to assert
@@ -79,7 +129,7 @@ func TestGeoProxyFeatureDisabledOnGeoSecondarySite(t *testing.T) {
 	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
 	defer rsDeferredClose()
 
-	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
+	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
 	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 
@@ -109,7 +159,7 @@ func TestGeoProxyFeatureEnabledOnGeoSecondarySite(t *testing.T) {
 
 // This test can be removed when the environment variable `GEO_SECONDARY_PROXY` is removed
 func TestGeoProxyFeatureDisabledOnNonGeoSecondarySite(t *testing.T) {
-	geoProxyEndpointResponseBody := "{}"
+	geoProxyEndpointResponseBody := `{"geo_enabled":false}`
 	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 
@@ -127,7 +177,7 @@ func TestGeoProxyFeatureDisabledOnNonGeoSecondarySite(t *testing.T) {
 }
 
 func TestGeoProxyFeatureEnabledOnNonGeoSecondarySite(t *testing.T) {
-	geoProxyEndpointResponseBody := "{}"
+	geoProxyEndpointResponseBody := `{"geo_enabled":false}`
 	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 
@@ -166,8 +216,8 @@ func TestGeoProxyFeatureEnablingAndDisabling(t *testing.T) {
 	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
 	defer rsDeferredClose()
 
-	geoProxyEndpointEnabledResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
-	geoProxyEndpointDisabledResponseBody := "{}"
+	geoProxyEndpointEnabledResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
+	geoProxyEndpointDisabledResponseBody := `{"geo_enabled":true}`
 	geoProxyEndpointResponseBody := geoProxyEndpointEnabledResponseBody
 
 	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
@@ -218,9 +268,9 @@ func TestGeoProxyUpdatesExtraDataWhenChanged(t *testing.T) {
 	}))
 	defer remoteServer.Close()
 
-	geoProxyEndpointExtraData1 := fmt.Sprintf(`{"geo_proxy_url":"%v","geo_proxy_extra_data":"data1"}`, remoteServer.URL)
-	geoProxyEndpointExtraData2 := fmt.Sprintf(`{"geo_proxy_url":"%v","geo_proxy_extra_data":"data2"}`, remoteServer.URL)
-	geoProxyEndpointExtraData3 := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
+	geoProxyEndpointExtraData1 := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v","geo_proxy_extra_data":"data1"}`, remoteServer.URL)
+	geoProxyEndpointExtraData2 := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v","geo_proxy_extra_data":"data2"}`, remoteServer.URL)
+	geoProxyEndpointExtraData3 := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
 	geoProxyEndpointResponseBody := geoProxyEndpointExtraData1
 	expectedGeoProxyExtraData = "data1"
 
@@ -253,8 +303,8 @@ func TestGeoProxySetsCustomHeader(t *testing.T) {
 		json      string
 		extraData string
 	}{
-		{"no extra data", `{"geo_proxy_url":"%v"}`, ""},
-		{"with extra data", `{"geo_proxy_url":"%v","geo_proxy_extra_data":"extra-geo-data"}`, "extra-geo-data"},
+		{"no extra data", `{"geo_enabled":true,"geo_proxy_url":"%v"}`, ""},
+		{"with extra data", `{"geo_enabled":true,"geo_proxy_url":"%v","geo_proxy_extra_data":"extra-geo-data"}`, "extra-geo-data"},
 	}
 
 	for _, tc := range testCases {
@@ -299,7 +349,7 @@ func runTestCasesWithGeoProxyEnabled(t *testing.T, testCases []testCase) {
 	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
 	defer rsDeferredClose()
 
-	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
+	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
 	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 

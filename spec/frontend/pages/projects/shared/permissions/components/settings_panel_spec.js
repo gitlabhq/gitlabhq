@@ -51,6 +51,7 @@ const defaultProps = {
   requestCveAvailable: true,
   confirmationPhrase: 'my-fake-project',
   showVisibilityConfirmModal: false,
+  membersPagePath: '/my-fake-project/-/project_members',
 };
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = 30;
@@ -59,7 +60,7 @@ describe('Settings Panel', () => {
   let wrapper;
 
   const mountComponent = (
-    { currentSettings = {}, glFeatures = {}, ...customProps } = {},
+    { currentSettings = {}, glFeatures = {}, stubs = {}, ...customProps } = {},
     mountFn = shallowMount,
   ) => {
     const propsData = {
@@ -76,6 +77,7 @@ describe('Settings Panel', () => {
           ...glFeatures,
         },
       },
+      stubs,
     });
   };
 
@@ -176,7 +178,7 @@ describe('Settings Panel', () => {
     );
 
     it('should set the visibility level description based upon the selected visibility level', () => {
-      wrapper = mountComponent();
+      wrapper = mountComponent({ stubs: { GlSprintf } });
 
       findProjectVisibilityLevelInput().setValue(visibilityOptions.INTERNAL);
 

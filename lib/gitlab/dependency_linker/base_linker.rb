@@ -6,9 +6,6 @@ module Gitlab
       URL_REGEX = %r{https?://[^'" ]+}.freeze
       GIT_INVALID_URL_REGEX = /^git\+#{URL_REGEX}/.freeze
       REPO_REGEX = %r{[^/'" ]+/[^/'" ]+}.freeze
-      VALID_LINK_ATTRIBUTES = %w[href rel target].freeze
-
-      include ActionView::Helpers::SanitizeHelper
 
       class_attribute :file_type
 
@@ -65,10 +62,9 @@ module Gitlab
       end
 
       def link_tag(name, url)
-        sanitize(
-          %{<a href="#{ERB::Util.html_escape_once(url)}" rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>},
-          attributes: VALID_LINK_ATTRIBUTES
-        )
+        href_attribute = %{href="#{ERB::Util.html_escape_once(url)}" } if Gitlab::UrlSanitizer.valid_web?(url)
+
+        %{<a #{href_attribute}rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>}.html_safe
       end
 
       # Links package names based on regex.

@@ -9,9 +9,9 @@ module Users
     FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
     REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
-    MINUTE_LIMIT_BANNER = 'minute_limit_banner'
     SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
+    WEB_HOOK_DISABLED = 'web_hook_disabled'
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -61,16 +61,31 @@ module Users
         !user_dismissed?(SECURITY_NEWSLETTER_CALLOUT)
     end
 
-    def minute_limit_banner_dismissed?
-      user_dismissed?(MINUTE_LIMIT_BANNER)
+    def web_hook_disabled_dismissed?(project)
+      return false unless project
+
+      last_failure = Gitlab::Redis::SharedState.with do |redis|
+        key = "web_hooks:last_failure:project-#{project.id}"
+        redis.get(key)
+      end
+
+      last_failure = DateTime.parse(last_failure) if last_failure
+
+      user_dismissed?(WEB_HOOK_DISABLED, last_failure, namespace: project.namespace)
     end
 
     private
 
-    def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil)
+    def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil, namespace: nil)
       return false unless current_user
 
-      current_user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: ignore_dismissal_earlier_than)
+      query = { feature_name: feature_name, ignore_dismissal_earlier_than: ignore_dismissal_earlier_than }
+
+      if namespace
+        current_user.dismissed_callout_for_namespace?(namespace: namespace, **query)
+      else
+        current_user.dismissed_callout?(**query)
+      end
     end
   end
 end

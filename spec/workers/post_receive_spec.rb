@@ -274,6 +274,32 @@ RSpec.describe PostReceive do
 
           expect { perform }.to change { counter.read(:pushes) }.by(1)
         end
+
+        it 'records correct payload with Snowplow event', :snowplow do
+          stub_feature_flags(route_hll_to_snowplow_phase2: true)
+
+          perform
+
+          expect_snowplow_event(
+            category: 'PostReceive',
+            action: 'source_code_pushes',
+            namespace: project.namespace,
+            user: project.first_owner,
+            project: project
+          )
+        end
+
+        context 'when FF is disabled' do
+          before do
+            stub_feature_flags(route_hll_to_snowplow_phase2: false)
+          end
+
+          it 'doesnt emit snowplow events', :snowplow do
+            perform
+
+            expect_no_snowplow_event
+          end
+        end
       end
     end
 

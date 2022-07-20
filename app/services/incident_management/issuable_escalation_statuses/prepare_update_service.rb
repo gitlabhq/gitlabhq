@@ -5,7 +5,7 @@ module IncidentManagement
     class PrepareUpdateService < ::BaseProjectService
       include Gitlab::Utils::StrongMemoize
 
-      SUPPORTED_PARAMS = %i[status status_change_reason].freeze
+      SUPPORTED_PARAMS = %i[status].freeze
 
       def initialize(issuable, current_user, params)
         @issuable = issuable

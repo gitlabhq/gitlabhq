@@ -49,6 +49,12 @@ RSpec.describe 'File blame', :js do
         expect(page).to have_css('#L3')
         expect(find('.page-link.active')).to have_text('2')
       end
+
+      it 'correctly redirects to the prior blame page' do
+        find('.version-link').click
+
+        expect(find('.page-link.active')).to have_text('2')
+      end
     end
 
     context 'when feature flag disabled' do
@@ -61,6 +67,39 @@ RSpec.describe 'File blame', :js do
 
         expect(page).to have_css('.blame-commit')
         expect(page).not_to have_css('.gl-pagination')
+      end
+    end
+  end
+
+  context 'when blob length is over global max page limit' do
+    before do
+      stub_const('Projects::BlameService::PER_PAGE', 200)
+    end
+
+    let(:path) { 'files/markdown/ruby-style-guide.md' }
+
+    it 'displays two hundred lines of the file with pagination' do
+      visit_blob_blame(path)
+
+      expect(page).to have_css('.blame-commit')
+      expect(page).to have_css('.gl-pagination')
+
+      expect(page).to have_css('#L1')
+      expect(page).not_to have_css('#L201')
+      expect(find('.page-link.active')).to have_text('1')
+    end
+
+    context 'when user clicks on the next button' do
+      before do
+        visit_blob_blame(path)
+
+        find('.js-next-button').click
+      end
+
+      it 'displays next two hundred lines of the file with pagination' do
+        expect(page).not_to have_css('#L1')
+        expect(page).to have_css('#L201')
+        expect(find('.page-link.active')).to have_text('2')
       end
     end
   end

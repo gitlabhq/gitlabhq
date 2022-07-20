@@ -72,12 +72,6 @@ module Gitlab
         )
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
 
-          if transaction_open?
-            raise 'The `queue_batched_background_migration` cannot be run inside a transaction. ' \
-              'You can disable transactions by calling `disable_ddl_transaction!` in the body of ' \
-              'your migration class.'
-          end
-
           gitlab_schema ||= gitlab_schema_from_context
 
           Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
@@ -181,12 +175,6 @@ module Gitlab
         #       ['column1', 'column2'])
         def delete_batched_background_migration(job_class_name, table_name, column_name, job_arguments)
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
-
-          if transaction_open?
-            raise 'The `#delete_batched_background_migration` cannot be run inside a transaction. ' \
-              'You can disable transactions by calling `disable_ddl_transaction!` in the body of ' \
-              'your migration class.'
-          end
 
           Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
 

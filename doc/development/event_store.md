@@ -293,6 +293,8 @@ in the `handle_event` method of the subscriber worker.
 
 ## Testing
 
+### Testing the publisher
+
 The publisher's responsibility is to ensure that the event is published correctly.
 
 To test that an event has been published correctly, we can use the RSpec matcher `:publish_event`:
@@ -307,6 +309,25 @@ it 'publishes a ProjectDeleted event with project id and namespace id' do
     .with(expected_data)
 end
 ```
+
+It is also possible to compose matchers inside the `:publish_event` matcher.
+This could be useful when we want to assert that an event is created with a certain kind of value,
+but we do not know the value in advance. An example of this is when publishing an event
+after creating a new record.
+
+```ruby
+it 'publishes a ProjectCreatedEvent with project id and namespace id' do
+  # The project ID will only be generated when the `create_project`
+  # is called in the expect block.
+  expected_data = { project_id: kind_of(Numeric), namespace_id: group_id }
+  
+  expect { create_project(user, name: 'Project', path: 'project', namespace_id: group_id) }
+    .to publish_event(Projects::ProjectCreatedEvent)
+    .with(expected_data)
+end
+```
+
+### Testing the subscriber
 
 The subscriber must ensure that a published event can be consumed correctly. For this purpose
 we have added helpers and shared examples to standardize the way we test subscribers:

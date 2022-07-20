@@ -1,8 +1,7 @@
 <script>
-import { GlBadge, GlLink } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { formatNumber } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
@@ -21,13 +20,9 @@ import {
   GROUP_FILTERED_SEARCH_NAMESPACE,
   GROUP_TYPE,
   PROJECT_TYPE,
-  STATUS_ONLINE,
-  STATUS_OFFLINE,
-  STATUS_STALE,
   I18N_FETCH_ERROR,
 } from '../constants';
 import groupRunnersQuery from '../graphql/list/group_runners.query.graphql';
-import groupRunnersCountQuery from '../graphql/list/group_runners_count.query.graphql';
 import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
@@ -36,54 +31,9 @@ import {
 } from '../runner_search_utils';
 import { captureException } from '../sentry_utils';
 
-const countSmartQuery = () => ({
-  query: groupRunnersCountQuery,
-  fetchPolicy: fetchPolicies.NETWORK_ONLY,
-  update(data) {
-    return data?.group?.runners?.count;
-  },
-  error(error) {
-    this.reportToSentry(error);
-  },
-});
-
-const tabCountSmartQuery = ({ type }) => {
-  return {
-    ...countSmartQuery(),
-    variables() {
-      return {
-        ...this.countVariables,
-        type,
-      };
-    },
-  };
-};
-
-const statusCountSmartQuery = ({ status, name }) => {
-  return {
-    ...countSmartQuery(),
-    skip() {
-      // skip if filtering by status and not using _this_ status as filter
-      if (this.countVariables.status && this.countVariables.status !== status) {
-        // reset count for given status
-        this[name] = null;
-        return true;
-      }
-      return false;
-    },
-    variables() {
-      return {
-        ...this.countVariables,
-        status,
-      };
-    },
-  };
-};
-
 export default {
   name: 'GroupRunnersApp',
   components: {
-    GlBadge,
     GlLink,
     RegistrationDropdown,
     RunnerFilteredSearchBar,
@@ -153,28 +103,6 @@ export default {
         this.reportToSentry(error);
       },
     },
-
-    // Tabs counts
-    allRunnersCount: {
-      ...tabCountSmartQuery({ type: null }),
-    },
-    groupRunnersCount: {
-      ...tabCountSmartQuery({ type: GROUP_TYPE }),
-    },
-    projectRunnersCount: {
-      ...tabCountSmartQuery({ type: PROJECT_TYPE }),
-    },
-
-    // Runner status summary
-    onlineRunnersTotal: {
-      ...statusCountSmartQuery({ status: STATUS_ONLINE, name: 'onlineRunnersTotal' }),
-    },
-    offlineRunnersTotal: {
-      ...statusCountSmartQuery({ status: STATUS_OFFLINE, name: 'offlineRunnersTotal' }),
-    },
-    staleRunnersTotal: {
-      ...statusCountSmartQuery({ status: STATUS_STALE, name: 'staleRunnersTotal' }),
-    },
   },
   computed: {
     variables() {
@@ -221,41 +149,16 @@ export default {
     this.reportToSentry(error);
   },
   methods: {
-    tabCount({ runnerType }) {
-      let count;
-      switch (runnerType) {
-        case null:
-          count = this.allRunnersCount;
-          break;
-        case GROUP_TYPE:
-          count = this.groupRunnersCount;
-          break;
-        case PROJECT_TYPE:
-          count = this.projectRunnersCount;
-          break;
-        default:
-          return null;
-      }
-      if (typeof count === 'number') {
-        return formatNumber(count);
-      }
-      return null;
-    },
     webUrl(runner) {
       return this.runners.urlsById[runner.id]?.web;
     },
     editUrl(runner) {
       return this.runners.urlsById[runner.id]?.edit;
     },
-    refetchFilteredCounts() {
-      this.$apollo.queries.allRunnersCount.refetch();
-      this.$apollo.queries.groupRunnersCount.refetch();
-      this.$apollo.queries.projectRunnersCount.refetch();
-    },
     onToggledPaused() {
-      // When a runner is Paused, the tab count can
+      // When a runner becomes Paused, the tab count can
       // become stale, refetch outdated counts.
-      this.refetchFilteredCounts();
+      this.$refs['runner-type-tabs'].refetch();
     },
     onDeleted({ message }) {
       this.$root.$toast?.show(message);
@@ -273,18 +176,15 @@ export default {
   <div>
     <div class="gl-display-flex gl-align-items-center">
       <runner-type-tabs
+        ref="runner-type-tabs"
         v-model="search"
+        :count-scope="$options.GROUP_TYPE"
+        :count-variables="countVariables"
         :runner-types="$options.TABS_RUNNER_TYPES"
+        class="gl-w-full"
         content-class="gl-display-none"
         nav-class="gl-border-none!"
-      >
-        <template #title="{ tab }">
-          {{ tab.title }}
-          <gl-badge v-if="tabCount(tab)" class="gl-ml-1" size="sm">
-            {{ tabCount(tab) }}
-          </gl-badge>
-        </template>
-      </runner-type-tabs>
+      />
 
       <registration-dropdown
         class="gl-ml-auto"
@@ -300,11 +200,7 @@ export default {
       :namespace="filteredSearchNamespace"
     />
 
-    <runner-stats
-      :online-runners-count="onlineRunnersTotal"
-      :offline-runners-count="offlineRunnersTotal"
-      :stale-runners-count="staleRunnersTotal"
-    />
+    <runner-stats :scope="$options.GROUP_TYPE" :variables="countVariables" />
 
     <runner-list-empty-state
       v-if="noRunnersFound"

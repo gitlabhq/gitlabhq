@@ -8,7 +8,7 @@ export default function initAddContextCommitsTriggers() {
   const addContextCommitsModalTriggerEl = document.querySelector('.add-review-item-modal-trigger');
   const addContextCommitsModalWrapperEl = document.querySelector('.add-review-item-modal-wrapper');
 
-  if (addContextCommitsModalTriggerEl || addContextCommitsModalWrapperEl) {
+  if (addContextCommitsModalTriggerEl) {
     // eslint-disable-next-line no-new
     new Vue({
       el: addContextCommitsModalTriggerEl,
@@ -28,7 +28,9 @@ export default function initAddContextCommitsTriggers() {
         });
       },
     });
+  }
 
+  if (addContextCommitsModalWrapperEl) {
     const store = createStore();
 
     // eslint-disable-next-line no-new

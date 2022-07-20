@@ -10,7 +10,7 @@ This page describes GitLab reference architecture for up to 1,000 users. For a
 full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
-If you need to serve up to 1,000 users and you don't have strict availability
+If you are serving up to 1,000 users and you don't have strict availability
 requirements, a single-node solution with
 [frequent backups](index.md#automated-backups) is appropriate for
 many organizations.
@@ -83,6 +83,7 @@ As a general guidance, GitLab should run on most infrastructure such as reputabl
 
 Be aware of the following specific call outs:
 
+- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible. See [14.4.0](../../update/index.md#1440) for more details.
 - [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/#:~:text=Azure%20Database%20for%20PostgreSQL%20is,high%20availability%2C%20and%20dynamic%20scalability.) is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to known performance issues or missing features.
 - [Azure Blob Storage](https://docs.microsoft.com/en-us/azure/storage/blobs/) is recommended to be configured with [Premium accounts](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium) to ensure consistent performance.
 
@@ -93,7 +94,8 @@ swap on your server, even if you currently have enough available memory. Having
 swap helps to reduce the chance of errors occurring if your available memory
 changes. We also recommend configuring the kernel's swappiness setting to a
 lower value (such as `10`) to make the most of your memory, while still having
-the swap available when needed.
+the swap available when needed. View the
+[Memory requirements](../../install/requirements.md#memory) for details.
 
 ## Setup instructions
 
@@ -121,4 +123,4 @@ components are deployed in Kubernetes via our official [Helm Charts](https://doc
 and _stateful_ components are deployed in compute VMs with Omnibus.
 
 The [2k GitLab Cloud Native Hybrid](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (non HA) and [3k GitLab Cloud Native Hybrid](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (HA) reference architectures are the smallest we recommend in Kubernetes.
-For environments that need to serve less users, you can lower the node specs. Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).
+For environments that serve fewer users, you can lower the node specs. Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).

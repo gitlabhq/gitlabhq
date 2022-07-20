@@ -1,0 +1,11 @@
+---
+table_name: sbom_occurrences
+classes:
+- Sbom::Occurrence
+feature_categories:
+- container_scanning
+- dependency_scanning
+- license_compliance
+description: Tracks each occurrence of an SBoM component
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90814
+milestone: '15.2'

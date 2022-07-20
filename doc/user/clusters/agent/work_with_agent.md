@@ -53,23 +53,39 @@ View and provide feedback about the UI in [this epic](https://gitlab.com/groups/
 
 ## Debug the agent
 
+> The `grpc_level` was [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/669) in GitLab 15.1.
+
 To debug the cluster-side component (`agentk`) of the agent, set the log
 level according to the available options:
 
-- `off`
-- `warning`
 - `error`
+- `warning`
 - `info`
 - `debug`
 
-The log level defaults to `info`. You can change it by using a top-level `observability`
-section in the configuration file, for example:
+The agent has two loggers:
+
+- A general purpose logger, which defaults to `info`.
+- A gRPC logger, which defaults to `error`.
+
+One can change their log levels by using a top-level `observability` section in the [agent configuration file](install/index.md#configure-your-agent), for example setting the levels to `debug` and `warning`:
 
 ```yaml
 observability:
   logging:
     level: debug
+    grpc_level: warning
 ```
+
+When `grpc_level` is set to `info` or below, there will be a lot of gRPC logs.
+
+Commit the configuration changes and inspect the agent service logs:
+
+```shell
+kubectl logs -f -l=app=gitlab-agent -n gitlab-agent
+```
+
+For more information about debugging, see [troubleshooting documentation](troubleshooting.md).
 
 ## Reset the agent token
 

@@ -204,9 +204,9 @@ describe('~/environments/components/environments_app.vue', () => {
       const [available, stopped] = wrapper.findAllByRole('tab').wrappers;
 
       expect(available.text()).toContain(__('Available'));
-      expect(available.text()).toContain(resolvedEnvironmentsApp.availableCount);
+      expect(available.text()).toContain(resolvedEnvironmentsApp.availableCount.toString());
       expect(stopped.text()).toContain(__('Stopped'));
-      expect(stopped.text()).toContain(resolvedEnvironmentsApp.stoppedCount);
+      expect(stopped.text()).toContain(resolvedEnvironmentsApp.stoppedCount.toString());
     });
 
     it('should change the requested scope on tab change', async () => {

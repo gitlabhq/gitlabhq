@@ -4,7 +4,7 @@ key_path: redis_hll_counters.secure.users_expanding_secure_security_report_weekl
 description: Count of expanding the security report widget
 product_section: sec
 product_stage: secure
-product_group: group::static analysis
+product_group: static_analysis
 product_category: dependency_scanning
 value_type: number
 status: active

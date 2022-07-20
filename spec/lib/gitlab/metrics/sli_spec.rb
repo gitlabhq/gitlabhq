@@ -172,11 +172,11 @@ RSpec.describe Gitlab::Metrics::Sli do
     fake_counter
   end
 
-  def fake_total_counter(name)
-    fake_prometheus_counter("gitlab_sli:#{name}:total")
+  def fake_total_counter(name, separator = '_')
+    fake_prometheus_counter(['gitlab_sli', name, 'total'].join(separator))
   end
 
-  def fake_numerator_counter(name, numerator_name)
-    fake_prometheus_counter("gitlab_sli:#{name}:#{numerator_name}_total")
+  def fake_numerator_counter(name, numerator_name, separator = '_')
+    fake_prometheus_counter(["gitlab_sli", name, "#{numerator_name}_total"].join(separator))
   end
 end

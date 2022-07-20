@@ -2,8 +2,11 @@
 
 module Integrations
   class Shimo < BaseThirdPartyWiki
-    prop_accessor :external_wiki_url
     validates :external_wiki_url, presence: true, public_url: true, if: :activated?
+
+    field :external_wiki_url,
+      title: -> { s_('Shimo|Shimo Workspace URL') },
+      required: true
 
     def render?
       return false unless Feature.enabled?(:shimo_integration, project)
@@ -25,21 +28,10 @@ module Integrations
 
     # support for `test` method
     def execute(_data)
-      response = Gitlab::HTTP.get(properties['external_wiki_url'], verify: true, use_read_total_timeout: true)
+      response = Gitlab::HTTP.get(properties['external_wiki_url'], verify: true)
       response.body if response.code == 200
     rescue StandardError
       nil
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'external_wiki_url',
-          title: s_('Shimo|Shimo Workspace URL'),
-          required: true
-        }
-      ]
     end
   end
 end

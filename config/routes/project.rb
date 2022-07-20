@@ -221,20 +221,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        # Legacy routes for `/-/integrations` which are now in `/-/settings/integrations`.
-        # Can be removed in 15.2, see https://gitlab.com/gitlab-org/gitlab/-/issues/334846
-        resources :integrations, controller: 'settings/integrations', constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
-          member do
-            put :test
-          end
-
-          resources :hook_logs, only: [:show], controller: 'settings/integration_hook_logs' do
-            member do
-              post :retry
-            end
-          end
-        end
-
         resources :boards, only: [:index, :show, :create, :update, :destroy], constraints: { id: /\d+/ } do
           collection do
             get :recent
@@ -249,13 +235,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             scope module: :releases do
               resources :evidences, only: [:show]
             end
-          end
-        end
-
-        resources :logs, only: [:index] do
-          collection do
-            get :k8s
-            get :elasticsearch
           end
         end
 
@@ -319,15 +298,18 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :terraform, only: [:index]
 
-        resources :google_cloud, only: [:index]
-
         namespace :google_cloud do
+          get '/configuration', to: 'configuration#index'
+
           resources :revoke_oauth, only: [:create]
           resources :service_accounts, only: [:index, :create]
           resources :gcp_regions, only: [:index, :create]
 
+          get '/deployments', to: 'deployments#index'
           get '/deployments/cloud_run', to: 'deployments#cloud_run'
           get '/deployments/cloud_storage', to: 'deployments#cloud_storage'
+
+          get '/databases', to: 'databases#index'
         end
 
         resources :environments, except: [:destroy] do
@@ -376,8 +358,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'
 
         get 'work_items/*work_items_path' => 'work_items#index', as: :work_items
-
-        resource :tracing, only: [:show]
 
         post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 
@@ -480,6 +460,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
         end
+
+        namespace :harbor do
+          resources :repositories, only: [:index, :show] do
+            resources :artifacts, only: [:index] do
+              resources :tags, only: [:index]
+            end
+          end
+        end
       end
       # End of the /-/ scope.
 
@@ -545,9 +533,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :container_registry, only: [:index, :destroy, :show], # rubocop: disable Cop/PutProjectRoutesUnderScope
                                      controller: 'registry/repositories'
-
-      resources :harbor_registry, only: [:index, :show], # rubocop: disable Cop/PutProjectRoutesUnderScope
-                                  controller: 'harbor/repositories'
 
       namespace :registry do
         resources :repository, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
@@ -638,7 +623,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :commits, :commit, :find_file, :files, :compare,
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking, :alert_management,
-                                            :tracing,
                                             :serverless, :clusters, :audit_events, :wikis, :merge_requests,
                                             :vulnerability_feedback, :security, :dependencies, :issues,
                                             :pipelines, :pipeline_schedules, :runners, :snippets)

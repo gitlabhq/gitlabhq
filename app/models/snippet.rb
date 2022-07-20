@@ -18,6 +18,7 @@ class Snippet < ApplicationRecord
   include CanMoveRepositoryStorage
   include AfterCommitQueue
   extend ::Gitlab::Utils::Override
+  include CreatedAtFilterable
 
   MAX_FILE_COUNT = 10
 

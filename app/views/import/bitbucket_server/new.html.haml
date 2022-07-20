@@ -10,7 +10,7 @@
 %p
   = _('Enter in your Bitbucket Server URL and personal access token below')
 
-= form_tag configure_import_bitbucket_server_path, method: :post do
+= form_tag configure_import_bitbucket_server_path(namespace_id: params[:namespace_id]), method: :post do
   .form-group.row
     = label_tag :bitbucket_server_url, 'Bitbucket Server URL', class: 'col-form-label col-md-2'
     .col-md-4

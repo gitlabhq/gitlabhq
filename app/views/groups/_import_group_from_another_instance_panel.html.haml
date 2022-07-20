@@ -1,4 +1,4 @@
-= form_with url: configure_import_bulk_imports_path, class: 'group-form gl-show-field-errors' do |f|
+= form_with url: configure_import_bulk_imports_path(namespace_id: params[:parent_id]), class: 'group-form gl-show-field-errors' do |f|
   .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
     .gl-display-flex.gl-align-items-center
       %h4.gl-display-flex

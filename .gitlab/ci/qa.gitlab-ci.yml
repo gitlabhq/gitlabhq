@@ -11,8 +11,7 @@
     QA_EXPORT_TEST_METRICS: "false"
   before_script:
     - !reference [.default-before_script, before_script]
-    - cd qa/
-    - bundle install
+    - cd qa && bundle install
 
 qa:internal:
   extends:
@@ -73,8 +72,7 @@ populate-qa-tests-var:
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
   stage: prepare
   script:
-    - tooling/bin/qa/check_if_qa_only_spec_changes ${CHANGES_FILE} ${ONLY_QA_CHANGES_FILE}
-    - '[ -f $ONLY_QA_CHANGES_FILE ] && export QA_TESTS="`cat $ONLY_QA_CHANGES_FILE`"'
+    - export QA_TESTS=$(scripts/determine-qa-tests --files $CHANGES_FILE --labels "$CI_MERGE_REQUEST_LABELS")
     - 'echo "QA_TESTS=$QA_TESTS" >> qa_tests_var.env'
     - 'echo "QA_TESTS: $QA_TESTS"'
   artifacts:
@@ -83,11 +81,9 @@ populate-qa-tests-var:
       dotenv: qa_tests_var.env
     paths:
       - ${CHANGES_FILE}
-      - ${ONLY_QA_CHANGES_FILE}
       - qa_tests_var.env
   variables:
     CHANGES_FILE: tmp/changed_files.txt
-    ONLY_QA_CHANGES_FILE: tmp/qa_only_changed_files.txt
   needs:
     - detect-tests
 

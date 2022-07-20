@@ -22,7 +22,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   before_action :redirect_if_task, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
-  after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
+  after_action :log_issue_show, only: :show
 
   before_action :set_issuables_index, if: ->(c) {
     SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request?
@@ -41,14 +41,11 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:contacts_autocomplete, project&.group)
     push_frontend_feature_flag(:incident_timeline, project)
   end
 
   before_action only: :show do
-    push_frontend_feature_flag(:confidential_notes, project&.group)
     push_frontend_feature_flag(:issue_assignees_widget, project)
-    push_frontend_feature_flag(:paginated_issue_discussions, project)
     push_frontend_feature_flag(:realtime_labels, project)
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
     push_frontend_feature_flag(:work_items_mvc_2)

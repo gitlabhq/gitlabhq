@@ -10,6 +10,7 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
   let(:gitaly_seconds_metric) { double('gitaly seconds metric') }
   let(:failed_total_metric) { double('failed total metric') }
   let(:retried_total_metric) { double('retried total metric') }
+  let(:interrupted_total_metric) { double('interrupted total metric') }
   let(:redis_requests_total) { double('redis calls total metric') }
   let(:running_jobs_metric) { double('running jobs metric') }
   let(:redis_seconds_metric) { double('redis seconds metric') }
@@ -30,6 +31,7 @@ RSpec.shared_context 'server metrics with mocked prometheus' do
     allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_elasticsearch_requests_duration_seconds, anything, anything, anything).and_return(elasticsearch_seconds_metric)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_failed_total, anything).and_return(failed_total_metric)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_retried_total, anything).and_return(retried_total_metric)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_interrupted_total, anything).and_return(interrupted_total_metric)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_redis_requests_total, anything).and_return(redis_requests_total)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_elasticsearch_requests_total, anything).and_return(elasticsearch_requests_total)
     allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_load_balancing_count, anything).and_return(load_balancing_metric)

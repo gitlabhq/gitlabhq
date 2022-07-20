@@ -169,6 +169,16 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
             subject.call(worker, job, :test) { nil }
           end
         end
+
+        context 'when job is interrupted' do
+          let(:job) { { 'interrupted_count' => 1 } }
+
+          it 'sets sidekiq_jobs_interrupted_total metric' do
+            expect(interrupted_total_metric).to receive(:increment)
+
+            subject.call(worker, job, :test) { nil }
+          end
+        end
       end
     end
 

@@ -59,18 +59,15 @@ RSpec.describe ::Gitlab::BareRepositoryImport::Repository do
     let(:root_path) { TestEnv.repos_path }
     let(:repo_path) { File.join(root_path, "#{hashed_path}.git") }
     let(:wiki_path) { File.join(root_path, "#{hashed_path}.wiki.git") }
+    let(:raw_repository) { Gitlab::Git::Repository.new('default', "#{hashed_path}.git", nil, nil) }
 
     before do
-      TestEnv.create_bare_repository(repo_path)
-
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository = Rugged::Repository.new(repo_path)
-        repository.config['gitlab.fullpath'] = 'to/repo'
-      end
+      raw_repository.create_repository
+      raw_repository.set_full_path(full_path: 'to/repo')
     end
 
     after do
-      FileUtils.rm_rf(repo_path)
+      raw_repository.remove
     end
 
     subject { described_class.new(root_path, repo_path) }

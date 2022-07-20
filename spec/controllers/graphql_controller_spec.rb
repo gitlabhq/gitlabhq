@@ -27,6 +27,18 @@ RSpec.describe GraphqlController do
       )
     end
 
+    it 'handles a timeout nicely' do
+      allow(subject).to receive(:execute) do
+        raise ActiveRecord::QueryCanceled, '**taps wristwatch**'
+      end
+
+      post :execute
+
+      expect(json_response).to include(
+        'errors' => include(a_hash_including('message' => /Request timed out/))
+      )
+    end
+
     it 'handles StandardError' do
       allow(subject).to receive(:execute) do
         raise StandardError, message

@@ -8,6 +8,7 @@ RSpec.describe Import::FogbugzController do
   let(:user) { create(:user) }
   let(:token) { FFaker::Lorem.characters(8) }
   let(:uri) { 'https://example.com' }
+  let(:namespace_id) { 5 }
 
   before do
     sign_in(user)
@@ -16,14 +17,39 @@ RSpec.describe Import::FogbugzController do
   describe 'POST #callback' do
     let(:xml_response) { %Q(<?xml version=\"1.0\" encoding=\"UTF-8\"?><response><token><![CDATA[#{token}]]></token></response>) }
 
-    it 'attempts to contact Fogbugz server' do
+    before do
       stub_request(:post, "https://example.com/api.asp").to_return(status: 200, body: xml_response, headers: {})
+    end
 
+    it 'attempts to contact Fogbugz server' do
       post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
 
       expect(session[:fogbugz_token]).to eq(token)
       expect(session[:fogbugz_uri]).to eq(uri)
       expect(response).to redirect_to(new_user_map_import_fogbugz_path)
+    end
+
+    it 'preserves namespace_id query param on success' do
+      post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword', namespace_id: namespace_id }
+
+      expect(response).to redirect_to(new_user_map_import_fogbugz_path(namespace_id: namespace_id))
+    end
+
+    it 'redirects to new page maintaining namespace_id when client raises standard error' do
+      namespace_id = 5
+      allow(::Gitlab::FogbugzImport::Client).to receive(:new).and_raise(StandardError)
+
+      post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword', namespace_id: namespace_id }
+
+      expect(response).to redirect_to(new_import_fogbugz_url(namespace_id: namespace_id))
+    end
+
+    it 'redirects to new page form when client raises authentication exception' do
+      allow(::Gitlab::FogbugzImport::Client).to receive(:new).and_raise(::Fogbugz::AuthenticationException)
+
+      post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
+
+      expect(response).to redirect_to(new_import_fogbugz_url)
     end
 
     context 'verify url' do
@@ -76,6 +102,16 @@ RSpec.describe Import::FogbugzController do
       expect(session[:fogbugz_user_map]).to eq(user_map)
       expect(response).to redirect_to(status_import_fogbugz_path)
     end
+
+    it 'preserves namespace_id query param' do
+      client = double(user_map: {})
+      expect(controller).to receive(:client).and_return(client)
+
+      post :create_user_map, params: { users: user_map, namespace_id: namespace_id }
+
+      expect(session[:fogbugz_user_map]).to eq(user_map)
+      expect(response).to redirect_to(status_import_fogbugz_path(namespace_id: namespace_id))
+    end
   end
 
   describe 'GET status' do
@@ -84,11 +120,19 @@ RSpec.describe Import::FogbugzController do
                       id: 'demo', name: 'vim', safe_name: 'vim', path: 'vim')
     end
 
-    before do
-      stub_client(valid?: true)
+    it 'redirects to new page form when client is invalid' do
+      stub_client(valid?: false)
+
+      get :status
+
+      expect(response).to redirect_to(new_import_fogbugz_path)
     end
 
     it_behaves_like 'import controller status' do
+      before do
+        stub_client(valid?: true)
+      end
+
       let(:repo_id) { repo.id }
       let(:import_source) { repo.name }
       let(:provider_name) { 'fogbugz' }

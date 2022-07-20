@@ -51,4 +51,10 @@ RSpec.describe Ci::Variable do
       let!(:model) { create(:ci_variable, project: parent) }
     end
   end
+
+  describe '#audit_details' do
+    it "equals to the variable's key" do
+      expect(subject.audit_details).to eq(subject.key)
+    end
+  end
 end

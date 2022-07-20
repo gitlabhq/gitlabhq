@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::TaskListReferenceReplacementService do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:project) { create(:project, :repository).tap { |project| project.add_developer(developer) } }
   let_it_be(:single_line_work_item, refind: true) { create(:work_item, project: project, description: '- [ ] single line', lock_version: 3) }
   let_it_be(:multiple_line_work_item, refind: true) { create(:work_item, project: project, description: "Any text\n\n* [ ] Item to be converted\n    second line\n    third line", lock_version: 3) }
 
@@ -37,6 +38,7 @@ RSpec.describe WorkItems::TaskListReferenceReplacementService do
     subject(:result) do
       described_class.new(
         work_item: work_item,
+        current_user: developer,
         work_item_reference: reference,
         line_number_start: line_number_start,
         line_number_end: line_number_end,
@@ -52,6 +54,12 @@ RSpec.describe WorkItems::TaskListReferenceReplacementService do
       let(:task_prefix) { '- [ ]' }
 
       it_behaves_like 'successful work item task reference replacement service'
+
+      it 'creates description version note' do
+        expect { result }.to change(Note, :count).by(1)
+        expect(work_item.notes.last.note).to eq('changed the description')
+        expect(work_item.saved_description_version.id).to eq(work_item.notes.last.system_note_metadata.description_version_id)
+      end
     end
 
     context 'when task mardown spans multiple lines' do

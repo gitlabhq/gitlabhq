@@ -20,6 +20,18 @@ RSpec.describe Gitlab::Changelog::Config do
       described_class.from_git(project)
     end
 
+    it "retrieves the specified configuration from git" do
+      allow(project.repository)
+        .to receive(:changelog_config).with('HEAD', 'specified_changelog_config.yml')
+        .and_return("---\ndate_format: '%Y'")
+
+      expect(described_class)
+        .to receive(:from_hash)
+        .with(project, { 'date_format' => '%Y' }, nil)
+
+      described_class.from_git(project, nil, 'specified_changelog_config.yml')
+    end
+
     it 'returns the default configuration when no YAML file exists in Git' do
       allow(project.repository)
         .to receive(:changelog_config)

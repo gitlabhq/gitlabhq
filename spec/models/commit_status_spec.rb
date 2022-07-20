@@ -803,7 +803,7 @@ RSpec.describe CommitStatus do
   describe 'ensure stage assignment' do
     context 'when commit status has a stage_id assigned' do
       let!(:stage) do
-        create(:ci_stage_entity, project: project, pipeline: pipeline)
+        create(:ci_stage, project: project, pipeline: pipeline)
       end
 
       let(:commit_status) do
@@ -836,7 +836,7 @@ RSpec.describe CommitStatus do
 
     context 'when commit status does not have stage but it exists' do
       let!(:stage) do
-        create(:ci_stage_entity, project: project,
+        create(:ci_stage, project: project,
                                  pipeline: pipeline,
                                  name: 'test')
       end
@@ -981,22 +981,6 @@ RSpec.describe CommitStatus do
       expect(build_old.reload).to have_attributes(retried: true, processed: true)
       expect(test.reload).to have_attributes(retried: false, processed: false)
       expect(build_from_other_pipeline.reload).to have_attributes(retried: false, processed: false)
-    end
-  end
-
-  describe '.bulk_insert_tags!' do
-    let(:statuses) { double('statuses') }
-    let(:inserter) { double('inserter') }
-
-    it 'delegates to bulk insert class' do
-      expect(Gitlab::Ci::Tags::BulkInsert)
-        .to receive(:new)
-        .with(statuses)
-        .and_return(inserter)
-
-      expect(inserter).to receive(:insert!)
-
-      described_class.bulk_insert_tags!(statuses)
     end
   end
 

@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlSprintf, GlSafeHtmlDirective as SafeHtml, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import $ from 'jquery';
 import { escape, isEmpty } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
@@ -11,7 +11,6 @@ import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { __, s__, sprintf } from '~/locale';
-import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -31,11 +30,12 @@ export default {
   name: 'NoteableNote',
   components: {
     GlSprintf,
-    userAvatarLink,
     noteHeader,
     noteActions,
     NoteBody,
     TimelineEntryItem,
+    GlAvatarLink,
+    GlAvatar,
   },
   directives: {
     SafeHtml,
@@ -196,13 +196,11 @@ export default {
 
       return fileResolvedFromAvailableSource || null;
     },
-    avatarSize() {
-      // Use a different size if shown on a Merge Request Diff
-      if (this.line && !this.isOverviewTab) {
-        return 24;
-      }
-
-      return 40;
+    isMRDiffView() {
+      return this.line && !this.isOverviewTab;
+    },
+    authorAvatarAdaptiveSize() {
+      return { default: 24, md: 32 };
     },
   },
   created() {
@@ -261,7 +259,7 @@ export default {
       });
       const confirmed = await confirmAction(msg, {
         primaryBtnVariant: 'danger',
-        primaryBtnText: this.note.confidential ? __('Delete Internal Note') : __('Delete Comment'),
+        primaryBtnText: this.note.confidential ? __('Delete internal note') : __('Delete comment'),
       });
 
       if (confirmed) {
@@ -428,19 +426,33 @@ export default {
         </template>
       </gl-sprintf>
     </div>
-    <div class="timeline-icon">
-      <user-avatar-link
-        :link-href="author.path"
-        :img-src="author.avatar_url"
-        :img-alt="author.name"
-        :img-size="avatarSize"
-        lazy
-      >
-        <template #avatar-badge>
-          <slot name="avatar-badge"></slot>
-        </template>
-      </user-avatar-link>
+
+    <div v-if="isMRDiffView" class="gl-float-left gl-mt-n1 gl-mr-3">
+      <gl-avatar-link :href="author.path">
+        <gl-avatar
+          :src="author.avatar_url"
+          :entity-name="author.username"
+          :alt="author.name"
+          :size="24"
+        />
+
+        <slot name="avatar-badge"></slot>
+      </gl-avatar-link>
     </div>
+
+    <div v-else class="gl-float-left gl-pl-3 gl-mr-3 gl-md-pl-2 gl-md-pr-2">
+      <gl-avatar-link :href="author.path">
+        <gl-avatar
+          :src="author.avatar_url"
+          :entity-name="author.username"
+          :alt="author.name"
+          :size="authorAvatarAdaptiveSize"
+        />
+
+        <slot name="avatar-badge"></slot>
+      </gl-avatar-link>
+    </div>
+
     <div class="timeline-content">
       <div class="note-header">
         <note-header

@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils';
 
-import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 import SettingsDropdown from '~/diffs/components/settings_dropdown.vue';
@@ -139,9 +138,7 @@ describe('Diff settings dropdown component', () => {
       const checkbox = wrapper.findByTestId('show-whitespace');
       const { checked } = checkbox.element;
 
-      checkbox.trigger('click');
-
-      await nextTick();
+      await checkbox.setChecked(false);
 
       expect(store.dispatch).toHaveBeenCalledWith('diffs/setShowWhitespace', {
         showWhitespace: !checked,
@@ -182,9 +179,7 @@ describe('Diff settings dropdown component', () => {
             Object.assign(origStore.state.diffs, { viewDiffsFileByFile: start }),
         });
 
-        getFileByFileCheckbox(wrapper).trigger('click');
-
-        await nextTick();
+        await getFileByFileCheckbox(wrapper).setChecked(setting);
 
         expect(store.dispatch).toHaveBeenCalledWith('diffs/setFileByFile', {
           fileByFile: setting,

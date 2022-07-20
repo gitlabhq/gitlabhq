@@ -4,7 +4,7 @@ import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   i18n: {
-    approvalNeeded: s__('mrWidget|Merge blocked: this merge request must be approved.'),
+    approvalNeeded: s__('mrWidget|Merge blocked: all required approvals must be given.'),
     blockingMergeRequests: s__(
       'mrWidget|Merge blocked: you can only merge after the above items are resolved.',
     ),

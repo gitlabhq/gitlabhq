@@ -22,12 +22,10 @@ export default {
       // the input field. This is used to avoid showing validation
       // errors immediately when the page loads.
       isInputDirty: false,
-
-      showCreateFrom: true,
     };
   },
   computed: {
-    ...mapState('editNew', ['projectId', 'release', 'createFrom']),
+    ...mapState('editNew', ['projectId', 'release', 'createFrom', 'showCreateFrom']),
     ...mapGetters('editNew', ['validationErrors']),
     tagName: {
       get() {
@@ -40,7 +38,7 @@ export default {
         // When this is called, the selection originated from the
         // dropdown list of existing tag names, so we know the tag
         // already exists and don't need to show the "create from" input
-        this.showCreateFrom = false;
+        this.updateShowCreateFrom(false);
       },
     },
     createFromModel: {
@@ -70,7 +68,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions('editNew', ['updateReleaseTagName', 'updateCreateFrom', 'fetchTagNotes']),
+    ...mapActions('editNew', [
+      'updateReleaseTagName',
+      'updateCreateFrom',
+      'fetchTagNotes',
+      'updateShowCreateFrom',
+    ]),
     markInputAsDirty() {
       this.isInputDirty = true;
     },
@@ -80,7 +83,7 @@ export default {
       // This method is called when the user selects the "create tag"
       // option, so the tag does not already exist. Because of this,
       // we need to show the "create from" input.
-      this.showCreateFrom = true;
+      this.updateShowCreateFrom(true);
     },
     shouldShowCreateTagOption(isLoading, matches, query) {
       // Show the "create tag" option if:

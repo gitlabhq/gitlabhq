@@ -148,6 +148,7 @@ This method should return an array of hashes for each field, where the keys can 
 | `title:`       | string  | false    | Capitalized value of `name:` | The label for the form field.
 | `placeholder:` | string  | false    |                              | A placeholder for the form field.
 | `help:`        | string  | false    |                              | A help text that displays below the form field.
+| `api_only:`    | boolean | false    | `false`                      | Specify if the field should only be available through the API, and excluded from the frontend form.
 
 #### Additional keys for `type: 'checkbox'`
 

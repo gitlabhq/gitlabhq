@@ -190,6 +190,14 @@ RSpec.describe ProtectedBranch do
           expect(described_class).not_to receive(:matching)
           expect(described_class.protected?(project, protected_branch.name)).to eq(true)
         end
+
+        it 'sets expires_in for a cache key' do
+          cache_key = described_class.protected_ref_cache_key(project, protected_branch.name)
+
+          expect(Rails.cache).to receive(:fetch).with(cache_key, expires_in: 1.hour)
+
+          described_class.protected?(project, protected_branch.name)
+        end
       end
     end
 

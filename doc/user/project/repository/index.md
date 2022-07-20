@@ -116,7 +116,7 @@ You can download the source code that's stored in a repository.
 For the default branch of each repository, GitLab determines which programming languages
 are used. This information is displayed on the **Project information** page.
 
-![Repository Languages bar](img/repository_languages_v12_2.gif)
+![Repository Languages bar](img/repository_languages_v15_2.png)
 
 When new files are added, this information can take up to five minutes to update.
 
@@ -232,7 +232,7 @@ When a repository path changes, GitLab handles the transition from the
 old location to the new one with a redirect.
 
 When you [rename a user](../../profile/index.md#change-your-username),
-[change a group path](../../group/index.md#change-a-groups-path), or [rename a repository](../settings/index.md#renaming-a-repository):
+[change a group path](../../group/index.md#change-a-groups-path), or [rename a repository](../settings/index.md#rename-a-repository):
 
 - URLs for the namespace and everything under it, like projects, are
   redirected to the new URLs.

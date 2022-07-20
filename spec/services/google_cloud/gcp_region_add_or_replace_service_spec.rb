@@ -11,7 +11,7 @@ RSpec.describe GoogleCloud::GcpRegionAddOrReplaceService do
     service.execute('env_2', 'loc_2')
     service.execute('env_1', 'loc_3')
 
-    list = project.variables.reload.filter { |variable| variable.key == Projects::GoogleCloudController::GCP_REGION_CI_VAR_KEY }
+    list = project.variables.reload.filter { |variable| variable.key == Projects::GoogleCloud::GcpRegionsController::GCP_REGION_CI_VAR_KEY }
     list = list.sort_by(&:environment_scope)
 
     aggregate_failures 'testing list of gcp regions' do

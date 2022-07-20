@@ -23,11 +23,9 @@ module Ci
     UnknownStatusError = Class.new(StandardError)
 
     class_methods do
-      # The parameter `project` is only used for the feature flag check, and will be removed with
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/321972
-      def composite_status(project: nil)
+      def composite_status
         Gitlab::Ci::Status::Composite
-          .new(all, with_allow_failure: columns_hash.key?('allow_failure'), project: project)
+          .new(all, with_allow_failure: columns_hash.key?('allow_failure'))
           .status
       end
 

@@ -28,6 +28,7 @@ class ApplicationSetting < ApplicationRecord
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
   add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required
+  add_authentication_token_field :error_tracking_access_token, encrypted: :required
 
   belongs_to :self_monitoring_project, class_name: "Project", foreign_key: 'instance_administration_project_id'
   belongs_to :push_rule
@@ -170,6 +171,11 @@ class ApplicationSetting < ApplicationRecord
   validate :validate_kroki_url, if: :kroki_enabled
 
   validates :kroki_formats, json_schema: { filename: 'application_setting_kroki_formats' }
+
+  validates :metrics_method_call_threshold,
+           numericality: { greater_than_or_equal_to: 0 },
+           presence: true,
+           if: :prometheus_metrics_enabled
 
   validates :plantuml_url,
             presence: true,
@@ -393,6 +399,7 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :packages_cleanup_package_file_worker_capacity,
+            :package_registry_cleanup_policies_worker_capacity,
             allow_nil: false,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
@@ -589,6 +596,14 @@ class ApplicationSetting < ApplicationRecord
     presence: true, length: { maximum: 255 },
     if: :sentry_enabled?
 
+  validates :error_tracking_enabled,
+    inclusion: { in: [true, false], message: _('must be a boolean value') }
+  validates :error_tracking_api_url,
+    presence: true,
+    addressable_url: true,
+    length: { maximum: 255 },
+    if: :error_tracking_enabled?
+
   validates :users_get_by_id_limit,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :users_get_by_id_limit_allowlist,
@@ -653,6 +668,7 @@ class ApplicationSetting < ApplicationRecord
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
+  before_save :ensure_error_tracking_access_token
 
   after_commit do
     reset_memoized_terms

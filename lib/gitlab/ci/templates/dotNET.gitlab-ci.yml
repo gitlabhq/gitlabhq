@@ -23,6 +23,9 @@
 # You need to have the network drive mapped as Local System user for gitlab-runner service to see it
 # The best way to persist the mapping is via a scheduled task
 # running the following batch command: net use P: \\x.x.x.x\Projects /u:your_user your_pass /persistent:yes
+#
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
 
 # place project specific paths in variables to make the rest of the script more generic
 variables:

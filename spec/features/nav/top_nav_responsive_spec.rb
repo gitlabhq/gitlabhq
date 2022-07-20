@@ -41,7 +41,7 @@ RSpec.describe 'top nav responsive', :js do
     end
 
     it 'has new dropdown', :aggregate_failures do
-      click_button('Create new')
+      click_button('Create new...')
 
       expect(page).to have_link('New project', href: new_project_path)
       expect(page).to have_link('New group', href: new_group_path)

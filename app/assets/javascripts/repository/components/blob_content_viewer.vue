@@ -97,6 +97,7 @@ export default {
       project: DEFAULT_BLOB_INFO.project,
       gitpodEnabled: DEFAULT_BLOB_INFO.gitpodEnabled,
       currentUser: DEFAULT_BLOB_INFO.currentUser,
+      useFallback: false,
     };
   },
   computed: {
@@ -130,7 +131,7 @@ export default {
     },
     shouldLoadLegacyViewer() {
       const isTextFile = this.viewer.fileType === TEXT_FILE_TYPE && !this.glFeatures.highlightJs;
-      return isTextFile || LEGACY_FILE_TYPES.includes(this.blobInfo.fileType);
+      return isTextFile || LEGACY_FILE_TYPES.includes(this.blobInfo.fileType) || this.useFallback;
     },
     legacyViewerLoaded() {
       return (
@@ -173,6 +174,10 @@ export default {
     },
   },
   methods: {
+    onError() {
+      this.useFallback = true;
+      this.loadLegacyViewer();
+    },
     loadLegacyViewer() {
       if (this.legacyViewerLoaded) {
         return;
@@ -303,7 +308,7 @@ export default {
         :loading="isLoadingLegacyViewer"
         :data-loading="isRenderingLegacyTextViewer"
       />
-      <component :is="blobViewer" v-else :blob="blobInfo" class="blob-viewer" />
+      <component :is="blobViewer" v-else :blob="blobInfo" class="blob-viewer" @error="onError" />
       <code-intelligence
         v-if="blobViewer || legacyViewerLoaded"
         :code-navigation-path="blobInfo.codeNavigationPath"

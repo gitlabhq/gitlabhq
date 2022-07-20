@@ -15,6 +15,10 @@ module FeatureFlags
 
     protected
 
+    def update_last_feature_flag_updated_at!
+      Operations::FeatureFlagsClient.update_last_feature_flag_updated_at!(project)
+    end
+
     def audit_event(feature_flag)
       message = audit_message(feature_flag)
 

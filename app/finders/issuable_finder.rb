@@ -316,7 +316,12 @@ class IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_project(items)
-    if params.project? || params.projects
+    # When finding issues for multiple projects it's more efficient
+    # to use a JOIN instead of running a sub-query
+    # See https://gitlab.com/gitlab-org/gitlab/-/commit/8591cc02be6b12ed60f763a5e0147f2cbbca99e1
+    if params.projects.is_a?(ActiveRecord::Relation)
+      items.merge(params.projects.reorder(nil)).join_project
+    elsif params.projects
       items.of_projects(params.projects).references_project
     else
       items.none
@@ -431,7 +436,7 @@ class IssuableFinder
     elsif not_params.filter_by_started_milestone?
       items.joins(:milestone).merge(Milestone.not_started)
     else
-      items.without_particular_milestone(not_params[:milestone_title])
+      items.without_particular_milestones(not_params[:milestone_title])
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

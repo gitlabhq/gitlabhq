@@ -100,6 +100,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the tag or wildcard |
 | `create_access_level` | string | no | Access levels allowed to create (defaults: `40`, Maintainer role) |
+| `allowed_to_create`   | array  | no | Array of access levels allowed to create tags, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}` |
 
 Example response:
 

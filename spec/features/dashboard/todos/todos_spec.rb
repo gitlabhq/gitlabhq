@@ -60,6 +60,21 @@ RSpec.describe 'Dashboard Todos' do
     end
   end
 
+  context 'when todo references an issue of type task' do
+    let(:task) { create(:issue, :task, project: project) }
+    let!(:task_todo) { create(:todo, :mentioned, user: user, project: project, target: task, author: author) }
+
+    before do
+      sign_in(user)
+
+      visit dashboard_todos_path
+    end
+
+    it 'displays the correct issue type name' do
+      expect(page).to have_content('mentioned you on task')
+    end
+  end
+
   context 'user has an unauthorized todo' do
     before do
       sign_in(user)
@@ -83,6 +98,10 @@ RSpec.describe 'Dashboard Todos' do
       sign_in(user)
 
       visit dashboard_todos_path
+    end
+
+    it 'displays the correct issue type name' do
+      expect(page).to have_content('mentioned you on issue')
     end
 
     it 'has todo present' do

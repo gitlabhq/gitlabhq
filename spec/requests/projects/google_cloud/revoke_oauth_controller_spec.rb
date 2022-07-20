@@ -47,13 +47,13 @@ RSpec.describe Projects::GoogleCloud::RevokeOauthController do
         post url
 
         expect(request.session[GoogleApi::CloudPlatform::Client.session_key_for_token]).to be_nil
-        expect(response).to redirect_to(project_google_cloud_index_path(project))
+        expect(response).to redirect_to(project_google_cloud_configuration_path(project))
         expect(flash[:notice]).to eq('Google OAuth2 token revocation requested')
         expect_snowplow_event(
           category: 'Projects::GoogleCloud',
           action: 'revoke_oauth#create',
-          label: 'create',
-          property: 'success',
+          label: 'success',
+          property: '{}',
           project: project,
           user: user
         )
@@ -70,13 +70,13 @@ RSpec.describe Projects::GoogleCloud::RevokeOauthController do
         post url
 
         expect(request.session[GoogleApi::CloudPlatform::Client.session_key_for_token]).to be_nil
-        expect(response).to redirect_to(project_google_cloud_index_path(project))
+        expect(response).to redirect_to(project_google_cloud_configuration_path(project))
         expect(flash[:alert]).to eq('Google OAuth2 token revocation request failed')
         expect_snowplow_event(
           category: 'Projects::GoogleCloud',
           action: 'revoke_oauth#create',
-          label: 'create',
-          property: 'failed',
+          label: 'error',
+          property: '{}',
           project: project,
           user: user
         )

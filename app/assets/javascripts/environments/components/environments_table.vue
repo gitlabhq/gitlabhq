@@ -164,7 +164,6 @@ export default {
             :deploy-board-data="model.deployBoardData"
             :is-loading="model.isLoadingDeployBoard"
             :is-empty="model.isEmptyDeployBoard"
-            :logs-path="model.logs_path"
             @changeCanaryWeight="changeCanaryWeight(model, $event)"
           />
         </div>
@@ -199,7 +198,6 @@ export default {
                   :deploy-board-data="child.deployBoardData"
                   :is-loading="child.isLoadingDeployBoard"
                   :is-empty="child.isEmptyDeployBoard"
-                  :logs-path="child.logs_path"
                   @changeCanaryWeight="changeCanaryWeight(child, $event)"
                 />
               </div>

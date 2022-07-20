@@ -1,4 +1,3 @@
-import { GlSprintf, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -11,7 +10,6 @@ import MavenSettings from '~/packages_and_registries/settings/group/components/m
 import {
   PACKAGE_SETTINGS_HEADER,
   PACKAGE_SETTINGS_DESCRIPTION,
-  PACKAGES_DOCS_PATH,
 } from '~/packages_and_registries/settings/group/constants';
 
 import updateNamespacePackageSettings from '~/packages_and_registries/settings/group/graphql/mutations/update_group_packages_settings.mutation.graphql';
@@ -33,7 +31,6 @@ describe('Packages Settings', () => {
   let apolloProvider;
 
   const defaultProvide = {
-    defaultExpanded: false,
     groupPath: 'foo_group_path',
   };
 
@@ -53,7 +50,6 @@ describe('Packages Settings', () => {
         packageSettings: packageSettings(),
       },
       stubs: {
-        GlSprintf,
         SettingsBlock,
         MavenSettings,
         GenericSettings,
@@ -67,7 +63,6 @@ describe('Packages Settings', () => {
 
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findDescription = () => wrapper.findByTestId('description');
-  const findLink = () => wrapper.findComponent(GlLink);
   const findMavenSettings = () => wrapper.findComponent(MavenSettings);
   const findMavenDuplicatedSettings = () => findMavenSettings().findComponent(DuplicatesSettings);
   const findGenericSettings = () => wrapper.findComponent(GenericSettings);
@@ -97,12 +92,6 @@ describe('Packages Settings', () => {
     expect(findSettingsBlock().exists()).toBe(true);
   });
 
-  it('passes the correct props to settings block', () => {
-    mountComponent();
-
-    expect(findSettingsBlock().props('defaultExpanded')).toBe(false);
-  });
-
   it('has the correct header text', () => {
     mountComponent();
 
@@ -113,16 +102,6 @@ describe('Packages Settings', () => {
     mountComponent();
 
     expect(findDescription().text()).toMatchInterpolatedText(PACKAGE_SETTINGS_DESCRIPTION);
-  });
-
-  it('has the correct link', () => {
-    mountComponent();
-
-    expect(findLink().attributes()).toMatchObject({
-      href: PACKAGES_DOCS_PATH,
-      target: '_blank',
-    });
-    expect(findLink().text()).toBe('Learn more.');
   });
 
   describe('maven settings', () => {

@@ -146,6 +146,8 @@ RSpec.shared_examples 'User updates wiki page' do
         it_behaves_like 'edits content using the content editor'
       end
     end
+
+    it_behaves_like 'autocompletes items'
   end
 
   context 'when the page is in a subdir', :js do

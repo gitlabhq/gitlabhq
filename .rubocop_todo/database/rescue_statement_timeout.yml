@@ -1,0 +1,5 @@
+---
+Database/RescueStatementTimeout:
+  Exclude:
+    - 'app/services/issues/relative_position_rebalancing_service.rb'
+    - 'lib/gitlab/background_migration/backfill_work_item_type_id_for_issues.rb'

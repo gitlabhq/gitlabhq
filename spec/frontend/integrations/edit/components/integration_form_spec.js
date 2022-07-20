@@ -596,37 +596,42 @@ describe('IntegrationForm', () => {
       });
 
       describe.each`
-        scenario                                   | replyStatus                         | errorMessage  | expectToast                           | expectSentry
-        ${'when "test settings" request fails'}    | ${httpStatus.INTERNAL_SERVER_ERROR} | ${undefined}  | ${I18N_DEFAULT_ERROR_MESSAGE}         | ${true}
-        ${'when "test settings" returns an error'} | ${httpStatus.OK}                    | ${'an error'} | ${'an error'}                         | ${false}
-        ${'when "test settings" succeeds'}         | ${httpStatus.OK}                    | ${undefined}  | ${I18N_SUCCESSFUL_CONNECTION_MESSAGE} | ${false}
-      `('$scenario', ({ replyStatus, errorMessage, expectToast, expectSentry }) => {
-        beforeEach(async () => {
-          mockAxios.onPut(mockTestPath).replyOnce(replyStatus, {
-            error: Boolean(errorMessage),
-            message: errorMessage,
+        scenario                                                | replyStatus                         | errorMessage   | serviceResponse | expectToast                           | expectSentry
+        ${'when "test settings" request fails'}                 | ${httpStatus.INTERNAL_SERVER_ERROR} | ${undefined}   | ${undefined}    | ${I18N_DEFAULT_ERROR_MESSAGE}         | ${true}
+        ${'when "test settings" returns an error'}              | ${httpStatus.OK}                    | ${'an error'}  | ${undefined}    | ${'an error'}                         | ${false}
+        ${'when "test settings" returns an error with details'} | ${httpStatus.OK}                    | ${'an error.'} | ${'extra info'} | ${'an error. extra info'}             | ${false}
+        ${'when "test settings" succeeds'}                      | ${httpStatus.OK}                    | ${undefined}   | ${undefined}    | ${I18N_SUCCESSFUL_CONNECTION_MESSAGE} | ${false}
+      `(
+        '$scenario',
+        ({ replyStatus, errorMessage, serviceResponse, expectToast, expectSentry }) => {
+          beforeEach(async () => {
+            mockAxios.onPut(mockTestPath).replyOnce(replyStatus, {
+              error: Boolean(errorMessage),
+              message: errorMessage,
+              service_response: serviceResponse,
+            });
+
+            await findTestButton().vm.$emit('click', new Event('click'));
+            await waitForPromises();
           });
 
-          await findTestButton().vm.$emit('click', new Event('click'));
-          await waitForPromises();
-        });
+          it(`calls toast with '${expectToast}'`, () => {
+            expect(mockToastShow).toHaveBeenCalledWith(expectToast);
+          });
 
-        it(`calls toast with '${expectToast}'`, () => {
-          expect(mockToastShow).toHaveBeenCalledWith(expectToast);
-        });
+          it('sets `loading` prop of test button to `false`', () => {
+            expect(findTestButton().props('loading')).toBe(false);
+          });
 
-        it('sets `loading` prop of test button to `false`', () => {
-          expect(findTestButton().props('loading')).toBe(false);
-        });
+          it('sets save button `disabled` prop to `false`', () => {
+            expect(findProjectSaveButton().props('disabled')).toBe(false);
+          });
 
-        it('sets save button `disabled` prop to `false`', () => {
-          expect(findProjectSaveButton().props('disabled')).toBe(false);
-        });
-
-        it(`${expectSentry ? 'does' : 'does not'} capture exception in Sentry`, () => {
-          expect(Sentry.captureException).toHaveBeenCalledTimes(expectSentry ? 1 : 0);
-        });
-      });
+          it(`${expectSentry ? 'does' : 'does not'} capture exception in Sentry`, () => {
+            expect(Sentry.captureException).toHaveBeenCalledTimes(expectSentry ? 1 : 0);
+          });
+        },
+      );
     });
   });
 

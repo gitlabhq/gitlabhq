@@ -1,7 +1,7 @@
 - expanded = integration_expanded?('kroki_')
 %section.settings.as-kroki.no-animate#js-kroki-settings{ class: ('expanded' if expanded) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Kroki')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')

@@ -11,7 +11,7 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-git-2.33-lfs-2.9-node-16.14-yarn-1.22-graphicsmagick-1.3.36
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-16.14:rubygems-3.2-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -43,13 +43,7 @@ compile-production-assets:
       - webpack-report/
     when: always
   before_script:
-    - if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
-        echo "Checking out \$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA ($CI_MERGE_REQUEST_SOURCE_BRANCH_SHA) instead of \$CI_COMMIT_SHA (merge result commit $CI_COMMIT_SHA) so that GitLab assets image tag actually reflect the commit for which assets were compiled.";
-        git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA};
-      else
-        echo "Building the image from \$CI_COMMIT_SHA ($CI_COMMIT_SHA) for this non-merge result pipeline.";
-      fi;
-    - echo "See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#with-pipeline-for-merged-results for more details.";
+    - scripts/checkout-mr-source-sha
     - !reference [.default-before_script, before_script]
   after_script:
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
@@ -185,6 +179,12 @@ graphql-schema-dump:
     paths:
       - tmp/tests/graphql/gitlab_schema.graphql
       - tmp/tests/graphql/gitlab_schema.json
+
+graphql-schema-dump as-if-foss:
+  extends:
+    - graphql-schema-dump
+    - .frontend:rules:eslint-as-if-foss
+    - .as-if-foss
 
 .frontend-test-base:
   extends:

@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { within, fireEvent } from '@testing-library/dom';
 import { mount } from '@vue/test-utils';
 import ProjectsField from '~/access_tokens/components/projects_field.vue';
@@ -118,11 +119,10 @@ describe('ProjectsField', () => {
       });
 
       describe('when radio is changed back to "All projects"', () => {
-        beforeEach(() => {
-          fireEvent.click(findAllProjectsRadio());
-        });
+        it('removes the hidden input value', async () => {
+          fireEvent.change(findAllProjectsRadio());
+          await nextTick();
 
-        it('removes the hidden input value', () => {
           expect(findHiddenInput().attributes('value')).toBe('');
         });
       });

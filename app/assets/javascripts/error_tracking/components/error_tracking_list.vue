@@ -150,6 +150,12 @@ export default {
     paginationRequired() {
       return !isEmpty(this.pagination);
     },
+    previousPage() {
+      return this.pagination.previous ? this.$options.PREV_PAGE : null;
+    },
+    nextPage() {
+      return this.pagination.next ? this.$options.NEXT_PAGE : null;
+    },
     errorTrackingHelpUrl() {
       return helpPagePath('operations/error_tracking');
     },
@@ -430,8 +436,8 @@ export default {
         <gl-pagination
           v-show="!loading"
           v-if="paginationRequired"
-          :prev-page="$options.PREV_PAGE"
-          :next-page="$options.NEXT_PAGE"
+          :prev-page="previousPage"
+          :next-page="nextPage"
           :value="pageValue"
           align="center"
           @input="goToPage"

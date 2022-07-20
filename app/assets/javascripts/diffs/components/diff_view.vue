@@ -2,12 +2,14 @@
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { IdState } from 'vendor/vue-virtual-scroller';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 import { hide } from '~/tooltips';
 import { pickDirection } from '../utils/diff_line';
 import DiffCommentCell from './diff_comment_cell.vue';
+import DiffCodeQuality from './diff_code_quality.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
 import DiffRow from './diff_row.vue';
 import { isHighlighted } from './diff_row_utils';
@@ -17,12 +19,17 @@ export default {
     DiffExpansionCell,
     DiffRow,
     DiffCommentCell,
+    DiffCodeQuality,
     DraftNote,
   },
   directives: {
     SafeHtml,
   },
-  mixins: [draftCommentsMixin, IdState({ idProp: (vm) => vm.diffFile.file_hash })],
+  mixins: [
+    draftCommentsMixin,
+    IdState({ idProp: (vm) => vm.diffFile.file_hash }),
+    glFeatureFlagsMixin(),
+  ],
   props: {
     diffFile: {
       type: Object,
@@ -42,6 +49,11 @@ export default {
       required: false,
       default: false,
     },
+  },
+  data() {
+    return {
+      codeQualityExpandedLines: [],
+    };
   },
   idState() {
     return {
@@ -84,6 +96,23 @@ export default {
       }
       this.idState.dragStart = line;
     },
+    parseCodeQuality(line) {
+      return (line.left ?? line.right)?.codequality;
+    },
+
+    hideCodeQualityFindings(line) {
+      const index = this.codeQualityExpandedLines.indexOf(line);
+      if (index > -1) {
+        this.codeQualityExpandedLines.splice(index, 1);
+      }
+    },
+    toggleCodeQualityFindings(line) {
+      if (!this.codeQualityExpandedLines.includes(line)) {
+        this.codeQualityExpandedLines.push(line);
+      } else {
+        this.hideCodeQualityFindings(line);
+      }
+    },
     onDragOver(line) {
       if (line.chunk !== this.idState.dragStart.chunk) return;
 
@@ -125,15 +154,16 @@ export default {
     },
     handleParallelLineMouseDown(e) {
       const line = e.target.closest('.diff-td');
-      const table = line.closest('.diff-table');
+      if (line) {
+        const table = line.closest('.diff-table');
+        table.classList.remove('left-side-selected', 'right-side-selected');
+        const [lineClass] = ['left-side', 'right-side'].filter((name) =>
+          line.classList.contains(name),
+        );
 
-      table.classList.remove('left-side-selected', 'right-side-selected');
-      const [lineClass] = ['left-side', 'right-side'].filter((name) =>
-        line.classList.contains(name),
-      );
-
-      if (lineClass) {
-        table.classList.add(`${lineClass}-selected`);
+        if (lineClass) {
+          table.classList.add(`${lineClass}-selected`);
+        }
       }
     },
     getCountBetweenIndex(index) {
@@ -147,6 +177,9 @@ export default {
         Number(this.diffLines[index + 1].left.new_line) -
         Number(this.diffLines[index - 1].left.new_line)
       );
+    },
+    getCodeQualityLine(line) {
+      return this.parseCodeQuality(line)?.[0]?.line;
     },
   },
   userColorScheme: window.gon.user_color_scheme,
@@ -190,6 +223,7 @@ export default {
         :coverage-loaded="coverageLoaded"
         @showCommentForm="(code) => singleLineComment(code, line)"
         @setHighlightedRow="setHighlightedRow"
+        @toggleCodeQualityFindings="toggleCodeQualityFindings"
         @toggleLineDiscussions="
           ({ lineCode, expanded }) =>
             toggleLineDiscussions({ lineCode, fileHash: diffFile.file_hash, expanded })
@@ -197,6 +231,17 @@ export default {
         @enterdragging="onDragOver"
         @startdragging="onStartDragging"
         @stopdragging="onStopDragging"
+      />
+
+      <diff-code-quality
+        v-if="
+          glFeatures.refactorCodeQualityInlineFindings &&
+          codeQualityExpandedLines.includes(getCodeQualityLine(line))
+        "
+        :key="line.line_code"
+        :line="getCodeQualityLine(line)"
+        :code-quality="parseCodeQuality(line)"
+        @hideCodeQualityFindings="hideCodeQualityFindings"
       />
       <div
         v-if="line.renderCommentRow"

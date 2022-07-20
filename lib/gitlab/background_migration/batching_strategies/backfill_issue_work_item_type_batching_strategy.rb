@@ -8,7 +8,7 @@ module Gitlab
       #
       # If no more batches exist in the table, returns nil.
       class BackfillIssueWorkItemTypeBatchingStrategy < PrimaryKeyBatchingStrategy
-        def apply_additional_filters(relation, job_arguments:)
+        def apply_additional_filters(relation, job_arguments:, job_class: nil)
           issue_type = job_arguments.first
 
           relation.where(issue_type: issue_type)

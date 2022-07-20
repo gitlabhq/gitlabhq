@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { range } from 'lodash';
+import { stubPerformanceWebAPI } from 'helpers/performance';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import createFlash from '~/flash';
@@ -35,6 +36,8 @@ describe('IDE store merge request actions', () => {
   let mock;
 
   beforeEach(() => {
+    stubPerformanceWebAPI();
+
     store = createStore();
 
     mock = new MockAdapter(axios);

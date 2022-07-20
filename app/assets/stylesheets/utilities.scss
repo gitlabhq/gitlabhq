@@ -367,50 +367,6 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   -webkit-backdrop-filter: blur(2px); // still required by Safari
 }
 
-/*
- * The styles from here to END-#1825 will be moved to @gitlab/ui by
- * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1825
- */
-.gl-lg-mx-12 {
-  @include media-breakpoint-up(lg) {
-    margin-left: $gl-spacing-scale-12;
-    margin-right: $gl-spacing-scale-12;
-  }
+.gl-flex-flow-row-wrap {
+  flex-flow: row wrap;
 }
-
-.gl-lg-ml-12 {
-  @include media-breakpoint-up(lg) {
-    margin-left: $gl-spacing-scale-12;
-  }
-}
-
-.gl-lg-mr-12 {
-  @include media-breakpoint-up(lg) {
-    margin-right: $gl-spacing-scale-12;
-  }
-}
-
-.gl-lg-ml-10 {
-  @include media-breakpoint-up(lg) {
-    margin-left: $gl-spacing-scale-10;
-  }
-}
-
-.gl-lg-mr-10 {
-  @include media-breakpoint-up(lg) {
-    margin-right: $gl-spacing-scale-10;
-  }
-}
-
-.gl-lg-w-30p {
-  @include gl-media-breakpoint-up(lg) {
-    width: 30%;
-  }
-}
-
-.gl-lg-w-40p {
-  @include gl-media-breakpoint-up(lg) {
-    width: 40%;
-  }
-}
-/* END-#1825 */

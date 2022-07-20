@@ -61,7 +61,7 @@ This example prevents pipelines for schedules or `push` (branches and tags) pipe
 The final `when: always` rule runs all other pipeline types, **including** merge
 request pipelines.
 
-## Switch between branch pipelines and merge request pipelines
+### Switch between branch pipelines and merge request pipelines
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) in GitLab 13.8.
 
@@ -115,6 +115,25 @@ set and could be blocked by a similar rule. Triggered pipelines have a pipeline 
 of `trigger` or `pipeline`, so `&& $CI_PIPELINE_SOURCE == "push"` ensures the rule
 does not block triggered pipelines.
 
+### Git Flow with merge request pipelines
+
+You can use `workflow: rules` as part of [Git Flow or similar strategies](../../topics/gitlab_flow.md)
+with merge request pipelines. With these rules, you can use [merge request pipeline features](../pipelines/merge_request_pipelines.md)
+with feature branches, while keeping long-lived branches to support multiple versions
+of your software.
+
+For example, to only run pipelines for your merge requests, tags, and protected branches:
+
+```yaml
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_REF_PROTECTED
+```
+
+This example assumes that your long-lived branches are [protected](../../user/project/protected_branches.md).
+
 ## `workflow:rules` templates
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217732) in GitLab 13.0.
@@ -149,4 +168,24 @@ To [include](index.md#include) it:
 ```yaml
 include:
   - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
+```
+
+## Troubleshooting
+
+### Merge request stuck with `Checking pipeline status.` message
+
+If a merge request displays `Checking pipeline status.`, but the message never goes
+away (the "spinner" never stops spinning), it might be due to `workflow:rules`.
+This issue can happen if a project has [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds)
+enabled, but the `workflow:rules` prevent a pipeline from running for the merge request.
+
+For example, with this workflow, merge requests cannot be merged, because no
+pipeline can run:
+
+```yaml
+workflow:
+  rules:
+    - changes:
+      - .gitlab/**/**.md
+      when: never
 ```

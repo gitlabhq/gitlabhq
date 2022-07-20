@@ -18,7 +18,7 @@ export const overrideDropdownDescriptions = {
 };
 
 export const I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE = s__(
-  'Integrations|Connection failed. Please check your settings.',
+  'Integrations|Connection failed. Check your integration settings.',
 );
 export const I18N_DEFAULT_ERROR_MESSAGE = __('Something went wrong on our end.');
 export const I18N_SUCCESSFUL_CONNECTION_MESSAGE = s__('Integrations|Connection successful.');
@@ -82,4 +82,12 @@ export const billingPlans = {
 export const billingPlanNames = {
   [billingPlans.PREMIUM]: s__('BillingPlans|Premium'),
   [billingPlans.ULTIMATE]: s__('BillingPlans|Ultimate'),
+};
+
+const INTEGRATION_TYPE_SLACK = 'slack';
+const INTEGRATION_TYPE_MATTERMOST = 'mattermost';
+
+export const placeholderForType = {
+  [INTEGRATION_TYPE_SLACK]: __('#general, #development'),
+  [INTEGRATION_TYPE_MATTERMOST]: __('my-channel'),
 };

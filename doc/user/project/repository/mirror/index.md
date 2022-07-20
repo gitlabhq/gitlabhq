@@ -8,7 +8,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.htm
 # Repository mirroring **(FREE)**
 
 You can _mirror_ a repository to and from external sources. You can select which repository
-serves as the source. Branches, tags, and commits can be mirrored.
+serves as the source. Branches, tags, and commits are synced automatically.
 
 NOTE:
 SCP-style URLs are **not** supported. However, the work for implementing SCP-style URLs is tracked
@@ -302,3 +302,12 @@ fail nor succeed. They also do not leave a clear log. To check for this problem:
 1. After you run the command, the [background jobs page](../../../admin_area/index.md#background-jobs)
    should show new mirroring jobs being scheduled, especially when
    [triggered manually](#update-a-mirror).
+
+### Invalid URL
+
+If you receive this error while setting up mirroring over [SSH](#ssh-authentication), make sure the URL is in a valid format.
+
+Mirroring does not support the short version of SSH clone URLs (`git@gitlab.com:gitlab-org/gitlab.git`)
+and requires the full version including the protocol (`ssh://git@gitlab.com/gitlab-org/gitlab.git`).
+
+Make sure that host and project path are separated using `/` instead of `:`.

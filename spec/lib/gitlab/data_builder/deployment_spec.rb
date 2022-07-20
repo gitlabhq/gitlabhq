@@ -7,7 +7,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
     it 'returns the object kind for a deployment' do
       deployment = build(:deployment, deployable: nil, environment: create(:environment))
 
-      data = described_class.build(deployment, Time.current)
+      data = described_class.build(deployment, 'success', Time.current)
 
       expect(data[:object_kind]).to eq('deployment')
     end
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
       expected_commit_url = Gitlab::UrlBuilder.build(commit)
       status_changed_at = Time.current
 
-      data = described_class.build(deployment, status_changed_at)
+      data = described_class.build(deployment, 'failed', status_changed_at)
 
       expect(data[:status]).to eq('failed')
       expect(data[:status_changed_at]).to eq(status_changed_at)
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
 
     it 'does not include the deployable URL when there is no deployable' do
       deployment = create(:deployment, status: :failed, deployable: nil)
-      data = described_class.build(deployment, Time.current)
+      data = described_class.build(deployment, 'failed', Time.current)
 
       expect(data[:deployable_url]).to be_nil
     end
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
       let_it_be(:project) { create(:project, :repository) }
       let_it_be(:deployment) { create(:deployment, project: project) }
 
-      subject(:data) { described_class.build(deployment, Time.current) }
+      subject(:data) { described_class.build(deployment, 'created', Time.current) }
 
       before(:all) do
         project.repository.remove
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
     context 'when deployed_by is nil' do
       let_it_be(:deployment) { create(:deployment, user: nil, deployable: nil) }
 
-      subject(:data) { described_class.build(deployment, Time.current) }
+      subject(:data) { described_class.build(deployment, 'created', Time.current) }
 
       before(:all) do
         deployment.user = nil

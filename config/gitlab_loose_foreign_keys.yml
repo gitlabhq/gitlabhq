@@ -219,6 +219,10 @@ requirements_management_test_reports:
   - table: ci_builds
     column: build_id
     on_delete: async_nullify
+sbom_occurrences:
+  - table: ci_pipelines
+    column: pipeline_id
+    on_delete: async_nullify
 security_scans:
   - table: ci_builds
     column: build_id

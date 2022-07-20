@@ -56,7 +56,7 @@ the following sections and tables provide an alternative.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `name` | `string` |  | Name of the policy. |
+| `name` | `string` |  | Name of the policy. Maximum of 255 characters.|
 | `description` (optional) | `string` |  | Description of the policy. |
 | `enabled` | `boolean` | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules` | `array` of rules |  | List of rules that the policy applies. |
@@ -69,7 +69,7 @@ This rule enforces the defined actions based on the information provided.
 | Field      | Type | Possible values | Description |
 |------------|------|-----------------|-------------|
 | `type`     | `string` | `scan_finding` | The rule's type. |
-| `branches` | `array` of `string` | `[]` or the branch's name | Protected branches for this rule to consider. |
+| `branches` | `array` of `string` | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. |
 | `scanners`  | `array` of `string` | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. |
 | `vulnerabilities_allowed`  | `integer` | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels`  | `array` of `string` | `info`, `unknown`, `low`, `medium`, `high`, `critical`| The severity levels for this rule to consider. |
@@ -84,10 +84,10 @@ the defined policy.
 |-------|------|-----------------|-------------|
 | `type` | `string` | `require_approval` | The action's type. |
 | `approvals_required` | `integer` | Greater than or equal to zero | The number of MR approvals required. |
-| `user_approvers` | `array` of `string` | Username of one of more users | The users to consider as approvers. |
-| `user_approvers_ids` | `array` of `integer` | ID of one of more users | The IDs of users to consider as approvers. |
-| `group_approvers` | `array` of `string` | Path of one of more groups | The groups to consider as approvers. |
-| `group_approvers_ids` | `array` of `integer` | ID of one of more groups | The IDs of groups to consider as approvers. |
+| `user_approvers` | `array` of `string` | Username of one of more users | The users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `user_approvers_ids` | `array` of `integer` | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `group_approvers` | `array` of `string` | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `group_approvers_ids` | `array` of `integer` | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
 
 Requirements and limitations:
 

@@ -23,7 +23,6 @@ import (
 	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/rejectmethods"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
@@ -52,6 +51,7 @@ type upstream struct {
 	geoProxyCableRoute    routeEntry
 	geoProxyRoute         routeEntry
 	geoProxyPollSleep     func(time.Duration)
+	geoPollerDone         chan struct{}
 	accessLogger          *logrus.Logger
 	enableGeoProxyFeature bool
 	mu                    sync.RWMutex
@@ -81,6 +81,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 	if up.CableSocket == "" {
 		up.CableSocket = up.Socket
 	}
+	up.geoPollerDone = make(chan struct{})
 	up.RoundTripper = roundtripper.NewBackendRoundTripper(up.Backend, up.Socket, up.ProxyHeadersTimeout, cfg.DevelopmentMode)
 	up.CableRoundTripper = roundtripper.NewBackendRoundTripper(up.CableBackend, up.CableSocket, up.ProxyHeadersTimeout, cfg.DevelopmentMode)
 	up.configureURLPrefix()
@@ -92,9 +93,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 
 	routesCallback(&up)
 
-	if up.enableGeoProxyFeature {
-		go up.pollGeoProxyAPI()
-	}
+	go up.pollGeoProxyAPI()
 
 	var correlationOpts []correlation.InboundHandlerOption
 	if cfg.PropagateCorrelationID {
@@ -165,10 +164,8 @@ func (u *upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *upstream) findRoute(cleanedPath string, r *http.Request) *routeEntry {
-	if u.enableGeoProxyFeature {
-		if route := u.findGeoProxyRoute(cleanedPath, r); route != nil {
-			return route
-		}
+	if route := u.findGeoProxyRoute(cleanedPath, r); route != nil {
+		return route
 	}
 
 	for _, ro := range u.Routes {
@@ -185,19 +182,15 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 	defer u.mu.RUnlock()
 
 	if u.geoProxyBackend.String() == "" {
-		log.WithRequest(r).Debug("Geo Proxy: Not a Geo proxy")
 		return nil
 	}
 
 	// Some routes are safe to serve from this GitLab instance
 	for _, ro := range u.geoLocalRoutes {
 		if ro.isMatch(cleanedPath, r) {
-			log.WithRequest(r).Debug("Geo Proxy: Handle this request locally")
 			return &ro
 		}
 	}
-
-	log.WithRequest(r).WithFields(log.Fields{"geoProxyBackend": u.geoProxyBackend}).Debug("Geo Proxy: Forward this request")
 
 	if cleanedPath == "/-/cable" {
 		return &u.geoProxyCableRoute
@@ -207,7 +200,15 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 }
 
 func (u *upstream) pollGeoProxyAPI() {
+	defer close(u.geoPollerDone)
+
 	for {
+		// Check enableGeoProxyFeature every time because `callGeoProxyApi()` can change its value.
+		// This is can also be disabled through the GEO_SECONDARY_PROXY env var.
+		if !u.enableGeoProxyFeature {
+			break
+		}
+
 		u.callGeoProxyAPI()
 		u.geoProxyPollSleep(geoProxyApiPollingInterval)
 	}
@@ -217,19 +218,26 @@ func (u *upstream) pollGeoProxyAPI() {
 func (u *upstream) callGeoProxyAPI() {
 	geoProxyData, err := u.APIClient.GetGeoProxyData()
 	if err != nil {
-		log.WithError(err).WithFields(log.Fields{"geoProxyBackend": u.geoProxyBackend}).Error("Geo Proxy: Unable to determine Geo Proxy URL. Fallback on cached value.")
+		// Unable to determine Geo Proxy URL. Fallback on cached value.
+		return
+	}
+
+	if !geoProxyData.GeoEnabled {
+		// When Geo is not enabled, we don't need to proxy, as it unnecessarily polls the
+		// API, whereas a restart is necessary to enable Geo in the first place; at which
+		// point we get fresh data from the API.
+		u.enableGeoProxyFeature = false
 		return
 	}
 
 	hasProxyDataChanged := false
 	if u.geoProxyBackend.String() != geoProxyData.GeoProxyURL.String() {
-		log.WithFields(log.Fields{"oldGeoProxyURL": u.geoProxyBackend, "newGeoProxyURL": geoProxyData.GeoProxyURL}).Info("Geo Proxy: URL changed")
+		// URL changed
 		hasProxyDataChanged = true
 	}
 
 	if u.geoProxyExtraData != geoProxyData.GeoProxyExtraData {
-		// extra data is usually a JWT, thus not explicitly logging it
-		log.Info("Geo Proxy: signed data changed")
+		// Signed data changed
 		hasProxyDataChanged = true
 	}
 

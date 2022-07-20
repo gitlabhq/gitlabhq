@@ -6,7 +6,7 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { s__ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -18,8 +18,8 @@ import JobsTableApp from '~/jobs/components/table/jobs_table_app.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
 import {
-  mockJobsQueryResponse,
-  mockJobsQueryEmptyResponse,
+  mockJobsResponsePaginated,
+  mockJobsResponseEmpty,
   mockFailedSearchToken,
 } from '../../mock_data';
 
@@ -30,11 +30,10 @@ jest.mock('~/flash');
 
 describe('Job table app', () => {
   let wrapper;
-  let jobsTableVueSearch = true;
 
-  const successHandler = jest.fn().mockResolvedValue(mockJobsQueryResponse);
+  const successHandler = jest.fn().mockResolvedValue(mockJobsResponsePaginated);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
-  const emptyHandler = jest.fn().mockResolvedValue(mockJobsQueryEmptyResponse);
+  const emptyHandler = jest.fn().mockResolvedValue(mockJobsResponseEmpty);
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
@@ -66,7 +65,6 @@ describe('Job table app', () => {
       },
       provide: {
         fullPath: projectPath,
-        glFeatures: { jobsTableVueSearch },
       },
       apolloProvider: createMockApolloProvider(handler),
     });
@@ -77,17 +75,17 @@ describe('Job table app', () => {
   });
 
   describe('loading state', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('should display skeleton loader when loading', () => {
+      createComponent();
+
       expect(findSkeletonLoader().exists()).toBe(true);
       expect(findTable().exists()).toBe(false);
       expect(findLoadingSpinner().exists()).toBe(false);
     });
 
     it('when switching tabs only the skeleton loader should show', () => {
+      createComponent();
+
       findTabs().vm.$emit('fetchJobsByStatus', null);
 
       expect(findSkeletonLoader().exists()).toBe(true);
@@ -119,24 +117,29 @@ describe('Job table app', () => {
     });
 
     describe('when infinite scrolling is triggered', () => {
-      beforeEach(() => {
-        triggerInfiniteScroll();
-      });
-
       it('does not display a skeleton loader', () => {
+        triggerInfiniteScroll();
+
         expect(findSkeletonLoader().exists()).toBe(false);
       });
 
       it('handles infinite scrolling by calling fetch more', async () => {
+        triggerInfiniteScroll();
+
+        await nextTick();
+
+        const pageSize = 30;
+
         expect(findLoadingSpinner().exists()).toBe(true);
 
         await waitForPromises();
 
         expect(findLoadingSpinner().exists()).toBe(false);
 
-        expect(successHandler).toHaveBeenCalledWith({
-          after: 'eyJpZCI6IjIzMTcifQ',
-          fullPath: 'gitlab-org/gitlab',
+        expect(successHandler).toHaveBeenLastCalledWith({
+          first: pageSize,
+          fullPath: projectPath,
+          after: mockJobsResponsePaginated.data.project.jobs.pageInfo.endCursor,
         });
       });
     });
@@ -226,14 +229,6 @@ describe('Job table app', () => {
 
       expect(createFlash).toHaveBeenCalledWith(expectedWarning);
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
-    });
-
-    it('should not display filtered search', () => {
-      jobsTableVueSearch = false;
-
-      createComponent();
-
-      expect(findFilteredSearch().exists()).toBe(false);
     });
   });
 });

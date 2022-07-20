@@ -968,4 +968,18 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('abc!abc') }
     it { is_expected.not_to match((['abc'] * 100).join('.') + '!') }
   end
+
+  describe '.x509_subject_key_identifier_regex' do
+    subject { described_class.x509_subject_key_identifier_regex }
+
+    it { is_expected.to match('AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB') }
+    it { is_expected.to match('CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD') }
+    it { is_expected.to match('79:FB:C1:E5:6B:53:8B:0A') }
+    it { is_expected.to match('79:fb:c1:e5:6b:53:8b:0a') }
+
+    it { is_expected.not_to match('') }
+    it { is_expected.not_to match('CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:CD:GG') }
+    it { is_expected.not_to match('random string') }
+    it { is_expected.not_to match('12321342545356434523412341245452345623453542345234523453245') }
+  end
 end

@@ -1038,3 +1038,245 @@ export const triggerJob = {
     action: null,
   },
 };
+
+export const mockPerformanceInsightsResponse = {
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/20',
+      pipeline: {
+        __typename: 'Pipeline',
+        id: 'gid://gitlab/Ci::Pipeline/97',
+        jobs: {
+          __typename: 'CiJobConnection',
+          pageInfo: {
+            __typename: 'PageInfo',
+            hasNextPage: false,
+          },
+          nodes: [
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Bridge/2502',
+              duration: null,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'success-2502-2502',
+                detailsPath: '/root/lots-of-jobs-project/-/pipelines/98',
+              },
+              name: 'trigger_job',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/303',
+                name: 'deploy',
+              },
+              startedAt: null,
+              queuedDuration: 424850.376278,
+            },
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Build/2501',
+              duration: 10,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'success-2501-2501',
+                detailsPath: '/root/ci-project/-/jobs/2501',
+              },
+              name: 'artifact_job',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/303',
+                name: 'deploy',
+              },
+              startedAt: '2022-07-01T16:31:41Z',
+              queuedDuration: 2.621553,
+            },
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Build/2500',
+              duration: 4,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'success-2500-2500',
+                detailsPath: '/root/ci-project/-/jobs/2500',
+              },
+              name: 'coverage_job',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/302',
+                name: 'test',
+              },
+              startedAt: '2022-07-01T16:31:33Z',
+              queuedDuration: 14.388869,
+            },
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Build/2499',
+              duration: 4,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'success-2499-2499',
+                detailsPath: '/root/ci-project/-/jobs/2499',
+              },
+              name: 'test_job_two',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/302',
+                name: 'test',
+              },
+              startedAt: '2022-07-01T16:31:28Z',
+              queuedDuration: 15.792664,
+            },
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Build/2498',
+              duration: 4,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'success-2498-2498',
+                detailsPath: '/root/ci-project/-/jobs/2498',
+              },
+              name: 'test_job_one',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/302',
+                name: 'test',
+              },
+              startedAt: '2022-07-01T16:31:17Z',
+              queuedDuration: 8.317072,
+            },
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Build/2497',
+              duration: 5,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'failed-2497-2497',
+                detailsPath: '/root/ci-project/-/jobs/2497',
+              },
+              name: 'allow_failure_test_job',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/302',
+                name: 'test',
+              },
+              startedAt: '2022-07-01T16:31:22Z',
+              queuedDuration: 3.547553,
+            },
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Build/2496',
+              duration: null,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'manual-2496-2496',
+                detailsPath: '/root/ci-project/-/jobs/2496',
+              },
+              name: 'test_manual_job',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/302',
+                name: 'test',
+              },
+              startedAt: null,
+              queuedDuration: null,
+            },
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Build/2495',
+              duration: 5,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'success-2495-2495',
+                detailsPath: '/root/ci-project/-/jobs/2495',
+              },
+              name: 'large_log_output',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/301',
+                name: 'build',
+              },
+              startedAt: '2022-07-01T16:31:11Z',
+              queuedDuration: 79.128625,
+            },
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Build/2494',
+              duration: 5,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'success-2494-2494',
+                detailsPath: '/root/ci-project/-/jobs/2494',
+              },
+              name: 'build_job',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/301',
+                name: 'build',
+              },
+              startedAt: '2022-07-01T16:31:05Z',
+              queuedDuration: 73.286895,
+            },
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Build/2493',
+              duration: 16,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'success-2493-2493',
+                detailsPath: '/root/ci-project/-/jobs/2493',
+              },
+              name: 'wait_job',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/301',
+                name: 'build',
+              },
+              startedAt: '2022-07-01T16:30:48Z',
+              queuedDuration: 56.258856,
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const mockPerformanceInsightsNextPageResponse = {
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/20',
+      pipeline: {
+        __typename: 'Pipeline',
+        id: 'gid://gitlab/Ci::Pipeline/97',
+        jobs: {
+          __typename: 'CiJobConnection',
+          pageInfo: {
+            __typename: 'PageInfo',
+            hasNextPage: true,
+          },
+          nodes: [
+            {
+              __typename: 'CiJob',
+              id: 'gid://gitlab/Ci::Bridge/2502',
+              duration: null,
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'success-2502-2502',
+                detailsPath: '/root/lots-of-jobs-project/-/pipelines/98',
+              },
+              name: 'trigger_job',
+              stage: {
+                __typename: 'CiStage',
+                id: 'gid://gitlab/Ci::Stage/303',
+                name: 'deploy',
+              },
+              startedAt: null,
+              queuedDuration: 424850.376278,
+            },
+          ],
+        },
+      },
+    },
+  },
+};

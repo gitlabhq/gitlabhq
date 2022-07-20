@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67614
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285533
 milestone: '14.3'
 type: experiment
-group: group::adoption
+group: group::acquisition
 default_enabled: false

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe StageSerializer do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
-  let(:resource) { create(:ci_stage_entity) }
+  let(:resource) { create(:ci_stage) }
 
   let(:serializer) do
     described_class.new(current_user: user, project: project)
@@ -21,7 +21,7 @@ RSpec.describe StageSerializer do
     end
 
     context 'with an array of entities' do
-      let(:resource) { create_list(:ci_stage_entity, 2) }
+      let(:resource) { create_list(:ci_stage, 2) }
 
       it 'serializes the array of pipelines' do
         expect(subject).not_to be_empty

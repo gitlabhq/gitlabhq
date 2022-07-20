@@ -1,6 +1,6 @@
 ---
 stage: Growth
-group: Expansion
+group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -20,7 +20,7 @@ levels are defined in the `Gitlab::Access` module. Currently, these levels are v
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
-- Owner (`50`) - Only valid to set for groups
+- Owner (`50`). Valid for projects in [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/21432).
 
 NOTE:
 From [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects have a maximum role of Owner.

@@ -94,7 +94,7 @@ namespace :gitlab do
         connection = Gitlab::Database.database_base_models['main'].connection
         databases_loaded << configure_database(connection)
       else
-        Gitlab::Database.database_base_models.each do |name, model|
+        Gitlab::Database.database_base_models_with_gitlab_shared.each do |name, model|
           next unless databases_with_tasks.any? { |db_with_tasks| db_with_tasks.name == name }
 
           databases_loaded << configure_database(model.connection, database_name: name)
@@ -366,6 +366,70 @@ namespace :gitlab do
       if Rails.env.development? && Gitlab::Database::BackgroundMigration::BatchedMigration.table_exists?
         Rake::Task['gitlab:db:execute_batched_migrations'].invoke
       end
+    end
+
+    namespace :dictionary do
+      DB_DOCS_PATH = File.join(Rails.root, 'db', 'docs')
+
+      desc 'Generate database docs yaml'
+      task generate: :environment do
+        FileUtils.mkdir_p(DB_DOCS_PATH) unless Dir.exist?(DB_DOCS_PATH)
+
+        Rails.application.eager_load!
+
+        tables = Gitlab::Database.database_base_models.flat_map { |_, m| m.connection.tables }
+        classes = tables.to_h { |t| [t, []] }
+
+        Gitlab::Database.database_base_models.each do |_, model_class|
+          model_class
+            .descendants
+            .reject(&:abstract_class)
+            .reject { |c| c.name =~ /^(?:EE::)?Gitlab::(?:BackgroundMigration|DatabaseImporters)::/ }
+            .reject { |c| c.name =~ /^HABTM_/ }
+            .each { |c| classes[c.table_name] << c.name if classes.has_key?(c.table_name) }
+        end
+
+        version = Gem::Version.new(File.read('VERSION'))
+        milestone = version.release.segments[0..1].join('.')
+
+        tables.each do |table_name|
+          file = File.join(DB_DOCS_PATH, "#{table_name}.yml")
+
+          table_metadata = {
+            'table_name' => table_name,
+            'classes' => classes[table_name]&.sort&.uniq,
+            'feature_categories' => [],
+            'description' => nil,
+            'introduced_by_url' => nil,
+            'milestone' => milestone
+          }
+
+          if File.exist?(file)
+            outdated = false
+
+            existing_metadata = YAML.safe_load(File.read(file))
+
+            if existing_metadata['table_name'] != table_metadata['table_name']
+              existing_metadata['table_name'] = table_metadata['table_name']
+              outdated = true
+            end
+
+            if existing_metadata['classes'].difference(table_metadata['classes']).any?
+              existing_metadata['classes'] = table_metadata['classes']
+              outdated = true
+            end
+
+            File.write(file, existing_metadata.to_yaml) if outdated
+          else
+            File.write(file, table_metadata.to_yaml)
+          end
+        end
+      end
+
+      # Temporary disable this, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85760#note_998452069
+      # Rake::Task['db:migrate'].enhance do
+      #   Rake::Task['gitlab:db:dictionary:generate'].invoke if Rails.env.development?
+      # end
     end
   end
 end

@@ -47,6 +47,25 @@ describe('IssuableForm', () => {
     });
   });
 
+  describe('resetAutosave', () => {
+    it('resets autosave on elements with the .js-reset-autosave class', () => {
+      setHTMLFixture(`
+        <form>
+          <input name="[title]" />
+          <textarea name="[description]"></textarea>
+          <a class="js-reset-autosave">Cancel</a>
+        </form>
+      `);
+      const $form = $('form');
+      const resetAutosave = jest.spyOn(IssuableForm.prototype, 'resetAutosave');
+      createIssuable($form);
+
+      $form.find('.js-reset-autosave').trigger('click');
+
+      expect(resetAutosave).toHaveBeenCalled();
+    });
+  });
+
   describe('removeWip', () => {
     it.each`
       prefix

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v15/proto/go/gitalypb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
@@ -30,7 +30,7 @@ func TestHandleLimitErr(t *testing.T) {
 			}, []byte{}),
 		},
 		{
-			desc:      "recieve pack",
+			desc:      "receive pack",
 			errWriter: writeReceivePackError,
 			expectedBytes: bytes.Join([][]byte{
 				{'0', '0', '2', '3', 1, '0', '0', '1', 'a'},

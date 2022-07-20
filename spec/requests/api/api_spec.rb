@@ -133,7 +133,7 @@ RSpec.describe API::API do
                         'meta.caller_id' => 'GET /api/:version/broadcast_messages',
                         'meta.remote_ip' => an_instance_of(String),
                         'meta.client_id' => a_string_matching(%r{\Aip/.+}),
-                        'meta.feature_category' => 'navigation',
+                        'meta.feature_category' => 'onboarding',
                         'route' => '/api/:version/broadcast_messages')
 
           expect(data.stringify_keys).not_to include('meta.project', 'meta.root_namespace', 'meta.user')
@@ -209,7 +209,7 @@ RSpec.describe API::API do
                         'meta.caller_id' => 'GET /api/:version/broadcast_messages',
                         'meta.remote_ip' => an_instance_of(String),
                         'meta.client_id' => a_string_matching(%r{\Aip/.+}),
-                        'meta.feature_category' => 'navigation',
+                        'meta.feature_category' => 'onboarding',
                         'route' => '/api/:version/broadcast_messages')
 
           expect(data.stringify_keys).not_to include('meta.project', 'meta.root_namespace', 'meta.user')

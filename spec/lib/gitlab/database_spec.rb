@@ -337,7 +337,7 @@ RSpec.describe Gitlab::Database do
     let(:model2) { Class.new(base_model) }
 
     before do
-      allow(described_class).to receive(:database_base_models)
+      allow(described_class).to receive(:database_base_models_using_load_balancing)
         .and_return({ model1: model1, model2: model2 }.with_indifferent_access)
     end
 

@@ -16,6 +16,8 @@ module Packages
             raise ActiveRecord::RecordInvalid, meta
           end
 
+          params.delete(:md5_digest) if Gitlab::FIPS.enabled?
+
           Packages::Pypi::Metadatum.upsert(meta.attributes)
 
           ::Packages::CreatePackageFileService.new(created_package, file_params).execute

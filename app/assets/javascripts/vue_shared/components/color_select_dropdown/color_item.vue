@@ -14,12 +14,12 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="color-item">
     <span
-      class="dropdown-label-box gl-flex-shrink-0 gl-top-1 gl-mr-0"
+      class="dropdown-label-box color-item-color"
       data-testid="color-item"
       :style="{ backgroundColor: color }"
     ></span>
-    <span class="hide-collapsed">{{ title }}</span>
+    <span class="color-item-text">{{ title }}</span>
   </div>
 </template>

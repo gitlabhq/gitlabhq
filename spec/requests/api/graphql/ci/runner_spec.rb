@@ -424,7 +424,7 @@ RSpec.describe 'Query.runner(id)' do
     let(:user) { create(:user) }
 
     before do
-      group.add_user(user, Gitlab::Access::OWNER)
+      group.add_member(user, Gitlab::Access::OWNER)
     end
 
     it_behaves_like 'retrieval with no admin url' do

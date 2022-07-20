@@ -296,7 +296,7 @@ The following table details the cost to run the different reference architecture
 
 NOTE:
 The following lists are non exhaustive. Generally, other cloud providers not listed
-here will likely work with the same specs, but this hasn't been validated.
+here likely work with the same specs, but this hasn't been validated.
 Additionally, when it comes to other cloud provider services not listed here,
 it's advised to be cautious as each implementation can be notably different
 and should be tested thoroughly before production use.
@@ -366,9 +366,9 @@ Additionally, the following cloud provider services are validated and supported 
 
 The following specific cloud provider services have been found to have issues in terms of either functionality or performance. As such, they either have caveats that should be considered or are not recommended:
 
+- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible. See [14.4.0](../../update/index.md#1440) for more details.
 - [Azure Blob Storage](https://azure.microsoft.com/en-gb/services/storage/blobs/) has been found to have performance limits that can impact production use at certain times. For larger Reference Architectures the service may not be sufficient for production use and an alternative is recommended for use instead.
 - [Azure Database for PostgreSQL Server](https://azure.microsoft.com/en-gb/services/postgresql/#overview) (Single / Flexible) is not recommended for use due to notable performance issues or missing functionality.
-- [AWS Aurora Database](https://aws.amazon.com/rds/aurora/) is not recommended due to compatibility issues.
 
 NOTE:
 As a general rule we unfortunately don't recommend Azure Services at this time.
@@ -389,7 +389,7 @@ most complex:
 As you implement these components, begin with a single server and then do
 backups. Only after completing the first server should you proceed to the next.
 
-Also, not implementing extra servers for GitLab doesn't necessarily mean that you'll have
+Also, not implementing extra servers for GitLab doesn't necessarily mean that you have
 more downtime. Depending on your needs and experience level, single servers can
 have more actual perceived uptime for your users.
 
@@ -401,7 +401,7 @@ have more actual perceived uptime for your users.
 This solution is appropriate for many teams that have the default GitLab installation.
 With automatic backups of the GitLab repositories, configuration, and the database,
 this can be an optimal solution if you don't have strict requirements.
-[Automated backups](../../raketasks/backup_restore.md#configuring-cron-to-make-daily-backups)
+[Automated backups](../../raketasks/backup_gitlab.md#configuring-cron-to-make-daily-backups)
 is the least complex to setup. This provides a point-in-time recovery of a predetermined schedule.
 
 ### Traffic load balancer **(PREMIUM SELF)**
@@ -410,7 +410,7 @@ is the least complex to setup. This provides a point-in-time recovery of a prede
 > - Required domain knowledge: HAProxy, shared storage, distributed systems
 
 This requires separating out GitLab into multiple application nodes with an added
-[load balancer](../load_balancer.md). The load balancer will distribute traffic
+[load balancer](../load_balancer.md). The load balancer distributes traffic
 across GitLab application nodes. Meanwhile, each application node connects to a
 shared file server and database systems on the back end. This way, if one of the
 application servers fails, the workflow is not interrupted.
@@ -434,7 +434,7 @@ to any of the [available reference architectures](#available-reference-architect
 GitLab supports [zero-downtime upgrades](../../update/zero_downtime.md).
 Single GitLab nodes can be updated with only a [few minutes of downtime](../../update/index.md#upgrade-based-on-installation-method).
 To avoid this, we recommend to separate GitLab into several application nodes.
-As long as at least one of each component is online and capable of handling the instance's usage load, your team's productivity will not be interrupted during the update.
+As long as at least one of each component is online and capable of handling the instance's usage load, your team's productivity is not interrupted during the update.
 
 ### Automated database failover **(PREMIUM SELF)**
 
@@ -459,8 +459,8 @@ that can also be promoted in case of disaster.
 ## Deviating from the suggested reference architectures
 
 As a general guideline, the further away you move from the Reference Architectures,
-the harder it will be get support for it. With any deviation, you're introducing
-a layer of complexity that will add challenges to finding out where potential
+the harder it is to get support for it. With any deviation, you're introducing
+a layer of complexity that adds challenges to finding out where potential
 issues might lie.
 
 The reference architectures use the official GitLab Linux packages (Omnibus
@@ -474,7 +474,7 @@ However, it is still an additional layer and may still add some support complexi
 
 Other technologies, like [Docker swarm](https://docs.docker.com/engine/swarm/)
 are not officially supported, but can be implemented at your own risk. In that
-case, GitLab Support will not be able to help you.
+case, GitLab Support is not able to help you.
 
 ## Supported modifications for lower user count HA reference architectures
 

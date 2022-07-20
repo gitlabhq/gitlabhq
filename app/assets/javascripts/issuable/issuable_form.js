@@ -68,8 +68,7 @@ export default class IssuableForm {
     this.gfmAutoComplete = new GfmAutoComplete(
       gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources,
     ).setup();
-    const autoAssignToMe = form.get(0).id === 'new_merge_request';
-    this.usersSelect = new UsersSelect(undefined, undefined, { autoAssignToMe });
+    this.usersSelect = new UsersSelect();
     this.reviewersSelect = new UsersSelect(undefined, '.js-reviewer-search');
     this.zenMode = new ZenMode();
 
@@ -82,7 +81,7 @@ export default class IssuableForm {
 
     this.initAutosave();
     this.form.on('submit', this.handleSubmit);
-    this.form.on('click', '.btn-cancel', this.resetAutosave);
+    this.form.on('click', '.btn-cancel, .js-reset-autosave', this.resetAutosave);
     this.form.find('.js-unwrap-on-load').unwrap();
     this.initWip();
 

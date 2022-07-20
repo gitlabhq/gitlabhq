@@ -15,6 +15,7 @@ import * as utils from '~/notes/stores/utils';
 import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
 import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
+import waitForPromises from 'helpers/wait_for_promises';
 import { resetStore } from '../helpers';
 import {
   discussionMock,
@@ -254,9 +255,7 @@ describe('Actions Notes Store', () => {
         jest.advanceTimersByTime(time);
       }
 
-      return new Promise((resolve) => {
-        requestAnimationFrame(resolve);
-      });
+      return waitForPromises();
     };
     const advanceXMoreIntervals = async (number) => {
       const timeoutLength = pollInterval * number;
@@ -365,7 +364,6 @@ describe('Actions Notes Store', () => {
       });
 
       it('hides the error display if it exists on success', async () => {
-        jest.mock();
         failureMock();
 
         await startPolling();
@@ -668,7 +666,6 @@ describe('Actions Notes Store', () => {
 
   describe('updateOrCreateNotes', () => {
     it('Prevents `fetchDiscussions` being called multiple times within time limit', () => {
-      jest.useFakeTimers();
       const note = { id: 1234, type: notesConstants.DIFF_NOTE };
       const getters = { notesById: {} };
       state = { discussions: [note], notesData: { discussionsPath: '' } };
@@ -1351,7 +1348,7 @@ describe('Actions Notes Store', () => {
       return testAction(
         actions.fetchDiscussions,
         {},
-        null,
+        { noteableType: notesConstants.MERGE_REQUEST_NOTEABLE_TYPE },
         [
           { type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } },
           { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
@@ -1360,13 +1357,11 @@ describe('Actions Notes Store', () => {
       );
     });
 
-    it('dispatches `fetchDiscussionsBatch` action if `paginatedIssueDiscussions` feature flag is enabled', () => {
-      window.gon = { features: { paginatedIssueDiscussions: true } };
-
+    it('dispatches `fetchDiscussionsBatch` action if noteable is an Issue', () => {
       return testAction(
         actions.fetchDiscussions,
         { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
-        null,
+        { noteableType: notesConstants.ISSUE_NOTEABLE_TYPE },
         [],
         [
           {
@@ -1389,7 +1384,7 @@ describe('Actions Notes Store', () => {
       return testAction(
         actions.fetchDiscussions,
         { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
-        null,
+        { noteableType: notesConstants.MERGE_REQUEST_NOTEABLE_TYPE },
         [],
         [
           {

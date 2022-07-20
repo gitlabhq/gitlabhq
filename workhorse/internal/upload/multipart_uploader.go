@@ -19,23 +19,15 @@ func Multipart(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 	}, "/authorize")
 }
 
-// SkipRailsPreAuthMultipart behaves like Multipart except it does not
-// pre-authorize with Rails. It is intended for use on catch-all routes
-// where we cannot pre-authorize both because we don't know which Rails
-// endpoint to call, and because eagerly pre-authorizing would add too
-// much overhead.
-func SkipRailsPreAuthMultipart(tempPath string, myAPI *api.API, h http.Handler, p Preparer) http.Handler {
+// FixedPreAuthMultipart behaves like Multipart except it makes lazy
+// preauthorization requests when it encounters a multipart upload. The
+// preauthorization requests go to a fixed internal GitLab Rails API
+// endpoint. This endpoint currently does not support direct upload, so
+// using FixedPreAuthMultipart implies disk buffering.
+func FixedPreAuthMultipart(myAPI *api.API, h http.Handler, p Preparer) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		s := &SavedFileTracker{Request: r}
-
-		// We use testAuthorizer as a temporary measure. When
-		// https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/742 is done, we
-		// should only be using apiAuthorizer.
-		fa := &testAuthorizer{
-			test:   &apiAuthorizer{myAPI},
-			actual: &eagerAuthorizer{&api.Response{TempPath: tempPath}},
-		}
-
+		fa := &apiAuthorizer{myAPI}
 		interceptMultipartFiles(w, r, h, s, fa, p)
 	})
 }

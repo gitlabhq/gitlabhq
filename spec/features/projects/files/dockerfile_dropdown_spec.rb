@@ -26,6 +26,6 @@ RSpec.describe 'Projects > Files > User wants to add a Dockerfile file', :js do
     wait_for_requests
 
     expect(page).to have_css('.dockerfile-selector .dropdown-toggle-text', text: 'Apply a template')
-    expect(editor_get_value).to have_content('COPY ./ /usr/local/apache2/htdocs/')
+    expect(find('.monaco-editor')).to have_content('COPY ./ /usr/local/apache2/htdocs/')
   end
 end

@@ -1,10 +1,11 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import createFlash from '~/flash';
 import eventHub from '~/sidebar/event_hub';
+import toast from '~/vue_shared/plugins/global_toast';
 import editForm from './edit_form.vue';
 
 export default {
@@ -27,6 +28,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    Outside,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
@@ -84,6 +86,11 @@ export default {
         locked: !this.isLocked,
         fullPath: this.fullPath,
       })
+        .then(() => {
+          if (this.isMergeRequest) {
+            toast(this.isLocked ? __('Merge request locked.') : __('Merge request unlocked.'));
+          }
+        })
         .catch(() => {
           const flashMessage = __(
             'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
@@ -95,6 +102,9 @@ export default {
         .finally(() => {
           this.isLoading = false;
         });
+    },
+    closeForm() {
+      this.isLockDialogOpen = false;
     },
   },
 };
@@ -142,6 +152,7 @@ export default {
     <div class="value sidebar-item-value hide-collapsed">
       <edit-form
         v-if="isLockDialogOpen"
+        v-outside="closeForm"
         data-testid="edit-form"
         :is-locked="isLocked"
         :issuable-display-name="issuableDisplayName"

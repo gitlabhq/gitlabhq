@@ -98,8 +98,8 @@ RSpec.describe Packages::GroupPackagesFinder do
               )
 
               unless role == :anonymous
-                project.add_user(user, role)
-                subproject.add_user(user, role)
+                project.add_member(user, role)
+                subproject.add_member(user, role)
               end
             end
 

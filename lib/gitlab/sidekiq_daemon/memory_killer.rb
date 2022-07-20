@@ -145,6 +145,8 @@ module Gitlab
           sleep(CHECK_INTERVAL_SECONDS)
 
           refresh_state(:above_soft_limit)
+
+          log_rss_out_of_range(false)
         end
 
         # There are two chances to break from loop:
@@ -153,28 +155,49 @@ module Gitlab
         # When `above hard limit`, it immediately go to `stop_fetching_new_jobs`
         # So ignore `above hard limit` and always set `above_soft_limit` here
         refresh_state(:above_soft_limit)
-        log_rss_out_of_range(@current_rss, @hard_limit_rss, @soft_limit_rss)
+        log_rss_out_of_range
 
         false
       end
 
-      def log_rss_out_of_range(current_rss, hard_limit_rss, soft_limit_rss)
+      def log_rss_out_of_range(deadline_exceeded = true)
+        reason = out_of_range_description(@current_rss,
+                   @hard_limit_rss,
+                   @soft_limit_rss,
+                   deadline_exceeded)
+
         Sidekiq.logger.warn(
           class: self.class.to_s,
           pid: pid,
           message: 'Sidekiq worker RSS out of range',
-          current_rss: current_rss,
-          hard_limit_rss: hard_limit_rss,
-          soft_limit_rss: soft_limit_rss,
-          reason: out_of_range_description(current_rss, hard_limit_rss, soft_limit_rss)
-        )
+          current_rss: @current_rss,
+          soft_limit_rss: @soft_limit_rss,
+          hard_limit_rss: @hard_limit_rss,
+          reason: reason,
+          running_jobs: running_jobs)
       end
 
-      def out_of_range_description(rss, hard_limit, soft_limit)
+      def running_jobs
+        jobs = []
+        Gitlab::SidekiqDaemon::Monitor.instance.jobs_mutex.synchronize do
+          jobs = Gitlab::SidekiqDaemon::Monitor.instance.jobs.map do |jid, job|
+            {
+              jid: jid,
+              worker_class: job[:worker_class].name
+            }
+          end
+        end
+
+        jobs
+      end
+
+      def out_of_range_description(rss, hard_limit, soft_limit, deadline_exceeded)
         if rss > hard_limit
           "current_rss(#{rss}) > hard_limit_rss(#{hard_limit})"
-        else
+        elsif deadline_exceeded
           "current_rss(#{rss}) > soft_limit_rss(#{soft_limit}) longer than GRACE_BALLOON_SECONDS(#{GRACE_BALLOON_SECONDS})"
+        else
+          "current_rss(#{rss}) > soft_limit_rss(#{soft_limit})"
         end
       end
 

@@ -77,9 +77,9 @@ module QA
         Page::Project::Menu.perform(&:go_to_container_registry)
 
         Page::Project::Registry::Show.perform do |registry|
-          expect(registry).to have_registry_repository(registry_repository.name)
+          expect(registry).to have_registry_repository(project.name)
 
-          registry.click_on_image(registry_repository.name)
+          registry.click_on_image(project.name)
           expect(registry).to have_tag('master')
 
           registry.click_delete

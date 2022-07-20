@@ -35,7 +35,7 @@ function UsersSelect(currentUser, els, options = {}) {
     }
   }
 
-  const { handleClick, autoAssignToMe } = options;
+  const { handleClick } = options;
   const userSelect = this;
 
   $els.each((i, dropdown) => {
@@ -172,7 +172,10 @@ function UsersSelect(currentUser, els, options = {}) {
       });
     };
 
-    const onAssignToMeClick = () => {
+    $assignToMeLink.on('click', (e) => {
+      e.preventDefault();
+      $(e.currentTarget).hide();
+
       if ($dropdown.data('multiSelect')) {
         assignYourself();
         checkMaxSelect();
@@ -191,18 +194,7 @@ function UsersSelect(currentUser, els, options = {}) {
           .text(gon.current_user_fullname)
           .removeClass('is-default');
       }
-    };
-
-    $assignToMeLink.on('click', (e) => {
-      e.preventDefault();
-      $(e.currentTarget).hide();
-      onAssignToMeClick();
     });
-
-    if (autoAssignToMe) {
-      $assignToMeLink.hide();
-      onAssignToMeClick();
-    }
 
     $block.on('click', '.js-assign-yourself', (e) => {
       e.preventDefault();
@@ -249,7 +241,7 @@ function UsersSelect(currentUser, els, options = {}) {
       )} <% } %>`,
     );
     assigneeTemplate = template(
-      `<% if (username) { %> <a class="author-link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself">
+      `<% if (username) { %> <a class="author-link gl-font-weight-bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself">
       ${sprintf(s__('UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}'), {
         openingTag: '<a href="#" class="js-assign-yourself">',
         closingTag: '</a>',
@@ -585,7 +577,7 @@ function UsersSelect(currentUser, els, options = {}) {
           )}</a></li>`;
         } else {
           // 0 margin, because it's now handled by a wrapper
-          img = `<img src='${avatar}' class='avatar avatar-inline m-0' width='32' />`;
+          img = `<img src='${avatar}' class='avatar avatar-inline gl-m-0!' width='32' />`;
         }
 
         return userSelect.renderRow(
@@ -806,9 +798,9 @@ UsersSelect.prototype.renderRow = function (
       : user.name;
   return `
     <li data-user-id=${user.id}>
-      <a href="#" class="dropdown-menu-user-link d-flex align-items-center ${linkClasses}" ${tooltipAttributes}>
+      <a href="#" class="dropdown-menu-user-link gl-display-flex! gl-align-items-center ${linkClasses}" ${tooltipAttributes}>
         ${this.renderRowAvatar(issuableType, user, img)}
-        <span class="d-flex flex-column overflow-hidden">
+        <span class="gl-display-flex gl-flex-direction-column gl-overflow-hidden">
           <strong class="dropdown-menu-user-full-name gl-font-weight-bold">
             ${escape(name)}
           </strong>
@@ -836,7 +828,7 @@ UsersSelect.prototype.renderRowAvatar = function (issuableType, user, img) {
       ? spriteIcon('warning-solid', 's12 merge-icon')
       : '';
 
-  return `<span class="position-relative mr-2">
+  return `<span class="gl-relative gl-mr-3">
     ${img}
     ${mergeIcon}
   </span>`;
@@ -851,7 +843,7 @@ UsersSelect.prototype.renderApprovalRules = function (elsClassName, approvalRule
 
   const [rule] = approvalRules;
   const countText = sprintf(__('(+%{count}&nbsp;rules)'), { count });
-  const renderApprovalRulesCount = count > 1 ? `<span class="ml-1">${countText}</span>` : '';
+  const renderApprovalRulesCount = count > 1 ? `<span class="gl-ml-2">${countText}</span>` : '';
   const ruleName = rule.rule_type === 'code_owner' ? __('Code Owner') : escape(rule.name);
 
   return `<div class="gl-display-flex gl-font-sm">

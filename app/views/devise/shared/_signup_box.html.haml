@@ -45,21 +45,24 @@
       = f.label :email, class: 'label-bold'
       = f.email_field :email,
         value: @invite_email,
-        class: 'form-control gl-form-input middle',
+        class: 'form-control gl-form-input middle js-validate-email',
         data: { qa_selector: 'new_user_email_field' },
         required: true,
         title: _('Please provide a valid email address.')
       %p.gl-field-hint.text-secondary= _('We recommend a work email address.')
+      -# This is used for providing entry to Jihu on email verification
+      = render_if_exists 'devise/shared/signup_email_additional_info'
     .form-group.gl-mb-5#password-strength
       = f.label :password, class: 'label-bold'
       = f.password_field :password,
-        class: 'form-control gl-form-input bottom',
+        class: 'form-control gl-form-input bottom js-password-complexity-validation',
         data: { qa_selector: 'new_user_password_field' },
         autocomplete: 'new-password',
         required: true,
         pattern: ".{#{@minimum_password_length},}",
         title: s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
       %p.gl-field-hint.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
+      = render_if_exists 'shared/password_requirements_list'
     = render_if_exists 'devise/shared/phone_verification', form: f
     %div
     - if show_recaptcha_sign_up?

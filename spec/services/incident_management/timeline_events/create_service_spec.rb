@@ -132,6 +132,40 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
       it 'creates a system note' do
         expect { execute }.to change { incident.notes.reload.count }.by(1)
       end
+
+      context 'with auto_created param' do
+        let(:args) do
+          {
+            note: 'note',
+            occurred_at: Time.current,
+            action: 'new comment',
+            promoted_from_note: comment,
+            auto_created: auto_created
+          }
+        end
+
+        context 'when auto_created is true' do
+          let(:auto_created) { true }
+
+          it 'does not create a system note' do
+            expect { execute }.not_to change { incident.notes.reload.count }
+          end
+
+          context 'when user does not have permissions' do
+            let(:current_user) { user_without_permissions }
+
+            it_behaves_like 'success response'
+          end
+        end
+
+        context 'when auto_created is false' do
+          let(:auto_created) { false }
+
+          it 'creates a system note' do
+            expect { execute }.to change { incident.notes.reload.count }.by(1)
+          end
+        end
+      end
     end
 
     context 'when incident_timeline feature flag is disabled' do
@@ -142,6 +176,73 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
       it 'does not create a system note' do
         expect { execute }.not_to change { incident.notes.reload.count }
       end
+    end
+  end
+
+  describe 'automatically created timeline events' do
+    shared_examples 'successfully created timeline event' do
+      it 'creates a timeline event', :aggregate_failures do
+        expect(execute).to be_success
+
+        result = execute.payload[:timeline_event]
+        expect(result).to be_a(::IncidentManagement::TimelineEvent)
+        expect(result.author).to eq(current_user)
+        expect(result.incident).to eq(incident)
+        expect(result.project).to eq(project)
+        expect(result.note).to eq(expected_note)
+        expect(result.editable).to eq(false)
+        expect(result.action).to eq(expected_action)
+      end
+
+      it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_created
+
+      it 'successfully creates a database record', :aggregate_failures do
+        expect { execute }.to change { ::IncidentManagement::TimelineEvent.count }.by(1)
+      end
+
+      it 'does not create a system note' do
+        expect { execute }.not_to change { incident.notes.reload.count }
+      end
+    end
+
+    describe '.create_incident' do
+      subject(:execute) { described_class.create_incident(incident, current_user) }
+
+      let(:expected_note) { "@#{current_user.username} created the incident" }
+      let(:expected_action) { 'issues' }
+
+      it_behaves_like 'successfully created timeline event'
+    end
+
+    describe '.reopen_incident' do
+      subject(:execute) { described_class.reopen_incident(incident, current_user) }
+
+      let(:expected_note) { "@#{current_user.username} reopened the incident" }
+      let(:expected_action) { 'issues' }
+
+      it_behaves_like 'successfully created timeline event'
+    end
+
+    describe '.resolve_incident' do
+      subject(:execute) { described_class.resolve_incident(incident, current_user) }
+
+      let(:expected_note) { "@#{current_user.username} resolved the incident" }
+      let(:expected_action) { 'status' }
+
+      it_behaves_like 'successfully created timeline event'
+    end
+
+    describe '.change_incident_status' do
+      subject(:execute) { described_class.change_incident_status(incident, current_user, escalation_status) }
+
+      let(:escalation_status) do
+        instance_double('IncidentManagement::IssuableEscalationStatus', status_name: 'acknowledged')
+      end
+
+      let(:expected_note) { "@#{current_user.username} changed the incident status to **Acknowledged**" }
+      let(:expected_action) { 'status' }
+
+      it_behaves_like 'successfully created timeline event'
     end
   end
 end

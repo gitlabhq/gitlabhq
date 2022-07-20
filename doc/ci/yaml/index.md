@@ -675,6 +675,45 @@ artifacts are restored after [caches](#cache).
 
 [Read more about artifacts](../pipelines/job_artifacts.md).
 
+#### `artifacts:paths`
+
+Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly
+link outside it.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+- An array of file paths, relative to the project directory.
+- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+  patterns and:
+  - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
+    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
+  - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+
+**Example of `artifacts:paths`**:
+
+```yaml
+job:
+  artifacts:
+    paths:
+      - binaries/
+      - .config
+```
+
+This example creates an artifact with `.config` and all the files in the `binaries` directory.
+
+**Additional details**:
+
+- If not used with [`artifacts:name`](#artifactsname), the artifacts file
+  is named `artifacts`, which becomes `artifacts.zip` when downloaded.
+
+**Related topics**:
+
+- To restrict which jobs a specific job fetches artifacts from, see [`dependencies`](#dependencies).
+- [Create job artifacts](../pipelines/job_artifacts.md#create-job-artifacts).
+
 #### `artifacts:exclude`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15122) in GitLab 13.1
@@ -843,45 +882,6 @@ job:
 
 - [Use CI/CD variables to define the artifacts name](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name).
 
-#### `artifacts:paths`
-
-Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly
-link outside it.
-
-**Keyword type**: Job keyword. You can use it only as part of a job or in the
-[`default` section](#default).
-
-**Possible inputs**:
-
-- An array of file paths, relative to the project directory.
-- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-  patterns and:
-  - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
-  - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
-
-**Example of `artifacts:paths`**:
-
-```yaml
-job:
-  artifacts:
-    paths:
-      - binaries/
-      - .config
-```
-
-This example creates an artifact with `.config` and all the files in the `binaries` directory.
-
-**Additional details**:
-
-- If not used with [`artifacts:name`](#artifactsname) defined, the artifacts file
-  is named `artifacts`, which becomes `artifacts.zip` when downloaded.
-
-**Related topics**:
-
-- To restrict which jobs a specific job fetches artifacts from, see [`dependencies`](#dependencies).
-- [Create job artifacts](../pipelines/job_artifacts.md#create-job-artifacts).
-
 #### `artifacts:public`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49775) in GitLab 13.8
@@ -910,7 +910,7 @@ pipelines, set `artifacts:public` to `false`:
 
 - `true` (default if not defined) or `false`.
 
-**Example of `artifacts:paths`**:
+**Example of `artifacts:public`**:
 
 ```yaml
 job:
@@ -1099,6 +1099,8 @@ that use the same cache key use the same cache, including in different pipelines
 If not set, the default key is `default`. All jobs with the `cache` keyword but
 no `cache:key` share the `default` cache.
 
+Must be used with `cache: path`, or nothing is cached.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -1263,6 +1265,8 @@ rspec:
 
 Use `cache:when` to define when to save the cache, based on the status of the job.
 
+Must be used with `cache: path`, or nothing is cached.
+
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
@@ -1300,6 +1304,8 @@ cache when the job starts, use `cache:policy:push`.
 Use the `pull` policy when you have many jobs executing in parallel that use the same cache.
 This policy speeds up job execution and reduces load on the cache server. You can
 use a job with the `push` policy to build the cache.
+
+Must be used with `cache: path`, or nothing is cached.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -2204,6 +2210,7 @@ In this example:
 
 Use `needs:project` to download artifacts from up to five jobs in other pipelines.
 The artifacts are downloaded from the latest successful pipeline for the specified ref.
+To specify multiple jobs, add each as separate array items under the `needs` keyword.
 
 If there is a pipeline running for the specified ref, a job with `needs:project`
 does not wait for the pipeline to complete. Instead, the job downloads the artifact
@@ -2232,10 +2239,14 @@ build_job:
       job: build-1
       ref: main
       artifacts: true
+    - project: namespace/group/project-name-2
+      job: build-2
+      ref: main
+      artifacts: true
 ```
 
-In this example, `build_job` downloads the artifacts from the latest successful `build-1` job
-on the `main` branch in the `group/project-name` project.
+In this example, `build_job` downloads the artifacts from the latest successful `build-1` and `build-2` jobs
+on the `main` branches in the `group/project-name` and `group/project-name-2` projects.
 
 In GitLab 13.3 and later, you can use [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
 in `needs:project`, for example:
@@ -2428,13 +2439,6 @@ You can use `only` and `except` to control when to add jobs to pipelines.
 - Use `only` to define when a job runs.
 - Use `except` to define when a job **does not** run.
 
-Four keywords can be used with `only` and `except`:
-
-- [`refs`](#onlyrefs--exceptrefs)
-- [`variables`](#onlyvariables--exceptvariables)
-- [`changes`](#onlychanges--exceptchanges)
-- [`kubernetes`](#onlykubernetes--exceptkubernetes)
-
 See [specify when jobs run with `only` and `except`](../jobs/job_control.md#specify-when-jobs-run-with-only-and-except)
 for more details and examples.
 
@@ -2442,6 +2446,10 @@ for more details and examples.
 
 Use the `only:refs` and `except:refs` keywords to control when to add jobs to a
 pipeline based on branch names or pipeline types.
+
+`only:refs` and `except:refs` are not being actively developed. [`rules:if`](#rulesif)
+is the preferred keyword when using refs, regular expressions, or variables to control
+when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2519,14 +2527,18 @@ job2:
   job2:
     script: echo "test"
     only:
-    - branches
-    - tags
+      - branches
+      - tags
   ```
 
 #### `only:variables` / `except:variables`
 
 Use the `only:variables` or `except:variables` keywords to control when to add jobs
 to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
+
+`only:variables` and `except:variables` are not being actively developed. [`rules:if`](#rulesif)
+is the preferred keyword when using refs, regular expressions, or variables to control
+when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2559,6 +2571,9 @@ Use `changes` in pipelines with the following refs:
 - `branches`
 - `external_pull_requests`
 - `merge_requests` (see additional details about [using `only:changes` with merge request pipelines](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines))
+
+`only:changes` and `except:changes` are not being actively developed. [`rules:changes`](#ruleschanges)
+is the preferred keyword when using changed files to control when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2609,6 +2624,10 @@ docker build:
 
 Use `only:kubernetes` or `except:kubernetes` to control if jobs are added to the pipeline
 when the Kubernetes service is active in the project.
+
+`only:refs` and `except:refs` are not being actively developed. Use [`rules:if`](#rulesif)
+with the [`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable
+to control if jobs are added to the pipeline when the Kubernetes service is active in the project.
 
 **Keyword type**: Job-specific. You can use it only as part of a job.
 
@@ -3388,7 +3407,7 @@ This keyword must be used with `secrets:vault`.
 
 #### `secrets:vault`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
 
 Use `secrets:vault` to specify secrets provided by a [HashiCorp Vault](https://www.vaultproject.io/).
 
@@ -3518,6 +3537,52 @@ in that container.
 - [Define `services` in the `.gitlab-ci.yml` file](../services/index.md#define-services-in-the-gitlab-ciyml-file).
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
 - [Use Docker to build Docker images](../docker/using_docker_build.md).
+
+#### `service:pull_policy`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
+> - Requires GitLab Runner 15.1 or later.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`.
+
+The pull policy that the runner uses to fetch the Docker image.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Possible inputs**:
+
+- A single pull policy, or multiple pull policies in an array.
+  Can be `always`, `if-not-present`, or `never`.
+
+**Examples of `service:pull_policy`**:
+
+```yaml
+job1:
+  script: echo "A single pull policy."
+  services:
+    - name: postgres:11.6
+      pull_policy: if-not-present
+
+job2:
+  script: echo "Multiple pull policies."
+  services:
+    - name: postgres:11.6
+      pull_policy: [always, if-not-present]
+```
+
+**Additional details**:
+
+- If the runner does not support the defined pull policy, the job fails with an error similar to:
+  `ERROR: Job failed (system failure): the configured PullPolicies ([always]) are not allowed by AllowedPullPolicies ([never])`.
+
+**Related topics**:
+
+- [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
+- [How runner pull policies work](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work).
+- [Using multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#using-multiple-pull-policies).
 
 ### `stage`
 

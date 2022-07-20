@@ -1,10 +1,13 @@
 <script>
 import {
+  GlButton,
   GlToast,
   GlModal,
   GlTooltipDirective,
   GlIcon,
   GlFormCheckbox,
+  GlFormInput,
+  GlFormInputGroup,
   GlDropdown,
   GlDropdownItem,
   GlSafeHtmlDirective,
@@ -38,9 +41,12 @@ const statusTimeRanges = [
 
 export default {
   components: {
+    GlButton,
     GlIcon,
     GlModal,
     GlFormCheckbox,
+    GlFormInput,
+    GlFormInputGroup,
     GlDropdown,
     GlDropdownItem,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
@@ -215,97 +221,80 @@ export default {
     @primary="setStatus"
     @secondary="removeStatus"
   >
-    <div>
-      <input
-        v-model="emoji"
-        class="js-status-emoji-field"
-        type="hidden"
-        name="user[status][emoji]"
+    <input v-model="emoji" class="js-status-emoji-field" type="hidden" name="user[status][emoji]" />
+    <gl-form-input-group class="gl-mb-5">
+      <gl-form-input
+        ref="statusMessageField"
+        v-model="message"
+        :placeholder="s__(`SetStatusModal|What's your status?`)"
+        class="js-status-message-field"
+        name="user[status][message]"
+        @keyup="setDefaultEmoji"
+        @keyup.enter.prevent
       />
-      <div ref="userStatusForm" class="form-group position-relative m-0">
-        <div class="input-group gl-mb-5">
-          <span class="input-group-prepend">
-            <emoji-picker
-              dropdown-class="gl-h-full"
-              toggle-class="btn emoji-menu-toggle-button gl-px-4! gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
-              boundary="viewport"
-              :right="false"
-              @click="setEmoji"
+      <template #prepend>
+        <emoji-picker
+          dropdown-class="gl-h-full"
+          toggle-class="btn emoji-menu-toggle-button gl-px-4! gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
+          boundary="viewport"
+          :right="false"
+          @click="setEmoji"
+        >
+          <template #button-content>
+            <span v-safe-html:[$options.safeHtmlConfig]="emojiTag"></span>
+            <span
+              v-show="noEmoji"
+              class="js-no-emoji-placeholder no-emoji-placeholder position-relative"
             >
-              <template #button-content>
-                <span v-safe-html:[$options.safeHtmlConfig]="emojiTag"></span>
-                <span
-                  v-show="noEmoji"
-                  class="js-no-emoji-placeholder no-emoji-placeholder position-relative"
-                >
-                  <gl-icon name="slight-smile" class="award-control-icon-neutral" />
-                  <gl-icon name="smiley" class="award-control-icon-positive" />
-                  <gl-icon name="smile" class="award-control-icon-super-positive" />
-                </span>
-              </template>
-            </emoji-picker>
-          </span>
-          <input
-            ref="statusMessageField"
-            v-model="message"
-            :placeholder="s__('SetStatusModal|What\'s your status?')"
-            type="text"
-            class="form-control form-control input-lg js-status-message-field"
-            name="user[status][message]"
-            @keyup="setDefaultEmoji"
-            @keyup.enter.prevent
-          />
-          <span v-show="isDirty" class="input-group-append">
-            <button
-              v-gl-tooltip.bottom
-              :title="s__('SetStatusModal|Clear status')"
-              :aria-label="s__('SetStatusModal|Clear status')"
-              name="button"
-              type="button"
-              class="js-clear-user-status-button clear-user-status btn"
-              @click="clearStatusInputs()"
-            >
-              <gl-icon name="close" />
-            </button>
-          </span>
-        </div>
-        <div class="form-group">
-          <div class="gl-display-flex">
-            <gl-form-checkbox
-              v-model="availability"
-              data-testid="user-availability-checkbox"
-              class="gl-mb-0"
-            >
-              <span class="gl-font-weight-bold">{{ s__('SetStatusModal|Busy') }}</span>
-            </gl-form-checkbox>
-          </div>
-          <div class="gl-display-flex">
-            <span class="gl-text-gray-600 gl-ml-5">
-              {{ s__('SetStatusModal|An indicator appears next to your name and avatar') }}
+              <gl-icon name="slight-smile" class="award-control-icon-neutral" />
+              <gl-icon name="smiley" class="award-control-icon-positive" />
+              <gl-icon name="smile" class="award-control-icon-super-positive" />
             </span>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="gl-display-flex gl-align-items-baseline">
-            <span class="gl-mr-3">{{ s__('SetStatusModal|Clear status after') }}</span>
-            <gl-dropdown :text="clearStatusAfter" data-testid="clear-status-at-dropdown">
-              <gl-dropdown-item
-                v-for="after in $options.statusTimeRanges"
-                :key="after.name"
-                :data-testid="after.name"
-                @click="setClearStatusAfter(after.label)"
-                >{{ after.label }}</gl-dropdown-item
-              >
-            </gl-dropdown>
-          </div>
-          <div
-            v-if="currentClearStatusAfter.length"
-            class="gl-mt-3 gl-text-gray-400 gl-font-sm"
-            data-testid="clear-status-at-message"
+          </template>
+        </emoji-picker>
+      </template>
+      <template v-if="isDirty" #append>
+        <gl-button
+          v-gl-tooltip.bottom
+          :title="s__('SetStatusModal|Clear status')"
+          :aria-label="s__('SetStatusModal|Clear status')"
+          icon="close"
+          class="js-clear-user-status-button"
+          @click="clearStatusInputs"
+        />
+      </template>
+    </gl-form-input-group>
+
+    <gl-form-checkbox
+      v-model="availability"
+      class="gl-mb-5"
+      data-testid="user-availability-checkbox"
+    >
+      {{ s__('SetStatusModal|Busy') }}
+      <template #help>
+        {{ s__('SetStatusModal|An indicator appears next to your name and avatar') }}
+      </template>
+    </gl-form-checkbox>
+
+    <div class="form-group">
+      <div class="gl-display-flex gl-align-items-baseline">
+        <span class="gl-mr-3">{{ s__('SetStatusModal|Clear status after') }}</span>
+        <gl-dropdown :text="clearStatusAfter" data-testid="clear-status-at-dropdown">
+          <gl-dropdown-item
+            v-for="after in $options.statusTimeRanges"
+            :key="after.name"
+            :data-testid="after.name"
+            @click="setClearStatusAfter(after.label)"
+            >{{ after.label }}</gl-dropdown-item
           >
-            {{ clearStatusAfterMessage }}
-          </div>
-        </div>
+        </gl-dropdown>
+      </div>
+      <div
+        v-if="currentClearStatusAfter.length"
+        class="gl-mt-3 gl-text-gray-400 gl-font-sm"
+        data-testid="clear-status-at-message"
+      >
+        {{ clearStatusAfterMessage }}
       </div>
     </div>
   </gl-modal>

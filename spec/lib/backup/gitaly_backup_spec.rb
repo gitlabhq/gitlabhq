@@ -16,8 +16,8 @@ RSpec.describe Backup::GitalyBackup do
 
   let(:expected_env) do
     {
-      'SSL_CERT_FILE' => OpenSSL::X509::DEFAULT_CERT_FILE,
-      'SSL_CERT_DIR'  => OpenSSL::X509::DEFAULT_CERT_DIR
+      'SSL_CERT_FILE' => Gitlab::X509::Certificate.default_cert_file,
+      'SSL_CERT_DIR'  => Gitlab::X509::Certificate.default_cert_dir
     }.merge(ENV)
   end
 

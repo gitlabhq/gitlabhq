@@ -9,7 +9,7 @@ module Groups::GroupMembersHelper
     { multiple: true, class: 'input-clamp qa-member-select-field ', scope: :all, email_user: true }
   end
 
-  def group_members_app_data(group, members:, invited:, access_requests:, include_relations:, search:)
+  def group_members_app_data(group, members:, invited:, access_requests:, banned:, include_relations:, search:)
     {
       user: group_members_list_data(group, members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }),
       group: group_group_links_list_data(group, include_relations, search),
