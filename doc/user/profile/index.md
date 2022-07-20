@@ -36,7 +36,7 @@ To change your password:
 1. In the **New password** and **Password confirmation** text box, enter your new password.
 1. Select **Save password**.
 
-If you don't know your current password, select the **I forgot my password** link.
+If you don't know your current password, select the **I forgot my password** link. A password reset email is sent to the account's **primary** email address.
 
 ## Change your username
 

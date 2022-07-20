@@ -105,9 +105,11 @@ module Gitlab
                          .joins("INNER JOIN namespaces n2 ON namespaces.parent_id = n2.id")
                          .select("namespaces.id as project_namespace_id, n2.traversal_ids")
 
+          # some customers have namespaces.id column type as bigint, which makes array_append(integer[], bigint) to fail
+          # so we just explicitly cast arguments to compatible types
           ApplicationRecord.connection.execute <<~SQL
             UPDATE namespaces
-            SET traversal_ids = array_append(project_namespaces.traversal_ids, project_namespaces.project_namespace_id)
+            SET traversal_ids = array_append(project_namespaces.traversal_ids::bigint[], project_namespaces.project_namespace_id::bigint)
             FROM (#{namespaces.to_sql}) as project_namespaces(project_namespace_id, traversal_ids)
             WHERE id = project_namespaces.project_namespace_id
           SQL

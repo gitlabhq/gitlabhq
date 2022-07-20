@@ -10,7 +10,7 @@ module Gitlab
         attr_reader :attributes
 
         expose_attribute :id, :actor, :event, :commit_id, :label_title, :old_title, :new_title,
-                         :source, :created_at
+                         :milestone_title, :source, :created_at
         expose_attribute :issue_db_id # set in SingleEndpointIssueEventsImporter#each_associated
 
         # Builds a event from a GitHub API response.
@@ -27,6 +27,7 @@ module Gitlab
             new_title: event.rename && event.rename[:to],
             source: event.source,
             issue_db_id: event.issue_db_id,
+            milestone_title: event.milestone && event.milestone[:title],
             created_at: event.created_at
           )
         end

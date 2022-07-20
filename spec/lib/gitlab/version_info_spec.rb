@@ -133,6 +133,20 @@ RSpec.describe Gitlab::VersionInfo do
     it { expect(@unknown.to_s).to eq("Unknown") }
   end
 
+  describe '.to_json' do
+    let(:correct_version) do
+      "{\"major\":1,\"minor\":0,\"patch\":1}"
+    end
+
+    let(:unknown_version) do
+      "{\"major\":0,\"minor\":0,\"patch\":0}"
+    end
+
+    it { expect(@v1_0_1.to_json).to eq(correct_version) }
+    it { expect(@v1_0_1_rc2.to_json).to eq(correct_version) }
+    it { expect(@unknown.to_json).to eq(unknown_version) }
+  end
+
   describe '.hash' do
     it { expect(described_class.parse("1.0.0").hash).to eq(@v1_0_0.hash) }
     it { expect(described_class.parse("1.0.0.1").hash).to eq(@v1_0_0.hash) }

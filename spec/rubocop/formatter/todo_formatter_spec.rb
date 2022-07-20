@@ -261,16 +261,12 @@ RSpec.describe RuboCop::Formatter::TodoFormatter do
     double(:offense, cop_name: cop_name)
   end
 
-  def stub_rubocop_registry(**cops)
-    rubocop_registry = double(:rubocop_registry)
-
-    allow(RuboCop::Cop::Registry).to receive(:global).and_return(rubocop_registry)
-
-    allow(rubocop_registry).to receive(:find_by_cop_name)
-      .with(String).and_return(nil)
+  def stub_rubocop_registry(cops)
+    allow(RuboCop::CopTodo).to receive(:find_cop_by_name)
+      .with(String).and_return(nil).and_call_original
 
     cops.each do |cop_name, attributes|
-      allow(rubocop_registry).to receive(:find_by_cop_name)
+      allow(RuboCop::CopTodo).to receive(:find_cop_by_name)
         .with(cop_name).and_return(fake_cop(**attributes))
     end
   end

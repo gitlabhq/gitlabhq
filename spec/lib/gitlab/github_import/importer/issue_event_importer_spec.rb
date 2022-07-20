@@ -87,6 +87,20 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
                       Gitlab::GithubImport::Importer::Events::Renamed
     end
 
+    context "when it's milestoned issue event" do
+      let(:event_name) { 'milestoned' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedMilestone
+    end
+
+    context "when it's demilestoned issue event" do
+      let(:event_name) { 'demilestoned' }
+
+      it_behaves_like 'triggers specific event importer',
+                      Gitlab::GithubImport::Importer::Events::ChangedMilestone
+    end
+
     context "when it's cross-referenced issue event" do
       let(:event_name) { 'cross-referenced' }
 

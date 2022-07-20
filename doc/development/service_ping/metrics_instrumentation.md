@@ -29,7 +29,7 @@ A metric definition has the [`instrumentation_class`](metrics_dictionary.md) fie
 
 The defined instrumentation class should inherit one of the existing metric classes: `DatabaseMetric`, `RedisMetric`, `RedisHLLMetric`, `NumbersMetric` or `GenericMetric`.
 
-The current convention is that a single instrumentation class corresponds to a single metric. On a rare occasions, there are exceptions to that convention like [Redis metrics](#redis-metrics). To use a single instrumentation class for more than one metric, please reach out to one of the `@gitlab-org/growth/product-intelligence/engineers` members to consult about your case.
+The current convention is that a single instrumentation class corresponds to a single metric. On rare occasions, there are exceptions to that convention like [Redis metrics](#redis-metrics). To use a single instrumentation class for more than one metric, please reach out to one of the `@gitlab-org/analytics-section/product-intelligence/engineers` members to consult about your case.
 
 Using the instrumentation classes ensures that metrics can fail safe individually, without breaking the entire
  process of Service Ping generation.

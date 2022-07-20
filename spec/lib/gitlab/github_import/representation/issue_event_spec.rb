@@ -77,6 +77,20 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         end
       end
 
+      context 'when milestone data is present' do
+        it 'includes the milestone_title' do
+          expect(issue_event.milestone_title).to eq('milestone title')
+        end
+      end
+
+      context 'when milestone data is empty' do
+        let(:with_milestone) { false }
+
+        it 'does not return such info' do
+          expect(issue_event.milestone_title).to eq nil
+        end
+      end
+
       it 'includes the created timestamp' do
         expect(issue_event.created_at).to eq('2022-04-26 18:30:53 UTC')
       end
@@ -93,7 +107,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
     let(:response) do
       event_resource = Struct.new(
         :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label,
-        :rename, :issue_db_id, :created_at, :performed_via_github_app, :source,
+        :rename, :milestone, :source, :issue_db_id, :created_at, :performed_via_github_app,
         keyword_init: true
       )
       user_resource = Struct.new(:id, :login, keyword_init: true)
@@ -106,10 +120,11 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         commit_id: '570e7b2abdd848b95f2f578043fc23bd6f6fd24d',
         commit_url: 'https://api.github.com/repos/octocat/Hello-World/commits'\
           '/570e7b2abdd848b95f2f578043fc23bd6f6fd24d',
+        label: with_label ? { name: 'label title' } : nil,
         rename: with_rename ? { from: 'old title', to: 'new title' } : nil,
+        milestone: with_milestone ? { title: 'milestone title' } : nil,
         source: { type: 'issue', id: 123456 },
         issue_db_id: 100500,
-        label: with_label ? { name: 'label title' } : nil,
         created_at: '2022-04-26 18:30:53 UTC',
         performed_via_github_app: nil
       )
@@ -118,6 +133,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
     let(:with_actor) { true }
     let(:with_label) { true }
     let(:with_rename) { true }
+    let(:with_milestone) { true }
 
     it_behaves_like 'an IssueEvent' do
       let(:issue_event) { described_class.from_api_response(response) }
@@ -139,6 +155,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
           'label_title' => (with_label ? 'label title' : nil),
           'old_title' => with_rename ? 'old title' : nil,
           'new_title' => with_rename ? 'new title' : nil,
+          'milestone_title' => (with_milestone ? 'milestone title' : nil),
           'source' => { 'type' => 'issue', 'id' => 123456 },
           "issue_db_id" => 100500,
           'created_at' => '2022-04-26 18:30:53 UTC',
@@ -149,6 +166,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
       let(:with_actor) { true }
       let(:with_label) { true }
       let(:with_rename) { true }
+      let(:with_milestone) { true }
 
       let(:issue_event) { described_class.from_json_hash(hash) }
     end

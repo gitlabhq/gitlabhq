@@ -50,7 +50,7 @@ See [Snowplow technology 101](https://github.com/snowplow/snowplow/#snowplow-tec
 
 ### Pseudonymization
 
-In contrast to a typical Snowplow pipeline, after enrichment, GitLab Snowplow events go through a [pseudonymization service](https://gitlab.com/gitlab-org/growth/product-intelligence/snowplow-pseudonymization) in the form of an AWS Lambda service before they are stored in S3 storage.
+In contrast to a typical Snowplow pipeline, after enrichment, GitLab Snowplow events go through a [pseudonymization service](https://gitlab.com/gitlab-org/analytics-section/product-intelligence/snowplow-pseudonymization) in the form of an AWS Lambda service before they are stored in S3 storage.
 
 #### Why events need to be pseudonymized
 
@@ -85,7 +85,7 @@ There are several tools that monitor Snowplow events tracking in different stage
   - The number of events that successfully reach Snowplow collectors.
   - The number of events that failed to reach Snowplow collectors.
   - The number of backend events that were sent.
-- [AWS CloudWatch dashboard](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=SnowPlow;start=P3D) monitors the state of the events in a processing pipeline. The pipeline starts from Snowplow collectors, goes through to enrichers and pseudonymization, and then up to persistence in an S3 bucket. From S3, the events are imported into the Snowflake Data Warehouse. You must have AWS access rights to view this dashboard. For more information, see [monitoring](https://gitlab.com/gitlab-org/growth/product-intelligence/snowplow-pseudonymization#monitoring) in the Snowplow Events pseudonymization service documentation.
+- [AWS CloudWatch dashboard](https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=SnowPlow;start=P3D) monitors the state of the events in a processing pipeline. The pipeline starts from Snowplow collectors, goes through to enrichers and pseudonymization, and then up to persistence in an S3 bucket. From S3, the events are imported into the Snowflake Data Warehouse. You must have AWS access rights to view this dashboard. For more information, see [monitoring](https://gitlab.com/gitlab-org/analytics-section/product-intelligence/snowplow-pseudonymization#monitoring) in the Snowplow Events pseudonymization service documentation.
 - [Sisense dashboard](https://app.periscopedata.com/app/gitlab/417669/Snowplow-Summary-Dashboard) provides information about the number of good and bad events imported into the Data Warehouse, in addition to the total number of imported Snowplow events.
 
 For more information, see this [video walk-through](https://www.youtube.com/watch?v=NxPS0aKa_oU).
@@ -93,7 +93,7 @@ For more information, see this [video walk-through](https://www.youtube.com/watc
 ## Related topics
 
 - [Snowplow technology 101](https://github.com/snowplow/snowplow/#snowplow-technology-101)
-- [Snowplow pseudonymization AWS Lambda project](https://gitlab.com/gitlab-org/growth/product-intelligence/snowplow-pseudonymization)
+- [Snowplow pseudonymization AWS Lambda project](https://gitlab.com/gitlab-org/analytics-section/product-intelligence/snowplow-pseudonymization)
 - [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
 - [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)
 - [Snowplow architecture overview (internal)](https://www.youtube.com/watch?v=eVYJjzspsLU)

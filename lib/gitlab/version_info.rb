@@ -62,6 +62,10 @@ module Gitlab
       end
     end
 
+    def to_json(*_args)
+      { major: @major, minor: @minor, patch: @patch }.to_json
+    end
+
     def suffix
       @suffix ||= @suffix_s.strip.gsub('-', '.pre.').scan(/\d+|[a-z]+/i).map do |s|
         /^\d+$/ =~ s ? s.to_i : s

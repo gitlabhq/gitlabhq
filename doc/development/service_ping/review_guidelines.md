@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Service Ping review guidelines
 
 This page includes introductory material for a
-[Product Intelligence](https://about.gitlab.com/handbook/engineering/development/growth/product-intelligence/)
+[Product Intelligence](https://about.gitlab.com/handbook/engineering/development/analytics/product-intelligence/)
 review, and is specific to Service Ping related reviews. For broader advice and
 general best practices for code reviews, refer to our [code review guide](../code_review.md).
 
@@ -42,7 +42,7 @@ are regular backend changes.
   - Assign both the `~backend` and `~product intelligence` reviews to another Product Intelligence team member.
   - Assign the maintainer review to someone outside of the Product Intelligence group.
 - Assign an
-  [engineer](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) from the Product Intelligence team for a review.
+  [engineer](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) from the Product Intelligence team for a review.
 - Set the correct attributes in the metric's YAML definition:
   - `product_section`, `product_stage`, `product_group`, `product_category`
   - Provide a clear description of the metric.
@@ -76,7 +76,7 @@ are regular backend changes.
 
 [Danger bot](../dangerbot.md) adds the list of changed Product Intelligence files
 and pings the
-[`@gitlab-org/growth/product-intelligence/engineers`](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) group for merge requests
+[`@gitlab-org/analytics-section/product-intelligence/engineers`](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) group for merge requests
 that are not drafts.
 
 Any of the Product Intelligence engineers can be assigned for the Product Intelligence review.

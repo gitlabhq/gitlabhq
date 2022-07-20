@@ -39,13 +39,13 @@ import {
   TOKEN_TITLE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import {
-  IssuableListTabs,
-  IssuableStates,
-  IssuableTypes,
-} from '~/vue_shared/issuable/list/constants';
+import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { WORK_ITEM_TYPE_ENUM_TASK } from '~/work_items/constants';
 import {
   CREATED_DESC,
+  defaultTypeTokenOptions,
+  defaultWorkItemTypes,
   i18n,
   ISSUE_REFERENCE,
   MAX_LIST_SIZE,
@@ -67,6 +67,7 @@ import {
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
+  TYPE_TOKEN_TASK_OPTION,
   UPDATED_DESC,
   urlSortParams,
 } from '../constants';
@@ -107,7 +108,6 @@ const CrmOrganizationToken = () =>
 export default {
   i18n,
   IssuableListTabs,
-  IssuableTypes: [IssuableTypes.Issue, IssuableTypes.Incident, IssuableTypes.TestCase],
   components: {
     CsvImportExportButtons,
     GlButton,
@@ -123,6 +123,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: [
     'autocompleteAwardEmojisPath',
     'calendarPath',
@@ -180,9 +181,7 @@ export default {
     issues: {
       query: getIssuesQuery,
       variables() {
-        const { types } = this.queryVariables;
-
-        return { ...this.queryVariables, types: types ? [types] : this.$options.IssuableTypes };
+        return this.queryVariables;
       },
       update(data) {
         return data[this.namespace]?.issues.nodes ?? [];
@@ -206,9 +205,7 @@ export default {
     issuesCounts: {
       query: getIssuesCountsQuery,
       variables() {
-        const { types } = this.queryVariables;
-
-        return { ...this.queryVariables, types: types ? [types] : this.$options.IssuableTypes };
+        return this.queryVariables;
       },
       update(data) {
         return data[this.namespace] ?? {};
@@ -240,10 +237,21 @@ export default {
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
+        types: this.apiFilterParams.types || this.defaultWorkItemTypes,
       };
     },
     namespace() {
       return this.isProject ? ITEM_TYPE.PROJECT : ITEM_TYPE.GROUP;
+    },
+    defaultWorkItemTypes() {
+      return this.isWorkItemsEnabled
+        ? defaultWorkItemTypes.concat(WORK_ITEM_TYPE_ENUM_TASK)
+        : defaultWorkItemTypes;
+    },
+    typeTokenOptions() {
+      return this.isWorkItemsEnabled
+        ? defaultTypeTokenOptions.concat(TYPE_TOKEN_TASK_OPTION)
+        : defaultTypeTokenOptions;
     },
     hasSearch() {
       return (
@@ -261,6 +269,9 @@ export default {
     },
     isOpenTab() {
       return this.state === IssuableStates.Opened;
+    },
+    isWorkItemsEnabled() {
+      return this.glFeatures.workItems;
     },
     showCsvButtons() {
       return this.isProject && this.isSignedIn;
@@ -340,11 +351,7 @@ export default {
           title: TOKEN_TITLE_TYPE,
           icon: 'issues',
           token: GlFilteredSearchToken,
-          options: [
-            { icon: 'issue-type-issue', title: 'issue', value: 'issue' },
-            { icon: 'issue-type-incident', title: 'incident', value: 'incident' },
-            { icon: 'issue-type-test-case', title: 'test_case', value: 'test_case' },
-          ],
+          options: this.typeTokenOptions,
         },
       ];
 

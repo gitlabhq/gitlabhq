@@ -30,6 +30,9 @@ module Gitlab
           when 'renamed'
             Gitlab::GithubImport::Importer::Events::Renamed.new(project, author_id)
               .execute(issue_event)
+          when 'milestoned', 'demilestoned'
+            Gitlab::GithubImport::Importer::Events::ChangedMilestone.new(project, author_id)
+              .execute(issue_event)
           when 'cross-referenced'
             Gitlab::GithubImport::Importer::Events::CrossReferenced.new(project, author_id)
               .execute(issue_event)

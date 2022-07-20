@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Snowplow review guidelines
 
 This page includes introductory material for a
-[Product Intelligence](https://about.gitlab.com/handbook/engineering/development/growth/product-intelligence/)
+[Product Intelligence](https://about.gitlab.com/handbook/engineering/development/analytics/product-intelligence/)
 review, and is specific to Snowplow related reviews. For broader advice and
 general best practices for code reviews, refer to our [code review guide](../code_review.md).
 

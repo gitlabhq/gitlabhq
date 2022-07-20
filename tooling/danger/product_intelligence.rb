@@ -7,7 +7,7 @@ module Tooling
       APPROVED_LABEL = 'product intelligence::approved'
       REVIEW_LABEL = 'product intelligence::review pending'
       CHANGED_FILES_MESSAGE = <<~MSG
-      For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
+      For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
       Please check the ~"product intelligence" [Service Ping guide](https://docs.gitlab.com/ee/development/service_ping/) or the [Snowplow guide](https://docs.gitlab.com/ee/development/snowplow/).
 
       For MR review guidelines, see the [Service Ping review guidelines](https://docs.gitlab.com/ee/development/service_ping/review_guidelines.html) or the [Snowplow review guidelines](https://docs.gitlab.com/ee/development/snowplow/review_guidelines.html).
