@@ -1,7 +1,7 @@
 #import "ee_else_ce/runner/graphql/list/list_item.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
-query getRunners(
+query getAllRunners(
   $before: String
   $after: String
   $first: Int

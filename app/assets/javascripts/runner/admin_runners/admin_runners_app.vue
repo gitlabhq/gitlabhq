@@ -11,7 +11,7 @@ import {
   fromSearchToVariables,
   isSearchFiltered,
 } from 'ee_else_ce/runner/runner_search_utils';
-import runnersAdminQuery from 'ee_else_ce/runner/graphql/list/admin_runners.query.graphql';
+import allRunnersQuery from 'ee_else_ce/runner/graphql/list/all_runners.query.graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -64,7 +64,7 @@ export default {
   },
   apollo: {
     runners: {
-      query: runnersAdminQuery,
+      query: allRunnersQuery,
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
       variables() {
         return this.variables;

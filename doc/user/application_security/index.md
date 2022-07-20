@@ -502,6 +502,8 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 
 ## Troubleshooting
 
+<!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, please ensure to update the corresponding URL in the mentioned repository.
+-->
 ### Secure job failing with exit code 1
 
 If a Secure job is failing and it's unclear why, add `SECURE_LOG_LEVEL: "debug"` as a global CI/CD variable for

@@ -10,7 +10,7 @@ class-methods-use-this */
 deprecated_notes_spec.js is the spec for the legacy, jQuery notes application. It has nothing to do with the new, fancy Vue notes app.
  */
 
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import Autosize from 'autosize';
 import $ from 'jquery';
 import { escape, uniqueId } from 'lodash';
@@ -1233,10 +1233,10 @@ export default class Notes {
     new Vue({
       el,
       components: {
-        GlSkeletonLoading,
+        GlSkeletonLoader,
       },
       render(createElement) {
-        return createElement('gl-skeleton-loading');
+        return createElement('gl-skeleton-loader');
       },
     });
   }

@@ -115,6 +115,15 @@ module API
               redirect(download_path)
             end
 
+            get do
+              latest_package = packages.order_version.last
+
+              render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found) if latest_package&.version.nil?
+
+              presenter = ::Terraform::ModuleVersionPresenter.new(latest_package, params[:module_system])
+              present presenter, with: ::API::Entities::Terraform::ModuleVersion
+            end
+
             params do
               includes :module_version
             end

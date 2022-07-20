@@ -7,8 +7,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/runner/sentry_utils';
 
-import adminRunnersCountQuery from '~/runner/graphql/list/admin_runners_count.query.graphql';
-import getGroupRunnersCountQuery from '~/runner/graphql/list/group_runners_count.query.graphql';
+import allRunnersCountQuery from '~/runner/graphql/list/all_runners_count.query.graphql';
+import groupRunnersCountQuery from '~/runner/graphql/list/group_runners_count.query.graphql';
 
 import { runnersCountData, groupRunnersCountData } from '../../mock_data';
 
@@ -18,13 +18,13 @@ Vue.use(VueApollo);
 
 describe('RunnerCount', () => {
   let wrapper;
-  let mockRunnersCountQuery;
-  let mockGroupRunnersCountQuery;
+  let mockRunnersCountHandler;
+  let mockGroupRunnersCountHandler;
 
   const createComponent = ({ props = {}, ...options } = {}) => {
     const handlers = [
-      [adminRunnersCountQuery, mockRunnersCountQuery],
-      [getGroupRunnersCountQuery, mockGroupRunnersCountQuery],
+      [allRunnersCountQuery, mockRunnersCountHandler],
+      [groupRunnersCountQuery, mockGroupRunnersCountHandler],
     ];
 
     wrapper = shallowMount(RunnerCount, {
@@ -42,8 +42,8 @@ describe('RunnerCount', () => {
   };
 
   beforeEach(() => {
-    mockRunnersCountQuery = jest.fn().mockResolvedValue(runnersCountData);
-    mockGroupRunnersCountQuery = jest.fn().mockResolvedValue(groupRunnersCountData);
+    mockRunnersCountHandler = jest.fn().mockResolvedValue(runnersCountData);
+    mockGroupRunnersCountHandler = jest.fn().mockResolvedValue(groupRunnersCountData);
   });
 
   describe('in admin scope', () => {
@@ -54,21 +54,21 @@ describe('RunnerCount', () => {
     });
 
     it('fetches data from admin query', () => {
-      expect(mockRunnersCountQuery).toHaveBeenCalledTimes(1);
-      expect(mockRunnersCountQuery).toHaveBeenCalledWith({});
+      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(1);
+      expect(mockRunnersCountHandler).toHaveBeenCalledWith({});
     });
 
     it('fetches data with filters', async () => {
       await createComponent({ props: { scope: INSTANCE_TYPE, variables: mockVariables } });
 
-      expect(mockRunnersCountQuery).toHaveBeenCalledTimes(2);
-      expect(mockRunnersCountQuery).toHaveBeenCalledWith(mockVariables);
+      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(2);
+      expect(mockRunnersCountHandler).toHaveBeenCalledWith(mockVariables);
 
       expect(wrapper.html()).toBe(`<strong>${runnersCountData.data.runners.count}</strong>`);
     });
 
     it('does not fetch from the group query', async () => {
-      expect(mockGroupRunnersCountQuery).not.toHaveBeenCalled();
+      expect(mockGroupRunnersCountHandler).not.toHaveBeenCalled();
     });
 
     describe('when this query is skipped after data was loaded', () => {
@@ -90,8 +90,8 @@ describe('RunnerCount', () => {
     });
 
     it('does not fetch data', async () => {
-      expect(mockRunnersCountQuery).not.toHaveBeenCalled();
-      expect(mockGroupRunnersCountQuery).not.toHaveBeenCalled();
+      expect(mockRunnersCountHandler).not.toHaveBeenCalled();
+      expect(mockGroupRunnersCountHandler).not.toHaveBeenCalled();
 
       expect(wrapper.html()).toBe('<strong></strong>');
     });
@@ -101,7 +101,7 @@ describe('RunnerCount', () => {
     const mockError = new Error('error!');
 
     beforeEach(async () => {
-      mockRunnersCountQuery.mockRejectedValue(mockError);
+      mockRunnersCountHandler.mockRejectedValue(mockError);
 
       await createComponent({ props: { scope: INSTANCE_TYPE } });
     });
@@ -122,8 +122,8 @@ describe('RunnerCount', () => {
     });
 
     it('fetches data from the group query', async () => {
-      expect(mockGroupRunnersCountQuery).toHaveBeenCalledTimes(1);
-      expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({});
+      expect(mockGroupRunnersCountHandler).toHaveBeenCalledTimes(1);
+      expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({});
 
       expect(wrapper.html()).toBe(
         `<strong>${groupRunnersCountData.data.group.runners.count}</strong>`,
@@ -131,7 +131,7 @@ describe('RunnerCount', () => {
     });
 
     it('does not fetch from the group query', () => {
-      expect(mockRunnersCountQuery).not.toHaveBeenCalled();
+      expect(mockRunnersCountHandler).not.toHaveBeenCalled();
     });
   });
 
@@ -142,7 +142,7 @@ describe('RunnerCount', () => {
     });
 
     it('data is not shown and error is reported', async () => {
-      expect(mockRunnersCountQuery).toHaveBeenCalledTimes(2);
+      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(2);
     });
   });
 });

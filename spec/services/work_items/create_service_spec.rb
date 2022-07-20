@@ -27,15 +27,17 @@ RSpec.describe WorkItems::CreateService do
   end
 
   describe '#execute' do
-    subject(:service_result) do
+    let(:service) do
       described_class.new(
         project: project,
         current_user: current_user,
         params: opts,
         spam_params: spam_params,
         widget_params: widget_params
-      ).execute
+      )
     end
+
+    subject(:service_result) { service.execute }
 
     before do
       stub_spam_services
@@ -72,6 +74,14 @@ RSpec.describe WorkItems::CreateService do
 
       it 'returns validation errors' do
         expect(service_result.errors).to contain_exactly("Title can't be blank")
+      end
+
+      it 'does not execute after-create transaction widgets' do
+        expect(service).to receive(:create).and_call_original
+        expect(service).not_to receive(:execute_widgets)
+          .with(callback: :after_create_in_transaction, widget_params: widget_params)
+
+        service_result
       end
     end
 

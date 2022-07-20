@@ -1,4 +1,4 @@
-query getRunnersCount(
+query getAllRunnersCount(
   $paused: Boolean
   $status: CiRunnerStatus
   $type: CiRunnerType

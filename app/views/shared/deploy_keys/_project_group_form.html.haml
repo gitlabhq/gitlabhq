@@ -1,5 +1,5 @@
 = gitlab_ui_form_for [@project.namespace, @project, @deploy_keys.new_key], url: namespace_project_deploy_keys_path, html: { class: "js-requires-input container" } do |f|
-  = form_errors(@deploy_keys.new_key)
+  = form_errors(@deploy_keys.new_key, pajamas_alert: true)
   .form-group.row
     = f.label :title, class: "label-bold"
     = f.text_field :title, class: 'form-control gl-form-input', required: true, data: { qa_selector: 'deploy_key_title_field' }

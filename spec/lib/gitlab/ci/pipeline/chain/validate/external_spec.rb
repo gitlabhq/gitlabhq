@@ -84,7 +84,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
       end
     end
 
-    it 'respects the defined payload schema', :saas do
+    it 'respects the defined payload schema' do
       expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
         expect(params[:body]).to match_schema('/external_validation')
         expect(params[:timeout]).to eq(described_class::DEFAULT_VALIDATION_REQUEST_TIMEOUT)

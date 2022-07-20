@@ -39,19 +39,19 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
     end
 
     describe GraphQL::Query, type: :request do
-      admin_runners_query = 'list/admin_runners.query.graphql'
+      all_runners_query = 'list/all_runners.query.graphql'
 
       let_it_be(:query) do
-        get_graphql_query_as_string("#{query_path}#{admin_runners_query}")
+        get_graphql_query_as_string("#{query_path}#{all_runners_query}")
       end
 
-      it "#{fixtures_path}#{admin_runners_query}.json" do
+      it "#{fixtures_path}#{all_runners_query}.json" do
         post_graphql(query, current_user: admin, variables: {})
 
         expect_graphql_errors_to_be_empty
       end
 
-      it "#{fixtures_path}#{admin_runners_query}.paginated.json" do
+      it "#{fixtures_path}#{all_runners_query}.paginated.json" do
         post_graphql(query, current_user: admin, variables: { first: 2 })
 
         expect_graphql_errors_to_be_empty
@@ -59,13 +59,13 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
     end
 
     describe GraphQL::Query, type: :request do
-      admin_runners_count_query = 'list/admin_runners_count.query.graphql'
+      all_runners_count_query = 'list/all_runners_count.query.graphql'
 
       let_it_be(:query) do
-        get_graphql_query_as_string("#{query_path}#{admin_runners_count_query}")
+        get_graphql_query_as_string("#{query_path}#{all_runners_count_query}")
       end
 
-      it "#{fixtures_path}#{admin_runners_count_query}.json" do
+      it "#{fixtures_path}#{all_runners_count_query}.json" do
         post_graphql(query, current_user: admin, variables: {})
 
         expect_graphql_errors_to_be_empty

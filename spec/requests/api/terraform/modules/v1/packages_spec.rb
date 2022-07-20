@@ -100,7 +100,7 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/download' do
     context 'empty registry' do
-      let(:url) { api("/packages/terraform/modules/v1/module-2/system/download") }
+      let(:url) { api("/packages/terraform/modules/v1/#{group.path}/module-2/system/download") }
       let(:headers) { {} }
 
       subject { get(url, headers: headers) }
@@ -149,6 +149,74 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
         :public  | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
         :public  | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
         :private | :developer  | true  | :job_token | 'redirects to version download' | :found
+        :private | :guest      | true  | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | false | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :guest      | false | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+      end
+
+      with_them do
+        let(:headers) { user_role == :anonymous ? {} : { 'Authorization' => "Bearer #{token}" } }
+
+        before do
+          group.update!(visibility: visibility.to_s)
+          project.update!(visibility: visibility.to_s)
+        end
+
+        it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+      end
+    end
+  end
+
+  describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system' do
+    context 'empty registry' do
+      let(:url) { api("/packages/terraform/modules/v1/#{group.path}/non-existent/system") }
+      let(:headers) { { 'Authorization' => "Bearer #{tokens[:personal_access_token]}" } }
+
+      subject { get(url, headers: headers) }
+
+      it 'returns not found when there is no module' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with valid namespace' do
+      let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}") }
+
+      subject { get(url, headers: headers) }
+
+      where(:visibility, :user_role, :member, :token_type, :shared_examples_name, :expected_status) do
+        :public  | :developer  | true  | :personal_access_token | 'returns terraform module version'         | :success
+        :public  | :guest      | true  | :personal_access_token | 'returns terraform module version'         | :success
+        :public  | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | :personal_access_token | 'returns terraform module version'         | :success
+        :public  | :guest      | false | :personal_access_token | 'returns terraform module version'         | :success
+        :public  | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :anonymous  | false | nil | 'returns terraform module version' | :success
+        :private | :developer  | true  | :personal_access_token | 'returns terraform module version'         | :success
+        :private | :guest      | true  | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | false | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :guest      | false | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :anonymous  | false | nil | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | true  | :job_token | 'returns terraform module version'         | :success
+        :public  | :guest      | true  | :job_token | 'returns terraform module version'         | :success
+        :public  | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | :job_token | 'returns terraform module version'         | :success
+        :public  | :guest      | false | :job_token | 'returns terraform module version'         | :success
+        :public  | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | true  | :job_token | 'returns terraform module version'         | :success
         :private | :guest      | true  | :job_token | 'rejects terraform module packages access' | :forbidden
         :private | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
         :private | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized

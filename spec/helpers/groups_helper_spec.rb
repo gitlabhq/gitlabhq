@@ -355,8 +355,8 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#show_thanks_for_purchase_banner?' do
-    subject { helper.show_thanks_for_purchase_banner? }
+  describe '#show_thanks_for_purchase_alert?' do
+    subject { helper.show_thanks_for_purchase_alert? }
 
     it 'returns true with purchased_quantity present in params' do
       allow(controller).to receive(:params) { { purchased_quantity: '1' } }

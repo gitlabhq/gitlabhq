@@ -1,7 +1,7 @@
 <script>
 import { fetchPolicies } from '~/lib/graphql';
 import { captureException } from '../../sentry_utils';
-import runnersAdminCountQuery from '../../graphql/list/admin_runners_count.query.graphql';
+import allRunnersCountQuery from '../../graphql/list/all_runners_count.query.graphql';
 import groupRunnersCountQuery from '../../graphql/list/group_runners_count.query.graphql';
 import { INSTANCE_TYPE, GROUP_TYPE } from '../../constants';
 
@@ -53,7 +53,7 @@ export default {
     count: {
       query() {
         if (this.scope === INSTANCE_TYPE) {
-          return runnersAdminCountQuery;
+          return allRunnersCountQuery;
         } else if (this.scope === GROUP_TYPE) {
           return groupRunnersCountQuery;
         }

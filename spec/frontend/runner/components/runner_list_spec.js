@@ -7,9 +7,9 @@ import {
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerStatusPopover from '~/runner/components/runner_status_popover.vue';
-import { runnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
+import { allRunnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
 
-const mockRunners = runnersData.data.runners.nodes;
+const mockRunners = allRunnersData.data.runners.nodes;
 const mockActiveRunnersCount = mockRunners.length;
 
 describe('RunnerList', () => {

@@ -39,8 +39,8 @@ import {
   RUNNER_PAGE_SIZE,
   I18N_EDIT,
 } from '~/runner/constants';
-import getGroupRunnersQuery from '~/runner/graphql/list/group_runners.query.graphql';
-import getGroupRunnersCountQuery from '~/runner/graphql/list/group_runners_count.query.graphql';
+import groupRunnersQuery from '~/runner/graphql/list/group_runners.query.graphql';
+import groupRunnersCountQuery from '~/runner/graphql/list/group_runners_count.query.graphql';
 import GroupRunnersApp from '~/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 import {
@@ -61,8 +61,8 @@ const mockRegistrationToken = 'AABBCC';
 const mockGroupRunnersEdges = groupRunnersData.data.group.runners.edges;
 const mockGroupRunnersCount = mockGroupRunnersEdges.length;
 
-const mockGroupRunnersQuery = jest.fn();
-const mockGroupRunnersCountQuery = jest.fn();
+const mockGroupRunnersHandler = jest.fn();
+const mockGroupRunnersCountHandler = jest.fn();
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -87,8 +87,8 @@ describe('GroupRunnersApp', () => {
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
     const handlers = [
-      [getGroupRunnersQuery, mockGroupRunnersQuery],
-      [getGroupRunnersCountQuery, mockGroupRunnersCountQuery],
+      [groupRunnersQuery, mockGroupRunnersHandler],
+      [groupRunnersCountQuery, mockGroupRunnersCountHandler],
     ];
 
     wrapper = mountFn(GroupRunnersApp, {
@@ -112,13 +112,13 @@ describe('GroupRunnersApp', () => {
   };
 
   beforeEach(async () => {
-    mockGroupRunnersQuery.mockResolvedValue(groupRunnersData);
-    mockGroupRunnersCountQuery.mockResolvedValue(groupRunnersCountData);
+    mockGroupRunnersHandler.mockResolvedValue(groupRunnersData);
+    mockGroupRunnersCountHandler.mockResolvedValue(groupRunnersCountData);
   });
 
   afterEach(() => {
-    mockGroupRunnersQuery.mockReset();
-    mockGroupRunnersCountQuery.mockReset();
+    mockGroupRunnersHandler.mockReset();
+    mockGroupRunnersCountHandler.mockReset();
     wrapper.destroy();
   });
 
@@ -140,15 +140,15 @@ describe('GroupRunnersApp', () => {
   it('shows total runner counts', async () => {
     await createComponent({ mountFn: mountExtended });
 
-    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+    expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
       status: STATUS_ONLINE,
       groupFullPath: mockGroupFullPath,
     });
-    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+    expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
       status: STATUS_OFFLINE,
       groupFullPath: mockGroupFullPath,
     });
-    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+    expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
       status: STATUS_STALE,
       groupFullPath: mockGroupFullPath,
     });
@@ -174,7 +174,7 @@ describe('GroupRunnersApp', () => {
   it('requests the runners with group path and no other filters', async () => {
     await createComponent();
 
-    expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
+    expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith({
       groupFullPath: mockGroupFullPath,
       status: undefined,
       type: undefined,
@@ -231,11 +231,11 @@ describe('GroupRunnersApp', () => {
     });
 
     it('When runner is paused or unpaused, some data is refetched', async () => {
-      expect(mockGroupRunnersCountQuery).toHaveBeenCalledTimes(COUNT_QUERIES);
+      expect(mockGroupRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
       findRunnerActionsCell().vm.$emit('toggledPaused');
 
-      expect(mockGroupRunnersCountQuery).toHaveBeenCalledTimes(
+      expect(mockGroupRunnersCountHandler).toHaveBeenCalledTimes(
         COUNT_QUERIES + FILTERED_COUNT_QUERIES,
       );
 
@@ -272,7 +272,7 @@ describe('GroupRunnersApp', () => {
     });
 
     it('requests the runners with filter parameters', () => {
-      expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
+      expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
         status: STATUS_ONLINE,
         type: INSTANCE_TYPE,
@@ -282,7 +282,7 @@ describe('GroupRunnersApp', () => {
     });
 
     it('fetches count results for requested status', () => {
-      expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+      expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
         groupFullPath: mockGroupFullPath,
         type: INSTANCE_TYPE,
         status: STATUS_ONLINE,
@@ -319,7 +319,7 @@ describe('GroupRunnersApp', () => {
     });
 
     it('requests the runners with filters', () => {
-      expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
+      expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
         status: STATUS_ONLINE,
         tagList: ['tag1'],
@@ -329,7 +329,7 @@ describe('GroupRunnersApp', () => {
     });
 
     it('fetches count results for requested status', () => {
-      expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+      expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
         groupFullPath: mockGroupFullPath,
         tagList: ['tag1'],
         status: STATUS_ONLINE,
@@ -344,7 +344,7 @@ describe('GroupRunnersApp', () => {
 
   describe('when no runners are found', () => {
     beforeEach(async () => {
-      mockGroupRunnersQuery.mockResolvedValue({
+      mockGroupRunnersHandler.mockResolvedValue({
         data: {
           group: {
             id: '1',
@@ -362,7 +362,7 @@ describe('GroupRunnersApp', () => {
 
   describe('when runners query fails', () => {
     beforeEach(async () => {
-      mockGroupRunnersQuery.mockRejectedValue(new Error('Error!'));
+      mockGroupRunnersHandler.mockRejectedValue(new Error('Error!'));
       await createComponent();
     });
 
@@ -380,7 +380,7 @@ describe('GroupRunnersApp', () => {
 
   describe('Pagination', () => {
     beforeEach(async () => {
-      mockGroupRunnersQuery.mockResolvedValue(groupRunnersDataPaginated);
+      mockGroupRunnersHandler.mockResolvedValue(groupRunnersDataPaginated);
 
       await createComponent({ mountFn: mountExtended });
     });
@@ -388,7 +388,7 @@ describe('GroupRunnersApp', () => {
     it('navigates to the next page', async () => {
       await findRunnerPaginationNext().trigger('click');
 
-      expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
+      expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
         sort: CREATED_DESC,
         first: RUNNER_PAGE_SIZE,

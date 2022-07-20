@@ -51,7 +51,7 @@ RSpec.describe StorageHelper do
     end
   end
 
-  describe "storage_enforcement_banner", :saas do
+  describe "storage_enforcement_banner" do
     let_it_be_with_refind(:current_user) { create(:user) }
     let_it_be(:free_group) { create(:group) }
     let_it_be(:paid_group) { create(:group) }

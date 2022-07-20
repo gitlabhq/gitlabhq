@@ -10,9 +10,9 @@ import runnerJobsData from 'test_fixtures/graphql/runner/show/runner_jobs.query.
 import runnerFormData from 'test_fixtures/graphql/runner/edit/runner_form.query.graphql.json';
 
 // List queries
-import runnersData from 'test_fixtures/graphql/runner/list/admin_runners.query.graphql.json';
-import runnersDataPaginated from 'test_fixtures/graphql/runner/list/admin_runners.query.graphql.paginated.json';
-import runnersCountData from 'test_fixtures/graphql/runner/list/admin_runners_count.query.graphql.json';
+import allRunnersData from 'test_fixtures/graphql/runner/list/all_runners.query.graphql.json';
+import allRunnersDataPaginated from 'test_fixtures/graphql/runner/list/all_runners.query.graphql.paginated.json';
+import runnersCountData from 'test_fixtures/graphql/runner/list/all_runners_count.query.graphql.json';
 import groupRunnersData from 'test_fixtures/graphql/runner/list/group_runners.query.graphql.json';
 import groupRunnersDataPaginated from 'test_fixtures/graphql/runner/list/group_runners.query.graphql.paginated.json';
 import groupRunnersCountData from 'test_fixtures/graphql/runner/list/group_runners_count.query.graphql.json';
@@ -227,8 +227,8 @@ export const emptyStateSvgPath = 'emptyStateSvgPath.svg';
 export const emptyStateFilteredSvgPath = 'emptyStateFilteredSvgPath.svg';
 
 export {
-  runnersData,
-  runnersDataPaginated,
+  allRunnersData,
+  allRunnersDataPaginated,
   runnersCountData,
   groupRunnersData,
   groupRunnersDataPaginated,

@@ -17,9 +17,9 @@ import {
 
 import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
 import RunnerDeleteModal from '~/runner/components/runner_delete_modal.vue';
-import { runnersData } from '../mock_data';
+import { allRunnersData } from '../mock_data';
 
-const mockRunner = runnersData.data.runners.nodes[0];
+const mockRunner = allRunnersData.data.runners.nodes[0];
 const mockRunnerId = getIdFromGraphQLId(mockRunner.id);
 
 Vue.use(VueApollo);

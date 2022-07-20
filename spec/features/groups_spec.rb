@@ -22,7 +22,7 @@ RSpec.describe 'Group' do
     end
 
     describe 'as a non-admin' do
-      it 'creates a group and persists visibility radio selection', :js, :saas do
+      it 'creates a group and persists visibility radio selection', :js do
         stub_application_setting(default_group_visibility: :private)
 
         fill_in 'Group name', with: 'test-group'

@@ -33,9 +33,12 @@ module WorkItems
     end
 
     def transaction_create(work_item)
-      super
-
-      execute_widgets(work_item: work_item, callback: :after_create_in_transaction, widget_params: @widget_params)
+      super.tap do |save_result|
+        if save_result
+          execute_widgets(work_item: work_item, callback: :after_create_in_transaction,
+                          widget_params: @widget_params)
+        end
+      end
     end
 
     private
