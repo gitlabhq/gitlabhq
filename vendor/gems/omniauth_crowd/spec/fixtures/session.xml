@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<session expand="user">
+  <token>rtk8eMvqq00EiGn5iJCMZQ00</token>
+  <user name="foo">
+    <link rel="self" href="http://crowd.example.org/crowd/rest/usermanagement/latest/user?username=foo"/>
+  </user>
+  <link rel="self" href="http://crowd.example.org/crowd/rest/usermanagement/latest/session/rtk8eMvqq00EiGn5iJCMZQ00"/>
+</session>

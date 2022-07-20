@@ -1,0 +1,74 @@
+PATH
+  remote: .
+  specs:
+    omniauth_crowd (2.4.0)
+      activesupport
+      nokogiri (>= 1.4.4)
+      omniauth (~> 1.0, < 3)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (5.0.0.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (~> 0.7)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
+    concurrent-ruby (1.0.5)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
+    diff-lcs (1.2.5)
+    hashdiff (0.3.6)
+    hashie (3.4.3)
+    i18n (0.8.1)
+    mini_portile2 (2.1.0)
+    minitest (5.10.1)
+    nokogiri (1.6.8.1)
+      mini_portile2 (~> 2.1.0)
+    omniauth (1.3.1)
+      hashie (>= 1.2, < 4)
+      rack (>= 1.0, < 3)
+    public_suffix (3.0.0)
+    rack (1.6.4)
+    rack-test (0.6.3)
+      rack (>= 1.0)
+    rake (10.5.0)
+    rexml (3.2.5)
+    rspec (3.0.0)
+      rspec-core (~> 3.0.0)
+      rspec-expectations (~> 3.0.0)
+      rspec-mocks (~> 3.0.0)
+    rspec-core (3.0.4)
+      rspec-support (~> 3.0.0)
+    rspec-expectations (3.0.4)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.0.0)
+    rspec-mocks (3.0.4)
+      rspec-support (~> 3.0.0)
+    rspec-support (3.0.4)
+    safe_yaml (1.0.4)
+    thread_safe (0.3.6)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+    webmock (3.0.1)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (> 1.0.0)
+  omniauth_crowd!
+  rack
+  rack-test
+  rake
+  rexml (~> 3.2.5)
+  rspec (~> 3.0.0)
+  webmock (~> 3.0.0)
+
+BUNDLED WITH
+   2.3.15

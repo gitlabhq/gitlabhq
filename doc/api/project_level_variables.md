@@ -170,5 +170,5 @@ This parameter is used for filtering by attributes, such as `environment_scope`.
 Example usage:
 
 ```shell
-curl --request DELETE --globoff --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1?filter[environment_scope]=production"
+curl --globoff --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1?filter[environment_scope]=production"
 ```

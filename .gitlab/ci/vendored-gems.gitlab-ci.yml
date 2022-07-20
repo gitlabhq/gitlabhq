@@ -14,6 +14,14 @@ vendor ipynbdiff:
     include: vendor/gems/ipynbdiff/.gitlab-ci.yml
     strategy: depend
 
+vendor omniauth_crowd:
+  extends:
+    - .vendor:rules:omniauth_crowd
+  needs: []
+  trigger:
+    include: vendor/gems/omniauth_crowd/.gitlab-ci.yml
+    strategy: depend
+
 vendor omniauth-gitlab:
   extends:
     - .vendor:rules:omniauth-gitlab

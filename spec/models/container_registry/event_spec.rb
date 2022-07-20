@@ -40,16 +40,18 @@ RSpec.describe ContainerRegistry::Event do
 
     subject(:handle!) { described_class.new(raw_event).handle! }
 
-    it 'enqueues a project statistics update' do
-      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:container_registry_size])
+    shared_examples 'event with project statistics update' do
+      it 'enqueues a project statistics update' do
+        expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:container_registry_size])
 
-      handle!
-    end
+        handle!
+      end
 
-    it 'clears the cache for the namespace container repositories size' do
-      expect(Rails.cache).to receive(:delete).with(group.container_repositories_size_cache_key)
+      it 'clears the cache for the namespace container repositories size' do
+        expect(Rails.cache).to receive(:delete).with(group.container_repositories_size_cache_key)
 
-      handle!
+        handle!
+      end
     end
 
     shared_examples 'event without project statistics update' do
@@ -60,10 +62,32 @@ RSpec.describe ContainerRegistry::Event do
       end
     end
 
+    it_behaves_like 'event with project statistics update'
+
     context 'with no target tag' do
       let(:target) { super().without('tag') }
 
       it_behaves_like 'event without project statistics update'
+
+      context 'with a target digest' do
+        let(:target) { super().merge('digest' => 'abc123') }
+
+        it_behaves_like 'event without project statistics update'
+      end
+
+      context 'with a delete action' do
+        let(:action) { 'delete' }
+
+        context 'without a target digest' do
+          it_behaves_like 'event without project statistics update'
+        end
+
+        context 'with a target digest' do
+          let(:target) { super().merge('digest' => 'abc123') }
+
+          it_behaves_like 'event with project statistics update'
+        end
+      end
     end
 
     context 'with an unsupported action' do

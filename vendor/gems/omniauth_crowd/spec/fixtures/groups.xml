@@ -1,0 +1,8 @@
+<groups expand="group">
+<group name="Developers">
+<link rel="self" href="http://crowd.bogus.com/crowd/rest/usermanagement/latest/group?groupname=Developers"/>
+</group>
+<group name="jira-users">
+<link rel="self" href="http://crowd.bogus.com/crowd/rest/usermanagement/latest/group?groupname=jira-users"/>
+</group>
+</groups>

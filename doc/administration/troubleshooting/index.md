@@ -21,8 +21,10 @@ installation.
 - [Linux cheat sheet](linux_cheat_sheet.md)
 - [Parsing GitLab logs with `jq`](log_parsing.md)
 - [Diagnostics tools](diagnostics_tools.md)
-- [Debugging tips](debug.md)
 - [Tracing requests with correlation ID](tracing_correlation_id.md)
+
+Some feature documentation pages also have a troubleshooting section at the end
+that you can check for feature-specific help.
 
 If you need a testing environment to troubleshoot, see the
 [apps for a testing environment](test_environments.md).

@@ -31,6 +31,14 @@ PATH
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.7.1)
 
+PATH
+  remote: vendor/gems/omniauth_crowd
+  specs:
+    omniauth_crowd (2.4.0)
+      activesupport
+      nokogiri (>= 1.4.4)
+      omniauth (~> 1.0, < 3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -915,10 +923,6 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
-    omniauth_crowd (2.4.0)
-      activesupport
-      nokogiri (>= 1.4.4)
-      omniauth (~> 1.0)
     open4 (1.3.4)
     openid_connect (1.3.0)
       activemodel
@@ -1652,7 +1656,7 @@ DEPENDENCIES
   omniauth-saml (~> 1.10)
   omniauth-shibboleth (~> 1.3.0)
   omniauth-twitter (~> 1.4)
-  omniauth_crowd (~> 2.4.0)
+  omniauth_crowd (~> 2.4.0)!
   org-ruby (~> 0.9.12)
   pact (~> 1.12)
   parallel (~> 1.19)

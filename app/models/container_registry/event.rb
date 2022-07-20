@@ -6,6 +6,7 @@ module ContainerRegistry
 
     ALLOWED_ACTIONS = %w(push delete).freeze
     PUSH_ACTION = 'push'
+    DELETE_ACTION = 'delete'
     EVENT_TRACKING_CATEGORY = 'container_registry:notification'
 
     attr_reader :event
@@ -41,6 +42,10 @@ module ContainerRegistry
       event['target'].has_key?('tag')
     end
 
+    def target_digest?
+      event['target'].has_key?('digest')
+    end
+
     def target_repository?
       !target_tag? && event['target'].has_key?('repository')
     end
@@ -51,6 +56,10 @@ module ContainerRegistry
 
     def action_push?
       PUSH_ACTION == action
+    end
+
+    def action_delete?
+      DELETE_ACTION == action
     end
 
     def container_repository_exists?
@@ -74,7 +83,7 @@ module ContainerRegistry
 
     def update_project_statistics
       return unless supported?
-      return unless target_tag?
+      return unless target_tag? || (action_delete? && target_digest?)
       return unless project
 
       Rails.cache.delete(project.root_ancestor.container_repositories_size_cache_key)
