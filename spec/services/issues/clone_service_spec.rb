@@ -140,11 +140,11 @@ RSpec.describe Issues::CloneService do
       context 'issue with award emoji' do
         let!(:award_emoji) { create(:award_emoji, awardable: old_issue) }
 
-        it 'copies the award emoji' do
+        it 'does not copy the award emoji' do
           old_issue.reload
           new_issue = clone_service.execute(old_issue, new_project)
 
-          expect(old_issue.award_emoji.first.name).to eq new_issue.reload.award_emoji.first.name
+          expect(new_issue.reload.award_emoji).to be_empty
         end
       end
 

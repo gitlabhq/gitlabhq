@@ -45,9 +45,5 @@
       = link_to _("Learn more."), help_path, target: '_blank', rel: 'noopener noreferrer'
     = render 'shared/tokens/scopes_form', prefix: prefix, token: token, scopes: scopes, f: f
 
-  - if prefix == :personal_access_token && Feature.enabled?(:personal_access_tokens_scoped_to_projects, current_user)
-    .js-access-tokens-projects
-      %input{ type: 'hidden', name: 'personal_access_token[projects]', id: 'personal_access_token_projects', data: { js_name: 'projects' } }
-
   .gl-mt-3
     = f.submit _('Create %{type}') % { type: type }, class: 'gl-button btn btn-confirm', data: { qa_selector: 'create_token_button' }

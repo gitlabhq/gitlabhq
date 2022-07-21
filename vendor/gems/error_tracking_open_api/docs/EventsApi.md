@@ -20,6 +20,13 @@ Get information about the events related to the error
 ```ruby
 require 'time'
 require 'error_tracking_open_api'
+# setup authorization
+ErrorTrackingOpenAPI.configure do |config|
+  # Configure API key authorization: internalToken
+  config.api_key['internalToken'] = 'YOUR API KEY'
+  # Uncomment the following line to set a prefix for the API key, e.g. 'Bearer' (defaults to nil)
+  # config.api_key_prefix['internalToken'] = 'Bearer'
+end
 
 api_instance = ErrorTrackingOpenAPI::EventsApi.new
 project_id = 56 # Integer | ID of the project where the error was created
@@ -73,7 +80,7 @@ end
 
 ### Authorization
 
-No authorization required
+[internalToken](../README.md#internalToken)
 
 ### HTTP request headers
 
@@ -92,6 +99,13 @@ Ingestion endpoint for error events sent from client SDKs
 ```ruby
 require 'time'
 require 'error_tracking_open_api'
+# setup authorization
+ErrorTrackingOpenAPI.configure do |config|
+  # Configure API key authorization: internalToken
+  config.api_key['internalToken'] = 'YOUR API KEY'
+  # Uncomment the following line to set a prefix for the API key, e.g. 'Bearer' (defaults to nil)
+  # config.api_key_prefix['internalToken'] = 'Bearer'
+end
 
 api_instance = ErrorTrackingOpenAPI::EventsApi.new
 project_id = 56 # Integer | ID of the project where the error was created
@@ -135,7 +149,7 @@ end
 
 ### Authorization
 
-No authorization required
+[internalToken](../README.md#internalToken)
 
 ### HTTP request headers
 
@@ -154,6 +168,13 @@ Ingestion endpoint for error events sent from client SDKs
 ```ruby
 require 'time'
 require 'error_tracking_open_api'
+# setup authorization
+ErrorTrackingOpenAPI.configure do |config|
+  # Configure API key authorization: internalToken
+  config.api_key['internalToken'] = 'YOUR API KEY'
+  # Uncomment the following line to set a prefix for the API key, e.g. 'Bearer' (defaults to nil)
+  # config.api_key_prefix['internalToken'] = 'Bearer'
+end
 
 api_instance = ErrorTrackingOpenAPI::EventsApi.new
 project_id = 56 # Integer | ID of the project where the error was created
@@ -197,7 +218,7 @@ end
 
 ### Authorization
 
-No authorization required
+[internalToken](../README.md#internalToken)
 
 ### HTTP request headers
 

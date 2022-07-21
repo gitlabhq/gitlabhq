@@ -88,7 +88,7 @@ module ErrorTrackingOpenAPI
       return_type = opts[:debug_return_type] || 'Array<ErrorEvent>'
 
       # auth_names
-      auth_names = opts[:debug_auth_names] || []
+      auth_names = opts[:debug_auth_names] || ['internalToken']
 
       new_options = opts.merge(
         :operation => :"EventsApi.list_events",
@@ -149,7 +149,7 @@ module ErrorTrackingOpenAPI
       return_type = opts[:debug_return_type] || 'ErrorEvent'
 
       # auth_names
-      auth_names = opts[:debug_auth_names] || []
+      auth_names = opts[:debug_auth_names] || ['internalToken']
 
       new_options = opts.merge(
         :operation => :"EventsApi.projects_api_project_id_envelope_post",
@@ -210,7 +210,7 @@ module ErrorTrackingOpenAPI
       return_type = opts[:debug_return_type] || 'ErrorEvent'
 
       # auth_names
-      auth_names = opts[:debug_auth_names] || []
+      auth_names = opts[:debug_auth_names] || ['internalToken']
 
       new_options = opts.merge(
         :operation => :"EventsApi.projects_api_project_id_store_post",

@@ -967,7 +967,6 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Mattermost token |
-| `username` | string | no | The username to use to post the message |
 
 ### Disable Mattermost Slash Command integration
 

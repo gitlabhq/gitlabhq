@@ -35,6 +35,9 @@ module QA
         # to `in_progress`, and create a job lock for each one.
         queue_size_target = 10
 
+        # During normal operations we avoid create a replication event
+        # https://gitlab.com/groups/gitlab-org/-/epics/7741
+        praefect_manager.stop_secondary_node
         Git::Repository.perform do |repository|
           repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
@@ -46,11 +49,12 @@ module QA
           end
           repository.push_all_branches
         end
+        praefect_manager.start_secondary_node
 
-        count = 0
-        while count < 1
+        Support::Retrier.retry_until(max_duration: 60) do
           count = praefect_manager.replication_queue_lock_count
           QA::Runtime::Logger.debug("Lock count: #{count}")
+          count >= 1
         end
 
         praefect_manager.stop_praefect
@@ -58,12 +62,12 @@ module QA
 
         praefect_manager.start_praefect
 
-        # Create a new project, push to it, and check that replication occurs
-        project_push = Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project_name = "gitaly_cluster"
+        # Create a new project, and check that replication occurs
+        new_project = Resource::Project.fabricate! do |project|
+          project.initialize_with_readme = true
         end
 
-        expect(praefect_manager.replicated?(project_push.project.id)).to be true
+        expect(praefect_manager.replicated?(new_project.id)).to be true
       end
     end
   end

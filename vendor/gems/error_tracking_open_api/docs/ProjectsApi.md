@@ -18,6 +18,13 @@ Deletes all project related data. Mostly for testing purposes and later for prod
 ```ruby
 require 'time'
 require 'error_tracking_open_api'
+# setup authorization
+ErrorTrackingOpenAPI.configure do |config|
+  # Configure API key authorization: internalToken
+  config.api_key['internalToken'] = 'YOUR API KEY'
+  # Uncomment the following line to set a prefix for the API key, e.g. 'Bearer' (defaults to nil)
+  # config.api_key_prefix['internalToken'] = 'Bearer'
+end
 
 api_instance = ErrorTrackingOpenAPI::ProjectsApi.new
 id = 56 # Integer | ID of the project
@@ -60,7 +67,7 @@ nil (empty response body)
 
 ### Authorization
 
-No authorization required
+[internalToken](../README.md#internalToken)
 
 ### HTTP request headers
 

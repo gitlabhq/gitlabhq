@@ -12,12 +12,22 @@ type Items {
   nodes: [Item]!
 }
 
+input ItemInput {
+  id: ID!
+  label: String!
+  icon: String
+  selected: Boolean
+  group: Int!
+  category: String
+  selectedLabel: String
+}
+
 extend type Query {
   items: Items
 }
 
 extend type Mutation {
-  updateToolbarItem(id: ID!, propsToUpdate: Item!): LocalErrors
+  updateToolbarItem(id: ID!, propsToUpdate: ItemInput!): LocalErrors
   removeToolbarItems(ids: [ID!]): LocalErrors
-  addToolbarItems(items: [Item]): LocalErrors
+  addToolbarItems(items: [ItemInput]): LocalErrors
 }

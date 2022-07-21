@@ -525,12 +525,9 @@ To upgrade a Gitaly Cluster, follow the documentation for
 
 ### Downgrade Gitaly Cluster to a previous version
 
-If you need to roll back a Gitaly Cluster to an earlier version, some Praefect database migrations may need to be reverted. In a cluster with:
+If you need to roll back a Gitaly Cluster to an earlier version, some Praefect database migrations may need to be reverted.
 
-- A single Praefect node, this happens when GitLab itself is downgraded.
-- Multiple Praefect nodes, additional steps are required.
-
-To downgrade a Gitaly Cluster with multiple Praefect nodes:
+To downgrade a Gitaly Cluster (assuming multiple Praefect nodes):
 
 1. Stop the Praefect service on all Praefect nodes:
 

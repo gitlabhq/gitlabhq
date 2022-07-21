@@ -4190,9 +4190,6 @@ msgstr ""
 msgid "An error occurred while loading the Test Reports tab."
 msgstr ""
 
-msgid "An error occurred while loading the access tokens form, please try again."
-msgstr ""
-
 msgid "An error occurred while loading the blob controls."
 msgstr ""
 
@@ -35462,9 +35459,6 @@ msgstr ""
 msgid "Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users."
 msgstr ""
 
-msgid "Selected projects"
-msgstr ""
-
 msgid "Selected tag is already in use. Choose another option."
 msgstr ""
 
@@ -35661,9 +35655,6 @@ msgid "Set a default description template to be used for new issues. %{link_star
 msgstr ""
 
 msgid "Set a password on your account to pull or push via %{protocol}."
-msgstr ""
-
-msgid "Set access permissions for this token."
 msgstr ""
 
 msgid "Set any rate limit to %{code_open}0%{code_close} to disable the limit."

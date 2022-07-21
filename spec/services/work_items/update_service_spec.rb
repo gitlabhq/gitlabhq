@@ -14,15 +14,17 @@ RSpec.describe WorkItems::UpdateService do
   let(:current_user) { developer }
 
   describe '#execute' do
-    subject(:update_work_item) do
+    let(:service) do
       described_class.new(
         project: project,
         current_user: current_user,
         params: opts,
         spam_params: spam_params,
         widget_params: widget_params
-      ).execute(work_item)
+      )
     end
+
+    subject(:update_work_item) { service.execute(work_item) }
 
     before do
       stub_spam_services
@@ -142,6 +144,21 @@ RSpec.describe WorkItems::UpdateService do
 
           expect(work_item.description).to eq('changed')
         end
+
+        context 'when work item validation fails' do
+          let(:opts) { { title: '' } }
+
+          it 'returns validation errors' do
+            expect(update_work_item[:message]).to contain_exactly("Title can't be blank")
+          end
+
+          it 'does not execute after-update widgets', :aggregate_failures do
+            expect(service).to receive(:update).and_call_original
+            expect(service).not_to receive(:execute_widgets).with(callback: :update, widget_params: widget_params)
+
+            expect { update_work_item }.not_to change(work_item, :description)
+          end
+        end
       end
 
       context 'for the hierarchy widget' do
@@ -173,6 +190,22 @@ RSpec.describe WorkItems::UpdateService do
               update_work_item
               work_item.reload
             end.to not_change(WorkItems::ParentLink, :count).and(not_change(work_item, :title))
+          end
+        end
+
+        context 'when work item validation fails' do
+          let(:opts) { { title: '' } }
+
+          it 'returns validation errors' do
+            expect(update_work_item[:message]).to contain_exactly("Title can't be blank")
+          end
+
+          it 'does not execute after-update widgets', :aggregate_failures do
+            expect(service).to receive(:update).and_call_original
+            expect(service).not_to receive(:execute_widgets).with(callback: :before_update_in_transaction, widget_params: widget_params)
+            expect(work_item.work_item_children).not_to include(child_work_item)
+
+            update_work_item
           end
         end
       end

@@ -15,7 +15,7 @@ module WorkItems
           elsif params.key?(:children)
             update_work_item_children(params.delete(:children))
           else
-            invalid_args_error
+            invalid_args_error(params)
           end
         end
 
@@ -64,7 +64,7 @@ module WorkItems
           error(_('A Work Item can be a parent or a child, but not both.'))
         end
 
-        def invalid_args_error
+        def invalid_args_error(params)
           error(_("One or more arguments are invalid: %{args}." % { args: params.keys.to_sentence } ))
         end
 

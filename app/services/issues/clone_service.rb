@@ -41,7 +41,6 @@ module Issues
     def update_new_entity
       # we don't call `super` because we want to be able to decide whether or not to copy all comments over.
       update_new_entity_description
-      copy_award_emoji
 
       if with_notes
         copy_notes

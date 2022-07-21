@@ -5,21 +5,49 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# User File Uploads **(FREE)**
+# User file uploads **(FREE)**
 
-Images that are attached to issues, merge requests, or comments
-do not require authentication to be viewed if they are accessed directly by URL.
-This direct URL contains a random 32-character ID that prevents unauthorized
-people from guessing the URL for an image, thus there is some protection if an
-image contains sensitive information.
+> - Enforced authorization checks [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80117) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `enforce_auth_checks_on_uploads`. Disabled by default.
+> - Project settings in the user interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88567) in GitLab 15.3.
 
-Authentication is not enabled because images must be visible in the body of
-notification emails, which are often read from email clients that are not
-authenticated with GitLab, such as Outlook, Apple Mail, or the Mail app on your
-mobile device.
+FLAG:
+On self-managed GitLab, by default this feature is unavailable. To make it available per project or for your entire instance,
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `enforce_auth_checks_on_uploads`.
+On GitLab.com, this feature is not available.
 
-NOTE:
-Non-image attachments do require authentication to be viewed.
+In private or internal projects, GitLab restricts access to uploaded files (such as PDFs)
+to authenticated users only. By default, image files are not subject to the same
+restriction, and unauthenticated users can use the URL to view the
+file. If you enable authorization checks for all media files, images
+receive the same protection and are viewable only by authenticated users.
+
+Users can upload files to issues, merge requests, or comments in a project. Direct URLs
+to these images in GitLab contain a random 32-character ID to help prevent
+unauthorized users from guessing image URLs. This randomization provides some protection
+if an image contains sensitive information.
+
+Authentication checks for images can cause display issues in the body of notification emails.
+Emails are frequently read from clients (such as Outlook, Apple Mail, or your mobile device)
+not authenticated with GitLab. Images in emails appear broken and unavailable if
+the client is not authorized to GitLab.
+
+## Enable authorization checks for all media files
+
+Non-image attachments (including PDFs) always require authentication to be viewed.
+You can use this setting to extend this protection to image files.
+
+Prerequisite:
+
+- You must have the Maintainer or Owner role for the project.
+- Your project visibility settings must be **Private** or **Internal**.
+
+To configure authentication settings for all media files:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Scroll to **Project visibility** and select **Require authentication to view media files**.
+   You cannot select this option for projects with **Public** visibility.
 
 <!-- ## Troubleshooting
 

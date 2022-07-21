@@ -174,3 +174,6 @@ overrides:
       '@graphql-eslint/no-anonymous-operations': error
       '@graphql-eslint/unique-operation-name': error
       '@graphql-eslint/require-id-when-available': error
+      '@graphql-eslint/no-unused-variables': error
+      '@graphql-eslint/no-unused-fragments': error
+      '@graphql-eslint/no-duplicate-fields': error

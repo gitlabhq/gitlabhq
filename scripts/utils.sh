@@ -72,10 +72,6 @@ function setup_db() {
   run_timed_command "setup_db_praefect"
 }
 
-function install_api_client_dependencies_with_apk() {
-  run_timed_command "apk add --update openssl curl jq"
-}
-
 function install_gitlab_gem() {
   run_timed_command "gem install httparty --no-document --version 0.18.1"
   run_timed_command "gem install gitlab --no-document --version 4.17.0"

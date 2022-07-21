@@ -67,7 +67,7 @@ module ErrorTrackingOpenAPI
       return_type = opts[:debug_return_type] || 'Error'
 
       # auth_names
-      auth_names = opts[:debug_auth_names] || []
+      auth_names = opts[:debug_auth_names] || ['internalToken']
 
       new_options = opts.merge(
         :operation => :"ErrorsApi.get_error",
@@ -159,7 +159,7 @@ module ErrorTrackingOpenAPI
       return_type = opts[:debug_return_type] || 'Array<Error>'
 
       # auth_names
-      auth_names = opts[:debug_auth_names] || []
+      auth_names = opts[:debug_auth_names] || ['internalToken']
 
       new_options = opts.merge(
         :operation => :"ErrorsApi.list_errors",
@@ -247,7 +247,7 @@ module ErrorTrackingOpenAPI
       return_type = opts[:debug_return_type] || 'Array<ErrorEvent>'
 
       # auth_names
-      auth_names = opts[:debug_auth_names] || []
+      auth_names = opts[:debug_auth_names] || ['internalToken']
 
       new_options = opts.merge(
         :operation => :"ErrorsApi.list_events",
@@ -325,7 +325,7 @@ module ErrorTrackingOpenAPI
       return_type = opts[:debug_return_type] || 'Error'
 
       # auth_names
-      auth_names = opts[:debug_auth_names] || []
+      auth_names = opts[:debug_auth_names] || ['internalToken']
 
       new_options = opts.merge(
         :operation => :"ErrorsApi.update_error",

@@ -934,7 +934,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /config/feature_flags/development/forti_token_cloud.yml @gitlab-org/manage/authentication-and-authorization
 /config/feature_flags/development/groups_tokens_optional_encryption.yml @gitlab-org/manage/authentication-and-authorization
 /config/feature_flags/development/omniauth_login_minimal_scopes.yml @gitlab-org/manage/authentication-and-authorization
-/config/feature_flags/development/personal_access_tokens_scoped_to_projects.yml @gitlab-org/manage/authentication-and-authorization
 /config/feature_flags/development/projects_tokens_optional_encryption.yml @gitlab-org/manage/authentication-and-authorization
 /config/feature_flags/development/refresh_authorizations_via_affected_projects_on_group_membership.yml @gitlab-org/manage/authentication-and-authorization
 /config/feature_flags/development/skip_group_share_unlink_auth_refresh.yml @gitlab-org/manage/authentication-and-authorization

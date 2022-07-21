@@ -29,6 +29,14 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
       end
     end
 
+    context 'when invalid params are present' do
+      let(:params) { { other_parent: parent_work_item } }
+
+      it_behaves_like 'raises a WidgetError' do
+        let(:message) { 'One or more arguments are invalid: other_parent.' }
+      end
+    end
+
     context 'when updating children' do
       let_it_be(:child_work_item2) { create(:work_item, :task, project: project) }
       let_it_be(:child_work_item3) { create(:work_item, :task, project: project) }

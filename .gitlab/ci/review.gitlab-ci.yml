@@ -5,7 +5,7 @@ review-cleanup:
   extends:
     - .default-retry
     - .review:rules:review-cleanup
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ruby-3.0:gcloud-383-kubectl-1.23-helm-3.5
+  image: ${REVIEW_APPS_IMAGE}
   stage: prepare
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it

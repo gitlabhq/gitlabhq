@@ -224,9 +224,9 @@ You can customize the default secret detection rules provided with GitLab.
 Ruleset customization supports the following capabilities that can be used
 simultaneously:
 
-- [Disabling predefined rules](index.md#disable-predefined-analyzer-rules).
-- [Overriding predefined rules](index.md#override-predefined-analyzer-rules).
-- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration).
+- [Disabling predefined rules](#disable-predefined-analyzer-rules).
+- [Overriding predefined rules](#override-predefined-analyzer-rules).
+- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](#synthesize-a-custom-configuration).
 
 Customization allows replacing the default secret detection rules with rules that you define.
 
@@ -334,7 +334,7 @@ To create a custom configuration, you can use passthrough chains.
      ```
 
 Passthroughs can also be chained to build more complex configurations.
-For more details, see [SAST Customize ruleset section](../sast/index.md#customize-rulesets).
+For more details, see [SAST Customize ruleset section](../sast/customize_rulesets.md).
 
 ### Logging level
 

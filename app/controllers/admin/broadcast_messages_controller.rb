@@ -58,7 +58,6 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
 
   def broadcast_message_params
     params.require(:broadcast_message).permit(%i(
-      color
       theme
       ends_at
       message

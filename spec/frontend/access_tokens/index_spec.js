@@ -8,13 +8,11 @@ import {
   initAccessTokenTableApp,
   initExpiresAtField,
   initNewAccessTokenApp,
-  initProjectsField,
   initTokensApp,
 } from '~/access_tokens';
 import * as AccessTokenTableApp from '~/access_tokens/components/access_token_table_app.vue';
-import * as ExpiresAtField from '~/access_tokens/components/expires_at_field.vue';
+import ExpiresAtField from '~/access_tokens/components/expires_at_field.vue';
 import * as NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.vue';
-import * as ProjectsField from '~/access_tokens/components/projects_field.vue';
 import * as TokensApp from '~/access_tokens/components/tokens_app.vue';
 import { FEED_TOKEN, INCOMING_EMAIL_TOKEN, STATIC_OBJECT_TOKEN } from '~/access_tokens/constants';
 import { __, sprintf } from '~/locale';
@@ -115,49 +113,28 @@ describe('access tokens', () => {
     });
   });
 
-  describe.each`
-    initFunction          | mountSelector                    | fieldName      | expectedComponent
-    ${initExpiresAtField} | ${'js-access-tokens-expires-at'} | ${'expiresAt'} | ${ExpiresAtField}
-    ${initProjectsField}  | ${'js-access-tokens-projects'}   | ${'projects'}  | ${ProjectsField}
-  `('$initFunction', ({ initFunction, mountSelector, fieldName, expectedComponent }) => {
+  describe('initExpiresAtField', () => {
     describe('when mount element exists', () => {
-      const FakeComponent = Vue.component('FakeComponent', {
-        props: ['inputAttrs'],
-        render: () => null,
-      });
-
-      const nameAttribute = `access_tokens[${fieldName}]`;
-      const idAttribute = `access_tokens_${fieldName}`;
+      const nameAttribute = 'access_tokens[expires_at]';
+      const idAttribute = 'access_tokens_expires_at';
 
       beforeEach(() => {
-        window.gon = { features: { personalAccessTokensScopedToProjects: true } };
-
         setHTMLFixture(
-          `<div class="${mountSelector}">
+          `<div class="js-access-tokens-expires-at">
             <input
-              name="${nameAttribute}"
-              data-js-name="${fieldName}"
-              id="${idAttribute}"
+              name="access_tokens[expires_at]"
+              data-js-name="expiresAt"
+              id="access_tokens_expires_at"
               placeholder="Foo bar"
               value="1,2"
             />
           </div>`,
         );
-
-        // Mock component so we don't have to deal with mocking Apollo
-        // eslint-disable-next-line no-param-reassign
-        expectedComponent.default = FakeComponent;
-      });
-
-      afterEach(() => {
-        delete window.gon;
       });
 
       it('mounts component and sets `inputAttrs` prop', async () => {
-        const vueInstance = await initFunction();
-
-        wrapper = createWrapper(vueInstance);
-        const component = wrapper.findComponent(FakeComponent);
+        wrapper = createWrapper(initExpiresAtField());
+        const component = wrapper.findComponent(ExpiresAtField);
 
         expect(component.exists()).toBe(true);
         expect(component.props('inputAttrs')).toEqual({
@@ -171,7 +148,7 @@ describe('access tokens', () => {
 
     describe('when mount element does not exist', () => {
       it('returns `null`', () => {
-        expect(initFunction()).toBe(null);
+        expect(initExpiresAtField()).toBe(null);
       });
     });
   });

@@ -47,7 +47,7 @@ For an analyzer to be considered Generally Available, it is expected to minimall
 support the following features:
 
 - [Customizable configuration](index.md#available-cicd-variables)
-- [Customizable rulesets](index.md#customize-rulesets)
+- [Customizable rulesets](customize_rulesets.md#customize-rulesets)
 - [Scan projects](index.md#supported-languages-and-frameworks)
 - [Multi-project support](index.md#multi-project-support)
 - [Offline support](index.md#running-sast-in-an-offline-environment)

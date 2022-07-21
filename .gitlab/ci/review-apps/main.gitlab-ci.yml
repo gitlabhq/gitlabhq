@@ -14,7 +14,7 @@ include:
 .base-before_script: &base-before_script
   - source ./scripts/utils.sh
   - source ./scripts/review_apps/review-apps.sh
-  - install_api_client_dependencies_with_apk
+  - apt-get update && apt-get install -y jq
 
 review-build-cng-env:
   extends:
@@ -72,7 +72,7 @@ review-build-cng:
 .review-workflow-base:
   extends:
     - .default-retry
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:gitlab-helm3.5-kubectl1.17
+  image: ${REVIEW_APPS_IMAGE}
   resource_group: "review/${CI_COMMIT_REF_NAME}"
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
