@@ -1801,5 +1801,15 @@ RSpec.describe Ci::Runner do
         is_expected.to contain_exactly(runner_14_1_0)
       end
     end
+
+    describe 'composed with other scopes' do
+      subject { described_class.active(false).with_upgrade_status(:available) }
+
+      let(:inactive_runner_14_0_0) { create(:ci_runner, version: '14.0.0', active: false) }
+
+      it 'returns runner matching the composed scope' do
+        is_expected.to contain_exactly(inactive_runner_14_0_0)
+      end
+    end
   end
 end

@@ -27,9 +27,10 @@ module Gitlab
         def build(release)
           existing_tags.add(release.tag_name)
 
-          build_hash = {
+          {
             name: release.name,
             tag: release.tag_name,
+            author_id: fetch_author_id(release),
             description: description_for(release),
             created_at: release.created_at,
             updated_at: release.created_at,
@@ -37,12 +38,6 @@ module Gitlab
             released_at: release.published_at || Time.current,
             project_id: project.id
           }
-
-          if Feature.enabled?(:import_release_authors_from_github, project)
-            build_hash[:author_id] = fetch_author_id(release)
-          end
-
-          build_hash
         end
 
         def each_release

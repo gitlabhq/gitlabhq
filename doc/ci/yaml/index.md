@@ -2784,6 +2784,9 @@ which must be in the `$PATH`.
 If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
 you can use this image from the GitLab Container Registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
 
+If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
+[install `release-cli`](../../user/project/releases/release_cli.md) on the server where the runner is registered.
+
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Possible inputs**: The `release` subkeys:
@@ -2832,8 +2835,6 @@ This example creates a release:
 - The `release` section executes after the `script` keyword and before the `after_script`.
 - A release is created only if the job's main script succeeds.
 - If the release already exists, it is not updated and the job with the `release` keyword fails.
-- If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
-  [install `release-cli`](../../user/project/releases/release_cli.md) on the server where the runner is registered.
 
 **Related topics**:
 

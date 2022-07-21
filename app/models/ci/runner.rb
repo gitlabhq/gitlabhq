@@ -477,7 +477,7 @@ module Ci
     private
 
     scope :with_upgrade_status, ->(upgrade_status) do
-      Ci::Runner.joins(:runner_version).where(runner_version: { status: upgrade_status })
+      joins(:runner_version).where(runner_version: { status: upgrade_status })
     end
 
     EXECUTOR_NAME_TO_TYPES = {

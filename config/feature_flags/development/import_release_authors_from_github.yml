@@ -1,8 +1,0 @@
----
-name: import_release_authors_from_github
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89692
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343448
-milestone: '15.1'
-type: development
-group: group::release
-default_enabled: true
