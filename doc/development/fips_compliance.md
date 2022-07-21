@@ -12,12 +12,9 @@ to ensure a certain security floor is met by vendors selling products to U.S.
 Federal institutions.
 
 WARNING:
-GitLab is not FIPS compliant, even when built and run on a FIPS-enforcing
-system. Large parts of the build are broken, and many features use forbidden
-cryptographic primitives. Running GitLab on a FIPS-enforcing system is not
-supported and may result in data loss. This document is intended to help
-engineers looking to develop FIPS-related fixes. It is not intended to be used
-to run a production GitLab instance.
+You can build a FIPS-compliant instance of GitLab, but [not all features are included](#unsupported-features-in-fips-mode).
+A FIPS-compliant instance must be configured following the [FIPS install instructions](#install-gitlab-with-fips-compliance)
+exactly.
 
 There are two current FIPS standards: [140-2](https://en.wikipedia.org/wiki/FIPS_140-2)
 and [140-3](https://en.wikipedia.org/wiki/FIPS_140-3). At GitLab we usually
@@ -25,10 +22,7 @@ mean FIPS 140-2.
 
 ## Current status
 
-Read [Epic &5104](https://gitlab.com/groups/gitlab-org/-/epics/5104) for more
-information on the status of the investigation.
-
-GitLab is actively working towards FIPS compliance.
+GitLab is actively working towards FIPS compliance. Progress on this initiative can be tracked with this [FIPS compliance Epic](https://gitlab.com/groups/gitlab-org/-/epics/6452).
 
 ## FIPS compliance at GitLab
 
@@ -55,6 +49,29 @@ The supported hybrid environments are:
 
 - Omnibus: Ubuntu 20.04 FIPS
 - EKS: Amazon Linux 2
+
+### Unsupported features in FIPS mode
+
+Some GitLab features may not work when FIPS mode is enabled. The following features
+are known to not work in FIPS mode. However, there may be additional features not
+listed here that also do not work properly in FIPS mode:
+
+- [Container Scanning](../user/application_security/container_scanning/index.md) support for scanning images in repositories that require authentication.
+- [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
+- [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
+- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/index.md)
+  does not support operating in FIPS-compliant mode.
+- [License compliance](../user/compliance/license_compliance/index.md).
+- [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
+  for yarn projects.
+- [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
+  supports a reduced set of [analyzers](../user/application_security/sast/#fips-enabled-images)
+  when operating in FIPS-compliant mode.
+
+Additionally, these package repositories are disabled in FIPS mode:
+
+- [Conan package repository](../user/packages/conan_repository/index.md).
+- [Debian package repository](../user/packages/debian_repository/index.md).
 
 ## FIPS validation at GitLab
 
@@ -416,29 +433,6 @@ def default_min_key_size(name)
   end
 end
 ```
-
-#### Unsupported features in FIPS mode
-
-Some GitLab features may not work when FIPS mode is enabled. The following features
-are known to not work in FIPS mode. However, there may be additional features not
-listed here that also do not work properly in FIPS mode:
-
-- [Container Scanning](../user/application_security/container_scanning/index.md) support for scanning images in repositories that require authentication.
-- [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
-- [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
-- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/index.md)
-  does not support operating in FIPS-compliant mode.
-- [License compliance](../user/compliance/license_compliance/index.md).
-- [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
-  for yarn projects.
-- [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
-  supports a reduced set of [analyzers](../user/application_security/sast/#fips-enabled-images)
-  when operating in FIPS-compliant mode.
-
-Additionally, these package repositories are disabled in FIPS mode:
-
-- [Conan package repository](../user/packages/conan_repository/index.md).
-- [Debian package repository](../user/packages/debian_repository/index.md).
 
 ## Nightly Omnibus FIPS builds
 

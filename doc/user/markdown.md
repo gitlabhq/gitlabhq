@@ -1398,6 +1398,42 @@ For example:
 
 1. Another item
 
+---
+
+Ordered lists that are the first sub-item of an unordered list item must have a preceding blank line if they don't start with `1.`.
+
+**Good**
+
+```markdown
+- Unordered list item
+
+  5. First ordered list item
+```
+
+**Bad**
+
+```markdown
+- Unordered list item
+  5. First ordered list item
+```
+
+---
+
+CommonMark ignores blank lines between ordered and unordered list items, and considers them part of a single list. These are rendered as a
+_[loose](https://spec.commonmark.org/0.30/#loose)_ list. Each list item is enclosed in a paragraph tag and, therefore, has paragraph spacing and margins.
+This makes the list look like there is extra spacing between each item.
+
+For example:
+
+```markdown
+- First list item
+- Second list item
+
+- A different list
+```
+
+CommonMark ignores the blank line and renders this as one list with paragraph spacing.
+
 ### Superscripts / Subscripts
 
 CommonMark and GitLab Flavored Markdown don't support the Redcarpet superscript syntax ( `x^2` ).

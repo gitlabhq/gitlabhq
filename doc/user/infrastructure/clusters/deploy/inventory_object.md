@@ -4,9 +4,10 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Tracking cluster resources managed by GitLab **(PREMIUM)**
+# Tracking cluster resources managed by GitLab **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/346567) from GitLab Premium to GitLab Free in 15.3.
 
 GitLab uses an inventory object to track the resources you deploy to your cluster.
 The inventory object is a `ConfigMap` that contains a list of controlled objects.

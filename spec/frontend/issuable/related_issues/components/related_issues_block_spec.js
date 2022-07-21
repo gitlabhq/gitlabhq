@@ -37,9 +37,9 @@ describe('RelatedIssuesBlock', () => {
     });
 
     it.each`
-      issuableType | pathIdSeparator          | titleText          | helpLinkText                        | addButtonText
-      ${'issue'}   | ${PathIdSeparator.Issue} | ${'Linked issues'} | ${'Read more about related issues'} | ${'Add a related issue'}
-      ${'epic'}    | ${PathIdSeparator.Epic}  | ${'Linked epics'}  | ${'Read more about related epics'}  | ${'Add a related epic'}
+      issuableType | pathIdSeparator          | titleText         | helpLinkText                        | addButtonText
+      ${'issue'}   | ${PathIdSeparator.Issue} | ${'Linked items'} | ${'Read more about related issues'} | ${'Add a related issue'}
+      ${'epic'}    | ${PathIdSeparator.Epic}  | ${'Linked epics'} | ${'Read more about related epics'}  | ${'Add a related epic'}
     `(
       'displays "$titleText" in the header, "$helpLinkText" aria-label for help link, and "$addButtonText" aria-label for add button when issuableType is set to "$issuableType"',
       ({ issuableType, pathIdSeparator, titleText, helpLinkText, addButtonText }) => {

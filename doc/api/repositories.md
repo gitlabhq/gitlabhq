@@ -319,7 +319,7 @@ Supported attributes:
 | `date`    | datetime | no | The date and time of the release, defaults to the current time. |
 | `branch`  | string   | no | The branch to commit the changelog changes to, defaults to the project's default branch. |
 | `trailer` | string   | no | The Git trailer to use for including commits, defaults to `Changelog`. |
-| `config_file` | string   | no | The path of changelog configuration file in the project's Git repository, defaults to `.gitlab/changelog_config.yml`. |
+| `config_file` | string   | no | Path to the changelog configuration file in the project's Git repository. Defaults to `.gitlab/changelog_config.yml`. |
 | `file`    | string   | no | The file to commit the changes to, defaults to `CHANGELOG.md`. |
 | `message` | string   | no | The commit message to produce when committing the changes, defaults to `Add changelog for version X` where X is the value of the `version` argument. |
 

@@ -54,6 +54,10 @@ module API
 
           ::Clusters::AgentTokens::TrackUsageService.new(agent_token).execute
         end
+
+        def agent_has_access_to_project?(project)
+          Guest.can?(:download_code, project) || agent.has_access_to?(project)
+        end
       end
 
       namespace 'internal' do
@@ -74,6 +78,24 @@ module API
               project_id: project.id,
               agent_id: agent.id,
               agent_name: agent.name,
+              gitaly_info: gitaly_info(project),
+              gitaly_repository: gitaly_repository(project),
+              default_branch: project.default_branch_or_main
+            }
+          end
+
+          desc 'Gets project info' do
+            detail 'Retrieves project info (if authorized)'
+          end
+          route_setting :authentication, cluster_agent_token_allowed: true
+          get '/project_info', urgency: :low do
+            project = find_project(params[:id])
+
+            not_found! unless agent_has_access_to_project?(project)
+
+            status 200
+            {
+              project_id: project.id,
               gitaly_info: gitaly_info(project),
               gitaly_repository: gitaly_repository(project),
               default_branch: project.default_branch_or_main
