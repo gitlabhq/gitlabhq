@@ -12,4 +12,5 @@ export const createLink = (href, innerText) => {
   return link.outerHTML;
 };
 
-export const generateHLJSOpenTag = (type) => `<span class="hljs-${escape(type)}">&quot;`;
+export const generateHLJSOpenTag = (type, delimiter = '&quot;') =>
+  `<span class="hljs-${escape(type)}">${delimiter}`;

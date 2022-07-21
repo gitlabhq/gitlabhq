@@ -65,15 +65,8 @@ RSpec.describe Mutations::Boards::Destroy do
         other_board.destroy!
       end
 
-      it 'does not destroy the board' do
-        expect { subject }.not_to change { Board.count }.from(1)
-      end
-
-      it 'returns an error and not nil board' do
-        subject
-
-        expect(mutation_response['errors']).not_to be_empty
-        expect(mutation_response['board']).not_to be_nil
+      it 'does destroy the board' do
+        expect { subject }.to change { Board.count }.by(-1)
       end
     end
   end

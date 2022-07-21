@@ -59,11 +59,9 @@ export const workItemQueryResponse = {
             title: 'Parent title',
           },
           children: {
-            edges: [
+            nodes: [
               {
-                node: {
-                  id: 'gid://gitlab/WorkItem/444',
-                },
+                id: 'gid://gitlab/WorkItem/444',
               },
             ],
           },
@@ -96,9 +94,9 @@ export const updateWorkItemMutationResponse = {
         widgets: [
           {
             children: {
-              edges: [
+              nodes: [
                 {
-                  node: 'gid://gitlab/WorkItem/444',
+                  id: 'gid://gitlab/WorkItem/444',
                 },
               ],
             },
@@ -161,11 +159,9 @@ export const workItemResponseFactory = ({
           __typename: 'WorkItemWidgetHierarchy',
           type: 'HIERARCHY',
           children: {
-            edges: [
+            nodes: [
               {
-                node: {
-                  id: 'gid://gitlab/WorkItem/444',
-                },
+                id: 'gid://gitlab/WorkItem/444',
               },
             ],
           },

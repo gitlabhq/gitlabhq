@@ -477,14 +477,14 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
     end
 
     context 'with invalid username and password' do
-      let(:user) { create(:user, password: 'not-the-default') }
+      let(:user) { create(:user) }
 
       it 'blocks invalid login' do
         expect(authentication_metrics)
           .to increment(:user_unauthenticated_counter)
           .and increment(:user_password_invalid_counter)
 
-        gitlab_sign_in(user)
+        gitlab_sign_in(user, password: 'incorrect-password')
 
         expect_single_session_with_short_ttl
         expect(page).to have_content('Invalid login or password.')

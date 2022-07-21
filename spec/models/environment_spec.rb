@@ -42,6 +42,92 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe 'validate and sanitize external url' do
+    let_it_be_with_refind(:environment) { create(:environment) }
+
+    where(:source_external_url, :expected_error_message) do
+      nil                                              | nil
+      'http://example.com'                             | nil
+      'example.com'                                    | nil
+      'www.example.io'                                 | nil
+      'http://$URL'                                    | nil
+      'http://$(URL)'                                  | nil
+      'custom://example.com'                           | nil
+      '1.1.1.1'                                        | nil
+      '$BASE_URL/${CI_COMMIT_REF_NAME}'                | nil
+      '$ENVIRONMENT_URL'                               | nil
+      'https://$SUB.$MAIN'                             | nil
+      'https://$SUB-$REGION.$MAIN'                     | nil
+      'https://example.com?param={()}'                 | nil
+      'http://XSS?x=<script>alert(1)</script>'         | nil
+      'https://user:${VARIABLE}@example.io'            | nil
+      'https://example.com/test?param={data}'          | nil
+      'http://${URL}'                                  | 'URI is invalid'
+      'https://${URL}.example/test'                    | 'URI is invalid'
+      'http://test${CI_MERGE_REQUEST_IID}.example.com' | 'URI is invalid'
+      'javascript:alert("hello")'                      | 'javascript scheme is not allowed'
+    end
+    with_them do
+      it 'sets an external URL or an error' do
+        environment.external_url = source_external_url
+
+        environment.valid?
+
+        if expected_error_message
+          expect(environment.errors[:external_url].first).to eq(expected_error_message)
+        else
+          expect(environment.errors[:external_url]).to be_empty,
+              "There were unexpected errors: #{environment.errors.full_messages}"
+          expect(environment.external_url).to eq(source_external_url)
+        end
+      end
+    end
+
+    context 'when soft_validation_on_external_url feature flag is disabled' do
+      before do
+        stub_feature_flags(soft_validation_on_external_url: false)
+      end
+
+      where(:source_external_url, :expected_error_message) do
+        nil                                              | nil
+        'http://example.com'                             | nil
+        'example.com'                                    | 'is blocked: Only allowed schemes are http, https'
+        'www.example.io'                                 | 'is blocked: Only allowed schemes are http, https'
+        'http://$URL'                                    | 'is blocked: Hostname or IP address invalid'
+        'http://$(URL)'                                  | 'is blocked: Hostname or IP address invalid'
+        'custom://example.com'                           | 'is blocked: Only allowed schemes are http, https'
+        '1.1.1.1'                                        | 'is blocked: Only allowed schemes are http, https'
+        '$BASE_URL/${CI_COMMIT_REF_NAME}'                | 'is blocked: Only allowed schemes are http, https'
+        '$ENVIRONMENT_URL'                               | 'is blocked: Only allowed schemes are http, https'
+        'https://$SUB.$MAIN'                             | 'is blocked: Hostname or IP address invalid'
+        'https://$SUB-$REGION.$MAIN'                     | 'is blocked: Hostname or IP address invalid'
+        'https://example.com?param={()}'                 | nil
+        'http://XSS?x=<script>alert(1)</script>'         | nil
+        'https://user:${VARIABLE}@example.io'            | nil
+        'https://example.com/test?param={data}'          | nil
+        'http://${URL}'                                  | 'is blocked: URI is invalid'
+        'https://${URL}.example/test'                    | 'is blocked: URI is invalid'
+        'http://test${CI_MERGE_REQUEST_IID}.example.com' | 'is blocked: URI is invalid'
+        'javascript:alert("hello")'                      | 'is blocked: Only allowed schemes are http, https'
+      end
+      with_them do
+        it 'sets an external URL or an error' do
+          environment.external_url = source_external_url
+
+          environment.valid?
+
+          if expected_error_message
+            expect(environment.errors[:external_url].first).to eq(expected_error_message)
+          else
+            expect(environment.errors[:external_url]).to be_empty,
+              "There were unexpected errors: #{environment.errors.full_messages}"
+            expect(environment.external_url).to eq(source_external_url)
+          end
+        end
+      end
+    end
+  end
+
   describe '.before_save' do
     it 'ensures environment tier when a new object is created' do
       environment = build(:environment, name: 'gprd', tier: nil)

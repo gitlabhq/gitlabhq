@@ -53,23 +53,80 @@ RSpec.describe API::BulkImports do
       end
     end
 
-    it 'starts a new migration' do
-      post api('/bulk_imports', user), params: {
-        configuration: {
-          url: 'http://gitlab.example',
-          access_token: 'access_token'
-        },
-        entities: [
-          source_type: 'group_entity',
-          source_full_path: 'full_path',
-          destination_name: 'destination_slug',
-          destination_namespace: 'destination_namespace'
-        ]
-      }
+    shared_examples 'starting a new migration' do
+      it 'starts a new migration' do
+        post api('/bulk_imports', user), params: {
+          configuration: {
+            url: 'http://gitlab.example',
+            access_token: 'access_token'
+          },
+          entities: [
+            {
+              source_type: 'group_entity',
+              source_full_path: 'full_path',
+              destination_namespace: 'destination_namespace'
+            }.merge(destination_param)
+          ]
+        }
 
-      expect(response).to have_gitlab_http_status(:created)
+        expect(response).to have_gitlab_http_status(:created)
 
-      expect(json_response['status']).to eq('created')
+        expect(json_response['status']).to eq('created')
+      end
+    end
+
+    include_examples 'starting a new migration' do
+      let(:destination_param) { { destination_slug: 'destination_slug' } }
+    end
+
+    include_examples 'starting a new migration' do
+      let(:destination_param) { { destination_name: 'destination_name' } }
+    end
+
+    context 'when both destination_name & destination_slug are provided' do
+      it 'returns a mutually exclusive error' do
+        post api('/bulk_imports', user), params: {
+          configuration: {
+            url: 'http://gitlab.example',
+            access_token: 'access_token'
+          },
+          entities: [
+            {
+              source_type: 'group_entity',
+              source_full_path: 'full_path',
+              destination_name: 'destination_name',
+              destination_slug: 'destination_slug',
+              destination_namespace: 'destination_namespace'
+            }
+          ]
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+
+        expect(json_response['error']).to eq('entities[0][destination_slug], entities[0][destination_name] are mutually exclusive')
+      end
+    end
+
+    context 'when neither destination_name nor destination_slug is provided' do
+      it 'returns at_least_one_of error' do
+        post api('/bulk_imports', user), params: {
+          configuration: {
+            url: 'http://gitlab.example',
+            access_token: 'access_token'
+          },
+          entities: [
+            {
+              source_type: 'group_entity',
+              source_full_path: 'full_path',
+              destination_namespace: 'destination_namespace'
+            }
+          ]
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+
+        expect(json_response['error']).to eq('entities[0][destination_slug], entities[0][destination_name] are missing, at least one parameter must be provided')
+      end
     end
 
     context 'when provided url is blocked' do
@@ -82,7 +139,7 @@ RSpec.describe API::BulkImports do
           entities: [
             source_type: 'group_entity',
             source_full_path: 'full_path',
-            destination_name: 'destination_slug',
+            destination_slug: 'destination_slug',
             destination_namespace: 'destination_namespace'
           ]
         }

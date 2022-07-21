@@ -12662,9 +12662,11 @@ Represents the Geo sync and verification state of a group wiki repository.
 | <a id="groupwikirepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the GroupWikiRepositoryRegistry. |
-| <a id="groupwikirepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the GroupWikiRepositoryRegistry should be resynced. |
+| <a id="groupwikirepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the GroupWikiRepositoryRegistry is resynced. |
 | <a id="groupwikirepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the GroupWikiRepositoryRegistry. |
+| <a id="groupwikirepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the GroupWikiRepositoryRegistry is reverified. |
+| <a id="groupwikirepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the GroupWikiRepositoryRegistry. |
 
 ### `HelmFileMetadata`
 
@@ -13111,9 +13113,11 @@ Represents the Geo replication and verification state of a job_artifact.
 | <a id="jobartifactregistryid"></a>`id` | [`ID!`](#id) | ID of the JobArtifactRegistry. |
 | <a id="jobartifactregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the JobArtifactRegistry. |
 | <a id="jobartifactregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the JobArtifactRegistry. |
-| <a id="jobartifactregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the JobArtifactRegistry should be resynced. |
+| <a id="jobartifactregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the JobArtifactRegistry is resynced. |
 | <a id="jobartifactregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the JobArtifactRegistry. |
 | <a id="jobartifactregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the JobArtifactRegistry. |
+| <a id="jobartifactregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the JobArtifactRegistry is reverified. |
+| <a id="jobartifactregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the JobArtifactRegistry. |
 
 ### `JobPermissions`
 
@@ -13163,9 +13167,11 @@ Represents the Geo sync and verification state of an LFS object.
 | <a id="lfsobjectregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrylfsobjectid"></a>`lfsObjectId` | [`ID!`](#id) | ID of the LFS object. |
-| <a id="lfsobjectregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the LfsObjectRegistry should be resynced. |
+| <a id="lfsobjectregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the LfsObjectRegistry is resynced. |
 | <a id="lfsobjectregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the LfsObjectRegistry. |
+| <a id="lfsobjectregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the LfsObjectRegistry is reverified. |
+| <a id="lfsobjectregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the LfsObjectRegistry. |
 
 ### `LicenseHistoryEntry`
 
@@ -13847,9 +13853,11 @@ Represents the Geo sync and verification state of a Merge Request diff.
 | <a id="mergerequestdiffregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrymergerequestdiffid"></a>`mergeRequestDiffId` | [`ID!`](#id) | ID of the Merge Request diff. |
-| <a id="mergerequestdiffregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry should be resynced. |
+| <a id="mergerequestdiffregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry is resynced. |
 | <a id="mergerequestdiffregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the MergeRequestDiffRegistry. |
+| <a id="mergerequestdiffregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry is reverified. |
+| <a id="mergerequestdiffregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the MergeRequestDiffRegistry. |
 
 ### `MergeRequestParticipant`
 
@@ -14794,9 +14802,11 @@ Represents the Geo sync and verification state of a package file.
 | <a id="packagefileregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PackageFileRegistry. |
 | <a id="packagefileregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PackageFileRegistry. |
 | <a id="packagefileregistrypackagefileid"></a>`packageFileId` | [`ID!`](#id) | ID of the PackageFile. |
-| <a id="packagefileregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry should be resynced. |
+| <a id="packagefileregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry is resynced. |
 | <a id="packagefileregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PackageFileRegistry. |
 | <a id="packagefileregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PackageFileRegistry. |
+| <a id="packagefileregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry is reverified. |
+| <a id="packagefileregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PackageFileRegistry. |
 
 ### `PackageHelmDependencyType`
 
@@ -14916,9 +14926,11 @@ Represents the Geo replication and verification state of a pages_deployment.
 | <a id="pagesdeploymentregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrypagesdeploymentid"></a>`pagesDeploymentId` | [`ID!`](#id) | ID of the Pages Deployment. |
-| <a id="pagesdeploymentregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PagesDeploymentRegistry should be resynced. |
+| <a id="pagesdeploymentregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PagesDeploymentRegistry is resynced. |
 | <a id="pagesdeploymentregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PagesDeploymentRegistry is reverified. |
+| <a id="pagesdeploymentregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PagesDeploymentRegistry. |
 
 ### `PathLock`
 
@@ -15085,9 +15097,11 @@ Represents the Geo sync and verification state of a pipeline artifact.
 | <a id="pipelineartifactregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrypipelineartifactid"></a>`pipelineArtifactId` | [`ID!`](#id) | ID of the pipeline artifact. |
-| <a id="pipelineartifactregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PipelineArtifactRegistry should be resynced. |
+| <a id="pipelineartifactregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PipelineArtifactRegistry is resynced. |
 | <a id="pipelineartifactregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PipelineArtifactRegistry. |
+| <a id="pipelineartifactregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PipelineArtifactRegistry is reverified. |
+| <a id="pipelineartifactregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PipelineArtifactRegistry. |
 
 ### `PipelineCounts`
 
@@ -17252,10 +17266,12 @@ Represents the Geo sync and verification state of a snippet repository.
 | <a id="snippetrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the SnippetRepositoryRegistry. |
-| <a id="snippetrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the SnippetRepositoryRegistry should be resynced. |
+| <a id="snippetrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the SnippetRepositoryRegistry is resynced. |
 | <a id="snippetrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrysnippetrepositoryid"></a>`snippetRepositoryId` | [`ID!`](#id) | ID of the Snippet Repository. |
 | <a id="snippetrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the SnippetRepositoryRegistry. |
+| <a id="snippetrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the SnippetRepositoryRegistry is reverified. |
+| <a id="snippetrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the SnippetRepositoryRegistry. |
 
 ### `StatusAction`
 
@@ -17354,10 +17370,12 @@ Represents the Geo sync and verification state of a terraform state version.
 | <a id="terraformstateversionregistryid"></a>`id` | [`ID!`](#id) | ID of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the TerraformStateVersionRegistry. |
-| <a id="terraformstateversionregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the TerraformStateVersionRegistry should be resynced. |
+| <a id="terraformstateversionregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the TerraformStateVersionRegistry is resynced. |
 | <a id="terraformstateversionregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistryterraformstateversionid"></a>`terraformStateVersionId` | [`ID!`](#id) | ID of the terraform state version. |
+| <a id="terraformstateversionregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the TerraformStateVersionRegistry is reverified. |
+| <a id="terraformstateversionregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the TerraformStateVersionRegistry. |
 
 ### `TestCase`
 
@@ -17618,9 +17636,11 @@ Represents the Geo replication and verification state of an upload.
 | <a id="uploadregistryid"></a>`id` | [`ID!`](#id) | ID of the UploadRegistry. |
 | <a id="uploadregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the UploadRegistry. |
 | <a id="uploadregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the UploadRegistry. |
-| <a id="uploadregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the UploadRegistry should be resynced. |
+| <a id="uploadregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the UploadRegistry is resynced. |
 | <a id="uploadregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the UploadRegistry. |
 | <a id="uploadregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the UploadRegistry. |
+| <a id="uploadregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the UploadRegistry is reverified. |
+| <a id="uploadregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the UploadRegistry. |
 
 ### `UsageTrendsMeasurement`
 

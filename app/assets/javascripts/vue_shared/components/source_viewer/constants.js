@@ -147,3 +147,4 @@ export const HLJS_COMMENT_SELECTOR = 'hljs-comment';
 export const HLJS_ON_AFTER_HIGHLIGHT = 'after:highlight';
 
 export const NPM_URL = 'https://npmjs.com/package';
+export const GEM_URL = 'https://rubygems.org/gems';

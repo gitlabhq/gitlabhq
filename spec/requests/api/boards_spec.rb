@@ -57,9 +57,11 @@ RSpec.describe API::Boards do
     let(:url) { "/projects/#{board_parent.id}/boards/#{board.id}" }
 
     it 'delete the issue board' do
-      delete api(url, user)
+      expect do
+        delete api(url, user)
 
-      expect(response).to have_gitlab_http_status(:no_content)
+        expect(response).to have_gitlab_http_status(:no_content)
+      end.to change {board_parent.boards.count}.by(-1)
     end
   end
 

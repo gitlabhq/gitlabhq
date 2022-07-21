@@ -13,7 +13,7 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
         :bulk_import_entity,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_name: 'destination-name-path',
+        destination_slug: 'destination-slug-path',
         destination_namespace: parent.full_path
       )
     end
@@ -41,14 +41,14 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
         'name' => 'Name',
         'description' => 'Description',
         'parent_id' => parent.id,
-        'path' => 'destination-name-path'
+        'path' => 'destination-slug-path'
       })
     end
 
-    it 'transforms path from destination_name' do
+    it 'transforms path from destination_slug' do
       transformed_data = subject.transform(context, data)
 
-      expect(transformed_data['path']).to eq(entity.destination_name)
+      expect(transformed_data['path']).to eq(entity.destination_slug)
     end
 
     it 'removes full path' do

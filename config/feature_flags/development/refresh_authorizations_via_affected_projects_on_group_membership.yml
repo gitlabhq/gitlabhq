@@ -1,8 +1,0 @@
----
-name: refresh_authorizations_via_affected_projects_on_group_membership
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87071
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362204
-milestone: '15.0'
-type: development
-group: group::workspace
-default_enabled: false

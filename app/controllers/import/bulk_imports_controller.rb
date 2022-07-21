@@ -47,7 +47,14 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def create
-    responses = create_params.map { |entry| ::BulkImports::CreateService.new(current_user, entry, credentials).execute }
+    responses = create_params.map do |entry|
+      if entry[:destination_name]
+        entry[:destination_slug] ||= entry[:destination_name]
+        entry.delete(:destination_name)
+      end
+
+      ::BulkImports::CreateService.new(current_user, entry, credentials).execute
+    end
 
     render json: responses.map { |response| { success: response.success?, id: response.payload[:id], message: response.message } }
   end
@@ -100,6 +107,7 @@ class Import::BulkImportsController < ApplicationController
       source_type
       source_full_path
       destination_name
+      destination_slug
       destination_namespace
     ]
   end

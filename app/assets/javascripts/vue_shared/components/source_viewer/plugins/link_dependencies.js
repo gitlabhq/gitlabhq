@@ -1,7 +1,9 @@
 import packageJsonLinker from './utils/package_json_linker';
+import gemspecLinker from './utils/gemspec_linker';
 
 const DEPENDENCY_LINKERS = {
   package_json: packageJsonLinker,
+  gemspec: gemspecLinker,
 };
 
 /**

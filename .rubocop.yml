@@ -596,6 +596,18 @@ RSpec/HaveGitlabHttpStatus:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+RSpec/ContextWording:
+  Prefixes:
+  - when
+  - with
+  - without
+  - for
+  - and
+  - on
+  - in
+  - as
+  - if
+
 Style/MultilineWhenThen:
   Enabled: false
 

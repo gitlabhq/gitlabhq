@@ -94,7 +94,6 @@ export const LFS_STORAGE = 'lfs';
  */
 export const LEGACY_FILE_TYPES = [
   'gemfile',
-  'gemspec',
   'composer_json',
   'podfile',
   'podspec',

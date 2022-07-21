@@ -28,10 +28,6 @@ fragment WorkItem on WorkItem {
         }
       }
     }
-    ... on WorkItemWidgetWeight {
-      type
-      weight
-    }
     ... on WorkItemWidgetHierarchy {
       type
       parent {
@@ -40,10 +36,8 @@ fragment WorkItem on WorkItem {
         title
       }
       children {
-        edges {
-          node {
-            id
-          }
+        nodes {
+          id
         }
       }
     }

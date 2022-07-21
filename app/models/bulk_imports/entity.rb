@@ -55,6 +55,8 @@ class BulkImports::Entity < ApplicationRecord
   scope :by_bulk_import_id, ->(bulk_import_id) { where(bulk_import_id: bulk_import_id)}
   scope :order_by_created_at, -> (direction) { order(created_at: direction) }
 
+  alias_attribute :destination_slug, :destination_name
+
   state_machine :status, initial: :created do
     state :created, value: 0
     state :started, value: 1

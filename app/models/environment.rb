@@ -56,8 +56,10 @@ class Environment < ApplicationRecord
 
   validates :external_url,
             length: { maximum: 255 },
-            allow_nil: true,
-            addressable_url: true
+            allow_nil: true
+
+  validates :external_url, addressable_url: true, allow_nil: true, unless: :soft_validation_on_external_url_enabled?
+  validate :safe_external_url, if: :soft_validation_on_external_url_enabled?
 
   delegate :manual_actions, :other_manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
@@ -492,6 +494,26 @@ class Environment < ApplicationRecord
   end
 
   private
+
+  def soft_validation_on_external_url_enabled?
+    ::Feature.enabled?(:soft_validation_on_external_url, project)
+  end
+
+  # We deliberately avoid using AddressableUrlValidator to allow users to update their environments even if they have
+  # misconfigured `environment:url` keyword. The external URL is presented as a clickable link on UI and not consumed
+  # in GitLab internally, thus we sanitize the URL before the persistence to make sure the rendered link is XSS safe.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/337417
+  def safe_external_url
+    return unless self.external_url.present?
+
+    new_external_url = Addressable::URI.parse(self.external_url)
+
+    if Gitlab::Utils::SanitizeNodeLink::UNSAFE_PROTOCOLS.include?(new_external_url.normalized_scheme)
+      errors.add(:external_url, "#{new_external_url.normalized_scheme} scheme is not allowed")
+    end
+  rescue Addressable::URI::InvalidURIError
+    errors.add(:external_url, 'URI is invalid')
+  end
 
   def rollout_status_available?
     has_terminals?

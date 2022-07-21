@@ -200,7 +200,7 @@ module Types
         if id
           pipeline.statuses.id_in(id.model_id)
         else
-          pipeline.statuses.by_name(name)
+          pipeline.latest_statuses.by_name(name)
         end.take # rubocop: disable CodeReuse/ActiveRecord
       end
 

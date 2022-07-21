@@ -3,16 +3,16 @@
 require('spec_helper')
 
 RSpec.describe ProfilesController, :request_store do
-  let(:password) { 'longsecret987!' }
+  let(:password) { User.random_password }
   let(:user) { create(:user, password: password) }
 
   describe 'POST update' do
     it 'does not update password' do
       sign_in(user)
-
+      new_password = User.random_password
       expect do
         post :update,
-             params: { user: { password: 'hello12345', password_confirmation: 'hello12345' } }
+             params: { user: { password: new_password, password_confirmation: new_password } }
       end.not_to change { user.reload.encrypted_password }
 
       expect(response).to have_gitlab_http_status(:found)

@@ -7,7 +7,6 @@ class GroupMember < Member
 
   SOURCE_TYPE = 'Namespace'
   SOURCE_TYPE_FORMAT = /\ANamespace\z/.freeze
-  THRESHOLD_FOR_REFRESHING_AUTHORIZATIONS_VIA_PROJECTS = 1000
 
   belongs_to :group, foreign_key: 'source_id'
   alias_attribute :namespace_id, :source_id
@@ -67,28 +66,8 @@ class GroupMember < Member
     # its projects are also destroyed, so the removal of project_authorizations
     # will happen behind the scenes via DB foreign keys anyway.
     return if destroyed_by_association.present?
-    return unless user_id
-    return super if Feature.disabled?(:refresh_authorizations_via_affected_projects_on_group_membership, group)
 
-    # rubocop:disable CodeReuse/ServiceClass
-    projects_to_refresh = Groups::ProjectsRequiringAuthorizationsRefresh::OnDirectMembershipFinder.new(group).execute
-    threshold_exceeded = (projects_to_refresh.size > THRESHOLD_FOR_REFRESHING_AUTHORIZATIONS_VIA_PROJECTS)
-
-    # We want to try the new approach only if the number of affected projects are greater than the set threshold.
-    return super unless threshold_exceeded
-
-    AuthorizedProjectUpdate::ProjectAccessChangedService
-      .new(projects_to_refresh)
-      .execute(blocking: false)
-
-    # Until we compare the inconsistency rates of the new approach
-    # the old approach, we still run AuthorizedProjectsWorker
-    # but with some delay and lower urgency as a safety net.
-    UserProjectAccessChangedService
-      .new(user_id)
-      .execute(blocking: false, priority: UserProjectAccessChangedService::LOW_PRIORITY)
-
-    # rubocop:enable CodeReuse/ServiceClass
+    super
   end
 
   def send_invite
