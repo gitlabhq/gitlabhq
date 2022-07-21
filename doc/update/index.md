@@ -333,7 +333,14 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 
 ### What do you do if your Advanced Search migrations are stuck?
 
-See [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
+In GitLab 15.0, an Advanced Search migration named `DeleteOrphanedCommit` can be permanently stuck
+in a pending state across upgrades. This issue [is corrected in
+GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89539).
+
+If you are a self-managed customer who uses GitLab 15.0 with Advanced Search, you will experience performance degradation.
+To clean up the migration, upgrade to 15.1 or later.
+
+For other Advanced Search migrations stuck in pending, see [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
 ### What do you do for the error `Elasticsearch version not compatible`
 

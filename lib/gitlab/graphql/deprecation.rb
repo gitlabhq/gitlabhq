@@ -21,8 +21,18 @@ module Gitlab
       validate :milestone_is_string
       validate :reason_known_or_string
 
-      def self.parse(options)
-        new(**options) if options
+      def self.parse(alpha: nil, deprecated: nil)
+        options = alpha || deprecated
+        return unless options
+
+        if alpha
+          raise ArgumentError, '`alpha` and `deprecated` arguments cannot be passed at the same time' \
+            if deprecated
+
+          options[:reason] = :alpha
+        end
+
+        new(**options)
       end
 
       def initialize(reason: nil, milestone: nil, replacement: nil)

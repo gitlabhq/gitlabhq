@@ -91,7 +91,7 @@ module Types
     field :work_item, Types::WorkItemType,
           null: true,
           resolver: Resolvers::WorkItemResolver,
-          deprecated: { milestone: '15.1', reason: :alpha },
+          alpha: { milestone: '15.1' },
           description: 'Find a work item. Returns `null` if `work_items` feature flag is disabled.'
 
     field :merge_request, Types::MergeRequestType,

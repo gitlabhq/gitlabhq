@@ -36,13 +36,14 @@ module QA
         end
 
         def register!
-          shell <<~CMD.tr("\n", ' ')
+          cmd = <<~CMD.tr("\n", ' ')
             docker run -d --rm --network #{runner_network} --name #{@name}
             #{'-v /var/run/docker.sock:/var/run/docker.sock' if @executor == :docker}
             --privileged
             #{@image}  #{add_gitlab_tls_cert if @address.include? 'https'}
             && docker exec --detach #{@name} sh -c "#{register_command}"
           CMD
+          shell(cmd, mask_secrets: [@token])
 
           wait_until_running_and_configured
 

@@ -219,12 +219,12 @@ You can use markdownlint:
 
 ### Vale
 
-[Vale](https://docs.errata.ai/vale/about/) is a grammar, style, and word usage linter for the
+[Vale](https://vale.sh/) is a grammar, style, and word usage linter for the
 English language. Vale's configuration is stored in the
 [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini) file located in the root
 directory of projects.
 
-Vale supports creating [custom tests](https://docs.errata.ai/vale/styles) that extend any of
+Vale supports creating [custom tests](https://vale.sh/docs/topics/styles/) that extend any of
 several types of checks, which we store in the `.linting/vale/styles/gitlab` directory in the
 documentation directory of projects.
 
@@ -241,7 +241,7 @@ This configuration is also used in build pipelines, where
 
 You can use Vale:
 
-- [On the command line](https://docs.errata.ai/vale/cli).
+- [On the command line](https://vale.sh/docs/vale-cli/structure/).
 - [In a code editor](#configure-editors).
 - [In a Git hook](#configure-pre-push-hooks). Vale only reports errors in the Git hook (the same
   configuration as the CI/CD pipelines), and does not report suggestions or warnings.
@@ -305,7 +305,7 @@ For example, a page that scores `12` before a set of changes, and `9` after, ind
 general complexity level of the page.
 
 The readability score is calculated based on the number of words per sentence, and the number
-of syllables per word. For more information, see [the Vale documentation](https://docs.errata.ai/vale/styles#metric).
+of syllables per word. For more information, see [the Vale documentation](https://vale.sh/docs/topics/styles/#metric).
 
 ### Install linters
 
@@ -400,8 +400,6 @@ To configure Vale in your editor, install one of the following as appropriate:
   In this setup the `markdownlint` checker is set as a "next" checker from the defined `vale` checker.
   Enabling this custom Vale checker provides error linting from both Vale and markdownlint.
 
-We don't use [Vale Server](https://docs.errata.ai/vale-server/install).
-
 ### Configure pre-push hooks
 
 Git [pre-push hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) allow Git users to:
@@ -480,7 +478,7 @@ document:
 Whenever possible, exclude only the problematic rule and lines.
 
 For more information, see
-[Vale's documentation](https://docs.errata.ai/vale/scoping#markup-based-configuration).
+[Vale's documentation](https://vale.sh/docs/topics/scoping/).
 
 ### Disable markdownlint tests
 

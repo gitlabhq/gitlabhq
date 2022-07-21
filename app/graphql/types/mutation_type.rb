@@ -139,13 +139,13 @@ module Types
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
     mount_mutation Mutations::Echo
-    mount_mutation Mutations::WorkItems::Create, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::CreateFromTask, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::Delete, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::DeleteTask, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::Update, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::UpdateWidgets, deprecated: { milestone: '15.1', reason: :alpha }
-    mount_mutation Mutations::WorkItems::UpdateTask, deprecated: { milestone: '15.1', reason: :alpha }
+    mount_mutation Mutations::WorkItems::Create, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::CreateFromTask, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::Delete, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::DeleteTask, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::Update, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::UpdateWidgets, alpha: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::UpdateTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update
     mount_mutation Mutations::Pages::MarkOnboardingComplete

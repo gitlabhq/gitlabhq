@@ -73,7 +73,6 @@ review-build-cng:
   extends:
     - .default-retry
   image: ${REVIEW_APPS_IMAGE}
-  resource_group: "review/${CI_COMMIT_REF_NAME}"
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
@@ -139,6 +138,7 @@ review-stop:
   extends:
     - .review-stop-base
     - .review:rules:review-stop
+  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: deploy
   needs: []
   script:

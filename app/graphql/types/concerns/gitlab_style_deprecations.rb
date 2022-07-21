@@ -14,7 +14,10 @@ module GitlabStyleDeprecations
                            'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-schema-items'
     end
 
-    deprecation = ::Gitlab::Graphql::Deprecation.parse(kwargs.delete(:deprecated))
+    # GitLab allows items to be marked as "alpha", which leverages GraphQL deprecations.
+    deprecation_args = kwargs.extract!(:alpha, :deprecated)
+
+    deprecation = ::Gitlab::Graphql::Deprecation.parse(**deprecation_args)
     return unless deprecation
 
     raise ArgumentError, "Bad deprecation. #{deprecation.errors.full_messages.to_sentence}" unless deprecation.valid?

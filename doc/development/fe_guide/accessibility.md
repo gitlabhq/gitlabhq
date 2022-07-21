@@ -13,7 +13,7 @@ This page contains guidelines we should follow.
 
 ## Quick summary
 
-Since [no ARIA is better than bad ARIA](https://www.w3.org/TR/wai-aria-practices/#no_aria_better_bad_aria),
+Since [no ARIA is better than bad ARIA](https://w3c.github.io/aria-practices/#no_aria_better_bad_aria),
 review the following recommendations before using `aria-*`, `role`, and `tabindex`.
 Use semantic HTML, which has accessibility semantics baked in, and ideally test with
 [relevant combinations of screen readers and browsers](https://www.accessibility-developer-guide.com/knowledge/screen-readers/relevant-combinations/).

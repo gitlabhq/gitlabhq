@@ -147,7 +147,7 @@ module Types
     field :work_items,
           Types::WorkItemType.connection_type,
           null: true,
-          deprecated: { milestone: '15.1', reason: :alpha },
+          alpha: { milestone: '15.1' },
           description: 'Work items of the project.',
           extras: [:lookahead],
           resolver: Resolvers::WorkItemsResolver

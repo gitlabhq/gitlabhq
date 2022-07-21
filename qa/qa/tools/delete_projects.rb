@@ -9,6 +9,7 @@ module QA
   module Tools
     class DeleteProjects
       include Support::API
+      include Lib::Project
 
       def initialize
         raise ArgumentError, "Please provide GITLAB_ADDRESS environment variable" unless ENV['GITLAB_ADDRESS']
@@ -30,24 +31,11 @@ module QA
         project_ids = fetch_project_ids(group_id, total_project_pages)
         $stdout.puts "Number of projects to be deleted: #{project_ids.length}"
 
-        delete_projects(project_ids) unless project_ids.empty?
+        delete_projects(project_ids, @api_client) unless project_ids.empty?
         $stdout.puts "\nDone"
       end
 
       private
-
-      def delete_projects(project_ids)
-        $stdout.puts "Deleting #{project_ids.length} projects..."
-        project_ids.each do |project_id|
-          request_url = Runtime::API::Request.new(@api_client, "/projects/#{project_id}").url
-          path = parse_body(get(request_url))[:path_with_namespace]
-          $stdout.puts "\nDeleting project #{path}..."
-
-          delete_response = delete(request_url)
-          dot_or_f = delete_response.code.between?(200, 300) ? "\e[32m.\e[0m" : "\e[31mF - #{delete_response}\e[0m"
-          print dot_or_f
-        end
-      end
 
       def fetch_group_id
         group_name = ENV['TOP_LEVEL_GROUP_NAME'] || "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"

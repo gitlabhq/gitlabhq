@@ -1041,7 +1041,7 @@ information on managing page-specific JavaScript within EE.
 
 #### Child Component only used in EE
 
-To separate Vue template differences we should [import the components asynchronously](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
+To separate Vue template differences we should [import the components asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
 
 Doing this allows for us to load the correct component in EE while in CE
 we can load a empty component that renders nothing. This code **should**

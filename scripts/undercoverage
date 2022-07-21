@@ -22,4 +22,5 @@ end
 compare_base = ARGV[0]
 compare_base ||= IO.popen(%w(git merge-base origin/master HEAD)) { |p| p.read.chomp }
 
-Undercover::CLI.run(%W(-c #{compare_base}))
+result = Undercover::CLI.run(%W(-c #{compare_base}))
+exit result

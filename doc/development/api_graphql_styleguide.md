@@ -558,7 +558,7 @@ Example:
 ```ruby
 field :foo, GraphQL::Types::String,
       null: true,
-      deprecated: { reason: :alpha, milestone: '10.0' },
+      alpha: { milestone: '10.0' },
       description: 'Some test field. Returns `null`' \
                    'if `my_feature_flag` feature flag is disabled.'
 
@@ -586,6 +586,7 @@ To deprecate a schema item in GraphQL:
 See also:
 
 - [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
+- [Marking schema items as Alpha](#marking-schema-items-as-alpha).
 - [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#queries-that-used-a-deprecated-field).
 
 ### Create a deprecation issue
@@ -756,14 +757,14 @@ at any time without notice.
 This leverages GraphQL deprecations to cause the schema item to appear as deprecated,
 and will be described as being in "alpha" in our generated docs and its GraphQL description.
 
-To mark a schema item as being in "alpha", use the `deprecated:` keyword with `reason: :alpha`.
+To mark a schema item as being in "alpha", use the `alpha:` keyword.
 You must provide the `milestone:` that introduced the alpha item.
 
 For example:
 
 ```ruby
 field :token, GraphQL::Types::String, null: true,
-      deprecated: { reason: :alpha, milestone: '10.0' },
+      alpha: { milestone: '10.0' },
       description: 'Token for login.'
 ```
 

@@ -6,30 +6,57 @@ require 'active_model'
 RSpec.describe ::Gitlab::Graphql::Deprecation do
   let(:options) { {} }
 
-  subject(:deprecation) { described_class.parse(options) }
+  subject(:deprecation) { described_class.new(**options) }
 
   describe '.parse' do
-    context 'with nil' do
-      let(:options) { nil }
+    subject(:parsed_deprecation) { described_class.parse(**options) }
 
-      it 'parses to nil' do
-        expect(deprecation).to be_nil
+    context 'with no arguments' do
+      it 'returns nil' do
+        expect(parsed_deprecation).to be_nil
       end
     end
 
-    context 'with empty options' do
-      let(:options) { {} }
+    context 'with an incomplete `deprecated` argument' do
+      let(:options) { { deprecated: {} } }
 
-      it 'parses to an empty deprecation' do
-        expect(deprecation).to eq(described_class.new)
+      it 'parses as an invalid deprecation' do
+        expect(parsed_deprecation).not_to be_valid
+        expect(parsed_deprecation).to eq(described_class.new)
       end
     end
 
-    context 'with defined options' do
-      let(:options) { { reason: :renamed, milestone: '10.10' } }
+    context 'with a `deprecated` argument' do
+      let(:options) { { deprecated: { reason: :renamed, milestone: '10.10' } } }
 
-      it 'assigns the properties' do
-        expect(deprecation).to eq(described_class.new(reason: 'This was renamed', milestone: '10.10'))
+      it 'parses as a deprecation' do
+        expect(parsed_deprecation).to be_valid
+        expect(parsed_deprecation).to eq(
+          described_class.new(reason: 'This was renamed', milestone: '10.10')
+        )
+      end
+    end
+
+    context 'with an `alpha` argument' do
+      let(:options) { { alpha: { milestone: '10.10' } } }
+
+      it 'parses as an alpha' do
+        expect(parsed_deprecation).to be_valid
+        expect(parsed_deprecation).to eq(
+          described_class.new(reason: :alpha, milestone: '10.10')
+        )
+      end
+    end
+
+    context 'with both `deprecated` and `alpha` arguments' do
+      let(:options) do
+        { alpha: { milestone: '10.10' }, deprecated: { reason: :renamed, milestone: '10.10' } }
+      end
+
+      it 'raises an error' do
+        expect { parsed_deprecation }.to raise_error(ArgumentError,
+          '`alpha` and `deprecated` arguments cannot be passed at the same time'
+        )
       end
     end
   end

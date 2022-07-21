@@ -1127,7 +1127,7 @@ in present tense, active voice.
 ## you, your, yours
 
 Use **you**, **your**, and **yours** instead of [**the user** and **the user's**](#user-users).
-Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone#point-of-view) of the reader.
+Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone/#point-of-view) of the reader.
 
 Use:
 

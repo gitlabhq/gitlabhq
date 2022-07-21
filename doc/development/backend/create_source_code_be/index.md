@@ -13,7 +13,7 @@ of the [Create stage](https://about.gitlab.com/handbook/product/categories/#crea
 of the [DevOps lifecycle](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 
 We interface with the Gitaly and Code Review teams, and work closely with the
-[Create:Source Code Frontend team](https://about.gitlab.com/handbook/engineering/development/dev/create-source-code-fe). The features
+[Create:Source Code Frontend team](https://about.gitlab.com/handbook/engineering/development/dev/create/create-source-code-fe/). The features
 we work with are listed on the
 [Features by Group Page](https://about.gitlab.com/handbook/product/categories/features/#createsource-code-group).
 
