@@ -625,8 +625,8 @@ RSpec.describe ::SystemNotes::IssuablesService do
   end
 
   describe '#noteable_cloned' do
-    let(:new_project) { create(:project) }
-    let(:new_noteable) { create(:issue, project: new_project) }
+    let_it_be(:new_project) { create(:project) }
+    let_it_be(:new_noteable) { create(:issue, project: new_project) }
 
     subject do
       service.noteable_cloned(new_noteable, direction)
@@ -681,6 +681,22 @@ RSpec.describe ::SystemNotes::IssuablesService do
 
       it 'raises error' do
         expect { subject }.to raise_error StandardError, /Invalid direction/
+      end
+    end
+
+    context 'custom created timestamp' do
+      let(:direction) { :from }
+
+      it 'allows setting of custom created_at value' do
+        timestamp = 1.day.ago
+
+        note = service.noteable_cloned(new_noteable, direction, created_at: timestamp)
+
+        expect(note.created_at).to be_like_time(timestamp)
+      end
+
+      it 'defaults to current time when created_at is not given', :freeze_time do
+        expect(subject.created_at).to be_like_time(Time.current)
       end
     end
 

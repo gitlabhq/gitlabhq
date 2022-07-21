@@ -312,13 +312,14 @@ module SystemNotes
     #
     # noteable_ref - Referenced noteable
     # direction    - symbol, :to or :from
+    # created_at   - timestamp for the system note, defaults to current time
     #
     # Example Note text:
     #
     #   "cloned to some_namespace/project_new#11"
     #
     # Returns the created Note object
-    def noteable_cloned(noteable_ref, direction)
+    def noteable_cloned(noteable_ref, direction, created_at: nil)
       unless [:to, :from].include?(direction)
         raise ArgumentError, "Invalid direction `#{direction}`"
       end
@@ -328,7 +329,7 @@ module SystemNotes
 
       issue_activity_counter.track_issue_cloned_action(author: author) if noteable.is_a?(Issue) && direction == :to
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'cloned'))
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'cloned', created_at: created_at))
     end
 
     # Called when the confidentiality changes

@@ -57,8 +57,20 @@ RSpec.describe Issues::CloneService do
           expect(old_issue.notes.last.note).to start_with 'cloned to'
         end
 
-        it 'adds system note to new issue at the end' do
-          expect(new_issue.notes.last.note).to start_with 'cloned from'
+        it 'adds system note to new issue at the start' do
+          # We set an assignee so an assignee system note will be generated and
+          # we can assert that the "cloned from" note is the first one
+          assignee = create(:user)
+          new_project.add_developer(assignee)
+          old_issue.assignees = [assignee]
+
+          new_issue = clone_service.execute(old_issue, new_project)
+
+          expect(new_issue.notes.size).to eq(2)
+
+          cloned_from_note = new_issue.notes.last
+          expect(cloned_from_note.note).to start_with 'cloned from'
+          expect(new_issue.notes.fresh.first).to eq(cloned_from_note)
         end
 
         it 'keeps old issue open' do

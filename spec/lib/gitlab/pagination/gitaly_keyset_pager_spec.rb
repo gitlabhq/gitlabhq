@@ -126,5 +126,19 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
         end
       end
     end
+
+    context 'with "none" pagination option' do
+      let(:expected_result) { double(:result) }
+      let(:query) { { pagination: 'none' } }
+
+      it 'uses offset pagination' do
+        expect(finder).to receive(:execute).with(gitaly_pagination: false).and_return(expected_result)
+        expect(Kaminari).not_to receive(:paginate_array)
+        expect(Gitlab::Pagination::OffsetPagination).not_to receive(:new)
+
+        actual_result = pager.paginate(finder)
+        expect(actual_result).to eq(expected_result)
+      end
+    end
   end
 end

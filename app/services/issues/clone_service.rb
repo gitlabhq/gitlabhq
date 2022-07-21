@@ -96,9 +96,14 @@ module Issues
     end
 
     def add_note_from
-      SystemNoteService.noteable_cloned(new_entity, target_project,
-        original_entity, current_user,
-        direction: :from)
+      SystemNoteService.noteable_cloned(
+        new_entity,
+        target_project,
+        original_entity,
+        current_user,
+        direction: :from,
+        created_at: new_entity.created_at
+      )
     end
 
     def add_note_to

@@ -16,6 +16,7 @@ module Issuable
         #
         ApplicationRecord.transaction do
           @new_entity = create_new_entity
+          @new_entity.system_note_timestamp = nil
 
           update_new_entity
           update_old_entity

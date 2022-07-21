@@ -375,13 +375,14 @@ RSpec.describe SystemNoteService do
   describe '.noteable_cloned' do
     let(:noteable_ref) { double }
     let(:direction) { double }
+    let(:created_at) { double }
 
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:noteable_cloned).with(noteable_ref, direction)
+        expect(service).to receive(:noteable_cloned).with(noteable_ref, direction, created_at: created_at)
       end
 
-      described_class.noteable_cloned(double, double, noteable_ref, double, direction: direction)
+      described_class.noteable_cloned(double, double, noteable_ref, double, direction: direction, created_at: created_at)
     end
   end
 

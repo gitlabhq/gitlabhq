@@ -204,11 +204,35 @@ The cost factors for jobs running on shared runners on GitLab.com are:
 - `0.008` for public projects, and projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
   For every 125 minutes of job execution time, you use 1 CI/CD minute.
 - `1` for internal and private projects.
+- Calculated differently for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:
 
 - `0` for public projects, so they do not consume CI/CD minutes.
 - `1` for internal and private projects.
+
+#### Cost factor for community contributions to GitLab projects
+
+Community contributors can use up to 300,000 minutes on shared runners when
+contributing to open source projects maintained by GitLab. The 300,000
+minutes applies to all SaaS tiers, and the cost factor calculation is:
+
+- `Monthly minute quota / 300,000 job duration minutes = Cost factor`
+
+For example, with the 10,000 CI/CD minutes per month in the Premium tier:
+
+- 10,000 / 300,000 = 0.03333333333 cost factor.
+
+For this reduced cost factor:
+
+- The merge request source project must be a fork of a GitLab-maintained project,
+  such as [`gitlab-com/www-gitlab-com`](https://gitlab.com/gitlab-com/www-gitlab-com),
+  [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab), and so on.
+- The merge request target project must be the fork's parent project.
+- The pipeline must be a merge request, merged results, or merge train pipeline.
+
+GitLab administrators can add a namespace to the reduced cost factor
+[with a flag](../../administration/feature_flags.md) named `ci_minimal_cost_factor_for_gitlab_namespaces`.
 
 ### Additional costs on GitLab SaaS
 

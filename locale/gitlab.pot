@@ -35099,6 +35099,15 @@ msgstr ""
 msgid "SecurityReports|Operational vulnerabilities"
 msgstr ""
 
+msgid "SecurityReports|Parsing errors and warnings in pipeline"
+msgstr ""
+
+msgid "SecurityReports|Parsing errors in pipeline"
+msgstr ""
+
+msgid "SecurityReports|Parsing warnings in pipeline"
+msgstr ""
+
 msgid "SecurityReports|Project"
 msgstr ""
 

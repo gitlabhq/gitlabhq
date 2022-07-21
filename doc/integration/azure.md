@@ -107,6 +107,24 @@ Alternatively, add the `User.Read.All` application permission.
      ]
      ```
 
+     For [alternative Azure clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud),
+     configure `base_azure_url` under the `args` section. For example, for Azure Government Community Cloud (GCC):
+
+     ```ruby
+     gitlab_rails['omniauth_providers'] = [
+       {
+         "name" => "azure_activedirectory_v2",
+         "label" => "Provider name", # optional label for login button, defaults to "Azure AD v2"
+         "args" => {
+           "client_id" => "CLIENT ID",
+           "client_secret" => "CLIENT SECRET",
+           "tenant_id" => "TENANT ID",
+           "base_azure_url" => "https://login.microsoftonline.us"
+         }
+       }
+     ]
+     ```
+
    - **For installations from source**
 
      For the v1.0 endpoint:
@@ -115,8 +133,8 @@ Alternatively, add the `User.Read.All` application permission.
      - { name: 'azure_oauth2',
          # label: 'Provider name', # optional label for login button, defaults to "Azure AD"
          args: { client_id: 'CLIENT ID',
-         client_secret: 'CLIENT SECRET',
-         tenant_id: 'TENANT ID' } }
+                 client_secret: 'CLIENT SECRET',
+                 tenant_id: 'TENANT ID' } }
      ```
 
      For the v2.0 endpoint:
@@ -125,14 +143,25 @@ Alternatively, add the `User.Read.All` application permission.
      - { name: 'azure_activedirectory_v2',
          label: 'Provider name', # optional label for login button, defaults to "Azure AD v2"
          args: { client_id: "CLIENT ID",
-         client_secret: "CLIENT SECRET",
-         tenant_id: "TENANT ID" } }
+                 client_secret: "CLIENT SECRET",
+                 tenant_id: "TENANT ID" } }
      ```
 
-   You can optionally add the following parameters:
+     For [alternative Azure clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud),
+     configure `base_azure_url` under the `args` section. For example, for Azure Government Community Cloud (GCC):
 
-   - `base_azure_url` for different locales. For example, `base_azure_url: "https://login.microsoftonline.de"`.
-   - `scope`, which you add to `args`. The default is `openid profile email`.
+     ```yaml
+     - { name: 'azure_activedirectory_v2',
+         label: 'Provider name', # optional label for login button, defaults to "Azure AD v2"
+         args: { client_id: "CLIENT ID",
+                 client_secret: "CLIENT SECRET",
+                 tenant_id: "TENANT ID",
+                 base_azure_url: "https://login.microsoftonline.us" } }
+     ```
+
+   In addition, you can optionally add the following parameters to the `args` section:
+
+   - `scope` for [OAuth2 scopes](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow). The default is `openid profile email`.
 
 1. Save the configuration file.
 

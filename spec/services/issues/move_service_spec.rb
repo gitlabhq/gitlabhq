@@ -16,7 +16,7 @@ RSpec.describe Issues::MoveService do
   let_it_be(:new_project) { create(:project, namespace: sub_group_2) }
 
   let(:old_issue) do
-    create(:issue, title: title, description: description, project: old_project, author: author)
+    create(:issue, title: title, description: description, project: old_project, author: author, created_at: 1.day.ago, updated_at: 1.day.ago)
   end
 
   subject(:move_service) do
@@ -62,8 +62,11 @@ RSpec.describe Issues::MoveService do
           expect(old_issue.notes.last.note).to start_with 'moved to'
         end
 
-        it 'adds system note to new issue at the end' do
-          expect(new_issue.notes.last.note).to start_with 'moved from'
+        it 'adds system note to new issue at the end', :freeze_time do
+          system_note = new_issue.notes.last
+
+          expect(system_note.note).to start_with 'moved from'
+          expect(system_note.created_at).to be_like_time(Time.current)
         end
 
         it 'closes old issue' do

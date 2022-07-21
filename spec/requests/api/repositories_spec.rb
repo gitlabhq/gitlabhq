@@ -92,6 +92,32 @@ RSpec.describe API::Repositories do
           expect(json_response.map { |t| t["id"] }).not_to include(page_token)
         end
       end
+
+      context 'with pagination=none' do
+        context 'with recursive=1' do
+          it 'returns unpaginated recursive project paths tree' do
+            get api("#{route}?recursive=1&pagination=none", current_user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+            expect(response).not_to include_pagination_headers
+            expect(json_response[4]['name']).to eq('html')
+            expect(json_response[4]['path']).to eq('files/html')
+            expect(json_response[4]['type']).to eq('tree')
+            expect(json_response[4]['mode']).to eq('040000')
+          end
+        end
+
+        context 'with recursive=0' do
+          it 'returns 400' do
+            get api("#{route}?recursive=0&pagination=none", current_user)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error'])
+              .to eq('pagination cannot be "none" unless "recursive" is true')
+          end
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is public' do

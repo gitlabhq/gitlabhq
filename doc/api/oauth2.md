@@ -26,9 +26,12 @@ support [CORS preflight requests](https://developer.mozilla.org/en-US/docs/Web/H
 - `/oauth/token`
 - `/oauth/userinfo`
 
-In addition to the headers listed for [simple requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests),
-only the `Authorization` header can be used for preflight requests. For example, the `X-Requested-With` header
-can't be used for preflight requests.
+Only certain headers can be used for preflight requests:
+
+- The headers listed for [simple requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests).
+- The `Authorization` header.
+
+For example, the `X-Requested-With` header can't be used for preflight requests.
 
 ## Supported OAuth 2.0 flows
 

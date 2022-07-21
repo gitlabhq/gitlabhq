@@ -256,8 +256,8 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).noteable_moved(noteable_ref, direction)
   end
 
-  def noteable_cloned(noteable, project, noteable_ref, author, direction:)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).noteable_cloned(noteable_ref, direction)
+  def noteable_cloned(noteable, project, noteable_ref, author, direction:, created_at: nil)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).noteable_cloned(noteable_ref, direction, created_at: created_at)
   end
 
   def mark_duplicate_issue(noteable, project, author, canonical_issue)
