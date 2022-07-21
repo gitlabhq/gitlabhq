@@ -13,21 +13,6 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
   IssuableTokenKeys.tokenKeys.splice(2, 0, reviewerToken);
   IssuableTokenKeys.tokenKeysWithAlternative.splice(2, 0, reviewerToken);
 
-  if (window.gon?.features?.mrAttentionRequests) {
-    const attentionRequestedToken = {
-      formattedKey: __('Attention'),
-      key: 'attention',
-      type: 'string',
-      param: '',
-      symbol: '@',
-      icon: 'user',
-      tag: '@attention',
-      hideNotEqual: true,
-    };
-    IssuableTokenKeys.tokenKeys.splice(2, 0, attentionRequestedToken);
-    IssuableTokenKeys.tokenKeysWithAlternative.splice(2, 0, attentionRequestedToken);
-  }
-
   const draftToken = {
     token: {
       formattedKey: __('Draft'),

@@ -49,9 +49,6 @@ export default {
     requestReview(data) {
       this.$emit('request-review', data);
     },
-    toggleAttentionRequested(data) {
-      this.$emit('toggle-attention-requested', data);
-    },
   },
 };
 </script>
@@ -73,7 +70,6 @@ export default {
         :root-path="rootPath"
         :issuable-type="issuableType"
         @request-review="requestReview"
-        @toggle-attention-requested="toggleAttentionRequested"
       />
     </div>
   </div>

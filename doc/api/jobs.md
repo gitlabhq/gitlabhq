@@ -700,7 +700,7 @@ Example of response
   "stage": "test",
   "status": "canceled",
   "tag": false,
-  "web_url": "https://example.com/foo/bar/-/jobs/42",
+  "web_url": "https://example.com/foo/bar/-/jobs/1",
   "user": null
 }
 ```
@@ -750,7 +750,7 @@ Example of response
   "stage": "test",
   "status": "pending",
   "tag": false,
-  "web_url": "https://example.com/foo/bar/-/jobs/42",
+  "web_url": "https://example.com/foo/bar/-/jobs/1",
   "user": null
 }
 ```
@@ -805,7 +805,7 @@ Example of response
   "queued_duration": 0.010,
   "status": "failed",
   "tag": false,
-  "web_url": "https://example.com/foo/bar/-/jobs/42",
+  "web_url": "https://example.com/foo/bar/-/jobs/1",
   "user": null
 }
 ```
@@ -881,7 +881,7 @@ Example response:
   "stage": "test",
   "status": "pending",
   "tag": false,
-  "web_url": "https://example.com/foo/bar/-/jobs/42",
+  "web_url": "https://example.com/foo/bar/-/jobs/1",
   "user": null
 }
 ```

@@ -62,6 +62,8 @@ RSpec.describe WorkItems::CreateAndLinkService do
         )
       end
 
+      it_behaves_like 'title with extra spaces'
+
       context 'when link params are valid' do
         let(:link_params) { { parent_work_item: related_work_item } }
 

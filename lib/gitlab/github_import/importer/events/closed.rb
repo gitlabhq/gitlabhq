@@ -4,15 +4,7 @@ module Gitlab
   module GithubImport
     module Importer
       module Events
-        class Closed
-          attr_reader :project, :user_id
-
-          def initialize(project, user_id)
-            @project = project
-            @user_id = user_id
-          end
-
-          # issue_event - An instance of `Gitlab::GithubImport::Representation::IssueEvent`.
+        class Closed < BaseImporter
           def execute(issue_event)
             create_event(issue_event)
             create_state_event(issue_event)
@@ -23,7 +15,7 @@ module Gitlab
           def create_event(issue_event)
             Event.create!(
               project_id: project.id,
-              author_id: user_id,
+              author_id: author_id(issue_event),
               action: 'closed',
               target_type: Issue.name,
               target_id: issue_event.issue_db_id,
@@ -34,7 +26,7 @@ module Gitlab
 
           def create_state_event(issue_event)
             ResourceStateEvent.create!(
-              user_id: user_id,
+              user_id: author_id(issue_event),
               issue_id: issue_event.issue_db_id,
               source_commit: issue_event.commit_id,
               state: 'closed',

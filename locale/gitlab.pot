@@ -998,9 +998,6 @@ msgstr[1] ""
 msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
 msgstr ""
 
-msgid "%{strongStart}Need your attention%{strongEnd} are the merge requests that need your help to move forward, as an assignee or reviewer."
-msgstr ""
-
 msgid "%{strongStart}Tip:%{strongEnd} You can also check out merge requests locally. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -2187,9 +2184,6 @@ msgid "Add approval rule"
 msgstr ""
 
 msgid "Add approvers"
-msgstr ""
-
-msgid "Add attention request"
 msgstr ""
 
 msgid "Add broadcast message"
@@ -4857,9 +4851,6 @@ msgstr ""
 msgid "Approved-By"
 msgstr ""
 
-msgid "Approved. Your attention request was removed."
-msgstr ""
-
 msgid "Approver"
 msgstr ""
 
@@ -5201,9 +5192,6 @@ msgstr ""
 msgid "Assigned to you"
 msgstr ""
 
-msgid "Assigned user(s). Your attention request was removed."
-msgstr ""
-
 msgid "Assignee"
 msgid_plural "%d Assignees"
 msgstr[0] ""
@@ -5257,12 +5245,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Attaching the file failed."
-msgstr ""
-
-msgid "Attention"
-msgstr ""
-
-msgid "Attention requested"
 msgstr ""
 
 msgid "Audit Events"
@@ -25492,12 +25474,6 @@ msgstr ""
 msgid "MrList|Assigned to %{name}"
 msgstr ""
 
-msgid "MrList|Attention requested from assignee %{name}"
-msgstr ""
-
-msgid "MrList|Attention requested from reviewer %{name}"
-msgstr ""
-
 msgid "MrList|Review requested from %{name}"
 msgstr ""
 
@@ -25705,9 +25681,6 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Need help?"
-msgstr ""
-
-msgid "Need your attention"
 msgstr ""
 
 msgid "Needs"
@@ -26010,9 +25983,6 @@ msgid "No artifacts found"
 msgstr ""
 
 msgid "No assignee"
-msgstr ""
-
-msgid "No attention request"
 msgstr ""
 
 msgid "No authentication methods configured."
@@ -32438,9 +32408,6 @@ msgstr ""
 msgid "Removed attention from %{users_sentence}."
 msgstr ""
 
-msgid "Removed attention request from @%{username}"
-msgstr ""
-
 msgid "Removed group can not be restored!"
 msgstr ""
 
@@ -32998,19 +32965,10 @@ msgstr ""
 msgid "Requested attention from %{users_sentence}."
 msgstr ""
 
-msgid "Requested attention from @%{username}"
-msgstr ""
-
-msgid "Requested attention from @%{username}. Your own attention request was removed."
-msgstr ""
-
 msgid "Requested design version does not exist."
 msgstr ""
 
 msgid "Requested review"
-msgstr ""
-
-msgid "Requested review. Your attention request was removed."
 msgstr ""
 
 msgid "Requested states are invalid"
@@ -36478,9 +36436,6 @@ msgid "Solid"
 msgstr ""
 
 msgid "Solution"
-msgstr ""
-
-msgid "Some actions remove attention requests, like a reviewer approving or anyone merging the merge request."
 msgstr ""
 
 msgid "Some changes are not shown"
@@ -40461,9 +40416,6 @@ msgstr ""
 msgid "To add the entry manually, provide the following details to the application on your phone."
 msgstr ""
 
-msgid "To ask someone to look at a merge request, select %{strongStart}Request attention%{strongEnd}. Select again to remove the request."
-msgstr ""
-
 msgid "To complete registration, we need additional details from you."
 msgstr ""
 
@@ -41584,9 +41536,6 @@ msgid "Updated date"
 msgstr ""
 
 msgid "Updating"
-msgstr ""
-
-msgid "Updating the attention request for %{username} failed."
 msgstr ""
 
 msgid "Updating…"

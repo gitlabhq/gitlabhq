@@ -24,7 +24,8 @@
 variables:
     # Setting this variable affects all Security templates
     # (SAST, Dependency Scanning, ...)
-    SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+    TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
+    SECURE_ANALYZERS_PREFIX: "$TEMPLATE_REGISTRY_HOST/security-products"
     #
     FUZZAPI_VERSION: "2"
     FUZZAPI_IMAGE_SUFFIX: ""

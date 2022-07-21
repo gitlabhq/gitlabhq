@@ -102,8 +102,5 @@
 - if Feature.enabled?(:mr_experience_survey, @project)
   #js-mr-experience-survey
 
-- if current_user&.mr_attention_requests_enabled?
-  #js-need-attention-sidebar-onboarding
-
 = render 'projects/invite_members_modal', project: @project
 = render 'shared/web_ide_path'

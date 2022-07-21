@@ -40,7 +40,17 @@ module Gitlab
       # If the object has no author ID we'll use the ID of the GitLab ghost
       # user.
       def author_id_for(object, author_key: :author)
-        user_info = author_key == :actor ? object&.actor : object&.author
+        user_info = case author_key
+                    when :actor
+                      object&.actor
+                    when :assignee
+                      object&.assignee
+                    when :assigner
+                      object&.assigner
+                    else
+                      object&.author
+                    end
+
         id = user_info ? user_id_for(user_info) : GithubImport.ghost_user_id
 
         if id

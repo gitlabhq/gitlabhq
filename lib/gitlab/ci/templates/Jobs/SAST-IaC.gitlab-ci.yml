@@ -6,7 +6,8 @@
 variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
-  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
+  SECURE_ANALYZERS_PREFIX: "$TEMPLATE_REGISTRY_HOST/security-products"
   SAST_IMAGE_SUFFIX: ""
 
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"

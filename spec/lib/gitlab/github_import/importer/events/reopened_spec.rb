@@ -3,11 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_failures do
-  subject(:importer) { described_class.new(project, user.id) }
+  subject(:importer) { described_class.new(project, user_finder) }
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
+  let(:client) { instance_double('Gitlab::GithubImport::Client') }
+  let(:user_finder) { Gitlab::GithubImport::UserFinder.new(project, client) }
   let(:issue) { create(:issue, project: project) }
 
   let(:issue_event) do
@@ -15,7 +17,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_fail
       'id' => 6501124486,
       'node_id' => 'CE_lADOHK9fA85If7x0zwAAAAGDf0mG',
       'url' => 'https://api.github.com/repos/elhowm/test-import/issues/events/6501124486',
-      'actor' => { 'id' => 4, 'login' => 'alice' },
+      'actor' => { 'id' => user.id, 'login' => user.username },
       'event' => 'reopened',
       'created_at' => '2022-04-26 18:30:53 UTC',
       'issue_db_id' => issue.id
@@ -40,6 +42,10 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_fail
       state: 'reopened',
       created_at: issue_event.created_at
     }.stringify_keys
+  end
+
+  before do
+    allow(user_finder).to receive(:find).with(user.id, user.username).and_return(user.id)
   end
 
   it 'creates expected event and state event' do

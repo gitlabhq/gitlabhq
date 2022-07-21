@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import AttentionRequestedToggle from '~/sidebar/components/attention_requested_toggle.vue';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
 import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
 import userDataMock from '../../user_data_mock';
@@ -118,19 +117,5 @@ describe('UncollapsedReviewerList component', () => {
       expect(wrapper.findAll('[data-testid="re-request-success"]').length).toBe(1);
       expect(wrapper.find('[data-testid="re-request-success"]').exists()).toBe(true);
     });
-  });
-
-  it('hides re-request review button when attentionRequired feature flag is enabled', () => {
-    createComponent({ users: [userDataMock()] }, { mrAttentionRequests: true });
-
-    expect(wrapper.findAll('[data-testid="re-request-button"]').length).toBe(0);
-  });
-
-  it('emits toggle-attention-requested', () => {
-    createComponent({ users: [userDataMock()] }, { mrAttentionRequests: true });
-
-    wrapper.find(AttentionRequestedToggle).vm.$emit('toggle-attention-requested', 'data');
-
-    expect(wrapper.emitted('toggle-attention-requested')[0]).toEqual(['data']);
   });
 });

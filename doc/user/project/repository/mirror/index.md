@@ -113,6 +113,11 @@ GitLab supports these authentication methods:
 - [SSH authentication](#ssh-authentication).
 - Password.
 
+When using password authentication, ensure you specify the username.
+For a [project access token](../../settings/project_access_tokens.md) or
+[group access token](../../../group/settings/group_access_tokens.md),
+use the username (not token name) and the token as the password.
+
 ### SSH authentication
 
 SSH authentication is mutual:

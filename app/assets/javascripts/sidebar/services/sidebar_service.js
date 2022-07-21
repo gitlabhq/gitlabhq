@@ -5,8 +5,6 @@ import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import reviewerRereviewMutation from '../queries/reviewer_rereview.mutation.graphql';
 import sidebarDetailsMRQuery from '../queries/sidebar_details_mr.query.graphql';
-import requestAttentionMutation from '../queries/request_attention.mutation.graphql';
-import removeAttentionRequestMutation from '../queries/remove_attention_request.mutation.graphql';
 
 const queries = {
   merge_request: sidebarDetailsMRQuery,
@@ -86,27 +84,6 @@ export default class SidebarService {
   requestReview(userId) {
     return gqClient.mutate({
       mutation: reviewerRereviewMutation,
-      variables: {
-        userId: convertToGraphQLId(TYPE_USER, `${userId}`),
-        projectPath: this.fullPath,
-        iid: this.iid.toString(),
-      },
-    });
-  }
-
-  requestAttention(userId) {
-    return gqClient.mutate({
-      mutation: requestAttentionMutation,
-      variables: {
-        userId: convertToGraphQLId(TYPE_USER, `${userId}`),
-        projectPath: this.fullPath,
-        iid: this.iid.toString(),
-      },
-    });
-  }
-  removeAttentionRequest(userId) {
-    return gqClient.mutate({
-      mutation: removeAttentionRequestMutation,
       variables: {
         userId: convertToGraphQLId(TYPE_USER, `${userId}`),
         projectPath: this.fullPath,

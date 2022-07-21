@@ -10,7 +10,8 @@ stages:
   - dast
 
 variables:
-  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
+  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
+  SECURE_ANALYZERS_PREFIX: "$TEMPLATE_REGISTRY_HOST/security-products"
   DAST_API_VERSION: "2"
   DAST_API_IMAGE_SUFFIX: ""
   DAST_API_IMAGE: api-security

@@ -9,8 +9,6 @@ RSpec.describe 'Merge requests > User mass updates', :js do
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
   before do
-    stub_feature_flags(mr_attention_requests: false)
-
     project.add_maintainer(user)
     project.add_maintainer(user2)
     sign_in(user)
@@ -62,18 +60,6 @@ RSpec.describe 'Merge requests > User mass updates', :js do
         change_assignee(user.name)
 
         expect(find('.merge-request')).to have_link "Assigned to #{user.name}"
-      end
-
-      describe 'with attention requests feature flag on' do
-        before do
-          stub_feature_flags(mr_attention_requests: true)
-        end
-
-        it 'updates merge request with assignee' do
-          change_assignee(user2.name)
-
-          expect(find('.issuable-meta a.author-link')[:title]).to eq "Attention requested from assignee #{user2.name}"
-        end
       end
     end
 

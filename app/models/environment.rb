@@ -331,11 +331,7 @@ class Environment < ApplicationRecord
   end
 
   def last_deployment_group
-    if ::Feature.enabled?(:batch_load_environment_last_deployment_group, project)
-      Deployment.last_deployment_group_for_environment(self)
-    else
-      legacy_last_deployment_group
-    end
+    Deployment.last_deployment_group_for_environment(self)
   end
 
   def reset_auto_stop

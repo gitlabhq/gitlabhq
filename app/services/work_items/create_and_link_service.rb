@@ -18,7 +18,7 @@ module WorkItems
       create_result = CreateService.new(
         project: @project,
         current_user: @current_user,
-        params: @params.reverse_merge(confidential: confidential_parent),
+        params: @params.merge(title: @params[:title].strip).reverse_merge(confidential: confidential_parent),
         spam_params: @spam_params
       ).execute
       return create_result if create_result.error?

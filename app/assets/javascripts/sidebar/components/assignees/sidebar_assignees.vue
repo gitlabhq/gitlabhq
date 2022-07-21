@@ -125,9 +125,6 @@ export default {
         availability: this.assigneeAvailabilityStatus[username] || '',
       }));
     },
-    toggleAttentionRequested(data) {
-      this.mediator.toggleAttentionRequested('assignee', data);
-    },
   },
 };
 </script>
@@ -155,7 +152,6 @@ export default {
       :editable="store.editable"
       :issuable-type="issuableType"
       @assign-self="assignSelf"
-      @toggle-attention-requested="toggleAttentionRequested"
     />
   </div>
 </template>

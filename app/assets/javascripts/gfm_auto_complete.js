@@ -276,8 +276,6 @@ class GfmAutoComplete {
       UNASSIGN_REVIEWER: '/unassign_reviewer',
       REASSIGN: '/reassign',
       CC: '/cc',
-      ATTENTION: '/attention',
-      REMOVE_ATTENTION: '/remove_attention',
     };
     let assignees = [];
     let reviewers = [];
@@ -356,23 +354,6 @@ class GfmAutoComplete {
           } else if (command === MEMBER_COMMAND.UNASSIGN_REVIEWER) {
             // Only include members which are not assigned as a reviewer to Issuable currently
             return data.filter((member) => reviewers.includes(member.search));
-          } else if (
-            command === MEMBER_COMMAND.ATTENTION ||
-            command === MEMBER_COMMAND.REMOVE_ATTENTION
-          ) {
-            const attentionUsers = [
-              ...(SidebarMediator.singleton?.store?.assignees || []),
-              ...(SidebarMediator.singleton?.store?.reviewers || []),
-            ];
-            const attentionRequested = command === MEMBER_COMMAND.REMOVE_ATTENTION;
-
-            return data.filter((member) =>
-              attentionUsers.find(
-                (u) =>
-                  createMemberSearchString(u).includes(member.search) &&
-                  u.attention_requested === attentionRequested,
-              ),
-            );
           }
 
           return data;

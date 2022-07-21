@@ -16,6 +16,7 @@ RSpec.describe Security::CiConfiguration::SastParserService do
     let(:bandit) { configuration['analyzers'][0] }
     let(:brakeman) { configuration['analyzers'][1] }
     let(:sast_brakeman_level) { brakeman['variables'][0] }
+    let(:secure_analyzers_prefix) { '$TEMPLATE_REGISTRY_HOST/security-products' }
 
     it 'parses the configuration for SAST' do
       expect(secure_analyzers['default_value']).to eql(secure_analyzers_prefix)

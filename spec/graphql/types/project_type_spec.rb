@@ -195,8 +195,8 @@ RSpec.describe GitlabSchema.types['Project'] do
       expect(secure_analyzers['type']).to eq('string')
       expect(secure_analyzers['field']).to eq('SECURE_ANALYZERS_PREFIX')
       expect(secure_analyzers['label']).to eq('Image prefix')
-      expect(secure_analyzers['defaultValue']).to eq(secure_analyzers_prefix)
-      expect(secure_analyzers['value']).to eq(secure_analyzers_prefix)
+      expect(secure_analyzers['defaultValue']).to eq('$TEMPLATE_REGISTRY_HOST/security-products')
+      expect(secure_analyzers['value']).to eq('$TEMPLATE_REGISTRY_HOST/security-products')
       expect(secure_analyzers['size']).to eq('LARGE')
       expect(secure_analyzers['options']).to be_nil
     end

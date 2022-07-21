@@ -57,7 +57,7 @@
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
-              - top_level_link = current_user.mr_attention_requests_enabled? ? attention_requested_mrs_dashboard_path : assigned_mrs_dashboard_path
+              - top_level_link = assigned_mrs_dashboard_path
               = link_to top_level_link, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
                 data: { qa_selector: 'merge_requests_shortcut_button',
                 toggle: "dropdown",
@@ -74,27 +74,14 @@
                 %ul
                   %li.dropdown-header
                     = _('Merge requests')
-                  - if current_user.mr_attention_requests_enabled?
-                    %li#js-need-attention-nav
-                      #js-need-attention-nav-onboarding
-                      = link_to attention_requested_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
-                        = _('Need your attention')
-                        = gl_badge_tag user_merge_requests_counts[:attention_requested_count], { size: :sm, variant: user_merge_requests_counts[:attention_requested_count] == 0 ? :neutral : :warning }, { class: 'merge-request-badge gl-ml-auto js-attention-count' }
-                    %li.divider
                   %li
                     = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
-                      - if current_user.mr_attention_requests_enabled?
-                        = _('Assignee')
-                      - else
-                        = _('Assigned to you')
+                      = _('Assigned to you')
                       = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-assigned-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:assigned]
                   %li
                     = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
-                      - if current_user.mr_attention_requests_enabled?
-                        = _('Reviewer')
-                      - else
-                        = _('Review requests for you')
+                      = _('Review requests for you')
                       = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-reviewer-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:review_requested]
           - if header_link?(:todos)

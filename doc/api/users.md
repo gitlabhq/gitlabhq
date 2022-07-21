@@ -39,7 +39,7 @@ GET /users
 ]
 ```
 
-You can also search for users by name, username or public email by using `?search=`. For example. `/users?search=John`.
+You can also search for users by name, username, or public email by using `?search=`. For example. `/users?search=John`.
 
 In addition, you can lookup users by username:
 
@@ -1220,7 +1220,7 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/gpg_keys/1"
 ```
 
-Returns `204 No Content` on success, or `404 Not found` if the key cannot be found.
+Returns `204 No Content` on success or `404 Not Found` if the key cannot be found.
 
 ## List all GPG keys for given user
 
@@ -1964,7 +1964,7 @@ Pre-requisite:
 - You must be an administrator.
 
 Lists all projects and groups a user is a member of.
-It returns the `source_id`, `source_name`, `source_type` and `access_level` of a membership.
+It returns the `source_id`, `source_name`, `source_type`, and `access_level` of a membership.
 Source can be of type `Namespace` (representing a group) or `Project`. The response represents only direct memberships. Inherited memberships, for example in subgroups, are not included.
 Access levels are represented by an integer value. For more details, read about the meaning of [access level values](access_requests.md#valid-access-levels).
 

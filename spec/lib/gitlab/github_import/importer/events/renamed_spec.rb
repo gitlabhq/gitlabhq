@@ -3,17 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::Events::Renamed do
-  subject(:importer) { described_class.new(project, user.id) }
+  subject(:importer) { described_class.new(project, user_finder) }
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   let(:issue) { create(:issue, project: project) }
 
+  let(:client) { instance_double('Gitlab::GithubImport::Client') }
+  let(:user_finder) { Gitlab::GithubImport::UserFinder.new(project, client) }
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
       'id' => 6501124486,
-      'actor' => { 'id' => 4, 'login' => 'alice' },
+      'actor' => { 'id' => user.id, 'login' => user.username },
       'event' => 'renamed',
       'commit_id' => nil,
       'created_at' => '2022-04-26 18:30:53 UTC',
@@ -45,6 +47,10 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Renamed do
   end
 
   describe '#execute' do
+    before do
+      allow(user_finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+    end
+
     it 'creates expected note' do
       expect { importer.execute(issue_event) }.to change { issue.notes.count }
         .from(0).to(1)

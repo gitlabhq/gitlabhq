@@ -1,5 +1,5 @@
 import { GlAlert, GlBadge, GlLoadingIcon, GlTabs } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -30,8 +30,7 @@ import {
   mockLintResponseWithoutMerged,
 } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 Vue.config.ignoredElements = ['gl-emoji'];
 
@@ -88,7 +87,6 @@ describe('Pipeline editor tabs component', () => {
       provide,
       mountFn,
       options: {
-        localVue,
         apolloProvider: mockApollo,
       },
     });

@@ -1,8 +1,0 @@
----
-name: batch_load_environment_last_deployment_group
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86584/
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363023
-milestone: '15.1'
-type: development
-group: group::release
-default_enabled: true

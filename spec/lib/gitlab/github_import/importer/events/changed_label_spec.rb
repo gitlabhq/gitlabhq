@@ -3,18 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedLabel do
-  subject(:importer) { described_class.new(project, user.id) }
+  subject(:importer) { described_class.new(project, user_finder) }
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
+  let(:client) { instance_double('Gitlab::GithubImport::Client') }
+  let(:user_finder) { Gitlab::GithubImport::UserFinder.new(project, client) }
   let(:issue) { create(:issue, project: project) }
   let!(:label) { create(:label, project: project) }
 
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
       'id' => 6501124486,
-      'actor' => { 'id' => 4, 'login' => 'alice' },
+      'actor' => { 'id' => user.id, 'login' => user.username },
       'event' => event_type,
       'commit_id' => nil,
       'label_title' => label.title,
@@ -43,6 +45,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedLabel do
 
   before do
     allow(Gitlab::Cache::Import::Caching).to receive(:read_integer).and_return(label.id)
+    allow(user_finder).to receive(:find).with(user.id, user.username).and_return(user.id)
   end
 
   context 'when importing a labeled event' do

@@ -2,7 +2,6 @@
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IssuableType } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
-import AttentionRequestedToggle from '../attention_requested_toggle.vue';
 import AssigneeAvatarLink from './assignee_avatar_link.vue';
 import UserNameWithStatus from './user_name_with_status.vue';
 
@@ -10,7 +9,6 @@ const DEFAULT_RENDER_COUNT = 5;
 
 export default {
   components: {
-    AttentionRequestedToggle,
     AssigneeAvatarLink,
     UserNameWithStatus,
   },
@@ -46,10 +44,6 @@ export default {
       return this.users.length - DEFAULT_RENDER_COUNT;
     },
     uncollapsedUsers() {
-      if (this.showVerticalList) {
-        return this.users;
-      }
-
       const uncollapsedLength = this.showLess
         ? Math.min(this.users.length, DEFAULT_RENDER_COUNT)
         : this.users.length;
@@ -57,9 +51,6 @@ export default {
     },
     username() {
       return `@${this.firstUser.username}`;
-    },
-    showVerticalList() {
-      return this.glFeatures.mrAttentionRequests && this.isMergeRequest;
     },
     isMergeRequest() {
       return this.issuableType === IssuableType.MergeRequest;
@@ -74,9 +65,6 @@ export default {
         return u?.availability || '';
       }
       return u?.status?.availability || '';
-    },
-    toggleAttentionRequested(data) {
-      this.$emit('toggle-attention-requested', data);
     },
   },
 };
@@ -96,7 +84,7 @@ export default {
         <assignee-avatar-link
           :user="user"
           :issuable-type="issuableType"
-          :tooltip-has-name="!showVerticalList"
+          :tooltip-has-name="!isMergeRequest"
           class="gl-word-break-word"
           data-css-area="user"
         >
@@ -107,14 +95,6 @@ export default {
             <user-name-with-status :name="user.name" :availability="userAvailability(user)" />
           </div>
         </assignee-avatar-link>
-        <attention-requested-toggle
-          v-if="showVerticalList"
-          :user="user"
-          type="assignee"
-          class="gl-mr-2"
-          data-css-area="attention"
-          @toggle-attention-requested="toggleAttentionRequested"
-        />
       </div>
     </div>
     <div v-if="renderShowMoreSection" class="user-list-more gl-hover-text-blue-800">

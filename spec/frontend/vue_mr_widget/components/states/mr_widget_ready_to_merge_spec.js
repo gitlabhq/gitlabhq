@@ -1,5 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import { GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import produce from 'immer';
@@ -71,8 +71,8 @@ const createTestService = () => ({
   merge: jest.fn(),
   poll: jest.fn().mockResolvedValue(),
 });
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+
+Vue.use(VueApollo);
 
 let wrapper;
 let readyToMergeResponseSpy;
@@ -93,7 +93,6 @@ const createComponent = (
   restructuredMrWidget = false,
 ) => {
   wrapper = shallowMount(ReadyToMerge, {
-    localVue,
     propsData: {
       mr: createTestMr(customConfig),
       service: createTestService(),

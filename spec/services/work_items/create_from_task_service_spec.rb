@@ -64,6 +64,8 @@ RSpec.describe WorkItems::CreateFromTaskService do
 
         expect(list_work_item.description).to eq("- [ ] #{created_work_item.to_reference}+")
       end
+
+      it_behaves_like 'title with extra spaces'
     end
 
     context 'when last operation fails' do

@@ -1,8 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, sprintf, s__ } from '~/locale';
-import AttentionRequestedToggle from '../attention_requested_toggle.vue';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
 const LOADING_STATE = 'loading';
@@ -16,12 +14,10 @@ export default {
     GlButton,
     GlIcon,
     ReviewerAvatarLink,
-    AttentionRequestedToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     users: {
       type: Array,
@@ -80,9 +76,6 @@ export default {
         this.loadingStates[userId] = null;
       }
     },
-    toggleAttentionRequested(data) {
-      this.$emit('toggle-attention-requested', data);
-    },
   },
   LOADING_STATE,
   SUCCESS_STATE,
@@ -96,7 +89,6 @@ export default {
       :key="user.id"
       :class="{
         'gl-mb-3': index !== users.length - 1,
-        'attention-requests': glFeatures.mrAttentionRequests,
       }"
       class="gl-display-grid gl-align-items-center reviewer-grid gl-mr-2"
       data-testid="reviewer"
@@ -112,14 +104,6 @@ export default {
           {{ user.name }}
         </div>
       </reviewer-avatar-link>
-      <attention-requested-toggle
-        v-if="glFeatures.mrAttentionRequests"
-        :user="user"
-        type="reviewer"
-        class="gl-mr-2"
-        data-css-area="attention"
-        @toggle-attention-requested="toggleAttentionRequested"
-      />
       <gl-icon
         v-if="user.approved"
         v-gl-tooltip.left
@@ -137,9 +121,7 @@ export default {
         data-testid="re-request-success"
       />
       <gl-button
-        v-else-if="
-          user.can_update_merge_request && user.reviewed && !glFeatures.mrAttentionRequests
-        "
+        v-else-if="user.can_update_merge_request && user.reviewed"
         v-gl-tooltip.left
         :title="$options.i18n.reRequestReview"
         :aria-label="$options.i18n.reRequestReview"

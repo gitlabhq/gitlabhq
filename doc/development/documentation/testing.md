@@ -250,7 +250,8 @@ You can use Vale:
 
 Vale returns three types of results:
 
-- **Error** - For branding and trademark issues, and words or phrases with ambiguous meanings.
+- **Error** - For branding and trademark issues, words or phrases with ambiguous meanings, and anything that causes content on
+  the docs site to render incorrectly.
 - **Warning** - For Technical Writing team style preferences.
 - **Suggestion** - For basic technical writing tenets and best practices.
 

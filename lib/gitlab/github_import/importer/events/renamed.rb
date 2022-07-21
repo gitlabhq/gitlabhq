@@ -4,27 +4,19 @@ module Gitlab
   module GithubImport
     module Importer
       module Events
-        class Renamed
-          def initialize(project, user_id)
-            @project = project
-            @user_id = user_id
-          end
-
-          # issue_event - An instance of `Gitlab::GithubImport::Representation::IssueEvent`
+        class Renamed < BaseImporter
           def execute(issue_event)
             Note.create!(note_params(issue_event))
           end
 
           private
 
-          attr_reader :project, :user_id
-
           def note_params(issue_event)
             {
               noteable_id: issue_event.issue_db_id,
               noteable_type: Issue.name,
               project_id: project.id,
-              author_id: user_id,
+              author_id: author_id(issue_event),
               note: parse_body(issue_event),
               system: true,
               created_at: issue_event.created_at,

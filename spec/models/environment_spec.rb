@@ -856,16 +856,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       it 'returns the successful deployment jobs for the last deployment pipeline' do
         expect(subject.pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
       end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(batch_load_environment_last_deployment_group: false)
-        end
-
-        it 'returns the successful deployment jobs for the last deployment pipeline' do
-          expect(subject.pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
-        end
-      end
     end
   end
 

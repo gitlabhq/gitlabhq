@@ -1,7 +1,0 @@
-mutation mergeRequestRemoveAttentionRequest($projectPath: ID!, $iid: String!, $userId: UserID!) {
-  mergeRequestRemoveAttentionRequest(
-    input: { projectPath: $projectPath, iid: $iid, userId: $userId }
-  ) {
-    errors
-  }
-}
