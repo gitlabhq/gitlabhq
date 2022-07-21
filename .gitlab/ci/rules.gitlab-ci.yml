@@ -853,11 +853,9 @@
       when: never
     - <<: *if-fork-merge-request
       when: never
-    - <<: *if-automated-merge-request
-      changes: *code-backstage-patterns
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *core-frontend-patterns
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *code-backstage-patterns
 
 .frontend:rules:eslint-as-if-foss:

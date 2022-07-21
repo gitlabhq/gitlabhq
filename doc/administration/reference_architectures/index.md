@@ -240,7 +240,7 @@ The following table details the cost to run the different reference architecture
     <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=b51f178f4403b69a63f6eb33ea425f82de3bf249">Calculated cost</a></td>
     <td></td>
-    <td><a href="https://azure.com/e/1adf30bef7e34ceba9efa97c4470417b">Calculated cost</a></td>
+    <td><a href="https://azure.com/e/1adf30bef7e34ceba9efa97c4470417b/">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">2k</th>
@@ -248,7 +248,7 @@ The following table details the cost to run the different reference architecture
     <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=dce36b5cb6ab25211f74e47233d77f58fefb54e2">Calculated cost</a></td>
     <td></td>
-    <td><a href="https://azure.com/e/72764902f3854f798407fb03c3de4b6f">Calculated cost</a></td>
+    <td><a href="https://azure.com/e/72764902f3854f798407fb03c3de4b6f/">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">3k</th>
@@ -256,7 +256,7 @@ The following table details the cost to run the different reference architecture
     <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=b1c5b4e32e990eaeb035a148255132bd28988760">Calculated cost</a></td>
     <td></td>
-    <td><a href="https://azure.com/e/0dbfc575051943b9970e5d8ace03680d">Calculated cost</a></td>
+    <td><a href="https://azure.com/e/0dbfc575051943b9970e5d8ace03680d/">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">5k</th>
@@ -264,7 +264,7 @@ The following table details the cost to run the different reference architecture
     <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=2bf1af883096e6f4c6efddb4f3c35febead7fec2">Calculated cost</a></td>
     <td></td>
-    <td><a href="https://azure.com/e/8f618711ffec4b039f1581871ca6a7c9">Calculated cost</a></td>
+    <td><a href="https://azure.com/e/8f618711ffec4b039f1581871ca6a7c9/">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">10k</th>
@@ -272,7 +272,7 @@ The following table details the cost to run the different reference architecture
     <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=1d374df13c0f2088d332ab0134f5b1d0f717259e">Calculated cost</a></td>
     <td></td>
-    <td><a href="https://azure.com/e/de3da8286dda4d4db1362932bc75410b">Calculated cost</a></td>
+    <td><a href="https://azure.com/e/de3da8286dda4d4db1362932bc75410b/">Calculated cost</a></td>
   </tr>
   <tr>
     <th scope="row">25k</th>
@@ -280,7 +280,7 @@ The following table details the cost to run the different reference architecture
     <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=46fe6a6e9256d9b7779fae59fbbfa7e836942b7d">Calculated cost</a></td>
     <td></td>
-    <td><a href="https://azure.com/e/69724ebd82914a60857da6a3ace05a64">Calculate cost</a></td>
+    <td><a href="https://azure.com/e/69724ebd82914a60857da6a3ace05a64/">Calculate cost</a></td>
   </tr>
   <tr>
     <th scope="row">50k</th>
@@ -288,7 +288,7 @@ The following table details the cost to run the different reference architecture
     <td></td>
     <td><a href="https://calculator.aws/#/estimate?id=e15926b1a3c7139e4faf390a3875ff807d2ab91c">Calculated cost</a></td>
     <td></td>
-    <td><a href="https://azure.com/e/3f973040ebc14023933d35f576c89846">Calculated cost</a></td>
+    <td><a href="https://azure.com/e/3f973040ebc14023933d35f576c89846/">Calculated cost</a></td>
   </tr>
 </table>
 

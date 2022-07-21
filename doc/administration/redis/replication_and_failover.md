@@ -16,14 +16,14 @@ In Redis lingo, `primary` is called `master`. In this document, `primary` is use
 instead of `master`, except the settings where `master` is required.
 
 Using [Redis](https://redis.io/) in scalable environment is possible using a **Primary** x **Replica**
-topology with a [Redis Sentinel](https://redis.io/topics/sentinel) service to watch and automatically
+topology with a [Redis Sentinel](https://redis.io/docs/manual/sentinel/) service to watch and automatically
 start the failover procedure.
 
 Redis requires authentication if used with Sentinel. See
-[Redis Security](https://redis.io/topics/security) documentation for more
+[Redis Security](https://redis.io/docs/manual/security/) documentation for more
 information. We recommend using a combination of a Redis password and tight
 firewall rules to secure your Redis service.
-You are highly encouraged to read the [Redis Sentinel](https://redis.io/topics/sentinel) documentation
+You are highly encouraged to read the [Redis Sentinel](https://redis.io/docs/manual/sentinel/) documentation
 before configuring Redis with GitLab to fully understand the topology and
 architecture.
 
@@ -67,7 +67,7 @@ When a **Primary** fails to respond, it's the application's responsibility
 for a new **Primary**).
 
 To get a better understanding on how to correctly set up Sentinel, please read
-the [Redis Sentinel documentation](https://redis.io/topics/sentinel) first, as
+the [Redis Sentinel](https://redis.io/docs/manual/sentinel/) documentation first, as
 failing to configure it correctly can lead to data loss or can bring your
 whole cluster down, invalidating the failover effort.
 

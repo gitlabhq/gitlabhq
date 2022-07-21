@@ -207,18 +207,20 @@ RSpec.describe "Group Runners" do
 
       context 'when a runner has a tag' do
         before do
-          runner.update!(tag_list: ['tag'])
+          runner.update!(tag_list: ['tag1'])
         end
 
         it 'user edits runner not to run untagged jobs' do
           visit edit_group_runner_path(group, runner)
 
-          page.find_field('runner[tag_list]').set('tag, tag2')
+          page.find_field('runner[tag_list]').set('tag1, tag2')
 
           uncheck 'runner_run_untagged'
           click_button _('Save changes')
 
-          expect(page).to have_content "#{s_('Runners|Tags')} tag tag2"
+          # Tags can be in any order
+          expect(page).to have_content /#{s_('Runners|Tags')}.*tag1/
+          expect(page).to have_content /#{s_('Runners|Tags')}.*tag2/
         end
       end
     end

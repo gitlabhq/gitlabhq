@@ -11,6 +11,7 @@ module API
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'
+    API_TOKEN_ENV = 'gitlab.api.token'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
 
@@ -74,6 +75,8 @@ module API
 
       save_current_user_in_env(@current_user) if @current_user
 
+      save_current_token_in_env
+
       if @current_user
         ::ApplicationRecord
           .sticking
@@ -86,6 +89,13 @@ module API
 
     def save_current_user_in_env(user)
       env[API_USER_ENV] = { user_id: user.id, username: user.username }
+    end
+
+    def save_current_token_in_env
+      token = access_token
+      env[API_TOKEN_ENV] = { token_id: token.id, token_type: token.class } if token
+
+    rescue Gitlab::Auth::UnauthorizedError
     end
 
     def sudo?

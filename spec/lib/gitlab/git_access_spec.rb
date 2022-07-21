@@ -229,7 +229,7 @@ RSpec.describe Gitlab::GitAccess do
     end
 
     context 'key is expired' do
-      let(:actor) { create(:rsa_key_2048, :expired) }
+      let(:actor) { create(:deploy_key, :expired) }
 
       it 'does not allow expired keys', :aggregate_failures do
         expect { pull_access_check }.to raise_forbidden('Your SSH key has expired.')
@@ -263,7 +263,7 @@ RSpec.describe Gitlab::GitAccess do
   end
 
   it_behaves_like '#check with a key that is not valid' do
-    let(:actor) { build(:rsa_key_2048, user: user) }
+    let(:actor) { build(:deploy_key, user: user) }
   end
 
   it_behaves_like '#check with a key that is not valid' do

@@ -17,7 +17,7 @@ gem 'view_component', '~> 2.61'
 gem 'default_value_for', '~> 3.4.0'
 
 # Supported DBs
-gem 'pg', '~> 1.3.0'
+gem 'pg', '~> 1.4.0'
 
 gem 'rugged', '~> 1.2'
 gem 'grape-path-helpers', '~> 1.7.0'

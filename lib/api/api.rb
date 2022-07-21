@@ -22,6 +22,7 @@ module API
                     Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
                     Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
+                    Gitlab::GrapeLogging::Loggers::TokenLogger.new,
                     Gitlab::GrapeLogging::Loggers::ExceptionLogger.new,
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
                     Gitlab::GrapeLogging::Loggers::PerfLogger.new,

@@ -214,16 +214,15 @@ Upgrading to PostgreSQL 13 is not yet supported for GitLab instances with Geo en
 
 </div>
 
-<div class="deprecation removal-152">
+<div class="deprecation removal-153">
 
 ### Vulnerability Report sort by State
 
-Planned removal: GitLab <span class="removal-milestone">15.2</span> (2022-07-22)
+Planned removal: GitLab <span class="removal-milestone">15.3</span> (2022-08-22)
 
 The ability to sort the Vulnerability Report by the `State` column was disabled and put behind a feature flag in GitLab 14.10 due to a refactor
 of the underlying data model. The feature flag has remained off by default as further refactoring will be required to ensure sorting
-by this value remains performant. Due to very low usage of the `State` column for sorting, the feature flag will instead be removed in
-GitLab 15.2 to simplify the codebase and prevent any unwanted performance degradation.
+by this value remains performant. Due to very low usage of the `State` column for sorting, the feature flag will instead be removed to simplify the codebase and prevent any unwanted performance degradation.
 
 </div>
 </div>

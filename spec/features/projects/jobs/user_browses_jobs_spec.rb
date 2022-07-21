@@ -74,6 +74,7 @@ RSpec.describe 'User browses jobs' do
           wait_for_requests
 
           expect(page).to have_selector('.ci-canceled')
+          expect(page).not_to have_selector('[data-testid="jobs-table-error-alert"]')
         end
       end
 

@@ -151,7 +151,7 @@ Depending on the CI infrastructure,
 the CI may have to fetch the Docker image every time the job runs.
 For the scanning job to run fast and avoid wasting bandwidth, Docker images should be as small as
 possible. You should aim for 50MB or smaller. If that isn't possible, try to keep it below 1.46 GB,
-which is the size of a CD-ROM.
+which is the size of a DVD-ROM.
 
 If the scanner requires a fully functional Linux environment,
 it is recommended to use a [Debian](https://www.debian.org/intro/about) "slim" distribution or [Alpine Linux](https://www.alpinelinux.org/).

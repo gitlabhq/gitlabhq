@@ -726,7 +726,7 @@ GitLab Runner can generate and produce attestation metadata for all build artifa
 
 ### Attestation format
 
-The attestation metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [v0.1](https://in-toto.io/Statement/v0.1). The following fields are populated by default:
+The attestation metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [v0.1](https://github.com/in-toto/attestation/tree/v0.1.0/spec). The following fields are populated by default:
 
 | Field  | Value  |
 | ------ | ------ |

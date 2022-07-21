@@ -133,7 +133,7 @@ To use Docker-in-Docker with TLS enabled:
 
    - This command registers a new runner to use the `docker:20.10.16` image.
      To start the build and service containers, it uses the `privileged` mode.
-     If you want to use [Docker-in-Docker](https://www.docker.com/blog/docker-can-now-run-within-docker/),
+     If you want to use Docker-in-Docker,
      you must always use `privileged = true` in your Docker containers.
    - This command mounts `/certs/client` for the service and build
      container, which is needed for the Docker client to use the

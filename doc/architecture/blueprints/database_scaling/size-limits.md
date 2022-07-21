@@ -167,7 +167,7 @@ The [epic for `~group::database`](https://gitlab.com/groups/gitlab-org/-/epics/6
 
 <!-- vale gitlab.Spelling = NO -->
 
-Identifying solutions for offending tables is driven by the [GitLab Database Team](https://about.gitlab.com/handbook/engineering/development/enablement/database/) and respective stage groups.
+Identifying solutions for offending tables is driven by the [GitLab Database Team](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/) and respective stage groups.
 
 | Role                         | Who
 |------------------------------|-------------------------|

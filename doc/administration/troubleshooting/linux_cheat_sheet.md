@@ -14,7 +14,7 @@ having an issue with GitLab, you may want to check your [support options](https:
 first, before attempting to use this information.
 
 WARNING:
-It is [beyond the scope of GitLab Support to assist in systems administration](https://about.gitlab.com/support/statement-of-support.html#training). GitLab administrators are expected to know these commands for their distribution
+It is [beyond the scope of GitLab Support to assist in systems administration](https://about.gitlab.com/support/statement-of-support/#training). GitLab administrators are expected to know these commands for their distribution
 of choice. If you are a GitLab Support Engineer, consider this a cross-reference to
 translate `yum` -> `apt-get` and the like.
 

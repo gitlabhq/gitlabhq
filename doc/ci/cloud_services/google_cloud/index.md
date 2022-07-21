@@ -67,7 +67,7 @@ inside the Workload Identity Pool created in the previous step, using the follow
   | `google.subject` | `assertion.sub` |
   | `attribute.X` | `assertion.X` |
 
-  You can also [build complex attributes](https://cloud.google.com/iam/help/workload-identity/attribute-mapping)
+  You can also [build complex attributes](https://cloud.google.com/iam/docs/workload-identity-federation#mapping)
   using Common Expression Language (CEL).
 
   You must map every attribute that you want to use for permission granting. For example, if you want to map permissions in the next step based on the user's email address, you must map `attribute.user_email` to `assertion.user_email`.
