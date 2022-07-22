@@ -98,6 +98,26 @@ RSpec.configure do |config|
       example.run
     end
   end
+
+  config.around(:each, :migration) do |example|
+    migration_schema = example.metadata[:migration]
+    migration_schema = :gitlab_main if migration_schema == true
+    base_model = Gitlab::Database.schemas_to_base_models.fetch(migration_schema).first
+
+    # Migration require an `ActiveRecord::Base` to point to desired database
+    if base_model != ActiveRecord::Base
+      with_reestablished_active_record_base do
+        reconfigure_db_connection(
+          model: ActiveRecord::Base,
+          config_model: base_model
+        )
+
+        example.run
+      end
+    else
+      example.run
+    end
+  end
 end
 
 ActiveRecord::Base.singleton_class.prepend(::Database::ActiveRecordBaseEstablishConnection) # rubocop:disable Database/MultipleDatabases

@@ -213,14 +213,20 @@ RSpec.describe 'Value Stream Analytics', :js do
       expect(page.find(metrics_selector)).not_to have_selector("#commits")
     end
 
-    it 'needs permissions to see restricted stages' do
+    it 'does not show restricted stages', :aggregate_failures do
       expect(find(stage_table_selector)).to have_content(issue.title)
 
-      click_stage('Code')
-      expect(find(stage_table_selector)).to have_content('You need permission.')
+      expect(page).to have_selector('.gl-path-nav-list-item', text: 'Issue')
 
-      click_stage('Review')
-      expect(find(stage_table_selector)).to have_content('You need permission.')
+      expect(page).to have_selector('.gl-path-nav-list-item', text: 'Plan')
+
+      expect(page).to have_selector('.gl-path-nav-list-item', text: 'Test')
+
+      expect(page).to have_selector('.gl-path-nav-list-item', text: 'Staging')
+
+      expect(page).not_to have_selector('.gl-path-nav-list-item', text: 'Code')
+
+      expect(page).not_to have_selector('.gl-path-nav-list-item', text: 'Review')
     end
   end
 

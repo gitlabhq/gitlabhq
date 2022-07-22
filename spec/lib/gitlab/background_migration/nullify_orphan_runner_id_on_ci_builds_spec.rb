@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::NullifyOrphanRunnerIdOnCiBuilds, :migration, schema: 20220223112304 do
+RSpec.describe Gitlab::BackgroundMigration::NullifyOrphanRunnerIdOnCiBuilds, migration: :gitlab_ci, schema: 20220223112304 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
-  let(:ci_runners) { table(:ci_runners, database: :ci) }
-  let(:ci_pipelines) { table(:ci_pipelines, database: :ci) }
-  let(:ci_builds) { table(:ci_builds, database: :ci) }
+  let(:ci_runners) { table(:ci_runners) }
+  let(:ci_pipelines) { table(:ci_pipelines) }
+  let(:ci_builds) { table(:ci_builds) }
 
   subject { described_class.new }
 

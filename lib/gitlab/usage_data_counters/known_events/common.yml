@@ -44,14 +44,6 @@
   category: search
   redis_slot: search
   aggregation: weekly
-- name: i_search_advanced
-  category: search
-  redis_slot: search
-  aggregation: weekly
-- name: i_search_paid
-  category: search
-  redis_slot: search
-  aggregation: weekly
 - name: wiki_action
   category: source_code
   aggregation: daily

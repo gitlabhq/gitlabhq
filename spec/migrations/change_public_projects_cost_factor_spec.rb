@@ -3,16 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ChangePublicProjectsCostFactor, :migration do
-  # This is a workaround to force the migration to run against the
-  # `gitlab_ci` schema. Otherwise it only runs against `gitlab_main`.
-  around do |example| # rubocop: disable Style/MultilineIfModifier
-    with_reestablished_active_record_base do
-      reconfigure_db_connection(name: :ci)
-      example.run
-    end
-  end if Gitlab::Database.has_config?(:ci)
-
+RSpec.describe ChangePublicProjectsCostFactor, migration: :gitlab_ci do
   let(:runners) { table(:ci_runners) }
 
   let!(:shared_1) { runners.create!(runner_type: 1, public_projects_minutes_cost_factor: 0) }

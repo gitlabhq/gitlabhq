@@ -122,6 +122,7 @@ To remove all resources:
     stages:
       - init
       - validate
+      - test
       - build
       - deploy
       - cleanup

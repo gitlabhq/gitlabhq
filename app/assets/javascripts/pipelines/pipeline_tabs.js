@@ -29,6 +29,10 @@ export const createAppOptions = (selector, apolloProvider) => {
     pipelineIid,
     pipelineProjectPath,
     totalJobCount,
+    licenseManagementApiUrl,
+    licenseManagementSettingsPath,
+    licensesApiPath,
+    canManageLicenses,
   } = dataset;
 
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
@@ -54,6 +58,10 @@ export const createAppOptions = (selector, apolloProvider) => {
       pipelineIid,
       pipelineProjectPath,
       totalJobCount,
+      licenseManagementApiUrl,
+      licenseManagementSettingsPath,
+      licensesApiPath,
+      canManageLicenses: parseBoolean(canManageLicenses),
     },
     errorCaptured(err, _vm, info) {
       reportToSentry('pipeline_tabs', `error: ${err}, info: ${info}`);
