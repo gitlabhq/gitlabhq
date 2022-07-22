@@ -425,7 +425,7 @@ You can include the user's [custom attributes](custom_attributes.md) in the resp
 GET /users/:id?with_custom_attributes=true
 ```
 
-## User creation
+## User creation **(FREE SELF)**
 
 > The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
@@ -482,7 +482,7 @@ Parameters:
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
-## User modification
+## User modification **(FREE SELF)**
 
 > The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 
@@ -531,7 +531,7 @@ Note, at the moment this method does only return a `404` error,
 even in cases where a `409` (Conflict) would be more appropriate.
 For example, when renaming the email address to some existing one.
 
-## Delete authentication identity from user
+## Delete authentication identity from user **(FREE SELF)**
 
 Deletes a user's authentication identity using the provider name associated with that identity. Available only for administrators.
 
@@ -546,7 +546,7 @@ Parameters:
 | `id`       | integer | yes      | ID of a user       |
 | `provider` | string  | yes      | External provider name |
 
-## User deletion
+## User deletion **(FREE SELF)**
 
 Deletes a user. Available only for administrators.
 This returns a `204 No Content` status code if the operation was successfully, `404` if the resource was not found or `409` if the user cannot be soft deleted.
@@ -1069,7 +1069,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 }
 ```
 
-## Add SSH key for user
+## Add SSH key for user **(FREE SELF)**
 
 Create new key owned by specified user. Available only for administrator.
 
@@ -1104,7 +1104,7 @@ Parameters:
 |-----------|---------|----------|-------------|
 | `key_id`  | integer | yes      | SSH key ID  |
 
-## Delete SSH key for given user
+## Delete SSH key for given user **(FREE SELF)**
 
 Deletes key owned by a specified user. Available only for administrator.
 
@@ -1282,7 +1282,7 @@ Example response:
   }
 ```
 
-## Add a GPG key for a given user
+## Add a GPG key for a given user **(FREE SELF)**
 
 Create new GPG key owned by the specified user. Available only for administrator.
 
@@ -1314,7 +1314,7 @@ Example response:
 ]
 ```
 
-## Delete a GPG key for a given user
+## Delete a GPG key for a given user **(FREE SELF)**
 
 Delete a GPG key owned by a specified user. Available only for administrator.
 
@@ -1364,7 +1364,7 @@ Parameters:
 
 - **none**
 
-## List emails for user
+## List emails for user **(FREE SELF)**
 
 Get a list of a specified user's emails. Available only for administrator
 
@@ -1439,7 +1439,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 }
 ```
 
-## Add email for user
+## Add email for user **(FREE SELF)**
 
 Create new email owned by specified user. Available only for administrator
 
@@ -1470,7 +1470,7 @@ Parameters:
 |------------|---------|----------|-------------|
 | `email_id` | integer | yes      | Email ID    |
 
-## Delete email for given user
+## Delete email for given user **(FREE SELF)**
 
 Deletes email owned by a specified user. Available only for administrator.
 
@@ -1485,7 +1485,7 @@ Parameters:
 | `id`       | integer | yes      | ID of specified user |
 | `email_id` | integer | yes      | Email ID             |
 
-## Block user
+## Block user **(FREE SELF)**
 
 Blocks the specified user. Available only for administrator.
 
@@ -1507,7 +1507,7 @@ Returns:
   - A user that is blocked through LDAP.
   - An internal user.
 
-## Unblock user
+## Unblock user **(FREE SELF)**
 
 Unblocks the specified user. Available only for administrator.
 
@@ -1524,7 +1524,7 @@ Parameters:
 Returns `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
-## Deactivate user
+## Deactivate user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
@@ -1549,7 +1549,7 @@ Returns:
   - That has any activity in past 90 days. These users cannot be deactivated.
   - That is internal.
 
-## Activate user
+## Activate user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
@@ -1571,7 +1571,7 @@ Returns:
 - `404 User Not Found` if the user cannot be found.
 - `403 Forbidden` if the user cannot be activated because they are blocked by an administrator or by LDAP synchronization.
 
-## Ban user
+## Ban user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
 
@@ -1591,7 +1591,7 @@ Returns:
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` when trying to ban a user that is not active.
 
-## Unban user
+## Unban user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
 
@@ -1615,7 +1615,7 @@ Returns:
 
 Please refer to the [Events API documentation](events.md#get-user-contribution-events)
 
-## Get all impersonation tokens of a user
+## Get all impersonation tokens of a user **(FREE SELF)**
 
 Requires administrator access.
 
@@ -1670,7 +1670,7 @@ Example response:
 ]
 ```
 
-## Approve user
+## Approve user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263107) in GitLab 13.7.
 
@@ -1711,7 +1711,7 @@ Example Responses:
 { "message": "The user you are trying to approve is not pending approval" }
 ```
 
-## Reject user
+## Reject user **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339925) in GitLab 14.3.
 
@@ -1750,7 +1750,7 @@ Example Responses:
 { "message": "User does not have a pending request" }
 ```
 
-## Get an impersonation token of a user
+## Get an impersonation token of a user **(FREE SELF)**
 
 > Requires administrators permissions.
 
@@ -1789,7 +1789,7 @@ Example response:
 }
 ```
 
-## Create an impersonation token
+## Create an impersonation token **(FREE SELF)**
 
 Requires administrator access. Token values are returned once. Make sure you save it because you can't access
 it again.
@@ -1834,7 +1834,7 @@ Example response:
 }
 ```
 
-## Revoke an impersonation token
+## Revoke an impersonation token **(FREE SELF)**
 
 Requires administrator access.
 
@@ -1898,7 +1898,7 @@ Example response:
 }
 ```
 
-## Get user activities
+## Get user activities **(FREE SELF)**
 
 Pre-requisite:
 
@@ -1955,7 +1955,7 @@ Example response:
 
 `last_activity_at` is deprecated. Use `last_activity_on` instead.
 
-## User memberships
+## User memberships **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20532) in GitLab 12.8.
 
@@ -2009,7 +2009,7 @@ Example response:
 ]
 ```
 
-## Disable two factor authentication
+## Disable two factor authentication **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295260) in GitLab 15.2.
 

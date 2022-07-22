@@ -178,26 +178,6 @@ Feature.all
 Feature.all.map {|f| [f.name, f.state]}
 ```
 
-## Command Line
-
-### Check the GitLab version fast
-
-```shell
-grep -m 1 gitlab /opt/gitlab/version-manifest.txt
-```
-
-### Debugging SSH
-
-```shell
-GIT_SSH_COMMAND="ssh -vvv" git clone <repository>
-```
-
-### Debugging over HTTPS
-
-```shell
-GIT_CURL_VERBOSE=1 GIT_TRACE=1 git clone <repository>
-```
-
 ## Projects
 
 ### Clear a project's cache
