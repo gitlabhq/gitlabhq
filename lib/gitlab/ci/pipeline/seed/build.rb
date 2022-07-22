@@ -54,9 +54,11 @@ module Gitlab
           end
 
           def errors
-            return unless included?
-
             strong_memoize(:errors) do
+              # We check rules errors before checking "included?" because rules affects its inclusion status.
+              next rules_errors if rules_errors
+              next unless included?
+
               [needs_errors, variable_expansion_errors].compact.flatten
             end
           end
@@ -165,6 +167,12 @@ module Gitlab
           def rules_result
             strong_memoize(:rules_result) do
               @rules.evaluate(@pipeline, evaluate_context)
+            end
+          end
+
+          def rules_errors
+            strong_memoize(:rules_errors) do
+              ["Failed to parse rule for #{name}: #{rules_result.errors.join(', ')}"] if rules_result.errors.present?
             end
           end
 

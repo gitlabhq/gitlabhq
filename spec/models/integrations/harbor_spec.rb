@@ -63,6 +63,8 @@ RSpec.describe Integrations::Harbor do
     it 'returns vars when harbor_integration is activated' do
       ci_vars = [
         { key: 'HARBOR_URL', value: url },
+        { key: 'HARBOR_HOST', value: 'demo.goharbor.io' },
+        { key: 'HARBOR_OCI', value: 'oci://demo.goharbor.io' },
         { key: 'HARBOR_PROJECT', value: project_name },
         { key: 'HARBOR_USERNAME', value: username },
         { key: 'HARBOR_PASSWORD', value: password, public: false, masked: true }

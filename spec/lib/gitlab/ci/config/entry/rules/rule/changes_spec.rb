@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes do
   let(:factory) do
@@ -119,6 +119,23 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes do
         end
       end
     end
+
+    context 'with paths and compare_to' do
+      let(:config) { { paths: %w[app/ lib/], compare_to: 'branch1' } }
+
+      it { is_expected.to be_valid }
+
+      context 'when compare_to is not a string' do
+        let(:config) { { paths: %w[app/ lib/], compare_to: 1 } }
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns information about errors' do
+          expect(entry.errors)
+            .to include(/should be a string/)
+        end
+      end
+    end
   end
 
   describe '#value' do
@@ -133,6 +150,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes do
     context 'with paths' do
       let(:config) do
         { paths: ['app/', 'lib/'] }
+      end
+
+      it { is_expected.to eq(config) }
+    end
+
+    context 'with paths and compare_to' do
+      let(:config) do
+        { paths: ['app/', 'lib/'], compare_to: 'branch1' }
       end
 
       it { is_expected.to eq(config) }

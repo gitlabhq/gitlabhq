@@ -113,7 +113,7 @@ When the last destination is successfully deleted, event streaming is disabled f
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336411) in GitLab 14.9.
 
-Users with at least the Owner role for a group can delete event streaming destinations.
+Users with at least the Owner role for a group can delete event streaming destinations:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**.
@@ -199,12 +199,11 @@ Users with at least the Owner role for a group can add event streaming destinati
    20 headers per endpoint.
 1. After all headers have been filled out, select **Add** to add the new endpoint.
 
-Event streaming is enabled if:
-
-- No warning is shown.
-- The added endpoint is displayed in the UI.
-
 ### Updating custom HTTP headers
+
+Add custom HTTP headers with the API or GitLab UI.
+
+#### Use the API
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361964) in GitLab 15.2.
 
@@ -218,7 +217,39 @@ mutation {
 }
 ```
 
+#### Use the GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91986) in GitLab 15.3 [with a flag](feature_flags.md) named `custom_headers_streaming_audit_events_ui`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the UI for this feature is not available. To make it available per group, ask an administrator to
+[enable the feature flag](../administration/feature_flags.md) named `custom_headers_streaming_audit_events_ui`. On GitLab.com, the UI for this feature is
+not available. The UI for this feature is not ready for production use.
+
+Users with at least the Owner role for a group can add event streaming destinations and custom HTTP headers for it:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select **{pencil}** at the right side of an item.
+1. Locate the **Custom HTTP headers** table.
+1. Locate the header that you wish to update.
+1. In the **Header** column, you can change the header's name.
+1. In the **Value** column, you can change the header's value.
+1. Ignore the **Active** checkbox because it isn't functional. To track progress on adding functionality to the **Active** checkbox, see the
+   [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361925).
+1. Select **Save** to update the endpoint.
+
+Event streaming is updated if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
 ### Deleting custom HTTP headers
+
+Deleting custom HTTP headers with the API or GitLab UI.
+
+#### Use the API
 
 Group owners can remove a HTTP header using the GraphQL `auditEventsStreamingHeadersDestroy` mutation. You can retrieve the header ID
 by [listing all the custom headers](#list-all-custom-headers) on the group.
@@ -232,6 +263,31 @@ mutation {
 ```
 
 The header is deleted if the returned `errors` object is empty.
+
+#### Use the GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91986) in GitLab 15.3 [with a flag](feature_flags.md) named `custom_headers_streaming_audit_events_ui`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the UI for this feature is not available. To make it available per group, ask an administrator to
+[enable the feature flag](../administration/feature_flags.md) named `custom_headers_streaming_audit_events_ui`. On GitLab.com, the UI for this feature is
+not available. The UI for this feature is not ready for production use.
+
+Users with at least the Owner role for a group can delete event streaming destinations:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select **{pencil}** at the right side of an item.
+1. Locate the **Custom HTTP headers** table.
+1. Locate the header that you wish to remove.
+1. Select **{remove}** at the right side of the header.
+1. Select **Save** to update the endpoint.
+
+Event streaming is updated if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
 
 ### List all custom headers
 
@@ -276,8 +332,6 @@ Users with at least the Owner role for a group can add event streaming destinati
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select **{pencil}** at the right side of an item.
-1. A read-only view of the items custom headers is shown. To track progress on adding editing functionality, see the [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361925).
-1. Select **Cancel** to close the read-only view.
 
 ## Verify event authenticity
 

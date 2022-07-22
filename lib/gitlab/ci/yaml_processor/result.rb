@@ -39,7 +39,7 @@ module Gitlab
         end
 
         def workflow_rules
-          @workflow_rules ||= hash_config.dig(:workflow, :rules)
+          @workflow_rules ||= @ci_config.workflow_rules
         end
 
         def root_variables
@@ -131,10 +131,6 @@ module Gitlab
 
         def variables
           @variables ||= @ci_config.variables
-        end
-
-        def hash_config
-          @hash_config ||= @ci_config.to_hash
         end
 
         def release(job)

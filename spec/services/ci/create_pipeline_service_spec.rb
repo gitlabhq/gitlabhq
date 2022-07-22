@@ -18,6 +18,7 @@ RSpec.describe Ci::CreatePipelineService do
     # rubocop:disable Metrics/ParameterLists
     def execute_service(
       source: :push,
+      before: '00000000',
       after: project.commit.id,
       ref: ref_name,
       trigger_request: nil,
@@ -29,7 +30,7 @@ RSpec.describe Ci::CreatePipelineService do
       target_sha: nil,
       save_on_errors: true)
       params = { ref: ref,
-                 before: '00000000',
+                 before: before,
                  after: after,
                  variables_attributes: variables_attributes,
                  push_options: push_options,
@@ -2152,6 +2153,145 @@ RSpec.describe Ci::CreatePipelineService do
         end
       end
 
+      context 'with changes: paths and compare_to' do
+        before_all do
+          project.repository.add_branch(user, 'feature_1', 'master')
+
+          project.repository.create_file(
+            user, 'file1.txt', 'file 1', message: 'Create file1.txt', branch_name: 'feature_1'
+          )
+
+          project.repository.add_branch(user, 'feature_2', 'feature_1')
+
+          project.repository.create_file(
+            user, 'file2.txt', 'file 2', message: 'Create file2.txt', branch_name: 'feature_2'
+          )
+        end
+
+        let(:changed_file) { 'file2.txt' }
+        let(:ref_name) { 'feature_2' }
+
+        let(:response) { execute_service(ref: ref_name, before: nil, after: project.commit(ref_name).sha) }
+
+        context 'for jobs rules' do
+          let(:config) do
+            <<-EOY
+            job1:
+              script: exit 0
+              rules:
+                - changes:
+                    paths: [#{changed_file}]
+                    compare_to: #{compare_to}
+
+            job2:
+              script: exit 0
+            EOY
+          end
+
+          context 'when there is no such compare_to ref' do
+            let(:compare_to) { 'invalid-branch' }
+
+            it 'returns an error' do
+              expect(pipeline.errors.full_messages).to eq([
+                'Failed to parse rule for job1: rules:changes:compare_to is not a valid ref'
+              ])
+            end
+
+            context 'when the FF ci_rules_changes_compare is not enabled' do
+              before do
+                stub_feature_flags(ci_rules_changes_compare: false)
+              end
+
+              it 'ignores compare_to and changes is always true' do
+                expect(build_names).to contain_exactly('job1', 'job2')
+              end
+            end
+          end
+
+          context 'when the compare_to ref exists' do
+            let(:compare_to) { 'feature_1'}
+
+            context 'when the rule matches' do
+              it 'creates job1 and job2' do
+                expect(build_names).to contain_exactly('job1', 'job2')
+              end
+
+              context 'when the FF ci_rules_changes_compare is not enabled' do
+                before do
+                  stub_feature_flags(ci_rules_changes_compare: false)
+                end
+
+                it 'ignores compare_to and changes is always true' do
+                  expect(build_names).to contain_exactly('job1', 'job2')
+                end
+              end
+            end
+
+            context 'when the rule does not match' do
+              let(:changed_file) { 'file1.txt' }
+
+              it 'does not create job1' do
+                expect(build_names).to contain_exactly('job2')
+              end
+
+              context 'when the FF ci_rules_changes_compare is not enabled' do
+                before do
+                  stub_feature_flags(ci_rules_changes_compare: false)
+                end
+
+                it 'ignores compare_to and changes is always true' do
+                  expect(build_names).to contain_exactly('job1', 'job2')
+                end
+              end
+            end
+          end
+        end
+
+        context 'for workflow rules' do
+          let(:config) do
+            <<-EOY
+            workflow:
+              rules:
+                - changes:
+                    paths: [#{changed_file}]
+                    compare_to: #{compare_to}
+
+            job1:
+              script: exit 0
+            EOY
+          end
+
+          let(:compare_to) { 'feature_1'}
+
+          context 'when the rule matches' do
+            it 'creates job1' do
+              expect(pipeline).to be_created_successfully
+              expect(build_names).to contain_exactly('job1')
+            end
+
+            context 'when the FF ci_rules_changes_compare is not enabled' do
+              before do
+                stub_feature_flags(ci_rules_changes_compare: false)
+              end
+
+              it 'ignores compare_to and changes is always true' do
+                expect(pipeline).to be_created_successfully
+                expect(build_names).to contain_exactly('job1')
+              end
+            end
+          end
+
+          context 'when the rule does not match' do
+            let(:changed_file) { 'file1.txt' }
+
+            it 'does not create job1' do
+              expect(pipeline).not_to be_created_successfully
+              expect(build_names).to be_empty
+            end
+          end
+        end
+      end
+
       context 'with mixed if: and changes: rules' do
         let(:config) do
           <<-EOY
@@ -2674,6 +2814,68 @@ RSpec.describe Ci::CreatePipelineService do
               expect(pipeline).not_to be_persisted
             end
           end
+        end
+      end
+
+      context 'with workflow rules changes' do
+        shared_examples 'comparing file changes with workflow rules' do
+          context 'when matches' do
+            before do
+              allow_next_instance_of(Ci::Pipeline) do |pipeline|
+                allow(pipeline).to receive(:modified_paths).and_return(%w[file1.md])
+              end
+            end
+
+            it 'creates the pipeline with a job' do
+              expect(pipeline).to be_persisted
+              expect(build_names).to contain_exactly('job')
+            end
+          end
+
+          context 'when does not match' do
+            before do
+              allow_next_instance_of(Ci::Pipeline) do |pipeline|
+                allow(pipeline).to receive(:modified_paths).and_return(%w[unknown])
+              end
+            end
+
+            it 'creates the pipeline with a job' do
+              expect(pipeline.errors.full_messages).to eq(['Pipeline filtered out by workflow rules.'])
+              expect(response).to be_error
+              expect(pipeline).not_to be_persisted
+            end
+          end
+        end
+
+        context 'changes is an array' do
+          let(:config) do
+            <<-EOY
+              workflow:
+                rules:
+                  - changes: [file1.md]
+
+              job:
+                script: exit 0
+            EOY
+          end
+
+          it_behaves_like 'comparing file changes with workflow rules'
+        end
+
+        context 'changes:paths is an array' do
+          let(:config) do
+            <<-EOY
+              workflow:
+                rules:
+                  - changes:
+                      paths: [file1.md]
+
+              job:
+                script: exit 0
+            EOY
+          end
+
+          it_behaves_like 'comparing file changes with workflow rules'
         end
       end
     end

@@ -418,6 +418,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
 
         it { is_expected.to eq(config) }
       end
+
+      context 'when using changes with paths and compare_to' do
+        let(:config) { { changes: { paths: %w[app/ lib/ spec/ other/* paths/**/*.rb], compare_to: 'branch1' } } }
+
+        it { is_expected.to eq(config) }
+      end
     end
 
     context 'when default value has been provided' do

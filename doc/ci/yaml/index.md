@@ -3251,6 +3251,64 @@ docker build:
 
 - [Jobs or pipelines can run unexpectedly when using `rules: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
+##### `rules:changes:paths`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90171) in GitLab 15.2.
+
+`rules:changes:paths` is an alias for `rules:changes`.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- An array of file paths.
+
+**Example of `rules:changes:paths`**:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        paths:
+          - Dockerfile
+```
+
+In this example, the `docker build` job is only included when the `Dockerfile` has changed
+and the pipeline source is a merge request event.
+
+##### `rules:changes:compare_to`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `ci_rules_changes_compare`. Disabled by default.
+
+Use `rules:changes:compare_to` to specify which ref to compare against for changes to the files
+listed under [`rules:changes:paths`](#ruleschangespaths).
+
+**Keyword type**: Job keyword. You can use it only as part of a job, and it must be combined with `rules:changes:paths`.
+
+**Possible inputs**:
+
+- A branch name, like `main`, `branch1`, or `refs/heads/branch1`.
+- A tag name, like `tag1` or `refs/tags/tag1`.
+- A commit SHA, like `2fg31ga14b`.
+
+**Example of `rules:changes:compare_to`**:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        paths:
+          - Dockerfile
+        compare_to: 'refs/heads/branch1'
+```
+
+In this example, the `docker build` job is only included when the `Dockerfile` has changed
+relative to `refs/heads/branch1` and the pipeline source is a merge request event.
+
 #### `rules:exists`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24021) in GitLab 12.4.

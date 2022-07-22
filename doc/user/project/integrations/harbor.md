@@ -39,7 +39,7 @@ GitLab supports integrating Harbor projects at the group or project level. Compl
 
 After the Harbor integration is activated:
 
-- The global variables `$HARBOR_USERNAME`, `$HARBOR_PASSWORD`, `$HARBOR_URL`, and `$HARBOR_PROJECT` are created for CI/CD use.
+- The global variables `$HARBOR_USERNAME`, `$HARBOR_HOST`, `$HARBOR_OCI`, `$HARBOR_PASSWORD`, `$HARBOR_URL`, and `$HARBOR_PROJECT` are created for CI/CD use.
 - The project-level integration settings override the group-level integration settings.
 
 ## Secure your requests to the Harbor APIs
@@ -50,3 +50,51 @@ the `username:password` combination. The following are suggestions for safe use:
 - Use TLS on the Harbor APIs you connect to.
 - Follow the principle of least privilege (for access on Harbor) with your credentials.
 - Have a rotation policy on your credentials.
+
+## Examples of Harbor variables in CI/CD
+
+### Push a Docker image with kaniko
+
+For more information, see [Use kaniko to build Docker images](../../../ci/docker/using_kaniko.md).
+
+```yaml
+docker:
+  stage: docker
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${HARBOR_HOST}\":{\"auth\":\"$(echo -n ${HARBOR_USERNAME}:${HARBOR_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:${CI_COMMIT_TAG}"
+  rules:
+  - if: $CI_COMMIT_TAG
+```
+
+### Push a Helm chart with an OCI registry
+
+Helm supports OCI registries by default. OCI is supported in [Harbor 2.0](https://github.com/goharbor/harbor/releases/tag/v2.0.0) and later.
+Read more about OCI in Helm's [blog](https://helm.sh/blog/storing-charts-in-oci/) and [documentation](https://helm.sh/docs/topics/registries/#enabling-oci-support).
+
+```yaml
+helm:
+  stage: helm
+  image:
+    name: dtzar/helm-kubectl:latest
+    entrypoint: ['']
+  variables:
+    # Enable OCI support (not required since Helm v3.8.0)
+    HELM_EXPERIMENTAL_OCI: 1
+  script:
+    # Log in to the Helm registry
+    - helm registry login "${HARBOR_URL}" -u "${HARBOR_USERNAME}" -p "${HARBOR_PASSWORD}"
+    # Package your Helm chart, which is in the `test` directory
+    - helm package test
+    # Your helm chart is created with <chart name>-<chart release>.tgz
+    # You can push all building charts to your Harbor repository
+    - helm push test-*.tgz ${HARBOR_OCI}/${HARBOR_PROJECT}
+```

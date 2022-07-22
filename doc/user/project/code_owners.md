@@ -59,19 +59,26 @@ Next steps:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53182) in GitLab 12.1.
 > - Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.
 
-You can use members of groups and subgroups as Code Owners for a project.
+You can use members of groups and subgroups as Code Owners for projects:
 
-For example, if you have these groups:
+```mermaid
+graph TD
+    A[Parent group X] -->|owns| B[Project A]
+    A -->|contains| C[Subgroup Y]
+    C -->|owns| D[Project B]
+    A-. inherits ownership .-> D
+```
 
-- **Group X** (`group-x`) with **Project A** in it.
-- **Subgroup Y** (`group-x/subgroup-y`), which belongs to **Group X**, with **Project B** in it.
+In this example:
 
-The eligible Code Owners:
+- **Parent group X** (`group-x`) owns **Project A**.
+- **Parent group X** also contains a subgroup, **Subgroup Y**. (`group-x/subgroup-y`)
+- **Subgroup Y** owns **Project B**.
 
-- For **Project A** are the members of **Group X** only, because **Project A** doesn't belong to **Subgroup Y**.
-- For **Project B** are the members of both **Group X** and **Subgroup Y**.
+The eligible Code Owners are:
 
-![Eligible Code Owners](img/code_owners_members_v13_4.png)
+- **Project A**: the members of **Group X** only, because **Project A** doesn't belong to **Subgroup Y**.
+- **Project B**: the members of both **Group X** and **Subgroup Y**.
 
 You can [invite](members/share_project_with_groups.md) **Subgroup Y** to **Project A**
 so that their members also become eligible Code Owners.

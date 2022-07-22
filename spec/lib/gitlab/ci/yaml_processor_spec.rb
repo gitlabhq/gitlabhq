@@ -2893,7 +2893,7 @@ module Gitlab
         end
       end
 
-      describe 'Rules' do
+      describe 'Job rules' do
         context 'changes' do
           let(:config) do
             <<~YAML
@@ -2932,6 +2932,49 @@ module Gitlab
                   name: "rspec",
                   rules: [{ changes: { paths: ["README.md"] } }]
                 )
+              )
+            end
+          end
+        end
+      end
+
+      describe 'Workflow rules' do
+        context 'changes' do
+          let(:config) do
+            <<~YAML
+            workflow:
+              rules:
+                - changes: [README.md]
+
+            rspec:
+              script: exit 0
+            YAML
+          end
+
+          it 'returns pipeline with correct rules' do
+            expect(processor.builds.size).to eq(1)
+            expect(processor.workflow_rules).to eq(
+              [{ changes: { paths: ["README.md"] } }]
+            )
+          end
+
+          context 'with paths' do
+            let(:config) do
+              <<~YAML
+              workflow:
+                rules:
+                - changes:
+                    paths: [README.md]
+
+              rspec:
+                script: exit 0
+              YAML
+            end
+
+            it 'returns pipeline with correct rules' do
+              expect(processor.builds.size).to eq(1)
+              expect(processor.workflow_rules).to eq(
+                [{ changes: { paths: ["README.md"] } }]
               )
             end
           end

@@ -446,6 +446,7 @@ module Gitlab
         when Key
           actor.user
         when :ci
+          Gitlab::AppJsonLogger.info(message: 'Actor was :ci', project_id: project.id)
           nil
         end
       end

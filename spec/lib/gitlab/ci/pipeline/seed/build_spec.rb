@@ -769,7 +769,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
           with_them do
             it { is_expected.not_to be_included }
 
-            it 'correctly populates when:' do
+            it 'still correctly populates when:' do
               expect(seed_build.attributes).to include(when: 'never')
             end
           end
@@ -956,6 +956,26 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
         it 'correctly populates when:' do
           expect(seed_build.attributes).to include(when: 'never')
+        end
+      end
+
+      context 'with invalid rules raising error' do
+        let(:rule_set) do
+          [
+            { changes: { paths: ['README.md'], compare_to: 'invalid-ref' }, when: 'never' }
+          ]
+        end
+
+        it { is_expected.not_to be_included }
+
+        it 'correctly populates when:' do
+          expect(seed_build.attributes).to include(when: 'never')
+        end
+
+        it 'returns an error' do
+          expect(seed_build.errors).to contain_exactly(
+            'Failed to parse rule for rspec: rules:changes:compare_to is not a valid ref'
+          )
         end
       end
     end

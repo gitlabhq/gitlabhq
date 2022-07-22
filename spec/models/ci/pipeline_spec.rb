@@ -2162,6 +2162,60 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#modified_paths_since' do
+    let(:project) do
+      create(:project, :custom_repo,
+             files: { 'file1.txt' => 'file 1' })
+    end
+
+    let(:user) { project.owner }
+    let(:main_branch) { project.default_branch }
+    let(:new_branch) { 'feature_x' }
+    let(:pipeline) { build(:ci_pipeline, project: project, sha: new_branch) }
+
+    subject(:modified_paths_since) { pipeline.modified_paths_since(main_branch) }
+
+    before do
+      project.repository.add_branch(user, new_branch, main_branch)
+    end
+
+    context 'when no change in the new branch' do
+      it 'returns an empty array' do
+        expect(modified_paths_since).to be_empty
+      end
+    end
+
+    context 'when adding a new file' do
+      before do
+        project.repository.create_file(user, 'file2.txt', 'file 2', message: 'Create file2.txt', branch_name: new_branch)
+      end
+
+      it 'returns the new file path' do
+        expect(modified_paths_since).to eq(['file2.txt'])
+      end
+
+      context 'and when updating an existing file' do
+        before do
+          project.repository.update_file(user, 'file1.txt', 'file 1 updated', message: 'Update file1.txt', branch_name: new_branch)
+        end
+
+        it 'returns the new and updated file paths' do
+          expect(modified_paths_since).to eq(['file1.txt', 'file2.txt'])
+        end
+      end
+    end
+
+    context 'when updating an existing file' do
+      before do
+        project.repository.update_file(user, 'file1.txt', 'file 1 updated', message: 'Update file1.txt', branch_name: new_branch)
+      end
+
+      it 'returns the updated file path' do
+        expect(modified_paths_since).to eq(['file1.txt'])
+      end
+    end
+  end
+
   describe '#all_worktree_paths' do
     let(:files) { { 'main.go' => '', 'mocks/mocks.go' => '' } }
     let(:project) { create(:project, :custom_repo, files: files) }

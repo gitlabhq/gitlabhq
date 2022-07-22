@@ -36,7 +36,7 @@ module Gitlab
 
           def errors
             strong_memoize(:errors) do
-              seeds.flat_map(&:errors).compact
+              @builds.flat_map(&:errors).compact
             end
           end
 

@@ -19075,8 +19075,8 @@ msgstr "HTTP Basic: Acces refuzat\\n Trebuie să folosiți un token de acces per
 msgid "Harbor Registry"
 msgstr "Registrul Harbor"
 
-msgid "HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use."
-msgstr "După ce integrarea Harbor este activată, variabilele globale \"$HARBOR_USERNAME\", \"$HARBOR_PASSWORD\", \"$HARBOR_URL\" și \"$HARBOR_PROJECT\" vor fi create pentru utilizarea CI/CD."
+msgid "HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_HOST’, ‘$HARBOR_OCI’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use."
+msgstr "După ce integrarea Harbor este activată, variabilele globale \"$HARBOR_USERNAME\", \"$HARBOR_HOST\", \"$HARBOR_OCI\" \"$HARBOR_PASSWORD\", \"$HARBOR_URL\" și \"$HARBOR_PROJECT\" vor fi create pentru utilizarea CI/CD."
 
 msgid "HarborIntegration|Base URL of the Harbor instance."
 msgstr "URL-ul de bază al instanței Harbor."

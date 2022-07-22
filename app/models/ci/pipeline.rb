@@ -1152,6 +1152,10 @@ module Ci
       end
     end
 
+    def modified_paths_since(compare_to_sha)
+      project.repository.diff_stats(project.repository.merge_base(compare_to_sha, sha), sha).paths
+    end
+
     def all_worktree_paths
       strong_memoize(:all_worktree_paths) do
         project.repository.ls_files(sha)

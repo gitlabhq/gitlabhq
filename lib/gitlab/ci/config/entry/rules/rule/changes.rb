@@ -30,7 +30,7 @@ module Gitlab
                 include ::Gitlab::Config::Entry::Validatable
                 include ::Gitlab::Config::Entry::Attributable
 
-                ALLOWED_KEYS = %i[paths].freeze
+                ALLOWED_KEYS = %i[paths compare_to].freeze
                 REQUIRED_KEYS = %i[paths].freeze
 
                 attributes ALLOWED_KEYS
@@ -43,6 +43,7 @@ module Gitlab
                     validates :paths,
                               array_of_strings: true,
                               length: { maximum: 50, too_long: "has too many entries (maximum %{count})" }
+                    validates :compare_to, type: String, allow_nil: true
                   end
                 end
               end

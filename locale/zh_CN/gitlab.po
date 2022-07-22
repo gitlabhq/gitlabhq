@@ -18739,7 +18739,7 @@ msgstr "HTTP Basic：访问被拒绝\\n您必须使用具有'api'权限的个人
 msgid "Harbor Registry"
 msgstr "Harbor 镜像库"
 
-msgid "HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use."
+msgid "HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_HOST’, ‘$HARBOR_OCI’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use."
 msgstr "启用 Harbor 集成后，将创建全局变量 “$HARBOR_USERNAME”、“$HARBOR_PASSWORD”、“$HARBOR_URL”和 “$HARBOR_PROJECT” 供 CI/CD 使用。"
 
 msgid "HarborIntegration|Base URL of the Harbor instance."

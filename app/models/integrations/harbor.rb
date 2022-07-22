@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'uri'
 
 module Integrations
   class Harbor < Integration
@@ -20,7 +21,7 @@ module Integrations
     end
 
     def help
-      s_("HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use.")
+      s_("HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_HOST’, ‘$HARBOR_OCI’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use.")
     end
 
     class << self
@@ -78,8 +79,12 @@ module Integrations
     def ci_variables
       return [] unless activated?
 
+      oci_uri = URI.parse(url)
+      oci_uri.scheme = 'oci'
       [
         { key: 'HARBOR_URL', value: url },
+        { key: 'HARBOR_HOST', value: oci_uri.host },
+        { key: 'HARBOR_OCI', value: oci_uri.to_s },
         { key: 'HARBOR_PROJECT', value: project_name },
         { key: 'HARBOR_USERNAME', value: username.gsub(/^robot\$/, 'robot$$') },
         { key: 'HARBOR_PASSWORD', value: password, public: false, masked: true }

@@ -5307,6 +5307,12 @@ msgstr ""
 msgid "AuditStreams|Active"
 msgstr ""
 
+msgid "AuditStreams|Add a custom header"
+msgstr ""
+
+msgid "AuditStreams|Add a custom value"
+msgstr ""
+
 msgid "AuditStreams|Add an HTTP endpoint to manage audit logs in third-party systems."
 msgstr ""
 
@@ -5323,6 +5329,9 @@ msgid "AuditStreams|An error occurred when deleting external audit event stream 
 msgstr ""
 
 msgid "AuditStreams|An error occurred when fetching external audit event streams. Please try it again"
+msgstr ""
+
+msgid "AuditStreams|An error occurred when updating external audit event stream destination. Please try it again."
 msgstr ""
 
 msgid "AuditStreams|Cancel editing"
@@ -18937,7 +18946,7 @@ msgstr ""
 msgid "Harbor Registry"
 msgstr ""
 
-msgid "HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use."
+msgid "HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_HOST’, ‘$HARBOR_OCI’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use."
 msgstr ""
 
 msgid "HarborIntegration|Base URL of the Harbor instance."
