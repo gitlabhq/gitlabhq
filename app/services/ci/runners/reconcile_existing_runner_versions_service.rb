@@ -74,13 +74,11 @@ module Ci
       end
 
       def runner_version_with_updated_status(runner_version)
-        version = runner_version['version']
-        suggestion = upgrade_check.check_runner_upgrade_status(version)
-        new_status = suggestion.each_key.first
+        _, new_status = upgrade_check.check_runner_upgrade_suggestion(runner_version.version)
 
-        if new_status != :error && new_status != runner_version['status'].to_sym
+        if new_status != :error && new_status != runner_version.status.to_sym
           {
-            version: version,
+            version: runner_version.version,
             status: Ci::RunnerVersion.statuses[new_status]
           }
         end

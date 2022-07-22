@@ -197,17 +197,33 @@ export default {
     @mousedown="handleParallelLineMouseDown"
   >
     <template v-for="(line, index) in diffLines">
-      <template v-if="line.isMatchLineLeft || line.isMatchLineRight">
+      <div
+        v-if="line.isMatchLineLeft || line.isMatchLineRight"
+        :key="`expand-${index}`"
+        class="diff-grid-row diff-tr line_holder match expansion"
+      >
         <diff-expansion-cell
-          :key="`expand-${index}`"
           :file="diffFile"
           :line="line.left"
           :is-top="index === 0"
           :is-bottom="index + 1 === diffLinesLength"
           :inline="inline"
           :line-count-between="getCountBetweenIndex(index)"
+          :class="{ parallel: !inline }"
+          class="diff-grid-left diff-grid-2-col left-side"
         />
-      </template>
+        <diff-expansion-cell
+          v-if="!inline"
+          :file="diffFile"
+          :line="line.left"
+          :is-top="index === 0"
+          :is-bottom="index + 1 === diffLinesLength"
+          :inline="inline"
+          :line-count-between="getCountBetweenIndex(index)"
+          :class="{ parallel: !inline }"
+          class="diff-grid-right diff-grid-2-col right-side"
+        />
+      </div>
       <diff-row
         v-if="!line.isMatchLineLeft && !line.isMatchLineRight"
         :key="line.line_code"

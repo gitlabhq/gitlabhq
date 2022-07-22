@@ -109,6 +109,7 @@ module Participable
       when User
         participants << source
       when Participable
+        next if skippable_system_notes?(source, participants)
         next unless !verify_access || source_visible_to_user?(source, current_user)
 
         source.class.participant_attrs.each do |attr|
@@ -131,6 +132,13 @@ module Participable
 
     participants.merge(users_that_can_read_internal_notes(internal_notes_extractor))
     participants.merge(extractor.users)
+  end
+
+  def skippable_system_notes?(source, participants)
+    source.is_a?(Note) &&
+      source.system? &&
+      source.author.in?(participants) &&
+      !source.note.match?(User.reference_pattern)
   end
 
   def use_internal_notes_extractor_for?(source)

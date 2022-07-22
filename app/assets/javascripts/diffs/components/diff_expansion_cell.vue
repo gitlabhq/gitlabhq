@@ -217,52 +217,50 @@ export default {
 </script>
 
 <template>
-  <div class="diff-grid-row diff-grid-row-full diff-tr line_holder match expansion">
-    <div :class="{ parallel: !inline }" class="diff-grid-left diff-grid-2-col left-side">
-      <div
-        class="diff-td diff-line-num gl-text-center! gl-p-0! gl-w-full! gl-display-flex gl-flex-direction-column"
+  <div>
+    <div
+      class="diff-td diff-line-num gl-text-center! gl-p-0! gl-w-full! gl-display-flex gl-flex-direction-column"
+    >
+      <button
+        v-if="showExpandDown"
+        v-gl-tooltip.left
+        :title="s__('Diffs|Next 20 lines')"
+        :disabled="loading.down"
+        type="button"
+        class="js-unfold-down gl-rounded-0 gl-border-0 diff-line-expand-button"
+        @click="handleExpandLines($options.EXPAND_DOWN)"
       >
-        <button
-          v-if="showExpandDown"
-          v-gl-tooltip.left
-          :title="s__('Diffs|Next 20 lines')"
-          :disabled="loading.down"
-          type="button"
-          class="js-unfold-down gl-rounded-0 gl-border-0 diff-line-expand-button"
-          @click="handleExpandLines($options.EXPAND_DOWN)"
-        >
-          <gl-loading-icon v-if="loading.down" size="sm" color="dark" inline />
-          <gl-icon v-else name="expand-down" />
-        </button>
-        <button
-          v-if="lineCountBetween !== -1 && lineCountBetween < 20"
-          v-gl-tooltip.left
-          :title="s__('Diffs|Expand all lines')"
-          :disabled="loading.all"
-          type="button"
-          class="js-unfold-all gl-rounded-0 gl-border-0 diff-line-expand-button"
-          @click="handleExpandLines()"
-        >
-          <gl-loading-icon v-if="loading.all" size="sm" color="dark" inline />
-          <gl-icon v-else name="expand" />
-        </button>
-        <button
-          v-if="showExpandUp"
-          v-gl-tooltip.left
-          :title="s__('Diffs|Previous 20 lines')"
-          :disabled="loading.up"
-          type="button"
-          class="js-unfold gl-rounded-0 gl-border-0 diff-line-expand-button"
-          @click="handleExpandLines($options.EXPAND_UP)"
-        >
-          <gl-loading-icon v-if="loading.up" size="sm" color="dark" inline />
-          <gl-icon v-else name="expand-up" />
-        </button>
-      </div>
-      <div
-        v-safe-html="line.rich_text"
-        class="gl-display-flex! gl-flex-direction-column gl-justify-content-center diff-td line_content left-side gl-white-space-normal!"
-      ></div>
+        <gl-loading-icon v-if="loading.down" size="sm" color="dark" inline />
+        <gl-icon v-else name="expand-down" />
+      </button>
+      <button
+        v-if="lineCountBetween !== -1 && lineCountBetween < 20"
+        v-gl-tooltip.left
+        :title="s__('Diffs|Expand all lines')"
+        :disabled="loading.all"
+        type="button"
+        class="js-unfold-all gl-rounded-0 gl-border-0 diff-line-expand-button"
+        @click="handleExpandLines()"
+      >
+        <gl-loading-icon v-if="loading.all" size="sm" color="dark" inline />
+        <gl-icon v-else name="expand" />
+      </button>
+      <button
+        v-if="showExpandUp"
+        v-gl-tooltip.left
+        :title="s__('Diffs|Previous 20 lines')"
+        :disabled="loading.up"
+        type="button"
+        class="js-unfold gl-rounded-0 gl-border-0 diff-line-expand-button"
+        @click="handleExpandLines($options.EXPAND_UP)"
+      >
+        <gl-loading-icon v-if="loading.up" size="sm" color="dark" inline />
+        <gl-icon v-else name="expand-up" />
+      </button>
     </div>
+    <div
+      v-safe-html="line.rich_text"
+      class="gl-display-flex! gl-flex-direction-column gl-justify-content-center diff-td line_content left-side gl-white-space-normal!"
+    ></div>
   </div>
 </template>

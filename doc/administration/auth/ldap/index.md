@@ -268,7 +268,6 @@ gitlab_rails['ldap_servers'] = {
     'port' => 636,
     ...
   }
-
 }
 ```
 
@@ -444,15 +443,15 @@ If initially your LDAP configuration looked like:
 
 1. In `/etc/gitlab/gitlab.rb`:
 
-  ```ruby
-    gitlab_rails['ldap_servers'] = {
-      'main' => {
-        # snip...
-        'bind_dn' => 'admin',
-        'password' => '123'
-      }
-    }
-  ```
+   ```ruby
+     gitlab_rails['ldap_servers'] = {
+       'main' => {
+         # snip...
+         'bind_dn' => 'admin',
+         'password' => '123'
+       }
+     }
+   ```
 
 1. Edit the encrypted secret:
 

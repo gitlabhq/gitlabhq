@@ -229,6 +229,12 @@ describe('Blob content viewer component', () => {
         expect(LineHighlighter).toHaveBeenCalled();
       });
 
+      it('does not load the LineHighlighter for RichViewers', async () => {
+        mockAxios.onGet(legacyViewerUrl).replyOnce(httpStatusCodes.OK, 'test');
+        await createComponent({ blob: { ...richViewerMock, fileType, highlightJs } });
+        expect(LineHighlighter).not.toHaveBeenCalled();
+      });
+
       it('scrolls to the hash', async () => {
         mockAxios.onGet(legacyViewerUrl).replyOnce(httpStatusCodes.OK, 'test');
         await createComponent({ blob: { ...simpleViewerMock, fileType, highlightJs } });

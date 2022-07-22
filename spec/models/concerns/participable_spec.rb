@@ -124,6 +124,7 @@ RSpec.describe Participable do
     end
 
     let(:readable) { true }
+    let(:project) { build(:project, :public) }
 
     it 'returns the list of participants' do
       model.participant(:foo)
@@ -132,7 +133,6 @@ RSpec.describe Participable do
       user1 = build(:user)
       user2 = build(:user)
       user3 = build(:user)
-      project = build(:project, :public)
       instance = model.new
 
       allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
@@ -155,13 +155,35 @@ RSpec.describe Participable do
         instance = model.new
         user1 = build(:user)
         user2 = build(:user)
-        project = build(:project, :public)
 
         allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
         allow(instance).to receive(:bar).and_return(user2)
         expect(instance).to receive(:project).thrice.and_return(project)
 
         expect(instance.visible_participants(user1)).to be_empty
+      end
+    end
+
+    context 'with multiple system notes from the same author and mentioned_users' do
+      let!(:user1) { create(:user) }
+      let!(:user2) { create(:user) }
+
+      it 'skips expensive checks if the author is aleady in participants list' do
+        model.participant(:notes)
+
+        instance = model.new
+        note1 = create(:system_note, author: user1)
+        note2 = create(:system_note, author: user1) # only skip system notes with no mentioned users
+        note3 = create(:system_note, author: user1, note: "assigned to #{user2.to_reference}")
+        note4 = create(:note, author: user2)
+
+        allow(instance).to receive(:project).and_return(project)
+        allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+        allow(instance).to receive(:notes).and_return([note1, note2, note3, note4])
+
+        allow(Ability).to receive(:allowed?).with(anything, :read_project, anything).and_return(true)
+        allow(Ability).to receive(:allowed?).with(anything, :read_note, anything).exactly(3).times.and_return(true)
+        expect(instance.visible_participants(user1)).to match_array [user1, user2]
       end
     end
   end

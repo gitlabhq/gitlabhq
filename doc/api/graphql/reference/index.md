@@ -20399,8 +20399,6 @@ Vulnerability sort values.
 | <a id="vulnerabilitysortreport_type_desc"></a>`report_type_desc` | Report Type in descending order. |
 | <a id="vulnerabilitysortseverity_asc"></a>`severity_asc` | Severity in ascending order. |
 | <a id="vulnerabilitysortseverity_desc"></a>`severity_desc` | Severity in descending order. |
-| <a id="vulnerabilitysortstate_asc"></a>`state_asc` | State in ascending order. |
-| <a id="vulnerabilitysortstate_desc"></a>`state_desc` | State in descending order. |
 
 ### `VulnerabilityState`
 

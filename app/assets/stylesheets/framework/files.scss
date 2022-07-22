@@ -575,3 +575,11 @@ span.idiff {
     @include gl-text-center;
   }
 }
+
+// *:nth-of-type(1n+5) - makes sure we do not render elements 5+ right away when
+// viewing a file. Even though the HTML is injected in the DOM, as long as we do
+// not render those elements, the browser doesn't need to spend resources
+// calculating and repainting what's hidden.
+.file-holder [data-loading] .file-content *:nth-of-type(1n+5) {
+  @include gl-display-none;
+}

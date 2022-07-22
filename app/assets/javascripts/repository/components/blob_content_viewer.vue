@@ -189,21 +189,24 @@ export default {
       axios
         .get(`${this.blobInfo.webPath}?format=json&viewer=${type}`)
         .then(async ({ data: { html, binary } }) => {
+          this.isRenderingLegacyTextViewer = true;
+
           if (type === SIMPLE_BLOB_VIEWER) {
-            this.isRenderingLegacyTextViewer = true;
-
             this.legacySimpleViewer = html;
-
-            window.requestIdleCallback(() => {
-              this.isRenderingLegacyTextViewer = false;
-              new LineHighlighter(); // eslint-disable-line no-new
-            });
           } else {
             this.legacyRichViewer = html;
           }
 
           this.isBinary = binary;
           this.isLoadingLegacyViewer = false;
+
+          window.requestIdleCallback(() => {
+            this.isRenderingLegacyTextViewer = false;
+
+            if (type === SIMPLE_BLOB_VIEWER) {
+              new LineHighlighter(); // eslint-disable-line no-new
+            }
+          });
 
           await this.$nextTick();
           handleLocationHash(); // Ensures that we scroll to the hash when async content is loaded
