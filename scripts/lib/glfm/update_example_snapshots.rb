@@ -29,6 +29,8 @@ module Glfm
     def process(skip_static_and_wysiwyg: false)
       output('Updating example snapshots...')
 
+      setup_environment
+
       output('(Skipping static HTML generation)') if skip_static_and_wysiwyg
 
       output("Reading #{GLFM_SPEC_TXT_PATH}...")
@@ -46,6 +48,14 @@ module Glfm
     end
 
     private
+
+    def setup_environment
+      # Set 'GITLAB_TEST_FOOTNOTE_ID' in order to override random number generation in
+      # Banzai::Filter::FootnoteFilter#random_number, and thus avoid the need to
+      # perform normalization on the value. See:
+      # https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization
+      ENV['GITLAB_TEST_FOOTNOTE_ID'] = '42'
+    end
 
     def add_example_names(all_examples)
       # NOTE: This method and the parse_examples method assume:

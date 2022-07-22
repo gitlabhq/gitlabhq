@@ -5,8 +5,12 @@ module IssuablesDescriptionTemplatesHelper
   include GitlabRoutingHelper
 
   def template_dropdown_tag(issuable, &block)
-    selected_template = selected_template(issuable)
-    title = selected_template || _('Choose a template')
+    template_names = template_names(issuable)
+
+    selected_template = selected_template_name(template_names)
+    default_template = default_template_name(template_names, issuable)
+    title = _('Choose a template')
+
     options = {
       toggle_class: 'js-issuable-selector',
       title: title,
@@ -17,6 +21,7 @@ module IssuablesDescriptionTemplatesHelper
         data: issuable_templates(ref_project, issuable.to_ability_name),
         field_name: 'issuable_template',
         selected: selected_template,
+        default: default_template,
         project_id: ref_project.id
       }
     }
@@ -32,19 +37,19 @@ module IssuablesDescriptionTemplatesHelper
     @template_types[project.id][issuable_type] ||= TemplateFinder.all_template_names(project, issuable_type.pluralize)
   end
 
-  def selected_template(issuable)
-    all_templates = issuable_templates(ref_project, issuable.to_ability_name)
+  def selected_template_name(template_names)
+    template_names.find { |tmpl_name| tmpl_name == params[:issuable_template] }
+  end
 
+  def default_template_name(template_names, issuable)
+    return if issuable.description.present? || issuable.persisted?
+
+    template_names.find { |tmpl_name| tmpl_name.casecmp?('default') }
+  end
+
+  def template_names(issuable)
     # Only local templates will be listed if licenses for inherited templates are not present
-    all_templates = all_templates.values.flatten.map { |tpl| tpl[:name] }.compact.uniq
-
-    template = all_templates.find { |tmpl_name| tmpl_name == params[:issuable_template] }
-
-    unless issuable.description.present?
-      template ||= all_templates.find { |tmpl_name| tmpl_name.casecmp?('default') }
-    end
-
-    template
+    issuable_templates(ref_project, issuable.to_ability_name).values.flatten.map { |tpl| tpl[:name] }.compact.uniq
   end
 
   def available_service_desk_templates_for(project)

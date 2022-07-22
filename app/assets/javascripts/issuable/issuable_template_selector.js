@@ -17,7 +17,15 @@ export default class IssuableTemplateSelector extends TemplateSelector {
       name: this.dropdown.data('selected'),
     };
 
-    if (initialQuery.name) this.requestFile(initialQuery);
+    // Only use the default template if we don't have description data from autosave
+    if (!initialQuery.name && this.dropdown.data('default') && !this.editor.getValue().length) {
+      initialQuery.name = this.dropdown.data('default');
+    }
+
+    if (initialQuery.name) {
+      this.requestFile(initialQuery);
+      this.setToggleText(initialQuery.name);
+    }
 
     $('.reset-template', this.dropdown.parent()).on('click', () => {
       this.setInputValueToTemplateContent();
@@ -53,8 +61,12 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     }
 
     this.setInputValueToTemplateContent();
-    $('.dropdown-toggle-text', this.dropdown).text(__('Choose a template'));
+    this.setToggleText(__('Choose a template'));
     this.previousSelectedIndex = null;
+  }
+
+  setToggleText(text) {
+    $('.dropdown-toggle-text', this.dropdown).text(text);
   }
 
   setSelectedIndex() {

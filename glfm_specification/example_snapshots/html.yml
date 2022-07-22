@@ -7556,16 +7556,35 @@
   wysiwyg: |-
     <p>Multiple     spaces</p>
 07_01__gitlab_specific_markdown__footnotes__001:
-  canonical: ""
+  canonical: |
+    <p>
+    footnote reference tag
+    <sup>
+    <a href="#fn-fortytwo-42" id="fnref-fortytwo-42" data-footnote-ref>
+    1
+    </a>
+    </sup>
+    </p>
+    <section data-footnotes>
+    <ol>
+    <li id="fn-fortytwo-42">
+    <p>
+    footnote text
+    <a href="#fnref-fortytwo-42" data-footnote-backref>
+    </a>
+    </p>
+    </li>
+    </ol>
+    </section>
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-9034" id="fnref-1-9034" data-footnote-ref>1</a></sup></p>
+    <p data-sourcepos="1:1-1:34" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-fortytwo-42" id="fnref-fortytwo-42" data-footnote-ref>1</a></sup></p>
     <section data-footnotes class="footnotes">
     <ol>
-    <li id="fn-1-9034">
-    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-9034" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    <li id="fn-fortytwo-42">
+    <p data-sourcepos="3:14-3:26">footnote text <a href="#fnref-fortytwo-42" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
     </section>
   wysiwyg: |-
-    <p>footnote reference tag <sup identifier="1">1</sup></p>
+    <p>footnote reference tag <sup identifier="fortytwo">fortytwo</sup></p>
     <div node="footnoteDefinition(paragraph(&quot;footnote text&quot;))" htmlattributes="[object Object]"><p>footnote text</p></div>

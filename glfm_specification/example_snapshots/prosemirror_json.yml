@@ -19218,8 +19218,8 @@
           {
             "type": "footnoteReference",
             "attrs": {
-              "identifier": "1",
-              "label": "1"
+              "identifier": "fortytwo",
+              "label": "fortytwo"
             }
           }
         ]
@@ -19227,8 +19227,8 @@
       {
         "type": "footnoteDefinition",
         "attrs": {
-          "identifier": "1",
-          "label": "1"
+          "identifier": "fortytwo",
+          "label": "fortytwo"
         },
         "content": [
           {

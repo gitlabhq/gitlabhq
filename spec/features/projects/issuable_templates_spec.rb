@@ -90,6 +90,34 @@ RSpec.describe 'issuable templates', :js do
     end
   end
 
+  context 'user creates an issue with a default template from the repo' do
+    let(:template_content) { 'this is the default template' }
+
+    before do
+      project.repository.create_file(
+        user,
+        '.gitlab/issue_templates/default.md',
+        template_content,
+        message: 'added default issue template',
+        branch_name: 'master'
+      )
+    end
+
+    it 'does not overwrite autosaved description' do
+      visit new_project_issue_path project
+      wait_for_requests
+
+      assert_template # default template is loaded the first time
+
+      fill_in 'issue_description', with: 'my own description', fill_options: { clear: :backspace }
+
+      visit new_project_issue_path project
+      wait_for_requests
+
+      assert_template(expected_content: 'my own description')
+    end
+  end
+
   context 'user creates a merge request using templates' do
     let(:template_content) { 'this is a test "feature-proposal" template' }
     let(:bug_template_content) { 'this is merge request bug template' }

@@ -2190,6 +2190,6 @@
 06_15__inlines__textual_content__003: |
   Multiple     spaces
 07_01__gitlab_specific_markdown__footnotes__001: |
-  footnote reference tag [^1]
+  footnote reference tag [^fortytwo]
 
-  [^1]: footnote text
+  [^fortytwo]: footnote text

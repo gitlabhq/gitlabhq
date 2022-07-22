@@ -144,7 +144,7 @@ You can restore a backup only to **the exact same version and type** (Community 
 
 ### Back up GitLab SaaS
 
-Backups of GitLab databases and filesystems are taken every 24 hours, and are kept for two weeks on a rolling schedule. All backups are encrypted.
+Backups of GitLab databases and file systems are taken every 24 hours, and are kept for two weeks on a rolling schedule. All backups are encrypted.
 
 - GitLab SaaS creates backups to ensure your data is secure, but you can't use these methods to export or back up your data yourself.
 - Issues are stored in the database. They can't be stored in Git itself.
