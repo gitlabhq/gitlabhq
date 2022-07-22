@@ -209,7 +209,7 @@ export default {
           :id="`asset-type-${index}`"
           ref="typeSelect"
           :value="link.linkType || $options.defaultTypeOptionValue"
-          class="form-control pr-4"
+          class="pr-4"
           name="asset-type"
           :options="$options.typeOptions"
           @change="updateAssetLinkType({ linkIdToUpdate: link.id, newType: $event })"

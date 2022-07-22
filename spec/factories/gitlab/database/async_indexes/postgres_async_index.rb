@@ -5,5 +5,9 @@ FactoryBot.define do
     sequence(:name) { |n| "users_id_#{n}" }
     definition { "CREATE INDEX #{name} ON #{table_name} (id)" }
     table_name { "users" }
+
+    trait :with_drop do
+      definition { "DROP INDEX #{name}" }
+    end
   end
 end

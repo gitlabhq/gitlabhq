@@ -167,6 +167,10 @@ If you're using Geo:
 After updating GitLab, upgrade your runners to match
 [your new GitLab version](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 
+#### GitLab agent for Kubernetes
+
+If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agents for Kubernetes](../user/clusters/agent/install/index.md#update-the-agent-version) to match your new GitLab version.
+
 #### Elasticsearch
 
 After updating GitLab, you may have to upgrade

@@ -22328,7 +22328,6 @@ CREATE TABLE vulnerability_occurrences (
     cve text,
     location jsonb,
     detection_method smallint DEFAULT 0 NOT NULL,
-    migrated_to_new_structure boolean DEFAULT false NOT NULL,
     CONSTRAINT check_4a3a60f2ba CHECK ((char_length(solution) <= 7000)),
     CONSTRAINT check_ade261da6b CHECK ((char_length(description) <= 15000)),
     CONSTRAINT check_df6dd20219 CHECK ((char_length(message) <= 3000)),
@@ -30140,8 +30139,6 @@ CREATE INDEX index_vulnerability_occurrences_on_location_image ON vulnerability_
 CREATE INDEX index_vulnerability_occurrences_on_location_k8s_agent_id ON vulnerability_occurrences USING gin ((((location -> 'kubernetes_resource'::text) -> 'agent_id'::text))) WHERE (report_type = 7);
 
 CREATE INDEX index_vulnerability_occurrences_on_location_k8s_cluster_id ON vulnerability_occurrences USING gin ((((location -> 'kubernetes_resource'::text) -> 'cluster_id'::text))) WHERE (report_type = 7);
-
-CREATE INDEX index_vulnerability_occurrences_on_migrated_to_new_structure ON vulnerability_occurrences USING btree (migrated_to_new_structure, id);
 
 CREATE INDEX index_vulnerability_occurrences_on_primary_identifier_id ON vulnerability_occurrences USING btree (primary_identifier_id);
 

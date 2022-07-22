@@ -13,6 +13,9 @@ module Gitlab
         validates :table_name, presence: true, length: { maximum: MAX_IDENTIFIER_LENGTH }
         validates :definition, presence: true, length: { maximum: MAX_DEFINITION_LENGTH }
 
+        scope :to_create, -> { where("definition ILIKE 'CREATE%'") }
+        scope :to_drop, -> { where("definition ILIKE 'DROP%'") }
+
         def to_s
           definition
         end

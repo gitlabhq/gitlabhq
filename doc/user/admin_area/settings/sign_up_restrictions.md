@@ -118,6 +118,25 @@ create or update pipelines until their email address is confirmed.
 You can [change](../../../security/password_length_limits.md#modify-minimum-password-length-using-gitlab-ui)
 the minimum number of characters a user must have in their password using the GitLab UI.
 
+### Password complexity requirements **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
+
+By default, the only requirement for user passwords is [minimum password length](#minimum-password-length-limit).
+You can add additional complexity requirements. Changes to password complexity requirements apply to new passwords:
+
+- For new users that sign up.
+- For existing users that reset their password.
+
+Existing passwords are unaffected. To change password complexity requirements:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Sign-up restrictions**.
+1. Under **Minimum password length (number of characters)**, select additional password complexity requirements. You can require numbers, uppercase letters, lowercase letters,
+   and symbols.
+1. Select **Save changes**.
+
 ## Allow or deny sign ups using specific email domains
 
 You can specify an inclusive or exclusive list of email domains which can be used for user sign up.

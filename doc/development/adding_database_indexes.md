@@ -312,3 +312,98 @@ Use the asynchronous index helpers on your local environment to test changes for
 1. Run `bundle exec rails db:migrate` so that it creates an entry in the `postgres_async_indexes` table.
 1. Run `bundle exec rails gitlab:db:reindex` so that the index is created asynchronously.
 1. To verify the index, open the PostgreSQL console using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md) command `gdk psql` and run the command `\d <index_name>` to check that your newly created index exists.
+
+## Drop indexes asynchronously
+
+For very large tables, index destruction can be a challenge to manage.
+While `remove_concurrent_index` removes indexes in a way that does not block
+normal traffic, it can still be problematic if index destruction runs for
+during autovacuum. Necessary database operations like `autovacuum` cannot run, and
+the deployment process on GitLab.com is blocked while waiting for index
+destruction to finish.
+
+To limit the impact on GitLab.com, use the following process to remove indexes
+asynchronously during weekend hours. Due to generally lower traffic and fewer deployments,
+index destruction can proceed at a lower level of risk.
+
+1. [Schedule the index to be removed](#schedule-the-index-to-be-removed).
+1. [Verify the MR was deployed and the index exists in production](#verify-the-mr-was-deployed-and-the-index-exists-in-production).
+1. [Add a migration to create the index synchronously](#add-a-migration-to-create-the-index-synchronously).
+
+### Schedule the index to be removed
+
+Create an MR with a post-deployment migration which prepares the index
+for asynchronous destruction. For example. to destroy an index using
+the asynchronous index helpers:
+
+```ruby
+# in db/post_migrate/
+
+INDEX_NAME = 'index_ci_builds_on_some_column'
+
+def up
+  prepare_async_index_removal :ci_builds, :some_column, name: INDEX_NAME
+end
+
+def down
+  unprepare_async_index :ci_builds, :some_column, name: INDEX_NAME
+end
+```
+
+This migration enters the index name and definition into the `postgres_async_indexes`
+table. The process that runs on weekends pulls indexes from this table and attempt
+to remove them.
+
+You must test the database index changes locally before creating a merge request.
+
+### Verify the MR was deployed and the index exists in production
+
+You can verify if the MR was deployed to GitLab.com with
+`/chatops run auto_deploy status <merge_sha>`. To verify the existence of
+the index, you can:
+
+- Use a meta-command in `#database-lab`, for example: `\d <index_name>`.
+  - Make sure the index is not [`invalid`](https://www.postgresql.org/docs/12/sql-createindex.html#:~:text=The%20psql%20%5Cd%20command%20will%20report%20such%20an%20index%20as%20INVALID).
+- Ask someone in `#database` to check if the index exists.
+- If you have access, you can verify directly on production or in a
+  production clone.
+
+### Add a migration to destroy the index synchronously
+
+After you verify the index exists in the production database, create a second
+merge request that removes the index synchronously. The schema changes must be
+updated and committed to `structure.sql` in this second merge request.
+The synchronous migration results in a no-op on GitLab.com, but you should still add the
+migration as expected for other installations. For example, to
+create the second migration for the previous asynchronous example:
+
+**WARNING:**
+Verify that the index no longer exist in production before merging a second migration with `remove_concurrent_index_by_name`.
+If the second migration is deployed before the index has been destroyed,
+the index is destroyed synchronously when the second migration executes.
+
+```ruby
+# in db/post_migrate/
+
+INDEX_NAME = 'index_ci_builds_on_some_column'
+
+disable_ddl_transaction!
+
+def up
+  remove_concurrent_index_by_name :ci_builds, name: INDEX_NAME
+end
+
+def down
+  add_concurrent_index :ci_builds, :some_column, INDEX_NAME
+end
+```
+
+### Verify indexes removed asynchronously
+
+To test changes for removing an index, use the asynchronous index helpers on your local environment:
+
+1. Enable the feature flags by running `Feature.enable(:database_async_index_destruction)` and `Feature.enable(:database_reindexing)` in the Rails console.
+1. Run `bundle exec rails db:migrate` which should create an entry in the `postgres_async_indexes` table.
+1. Run `bundle exec rails gitlab:db:reindex` destroy the index asynchronously.
+1. To verify the index, open the PostgreSQL console by using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md)
+   command `gdk psql` and run `\d <index_name>` to check that the destroyed index no longer exists.

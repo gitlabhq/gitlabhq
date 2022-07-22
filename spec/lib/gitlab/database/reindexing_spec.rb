@@ -46,6 +46,27 @@ RSpec.describe Gitlab::Database::Reindexing do
       end
     end
 
+    context 'when async index destruction is enabled' do
+      it 'executes async index destruction prior to any reindexing actions' do
+        stub_feature_flags(database_async_index_destruction: true)
+
+        expect(Gitlab::Database::AsyncIndexes).to receive(:drop_pending_indexes!).ordered.exactly(databases_count).times
+        expect(described_class).to receive(:automatic_reindexing).ordered.exactly(databases_count).times
+
+        described_class.invoke
+      end
+    end
+
+    context 'when async index destruction is disabled' do
+      it 'does not execute async index destruction' do
+        stub_feature_flags(database_async_index_destruction: false)
+
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:drop_pending_indexes!)
+
+        described_class.invoke
+      end
+    end
+
     context 'calls automatic reindexing' do
       it 'uses all candidate indexes' do
         expect(described_class).to receive(:automatic_reindexing).exactly(databases_count).times

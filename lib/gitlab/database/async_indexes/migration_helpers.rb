@@ -77,6 +77,38 @@ module Gitlab
           async_index
         end
 
+        # Prepares an index for asynchronous destruction.
+        #
+        # Stores the index information in the postgres_async_indexes table to be removed later. The
+        # index will be always be removed CONCURRENTLY, so that option does not need to be given.
+        #
+        # If the requested index has already been removed, it is not stored in the table for
+        # asynchronous destruction.
+        def prepare_async_index_removal(table_name, column_name, options = {})
+          index_name = options.fetch(:name)
+          raise 'prepare_async_index_removal must get an index name defined' if index_name.blank?
+
+          unless index_exists?(table_name, column_name, **options)
+            Gitlab::AppLogger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, index_name: #{index_name}"
+            return
+          end
+
+          definition = "DROP INDEX CONCURRENTLY #{quote_column_name(index_name)}"
+
+          async_index = PostgresAsyncIndex.find_or_create_by!(name: index_name) do |rec|
+            rec.table_name = table_name
+            rec.definition = definition
+          end
+
+          Gitlab::AppLogger.info(
+            message: 'Prepared index for async destruction',
+            table_name: async_index.table_name,
+            index_name: async_index.name
+          )
+
+          async_index
+        end
+
         def async_index_creation_available?
           connection.table_exists?(:postgres_async_indexes)
         end
