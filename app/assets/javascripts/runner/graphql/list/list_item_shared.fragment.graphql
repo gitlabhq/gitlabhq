@@ -5,7 +5,6 @@ fragment ListItemShared on CiRunner {
   runnerType
   shortSha
   version
-  revision
   ipAddress
   active
   locked

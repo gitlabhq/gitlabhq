@@ -80,7 +80,10 @@ export default {
           <h4>{{ heading }}</h4>
         </div>
       </div>
-      <div role="row" class="gl-responsive-table-row table-row-header font-weight-bold fgray">
+      <div
+        role="row"
+        class="gl-responsive-table-row table-row-header gl-font-weight-bold gl-fill-gray-700"
+      >
         <div role="rowheader" class="table-section section-20">
           {{ __('Suite') }}
         </div>
@@ -104,7 +107,7 @@ export default {
       <div
         v-for="(testCase, index) in getSuiteTests"
         :key="index"
-        class="gl-responsive-table-row rounded align-items-md-start"
+        class="gl-responsive-table-row gl-rounded-base gl-align-items-flex-start"
         data-testid="test-case-row"
       >
         <div class="table-section section-20 section-wrap">
@@ -142,11 +145,8 @@ export default {
 
         <div class="table-section section-10 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Status') }}</div>
-          <div class="table-mobile-content text-center">
-            <div
-              class="ci-status-icon d-flex align-items-center justify-content-end justify-content-md-center"
-              :class="`ci-status-icon-${testCase.status}`"
-            >
+          <div class="table-mobile-content gl-md-display-flex gl-justify-content-center">
+            <div class="ci-status-icon" :class="`ci-status-icon-${testCase.status}`">
               <gl-icon :size="24" :name="testCase.icon" />
             </div>
           </div>
@@ -156,7 +156,7 @@ export default {
           <div role="rowheader" class="table-mobile-header">
             {{ __('Duration') }}
           </div>
-          <div class="table-mobile-content pr-sm-1">
+          <div class="table-mobile-content gl-sm-pr-2">
             {{ testCase.formattedTime }}
           </div>
         </div>

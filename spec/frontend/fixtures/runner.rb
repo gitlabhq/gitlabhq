@@ -13,10 +13,10 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:project_2) { create(:project, :repository, :public) }
 
-  let_it_be(:instance_runner) { create(:ci_runner, :instance, version: '1.0.0', revision: '123', description: 'Instance runner', ip_address: '127.0.0.1') }
-  let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], active: false, version: '2.0.0', revision: '456', description: 'Group runner', ip_address: '127.0.0.1') }
-  let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group], active: false, version: '2.0.0', revision: '456', description: 'Group runner 2', ip_address: '127.0.0.1') }
-  let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project, project_2], active: false, version: '2.0.0', revision: '456', description: 'Project runner', ip_address: '127.0.0.1') }
+  let_it_be(:instance_runner) { create(:ci_runner, :instance, version: '1.0.0', description: 'Instance runner', ip_address: '127.0.0.1') }
+  let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], active: false, version: '2.0.0', description: 'Group runner', ip_address: '127.0.0.1') }
+  let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group], active: false, version: '2.0.0', description: 'Group runner 2', ip_address: '127.0.0.1') }
+  let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project, project_2], active: false, version: '2.0.0', description: 'Project runner', ip_address: '127.0.0.1') }
   let_it_be(:build) { create(:ci_build, runner: instance_runner) }
 
   query_path = 'runner/graphql/'

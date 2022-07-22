@@ -101,7 +101,7 @@ RSpec.describe 'Admin Appearance' do
 
   context 'Profile page with custom profile image guidelines' do
     before do
-      sign_in(create(:admin))
+      sign_in(admin)
       gitlab_enable_admin_mode_sign_in(admin)
       visit admin_application_settings_appearances_path
       fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines, please :smile:!'

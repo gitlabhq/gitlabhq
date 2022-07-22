@@ -42,7 +42,7 @@
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/runners/configure_runners.html#artifact-attestation
-  image_url: https://www.youtube.com/embed/MlIdqrDgI8U
+  image_url: https://img.youtube.com/vi/MlIdqrDgI8U/hqdefault.jpg
   published_at: 2022-06-22
   release: 15.1
 - title: "Link to included CI/CD configuration from the pipeline editor"
@@ -54,6 +54,6 @@
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/pipeline_editor/
-  image_url: https://www.youtube.com/embed/7BNDUYfY_ok
+  image_url: https://img.youtube.com/vi/7BNDUYfY_ok/hqdefault.jpg
   published_at: 2022-06-22
   release: 15.1

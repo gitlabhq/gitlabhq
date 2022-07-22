@@ -65,58 +65,53 @@ export default {
 
 <template>
   <div>
-    <div class="row">
-      <div class="col-12 d-flex gl-mt-3 align-items-center">
-        <gl-button
-          v-if="showBack"
-          size="small"
-          class="gl-mr-3 js-back-button"
-          icon="chevron-lg-left"
-          :aria-label="__('Go back')"
-          @click="onBackClick"
-        />
+    <div class="gl-w-full gl-display-flex gl-mt-3 gl-align-items-center">
+      <gl-button
+        v-if="showBack"
+        size="small"
+        class="gl-mr-3 js-back-button"
+        icon="chevron-lg-left"
+        :aria-label="__('Go back')"
+        @click="onBackClick"
+      />
 
-        <h4>{{ heading }}</h4>
-      </div>
+      <h4>{{ heading }}</h4>
     </div>
 
-    <div class="row mt-2">
-      <div class="col-4 col-md">
-        <span class="js-total-tests">{{
+    <div
+      class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-w-full gl-mt-3"
+    >
+      <div class="gl-display-flex gl-justify-content-space-between gl-flex-basis-half">
+        <span class="js-total-tests gl-flex-grow-1">{{
           sprintf(s__('TestReports|%{count} tests'), { count: report.total_count })
         }}</span>
-      </div>
 
-      <div class="col-4 col-md text-center text-md-center">
-        <span class="js-failed-tests">{{
+        <span class="js-failed-tests gl-flex-grow-1">{{
           sprintf(s__('TestReports|%{count} failures'), { count: report.failed_count })
         }}</span>
-      </div>
 
-      <div class="col-4 col-md text-right text-md-center">
         <span class="js-errored-tests">{{
           sprintf(s__('TestReports|%{count} errors'), { count: report.error_count })
         }}</span>
       </div>
-
-      <div class="col-6 mt-3 col-md mt-md-0 text-md-center">
-        <span class="js-success-rate">{{
+      <div class="gl-display-flex gl-justify-content-space-between gl-flex-grow-1">
+        <div class="gl-display-none gl-md-display-block gl-flex-grow-1"></div>
+        <span class="js-success-rate gl-flex-grow-1">{{
           sprintf(s__('TestReports|%{rate}%{sign} success rate'), {
             rate: successPercentage,
             sign: '%',
           })
         }}</span>
-      </div>
 
-      <div class="col-6 mt-3 col-md mt-md-0 text-right">
         <span class="js-duration">{{ formattedDuration }}</span>
       </div>
     </div>
 
-    <div class="row mt-3">
-      <div class="col-12">
-        <gl-progress-bar :value="successPercentage" :variant="progressBarVariant" height="10px" />
-      </div>
-    </div>
+    <gl-progress-bar
+      class="gl-mt-5"
+      :value="successPercentage"
+      :variant="progressBarVariant"
+      height="10px"
+    />
   </div>
 </template>

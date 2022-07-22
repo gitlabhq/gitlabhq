@@ -34,9 +34,10 @@
                   = display_issuable_type
 
           - unless current_controller?('conflicts')
-            - if current_user && moved_mr_sidebar_enabled? && !@merge_request.merged?
-              %li.gl-new-dropdown-divider
-                %hr.dropdown-divider
+            - if current_user && moved_mr_sidebar_enabled?
+              - if !@merge_request.merged?
+                %li.gl-new-dropdown-divider
+                  %hr.dropdown-divider
               %li.gl-new-dropdown-item.js-sidebar-subscriptions-entry-point
             - unless issuable_author_is_current_user(@merge_request)
               %li.gl-new-dropdown-item

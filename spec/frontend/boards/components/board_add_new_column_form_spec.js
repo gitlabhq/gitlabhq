@@ -61,7 +61,7 @@ describe('Board card layout', () => {
 
   const formTitle = () => wrapper.findByTestId('board-add-column-form-title').text();
   const findSearchInput = () => wrapper.find(GlSearchBoxByType);
-  const findSearchLabel = () => wrapper.find(GlFormGroup);
+  const findSearchLabelFormGroup = () => wrapper.find(GlFormGroup);
   const cancelButton = () => wrapper.findByTestId('cancelAddNewColumn');
   const submitButton = () => wrapper.findByTestId('addNewColumnButton');
   const findDropdown = () => wrapper.findComponent(GlDropdown);
@@ -121,8 +121,15 @@ describe('Board card layout', () => {
 
       mountComponent(props);
 
-      expect(findSearchLabel().attributes('label')).toEqual(props.searchLabel);
+      expect(findSearchLabelFormGroup().attributes('label')).toEqual(props.searchLabel);
       expect(findSearchInput().attributes('placeholder')).toEqual(props.searchPlaceholder);
+    });
+
+    it('does not show the dropdown as invalid by default', () => {
+      mountComponent();
+
+      expect(findSearchLabelFormGroup().attributes('state')).toBe('true');
+      expect(findDropdown().props('toggleClass')).not.toContain('gl-inset-border-1-red-400!');
     });
 
     it('emits filter event on input', () => {
@@ -137,13 +144,13 @@ describe('Board card layout', () => {
   });
 
   describe('Add list button', () => {
-    it('is disabled if no item is selected', () => {
+    it('is enabled by default', () => {
       mountComponent();
 
-      expect(submitButton().props('disabled')).toBe(true);
+      expect(submitButton().props('disabled')).toBe(false);
     });
 
-    it('emits add-list event on click', () => {
+    it('emits add-list event on click when an ID is selected', () => {
       mountComponent({
         selectedId: mockLabelList.label.id,
       });
@@ -151,6 +158,17 @@ describe('Board card layout', () => {
       submitButton().vm.$emit('click');
 
       expect(wrapper.emitted('add-list')).toEqual([[]]);
+    });
+
+    it('does not emit the add-list event on click and shows the dropdown as invalid when no ID is selected', async () => {
+      mountComponent();
+
+      await submitButton().vm.$emit('click');
+
+      expect(findSearchLabelFormGroup().attributes('state')).toBeUndefined();
+      expect(findDropdown().props('toggleClass')).toContain('gl-inset-border-1-red-400!');
+
+      expect(wrapper.emitted('add-list')).toBeUndefined();
     });
   });
 });

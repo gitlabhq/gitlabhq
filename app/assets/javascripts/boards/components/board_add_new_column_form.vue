@@ -19,6 +19,7 @@ export default {
     scope: __('Scope'),
     scopeDescription: __('Issues must match this scope to appear in this list.'),
     selected: __('Selected'),
+    requiredFieldFeedback: __('This field is required.'),
   },
   components: {
     GlButton,
@@ -55,12 +56,21 @@ export default {
   data() {
     return {
       searchValue: '',
+      selectedIdValid: true,
     };
+  },
+  computed: {
+    toggleClassList() {
+      return `gl-max-w-full gl-display-flex gl-align-items-center gl-text-trunate ${
+        this.selectedIdValid ? '' : 'gl-inset-border-1-red-400!'
+      }`;
+    },
   },
   watch: {
     selectedId(val) {
       if (val) {
         this.$refs.dropdown.hide(true);
+        this.selectedIdValid = true;
       }
     },
   },
@@ -73,6 +83,13 @@ export default {
       this.searchValue = '';
       this.$emit('filter-items', '');
       this.$emit('hide');
+    },
+    onSubmit() {
+      if (!this.selectedId) {
+        this.selectedIdValid = false;
+      } else {
+        this.$emit('add-list');
+      }
     },
   },
 };
@@ -103,11 +120,16 @@ export default {
 
         <slot name="select-list-type"></slot>
 
-        <gl-form-group class="gl-px-5 lg-mb-3 gl-max-w-full" :label="searchLabel">
+        <gl-form-group
+          class="gl-px-5 lg-mb-3 gl-max-w-full"
+          :label="searchLabel"
+          :state="selectedIdValid"
+          :invalid-feedback="$options.i18n.requiredFieldFeedback"
+        >
           <gl-dropdown
             ref="dropdown"
             class="gl-mb-3 gl-max-w-full"
-            toggle-class="gl-max-w-full gl-display-flex gl-align-items-center gl-text-trunate"
+            :toggle-class="toggleClassList"
             boundary="viewport"
             @shown="setFocus"
             @hide="onHide"
@@ -147,10 +169,9 @@ export default {
       <div class="gl-display-flex gl-mb-4">
         <gl-button
           data-testid="addNewColumnButton"
-          :disabled="!selectedId"
           variant="confirm"
           class="gl-mr-3 gl-ml-4"
-          @click="$emit('add-list')"
+          @click="onSubmit"
           >{{ $options.i18n.add }}</gl-button
         >
         <gl-button data-testid="cancelAddNewColumn" @click="setAddColumnFormVisibility(false)">{{
