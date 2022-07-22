@@ -204,24 +204,39 @@ or you can build it from source if you have the Rust compiler.
 
 #### How to use the tool
 
-First run the tool with no arguments other than the strace output filename to get
-a summary of the top processes sorted by time spent actively performing tasks. You
-can also sort based on total time, # of system calls made, PID #, and # of child processes
-using the `-S` or `--sort` flag. The number of results defaults to 25 processes, but
+First run the tool with `summary` flag to get a summary of the top processes sorted by time spent actively performing tasks. 
+You can also sort based on total time, # of system calls made, PID #, and # of child processes
+using the `-s` or `--sort` flag. The number of results defaults to 25 processes, but
 can be changed using the `-c`/`--count` option. See `--help` for full details.
 
 ```shell
-$ ./strace-parser strace.txt
+$ ./strace-parser sidekiq_trace.txt summary -c15 -s=pid                                                                                                                                   
 
-Top 25 PIDs
+Top 15 PIDs by PID #
 -----------
 
-  pid           active (ms)  wait (ms)  total (ms)   % active    syscalls
-  ----------    ----------  ---------   ---------   ---------   ---------
-  8795             689.072   45773.832   46462.902     16.89%       23018
-  13408            679.432   55910.891   56590.320     16.65%       28593
-  6423             554.822   13175.485   13730.308     13.60%       13735
-...
+  pid         actv (ms)     wait (ms)     user (ms)    total (ms)    % of actv     syscalls     children
+  -------    ----------    ----------    ----------    ----------    ---------    ---------    ---------
+  16706           0.000         0.000         0.000         0.000        0.00%            0            0
+  16708           0.000         0.000         0.000         0.000        0.00%            0            0
+  16716           0.000         0.000         0.000         0.000        0.00%            0            0
+  16717           0.000         0.000         0.000         0.000        0.00%            0            0
+  16718           0.000         0.000         0.000         0.000        0.00%            0            0
+  16719           0.000         0.000         0.000         0.000        0.00%            0            0
+  16720           0.389      9796.434         1.090      9797.912        0.02%           16            0
+  16721           0.000         0.000         0.000         0.000        0.00%            0            0
+  16722           0.000         0.000         0.000         0.000        0.00%            0            0
+  16723           0.000         0.000         0.000         0.000        0.00%            0            0
+  16804           0.218     11099.535         1.881     11101.634        0.01%           36            0
+  16813           0.000         0.000         0.000         0.000        0.00%            0            0
+  16814           1.740     11825.640         4.616     11831.996        0.10%           57            0
+  16815           2.364     12039.993         7.669     12050.026        0.14%           80            0
+  16816           0.000         0.000         0.000         0.000        0.00%            0            0
+
+PIDs   93
+real   0m12.287s
+user   0m1.474s
+sys    0m1.686s
 ```
 
 Based on the summary, you can then view the details of system calls made by one or more
@@ -229,36 +244,38 @@ processes using the `-p`/`--pid` for a specific process, or `-s`/`--stats` flags
 a sorted list. `--stats` takes the same sorting and count options as summary.
 
 ```shell
-$ ./strace-parse strace.text -p 6423
+./strace-parser sidekiq_trace.txt p 16815                                                                                                                                            
 
-PID 6423
-13735 syscalls, active time: 554.822ms, total time: 13730.308ms
+PID 16815
 
-  syscall              count         total         max         avg         min  errors
-                                      (ms)        (ms)        (ms)        (ms)
-  ---------------   --------    ----------  ----------  ----------  ----------  --------
-  epoll_wait             628     13175.485      21.259      20.980       0.020
-  clock_gettime         7326       199.500       0.249       0.027       0.013
-  stat                  2101       110.768      19.056       0.053       0.017  ENOENT: 2076
-  ...
+  80 syscalls, active time: 2.364ms, user time: 7.669ms, total time: 12050.026ms
+  start time: 22:46:14.830267    end time: 22:46:26.880293
+
+  syscall                 count    total (ms)      max (ms)      avg (ms)      min (ms)    errors
+  -----------------    --------    ----------    ----------    ----------    ----------    --------
+  futex                       5     10100.229      5400.106      2020.046         0.022    ETIMEDOUT: 2
+  restart_syscall             1      1939.764      1939.764      1939.764      1939.764    ETIMEDOUT: 1
+  getpid                     33         1.020         0.046         0.031         0.018
+  clock_gettime              14         0.420         0.038         0.030         0.021
+  stat                        6         0.277         0.072         0.046         0.031
+  read                        6         0.170         0.036         0.028         0.020
+  openat                      3         0.126         0.045         0.042         0.038
+  close                       3         0.099         0.034         0.033         0.031
+  lseek                       3         0.089         0.035         0.030         0.021
+  ioctl                       3         0.082         0.033         0.027         0.023    ENOTTY: 3
+  fstat                       3         0.081         0.034         0.027         0.022
   ---------------
 
-  Parent PID: 495
-  Child PIDs:  8383, 8418, 8419, 8420, 8421
+  Slowest file open times for PID 16815:
 
-  Slowest file access times for PID 6423:
-
-     open (ms)        timestamp              error     file name
-  -----------   ---------------    ---------------     ----------
-      29.818    10:53:11.528954                        /srv/gitlab-data/builds/2018_08/6174/954448.log
-      12.309    10:53:46.708274                        /srv/gitlab-data/builds/2018_08/5342/954186.log
-      0.039     10:53:49.222110                        /opt/gitlab/embedded/service/gitlab-rails/app/views/events/event/_note.html.haml
-      0.035     10:53:49.125115                        /opt/gitlab/embedded/service/gitlab-rails/app/views/events/event/_push.html.haml
-  ...
+    dur (ms)       timestamp            error         file name
+  ----------    ---------------    ---------------    ---------
+       0.045    22:46:16.771318           -           /opt/gitlab/embedded/service/gitlab-rails/config/database.yml
+       0.043    22:46:26.877954           -           /opt/gitlab/embedded/service/gitlab-rails/config/database.yml
+       0.038    22:46:22.174610           -           /opt/gitlab/embedded/service/gitlab-rails/config/database.yml
 ```
 
-In the example above, we can see that file opening times on `/srv/gitlab-data` are
-extremely slow, about 100X slower than `/opt/gitlab`.
+In the example above, we can see which files took longer to open for `PID 16815`.
 
 When nothing stands out in the results, a good way to get more context is to run `strace`
 on your own GitLab instance while performing the action performed by the customer,

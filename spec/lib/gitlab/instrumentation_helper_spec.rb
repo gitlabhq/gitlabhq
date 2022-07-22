@@ -195,6 +195,26 @@ RSpec.describe Gitlab::InstrumentationHelper do
         expect(payload[:uploaded_file_size_bytes]).to eq(uploaded_file.size)
       end
     end
+
+    context 'when an api call to the search api is made' do
+      before do
+        Gitlab::Instrumentation::GlobalSearchApi.set_global_search_information(
+          global_search_type: 'basic',
+          global_search_level: 'global',
+          global_search_duration_s: 0.1
+        )
+      end
+
+      it 'adds search data' do
+        subject
+
+        expect(payload).to include({
+         'meta.search.type' => 'basic',
+         'meta.search.level' => 'global',
+         global_search_duration_s: 0.1
+        })
+      end
+    end
   end
 
   describe 'duration calculations' do

@@ -47,7 +47,7 @@ module Ci
         { name: 'Go', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/go_logo.svg') },
         { name: 'Gradle', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/gradle.svg') },
         { name: 'Grails', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/grails.svg') },
-        { name: 'dotNET', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/dotnet.svg') },
+        { name: 'dotNET', logo: image_path('illustrations/third-party-logos/dotnet.svg') },
         { name: 'Julia', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/julia.svg') },
         { name: 'Laravel', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/laravel.svg') },
         { name: 'LaTeX', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/latex.svg') },

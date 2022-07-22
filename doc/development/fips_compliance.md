@@ -341,30 +341,30 @@ global:
 gitlab:
   gitaly:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
   gitlab-exporter:
     image:
-      tag: 11.15.2-fips
+      tag: 11.17.1-fips
   gitlab-shell:
     image:
-      tag: v15.1.0-fips
+      tag: v14.9.0-fips
   gitlab-mailroom:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
   migrations:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
   sidekiq:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
   toolbox:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
   webservice:
     image:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
     workhorse:
-      tag: v15.1.0-fips
+      tag: v15.2.0-fips
 ```
 
 ## FIPS Performance Benchmarking

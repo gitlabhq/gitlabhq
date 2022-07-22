@@ -114,5 +114,7 @@ The steps can be summed up to:
    sudo rm /etc/yum.repos.d/gitlab_gitlab-ce.repo
    ```
 
+1. Optional. [Set up the Elasticsearch integration](../../integration/advanced_search/elasticsearch.md) to enable [Advanced Search](../../user/search/advanced_search.md).
+
 That's it! You can now use GitLab Enterprise Edition! To update to a newer
 version, follow [Update using the official repositories](index.md#upgrade-using-the-official-repositories).

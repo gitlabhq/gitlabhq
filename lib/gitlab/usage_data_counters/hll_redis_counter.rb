@@ -43,7 +43,6 @@ module Gitlab
         importer
         incident_management_alerts
         pipeline_authoring
-        search
         secure
         snippets
         source_code
