@@ -14956,6 +14956,9 @@ msgstr ""
 msgid "Error creating the snippet"
 msgstr ""
 
+msgid "Error creating vulnerability finding: %{errors}"
+msgstr ""
+
 msgid "Error deleting project. Check logs for error details."
 msgstr ""
 
@@ -32585,6 +32588,9 @@ msgstr ""
 msgid "Reply…"
 msgstr ""
 
+msgid "Report Finding not found"
+msgstr ""
+
 msgid "Report abuse"
 msgstr ""
 
@@ -34401,6 +34407,9 @@ msgid "Security Configuration"
 msgstr ""
 
 msgid "Security Dashboard"
+msgstr ""
+
+msgid "Security Finding not found"
 msgstr ""
 
 msgid "Security dashboard"

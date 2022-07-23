@@ -112,15 +112,15 @@ _The uploads are stored by default in
 `/home/git/gitlab/public/uploads`._
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
-   lines:
+   lines, making sure to use the [appropriate ones for your provider](object_storage.md#connection-settings):
 
    ```yaml
    uploads:
      object_store:
        enabled: true
        remote_directory: "uploads" # The bucket name
-       connection:
-         provider: AWS # Only AWS supported at the moment
+       connection: # The lines in this block depend on your provider
+         provider: AWS
          aws_access_key_id: AWS_ACCESS_KEY_ID
          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
          region: eu-central-1
