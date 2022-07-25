@@ -5,7 +5,7 @@ group: unassigned
 description: 'Writing styles, markup, formatting, and other standards for the GitLab RESTful APIs.'
 ---
 
-# RESTful API
+# Documenting REST API resources
 
 REST API resources are documented in Markdown under
 [`/doc/api`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api). Each

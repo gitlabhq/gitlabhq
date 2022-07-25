@@ -5,7 +5,7 @@ RSpec.describe 'User adds pages domain', :js do
   include LetsEncryptHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let_it_be(:project) { create(:project, pages_https_only: false) }
+  let_it_be(:project) { create(:project, :pages_published, pages_https_only: false) }
 
   let(:user) { create(:user) }
 
@@ -18,8 +18,6 @@ RSpec.describe 'User adds pages domain', :js do
   end
 
   context 'when pages are exposed on external HTTP address', :http_pages_enabled do
-    let(:project) { create(:project, pages_https_only: false) }
-
     shared_examples 'adds new domain' do
       it 'adds new domain' do
         visit new_project_pages_domain_path(project)
@@ -42,7 +40,7 @@ RSpec.describe 'User adds pages domain', :js do
     context 'when project in group namespace' do
       it_behaves_like 'adds new domain' do
         let(:group) { create :group }
-        let(:project) { create(:project, namespace: group, pages_https_only: false) }
+        let(:project) { create(:project, :pages_published, namespace: group, pages_https_only: false) }
       end
     end
 

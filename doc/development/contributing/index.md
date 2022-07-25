@@ -218,7 +218,7 @@ This [documentation](issue_workflow.md) outlines the current issue workflow:
 
 This [documentation](merge_request_workflow.md) outlines the current merge request process.
 
-- [Merge request guidelines](merge_request_workflow.md#merge-request-guidelines)
+- [Merge request guidelines](merge_request_workflow.md#merge-request-guidelines-for-contributors)
 - [Contribution acceptance criteria](merge_request_workflow.md#contribution-acceptance-criteria)
 - [Definition of done](merge_request_workflow.md#definition-of-done)
 - [Dependencies](merge_request_workflow.md#dependencies)

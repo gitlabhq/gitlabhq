@@ -274,18 +274,18 @@ This file contains the information GitLab uses to manually process quarterly rec
 The **License Usage** CSV includes the following details:
 
 - License key
-- Email
+- Licensee email
 - License start date
 - License end date
 - Company
 - Generated at (the timestamp for when the file was exported)
 - Table of historical user counts for each day in the period:
-  - Date the count was recorded
-  - Active user count
+  - Timestamp the count was recorded
+  - Billable user count
 
 NOTES:
 
-- All timestamps are displayed in UTC.
+- All date timestamps are displayed in UTC.
 - A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
 
 ## Renew your subscription

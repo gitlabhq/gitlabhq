@@ -7,13 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # OmniAuth **(FREE SELF)**
 
 Users can sign in to GitLab by using their credentials from Twitter, GitHub, and other popular services.
-[OmniAuth](https://rubygems.org/gems/omniauth/) is the Rack
-framework that GitLab uses to provide this authentication.
+[OmniAuth](https://rubygems.org/gems/omniauth/) is the Rack framework that GitLab uses to provide this authentication.
 
-![OmniAuth providers on sign-in page](img/omniauth_providers_v_14_6.png)
-
-If you configure OmniAuth, users can continue to sign in using other
-mechanisms, including standard GitLab authentication or LDAP (if configured).
+When configured, additional sign-in options are displayed on the sign-in page.
 
 ## Supported providers
 

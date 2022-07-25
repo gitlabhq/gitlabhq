@@ -1,0 +1,11 @@
+- can_add_new_domain = can?(current_user, :update_pages, @project) && (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https)
+
+%h1.page-title.gl-font-size-h-display.with-button
+  = s_('GitLabPages|Pages')
+  - if can_add_new_domain
+    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'float-right'}, href: new_project_pages_domain_path(@project)) do
+      = s_('GitLabPages|New Domain')
+%p
+  - docs_link_start = "<a href='#{help_page_path('user/project/pages/index')}' target='_blank' rel='noopener noreferrer'>".html_safe
+  - docs_link_end = '</a>'.html_safe
+  = s_('GitLabPages|With GitLab Pages you can host your static website directly from your GitLab repository. %{docs_link_start}Learn more.%{link_end}').html_safe % { docs_link_start: docs_link_start, link_end: docs_link_end }

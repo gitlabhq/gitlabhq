@@ -404,6 +404,13 @@ FactoryBot.define do
     end
   end
 
+  trait :pages_published do
+    after(:create) do |project|
+      project.mark_pages_onboarding_complete
+      project.mark_pages_as_deployed
+    end
+  end
+
   trait :service_desk_disabled do
     service_desk_enabled { nil }
   end

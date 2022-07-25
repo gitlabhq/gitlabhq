@@ -1,0 +1,8 @@
+---
+name: use_pipeline_wizard_for_pages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78276
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/349095
+milestone: '15.3'
+type: development
+group: group::incubation
+default_enabled: false

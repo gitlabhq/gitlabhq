@@ -123,6 +123,7 @@ From there, you can see the following actions:
   - Prevent editing approval rules in projects and merge requests.
   - Require user password to approve.
   - Remove all approvals when commits are added to the source branch.
+- Changes to streaming audit destination custom HTTP headers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) in GitLab 15.3.
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 

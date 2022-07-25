@@ -32,6 +32,11 @@ export default {
       required: false,
       default: false,
     },
+    id: {
+      type: String,
+      required: false,
+      default: () => uniqueId('checklist_'),
+    },
   },
   computed: {
     checklistItems() {
@@ -62,8 +67,8 @@ export default {
 </script>
 
 <template>
-  <gl-form-group #default="{ ariaDescribedby }" :label="title">
-    <gl-form-checkbox-group :aria-describedby="ariaDescribedby" @input="updateValidState">
+  <gl-form-group :label="title" :label-for="id">
+    <gl-form-checkbox-group :id="id" :label="title" @input="updateValidState">
       <gl-form-checkbox
         v-for="item in checklistItems"
         :id="item.id"

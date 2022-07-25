@@ -49,7 +49,7 @@ RSpec.describe Emails::Profile do
 
   describe 'for users that signed up, the email' do
     let(:example_site_path) { root_path }
-    let(:new_user) { create(:user, email: new_user_address, password: "securePassword") }
+    let(:new_user) { create(:user, email: new_user_address) }
 
     subject { Notify.new_user_email(new_user.id) }
 
@@ -59,6 +59,7 @@ RSpec.describe Emails::Profile do
     it_behaves_like 'a user cannot unsubscribe through footer link'
 
     it 'does not contain the new user\'s password' do
+      is_expected.not_to have_body_text(new_user.password)
       is_expected.not_to have_body_text /password/
     end
   end

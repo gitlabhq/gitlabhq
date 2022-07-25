@@ -33,7 +33,7 @@ some potentially easy issues.
 To start developing GitLab, download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit)
 and see the [Development section](../../index.md) for the required guidelines.
 
-## Merge request guidelines
+## Merge request guidelines for contributors
 
 If you find an issue, please submit a merge request with a fix or improvement, if
 you can, and include tests. If you don't know how to fix the issue but can write a test
@@ -45,20 +45,10 @@ request is as follows:
 1. [Fork](../../user/project/repository/forking_workflow.md) the project into
    your personal namespace (or group) on GitLab.com.
 1. Create a feature branch in your fork (don't work off your [default branch](../../user/project/repository/branches/default.md)).
-1. Write [tests](../rake_tasks.md#run-tests) and code.
-1. [Ensure a changelog is created](../changelog.md).
-1. If you are writing documentation, make sure to follow the
-   [documentation guidelines](../documentation/index.md).
 1. Follow the [commit messages guidelines](#commit-messages-guidelines).
-1. If you have multiple commits, combine them into a few logically organized
-   commits by [squashing them](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#_squashing),
-   but do not change the commit history if you're working on shared branches though.
+1. If you have multiple commits, combine them into a few logically organized commits.
 1. Push the commits to your working branch in your fork.
-1. Submit a merge request (MR) to the `main` branch in the main GitLab project.
-   1. Your merge request needs at least 1 approval, but depending on your changes
-      you might need additional approvals. Refer to the [Approval guidelines](../code_review.md#approval-guidelines).
-   1. You don't have to select any specific approvers, but you can if you really want
-      specific people to approve your merge request.
+1. Submit a merge request (MR) against the default branch of the upstream project.
 1. The MR title should describe the change you want to make.
 1. The MR description should give a reason for your change.
    1. If you are contributing code, fill in the description according to the default
@@ -68,58 +58,15 @@ request is as follows:
    1. Use the syntax `Solves #XXX`, `Closes #XXX`, or `Refs #XXX` to mention the issues your merge
       request addresses. Referenced issues do not [close automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically).
       You must close them manually once the merge request is merged.
-   1. The MR must include *Before* and *After* screenshots if UI changes are made.
-   1. Include any steps or setup required to ensure reviewers can view the changes you've made (for example, include any information about feature flags).
 1. If you're allowed to, set a relevant milestone and [labels](issue_workflow.md).
    MR labels should generally match the corresponding issue (if there is one).
    The group label should reflect the group that executed or coached the work,
    not necessarily the group that owns the feature.
-1. UI changes should use available components from the GitLab Design System,
-   [Pajamas](https://design.gitlab.com/).
-1. If the MR changes CSS classes, please include the list of affected pages, which
-   can be found by running `grep css-class ./app -R`.
-1. If your MR touches code that executes shell commands, reads or opens files, or
-   handles paths to files on disk, make sure it adheres to the
-   [shell command guidelines](../shell_commands.md)
-1. [Code changes should include observability instrumentation](../code_review.md#observability-instrumentation).
-1. If your code needs to handle file storage, see the [uploads documentation](../uploads/index.md).
-1. If your merge request adds one or more migrations, make sure to execute all
-   migrations on a fresh database before the MR is reviewed. If the review leads
-   to large changes in the MR, execute the migrations again once the review is complete.
-1. Write tests for more complex migrations.
-1. If your merge request adds new validations to existing models, to make sure the
-   data processing is backwards compatible:
-
-   - Ask in the [`#database`](https://gitlab.slack.com/archives/CNZ8E900G) Slack channel
-     for assistance to execute the database query that checks the existing rows to
-     ensure existing rows aren't impacted by the change.
-   - Add the necessary validation with a feature flag to be gradually rolled out
-     following [the rollout steps](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#rollout).
-
-   If this merge request is urgent, the code owners should make the final call on
-   whether reviewing existing rows should be included as an immediate follow-up task
-   to the merge request.
-
-   NOTE:
-   There isn't a way to know anything about our customers' data on their
-   [self-managed instances](../../subscriptions/self_managed/index.md), so keep
-   that in mind for any data implications with your merge request.
-
-1. Merge requests **must** adhere to the [merge request performance guidelines](../merge_request_performance_guidelines.md).
-1. For tests that use Capybara, read
-   [how to write reliable, asynchronous integration tests](https://thoughtbot.com/blog/write-reliable-asynchronous-integration-tests-with-capybara).
-1. If your merge request introduces changes that require additional steps when
-   installing GitLab from source, add them to `doc/install/installation.md` in
-   the same merge request.
-1. If your merge request introduces changes that require additional steps when
-   upgrading GitLab from source, add them to
-   `doc/update/upgrading_from_source.md` in the same merge request. If these
-   instructions are specific to a version, add them to the "Version specific
-   upgrading instructions" section.
 1. Read and adhere to
    [The responsibility of the merge request author](../code_review.md#the-responsibility-of-the-merge-request-author).
 1. Read and follow
    [Having your merge request reviewed](../code_review.md#having-your-merge-request-reviewed).
+1. Make sure the merge request meets the [Definition of done](#definition-of-done).
 
 If you would like quick feedback on your merge request feel free to mention someone
 from the [core team](https://about.gitlab.com/community/core-team/) or one of the
@@ -218,12 +165,12 @@ the contribution acceptance criteria below:
    exposing a bug in existing code). Every new class should have corresponding
    unit tests, even if the class is exercised at a higher level, such as a feature test.
    - If a failing CI build seems to be unrelated to your contribution, you can try
-     restarting the failing CI job, rebasing from `main` to bring in updates that
+     restarting the failing CI job, rebasing on top of target branch to bring in updates that
      may resolve the failure, or if it has not been fixed yet, ask a developer to
      help you fix the test.
-1. The MR initially contains a few logically organized commits.
+1. The MR contains a few logically organized commits, or has [squashing commits enabled](../../user/project/merge_requests/squash_and_merge.md#squash-and-merge).
 1. The changes can merge without problems. If not, you should rebase if you're the
-   only one working on your feature branch, otherwise merge `main`.
+   only one working on your feature branch, otherwise merge the default branch into the MR branch.
 1. Only one specific issue is fixed or one specific feature is implemented. Do not
    combine things; send separate merge requests for each issue or feature.
 1. Migrations should do only one thing (for example, create a table, move data to a new
@@ -258,13 +205,60 @@ requirements.
 
 ### MR Merge
 
-1. Clear description explaining the relevancy of the contribution.
+1. Clear title and description explaining the relevancy of the contribution.
 1. Working and clean code that is commented where needed.
-1. [Unit, integration, and system tests](../testing_guide/index.md) that all pass
-   on the CI server.
-1. Peer member testing is optional but recommended when the risk of a change is high. This includes when the changes are [far-reaching](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work) or are for [components critical for security](../code_review.md#security).
-1. Regressions and bugs are covered with tests that reduce the risk of the issue happening
-   again.
+1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
+1. Testing:
+
+   - [Unit, integration, and system tests](../testing_guide/index.md) that all pass
+     on the CI server.
+   - Peer member testing is optional but recommended when the risk of a change is high.
+     This includes when the changes are [far-reaching](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work)
+     or are for [components critical for security](../code_review.md#security).
+   - Description includes any steps or setup required to ensure reviewers can view the changes you've made (for example, include any information about feature flags).
+   - Regressions and bugs are covered with tests that reduce the risk of the issue happening
+     again.
+   - For tests that use Capybara, read
+     [how to write reliable, asynchronous integration tests](https://thoughtbot.com/blog/write-reliable-asynchronous-integration-tests-with-capybara).
+   - [Black-box tests/end-to-end tests](../testing_guide/testing_levels.md#black-box-tests-at-the-system-level-aka-end-to-end-tests)
+     added if required. Please contact [the quality team](https://about.gitlab.com/handbook/engineering/quality/#teams)
+     with any questions.
+   - The change is tested in a review app where possible and if appropriate.
+1. In case of UI changes:
+
+   - Use available components from the GitLab Design System,
+     [Pajamas](https://design.gitlab.com/).
+   - The MR must include *Before* and *After* screenshots if UI changes are made.
+   - If the MR changes CSS classes, please include the list of affected pages, which
+     can be found by running `grep css-class ./app -R`.
+1. If your MR touches code that executes shell commands, reads or opens files, or
+   handles paths to files on disk, make sure it adheres to the
+   [shell command guidelines](../shell_commands.md)
+1. [Code changes should include observability instrumentation](../code_review.md#observability-instrumentation).
+1. If your code needs to handle file storage, see the [uploads documentation](../uploads/index.md).
+1. If your merge request adds one or more migrations:
+   - Make sure to execute all migrations on a fresh database before the MR is reviewed.
+     If the review leads to large changes in the MR, execute the migrations again
+     after the review is complete.
+   - Write tests for more complex migrations.
+1. If your merge request adds new validations to existing models, to make sure the
+   data processing is backwards compatible:
+
+   - Ask in the [`#database`](https://gitlab.slack.com/archives/CNZ8E900G) Slack channel
+     for assistance to execute the database query that checks the existing rows to
+     ensure existing rows aren't impacted by the change.
+   - Add the necessary validation with a feature flag to be gradually rolled out
+     following [the rollout steps](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#rollout).
+
+   If this merge request is urgent, the code owners should make the final call on
+   whether reviewing existing rows should be included as an immediate follow-up task
+   to the merge request.
+
+   NOTE:
+   There isn't a way to know anything about our customers' data on their
+   [self-managed instances](../../subscriptions/self_managed/index.md), so keep
+   that in mind for any data implications with your merge request.
+
 1. Code affected by a feature flag is covered by [automated tests with the feature flag enabled and disabled](../feature_flags/index.md#feature-flags-in-tests), or both
    states are tested as part of peer member testing or as part of the rollout plan.
 1. [Performance guidelines](../merge_request_performance_guidelines.md) have been followed.
@@ -272,16 +266,22 @@ requirements.
 1. [Application and rate limit guidelines](../merge_request_application_and_rate_limit_guidelines.md) have been followed.
 1. [Documented](../documentation/index.md) in the `/doc` directory.
 1. [Changelog entry added](../changelog.md), if necessary.
+1. If your merge request introduces changes that require additional steps when
+   installing GitLab from source, add them to `doc/install/installation.md` in
+   the same merge request.
+1. If your merge request introduces changes that require additional steps when
+   upgrading GitLab from source, add them to
+   `doc/update/upgrading_from_source.md` in the same merge request. If these
+   instructions are specific to a version, add them to the "Version specific
+   upgrading instructions" section.
 1. Reviewed by relevant reviewers, and all concerns are addressed for Availability, Regressions, and Security. Documentation reviews should take place as soon as possible, but they should not block a merge request.
 1. The [MR acceptance checklist](../code_review.md#acceptance-checklist) has been checked as confirmed in the MR.
 1. Create an issue in the [infrastructure issue tracker](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues) to inform the Infrastructure department when your contribution is changing default settings or introduces a new setting, if relevant.
-1. [Black-box tests/end-to-end tests](../testing_guide/testing_levels.md#black-box-tests-at-the-system-level-aka-end-to-end-tests)
-   added if required. Please contact [the quality team](https://about.gitlab.com/handbook/engineering/quality/#teams)
-   with any questions.
-1. The change is tested in a review app where possible and if appropriate.
-1. The new feature does not degrade the user experience of the product.
-1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
 1. An agreed-upon [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans/).
+1. Your merge request has at least 1 approval, but depending on your changes
+   you might need additional approvals. Refer to the [Approval guidelines](../code_review.md#approval-guidelines).
+   - You don't have to select any specific approvers, but you can if you really want
+      specific people to approve your merge request.
 1. Merged by a project maintainer.
 
 ### Production use

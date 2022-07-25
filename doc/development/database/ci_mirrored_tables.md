@@ -10,10 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 As part of the database [decomposition work](https://gitlab.com/groups/gitlab-org/-/epics/6168),
 which had the goal of splitting the single database GitLab is using, into two databases: `main` and
-`ci`, came the big challenge of removing all joins between the tables
-[that don't reside on the same database](multiple_databases.md#removing-joins-between-ci-and-non-ci-tables).
-PostgreSQL doesn't support joins between tables that belong to different databases. However,
-some core application models in the main database are queried very often by the CI side.
+`ci`, came the big challenge of 
+[removing all joins between the `main` and the `ci` tables](multiple_databases.md#removing-joins-between-ci-and-non-ci-tables).
+That is because PostgreSQL doesn't support joins between tables that belong to different databases. 
+However, some core application models in the main database are queried very often by the CI side.
 For example:
 
 - `Namespace`, in the `namespaces` table.

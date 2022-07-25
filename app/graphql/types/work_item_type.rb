@@ -6,6 +6,8 @@ module Types
 
     authorize :read_work_item
 
+    field :confidential, GraphQL::Types::Boolean, null: false,
+          description: 'Indicates the work item is confidential.'
     field :description, GraphQL::Types::String, null: true,
           description: 'Description of the work item.'
     field :id, Types::GlobalIDType[::WorkItem], null: false,

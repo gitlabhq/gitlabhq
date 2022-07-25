@@ -271,9 +271,11 @@ gitlab_rails['ldap_servers'] = {
 }
 ```
 
-This example results in the following sign-in page:
+This example results in a sign-in page with the following tabs:
 
-![Multiple LDAP servers sign in](img/multi_login.png)
+- **GitLab AD**.
+- **GitLab Secondary AD**.
+- **GitLab Tertiary AD**.
 
 ### Set up LDAP user filter
 

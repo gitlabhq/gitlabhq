@@ -10,11 +10,29 @@ class Projects::PagesController < Projects::ApplicationController
 
   feature_category :pages
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def show
-    @domains = @project.pages_domains.order(:domain).present(current_user: current_user)
+  def new
+    @pipeline_wizard_data = {
+      project_path: @project.full_path,
+      default_branch: @project.repository.root_ref,
+      redirect_to_when_done: project_pages_path(@project)
+    }
   end
-  # rubocop: enable CodeReuse/ActiveRecord
+
+  def show
+    unless @project.pages_enabled?
+      render :disabled
+      return
+    end
+
+    if @project.pages_show_onboarding?
+      redirect_to action: 'new'
+      return
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    @domains = @project.pages_domains.order(:domain).present(current_user: current_user)
+    # rubocop: enable CodeReuse/ActiveRecord
+  end
 
   def destroy
     ::Pages::DeleteService.new(@project, current_user).execute

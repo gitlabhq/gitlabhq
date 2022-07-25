@@ -1,4 +1,4 @@
-import { GlFormCheckbox, GlFormCheckboxGroup } from '@gitlab/ui';
+import { GlFormCheckbox, GlFormGroup, GlFormCheckboxGroup } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ChecklistWidget from '~/pipeline_wizard/components/widgets/checklist.vue';
@@ -21,6 +21,7 @@ describe('Pipeline Wizard - Checklist Widget', () => {
     return eventArray[eventArray.length - 1];
   };
   const findItem = (atIndex = 0) => wrapper.findAllComponents(GlFormCheckbox).at(atIndex);
+  const getGlFormGroup = () => wrapper.getComponent(GlFormGroup);
   const getGlFormCheckboxGroup = () => wrapper.getComponent(GlFormCheckboxGroup);
 
   // The item.ids *can* be passed inside props.items, but are usually
@@ -55,6 +56,16 @@ describe('Pipeline Wizard - Checklist Widget', () => {
   it("displays the item's text", () => {
     createComponent();
     expect(findItem().text()).toBe(props.items[0]);
+  });
+
+  it('assigns the same non-null value to label-for and form id', () => {
+    createComponent();
+    const formGroupLabelFor = getGlFormGroup().attributes('label-for');
+    const formCheckboxGroupId = getGlFormCheckboxGroup().attributes('id');
+
+    expect(formGroupLabelFor).not.toBeNull();
+    expect(formCheckboxGroupId).not.toBeNull();
+    expect(formGroupLabelFor).toBe(formCheckboxGroupId);
   });
 
   it('displays an item with a help text', () => {

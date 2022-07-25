@@ -6246,7 +6246,7 @@ msgstr ""
 msgid "Billing|Free groups on GitLab are limited to %{maxNamespaceSeats} seats"
 msgstr ""
 
-msgid "Billing|From June 22, 2022 (GitLab 15.1), free groups will be limited to 5 members"
+msgid "Billing|From October 19, 2022, free groups will be limited to 5 members"
 msgstr ""
 
 msgid "Billing|Group invite"
@@ -6285,7 +6285,7 @@ msgstr ""
 msgid "Billing|You are about to remove user %{username} from your subscription. If you continue, the user will be removed from the %{namespace} group and all its subgroups and projects. This action can't be undone."
 msgstr ""
 
-msgid "Billing|You can begin moving members in %{namespaceName} now. A member loses access to the group when you turn off %{strongStart}In a seat%{strongEnd}. If over 5 members have %{strongStart}In a seat%{strongEnd} enabled after June 22, 2022, we'll select the 5 members who maintain access. We'll first count members that have Owner and Maintainer roles, then the most recently active members until we reach 5 members. The remaining members will get a status of Over limit and lose access to the group."
+msgid "Billing|You can begin moving members in %{namespaceName} now. A member loses access to the group when you turn off %{strongStart}In a seat%{strongEnd}. If over 5 members have %{strongStart}In a seat%{strongEnd} enabled after October 19, 2022, we'll select the 5 members who maintain access. We'll first count members that have Owner and Maintainer roles, then the most recently active members until we reach 5 members. The remaining members will get a status of Over limit and lose access to the group."
 msgstr ""
 
 msgid "Billing|Your free group is now limited to %{free_user_limit} members"
@@ -16710,10 +16710,10 @@ msgstr ""
 msgid "From %{providerTitle}"
 msgstr ""
 
-msgid "From June 22, 2022 (GitLab 15.1), free personal namespaces and top-level groups will be limited to %{free_limit} members"
+msgid "From October 19, 2022, free personal namespaces and top-level groups will be limited to %{free_limit} members"
 msgstr ""
 
-msgid "From June 22, 2022 (GitLab 15.1), you can have a maximum of %{free_limit} unique members across all of your personal projects"
+msgid "From October 19, 2022, you can have a maximum of %{free_limit} unique members across all of your personal projects"
 msgstr ""
 
 msgid "From issue creation until deploy to production"
@@ -17617,6 +17617,9 @@ msgstr ""
 msgid "GitLabPages|Certificate: %{subject}"
 msgstr ""
 
+msgid "GitLabPages|Check the Pipeline Status"
+msgstr ""
+
 msgid "GitLabPages|Configure pages"
 msgstr ""
 
@@ -17668,6 +17671,9 @@ msgstr ""
 msgid "GitLabPages|Something went wrong while obtaining the Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}."
 msgstr ""
 
+msgid "GitLabPages|Start over"
+msgstr ""
+
 msgid "GitLabPages|Support for domains and certificates is disabled. Ask your system's administrator to enable it."
 msgstr ""
 
@@ -17680,6 +17686,9 @@ msgstr ""
 msgid "GitLabPages|Verified"
 msgstr ""
 
+msgid "GitLabPages|Waiting for the Pages Pipeline to complete..."
+msgstr ""
+
 msgid "GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -17690,6 +17699,9 @@ msgid "GitLabPages|With GitLab Pages you can host your static website directly f
 msgstr ""
 
 msgid "GitLabPages|Your Pages site is not configured yet. See the %{docs_link_start}GitLab Pages documentation%{link_end} to learn how to upload your static site and have GitLab serve it. You can also take some inspiration from the %{samples_link_start}sample Pages projects%{link_end}."
+msgstr ""
+
+msgid "GitLabPages|Your Project has been configured for Pages. Now we have to wait for the Pipeline to succeed for the first time."
 msgstr ""
 
 msgid "GitLabPages|Your pages are served under:"
@@ -44473,7 +44485,7 @@ msgstr ""
 msgid "You could not create a new trigger."
 msgstr ""
 
-msgid "You currently have more than %{free_limit} members across all your personal projects. From June 22, 2022, the %{free_limit} most recently active members will remain active, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access. To view and manage members, check the members page for each project in your namespace. We recommend you %{move_link_start}move your project to a group%{move_link_end} so you can easily manage users and features."
+msgid "You currently have more than %{free_limit} members across all your personal projects. From October 19, 2022, the %{free_limit} most recently active members will remain active, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access. To view and manage members, check the members page for each project in your namespace. We recommend you %{move_link_start}move your project to a group%{move_link_end} so you can easily manage users and features."
 msgstr ""
 
 msgid "You do not have any subscriptions yet"
@@ -44820,7 +44832,7 @@ msgstr ""
 msgid "YouTube"
 msgstr ""
 
-msgid "Your %{doc_link_start}namespace%{doc_link_end}, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_limit} members. From June 22, 2022, it will be limited to %{free_limit}, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access to the namespace. You can go to the Usage Quotas page to manage which %{free_limit} members will remain in your namespace. To get more members, an owner can start a trial or upgrade to a paid tier."
+msgid "Your %{doc_link_start}namespace%{doc_link_end}, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_limit} members. From October 19, 2022, it will be limited to %{free_limit}, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access to the namespace. You can go to the Usage Quotas page to manage which %{free_limit} members will remain in your namespace. To get more members, an owner can start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "Your %{group} membership will now expire in %{days}."

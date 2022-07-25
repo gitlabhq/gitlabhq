@@ -499,7 +499,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           defaults: { format: 'json' },
           constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
-      resource :pages, only: [:show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+      resource :pages, only: [:new, :show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do # rubocop: disable Cop/PutProjectRoutesUnderScope
           member do
             post :verify # rubocop:todo Cop/PutProjectRoutesUnderScope

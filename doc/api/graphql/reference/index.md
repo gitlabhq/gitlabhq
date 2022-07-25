@@ -18530,6 +18530,7 @@ Represents vulnerability letter grades with associated projects.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the work item is confidential. |
 | <a id="workitemdescription"></a>`description` | [`String`](#string) | Description of the work item. |
 | <a id="workitemdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
