@@ -448,36 +448,28 @@ up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every
 If initializing a slice, provide a capacity where possible to avoid extra
 allocations.
 
-<table>
-<tr><th>:white_check_mark: Do</th><th>:x: Don't</th></tr>
-<tr>
-  <td>
+**Don't:**
 
-  ```golang
-  s2 := make([]string, 0, size)
-  for _, val := range s1 {
-      s2 = append(s2, val)
-  }
-  ```
+```golang
+var s2 []string
+for _, val := range s1 {
+    s2 = append(s2, val)
+}
+```
 
-  </td>
-  <td>
+**Do:**
 
-  ```golang
-  var s2 []string
-  for _, val := range s1 {
-      s2 = append(s2, val)
-  }
-  ```
-
-  </td>
-</tr>
-</table>
+```golang
+s2 := make([]string, 0, size)
+for _, val := range s1 {
+    s2 = append(s2, val)
+}
+```
 
 If no capacity is passed to `make` when creating a new slice, `append`
 will continuously resize the slice's backing array if it cannot hold
 the values. Providing the capacity ensures that allocations are kept
-to a minimum. It is recommended that the [`prealloc`](https://github.com/alexkohler/prealloc)
+to a minimum. It's recommended that the [`prealloc`](https://github.com/alexkohler/prealloc)
 golanci-lint rule automatically check for this.
 
 ### Analyzer Tests

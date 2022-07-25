@@ -22,6 +22,8 @@ that may require Support intervention.
 
 The steps can be summed up to:
 
+1. Make a [GitLab backup](../../raketasks/backup_gitlab.md).
+
 1. Find the currently installed GitLab version:
 
    **For Debian/Ubuntu**

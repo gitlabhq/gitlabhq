@@ -45,6 +45,24 @@ sole discretion of GitLab Inc.
 
 <div class="announcement-milestone">
 
+## Announced in 15.3
+
+<div class="deprecation removal-160">
+
+### Maximum number of active pipelines per project limit (`ci_active_pipelines`)
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+The [**Maximum number of active pipelines per project** limit](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits) was never enabled by default and will be removed in GitLab 16.0. This limit can also be configured in the rails console under [`ci_active_pipelines`](https://docs.gitlab.com/ee/administration/instance_limits.html#number-of-pipelines-running-concurrently). Instead, use the other recommended rate limits that offer similar protection:
+
+- [**Pipelines rate limits**](https://docs.gitlab.com/ee/user/admin_area/settings/rate_limit_on_pipelines_creation.html).
+- [**Total number of jobs in currently active pipelines**](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits).
+
+</div>
+</div>
+
+<div class="announcement-milestone">
+
 ## Announced in 15.2
 
 <div class="deprecation removal-160 breaking-change">

@@ -190,8 +190,8 @@ end
 
 #### PlantUML
 
-To make PlantUML available in GitLab, a GitLab administrator must enable it. For more information, see the
-[PlantUML & GitLab](../administration/integration/plantuml.md) page.
+PlantUML integration is enabled on GitLab.com. To make PlantUML available in self-managed
+installation of GitLab, a GitLab administrator [must enable it](../administration/integration/plantuml.md).
 
 #### Kroki
 

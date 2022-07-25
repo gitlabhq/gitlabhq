@@ -54,6 +54,7 @@ DECLARE
   report_type smallint;
   resolved_on_default_branch boolean;
   present_on_default_branch boolean;
+  namespace_id bigint;
 BEGIN
   IF (NEW.vulnerability_id IS NULL AND (TG_OP = 'INSERT' OR TG_OP = 'UPDATE')) THEN
     RETURN NULL;
@@ -76,8 +77,17 @@ BEGIN
     RETURN NULL;
   END IF;
 
-  INSERT INTO vulnerability_reads (vulnerability_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
-    VALUES (NEW.vulnerability_id, NEW.project_id, NEW.scanner_id, report_type, severity, state, resolved_on_default_branch, NEW.uuid::uuid, NEW.location->>'image', NEW.location->'kubernetes_resource'->>'agent_id', CAST(NEW.location->'kubernetes_resource'->>'agent_id' AS bigint))
+  SELECT
+    projects.namespace_id
+  INTO
+    namespace_id
+  FROM
+    projects
+  WHERE
+    projects.id = NEW.project_id;
+
+  INSERT INTO vulnerability_reads (vulnerability_id, namespace_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
+    VALUES (NEW.vulnerability_id, namespace_id, NEW.project_id, NEW.scanner_id, report_type, severity, state, resolved_on_default_branch, NEW.uuid::uuid, NEW.location->>'image', NEW.location->'kubernetes_resource'->>'agent_id', CAST(NEW.location->'kubernetes_resource'->>'agent_id' AS bigint))
     ON CONFLICT(vulnerability_id) DO NOTHING;
   RETURN NULL;
 END
@@ -103,19 +113,21 @@ DECLARE
   location_image text;
   cluster_agent_id text;
   casted_cluster_agent_id bigint;
+  namespace_id bigint;
 BEGIN
   SELECT
-    v_o.scanner_id, v_o.uuid, v_o.location->>'image', v_o.location->'kubernetes_resource'->>'agent_id', CAST(v_o.location->'kubernetes_resource'->>'agent_id' AS bigint)
+    v_o.scanner_id, v_o.uuid, v_o.location->>'image', v_o.location->'kubernetes_resource'->>'agent_id', CAST(v_o.location->'kubernetes_resource'->>'agent_id' AS bigint), projects.namespace_id
   INTO
-    scanner_id, uuid, location_image, cluster_agent_id, casted_cluster_agent_id
+    scanner_id, uuid, location_image, cluster_agent_id, casted_cluster_agent_id, namespace_id
   FROM
-     vulnerability_occurrences v_o
+    vulnerability_occurrences v_o
+  INNER JOIN projects ON projects.id = v_o.project_id
   WHERE
     v_o.vulnerability_id = NEW.id
   LIMIT 1;
 
-  INSERT INTO vulnerability_reads (vulnerability_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
-    VALUES (NEW.id, NEW.project_id, scanner_id, NEW.report_type, NEW.severity, NEW.state, NEW.resolved_on_default_branch, uuid::uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
+  INSERT INTO vulnerability_reads (vulnerability_id, namespace_id, project_id, scanner_id, report_type, severity, state, resolved_on_default_branch, uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
+    VALUES (NEW.id, namespace_id, NEW.project_id, scanner_id, NEW.report_type, NEW.severity, NEW.state, NEW.resolved_on_default_branch, uuid::uuid, location_image, cluster_agent_id, casted_cluster_agent_id)
     ON CONFLICT(vulnerability_id) DO NOTHING;
   RETURN NULL;
 END
@@ -22357,6 +22369,7 @@ CREATE TABLE vulnerability_reads (
     location_image text,
     cluster_agent_id text,
     casted_cluster_agent_id bigint,
+    namespace_id bigint,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
     CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10))
 );
@@ -30044,6 +30057,8 @@ CREATE UNIQUE INDEX index_vuln_historical_statistics_on_project_id_and_date ON v
 
 CREATE INDEX index_vuln_reads_on_casted_cluster_agent_id_where_it_is_null ON vulnerability_reads USING btree (casted_cluster_agent_id) WHERE (casted_cluster_agent_id IS NOT NULL);
 
+CREATE INDEX index_vuln_reads_on_namespace_id_state_severity_and_vuln_id ON vulnerability_reads USING btree (namespace_id, state, severity, vulnerability_id DESC);
+
 CREATE INDEX index_vuln_reads_on_project_id_state_severity_and_vuln_id ON vulnerability_reads USING btree (project_id, state, severity, vulnerability_id DESC);
 
 CREATE INDEX index_vulnerabilites_common_finder_query ON vulnerabilities USING btree (project_id, state, report_type, severity, id);
@@ -31946,6 +31961,9 @@ ALTER TABLE ONLY user_namespace_callouts
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_4b88e5b255 FOREIGN KEY (component_version_id) REFERENCES sbom_component_versions(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_reads
+    ADD CONSTRAINT fk_4f593f6c62 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_5001652292 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

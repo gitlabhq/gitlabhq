@@ -703,7 +703,8 @@ SSH in to any of the Patroni nodes on the **primary site**:
    ```
 
 If the 'State' column for any node doesn't say "running", check the
-[Troubleshooting section](troubleshooting.md) before proceeding.
+[PostgreSQL replication and failover troubleshooting section](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+before proceeding.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2107,7 +2108,7 @@ the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#en
    failing to connect to PostgreSQL, it may be that your PgBouncer node's IP
    address is missing from PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb`
    on your database nodes. Before proceeding, see
-   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
+   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
 
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 

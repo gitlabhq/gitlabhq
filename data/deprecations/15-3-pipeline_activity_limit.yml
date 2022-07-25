@@ -1,0 +1,33 @@
+# This is a template for a feature deprecation.
+#
+# Please refer to the deprecation guidelines to confirm your understanding of GitLab's definitions.
+# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
+#
+# Deprecations must be announced at least three releases prior to removal.
+#
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` on Slack and mention `@gitlab-com/support` in this MR.
+#
+# Breaking changes must happen in a major release.
+#
+# For more information please refer to the handbook documentation here:
+# https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations
+#
+# Please delete this line and above before submitting your merge request.
+#
+# REQUIRED FIELDS
+#
+- name: "Maximum number of active pipelines per project limit (`ci_active_pipelines`)"  # (required) The name of the feature to be deprecated
+  announcement_milestone: "15.3"  # (required) The milestone when this feature was first announced as deprecated.
+  announcement_date: "2022-08-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  removal_date: "2023-05-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  breaking_change: false  # (required) If this deprecation is a breaking change, set this value to true
+  reporter: jheimbuck_gl  # (required) GitLab username of the person reporting the deprecation
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/368195  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The [**Maximum number of active pipelines per project** limit](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits) was never enabled by default and will be removed in GitLab 16.0. This limit can also be configured in the rails console under [`ci_active_pipelines`](https://docs.gitlab.com/ee/administration/instance_limits.html#number-of-pipelines-running-concurrently). Instead, use the other recommended rate limits that offer similar protection:
+
+    - [**Pipelines rate limits**](https://docs.gitlab.com/ee/user/admin_area/settings/rate_limit_on_pipelines_creation.html).
+    - [**Total number of jobs in currently active pipelines**](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits).

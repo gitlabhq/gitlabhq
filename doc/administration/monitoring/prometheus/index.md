@@ -465,3 +465,17 @@ If you are using Prometheus monitoring:
    ```
 
 1. Optional. [Configure the storage retention size](index.md#configure-the-storage-retention-size).
+
+### Monitoring node not receiving data
+
+If the monitoring node is not receiving any data, check that the exporters are capturing data:
+
+```shell
+curl "http[s]://localhost:<EXPORTER LISTENING PORT>/metric"
+```
+
+or
+
+```shell
+curl "http[s]://localhost:<EXPORTER LISTENING PORT>/-/metric"
+```

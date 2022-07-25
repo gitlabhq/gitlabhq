@@ -766,7 +766,7 @@ the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#en
    failing to connect to PostgreSQL, it may be that your PgBouncer node's IP
    address is missing from PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb`
    on your database nodes. Before proceeding, see
-   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
+   [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server).
 
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
