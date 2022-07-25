@@ -27,8 +27,8 @@ export default function initLinkedResources() {
       render: (createElement) =>
         createElement('resource-links-block', {
           props: {
-            issuableId,
             helpPath,
+            issuableId: parseInt(issuableId, 10),
             canAddResourceLinks: parseBoolean(canAddResourceLinks),
           },
         }),

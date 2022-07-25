@@ -18,10 +18,10 @@ RSpec.describe ProjectHookPresenter do
   end
 
   describe '#logs_retry_path' do
-    subject { web_hook.present.logs_details_path(web_hook_log) }
+    subject { web_hook.present.logs_retry_path(web_hook_log) }
 
     let(:expected_path) do
-      "/#{project.namespace.path}/#{project.name}/-/hooks/#{web_hook.id}/hook_logs/#{web_hook_log.id}"
+      "/#{project.namespace.path}/#{project.name}/-/hooks/#{web_hook.id}/hook_logs/#{web_hook_log.id}/retry"
     end
 
     it { is_expected.to eq(expected_path) }

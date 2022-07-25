@@ -347,7 +347,7 @@ gem 'warning', '~> 1.3.0'
 group :development do
   gem 'lefthook', '~> 1.0.0', require: false
   gem 'rubocop'
-  gem 'solargraph', '~> 0.44.3', require: false
+  gem 'solargraph', '~> 0.45.0', require: false
 
   gem 'letter_opener_web', '~> 2.0.0'
 

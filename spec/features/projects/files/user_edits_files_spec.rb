@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User edits files', :js do
+  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
   include ProjectForksHelper
   include BlobSpecHelpers
 
@@ -50,10 +51,9 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       click_link_or_button('Edit')
       find('.file-editor', match: :first)
 
-      find('#editor')
-      set_editor_value('*.rbca')
+      editor_set_value('*.rbca')
 
-      expect(editor_value).to eq('*.rbca')
+      expect(find('.monaco-editor')).to have_content('*.rbca')
     end
 
     it 'does not show the edit link if a file is binary' do
@@ -72,8 +72,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       click_link_or_button('Edit')
       find('.file-editor', match: :first)
 
-      find('#editor')
-      set_editor_value('*.rbca')
+      editor_set_value('*.rbca')
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
 
@@ -91,8 +90,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
 
       find('.file-editor', match: :first)
 
-      find('#editor')
-      set_editor_value('*.rbca')
+      editor_set_value('*.rbca')
       fill_in(:commit_message, with: 'New commit message', visible: true)
       fill_in(:branch_name, with: 'new_branch_name', visible: true)
       click_button('Commit changes')
@@ -110,8 +108,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
       click_link_or_button('Edit')
       find('.file-editor', match: :first)
 
-      find('#editor')
-      set_editor_value('*.rbca')
+      editor_set_value('*.rbca')
       click_link('Preview changes')
 
       expect(page).to have_css('.line_holder.new')
@@ -156,10 +153,9 @@ RSpec.describe 'Projects > Files > User edits files', :js do
 
       find('.file-editor', match: :first)
 
-      find('#editor')
-      set_editor_value('*.rbca')
+      editor_set_value('*.rbca')
 
-      expect(editor_value).to eq('*.rbca')
+      expect(find('.monaco-editor')).to have_content('*.rbca')
     end
 
     it 'opens the Web IDE in a forked project', :sidekiq_might_not_need_inline do
@@ -187,8 +183,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
 
       find('.file-editor', match: :first)
 
-      find('#editor')
-      set_editor_value('*.rbca')
+      editor_set_value('*.rbca')
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
 
@@ -216,8 +211,7 @@ RSpec.describe 'Projects > Files > User edits files', :js do
 
         expect(page).not_to have_link('Fork')
 
-        find('#editor')
-        set_editor_value('*.rbca')
+        editor_set_value('*.rbca')
         fill_in(:commit_message, with: 'Another commit', visible: true)
         click_button('Commit changes')
 

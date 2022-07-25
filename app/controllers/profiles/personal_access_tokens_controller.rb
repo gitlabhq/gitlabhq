@@ -58,7 +58,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   end
 
   def active_personal_access_tokens
-    tokens = finder(state: 'active', sort: 'expires_at_asc').execute
+    tokens = finder(state: 'active', sort: 'expires_at_asc_id_desc').execute
 
     if Feature.enabled?('access_token_pagination')
       tokens = tokens.page(page)

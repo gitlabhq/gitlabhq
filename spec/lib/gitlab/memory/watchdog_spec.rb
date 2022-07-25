@@ -26,6 +26,8 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
       allow(logger).to receive(:info)
 
       allow(Gitlab::Metrics::Memory).to receive(:gc_heap_fragmentation).and_return(fragmentation)
+
+      allow(::Prometheus::PidProvider).to receive(:worker_id).and_return('worker_1')
     end
 
     after do
@@ -37,7 +39,7 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
       let(:max_strikes) { 0 }
 
       it 'sets the heap fragmentation limit gauge' do
-        allow(Gitlab::Metrics).to receive(:gauge).and_return(heap_frag_limit_gauge)
+        allow(Gitlab::Metrics).to receive(:gauge).with(anything, anything).and_return(heap_frag_limit_gauge)
 
         expect(heap_frag_limit_gauge).to receive(:set).with({}, max_heap_fragmentation)
       end
@@ -86,11 +88,12 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
       let(:fragmentation) { max_heap_fragmentation + 0.1 }
 
       before do
+        expected_labels = { pid: 'worker_1' }
         allow(Gitlab::Metrics).to receive(:counter)
-          .with(:gitlab_memwd_heap_frag_violations_total, anything, anything)
+          .with(:gitlab_memwd_heap_frag_violations_total, anything, expected_labels)
           .and_return(heap_frag_violations_counter)
         allow(Gitlab::Metrics).to receive(:counter)
-          .with(:gitlab_memwd_heap_frag_violations_handled_total, anything, anything)
+          .with(:gitlab_memwd_heap_frag_violations_handled_total, anything, expected_labels)
           .and_return(heap_frag_violations_handled_counter)
         allow(heap_frag_violations_counter).to receive(:increment)
         allow(heap_frag_violations_handled_counter).to receive(:increment)
@@ -146,7 +149,6 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
         end
 
         it 'logs the event' do
-          expect(::Prometheus::PidProvider).to receive(:worker_id).at_least(:once).and_return('worker_1')
           expect(Gitlab::Metrics::System).to receive(:memory_usage_rss).at_least(:once).and_return(1024)
           expect(logger).to receive(:warn).with({
             message: 'heap fragmentation limit exceeded',

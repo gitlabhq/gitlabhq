@@ -5364,7 +5364,16 @@ msgstr ""
 msgid "AuditStreams|Setup streaming for audit events"
 msgstr ""
 
+msgid "AuditStreams|Stream added successfully"
+msgstr ""
+
 msgid "AuditStreams|Stream count icon"
+msgstr ""
+
+msgid "AuditStreams|Stream deleted successfully"
+msgstr ""
+
+msgid "AuditStreams|Stream updated successfully"
 msgstr ""
 
 msgid "AuditStreams|Streams"
@@ -23489,6 +23498,9 @@ msgstr ""
 msgid "LinkedResources|Cancel"
 msgstr ""
 
+msgid "LinkedResources|Error deleting the linked resource for the incident: %{error}"
+msgstr ""
+
 msgid "LinkedResources|Fetching linked resources"
 msgstr ""
 
@@ -23502,6 +23514,9 @@ msgid "LinkedResources|Read more about linked resources"
 msgstr ""
 
 msgid "LinkedResources|Remove"
+msgstr ""
+
+msgid "LinkedResources|Something went wrong while deleting the linked resource for the incident."
 msgstr ""
 
 msgid "LinkedResources|Something went wrong while fetching linked resources for the incident."

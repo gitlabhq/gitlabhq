@@ -36,11 +36,6 @@ Users with at least the Owner role for a group can add event streaming destinati
     - When the destination list is not empty, select **{plus}** to show the section for adding destinations.
 1. Enter the destination URL to add and select **Add**.
 
-Event streaming is enabled if:
-
-- No warning is shown.
-- The added endpoint is displayed in the UI.
-
 ### Use the API
 
 To enable event streaming and add a destination, users with at least the Owner role for a group must use the
@@ -119,11 +114,6 @@ Users with at least the Owner role for a group can delete event streaming destin
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select **{remove}** at the right side of each item.
-
-The external streaming destination is deleted when:
-
-- No warning is shown.
-- The deleted endpoint is not displayed in the UI.
 
 ### Use the API
 
@@ -237,11 +227,6 @@ Users with at least the Owner role for a group can add event streaming destinati
    [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361925).
 1. Select **Save** to update the endpoint.
 
-Event streaming is updated if:
-
-- The returned `errors` object is empty.
-- The API responds with `200 OK`.
-
 ### Deleting custom HTTP headers
 
 Deleting custom HTTP headers with the API or GitLab UI.
@@ -280,11 +265,6 @@ Users with at least the Owner role for a group can delete event streaming destin
 1. Locate the header that you wish to remove.
 1. Select **{remove}** at the right side of the header.
 1. Select **Save** to update the endpoint.
-
-Event streaming is updated if:
-
-- The returned `errors` object is empty.
-- The API responds with `200 OK`.
 
 ### List all custom headers
 

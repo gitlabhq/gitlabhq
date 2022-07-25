@@ -149,6 +149,7 @@ module.exports = (path, options = {}) => {
     'fault',
     'dateformat',
     'lowlight',
+    'vscode-languageserver-types',
     ...gfmParserDependencies,
   ];
 

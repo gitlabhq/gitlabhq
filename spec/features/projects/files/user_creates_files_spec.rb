@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User creates files', :js do
+  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
   include BlobSpecHelpers
 
   let(:fork_message) do
@@ -89,8 +90,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
       end
 
       it 'creates and commit a new file' do
-        find('#editor')
-        execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
+        editor_set_value('*.rbca')
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
@@ -107,8 +107,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
       it 'creates and commit a new file with new lines at the end of file' do
         set_default_button('edit')
 
-        find('#editor')
-        execute_script('monaco.editor.getModels()[0].setValue("Sample\n\n\n")')
+        editor_set_value('Sample\n\n\n')
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
@@ -119,8 +118,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
 
         click_link('Edit')
 
-        find('#editor')
-        expect(evaluate_script('monaco.editor.getModels()[0].getValue()')).to eq("Sample\n\n\n")
+        expect(find('.monaco-editor')).to have_content('Sample\n\n\n')
       end
 
       it 'creates and commit a new file with a directory name' do
@@ -128,8 +126,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
 
         expect(page).to have_selector('.file-editor')
 
-        find('#editor')
-        execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
+        editor_set_value('*.rbca')
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
 
@@ -143,8 +140,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
       it 'creates and commit a new file specifying a new branch' do
         expect(page).to have_selector('.file-editor')
 
-        find('#editor')
-        execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
+        editor_set_value('*.rbca')
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
         fill_in(:branch_name, with: 'new_branch_name', visible: true)
@@ -178,8 +174,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
       it 'creates and commit new file in forked project' do
         expect(page).to have_selector('.file-editor')
 
-        find('#editor')
-        execute_script("monaco.editor.getModels()[0].setValue('*.rbca')")
+        editor_set_value('*.rbca')
 
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)

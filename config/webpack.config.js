@@ -473,9 +473,7 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // automatically configure monaco editor web workers
-    new MonacoWebpackPlugin({
-      globalAPI: true,
-    }),
+    new MonacoWebpackPlugin(),
 
     new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
 

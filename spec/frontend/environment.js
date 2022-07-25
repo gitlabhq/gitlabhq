@@ -70,7 +70,6 @@ class CustomEnvironment extends JSDOMEnvironment {
     //
     // Monaco-related environment variables
     //
-    this.global.MonacoEnvironment = { globalAPI: true };
     Object.defineProperty(this.global, 'matchMedia', {
       writable: true,
       value: (query) => ({

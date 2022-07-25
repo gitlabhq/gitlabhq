@@ -1,6 +1,16 @@
-Contact: security@gitlab.com
+# Preferred disclosure is via HackerOne
+Contact: https://hackerone.com/gitlab/
+# Additional disclosure processes are available in our handbook:
+Contact: https://about.gitlab.com/security/disclosure/
+
+Policy: https://hackerone.com/gitlab/
+
+Acknowledgments: https://hackerone.com/gitlab/
 Acknowledgments: https://about.gitlab.com/security/vulnerability-acknowledgements/
+
+Canonical: https://gitlab.com/gitlab-org/gitlab/-/blob/master/security.txt
+
 Preferred-Languages: en
-Canonical: https://about.gitlab.com/security/disclosure/
-Policy: https://hackerone.com/gitlab
 Hiring: https://about.gitlab.com/jobs/
+
+Expires: 2023-07-31T00:00:00Z

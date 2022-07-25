@@ -2920,7 +2920,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#cancel_running' do
-    subject(:latest_status) { pipeline.statuses.pluck(:status) }
+    let(:latest_status) { pipeline.statuses.pluck(:status) }
 
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
 
@@ -2963,6 +2963,32 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
+    context 'with bridge jobs' do
+      before do
+        create(:ci_bridge, :created, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'bridges are canceled' do
+        expect(pipeline.bridges.first.status).to eq 'canceled'
+      end
+    end
+
+    context 'when pipeline is not cancelable' do
+      before do
+        create(:ci_build, :canceled, stage_idx: 0, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'does not send cancel signal to cancel self' do
+        expect(pipeline).not_to receive(:cancel_self_only)
+
+        pipeline.cancel_running
+      end
+    end
+
     context 'preloading relations' do
       let(:pipeline1) { create(:ci_empty_pipeline, :created) }
       let(:pipeline2) { create(:ci_empty_pipeline, :created) }
@@ -2994,37 +3020,257 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
-    context 'when the first try cannot get an exclusive lock' do
-      let(:retries) { 1 }
+    shared_examples 'retries' do
+      context 'when the first try cannot get an exclusive lock' do
+        let(:retries) { 1 }
 
-      subject(:cancel_running) { pipeline.cancel_running(retries: retries) }
+        subject { pipeline.cancel_running(retries: retries) }
 
-      before do
-        build = create(:ci_build, :running, pipeline: pipeline)
+        before do
+          create(:ci_build, :running, pipeline: pipeline)
 
-        allow(pipeline.cancelable_statuses).to receive(:find_in_batches).and_yield([build])
+          stub_first_cancel_call_fails
+        end
 
-        call_count = 0
-        allow(build).to receive(:cancel).and_wrap_original do |original, *args|
-          call_count >= retries ? raise(ActiveRecord::StaleObjectError) : original.call(*args)
+        it 'retries again and cancels the build' do
+          subject
 
-          call_count += 1
+          expect(latest_status).to contain_exactly('canceled')
+        end
+
+        context 'when the retries parameter is 0' do
+          let(:retries) { 0 }
+
+          it 'raises error' do
+            expect { subject }.to raise_error(ActiveRecord::StaleObjectError)
+          end
         end
       end
 
-      it 'retries again and cancels the build' do
-        cancel_running
+      def stub_first_cancel_call_fails
+        call_count = 0
 
-        expect(latest_status).to contain_exactly('canceled')
+        allow_next_found_instance_of(Ci::Build) do |build|
+          allow(build).to receive(:cancel).and_wrap_original do |original, *args| # rubocop:disable RSpec/AnyInstanceOf
+            call_count >= retries ? raise(ActiveRecord::StaleObjectError) : original.call(*args)
+
+            call_count += 1
+          end
+        end
+      end
+    end
+
+    context 'with retries' do
+      context 'when feature ci_parent_pipeline_cancels_children is disabled' do
+        before do
+          stub_feature_flags(ci_parent_pipeline_cancels_children: false)
+        end
+
+        it_behaves_like 'retries'
       end
 
-      context 'when the retries parameter is 0' do
-        let(:retries) { 0 }
+      context 'when feature ci_parent_pipeline_cancels_children is enabled' do
+        it_behaves_like 'retries'
+      end
+    end
 
-        it 'raises error' do
-          expect do
+    context 'when auto canceled' do
+      let!(:canceled_by) { create(:ci_empty_pipeline) }
+
+      before do
+        create(:ci_build, :running, pipeline: pipeline)
+
+        pipeline.cancel_running(auto_canceled_by_pipeline_id: canceled_by.id)
+      end
+
+      it 'sets auto cancel' do
+        jobs_canceled_by = pipeline.statuses.map { |s| s.auto_canceled_by.id }
+
+        expect(jobs_canceled_by).to contain_exactly(canceled_by.id)
+        expect(pipeline.auto_canceled_by.id).to eq(canceled_by.id)
+      end
+    end
+
+    context 'when there are child pipelines', :sidekiq_inline do
+      let_it_be(:child_pipeline) { create(:ci_empty_pipeline, :created, child_of: pipeline) }
+
+      before do
+        project.clear_memoization(:cascade_cancel_pipelines_enabled)
+
+        pipeline.reload
+      end
+
+      context 'when cascade_to_children is true' do
+        let(:cascade_to_children) { true }
+        let(:canceled_by) { nil }
+        let(:execute_async) { true }
+
+        let(:params) do
+          {
+            cascade_to_children: cascade_to_children,
+            execute_async: execute_async
+          }.tap do |p|
+            p.merge!(auto_canceled_by_pipeline_id: canceled_by.id) if canceled_by
+          end
+        end
+
+        subject(:cancel_running) { pipeline.cancel_running(**params) }
+
+        context 'when cancelable child pipeline builds' do
+          before do
+            create(:ci_build, :created, pipeline: child_pipeline)
+            create(:ci_build, :running, pipeline: child_pipeline)
+          end
+
+          it 'cancels child builds' do
             cancel_running
-          end.to raise_error(ActiveRecord::StaleObjectError)
+
+            latest_status_for_child = child_pipeline.statuses.pluck(:status)
+            expect(latest_status_for_child).to eq %w(canceled canceled)
+            expect(latest_status).to eq %w(canceled)
+          end
+
+          it 'cancels bridges' do
+            create(:ci_bridge, :created, pipeline: pipeline)
+            create(:ci_bridge, :created, pipeline: child_pipeline)
+
+            cancel_running
+
+            expect(pipeline.bridges.reload.first.status).to eq 'canceled'
+            expect(child_pipeline.bridges.reload.first.status).to eq 'canceled'
+          end
+
+          context 'with nested child pipelines' do
+            let!(:nested_child_pipeline) { create(:ci_empty_pipeline, :created, child_of: child_pipeline) }
+            let!(:nested_child_pipeline_build) { create(:ci_build, :created, pipeline: nested_child_pipeline) }
+
+            it 'cancels them' do
+              cancel_running
+
+              expect(nested_child_pipeline.reload.status).to eq 'canceled'
+              expect(nested_child_pipeline_build.reload.status).to eq 'canceled'
+            end
+          end
+
+          context 'when auto canceled' do
+            let(:canceled_by) { create(:ci_empty_pipeline) }
+
+            it 'sets auto cancel' do
+              cancel_running
+
+              pipeline.reload
+
+              jobs_canceled_by_ids = pipeline.statuses.map(&:auto_canceled_by_id)
+              child_pipelines_canceled_by_ids = pipeline.child_pipelines.map(&:auto_canceled_by_id)
+              child_pipelines_jobs_canceled_by_ids = pipeline.child_pipelines.map(&:statuses).flatten.map(&:auto_canceled_by_id)
+
+              expect(jobs_canceled_by_ids).to contain_exactly(canceled_by.id)
+              expect(pipeline.auto_canceled_by_id).to eq(canceled_by.id)
+              expect(child_pipelines_canceled_by_ids).to contain_exactly(canceled_by.id)
+              expect(child_pipelines_jobs_canceled_by_ids).to contain_exactly(canceled_by.id, canceled_by.id)
+            end
+          end
+
+          context 'when execute_async is false' do
+            let(:execute_async) { false }
+
+            it 'runs sync' do
+              expect(::Ci::CancelPipelineWorker).not_to receive(:perform_async)
+
+              cancel_running
+            end
+
+            it 'cancels children' do
+              cancel_running
+
+              latest_status_for_child = child_pipeline.statuses.pluck(:status)
+              expect(latest_status_for_child).to eq %w(canceled canceled)
+              expect(latest_status).to eq %w(canceled)
+            end
+
+            context 'with nested child pipelines' do
+              let!(:nested_child_pipeline) { create(:ci_empty_pipeline, :created, child_of: child_pipeline) }
+              let!(:nested_child_pipeline_build) { create(:ci_build, :created, pipeline: nested_child_pipeline) }
+
+              it 'cancels them' do
+                cancel_running
+
+                expect(nested_child_pipeline.reload.status).to eq 'canceled'
+                expect(nested_child_pipeline_build.reload.status).to eq 'canceled'
+              end
+            end
+          end
+        end
+
+        it 'does not cancel uncancelable child pipeline builds' do
+          create(:ci_build, :failed, pipeline: child_pipeline)
+
+          cancel_running
+
+          latest_status_for_child = child_pipeline.statuses.pluck(:status)
+          expect(latest_status_for_child).to eq %w(failed)
+          expect(latest_status).to eq %w(canceled)
+        end
+
+        context 'when feature ci_parent_pipeline_cancels_children is disabled' do
+          before do
+            stub_feature_flags(ci_parent_pipeline_cancels_children: false)
+          end
+
+          it 'does not cancel child pipeline builds' do
+            create(:ci_build, :created, pipeline: child_pipeline)
+            create(:ci_build, :running, pipeline: child_pipeline)
+
+            cancel_running
+
+            latest_status_for_child = child_pipeline.statuses.pluck(:status)
+            expect(latest_status_for_child).not_to include('canceled')
+            expect(latest_status).to eq %w(canceled)
+          end
+        end
+      end
+
+      context 'when cascade_to_children is false' do
+        let(:cascade_to_children) { false }
+
+        subject(:cancel_running) { pipeline.cancel_running(cascade_to_children: cascade_to_children) }
+
+        it 'does not cancel cancelable child pipeline builds' do
+          create(:ci_build, :created, pipeline: child_pipeline)
+          create(:ci_build, :running, pipeline: child_pipeline)
+
+          cancel_running
+
+          latest_status_for_child = child_pipeline.statuses.pluck(:status)
+          expect(latest_status_for_child).to eq %w(created running)
+          expect(latest_status).to eq %w(canceled)
+        end
+
+        it 'does not cancel uncancelable child pipeline builds' do
+          create(:ci_build, :failed, pipeline: child_pipeline)
+
+          cancel_running
+
+          latest_status_for_child = child_pipeline.statuses.pluck(:status)
+          expect(latest_status_for_child).to eq %w(failed)
+          expect(latest_status).to eq %w(canceled)
+        end
+
+        context 'when feature ci_parent_pipeline_cancels_children is disabled' do
+          before do
+            stub_feature_flags(ci_parent_pipeline_cancels_children: false)
+          end
+
+          it 'cancels parent but not children pipeline builds' do
+            create(:ci_build, :created, pipeline: child_pipeline)
+            create(:ci_build, :running, pipeline: child_pipeline)
+
+            cancel_running
+
+            latest_status_for_child = child_pipeline.statuses.pluck(:status)
+            expect(latest_status_for_child).not_to include('canceled')
+            expect(latest_status).to eq %w(canceled)
+          end
         end
       end
     end

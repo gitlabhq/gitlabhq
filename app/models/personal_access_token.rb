@@ -33,6 +33,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :preload_users, -> { preload(:user) }
   scope :order_expires_at_asc, -> { reorder(expires_at: :asc) }
   scope :order_expires_at_desc, -> { reorder(expires_at: :desc) }
+  scope :order_expires_at_asc_id_desc, -> { reorder(expires_at: :asc, id: :desc) }
   scope :project_access_token, -> { includes(:user).where(user: { user_type: :project_bot }) }
   scope :owner_is_human, -> { includes(:user).where(user: { user_type: :human }) }
 
@@ -77,7 +78,8 @@ class PersonalAccessToken < ApplicationRecord
     super.merge(
       {
         'expires_at_asc' => -> { order_expires_at_asc },
-        'expires_at_desc' => -> { order_expires_at_desc }
+        'expires_at_desc' => -> { order_expires_at_desc },
+        'expires_at_asc_id_desc' => -> { order_expires_at_asc_id_desc }
       }
     )
   end

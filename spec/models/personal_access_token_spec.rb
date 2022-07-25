@@ -251,7 +251,7 @@ RSpec.describe PersonalAccessToken do
 
   describe '.simple_sorts' do
     it 'includes overridden keys' do
-      expect(described_class.simple_sorts.keys).to include(*%w(expires_at_asc expires_at_desc))
+      expect(described_class.simple_sorts.keys).to include(*%w(expires_at_asc expires_at_desc expires_at_asc_id_desc))
     end
   end
 
@@ -268,6 +268,14 @@ RSpec.describe PersonalAccessToken do
     describe '.order_expires_at_desc' do
       it 'returns ordered list in desc order of expiry date' do
         expect(described_class.order_expires_at_desc).to match [later_token, earlier_token]
+      end
+    end
+
+    describe '.order_expires_at_asc_id_desc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, expires_at: 2.days.ago) }
+
+      it 'returns ordered list in combination of expires_at ascending and id descending' do
+        expect(described_class.order_expires_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
       end
     end
   end

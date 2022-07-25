@@ -26,6 +26,7 @@ RSpec.describe 'CI Lint', :js do
     shared_examples 'validates the YAML' do
       before do
         click_on 'Validate'
+        scroll_to(page.find('[data-testid="ci-lint-status"]'))
       end
 
       context 'YAML is correct' do

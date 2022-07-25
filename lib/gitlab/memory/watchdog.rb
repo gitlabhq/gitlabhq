@@ -167,15 +167,13 @@ module Gitlab
       end
 
       def init_prometheus_metrics(max_heap_fragmentation)
-        default_labels = { pid: worker_id }
-
         @heap_frag_limit = Gitlab::Metrics.gauge(
           :gitlab_memwd_heap_frag_limit,
-          'The configured limit for how fragmented the Ruby heap is allowed to be',
-          default_labels
+          'The configured limit for how fragmented the Ruby heap is allowed to be'
         )
         @heap_frag_limit.set({}, max_heap_fragmentation)
 
+        default_labels = { pid: worker_id }
         @heap_frag_violations = Gitlab::Metrics.counter(
           :gitlab_memwd_heap_frag_violations_total,
           'Total number of times heap fragmentation in a Ruby process exceeded its allowed maximum',

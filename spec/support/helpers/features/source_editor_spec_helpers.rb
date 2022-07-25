@@ -12,8 +12,7 @@ module Spec
           def editor_set_value(value)
             editor = find('.monaco-editor')
             uri = editor['data-uri']
-
-            execute_script("monaco.editor.getModel('#{uri}').setValue('#{escape_javascript(value)}')")
+            execute_script("localMonaco.getModel('#{uri}').setValue('#{escape_javascript(value)}')")
           end
         end
       end

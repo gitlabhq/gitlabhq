@@ -1,3 +1,4 @@
+import { KeyMod, KeyCode } from 'monaco-editor';
 import { debounce } from 'lodash';
 import { BLOB_PREVIEW_ERROR } from '~/blob_edit/constants';
 import createFlash from '~/flash';
@@ -158,8 +159,8 @@ export class EditorMarkdownPreviewExtension {
     if (instance.getAction(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID)) return;
     const actionBasis = {
       keybindings: [
-        // eslint-disable-next-line no-bitwise,no-undef
-        monaco.KeyMod.chord(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_P),
+        // eslint-disable-next-line no-bitwise
+        KeyMod.chord(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_P),
       ],
       contextMenuGroupId: 'navigation',
       contextMenuOrder: 1.5,

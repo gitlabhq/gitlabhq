@@ -367,6 +367,7 @@ export default {
           :img-alt="avatarUrlTitle(assignee)"
           :img-src="avatarUrl(assignee)"
           :img-size="24"
+          img-css-classes="avatar gl-mr-0!"
           class="js-no-trigger"
           tooltip-placement="bottom"
         >
