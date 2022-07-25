@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::DropInvalidSecurityFindings, schema: 20211108211434 do
+RSpec.describe Gitlab::BackgroundMigration::DropInvalidSecurityFindings, :suppress_gitlab_schemas_validate_connection,
+               schema: 20211108211434 do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user', type: Namespaces::UserNamespace.sti_name) }
   let(:project) { table(:projects).create!(namespace_id: namespace.id) }
 

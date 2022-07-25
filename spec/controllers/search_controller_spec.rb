@@ -410,9 +410,20 @@ RSpec.describe SearchController do
           expect(payload[:metadata]['meta.search.project_ids']).to eq(%w(456 789))
           expect(payload[:metadata]['meta.search.type']).to eq('basic')
           expect(payload[:metadata]['meta.search.level']).to eq('global')
+          expect(payload[:metadata]['meta.search.language']).to eq('ruby')
         end
 
-        get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456', project_ids: %w(456 789), confidential: true, state: true, force_search_results: true }
+        get :show, params: {
+          scope: 'issues',
+          search: 'hello world',
+          group_id: '123',
+          project_id: '456',
+          project_ids: %w(456 789),
+          confidential: true,
+          state: true,
+          force_search_results: true,
+          language: 'ruby'
+        }
       end
 
       it 'appends the default scope in meta.search.scope' do

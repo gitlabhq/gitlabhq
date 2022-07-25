@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DisableJobTokenScopeWhenUnused do
+RSpec.describe DisableJobTokenScopeWhenUnused, :suppress_gitlab_schemas_validate_connection do
   let(:ci_cd_settings) { table(:project_ci_cd_settings) }
   let(:links) { table(:ci_job_token_project_scope_links) }
   let(:namespaces) { table(:namespaces) }

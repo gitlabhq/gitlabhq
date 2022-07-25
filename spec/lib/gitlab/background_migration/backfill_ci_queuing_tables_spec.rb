@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillCiQueuingTables, :migration, schema: 20220208115439 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillCiQueuingTables, :migration,
+               :suppress_gitlab_schemas_validate_connection, schema: 20220208115439 do
   let(:namespaces)      { table(:namespaces) }
   let(:projects)        { table(:projects) }
   let(:ci_cd_settings)  { table(:project_ci_cd_settings) }

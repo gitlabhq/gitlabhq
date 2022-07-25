@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_database|
+RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_database, table_name|
   include ExclusiveLeaseHelpers
 
   describe 'defining the job attributes' do
@@ -136,8 +136,10 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
           let(:job_interval) { 5.minutes }
           let(:lease_timeout) { 15.minutes }
           let(:lease_key) { described_class.name.demodulize.underscore }
-          let(:migration) { build(:batched_background_migration, :active, interval: job_interval) }
           let(:interval_variance) { described_class::INTERVAL_VARIANCE }
+          let(:migration) do
+            build(:batched_background_migration, :active, interval: job_interval, table_name: table_name)
+          end
 
           before do
             allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
@@ -249,7 +251,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       create(
         :batched_background_migration,
         :active,
-        table_name: table_name,
+        table_name: new_table_name,
         column_name: :id,
         max_value: migration_records,
         batch_size: batch_size,
@@ -261,14 +263,14 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
     end
 
     let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
-    let(:table_name) { 'example_data' }
+    let(:new_table_name) { '_test_example_data' }
     let(:batch_size) { 5 }
     let(:sub_batch_size) { 2 }
     let(:number_of_batches) { 10 }
     let(:migration_records) { batch_size * number_of_batches }
 
     let(:connection) { Gitlab::Database.database_base_models[tracking_database].connection }
-    let(:example_data) { define_batchable_model(table_name, connection: connection) }
+    let(:example_data) { define_batchable_model(new_table_name, connection: connection) }
 
     around do |example|
       Gitlab::Database::SharedModel.using_connection(connection) do
@@ -283,16 +285,16 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       #   - one record beyond the migration's range
       #   - one record that doesn't match the migration job's batch condition
       connection.execute(<<~SQL)
-        CREATE TABLE #{table_name} (
+        CREATE TABLE #{new_table_name} (
           id integer primary key,
           some_column integer,
           status smallint);
 
-        INSERT INTO #{table_name} (id, some_column, status)
+        INSERT INTO #{new_table_name} (id, some_column, status)
         SELECT generate_series, generate_series, 1
         FROM generate_series(1, #{migration_records + 1});
 
-        UPDATE #{table_name}
+        UPDATE #{new_table_name}
           SET status = 0
         WHERE some_column = #{migration_records - 5};
       SQL

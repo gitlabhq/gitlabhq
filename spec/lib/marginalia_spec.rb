@@ -11,6 +11,11 @@ RSpec.describe 'Marginalia spec' do
       render body: nil
     end
 
+    def first_ci_pipeline
+      Ci::Pipeline.first
+      render body: nil
+    end
+
     private
 
     [:auth_user, :current_user, :set_experimentation_subject_id_cookie, :signed_in?].each do |method|
@@ -36,7 +41,7 @@ RSpec.describe 'Marginalia spec' do
 
   describe 'For rails web requests' do
     let(:correlation_id) { SecureRandom.uuid }
-    let(:recorded) { ActiveRecord::QueryRecorder.new { make_request(correlation_id) } }
+    let(:recorded) { ActiveRecord::QueryRecorder.new { make_request(correlation_id, :first_user) } }
 
     let(:component_map) do
       {
@@ -54,10 +59,11 @@ RSpec.describe 'Marginalia spec' do
     end
 
     context 'when using CI database' do
+      let(:recorded) { ActiveRecord::QueryRecorder.new { make_request(correlation_id, :first_ci_pipeline) } }
       let(:component_map) do
         {
           "application"    => "test",
-          "endpoint_id"    => "MarginaliaTestController#first_user",
+          "endpoint_id"    => "MarginaliaTestController#first_ci_pipeline",
           "correlation_id" => correlation_id,
           "db_config_name" => 'ci'
         }
@@ -65,8 +71,6 @@ RSpec.describe 'Marginalia spec' do
 
       before do
         skip_if_multiple_databases_not_setup
-
-        allow(User).to receive(:connection) { Ci::ApplicationRecord.connection }
       end
 
       it 'generates a query that includes the component and value' do
@@ -140,11 +144,11 @@ RSpec.describe 'Marginalia spec' do
     end
   end
 
-  def make_request(correlation_id)
+  def make_request(correlation_id, action_name)
     request_env = Rack::MockRequest.env_for('/')
 
     ::Labkit::Correlation::CorrelationId.use_id(correlation_id) do
-      MarginaliaTestController.action(:first_user).call(request_env)
+      MarginaliaTestController.action(action_name).call(request_env)
     end
   end
 end

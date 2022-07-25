@@ -3,23 +3,12 @@
 module MergeRequestsHelper
   include Gitlab::Utils::StrongMemoize
 
-  def new_mr_path_from_push_event(event)
-    target_project = event.project.default_merge_request_target
-    project_new_merge_request_path(
-      event.project,
-      new_mr_from_push_event(event, target_project)
-    )
+  def create_mr_button_from_event?(event)
+    create_mr_button?(from: event.branch_name, source_project: event.project)
   end
 
-  def new_mr_from_push_event(event, target_project)
-    {
-      merge_request: {
-        source_project_id: event.project.id,
-        target_project_id: target_project.id,
-        source_branch: event.branch_name,
-        target_branch: target_project.repository.root_ref
-      }
-    }
+  def create_mr_path_from_push_event(event)
+    create_mr_path(from: event.branch_name, source_project: event.project)
   end
 
   def mr_css_classes(mr)

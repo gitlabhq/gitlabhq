@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection, query_analyzers: false do
   let(:analyzer) { described_class }
 
+  # We keep only the GitlabSchemasValidateConnection analyzer running
+  around do |example|
+    Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed(false) do
+      example.run
+    end
+  end
+
   context 'properly observes all queries', :request_store do
     using RSpec::Parameterized::TableSyntax
 
@@ -58,6 +65,24 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
           expect { process_sql(model, sql) }.not_to raise_error
         end
       end
+    end
+  end
+
+  context "when analyzer is enabled for tests", :query_analyzers do
+    before do
+      skip_if_multiple_databases_not_setup
+    end
+
+    it "throws an error when trying to access a table that belongs to the gitlab_main schema from the ci database" do
+      expect do
+        Ci::ApplicationRecord.connection.execute("select * from users limit 1")
+      end.to raise_error(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection::CrossSchemaAccessError)
+    end
+
+    it "throws an error when trying to access a table that belongs to the gitlab_ci schema from the main database" do
+      expect do
+        ApplicationRecord.connection.execute("select * from ci_builds limit 1")
+      end.to raise_error(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection::CrossSchemaAccessError)
     end
   end
 

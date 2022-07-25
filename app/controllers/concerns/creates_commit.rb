@@ -98,8 +98,7 @@ module CreatesCommit
     project_new_merge_request_path(
       @project_to_commit_into,
       merge_request: {
-        source_project_id: @project_to_commit_into.id,
-        target_project_id: target_project.id,
+        target_project_id: @project_to_commit_into.default_merge_request_target.id,
         source_branch: @branch_name,
         target_branch: @start_branch
       }

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::NullifyOrphanRunnerIdOnCiBuilds, migration: :gitlab_ci, schema: 20220223112304 do
+RSpec.describe Gitlab::BackgroundMigration::NullifyOrphanRunnerIdOnCiBuilds,
+               :suppress_gitlab_schemas_validate_connection, migration: :gitlab_ci, schema: 20220223112304 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:ci_runners) { table(:ci_runners) }
@@ -20,7 +21,9 @@ RSpec.describe Gitlab::BackgroundMigration::NullifyOrphanRunnerIdOnCiBuilds, mig
   end
 
   after do
-    helpers.add_concurrent_foreign_key(:ci_builds, :ci_runners, column: :runner_id, on_delete: :nullify, validate: false)
+    helpers.add_concurrent_foreign_key(
+      :ci_builds, :ci_runners, column: :runner_id, on_delete: :nullify, validate: false
+    )
   end
 
   describe '#perform' do

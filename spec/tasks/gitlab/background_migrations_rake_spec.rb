@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:background_migrations namespace rake tasks' do
+RSpec.describe 'gitlab:background_migrations namespace rake tasks', :suppress_gitlab_schemas_validate_connection do
   before do
     Rake.application.rake_require 'tasks/gitlab/background_migrations'
   end
@@ -155,7 +155,7 @@ RSpec.describe 'gitlab:background_migrations namespace rake tasks' do
       context 'with multiple databases' do
         subject(:status_task) { run_rake_task('gitlab:background_migrations:status') }
 
-        let(:base_models) { { 'main' => main_model, 'ci' => ci_model } }
+        let(:base_models) { { main: main_model, ci: ci_model } }
         let(:main_model) { double(:model, connection: connection) }
         let(:ci_model) { double(:model, connection: connection) }
 

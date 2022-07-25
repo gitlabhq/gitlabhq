@@ -352,7 +352,6 @@ RSpec.describe Projects::BlobController do
             project_new_merge_request_path(
               forked_project,
               merge_request: {
-                source_project_id: forked_project.id,
                 target_project_id: project.id,
                 source_branch: "fork-test-1",
                 target_branch: "master"

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillProjectsWithCoverage, schema: 20210818185845 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillProjectsWithCoverage,
+               :suppress_gitlab_schemas_validate_connection, schema: 20210818185845 do
   let(:projects) { table(:projects) }
   let(:project_ci_feature_usages) { table(:project_ci_feature_usages) }
   let(:ci_pipelines) { table(:ci_pipelines) }

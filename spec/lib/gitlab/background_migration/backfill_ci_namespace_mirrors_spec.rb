@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillCiNamespaceMirrors, :migration, schema: 20211208122200 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillCiNamespaceMirrors, :migration,
+               :suppress_gitlab_schemas_validate_connection, schema: 20211208122200 do
   let(:namespaces) { table(:namespaces) }
   let(:ci_namespace_mirrors) { table(:ci_namespace_mirrors) }
 

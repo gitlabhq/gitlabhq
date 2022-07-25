@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::MigrateProjectTaggingsContextFromTagsToTopics, schema: 20210511095658 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateProjectTaggingsContextFromTagsToTopics,
+               :suppress_gitlab_schemas_validate_connection, schema: 20210511095658 do
   it 'correctly migrates project taggings context from tags to topics' do
     taggings = table(:taggings)
 

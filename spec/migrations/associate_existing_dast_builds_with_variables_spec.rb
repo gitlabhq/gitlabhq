@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AssociateExistingDastBuildsWithVariables do
+RSpec.describe AssociateExistingDastBuildsWithVariables, :suppress_gitlab_schemas_validate_connection do
   subject(:migration) { described_class.new }
 
   let_it_be(:namespaces_table) { table(:namespaces) }

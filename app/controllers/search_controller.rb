@@ -150,6 +150,7 @@ class SearchController < ApplicationController
     payload[:metadata]['meta.search.filters.state'] = params[:state]
     payload[:metadata]['meta.search.force_search_results'] = params[:force_search_results]
     payload[:metadata]['meta.search.project_ids'] = params[:project_ids]
+    payload[:metadata]['meta.search.language'] = params[:language]
     payload[:metadata]['meta.search.type'] = @search_type if @search_type.present?
     payload[:metadata]['meta.search.level'] = @search_level if @search_level.present?
     payload[:metadata][:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?

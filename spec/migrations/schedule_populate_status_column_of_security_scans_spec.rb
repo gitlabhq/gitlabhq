@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SchedulePopulateStatusColumnOfSecurityScans do
+RSpec.describe SchedulePopulateStatusColumnOfSecurityScans, :suppress_gitlab_schemas_validate_connection do
   before do
     allow(Gitlab).to receive(:ee?).and_return(ee?)
     stub_const("#{described_class.name}::BATCH_SIZE", 1)

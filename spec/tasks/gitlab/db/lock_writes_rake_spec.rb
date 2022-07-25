@@ -2,7 +2,8 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_record_base do
+RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_record_base,
+               :suppress_gitlab_schemas_validate_connection do
   before :all do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'

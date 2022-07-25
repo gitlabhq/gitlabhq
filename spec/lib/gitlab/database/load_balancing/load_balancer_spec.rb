@@ -358,7 +358,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
 
     it 'returns true for deeply wrapped/nested errors' do
-      top = twice_wrapped_exception(ActionView::Template::Error, ActiveRecord::StatementInvalid, ActiveRecord::ConnectionNotEstablished)
+      top = twice_wrapped_exception(
+        ActionView::Template::Error,
+        ActiveRecord::StatementInvalid,
+        ActiveRecord::ConnectionNotEstablished
+      )
 
       expect(lb.connection_error?(top)).to eq(true)
     end

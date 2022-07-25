@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleCopyCiBuildsColumnsToSecurityScans2 do
+RSpec.describe ScheduleCopyCiBuildsColumnsToSecurityScans2, :suppress_gitlab_schemas_validate_connection do
   let_it_be(:namespaces) { table(:namespaces) }
   let_it_be(:projects) { table(:projects) }
   let_it_be(:ci_pipelines) { table(:ci_pipelines) }

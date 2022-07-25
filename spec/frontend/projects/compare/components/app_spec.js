@@ -34,7 +34,8 @@ describe('CompareApp component', () => {
     expect(wrapper.props()).toEqual(
       expect.objectContaining({
         projectCompareIndexPath: defaultProps.projectCompareIndexPath,
-        refsProjectPath: defaultProps.refsProjectPath,
+        sourceProjectRefsPath: defaultProps.sourceProjectRefsPath,
+        targetProjectRefsPath: defaultProps.targetProjectRefsPath,
         paramsFrom: defaultProps.paramsFrom,
         paramsTo: defaultProps.paramsTo,
       }),

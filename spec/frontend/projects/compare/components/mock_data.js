@@ -1,7 +1,12 @@
-const refsProjectPath = 'some/refs/path';
+const sourceProjectRefsPath = 'some/refs/path';
+const targetProjectRefsPath = 'some/refs/path';
 const paramsName = 'to';
 const paramsBranch = 'main';
-const defaultProject = {
+const sourceProject = {
+  name: 'some-to-name',
+  id: '2',
+};
+const targetProject = {
   name: 'some-to-name',
   id: '1',
 };
@@ -9,29 +14,31 @@ const defaultProject = {
 export const appDefaultProps = {
   projectCompareIndexPath: 'some/path',
   projectMergeRequestPath: '',
-  projects: [defaultProject],
+  projects: [sourceProject],
   paramsFrom: 'main',
   paramsTo: 'target/branch',
   createMrPath: '',
-  refsProjectPath,
-  defaultProject,
+  sourceProjectRefsPath,
+  targetProjectRefsPath,
+  sourceProject,
+  targetProject,
 };
 
 export const revisionCardDefaultProps = {
-  selectedProject: defaultProject,
+  selectedProject: targetProject,
   paramsBranch,
   revisionText: 'Source',
-  refsProjectPath,
+  refsProjectPath: sourceProjectRefsPath,
   paramsName,
 };
 
 export const repoDropdownDefaultProps = {
-  selectedProject: defaultProject,
+  selectedProject: targetProject,
   paramsName,
 };
 
 export const revisionDropdownDefaultProps = {
-  refsProjectPath,
+  refsProjectPath: sourceProjectRefsPath,
   paramsBranch,
   paramsName,
 };

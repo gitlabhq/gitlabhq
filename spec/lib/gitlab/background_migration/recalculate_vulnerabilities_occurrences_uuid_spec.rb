@@ -20,7 +20,7 @@ def create_background_migration_job(ids, status)
   )
 end
 
-RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid, schema: 20211124132705 do
+RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid, :suppress_gitlab_schemas_validate_connection, schema: 20211124132705 do
   let(:background_migration_jobs) { table(:background_migration_jobs) }
   let(:pending_jobs) { background_migration_jobs.where(status: Gitlab::Database::BackgroundMigrationJob.statuses['pending']) }
   let(:succeeded_jobs) { background_migration_jobs.where(status: Gitlab::Database::BackgroundMigrationJob.statuses['succeeded']) }

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DeleteSecurityFindingsWithoutUuid do
+RSpec.describe DeleteSecurityFindingsWithoutUuid, :suppress_gitlab_schemas_validate_connection do
   let(:users) { table(:users) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe 'overridden dynamic model helpers' do
-    let(:test_table) { '__test_batching_table' }
+    let(:test_table) { '_test_batching_table' }
 
     before do
       model.connection.execute(<<~SQL)

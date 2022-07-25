@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DedupRunnerProjects, :migration, schema: 20220120085655 do
+RSpec.describe DedupRunnerProjects, :migration, :suppress_gitlab_schemas_validate_connection, schema: 20220120085655 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:runners) { table(:ci_runners) }

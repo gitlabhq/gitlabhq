@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillProjectsWithCoverage do
+RSpec.describe BackfillProjectsWithCoverage, :suppress_gitlab_schemas_validate_connection do
   let(:projects) { table(:projects) }
   let(:ci_pipelines) { table(:ci_pipelines) }
   let(:ci_daily_build_group_report_results) { table(:ci_daily_build_group_report_results) }

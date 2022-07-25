@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::CopyCiBuildsColumnsToSecurityScans, schema: 20210728174349 do
+RSpec.describe Gitlab::BackgroundMigration::CopyCiBuildsColumnsToSecurityScans,
+               :suppress_gitlab_schemas_validate_connection, schema: 20210728174349 do
   let(:migration) { described_class.new }
 
   let_it_be(:namespaces) { table(:namespaces) }

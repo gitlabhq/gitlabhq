@@ -11,6 +11,8 @@ RSpec.describe 'Merge Request button' do
   let(:forked_project) { fork_project(project, user, repository: true) }
 
   shared_examples 'Merge request button only shown when allowed' do
+    let(:extra_mr_params) { {} }
+
     context 'not logged in' do
       it 'does not show Create merge request button' do
         visit url
@@ -31,11 +33,8 @@ RSpec.describe 'Merge Request button' do
         href = project_new_merge_request_path(
           project,
           merge_request: {
-            source_project_id: project.id,
-            source_branch: 'feature',
-            target_project_id: project.id,
-            target_branch: 'master'
-          }
+            source_branch: 'feature'
+          }.merge(extra_mr_params)
         )
 
         visit url
@@ -90,11 +89,8 @@ RSpec.describe 'Merge Request button' do
           href = project_new_merge_request_path(
             forked_project,
             merge_request: {
-              source_project_id: forked_project.id,
-              source_branch: 'feature',
-              target_project_id: forked_project.id,
-              target_branch: 'master'
-            }
+              source_branch: 'feature'
+            }.merge(extra_mr_params)
           )
 
           visit fork_url
@@ -121,6 +117,7 @@ RSpec.describe 'Merge Request button' do
     it_behaves_like 'Merge request button only shown when allowed' do
       let(:url) { project_compare_path(project, from: 'master', to: 'feature') }
       let(:fork_url) { project_compare_path(forked_project, from: 'master', to: 'feature') }
+      let(:extra_mr_params) { { target_project_id: project.id, target_branch: 'master' } }
     end
 
     it 'shows the correct merge request button when viewing across forks', :js do
@@ -128,9 +125,8 @@ RSpec.describe 'Merge Request button' do
       project.add_developer(user)
 
       href = project_new_merge_request_path(
-        project,
+        forked_project,
         merge_request: {
-          source_project_id: forked_project.id,
           source_branch: 'feature',
           target_project_id: project.id,
           target_branch: 'master'

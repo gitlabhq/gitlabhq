@@ -298,6 +298,9 @@ gitlab:
   gitlab-mailroom:
     image:
       tag: master-fips
+  gitlab-pages:
+    image:
+      tag: master-fips
   migrations:
     image:
       tag: master-fips
@@ -327,7 +330,7 @@ See [this issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3153#note_
 how to build NGINX and the Ingress Controller.
 
 You can also use release tags, but the versioning is tricky because each
-component may use its own versioning scheme. For example, for GitLab v15.1:
+component may use its own versioning scheme. For example, for GitLab v15.2:
 
 ```yaml
 global:
@@ -351,6 +354,9 @@ gitlab:
   gitlab-mailroom:
     image:
       tag: v15.2.0-fips
+  gitlab-pages:
+    image:
+      tag: v1.61.0-fips
   migrations:
     image:
       tag: v15.2.0-fips

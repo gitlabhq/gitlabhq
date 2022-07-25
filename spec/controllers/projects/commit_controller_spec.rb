@@ -378,7 +378,6 @@ RSpec.describe Projects::CommitController do
         project_new_merge_request_path(
           source_project,
           merge_request: {
-            source_project_id: source_project.id,
             target_project_id: project.id,
             source_branch: branch,
             target_branch: 'feature'
