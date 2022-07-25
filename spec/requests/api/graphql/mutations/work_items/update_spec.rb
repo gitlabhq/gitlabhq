@@ -128,30 +128,6 @@ RSpec.describe 'Update a work item' do
       end
     end
 
-    context 'with weight widget input' do
-      let(:fields) do
-        <<~FIELDS
-        workItem {
-          widgets {
-            type
-            ... on WorkItemWidgetWeight {
-              weight
-            }
-          }
-        }
-        errors
-        FIELDS
-      end
-
-      it_behaves_like 'update work item weight widget' do
-        let(:new_weight) { 2 }
-
-        let(:input) do
-          { 'weightWidget' => { 'weight' => new_weight } }
-        end
-      end
-    end
-
     context 'with hierarchy widget input' do
       let(:widgets_response) { mutation_response['workItem']['widgets'] }
       let(:fields) do

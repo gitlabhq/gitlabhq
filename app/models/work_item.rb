@@ -40,3 +40,5 @@ class WorkItem < Issue
     Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.track_work_item_created_action(author: author)
   end
 end
+
+WorkItem.prepend_mod

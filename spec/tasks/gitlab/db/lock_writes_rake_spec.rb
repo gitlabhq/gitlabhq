@@ -133,6 +133,23 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
       end
     end
 
+    context 'multiple shared databases' do
+      before do
+        allow(::Gitlab::Database).to receive(:db_config_share_with).and_return(nil)
+        ci_db_config = Ci::ApplicationRecord.connection_db_config
+        allow(::Gitlab::Database).to receive(:db_config_share_with).with(ci_db_config).and_return('main')
+      end
+
+      it 'does not lock any tables if the ci database is shared with main database' do
+        run_rake_task('gitlab:db:lock_writes')
+
+        expect do
+          ApplicationRecord.connection.execute("delete from ci_builds")
+          Ci::ApplicationRecord.connection.execute("delete from users")
+        end.not_to raise_error
+      end
+    end
+
     context 'when unlocking writes' do
       before do
         run_rake_task('gitlab:db:lock_writes')

@@ -51,7 +51,7 @@
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
       .avatar-holder
         = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon_for_user(@user, 90, current_user: current_user), class: "avatar s90", alt: '', itemprop: 'image'
+          = render Pajamas::AvatarComponent.new(@user, alt: "", size: 96, avatar_options: { itemprop: "image" })
 
       - if @user.blocked? || !@user.confirmed?
         .user-info

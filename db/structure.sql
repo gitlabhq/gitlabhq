@@ -16594,6 +16594,7 @@ CREATE TABLE issues (
     upvotes_count integer DEFAULT 0 NOT NULL,
     work_item_type_id bigint,
     namespace_id bigint,
+    start_date date,
     CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))
 );
 

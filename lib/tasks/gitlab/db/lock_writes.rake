@@ -6,7 +6,7 @@ namespace :gitlab do
 
     desc "GitLab | DB | Install prevent write triggers on all databases"
     task lock_writes: [:environment, 'gitlab:db:validate_config'] do
-      Gitlab::Database::EachDatabase.each_database_connection do |connection, database_name|
+      Gitlab::Database::EachDatabase.each_database_connection(include_shared: false) do |connection, database_name|
         create_write_trigger_function(connection)
 
         schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)

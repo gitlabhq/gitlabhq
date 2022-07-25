@@ -855,6 +855,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
   end
 
+  def work_items_mvc_2_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc_2)
+  end
+
   # Check for enabled features, similar to `Project#feature_available?`
   # NOTE: We still want to keep this after removing `Namespace#feature_available?`.
   override :feature_available?

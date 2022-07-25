@@ -69,7 +69,57 @@ RSpec.describe Issue do
   end
 
   describe 'validations' do
-    subject { issue.valid? }
+    subject(:valid?) { issue.valid? }
+
+    describe 'due_date_after_start_date' do
+      let(:today) { Date.today }
+
+      context 'when both values are not present' do
+        let(:issue) { build(:issue) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when start date is present and due date is not' do
+        let(:issue) { build(:work_item, start_date: today) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when due date is present and start date is not' do
+        let(:issue) { build(:work_item, due_date: today) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when both date values are present' do
+        context 'when due date is greater than start date' do
+          let(:issue) { build(:work_item, start_date: today, due_date: 1.week.from_now) }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when due date is equal to start date' do
+          let(:issue) { build(:work_item, start_date: today, due_date: today) }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when due date is before start date' do
+          let(:issue) { build(:work_item, due_date: today, start_date: 1.week.from_now) }
+
+          it { is_expected.to be_falsey }
+
+          it 'adds an error message' do
+            valid?
+
+            expect(issue.errors.full_messages).to contain_exactly(
+              'Due date must be greater than or equal to start date'
+            )
+          end
+        end
+      end
+    end
 
     describe 'issue_type' do
       let(:issue) { build(:issue, issue_type: issue_type) }

@@ -84,8 +84,7 @@ RSpec.describe WorkItems::UpdateService do
       let(:widget_params) do
         {
           hierarchy_widget: { parent: parent },
-          description_widget: { description: 'foo' },
-          weight_widget: { weight: 1 }
+          description_widget: { description: 'foo' }
         }
       end
 
@@ -104,7 +103,6 @@ RSpec.describe WorkItems::UpdateService do
       let(:supported_widgets) do
         [
           { klass: WorkItems::Widgets::DescriptionService::UpdateService, callback: :update, params: { description: 'foo' } },
-          { klass: WorkItems::Widgets::WeightService::UpdateService, callback: :update, params: { weight: 1 } },
           { klass: WorkItems::Widgets::HierarchyService::UpdateService, callback: :before_update_in_transaction, params: { parent: parent } }
         ]
       end

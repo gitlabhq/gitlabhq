@@ -52,6 +52,7 @@ disk at:
 
 - `/var/log/gitlab/gitlab-rails` for Omnibus GitLab installations.
 - `/home/git/gitlab/log` for installations from source.
+- `/var/log/gitlab` in the Sidekiq pod for GitLab Helm chart installations.
 
 If periodic repository checks cause false alarms, you can clear all repository check states:
 
@@ -65,8 +66,9 @@ If periodic repository checks cause false alarms, you can clear all repository c
 You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command line on repositories
 on [Gitaly servers](gitaly/index.md). To locate the repositories:
 
-1. Go to the storage location for repositories. For Omnibus GitLab installations, repositories are
-   stored by default in the `/var/opt/gitlab/git-data/repositories` directory.
+1. Go to the storage location for repositories:
+   - For Omnibus GitLab installations, repositories are stored in the `/var/opt/gitlab/git-data/repositories` directory by default.
+   - For GitLab Helm chart installations, repositories are stored in the `/home/git/repositories` directory inside the Gitaly pod by default.
 1. [Identify the subdirectory that contains the repository](repository_storage_types.md#from-project-name-to-hashed-path)
    that you need to check.
 

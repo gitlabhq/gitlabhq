@@ -25,3 +25,38 @@ RSpec.shared_examples 'returns true if project is inactive' do
     end
   end
 end
+
+RSpec.shared_examples 'checks parent group feature flag' do
+  let(:group) { subject_project.group }
+  let(:root_group) { group.parent }
+
+  subject { subject_project.public_send(feature_flag_method) }
+
+  context 'when feature flag is disabled globally' do
+    before do
+      stub_feature_flags(feature_flag => false)
+    end
+
+    it { is_expected.to be_falsey }
+  end
+
+  context 'when feature flag is enabled globally' do
+    it { is_expected.to be_truthy }
+  end
+
+  context 'when feature flag is enabled for the root group' do
+    before do
+      stub_feature_flags(feature_flag => root_group)
+    end
+
+    it { is_expected.to be_truthy }
+  end
+
+  context 'when feature flag is enabled for the group' do
+    before do
+      stub_feature_flags(feature_flag => group)
+    end
+
+    it { is_expected.to be_truthy }
+  end
+end

@@ -3383,6 +3383,13 @@ RSpec.describe Group do
     end
   end
 
+  describe '#work_items_mvc_2_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :work_items_mvc_2 }
+      let(:feature_flag_method) { :work_items_mvc_2_feature_flag_enabled? }
+    end
+  end
+
   describe 'group shares' do
     let!(:sub_group) { create(:group, parent: group) }
     let!(:sub_sub_group) { create(:group, parent: sub_group) }

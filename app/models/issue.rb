@@ -100,6 +100,8 @@ class Issue < ApplicationRecord
   validates :issue_type, presence: true
   validates :namespace, presence: true, if: -> { project.present? }
 
+  validate :due_date_after_start_date
+
   enum issue_type: WorkItems::Type.base_types
 
   alias_method :issuing_parent, :project
@@ -659,6 +661,14 @@ class Issue < ApplicationRecord
   end
 
   private
+
+  def due_date_after_start_date
+    return unless start_date.present? && due_date.present?
+
+    if due_date < start_date
+      errors.add(:due_date, 'must be greater than or equal to start date')
+    end
+  end
 
   override :persist_pg_full_text_search_vector
   def persist_pg_full_text_search_vector(search_vector)

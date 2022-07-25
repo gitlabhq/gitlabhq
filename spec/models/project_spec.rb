@@ -8239,58 +8239,42 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#work_items_feature_flag_enabled?' do
-    shared_examples 'project checking work_items feature flag' do
-      context 'when work_items FF is disabled globally' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
 
-        it { is_expected.to be_falsey }
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :work_items_feature_flag_enabled? }
+      let(:feature_flag) { :work_items }
+      let(:subject_project) { group_project }
+    end
+
+    context 'when feature flag is enabled for the project' do
+      subject { subject_project.work_items_feature_flag_enabled? }
+
+      before do
+        stub_feature_flags(work_items: subject_project)
       end
 
-      context 'when work_items FF is enabled for the project' do
-        before do
-          stub_feature_flags(work_items: project)
-        end
+      context 'when project belongs to a group' do
+        let(:subject_project) { group_project }
 
         it { is_expected.to be_truthy }
       end
 
-      context 'when work_items FF is enabled globally' do
+      context 'when project does not belong to a group' do
+        let(:subject_project) { create(:project, namespace: create(:namespace)) }
+
         it { is_expected.to be_truthy }
       end
     end
+  end
 
-    subject { project.work_items_feature_flag_enabled? }
+  describe '#work_items_mvc_2_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
 
-    context 'when a project does not belong to a group' do
-      let_it_be(:project) { create(:project, namespace: namespace) }
-
-      it_behaves_like 'project checking work_items feature flag'
-    end
-
-    context 'when project belongs to a group' do
-      let_it_be(:root_group) { create(:group) }
-      let_it_be(:group) { create(:group, parent: root_group) }
-      let_it_be(:project) { create(:project, group: group) }
-
-      it_behaves_like 'project checking work_items feature flag'
-
-      context 'when work_items FF is enabled for the root group' do
-        before do
-          stub_feature_flags(work_items: root_group)
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when work_items FF is enabled for the group' do
-        before do
-          stub_feature_flags(work_items: group)
-        end
-
-        it { is_expected.to be_truthy }
-      end
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :work_items_mvc_2_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_mvc_2 }
+      let(:subject_project) { group_project }
     end
   end
 

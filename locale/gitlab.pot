@@ -45899,6 +45899,9 @@ msgstr ""
 msgid "example.com"
 msgstr ""
 
+msgid "exceeds maximum length (100 usernames)"
+msgstr ""
+
 msgid "exceeds the %{max_value_length} character limit"
 msgstr ""
 

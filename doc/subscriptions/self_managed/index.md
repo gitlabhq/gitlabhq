@@ -255,7 +255,7 @@ It also displays the following information:
 | Field              | Description |
 |:-------------------|:------------|
 | Users in License   | The number of users you've paid for in the current license loaded on the system. The number does not change unless you [add seats](#add-seats-to-a-subscription) during your current subscription period. |
-| Billable users     | The daily count of billable users on your system. The count may change as you block or add users to your instance. |
+| Billable users     | The daily count of billable users on your system. The count may change as you block, deactivate, or add users to your instance. |
 | Maximum users      | The highest number of billable users on your system during the term of the loaded license. |
 | Users over license | Calculated as `Maximum users` - `Users in License` for the current license term. This number incurs a retroactive charge that must be paid before renewal. |
 
@@ -312,7 +312,7 @@ the contact person who manages your subscription.
 
 It's important to regularly review your user accounts, because:
 
-- Stale user accounts that are not blocked count as billable users. You may pay more than you should
+- Stale user accounts may count as billable users. You may pay more than you should
   if you renew for too many users.
 - Stale user accounts can be a security risk. A regular review helps reduce this risk.
 
@@ -329,7 +329,7 @@ To view the number of _users over license_ go to the **Admin Area**.
 
 You purchase a license for 10 users.
 
-| Event                                              | Billable members | Maximum users |
+| Event                                              | Billable users | Maximum users |
 |:---------------------------------------------------|:-----------------|:--------------|
 | Ten users occupy all 10 seats.                     | 10               | 10            |
 | Two new users join.                                | 12               | 12            |

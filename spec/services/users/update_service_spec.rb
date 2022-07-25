@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Users::UpdateService do
-  let(:password) { 'longsecret987!' }
+  let(:password) { User.random_password }
   let(:user) { create(:user, password: password, password_confirmation: password) }
 
   describe '#execute' do

@@ -63,6 +63,27 @@ RSpec.describe WorkItemPolicy do
     end
   end
 
+  describe 'admin_work_item' do
+    context 'when user is reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_allowed(:admin_work_item) }
+    end
+
+    context 'when user is guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:admin_work_item) }
+
+      context 'when guest authored the work item' do
+        let(:work_item_subject) { authored_work_item }
+        let(:current_user) { guest_author }
+
+        it { is_expected.to be_disallowed(:admin_work_item) }
+      end
+    end
+  end
+
   describe 'update_work_item' do
     context 'when user is reporter' do
       let(:current_user) { reporter }

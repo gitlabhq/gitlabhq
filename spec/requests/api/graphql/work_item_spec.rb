@@ -8,7 +8,7 @@ RSpec.describe 'Query.work_item(id)' do
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
-  let_it_be(:work_item) { create(:work_item, project: project, description: '- List item', weight: 1) }
+  let_it_be(:work_item) { create(:work_item, project: project, description: '- List item') }
   let_it_be(:child_item1) { create(:work_item, :task, project: project) }
   let_it_be(:child_item2) { create(:work_item, :task, confidential: true, project: project) }
   let_it_be(:child_link1) { create(:parent_link, work_item_parent: work_item, work_item: child_item1) }
@@ -160,32 +160,6 @@ RSpec.describe 'Query.work_item(id)' do
               )
             )
           end
-        end
-      end
-
-      describe 'weight widget' do
-        let(:work_item_fields) do
-          <<~GRAPHQL
-            id
-            widgets {
-              type
-              ... on WorkItemWidgetWeight {
-                weight
-              }
-            }
-          GRAPHQL
-        end
-
-        it 'returns widget information' do
-          expect(work_item_data).to include(
-            'id' => work_item.to_gid.to_s,
-            'widgets' => include(
-              hash_including(
-                'type' => 'WEIGHT',
-                'weight' => work_item.weight
-              )
-            )
-          )
         end
       end
 
