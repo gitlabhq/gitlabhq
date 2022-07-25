@@ -1080,6 +1080,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         end
 
         it 'renames a column concurrently' do
+          expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
+
           expect(model).to receive(:check_trigger_permissions!).with(:users)
 
           expect(model).to receive(:install_rename_triggers)
@@ -1112,6 +1114,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           let(:connection) { ActiveRecord::Migration.connection }
 
           before do
+            expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
             expect(Gitlab::Database::UnidirectionalCopyTrigger).to receive(:on_table)
               .with(:users, connection: connection).and_return(copy_trigger)
           end
@@ -1165,6 +1168,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           end
 
           it 'copies the default to the new column' do
+            expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
+
             expect(model).to receive(:change_column_default)
               .with(:users, :new, old_column.default)
 
@@ -1246,6 +1251,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
 
       it 'reverses the operations of cleanup_concurrent_column_rename' do
+        expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
+
         expect(model).to receive(:check_trigger_permissions!).with(:users)
 
         expect(model).to receive(:install_rename_triggers)
@@ -1302,6 +1309,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         end
 
         it 'copies the default to the old column' do
+          expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
+
           expect(model).to receive(:change_column_default)
             .with(:users, :old, new_column.default)
 

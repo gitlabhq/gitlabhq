@@ -12931,7 +12931,7 @@ msgstr ""
 msgid "DeploymentApproval|Approve or reject deployment #%{deploymentIid}"
 msgstr ""
 
-msgid "DeploymentApproval|Approved by %{user} %{time}"
+msgid "DeploymentApproval|Approved %{time}"
 msgstr ""
 
 msgid "DeploymentApproval|Approved by you %{time}"

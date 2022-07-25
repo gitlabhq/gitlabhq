@@ -15,6 +15,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.uncountable %w(
     custom_emoji
     award_emoji
+    ci_secure_file_registry
     container_repository_registry
     design_registry
     event_log

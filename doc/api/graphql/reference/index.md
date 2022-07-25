@@ -6302,6 +6302,29 @@ The edge type for [`CiRunner`](#cirunner).
 | <a id="cirunneredgenode"></a>`node` | [`CiRunner`](#cirunner) | The item at the end of the edge. |
 | <a id="cirunneredgeweburl"></a>`webUrl` | [`String`](#string) | Web URL of the runner. The value depends on where you put this field in the query. You can use it for projects or groups. |
 
+#### `CiSecureFileRegistryConnection`
+
+The connection type for [`CiSecureFileRegistry`](#cisecurefileregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisecurefileregistryconnectionedges"></a>`edges` | [`[CiSecureFileRegistryEdge]`](#cisecurefileregistryedge) | A list of edges. |
+| <a id="cisecurefileregistryconnectionnodes"></a>`nodes` | [`[CiSecureFileRegistry]`](#cisecurefileregistry) | A list of nodes. |
+| <a id="cisecurefileregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiSecureFileRegistryEdge`
+
+The edge type for [`CiSecureFileRegistry`](#cisecurefileregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisecurefileregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cisecurefileregistryedgenode"></a>`node` | [`CiSecureFileRegistry`](#cisecurefileregistry) | The item at the end of the edge. |
+
 #### `CiStageConnection`
 
 The connection type for [`CiStage`](#cistage).
@@ -10070,6 +10093,25 @@ Returns [`CiRunnerStatus!`](#cirunnerstatus).
 | ---- | ---- | ----------- |
 | <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.0. Will be removed in 17.0. In GitLab 16.0 and later, the field will act as if `legacyMode` is null. |
 
+### `CiSecureFileRegistry`
+
+Represents the Geo replication and verification state of a ci_secure_file.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisecurefileregistrycisecurefileid"></a>`ciSecureFileId` | [`ID!`](#id) | ID of the Ci Secure File. |
+| <a id="cisecurefileregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the CiSecureFileRegistry was created. |
+| <a id="cisecurefileregistryid"></a>`id` | [`ID!`](#id) | ID of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the CiSecureFileRegistry is resynced. |
+| <a id="cisecurefileregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the CiSecureFileRegistry is reverified. |
+| <a id="cisecurefileregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the CiSecureFileRegistry. |
+
 ### `CiStage`
 
 #### Fields
@@ -11680,6 +11722,22 @@ Represents an external issue.
 | <a id="geonodeverificationmaxcapacity"></a>`verificationMaxCapacity` | [`Int`](#int) | Maximum concurrency of repository verification for this secondary node. |
 
 #### Fields with arguments
+
+##### `GeoNode.ciSecureFileRegistries`
+
+Find Ci Secure File registries on this Geo node Available only when feature flag `geo_ci_secure_file_replication` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+Returns [`CiSecureFileRegistryConnection`](#cisecurefileregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodecisecurefileregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
 
 ##### `GeoNode.groupWikiRepositoryRegistries`
 

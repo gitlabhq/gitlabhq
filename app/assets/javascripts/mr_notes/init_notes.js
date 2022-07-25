@@ -44,7 +44,13 @@ export default () => {
     },
     watch: {
       discussionTabCounter() {
-        this.updateDiscussionTabCounter();
+        if (window.gon?.features?.paginatedMrDiscussions) {
+          if (this.$store.state.notes.doneFetchingBatchDiscussions) {
+            this.updateDiscussionTabCounter();
+          }
+        } else {
+          this.updateDiscussionTabCounter();
+        }
       },
       isShowTabActive: {
         handler(newVal) {

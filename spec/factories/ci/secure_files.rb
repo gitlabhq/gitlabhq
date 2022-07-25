@@ -6,5 +6,11 @@ FactoryBot.define do
     file { fixture_file_upload('spec/fixtures/ci_secure_files/upload-keystore.jks', 'application/octet-stream') }
     checksum { 'foo1234' }
     project
+
+    trait :remote_store do
+      after(:create) do |ci_secure_file|
+        ci_secure_file.update!(file_store: ObjectStorage::Store::REMOTE)
+      end
+    end
   end
 end

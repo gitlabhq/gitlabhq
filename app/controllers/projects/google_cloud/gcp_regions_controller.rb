@@ -15,7 +15,6 @@ class Projects::GoogleCloud::GcpRegionsController < Projects::GoogleCloud::BaseC
     tags = TagsFinder.new(project.repository, params).execute(gitaly_pagination: true)
     refs = (branches + tags).map(&:name)
     js_data = {
-      screen: 'gcp_regions_form',
       availableRegions: AVAILABLE_REGIONS,
       refs: refs,
       cancelPath: project_google_cloud_configuration_path(project)

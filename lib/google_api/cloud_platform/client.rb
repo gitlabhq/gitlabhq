@@ -101,7 +101,7 @@ module GoogleApi
           result.append(project)
         end
 
-        result
+        result.sort_by(&:project_id)
       end
 
       def create_service_account(gcp_project_id, display_name, description)

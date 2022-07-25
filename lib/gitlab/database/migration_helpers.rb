@@ -1666,7 +1666,9 @@ into similar problems in the future (e.g. when new tables are created).
         end
 
         Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
-          update_column_in_batches(table, new, old_value, batch_column_name: batch_column_name)
+          Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
+            update_column_in_batches(table, new, old_value, batch_column_name: batch_column_name)
+          end
         end
 
         add_not_null_constraint(table, new) unless old_col.null

@@ -217,7 +217,11 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
   describe '#list_projects' do
     subject { client.list_projects }
 
-    let(:list_of_projects) { [{}, {}, {}] }
+    let(:gcp_project_01) { Google::Apis::CloudresourcemanagerV1::Project.new(project_id: '01') }
+    let(:gcp_project_02) { Google::Apis::CloudresourcemanagerV1::Project.new(project_id: '02') }
+    let(:gcp_project_03) { Google::Apis::CloudresourcemanagerV1::Project.new(project_id: '03') }
+    let(:list_of_projects) { [gcp_project_03, gcp_project_01, gcp_project_02] }
+
     let(:next_page_token) { nil }
     let(:operation) { double('projects': list_of_projects, 'next_page_token': next_page_token) }
 
@@ -225,7 +229,8 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
       expect_any_instance_of(Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService)
         .to receive(:list_projects)
               .and_return(operation)
-      is_expected.to eq(list_of_projects)
+
+      is_expected.to contain_exactly(gcp_project_01, gcp_project_02, gcp_project_03)
     end
   end
 

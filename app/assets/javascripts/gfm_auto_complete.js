@@ -12,6 +12,14 @@ import { spriteIcon } from './lib/utils/common_utils';
 import { parsePikadayDate } from './lib/utils/datetime_utility';
 import glRegexp from './lib/utils/regexp';
 
+const USERS_ALIAS = 'users';
+const ISSUES_ALIAS = 'issues';
+const MILESTONES_ALIAS = 'milestones';
+const MERGEREQUESTS_ALIAS = 'mergerequests';
+const LABELS_ALIAS = 'labels';
+const SNIPPETS_ALIAS = 'snippets';
+const CONTACTS_ALIAS = 'contacts';
+export const AT_WHO_ACTIVE_CLASS = 'at-who-active';
 /**
  * Escapes user input before we pass it to at.js, which
  * renders it as HTML in the autocomplete dropdown.
@@ -27,6 +35,15 @@ import glRegexp from './lib/utils/regexp';
  */
 function escape(string) {
   return lodashEscape(string).replace(/\$/g, '&dollar;');
+}
+
+export function showAndHideHelper($input, alias = '') {
+  $input.on(`hidden${alias ? '-' : ''}${alias}.atwho`, () => {
+    $input.removeClass(AT_WHO_ACTIVE_CLASS);
+  });
+  $input.on(`shown${alias ? '-' : ''}${alias}.atwho`, () => {
+    $input.addClass(AT_WHO_ACTIVE_CLASS);
+  });
 }
 
 function createMemberSearchString(member) {
@@ -265,6 +282,7 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input);
   }
 
   setupMembers($input) {
@@ -284,7 +302,7 @@ class GfmAutoComplete {
     // Team Members
     $input.atwho({
       at: '@',
-      alias: 'users',
+      alias: USERS_ALIAS,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         const { avatarTag, username, title, icon, availability } = value;
@@ -374,12 +392,13 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, USERS_ALIAS);
   }
 
   setupIssues($input) {
     $input.atwho({
       at: '#',
-      alias: 'issues',
+      alias: ISSUES_ALIAS,
       searchKey: 'search',
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
@@ -408,12 +427,13 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, ISSUES_ALIAS);
   }
 
   setupMilestones($input) {
     $input.atwho({
       at: '%',
-      alias: 'milestones',
+      alias: MILESTONES_ALIAS,
       searchKey: 'search',
       // eslint-disable-next-line no-template-curly-in-string
       insertTpl: '${atwho-at}${title}',
@@ -464,12 +484,13 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, MILESTONES_ALIAS);
   }
 
   setupMergeRequests($input) {
     $input.atwho({
       at: '!',
-      alias: 'mergerequests',
+      alias: MERGEREQUESTS_ALIAS,
       searchKey: 'search',
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
@@ -498,6 +519,7 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, MERGEREQUESTS_ALIAS);
   }
 
   setupLabels($input) {
@@ -508,7 +530,7 @@ class GfmAutoComplete {
 
     $input.atwho({
       at: '~',
-      alias: 'labels',
+      alias: LABELS_ALIAS,
       searchKey: 'search',
       data: GfmAutoComplete.defaultLoadingData,
       displayTpl(value) {
@@ -598,12 +620,13 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, LABELS_ALIAS);
   }
 
   setupSnippets($input) {
     $input.atwho({
       at: '$',
-      alias: 'snippets',
+      alias: SNIPPETS_ALIAS,
       searchKey: 'search',
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
@@ -631,13 +654,14 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, SNIPPETS_ALIAS);
   }
 
   setupContacts($input) {
     $input.atwho({
       at: '[contact:',
       suffix: ']',
-      alias: 'contacts',
+      alias: CONTACTS_ALIAS,
       searchKey: 'search',
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
@@ -667,6 +691,7 @@ class GfmAutoComplete {
         },
       },
     });
+    showAndHideHelper($input, CONTACTS_ALIAS);
   }
 
   getDefaultCallbacks() {
