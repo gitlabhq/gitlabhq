@@ -36,14 +36,14 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
           message: 'finished',
           pid: Process.pid,
           worker_id: 'worker_1',
-          report: 'jemalloc_stats'
+          perf_report: 'jemalloc_stats'
         )).twice
 
       daemon.send(:run_thread)
     end
 
     it 'sets real time duration gauge' do
-      expect(report_duration_counter).to receive(:increment).with({ report: 'jemalloc_stats' }, an_instance_of(Integer))
+      expect(report_duration_counter).to receive(:increment).with({ report: 'jemalloc_stats' }, an_instance_of(Float))
 
       daemon.send(:run_thread)
     end

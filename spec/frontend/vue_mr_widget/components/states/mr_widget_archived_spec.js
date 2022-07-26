@@ -18,11 +18,6 @@ describe('MRWidgetArchived', () => {
     expect(vm.$el.querySelector('.ci-status-icon')).not.toBeNull();
   });
 
-  it('renders a disabled button', () => {
-    expect(vm.$el.querySelector('button').getAttribute('disabled')).toEqual('disabled');
-    expect(vm.$el.querySelector('button').textContent.trim()).toEqual('Merge');
-  });
-
   it('renders information', () => {
     expect(vm.$el.querySelector('.bold').textContent.trim()).toEqual(
       'Merge unavailable: merge requests are read-only on archived projects.',

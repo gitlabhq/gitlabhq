@@ -1,5 +1,5 @@
 import { getByRole } from '@testing-library/dom';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
@@ -10,14 +10,6 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 describe('MRWidgetMerged', () => {
   let vm;
   const targetBranch = 'foo';
-  const selectors = {
-    get copyMergeShaButton() {
-      return vm.$el.querySelector('button.js-mr-merged-copy-sha');
-    },
-    get mergeCommitShaLink() {
-      return vm.$el.querySelector('a.js-mr-merged-commit-sha');
-    },
-  };
 
   beforeEach(() => {
     jest.spyOn(document, 'dispatchEvent');
@@ -177,56 +169,9 @@ describe('MRWidgetMerged', () => {
     expect(vm.$el.textContent).toContain('Administrator');
   });
 
-  it('renders branch information', () => {
-    expect(vm.$el.textContent).toContain('The changes were merged into');
-    expect(vm.$el.textContent).toContain(targetBranch);
-  });
-
-  it('renders information about branch being deleted', () => {
-    expect(vm.$el.textContent).toContain('The source branch has been deleted');
-  });
-
   it('shows revert and cherry-pick buttons', () => {
     expect(vm.$el.textContent).toContain('Revert');
     expect(vm.$el.textContent).toContain('Cherry-pick');
-  });
-
-  it('shows button to copy commit SHA to clipboard', () => {
-    expect(selectors.copyMergeShaButton).not.toBe(null);
-    expect(selectors.copyMergeShaButton.dataset.clipboardText).toBe(vm.mr.mergeCommitSha);
-  });
-
-  it('hides button to copy commit SHA if SHA does not exist', async () => {
-    vm.mr.mergeCommitSha = null;
-
-    await nextTick();
-
-    expect(selectors.copyMergeShaButton).toBe(null);
-    expect(vm.$el.querySelector('.mr-info-list').innerText).not.toContain('with');
-  });
-
-  it('shows merge commit SHA link', () => {
-    expect(selectors.mergeCommitShaLink).not.toBe(null);
-    expect(selectors.mergeCommitShaLink.text).toContain(vm.mr.shortMergeCommitSha);
-    expect(selectors.mergeCommitShaLink.href).toBe(vm.mr.mergeCommitPath);
-  });
-
-  it('should not show source branch deleted text', async () => {
-    vm.mr.sourceBranchRemoved = false;
-
-    await nextTick();
-
-    expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
-  });
-
-  it('should show source branch deleting text', async () => {
-    vm.mr.isRemovingSourceBranch = true;
-    vm.mr.sourceBranchRemoved = false;
-
-    await nextTick();
-
-    expect(vm.$el.innerText).toContain('The source branch is being deleted');
-    expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
   });
 
   it('should use mergedEvent mergedAt as tooltip title', () => {

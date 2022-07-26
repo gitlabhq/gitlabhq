@@ -17,7 +17,6 @@ import { setFaviconOverlay } from '../lib/utils/favicon';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
-import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import ArchivedState from './components/states/mr_widget_archived.vue';
@@ -61,7 +60,6 @@ export default {
     ExtensionsContainer,
     'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
-    'mr-widget-related-links': WidgetRelatedLinks,
     MrWidgetAlertMessage,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
@@ -73,9 +71,7 @@ export default {
     'mr-widget-nothing-to-merge': NothingToMergeState,
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
-    'mr-widget-ready-to-merge': window.gon?.features?.restructuredMrWidget
-      ? () => import('./components/states/new_ready_to_merge.vue')
-      : ReadyToMergeState,
+    'mr-widget-ready-to-merge': () => import('./components/states/new_ready_to_merge.vue'),
     'sha-mismatch': ShaMismatch,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
@@ -163,12 +159,6 @@ export default {
     shouldRenderCodeQuality() {
       return this.mr?.codequalityReportsPath;
     },
-    shouldRenderRelatedLinks() {
-      return (
-        (Boolean(this.mr.relatedLinks) || this.mr.divergedCommitsCount > 0) &&
-        !this.mr.isNothingToMergeState
-      );
-    },
     shouldRenderSourceBranchRemovalStatus() {
       return (
         !this.mr.canRemoveSourceBranch &&
@@ -238,9 +228,6 @@ export default {
     },
     shouldShowCodeQualityExtension() {
       return window.gon?.features?.refactorCodeQualityExtension;
-    },
-    isRestructuredMrWidgetEnabled() {
-      return window.gon?.features?.restructuredMrWidget;
     },
   },
   watch: {
@@ -638,23 +625,7 @@ export default {
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">
         <component :is="componentName" :mr="mr" :service="service" />
-        <ready-to-merge
-          v-if="isRestructuredMrWidgetEnabled && mr.commitsCount"
-          :mr="mr"
-          :service="service"
-        />
-        <div v-else class="mr-widget-info">
-          <mr-widget-related-links
-            v-if="shouldRenderRelatedLinks"
-            :state="mr.state"
-            :related-links="mr.relatedLinks"
-            :diverged-commits-count="mr.divergedCommitsCount"
-            :target-branch-path="mr.targetBranchPath"
-            class="mr-info-list gl-ml-7 gl-pb-5"
-          />
-
-          <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
-        </div>
+        <ready-to-merge v-if="mr.commitsCount" :mr="mr" :service="service" />
       </div>
     </div>
     <mr-widget-pipeline-container

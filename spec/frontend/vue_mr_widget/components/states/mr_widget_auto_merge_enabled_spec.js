@@ -102,74 +102,6 @@ describe('MRWidgetAutoMergeEnabled', () => {
       });
 
       describe('computed', () => {
-        describe('canRemoveSourceBranch', () => {
-          it('should return true when user is able to remove source branch', () => {
-            factory({
-              ...defaultMrProps(),
-            });
-
-            expect(wrapper.findByTestId('removeSourceBranchButton').exists()).toBe(true);
-          });
-
-          it.each`
-            mergeUserId | currentUserId
-            ${2}        | ${1}
-            ${1}        | ${2}
-          `(
-            'should return false when user id is not the same with who set the MWPS',
-            ({ mergeUserId, currentUserId }) => {
-              factory({
-                ...defaultMrProps(),
-                mergeUserId,
-                currentUserId,
-              });
-
-              expect(wrapper.findByTestId('removeSourceBranchButton').exists()).toBe(false);
-            },
-          );
-
-          it('should not find "Delete" button when shouldRemoveSourceBranch set to true', () => {
-            factory({
-              ...defaultMrProps(),
-              shouldRemoveSourceBranch: true,
-            });
-
-            expect(wrapper.findByTestId('removeSourceBranchButton').exists()).toBe(false);
-          });
-
-          it('should find "Delete" button when shouldRemoveSourceBranch overrides state.forceRemoveSourceBranch', () => {
-            factory(
-              {
-                ...defaultMrProps(),
-                shouldRemoveSourceBranch: false,
-              },
-              {
-                forceRemoveSourceBranch: true,
-              },
-            );
-
-            expect(wrapper.findByTestId('removeSourceBranchButton').exists()).toBe(true);
-          });
-
-          it('should find "Delete" button when shouldRemoveSourceBranch set to false', () => {
-            factory({
-              ...defaultMrProps(),
-              shouldRemoveSourceBranch: false,
-            });
-
-            expect(wrapper.findByTestId('removeSourceBranchButton').exists()).toBe(true);
-          });
-
-          it('should return false if user is not able to remove the source branch', () => {
-            factory({
-              ...defaultMrProps(),
-              canRemoveSourceBranch: false,
-            });
-
-            expect(wrapper.findByTestId('removeSourceBranchButton').exists()).toBe(false);
-          });
-        });
-
         describe('cancelButtonText', () => {
           it('should return "Cancel" if MWPS is selected', () => {
             factory({
@@ -263,42 +195,6 @@ describe('MRWidgetAutoMergeEnabled', () => {
           await nextTick();
 
           expect(wrapper.find('.js-cancel-auto-merge').props('loading')).toBe(true);
-        });
-
-        it('should show source branch will be deleted text when it source branch set to remove', () => {
-          factory({
-            ...defaultMrProps(),
-            shouldRemoveSourceBranch: true,
-          });
-
-          const normalizedText = wrapper.text().replace(/\s+/g, ' ');
-
-          expect(normalizedText).toContain('Deletes the source branch');
-          expect(normalizedText).not.toContain('Does not delete the source branch');
-        });
-
-        it('should not show delete source branch button when user not able to delete source branch', () => {
-          factory({
-            ...defaultMrProps(),
-            currentUserId: 4,
-          });
-
-          expect(wrapper.find('.js-remove-source-branch').exists()).toBe(false);
-        });
-
-        it('should disable delete source branch button when the action is in progress', async () => {
-          factory({
-            ...defaultMrProps(),
-          });
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            isRemovingSourceBranch: true,
-          });
-
-          await nextTick();
-
-          expect(wrapper.find('.js-remove-source-branch').props('loading')).toBe(true);
         });
 
         it('should render the status text as "...to merged automatically" if MWPS is selected', () => {

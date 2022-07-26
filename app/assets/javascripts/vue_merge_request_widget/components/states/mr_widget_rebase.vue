@@ -161,15 +161,13 @@ export default {
       <div class="rebase-state-find-class-convention media media-body space-children">
         <span
           v-if="rebaseInProgress || isMakingRequest"
-          :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }"
-          class="gl-font-weight-bold"
+          class="gl-ml-0! gl-text-body! gl-font-weight-bold"
           data-testid="rebase-message"
           >{{ __('Rebase in progress') }}</span
         >
         <span
           v-if="!rebaseInProgress && !canPushToSourceBranch"
-          :class="{ 'gl-text-body!': glFeatures.restructuredMrWidget }"
-          class="gl-font-weight-bold gl-ml-0!"
+          class="gl-text-body! gl-font-weight-bold gl-ml-0!"
           data-testid="rebase-message"
           >{{ fastForwardMergeText }}</span
         >
@@ -177,30 +175,9 @@ export default {
           v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"
           class="accept-merge-holder clearfix js-toggle-container accept-action media space-children gl-align-items-center"
         >
-          <gl-button
-            v-if="!glFeatures.restructuredMrWidget"
-            :loading="isMakingRequest"
-            variant="confirm"
-            data-qa-selector="mr_rebase_button"
-            data-testid="standard-rebase-button"
-            @click="rebase"
-          >
-            {{ __('Rebase') }}
-          </gl-button>
-          <gl-button
-            v-if="!glFeatures.restructuredMrWidget && showRebaseWithoutCi"
-            :loading="isMakingRequest"
-            variant="confirm"
-            category="secondary"
-            data-testid="rebase-without-ci-button"
-            @click="rebaseWithoutCi"
-          >
-            {{ __('Rebase without pipeline') }}
-          </gl-button>
           <span
             v-if="!rebasingError"
-            :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }"
-            class="gl-font-weight-bold"
+            class="gl-ml-0! gl-text-body! gl-font-weight-bold"
             data-testid="rebase-message"
             data-qa-selector="no_fast_forward_message_content"
             >{{
@@ -211,18 +188,18 @@ export default {
             rebasingError
           }}</span>
           <gl-button
-            v-if="glFeatures.restructuredMrWidget"
             :loading="isMakingRequest"
             variant="confirm"
             size="small"
             data-qa-selector="mr_rebase_button"
+            data-testid="standard-rebase-button"
             class="gl-ml-3!"
             @click="rebase"
           >
             {{ __('Rebase') }}
           </gl-button>
           <gl-button
-            v-if="glFeatures.restructuredMrWidget && showRebaseWithoutCi"
+            v-if="showRebaseWithoutCi"
             :loading="isMakingRequest"
             variant="confirm"
             size="small"

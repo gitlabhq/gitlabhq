@@ -7,7 +7,7 @@ module WaitableWorker
     # Schedules multiple jobs and waits for them to be completed.
     def bulk_perform_and_wait(args_list)
       # Short-circuit: it's more efficient to do small numbers of jobs inline
-      if args_list.size == 1
+      if args_list.size == 1 && !always_async_project_authorizations_refresh?
         return bulk_perform_inline(args_list)
       end
 
@@ -28,6 +28,10 @@ module WaitableWorker
       end
 
       bulk_perform_async(failed) if failed.present?
+    end
+
+    def always_async_project_authorizations_refresh?
+      Feature.enabled?(:always_async_project_authorizations_refresh)
     end
   end
 

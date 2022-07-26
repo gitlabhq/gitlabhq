@@ -40,34 +40,6 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
         
       </gl-button-stub>
     </h4>
-     
-    <section
-      class="mr-info-list"
-    >
-      <p
-        class="gl-display-flex"
-      >
-        <span
-          class="gl-mr-3"
-        >
-          Does not delete the source branch
-        </span>
-         
-        <gl-button-stub
-          buttontextclasses=""
-          category="primary"
-          class="js-remove-source-branch"
-          data-testid="removeSourceBranchButton"
-          icon=""
-          size="small"
-          variant="default"
-        >
-          
-            Delete source branch
-          
-        </gl-button-stub>
-      </p>
-    </section>
   </div>
 </div>
 `;
@@ -112,34 +84,6 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
         
       </gl-button-stub>
     </h4>
-     
-    <section
-      class="mr-info-list"
-    >
-      <p
-        class="gl-display-flex"
-      >
-        <span
-          class="gl-mr-3"
-        >
-          Does not delete the source branch
-        </span>
-         
-        <gl-button-stub
-          buttontextclasses=""
-          category="primary"
-          class="js-remove-source-branch"
-          data-testid="removeSourceBranchButton"
-          icon=""
-          size="small"
-          variant="default"
-        >
-          
-            Delete source branch
-          
-        </gl-button-stub>
-      </p>
-    </section>
   </div>
 </div>
 `;

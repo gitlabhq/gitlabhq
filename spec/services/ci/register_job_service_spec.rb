@@ -129,6 +129,12 @@ module Ci
             let!(:build2_project2) { create(:ci_build, :pending, :queued, pipeline: pipeline2) }
             let!(:build1_project3) { create(:ci_build, :pending, :queued, pipeline: pipeline3) }
 
+            it 'picks builds one-by-one' do
+              expect(Ci::Build).to receive(:find).with(pending_job.id).and_call_original
+
+              expect(execute(shared_runner)).to eq(build1_project1)
+            end
+
             context 'when using fair scheduling' do
               context 'when all builds are pending' do
                 it 'prefers projects without builds first' do
@@ -737,16 +743,6 @@ module Ci
             end
           end
         end
-      end
-
-      context 'when a long queue is created' do
-        it 'picks builds one-by-one' do
-          expect(Ci::Build).to receive(:find).with(pending_job.id).and_call_original
-
-          expect(execute(specific_runner)).to eq(pending_job)
-        end
-
-        include_examples 'handles runner assignment'
       end
 
       context 'when using pending builds table' do

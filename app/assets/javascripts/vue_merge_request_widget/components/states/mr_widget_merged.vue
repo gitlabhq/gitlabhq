@@ -1,13 +1,10 @@
 <script>
-/* eslint-disable @gitlab/vue-require-i18n-strings */
-import { GlLoadingIcon, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import api from '~/api';
 import createFlash from '~/flash';
 import { s__, __ } from '~/locale';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import modalEventHub from '~/projects/commit/event_hub';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import eventHub from '../../event_hub';
 import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
 
@@ -19,11 +16,8 @@ export default {
   components: {
     MrWidgetAuthorTime,
     GlIcon,
-    ClipboardButton,
-    GlLoadingIcon,
     GlButton,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     mr: {
       type: Object,
@@ -183,41 +177,6 @@ export default {
           {{ s__('mrWidget|Delete source branch') }}
         </gl-button>
       </div>
-      <section
-        v-if="!glFeatures.restructuredMrWidget"
-        class="mr-info-list"
-        data-qa-selector="merged_status_content"
-      >
-        <p>
-          {{ s__('mrWidget|The changes were merged into') }}
-          <span class="label-branch">
-            <a :href="mr.targetBranchPath">{{ mr.targetBranch }}</a>
-          </span>
-          <template v-if="mr.mergeCommitSha">
-            with
-            <a
-              :href="mr.mergeCommitPath"
-              class="commit-sha js-mr-merged-commit-sha"
-              v-text="mr.shortMergeCommitSha"
-            >
-            </a>
-            <clipboard-button
-              :title="__('Copy commit SHA')"
-              :text="mr.mergeCommitSha"
-              css-class="js-mr-merged-copy-sha"
-              category="tertiary"
-              size="small"
-            />
-          </template>
-        </p>
-        <p v-if="mr.sourceBranchRemoved">
-          {{ s__('mrWidget|The source branch has been deleted') }}
-        </p>
-        <p v-if="shouldShowSourceBranchRemoving">
-          <gl-loading-icon size="sm" :inline="true" />
-          <span> {{ s__('mrWidget|The source branch is being deleted') }} </span>
-        </p>
-      </section>
     </div>
   </div>
 </template>

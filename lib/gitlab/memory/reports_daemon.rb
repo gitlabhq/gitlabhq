@@ -41,7 +41,7 @@ module Gitlab
             end
 
             log_report(report_label(report), tms)
-            @report_duration_counter.increment({ report: report_label(report) }, tms.real.to_i)
+            @report_duration_counter.increment({ report: report_label(report) }, tms.real)
 
             sleep sleep_between_reports_s
           end
@@ -63,7 +63,7 @@ module Gitlab
           message: 'finished',
           pid: $$,
           worker_id: worker_id,
-          report: report_label,
+          perf_report: report_label,
           duration_s: tms.real.round(2),
           cpu_s: tms.utime.round(2),
           sys_cpu_s: tms.stime.round(2)

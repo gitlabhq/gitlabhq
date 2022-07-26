@@ -43,19 +43,6 @@ describe('MRWidgetMerging', () => {
     ).toContain('Merging!');
   });
 
-  it('renders branch information', () => {
-    expect(
-      wrapper
-        .find('.mr-info-list')
-        .text()
-        .trim()
-        .replace(/\s\s+/g, ' ')
-        .replace(/[\r\n]+/g, ' '),
-    ).toEqual('Merges changes into branch');
-
-    expect(wrapper.find('a').attributes('href')).toBe('/branch-path');
-  });
-
   describe('initiateMergePolling', () => {
     it('should call simplePoll', () => {
       wrapper.vm.initiateMergePolling();

@@ -20,7 +20,6 @@ import {
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
-import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
@@ -132,18 +131,6 @@ describe('MrWidgetOptions', () => {
           wrapper.vm.mr.hasCI = false;
 
           expect(wrapper.vm.shouldRenderPipelines).toBeFalsy();
-        });
-      });
-
-      describe('shouldRenderRelatedLinks', () => {
-        it('should return false for the initial data', () => {
-          expect(wrapper.vm.shouldRenderRelatedLinks).toBeFalsy();
-        });
-
-        it('should return true if there is relatedLinks in MR', () => {
-          Vue.set(wrapper.vm.mr, 'relatedLinks', {});
-
-          expect(wrapper.vm.shouldRenderRelatedLinks).toBeTruthy();
         });
       });
 
@@ -516,61 +503,6 @@ describe('MrWidgetOptions', () => {
 
           expect(wrapper.vm.pollingInterval.stopTimer).toHaveBeenCalled();
         });
-      });
-    });
-
-    describe('rendering relatedLinks', () => {
-      beforeEach(() => {
-        return createComponent({
-          ...mockData,
-          issues_links: {
-            closing: `
-              <a class="close-related-link" href="#">
-                Close
-              </a>
-            `,
-          },
-        });
-      });
-
-      afterEach(() => {
-        wrapper.destroy();
-      });
-
-      it('renders if there are relatedLinks', () => {
-        expect(wrapper.find('.close-related-link').exists()).toBe(true);
-      });
-
-      it('does not render if state is nothingToMerge', async () => {
-        wrapper.vm.mr.state = stateKey.nothingToMerge;
-        await nextTick();
-        expect(wrapper.find('.close-related-link').exists()).toBe(false);
-      });
-    });
-
-    describe('rendering source branch removal status', () => {
-      it('renders when user cannot remove branch and branch should be removed', async () => {
-        wrapper.vm.mr.canRemoveSourceBranch = false;
-        wrapper.vm.mr.shouldRemoveSourceBranch = true;
-        wrapper.vm.mr.state = 'readyToMerge';
-
-        await nextTick();
-        const tooltip = wrapper.find('[data-testid="question-o-icon"]');
-
-        expect(wrapper.text()).toContain('Deletes the source branch');
-        expect(tooltip.attributes('title')).toBe(
-          'A user with write access to the source branch selected this option',
-        );
-      });
-
-      it('does not render in merged state', async () => {
-        wrapper.vm.mr.canRemoveSourceBranch = false;
-        wrapper.vm.mr.shouldRemoveSourceBranch = true;
-        wrapper.vm.mr.state = 'merged';
-
-        await nextTick();
-        expect(wrapper.text()).toContain('The source branch has been deleted');
-        expect(wrapper.text()).not.toContain('Deletes the source branch');
       });
     });
 
@@ -1062,7 +994,7 @@ describe('MrWidgetOptions', () => {
 
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(6);
+        expect(pollRequest).toHaveBeenCalledTimes(4);
       });
     });
 
@@ -1100,14 +1032,14 @@ describe('MrWidgetOptions', () => {
         registerExtension(pollingErrorExtension);
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(6);
+        expect(pollRequest).toHaveBeenCalledTimes(4);
       });
 
       it('captures sentry error and displays error when poll has failed', async () => {
         registerExtension(pollingErrorExtension);
         await createComponent();
 
-        expect(Sentry.captureException).toHaveBeenCalledTimes(5);
+        expect(Sentry.captureException).toHaveBeenCalled();
         expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
         expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
       });
@@ -1126,7 +1058,7 @@ describe('MrWidgetOptions', () => {
       expect(
         wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]').exists(),
       ).toBe(false);
-      expect(Sentry.captureException).toHaveBeenCalledTimes(5);
+      expect(Sentry.captureException).toHaveBeenCalled();
       expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
       expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
     });

@@ -104,6 +104,9 @@ for the section. For example:
 > `widget_message` [introduced](<link-to-issue>) in GitLab 14.3.
 ```
 
+If the API or attribute is deployed behind a feature flag,
+[include the feature flag information](feature_flags.md) in the version history.
+
 ## Deprecations
 
 To document the deprecation of an API endpoint, follow the steps to

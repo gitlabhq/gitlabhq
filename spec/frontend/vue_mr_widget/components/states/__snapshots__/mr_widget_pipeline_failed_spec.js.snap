@@ -5,7 +5,7 @@ exports[`PipelineFailed should render error message with a disabled merge button
   class="mr-widget-body media"
 >
   <status-icon-stub
-    showdisabledbutton="true"
+    show-disabled-button="true"
     status="warning"
   />
    
@@ -13,7 +13,7 @@ exports[`PipelineFailed should render error message with a disabled merge button
     class="media-body space-children"
   >
     <span
-      class="bold"
+      class="gl-ml-0! gl-text-body! bold"
     >
       <gl-sprintf-stub
         message="Merge blocked: pipeline must succeed. Push a commit that fixes the failure, or %{linkStart}learn about other solutions.%{linkEnd}"

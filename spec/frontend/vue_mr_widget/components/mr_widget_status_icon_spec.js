@@ -6,7 +6,6 @@ describe('MR widget status icon component', () => {
   let wrapper;
 
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
-  const findDisabledMergeButton = () => wrapper.find('[data-testid="disabled-merge-button"]');
 
   const createWrapper = (props, mountFn = shallowMount) => {
     wrapper = mountFn(mrStatusIcon, {
@@ -39,22 +38,6 @@ describe('MR widget status icon component', () => {
       createWrapper({ status: 'failed' }, mount);
 
       expect(wrapper.find('[data-testid="status_failed-icon"]').exists()).toBe(true);
-    });
-  });
-
-  describe('with disabled button', () => {
-    it('renders a disabled button', () => {
-      createWrapper({ status: 'failed', showDisabledButton: true });
-
-      expect(findDisabledMergeButton().exists()).toBe(true);
-    });
-  });
-
-  describe('without disabled button', () => {
-    it('does not render a disabled button', () => {
-      createWrapper({ status: 'failed' });
-
-      expect(findDisabledMergeButton().exists()).toBe(false);
     });
   });
 });

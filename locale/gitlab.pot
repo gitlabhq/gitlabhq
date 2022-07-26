@@ -12466,9 +12466,6 @@ msgstr ""
 msgid "Deletes the source branch"
 msgstr ""
 
-msgid "Deletes the source branch."
-msgstr ""
-
 msgid "Deleting"
 msgstr ""
 
@@ -13730,9 +13727,6 @@ msgid "Documentation pages URL"
 msgstr ""
 
 msgid "Documents reindexed: %{processed_documents} (%{percentage}%%)"
-msgstr ""
-
-msgid "Does not delete the source branch."
 msgstr ""
 
 msgid "Domain"
@@ -16019,9 +16013,6 @@ msgid "False positive"
 msgstr ""
 
 msgid "Fast timeout"
-msgstr ""
-
-msgid "Fast-forward merge without a merge commit"
 msgstr ""
 
 msgid "Faster releases. Better code. Less pain."
@@ -38957,9 +38948,6 @@ msgstr ""
 msgid "The latest artifacts created by jobs in the most recent successful pipeline will be stored."
 msgstr ""
 
-msgid "The latest pipeline for this merge request did not complete successfully."
-msgstr ""
-
 msgid "The latest pipeline for this merge request did not succeed. The latest changes are unverified."
 msgstr ""
 
@@ -39486,9 +39474,6 @@ msgid "There was an error parsing the data for this graph."
 msgstr ""
 
 msgid "There was an error removing the e-mail."
-msgstr ""
-
-msgid "There was an error resetting group pipeline minutes."
 msgstr ""
 
 msgid "There was an error resetting user pipeline minutes."
@@ -46292,12 +46277,6 @@ msgstr ""
 msgid "mrWidgetCommitsAdded|1 merge commit"
 msgstr ""
 
-msgid "mrWidgetCommitsAdded|Adds %{commitCount} and %{mergeCommitCount} to %{targetBranch}%{squashedCommits}."
-msgstr ""
-
-msgid "mrWidgetCommitsAdded|Adds %{commitCount} to %{targetBranch}."
-msgstr ""
-
 msgid "mrWidgetCommitsAdded|Changes merged into %{targetBranch} with %{mergeCommitSha}%{squashedCommits}."
 msgstr ""
 
@@ -46414,9 +46393,6 @@ msgstr ""
 msgid "mrWidget|Delete source branch"
 msgstr ""
 
-msgid "mrWidget|Deletes the source branch"
-msgstr ""
-
 msgid "mrWidget|Deployment statistics are not available currently"
 msgstr ""
 
@@ -46424,9 +46400,6 @@ msgid "mrWidget|Did not close"
 msgstr ""
 
 msgid "mrWidget|Dismiss"
-msgstr ""
-
-msgid "mrWidget|Does not delete the source branch"
 msgstr ""
 
 msgid "mrWidget|Failed to load deployment statistics"
@@ -46464,9 +46437,6 @@ msgid_plural "mrWidget|Mentions issues"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "mrWidget|Merge"
-msgstr ""
-
 msgid "mrWidget|Merge blocked: all required approvals must be given."
 msgstr ""
 
@@ -46498,9 +46468,6 @@ msgid "mrWidget|Merge unavailable: merge requests are read-only on archived proj
 msgstr ""
 
 msgid "mrWidget|Merged by"
-msgstr ""
-
-msgid "mrWidget|Merges changes into"
 msgstr ""
 
 msgid "mrWidget|Merging! Changes are being shipped…"
@@ -46587,19 +46554,7 @@ msgstr ""
 msgid "mrWidget|The %{type} branch %{codeStart}%{name}%{codeEnd} does not exist."
 msgstr ""
 
-msgid "mrWidget|The changes were merged into"
-msgstr ""
-
-msgid "mrWidget|The changes were not merged into"
-msgstr ""
-
-msgid "mrWidget|The source branch has been deleted"
-msgstr ""
-
 msgid "mrWidget|The source branch is %{link} the target branch"
-msgstr ""
-
-msgid "mrWidget|The source branch is being deleted"
 msgstr ""
 
 msgid "mrWidget|This merge request failed to be merged automatically"

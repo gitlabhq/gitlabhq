@@ -15,10 +15,6 @@ describe('MRWidgetChecking', () => {
     vm.$destroy();
   });
 
-  it('renders disabled button', () => {
-    expect(vm.$el.querySelector('button').getAttribute('disabled')).toEqual('disabled');
-  });
-
   it('renders loading icon', () => {
     expect(vm.$el.querySelector('.mr-widget-icon span').classList).toContain('gl-spinner');
   });

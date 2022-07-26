@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 import MrWidgetFailedToMerge from '~/vue_merge_request_widget/components/states/mr_widget_failed_to_merge.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
@@ -116,7 +115,6 @@ describe('MRWidgetFailedToMerge', () => {
 
     it('renders warning icon and disabled merge button', () => {
       expect(wrapper.find('.js-ci-status-icon-warning')).not.toBeNull();
-      expect(wrapper.find(StatusIcon).props('showDisabledButton')).toBe(true);
     });
 
     it('renders given error', () => {

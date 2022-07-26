@@ -10,7 +10,6 @@ import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/state
 import simplePoll from '~/lib/utils/simple_poll';
 import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
-import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import MergeFailedPipelineConfirmationDialog from '~/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog.vue';
@@ -60,6 +59,7 @@ const createTestMr = (customConfig) => {
     transitionStateMachine: (transition) => eventHub.$emit('StateMachineValueChanged', transition),
     translateStateToMachine: () => this.transitionStateMachine(),
     state: 'open',
+    canMerge: true,
   };
 
   Object.assign(mr, customConfig.mr);
@@ -90,7 +90,7 @@ const createReadyToMergeResponse = (customMr) => {
 const createComponent = (
   customConfig = {},
   mergeRequestWidgetGraphql = false,
-  restructuredMrWidget = false,
+  restructuredMrWidget = true,
 ) => {
   wrapper = shallowMount(ReadyToMerge, {
     propsData: {
@@ -111,7 +111,6 @@ const createComponent = (
 };
 
 const findCheckboxElement = () => wrapper.find(SquashBeforeMerge);
-const findCommitsHeaderElement = () => wrapper.find(CommitsHeader);
 const findCommitEditElements = () => wrapper.findAll(CommitEdit);
 const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
 const findFirstCommitEditLabel = () => findCommitEditElements().at(0).props('label');
@@ -575,71 +574,9 @@ describe('ReadyToMerge', () => {
       });
     });
 
-    describe('commits count collapsible header', () => {
-      it('should be rendered when fast-forward is disabled', () => {
-        createComponent();
-
-        expect(findCommitsHeaderElement().exists()).toBeTruthy();
-      });
-
-      describe('when fast-forward is enabled', () => {
-        it('should be rendered if squash and squash before are enabled and there is more than 1 commit', () => {
-          createComponent({
-            mr: {
-              ffOnlyEnabled: true,
-              enableSquashBeforeMerge: true,
-              squashIsSelected: true,
-              commitsCount: 2,
-            },
-          });
-
-          expect(findCommitsHeaderElement().exists()).toBeTruthy();
-        });
-
-        it('should not be rendered if squash before merge is disabled', () => {
-          createComponent({
-            mr: {
-              ffOnlyEnabled: true,
-              enableSquashBeforeMerge: false,
-              squash: true,
-              commitsCount: 2,
-            },
-          });
-
-          expect(findCommitsHeaderElement().exists()).toBeFalsy();
-        });
-
-        it('should not be rendered if squash is disabled', () => {
-          createComponent({
-            mr: {
-              ffOnlyEnabled: true,
-              squash: false,
-              enableSquashBeforeMerge: true,
-              commitsCount: 2,
-            },
-          });
-
-          expect(findCommitsHeaderElement().exists()).toBeFalsy();
-        });
-
-        it('should not be rendered if commits count is 1', () => {
-          createComponent({
-            mr: {
-              ffOnlyEnabled: true,
-              squash: true,
-              enableSquashBeforeMerge: true,
-              commitsCount: 1,
-            },
-          });
-
-          expect(findCommitsHeaderElement().exists()).toBeFalsy();
-        });
-      });
-    });
-
     describe('commits edit components', () => {
       describe('when fast-forward merge is enabled', () => {
-        it('should not be rendered if squash is disabled', () => {
+        it('should not be rendered if squash is disabled', async () => {
           createComponent({
             mr: {
               ffOnlyEnabled: true,
@@ -678,7 +615,7 @@ describe('ReadyToMerge', () => {
           expect(findCommitEditElements().length).toBe(0);
         });
 
-        it('should have one edit component if squash is enabled and there is more than 1 commit', () => {
+        it('should have one edit component if squash is enabled and there is more than 1 commit', async () => {
           createComponent({
             mr: {
               ffOnlyEnabled: true,
@@ -688,18 +625,14 @@ describe('ReadyToMerge', () => {
             },
           });
 
+          await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+
           expect(findCommitEditElements().length).toBe(1);
           expect(findFirstCommitEditLabel()).toBe('Squash commit message');
         });
       });
 
-      it('should have one edit component when squash is disabled', () => {
-        createComponent();
-
-        expect(findCommitEditElements().length).toBe(1);
-      });
-
-      it('should have two edit components when squash is enabled and there is more than 1 commit', () => {
+      it('should have two edit components when squash is enabled and there is more than 1 commit', async () => {
         createComponent({
           mr: {
             commitsCount: 2,
@@ -707,6 +640,8 @@ describe('ReadyToMerge', () => {
             enableSquashBeforeMerge: true,
           },
         });
+
+        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
         expect(findCommitEditElements().length).toBe(2);
       });
@@ -737,11 +672,12 @@ describe('ReadyToMerge', () => {
           },
         });
         await nextTick();
+        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
         expect(findCommitEditElements().length).toBe(2);
       });
 
-      it('should have one edit components when squash is enabled and there is 1 commit only', () => {
+      it('should have one edit components when squash is enabled and there is 1 commit only', async () => {
         createComponent({
           mr: {
             commitsCount: 1,
@@ -750,16 +686,12 @@ describe('ReadyToMerge', () => {
           },
         });
 
+        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+
         expect(findCommitEditElements().length).toBe(1);
       });
 
-      it('should have correct edit merge commit label', () => {
-        createComponent();
-
-        expect(findFirstCommitEditLabel()).toBe('Merge commit message');
-      });
-
-      it('should have correct edit squash commit label', () => {
+      it('should have correct edit squash commit label', async () => {
         createComponent({
           mr: {
             commitsCount: 2,
@@ -767,6 +699,8 @@ describe('ReadyToMerge', () => {
             enableSquashBeforeMerge: true,
           },
         });
+
+        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
         expect(findFirstCommitEditLabel()).toBe('Squash commit message');
       });
@@ -779,45 +713,23 @@ describe('ReadyToMerge', () => {
         expect(findCommitDropdownElement().exists()).toBeFalsy();
       });
 
-      it('should  be rendered if squash is enabled and there is more than 1 commit', () => {
+      it('should  be rendered if squash is enabled and there is more than 1 commit', async () => {
         createComponent({
           mr: { enableSquashBeforeMerge: true, squashIsSelected: true, commitsCount: 2 },
         });
+
+        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
         expect(findCommitDropdownElement().exists()).toBeTruthy();
       });
     });
 
-    it('renders a tip including a link to docs on templates', () => {
+    it('renders a tip including a link to docs on templates', async () => {
       createComponent();
 
+      await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+
       expect(findTipLink().exists()).toBe(true);
-    });
-  });
-
-  describe('Merge request project settings', () => {
-    describe('when the merge commit merge method is enabled', () => {
-      beforeEach(() => {
-        createComponent({
-          mr: { ffOnlyEnabled: false },
-        });
-      });
-
-      it('should not show fast forward message', () => {
-        expect(wrapper.find('.mr-fast-forward-message').exists()).toBe(false);
-      });
-    });
-
-    describe('when the fast-forward merge method is enabled', () => {
-      beforeEach(() => {
-        createComponent({
-          mr: { ffOnlyEnabled: true },
-        });
-      });
-
-      it('should show fast forward message', () => {
-        expect(wrapper.find('.mr-fast-forward-message').exists()).toBe(true);
-      });
     });
   });
 
@@ -872,6 +784,7 @@ describe('ReadyToMerge', () => {
         createDefaultGqlComponent();
 
         await waitForPromises();
+        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
         expect(finderFn()).toBe(initialValue);
       });
@@ -879,6 +792,7 @@ describe('ReadyToMerge', () => {
       it('should have updated value after graphql refetch', async () => {
         createDefaultGqlComponent();
         await waitForPromises();
+        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
         triggerApprovalUpdated();
         await waitForPromises();
@@ -889,6 +803,7 @@ describe('ReadyToMerge', () => {
       it('should not update if user has touched', async () => {
         createDefaultGqlComponent();
         await waitForPromises();
+        await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
         const input = wrapper.find(inputId);
         input.element.value = USER_COMMIT_MESSAGE;

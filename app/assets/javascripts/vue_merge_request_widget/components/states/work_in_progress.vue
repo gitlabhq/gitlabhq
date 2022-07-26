@@ -167,10 +167,7 @@ export default {
     <status-icon :show-disabled-button="canUpdate" status="warning" />
     <div class="media-body">
       <div class="float-left">
-        <span
-          :class="{ 'gl-ml-0! gl-text-body!': glFeatures.restructuredMrWidget }"
-          class="gl-font-weight-bold"
-        >
+        <span class="gl-ml-0! gl-text-body! gl-font-weight-bold">
           {{
             __("Merge blocked: merge request must be marked as ready. It's still marked as draft.")
           }}

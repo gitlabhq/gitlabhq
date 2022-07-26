@@ -71,7 +71,6 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_merged.vue' do
           element :cherry_pick_button
-          element :merged_status_content
           element :revert_button
         end
 

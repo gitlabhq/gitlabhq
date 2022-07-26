@@ -3,7 +3,7 @@
 - project = @target_project || @project
 - presenter = local_assigns.fetch(:presenter, nil)
 
-= form_errors(issuable)
+= form_errors(issuable, pajamas_alert: true)
 
 - if @conflict
   = render Pajamas::AlertComponent.new(variant: :danger,

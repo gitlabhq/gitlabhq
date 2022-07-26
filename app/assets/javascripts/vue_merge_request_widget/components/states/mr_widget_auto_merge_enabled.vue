@@ -3,7 +3,6 @@ import { GlSkeletonLoader, GlIcon, GlButton, GlSprintf } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
 import createFlash from '~/flash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
@@ -77,19 +76,6 @@ export default {
     },
     autoMergeStrategy() {
       return (this.glFeatures.mergeRequestWidgetGraphql ? this.state : this.mr).autoMergeStrategy;
-    },
-    canRemoveSourceBranch() {
-      const { currentUserId } = this.mr;
-      const mergeUserId = this.glFeatures.mergeRequestWidgetGraphql
-        ? getIdFromGraphQLId(this.state.mergeUser?.id)
-        : this.mr.mergeUserId;
-      const canRemoveSourceBranch = this.glFeatures.mergeRequestWidgetGraphql
-        ? this.state.userPermissions.removeSourceBranch
-        : this.mr.canRemoveSourceBranch;
-
-      return (
-        !this.shouldRemoveSourceBranch && canRemoveSourceBranch && mergeUserId === currentUserId
-      );
     },
   },
   methods: {
@@ -175,24 +161,6 @@ export default {
             {{ cancelButtonText }}
           </gl-button>
         </h4>
-        <section v-if="!glFeatures.restructuredMrWidget" class="mr-info-list">
-          <p v-if="shouldRemoveSourceBranch">
-            {{ s__('mrWidget|Deletes the source branch') }}
-          </p>
-          <p v-else class="gl-display-flex">
-            <span class="gl-mr-3">{{ s__('mrWidget|Does not delete the source branch') }}</span>
-            <gl-button
-              v-if="canRemoveSourceBranch"
-              :loading="isRemovingSourceBranch"
-              size="small"
-              class="js-remove-source-branch"
-              data-testid="removeSourceBranchButton"
-              @click="removeSourceBranch"
-            >
-              {{ s__('mrWidget|Delete source branch') }}
-            </gl-button>
-          </p>
-        </section>
       </div>
     </template>
   </div>

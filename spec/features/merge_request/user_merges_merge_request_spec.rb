@@ -21,27 +21,6 @@ RSpec.describe "User merges a merge request", :js do
     end
   end
 
-  context "ff-only merge" do
-    let(:project) { create(:project, :public, :repository, merge_requests_ff_only_enabled: true) }
-
-    before do
-      stub_feature_flags(restructured_mr_widget: false)
-      visit(merge_request_path(merge_request))
-    end
-
-    context "when branch is rebased" do
-      let!(:merge_request) { create(:merge_request, :rebased, source_project: project) }
-
-      it_behaves_like "fast forward merge a merge request"
-    end
-
-    context "when branch is merged" do
-      let!(:merge_request) { create(:merge_request, :merged_target, source_project: project) }
-
-      it_behaves_like "fast forward merge a merge request"
-    end
-  end
-
   context 'sidebar merge requests counter' do
     let(:project) { create(:project, :public, :repository) }
     let!(:merge_request) { create(:merge_request, source_project: project) }

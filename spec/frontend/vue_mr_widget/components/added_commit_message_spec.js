@@ -10,11 +10,6 @@ function factory(propsData) {
       targetBranch: 'main',
       ...propsData,
     },
-    provide: {
-      glFeatures: {
-        restructuredMrWidget: true.valueOf,
-      },
-    },
   });
 }
 

@@ -66,10 +66,10 @@ you should keep the documentation with the code in that repository.
 
 Then you can use one of these approaches:
 
-- (Recommended) [Add the repository to the list of products](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/development.md#add-a-new-product)
+- Recommended. [Add the repository to the list of products](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/development.md#add-a-new-product)
   published at <https://docs.gitlab.com>. The source of the documentation pages remains
   in the external repository, but the resulting pages are indexed and searchable on <https://docs.gitlab.com>.
-- (Recommended) [Add an entry in the global navigation](global_nav.md#add-a-navigation-entry) for
+- Recommended. [Add an entry in the global navigation](global_nav.md#add-a-navigation-entry) for
   <https://docs.gitlab.com> that links directly to the documentation in that external repository.
   The documentation pages are not indexed or searchable on <https://docs.gitlab.com>.
   View [an example](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fedb6378a3c92274ba3b6031df0d34455594e4cc/content/_data/navigation.yaml#L2944-L2946).
