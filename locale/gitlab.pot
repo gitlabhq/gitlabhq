@@ -23510,6 +23510,9 @@ msgstr ""
 msgid "LinkedResources|Cancel"
 msgstr ""
 
+msgid "LinkedResources|Error creating resource link for the incident: %{error}"
+msgstr ""
+
 msgid "LinkedResources|Error deleting the linked resource for the incident: %{error}"
 msgstr ""
 
@@ -23526,6 +23529,9 @@ msgid "LinkedResources|Read more about linked resources"
 msgstr ""
 
 msgid "LinkedResources|Remove"
+msgstr ""
+
+msgid "LinkedResources|Something went wrong while creating the resource link for the incident."
 msgstr ""
 
 msgid "LinkedResources|Something went wrong while deleting the linked resource for the incident."

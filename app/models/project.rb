@@ -3018,6 +3018,10 @@ class Project < ApplicationRecord
     licensed_feature_available?(:security_training)
   end
 
+  def destroy_deployment_by_id(deployment_id)
+    deployments.where(id: deployment_id).fast_destroy_all
+  end
+
   private
 
   # overridden in EE

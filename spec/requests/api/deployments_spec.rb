@@ -448,6 +448,84 @@ RSpec.describe API::Deployments do
     end
   end
 
+  describe 'DELETE /projects/:id/deployments/:deployment_id' do
+    let(:project) { create(:project, :repository) }
+    let(:environment) { create(:environment, project: project) }
+    let(:commits) { project.repository.commits(nil, { limit: 2 })}
+    let!(:deploy) do
+      create(
+        :deployment,
+        :success,
+        project: project,
+        environment: environment,
+        deployable: nil,
+        sha: commits[1].sha
+      )
+    end
+
+    let!(:old_deploy) do
+      create(
+        :deployment,
+        :success,
+        project: project,
+        environment: environment,
+        deployable: nil,
+        sha: commits[0].sha,
+        finished_at: 1.year.ago
+      )
+    end
+
+    context 'as an maintainer' do
+      it 'deletes a deployment' do
+        delete api("/projects/#{project.id}/deployments/#{old_deploy.id}", user)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(delete_deployments_api: false)
+      end
+
+      it 'is not found' do
+        delete api("/projects/#{project.id}/deployments/#{old_deploy.id}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'as a developer' do
+      let(:developer) { create(:user) }
+
+      before do
+        project.add_developer(developer)
+      end
+
+      it 'is forbidden' do
+        delete api("/projects/#{project.id}/deployments/#{deploy.id}", developer)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'as non member' do
+      it 'is not found' do
+        delete api("/projects/#{project.id}/deployments/#{deploy.id}", non_member)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'for non-existent deployment' do
+      it 'is not found' do
+        delete api("/projects/#{project.id}/deployments/#{non_existing_record_id}", project.first_owner)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/deployments/:deployment_id/merge_requests' do
     let(:project) { create(:project, :repository) }
     let!(:deployment) { create(:deployment, :success, project: project) }

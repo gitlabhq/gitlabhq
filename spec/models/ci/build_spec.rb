@@ -1642,14 +1642,6 @@ RSpec.describe Ci::Build do
         end
 
         it { is_expected.to eq('review/master') }
-
-        context 'when the FF ci_expand_environment_name_and_url is disabled' do
-          before do
-            stub_feature_flags(ci_expand_environment_name_and_url: false)
-          end
-
-          it { is_expected.to eq('review/${CI_COMMIT_REF_NAME}') }
-        end
       end
     end
 

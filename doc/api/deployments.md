@@ -458,6 +458,37 @@ Deployments created by users on GitLab Premium or higher include the `approvals`
 }
 ```
 
+## Delete a specific deployment
+
+Delete a specific deployment that is not currently the last deployment for an environment or in a `running` state
+
+```plaintext
+DELETE /projects/:id/deployments/:deployment_id
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `deployment_id` | integer | yes      | The ID of the deployment |
+
+```shell
+curl --request "DELETE" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1"
+```
+
+Example responses:
+
+```json
+{ "message": "202 Accepted" }
+```
+
+```json
+{ "message": "400 Cannot destroy running deployment" }
+```
+
+```json
+{ "message": "400 Deployment currently deployed to environment" }
+```
+
 ## List of merge requests associated with a deployment
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35739) in GitLab 12.7.

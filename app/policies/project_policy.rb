@@ -470,6 +470,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_pipeline
     enable :admin_environment
     enable :admin_deployment
+    enable :destroy_deployment
     enable :admin_pages
     enable :read_pages
     enable :update_pages

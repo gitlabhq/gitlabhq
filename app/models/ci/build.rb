@@ -490,11 +490,7 @@ module Ci
         if metadata&.expanded_environment_name.present?
           metadata.expanded_environment_name
         else
-          if ::Feature.enabled?(:ci_expand_environment_name_and_url, project)
-            ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
-          else
-            ExpandVariables.expand(environment, -> { simple_variables })
-          end
+          ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
         end
       end
     end

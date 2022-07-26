@@ -307,14 +307,6 @@ RSpec.describe Deployments::UpdateEnvironmentService do
       end
 
       it { is_expected.to eq('http://appname-master.example.com') }
-
-      context 'when the FF ci_expand_environment_name_and_url is disabled' do
-        before do
-          stub_feature_flags(ci_expand_environment_name_and_url: false)
-        end
-
-        it { is_expected.to eq('http://${STACK_NAME}.example.com') }
-      end
     end
 
     context 'when yaml environment does not have url' do

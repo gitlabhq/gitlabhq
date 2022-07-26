@@ -8411,6 +8411,23 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#destroy_deployment_by_id' do
+    let(:project) { create(:project, :repository) }
+
+    let!(:deployment) { create(:deployment, :created, project: project) }
+    let!(:old_deployment) { create(:deployment, :created, project: project, finished_at: 1.year.ago) }
+
+    it 'will call fast_destroy_all on a specific deployment by id' do
+      expect(Deployment).to receive(:fast_destroy_all).and_call_original
+
+      expect do
+        project.destroy_deployment_by_id(project.deployments.first.id)
+      end.to change {project.deployments.count }.by(-1)
+
+      expect(project.deployments).to match_array([old_deployment])
+    end
+  end
+
   private
 
   def finish_job(export_job)

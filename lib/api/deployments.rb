@@ -119,9 +119,9 @@ module API
       end
       params do
         requires :status,
-          type: String,
-          desc: 'The new status of the deployment',
-          values: %w[running success failed canceled]
+                 type: String,
+                 desc: 'The new status of the deployment',
+                 values: %w[running success failed canceled]
       end
       put ':id/deployments/:deployment_id' do
         authorize!(:read_deployment, user_project)
@@ -140,6 +140,25 @@ module API
           present(deployment, with: Entities::DeploymentExtended, current_user: current_user)
         else
           render_validation_error!(deployment)
+        end
+      end
+
+      desc 'Deletes an existing deployment' do
+        detail 'This feature was introduced in GitLab 15.3'
+        http_codes [[204, 'Deployment was deleted'], [403, 'Forbidden'], [400, 'Cannot destroy']]
+      end
+      params do
+        requires :deployment_id, type: Integer, desc: 'The deployment ID'
+      end
+      delete ':id/deployments/:deployment_id' do
+        not_found! unless Feature.enabled?(:delete_deployments_api, user_project)
+
+        deployment = user_project.deployments.find(params[:deployment_id])
+
+        authorize!(:destroy_deployment, deployment)
+
+        destroy_conditionally!(deployment) do
+          ::Ci::Deployments::DestroyService.new(user_project, current_user).execute(deployment)
         end
       end
 

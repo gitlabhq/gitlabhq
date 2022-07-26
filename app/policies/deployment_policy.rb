@@ -24,3 +24,5 @@ class DeploymentPolicy < BasePolicy
     prevent :update_deployment
   end
 end
+
+DeploymentPolicy.prepend_mod_with('DeploymentPolicy')
