@@ -17,7 +17,7 @@ shared_examples 'Snowplow event tracking' do
 
     subject
 
-    expect_no_snowplow_event
+    expect_no_snowplow_event(category: category, action: action)
   end
 
   it 'is emitted' do

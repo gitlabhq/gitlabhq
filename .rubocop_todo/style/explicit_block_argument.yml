@@ -100,7 +100,6 @@ Style/ExplicitBlockArgument:
     - 'spec/services/pages/zip_directory_service_spec.rb'
     - 'spec/services/todo_service_spec.rb'
     - 'spec/support/helpers/feature_flag_helpers.rb'
-    - 'spec/support/helpers/features/runner_helpers.rb'
     - 'spec/support/helpers/features/top_nav_spec_helpers.rb'
     - 'spec/support/helpers/graphql_helpers.rb'
     - 'spec/support/helpers/modal_helpers.rb'

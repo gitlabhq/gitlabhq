@@ -33,7 +33,7 @@ RSpec.shared_examples 'does not track when feature flag is disabled' do |feature
   end
 end
 
-RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events' do
+RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events for given event params' do
   before do
     stub_application_setting(usage_ping_enabled: true)
   end
@@ -44,22 +44,21 @@ RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events
 
   specify do
     aggregate_failures do
-      expect(track_action(author: user1, project: project)).to be_truthy
-      expect(track_action(author: user1, project: project)).to be_truthy
-      expect(track_action(author: user2, project: project)).to be_truthy
+      expect(track_action({ author: user1 }.merge(track_params))).to be_truthy
+      expect(track_action({ author: user1 }.merge(track_params))).to be_truthy
+      expect(track_action({ author: user2 }.merge(track_params))).to be_truthy
       expect(count_unique).to eq(2)
     end
   end
 
   it 'does not track edit actions if author is not present' do
-    expect(track_action(author: nil, project: project)).to be_nil
+    expect(track_action({ author: nil }.merge(track_params))).to be_nil
   end
 
   it 'emits snowplow event' do
-    track_action(author: user1, project: project)
+    track_action({ author: user1 }.merge(track_params))
 
-    expect_snowplow_event(category: 'issues_edit', action: action, user: user1,
-                          namespace: project.namespace, project: project)
+    expect_snowplow_event(**{ category: category, action: event_action, user: user1 }.merge(event_params))
   end
 
   context 'with route_hll_to_snowplow_phase2 disabled' do
@@ -68,9 +67,35 @@ RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events
     end
 
     it 'does not emit snowplow event' do
-      track_action(author: user1, project: project)
+      track_action({ author: user1 }.merge(track_params))
 
       expect_no_snowplow_event
+    end
+  end
+end
+
+RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events' do
+  it_behaves_like 'a daily tracked issuable snowplow and service ping events for given event params' do
+    let_it_be(:track_params) { { project: project } }
+    let_it_be(:event_params) { track_params.merge(namespace: project.namespace) }
+    let_it_be(:category) { 'issues_edit' }
+    let_it_be(:event_action) { action }
+  end
+end
+
+RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events with namespace' do
+  it_behaves_like 'a daily tracked issuable snowplow and service ping events for given event params' do
+    let(:track_params) { { namespace: namespace } }
+    let(:event_params) { track_params.merge(label: event_label, property: event_property) }
+  end
+end
+
+RSpec.shared_examples 'does not track with namespace when feature flag is disabled' do |feature_flag|
+  context "when feature flag #{feature_flag} is disabled" do
+    it 'does not track action' do
+      stub_feature_flags(feature_flag => false)
+
+      expect(track_action(author: user1, namespace: namespace)).to be_nil
     end
   end
 end
