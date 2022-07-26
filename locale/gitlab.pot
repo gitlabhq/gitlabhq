@@ -41349,6 +41349,9 @@ msgstr ""
 msgid "Unauthenticated web rate limit period in seconds"
 msgstr ""
 
+msgid "Unban"
+msgstr ""
+
 msgid "Uncommitted changes will be lost if you change branches. Do you want to continue?"
 msgstr ""
 
@@ -42165,6 +42168,9 @@ msgid "User was successfully removed from group."
 msgstr ""
 
 msgid "User was successfully removed from project."
+msgstr ""
+
+msgid "User was successfully unbanned."
 msgstr ""
 
 msgid "User was successfully updated."

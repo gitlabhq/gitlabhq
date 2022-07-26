@@ -171,7 +171,7 @@ module IssuableActions
     discussions = Discussion.build_collection(notes, issuable)
 
     if issuable.is_a?(MergeRequest)
-      render_cached(discussions, with: discussion_serializer, cache_context: -> (_) { discussion_cache_context }, context: self)
+      render_mr_discussions(discussions, discussion_serializer, discussion_cache_context)
     elsif issuable.is_a?(Issue)
       render json: discussion_serializer.represent(discussions, context: self) if stale?(etag: [discussion_cache_context, discussions])
     else
@@ -181,6 +181,24 @@ module IssuableActions
   # rubocop:enable CodeReuse/ActiveRecord
 
   private
+
+  def render_mr_discussions(discussions, serializer, cache_context)
+    if Feature.enabled?(:mr_discussions_http_cache, project)
+      return unless stale?(etag: [cache_context, discussions])
+
+      if Feature.enabled?(:disabled_mr_discussions_redis_cache, project)
+        render json: serializer.represent(discussions, context: self)
+      else
+        render_cached_discussions(discussions, serializer, cache_context)
+      end
+    else
+      render_cached_discussions(discussions, serializer, cache_context)
+    end
+  end
+
+  def render_cached_discussions(discussions, serializer, cache_context)
+    render_cached(discussions, with: serializer, cache_context: -> (_) { cache_context }, context: self)
+  end
 
   def paginated_discussions
     return if params[:per_page].blank?

@@ -700,101 +700,21 @@ The results are stored in `gl-container-scanning-report.json`.
 
 ## Reports JSON format
 
-The container scanning tool emits a JSON report file. For more information, see the
-[schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json).
+The container scanning tool emits JSON reports which the [GitLab Runner](https://docs.gitlab.com/runner/)
+recognizes through the [`artifacts:reports`](../../../ci/yaml/#artifactsreports)
+keyword in the CI configuration file.
 
-Here's an example container scanning report:
+Once the CI job finishes, the Runner uploads these reports to GitLab, which are then available in
+the CI Job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding [pipeline](../vulnerability_report/pipeline.md)
+and become part of the [Vulnerability Report](../vulnerability_report/).
 
-```json-doc
-{
-  "version": "14.0.0",
-  "vulnerabilities": [
-    {
-      "id": "df52bc8ce9a2ae56bbcb0c4ecda62123fbd6f69b",
-      "category": "container_scanning",
-      "message": "CVE-2019-3462 in apt-1.4.8",
-      "description": "Incorrect sanitation of the 302 redirect field in HTTP transport method of apt versions 1.4.8 and earlier can lead to content injection by a MITM attacker, potentially leading to remote code execution on the target machine.",
-      "severity": "High",
-      "confidence": "Unknown",
-      "solution": "Upgrade apt from 1.4.8 to 1.4.9",
-      "scanner": {
-        "id": "trivy",
-        "name": "trivy"
-      },
-      "location": {
-        "dependency": {
-          "package": {
-            "name": "apt"
-          },
-          "version": "1.4.8"
-        },
-        "operating_system": "debian:9.4",
-        "image": "registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256:bc09fe2e0721dfaeee79364115aeedf2174cce0947b9ae5fe7c33312ee019a4e",
-        "default_branch_image": "registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0:latest"
-      },
-      "identifiers": [
-        {
-          "type": "cve",
-          "name": "CVE-2019-3462",
-          "value": "CVE-2019-3462",
-          "url": "http://www.securityfocus.com/bid/106690"
-        }
-      ],
-      "links": [
-        {
-          "url": "http://www.securityfocus.com/bid/106690"
-        },
-        {
-          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-3462"
-        },
-        {
-          "url": "https://lists.apache.org/thread.html/8338a0f605bdbb3a6098bb76f666a95fc2b2f53f37fa1ecc89f1146f@%3Cdevnull.infra.apache.org%3E"
-        },
-        {
-          "url": "https://lists.debian.org/debian-lts-announce/2019/01/msg00013.html"
-        },
-        {
-          "url": "https://lists.debian.org/debian-lts-announce/2019/01/msg00014.html"
-        },
-        {
-          "url": "https://security.netapp.com/advisory/ntap-20190125-0002/"
-        },
-        {
-          "url": "https://usn.ubuntu.com/3863-1/"
-        },
-        {
-          "url": "https://usn.ubuntu.com/3863-2/"
-        },
-        {
-          "url": "https://usn.ubuntu.com/usn/usn-3863-1"
-        },
-        {
-          "url": "https://usn.ubuntu.com/usn/usn-3863-2"
-        },
-        {
-          "url": "https://www.debian.org/security/2019/dsa-4371"
-        }
-      ]
-    }
-  ],
-  "remediations": []
-  "scan": {
-    "scanner": {
-      "id": "trivy",
-      "name": "Trivy",
-      "url": "https://github.com/aquasecurity/trivy/",
-      "vendor": {
-        "name": "GitLab"
-      },
-      "version": "0.16.0"
-    },
-    "type": "container_scanning",
-    "start_time": "2021-04-14T19:45:58",
-    "end_time": "2021-04-14T19:46:18",
-    "status": "success"
-  }
-}
-```
+These reports must follow a format defined in the
+[security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/). See:
+
+- [Latest schema for the container scanning report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json).
+- [Example container scanning report](https://gitlab.com/gitlab-examples/security/security-reports/-/blob/master/samples/container-scanning.json)
+
+For more information, see [Security scanner integration](../../../development/integrations/secure.md).
 
 ## Security Dashboard
 

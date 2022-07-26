@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GroupsHelper do
   include ApplicationHelper
+  include AvatarsHelper
 
   describe '#group_icon_url' do
     it 'returns an url for the avatar' do
@@ -132,6 +133,37 @@ RSpec.describe GroupsHelper do
       expect do
         helper.group_title(very_deep_nested_group)
       end.not_to exceed_query_limit(control_count)
+    end
+  end
+
+  describe '#group_title_link' do
+    let_it_be(:group) { create(:group, :with_avatar) }
+
+    let(:raw_link) { group_title_link(group, show_avatar: true) }
+    let(:document) { Nokogiri::HTML.parse(raw_link) }
+
+    describe 'link' do
+      subject(:link) { document.css('.group-path').first }
+
+      it 'uses the group name as innerText' do
+        expect(link.inner_text).to eq(group.name)
+      end
+
+      it 'links to the group path' do
+        expect(link.attr('href')).to eq(group_path(group))
+      end
+    end
+
+    describe 'icon' do
+      subject(:icon) { document.css('.avatar-tile').first }
+
+      it 'specifies the group name as the alt text' do
+        expect(icon.attr('alt')).to eq(group.name)
+      end
+
+      it 'uses the group\'s avatar_url' do
+        expect(icon.attr('src')).to eq(group.avatar_url)
+      end
     end
   end
 

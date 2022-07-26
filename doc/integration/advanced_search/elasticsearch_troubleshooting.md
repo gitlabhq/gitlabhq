@@ -24,6 +24,20 @@ integration are logs. The most relevant logs for this integration are:
 
 Here are some common pitfalls and how to overcome them.
 
+## Common terminology
+
+- **Lucene**: A full-text search library written in Java.
+- **Near real time (NRT)**: Refers to the slight latency from the time to index a
+  document to the time when it becomes searchable.
+- **Cluster**: A collection of one or more nodes that work together to hold all
+  the data, providing indexing and search capabilities.
+- **Node**: A single server that works as part of a cluster.
+- **Index**: A collection of documents that have somewhat similar characteristics.
+- **Document**: A basic unit of information that can be indexed.
+- **Shards**: Fully-functional and independent subdivisions of indices. Each shard is actually
+  a Lucene index.
+- **Replicas**: Failover mechanisms that duplicate indices.
+
 ## How can I verify that my GitLab instance is using Elasticsearch?
 
 There are a couple of ways to achieve that:

@@ -1116,6 +1116,36 @@ include a visual representation to help readers understand it, you can:
   an area of the screen.
 - Create a short video of the interaction and link to it.
 
+## Emojis
+
+Don't use the Markdown emoji format, for example `:smile:`, for any purpose. Use
+[GitLab SVG icons](#gitlab-svg-icons) instead.
+
+Use of emoji in Markdown requires GitLab Flavored Markdown, which is not supported by Kramdown,
+the Markdown rendering engine used for GitLab documentation.
+
+## GitLab SVG icons
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
+
+You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
+directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
+
+In most cases, you should avoid using the icons in text.
+However, you can use an icon when hover text is the only
+available way to describe a UI element. For example, **Delete** or **Edit** buttons
+often have hover text only.
+
+When you do use an icon, start with the hover text and follow it with the SVG reference in parentheses.
+
+- Avoid: `Select **{pencil}** **Edit**.` This generates as: Select **{pencil}** **Edit**.
+- Use instead: `Select **Edit** (**{pencil}**).` This generates as: Select **Edit** (**{pencil}**).
+
+Do not use words to describe the icon:
+
+- Avoid: `Select **Erase job log** (the trash icon).`
+- Use instead: `Select **Erase job log** (**{remove}**).` This generates as: Select **Erase job log** (**{remove}**).
+
 ## Videos
 
 Adding GitLab YouTube video tutorials to the documentation is highly
@@ -1196,28 +1226,6 @@ different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for
 `/help`, because the GitLab Markdown processor doesn't support iframes. It's
 hidden on the documentation site, but is displayed by `/help`.
-
-## GitLab SVG icons
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
-
-You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
-directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
-
-In most cases, you should avoid using the icons in text.
-However, you can use an icon when hover text is the only
-available way to describe a UI element. For example, **Delete** or **Edit** buttons
-often have hover text only.
-
-When you do use an icon, start with the hover text and follow it with the SVG reference in parentheses.
-
-- Avoid: `Select **{pencil}** **Edit**.` This generates as: Select **{pencil}** **Edit**.
-- Use instead: `Select **Edit** (**{pencil}**).` This generates as: Select **Edit** (**{pencil}**).
-
-Do not use words to describe the icon:
-
-- Avoid: `Select **Erase job log** (the trash icon).`
-- Use instead: `Select **Erase job log** (**{remove}**).` This generates as: Select **Erase job log** (**{remove}**).
 
 ## Alert boxes
 
