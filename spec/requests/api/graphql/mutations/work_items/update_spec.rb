@@ -155,7 +155,7 @@ RSpec.describe 'Update a work item' do
       end
 
       context 'when updating parent' do
-        let_it_be(:work_item) { create(:work_item, :task, project: project) }
+        let_it_be(:work_item, reload: true) { create(:work_item, :task, project: project) }
         let_it_be(:valid_parent) { create(:work_item, project: project) }
         let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 

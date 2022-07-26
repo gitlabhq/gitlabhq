@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Developers Guide to Logging **(FREE)**
 
-[GitLab Logs](../administration/logs.md) play a critical role for both
+[GitLab Logs](../administration/logs/index.md) play a critical role for both
 administrators and GitLab team members to diagnose problems in the field.
 
 ## Don't use `Rails.logger`
@@ -66,7 +66,7 @@ Suppose you want to log the events that happen in a project
 importer. You want to log issues created, merge requests, and so on, as the
 importer progresses. Here's what to do:
 
-1. Look at [the list of GitLab Logs](../administration/logs.md) to see
+1. Look at [the list of GitLab Logs](../administration/logs/index.md) to see
    if your log message might belong with one of the existing log files.
 1. If there isn't a good place, consider creating a new filename, but
    check with a maintainer if it makes sense to do so. A log file should
@@ -396,7 +396,7 @@ end
    a merge request to the [`gitlab_fluentd`](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
    project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/-/merge_requests/51/diffs).
 
-1. Be sure to update the [GitLab CE/EE documentation](../administration/logs.md) and the [GitLab.com
+1. Be sure to update the [GitLab CE/EE documentation](../administration/logs/index.md) and the [GitLab.com
    runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/docs/logging/README.md).
 
 ## Control logging visibility

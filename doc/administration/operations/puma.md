@@ -54,7 +54,7 @@ A higher value of `1200` or more would be beneficial if the server has free memo
 
 The worker killer checks memory every 20 seconds.
 
-To monitor the worker killer, use [the Puma log](../logs.md#puma_stdoutlog) `/var/log/gitlab/puma/puma_stdout.log`.
+To monitor the worker killer, use [the Puma log](../logs/index.md#puma_stdoutlog) `/var/log/gitlab/puma/puma_stdout.log`.
 For example:
 
 ```plaintext

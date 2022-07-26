@@ -863,7 +863,7 @@ Group runners are those that were created at the group level.
 
 ### View stale runner cleanup logs
 
-You can check the [Sidekiq logs](../../administration/logs.md#sidekiq-logs) to see the cleanup result. In Kibana you can use the following query:
+You can check the [Sidekiq logs](../../administration/logs/index.md#sidekiq-logs) to see the cleanup result. In Kibana you can use the following query:
 
 ```json
 {

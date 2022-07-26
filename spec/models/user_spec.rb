@@ -7218,4 +7218,12 @@ RSpec.describe User do
       expect(another_user.mr_attention_requests_enabled?).to be(false)
     end
   end
+
+  describe 'user age' do
+    let(:user) { create(:user, created_at: Date.yesterday) }
+
+    it 'returns age in days' do
+      expect(user.account_age_in_days).to be(1)
+    end
+  end
 end

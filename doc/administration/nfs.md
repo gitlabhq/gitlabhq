@@ -485,7 +485,7 @@ sudo perf trace --no-syscalls --event 'nfs4:*' -p $(pgrep -fd ',' puma)
 
 ### Warnings `garbage found: .../repositories/@hashed/...git/objects/pack/.nfs...` in Gitaly logs
 
-If you find any warnings like `garbage found: .../repositories/@hashed/...git/objects/pack/.nfs...` in [Gitaly logs](logs.md#gitaly-logs),
+If you find any warnings like `garbage found: .../repositories/@hashed/...git/objects/pack/.nfs...` in [Gitaly logs](logs/index.md#gitaly-logs),
 this problem occurs if `lookupcache=positive` is not set, which we recommend as an
 [NFS mount option](#mount-options).
 See [Gitaly issue #3175](https://gitlab.com/gitlab-org/gitaly/-/issues/3175) for more details.

@@ -381,7 +381,7 @@ the volume of updates.
 
 All of the indexing happens in Sidekiq, so much of the relevant logs for the
 Elasticsearch integration can be found in
-[`sidekiq.log`](../administration/logs.md#sidekiqlog). In particular, all
+[`sidekiq.log`](../administration/logs/index.md#sidekiqlog). In particular, all
 Sidekiq workers that make requests to Elasticsearch in any way will log the
 number of requests and time taken querying/writing to Elasticsearch. This can
 be useful to understand whether or not your cluster is keeping up with
@@ -390,12 +390,12 @@ indexing.
 Searching Elasticsearch is done via ordinary web workers handling requests. Any
 requests to load a page or make an API request, which then make requests to
 Elasticsearch, will log the number of requests and the time taken to
-[`production_json.log`](../administration/logs.md#production_jsonlog). These
+[`production_json.log`](../administration/logs/index.md#production_jsonlog). These
 logs will also include the time spent on Database and Gitaly requests, which
 may help to diagnose which part of the search is performing poorly.
 
 There are additional logs specific to Elasticsearch that are sent to
-[`elasticsearch.log`](../administration/logs.md#elasticsearchlog)
+[`elasticsearch.log`](../administration/logs/index.md#elasticsearchlog)
 that may contain information to help diagnose performance issues.
 
 ### Performance Bar
@@ -477,13 +477,13 @@ documented here in case it is useful for others. The relevant logs that could
 theoretically be used to figure out what needs to be replayed are:
 
 1. All non-repository updates that were synced can be found in
-   [`elasticsearch.log`](../administration/logs.md#elasticsearchlog) by
+   [`elasticsearch.log`](../administration/logs/index.md#elasticsearchlog) by
    searching for
    [`track_items`](https://gitlab.com/gitlab-org/gitlab/-/blob/1e60ea99bd8110a97d8fc481e2f41cab14e63d31/ee/app/services/elastic/process_bookkeeping_service.rb#L25)
    and these can be replayed by sending these items again through
    `::Elastic::ProcessBookkeepingService.track!`
 1. All repository updates that occurred can be found in
-   [`elasticsearch.log`](../administration/logs.md#elasticsearchlog) by
+   [`elasticsearch.log`](../administration/logs/index.md#elasticsearchlog) by
    searching for
    [`indexing_commit_range`](https://gitlab.com/gitlab-org/gitlab/-/blob/6f9d75dd3898536b9ec2fb206e0bd677ab59bd6d/ee/lib/gitlab/elastic/indexer.rb#L41).
    Replaying these requires resetting the
@@ -492,7 +492,7 @@ theoretically be used to figure out what needs to be replayed are:
    the project using
    [`ElasticCommitIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_commit_indexer_worker.rb)
 1. All project deletes that occurred can be found in
-   [`sidekiq.log`](../administration/logs.md#sidekiqlog) by searching for
+   [`sidekiq.log`](../administration/logs/index.md#sidekiqlog) by searching for
    [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_delete_project_worker.rb).
    These updates can be replayed by triggering another
    `ElasticDeleteProjectWorker`.

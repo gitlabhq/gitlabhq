@@ -129,7 +129,7 @@ http://secondary.example.com/
 ```
 
 To find more details about failed items, check
-[the `gitlab-rails/geo.log` file](../../troubleshooting/log_parsing.md#find-most-common-geo-sync-errors)
+[the `gitlab-rails/geo.log` file](../../logs/log_parsing.md#find-most-common-geo-sync-errors)
 
 ### Check if PostgreSQL replication is working
 
@@ -191,7 +191,7 @@ If a replication slot is inactive,
 the `pg_wal` logs corresponding to the slot are reserved forever
 (or until the slot is active again). This causes continuous disk usage growth
 and the following messages appear repeatedly in the
-[PostgreSQL logs](../../logs.md#postgresql-logs):
+[PostgreSQL logs](../../logs/index.md#postgresql-logs):
 
 ```plaintext
 WARNING: oldest xmin is far in the past
@@ -376,7 +376,7 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 Slots where `active` is `f` are not active.
 
 - When this slot should be active, because you have a **secondary** node configured using that slot,
-  sign in to that **secondary** node and check the [PostgreSQL logs](../../logs.md#postgresql-logs)
+  sign in to that **secondary** node and check the [PostgreSQL logs](../../logs/index.md#postgresql-logs)
   to view why the replication is not running.
 
 - If you are no longer using the slot (for example, you no longer have Geo enabled), you can remove it with in the
@@ -510,7 +510,7 @@ To solve this:
 
 1. Back up [the `.git` folder](../../repository_storage_types.md#translate-hashed-storage-paths).
 
-1. Optional. [Spot-check](../../troubleshooting/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem)
+1. Optional. [Spot-check](../../logs/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem)
    a few of those IDs whether they indeed correspond
    to a project with known Geo replication failures.
    Use `fatal: 'geo'` as the `grep` term and the following API call:
@@ -597,7 +597,7 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl stop geo-logcursor
    ```
 
-   You can watch the [Sidekiq logs](../../logs.md#sidekiq-logs) to know when Sidekiq jobs processing has finished:
+   You can watch the [Sidekiq logs](../../logs/index.md#sidekiq-logs) to know when Sidekiq jobs processing has finished:
 
    ```shell
    gitlab-ctl tail sidekiq

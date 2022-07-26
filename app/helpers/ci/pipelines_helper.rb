@@ -40,7 +40,7 @@ module Ci
         { name: 'Crystal', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/crystal.svg') },
         { name: 'Dart', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/dart.svg') },
         { name: 'Django', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/django.svg') },
-        { name: 'Docker', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/docker.svg') },
+        { name: 'Docker', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/docker.png') },
         { name: 'Elixir', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/elixir.svg') },
         { name: 'iOS-Fastlane', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/fastlane.svg'), title: 'iOS with Fastlane' },
         { name: 'Flutter', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/flutter.svg') },

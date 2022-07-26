@@ -60,13 +60,24 @@ waitForCSSLoaded(() => {
     },
   });
 
+  const {
+    graphEndpoint,
+    graphEndDate,
+    graphStartDate,
+    graphRef,
+    graphCsvPath,
+  } = codeCoverageContainer.dataset;
   // eslint-disable-next-line no-new
   new Vue({
     el: codeCoverageContainer,
     render(h) {
       return h(CodeCoverage, {
         props: {
-          graphEndpoint: codeCoverageContainer.dataset?.graphEndpoint,
+          graphEndpoint,
+          graphEndDate,
+          graphStartDate,
+          graphRef,
+          graphCsvPath,
         },
       });
     },

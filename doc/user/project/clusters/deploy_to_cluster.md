@@ -131,7 +131,7 @@ However, sometimes GitLab cannot create them. In such instances, your job can fa
 This job failed because the necessary resources were not successfully created.
 ```
 
-To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#kuberneteslog).
+To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs/index.md#kuberneteslog).
 
 Reasons for failure include:
 

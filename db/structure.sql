@@ -30091,6 +30091,8 @@ CREATE INDEX index_vulnerabilities_on_state_case_id_desc ON vulnerabilities USIN
 
 CREATE INDEX index_vulnerabilities_on_updated_by_id ON vulnerabilities USING btree (updated_by_id);
 
+CREATE INDEX index_vulnerabilities_project_id_state_severity_default_branch ON vulnerabilities USING btree (project_id, state, severity, present_on_default_branch);
+
 CREATE INDEX index_vulnerability_exports_on_author_id ON vulnerability_exports USING btree (author_id);
 
 CREATE INDEX index_vulnerability_exports_on_file_store ON vulnerability_exports USING btree (file_store);

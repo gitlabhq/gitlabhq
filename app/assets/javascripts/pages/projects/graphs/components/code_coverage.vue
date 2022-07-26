@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { get } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -11,12 +11,29 @@ export default {
   components: {
     GlAlert,
     GlAreaChart,
+    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlSprintf,
   },
   props: {
     graphEndpoint: {
+      type: String,
+      required: true,
+    },
+    graphEndDate: {
+      type: String,
+      required: true,
+    },
+    graphStartDate: {
+      type: String,
+      required: true,
+    },
+    graphRef: {
+      type: String,
+      required: true,
+    },
+    graphCsvPath: {
       type: String,
       required: true,
     },
@@ -119,6 +136,28 @@ export default {
 
 <template>
   <div>
+    <div
+      class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-border-t gl-pt-4 gl-mb-3"
+    >
+      <h4 class="gl-m-0" sub-header>
+        <gl-sprintf
+          :message="__('Code coverage statistics for %{ref} %{start_date} - %{end_date}')"
+        >
+          <template #ref>
+            <strong> {{ graphRef }} </strong>
+          </template>
+          <template #start_date>
+            <strong> {{ graphStartDate }} </strong>
+          </template>
+          <template #end_date>
+            <strong> {{ graphEndDate }} </strong>
+          </template>
+        </gl-sprintf>
+      </h4>
+      <gl-button v-if="canShowData" size="small" data-testid="download-button" :href="graphCsvPath">
+        {{ __('Download raw data (.csv)') }}
+      </gl-button>
+    </div>
     <div class="gl-mt-3 gl-mb-3">
       <gl-alert
         v-if="hasFetchError"

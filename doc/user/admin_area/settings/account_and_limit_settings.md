@@ -318,7 +318,7 @@ nginx['client_max_body_size'] = "200m"
 
 ### This repository has exceeded its size limit
 
-If you receive intermittent push errors in your [Rails exceptions log](../../../administration/logs.md#exceptions_jsonlog), like this:
+If you receive intermittent push errors in your [Rails exceptions log](../../../administration/logs/index.md#exceptions_jsonlog), like this:
 
 ```plaintext
 Your push has been rejected, because this repository has exceeded its size limit.

@@ -32,6 +32,12 @@ export default {
     tooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
+  props: {
+    accountAge: {
+      type: Number,
+      required: true,
+    },
+  },
   i18n: {
     survey: s__('MrSurvey|Merge request experience survey'),
     close: __('Close'),
@@ -68,6 +74,9 @@ export default {
       this.track('survey:mr_experience', {
         label: this.step.label,
         value: event,
+        extra: {
+          accountAge: this.accountAge,
+        },
       });
       this.stepIndex += 1;
       if (!this.step) {

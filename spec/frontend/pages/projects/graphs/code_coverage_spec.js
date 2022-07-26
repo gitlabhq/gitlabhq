@@ -15,17 +15,26 @@ describe('Code Coverage', () => {
   let mockAxios;
 
   const graphEndpoint = '/graph';
+  const graphStartDate = '13 February';
+  const graphEndDate = '12 May';
+  const graphRef = 'master';
+  const graphCsvPath = 'url/';
 
   const findAlert = () => wrapper.find(GlAlert);
   const findAreaChart = () => wrapper.find(GlAreaChart);
   const findAllDropdownItems = () => wrapper.findAll(GlDropdownItem);
   const findFirstDropdownItem = () => findAllDropdownItems().at(0);
   const findSecondDropdownItem = () => findAllDropdownItems().at(1);
+  const findDownloadButton = () => wrapper.find('[data-testid="download-button"]');
 
   const createComponent = () => {
     wrapper = shallowMount(CodeCoverage, {
       propsData: {
         graphEndpoint,
+        graphStartDate,
+        graphEndDate,
+        graphRef,
+        graphCsvPath,
       },
     });
   };
@@ -63,6 +72,10 @@ describe('Code Coverage', () => {
 
     it('shows no error messages', () => {
       expect(findAlert().exists()).toBe(false);
+    });
+
+    it('does not render download button', () => {
+      expect(findDownloadButton().exists()).toBe(true);
     });
   });
 
@@ -111,6 +124,10 @@ describe('Code Coverage', () => {
 
     it('still renders an empty graph', () => {
       expect(findAreaChart().exists()).toBe(true);
+    });
+
+    it('does not render download button', () => {
+      expect(findDownloadButton().exists()).toBe(false);
     });
   });
 

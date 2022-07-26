@@ -10,7 +10,7 @@
       = html_escape(_('Configure %{link} to track events. %{link_start}Learn more.%{link_end}')) % { link: link_to('Snowplow', 'https://snowplowanalytics.com/', target: '_blank', rel: 'noopener noreferrer').html_safe, link_start: link_start, link_end: '</a>'.html_safe }
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-snowplow-settings'), html: { class: 'fieldset-form', id: 'snowplow-settings' } do |f|
-      = form_errors(@application_setting) if expanded
+      = form_errors(@application_setting, pajamas_alert: true) if expanded
 
       %fieldset
         .form-group

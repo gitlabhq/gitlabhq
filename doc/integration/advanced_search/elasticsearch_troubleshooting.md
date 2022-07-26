@@ -14,10 +14,10 @@ Use the following information to troubleshoot Elasticsearch issues.
 One of the most valuable tools for identifying issues with the Elasticsearch
 integration are logs. The most relevant logs for this integration are:
 
-1. [`sidekiq.log`](../../administration/logs.md#sidekiqlog) - All of the
+1. [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) - All of the
    indexing happens in Sidekiq, so much of the relevant logs for the
    Elasticsearch integration can be found in this file.
-1. [`elasticsearch.log`](../../administration/logs.md#elasticsearchlog) - There
+1. [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) - There
    are additional logs specific to Elasticsearch that are sent to this file
    that may contain useful diagnostic information about searching,
    indexing or migrations.

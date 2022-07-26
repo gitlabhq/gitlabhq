@@ -33,13 +33,44 @@ module Integrations
 
     def default_fields
       [
-        { type: "text", name: "webhook", placeholder: "https://discordapp.com/api/webhooks/…", help: "URL to the webhook for the Discord channel." },
-        { type: "checkbox", name: "notify_only_broken_pipelines" },
+        {
+          type: 'text',
+          section: SECTION_TYPE_CONNECTION,
+          name: 'webhook',
+          placeholder: 'https://discordapp.com/api/webhooks/…',
+          help: 'URL to the webhook for the Discord channel.'
+        },
+        {
+          type: 'checkbox',
+          section: SECTION_TYPE_CONFIGURATION,
+          name: 'notify_only_broken_pipelines'
+        },
         {
           type: 'select',
+          section: SECTION_TYPE_CONFIGURATION,
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
           choices: self.class.branch_choices
+        }
+      ]
+    end
+
+    def sections
+      [
+        {
+          type: SECTION_TYPE_CONNECTION,
+          title: s_('Integrations|Connection details'),
+          description: help
+        },
+        {
+          type: SECTION_TYPE_TRIGGER,
+          title: s_('Integrations|Trigger'),
+          description: s_('Integrations|An event will be triggered when one of the following items happen.')
+        },
+        {
+          type: SECTION_TYPE_CONFIGURATION,
+          title: s_('Integrations|Notification settings'),
+          description: s_('Integrations|Configure the scope of notifications.')
         }
       ]
     end

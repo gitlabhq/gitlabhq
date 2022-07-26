@@ -2158,6 +2158,10 @@ class User < ApplicationRecord
     Feature.enabled?(:mr_attention_requests, self)
   end
 
+  def account_age_in_days
+    (Date.current - created_at.to_date).to_i
+  end
+
   protected
 
   # override, from Devise::Validatable

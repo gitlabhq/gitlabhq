@@ -34,7 +34,7 @@ of requests dropped due to request limiting. The `reason` label indicates why a 
 You can observe specific behavior of [concurrency-queued requests](configure_gitaly.md#limit-rpc-concurrency) using
 the Gitaly logs and Prometheus:
 
-- In the [Gitaly logs](../logs.md#gitaly-logs), look for the string (or structured log field)
+- In the [Gitaly logs](../logs/index.md#gitaly-logs), look for the string (or structured log field)
   `acquire_ms`. Messages that have this field are reporting about the concurrency limiter.
 - In Prometheus, look for the following metrics:
   - `gitaly_concurrency_limiting_in_progress` indicates how many concurrent requests are
@@ -188,7 +188,7 @@ To monitor [repository verification](praefect.md#repository-verification), use t
 - `gitaly_praefect_stale_verification_leases_released_total`, the number of stale verification leases
   released.
 
-You can also monitor the [Praefect logs](../logs.md#praefect-logs).
+You can also monitor the [Praefect logs](../logs/index.md#praefect-logs).
 
 ### Database metrics `/db_metrics` endpoint
 

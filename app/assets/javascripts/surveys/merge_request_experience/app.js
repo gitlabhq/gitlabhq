@@ -8,11 +8,16 @@ Vue.use(Translate);
 Vue.use(VueApollo);
 
 export const startMrSurveyApp = () => {
+  const mountEl = document.querySelector('#js-mr-experience-survey');
+  if (!mountEl) return;
+
   let channel = null;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });
+
+  const { accountAge } = mountEl.dataset;
 
   const app = new Vue({
     apolloProvider,
@@ -24,6 +29,9 @@ export const startMrSurveyApp = () => {
     render(h) {
       if (this.hidden) return null;
       return h(MergeRequestExperienceSurveyApp, {
+        props: {
+          accountAge: Number(accountAge),
+        },
         on: {
           close: () => {
             channel?.postMessage('close');
@@ -37,7 +45,7 @@ export const startMrSurveyApp = () => {
     },
   });
 
-  app.$mount('#js-mr-experience-survey');
+  app.$mount(mountEl);
 
   if (window.BroadcastChannel) {
     channel = new BroadcastChannel('mr_survey');

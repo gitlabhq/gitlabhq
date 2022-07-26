@@ -330,6 +330,7 @@ module Gitlab
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
+    config.assets.precompile << "illustrations/*.png"
 
     # Import css for xterm
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"

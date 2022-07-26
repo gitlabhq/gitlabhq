@@ -207,7 +207,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Troubleshooting
 
-- [Log system](logs.md): Where to look for logs.
+- [Log system](logs/index.md): Where to look for logs.
 - [Sidekiq Troubleshooting](troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
 - [Troubleshooting Elasticsearch](troubleshooting/elasticsearch.md)
 - [Navigating GitLab via Rails console](operations/rails_console.md)

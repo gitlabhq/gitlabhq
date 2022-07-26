@@ -438,13 +438,13 @@ This should return something similar to:
 }
 ```
 
-In order to debug issues with the migrations you can check the [`elasticsearch.log` file](../../administration/logs.md#elasticsearchlog).
+In order to debug issues with the migrations you can check the [`elasticsearch.log` file](../../administration/logs/index.md#elasticsearchlog).
 
 ### Retry a halted migration
 
 Some migrations are built with a retry limit. If the migration cannot finish within the retry limit,
 it is halted and a notification is displayed in the Advanced Search integration settings.
-It is recommended to check the [`elasticsearch.log` file](../../administration/logs.md#elasticsearchlog) to
+It is recommended to check the [`elasticsearch.log` file](../../administration/logs/index.md#elasticsearchlog) to
 debug why the migration was halted and make any changes before retrying the migration. Once you believe you've
 fixed the cause of the failure, select "Retry migration", and the migration is scheduled to be retried
 in the background.

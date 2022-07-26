@@ -1313,4 +1313,38 @@ RSpec.describe ProjectsHelper do
       end
     end
   end
+
+  describe '#project_coverage_chart_data_attributes' do
+    let(:ref) { 'ref' }
+    let(:daily_coverage_options) do
+      {
+        base_params: {
+          start_date: Date.current - 90.days,
+          end_date: Date.current,
+          ref_path: project.repository.expand_ref(ref),
+          param_type: 'coverage'
+        },
+        download_path: namespace_project_ci_daily_build_group_report_results_path(
+          namespace_id: project.namespace,
+          project_id: project,
+          format: :csv
+        ),
+        graph_api_path: namespace_project_ci_daily_build_group_report_results_path(
+          namespace_id: project.namespace,
+          project_id: project,
+          format: :json
+        )
+      }
+    end
+
+    it 'returns project data to render coverage chart' do
+      expect(helper.project_coverage_chart_data_attributes(daily_coverage_options, ref)).to include(
+        graph_endpoint: start_with(daily_coverage_options.fetch(:graph_api_path)),
+        graph_start_date: daily_coverage_options.dig(:base_params, :start_date).strftime('%b %d'),
+        graph_end_date: daily_coverage_options.dig(:base_params, :end_date).strftime('%b %d'),
+        graph_ref: ref,
+        graph_csv_path: start_with(daily_coverage_options.fetch(:download_path))
+      )
+    end
+  end
 end

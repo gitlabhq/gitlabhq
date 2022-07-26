@@ -242,7 +242,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/lfs/index.md @aqualls
 /doc/administration/libravatar.md @axil
 /doc/administration/load_balancer.md @axil
-/doc/administration/logs.md @msedlakjakubowski
+/doc/administration/logs/index.md @msedlakjakubowski
 /doc/administration/maintenance_mode/index.md @axil
 /doc/administration/merge_request_diffs.md @aqualls
 /doc/administration/monitoring/ @msedlakjakubowski

@@ -25,6 +25,9 @@ describe('MergeRequestExperienceSurveyApp', () => {
       shouldShowCallout,
     });
     wrapper = shallowMountExtended(MergeRequestExperienceSurveyApp, {
+      propsData: {
+        accountAge: 0,
+      },
       stubs: {
         UserCalloutDismisser: dismisserComponent,
         GlSprintf,
@@ -82,11 +85,17 @@ describe('MergeRequestExperienceSurveyApp', () => {
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'survey:mr_experience', {
         value: 5,
         label: 'overall',
+        extra: {
+          accountAge: 0,
+        },
       });
       rate.vm.$emit('rate', 4);
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'survey:mr_experience', {
         value: 4,
         label: 'performance',
+        extra: {
+          accountAge: 0,
+        },
       });
     });
 

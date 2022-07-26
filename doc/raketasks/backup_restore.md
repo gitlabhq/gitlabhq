@@ -184,7 +184,7 @@ ActiveRecord::StatementInvalid: PG::UndefinedTable
 ```
 
 Each time the GitLab backup runs, GitLab starts generating 500 errors and errors about missing
-tables will [be logged by PostgreSQL](../administration/logs.md#postgresql-logs):
+tables will [be logged by PostgreSQL](../administration/logs/index.md#postgresql-logs):
 
 ```plaintext
 ERROR: relation "tablename" does not exist at character 123

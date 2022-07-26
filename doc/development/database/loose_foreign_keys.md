@@ -251,8 +251,8 @@ When the loose foreign key definition is no longer needed (parent table is remov
 we need to remove the definition from the YAML file and ensure that we don't leave pending deleted
 records in the database.
 
-1. Remove the loose foreign key definition from the configuration (`config/gitlab_loose_foreign_keys.yml`).
 1. Remove the deletion tracking trigger from the parent table (if the parent table is still there).
+1. Remove the loose foreign key definition from the configuration (`config/gitlab_loose_foreign_keys.yml`).
 1. Remove leftover deleted records from the `loose_foreign_keys_deleted_records` table.
 
 Migration for removing the trigger:

@@ -864,7 +864,7 @@ connect to the Google Workspace SAML app.
 
 ### SAML Response
 
-You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs.md#production_jsonlog). This response is sent from the IdP, and contains user information that is consumed by GitLab. Many errors in the SAML integration can be solved by decoding this response and comparing it to the SAML settings in the GitLab configuration file.
+You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs/index.md#production_jsonlog). This response is sent from the IdP, and contains user information that is consumed by GitLab. Many errors in the SAML integration can be solved by decoding this response and comparing it to the SAML settings in the GitLab configuration file.
 
 ### GitLab+SAML Testing Environments
 

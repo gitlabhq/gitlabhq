@@ -71,7 +71,7 @@ Once built, a chart can be uploaded to the desired channel with `curl` or `helm 
 
 ### Release channels
 
-You can publish Helm charts to channels in GitLab. Channels are a method you can use to differentiate Helm chart repositories. 
+You can publish Helm charts to channels in GitLab. Channels are a method you can use to differentiate Helm chart repositories.
 For example, you can use `stable` and `devel` as channels to allow users to add the `stable` repo while `devel` charts are isolated.
 
 ## Use CI/CD to publish a Helm package
@@ -129,7 +129,7 @@ See [Using Helm](https://helm.sh/docs/intro/using_helm/) for more information.
 
 ### The chart is not visible in the Package Registry after uploading
 
-Check the [Sidekiq log](../../../administration/logs.md#sidekiqlog)
+Check the [Sidekiq log](../../../administration/logs/index.md#sidekiqlog)
 for any related errors. If you see `Validation failed: Version is invalid`, it means that the
 version in your `Chart.yaml` file does not follow [Helm Chart versioning specifications](https://helm.sh/docs/topics/charts/#charts-and-versioning).
 To fix the error, use the correct version syntax and upload the chart again.

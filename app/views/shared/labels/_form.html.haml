@@ -1,5 +1,5 @@
 = form_for @label, as: :label, url: url, html: { class: 'label-form js-quick-submit js-requires-input' } do |f|
-  = form_errors(@label)
+  = form_errors(@label, pajamas_alert: true)
 
   .form-group.row
     .col-12

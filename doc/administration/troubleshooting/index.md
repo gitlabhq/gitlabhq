@@ -19,7 +19,7 @@ installation.
 - [Group SAML and SCIM troubleshooting](group_saml_scim.md) **(PREMIUM SAAS)**
 - [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
 - [Linux cheat sheet](linux_cheat_sheet.md)
-- [Parsing GitLab logs with `jq`](log_parsing.md)
+- [Parsing GitLab logs with `jq`](../logs/log_parsing.md)
 - [Diagnostics tools](diagnostics_tools.md)
 - [Tracing requests with correlation ID](tracing_correlation_id.md)
 

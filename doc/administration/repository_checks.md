@@ -47,7 +47,7 @@ Repositories with known check failures can be found at
 
 ## What to do if a check failed
 
-If a repository check fails, locate the error in the [`repocheck.log` file](logs.md#repochecklog) on
+If a repository check fails, locate the error in the [`repocheck.log` file](logs/index.md#repochecklog) on
 disk at:
 
 - `/var/log/gitlab/gitlab-rails` for Omnibus GitLab installations.
