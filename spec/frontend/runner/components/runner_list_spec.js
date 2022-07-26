@@ -88,9 +88,7 @@ describe('RunnerList', () => {
     createComponent({}, mountExtended);
 
     // Badges
-    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText(
-      'never contacted paused',
-    );
+    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText('never contacted');
 
     // Runner summary
     expect(findCell({ fieldKey: 'summary' }).text()).toContain(

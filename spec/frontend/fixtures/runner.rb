@@ -13,11 +13,12 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:project_2) { create(:project, :repository, :public) }
 
-  let_it_be(:instance_runner) { create(:ci_runner, :instance, version: '1.0.0', description: 'Instance runner', ip_address: '127.0.0.1') }
-  let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], active: false, version: '2.0.0', description: 'Group runner', ip_address: '127.0.0.1') }
-  let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group], active: false, version: '2.0.0', description: 'Group runner 2', ip_address: '127.0.0.1') }
-  let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project, project_2], active: false, version: '2.0.0', description: 'Project runner', ip_address: '127.0.0.1') }
-  let_it_be(:build) { create(:ci_build, runner: instance_runner) }
+  let_it_be(:runner) { create(:ci_runner, :instance, description: 'My Runner', version: '1.0.0') }
+  let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], version: '2.0.0') }
+  let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group], version: '2.0.0') }
+  let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project, project_2], version: '2.0.0') }
+
+  let_it_be(:build) { create(:ci_build, runner: runner) }
 
   query_path = 'runner/graphql/'
   fixtures_path = 'graphql/runner/'
@@ -32,13 +33,13 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
       .and_return([nil, :not_available])
   end
 
-  describe do
+  describe 'as admin', GraphQL::Query do
     before do
       sign_in(admin)
       enable_admin_mode!(admin)
     end
 
-    describe GraphQL::Query, type: :request do
+    describe 'all_runners.query.graphql', type: :request do
       all_runners_query = 'list/all_runners.query.graphql'
 
       let_it_be(:query) do
@@ -58,7 +59,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
       end
     end
 
-    describe GraphQL::Query, type: :request do
+    describe 'all_runners_count.query.graphql', type: :request do
       all_runners_count_query = 'list/all_runners_count.query.graphql'
 
       let_it_be(:query) do
@@ -72,7 +73,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
       end
     end
 
-    describe GraphQL::Query, type: :request do
+    describe 'runner.query.graphql', type: :request do
       runner_query = 'show/runner.query.graphql'
 
       let_it_be(:query) do
@@ -81,7 +82,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
 
       it "#{fixtures_path}#{runner_query}.json" do
         post_graphql(query, current_user: admin, variables: {
-          id: instance_runner.to_global_id.to_s
+          id: runner.to_global_id.to_s
         })
 
         expect_graphql_errors_to_be_empty
@@ -96,7 +97,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
       end
     end
 
-    describe GraphQL::Query, type: :request do
+    describe 'runner_projects.query.graphql', type: :request do
       runner_projects_query = 'show/runner_projects.query.graphql'
 
       let_it_be(:query) do
@@ -112,7 +113,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
       end
     end
 
-    describe GraphQL::Query, type: :request do
+    describe 'runner_jobs.query.graphql', type: :request do
       runner_jobs_query = 'show/runner_jobs.query.graphql'
 
       let_it_be(:query) do
@@ -121,14 +122,14 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
 
       it "#{fixtures_path}#{runner_jobs_query}.json" do
         post_graphql(query, current_user: admin, variables: {
-          id: instance_runner.to_global_id.to_s
+          id: runner.to_global_id.to_s
         })
 
         expect_graphql_errors_to_be_empty
       end
     end
 
-    describe GraphQL::Query, type: :request do
+    describe 'runner_form.query.graphql', type: :request do
       runner_jobs_query = 'edit/runner_form.query.graphql'
 
       let_it_be(:query) do
@@ -137,7 +138,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
 
       it "#{fixtures_path}#{runner_jobs_query}.json" do
         post_graphql(query, current_user: admin, variables: {
-          id: instance_runner.to_global_id.to_s
+          id: runner.to_global_id.to_s
         })
 
         expect_graphql_errors_to_be_empty
@@ -145,14 +146,14 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
     end
   end
 
-  describe do
+  describe 'as group owner', GraphQL::Query do
     let_it_be(:group_owner) { create(:user) }
 
     before do
       group.add_owner(group_owner)
     end
 
-    describe GraphQL::Query, type: :request do
+    describe 'group_runners.query.graphql', type: :request do
       group_runners_query = 'list/group_runners.query.graphql'
 
       let_it_be(:query) do
@@ -177,7 +178,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
       end
     end
 
-    describe GraphQL::Query, type: :request do
+    describe 'group_runners_count.query.graphql', type: :request do
       group_runners_count_query = 'list/group_runners_count.query.graphql'
 
       let_it_be(:query) do

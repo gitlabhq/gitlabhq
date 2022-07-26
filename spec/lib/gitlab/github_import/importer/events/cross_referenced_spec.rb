@@ -58,7 +58,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
       allow(user_finder).to receive(:find).with(user.id, user.username).and_return(user.id)
     end
 
-    it 'creates expected note' do
+    it 'creates expected note', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/368827' do
       importer.execute(issue_event)
 
       expect(issue.notes.count).to eq 1

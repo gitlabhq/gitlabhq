@@ -341,7 +341,6 @@ Layout/FirstHashElementIndentation:
     - 'spec/features/gitlab_experiments_spec.rb'
     - 'spec/frontend/fixtures/autocomplete_sources.rb'
     - 'spec/frontend/fixtures/blob.rb'
-    - 'spec/frontend/fixtures/runner.rb'
     - 'spec/graphql/mutations/release_asset_links/create_spec.rb'
     - 'spec/graphql/resolvers/concerns/caching_array_resolver_spec.rb'
     - 'spec/graphql/types/ci/detailed_status_type_spec.rb'

@@ -94,10 +94,10 @@ describe('AdminRunnerShowApp', () => {
     });
 
     it('shows basic runner details', async () => {
-      const expected = `Description Instance runner
+      const expected = `Description My Runner
                         Last contact Never contacted
                         Version 1.0.0
-                        IP Address 127.0.0.1
+                        IP Address None
                         Executor None
                         Architecture None
                         Platform darwin
