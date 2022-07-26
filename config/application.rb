@@ -532,6 +532,21 @@ module Gitlab
 
     # DO NOT PLACE ANY INITIALIZERS AFTER THIS.
     config.after_initialize do
+      config.active_record.yaml_column_permitted_classes = [
+        Symbol, Date, Time,
+        Gitlab::Diff::Position,
+        # Used in:
+        # app/models/concerns/diff_positionable_note.rb
+        # app/models/legacy_diff_note.rb:  serialize :st_diff
+        ActiveSupport::HashWithIndifferentAccess,
+        # Used in ee/lib/ee/api/helpers.rb: send_git_archive
+        DeployToken,
+        ActiveModel::Attribute.const_get(:FromDatabase, false), # https://gitlab.com/gitlab-org/gitlab/-/issues/368072
+        # Used in app/services/web_hooks/log_execution_service.rb: log_execution
+        ActiveSupport::TimeWithZone,
+        ActiveSupport::TimeZone
+      ]
+
       # on_master_start yields immediately in unclustered environments and runs
       # when the primary process is done initializing otherwise.
       Gitlab::Cluster::LifecycleEvents.on_master_start do

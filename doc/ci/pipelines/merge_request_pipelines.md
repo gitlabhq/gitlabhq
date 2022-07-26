@@ -151,6 +151,8 @@ or [**Rebase** option](../../user/project/merge_requests/methods/index.md#rebasi
 
 Prerequisites:
 
+- The parent project's [CI/CD configuration file](../yaml/index.md) must be configured to
+  [run jobs in merge request pipelines](#prerequisites).
 - You must be a member of the parent project and have at least the [Developer role](../../user/permissions.md).
 - The fork project must be [visible](../../user/public_access.md) to the
   user running the pipeline. Otherwise, the **Pipelines** tab does not display

@@ -12,7 +12,7 @@
   - if can?(current_user, :update_user_status, current_user)
     %li
       %button.gl-button.btn.btn-link.menu-item.js-set-status-modal-trigger{ type: 'button' }
-        - if show_status_emoji?(current_user.status) || user_status_set_to_busy?(current_user.status)
+        - if current_user.status&.busy? || current_user.status&.customized?
           = s_('SetStatusModal|Edit status')
         - else
           = s_('SetStatusModal|Set status')

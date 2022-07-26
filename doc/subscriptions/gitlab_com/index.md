@@ -33,10 +33,10 @@ To subscribe to GitLab SaaS:
    and decide which tier you want.
 1. Create a user account for yourself by using the
    [sign up page](https://gitlab.com/users/sign_up).
-1. Create a [group](../../user/group/index.md#create-a-group). Your license tier applies to the top-level group, its subgroups, and projects.
+1. Create a [group](../../user/group/index.md#create-a-group). Your subscription tier applies to the top-level group, its subgroups, and projects.
 1. Create additional users and
    [add them to the group](../../user/group/index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
-   the features of your license tier, and they consume a seat in your subscription.
+   the features of your subscription tier, and they consume a seat in your subscription.
 1. On the left sidebar, select **Billing** and choose a tier.
 1. Fill out the form to complete your purchase.
 

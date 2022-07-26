@@ -64,9 +64,12 @@ RSpec.describe WorkItems::Type do
     subject { described_class.available_widgets }
 
     it 'returns list of all possible widgets' do
-      is_expected.to include(::WorkItems::Widgets::Description,
-                              ::WorkItems::Widgets::Hierarchy,
-                              ::WorkItems::Widgets::Assignees)
+      is_expected.to include(
+        ::WorkItems::Widgets::Description,
+        ::WorkItems::Widgets::Hierarchy,
+        ::WorkItems::Widgets::Assignees,
+        ::WorkItems::Widgets::StartAndDueDate
+      )
     end
   end
 

@@ -189,8 +189,10 @@ module MarkdownMatchers
 
     match do |actual|
       expect(actual).to have_selector('ul.task-list', count: 2)
-      expect(actual).to have_selector('li.task-list-item', count: 7)
+      expect(actual).to have_selector('li.task-list-item', count: 9)
+      expect(actual).to have_selector('li.task-list-item.inapplicable > s', count: 2)
       expect(actual).to have_selector('input[checked]', count: 3)
+      expect(actual).to have_selector('input[data-inapplicable]', count: 2)
     end
   end
 

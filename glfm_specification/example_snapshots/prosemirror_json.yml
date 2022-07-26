@@ -19244,3 +19244,73 @@
       }
     ]
   }
+07_02__gitlab_specific_markdown__task_list_items__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "taskList",
+        "attrs": {
+          "numeric": false,
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": false
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "incomplete"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+07_02__gitlab_specific_markdown__task_list_items__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "taskList",
+        "attrs": {
+          "numeric": false,
+          "start": 1,
+          "parens": false
+        },
+        "content": [
+          {
+            "type": "taskItem",
+            "attrs": {
+              "checked": true
+            },
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "completed"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+07_02__gitlab_specific_markdown__task_list_items__003: |-
+  Inapplicable task list items not yet implemented for WYSYWIG
+07_02__gitlab_specific_markdown__task_list_items__004: |-
+  Inapplicable task list items not yet implemented for WYSYWIG

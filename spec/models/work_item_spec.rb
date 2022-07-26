@@ -40,9 +40,12 @@ RSpec.describe WorkItem do
     subject { build(:work_item).widgets }
 
     it 'returns instances of supported widgets' do
-      is_expected.to include(instance_of(WorkItems::Widgets::Description),
-                             instance_of(WorkItems::Widgets::Hierarchy),
-                             instance_of(WorkItems::Widgets::Assignees))
+      is_expected.to include(
+        instance_of(WorkItems::Widgets::Description),
+        instance_of(WorkItems::Widgets::Hierarchy),
+        instance_of(WorkItems::Widgets::Assignees),
+        instance_of(WorkItems::Widgets::StartAndDueDate)
+      )
     end
   end
 

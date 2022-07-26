@@ -56,6 +56,7 @@ describe('Markdown field header component', () => {
         'Add a task list',
         'Add a collapsible section',
         'Add a table',
+        'Attach a file or image',
         'Go full screen',
       ];
       const elements = findToolbarButtons();

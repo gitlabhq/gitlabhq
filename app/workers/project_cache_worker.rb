@@ -47,7 +47,8 @@ class ProjectCacheWorker
 
     Projects::UpdateStatisticsService.new(project, nil, statistics: statistics).execute
 
-    UpdateProjectStatisticsWorker.perform_in(LEASE_TIMEOUT, project.id, statistics)
+    lease_key = project_cache_worker_key(project.id, statistics)
+    UpdateProjectStatisticsWorker.perform_in(LEASE_TIMEOUT, lease_key, project.id, statistics)
   end
 
   private

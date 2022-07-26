@@ -31,10 +31,6 @@ module ProfilesHelper
     Types::AvailabilityEnum.enum
   end
 
-  def user_status_set_to_busy?(status)
-    status&.availability == availability_values[:busy]
-  end
-
   def middle_dot_divider_classes(stacking, breakpoint)
     ['gl-mb-3'].tap do |classes|
       if stacking

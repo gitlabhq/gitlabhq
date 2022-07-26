@@ -156,6 +156,14 @@ export default {
         })
         .catch(() => {});
     },
+    handleAttachFile(e) {
+      e.preventDefault();
+      const $gfmForm = $(this.$el).closest('.gfm-form');
+      const $gfmTextarea = $gfmForm.find('.js-gfm-input');
+
+      $gfmForm.find('.div-dropzone').click();
+      $gfmTextarea.focus();
+    },
   },
   shortcuts: {
     bold: keysFor(BOLD_TEXT),
@@ -323,6 +331,14 @@ export default {
             :prepend="true"
             :button-title="__('Add a table')"
             icon="table"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('attach-file')"
+            data-testid="button-attach-file"
+            :prepend="true"
+            :button-title="__('Attach a file or image')"
+            icon="paperclip"
+            @click="handleAttachFile"
           />
           <toolbar-button
             v-if="!restrictedToolBarItems.includes('full-screen')"

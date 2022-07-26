@@ -950,6 +950,16 @@ For example:
 1. Optional. Enter a description for the job.
 ```
 
+### Recommended steps
+
+If a step is recommended, start the step with the word `Recommended` followed by a period.
+
+For example:
+
+```markdown
+1. Recommended. Enter a description for the job.
+```
+
 ### Documenting multiple fields at once
 
 If the UI text sufficiently explains the fields in a section, do not include a task step for every field.

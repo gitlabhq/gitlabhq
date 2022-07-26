@@ -13,7 +13,8 @@ module Types
       ORPHAN_TYPES = [
         ::Types::WorkItems::Widgets::DescriptionType,
         ::Types::WorkItems::Widgets::HierarchyType,
-        ::Types::WorkItems::Widgets::AssigneesType
+        ::Types::WorkItems::Widgets::AssigneesType,
+        ::Types::WorkItems::Widgets::StartAndDueDateType
       ].freeze
 
       def self.ce_orphan_types
@@ -28,6 +29,8 @@ module Types
           ::Types::WorkItems::Widgets::HierarchyType
         when ::WorkItems::Widgets::Assignees
           ::Types::WorkItems::Widgets::AssigneesType
+        when ::WorkItems::Widgets::StartAndDueDate
+          ::Types::WorkItems::Widgets::StartAndDueDateType
         else
           raise "Unknown GraphQL type for widget #{object}"
         end

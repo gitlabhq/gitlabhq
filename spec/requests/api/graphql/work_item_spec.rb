@@ -8,7 +8,16 @@ RSpec.describe 'Query.work_item(id)' do
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
-  let_it_be(:work_item) { create(:work_item, project: project, description: '- List item') }
+  let_it_be(:work_item) do
+    create(
+      :work_item,
+      project: project,
+      description: '- List item',
+      start_date: Date.today,
+      due_date: 1.week.from_now
+    )
+  end
+
   let_it_be(:child_item1) { create(:work_item, :task, project: project) }
   let_it_be(:child_item2) { create(:work_item, :task, confidential: true, project: project) }
   let_it_be(:child_link1) { create(:parent_link, work_item_parent: work_item, work_item: child_item1) }
@@ -200,6 +209,34 @@ RSpec.describe 'Query.work_item(id)' do
                     assignees.map { |a| { 'id' => a.to_gid.to_s, 'username' => a.username } }
                   )
                 }
+              )
+            )
+          )
+        end
+      end
+
+      describe 'start and due date widget' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetStartAndDueDate {
+                startDate
+                dueDate
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'START_AND_DUE_DATE',
+                'startDate' => work_item.start_date.to_s,
+                'dueDate' => work_item.due_date.to_s
               )
             )
           )

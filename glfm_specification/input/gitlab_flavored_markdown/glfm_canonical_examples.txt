@@ -38,3 +38,85 @@ footnote text
 </ol>
 </section>
 ````````````````````````````````
+
+## Task list items
+
+See
+[Task lists](https://docs.gitlab.com/ee/user/markdown.html#task-lists) in the GitLab Flavored Markdown documentation.
+
+Task list items (checkboxes) are defined as a GitHub Flavored Markdown extension in a section above.
+GitLab extends the behavior of task list items to support additional features.
+Some of these features are in-progress, and should not yet be considered part of the official
+GitLab Flavored Markdown specification.
+
+Some of the behavior of task list items is implemented as client-side JavaScript/CSS.
+
+The following are some basic examples; more examples may be added in the future.
+
+Incomplete task:
+
+```````````````````````````````` example gitlab tasklist
+- [ ] incomplete
+.
+<ul>
+<li>
+<task-button/>
+<input type="checkbox" disabled/>
+incomplete
+</li>
+</ul>
+````````````````````````````````
+
+Completed task:
+
+```````````````````````````````` example gitlab tasklist
+- [x] completed
+.
+<ul>
+<li>
+<task-button/>
+<input type="checkbox" checked disabled/>
+completed
+</li>
+</ul>
+````````````````````````````````
+
+Inapplicable task:
+
+```````````````````````````````` example gitlab tasklist
+- [~] inapplicable
+.
+<ul>
+<li>
+<task-button/>
+<input type="checkbox" data-inapplicable disabled>
+<s>
+inapplicable
+</s>
+</li>
+</ul>
+````````````````````````````````
+
+Inapplicable task in a "loose" list. Note that the `<del>` tag is not applied to the
+loose text; it has strikethrough applied with CSS.
+
+```````````````````````````````` example gitlab tasklist
+- [~] inapplicable
+
+  text in loose list
+.
+<ul>
+<li>
+<p>
+<task-button/>
+<input type="checkbox" data-inapplicable disabled>
+<s>
+inapplicable
+</s>
+</p>
+<p>
+text in loose list
+</p>
+</li>
+</ul>
+````````````````````````````````

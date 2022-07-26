@@ -147,7 +147,7 @@ module IssuablesHelper
   end
 
   def issuable_meta_author_status(author)
-    return "" unless show_status_emoji?(author&.status) && status = user_status(author)
+    return "" unless author&.status&.customized? && status = user_status(author)
 
     "#{status}".html_safe
   end

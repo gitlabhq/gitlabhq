@@ -32,6 +32,10 @@ class UserStatus < ApplicationRecord
   def clear_status_after=(value)
     self.clear_status_at = CLEAR_STATUS_QUICK_OPTIONS[value]&.from_now
   end
+
+  def customized?
+    message.present? || emoji != UserStatus::DEFAULT_EMOJI
+  end
 end
 
 UserStatus.prepend_mod_with('UserStatus')

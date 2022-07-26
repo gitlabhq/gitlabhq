@@ -5233,7 +5233,7 @@ msgstr ""
 msgid "At risk"
 msgstr ""
 
-msgid "Attach a file"
+msgid "Attach a file or image"
 msgstr ""
 
 msgid "Attaching File - %{progress}"

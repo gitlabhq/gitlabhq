@@ -12,8 +12,8 @@ RSpec.shared_examples 'wiki file attachments' do
     end
 
     context 'before uploading' do
-      it 'shows "Attach a file" button' do
-        expect(page).to have_button('Attach a file')
+      it 'shows "Attach a file or image" button' do
+        expect(page).to have_selector('[data-testid="button-attach-file"]')
         expect(page).not_to have_selector('.uploading-progress-container', visible: true)
       end
     end
@@ -26,7 +26,7 @@ RSpec.shared_examples 'wiki file attachments' do
           click_button 'Cancel'
         end
 
-        expect(page).to have_button('Attach a file')
+        expect(page).to have_selector('[data-testid="button-attach-file"]')
         expect(page).not_to have_button('Cancel')
         expect(page).not_to have_selector('.uploading-progress-container', visible: true)
       end
@@ -41,11 +41,11 @@ RSpec.shared_examples 'wiki file attachments' do
     end
 
     context 'uploading is complete' do
-      it 'shows "Attach a file" button on uploading complete' do
+      it 'shows "Attach a file or image" button on uploading complete' do
         attach_with_dropzone
         wait_for_requests
 
-        expect(page).to have_button('Attach a file')
+        expect(page).to have_selector('[data-testid="button-attach-file"]')
         expect(page).not_to have_selector('.uploading-progress-container', visible: true)
       end
 

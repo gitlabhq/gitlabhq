@@ -14,6 +14,16 @@ RSpec.describe GitlabScriptTagHelper do
       expect(helper.javascript_include_tag(script_url).to_s)
         .to eq "<script src=\"/javascripts/#{script_url}\" defer=\"defer\" nonce=\"noncevalue\"></script>"
     end
+
+    it 'returns a script tag with defer=false and a nonce' do
+      expect(helper.javascript_include_tag(script_url, defer: nil).to_s)
+        .to eq "<script src=\"/javascripts/#{script_url}\" nonce=\"noncevalue\"></script>"
+    end
+
+    it 'returns a script tag with a nonce even nonce is set to nil' do
+      expect(helper.javascript_include_tag(script_url, nonce: nil).to_s)
+        .to eq "<script src=\"/javascripts/#{script_url}\" defer=\"defer\" nonce=\"noncevalue\"></script>"
+    end
   end
 
   describe 'inline script tag' do

@@ -315,7 +315,7 @@ export default {
       }
 
       this.taskButtons = [];
-      const taskListFields = this.$el.querySelectorAll('.task-list-item');
+      const taskListFields = this.$el.querySelectorAll('.task-list-item:not(.inapplicable)');
 
       taskListFields.forEach((item, index) => {
         const taskLink = item.querySelector('.gfm-issue');

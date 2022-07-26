@@ -103,9 +103,9 @@ RSpec.describe 'Project > Tags', :js do
         end
       end
 
-      it 'release notes form shows "Attach a file" button', :js do
+      it 'release notes form shows "Attach a file or image" button', :js do
         page.within('.content form.release-form') do
-          expect(page).to have_button('Attach a file')
+          expect(page).to have_selector('[data-testid="button-attach-file"]')
           expect(page).not_to have_selector('.uploading-progress-container', visible: true)
         end
       end

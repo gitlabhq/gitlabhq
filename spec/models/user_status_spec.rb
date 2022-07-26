@@ -47,4 +47,30 @@ RSpec.describe UserStatus do
       end
     end
   end
+
+  describe '#customized?' do
+    it 'is customized when message text is present' do
+      subject.message = 'My custom status'
+
+      expect(subject).to be_customized
+    end
+
+    it 'is not customized when message text is absent' do
+      subject.message = nil
+
+      expect(subject).not_to be_customized
+    end
+
+    it 'is customized without message but with custom emoji' do
+      subject.emoji = 'bow'
+
+      expect(subject).to be_customized
+    end
+
+    it 'is not customized without message but with default custom emoji' do
+      subject.emoji = 'speech_balloon'
+
+      expect(subject).not_to be_customized
+    end
+  end
 end

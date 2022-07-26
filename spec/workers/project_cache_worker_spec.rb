@@ -115,7 +115,7 @@ RSpec.describe ProjectCacheWorker do
           .twice
 
         expect(UpdateProjectStatisticsWorker).to receive(:perform_in)
-          .with(lease_timeout, project.id, statistics)
+          .with(lease_timeout, lease_key, project.id, statistics)
           .and_call_original
 
         expect(Namespaces::ScheduleAggregationWorker)

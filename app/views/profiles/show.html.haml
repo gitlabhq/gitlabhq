@@ -3,7 +3,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - gravatar_link = link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host
 - availability = availability_values
-- custom_emoji = show_status_emoji?(@user.status)
+- custom_emoji = @user.status&.customized?
 
 = gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user gl-mt-3 js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
   .row.js-search-settings-section

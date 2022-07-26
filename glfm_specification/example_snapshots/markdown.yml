@@ -2193,3 +2193,13 @@
   footnote reference tag [^fortytwo]
 
   [^fortytwo]: footnote text
+07_02__gitlab_specific_markdown__task_list_items__001: |
+  - [ ] incomplete
+07_02__gitlab_specific_markdown__task_list_items__002: |
+  - [x] completed
+07_02__gitlab_specific_markdown__task_list_items__003: |
+  - [~] inapplicable
+07_02__gitlab_specific_markdown__task_list_items__004: |
+  - [~] inapplicable
+
+    text in loose list

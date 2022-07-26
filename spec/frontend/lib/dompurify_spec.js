@@ -173,4 +173,50 @@ describe('~/lib/dompurify', () => {
       expect(sanitize(html)).toBe(`<a>internal link</a>`);
     });
   });
+
+  describe('links with target attribute', () => {
+    const getSanitizedNode = (html) => {
+      return document.createRange().createContextualFragment(sanitize(html)).firstElementChild;
+    };
+
+    it('adds secure context', () => {
+      const html = `<a href="https://example.com" target="_blank">link</a>`;
+      const el = getSanitizedNode(html);
+
+      expect(el.getAttribute('target')).toBe('_blank');
+      expect(el.getAttribute('rel')).toBe('noopener noreferrer');
+    });
+
+    it('adds secure context and merge existing `rel` values', () => {
+      const html = `<a href="https://example.com" target="_blank" rel="help External">link</a>`;
+      const el = getSanitizedNode(html);
+
+      expect(el.getAttribute('target')).toBe('_blank');
+      expect(el.getAttribute('rel')).toBe('help external noopener noreferrer');
+    });
+
+    it('does not duplicate noopener/noreferrer `rel` values', () => {
+      const html = `<a href="https://example.com" target="_blank" rel="noreferrer noopener">link</a>`;
+      const el = getSanitizedNode(html);
+
+      expect(el.getAttribute('target')).toBe('_blank');
+      expect(el.getAttribute('rel')).toBe('noreferrer noopener');
+    });
+
+    it('does not update `rel` values when target is not `_blank` ', () => {
+      const html = `<a href="https://example.com" target="_self" rel="help">internal</a>`;
+      const el = getSanitizedNode(html);
+
+      expect(el.getAttribute('target')).toBe('_self');
+      expect(el.getAttribute('rel')).toBe('help');
+    });
+
+    it('does not update `rel` values when target attribute is not present', () => {
+      const html = `<a href="https://example.com">link</a>`;
+      const el = getSanitizedNode(html);
+
+      expect(el.hasAttribute('target')).toBe(false);
+      expect(el.hasAttribute('rel')).toBe(false);
+    });
+  });
 });

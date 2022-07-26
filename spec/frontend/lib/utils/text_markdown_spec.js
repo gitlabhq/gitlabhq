@@ -193,6 +193,7 @@ describe('init markdown', () => {
           ${'- [ ] item'}                | ${'- [ ] item\n- [ ] '}
           ${'- [x] item'}                | ${'- [x] item\n- [ ] '}
           ${'- [X] item'}                | ${'- [X] item\n- [ ] '}
+          ${'- [~] item'}                | ${'- [~] item\n- [ ] '}
           ${'- [ ] nbsp (U+00A0)'}       | ${'- [ ] nbsp (U+00A0)\n- [ ] '}
           ${'- item\n  - second'}        | ${'- item\n  - second\n  - '}
           ${'- - -'}                     | ${'- - -'}
@@ -205,6 +206,7 @@ describe('init markdown', () => {
           ${'1. [ ] item'}               | ${'1. [ ] item\n2. [ ] '}
           ${'1. [x] item'}               | ${'1. [x] item\n2. [ ] '}
           ${'1. [X] item'}               | ${'1. [X] item\n2. [ ] '}
+          ${'1. [~] item'}               | ${'1. [~] item\n2. [ ] '}
           ${'108. item'}                 | ${'108. item\n109. '}
           ${'108. item\n     - second'}  | ${'108. item\n     - second\n     - '}
           ${'108. item\n     1. second'} | ${'108. item\n     1. second\n     2. '}
@@ -228,11 +230,13 @@ describe('init markdown', () => {
           ${'- [ ] item\n- [ ] '}                  | ${'- [ ] item\n'}
           ${'- [x] item\n- [x] '}                  | ${'- [x] item\n'}
           ${'- [X] item\n- [X] '}                  | ${'- [X] item\n'}
+          ${'- [~] item\n- [~] '}                  | ${'- [~] item\n'}
           ${'- item\n  - second\n  - '}            | ${'- item\n  - second\n'}
           ${'1. item\n2. '}                        | ${'1. item\n'}
           ${'1. [ ] item\n2. [ ] '}                | ${'1. [ ] item\n'}
           ${'1. [x] item\n2. [x] '}                | ${'1. [x] item\n'}
           ${'1. [X] item\n2. [X] '}                | ${'1. [X] item\n'}
+          ${'1. [~] item\n2. [~] '}                | ${'1. [~] item\n'}
           ${'108. item\n109. '}                    | ${'108. item\n'}
           ${'108. item\n     - second\n     - '}   | ${'108. item\n     - second\n'}
           ${'108. item\n     1. second\n     1. '} | ${'108. item\n     1. second\n'}

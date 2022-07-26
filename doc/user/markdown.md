@@ -376,6 +376,8 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 
 ### Task lists
 
+> Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
+
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#task-lists).
 
 You can add task lists anywhere Markdown is supported.
@@ -384,22 +386,28 @@ You can add task lists anywhere Markdown is supported.
 - In all other places, you cannot select the boxes. You must edit the Markdown manually
   by adding or removing an `x` in the brackets.
 
+Besides complete and incomplete, tasks can also be **inapplicable**. Selecting an inapplicable checkbox
+in an issue, merge request, or comment has no effect.
+
 To create a task list, follow the format of an ordered or unordered list:
 
 ```markdown
 - [x] Completed task
+- [~] Inapplicable task
 - [ ] Incomplete task
-  - [ ] Sub-task 1
-  - [x] Sub-task 2
+  - [x] Sub-task 1
+  - [~] Sub-task 2
   - [ ] Sub-task 3
 
 1. [x] Completed task
+1. [~] Inapplicable task
 1. [ ] Incomplete task
-   1. [ ] Sub-task 1
-   1. [x] Sub-task 2
+   1. [x] Sub-task 1
+   1. [~] Sub-task 2
+   1. [ ] Sub-task 3
 ```
 
-![Task list as rendered by GitLab](img/completed_tasks_v13_3.png)
+![Task list as rendered by GitLab](img/completed_tasks_v15_3.png)
 
 ### Table of contents
 

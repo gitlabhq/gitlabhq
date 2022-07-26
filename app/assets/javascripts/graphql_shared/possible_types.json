@@ -134,6 +134,7 @@
     "WorkItemWidgetAssignees",
     "WorkItemWidgetDescription",
     "WorkItemWidgetHierarchy",
+    "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetWeight"
   ]
 }

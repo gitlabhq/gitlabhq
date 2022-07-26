@@ -2015,3 +2015,15 @@
 07_01__gitlab_specific_markdown__footnotes__001:
   spec_txt_example_position: 674
   source_specification: gitlab
+07_02__gitlab_specific_markdown__task_list_items__001:
+  spec_txt_example_position: 675
+  source_specification: gitlab
+07_02__gitlab_specific_markdown__task_list_items__002:
+  spec_txt_example_position: 676
+  source_specification: gitlab
+07_02__gitlab_specific_markdown__task_list_items__003:
+  spec_txt_example_position: 677
+  source_specification: gitlab
+07_02__gitlab_specific_markdown__task_list_items__004:
+  spec_txt_example_position: 678
+  source_specification: gitlab

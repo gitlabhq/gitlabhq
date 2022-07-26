@@ -27,6 +27,10 @@
                               data: { "md-tag" => "<details><summary>Click to expand</summary>\n{text}\n</details>", "md-prepend" => true, "md-select" => "Click to expand" },
                               title: _("Add a collapsible section") })
   = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |", "md-prepend" => true }, title: _("Add a table") })
+  = markdown_toolbar_button({ icon: "paperclip",
+                              data: { "md-tag" => "", "md-prepend" => true, "testid" => "button-attach-file" },
+                              css_class: 'js-attach-file-button markdown-selector',
+                              title: _("Attach a file or image") })
   - if show_fullscreen_button
     %button.gl-button.btn.btn-default-tertiary.btn-icon.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, "aria-label": "Go full screen", title: _("Go full screen"), data: { container: "body" } }
       = sprite_icon("maximize")

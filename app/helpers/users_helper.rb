@@ -67,12 +67,6 @@ module UsersHelper
     "access:#{max_project_member_access(project)}"
   end
 
-  def show_status_emoji?(status)
-    return false unless status
-
-    status.message.present? || status.emoji != UserStatus::DEFAULT_EMOJI
-  end
-
   def user_status(user)
     return unless user
 

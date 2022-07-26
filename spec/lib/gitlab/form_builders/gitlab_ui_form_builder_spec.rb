@@ -25,7 +25,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         it 'renders correct html' do
           expected_html = <<~EOS
             <div class="gl-form-checkbox custom-control custom-checkbox">
-              <input name="user[view_diffs_file_by_file]" type="hidden" value="0" />
+              <input name="user[view_diffs_file_by_file]" type="hidden" value="0" autocomplete="off" />
               <input class="custom-control-input" type="checkbox" value="1" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
               <label class="custom-control-label" for="user_view_diffs_file_by_file">
                 <span>Show one file at a time on merge request&#39;s Changes tab</span>
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         it 'renders help text' do
           expected_html = <<~EOS
             <div class="gl-form-checkbox custom-control custom-checkbox">
-              <input name="user[view_diffs_file_by_file]" type="hidden" value="1" />
+              <input name="user[view_diffs_file_by_file]" type="hidden" value="1" autocomplete="off" />
               <input class="custom-control-input checkbox-foo-bar" type="checkbox" value="3" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
               <label class="custom-control-label label-foo-bar" for="user_view_diffs_file_by_file">
                 <span>Show one file at a time on merge request&#39;s Changes tab</span>
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
       it 'renders correct html' do
         expected_html = <<~EOS
           <div class="gl-form-checkbox custom-control custom-checkbox">
-            <input name="user[view_diffs_file_by_file]" type="hidden" value="0" />
+            <input name="user[view_diffs_file_by_file]" type="hidden" value="0" autocomplete="off" />
             <input class="custom-control-input" type="checkbox" value="1" name="user[view_diffs_file_by_file]" id="user_view_diffs_file_by_file" />
             <label class="custom-control-label" for="user_view_diffs_file_by_file">
               <span>Show one file at a time on merge request&#39;s Changes tab</span>

@@ -151,7 +151,7 @@ RSpec.describe "User creates issue" do
           click_button 'Cancel'
         end
 
-        expect(page).to have_button('Attach a file')
+        expect(page).to have_selector('[data-testid="button-attach-file"]')
         expect(page).not_to have_button('Cancel')
         expect(page).not_to have_selector('.uploading-progress-container', visible: true)
       end
