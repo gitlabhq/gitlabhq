@@ -35,6 +35,9 @@ gem 'confiner', '~> 0.3'
 gem 'chemlab', '~> 0.9'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1'
 
+# dependencies for jenkins client
+gem 'nokogiri', '~> 1.12'
+
 gem 'deprecation_toolkit', '~> 1.5.1', require: false
 
 group :development do

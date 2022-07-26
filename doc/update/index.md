@@ -465,7 +465,7 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
-### 15.2.0 (unreleased)
+### 15.2.0
 
 - GitLab installations that have multiple web nodes should be
   [upgraded to 15.1](#1510) before upgrading to 15.2 (and later) due to a

@@ -188,6 +188,30 @@ RSpec.describe Gitlab::Ci::Config::Entry::Release do
       end
     end
 
+    context "when value includes 'tag_message' keyword" do
+      let(:config) do
+        {
+          tag_name: 'v0.06',
+          description: "./release_changelog.txt",
+          tag_message: "Annotated tag message"
+        }
+      end
+
+      it_behaves_like 'a valid entry'
+    end
+
+    context "when 'tag_message' is nil" do
+      let(:config) do
+        {
+          tag_name: 'v0.06',
+          description: "./release_changelog.txt",
+          tag_message: nil
+        }
+      end
+
+      it_behaves_like 'a valid entry'
+    end
+
     context 'when entry value is not correct' do
       describe '#errors' do
         context 'when value of attribute is invalid' do
@@ -230,6 +254,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Release do
           let(:config) { { milestones: [1, 2, 3] } }
 
           it_behaves_like 'reports error', 'release milestones should be an array of strings or a string'
+        end
+
+        context 'when `tag_message` is not a string' do
+          let(:config) { { tag_message: 100 } }
+
+          it_behaves_like 'reports error', 'release tag message should be a string'
         end
       end
     end

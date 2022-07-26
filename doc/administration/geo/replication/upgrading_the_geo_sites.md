@@ -28,12 +28,23 @@ and cause downtime. If you want to avoid downtime, consider using
 To upgrade the Geo sites when a new GitLab version is released, upgrade **primary**
 and all **secondary** sites:
 
-1. **Optional:** [Pause replication on each **secondary** sites.](../index.md#pausing-and-resuming-replication)
+1. Optional. [Pause replication on each **secondary** site](../index.md#pausing-and-resuming-replication)
+   to protect the disaster recovery (DR) capability of the **secondary** sites.
 1. SSH into each node of the **primary** site.
 1. [Upgrade GitLab on the **primary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).
+1. Perform testing on the **primary** site, particularly if you paused replication in step 1 to protect DR. [There are some suggestions for post-upgrade testing](../../../update/plan_your_upgrade.md#pre-upgrade-and-post-upgrade-checks) in the upgrade documentation.
 1. SSH into each node of **secondary** sites.
 1. [Upgrade GitLab on each **secondary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).
-1. If you paused replication in step 1, [resume replication on each **secondary**](../index.md#pausing-and-resuming-replication)
+1. If you paused replication in step 1, [resume replication on each **secondary**](../index.md#pausing-and-resuming-replication).
+   Then, restart Puma and Sidekiq on each **secondary** site. This is to ensure they
+   are initialized against the newer database schema that is now replicated from
+   the previously upgraded **primary** site.
+
+   ```shell
+   sudo gitlab-ctl restart sidekiq
+   sudo gitlab-ctl restart puma
+   ```
+
 1. [Test](#check-status-after-upgrading) **primary** and **secondary** sites, and check version in each.
 
 ### Check status after upgrading

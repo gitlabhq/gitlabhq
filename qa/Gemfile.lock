@@ -337,6 +337,7 @@ DEPENDENCIES
   gitlab-qa (~> 7)
   influxdb-client (~> 1.17)
   knapsack (~> 4.0)
+  nokogiri (~> 1.12)
   octokit (~> 4.21)
   parallel (~> 1.19)
   parallel_tests (~> 2.29)

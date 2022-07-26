@@ -12,8 +12,8 @@ module Gitlab
           include ::Gitlab::Config::Entry::Validatable
           include ::Gitlab::Config::Entry::Attributable
 
-          ALLOWED_KEYS = %i[tag_name name description ref released_at milestones assets].freeze
-          attributes %i[tag_name name ref milestones assets].freeze
+          ALLOWED_KEYS = %i[tag_name tag_message name description ref released_at milestones assets].freeze
+          attributes %i[tag_name tag_message name ref milestones assets].freeze
           attr_reader :released_at
 
           # Attributable description conflicts with
@@ -31,6 +31,7 @@ module Gitlab
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
             validates :tag_name, type: String, presence: true
+            validates :tag_message, type: String, allow_blank: true
             validates :description, type: String, presence: true
             validates :milestones, array_of_strings_or_string: true, allow_blank: true
             validate do

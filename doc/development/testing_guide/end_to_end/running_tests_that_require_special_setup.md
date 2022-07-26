@@ -8,11 +8,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Jenkins spec
 
-The [`jenkins_build_status_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/163c8a8c814db26d11e104d1cb2dcf02eb567dbe/qa/qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb) spins up a Jenkins instance in a Docker container based on an image stored in the [GitLab-QA container registry](https://gitlab.com/gitlab-org/gitlab-qa/container_registry).
-The Docker image it uses is preconfigured with some base data and plugins.
-The test then configures the GitLab plugin in Jenkins with a URL of the GitLab instance that are used
-to run the tests. Unfortunately, the GitLab Jenkins plugin does not accept ports so `http://localhost:3000` would
-not be accepted. Therefore, this requires us to run GitLab on port 80 or inside a Docker container.
+The [`jenkins_build_status_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/24a86debf49f3aed6f2ecfd6e8f9233b3a214181/qa/qa/specs/features/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb)
+spins up a Jenkins instance in a Docker container with the Jenkins GitLab plugin pre-installed. Due to a license restriction we are unable to distribute this image.
+To build a QA compatible image, please visit the [third party images project](https://gitlab.com/gitlab-org/quality/third-party-docker-public), where third party Dockerfiles can be found.
+The project also has instructions for forking and building the images automatically in CI.
+
+Some extra environment variables for the location of the forked repository are also needed.
+
+- `QA_THIRD_PARTY_DOCKER_REGISTRY` (the container registry where the repository/images are hosted, eg `registry.gitlab.com`)
+- `QA_THIRD_PARTY_DOCKER_REPOSITORY` (the base repository path where the images are hosted, eg `registry.gitlab.com/<project path>`)
+- `QA_THIRD_PARTY_DOCKER_USER` (a username that has access to the container registry for this repository)
+- `QA_THIRD_PARTY_DOCKER_PASSWORD` (a password/token for the username to authenticate with)
+
+The test configures the GitLab plugin in Jenkins with a URL of the GitLab instance that are used
+to run the tests. Bi-directional networking is needed between a GitLab instance and Jenkins, so GitLab can also be started in a Docker container.
 
 To start a Docker container for GitLab based on the nightly image:
 
@@ -21,34 +30,25 @@ docker run \
   --publish 80:80 \
   --name gitlab \
   --hostname localhost \
+  --network test
   gitlab/gitlab-ee:nightly
 ```
 
 To run the tests from the `/qa` directory:
 
 ```shell
-WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://localhost -- qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb
+export QA_THIRD_PARTY_DOCKER_REGISTRY=<registry>
+export QA_THIRD_PARTY_DOCKER_REPOSITORY=<repository>
+export QA_THIRD_PARTY_DOCKER_USER=<user with registry access>
+export QA_THIRD_PARTY_DOCKER_PASSWORD=<password for user>
+export WEBDRIVER_HEADLESS=0
+bin/qa Test::Instance::All http://localhost -- qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb
 ```
 
 The test automatically spins up a Docker container for Jenkins and tear down once the test completes.
 
-However, if you need to run Jenkins manually outside of the tests, use this command:
-
-```shell
-docker run \
-  --hostname localhost \
-  --name jenkins-server \
-  --env JENKINS_HOME=jenkins_home \
-  --publish 8080:8080 \
-  registry.gitlab.com/gitlab-org/gitlab-qa/jenkins-gitlab:version1
-```
-
-Jenkins is available on `http://localhost:8080`.
-
-Administrator username is `admin` and password is `password`.
-
-It is worth noting that this is not an orchestrated test. It is [tagged with the `:orchestrated` meta](https://gitlab.com/gitlab-org/gitlab/-/blob/163c8a8c814db26d11e104d1cb2dcf02eb567dbe/qa/qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb#L5)
-only to prevent it from running in the pipelines for live environments such as Staging.
+If you need to run Jenkins manually outside of the tests, please refer to the README for the
+[third party images project](https://gitlab.com/gitlab-org/quality/third-party-docker-public/-/blob/main/jenkins/README.md)
 
 ### Troubleshooting
 

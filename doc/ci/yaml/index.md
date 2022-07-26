@@ -2792,6 +2792,7 @@ If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.h
 **Possible inputs**: The `release` subkeys:
 
 - [`tag_name`](#releasetag_name)
+- [`tag_message`](#releasetag_message) (optional)
 - [`name`](#releasename) (optional)
 - [`description`](#releasedescription)
 - [`ref`](#releaseref) (optional)
@@ -2886,6 +2887,30 @@ job:
     description: 'Release description'
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
+```
+
+#### `release:tag_message`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363024) in GitLab 15.3. Supported by `release-cli` v0.12.0 or later.
+
+If the tag does not exist, the newly created tag is annotated with the message specifed by `tag_message`.
+If omitted, a lightweight tag is created.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- A text string.
+
+**Example of `release:tag_message`**:
+
+```yaml
+  release_job:
+    stage: release
+    release:
+      tag_name: $CI_COMMIT_TAG
+      description: 'Release description'
+      tag_message: 'Annotated tag message'
 ```
 
 #### `release:name`

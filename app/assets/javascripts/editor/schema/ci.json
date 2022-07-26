@@ -1204,6 +1204,10 @@
               "description": "The tag_name must be specified. It can refer to an existing Git tag or can be specified by the user.",
               "minLength": 1
             },
+            "tag_message": {
+              "type": "string",
+              "description": "Message to use if creating a new annotated tag."
+            },
             "description": {
               "type": "string",
               "description": "Specifies the longer description of the Release.",

@@ -12481,7 +12481,6 @@ CREATE TABLE ci_builds (
     "when" character varying,
     yaml_variables text,
     queued_at timestamp without time zone,
-    token character varying,
     lock_version integer DEFAULT 0,
     coverage_regex character varying,
     auto_canceled_by_id integer,

@@ -291,6 +291,14 @@ module QA
         ENV['JIRA_HOSTNAME']
       end
 
+      def jenkins_admin_username
+        ENV.fetch('QA_JENKINS_USER', 'administrator')
+      end
+
+      def jenkins_admin_password
+        ENV.fetch('QA_JENKINS_PASS', 'password')
+      end
+
       # this is set by the integrations job
       # which will allow bidirectional communication
       # between the app and the specs container

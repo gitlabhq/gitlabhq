@@ -1766,6 +1766,7 @@ module Gitlab
               script: ["make changelog | tee release_changelog.txt"],
               release: {
                 tag_name: "$CI_COMMIT_TAG",
+                tag_message: "Annotated tag message",
                 name: "Release $CI_TAG_NAME",
                 description: "./release_changelog.txt",
                 ref: 'b3235930aa443112e639f941c69c578912189bdd',

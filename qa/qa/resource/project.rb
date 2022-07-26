@@ -4,6 +4,7 @@ module QA
   module Resource
     class Project < Base
       include Events::Project
+      include Integrations::Project
       include Members
       include Visibility
 
