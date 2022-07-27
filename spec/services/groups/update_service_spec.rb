@@ -242,6 +242,69 @@ RSpec.describe Groups::UpdateService do
     end
   end
 
+  context 'when user is not group owner' do
+    context 'when group is private' do
+      before do
+        private_group.add_maintainer(user)
+      end
+
+      it 'does not update the group to public' do
+        result = described_class.new(private_group, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC).execute
+
+        expect(result).to eq(false)
+        expect(private_group.errors.count).to eq(1)
+        expect(private_group).to be_private
+      end
+
+      it 'does not update the group to public with tricky value' do
+        result = described_class.new(private_group, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC.to_s + 'r').execute
+
+        expect(result).to eq(false)
+        expect(private_group.errors.count).to eq(1)
+        expect(private_group).to be_private
+      end
+    end
+
+    context 'when group is public' do
+      before do
+        public_group.add_maintainer(user)
+      end
+
+      it 'does not update the group to private' do
+        result = described_class.new(public_group, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE).execute
+
+        expect(result).to eq(false)
+        expect(public_group.errors.count).to eq(1)
+        expect(public_group).to be_public
+      end
+
+      it 'does not update the group to private with invalid string value' do
+        result = described_class.new(public_group, user, visibility_level: 'invalid').execute
+
+        expect(result).to eq(false)
+        expect(public_group.errors.count).to eq(1)
+        expect(public_group).to be_public
+      end
+
+      it 'does not update the group to private with valid string value' do
+        result = described_class.new(public_group, user, visibility_level: 'private').execute
+
+        expect(result).to eq(false)
+        expect(public_group.errors.count).to eq(1)
+        expect(public_group).to be_public
+      end
+
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/359910
+      it 'does not update the group to private because of Active Record typecasting' do
+        result = described_class.new(public_group, user, visibility_level: 'public').execute
+
+        expect(result).to eq(true)
+        expect(public_group.errors.count).to eq(0)
+        expect(public_group).to be_public
+      end
+    end
+  end
+
   context 'when updating #emails_disabled' do
     let(:service) { described_class.new(internal_group, user, emails_disabled: true) }
 

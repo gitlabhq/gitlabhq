@@ -18,6 +18,8 @@ module Gitlab
       scope :public_to_user, -> (user = nil) do
         where(visibility_level: VisibilityLevel.levels_for_user(user))
       end
+
+      alias_method :visibility_level=, :visibility=
     end
 
     PRIVATE  = 0 unless const_defined?(:PRIVATE)
@@ -108,10 +110,10 @@ module Gitlab
         options.key(level.to_i) || s_('VisibilityLevel|Unknown')
       end
 
-      def level_value(level)
+      def level_value(level, fallback_value: PRIVATE)
         return level.to_i if level.to_i.to_s == level.to_s && string_options.key(level.to_i)
 
-        string_options[level] || PRIVATE
+        string_options[level] || fallback_value
       end
 
       def string_level(level)
