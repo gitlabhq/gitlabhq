@@ -9,6 +9,31 @@ RSpec.describe Integrations::Zentao do
   let(:zentao_product_xid) { '3' }
   let(:zentao_integration) { create(:zentao_integration) }
 
+  it_behaves_like Integrations::ResetSecretFields do
+    let(:integration) { zentao_integration }
+  end
+
+  describe 'set_default_data' do
+    let(:project) { create(:project, :repository) }
+
+    context 'when gitlab.yml was initialized' do
+      it 'is prepopulated with the settings' do
+        settings = {
+          'zentao' => {
+            'url' => 'http://zentao.sample/projects/project_a',
+            'api_url' => 'http://zentao.sample/api'
+          }
+        }
+        allow(Gitlab.config).to receive(:issues_tracker).and_return(settings)
+
+        integration = project.create_zentao_integration(active: true)
+
+        expect(integration.url).to eq('http://zentao.sample/projects/project_a')
+        expect(integration.api_url).to eq('http://zentao.sample/api')
+      end
+    end
+  end
+
   describe '#create' do
     let(:project) { create(:project, :repository) }
     let(:params) do

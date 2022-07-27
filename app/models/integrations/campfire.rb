@@ -2,7 +2,15 @@
 
 module Integrations
   class Campfire < Integration
+    SUBDOMAIN_REGEXP = %r{\A[a-z](?:[a-z0-9-]*[a-z0-9])?\z}i.freeze
+
     validates :token, presence: true, if: :activated?
+    validates :room,
+      allow_blank: true,
+      numericality: { only_integer: true, greater_than: 0 }
+    validates :subdomain,
+      allow_blank: true,
+      format: { with: SUBDOMAIN_REGEXP }, length: { in: 1..63 }
 
     field :token,
       type: 'password',
@@ -16,6 +24,7 @@ module Integrations
     field :subdomain,
       title: -> { _('Campfire subdomain (optional)') },
       placeholder: '',
+      exposes_secrets: true,
       help: -> do
         ERB::Util.html_escape(
           s_('CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain.')
