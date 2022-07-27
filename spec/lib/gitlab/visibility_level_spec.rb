@@ -4,20 +4,52 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::VisibilityLevel do
   describe '.level_value' do
-    it 'converts "public" to integer value' do
-      expect(described_class.level_value('public')).to eq(Gitlab::VisibilityLevel::PUBLIC)
+    where(:string_value, :integer_value) do
+      [
+        ['private', described_class::PRIVATE],
+        ['internal', described_class::INTERNAL],
+        ['public', described_class::PUBLIC]
+      ]
     end
 
-    it 'converts string integer to integer value' do
-      expect(described_class.level_value('20')).to eq(20)
+    with_them do
+      it "converts '#{params[:string_value]}' to integer value #{params[:integer_value]}" do
+        expect(described_class.level_value(string_value)).to eq(integer_value)
+      end
+
+      it "converts string integer '#{params[:integer_value]}' to integer value #{params[:integer_value]}" do
+        expect(described_class.level_value(integer_value.to_s)).to eq(integer_value)
+      end
+
+      it 'defaults to PRIVATE when string integer value is not valid' do
+        expect(described_class.level_value(integer_value.to_s + 'r')).to eq(described_class::PRIVATE)
+        expect(described_class.level_value(integer_value.to_s + ' ')).to eq(described_class::PRIVATE)
+        expect(described_class.level_value('r' + integer_value.to_s)).to eq(described_class::PRIVATE)
+      end
+
+      it 'defaults to PRIVATE when string value is not valid' do
+        expect(described_class.level_value(string_value.capitalize)).to eq(described_class::PRIVATE)
+        expect(described_class.level_value(string_value + ' ')).to eq(described_class::PRIVATE)
+        expect(described_class.level_value(string_value + 'r')).to eq(described_class::PRIVATE)
+      end
     end
 
     it 'defaults to PRIVATE when string value is not valid' do
-      expect(described_class.level_value('invalid')).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      expect(described_class.level_value('invalid')).to eq(described_class::PRIVATE)
     end
 
     it 'defaults to PRIVATE when integer value is not valid' do
-      expect(described_class.level_value(100)).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      expect(described_class.level_value(100)).to eq(described_class::PRIVATE)
+    end
+
+    context 'when `fallback_value` is set to `nil`' do
+      it 'returns `nil` when string value is not valid' do
+        expect(described_class.level_value('invalid', fallback_value: nil)).to be_nil
+      end
+
+      it 'returns `nil` when integer value is not valid' do
+        expect(described_class.level_value(100, fallback_value: nil)).to be_nil
+      end
     end
   end
 
