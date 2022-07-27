@@ -495,4 +495,14 @@ RSpec.describe Todo do
 
     it { is_expected.to contain_exactly(user1.id, user2.id) }
   end
+
+  describe '.for_internal_notes' do
+    it 'returns todos created from internal notes' do
+      internal_note = create(:note, confidential: true )
+      todo = create(:todo, note: internal_note)
+      create(:todo)
+
+      expect(described_class.for_internal_notes).to contain_exactly(todo)
+    end
+  end
 end

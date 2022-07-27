@@ -86,4 +86,38 @@ RSpec.describe GrafanaIntegration do
       end
     end
   end
+
+  describe 'Callbacks' do
+    describe 'before_validation :reset_token' do
+      context 'when a token was previously set' do
+        subject(:grafana_integration) { create(:grafana_integration) }
+
+        it 'resets token if url changed' do
+          grafana_integration.grafana_url = 'http://gitlab1.com'
+
+          expect(grafana_integration).not_to be_valid
+          expect(grafana_integration.send(:token)).to be_nil
+        end
+
+        it "does not reset token if new url is set together with the same token" do
+          grafana_integration.grafana_url = 'http://gitlab_edited.com'
+          current_token = grafana_integration.send(:token)
+          grafana_integration.token = current_token
+
+          expect(grafana_integration).to be_valid
+          expect(grafana_integration.send(:token)).to eq(current_token)
+          expect(grafana_integration.grafana_url).to eq('http://gitlab_edited.com')
+        end
+
+        it 'does not reset token if new url is set together with a new token' do
+          grafana_integration.grafana_url = 'http://gitlab_edited.com'
+          grafana_integration.token = 'token'
+
+          expect(grafana_integration).to be_valid
+          expect(grafana_integration.send(:token)).to eq('token')
+          expect(grafana_integration.grafana_url).to eq('http://gitlab_edited.com')
+        end
+      end
+    end
+  end
 end

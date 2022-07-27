@@ -29549,6 +29549,10 @@ CREATE INDEX index_requirements_on_title_trigram ON requirements USING gin (titl
 
 CREATE INDEX index_requirements_on_updated_at ON requirements USING btree (updated_at);
 
+CREATE INDEX index_requirements_project_id_user_id_id_and_target_type ON todos USING btree (project_id, user_id, id, target_type);
+
+CREATE INDEX index_requirements_user_id_and_target_type ON todos USING btree (user_id, target_type);
+
 CREATE INDEX index_resource_iteration_events_on_issue_id ON resource_iteration_events USING btree (issue_id);
 
 CREATE INDEX index_resource_iteration_events_on_iteration_id ON resource_iteration_events USING btree (iteration_id);
@@ -29867,11 +29871,7 @@ CREATE INDEX index_todos_on_note_id ON todos USING btree (note_id);
 
 CREATE INDEX index_todos_on_project_id_and_id ON todos USING btree (project_id, id);
 
-CREATE INDEX index_todos_on_project_id_and_user_id_and_id ON todos USING btree (project_id, user_id, id);
-
 CREATE INDEX index_todos_on_target_type_and_target_id ON todos USING btree (target_type, target_id);
-
-CREATE INDEX index_todos_on_user_id ON todos USING btree (user_id);
 
 CREATE INDEX index_todos_on_user_id_and_id_done ON todos USING btree (user_id, id) WHERE ((state)::text = 'done'::text);
 
