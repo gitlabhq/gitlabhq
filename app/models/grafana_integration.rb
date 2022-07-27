@@ -18,6 +18,8 @@ class GrafanaIntegration < ApplicationRecord
 
   validates :enabled, inclusion: { in: [true, false] }
 
+  before_validation :reset_token
+
   scope :enabled, -> { where(enabled: true) }
 
   def client
@@ -35,6 +37,12 @@ class GrafanaIntegration < ApplicationRecord
   end
 
   private
+
+  def reset_token
+    if grafana_url_changed? && !encrypted_token_changed?
+      self.token = nil
+    end
+  end
 
   def token
     decrypt(:token, encrypted_token)

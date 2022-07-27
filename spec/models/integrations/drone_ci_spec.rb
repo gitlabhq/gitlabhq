@@ -7,6 +7,10 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
 
   subject(:integration) { described_class.new }
 
+  it_behaves_like Integrations::ResetSecretFields do
+    let(:integration) { subject }
+  end
+
   describe 'validations' do
     context 'active' do
       before do
