@@ -289,6 +289,32 @@ export const deleteWorkItemFailureResponse = {
   ],
 };
 
+export const deleteWorkItemMutationErrorResponse = {
+  data: {
+    workItemDelete: {
+      errors: ['Error'],
+    },
+  },
+};
+
+export const deleteWorkItemFromTaskMutationResponse = {
+  data: {
+    workItemDeleteTask: {
+      workItem: { id: 123, descriptionHtml: 'updated work item desc' },
+      errors: [],
+    },
+  },
+};
+
+export const deleteWorkItemFromTaskMutationErrorResponse = {
+  data: {
+    workItemDeleteTask: {
+      workItem: { id: 123, descriptionHtml: 'updated work item desc' },
+      errors: ['Error'],
+    },
+  },
+};
+
 export const workItemTitleSubscriptionResponse = {
   data: {
     issuableTitleUpdated: {

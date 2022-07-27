@@ -2,29 +2,35 @@
 import '~/commons/bootstrap';
 import {
   GlIcon,
+  GlLink,
   GlTooltip,
   GlTooltipDirective,
   GlButton,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
+import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import relatedIssuableMixin from '../mixins/related_issuable_mixin';
 import IssueAssignees from './issue_assignees.vue';
 import IssueMilestone from './issue_milestone.vue';
 
 export default {
-  name: 'IssueItem',
   components: {
     IssueMilestone,
     IssueAssignees,
     CiIcon,
     GlIcon,
+    GlLink,
     GlTooltip,
     IssueWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
     IssueDueDate,
     GlButton,
+    WorkItemDetailModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -47,6 +53,11 @@ export default {
       required: false,
       default: '',
     },
+    workItemType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     stateTitle() {
@@ -61,6 +72,27 @@ export default {
     },
     iconClasses() {
       return `${this.iconClass} ic-${this.iconName}`;
+    },
+    workItemId() {
+      return convertToGraphQLId(TYPE_WORK_ITEM, this.idKey);
+    },
+  },
+  methods: {
+    handleTitleClick(event) {
+      if (this.workItemType === 'TASK') {
+        event.preventDefault();
+        this.$refs.modal.show();
+        this.updateWorkItemIdUrlQuery(this.idKey);
+      }
+    },
+    handleWorkItemDeleted(workItemId) {
+      this.$emit('relatedIssueRemoveRequest', workItemId);
+    },
+    updateWorkItemIdUrlQuery(workItemId) {
+      updateHistory({
+        url: setUrlParams({ work_item_id: workItemId }),
+        replace: true,
+      });
     },
   },
 };
@@ -102,7 +134,13 @@ export default {
           class="confidential-icon gl-mr-2 align-self-baseline align-self-md-auto mt-xl-0"
           :aria-label="__('Confidential')"
         />
-        <a :href="computedPath" class="sortable-link gl-font-weight-normal">{{ title }}</a>
+        <gl-link
+          :href="computedPath"
+          class="sortable-link gl-font-weight-normal"
+          @click="handleTitleClick"
+        >
+          {{ title }}
+        </gl-link>
       </div>
 
       <!-- Info area: meta, path, and assignees -->
@@ -178,16 +216,15 @@ export default {
 
     <span
       v-if="isLocked"
-      ref="lockIcon"
       v-gl-tooltip
       class="gl-px-3 gl-display-inline-block gl-cursor-not-allowed"
       :title="lockedMessage"
+      data-testid="lockIcon"
     >
       <gl-icon name="lock" />
     </span>
     <gl-button
       v-else-if="canRemove"
-      ref="removeButton"
       v-gl-tooltip
       icon="close"
       category="tertiary"
@@ -197,6 +234,12 @@ export default {
       :title="__('Remove')"
       :aria-label="__('Remove')"
       @click="onRemoveRequest"
+    />
+    <work-item-detail-modal
+      ref="modal"
+      :work-item-id="workItemId"
+      @close="updateWorkItemIdUrlQuery"
+      @workItemDeleted="handleWorkItemDeleted"
     />
   </div>
 </template>

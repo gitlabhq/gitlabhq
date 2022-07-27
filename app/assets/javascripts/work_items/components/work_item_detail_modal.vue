@@ -2,9 +2,13 @@
 import { GlAlert, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import deleteWorkItemFromTaskMutation from '../graphql/delete_task_from_work_item.mutation.graphql';
+import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 import WorkItemDetail from './work_item_detail.vue';
 
 export default {
+  i18n: {
+    errorMessage: s__('WorkItem|Something went wrong when deleting the task. Please try again.'),
+  },
   components: {
     GlAlert,
     GlModal,
@@ -45,6 +49,13 @@ export default {
   },
   methods: {
     deleteWorkItem() {
+      if (this.lockVersion != null && this.lineNumberStart && this.lineNumberEnd) {
+        this.deleteWorkItemWithTaskData();
+      } else {
+        this.deleteWorkItemWithoutTaskData();
+      }
+    },
+    deleteWorkItemWithTaskData() {
       this.$apollo
         .mutate({
           mutation: deleteWorkItemFromTaskMutation,
@@ -70,17 +81,33 @@ export default {
             },
           }) => {
             if (errors?.length) {
-              throw new Error(errors[0].message);
+              throw new Error(errors[0]);
             }
 
             this.$emit('workItemDeleted', descriptionHtml);
-            this.$refs.modal.hide();
+            this.hide();
           },
         )
-        .catch((e) => {
-          this.error =
-            e.message ||
-            s__('WorkItem|Something went wrong when deleting the task. Please try again.');
+        .catch((error) => {
+          this.setErrorMessage(error.message);
+        });
+    },
+    deleteWorkItemWithoutTaskData() {
+      this.$apollo
+        .mutate({
+          mutation: deleteWorkItemMutation,
+          variables: { input: { id: this.workItemId } },
+        })
+        .then(({ data }) => {
+          if (data.workItemDelete.errors?.length) {
+            throw new Error(data.workItemDelete.errors[0]);
+          }
+
+          this.$emit('workItemDeleted', this.workItemId);
+          this.hide();
+        })
+        .catch((error) => {
+          this.setErrorMessage(error.message);
         });
     },
     closeModal() {
@@ -91,7 +118,7 @@ export default {
       this.$refs.modal.hide();
     },
     setErrorMessage(message) {
-      this.error = message;
+      this.error = message || this.$options.i18n.errorMessage;
     },
     show() {
       this.$refs.modal.show();

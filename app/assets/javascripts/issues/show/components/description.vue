@@ -326,6 +326,7 @@ export default {
           }
           const workItemId = convertToGraphQLId(TYPE_WORK_ITEM, issue);
           this.addHoverListeners(taskLink, workItemId);
+          taskLink.classList.add('gl-link');
           taskLink.addEventListener('click', (e) => {
             e.preventDefault();
             this.openWorkItemDetailModal(taskLink);

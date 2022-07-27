@@ -45,6 +45,12 @@ Do not include the deprecation announcement in the merge request that introduces
 Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see
 [Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
 
+## How are Community Contributions to a deprecated feature handled?
+
+Development on deprecated features is restricted to Priority 1 / Severity 1 bug fixes. Any community contributions to deprecated features are unlikely to be prioritized during milestone planning.
+
+However, at GitLab, we [give agency](https://about.gitlab.com/handbook/values/#give-agency) to our team members. So, a member of the team associated with the contribution may decide to review and merge it at their discretion.
+
 ## When can a feature be removed/changed?
 
 Generally, feature or configuration can be removed/changed only on major release.

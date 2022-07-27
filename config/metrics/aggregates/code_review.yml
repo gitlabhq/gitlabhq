@@ -86,6 +86,12 @@
     - 'i_code_review_merge_request_widget_test_summary_expand_success'
     - 'i_code_review_merge_request_widget_test_summary_expand_warning'
     - 'i_code_review_merge_request_widget_test_summary_expand_failed'
+    - 'i_code_review_merge_request_widget_accessibility_view'
+    - 'i_code_review_merge_request_widget_accessibility_full_report_clicked'
+    - 'i_code_review_merge_request_widget_accessibility_expand'
+    - 'i_code_review_merge_request_widget_accessibility_expand_success'
+    - 'i_code_review_merge_request_widget_accessibility_expand_warning'
+    - 'i_code_review_merge_request_widget_accessibility_expand_failed'
 - name: code_review_category_monthly_active_users
   operator: OR
   source: redis
@@ -160,6 +166,12 @@
     - 'i_code_review_merge_request_widget_test_summary_expand_success'
     - 'i_code_review_merge_request_widget_test_summary_expand_warning'
     - 'i_code_review_merge_request_widget_test_summary_expand_failed'
+    - 'i_code_review_merge_request_widget_accessibility_view'
+    - 'i_code_review_merge_request_widget_accessibility_full_report_clicked'
+    - 'i_code_review_merge_request_widget_accessibility_expand'
+    - 'i_code_review_merge_request_widget_accessibility_expand_success'
+    - 'i_code_review_merge_request_widget_accessibility_expand_warning'
+    - 'i_code_review_merge_request_widget_accessibility_expand_failed'
 - name: code_review_extension_category_monthly_active_users
   operator: OR
   source: redis

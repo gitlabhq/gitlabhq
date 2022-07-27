@@ -325,3 +325,28 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
+## Accessibility
+- name: i_code_review_merge_request_widget_accessibility_view
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_accessibility_full_report_clicked
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_accessibility_expand
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_accessibility_expand_success
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_accessibility_expand_warning
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_accessibility_expand_failed
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly

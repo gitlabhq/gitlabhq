@@ -5,7 +5,6 @@ import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue
 import { defaultSortableOptions } from '~/sortable/constants';
 
 export default {
-  name: 'RelatedIssuesList',
   components: {
     GlLoadingIcon,
     RelatedIssuableItem,
@@ -141,6 +140,7 @@ export default {
             :path-id-separator="pathIdSeparator"
             :is-locked="issue.lockIssueRemoval"
             :locked-message="issue.lockedMessage"
+            :work-item-type="issue.type"
             event-namespace="relatedIssue"
             data-qa-selector="related_issuable_content"
             @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"

@@ -97,16 +97,6 @@ Example response:
     "type": "development",
     "group": "group::geo",
     "default_enabled": true
-  },
-  {
-    "name": "analytics_devops_adoption_codeowners",
-    "introduced_by_url": "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59874",
-    "rollout_issue_url": "https://gitlab.com/gitlab-org/gitlab/-/issues/328542",
-    "milestone": "13.12",
-    "log_state_changes": null,
-    "type": "development",
-    "group": "group::optimize",
-    "default_enabled": true
   }
 ]
 ```

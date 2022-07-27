@@ -69,6 +69,11 @@ export const TRACKING_ACTION_DOWNLOAD_PACKAGE_ASSET = 'download_package_asset';
 export const TRACKING_ACTION_EXPAND_PACKAGE_ASSET = 'expand_package_asset';
 export const TRACKING_ACTION_COPY_PACKAGE_ASSET_SHA = 'copy_package_asset_sha';
 
+export const TRACKING_ACTION_CLICK_PIPELINE_LINK = 'click_pipeline_link_from_package';
+export const TRACKING_ACTION_CLICK_COMMIT_LINK = 'click_commit_link_from_package';
+
+export const TRACKING_LABEL_PACKAGE_HISTORY = 'package_history';
+
 export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
 export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package file.',
