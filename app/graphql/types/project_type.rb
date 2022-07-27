@@ -221,7 +221,7 @@ module Types
           resolver: Resolvers::Ci::ProjectPipelineCountsResolver
 
     field :ci_variables,
-          Types::Ci::VariableType.connection_type,
+          Types::Ci::ProjectVariableType.connection_type,
           null: true,
           description: "List of the project's CI/CD variables.",
           authorize: :admin_build,

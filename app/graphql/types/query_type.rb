@@ -124,7 +124,7 @@ module Types
           description: "Find runners visible to the current user."
 
     field :ci_variables,
-          Types::Ci::VariableType.connection_type,
+          Types::Ci::InstanceVariableType.connection_type,
           null: true,
           description: "List of the instance's CI/CD variables."
 

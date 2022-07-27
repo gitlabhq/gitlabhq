@@ -3,6 +3,12 @@
     "AlertManagementHttpIntegration",
     "AlertManagementPrometheusIntegration"
   ],
+  "CiVariable": [
+    "CiGroupVariable",
+    "CiInstanceVariable",
+    "CiManualVariable",
+    "CiProjectVariable"
+  ],
   "CurrentUserTodos": [
     "BoardEpic",
     "Design",

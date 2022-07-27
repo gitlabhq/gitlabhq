@@ -320,15 +320,14 @@ gitlab:
 nginx-ingress:
   controller:
     image:
-      repository: registry.gitlab.com/stanhu/gitlab-test-images/k8s-staging-ingress-nginx/controller
-      tag: v1.2.0-beta.1
+      repository: registry.gitlab.com/gitlab-org/cloud-native/charts/gitlab-ingress-nginx/controller
+      tag: v1.2.1-fips
       pullPolicy: Always
-      digest: sha256:ace38833689ad34db4a46bc1e099242696eb800def88f02200a8615530734116
+      digest: sha256:c4222b7ab3836b9be2a7649cff4b2e6ead34286dfdf3a7b04eb34fdd3abb0334
 ```
 
 The above example shows a FIPS-enabled [`nginx-ingress`](https://github.com/kubernetes/ingress-nginx) image.
-See [this issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3153#note_917782207) for more details on
-how to build NGINX and the Ingress Controller.
+See our [Charts documentation on FIPS](https://docs.gitlab.com/charts/advanced/fips/index.html) for more details.
 
 You can also use release tags, but the versioning is tricky because each
 component may use its own versioning scheme. For example, for GitLab v15.2:

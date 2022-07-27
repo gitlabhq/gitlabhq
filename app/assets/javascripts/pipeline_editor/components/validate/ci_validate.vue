@@ -232,6 +232,7 @@ export default {
           class="gl-mt-3"
           :disabled="isInitialCiContentLoading"
           data-testid="simulate-pipeline-button"
+          data-qa-selector="simulate_pipeline_button"
           @click="validateYaml"
         >
           {{ $options.i18n.cta }}

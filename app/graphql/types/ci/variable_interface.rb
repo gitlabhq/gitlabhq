@@ -2,8 +2,9 @@
 
 module Types
   module Ci
-    # rubocop: disable Graphql/AuthorizeTypes
-    class VariableType < BaseObject
+    module VariableInterface
+      include Types::BaseInterface
+
       graphql_name 'CiVariable'
 
       field :id, GraphQL::Types::ID, null: false,
@@ -26,15 +27,6 @@ module Types
 
       field :raw, GraphQL::Types::Boolean, null: true,
         description: 'Indicates whether the variable is raw.'
-
-      field :environment_scope, GraphQL::Types::String, null: true,
-        description: 'Scope defining the environments in which the variable can be used.'
-
-      def environment_scope
-        if object.respond_to?(:environment_scope)
-          object.environment_scope
-        end
-      end
     end
   end
 end

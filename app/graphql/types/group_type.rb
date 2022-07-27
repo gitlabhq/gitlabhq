@@ -195,7 +195,7 @@ module Types
           resolver: Resolvers::GroupsResolver
 
     field :ci_variables,
-          Types::Ci::VariableType.connection_type,
+          Types::Ci::GroupVariableType.connection_type,
           null: true,
           description: "List of the group's CI/CD variables.",
           authorize: :admin_group,

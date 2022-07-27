@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['CiVariable'] do
-  it 'contains attributes related to CI variables' do
+  specify do
     expect(described_class).to have_graphql_fields(
-      :id, :key, :value, :variable_type, :protected, :masked, :raw, :environment_scope
-    )
+      :id, :key, :value, :variable_type, :protected, :masked, :raw
+    ).at_least
   end
 end

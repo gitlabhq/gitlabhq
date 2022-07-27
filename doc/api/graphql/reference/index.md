@@ -91,7 +91,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 List of the instance's CI/CD variables.
 
-Returns [`CiVariableConnection`](#civariableconnection).
+Returns [`CiInstanceVariableConnection`](#ciinstancevariableconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
@@ -6170,6 +6170,52 @@ The edge type for [`CiGroup`](#cigroup).
 | <a id="cigroupedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cigroupedgenode"></a>`node` | [`CiGroup`](#cigroup) | The item at the end of the edge. |
 
+#### `CiGroupVariableConnection`
+
+The connection type for [`CiGroupVariable`](#cigroupvariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cigroupvariableconnectionedges"></a>`edges` | [`[CiGroupVariableEdge]`](#cigroupvariableedge) | A list of edges. |
+| <a id="cigroupvariableconnectionnodes"></a>`nodes` | [`[CiGroupVariable]`](#cigroupvariable) | A list of nodes. |
+| <a id="cigroupvariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiGroupVariableEdge`
+
+The edge type for [`CiGroupVariable`](#cigroupvariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cigroupvariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cigroupvariableedgenode"></a>`node` | [`CiGroupVariable`](#cigroupvariable) | The item at the end of the edge. |
+
+#### `CiInstanceVariableConnection`
+
+The connection type for [`CiInstanceVariable`](#ciinstancevariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinstancevariableconnectionedges"></a>`edges` | [`[CiInstanceVariableEdge]`](#ciinstancevariableedge) | A list of edges. |
+| <a id="ciinstancevariableconnectionnodes"></a>`nodes` | [`[CiInstanceVariable]`](#ciinstancevariable) | A list of nodes. |
+| <a id="ciinstancevariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiInstanceVariableEdge`
+
+The edge type for [`CiInstanceVariable`](#ciinstancevariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinstancevariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="ciinstancevariableedgenode"></a>`node` | [`CiInstanceVariable`](#ciinstancevariable) | The item at the end of the edge. |
+
 #### `CiJobArtifactConnection`
 
 The connection type for [`CiJobArtifact`](#cijobartifact).
@@ -6230,6 +6276,29 @@ The edge type for [`CiJob`](#cijob).
 | <a id="cijobedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cijobedgenode"></a>`node` | [`CiJob`](#cijob) | The item at the end of the edge. |
 
+#### `CiManualVariableConnection`
+
+The connection type for [`CiManualVariable`](#cimanualvariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cimanualvariableconnectionedges"></a>`edges` | [`[CiManualVariableEdge]`](#cimanualvariableedge) | A list of edges. |
+| <a id="cimanualvariableconnectionnodes"></a>`nodes` | [`[CiManualVariable]`](#cimanualvariable) | A list of nodes. |
+| <a id="cimanualvariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiManualVariableEdge`
+
+The edge type for [`CiManualVariable`](#cimanualvariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cimanualvariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cimanualvariableedgenode"></a>`node` | [`CiManualVariable`](#cimanualvariable) | The item at the end of the edge. |
+
 #### `CiMinutesNamespaceMonthlyUsageConnection`
 
 The connection type for [`CiMinutesNamespaceMonthlyUsage`](#ciminutesnamespacemonthlyusage).
@@ -6275,6 +6344,29 @@ The edge type for [`CiMinutesProjectMonthlyUsage`](#ciminutesprojectmonthlyusage
 | ---- | ---- | ----------- |
 | <a id="ciminutesprojectmonthlyusageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="ciminutesprojectmonthlyusageedgenode"></a>`node` | [`CiMinutesProjectMonthlyUsage`](#ciminutesprojectmonthlyusage) | The item at the end of the edge. |
+
+#### `CiProjectVariableConnection`
+
+The connection type for [`CiProjectVariable`](#ciprojectvariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciprojectvariableconnectionedges"></a>`edges` | [`[CiProjectVariableEdge]`](#ciprojectvariableedge) | A list of edges. |
+| <a id="ciprojectvariableconnectionnodes"></a>`nodes` | [`[CiProjectVariable]`](#ciprojectvariable) | A list of nodes. |
+| <a id="ciprojectvariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiProjectVariableEdge`
+
+The edge type for [`CiProjectVariable`](#ciprojectvariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciprojectvariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="ciprojectvariableedgenode"></a>`node` | [`CiProjectVariable`](#ciprojectvariable) | The item at the end of the edge. |
 
 #### `CiRunnerConnection`
 
@@ -6347,29 +6439,6 @@ The edge type for [`CiStage`](#cistage).
 | ---- | ---- | ----------- |
 | <a id="cistageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cistageedgenode"></a>`node` | [`CiStage`](#cistage) | The item at the end of the edge. |
-
-#### `CiVariableConnection`
-
-The connection type for [`CiVariable`](#civariable).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="civariableconnectionedges"></a>`edges` | [`[CiVariableEdge]`](#civariableedge) | A list of edges. |
-| <a id="civariableconnectionnodes"></a>`nodes` | [`[CiVariable]`](#civariable) | A list of nodes. |
-| <a id="civariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `CiVariableEdge`
-
-The edge type for [`CiVariable`](#civariable).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="civariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="civariableedgenode"></a>`node` | [`CiVariable`](#civariable) | The item at the end of the edge. |
 
 #### `ClusterAgentActivityEventConnection`
 
@@ -9939,6 +10008,40 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cigroupname"></a>`name` | [`String`](#string) | Name of the job group. |
 | <a id="cigroupsize"></a>`size` | [`Int`](#int) | Size of the group. |
 
+### `CiGroupVariable`
+
+CI/CD variables for a group.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cigroupvariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
+| <a id="cigroupvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
+| <a id="cigroupvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="cigroupvariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
+| <a id="cigroupvariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
+| <a id="cigroupvariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
+| <a id="cigroupvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
+| <a id="cigroupvariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
+
+### `CiInstanceVariable`
+
+CI/CD variables for a GitLab instance.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinstancevariableenvironmentscope"></a>`environmentScope` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.3. No longer used, only available for GroupVariableType and ProjectVariableType. |
+| <a id="ciinstancevariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
+| <a id="ciinstancevariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="ciinstancevariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
+| <a id="ciinstancevariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
+| <a id="ciinstancevariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
+| <a id="ciinstancevariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
+| <a id="ciinstancevariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
+
 ### `CiJob`
 
 #### Fields
@@ -9960,7 +10063,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobid"></a>`id` | [`JobID`](#jobid) | ID of the job. |
 | <a id="cijobkind"></a>`kind` | [`CiJobKind!`](#cijobkind) | Indicates the type of job. |
 | <a id="cijobmanualjob"></a>`manualJob` | [`Boolean`](#boolean) | Whether the job has a manual action. |
-| <a id="cijobmanualvariables"></a>`manualVariables` | [`CiVariableConnection`](#civariableconnection) | Variables added to a manual job when the job is triggered. (see [Connections](#connections)) |
+| <a id="cijobmanualvariables"></a>`manualVariables` | [`CiManualVariableConnection`](#cimanualvariableconnection) | Variables added to a manual job when the job is triggered. (see [Connections](#connections)) |
 | <a id="cijobname"></a>`name` | [`String`](#string) | Name of the job. |
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. (see [Connections](#connections)) |
 | <a id="cijobpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline the job belongs to. |
@@ -10001,6 +10104,23 @@ Represents the total number of issues and their weights for a particular day.
 | ---- | ---- | ----------- |
 | <a id="cijobtokenscopetypeprojects"></a>`projects` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that can be accessed by CI Job tokens created by this project. (see [Connections](#connections)) |
 
+### `CiManualVariable`
+
+CI/CD variables given to a manual job.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cimanualvariableenvironmentscope"></a>`environmentScope` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.3. No longer used, only available for GroupVariableType and ProjectVariableType. |
+| <a id="cimanualvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
+| <a id="cimanualvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="cimanualvariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
+| <a id="cimanualvariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
+| <a id="cimanualvariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
+| <a id="cimanualvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
+| <a id="cimanualvariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
+
 ### `CiMinutesNamespaceMonthlyUsage`
 
 #### Fields
@@ -10022,6 +10142,23 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="ciminutesprojectmonthlyusageminutes"></a>`minutes` | [`Int`](#int) | Number of CI/CD minutes used by the project in the month. |
 | <a id="ciminutesprojectmonthlyusagename"></a>`name` | [`String`](#string) | Name of the project. |
 | <a id="ciminutesprojectmonthlyusagesharedrunnersduration"></a>`sharedRunnersDuration` | [`Int`](#int) | Total duration (in seconds) of shared runners use by the project for the month. |
+
+### `CiProjectVariable`
+
+CI/CD variables for a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciprojectvariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
+| <a id="ciprojectvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
+| <a id="ciprojectvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="ciprojectvariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
+| <a id="ciprojectvariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
+| <a id="ciprojectvariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
+| <a id="ciprojectvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
+| <a id="ciprojectvariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
 
 ### `CiRunner`
 
@@ -10135,21 +10272,6 @@ GitLab CI/CD configuration template.
 | ---- | ---- | ----------- |
 | <a id="citemplatecontent"></a>`content` | [`String!`](#string) | Contents of the CI template. |
 | <a id="citemplatename"></a>`name` | [`String!`](#string) | Name of the CI template. |
-
-### `CiVariable`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="civariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments in which the variable can be used. |
-| <a id="civariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
-| <a id="civariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
-| <a id="civariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
-| <a id="civariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
-| <a id="civariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
-| <a id="civariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
-| <a id="civariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
 
 ### `ClusterAgent`
 
@@ -11922,7 +12044,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
-| <a id="groupcivariables"></a>`ciVariables` | [`CiVariableConnection`](#civariableconnection) | List of the group's CI/CD variables. (see [Connections](#connections)) |
+| <a id="groupcivariables"></a>`ciVariables` | [`CiGroupVariableConnection`](#cigroupvariableconnection) | List of the group's CI/CD variables. (see [Connections](#connections)) |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | <a id="groupcrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
@@ -15236,7 +15358,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |
-| <a id="projectcivariables"></a>`ciVariables` | [`CiVariableConnection`](#civariableconnection) | List of the project's CI/CD variables. (see [Connections](#connections)) |
+| <a id="projectcivariables"></a>`ciVariables` | [`CiProjectVariableConnection`](#ciprojectvariableconnection) | List of the project's CI/CD variables. (see [Connections](#connections)) |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy of the project. |
@@ -21278,6 +21400,27 @@ Implementations:
 | <a id="alertmanagementintegrationtoken"></a>`token` | [`String`](#string) | Token used to authenticate alert notification requests. |
 | <a id="alertmanagementintegrationtype"></a>`type` | [`AlertManagementIntegrationType!`](#alertmanagementintegrationtype) | Type of integration. |
 | <a id="alertmanagementintegrationurl"></a>`url` | [`String`](#string) | Endpoint which accepts alert notifications. |
+
+#### `CiVariable`
+
+Implementations:
+
+- [`CiGroupVariable`](#cigroupvariable)
+- [`CiInstanceVariable`](#ciinstancevariable)
+- [`CiManualVariable`](#cimanualvariable)
+- [`CiProjectVariable`](#ciprojectvariable)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="civariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
+| <a id="civariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="civariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
+| <a id="civariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
+| <a id="civariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
+| <a id="civariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
+| <a id="civariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
 
 #### `CurrentUserTodos`
 

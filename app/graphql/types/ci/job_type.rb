@@ -70,7 +70,7 @@ module Types
             description: 'Downstream pipeline for a bridge.'
       field :manual_job, GraphQL::Types::Boolean, null: true,
             description: 'Whether the job has a manual action.'
-      field :manual_variables, VariableType.connection_type, null: true,
+      field :manual_variables, ManualVariableType.connection_type, null: true,
             description: 'Variables added to a manual job when the job is triggered.'
       field :playable, GraphQL::Types::Boolean, null: false, method: :playable?,
             description: 'Indicates the job can be played.'

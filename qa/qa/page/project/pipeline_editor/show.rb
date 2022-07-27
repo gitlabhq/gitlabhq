@@ -54,7 +54,12 @@ module QA
             element :file_tree_popover
           end
 
+          view 'app/assets/javascripts/pipeline_editor/components/validate/ci_validate.vue' do
+            element :simulate_pipeline_button
+          end
+
           def initialize
+            wait_for_requests(skip_finished_loading_check: true)
             dismiss_file_tree_popover if has_element?(:file_tree_popover)
 
             super
@@ -89,7 +94,7 @@ module QA
           end
 
           def submit_changes
-            Support::Waiter.wait_until { !find_element(:commit_changes_button).disabled? }
+            wait_until(reload: false) { !find_element(:commit_changes_button).disabled? }
             click_element(:commit_changes_button)
 
             wait_for_requests
@@ -115,12 +120,18 @@ module QA
             go_to_tab('Visualize')
           end
 
+          # TODO: Remove when FF :simulate_pipeline is removed
+          # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/364257
           def go_to_lint_tab
             go_to_tab('Lint')
           end
 
           def go_to_view_merged_yaml_tab
             go_to_tab('View merged YAML')
+          end
+
+          def go_to_validate_tab
+            go_to_tab('Validate')
           end
 
           def has_source_editor?
@@ -141,6 +152,12 @@ module QA
             end
           end
 
+          def tab_alert_title
+            within_element(:file_editor_container) do
+              find('.gl-alert-title').text
+            end
+          end
+
           def has_new_mr_checkbox?
             has_element?(:new_mr_checkbox, visible: true)
           end
@@ -151,6 +168,10 @@ module QA
 
           def select_new_mr_checkbox
             check_element(:new_mr_checkbox, true)
+          end
+
+          def simulate_pipeline
+            click_element(:simulate_pipeline_button)
           end
 
           private
