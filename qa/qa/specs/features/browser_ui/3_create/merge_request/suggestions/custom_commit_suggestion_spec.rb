@@ -52,7 +52,12 @@ module QA
 
           merge_request.click_commits_tab
 
-          expect(merge_request).to have_content(commit_message)
+          # Commit does not always display immediately and may require a page refresh
+          # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/368735
+          # TODO: Remove page refresh logic once issue is resolved.
+          Support::Retrier.retry_on_exception(max_attempts: 2, reload_page: merge_request) do
+            expect(merge_request).to have_content(commit_message)
+          end
         end
       end
     end

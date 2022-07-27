@@ -26595,6 +26595,9 @@ msgstr ""
 msgid "Notify|%{invite_email}, now known as %{user_name}, has accepted your invitation to join the %{target_name} %{target_model_name}."
 msgstr ""
 
+msgid "Notify|%{member_link} requested %{member_role} access to the %{target_source_link} %{target_type}."
+msgstr ""
+
 msgid "Notify|Assignee changed from %{fromNames} to %{toNames}"
 msgstr ""
 

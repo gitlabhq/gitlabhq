@@ -141,3 +141,7 @@ methods: {
 ```
 
 [View an example of such a component.](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/notes/components/sidebar_subscription.vue)
+
+## Merge request widgets
+
+Refer to the documentation specific to the [merge request widget extension framework](../merge_request_concepts/widget_extensions.md).

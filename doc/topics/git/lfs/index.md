@@ -50,7 +50,8 @@ repository with Git LFS. For example, if you want to upload a very large file an
 check it into your Git repository:
 
 ```shell
-git clone git@gitlab.example.com:group/project.git
+git clone git@gitlab.example.com:group/my-sample-project.git
+cd my-sample-project
 git lfs install                       # initialize the Git LFS project
 git lfs track "*.iso"                 # select the file extensions that you want to treat as large files
 ```
@@ -70,6 +71,8 @@ LFS doesn't work properly for people cloning the project:
 
 ```shell
 git add .gitattributes
+git commit -am "Added .gitattributes to capture LFS tracking"
+git push origin main
 ```
 
 Cloning the repository works the same as before. Git automatically detects the
@@ -78,7 +81,7 @@ command with a SSH URL, you have to enter your GitLab credentials for HTTP
 authentication.
 
 ```shell
-git clone git@gitlab.example.com:group/project.git
+git clone git@gitlab.example.com:group/my-sample-project.git
 ```
 
 If you already cloned the repository and you want to get the latest LFS object
@@ -214,7 +217,7 @@ This behavior is caused by Git LFS using HTTPS connections by default when a
 To prevent this from happening, set the LFS URL in project Git configuration:
 
 ```shell
-git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"
+git config --add lfs.url "http://gitlab.example.com/group/my-sample-project.git/info/lfs"
 ```
 
 ### Credentials are always required when pushing an object

@@ -17,8 +17,8 @@ Subscribe to the issue to follow its progress.
 
 Several mirroring methods exist:
 
-- [Push](push.md): for mirroring a GitLab repository to another location.
-- [Pull](pull.md): for mirroring a repository from another location to GitLab.
+- [Push](push.md): Mirror a repository from GitLab to another location.
+- [Pull](pull.md): Mirror a repository from another location to a GitLab Premium instance.
 - [Bidirectional](bidirectional.md) mirroring is also available, but can cause conflicts.
 
 Mirror a repository when:
