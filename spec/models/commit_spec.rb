@@ -226,27 +226,45 @@ RSpec.describe Commit do
   end
 
   describe '#committer' do
-    context 'with a confirmed e-mail' do
-      it 'returns the user' do
-        user = create(:user, email: commit.committer_email)
+    context "when committer_email is the user's primary email" do
+      context 'when the user email is confirmed' do
+        let!(:user) { create(:user, email: commit.committer_email) }
 
-        expect(commit.committer).to eq(user)
+        it 'returns the user' do
+          expect(commit.committer).to eq(user)
+          expect(commit.committer(confirmed: false)).to eq(user)
+        end
+      end
+
+      context 'when the user email is unconfirmed' do
+        let!(:user) { create(:user, :unconfirmed, email: commit.committer_email) }
+
+        it 'returns the user according to confirmed argument' do
+          expect(commit.committer).to be_nil
+          expect(commit.committer(confirmed: false)).to eq(user)
+        end
       end
     end
 
-    context 'with an unconfirmed e-mail' do
-      let(:user) { create(:user) }
+    context "when committer_email is the user's secondary email" do
+      let!(:user) { create(:user) }
 
-      before do
-        create(:email, user: user, email: commit.committer_email)
+      context 'when the user email is confirmed' do
+        let!(:email) { create(:email, :confirmed, user: user, email: commit.committer_email) }
+
+        it 'returns the user' do
+          expect(commit.committer).to eq(user)
+          expect(commit.committer(confirmed: false)).to eq(user)
+        end
       end
 
-      it 'returns no user' do
-        expect(commit.committer).to be_nil
-      end
+      context 'when the user email is unconfirmed' do
+        let!(:email) { create(:email, user: user, email: commit.committer_email) }
 
-      it 'returns the user' do
-        expect(commit.committer(confirmed: false)).to eq(user)
+        it 'does not return the user' do
+          expect(commit.committer).to be_nil
+          expect(commit.committer(confirmed: false)).to be_nil
+        end
       end
     end
   end

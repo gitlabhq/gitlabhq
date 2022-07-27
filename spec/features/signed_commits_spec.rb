@@ -61,7 +61,7 @@ RSpec.describe 'GPG signed commits' do
     let(:user_2) do
       create(:user, email: GpgHelpers::User2.emails.first, username: 'bette.cartwright', name: 'Bette Cartwright').tap do |user|
         # secondary, unverified email
-        create :email, user: user, email: GpgHelpers::User2.emails.last
+        create :email, user: user, email: 'mail@koffeinfrei.org'
       end
     end
 
@@ -83,10 +83,11 @@ RSpec.describe 'GPG signed commits' do
       end
     end
 
-    it 'unverified signature: user email does not match the committer email, but is the same user' do
+    it 'unverified signature: gpg key email does not match the committer_email but is the same user when the committer_email belongs to the user as a confirmed secondary email' do
       user_2_key
+      user_2.emails.find_by(email: 'mail@koffeinfrei.org').confirm
 
-      visit project_commit_path(project, GpgHelpers::DIFFERING_EMAIL_SHA)
+      visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
       wait_for_all_requests
 
       page.find('.gpg-status-box', text: 'Unverified').click
@@ -99,7 +100,7 @@ RSpec.describe 'GPG signed commits' do
       end
     end
 
-    it 'unverified signature: user email does not match the committer email' do
+    it 'unverified signature: gpg key email does not match the committer_email when the committer_email belongs to the user as a unconfirmed secondary email' do
       user_2_key
 
       visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
