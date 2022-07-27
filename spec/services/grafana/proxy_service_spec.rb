@@ -50,17 +50,47 @@ RSpec.describe Grafana::ProxyService do
   describe '#execute' do
     subject(:result) { service.execute }
 
-    context 'when grafana integration is not configured' do
-      before do
-        allow(project).to receive(:grafana_integration).and_return(nil)
-      end
-
-      it 'returns error' do
+    shared_examples 'missing proxy support' do
+      it 'returns API not supported error' do
         expect(result).to eq(
           status: :error,
           message: 'Proxy support for this API is not available currently'
         )
       end
+    end
+
+    context 'with unsupported proxy path' do
+      where(:proxy_path) do
+        %w[
+          /api/vl/query_range
+          api/vl/query_range/
+          api/vl/labels
+          api/v2/query_range
+          ../../../org/users
+        ]
+      end
+
+      with_them do
+        include_examples 'missing proxy support'
+      end
+    end
+
+    context 'with unsupported datasource_id' do
+      where(:datasource_id) do
+        ['', '-1', '1str', 'str1', '../../1', '1/../..', "1\n1"]
+      end
+
+      with_them do
+        include_examples 'missing proxy support'
+      end
+    end
+
+    context 'when grafana integration is not configured' do
+      before do
+        allow(project).to receive(:grafana_integration).and_return(nil)
+      end
+
+      include_examples 'missing proxy support'
     end
 
     context 'with caching', :use_clean_rails_memory_store_caching do
