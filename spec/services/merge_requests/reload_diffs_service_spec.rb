@@ -34,10 +34,7 @@ RSpec.describe MergeRequests::ReloadDiffsService, :use_clean_rails_memory_store_
 
     context 'cache clearing' do
       it 'clears the cache for older diffs on the merge request' do
-        redis = instance_double(Redis)
-        expect(Gitlab::Redis::Cache).to receive(:with).and_yield(redis)
-
-        expect(redis).to receive(:del).once
+        expect_any_instance_of(Redis).to receive(:del).once.and_call_original
         expect(Rails.cache).to receive(:delete).once.and_call_original
 
         subject.execute

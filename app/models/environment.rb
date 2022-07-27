@@ -58,8 +58,7 @@ class Environment < ApplicationRecord
             length: { maximum: 255 },
             allow_nil: true
 
-  validates :external_url, addressable_url: true, allow_nil: true, unless: :soft_validation_on_external_url_enabled?
-  validate :safe_external_url, if: :soft_validation_on_external_url_enabled?
+  validate :safe_external_url
 
   delegate :manual_actions, :other_manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
@@ -490,10 +489,6 @@ class Environment < ApplicationRecord
   end
 
   private
-
-  def soft_validation_on_external_url_enabled?
-    ::Feature.enabled?(:soft_validation_on_external_url, project)
-  end
 
   # We deliberately avoid using AddressableUrlValidator to allow users to update their environments even if they have
   # misconfigured `environment:url` keyword. The external URL is presented as a clickable link on UI and not consumed

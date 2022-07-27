@@ -133,9 +133,6 @@ export default {
       this.model = null;
     }
   },
-  helpHtmlConfig: {
-    ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented
-  },
 };
 </script>
 
@@ -147,7 +144,7 @@ export default {
     :state="valid"
   >
     <template v-if="!isCheckbox" #description>
-      <span v-safe-html:[$options.helpHtmlConfig]="help"></span>
+      <span v-safe-html="help"></span>
     </template>
 
     <template v-if="isCheckbox">
@@ -155,7 +152,7 @@ export default {
       <gl-form-checkbox :id="fieldId" v-model="model" :disabled="isInheriting">
         {{ checkboxLabel || humanizedTitle }}
         <template #help>
-          <span v-safe-html:[$options.helpHtmlConfig]="help"></span>
+          <span v-safe-html="help"></span>
         </template>
       </gl-form-checkbox>
     </template>

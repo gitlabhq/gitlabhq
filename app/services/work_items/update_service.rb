@@ -26,8 +26,8 @@ module WorkItems
 
     private
 
-    def update(work_item)
-      execute_widgets(work_item: work_item, callback: :update, widget_params: @widget_params)
+    def before_update(work_item, skip_spam_check: false)
+      execute_widgets(work_item: work_item, callback: :before_update_callback, widget_params: @widget_params)
 
       super
     end

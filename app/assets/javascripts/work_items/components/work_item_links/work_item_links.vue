@@ -43,6 +43,7 @@ export default {
         };
       },
       update(data) {
+        this.canUpdate = data.workItem.userPermissions.updateWorkItem;
         return (
           data.workItem.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.children
             .nodes ?? []
@@ -51,6 +52,9 @@ export default {
       skip() {
         return !this.issuableId;
       },
+      result({ data }) {
+        this.canUpdate = data.workItem.userPermissions.updateWorkItem;
+      },
     },
   },
   data() {
@@ -58,6 +62,7 @@ export default {
       isShownAddForm: false,
       isOpen: true,
       children: [],
+      canUpdate: false,
     };
   },
   computed: {
@@ -117,7 +122,7 @@ export default {
     >
       <h5 class="gl-m-0 gl-line-height-32 gl-flex-grow-1">{{ $options.i18n.title }}</h5>
       <gl-button
-        v-if="!isShownAddForm"
+        v-if="!isShownAddForm && canUpdate"
         category="secondary"
         data-testid="toggle-add-form"
         @click="toggleAddForm"
@@ -173,7 +178,12 @@ export default {
                 $options.WORK_ITEM_STATUS_TEXT[child.state]
               }}</span>
             </gl-badge>
-            <work-item-links-menu :work-item-id="child.id" :parent-work-item-id="issuableGid" />
+            <work-item-links-menu
+              v-if="canUpdate"
+              :work-item-id="child.id"
+              :parent-work-item-id="issuableGid"
+              data-testid="links-menu"
+            />
           </div>
         </div>
       </template>

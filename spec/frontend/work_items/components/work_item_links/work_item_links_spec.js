@@ -6,7 +6,11 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
-import { workItemHierarchyResponse, workItemHierarchyEmptyResponse } from '../../mock_data';
+import {
+  workItemHierarchyResponse,
+  workItemHierarchyEmptyResponse,
+  workItemHierarchyNoUpdatePermissionResponse,
+} from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -29,6 +33,7 @@ describe('WorkItemLinks', () => {
   const findEmptyState = () => wrapper.findByTestId('links-empty');
   const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
+  const findFirstLinksMenu = () => wrapper.findByTestId('links-menu');
 
   beforeEach(async () => {
     await createComponent();
@@ -82,5 +87,20 @@ describe('WorkItemLinks', () => {
 
     expect(children).toHaveLength(4);
     expect(children.at(0).findComponent(GlBadge).text()).toBe('Open');
+    expect(findFirstLinksMenu().exists()).toBe(true);
+  });
+
+  describe('when no permission to update', () => {
+    beforeEach(async () => {
+      await createComponent({ response: workItemHierarchyNoUpdatePermissionResponse });
+    });
+
+    it('does not display button to toggle Add form', () => {
+      expect(findToggleAddFormButton().exists()).toBe(false);
+    });
+
+    it('does not display link menu on children', () => {
+      expect(findFirstLinksMenu().exists()).toBe(false);
+    });
   });
 });

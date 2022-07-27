@@ -204,7 +204,7 @@ describe('DynamicField', () => {
         });
 
         expect(findGlFormGroup().find('small').html()).toContain(
-          '[<code>1</code>  <a>3</a> <a target="_blank" href="foo">4</a>]',
+          '[<code>1</code>  <a>3</a> <a href="foo">4</a>]',
         );
       });
     });

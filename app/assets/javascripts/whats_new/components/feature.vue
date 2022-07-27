@@ -30,7 +30,6 @@ export default {
       return dateInWords(date);
     },
   },
-  safeHtmlConfig: { ADD_ATTR: ['target'] },
 };
 </script>
 
@@ -76,10 +75,7 @@ export default {
         {{ packageName }}
       </gl-badge>
     </div>
-    <div
-      v-safe-html:[$options.safeHtmlConfig]="feature.body"
-      class="gl-pt-3 gl-line-height-20"
-    ></div>
+    <div v-safe-html="feature.body" class="gl-pt-3 gl-line-height-20"></div>
     <gl-button
       :href="feature.url"
       target="_blank"

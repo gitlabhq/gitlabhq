@@ -153,6 +153,11 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
           end
 
           it 'logs' do
+            allow(Gitlab::AppJsonLogger).to receive(:info).with(
+              hash_including(
+                "class" => "AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker"
+              )
+            )
             expect(Gitlab::AppJsonLogger).to receive(:info).with(
               message: 'Actor was :ci',
               project_id: project.id
@@ -745,6 +750,11 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
           it { expect { pull_access_check }.not_to raise_error }
 
           it 'logs' do
+            expect(Gitlab::AppJsonLogger).to receive(:info).with(
+              hash_including(
+                "class" => "AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker"
+              )
+            ).once
             expect(Gitlab::AppJsonLogger).to receive(:info).with(
               message: 'Actor was :ci',
               project_id: project.id

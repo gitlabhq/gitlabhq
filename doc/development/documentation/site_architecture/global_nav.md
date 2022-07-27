@@ -22,7 +22,7 @@ At the highest level, our global nav is workflow-based. Navigation needs to help
 The levels under each of the higher workflow-based topics are the names of features.
 For example:
 
-**Use GitLab** (_workflow_) **> Build your application** (_workflow_) **> CI/CD** (_feature_) **> Pipelines** (_feature)
+**Use GitLab** (_workflow_) **> Build your application** (_workflow_) **> CI/CD** (_feature_) **> Pipelines** (_feature_)
 
 ## Choose the right words for your navigation entry
 
@@ -39,20 +39,35 @@ as helpful as **Get started with runners**.
 
 ## Add a navigation entry
 
-All topics should be included in the left nav.
-
 To add a topic to the global nav, edit
 [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml)
 and add your item.
 
-All new pages need a navigation item. Without a navigation, the page becomes "orphaned." That
-is:
+Without a navigation entry:
 
-- The navigation shuts when the page is opened, and the reader loses their place.
-- The page doesn't belong in a group with other pages.
+- The navigation closes when the page is opened, and the reader loses their place.
+- The page isn't visible in a group with other pages.
 
-This means the decision to create a new page is a decision to create new navigation item and vice
-versa.
+### Pages you don't need to add
+
+Exclude these pages from the global nav:
+
+- Legal notices.
+- Pages in the `architecture/blueprints` directory.
+
+The following pages should probably be in the global nav, but the technical writers
+do not actively work to add them:
+
+- Pages in the `/development` directory.
+- Pages authored by the support team, which are under the `doc/administration/troubleshooting` directory.
+
+Sometimes pages for deprecated features are not in the global nav, depending on how long ago the feature was deprecated.
+
+All other pages should be in the global nav.
+
+The technical writing team runs a report to determine which pages are not in the nav.
+For now this report is manual, but [an issue exists](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/1212)
+to automate it.
 
 ### Where to add
 

@@ -5,17 +5,18 @@ module WorkItems
     class BaseService < ::BaseService
       WidgetError = Class.new(StandardError)
 
-      attr_reader :widget, :current_user
+      attr_reader :widget, :work_item, :current_user
 
       def initialize(widget:, current_user:)
         @widget = widget
+        @work_item = widget.work_item
         @current_user = current_user
       end
 
       private
 
-      def can_admin_work_item?
-        can?(current_user, :admin_work_item, widget.work_item)
+      def has_permission?(permission)
+        can?(current_user, permission, widget.work_item)
       end
     end
   end

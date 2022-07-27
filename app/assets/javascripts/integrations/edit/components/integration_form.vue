@@ -192,11 +192,7 @@ export default {
       this.integrationActive = integrationActive;
     },
   },
-  descriptionHtmlConfig: {
-    ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented
-  },
   helpHtmlConfig: {
-    ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented
     ADD_TAGS: ['use'], // to support icon SVGs
     FORBID_ATTR: [], // This is trusted input so we can override the default config to allow data-* attributes
   },
@@ -254,7 +250,7 @@ export default {
                 {{ $options.billingPlanNames[section.plan] }}
               </gl-badge>
             </h4>
-            <p v-safe-html:[$options.descriptionHtmlConfig]="section.description"></p>
+            <p v-safe-html="section.description"></p>
           </div>
 
           <div class="col-lg-8">

@@ -5,6 +5,9 @@ query workItemQuery($id: WorkItemID!) {
       id
     }
     title
+    userPermissions {
+      updateWorkItem
+    }
     widgets {
       type
       ... on WorkItemWidgetHierarchy {

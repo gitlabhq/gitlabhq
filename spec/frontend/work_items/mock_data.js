@@ -307,6 +307,9 @@ export const workItemHierarchyEmptyResponse = {
         __typename: 'WorkItemType',
       },
       title: 'New title',
+      userPermissions: {
+        updateWorkItem: false,
+      },
       widgets: [
         {
           type: 'DESCRIPTION',
@@ -327,6 +330,49 @@ export const workItemHierarchyEmptyResponse = {
   },
 };
 
+export const workItemHierarchyNoUpdatePermissionResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/1',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/6',
+        __typename: 'WorkItemType',
+      },
+      title: 'New title',
+      userPermissions: {
+        updateWorkItem: false,
+      },
+      widgets: [
+        {
+          type: 'DESCRIPTION',
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          type: 'HIERARCHY',
+          parent: null,
+          children: {
+            nodes: [
+              {
+                id: 'gid://gitlab/WorkItem/2',
+                workItemType: {
+                  id: 'gid://gitlab/WorkItems::Type/5',
+                  __typename: 'WorkItemType',
+                },
+                title: 'xyz',
+                state: 'OPEN',
+                __typename: 'WorkItem',
+              },
+            ],
+            __typename: 'WorkItemConnection',
+          },
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
+  },
+};
+
 export const workItemHierarchyResponse = {
   data: {
     workItem: {
@@ -336,6 +382,9 @@ export const workItemHierarchyResponse = {
         __typename: 'WorkItemType',
       },
       title: 'New title',
+      userPermissions: {
+        updateWorkItem: true,
+      },
       widgets: [
         {
           type: 'DESCRIPTION',

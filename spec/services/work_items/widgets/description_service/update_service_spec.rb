@@ -3,32 +3,102 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be_with_reload(:work_item) { create(:work_item, project: project, description: 'old description') }
+  let_it_be(:random_user) { create(:user) }
+  let_it_be(:author) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+
+  let(:params) { { description: 'updated description' } }
+  let(:current_user) { author }
+  let(:work_item) do
+    create(:work_item, author: author, project: project, description: 'old description',
+      last_edited_at: Date.yesterday, last_edited_by: random_user
+    )
+  end
 
   let(:widget) { work_item.widgets.find {|widget| widget.is_a?(WorkItems::Widgets::Description) } }
 
   describe '#update' do
-    subject { described_class.new(widget: widget, current_user: user).update(params: params) } # rubocop:disable Rails/SaveBang
+    subject { described_class.new(widget: widget, current_user: current_user).before_update_callback(params: params) }
 
-    context 'when description param is present' do
-      let(:params) { { description: 'updated description' } }
-
+    shared_examples 'sets work item description' do
       it 'correctly sets work item description value' do
         subject
 
-        expect(work_item.description).to eq('updated description')
+        expect(work_item.description).to eq(params[:description])
+        expect(work_item.last_edited_by).to eq(current_user)
+        expect(work_item.last_edited_at).to be_within(2.seconds).of(Time.current)
       end
     end
 
-    context 'when description param is not present' do
-      let(:params) { {} }
-
+    shared_examples 'does not set work item description' do
       it 'does not change work item description value' do
         subject
 
         expect(work_item.description).to eq('old description')
+        expect(work_item.last_edited_by).to eq(random_user)
+        expect(work_item.last_edited_at).to eq(Date.yesterday)
+      end
+    end
+
+    context 'when user has permission to update description' do
+      context 'when user is work item author' do
+        let(:current_user) { author }
+
+        it_behaves_like 'sets work item description'
+      end
+
+      context 'when user is a project reporter' do
+        let(:current_user) { reporter }
+
+        before do
+          project.add_reporter(reporter)
+        end
+
+        it_behaves_like 'sets work item description'
+      end
+
+      context 'when description is nil' do
+        let(:current_user) { author }
+        let(:params) { { description: nil } }
+
+        it_behaves_like 'sets work item description'
+      end
+
+      context 'when description is empty' do
+        let(:current_user) { author }
+        let(:params) { { description: '' } }
+
+        it_behaves_like 'sets work item description'
+      end
+
+      context 'when description param is not present' do
+        let(:params) { {} }
+
+        it_behaves_like 'does not set work item description'
+      end
+    end
+
+    context 'when user does not have permission to update description' do
+      context 'when user is a project guest' do
+        let(:current_user) { guest }
+
+        before do
+          project.add_guest(guest)
+        end
+
+        it_behaves_like 'does not set work item description'
+      end
+
+      context 'with private project' do
+        let_it_be(:project) { create(:project) }
+
+        context 'when user is work item author' do
+          let(:current_user) { author }
+
+          it_behaves_like 'does not set work item description'
+        end
       end
     end
   end

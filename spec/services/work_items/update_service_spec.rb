@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::UpdateService do
   let_it_be(:developer) { create(:user) }
-  let_it_be(:project) { create(:project).tap { |proj| proj.add_developer(developer) } }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:parent) { create(:work_item, project: project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project, assignees: [developer]) }
 
@@ -12,6 +13,11 @@ RSpec.describe WorkItems::UpdateService do
   let(:widget_params) { {} }
   let(:opts) { {} }
   let(:current_user) { developer }
+
+  before do
+    project.add_developer(developer)
+    project.add_guest(guest)
+  end
 
   describe '#execute' do
     let(:service) do
@@ -102,7 +108,7 @@ RSpec.describe WorkItems::UpdateService do
 
       let(:supported_widgets) do
         [
-          { klass: WorkItems::Widgets::DescriptionService::UpdateService, callback: :update, params: { description: 'foo' } },
+          { klass: WorkItems::Widgets::DescriptionService::UpdateService, callback: :before_update_callback, params: { description: 'foo' } },
           { klass: WorkItems::Widgets::HierarchyService::UpdateService, callback: :before_update_in_transaction, params: { parent: parent } }
         ]
       end
@@ -126,7 +132,7 @@ RSpec.describe WorkItems::UpdateService do
         before do
           allow_next_instance_of(widget_service_class) do |instance|
             allow(instance)
-              .to receive(:update)
+              .to receive(:before_update_callback)
               .with(params: { description: 'changed' }).and_return(nil)
           end
         end
@@ -141,6 +147,28 @@ RSpec.describe WorkItems::UpdateService do
           update_work_item
 
           expect(work_item.description).to eq('changed')
+        end
+
+        context 'with mentions', :mailer, :sidekiq_might_not_need_inline do
+          shared_examples 'creates the todo and sends email' do |attribute|
+            it 'creates a todo and sends email' do
+              expect { perform_enqueued_jobs { update_work_item } }.to change(Todo, :count).by(1)
+              expect(work_item.reload.attributes[attribute.to_s]).to eq("mention #{guest.to_reference}")
+              should_email(guest)
+            end
+          end
+
+          context 'when description contains a user mention' do
+            let(:widget_params) { { description_widget: { description: "mention #{guest.to_reference}" } } }
+
+            it_behaves_like 'creates the todo and sends email', :description
+          end
+
+          context 'when title contains a user mention' do
+            let(:opts) { { title: "mention #{guest.to_reference}" } }
+
+            it_behaves_like 'creates the todo and sends email', :title
+          end
         end
 
         context 'when work item validation fails' do
