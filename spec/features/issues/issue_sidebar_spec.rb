@@ -182,7 +182,7 @@ RSpec.describe 'Issue Sidebar' do
 
             page.within '.dropdown-menu-user' do
               expect(page).not_to have_content 'Unassigned'
-              click_link user2.name
+              click_button user2.name
             end
 
             find('.participants').click

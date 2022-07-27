@@ -285,7 +285,7 @@ RSpec.describe "Issues > User edits issue", :js do
               end
 
               page.within '.dropdown-menu-user' do
-                click_link user.name
+                click_button user.name
               end
 
               page.within('.assignee') do
@@ -306,7 +306,7 @@ RSpec.describe "Issues > User edits issue", :js do
 
                 click_button('Edit')
                 wait_for_requests
-                click_link user.name
+                click_button user.name
 
                 find('[data-testid="title"]').click
                 wait_for_requests

@@ -555,18 +555,22 @@ describe('URL utility', () => {
 
   describe('relativePathToAbsolute', () => {
     it.each`
-      path                       | base                                  | result
-      ${'./foo'}                 | ${'bar/'}                             | ${'/bar/foo'}
-      ${'../john.md'}            | ${'bar/baz/foo.php'}                  | ${'/bar/john.md'}
-      ${'../images/img.png'}     | ${'bar/baz/foo.php'}                  | ${'/bar/images/img.png'}
-      ${'../images/Image 1.png'} | ${'bar/baz/foo.php'}                  | ${'/bar/images/Image 1.png'}
-      ${'/images/img.png'}       | ${'bar/baz/foo.php'}                  | ${'/images/img.png'}
-      ${'/images/img.png'}       | ${'/bar/baz/foo.php'}                 | ${'/images/img.png'}
-      ${'../john.md'}            | ${'/bar/baz/foo.php'}                 | ${'/bar/john.md'}
-      ${'../john.md'}            | ${'///bar/baz/foo.php'}               | ${'/bar/john.md'}
-      ${'/images/img.png'}       | ${'https://gitlab.com/user/project/'} | ${'https://gitlab.com/images/img.png'}
-      ${'../images/img.png'}     | ${'https://gitlab.com/user/project/'} | ${'https://gitlab.com/user/images/img.png'}
-      ${'../images/Image 1.png'} | ${'https://gitlab.com/user/project/'} | ${'https://gitlab.com/user/images/Image%201.png'}
+      path                       | base                                     | result
+      ${'./foo'}                 | ${'bar/'}                                | ${'/bar/foo'}
+      ${'../john.md'}            | ${'bar/baz/foo.php'}                     | ${'/bar/john.md'}
+      ${'../images/img.png'}     | ${'bar/baz/foo.php'}                     | ${'/bar/images/img.png'}
+      ${'../images/Image 1.png'} | ${'bar/baz/foo.php'}                     | ${'/bar/images/Image 1.png'}
+      ${'/images/img.png'}       | ${'bar/baz/foo.php'}                     | ${'/images/img.png'}
+      ${'/images/img.png'}       | ${'bar/baz//foo.php'}                    | ${'/images/img.png'}
+      ${'/images//img.png'}      | ${'bar/baz/foo.php'}                     | ${'/images/img.png'}
+      ${'/images/img.png'}       | ${'/bar/baz/foo.php'}                    | ${'/images/img.png'}
+      ${'../john.md'}            | ${'/bar/baz/foo.php'}                    | ${'/bar/john.md'}
+      ${'../john.md'}            | ${'///bar/baz/foo.php'}                  | ${'/bar/john.md'}
+      ${'/images/img.png'}       | ${'https://gitlab.com/user/project/'}    | ${'https://gitlab.com/images/img.png'}
+      ${'/images/img.png'}       | ${'https://gitlab.com////user/project/'} | ${'https://gitlab.com/images/img.png'}
+      ${'/images////img.png'}    | ${'https://gitlab.com/user/project/'}    | ${'https://gitlab.com/images/img.png'}
+      ${'../images/img.png'}     | ${'https://gitlab.com/user/project/'}    | ${'https://gitlab.com/user/images/img.png'}
+      ${'../images/Image 1.png'} | ${'https://gitlab.com/user/project/'}    | ${'https://gitlab.com/user/images/Image%201.png'}
     `(
       'converts relative path "$path" with base "$base" to absolute path => "expected"',
       ({ path, base, result }) => {

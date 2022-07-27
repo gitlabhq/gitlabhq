@@ -1,7 +1,8 @@
 <script>
-import { GlDatepicker, GlFormInput, GlFormGroup } from '@gitlab/ui';
+import { GlDatepicker, GlFormGroup } from '@gitlab/ui';
 
 import { __ } from '~/locale';
+import { getDateInFuture } from '~/lib/utils/datetime_utility';
 
 export default {
   name: 'ExpiresAtField',
@@ -10,7 +11,6 @@ export default {
   },
   components: {
     GlDatepicker,
-    GlFormInput,
     GlFormGroup,
     MaxExpirationDateMessage: () =>
       import('ee_component/access_tokens/components/max_expiration_date_message.vue'),
@@ -32,20 +32,28 @@ export default {
       default: () => null,
     },
   },
+  computed: {
+    in30Days() {
+      const today = new Date();
+      return getDateInFuture(today, 30);
+    },
+  },
 };
 </script>
 
 <template>
   <gl-form-group :label="$options.i18n.label" :label-for="inputAttrs.id">
-    <gl-datepicker :target="null" :min-date="minDate" :max-date="maxDate">
-      <gl-form-input
-        v-bind="inputAttrs"
-        class="datepicker gl-datepicker-input"
-        autocomplete="off"
-        inputmode="none"
-        data-qa-selector="expiry_date_field"
-      />
-    </gl-datepicker>
+    <gl-datepicker
+      :target="null"
+      :min-date="minDate"
+      :max-date="maxDate"
+      :default-date="in30Days"
+      show-clear-button
+      :input-name="inputAttrs.name"
+      :input-id="inputAttrs.id"
+      :placeholder="inputAttrs.placeholder"
+      data-qa-selector="expiry_date_field"
+    />
     <template #description>
       <max-expiration-date-message :max-date="maxDate" />
     </template>

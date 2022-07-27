@@ -748,6 +748,9 @@ msgstr ""
 msgid "%{labelStart}Namespace:%{labelEnd} %{namespace}"
 msgstr ""
 
+msgid "%{labelStart}Project:%{labelEnd} %{project}"
+msgstr ""
+
 msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
 msgstr ""
 

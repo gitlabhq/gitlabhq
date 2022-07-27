@@ -397,6 +397,7 @@ export function relativePathToAbsolute(path, basePath) {
   const absolute = isAbsolute(basePath);
   const base = absolute ? basePath : `file:///${basePath}`;
   const url = new URL(path, base);
+  url.pathname = url.pathname.replace(/\/\/+/g, '/');
   return absolute ? url.href : decodeURIComponent(url.pathname);
 }
 

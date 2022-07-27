@@ -509,11 +509,9 @@ your own suggestions to the merge request. Note that:
     has more than one commit, then see the note below about rewriting
     commit history.
 
-As a maintainer, if a merge request that you authored has received all required approvals, it is acceptable to show a [bias for action](https://about.gitlab.com/handbook/values/#bias-for-action) and merge your own MR, if:
-
-- The last maintainer to review intended to start the merge and did not, OR
-- The last maintainer to review started the merge, but some trivial chore caused the pipeline to break. For example, the MR might need a rebase first because of unrelated pipeline issues, or some files might need to be regenerated (like `gitlab.pot`).
-  - "Trivial" is a subjective measure but we expect project maintainers to exercise their judgement carefully and cautiously.
+Authors are not authorized to merge their own merge requests and need to seek another maintainer to merge.
+This policy is in place to satisfy the CHG-04 control of the GitLab
+[Change Management Controls](https://about.gitlab.com/handbook/engineering/security/security-assurance/security-compliance/guidance/change-management.html).
 
 When ready to merge:
 

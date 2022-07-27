@@ -1,5 +1,5 @@
 import { GlEmptyState, GlBadge, GlTabs, GlTab } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -303,6 +303,8 @@ describe('PackagesApp', () => {
     });
 
     describe('deleting a file', () => {
+      let showDeleteFileSpy;
+      let showDeletePackageSpy;
       const [fileToDelete] = packageFiles();
 
       const doDeleteFile = () => {
@@ -313,16 +315,48 @@ describe('PackagesApp', () => {
         return waitForPromises();
       };
 
-      it('opens a confirmation modal', async () => {
+      it('opens delete file confirmation modal', async () => {
         createComponent();
 
         await waitForPromises();
 
+        expect(findDeleteFileModal().exists()).toBe(true);
+
+        showDeleteFileSpy = jest.spyOn(wrapper.vm.$refs.deleteFileModal, 'show');
+        showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
+
         findPackageFiles().vm.$emit('delete-file', fileToDelete);
 
-        await nextTick();
+        expect(showDeletePackageSpy).not.toBeCalled();
+        expect(showDeleteFileSpy).toBeCalled();
+      });
 
-        expect(findDeleteFileModal().exists()).toBe(true);
+      it('when its the only file opens delete package confirmation modal', async () => {
+        const [packageFile] = packageFiles();
+        const resolver = jest.fn().mockResolvedValue(
+          packageDetailsQuery({
+            packageFiles: {
+              nodes: [packageFile],
+              __typename: 'PackageFileConnection',
+            },
+          }),
+        );
+
+        createComponent({
+          resolver,
+        });
+
+        await waitForPromises();
+
+        expect(findDeleteModal().exists()).toBe(true);
+
+        showDeleteFileSpy = jest.spyOn(wrapper.vm.$refs.deleteFileModal, 'show');
+        showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
+
+        findPackageFiles().vm.$emit('delete-file', fileToDelete);
+
+        expect(showDeletePackageSpy).toBeCalled();
+        expect(showDeleteFileSpy).not.toBeCalled();
       });
 
       it('confirming on the modal deletes the file and shows a success message', async () => {

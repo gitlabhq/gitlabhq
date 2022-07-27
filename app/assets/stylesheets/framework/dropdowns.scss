@@ -477,6 +477,12 @@
     height: 2 * $gl-padding;
     margin: 0 10px 0 0;
   }
+
+  .sidebar-participant {
+    .merge-icon {
+      top: calc(50% + 5px);
+    }
+  }
 }
 
 .dropdown-menu-user-full-name {

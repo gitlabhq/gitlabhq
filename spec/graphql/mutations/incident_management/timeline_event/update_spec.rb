@@ -57,17 +57,40 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update do
         end
 
         context 'when there is a validation error' do
-          let(:occurred_at) { 'invalid date' }
+          context 'when note is blank' do
+            let(:note) { '' }
 
-          it 'does not update the timeline event' do
-            expect { resolve }.not_to change { timeline_event.reload.updated_at }
+            it 'does not update the timeline event' do
+              expect { resolve }.not_to change { timeline_event.reload.updated_at }
+            end
+
+            it 'responds with error' do
+              expect(resolve).to eq(timeline_event: nil, errors: ["Note can't be blank"])
+            end
           end
 
-          it 'responds with error' do
-            expect(resolve).to eq(
-              timeline_event: nil,
-              errors: ["Occurred at can't be blank"]
-            )
+          context 'when occurred_at is blank' do
+            let(:occurred_at) { '' }
+
+            it 'does not update the timeline event' do
+              expect { resolve }.not_to change { timeline_event.reload.updated_at }
+            end
+
+            it 'responds with error' do
+              expect(resolve).to eq(timeline_event: nil, errors: ["Occurred at can't be blank"])
+            end
+          end
+
+          context 'when occurred_at is invalid' do
+            let(:occurred_at) { 'invalid date' }
+
+            it 'does not update the timeline event' do
+              expect { resolve }.not_to change { timeline_event.reload.updated_at }
+            end
+
+            it 'responds with error' do
+              expect(resolve).to eq(timeline_event: nil, errors: ["Occurred at can't be blank"])
+            end
           end
         end
       end

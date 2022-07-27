@@ -19098,7 +19098,6 @@ Values for sorting runners.
 | <a id="cirunnerupgradestatustypeinvalid"></a>`INVALID` | Runner version is not valid. |
 | <a id="cirunnerupgradestatustypenot_available"></a>`NOT_AVAILABLE` | Upgrade is not available for the runner. |
 | <a id="cirunnerupgradestatustyperecommended"></a>`RECOMMENDED` | Upgrade is available and recommended for the runner. |
-| <a id="cirunnerupgradestatustypeunknown"></a>`UNKNOWN` | Upgrade status is unknown. |
 
 ### `CiVariableType`
 

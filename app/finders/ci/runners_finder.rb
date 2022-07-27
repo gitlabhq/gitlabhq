@@ -69,10 +69,15 @@ module Ci
     end
 
     def filter_by_upgrade_status!
-      return unless @params.key?(:upgrade_status)
-      return unless Ci::RunnerVersion.statuses.key?(@params[:upgrade_status])
+      upgrade_status = @params[:upgrade_status]
 
-      @runners = @runners.with_upgrade_status(@params[:upgrade_status])
+      return unless upgrade_status
+
+      unless Ci::RunnerVersion.statuses.key?(upgrade_status)
+        raise ArgumentError, "Invalid upgrade status value '#{upgrade_status}'"
+      end
+
+      @runners = @runners.with_upgrade_status(upgrade_status)
     end
 
     def filter_by_runner_type!

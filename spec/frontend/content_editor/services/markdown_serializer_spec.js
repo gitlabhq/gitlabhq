@@ -1195,7 +1195,7 @@ Oranges are orange [^1]
     ${'link'}     | ${'link <https://www.gitlab.com>'}         | ${'modified link <https://www.gitlab.com>'}                                   | ${prependContentEditAction}
     ${'link'}     | ${'link [https://www.gitlab.com>'}         | ${'modified link \\[https://www.gitlab.com>'}                                 | ${prependContentEditAction}
     ${'link'}     | ${'link <https://www.gitlab.com'}          | ${'modified link <https://www.gitlab.com'}                                    | ${prependContentEditAction}
-    ${'link'}     | ${'link https://www.gitlab.com>'}          | ${'modified link https://www.gitlab.com>'}                                    | ${prependContentEditAction}
+    ${'link'}     | ${'link https://www.gitlab.com>'}          | ${'modified link [https://www.gitlab.com>](https://www.gitlab.com%3E)'}       | ${prependContentEditAction}
     ${'link'}     | ${'link **https://www.gitlab.com]**'}      | ${'modified link [**https://www.gitlab.com\\]**](https://www.gitlab.com%5D)'} | ${prependContentEditAction}
     ${'code'}     | ${'`code`'}                                | ${'`code modified`'}                                                          | ${defaultEditAction}
     ${'code'}     | ${'<code>code</code>'}                     | ${'<code>code modified</code>'}                                               | ${defaultEditAction}

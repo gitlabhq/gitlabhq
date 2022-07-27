@@ -208,8 +208,12 @@ export default {
     },
     handleFileDelete(file) {
       this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
-      this.fileToDelete = { ...file };
-      this.$refs.deleteFileModal.show();
+      if (this.packageFiles.length === 1) {
+        this.$refs.deleteModal.show();
+      } else {
+        this.fileToDelete = { ...file };
+        this.$refs.deleteFileModal.show();
+      }
     },
     confirmFileDelete() {
       this.track(DELETE_PACKAGE_FILE_TRACKING_ACTION);

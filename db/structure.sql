@@ -16996,6 +16996,24 @@ CREATE SEQUENCE loose_foreign_keys_deleted_records_id_seq
 
 ALTER SEQUENCE loose_foreign_keys_deleted_records_id_seq OWNED BY loose_foreign_keys_deleted_records.id;
 
+CREATE TABLE member_roles (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    base_access_level integer NOT NULL,
+    download_code boolean DEFAULT false
+);
+
+CREATE SEQUENCE member_roles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE member_roles_id_seq OWNED BY member_roles.id;
+
 CREATE TABLE member_tasks (
     id bigint NOT NULL,
     member_id bigint NOT NULL,
@@ -17034,7 +17052,8 @@ CREATE TABLE members (
     override boolean DEFAULT false NOT NULL,
     state smallint DEFAULT 0,
     invite_email_success boolean DEFAULT true NOT NULL,
-    member_namespace_id bigint
+    member_namespace_id bigint,
+    member_role_id bigint
 );
 
 CREATE SEQUENCE members_id_seq
@@ -23285,6 +23304,8 @@ ALTER TABLE ONLY lists ALTER COLUMN id SET DEFAULT nextval('lists_id_seq'::regcl
 
 ALTER TABLE ONLY loose_foreign_keys_deleted_records ALTER COLUMN id SET DEFAULT nextval('loose_foreign_keys_deleted_records_id_seq'::regclass);
 
+ALTER TABLE ONLY member_roles ALTER COLUMN id SET DEFAULT nextval('member_roles_id_seq'::regclass);
+
 ALTER TABLE ONLY member_tasks ALTER COLUMN id SET DEFAULT nextval('member_tasks_id_seq'::regclass);
 
 ALTER TABLE ONLY members ALTER COLUMN id SET DEFAULT nextval('members_id_seq'::regclass);
@@ -25259,6 +25280,9 @@ ALTER TABLE ONLY lists
 
 ALTER TABLE ONLY loose_foreign_keys_deleted_records
     ADD CONSTRAINT loose_foreign_keys_deleted_records_pkey PRIMARY KEY (partition, id);
+
+ALTER TABLE ONLY member_roles
+    ADD CONSTRAINT member_roles_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY member_tasks
     ADD CONSTRAINT member_tasks_pkey PRIMARY KEY (id);
@@ -28695,6 +28719,8 @@ CREATE INDEX index_lists_on_user_id ON lists USING btree (user_id);
 
 CREATE INDEX index_loose_foreign_keys_deleted_records_for_partitioned_query ON ONLY loose_foreign_keys_deleted_records USING btree (partition, fully_qualified_table_name, consume_after, id) WHERE (status = 1);
 
+CREATE INDEX index_member_roles_on_namespace_id ON member_roles USING btree (namespace_id);
+
 CREATE INDEX index_member_tasks_on_member_id ON member_tasks USING btree (member_id);
 
 CREATE UNIQUE INDEX index_member_tasks_on_member_id_and_project_id ON member_tasks USING btree (member_id, project_id);
@@ -28710,6 +28736,8 @@ CREATE INDEX index_members_on_invite_email ON members USING btree (invite_email)
 CREATE UNIQUE INDEX index_members_on_invite_token ON members USING btree (invite_token);
 
 CREATE INDEX index_members_on_member_namespace_id ON members USING btree (member_namespace_id);
+
+CREATE INDEX index_members_on_member_role_id ON members USING btree (member_role_id);
 
 CREATE INDEX index_members_on_non_requested_non_invited_and_state_awaiting ON members USING btree (source_id) WHERE ((requested_at IS NULL) AND (invite_token IS NULL) AND (access_level > 5) AND (state = 1));
 
@@ -31996,6 +32024,9 @@ ALTER TABLE ONLY dast_scanner_profiles_builds
 ALTER TABLE ONLY issue_assignees
     ADD CONSTRAINT fk_5e0c8d9154 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY members
+    ADD CONSTRAINT fk_5e12d50db3 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY csv_issue_imports
     ADD CONSTRAINT fk_5e1572387c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -33897,6 +33928,9 @@ ALTER TABLE ONLY resource_milestone_events
 
 ALTER TABLE ONLY resource_iteration_events
     ADD CONSTRAINT fk_rails_cee126f66c FOREIGN KEY (iteration_id) REFERENCES sprints(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY member_roles
+    ADD CONSTRAINT fk_rails_cf0ee35814 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY upload_states
     ADD CONSTRAINT fk_rails_d00f153613 FOREIGN KEY (upload_id) REFERENCES uploads(id) ON DELETE CASCADE;

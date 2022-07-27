@@ -8,7 +8,6 @@ module Ci
     enum_with_nil status: {
       not_processed: nil,
       invalid_version: -1,
-      unknown: 0,
       not_available: 1,
       available: 2,
       recommended: 3
@@ -16,7 +15,6 @@ module Ci
 
     STATUS_DESCRIPTIONS = {
       invalid_version: 'Runner version is not valid.',
-      unknown: 'Upgrade status is unknown.',
       not_available: 'Upgrade is not available for the runner.',
       available: 'Upgrade is available for the runner.',
       recommended: 'Upgrade is available and recommended for the runner.'
@@ -27,7 +25,7 @@ module Ci
 
     # This scope returns all versions that might need recalculating. For instance, once a version is considered
     # :recommended, it normally doesn't change status even if the instance is upgraded
-    scope :potentially_outdated, -> { where(status: [nil, :not_available, :available, :unknown]) }
+    scope :potentially_outdated, -> { where(status: [nil, :not_available, :available]) }
 
     validates :version, length: { maximum: 2048 }
   end

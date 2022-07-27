@@ -51,6 +51,9 @@ export default {
       }
       return null;
     },
+    tagList() {
+      return this.runner.tagList || [];
+    },
     isGroupRunner() {
       return this.runner?.runnerType === GROUP_TYPE;
     },
@@ -66,14 +69,17 @@ export default {
   <div>
     <runner-upgrade-status-alert class="gl-my-4" :runner="runner" />
     <div class="gl-pt-4">
-      <dl class="gl-mb-0" data-testid="runner-details-list">
+      <dl
+        class="gl-mb-0 gl-display-grid runner-details-grid-template"
+        data-testid="runner-details-list"
+      >
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
         <runner-detail
           :label="s__('Runners|Last contact')"
           :empty-value="s__('Runners|Never contacted')"
         >
-          <template #value>
-            <time-ago v-if="runner.contactedAt" :time="runner.contactedAt" />
+          <template v-if="runner.contactedAt" #value>
+            <time-ago :time="runner.contactedAt" />
           </template>
         </runner-detail>
         <runner-detail :label="s__('Runners|Version')">
@@ -87,8 +93,8 @@ export default {
         <runner-detail :label="s__('Runners|Architecture')" :value="runner.architectureName" />
         <runner-detail :label="s__('Runners|Platform')" :value="runner.platformName" />
         <runner-detail :label="s__('Runners|Configuration')">
-          <template #value>
-            <gl-intersperse v-if="configTextProtected || configTextUntagged">
+          <template v-if="configTextProtected || configTextUntagged" #value>
+            <gl-intersperse>
               <span v-if="configTextProtected">{{ configTextProtected }}</span>
               <span v-if="configTextUntagged">{{ configTextUntagged }}</span>
             </gl-intersperse>
@@ -96,13 +102,8 @@ export default {
         </runner-detail>
         <runner-detail :label="s__('Runners|Maximum job timeout')" :value="maximumTimeout" />
         <runner-detail :label="s__('Runners|Tags')">
-          <template #value>
-            <runner-tags
-              v-if="runner.tagList && runner.tagList.length"
-              class="gl-vertical-align-middle"
-              :tag-list="runner.tagList"
-              size="sm"
-            />
+          <template v-if="tagList.length" #value>
+            <runner-tags class="gl-vertical-align-middle" :tag-list="tagList" size="sm" />
           </template>
         </runner-detail>
 

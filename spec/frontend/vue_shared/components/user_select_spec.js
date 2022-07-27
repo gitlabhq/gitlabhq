@@ -4,11 +4,13 @@ import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stripTypenames } from 'helpers/graphql_helpers';
 import waitForPromises from 'helpers/wait_for_promises';
 import searchUsersQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import searchUsersQueryOnMR from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
 import { IssuableType } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import getIssueParticipantsQuery from '~/vue_shared/components/sidebar/queries/get_issue_participants.query.graphql';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import {
@@ -16,6 +18,8 @@ import {
   searchResponseOnMR,
   projectMembersResponse,
   participantsQueryResponse,
+  mockUser1,
+  mockUser2,
 } from 'jest/sidebar/mock_data';
 
 const assignee = {
@@ -45,9 +49,14 @@ describe('User select dropdown', () => {
   const findSearchField = () => wrapper.findComponent(GlSearchBoxByType);
   const findParticipantsLoading = () => wrapper.find('[data-testid="loading-participants"]');
   const findSelectedParticipants = () => wrapper.findAll('[data-testid="selected-participant"]');
+  const findSelectedParticipantByIndex = (index) =>
+    findSelectedParticipants().at(index).findComponent(SidebarParticipant);
   const findUnselectedParticipants = () =>
     wrapper.findAll('[data-testid="unselected-participant"]');
+  const findUnselectedParticipantByIndex = (index) =>
+    findUnselectedParticipants().at(index).findComponent(SidebarParticipant);
   const findCurrentUser = () => wrapper.findAll('[data-testid="current-user"]');
+  const findIssuableAuthor = () => wrapper.findAll('[data-testid="issuable-author"]');
   const findUnassignLink = () => wrapper.find('[data-testid="unassign"]');
   const findEmptySearchResults = () => wrapper.find('[data-testid="empty-results"]');
 
@@ -134,6 +143,97 @@ describe('User select dropdown', () => {
     await waitForPromises();
 
     expect(findCurrentUser().exists()).toBe(true);
+  });
+
+  it('does not render current user if user is not logged in', async () => {
+    createComponent({
+      props: {
+        currentUser: {},
+      },
+    });
+    await waitForPromises();
+
+    expect(findCurrentUser().exists()).toBe(false);
+  });
+
+  it('does not render issuable author if author is not passed as a prop', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findIssuableAuthor().exists()).toBe(false);
+  });
+
+  describe('when issuable author is passed as a prop', () => {
+    it('moves issuable author on top of assigned list, if author is assigned', async () => {
+      createComponent({
+        props: {
+          value: [assignee, mockUser2],
+          issuableAuthor: mockUser2,
+        },
+      });
+      await waitForPromises();
+
+      expect(findSelectedParticipantByIndex(0).props('user')).toEqual(mockUser2);
+    });
+
+    it('moves issuable author on top of assigned list after current user, if author and current user are assigned', async () => {
+      const currentUser = mockUser1;
+      const issuableAuthor = mockUser2;
+
+      createComponent({
+        props: {
+          value: [assignee, issuableAuthor, currentUser],
+          issuableAuthor,
+          currentUser,
+        },
+      });
+      await waitForPromises();
+
+      expect(findSelectedParticipantByIndex(0).props('user')).toEqual(currentUser);
+      expect(findSelectedParticipantByIndex(1).props('user')).toEqual(issuableAuthor);
+    });
+
+    it('moves issuable author on top of unassigned list, if author is unassigned project member', async () => {
+      createComponent({
+        props: {
+          issuableAuthor: mockUser2,
+        },
+      });
+      await waitForPromises();
+
+      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(stripTypenames(mockUser2));
+    });
+
+    it('moves issuable author on top of unassigned list after current user, if author and current user are unassigned project members', async () => {
+      const currentUser = mockUser2;
+      const issuableAuthor = mockUser1;
+
+      createComponent({
+        props: {
+          issuableAuthor,
+          currentUser,
+        },
+      });
+      await waitForPromises();
+
+      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(
+        stripTypenames(currentUser),
+      );
+      expect(findUnselectedParticipantByIndex(1).props('user')).toMatchObject(
+        stripTypenames(issuableAuthor),
+      );
+    });
+
+    it('displays author in a designated position if author is not assigned and not a project member', async () => {
+      createComponent({
+        props: {
+          issuableAuthor: assignee,
+        },
+      });
+      await waitForPromises();
+
+      expect(findIssuableAuthor().exists()).toBe(true);
+    });
   });
 
   it('displays correct amount of selected users', async () => {

@@ -140,6 +140,12 @@ project_members:
 - project
 - member_task
 - member_namespace
+- member_role
+member_roles:
+- members
+- namespace
+- base_access_level
+- download_code
 merge_requests:
 - status_check_responses
 - subscriptions

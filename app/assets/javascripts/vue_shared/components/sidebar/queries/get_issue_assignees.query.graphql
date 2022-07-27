@@ -8,6 +8,10 @@ query issueAssignees($fullPath: ID!, $iid: String!) {
     issuable: issue(iid: $iid) {
       __typename
       id
+      author {
+        ...User
+        ...UserAvailability
+      }
       assignees {
         nodes {
           ...User

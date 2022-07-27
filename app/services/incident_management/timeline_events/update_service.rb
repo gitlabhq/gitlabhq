@@ -34,7 +34,7 @@ module IncidentManagement
       attr_reader :timeline_event, :incident, :user, :note, :occurred_at
 
       def update_params
-        { updated_by_user: user, note: note.presence, occurred_at: occurred_at.presence }.compact
+        { updated_by_user: user, note: note, occurred_at: occurred_at }.compact
       end
 
       def add_system_note(timeline_event)

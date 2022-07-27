@@ -38,7 +38,7 @@ RSpec.shared_examples 'resource access tokens creation' do |resource_type|
     expect(active_resource_access_tokens).to have_text('in')
     expect(active_resource_access_tokens).to have_text('read_api')
     expect(active_resource_access_tokens).to have_text('read_repository')
-    expect(active_resource_access_tokens).to have_text('Maintainer')
+    expect(active_resource_access_tokens).to have_text('Guest')
     expect(created_resource_access_token).not_to be_empty
   end
 end
