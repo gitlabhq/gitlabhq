@@ -10,8 +10,8 @@ require_relative 'api/default_options'
 # Each desired feature flag state is specified as 'feature-flag=state'. This allows us to run package-and-qa with the
 # feature flag set to the desired state.
 #
-# For example, if the specified files included `config/feature_flags/development/ci_yaml_limit_size.yml` and the desired
-# state as specified by the second argument was enabled, the value returned would be `ci_yaml_limit_size=enabled`
+# For example, if the specified files included `config/feature_flags/development/ci_awesome_feature.yml` and the desired
+# state as specified by the second argument was enabled, the value returned would be `ci_awesome_feature=enabled`
 
 class GetFeatureFlagsFromFiles
   def initialize(options)

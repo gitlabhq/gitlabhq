@@ -1,8 +1,0 @@
----
-name: ci_yaml_limit_size
-introduced_by_url: https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3126
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/29875
-milestone: '12.0'
-type: development
-group: group::pipeline authoring
-default_enabled: true

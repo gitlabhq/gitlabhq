@@ -5,7 +5,7 @@ module UpdateVisibilityLevel
   def valid_visibility_level_change?(target, new_visibility)
     return true unless new_visibility
 
-    new_visibility_level = Gitlab::VisibilityLevel.level_value(new_visibility)
+    new_visibility_level = Gitlab::VisibilityLevel.level_value(new_visibility, fallback_value: nil)
 
     if new_visibility_level != target.visibility_level_value
       unless can?(current_user, :change_visibility_level, target) &&

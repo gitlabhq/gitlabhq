@@ -893,42 +893,65 @@ RSpec.describe IssuesFinder do
         end
       end
 
-      context 'filtering by crm contact' do
-        let_it_be(:contact1) { create(:contact, group: group) }
-        let_it_be(:contact2) { create(:contact, group: group) }
+      context 'crm filtering' do
+        let_it_be(:root_group) { create(:group) }
+        let_it_be(:group) { create(:group, parent: root_group) }
+        let_it_be(:project_crm) { create(:project, :public, group: group) }
+        let_it_be(:organization) { create(:organization, group: root_group) }
+        let_it_be(:contact1) { create(:contact, group: root_group, organization: organization) }
+        let_it_be(:contact2) { create(:contact, group: root_group, organization: organization) }
 
-        let_it_be(:contact1_issue1) { create(:issue, project: project1) }
-        let_it_be(:contact1_issue2) { create(:issue, project: project1) }
-        let_it_be(:contact2_issue1) { create(:issue, project: project1) }
+        let_it_be(:contact1_item1) { create(:issue, project: project_crm) }
+        let_it_be(:contact1_item2) { create(:issue, project: project_crm) }
+        let_it_be(:contact2_item1) { create(:issue, project: project_crm) }
+        let_it_be(:item_no_contact) { create(:issue, project: project_crm) }
 
-        let(:params) { { crm_contact_id: contact1.id } }
-
-        it 'returns for that contact' do
-          create(:issue_customer_relations_contact, issue: contact1_issue1, contact: contact1)
-          create(:issue_customer_relations_contact, issue: contact1_issue2, contact: contact1)
-          create(:issue_customer_relations_contact, issue: contact2_issue1, contact: contact2)
-
-          expect(issues).to contain_exactly(contact1_issue1, contact1_issue2)
+        let_it_be(:all_project_issues) do
+          [contact1_item1, contact1_item2, contact2_item1, item_no_contact]
         end
-      end
 
-      context 'filtering by crm organization' do
-        let_it_be(:organization) { create(:organization, group: group) }
-        let_it_be(:contact1) { create(:contact, group: group, organization: organization) }
-        let_it_be(:contact2) { create(:contact, group: group, organization: organization) }
+        before do
+          create(:crm_settings, group: root_group, enabled: true)
 
-        let_it_be(:contact1_issue1) { create(:issue, project: project1) }
-        let_it_be(:contact1_issue2) { create(:issue, project: project1) }
-        let_it_be(:contact2_issue1) { create(:issue, project: project1) }
+          create(:issue_customer_relations_contact, issue: contact1_item1, contact: contact1)
+          create(:issue_customer_relations_contact, issue: contact1_item2, contact: contact1)
+          create(:issue_customer_relations_contact, issue: contact2_item1, contact: contact2)
+        end
 
-        let(:params) { { crm_organization_id: organization.id } }
+        context 'filtering by crm contact' do
+          let(:params) { { project_id: project_crm.id, crm_contact_id: contact1.id } }
 
-        it 'returns for that contact' do
-          create(:issue_customer_relations_contact, issue: contact1_issue1, contact: contact1)
-          create(:issue_customer_relations_contact, issue: contact1_issue2, contact: contact1)
-          create(:issue_customer_relations_contact, issue: contact2_issue1, contact: contact2)
+          context 'when the user can read crm contacts' do
+            it 'returns for that contact' do
+              root_group.add_reporter(user)
 
-          expect(issues).to contain_exactly(contact1_issue1, contact1_issue2, contact2_issue1)
+              expect(issues).to contain_exactly(contact1_item1, contact1_item2)
+            end
+          end
+
+          context 'when the user can not read crm contacts' do
+            it 'does not filter by contact' do
+              expect(issues).to match_array(all_project_issues)
+            end
+          end
+        end
+
+        context 'filtering by crm organization' do
+          let(:params) { { project_id: project_crm.id, crm_organization_id: organization.id } }
+
+          context 'when the user can read crm organization' do
+            it 'returns for that organization' do
+              root_group.add_reporter(user)
+
+              expect(issues).to contain_exactly(contact1_item1, contact1_item2, contact2_item1)
+            end
+          end
+
+          context 'when the user can not read crm organization' do
+            it 'does not filter by organization' do
+              expect(issues).to match_array(all_project_issues)
+            end
+          end
         end
       end
 
