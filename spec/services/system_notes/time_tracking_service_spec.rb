@@ -106,6 +106,30 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
     end
   end
 
+  describe '#create_timelog' do
+    subject { described_class.new(noteable: noteable, project: project, author: author).created_timelog(timelog) }
+
+    context 'when the timelog has a positive time spent value' do
+      let_it_be(:noteable, reload: true) { create(:issue, project: project) }
+
+      let(:timelog) { create(:timelog, user: author, issue: noteable, time_spent: 1800, spent_at: '2022-03-30T00:00:00.000Z')}
+
+      it 'sets the note text' do
+        expect(subject.note).to eq "added 30m of time spent at 2022-03-30"
+      end
+    end
+
+    context 'when the timelog has a negative time spent value' do
+      let_it_be(:noteable, reload: true) { create(:issue, project: project) }
+
+      let(:timelog) { create(:timelog, user: author, issue: noteable, time_spent: -1800, spent_at: '2022-03-30T00:00:00.000Z')}
+
+      it 'sets the note text' do
+        expect(subject.note).to eq "subtracted 30m of time spent at 2022-03-30"
+      end
+    end
+  end
+
   describe '#remove_timelog' do
     subject { described_class.new(noteable: noteable, project: project, author: author).remove_timelog(timelog) }
 

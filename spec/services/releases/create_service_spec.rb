@@ -111,14 +111,6 @@ RSpec.describe Releases::CreateService do
         expect(result[:message]).to eq("Milestone(s) not found: #{inexistent_milestone_tag}")
       end
     end
-  end
-
-  describe '#find_or_build_release' do
-    it 'does not save the built release' do
-      service.find_or_build_release
-
-      expect(project.releases.count).to eq(0)
-    end
 
     context 'when existing milestone is passed in' do
       let(:title) { 'v1.0' }

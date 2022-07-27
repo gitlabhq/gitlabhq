@@ -332,11 +332,12 @@ export default {
             :button-title="__('Add a table')"
             icon="table"
           />
-          <toolbar-button
+          <gl-button
             v-if="!restrictedToolBarItems.includes('attach-file')"
+            v-gl-tooltip
+            :title="__('Attach a file or image')"
             data-testid="button-attach-file"
-            :prepend="true"
-            :button-title="__('Attach a file or image')"
+            category="tertiary"
             icon="paperclip"
             @click="handleAttachFile"
           />

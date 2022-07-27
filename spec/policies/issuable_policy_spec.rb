@@ -113,5 +113,45 @@ RSpec.describe IssuablePolicy, models: true do
         end
       end
     end
+
+    context 'when user is anonymous' do
+      it 'does not allow timelogs creation' do
+        expect(permissions(nil, issue)).to be_disallowed(:create_timelog)
+      end
+    end
+
+    context 'when user is not a member of the project' do
+      it 'does not allow timelogs creation' do
+        expect(policies).to be_disallowed(:create_timelog)
+      end
+    end
+
+    context 'when user is not a member of the project but the author of the issuable' do
+      let(:issue) { create(:issue, project: project, author: user) }
+
+      it 'does not allow timelogs creation' do
+        expect(policies).to be_disallowed(:create_timelog)
+      end
+    end
+
+    context 'when user is a guest member of the project' do
+      it 'does not allow timelogs creation' do
+        expect(permissions(guest, issue)).to be_disallowed(:create_timelog)
+      end
+    end
+
+    context 'when user is a guest member of the project and the author of the issuable' do
+      let(:issue) { create(:issue, project: project, author: guest) }
+
+      it 'does not allow timelogs creation' do
+        expect(permissions(guest, issue)).to be_disallowed(:create_timelog)
+      end
+    end
+
+    context 'when user is at least reporter of the project' do
+      it 'allows timelogs creation' do
+        expect(permissions(reporter, issue)).to be_allowed(:create_timelog)
+      end
+    end
   end
 end

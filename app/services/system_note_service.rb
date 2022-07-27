@@ -111,6 +111,24 @@ module SystemNoteService
     ::SystemNotes::TimeTrackingService.new(noteable: noteable, project: project, author: author).change_time_spent
   end
 
+  # Called when a timelog is added to an issuable
+  #
+  # issuable   - Issuable object (Issue, WorkItem or MergeRequest)
+  # project    - Project owning the issuable
+  # author     - User performing the change
+  # timelog    - Created timelog
+  #
+  # Example Note text:
+  #
+  #   "subtracted 1h 15m of time spent"
+  #
+  #   "added 2h 30m of time spent"
+  #
+  # Returns the created Note object
+  def created_timelog(issuable, project, author, timelog)
+    ::SystemNotes::TimeTrackingService.new(noteable: issuable, project: project, author: author).created_timelog(timelog)
+  end
+
   # Called when a timelog is removed from a Noteable
   #
   # noteable  - Noteable object

@@ -12,6 +12,7 @@ RSpec.describe 'Create a work item' do
     {
       'title' => 'new title',
       'description' => 'new description',
+      'confidential' => true,
       'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_global_id.to_s
     }
   end
@@ -38,6 +39,7 @@ RSpec.describe 'Create a work item' do
 
       expect(response).to have_gitlab_http_status(:success)
       expect(created_work_item.issue_type).to eq('task')
+      expect(created_work_item).to be_confidential
       expect(created_work_item.work_item_type.base_type).to eq('task')
       expect(mutation_response['workItem']).to include(
         input.except('workItemTypeId').merge(

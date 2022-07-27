@@ -76,6 +76,32 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
     end
 
+    # Called when a timelog is added to an issuable
+    #
+    # timelog - Added timelog
+    #
+    # Example Note text:
+    #
+    #   "subtracted 1h 15m of time spent"
+    #
+    #   "added 2h 30m of time spent"
+    #
+    # Returns the created Note object
+    def created_timelog(timelog)
+      time_spent = timelog.time_spent
+      spent_at = timelog.spent_at&.to_date
+      parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
+      action = time_spent > 0 ? 'added' : 'subtracted'
+
+      text_parts = ["#{action} #{parsed_time} of time spent"]
+      text_parts << "at #{spent_at}" if spent_at && spent_at != DateTime.current.to_date
+      body = text_parts.join(' ')
+
+      issue_activity_counter.track_issue_time_spent_changed_action(author: author) if noteable.is_a?(Issue)
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
+    end
+
     def remove_timelog(timelog)
       time_spent = timelog.time_spent
       spent_at = timelog.spent_at&.to_date

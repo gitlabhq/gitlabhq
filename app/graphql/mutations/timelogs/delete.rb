@@ -2,13 +2,8 @@
 
 module Mutations
   module Timelogs
-    class Delete < Mutations::BaseMutation
+    class Delete < Base
       graphql_name 'TimelogDelete'
-
-      field :timelog,
-            Types::TimelogType,
-            null: true,
-            description: 'Deleted timelog.'
 
       argument :id,
                ::Types::GlobalIDType[::Timelog],
@@ -22,11 +17,13 @@ module Mutations
         result = ::Timelogs::DeleteService.new(timelog, current_user).execute
 
         # Return the result payload, not the loaded timelog, so that it returns null in case of unauthorized access
-        { timelog: result.payload, errors: result.errors }
+        response(result)
       end
 
+      private
+
       def find_object(id:)
-        GitlabSchema.find_by_gid(id)
+        GitlabSchema.object_from_id(id, expected_type: ::Timelog).sync
       end
     end
   end

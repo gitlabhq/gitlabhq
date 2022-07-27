@@ -56,7 +56,6 @@ describe('Markdown field header component', () => {
         'Add a task list',
         'Add a collapsible section',
         'Add a table',
-        'Attach a file or image',
         'Go full screen',
       ];
       const elements = findToolbarButtons();
@@ -64,6 +63,13 @@ describe('Markdown field header component', () => {
       elements.wrappers.forEach((buttonEl, index) => {
         expect(buttonEl.props('buttonTitle')).toBe(buttons[index]);
       });
+    });
+
+    it('renders "Attach a file or image" button using gl-button', () => {
+      const button = wrapper.findByTestId('button-attach-file');
+
+      expect(button.element.tagName).toBe('GL-BUTTON-STUB');
+      expect(button.attributes('title')).toBe('Attach a file or image');
     });
 
     describe('when the user is on a non-Mac', () => {

@@ -621,6 +621,10 @@ The `Managed-Cluster-Applications.gitlab-ci.yml` CI/CD template is being removed
 
 ### `artifacts:reports:cobertura` keyword
 
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
+
 As of GitLab 15.0, the [`artifacts:reports:cobertura`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura-removed)
 keyword has been [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) by
 [`artifacts:reports:coverage_report`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscoverage_report).

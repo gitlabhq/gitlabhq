@@ -21,8 +21,8 @@ RSpec.describe Timelogs::DeleteService do
       end
 
       it 'returns the removed timelog' do
-        expect(subject).to be_success
-        expect(subject.payload).to eq(timelog)
+        is_expected.to be_success
+        expect(subject.payload[:timelog]).to eq(timelog)
       end
     end
 
@@ -31,7 +31,7 @@ RSpec.describe Timelogs::DeleteService do
       let!(:timelog) { nil }
 
       it 'returns an error' do
-        expect(subject).to be_error
+        is_expected.to be_error
         expect(subject.message).to eq('Timelog doesn\'t exist or you don\'t have permission to delete it')
         expect(subject.http_status).to eq(404)
       end
@@ -41,7 +41,7 @@ RSpec.describe Timelogs::DeleteService do
       let(:user) { create(:user) }
 
       it 'returns an error' do
-        expect(subject).to be_error
+        is_expected.to be_error
         expect(subject.message).to eq('Timelog doesn\'t exist or you don\'t have permission to delete it')
         expect(subject.http_status).to eq(404)
       end
@@ -56,7 +56,7 @@ RSpec.describe Timelogs::DeleteService do
       end
 
       it 'returns an error' do
-        expect(subject).to be_error
+        is_expected.to be_error
         expect(subject.message).to eq('Failed to remove timelog')
         expect(subject.http_status).to eq(400)
       end

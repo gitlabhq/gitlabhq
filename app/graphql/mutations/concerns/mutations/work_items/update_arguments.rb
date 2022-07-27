@@ -15,6 +15,9 @@ module Mutations
         argument :title, GraphQL::Types::String,
                  required: false,
                  description: copy_field_description(Types::WorkItemType, :title)
+        argument :confidential, GraphQL::Types::Boolean,
+                 required: false,
+                 description: 'Sets the work item confidentiality.'
         argument :description_widget, ::Types::WorkItems::Widgets::DescriptionInputType,
                  required: false,
                  description: 'Input for description widget.'

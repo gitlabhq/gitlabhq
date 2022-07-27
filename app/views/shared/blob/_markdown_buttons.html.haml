@@ -28,7 +28,7 @@
                               title: _("Add a collapsible section") })
   = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |", "md-prepend" => true }, title: _("Add a table") })
   = markdown_toolbar_button({ icon: "paperclip",
-                              data: { "md-tag" => "", "md-prepend" => true, "testid" => "button-attach-file" },
+                              data: { "testid" => "button-attach-file" },
                               css_class: 'js-attach-file-button markdown-selector',
                               title: _("Attach a file or image") })
   - if show_fullscreen_button

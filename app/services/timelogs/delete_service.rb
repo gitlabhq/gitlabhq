@@ -2,11 +2,17 @@
 
 module Timelogs
   class DeleteService < Timelogs::BaseService
+    attr_accessor :timelog
+
+    def initialize(timelog, user)
+      super(user)
+
+      @timelog = timelog
+    end
+
     def execute
       unless can?(current_user, :admin_timelog, timelog)
-        return ServiceResponse.error(
-          message: "Timelog doesn't exist or you don't have permission to delete it",
-          http_status: 404)
+        return error(_("Timelog doesn't exist or you don't have permission to delete it"), 404)
       end
 
       if timelog.destroy
@@ -17,9 +23,9 @@ module Timelogs
           SystemNoteService.remove_timelog(issuable, issuable.project, current_user, timelog)
         end
 
-        ServiceResponse.success(payload: timelog)
+        success(timelog)
       else
-        ServiceResponse.error(message: 'Failed to remove timelog', http_status: 400)
+        error(_('Failed to remove timelog'), 400)
       end
     end
   end

@@ -4815,6 +4815,28 @@ Input type: `TimelineEventUpdateInput`
 | <a id="mutationtimelineeventupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationtimelineeventupdatetimelineevent"></a>`timelineEvent` | [`TimelineEventType`](#timelineeventtype) | Timeline event. |
 
+### `Mutation.timelogCreate`
+
+Input type: `TimelogCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelogcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelogcreateissuableid"></a>`issuableId` | [`IssuableID!`](#issuableid) | Global ID of the issuable (Issue, WorkItem or MergeRequest). |
+| <a id="mutationtimelogcreatespentat"></a>`spentAt` | [`Date!`](#date) | When the time was spent. |
+| <a id="mutationtimelogcreatesummary"></a>`summary` | [`String!`](#string) | Summary of time spent. |
+| <a id="mutationtimelogcreatetimespent"></a>`timeSpent` | [`String!`](#string) | Amount of time spent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelogcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelogcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationtimelogcreatetimelog"></a>`timelog` | [`Timelog`](#timelog) | Timelog. |
+
 ### `Mutation.timelogDelete`
 
 Input type: `TimelogDeleteInput`
@@ -4832,7 +4854,7 @@ Input type: `TimelogDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationtimelogdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationtimelogdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationtimelogdeletetimelog"></a>`timelog` | [`Timelog`](#timelog) | Deleted timelog. |
+| <a id="mutationtimelogdeletetimelog"></a>`timelog` | [`Timelog`](#timelog) | Timelog. |
 
 ### `Mutation.todoCreate`
 
@@ -5587,6 +5609,7 @@ Input type: `WorkItemCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemcreateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemcreatedescription"></a>`description` | [`String`](#string) | Description of the work item. |
 | <a id="mutationworkitemcreatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | Input for hierarchy widget. |
 | <a id="mutationworkitemcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the work item is associated with. |
@@ -5695,6 +5718,7 @@ Input type: `WorkItemUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemupdateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemupdatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="mutationworkitemupdatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](#workitemwidgethierarchyupdateinput) | Input for hierarchy widget. |
 | <a id="mutationworkitemupdateid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
@@ -22394,6 +22418,7 @@ A time-frame defined as a closed inclusive range of two dates.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemupdatedtaskinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="workitemupdatedtaskinputdescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="workitemupdatedtaskinputhierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](#workitemwidgethierarchyupdateinput) | Input for hierarchy widget. |
 | <a id="workitemupdatedtaskinputid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |

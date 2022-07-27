@@ -694,6 +694,9 @@ msgstr ""
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
+msgid "%{issuable_class_name} doesn't exist or you don't have permission to add timelog to it."
+msgstr ""
+
 msgid "%{issuable}(s) already assigned"
 msgstr ""
 
@@ -15946,6 +15949,9 @@ msgstr ""
 msgid "Failed to remove the pipeline schedule"
 msgstr ""
 
+msgid "Failed to remove timelog"
+msgstr ""
+
 msgid "Failed to remove user identity."
 msgstr ""
 
@@ -15968,6 +15974,9 @@ msgid "Failed to save preferences (%{error_message})."
 msgstr ""
 
 msgid "Failed to save preferences."
+msgstr ""
+
+msgid "Failed to save timelog"
 msgstr ""
 
 msgid "Failed to set due date because the date format is invalid."
@@ -38174,9 +38183,6 @@ msgstr ""
 msgid "TagsPage|Edit release"
 msgstr ""
 
-msgid "TagsPage|Edit release notes"
-msgstr ""
-
 msgid "TagsPage|Existing branch name, tag, or commit SHA"
 msgstr ""
 
@@ -40401,6 +40407,9 @@ msgid "Timeline|Turn recent updates view off"
 msgstr ""
 
 msgid "Timeline|Turn recent updates view on"
+msgstr ""
+
+msgid "Timelog doesn't exist or you don't have permission to delete it"
 msgstr ""
 
 msgid "Timeout"

@@ -432,6 +432,19 @@ RSpec.describe SystemNoteService do
     end
   end
 
+  describe '.created_timelog' do
+    let(:issue) { create(:issue, project: project) }
+    let(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800)}
+
+    it 'calls TimeTrackingService' do
+      expect_next_instance_of(::SystemNotes::TimeTrackingService) do |service|
+        expect(service).to receive(:created_timelog)
+      end
+
+      described_class.created_timelog(noteable, project, author, timelog)
+    end
+  end
+
   describe '.remove_timelog' do
     let(:issue) { create(:issue, project: project) }
     let(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800)}

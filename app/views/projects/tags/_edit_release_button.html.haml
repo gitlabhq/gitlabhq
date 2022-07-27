@@ -1,11 +1,7 @@
-- if Feature.enabled?(:edit_tag_release_notes_via_release_page, project)
-  - release_btn_text = s_('TagsPage|Create release')
-  - release_btn_path = new_project_release_path(project, tag_name: tag.name)
-  - if release
-    - release_btn_text = s_('TagsPage|Edit release')
-    - release_btn_path = edit_project_release_path(project, release)
-  = link_to release_btn_path, class: 'btn gl-button btn-default btn-icon btn-edit has-tooltip', title: release_btn_text, data: { container: "body" } do
-    = sprite_icon('pencil', css_class: 'gl-icon')
-- else
-  = link_to edit_project_tag_release_path(project, tag.name), class: 'btn gl-button btn-default btn-icon btn-edit has-tooltip', title: s_('TagsPage|Edit release notes'), data: { container: "body" } do
-    = sprite_icon('pencil', css_class: 'gl-icon')
+- release_btn_text = s_('TagsPage|Create release')
+- release_btn_path = new_project_release_path(project, tag_name: tag.name)
+- if release
+  - release_btn_text = s_('TagsPage|Edit release')
+  - release_btn_path = edit_project_release_path(project, release)
+= link_to release_btn_path, class: 'btn gl-button btn-default btn-icon btn-edit has-tooltip', title: release_btn_text, data: { container: "body" } do
+  = sprite_icon('pencil', css_class: 'gl-icon')
