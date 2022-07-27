@@ -79,8 +79,6 @@ If you get an error **Something went wrong while obtaining the Let's Encrypt cer
     1. Make sure [your domain is verified](index.md#1-add-a-custom-domain-to-pages).
     1. Go to step 1.
 
-Another possible cause of this error is the `_redirects` file because the current implementation relies on an HTTP ACME challenge. If you redirect the `.acme-challenge/` endpoint Let's Encrypt cannot validate the domain. Make sure you don't have a wildcard (`*`) redirect either as that too breaks validation. The problem with wildcard redirects is tracked in the [Wildcard redirects break Let's Encrypt integration](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/649) issue.
-
 ### Message "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later." hangs for more than an hour
 
 If you've enabled Let's Encrypt integration, but a certificate is absent after an hour and you see the message, "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.", try to remove and add the domain for GitLab Pages again by following these steps:

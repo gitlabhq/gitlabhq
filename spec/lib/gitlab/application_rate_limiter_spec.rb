@@ -111,23 +111,35 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     shared_examples 'throttles based on key and scope' do
       let(:start_time) { Time.current.beginning_of_hour }
 
-      it 'returns true when threshold is exceeded' do
+      let(:threshold) { nil }
+      let(:interval) { nil }
+
+      it 'returns true when threshold is exceeded', :aggregate_failures do
         travel_to(start_time) do
-          expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
+          expect(subject.throttled?(
+                   :test_action, scope: scope, threshold: threshold, interval: interval)
+                ).to eq(false)
         end
 
         travel_to(start_time + 1.minute) do
-          expect(subject.throttled?(:test_action, scope: scope)).to eq(true)
+          expect(subject.throttled?(
+                   :test_action, scope: scope, threshold: threshold, interval: interval)
+                ).to eq(true)
 
           # Assert that it does not affect other actions or scope
           expect(subject.throttled?(:another_action, scope: scope)).to eq(false)
-          expect(subject.throttled?(:test_action, scope: [user])).to eq(false)
+
+          expect(subject.throttled?(
+                   :test_action, scope: [user], threshold: threshold, interval: interval)
+                ).to eq(false)
         end
       end
 
-      it 'returns false when interval has elapsed' do
+      it 'returns false when interval has elapsed', :aggregate_failures do
         travel_to(start_time) do
-          expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
+          expect(subject.throttled?(
+                   :test_action, scope: scope, threshold: threshold, interval: interval)
+                ).to eq(false)
 
           # another_action has a threshold of 2 so we simulate 2 requests
           expect(subject.throttled?(:another_action, scope: scope)).to eq(false)
@@ -135,21 +147,34 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         end
 
         travel_to(start_time + 2.minutes) do
-          expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
+          expect(subject.throttled?(
+                   :test_action, scope: scope, threshold: threshold, interval: interval)
+                ).to eq(false)
 
           # Assert that another_action has its own interval that hasn't elapsed
           expect(subject.throttled?(:another_action, scope: scope)).to eq(true)
         end
       end
 
-      it 'allows peeking at the current state without changing its value' do
+      it 'allows peeking at the current state without changing its value', :aggregate_failures do
         travel_to(start_time) do
-          expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
+          expect(subject.throttled?(
+                   :test_action, scope: scope, threshold: threshold, interval: interval)
+                ).to eq(false)
+
           2.times do
-            expect(subject.throttled?(:test_action, scope: scope, peek: true)).to eq(false)
+            expect(subject.throttled?(
+                     :test_action, scope: scope, threshold: threshold, interval: interval, peek: true)
+                  ).to eq(false)
           end
-          expect(subject.throttled?(:test_action, scope: scope)).to eq(true)
-          expect(subject.throttled?(:test_action, scope: scope, peek: true)).to eq(true)
+
+          expect(subject.throttled?(
+                   :test_action, scope: scope, threshold: threshold, interval: interval)
+                ).to eq(true)
+
+          expect(subject.throttled?(
+                   :test_action, scope: scope, peek: true, threshold: threshold, interval: interval)
+                ).to eq(true)
         end
       end
     end
@@ -164,6 +189,28 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       let(:scope) { [project, 'app/controllers/groups_controller.rb'] }
 
       it_behaves_like 'throttles based on key and scope'
+    end
+
+    context 'when threshold and interval get overwritten from rate_limits' do
+      let(:rate_limits) do
+        {
+          test_action: {
+            threshold: 0,
+            interval: 0
+          },
+          another_action: {
+            threshold: -> { 2 },
+            interval: -> { 3.minutes }
+          }
+        }
+      end
+
+      let(:scope) { [user, project] }
+
+      it_behaves_like 'throttles based on key and scope' do
+        let(:threshold) { 1 }
+        let(:interval) { 2.minutes}
+      end
     end
   end
 

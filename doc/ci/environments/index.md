@@ -21,7 +21,6 @@ GitLab:
 
 If you have a deployment service like [Kubernetes](../../user/infrastructure/clusters/index.md)
 associated with your project, you can use it to assist with your deployments.
-You can even access a [web terminal](#web-terminals-deprecated) for your environment from within GitLab.
 
 ## View environments and deployments
 

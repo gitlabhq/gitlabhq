@@ -792,7 +792,7 @@ gitaly['concurrency'] = [
 - `max_per_repo` is the maximum number of in-flight RPC calls for the given RPC per repository.
 - `max_queue_time` is the maximum amount of time a request can wait in the concurrency queue to
   be picked up by Gitaly.
-- `max_queue_size` is the maximum size the concurrency queue can grow to before requests are rejected by
+- `max_queue_size` is the maximum size the concurrency queue (per RPC method) can grow to before requests are rejected by
   Gitaly.
 
 This limits the number of in-flight RPC calls for the given RPCs. The limit is applied per

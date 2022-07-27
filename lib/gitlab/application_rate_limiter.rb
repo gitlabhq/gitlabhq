@@ -65,6 +65,8 @@ module Gitlab
       #     per user (scope))
       # @param threshold [Integer] Optional threshold value to override default
       #     one registered in `.rate_limits`
+      # @param interval [Integer] Optional interval value to override default
+      #     one registered in `.rate_limits`
       # @param users_allowlist [Array<String>] Optional list of usernames to
       #     exclude from the limit. This param will only be functional if Scope
       #     includes a current user.
@@ -72,7 +74,7 @@ module Gitlab
       #     incremented but the current throttled state will be returned.
       #
       # @return [Boolean] Whether or not a request should be throttled
-      def throttled?(key, scope:, resource: nil, threshold: nil, users_allowlist: nil, peek: false)
+      def throttled?(key, scope:, resource: nil, threshold: nil, interval: nil, users_allowlist: nil, peek: false)
         raise InvalidKeyError unless rate_limits[key]
 
         strategy = resource.present? ? IncrementPerActionedResource.new(resource.id) : IncrementPerAction.new
@@ -85,7 +87,7 @@ module Gitlab
 
         return false if threshold_value == 0
 
-        interval_value = interval(key)
+        interval_value = interval || interval(key)
 
         return false if interval_value == 0
 
@@ -112,11 +114,12 @@ module Gitlab
       # @param key [Symbol] Key attribute registered in `.rate_limits`
       # @param scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
       # @param threshold [Integer] Optional threshold value to override default one registered in `.rate_limits`
+      # @param interval [Integer] Optional interval value to override default one registered in `.rate_limits`
       # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
       #
       # @return [Boolean] Whether or not a request is currently throttled
-      def peek(key, scope:, threshold: nil, users_allowlist: nil)
-        throttled?(key, peek: true, scope: scope, threshold: threshold, users_allowlist: users_allowlist)
+      def peek(key, scope:, threshold: nil, interval: nil, users_allowlist: nil)
+        throttled?(key, peek: true, scope: scope, threshold: threshold, interval: interval, users_allowlist: users_allowlist)
       end
 
       # Logs request using provided logger

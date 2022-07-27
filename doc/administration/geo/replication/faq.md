@@ -69,6 +69,6 @@ That's totally fine. We use HTTP(s) to fetch repository changes from the **prima
 
 Yes. See [Docker Registry for a **secondary** site](docker_registry.md).
 
-## Can you login to a secondary site?
+## Can you log in to a secondary site?
 
 Yes, but secondary sites receive all authentication data (like user accounts and logins) from the primary instance. This means you are re-directed to the primary for authentication and then routed back.
