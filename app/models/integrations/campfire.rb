@@ -2,8 +2,35 @@
 
 module Integrations
   class Campfire < Integration
-    prop_accessor :token, :subdomain, :room
+    SUBDOMAIN_REGEXP = %r{\A[a-z](?:[a-z0-9-]*[a-z0-9])?\z}i.freeze
+
     validates :token, presence: true, if: :activated?
+    validates :room,
+      allow_blank: true,
+      numericality: { only_integer: true, greater_than: 0 }
+    validates :subdomain,
+      allow_blank: true,
+      format: { with: SUBDOMAIN_REGEXP }, length: { in: 1..63 }
+
+    field :token,
+      type: 'password',
+      title:  -> { s_('Campfire token') },
+      help:  -> { s_('CampfireService|API authentication token from Campfire.') },
+      non_empty_password_title:  -> { s_('ProjectService|Enter new token') },
+      non_empty_password_help:  -> { s_('ProjectService|Leave blank to use your current token.') },
+      placeholder: '',
+      required: true
+
+    field :subdomain,
+      title:  -> { s_('Campfire subdomain (optional)') },
+      placeholder: '',
+      exposes_secrets: true,
+      help:  -> { s_('CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain.') % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe } }
+
+    field :room,
+      title:  -> { s_('Campfire room ID (optional)') },
+      placeholder: '123456',
+      help:  -> { s_('CampfireService|From the end of the room URL.') }
 
     def title
       'Campfire'
@@ -20,35 +47,6 @@ module Integrations
 
     def self.to_param
       'campfire'
-    end
-
-    def fields
-      [
-        {
-          type: 'password',
-          name: 'token',
-          title: _('Campfire token'),
-          help: s_('CampfireService|API authentication token from Campfire.'),
-          non_empty_password_title: s_('ProjectService|Enter new token'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
-          placeholder: '',
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'subdomain',
-          title: _('Campfire subdomain (optional)'),
-          placeholder: '',
-          help: s_('CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain.') % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-        },
-        {
-          type: 'text',
-          name: 'room',
-          title: _('Campfire room ID (optional)'),
-          placeholder: '123456',
-          help: s_('CampfireService|From the end of the room URL.')
-        }
-      ]
     end
 
     def self.supported_events

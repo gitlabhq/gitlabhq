@@ -29,6 +29,10 @@ RSpec.describe Integrations::Packagist do
     let(:hook_url) { "#{packagist_server}/api/update-package?username=#{packagist_username}&apiToken=#{packagist_token}" }
   end
 
+  it_behaves_like Integrations::ResetSecretFields do
+    let(:integration) { described_class.new(packagist_params) }
+  end
+
   describe '#execute' do
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }

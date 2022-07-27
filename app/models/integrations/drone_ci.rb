@@ -13,6 +13,7 @@ module Integrations
     field :drone_url,
       title: -> { s_('ProjectService|Drone server URL') },
       placeholder: 'http://drone.example.com',
+      exposes_secrets: true,
       required: true
 
     field :token,
