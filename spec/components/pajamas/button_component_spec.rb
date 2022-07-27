@@ -9,7 +9,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
   let(:content) { "Button content" }
   let(:options) { {} }
 
-  describe 'basic usage' do
+  RSpec.shared_examples 'basic button behavior' do
     before do
       render_inline(subject) do |c|
         content
@@ -59,7 +59,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
     describe 'disabled' do
       context 'by default (false)' do
         it 'does not have  disabled styling and behavior' do
-          expect(page).not_to have_css ".disabled[disabled='disabled'][aria-disabled='true']"
+          expect(page).not_to have_css ".disabled[disabled][aria-disabled]"
         end
       end
 
@@ -67,7 +67,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
         let(:options) { { disabled: true } }
 
         it 'has disabled styling and behavior' do
-          expect(page).to have_css ".disabled[disabled='disabled'][aria-disabled='true']"
+          expect(page).to have_css ".disabled[disabled][aria-disabled]"
         end
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
     describe 'loading' do
       context 'by default (false)' do
         it 'is not disabled' do
-          expect(page).not_to have_css ".disabled[disabled='disabled']"
+          expect(page).not_to have_css ".disabled[disabled]"
         end
 
         it 'does not render a spinner' do
@@ -87,7 +87,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
         let(:options) { { loading: true } }
 
         it 'is disabled' do
-          expect(page).to have_css ".disabled[disabled='disabled']"
+          expect(page).to have_css ".disabled[disabled]"
         end
 
         it 'renders a spinner' do
@@ -218,9 +218,13 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
         end
       end
     end
+  end
+
+  context 'button component renders a button' do
+    include_examples 'basic button behavior'
 
     describe 'type' do
-      context 'by default (without href)' do
+      context 'by default' do
         it 'has type "button"' do
           expect(page).to have_css "button[type='button']"
         end
@@ -238,34 +242,42 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
         end
       end
 
-      context 'when set to unkown type' do
+      context 'when set to unknown type' do
         let(:options) { { type: :madeup } }
 
         it 'has type "button"' do
           expect(page).to have_css "button[type='button']"
         end
       end
+    end
+  end
 
-      context 'for links (with href)' do
-        let(:options) { { href: 'https://example.com', type: :reset } }
+  context 'button component renders a link' do
+    let(:options) { { href: 'https://gitlab.com', target: '_blank' } }
 
-        it 'ignores type' do
-          expect(page).not_to have_css "[type]"
-        end
+    it "renders a link instead of the button" do
+      expect(page).not_to have_css "button[type='button']"
+      expect(page).to have_css "a[href='https://gitlab.com'][target='_blank']"
+    end
+
+    include_examples 'basic button behavior'
+
+    describe 'type' do
+      let(:options) { { href: 'https://example.com', type: :reset } }
+
+      it 'ignores type' do
+        expect(page).not_to have_css "[type]"
       end
     end
 
-    describe 'link button' do
-      it 'renders a button tag with type="button" when "href" is not set' do
-        expect(page).to have_css "button[type='button']"
-      end
+    describe 'method' do
+      where(:method) { [:get, :post, :put, :delete, :patch] }
 
-      context 'when "href" is provided' do
-        let(:options) { { href: 'https://gitlab.com', target: '_blank' } }
+      let(:options) { { href: 'https://gitlab.com', method: method } }
 
-        it "renders a link instead of the button" do
-          expect(page).not_to have_css "button[type='button']"
-          expect(page).to have_css "a[href='https://gitlab.com'][target='_blank']"
+      with_them do
+        it 'has the correct data-method attribute' do
+          expect(page).to have_css "a[data-method='#{method}']"
         end
       end
     end

@@ -40,7 +40,10 @@ RSpec.describe 'layouts/header/_new_dropdown' do
       it 'has a "New subgroup" link' do
         render
 
-        expect(rendered).to have_link('New subgroup', href: new_group_path(parent_id: group.id))
+        expect(rendered).to have_link(
+          'New subgroup',
+          href: new_group_path(parent_id: group.id, anchor: 'create-group-pane')
+        )
       end
     end
 

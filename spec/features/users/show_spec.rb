@@ -132,10 +132,10 @@ RSpec.describe 'User page' do
       let_it_be(:followee) { create(:user) }
       let_it_be(:follower) { create(:user) }
 
-      it 'does not show link to follow' do
+      it 'does not show button to follow' do
         subject
 
-        expect(page).not_to have_link(text: 'Follow', class: 'gl-button')
+        expect(page).not_to have_button(text: 'Follow', class: 'gl-button')
       end
 
       it 'shows 0 followers and 0 following' do
@@ -155,11 +155,11 @@ RSpec.describe 'User page' do
         expect(page).to have_content('1 following')
       end
 
-      it 'does show link to follow' do
+      it 'does show button to follow' do
         sign_in(user)
         visit user_path(followee)
 
-        expect(page).to have_link(text: 'Follow', class: 'gl-button')
+        expect(page).to have_button(text: 'Follow', class: 'gl-button')
       end
 
       it 'does show link to unfollow' do
@@ -168,7 +168,7 @@ RSpec.describe 'User page' do
 
         visit user_path(followee)
 
-        expect(page).to have_link(text: 'Unfollow', class: 'gl-button')
+        expect(page).to have_button(text: 'Unfollow', class: 'gl-button')
       end
     end
   end

@@ -221,14 +221,13 @@ RSpec.describe 'Group' do
       let(:user) { create(:admin) }
 
       before do
-        visit new_group_path(parent_id: group.id)
+        visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
       end
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'creates a nested group' do
-          click_link 'Create group'
-          fill_in 'Group name', with: 'bar'
-          click_button 'Create group'
+          fill_in 'Subgroup name', with: 'bar'
+          click_button 'Create subgroup'
 
           expect(page).to have_current_path(group_path('foo/bar'), ignore_query: true)
           expect(page).to have_selector 'h1', text: 'bar'
@@ -237,7 +236,7 @@ RSpec.describe 'Group' do
 
       context 'when admin mode is disabled' do
         it 'is not allowed' do
-          expect(page).not_to have_button('Create group')
+          expect(page).not_to have_button('Create subgroup')
         end
       end
     end
@@ -250,11 +249,10 @@ RSpec.describe 'Group' do
         sign_out(:user)
         sign_in(user)
 
-        visit new_group_path(parent_id: group.id)
-        click_link 'Create group'
+        visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
 
-        fill_in 'Group name', with: 'bar'
-        click_button 'Create group'
+        fill_in 'Subgroup name', with: 'bar'
+        click_button 'Create subgroup'
 
         expect(page).to have_current_path(group_path('foo/bar'), ignore_query: true)
         expect(page).to have_selector 'h1', text: 'bar'
@@ -268,7 +266,7 @@ RSpec.describe 'Group' do
       end
 
       context 'when creating subgroup' do
-        let(:path) { new_group_path(parent_id: group.id) }
+        let(:path) { new_group_path(parent_id: group.id, anchor: 'create-group-pane') }
 
         it 'does not render recaptcha' do
           visit path
@@ -278,24 +276,50 @@ RSpec.describe 'Group' do
       end
     end
 
+    context 'when many parent groups are available' do
+      let_it_be(:group2) { create(:group, path: 'foo2') }
+      let_it_be(:group3) { create(:group, path: 'foo3') }
+
+      before do
+        group.add_owner(user)
+        group2.add_maintainer(user)
+        group3.add_developer(user)
+        visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
+      end
+
+      it 'creates private subgroup' do
+        fill_in 'Subgroup name', with: 'bar'
+        click_button 'foo'
+
+        expect(page).to have_css('[data-testid="select_group_dropdown_item"]', text: 'foo2')
+        expect(page).not_to have_css('[data-testid="select_group_dropdown_item"]', text: 'foo3')
+
+        click_button 'foo2'
+        click_button 'Create subgroup'
+
+        expect(page).to have_current_path(group_path('foo2/bar'), ignore_query: true)
+        expect(page).to have_selector('h1', text: 'bar')
+        expect(page).to have_selector('.visibility-icon [data-testid="lock-icon"]')
+      end
+    end
+
     describe 'real-time group url validation', :js do
       let_it_be(:subgroup) { create(:group, path: 'sub', parent: group) }
 
       before do
         group.add_owner(user)
-        visit new_group_path(parent_id: group.id)
-        click_link 'Create group'
+        visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
       end
 
       it 'shows a message if group url is available' do
-        fill_in 'Group URL', with: group.path
+        fill_in 'Subgroup slug', with: group.path
         wait_for_requests
 
         expect(page).to have_content('Group path is available')
       end
 
       it 'shows an error if group url is taken' do
-        fill_in 'Group URL', with: subgroup.path
+        fill_in 'Subgroup slug', with: subgroup.path
         wait_for_requests
 
         expect(page).to have_content("Group path is unavailable. Path has been replaced with a suggested available path.")
@@ -308,7 +332,7 @@ RSpec.describe 'Group' do
 
     sign_out(:user)
     sign_in(create(:user))
-    visit new_group_path(parent_id: group.id)
+    visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
 
     expect(page).to have_title('Not Found')
     expect(page).to have_content('Page Not Found')

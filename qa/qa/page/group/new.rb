@@ -12,7 +12,7 @@ module QA
         end
 
         view 'app/views/groups/_new_group_fields.html.haml' do
-          element :create_group_button, "submit _('Create group')" # rubocop:disable QA/ElementWithPattern
+          element :create_group_button
         end
 
         view 'app/views/groups/_import_group_from_another_instance_panel.html.haml' do
@@ -32,6 +32,10 @@ module QA
 
         def create
           click_button 'Create group'
+        end
+
+        def create_subgroup
+          click_button 'Create subgroup'
         end
 
         def set_gitlab_url(url)

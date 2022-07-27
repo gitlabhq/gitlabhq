@@ -542,7 +542,7 @@ production: &base
 
     # Periodically update ci_runner_versions table with up-to-date versions and status.
     ci_runner_versions_reconciliation_worker:
-      cron: "20 * * * *"
+      cron: "@daily"
 
   # GitLab EE only jobs. These jobs are automatically enabled for an EE
   # installation, and ignored for a CE installation.

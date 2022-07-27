@@ -42,7 +42,7 @@ module Nav
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'new_subgroup',
             title: _('New subgroup'),
-            href: new_group_path(parent_id: group.id),
+            href: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
             data: { track_action: 'click_link_new_subgroup', track_label: 'plus_menu_dropdown' }
           )
         )

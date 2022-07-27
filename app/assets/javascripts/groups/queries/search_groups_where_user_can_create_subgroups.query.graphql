@@ -1,0 +1,11 @@
+query searchGroupsWhereUserCanCreateSubgroups($search: String) {
+  currentUser {
+    id
+    groups(permissionScope: TRANSFER_PROJECTS, search: $search) {
+      nodes {
+        id
+        fullPath
+      }
+    }
+  }
+}

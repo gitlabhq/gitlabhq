@@ -18802,6 +18802,9 @@ msgstr ""
 msgid "GroupsEmptyState|You do not have necessary permissions to create a subgroup or project in this group. Please contact an owner of this group to create a new subgroup or project."
 msgstr ""
 
+msgid "GroupsNew|%{groupsLinkStart}Groups%{groupsLinkEnd} and %{subgroupsLinkStart}subgroups%{subgroupsLinkEnd} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
+msgstr ""
+
 msgid "GroupsNew|%{linkStart}Groups%{linkEnd} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
@@ -18818,6 +18821,9 @@ msgid "GroupsNew|Create group"
 msgstr ""
 
 msgid "GroupsNew|Create new group"
+msgstr ""
+
+msgid "GroupsNew|Create subgroup"
 msgstr ""
 
 msgid "GroupsNew|Create this in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, use a short expiration date when creating the token."
@@ -18863,6 +18869,9 @@ msgid "GroupsNew|To import a group, navigate to the group settings for the GitLa
 msgstr ""
 
 msgid "GroupsNew|Upload file"
+msgstr ""
+
+msgid "GroupsNew|You can also %{linkStart}import an existing group%{linkEnd}."
 msgstr ""
 
 msgid "GroupsNew|e.g. h8d3f016698e..."
@@ -18941,6 +18950,15 @@ msgid "Groups|Remove avatar"
 msgstr ""
 
 msgid "Groups|Save changes"
+msgstr ""
+
+msgid "Groups|Subgroup URL"
+msgstr ""
+
+msgid "Groups|Subgroup name"
+msgstr ""
+
+msgid "Groups|Subgroup slug"
 msgstr ""
 
 msgid "Guideline"
@@ -23516,9 +23534,6 @@ msgstr ""
 msgid "LinkedResources|Linked resources"
 msgstr ""
 
-msgid "LinkedResources|Read more about linked resources"
-msgstr ""
-
 msgid "LinkedResources|Remove"
 msgstr ""
 
@@ -23532,6 +23547,9 @@ msgid "LinkedResources|Something went wrong while fetching linked resources for 
 msgstr ""
 
 msgid "LinkedResources|Text (Optional)"
+msgstr ""
+
+msgid "LinkedResources|Use this space to add links to the resources your team needs as they work to resolve the incident."
 msgstr ""
 
 msgid "Links"

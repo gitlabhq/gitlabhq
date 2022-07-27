@@ -14,6 +14,7 @@ import { glEmojiTag } from '~/emoji';
 import createFlash from '~/flash';
 import { followUser, unfollowUser } from '~/rest_api';
 import { isUserBusy } from '~/set_status_modal/utils';
+import Tracking from '~/tracking';
 import { USER_POPOVER_DELAY } from './constants';
 
 const MAX_SKELETON_LINES = 4;
@@ -37,6 +38,7 @@ export default {
   directives: {
     SafeHtml: GlSafeHtmlDirective,
   },
+  mixins: [Tracking.mixin()],
   props: {
     target: {
       type: HTMLElement,
@@ -117,6 +119,11 @@ export default {
     },
     async follow() {
       this.toggleFollowLoading = true;
+
+      this.track('click_button', {
+        label: 'follow_from_user_popover',
+      });
+
       try {
         await followUser(this.user.id);
         this.$emit('follow');
@@ -132,6 +139,11 @@ export default {
     },
     async unfollow() {
       this.toggleFollowLoading = true;
+
+      this.track('click_button', {
+        label: 'unfollow_from_user_popover',
+      });
+
       try {
         await unfollowUser(this.user.id);
         this.$emit('unfollow');

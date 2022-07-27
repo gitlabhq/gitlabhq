@@ -13,6 +13,7 @@ module Pajamas
     # @param [String] icon
     # @param [String] href
     # @param [String] target
+    # @param [Symbol] method
     # @param [Hash] button_options
     # @param [String] button_text_classes
     # @param [String] icon_classes
@@ -28,6 +29,7 @@ module Pajamas
       icon: nil,
       href: nil,
       target: nil,
+      method: nil,
       button_options: {},
       button_text_classes: nil,
       icon_classes: nil
@@ -43,6 +45,7 @@ module Pajamas
       @icon = icon
       @href = href
       @target = filter_attribute(target, TARGET_OPTIONS)
+      @method = filter_attribute(method, METHOD_OPTIONS)
       @button_options = button_options
       @button_text_classes = button_text_classes
       @icon_classes = icon_classes
@@ -75,6 +78,7 @@ module Pajamas
     SIZE_OPTIONS = [:small, :medium].freeze
     TYPE_OPTIONS = [:button, :reset, :submit].freeze
     TARGET_OPTIONS = %w[_self _blank _parent _top].freeze
+    METHOD_OPTIONS = [:get, :post, :put, :delete, :patch].freeze
 
     CATEGORY_CLASSES = {
       primary: '',
@@ -101,8 +105,8 @@ module Pajamas
     delegate :sprite_icon, to: :helpers
     delegate :gl_loading_icon, to: :helpers
 
-    def tag
-      @href ? 'a' : 'button'
+    def link?
+      @href.present?
     end
 
     def base_attributes

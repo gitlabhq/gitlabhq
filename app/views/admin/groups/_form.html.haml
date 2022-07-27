@@ -9,7 +9,7 @@
           = _('Update your group name, description, avatar, and visibility.')
           = link_to _('Learn more about groups.'), help_page_path('user/group/index')
       .col-lg-8
-        = render 'shared/group_form', f: f
+        = render 'shared/groups/group_name_and_path_fields', f: f
         = render 'shared/group_form_description', f: f
         .form-group.gl-form-group{ role: 'group' }
           = f.label :avatar, _("Group avatar"), class: 'gl-display-block col-form-label'

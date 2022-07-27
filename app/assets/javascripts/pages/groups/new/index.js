@@ -16,9 +16,18 @@ BindInOut.initAll();
 initFilePickers();
 
 function initNewGroupCreation(el) {
-  const { hasErrors, verificationRequired, verificationFormUrl, subscriptionsUrl } = el.dataset;
+  const {
+    hasErrors,
+    parentGroupName,
+    importExistingGroupPath,
+    verificationRequired,
+    verificationFormUrl,
+    subscriptionsUrl,
+  } = el.dataset;
 
   const props = {
+    parentGroupName,
+    importExistingGroupPath,
     hasErrors: parseBoolean(hasErrors),
   };
 

@@ -1,4 +1,4 @@
-= content_tag tag, {**@button_options, **base_attributes, class: button_class, href: @href, target: @target } do
+= content_for :pajamas_button_content, flush: true do
   - if @loading
     = gl_loading_icon(inline: true, css_class: 'gl-button-icon gl-button-loading-indicator')
   - if @icon && (!@loading || content)
@@ -6,3 +6,10 @@
   - if content
     %span.gl-button-text{ class: @button_text_classes }
       = content
+
+- if link?
+  = link_to @href, { **@button_options, **base_attributes, class: button_class, target: @target, method: @method } do
+    = content_for :pajamas_button_content
+- else
+  = content_tag 'button', { **@button_options, **base_attributes, class: button_class } do
+    = content_for :pajamas_button_content

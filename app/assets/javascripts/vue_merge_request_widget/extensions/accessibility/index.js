@@ -6,7 +6,6 @@ import { EXTENSION_ICONS } from '../../constants';
 export default {
   name: 'WidgetAccessibility',
   enablePolling: true,
-  telemetry: false,
   i18n: {
     loading: s__('Reports|Accessibility scanning results are being parsed'),
     error: s__('Reports|Accessibility scanning failed loading results'),

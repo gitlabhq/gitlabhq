@@ -84,7 +84,7 @@ RSpec.describe 'Group show page' do
         it 'shows `Create new subgroup` link' do
           expect(page).to have_link(
             s_('GroupsEmptyState|Create new subgroup'),
-            href: new_group_path(parent_id: group.id)
+            href: new_group_path(parent_id: group.id, anchor: 'create-group-pane')
           )
         end
 

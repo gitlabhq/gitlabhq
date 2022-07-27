@@ -6,6 +6,7 @@ import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { followUser, unfollowUser } from '~/api/user_api';
+import { mockTracking } from 'helpers/tracking_helper';
 
 jest.mock('~/flash');
 jest.mock('~/api/user_api', () => ({
@@ -50,6 +51,18 @@ describe('User Popover Component', () => {
   const findSecurityBotDocsLink = () => wrapper.findByTestId('user-popover-bot-docs-link');
   const findUserLocalTime = () => wrapper.findByTestId('user-popover-local-time');
   const findToggleFollowButton = () => wrapper.findByTestId('toggle-follow-button');
+
+  const itTracksToggleFollowButtonClick = (expectedLabel) => {
+    it('tracks click', async () => {
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+      await findToggleFollowButton().trigger('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_button', {
+        label: expectedLabel,
+      });
+    });
+  };
 
   const createWrapper = (props = {}) => {
     wrapper = mountExtended(UserPopover, {
@@ -341,6 +354,8 @@ describe('User Popover Component', () => {
         expect(wrapper.emitted().unfollow).toBeFalsy();
       });
 
+      itTracksToggleFollowButtonClick('follow_from_user_popover');
+
       describe('when an error occurs', () => {
         beforeEach(() => {
           followUser.mockRejectedValue({});
@@ -387,6 +402,8 @@ describe('User Popover Component', () => {
         expect(wrapper.emitted().follow).toBe(undefined);
         expect(wrapper.emitted().unfollow.length).toBe(1);
       });
+
+      itTracksToggleFollowButtonClick('unfollow_from_user_popover');
 
       describe('when an error occurs', () => {
         beforeEach(async () => {

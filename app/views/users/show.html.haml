@@ -42,11 +42,13 @@
           = sprite_icon('user')
       - if current_user && current_user.id != @user.id
         - if current_user.following?(@user)
-          = link_to user_unfollow_path(@user, :json) , class: link_classes + 'btn gl-button btn-default', method: :post do
-            = _('Unfollow')
+          = form_tag user_unfollow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
+            = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-w-full', data: { track_action: 'click_button', track_label: 'unfollow_from_profile' } }) do
+              = _('Unfollow')
         - else
-          = link_to user_follow_path(@user, :json) , class: link_classes + 'btn gl-button btn-confirm', method: :post, data: { qa_selector: 'follow_user_link' } do
-            = _('Follow')
+          = form_tag user_follow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
+            = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-w-full', data: { qa_selector: 'follow_user_link', track_action: 'click_button', track_label: 'follow_from_profile' } }) do
+              = _('Follow')
 
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
       .avatar-holder

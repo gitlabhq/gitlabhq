@@ -68,12 +68,14 @@ bugsCharts:
       description: "Open bugs created per month"
       type: bar
       query:
-        issuable_type: issue
-        issuable_state: opened
-        filter_labels:
-          - bug
-        group_by: month
-        period_limit: 24
+        data_source: issuables
+        params:
+          issuable_type: issue
+          issuable_state: opened
+          filter_labels:
+            - bug
+          group_by: month
+          period_limit: 24
 ```
 
 Each chart definition is made up of a hash composed of key-value pairs.
@@ -85,12 +87,14 @@ For example, here's single chart definition:
   description: "Open bugs created per month"
   type: bar
   query:
-    issuable_type: issue
-    issuable_state: opened
-    filter_labels:
-      - bug
-    group_by: month
-    period_limit: 24
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
+      group_by: month
+      period_limit: 24
 ```
 
 ## Configuration parameters
@@ -104,7 +108,7 @@ The following table lists available parameters for charts:
 | [`title`](#title)                                  | The title of the chart. This displays on the Insights page. |
 | [`description`](#description)                      | A description for the individual chart. This displays above the relevant chart. |
 | [`type`](#type)                                    | The type of chart: `bar`, `line` or `stacked-bar`. |
-| [`query`](#query)                                  | A hash that defines the conditions for issues / merge requests to be part of the chart. |
+| [`query`](#query)                                  | A hash that defines the data source and filtering conditions for the chart. |
 
 ## Parameter details
 
@@ -155,10 +159,32 @@ Supported values are:
 
 ### `query`
 
-`query` allows to define the conditions for issues / merge requests to be part
-of the chart.
+`query` allows to define the data source and various filtering conditions for the chart.
 
 Example:
+
+```yaml
+monthlyBugsCreated:
+  title: "Monthly bugs created"
+  description: "Open bugs created per month"
+  type: bar
+  query:
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
+      collection_labels:
+        - S1
+        - S2
+        - S3
+        - S4
+      group_by: week
+      period_limit: 104
+```
+
+The legacy format without the `data_source` parameter is still supported:
 
 ```yaml
 monthlyBugsCreated:
@@ -179,7 +205,15 @@ monthlyBugsCreated:
     period_limit: 104
 ```
 
-#### `query.issuable_type`
+#### `query.data_source`
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 15.3.
+
+The `data_source` parameter was introduced to allow visualizing data from different data sources. Currently `issuable` is the only supported value.
+
+#### `Issuable` query parameters
+
+##### `query.params.issuable_type`
 
 Defines the type of "issuable" you want to create a chart for.
 
@@ -188,7 +222,7 @@ Supported values are:
 - `issue`: The chart displays issues' data.
 - `merge_request`: The chart displays merge requests' data.
 
-#### `query.issuable_state`
+##### `query.params.issuable_state`
 
 Filter by the current state of the queried "issuable".
 
@@ -202,7 +236,7 @@ Supported values are:
 - `merged`: Merged merge requests.
 - `all`: Issues / merge requests in all states
 
-#### `query.filter_labels`
+##### `query.params.filter_labels`
 
 Filter by labels currently applied to the queried "issuable".
 
@@ -216,14 +250,16 @@ monthlyBugsCreated:
   title: "Monthly regressions created"
   type: bar
   query:
-    issuable_type: issue
-    issuable_state: opened
-    filter_labels:
-      - bug
-      - regression
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
+        - regression
 ```
 
-#### `query.collection_labels`
+#### `query.params.collection_labels`
 
 Group "issuable" by the configured labels.
 
@@ -237,15 +273,17 @@ weeklyBugsBySeverity:
   title: "Weekly bugs by severity"
   type: stacked-bar
   query:
-    issuable_type: issue
-    issuable_state: opened
-    filter_labels:
-      - bug
-    collection_labels:
-      - S1
-      - S2
-      - S3
-      - S4
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
+      collection_labels:
+        - S1
+        - S2
+        - S3
+        - S4
 ```
 
 #### `query.group_by`
@@ -325,10 +363,12 @@ monthlyBugsCreated:
   description: "Open bugs created per month"
   type: bar
   query:
-    issuable_type: issue
-    issuable_state: opened
-    filter_labels:
-      - bug
+    data_source: issuables
+    params:
+      issuable_type: issue
+      issuable_state: opened
+      filter_labels:
+        - bug
   projects:
     only:
       - 3                         # You can use the project ID
@@ -355,41 +395,47 @@ bugsCharts:
       type: bar
       <<: *projectsOnly
       query:
-        issuable_type: issue
-        issuable_state: opened
-        filter_labels:
-          - bug
-        group_by: month
-        period_limit: 24
+        data_source: issuables
+        params:
+          issuable_type: issue
+          issuable_state: opened
+          filter_labels:
+            - bug
+          group_by: month
+          period_limit: 24
 
     - title: "Weekly bugs by severity"
       type: stacked-bar
       <<: *projectsOnly
       query:
-        issuable_type: issue
-        issuable_state: opened
-        filter_labels:
-          - bug
-        collection_labels:
-          - S1
-          - S2
-          - S3
-          - S4
-        group_by: week
-        period_limit: 104
+        data_source: issuables
+        params:
+          issuable_type: issue
+          issuable_state: opened
+          filter_labels:
+            - bug
+          collection_labels:
+            - S1
+            - S2
+            - S3
+            - S4
+          group_by: week
+          period_limit: 104
 
     - title: "Monthly bugs by team"
       type: line
       <<: *projectsOnly
       query:
-        issuable_type: merge_request
-        issuable_state: opened
-        filter_labels:
-          - bug
-        collection_labels:
-          - Manage
-          - Plan
-          - Create
-        group_by: month
-        period_limit: 24
+        data_source: issuables
+        params:
+          issuable_type: merge_request
+          issuable_state: opened
+          filter_labels:
+            - bug
+          collection_labels:
+            - Manage
+            - Plan
+            - Create
+          group_by: month
+          period_limit: 24
 ```

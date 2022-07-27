@@ -5,34 +5,42 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# DAST browser-based crawler **(ULTIMATE)**
+# DAST browser-based analyzer **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323423) in GitLab 13.12.
 
 WARNING:
 This product is in an early-access stage and is considered a [beta](../../../policy/alpha-beta-support.md#beta-features) feature.
 
-GitLab DAST's new browser-based crawler is a crawl engine built by GitLab to test Single Page Applications (SPAs) and traditional web applications.
-Due to the reliance of modern web applications on JavaScript, handling SPAs or applications that are dependent on JavaScript is paramount to ensuring proper coverage of an application for Dynamic Application Security Testing (DAST).
+GitLab DAST's browser-based analyzer was built by GitLab to test Single Page Applications (SPAs) and
+traditional web applications. It both crawls the web application and analyzes the resulting output
+for vulnerabilities. Analysis of modern applications, heavily reliant on JavaScript, is vital to
+ensuring DAST coverage.
 
-The browser-based crawler works by loading the target application into a specially-instrumented Chromium browser. A snapshot of the page is taken before a search to find any actions that a user might perform,
-such as clicking on a link or filling in a form. For each action found, the crawler executes it, takes a new snapshot, and determines what in the page changed from the previous snapshot.
-Crawling continues by taking more snapshots and finding subsequent actions.
+The browser-based scanner works by loading the target application into a specially-instrumented
+Chromium browser. A snapshot of the page is taken before a search to find any actions that a user
+might perform, such as clicking on a link or filling in a form. For each action found, the
+browser-based scanner executes it, takes a new snapshot, and determines what in the page changed
+from the previous snapshot. Crawling continues by taking more snapshots and finding subsequent
+actions. The benefit of scanning by following user actions in a browser is that the crawler can
+interact with the target application much like a real user would, identifying complex flows that
+traditional web crawlers don't understand. This results in better coverage of the website.
 
-The benefit of crawling by following user actions in a browser is that the crawler can interact with the target application much like a real user would, identifying complex flows that traditional web crawlers don't understand. This results in better coverage of the website.
+The browser-based scanner should provide greater coverage for most web applications, compared
+with the current DAST AJAX crawler. While both crawlers are
+used together with the current DAST scanner, the combination of the browser-based crawler with the
+current DAST scanner is much more effective at finding and testing every page in an application.
 
-Using the browser-based crawler should provide greater coverage for most web applications, compared with the current DAST AJAX crawler. The new crawler replaces the AJAX crawler and is specifically designed to maximize crawl coverage in modern web applications. While both crawlers are currently used in conjunction with the existing DAST scanner, the combination of the browser-based crawler with the current DAST scanner is much more effective at finding and testing every page in an application.
+## Enable browser-based analyzer
 
-## Enable browser-based crawler
-
-The browser-based crawler is an extension to the GitLab DAST product. DAST should be included in the CI/CD configuration and the browser-based crawler enabled using CI/CD variables:
+To enable the browser-based analyzer:
 
 1. Ensure the DAST [prerequisites](index.md#prerequisites) are met.
-1. Include the [DAST CI template](index.md#include-the-dast-template).
-1. Set the target website using the `DAST_WEBSITE` CI/CD variable.
+1. Include the [DAST CI/CD template](index.md#include-the-dast-template).
+1. Set the target website using the [`DAST_WEBSITE` CI/CD variable](index.md#available-cicd-variables).
 1. Set the CI/CD variable `DAST_BROWSER_SCAN` to `true`.
 
-An example configuration might look like the following:
+Example extract of `.gitlab-ci.yml` file:
 
 ```yaml
 include:
@@ -77,13 +85,20 @@ The [DAST variables](index.md#available-cicd-variables) `SECURE_ANALYZERS_PREFIX
 
 ## Vulnerability detection
 
-While the browser-based crawler crawls modern web applications efficiently, vulnerability detection is still managed by the standard DAST/Zed Attack Proxy (ZAP) solution.
+Vulnerability detection is gradually being migrated from the default Zed Attack Proxy (ZAP) solution
+to the browser-based analyzer. For details of the vulnerability detection already migrated, see
+[browser-based vulnerability checks](checks/index.md).
 
-The crawler runs the target website in a browser with DAST/ZAP configured as the proxy server. This ensures that all requests and responses made by the browser are passively scanned by DAST/ZAP.
-When running a full scan, active vulnerability checks executed by DAST/ZAP do not use a browser. This difference in how vulnerabilities are checked can cause issues that require certain features of the target website to be disabled to ensure the scan works as intended.
+The crawler runs the target website in a browser with DAST/ZAP configured as the proxy server. This
+ensures that all requests and responses made by the browser are passively scanned by DAST/ZAP. When
+running a full scan, active vulnerability checks executed by DAST/ZAP do not use a browser. This
+difference in how vulnerabilities are checked can cause issues that require certain features of the
+target website to be disabled to ensure the scan works as intended.
 
-For example, for a target website that contains forms with Anti-CSRF tokens, a passive scan works as intended because the browser displays pages and forms as if a user is viewing the page.
-However, active vulnerability checks that run in a full scan cannot submit forms containing Anti-CSRF tokens. In such cases, we recommend you disable Anti-CSRF tokens when running a full scan.
+For example, for a target website that contains forms with Anti-CSRF tokens, a passive scan works as
+intended because the browser displays pages and forms as if a user is viewing the page. However,
+active vulnerability checks that run in a full scan cannot submit forms containing Anti-CSRF tokens.
+In such cases, we recommend you disable Anti-CSRF tokens when running a full scan.
 
 ## Managing scan time
 

@@ -13,7 +13,6 @@ module Mutations
 
           if pipeline.cancelable?
             pipeline.cancel_running
-            pipeline.cancel
 
             { success: true, errors: [] }
           else

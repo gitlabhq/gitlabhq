@@ -394,7 +394,7 @@ RSpec.describe 'Pipeline', :js do
               expect(page).to have_selector('button[aria-label="Cancel downstream pipeline"]')
             end
 
-            context 'when canceling' do
+            context 'when canceling', :sidekiq_inline do
               before do
                 find('button[aria-label="Cancel downstream pipeline"]').click
                 wait_for_requests

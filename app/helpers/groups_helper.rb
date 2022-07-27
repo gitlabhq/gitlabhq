@@ -134,6 +134,13 @@ module GroupsHelper
     @group_projects_sort || @sort || params[:sort] || sort_value_recently_created
   end
 
+  def subgroup_creation_data(group)
+    {
+      parent_group_name: group.parent&.name,
+      import_existing_group_path: new_group_path(parent_id: group.parent_id, anchor: 'import-group-pane')
+    }
+  end
+
   def verification_for_group_creation_data
     # overridden in EE
     {}
@@ -144,11 +151,9 @@ module GroupsHelper
     false
   end
 
-  def group_name_and_path_app_data(group)
-    parent = group.parent
-
+  def group_name_and_path_app_data
     {
-      base_path: URI.join(root_url, parent&.full_path || "").to_s,
+      base_path: root_url,
       mattermost_enabled: Gitlab.config.mattermost.enabled.to_s
     }
   end
@@ -156,7 +161,7 @@ module GroupsHelper
   def subgroups_and_projects_list_app_data(group)
     {
       show_schema_markup: 'true',
-      new_subgroup_path: new_group_path(parent_id: group.id),
+      new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
       new_project_path: new_project_path(namespace_id: group.id),
       new_subgroup_illustration: image_path('illustrations/subgroup-create-new-sm.svg'),
       new_project_illustration: image_path('illustrations/project-create-new-sm.svg'),

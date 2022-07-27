@@ -173,7 +173,7 @@ RSpec.describe Nav::NewDropdownHelper do
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_subgroup',
                 title: 'New subgroup',
-                href: "/groups/new?parent_id=#{group.id}",
+                href: "/groups/new?parent_id=#{group.id}#create-group-pane",
                 data: { track_action: 'click_link_new_subgroup', track_label: 'plus_menu_dropdown' }
               )
             )
