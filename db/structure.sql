@@ -13202,7 +13202,8 @@ ALTER SEQUENCE ci_stages_id_seq OWNED BY ci_stages.id;
 CREATE TABLE ci_subscriptions_projects (
     id bigint NOT NULL,
     downstream_project_id bigint NOT NULL,
-    upstream_project_id bigint NOT NULL
+    upstream_project_id bigint NOT NULL,
+    author_id bigint
 );
 
 CREATE SEQUENCE ci_subscriptions_projects_id_seq
@@ -27528,6 +27529,8 @@ CREATE UNIQUE INDEX index_ci_stages_on_pipeline_id_and_name ON ci_stages USING b
 CREATE INDEX index_ci_stages_on_pipeline_id_and_position ON ci_stages USING btree (pipeline_id, "position");
 
 CREATE INDEX index_ci_stages_on_project_id ON ci_stages USING btree (project_id);
+
+CREATE INDEX index_ci_subscriptions_projects_author_id ON ci_subscriptions_projects USING btree (author_id);
 
 CREATE INDEX index_ci_subscriptions_projects_on_upstream_project_id ON ci_subscriptions_projects USING btree (upstream_project_id);
 

@@ -1168,6 +1168,16 @@ class Repository
     @cache ||= Gitlab::RepositoryCache.new(self)
   end
 
+  def remove_prohibited_branches
+    return unless exists?
+
+    prohibited_branches = raw_repository.branch_names.select { |name| name.match(/\A\h{40}\z/) }
+
+    return if prohibited_branches.blank?
+
+    prohibited_branches.each { |name| raw_repository.delete_branch(name) }
+  end
+
   private
 
   # TODO Genericize finder, later split this on finders by Ref or Oid

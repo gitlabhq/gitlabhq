@@ -144,6 +144,9 @@ ci_subscriptions_projects:
   - table: projects
     column: upstream_project_id
     on_delete: async_delete
+  - table: users
+    column: author_id
+    on_delete: async_delete
 ci_triggers:
   - table: users
     column: owner_id

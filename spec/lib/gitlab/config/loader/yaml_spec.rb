@@ -120,12 +120,6 @@ RSpec.describe Gitlab::Config::Loader::Yaml do
       it 'returns false' do
         expect(loader).not_to be_valid
       end
-
-      it 'returns true if "ci_yaml_limit_size" feature flag is disabled' do
-        stub_feature_flags(ci_yaml_limit_size: false)
-
-        expect(loader).to be_valid
-      end
     end
 
     describe '#load!' do
