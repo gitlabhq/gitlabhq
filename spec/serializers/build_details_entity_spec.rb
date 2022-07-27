@@ -170,6 +170,24 @@ RSpec.describe BuildDetailsEntity do
           expect(message).to include('could not retrieve the needed artifacts.')
         end
       end
+
+      context 'when dependency contains invalid dependency names' do
+        invalid_name = 'XSS<a href=# data-disable-with="<img src=x onerror=alert(document.domain)>">'
+        let!(:test1) { create(:ci_build, :success, :expired, pipeline: pipeline, name: invalid_name, stage_idx: 0) }
+        let!(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: { dependencies: [invalid_name] }) }
+
+        before do
+          build.pipeline.unlocked!
+          build.drop!(:missing_dependency_failure)
+        end
+
+        it { is_expected.to include(failure_reason: 'missing_dependency_failure') }
+
+        it 'escapes the invalid dependency names' do
+          escaped_name = html_escape(invalid_name)
+          expect(message).to include(escaped_name)
+        end
+      end
     end
 
     context 'when a build has environment with latest deployment' do
