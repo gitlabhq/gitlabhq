@@ -418,6 +418,10 @@ module Gitlab
       @jira_issue_key_regex ||= /[A-Z][A-Z_0-9]+-\d+/
     end
 
+    def jira_issue_key_project_key_extraction_regex
+      @jira_issue_key_project_key_extraction_regex ||= /-\d+/
+    end
+
     def jira_transition_id_regex
       @jira_transition_id_regex ||= /\d+/
     end
