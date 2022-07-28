@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.0.5 (2022-07-28)
+
+### Security (18 changes)
+
+- [Security datadog integration leaking](gitlab-org/security/gitlab@827505e96860979709654210525007901abd56f0) ([merge request](gitlab-org/security/gitlab!2595))
+- [Prevent users who cannot admin a public project from viewing deploy keys](gitlab-org/security/gitlab@2b06195d21bbd6b566221c49e871cd8da1f744b6) ([merge request](gitlab-org/security/gitlab!2642))
+- [Add additional condition to accept invitation](gitlab-org/security/gitlab@8aa70bcc8a3eb1bd2f96c06e9b0e5b6eb0ac561d) ([merge request](gitlab-org/security/gitlab!2654))
+- [Update GITLAB_PAGES_VERSION](gitlab-org/security/gitlab@6b81c541a60da6c389788d21a216dab4d7e40304) ([merge request](gitlab-org/security/gitlab!2583))
+- [Add html_escape to build_details_entity](gitlab-org/security/gitlab@efe16cfa36ff42981891994d5b5e63dcdd2f1daa) ([merge request](gitlab-org/security/gitlab!2611))
+- [Check permissions when filtering by contact or organization](gitlab-org/security/gitlab@3d210e31d933cfff0c9fae9dd2f1ed97058bfea6) ([merge request](gitlab-org/security/gitlab!2646))
+- [Use author to run subscribed pipeline](gitlab-org/security/gitlab@c1ca513e600d1a963e23ab63c261c982780593b5) ([merge request](gitlab-org/security/gitlab!2559))
+- [Remove prohibited branches after project import](gitlab-org/security/gitlab@8ceb9492555471041f962d54e190314aac86207c) ([merge request](gitlab-org/security/gitlab!2588))
+- [Remove feature flag `ci_yaml_limit_size`](gitlab-org/security/gitlab@df0d379902f0e03a6f1506276402246cfe2e922f) ([merge request](gitlab-org/security/gitlab!2631))
+- [Maintainer can change the visibility of Project and Group](gitlab-org/security/gitlab@1e575f57368d7374dc33e151e81a2f5dfe3fa21e) ([merge request](gitlab-org/security/gitlab!2617))
+- [Do not link unverified secondary emails with any users](gitlab-org/security/gitlab@e15f72a77f67e946258576d1b3006e9471d5ec9a) ([merge request](gitlab-org/security/gitlab!2626))
+- [Forbid exchanging access token for ROP flow to users required 2FA setup](gitlab-org/security/gitlab@7250fb15bf59401acd0c88c89d27423578b24f71) ([merge request](gitlab-org/security/gitlab!2620))
+- [Remove todos from confidential notes when user loses access](gitlab-org/security/gitlab@f91cc66eaa83c9a0744d8f25ee56197b5805035e) ([merge request](gitlab-org/security/gitlab!2609))
+- [Remove group_bot_user and group_access_token after group delete](gitlab-org/security/gitlab@995de100fcba61c0efa11c1a2a98377c90f68f0c) ([merge request](gitlab-org/security/gitlab!2635))
+- [Protect integration secrets](gitlab-org/security/gitlab@e475ad82568f5d9da62d8a89c0ee3393a97685bf) ([merge request](gitlab-org/security/gitlab!2586))
+- [Protect Grafana and Sentry integrations](gitlab-org/security/gitlab@0c3fa9f84e2459e63ec58d6253752649489d6283) ([merge request](gitlab-org/security/gitlab!2577))
+- [Fix IDOR in Jira issue show action](gitlab-org/security/gitlab@cf6ad0474584f701e3f14262284ab681f6a06a42) ([merge request](gitlab-org/security/gitlab!2649))
+- [Limit proxied requests to Grafana API](gitlab-org/security/gitlab@28225721c1bce851d81b6e462ec6965570c7320a) ([merge request](gitlab-org/security/gitlab!2598))
+
 ## 15.0.4 (2022-06-30)
 
 ### Security (17 changes)
