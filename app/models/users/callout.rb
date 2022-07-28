@@ -55,8 +55,12 @@ module Users
       preview_user_over_limit_free_plan_alert: 50, # EE-only
       user_reached_limit_free_plan_alert: 51, # EE-only
       submit_license_usage_data_banner: 52, # EE-only
-      personal_project_limitations_banner: 53,  # EE-only
-      mr_experience_survey: 54
+      personal_project_limitations_banner: 53, # EE-only
+      mr_experience_survey: 54,
+      namespace_storage_limit_banner_info_threshold: 55, # EE-only
+      namespace_storage_limit_banner_warning_threshold: 56, # EE-only
+      namespace_storage_limit_banner_alert_threshold: 57, # EE-only
+      namespace_storage_limit_banner_error_threshold: 58 # EE-only
     }
 
     validates :feature_name,

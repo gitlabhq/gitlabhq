@@ -455,7 +455,7 @@ spotbugs-sast:
   dependencies:
     - build
   variables:
-    MAVEN_REPO_PATH: ./.m2/repository
+    MAVEN_REPO_PATH: $CI_PROJECT_DIR/.m2/repository
     COMPILE: "false"
   artifacts:
     reports:

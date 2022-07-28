@@ -538,7 +538,7 @@ gem 'json', '~> 2.5.1'
 gem 'json_schemer', '~> 0.2.18'
 gem 'oj', '~> 3.13.18'
 gem 'multi_json', '~> 1.14.1'
-gem 'yajl-ruby', '~> 1.4.1', require: 'yajl'
+gem 'yajl-ruby', '~> 1.4.3', require: 'yajl'
 
 gem 'webauthn', '~> 2.3'
 

@@ -16,6 +16,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-minute-limit-banner',
   '.js-submit-license-usage-data-banner',
   '.js-project-usage-limitations-callout',
+  '.js-namespace-storage-alert',
 ];
 
 const initCallouts = () => {

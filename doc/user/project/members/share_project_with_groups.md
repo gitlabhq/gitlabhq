@@ -29,7 +29,7 @@ You can share a project only with:
 - Groups for which you have an explicitly defined [membership](index.md).
 - Groups that contain a nested subgroup or project for which you have an explicitly defined role.
 
-Administrators can share projects with any group in the namespace.
+Administrators can share projects with any group in the instance.
 
 The primary mechanism to give a group of users, say 'Engineering', access to a project,
 say 'Project Acme', in GitLab is to make the 'Engineering' group the owner of 'Project

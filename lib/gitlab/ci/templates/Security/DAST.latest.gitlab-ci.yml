@@ -40,6 +40,8 @@ dast:
     - if [ -z "$DAST_WEBSITE$DAST_API_SPECIFICATION" ]; then echo "Either DAST_WEBSITE or DAST_API_SPECIFICATION must be set. See https://docs.gitlab.com/ee/user/application_security/dast/#configuration for more details." && exit 1; fi
     - /analyze
   artifacts:
+    paths:
+      - dast_artifacts/*
     reports:
       dast: gl-dast-report.json
   rules:
@@ -56,3 +58,7 @@ dast:
           $GITLAB_FEATURES =~ /\bdast\b/
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdast\b/
+  after_script:
+    # Remove any debug.log files because they might contain secrets.
+    - rm -f /zap/wrk/**/debug.log
+    - cp -r /zap/wrk dast_artifacts
