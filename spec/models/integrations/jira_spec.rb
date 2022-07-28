@@ -12,6 +12,7 @@ RSpec.describe Integrations::Jira do
   let(:api_url) { 'http://api-jira.example.com' }
   let(:username) { 'jira-username' }
   let(:password) { 'jira-password' }
+  let(:project_key) { nil }
   let(:transition_id) { 'test27' }
   let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
   let(:jira_integration) do
@@ -19,7 +20,8 @@ RSpec.describe Integrations::Jira do
       project: project,
       url: url,
       username: username,
-      password: password
+      password: password,
+      project_key: project_key
     )
   end
 
@@ -531,6 +533,22 @@ RSpec.describe Integrations::Jira do
         jira_integration.find_issue(issue_key, rendered_fields: true, transitions: true)
 
         expect(WebMock).to have_requested(:get, issue_url)
+      end
+    end
+
+    context 'with restricted restrict_project_key option' do
+      subject(:find_issue) { jira_integration.find_issue(issue_key, restrict_project_key: true) }
+
+      it { is_expected.to eq(nil) }
+
+      context 'and project_key matches' do
+        let(:project_key) { 'JIRA' }
+
+        it 'calls the Jira API to get the issue' do
+          find_issue
+
+          expect(WebMock).to have_requested(:get, issue_url)
+        end
       end
     end
   end

@@ -24,7 +24,11 @@ Doorkeeper.configure do
 
   resource_owner_from_credentials do |routes|
     user = Gitlab::Auth.find_with_user_password(params[:username], params[:password], increment_failed_attempts: true)
-    user unless user.try(:two_factor_enabled?)
+
+    next unless user
+    next if user.two_factor_enabled? || Gitlab::Auth::TwoFactorAuthVerifier.new(user).two_factor_authentication_enforced?
+
+    user
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.

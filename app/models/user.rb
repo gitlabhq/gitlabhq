@@ -605,23 +605,24 @@ class User < ApplicationRecord
       end
     end
 
-    # Find a User by their primary email or any associated secondary email
+    # Find a User by their primary email or any associated confirmed secondary email
     def find_by_any_email(email, confirmed: false)
       return unless email
 
       by_any_email(email, confirmed: confirmed).take
     end
 
-    # Returns a relation containing all the users for the given email addresses
+    # Returns a relation containing all found users by their primary email
+    # or any associated confirmed secondary email
     #
     # @param emails [String, Array<String>] email addresses to check
-    # @param confirmed [Boolean] Only return users where the email is confirmed
+    # @param confirmed [Boolean] Only return users where the primary email is confirmed
     def by_any_email(emails, confirmed: false)
       from_users = by_user_email(emails)
       from_users = from_users.confirmed if confirmed
 
-      from_emails = by_emails(emails)
-      from_emails = from_emails.confirmed.merge(Email.confirmed) if confirmed
+      from_emails = by_emails(emails).merge(Email.confirmed)
+      from_emails = from_emails.confirmed if confirmed
 
       items = [from_users, from_emails]
 
@@ -752,6 +753,7 @@ class User < ApplicationRecord
       matched_by_email_user_id = email_table
         .project(email_table[:user_id])
         .where(email_table[:email].eq(email_address))
+        .where(email_table[:confirmed_at].not_eq(nil))
         .take(1) # at most 1 record as there is a unique constraint
 
       where(
@@ -1502,7 +1504,7 @@ class User < ApplicationRecord
     all_emails = []
     all_emails << email unless temp_oauth_email?
     all_emails << private_commit_email if include_private_email
-    all_emails.concat(emails.map(&:email))
+    all_emails.concat(emails.filter_map { |email| email.email if email.confirmed? })
     all_emails.uniq
   end
 

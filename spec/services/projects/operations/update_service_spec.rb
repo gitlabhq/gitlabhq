@@ -306,6 +306,11 @@ RSpec.describe Projects::Operations::UpdateService do
         let(:params) do
           {
             error_tracking_setting_attributes: {
+              api_host: 'https://sentrytest.gitlab.com/',
+              project: {
+                slug: 'sentry-project',
+                organization_slug: 'sentry-org'
+              },
               enabled: false,
               token: '*' * 8
             }
@@ -313,7 +318,7 @@ RSpec.describe Projects::Operations::UpdateService do
         end
 
         before do
-          create(:project_error_tracking_setting, project: project, token: 'token')
+          create(:project_error_tracking_setting, project: project, token: 'token', api_url: 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/')
         end
 
         it 'does not update token' do

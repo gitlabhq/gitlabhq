@@ -7,6 +7,7 @@ RSpec.describe API::Invitations do
   let_it_be(:developer) { create(:user) }
   let_it_be(:access_requester) { create(:user) }
   let_it_be(:stranger) { create(:user) }
+  let_it_be(:unconfirmed_stranger) { create(:user, :unconfirmed) }
   let(:email) { 'email1@example.com' }
   let(:email2) { 'email2@example.com' }
 
@@ -90,6 +91,46 @@ RSpec.describe API::Invitations do
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(1)
+        end
+
+        it 'adds a new member by confirmed primary email' do
+          expect do
+            post invitations_url(source, maintainer),
+                 params: { email: stranger.email, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.non_invite.count }.by(1)
+        end
+
+        it 'adds a new member by unconfirmed primary email' do
+          expect do
+            post invitations_url(source, maintainer),
+                 params: { email: unconfirmed_stranger.email, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.non_invite.count }.by(1)
+        end
+
+        it 'adds a new member by confirmed secondary email' do
+          secondary_email = create(:email, :confirmed, email: 'secondary@example.com', user: stranger)
+
+          expect do
+            post invitations_url(source, maintainer),
+              params: { email: secondary_email.email, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.non_invite.count }.by(1)
+        end
+
+        it 'adds a new member as an invite for unconfirmed secondary email' do
+          secondary_email = create(:email, email: 'secondary@example.com', user: stranger)
+
+          expect do
+            post invitations_url(source, maintainer),
+              params: { email: secondary_email.email, access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:created)
+          end.to change { source.members.invite.count }.by(1).and change { source.members.non_invite.count }.by(0)
         end
 
         it 'adds a new member by user_id' do

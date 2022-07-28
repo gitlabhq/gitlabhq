@@ -3364,4 +3364,62 @@ RSpec.describe Repository do
       end
     end
   end
+
+  describe '#remove_prohibited_branches' do
+    let(:branch_name) { '37fd3601be4c25497a39fa2e6a206e09e759d597' }
+
+    before do
+      allow(repository.raw_repository).to receive(:branch_names).and_return([branch_name])
+    end
+
+    context 'when prohibited branch exists' do
+      it 'deletes prohibited branch' do
+        expect(repository.raw_repository).to receive(:delete_branch).with(branch_name)
+
+        repository.remove_prohibited_branches
+      end
+    end
+
+    shared_examples 'does not delete branch' do
+      it 'returns without removing the branch' do
+        expect(repository.raw_repository).not_to receive(:delete_branch)
+
+        repository.remove_prohibited_branches
+      end
+    end
+
+    context 'when branch name is 40-characters long but not hexadecimal' do
+      let(:branch_name) { '37fd3601be4c25497a39fa2e6a206e09e759d59s' }
+
+      include_examples 'does not delete branch'
+    end
+
+    context 'when branch name is hexadecimal' do
+      context 'when branch name is less than 40-characters long' do
+        let(:branch_name) { '37fd3601be4c25497a39fa2e6a206e09e759d' }
+
+        include_examples 'does not delete branch'
+      end
+
+      context 'when branch name is more than 40-characters long' do
+        let(:branch_name) { '37fd3601be4c25497a39fa2e6a206e09e759dfdfd' }
+
+        include_examples 'does not delete branch'
+      end
+    end
+
+    context 'when prohibited branch does not exist' do
+      let(:branch_name) { 'main' }
+
+      include_examples 'does not delete branch'
+    end
+
+    context 'when raw repository does not exist' do
+      before do
+        allow(repository).to receive(:exists?).and_return(false)
+      end
+
+      include_examples 'does not delete branch'
+    end
+  end
 end

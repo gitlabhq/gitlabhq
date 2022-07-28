@@ -223,7 +223,9 @@ module Integrations
       # support any events.
     end
 
-    def find_issue(issue_key, rendered_fields: false, transitions: false)
+    def find_issue(issue_key, rendered_fields: false, transitions: false, restrict_project_key: false)
+      return if restrict_project_key && parse_project_from_issue_key(issue_key) != project_key
+
       expands = []
       expands << 'renderedFields' if rendered_fields
       expands << 'transitions' if transitions
@@ -320,6 +322,10 @@ module Integrations
     end
 
     private
+
+    def parse_project_from_issue_key(issue_key)
+      issue_key.gsub(Gitlab::Regex.jira_issue_key_project_key_extraction_regex, '')
+    end
 
     def branch_name(commit)
       commit.first_ref_by_oid(project.repository)

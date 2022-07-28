@@ -206,12 +206,12 @@ RSpec.describe Gitlab::Gpg::Commit do
           it_behaves_like 'returns the cached signature on second call'
         end
 
-        context 'user email does not match the committer email, but is the same user' do
+        context 'gpg key email does not match the committer_email but is the same user when the committer_email belongs to the user as a confirmed secondary email' do
           let(:committer_email) { GpgHelpers::User2.emails.first }
 
           let(:user) do
             create(:user, email: GpgHelpers::User1.emails.first).tap do |user|
-              create :email, user: user, email: GpgHelpers::User2.emails.first
+              create :email, :confirmed, user: user, email: committer_email
             end
           end
 
@@ -224,6 +224,30 @@ RSpec.describe Gitlab::Gpg::Commit do
               gpg_key_user_name: GpgHelpers::User1.names.first,
               gpg_key_user_email: GpgHelpers::User1.emails.first,
               verification_status: 'same_user_different_email'
+            )
+          end
+
+          it_behaves_like 'returns the cached signature on second call'
+        end
+
+        context 'gpg key email does not match the committer_email when the committer_email belongs to the user as a unconfirmed secondary email' do
+          let(:committer_email) { GpgHelpers::User2.emails.first }
+
+          let(:user) do
+            create(:user, email: GpgHelpers::User1.emails.first).tap do |user|
+              create :email, user: user, email: committer_email
+            end
+          end
+
+          it 'returns an invalid signature' do
+            expect(described_class.new(commit).signature).to have_attributes(
+              commit_sha: commit_sha,
+              project: project,
+              gpg_key: gpg_key,
+              gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
+              gpg_key_user_name: GpgHelpers::User1.names.first,
+              gpg_key_user_email: GpgHelpers::User1.emails.first,
+              verification_status: 'other_user'
             )
           end
 

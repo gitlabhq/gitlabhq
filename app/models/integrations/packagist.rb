@@ -23,7 +23,8 @@ module Integrations
     field :server,
       title: -> { _('Server (optional)') },
       help: -> { s_('Enter your Packagist server. Defaults to https://packagist.org.') },
-      placeholder: 'https://packagist.org'
+      placeholder: 'https://packagist.org',
+      exposes_secrets: true
 
     validates :username, presence: true, if: :activated?
     validates :token, presence: true, if: :activated?

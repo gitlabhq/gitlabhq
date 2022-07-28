@@ -25,6 +25,40 @@ RSpec.describe 'OAuth tokens' do
       end
     end
 
+    context 'when 2FA enforced' do
+      let_it_be(:user) { create(:user, otp_grace_period_started_at: 1.day.ago) }
+
+      before do
+        stub_application_setting(require_two_factor_authentication: true)
+      end
+
+      context 'when grace period expired' do
+        before do
+          stub_application_setting(two_factor_grace_period: 0)
+        end
+
+        it 'does not create an access token' do
+          request_oauth_token(user, client_basic_auth_header(client))
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('invalid_grant')
+        end
+      end
+
+      context 'when grace period is not expired' do
+        before do
+          stub_application_setting(two_factor_grace_period: 72)
+        end
+
+        it 'creates an access token' do
+          request_oauth_token(user, client_basic_auth_header(client))
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['access_token']).not_to be_nil
+        end
+      end
+    end
+
     context 'when user does not have 2FA enabled' do
       context 'when no client credentials provided' do
         it 'creates an access token' do
