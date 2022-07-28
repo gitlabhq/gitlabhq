@@ -51,13 +51,13 @@ describe('vue_shared/components/confirm_modal', () => {
     wrapper.destroy();
   });
 
-  const findModal = () => wrapper.find(GlModalStub);
+  const findModal = () => wrapper.findComponent(GlModalStub);
   const findForm = () => wrapper.find('form');
   const findFormData = () =>
     findForm()
       .findAll('input')
       .wrappers.map((x) => ({ name: x.attributes('name'), value: x.attributes('value') }));
-  const findDomElementListener = () => wrapper.find(DomElementListener);
+  const findDomElementListener = () => wrapper.findComponent(DomElementListener);
   const triggerOpenWithEventHub = (modalData) => {
     eventHub.$emit(EVENT_OPEN_CONFIRM_MODAL, modalData);
   };

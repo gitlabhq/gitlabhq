@@ -92,15 +92,15 @@ describe('AlertManagementEmptyState', () => {
 
   const EmptyState = () => wrapper.find('.empty-state');
   const ItemsTable = () => wrapper.find('.gl-table');
-  const ErrorAlert = () => wrapper.find(GlAlert);
-  const Pagination = () => wrapper.find(GlPagination);
-  const Tabs = () => wrapper.find(GlTabs);
+  const ErrorAlert = () => wrapper.findComponent(GlAlert);
+  const Pagination = () => wrapper.findComponent(GlPagination);
+  const Tabs = () => wrapper.findComponent(GlTabs);
   const ActionButton = () => wrapper.find('.header-actions > button');
-  const Filters = () => wrapper.find(FilteredSearchBar);
-  const findPagination = () => wrapper.find(GlPagination);
-  const findStatusFilterTabs = () => wrapper.findAll(GlTab);
-  const findStatusTabs = () => wrapper.find(GlTabs);
-  const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
+  const Filters = () => wrapper.findComponent(FilteredSearchBar);
+  const findPagination = () => wrapper.findComponent(GlPagination);
+  const findStatusFilterTabs = () => wrapper.findAllComponents(GlTab);
+  const findStatusTabs = () => wrapper.findComponent(GlTabs);
+  const findStatusFilterBadge = () => wrapper.findAllComponents(GlBadge);
 
   describe('Snowplow tracking', () => {
     beforeEach(() => {
@@ -213,7 +213,7 @@ describe('AlertManagementEmptyState', () => {
     });
 
     it('should render pagination', () => {
-      expect(wrapper.find(GlPagination).exists()).toBe(true);
+      expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
     });
 
     describe('prevPage', () => {

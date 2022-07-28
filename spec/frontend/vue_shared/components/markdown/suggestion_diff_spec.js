@@ -71,7 +71,7 @@ describe('Suggestion Diff component', () => {
   });
 
   it('renders a correct amount of suggestion diff rows', () => {
-    expect(wrapper.findAll(SuggestionDiffRow)).toHaveLength(3);
+    expect(wrapper.findAllComponents(SuggestionDiffRow)).toHaveLength(3);
   });
 
   it.each`
@@ -81,14 +81,14 @@ describe('Suggestion Diff component', () => {
     ${'addToBatch'}      | ${[]}             | ${[suggestionId]}
     ${'removeFromBatch'} | ${[]}             | ${[suggestionId]}
   `('emits $event event on sugestion diff header $event', ({ event, childArgs, args }) => {
-    wrapper.find(SuggestionDiffHeader).vm.$emit(event, ...childArgs);
+    wrapper.findComponent(SuggestionDiffHeader).vm.$emit(event, ...childArgs);
 
     expect(wrapper.emitted(event)).toBeDefined();
     expect(wrapper.emitted(event)).toEqual([args]);
   });
 
   it('passes suggestion batch props to suggestion diff header', () => {
-    expect(wrapper.find(SuggestionDiffHeader).props()).toMatchObject({
+    expect(wrapper.findComponent(SuggestionDiffHeader).props()).toMatchObject({
       batchSuggestionsCount: 1,
       isBatched: true,
       isApplyingBatch: MOCK_DATA.suggestion.is_applying_batch,

@@ -33708,6 +33708,9 @@ msgstr ""
 msgid "Runners|Online:"
 msgstr ""
 
+msgid "Runners|Outdated"
+msgstr ""
+
 msgid "Runners|Pause from accepting jobs"
 msgstr ""
 
@@ -33955,6 +33958,9 @@ msgstr ""
 msgid "Runners|active"
 msgstr ""
 
+msgid "Runners|available"
+msgstr ""
+
 msgid "Runners|group"
 msgstr ""
 
@@ -33968,6 +33974,9 @@ msgid "Runners|online"
 msgstr ""
 
 msgid "Runners|paused"
+msgstr ""
+
+msgid "Runners|recommended"
 msgstr ""
 
 msgid "Runners|shared"
@@ -34112,6 +34121,21 @@ msgid "Saving"
 msgstr ""
 
 msgid "Saving project."
+msgstr ""
+
+msgid "ScanExecutionPolicy|%{ifLabelStart}if%{ifLabelEnd} %{rules} for the %{branches} branch(es)"
+msgstr ""
+
+msgid "ScanExecutionPolicy|A pipeline is run"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Schedule"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Schedule rule component"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Select branches"
 msgstr ""
 
 msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
@@ -46137,6 +46161,9 @@ msgid "https://your-bitbucket-server"
 msgstr ""
 
 msgid "i18n|%{language} (%{percent_translated}%% translated)"
+msgstr ""
+
+msgid "if"
 msgstr ""
 
 msgid "image diff"

@@ -102,7 +102,7 @@ Subgroup members can:
 
 1. Be [direct members](../../project/members/index.md#add-users-to-a-project) of the subgroup.
 1. [Inherit membership](../../project/members/index.md#inherited-membership) of the subgroup from the subgroup's parent group.
-1. Be a member of a group that was [shared with the subgroup's top-level group](../index.md#share-a-group-with-another-group).
+1. Be a member of a group that was [shared with the subgroup's top-level group](../manage.md#share-a-group-with-another-group).
 
 ```mermaid
 flowchart RL
@@ -161,7 +161,7 @@ In the screenshot above:
 - Administrator has the Owner role on group _Four_ and is a member of all subgroups. For that reason, as with User 3,
   the **Source** column indicates they are a direct member.
 
-Members can be [filtered by inherited or direct membership](../index.md#filter-a-group).
+Members can be [filtered by inherited or direct membership](../manage.md#filter-a-group).
 
 ### Override ancestor group membership
 

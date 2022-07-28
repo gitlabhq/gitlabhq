@@ -166,7 +166,7 @@ describe('RunnerInstructionsModal component', () => {
         });
 
         it('sets the focus on the default selected platform', () => {
-          const findOsxPlatformButton = () => wrapper.find({ ref: 'osx' });
+          const findOsxPlatformButton = () => wrapper.findComponent({ ref: 'osx' });
 
           findOsxPlatformButton().element.focus = jest.fn();
 

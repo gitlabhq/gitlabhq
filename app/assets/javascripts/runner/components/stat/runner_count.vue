@@ -1,8 +1,9 @@
 <script>
 import { fetchPolicies } from '~/lib/graphql';
+import allRunnersCountQuery from 'ee_else_ce/runner/graphql/list/all_runners_count.query.graphql';
+import groupRunnersCountQuery from 'ee_else_ce/runner/graphql/list/group_runners_count.query.graphql';
+
 import { captureException } from '../../sentry_utils';
-import allRunnersCountQuery from '../../graphql/list/all_runners_count.query.graphql';
-import groupRunnersCountQuery from '../../graphql/list/group_runners_count.query.graphql';
 import { INSTANCE_TYPE, GROUP_TYPE } from '../../constants';
 
 /**
@@ -38,7 +39,7 @@ export default {
     variables: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
     skip: {
       type: Boolean,

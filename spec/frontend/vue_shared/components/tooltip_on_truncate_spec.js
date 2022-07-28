@@ -68,7 +68,7 @@ describe('TooltipOnTruncate component', () => {
       },
     );
 
-    wrapper = parent.find(WrappedTooltipOnTruncate);
+    wrapper = parent.findComponent(WrappedTooltipOnTruncate);
   };
 
   const getTooltipValue = () => getBinding(wrapper.element, 'gl-tooltip')?.value;

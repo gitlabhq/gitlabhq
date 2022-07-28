@@ -1614,7 +1614,7 @@ Payload example:
 
 ### Remove a subgroup from a group
 
-This webhook is not triggered when a [subgroup is transferred to a new parent group](../../group/index.md#transfer-a-group).
+This webhook is not triggered when a [subgroup is transferred to a new parent group](../../group/manage.md#transfer-a-group).
 
 Request header:
 

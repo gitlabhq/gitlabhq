@@ -195,7 +195,7 @@ describe('AuthorToken', () => {
       });
 
       await nextTick();
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
       expect(tokenSegments).toHaveLength(3); // Author, =, "Administrator"
 
@@ -207,7 +207,7 @@ describe('AuthorToken', () => {
 
     it('renders token value with correct avatarUrl from author object', async () => {
       const getAvatarEl = () =>
-        wrapper.findAll(GlFilteredSearchTokenSegment).at(2).findComponent(GlAvatar);
+        wrapper.findAllComponents(GlFilteredSearchTokenSegment).at(2).findComponent(GlAvatar);
 
       wrapper = createComponent({
         value: { data: mockAuthors[0].username },
@@ -252,7 +252,7 @@ describe('AuthorToken', () => {
 
       await activateSuggestionsList();
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(defaultAuthors.length + currentUserLength);
       defaultAuthors.forEach((label, index) => {
@@ -266,12 +266,12 @@ describe('AuthorToken', () => {
         config: { ...mockAuthorToken, defaultAuthors: [] },
         stubs: { Portal: true },
       });
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
 
-      expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
+      expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
     it('renders `DEFAULT_NONE_ANY` as default suggestions', async () => {
@@ -283,7 +283,7 @@ describe('AuthorToken', () => {
 
       await activateSuggestionsList();
 
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(2 + currentUserLength);
       expect(suggestions.at(0).text()).toBe(DEFAULT_NONE_ANY[0].text);

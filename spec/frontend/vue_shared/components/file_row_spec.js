@@ -119,7 +119,7 @@ describe('File row component', () => {
       level: 0,
     });
 
-    expect(wrapper.find(FileHeader).exists()).toBe(true);
+    expect(wrapper.findComponent(FileHeader).exists()).toBe(true);
   });
 
   it('matches the current route against encoded file URL', () => {
@@ -164,6 +164,6 @@ describe('File row component', () => {
       level: 0,
     });
 
-    expect(wrapper.find(FileIcon).props('submodule')).toBe(submodule);
+    expect(wrapper.findComponent(FileIcon).props('submodule')).toBe(submodule);
   });
 });

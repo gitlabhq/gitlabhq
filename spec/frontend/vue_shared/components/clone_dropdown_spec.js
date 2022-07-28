@@ -38,9 +38,9 @@ describe('Clone Dropdown Button', () => {
       ${'HTTP'} | ${1}  | ${httpLink}
     `('renders correct link and a copy-button for $name', ({ index, value }) => {
       createComponent();
-      const group = wrapper.findAll(GlFormInputGroup).at(index);
+      const group = wrapper.findAllComponents(GlFormInputGroup).at(index);
       expect(group.props('value')).toBe(value);
-      expect(group.find(GlFormInputGroup).exists()).toBe(true);
+      expect(group.findComponent(GlFormInputGroup).exists()).toBe(true);
     });
 
     it.each`
@@ -50,8 +50,8 @@ describe('Clone Dropdown Button', () => {
     `('does not fail if only $name is set', ({ name, value }) => {
       createComponent({ [name]: value });
 
-      expect(wrapper.find(GlFormInputGroup).props('value')).toBe(value);
-      expect(wrapper.findAll(GlDropdownSectionHeader).length).toBe(1);
+      expect(wrapper.findComponent(GlFormInputGroup).props('value')).toBe(value);
+      expect(wrapper.findAllComponents(GlDropdownSectionHeader).length).toBe(1);
     });
   });
 
@@ -63,12 +63,12 @@ describe('Clone Dropdown Button', () => {
     `('allows null values for the props', ({ name, value }) => {
       createComponent({ ...defaultPropsData, [name]: value });
 
-      expect(wrapper.findAll(GlDropdownSectionHeader).length).toBe(1);
+      expect(wrapper.findAllComponents(GlDropdownSectionHeader).length).toBe(1);
     });
 
     it('correctly calculates httpLabel for HTTPS protocol', () => {
       createComponent({ httpLink: httpsLink });
-      expect(wrapper.find(GlDropdownSectionHeader).text()).toContain('HTTPS');
+      expect(wrapper.findComponent(GlDropdownSectionHeader).text()).toContain('HTTPS');
     });
   });
 });

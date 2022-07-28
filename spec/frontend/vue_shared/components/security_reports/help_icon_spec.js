@@ -17,9 +17,9 @@ describe('HelpIcon component', () => {
     });
   };
 
-  const findLink = () => wrapper.find(GlLink);
-  const findPopover = () => wrapper.find(GlPopover);
-  const findPopoverTarget = () => wrapper.find({ ref: 'discoverProjectSecurity' });
+  const findLink = () => wrapper.findComponent(GlLink);
+  const findPopover = () => wrapper.findComponent(GlPopover);
+  const findPopoverTarget = () => wrapper.findComponent({ ref: 'discoverProjectSecurity' });
 
   afterEach(() => {
     wrapper.destroy();

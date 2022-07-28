@@ -439,9 +439,9 @@ The following table lists group permissions available for each role:
 2. Introduced in GitLab 12.2.
 3. Default project creation role can be changed at:
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
-   - The [group level](group/index.md#specify-who-can-add-projects-to-a-group).
+   - The [group level](group/manage.md#specify-who-can-add-projects-to-a-group).
 4. Does not apply to subgroups.
-5. Developers can push commits to the default branch of a new project only if the [default branch protection](group/index.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
+5. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
 6. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
 7. Users can only view events based on their individual actions.
 

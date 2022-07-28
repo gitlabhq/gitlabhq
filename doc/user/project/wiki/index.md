@@ -230,7 +230,7 @@ GitLab tracks wiki creation, deletion, and update events. These events are displ
 
 - [User profile](../../profile/index.md#access-your-user-profile).
 - Activity pages, depending on the type of wiki:
-  - [Group activity](../../group/index.md#view-group-activity).
+  - [Group activity](../../group/manage.md#view-group-activity).
   - [Project activity](../working_with_projects.md#view-project-activity).
 
 Commits to wikis are not counted in [repository analytics](../../analytics/repository_analytics.md).

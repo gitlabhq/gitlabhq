@@ -173,15 +173,15 @@ describe('IssuableMoveDropdown', () => {
   });
 
   describe('template', () => {
-    const findDropdownEl = () => wrapper.find(GlDropdown);
+    const findDropdownEl = () => wrapper.findComponent(GlDropdown);
 
     it('renders collapsed state element with icon', () => {
       const collapsedEl = wrapper.find('[data-testid="move-collapsed"]');
 
       expect(collapsedEl.exists()).toBe(true);
       expect(collapsedEl.attributes('title')).toBe(mockProps.dropdownButtonTitle);
-      expect(collapsedEl.find(GlIcon).exists()).toBe(true);
-      expect(collapsedEl.find(GlIcon).props('name')).toBe('arrow-right');
+      expect(collapsedEl.findComponent(GlIcon).exists()).toBe(true);
+      expect(collapsedEl.findComponent(GlIcon).props('name')).toBe('arrow-right');
     });
 
     describe('gl-dropdown component', () => {
@@ -191,7 +191,7 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('renders gl-dropdown-form component', () => {
-        expect(findDropdownEl().find(GlDropdownForm).exists()).toBe(true);
+        expect(findDropdownEl().findComponent(GlDropdownForm).exists()).toBe(true);
       });
 
       it('renders header element', () => {
@@ -199,11 +199,11 @@ describe('IssuableMoveDropdown', () => {
 
         expect(headerEl.exists()).toBe(true);
         expect(headerEl.find('span').text()).toBe(mockProps.dropdownHeaderTitle);
-        expect(headerEl.find(GlButton).props('icon')).toBe('close');
+        expect(headerEl.findComponent(GlButton).props('icon')).toBe('close');
       });
 
       it('renders gl-search-box-by-type component', () => {
-        const searchEl = findDropdownEl().find(GlSearchBoxByType);
+        const searchEl = findDropdownEl().findComponent(GlSearchBoxByType);
 
         expect(searchEl.exists()).toBe(true);
         expect(searchEl.attributes()).toMatchObject({
@@ -221,7 +221,7 @@ describe('IssuableMoveDropdown', () => {
 
         await nextTick();
 
-        expect(findDropdownEl().find(GlLoadingIcon).exists()).toBe(true);
+        expect(findDropdownEl().findComponent(GlLoadingIcon).exists()).toBe(true);
       });
 
       it('renders gl-dropdown-item components for available projects', async () => {
@@ -234,7 +234,7 @@ describe('IssuableMoveDropdown', () => {
 
         await nextTick();
 
-        const dropdownItems = wrapper.findAll(GlDropdownItem);
+        const dropdownItems = wrapper.findAllComponents(GlDropdownItem);
 
         expect(dropdownItems).toHaveLength(mockProjects.length);
         expect(dropdownItems.at(0).props()).toMatchObject({
@@ -285,7 +285,7 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('renders gl-button within footer', async () => {
-        const moveButtonEl = wrapper.find('[data-testid="footer"]').find(GlButton);
+        const moveButtonEl = wrapper.find('[data-testid="footer"]').findComponent(GlButton);
 
         expect(moveButtonEl.text()).toBe('Move');
         expect(moveButtonEl.attributes('disabled')).toBe('true');
@@ -299,7 +299,7 @@ describe('IssuableMoveDropdown', () => {
         await nextTick();
 
         expect(
-          wrapper.find('[data-testid="footer"]').find(GlButton).attributes('disabled'),
+          wrapper.find('[data-testid="footer"]').findComponent(GlButton).attributes('disabled'),
         ).not.toBeDefined();
       });
     });
@@ -341,7 +341,7 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('close icon in dropdown header closes the dropdown when clicked', () => {
-        wrapper.find('[data-testid="header"]').find(GlButton).vm.$emit('click', mockEvent);
+        wrapper.find('[data-testid="header"]').findComponent(GlButton).vm.$emit('click', mockEvent);
 
         expect(wrapper.vm.$refs.dropdown.hide).toHaveBeenCalled();
       });
@@ -355,7 +355,7 @@ describe('IssuableMoveDropdown', () => {
 
         await nextTick();
 
-        wrapper.findAll(GlDropdownItem).at(0).vm.$emit('click', mockEvent);
+        wrapper.findAllComponents(GlDropdownItem).at(0).vm.$emit('click', mockEvent);
 
         expect(wrapper.vm.selectedProject).toBe(mockProjects[0]);
       });
@@ -369,7 +369,7 @@ describe('IssuableMoveDropdown', () => {
 
         await nextTick();
 
-        wrapper.find('[data-testid="footer"]').find(GlButton).vm.$emit('click');
+        wrapper.find('[data-testid="footer"]').findComponent(GlButton).vm.$emit('click');
 
         expect(wrapper.vm.$refs.dropdown.hide).toHaveBeenCalled();
         expect(wrapper.emitted('move-issuable')).toBeTruthy();

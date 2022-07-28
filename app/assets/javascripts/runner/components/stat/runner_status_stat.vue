@@ -1,17 +1,21 @@
 <script>
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
-import { s__, formatNumber } from '~/locale';
+import { s__ } from '~/locale';
 import { STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE } from '../../constants';
+import RunnerSingleStat from './runner_single_stat.vue';
 
 export default {
   components: {
-    GlSingleStat,
+    RunnerSingleStat,
   },
   props: {
-    value: {
-      type: Number,
+    scope: {
+      type: String,
+      required: true,
+    },
+    variables: {
+      type: Object,
       required: false,
-      default: null,
+      default: () => ({}),
     },
     status: {
       type: String,
@@ -19,13 +23,16 @@ export default {
     },
   },
   computed: {
-    formattedValue() {
-      if (typeof this.value === 'number') {
-        return formatNumber(this.value);
-      }
-      return '-';
+    countVariables() {
+      return { ...this.variables, status: this.status };
     },
-    stat() {
+    skip() {
+      // Status are mutually exclusive, skip displaying this total
+      // when filtering by an status different to this one
+      const { status } = this.variables;
+      return status && status !== this.status;
+    },
+    statProps() {
       switch (this.status) {
         case STATUS_ONLINE:
           return {
@@ -55,11 +62,11 @@ export default {
 };
 </script>
 <template>
-  <gl-single-stat
-    v-if="stat"
-    :value="formattedValue"
-    :variant="stat.variant"
-    :title="stat.title"
-    :meta-text="stat.metaText"
+  <runner-single-stat
+    v-if="statProps"
+    v-bind="statProps"
+    :scope="scope"
+    :variables="countVariables"
+    :skip="skip"
   />
 </template>

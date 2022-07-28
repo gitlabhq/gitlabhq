@@ -86,7 +86,7 @@ describe('IssuableHeader', () => {
       const blockedEl = wrapper.findByTestId('blocked');
 
       expect(blockedEl.exists()).toBe(true);
-      expect(blockedEl.find(GlIcon).props('name')).toBe('lock');
+      expect(blockedEl.findComponent(GlIcon).props('name')).toBe('lock');
     });
 
     it('renders confidential icon when issuable is confidential', async () => {
@@ -97,7 +97,7 @@ describe('IssuableHeader', () => {
       const confidentialEl = wrapper.findByTestId('confidential');
 
       expect(confidentialEl.exists()).toBe(true);
-      expect(confidentialEl.find(GlIcon).props('name')).toBe('eye-slash');
+      expect(confidentialEl.findComponent(GlIcon).props('name')).toBe('eye-slash');
     });
 
     it('renders issuable author avatar', () => {
@@ -113,12 +113,12 @@ describe('IssuableHeader', () => {
       const avatarEl = wrapper.findByTestId('avatar');
       expect(avatarEl.exists()).toBe(true);
       expect(avatarEl.attributes()).toMatchObject(avatarElAttrs);
-      expect(avatarEl.find(GlAvatarLabeled).attributes()).toMatchObject({
+      expect(avatarEl.findComponent(GlAvatarLabeled).attributes()).toMatchObject({
         size: '24',
         src: avatarUrl,
         label: name,
       });
-      expect(avatarEl.find(GlAvatarLabeled).find(GlIcon).exists()).toBe(false);
+      expect(avatarEl.findComponent(GlAvatarLabeled).findComponent(GlIcon).exists()).toBe(false);
     });
 
     it('renders task status text when `taskCompletionStatus` prop is defined', () => {
@@ -172,7 +172,7 @@ describe('IssuableHeader', () => {
         );
 
         const avatarEl = wrapper.findComponent(GlAvatarLabeled);
-        const icon = avatarEl.find(GlIcon);
+        const icon = avatarEl.findComponent(GlIcon);
 
         expect(icon.exists()).toBe(true);
         expect(icon.props('name')).toBe('external-link');

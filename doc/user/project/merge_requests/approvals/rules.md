@@ -172,15 +172,15 @@ oversight on proposed work. To enable approval permissions for these users witho
 granting them push access:
 
 1. [Create a protected branch](../../protected_branches.md)
-1. [Create a new group](../../../group/index.md#create-a-group).
-1. [Add the user to the group](../../../group/index.md#add-users-to-a-group),
+1. [Create a new group](../../../group/manage.md#create-a-group).
+1. [Add the user to the group](../../../group/manage.md#add-users-to-a-group),
    and select the Reporter role for the user.
 1. [Share the project with your group](../../members/share_project_with_groups.md#share-a-project-with-a-group-of-users),
    based on the Reporter role.
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
 1. Select **Add approval rule** or **Update approval rule** and target the protected branch.
-1. [Add the group](../../../group/index.md#create-a-group) to the permission list.
+1. [Add the group](../../../group/manage.md#create-a-group) to the permission list.
 
    ![Update approval rule](img/update_approval_rule_v13_10.png)
 

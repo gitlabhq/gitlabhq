@@ -37,8 +37,8 @@ Watch an overview of [groups and projects](https://www.youtube.com/watch?v=cqb2m
 Get started:
 
 - Create a [project](../user/project/working_with_projects.md#create-a-project).
-- Create a [group](../user/group/index.md#create-a-group).
-- [Add members](../user/group/index.md#add-users-to-a-group) to the group.
+- Create a [group](../user/group/manage.md#create-a-group).
+- [Add members](../user/group/manage.md#add-users-to-a-group) to the group.
 - Create a [subgroup](../user/group/subgroups/index.md#create-a-subgroup).
 - [Add members](../user/group/subgroups/index.md#subgroup-membership) to the subgroup.
 - Enable [external authorization control](../user/admin_area/settings/external_authorization.md#configuration).

@@ -47,7 +47,7 @@ in a different color.
 Avoid mentioning `@all` in issues and merge requests, because it sends an email notification
 to all the members of that project's group. This might be interpreted as spam.
 Notifications and mentions can be disabled in
-[a group's settings](../group/index.md#disable-email-notifications).
+[a group's settings](../group/manage.md#disable-email-notifications).
 
 ## Add a comment to a merge request diff
 

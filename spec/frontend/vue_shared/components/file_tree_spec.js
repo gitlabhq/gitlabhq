@@ -25,8 +25,8 @@ describe('File Tree component', () => {
     });
   };
 
-  const findFileRow = () => wrapper.find(MockFileRow);
-  const findChildrenTrees = () => wrapper.findAll(FileTree).wrappers.slice(1);
+  const findFileRow = () => wrapper.findComponent(MockFileRow);
+  const findChildrenTrees = () => wrapper.findAllComponents(FileTree).wrappers.slice(1);
   const findChildrenTreeProps = () =>
     findChildrenTrees().map((x) => ({
       ...x.props(),

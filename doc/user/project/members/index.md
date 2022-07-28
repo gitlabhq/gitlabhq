@@ -15,7 +15,7 @@ Project members can:
 1. Be [direct members](#add-users-to-a-project) of the project.
 1. [Inherit membership](#inherited-membership) of the project from the project's group.
 1. Be a member of a group that was [shared](share_project_with_groups.md) with the project.
-1. Be a member of a group that was [shared with the project's group](../../group/index.md#share-a-group-with-another-group).
+1. Be a member of a group that was [shared with the project's group](../../group/manage.md#share-a-group-with-another-group).
 
 ```mermaid
 flowchart RL

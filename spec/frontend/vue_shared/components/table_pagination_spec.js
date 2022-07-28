@@ -50,7 +50,7 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(wrapper.find(GlPagination).exists()).toBe(true);
+      expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
     });
 
     it('renders if there is a prev page', () => {
@@ -66,7 +66,7 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(wrapper.find(GlPagination).exists()).toBe(true);
+      expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
     });
   });
 
@@ -83,7 +83,7 @@ describe('Pagination component', () => {
         },
         change: spy,
       });
-      wrapper.find(GlPagination).vm.$emit('input', 3);
+      wrapper.findComponent(GlPagination).vm.$emit('input', 3);
       expect(spy).toHaveBeenCalledWith(3);
     });
   });

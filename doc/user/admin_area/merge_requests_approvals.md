@@ -38,4 +38,4 @@ Merge request approval settings that can be set at an instance level are:
 See also the following, which are affected by instance-level rules:
 
 - [Project merge request approval rules](../project/merge_requests/approvals/index.md).
-- [Group merge request approval settings](../group/index.md#group-merge-request-approval-settings) available in GitLab 13.9 and later.
+- [Group merge request approval settings](../group/manage.md#group-merge-request-approval-settings) available in GitLab 13.9 and later.

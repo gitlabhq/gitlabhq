@@ -15,7 +15,7 @@ describe('ProjectSelector component', () => {
   let selected = [];
   selected = selected.concat(allProjects.slice(0, 3)).concat(allProjects.slice(5, 8));
 
-  const findSearchInput = () => wrapper.find(GlSearchBoxByType).find('input');
+  const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType).find('input');
   const findLegendText = () => wrapper.find('[data-testid="legend-text"]').text();
   const search = (query) => {
     const searchInput = findSearchInput();
@@ -65,14 +65,14 @@ describe('ProjectSelector component', () => {
 
   it(`triggers a "bottomReached" event when user has scrolled to the bottom of the list`, () => {
     jest.spyOn(vm, '$emit').mockImplementation(() => {});
-    wrapper.find(GlInfiniteScroll).vm.$emit('bottomReached');
+    wrapper.findComponent(GlInfiniteScroll).vm.$emit('bottomReached');
 
     expect(vm.$emit).toHaveBeenCalledWith('bottomReached');
   });
 
   it(`triggers a "projectClicked" event when a project is clicked`, () => {
     jest.spyOn(vm, '$emit').mockImplementation(() => {});
-    wrapper.find(ProjectListItem).vm.$emit('click', head(searchResults));
+    wrapper.findComponent(ProjectListItem).vm.$emit('click', head(searchResults));
 
     expect(vm.$emit).toHaveBeenCalledWith('projectClicked', head(searchResults));
   });

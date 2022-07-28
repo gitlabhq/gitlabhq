@@ -276,7 +276,7 @@ It's rendered as:
 
 User activity events on designs (creation, deletion, and updates) are tracked by GitLab and
 displayed on the [user profile](../../profile/index.md#access-your-user-profile),
-[group](../../group/index.md#view-group-activity),
+[group](../../group/manage.md#view-group-activity),
 and [project](../working_with_projects.md#view-project-activity) activity pages.
 
 ## GitLab-Figma plugin

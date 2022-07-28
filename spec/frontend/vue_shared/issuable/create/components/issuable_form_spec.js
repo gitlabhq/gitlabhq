@@ -65,9 +65,9 @@ describe('IssuableForm', () => {
 
       expect(titleFieldEl.exists()).toBe(true);
       expect(titleFieldEl.find('label').text()).toBe('Title');
-      expect(titleFieldEl.find(GlFormInput).exists()).toBe(true);
-      expect(titleFieldEl.find(GlFormInput).attributes('placeholder')).toBe('Title');
-      expect(titleFieldEl.find(GlFormInput).attributes('autofocus')).toBe('true');
+      expect(titleFieldEl.findComponent(GlFormInput).exists()).toBe(true);
+      expect(titleFieldEl.findComponent(GlFormInput).attributes('placeholder')).toBe('Title');
+      expect(titleFieldEl.findComponent(GlFormInput).attributes('autofocus')).toBe('true');
     });
 
     it('renders issuable description input field', () => {
@@ -75,8 +75,8 @@ describe('IssuableForm', () => {
 
       expect(descriptionFieldEl.exists()).toBe(true);
       expect(descriptionFieldEl.find('label').text()).toBe('Description');
-      expect(descriptionFieldEl.find(MarkdownField).exists()).toBe(true);
-      expect(descriptionFieldEl.find(MarkdownField).props()).toMatchObject({
+      expect(descriptionFieldEl.findComponent(MarkdownField).exists()).toBe(true);
+      expect(descriptionFieldEl.findComponent(MarkdownField).props()).toMatchObject({
         markdownPreviewPath: wrapper.vm.descriptionPreviewPath,
         markdownDocsPath: wrapper.vm.descriptionHelpPath,
         addSpacingClasses: false,
@@ -94,8 +94,8 @@ describe('IssuableForm', () => {
 
       expect(labelsSelectEl.exists()).toBe(true);
       expect(labelsSelectEl.find('label').text()).toBe('Labels');
-      expect(labelsSelectEl.find(LabelsSelect).exists()).toBe(true);
-      expect(labelsSelectEl.find(LabelsSelect).props()).toMatchObject({
+      expect(labelsSelectEl.findComponent(LabelsSelect).exists()).toBe(true);
+      expect(labelsSelectEl.findComponent(LabelsSelect).props()).toMatchObject({
         allowLabelEdit: true,
         allowLabelCreate: true,
         allowMultiselect: true,

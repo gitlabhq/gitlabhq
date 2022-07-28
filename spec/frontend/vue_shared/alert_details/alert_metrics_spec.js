@@ -28,8 +28,8 @@ describe('Alert Metrics', () => {
     });
   }
 
-  const findChart = () => wrapper.find(MetricEmbed);
-  const findEmptyState = () => wrapper.find({ ref: 'emptyState' });
+  const findChart = () => wrapper.findComponent(MetricEmbed);
+  const findEmptyState = () => wrapper.findComponent({ ref: 'emptyState' });
 
   afterEach(() => {
     if (wrapper) {

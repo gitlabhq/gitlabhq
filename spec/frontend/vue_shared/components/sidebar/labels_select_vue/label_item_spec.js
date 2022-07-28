@@ -32,7 +32,7 @@ describe('LabelItem', () => {
 
   describe('template', () => {
     it('renders gl-link component', () => {
-      expect(wrapper.find(GlLink).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLink).exists()).toBe(true);
     });
 
     it('renders component root with class `is-focused` when `highlight` prop is true', () => {

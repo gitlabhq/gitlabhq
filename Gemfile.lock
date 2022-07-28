@@ -1000,7 +1000,7 @@ GEM
       pry (~> 0.13.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    pry-shell (0.5.0)
+    pry-shell (0.5.1)
       pry (~> 0.13.0)
       tty-markdown
       tty-prompt
@@ -1669,7 +1669,7 @@ DEPENDENCIES
   prometheus-client-mmap (~> 0.16)
   pry-byebug
   pry-rails (~> 0.3.9)
-  pry-shell (~> 0.5.0)
+  pry-shell (~> 0.5.1)
   puma (~> 5.6.4)
   puma_worker_killer (~> 0.3.1)
   rack (~> 2.2.4)

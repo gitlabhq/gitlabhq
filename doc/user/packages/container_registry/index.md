@@ -563,7 +563,7 @@ project or branch name. Special characters can include:
 - Leading underscore
 - Trailing hyphen/dash
 
-To get around this, you can [change the group path](../../group/index.md#change-a-groups-path),
+To get around this, you can [change the group path](../../group/manage.md#change-a-groups-path),
 [change the project path](../../project/settings/index.md#rename-a-repository) or change the branch
 name.
 

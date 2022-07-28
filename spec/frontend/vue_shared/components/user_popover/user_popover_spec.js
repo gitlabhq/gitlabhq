@@ -88,7 +88,7 @@ describe('User Popover Component', () => {
         },
       });
 
-      expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);
+      expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
     });
   });
 
@@ -102,7 +102,7 @@ describe('User Popover Component', () => {
 
     it('shows icon for location', () => {
       createWrapper();
-      const iconEl = wrapper.find(GlIcon);
+      const iconEl = wrapper.findComponent(GlIcon);
 
       expect(iconEl.props('name')).toEqual('location');
     });
@@ -115,8 +115,8 @@ describe('User Popover Component', () => {
   });
 
   describe('job data', () => {
-    const findWorkInformation = () => wrapper.find({ ref: 'workInformation' });
-    const findBio = () => wrapper.find({ ref: 'bio' });
+    const findWorkInformation = () => wrapper.findComponent({ ref: 'workInformation' });
+    const findBio = () => wrapper.findComponent({ ref: 'bio' });
     const bio = 'My super interesting bio';
 
     it('should show only bio if work information is not available', () => {
@@ -172,7 +172,7 @@ describe('User Popover Component', () => {
       createWrapper({ user });
 
       expect(
-        wrapper.findAll(GlIcon).filter((icon) => icon.props('name') === 'profile').length,
+        wrapper.findAllComponents(GlIcon).filter((icon) => icon.props('name') === 'profile').length,
       ).toEqual(1);
     });
 
@@ -185,7 +185,7 @@ describe('User Popover Component', () => {
       createWrapper({ user });
 
       expect(
-        wrapper.findAll(GlIcon).filter((icon) => icon.props('name') === 'work').length,
+        wrapper.findAllComponents(GlIcon).filter((icon) => icon.props('name') === 'work').length,
       ).toEqual(1);
     });
   });

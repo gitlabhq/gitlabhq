@@ -45,9 +45,9 @@ describe('Actions button component', () => {
 
     return directiveBinding.value;
   };
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
   const findButtonTooltip = () => getTooltip(findButton());
-  const findDropdown = () => wrapper.find(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownTooltip = () => getTooltip(findDropdown());
   const parseDropdownItems = () =>
     findDropdown()

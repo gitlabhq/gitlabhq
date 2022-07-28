@@ -392,7 +392,7 @@ When you transfer a project to another namespace, you move the project to a diff
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the [group](../../group/index.md#create-a-group) to which you are transferring.
+- You must have at least the Maintainer role for the [group](../../group/manage.md#create-a-group) to which you are transferring.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
 - The project must not contain any [container images](../../packages/container_registry/index.md#limitations).
@@ -455,7 +455,7 @@ delayed project deletion is enabled for a particular project:
 - Self-managed instance [settings](../../admin_area/settings/visibility_and_access_controls.md#delayed-project-deletion).
   You can enable delayed project deletion as the default setting for new groups, and configure the number of days for the
   delay. For GitLab.com, see the [GitLab.com settings](../../gitlab_com/index.md#delayed-project-deletion).
-- Group [settings](../../group/index.md#enable-delayed-project-deletion) to enabled delayed project deletion for all
+- Group [settings](../../group/manage.md#enable-delayed-project-deletion) to enabled delayed project deletion for all
   projects in the group.
 
 ### Delete a project immediately

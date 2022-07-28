@@ -43,6 +43,6 @@ describe('Blob Rich Viewer component', () => {
   });
 
   it('is using Markdown View Field', () => {
-    expect(wrapper.find(MarkdownFieldView).exists()).toBe(true);
+    expect(wrapper.findComponent(MarkdownFieldView).exists()).toBe(true);
   });
 });

@@ -273,9 +273,9 @@ describe('IssuableItem', () => {
         const titleEl = wrapper.find('[data-testid="issuable-title"]');
 
         expect(titleEl.exists()).toBe(true);
-        expect(titleEl.find(GlLink).attributes('href')).toBe(expectedHref);
-        expect(titleEl.find(GlLink).attributes('target')).toBe(expectedTarget);
-        expect(titleEl.find(GlLink).text()).toBe(mockIssuable.title);
+        expect(titleEl.findComponent(GlLink).attributes('href')).toBe(expectedHref);
+        expect(titleEl.findComponent(GlLink).attributes('target')).toBe(expectedTarget);
+        expect(titleEl.findComponent(GlLink).text()).toBe(mockIssuable.title);
       },
     );
 
@@ -286,8 +286,8 @@ describe('IssuableItem', () => {
 
       await nextTick();
 
-      expect(wrapper.find(GlFormCheckbox).exists()).toBe(true);
-      expect(wrapper.find(GlFormCheckbox).attributes('checked')).not.toBeDefined();
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
+      expect(wrapper.findComponent(GlFormCheckbox).attributes('checked')).not.toBeDefined();
 
       wrapper.setProps({
         checked: true,
@@ -295,7 +295,7 @@ describe('IssuableItem', () => {
 
       await nextTick();
 
-      expect(wrapper.find(GlFormCheckbox).attributes('checked')).toBe('true');
+      expect(wrapper.findComponent(GlFormCheckbox).attributes('checked')).toBe('true');
     });
 
     it('renders issuable title with `target` set as "_blank" when issuable.webUrl is external', async () => {
@@ -308,9 +308,9 @@ describe('IssuableItem', () => {
 
       await nextTick();
 
-      expect(wrapper.find('[data-testid="issuable-title"]').find(GlLink).attributes('target')).toBe(
-        '_blank',
-      );
+      expect(
+        wrapper.find('[data-testid="issuable-title"]').findComponent(GlLink).attributes('target'),
+      ).toBe('_blank');
     });
 
     it('renders issuable confidential icon when issuable is confidential', async () => {
@@ -323,7 +323,7 @@ describe('IssuableItem', () => {
 
       await nextTick();
 
-      const confidentialEl = wrapper.find('[data-testid="issuable-title"]').find(GlIcon);
+      const confidentialEl = wrapper.find('[data-testid="issuable-title"]').findComponent(GlIcon);
 
       expect(confidentialEl.exists()).toBe(true);
       expect(confidentialEl.props('name')).toBe('eye-slash');
@@ -440,7 +440,7 @@ describe('IssuableItem', () => {
     it('renders gl-label component for each label present within `issuable` prop', () => {
       wrapper = createComponent();
 
-      const labelsEl = wrapper.findAll(GlLabel);
+      const labelsEl = wrapper.findAllComponents(GlLabel);
 
       expect(labelsEl.exists()).toBe(true);
       expect(labelsEl).toHaveLength(mockLabels.length);
@@ -476,18 +476,18 @@ describe('IssuableItem', () => {
       const discussionsEl = wrapper.find('[data-testid="issuable-discussions"]');
 
       expect(discussionsEl.exists()).toBe(true);
-      expect(discussionsEl.find(GlLink).attributes()).toMatchObject({
+      expect(discussionsEl.findComponent(GlLink).attributes()).toMatchObject({
         title: 'Comments',
         href: `${mockIssuable.webUrl}#notes`,
       });
-      expect(discussionsEl.find(GlIcon).props('name')).toBe('comments');
-      expect(discussionsEl.find(GlLink).text()).toContain('2');
+      expect(discussionsEl.findComponent(GlIcon).props('name')).toBe('comments');
+      expect(discussionsEl.findComponent(GlLink).text()).toContain('2');
     });
 
     it('renders issuable-assignees component', () => {
       wrapper = createComponent();
 
-      const assigneesEl = wrapper.find(IssuableAssignees);
+      const assigneesEl = wrapper.findComponent(IssuableAssignees);
 
       expect(assigneesEl.exists()).toBe(true);
       expect(assigneesEl.props()).toMatchObject({

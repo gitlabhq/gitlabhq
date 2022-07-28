@@ -250,7 +250,7 @@ sort order is by **Last created**.
 To search for groups by name, enter your criteria in the search field. The group search is case
 insensitive, and applies partial matching.
 
-To [Create a new group](../group/index.md#create-a-group) select **New group**.
+To [Create a new group](../group/manage.md#create-a-group) select **New group**.
 
 ### Administering Topics
 

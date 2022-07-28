@@ -124,7 +124,7 @@ describe('IssuableEditForm', () => {
       const titleInputEl = wrapper.find('[data-testid="title"]');
 
       expect(titleInputEl.exists()).toBe(true);
-      expect(titleInputEl.find(GlFormInput).attributes()).toMatchObject({
+      expect(titleInputEl.findComponent(GlFormInput).attributes()).toMatchObject({
         'aria-label': 'Title',
         placeholder: 'Title',
       });
@@ -134,7 +134,7 @@ describe('IssuableEditForm', () => {
       const descriptionEl = wrapper.find('[data-testid="description"]');
 
       expect(descriptionEl.exists()).toBe(true);
-      expect(descriptionEl.find(MarkdownField).props()).toMatchObject({
+      expect(descriptionEl.findComponent(MarkdownField).props()).toMatchObject({
         markdownPreviewPath: issuableEditFormProps.descriptionPreviewPath,
         markdownDocsPath: issuableEditFormProps.descriptionHelpPath,
         enableAutocomplete: issuableEditFormProps.enableAutocomplete,
@@ -161,7 +161,7 @@ describe('IssuableEditForm', () => {
       };
 
       it('component emits `keydown-title` event with event object and issuableMeta params via gl-form-input', async () => {
-        const titleInputEl = wrapper.find(GlFormInput);
+        const titleInputEl = wrapper.findComponent(GlFormInput);
 
         titleInputEl.vm.$emit('keydown', eventObj, 'title');
 

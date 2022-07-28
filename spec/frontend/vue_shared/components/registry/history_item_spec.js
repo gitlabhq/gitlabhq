@@ -27,8 +27,8 @@ describe('History Item', () => {
     wrapper = null;
   });
 
-  const findTimelineEntry = () => wrapper.find(TimelineEntryItem);
-  const findGlIcon = () => wrapper.find(GlIcon);
+  const findTimelineEntry = () => wrapper.findComponent(TimelineEntryItem);
+  const findGlIcon = () => wrapper.findComponent(GlIcon);
   const findDefaultSlot = () => wrapper.find('[data-testid="default-slot"]');
   const findBodySlot = () => wrapper.find('[data-testid="body-slot"]');
 

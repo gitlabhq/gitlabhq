@@ -139,7 +139,7 @@ You can also enforce merge request approval settings:
 
 - At the [instance level](../../../admin_area/merge_requests_approvals.md), which apply to all groups
   on an instance and, therefore, all projects.
-- On a [top-level group](../../../group/index.md#group-merge-request-approval-settings), which apply to all subgroups
+- On a [top-level group](../../../group/manage.md#group-merge-request-approval-settings), which apply to all subgroups
   and projects.
 
 If the settings are inherited by a group or project, they cannot be changed in the group or project

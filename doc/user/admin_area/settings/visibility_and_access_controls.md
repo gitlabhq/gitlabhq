@@ -20,7 +20,7 @@ To access the visibility and access control options:
 ## Define which roles can create projects
 
 Instance-level protections for project creation define which roles can
-[add projects to a group](../../group/index.md#specify-who-can-add-projects-to-a-group)
+[add projects to a group](../../group/manage.md#specify-who-can-add-projects-to-a-group)
 on the instance. To alter which roles have permission to create projects:
 
 1. Sign in to GitLab as a user with Administrator access level.

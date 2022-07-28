@@ -74,7 +74,7 @@ describe('AlertDetails', () => {
       });
 
       it('displays a loading state when loading', () => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
     });
 

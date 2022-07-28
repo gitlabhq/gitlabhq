@@ -13,7 +13,7 @@ describe('AlertManagementStatus', () => {
   let wrapper;
   const findStatusDropdown = () => wrapper.findComponent(GlDropdown);
   const findFirstStatusOption = () => findStatusDropdown().findComponent(GlDropdownItem);
-  const findAllStatusOptions = () => findStatusDropdown().findAll(GlDropdownItem);
+  const findAllStatusOptions = () => findStatusDropdown().findAllComponents(GlDropdownItem);
   const findStatusDropdownHeader = () => wrapper.findByTestId('dropdown-header');
 
   const selectFirstStatusOption = () => {

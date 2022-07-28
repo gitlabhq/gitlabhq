@@ -7,8 +7,8 @@ describe('HelpPopover', () => {
   const title = 'popover <strong>title</strong>';
   const content = 'popover <b>content</b>';
 
-  const findQuestionButton = () => wrapper.find(GlButton);
-  const findPopover = () => wrapper.find(GlPopover);
+  const findQuestionButton = () => wrapper.findComponent(GlButton);
+  const findPopover = () => wrapper.findComponent(GlPopover);
 
   const createComponent = ({ props, ...opts } = {}) => {
     wrapper = mount(HelpPopover, {

@@ -1,12 +1,12 @@
 <script>
 import { STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE } from '../../constants';
-import RunnerCount from './runner_count.vue';
 import RunnerStatusStat from './runner_status_stat.vue';
 
 export default {
   components: {
-    RunnerCount,
     RunnerStatusStat,
+    RunnerUpgradeStatusStats: () =>
+      import('ee_component/runner/components/stat/runner_upgrade_status_stats.vue'),
   },
   props: {
     scope: {
@@ -16,13 +16,10 @@ export default {
     variables: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
   },
   methods: {
-    countVariables(vars) {
-      return { ...this.variables, ...vars };
-    },
     statusCountSkip(status) {
       // Show an empty result when we already filter by another status
       return this.variables.status && this.variables.status !== status;
@@ -32,16 +29,20 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-py-6">
-    <runner-count
+  <div class="gl-display-flex gl-flex-wrap gl-py-6">
+    <runner-status-stat
       v-for="status in $options.STATUS_LIST"
-      #default="{ count }"
       :key="status"
+      class="gl-px-5"
+      :variables="variables"
       :scope="scope"
-      :variables="countVariables({ status })"
-      :skip="statusCountSkip(status)"
-    >
-      <runner-status-stat class="gl-px-5" :status="status" :value="count" />
-    </runner-count>
+      :status="status"
+    />
+
+    <runner-upgrade-status-stats
+      class="gl-display-contents"
+      :scope="scope"
+      :variables="variables"
+    />
   </div>
 </template>

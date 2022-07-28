@@ -22,7 +22,7 @@ describe('CI Icon component', () => {
     });
 
     expect(wrapper.find('span').exists()).toBe(true);
-    expect(wrapper.find(GlIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
   });
 
   describe('active icons', () => {

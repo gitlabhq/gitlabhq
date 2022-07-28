@@ -108,8 +108,8 @@ describe('Web IDE link component', () => {
     wrapper.destroy();
   });
 
-  const findActionsButton = () => wrapper.find(ActionsButton);
-  const findLocalStorageSync = () => wrapper.find(LocalStorageSync);
+  const findActionsButton = () => wrapper.findComponent(ActionsButton);
+  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findModal = () => wrapper.findComponent(GlModal);
   const findForkConfirmModal = () => wrapper.findComponent(ConfirmForkModal);
 

@@ -21,7 +21,7 @@ describe('clipboard button', () => {
     });
   };
 
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
 
   const expectConfirmationTooltip = async ({ event, message }) => {
     const title = 'Copy this value';

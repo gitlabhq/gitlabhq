@@ -31,7 +31,7 @@ describe('Alert Details System Note', () => {
 
     it('renders the correct system note', () => {
       const noteId = wrapper.find('.note-wrapper').attributes('id');
-      const iconName = wrapper.find(GlIcon).attributes('name');
+      const iconName = wrapper.findComponent(GlIcon).attributes('name');
 
       expect(noteId).toBe('note_1628');
       expect(iconName).toBe(mockAlert.notes.nodes[0].systemNoteIconName);

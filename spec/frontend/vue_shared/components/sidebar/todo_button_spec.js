@@ -30,19 +30,19 @@ describe('Todo Button', () => {
   it('renders GlButton', () => {
     createComponent();
 
-    expect(wrapper.find(GlButton).exists()).toBe(true);
+    expect(wrapper.findComponent(GlButton).exists()).toBe(true);
   });
 
   it('emits click event when clicked', () => {
     createComponent({}, mount);
-    wrapper.find(GlButton).trigger('click');
+    wrapper.findComponent(GlButton).trigger('click');
 
     expect(wrapper.emitted().click).toBeTruthy();
   });
 
   it('calls dispatchDocumentEvent to update global To-Do counter correctly', () => {
     createComponent({}, mount);
-    wrapper.find(GlButton).trigger('click');
+    wrapper.findComponent(GlButton).trigger('click');
     const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
 
     expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
@@ -57,12 +57,12 @@ describe('Todo Button', () => {
   `('sets correct label when isTodo is $isTodo', ({ label, isTodo }) => {
     createComponent({ isTodo });
 
-    expect(wrapper.find(GlButton).text()).toBe(label);
+    expect(wrapper.findComponent(GlButton).text()).toBe(label);
   });
 
   it('binds additional props to GlButton', () => {
     createComponent({ loading: true });
 
-    expect(wrapper.find(GlButton).props('loading')).toBe(true);
+    expect(wrapper.findComponent(GlButton).props('loading')).toBe(true);
   });
 });

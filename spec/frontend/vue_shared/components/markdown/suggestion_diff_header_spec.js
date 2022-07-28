@@ -38,13 +38,13 @@ describe('Suggestion Diff component', () => {
     wrapper.destroy();
   });
 
-  const findApplyButton = () => wrapper.find(ApplySuggestion);
+  const findApplyButton = () => wrapper.findComponent(ApplySuggestion);
   const findApplyBatchButton = () => wrapper.find('.js-apply-batch-btn');
   const findAddToBatchButton = () => wrapper.find('.js-add-to-batch-btn');
   const findRemoveFromBatchButton = () => wrapper.find('.js-remove-from-batch-btn');
   const findHeader = () => wrapper.find('.js-suggestion-diff-header');
   const findHelpButton = () => wrapper.find('.js-help-btn');
-  const findLoading = () => wrapper.find(GlLoadingIcon);
+  const findLoading = () => wrapper.findComponent(GlLoadingIcon);
 
   it('renders a suggestion header', () => {
     createComponent();

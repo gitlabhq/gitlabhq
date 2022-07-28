@@ -96,7 +96,7 @@ Projects are permanently deleted after a seven-day delay.
 
 If you are on:
 
-- Premium tier and above, you can disable this by changing the [group setting](../group/index.md#enable-delayed-project-deletion).
+- Premium tier and above, you can disable this by changing the [group setting](../group/manage.md#enable-delayed-project-deletion).
 - Free tier, you cannot disable this setting or restore projects.
 
 ## Inactive project deletion

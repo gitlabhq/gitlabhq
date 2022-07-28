@@ -77,7 +77,7 @@ describe('Source Editor component', () => {
     });
 
     it('initialises Source Editor instance', () => {
-      const el = wrapper.find({ ref: 'editor' }).element;
+      const el = wrapper.findComponent({ ref: 'editor' }).element;
       expect(createInstanceMock).toHaveBeenCalledWith({
         el,
         blobPath: fileName,
@@ -112,7 +112,7 @@ describe('Source Editor component', () => {
     });
 
     it('emits EDITOR_READY_EVENT event when the Source Editor is ready', async () => {
-      const el = wrapper.find({ ref: 'editor' }).element;
+      const el = wrapper.findComponent({ ref: 'editor' }).element;
       expect(wrapper.emitted()[EDITOR_READY_EVENT]).toBeUndefined();
 
       await el.dispatchEvent(new Event(EDITOR_READY_EVENT));

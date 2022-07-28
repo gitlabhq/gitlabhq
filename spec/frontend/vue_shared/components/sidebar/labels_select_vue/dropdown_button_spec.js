@@ -33,9 +33,9 @@ describe('DropdownButton', () => {
     wrapper.destroy();
   });
 
-  const findDropdownButton = () => wrapper.find(GlButton);
+  const findDropdownButton = () => wrapper.findComponent(GlButton);
   const findDropdownText = () => wrapper.find('.dropdown-toggle-text');
-  const findDropdownIcon = () => wrapper.find(GlIcon);
+  const findDropdownIcon = () => wrapper.findComponent(GlIcon);
 
   describe('methods', () => {
     describe('handleButtonClick', () => {
@@ -61,7 +61,7 @@ describe('DropdownButton', () => {
 
   describe('template', () => {
     it('renders component container element', () => {
-      expect(wrapper.find(GlButton).element).toBe(wrapper.element);
+      expect(wrapper.findComponent(GlButton).element).toBe(wrapper.element);
     });
 
     it('renders default button text element', () => {

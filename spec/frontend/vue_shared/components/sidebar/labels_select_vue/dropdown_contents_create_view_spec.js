@@ -127,7 +127,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders dropdown back button element', () => {
-      const backBtnEl = wrapper.find('.dropdown-title').findAll(GlButton).at(0);
+      const backBtnEl = wrapper.find('.dropdown-title').findAllComponents(GlButton).at(0);
 
       expect(backBtnEl.exists()).toBe(true);
       expect(backBtnEl.attributes('aria-label')).toBe('Go back');
@@ -142,7 +142,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders dropdown close button element', () => {
-      const closeBtnEl = wrapper.find('.dropdown-title').findAll(GlButton).at(1);
+      const closeBtnEl = wrapper.find('.dropdown-title').findAllComponents(GlButton).at(1);
 
       expect(closeBtnEl.exists()).toBe(true);
       expect(closeBtnEl.attributes('aria-label')).toBe('Close');
@@ -150,7 +150,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders label title input element', () => {
-      const titleInputEl = wrapper.find('.dropdown-input').find(GlFormInput);
+      const titleInputEl = wrapper.find('.dropdown-input').findComponent(GlFormInput);
 
       expect(titleInputEl.exists()).toBe(true);
       expect(titleInputEl.attributes('placeholder')).toBe('Name new label');
@@ -158,7 +158,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders color block element for all suggested colors', () => {
-      const colorBlocksEl = wrapper.find('.dropdown-content').findAll(GlLink);
+      const colorBlocksEl = wrapper.find('.dropdown-content').findAllComponents(GlLink);
 
       colorBlocksEl.wrappers.forEach((colorBlock, index) => {
         expect(colorBlock.attributes('style')).toContain('background-color');
@@ -175,7 +175,7 @@ describe('DropdownContentsCreateView', () => {
 
       await nextTick();
       const colorPreviewEl = wrapper.find('.color-input-container > .dropdown-label-color-preview');
-      const colorInputEl = wrapper.find('.color-input-container').find(GlFormInput);
+      const colorInputEl = wrapper.find('.color-input-container').findComponent(GlFormInput);
 
       expect(colorPreviewEl.exists()).toBe(true);
       expect(colorPreviewEl.attributes('style')).toContain('background-color');
@@ -185,7 +185,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('renders create button element', () => {
-      const createBtnEl = wrapper.find('.dropdown-actions').findAll(GlButton).at(0);
+      const createBtnEl = wrapper.find('.dropdown-actions').findAllComponents(GlButton).at(0);
 
       expect(createBtnEl.exists()).toBe(true);
       expect(createBtnEl.text()).toContain('Create');
@@ -195,14 +195,14 @@ describe('DropdownContentsCreateView', () => {
       wrapper.vm.$store.dispatch('requestCreateLabel');
 
       await nextTick();
-      const loadingIconEl = wrapper.find('.dropdown-actions').find(GlLoadingIcon);
+      const loadingIconEl = wrapper.find('.dropdown-actions').findComponent(GlLoadingIcon);
 
       expect(loadingIconEl.exists()).toBe(true);
       expect(loadingIconEl.isVisible()).toBe(true);
     });
 
     it('renders cancel button element', () => {
-      const cancelBtnEl = wrapper.find('.dropdown-actions').findAll(GlButton).at(1);
+      const cancelBtnEl = wrapper.find('.dropdown-actions').findAllComponents(GlButton).at(1);
 
       expect(cancelBtnEl.exists()).toBe(true);
       expect(cancelBtnEl.text()).toContain('Cancel');

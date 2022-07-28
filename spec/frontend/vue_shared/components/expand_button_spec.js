@@ -37,11 +37,11 @@ describe('Expand button', () => {
   });
 
   it('renders no text when short text is not provided', () => {
-    expect(wrapper.find(ExpandButton).text()).toBe('');
+    expect(wrapper.findComponent(ExpandButton).text()).toBe('');
   });
 
   it('does not render expanded text', () => {
-    expect(wrapper.find(ExpandButton).text().trim()).not.toBe(text.short);
+    expect(wrapper.findComponent(ExpandButton).text().trim()).not.toBe(text.short);
   });
 
   describe('when short text is provided', () => {
@@ -55,13 +55,13 @@ describe('Expand button', () => {
     });
 
     it('renders short text', () => {
-      expect(wrapper.find(ExpandButton).text().trim()).toBe(text.short);
+      expect(wrapper.findComponent(ExpandButton).text().trim()).toBe(text.short);
     });
 
     it('renders button before text', () => {
       expect(expanderPrependEl().isVisible()).toBe(true);
       expect(expanderAppendEl().isVisible()).toBe(false);
-      expect(wrapper.find(ExpandButton).element).toMatchSnapshot();
+      expect(wrapper.findComponent(ExpandButton).element).toMatchSnapshot();
     });
   });
 
@@ -81,7 +81,7 @@ describe('Expand button', () => {
     });
 
     it('renders the expanded text', () => {
-      expect(wrapper.find(ExpandButton).text()).toContain(text.expanded);
+      expect(wrapper.findComponent(ExpandButton).text()).toContain(text.expanded);
     });
 
     describe('when short text is provided', () => {
@@ -98,13 +98,13 @@ describe('Expand button', () => {
       });
 
       it('only renders expanded text', () => {
-        expect(wrapper.find(ExpandButton).text().trim()).toBe(text.expanded);
+        expect(wrapper.findComponent(ExpandButton).text().trim()).toBe(text.expanded);
       });
 
       it('renders button after text', () => {
         expect(expanderPrependEl().isVisible()).toBe(false);
         expect(expanderAppendEl().isVisible()).toBe(true);
-        expect(wrapper.find(ExpandButton).element).toMatchSnapshot();
+        expect(wrapper.findComponent(ExpandButton).element).toMatchSnapshot();
       });
     });
   });
@@ -124,11 +124,11 @@ describe('Expand button', () => {
     });
 
     it('clicking hides expanded text', async () => {
-      expect(wrapper.find(ExpandButton).text().trim()).toBe(text.expanded);
+      expect(wrapper.findComponent(ExpandButton).text().trim()).toBe(text.expanded);
       expanderAppendEl().trigger('click');
 
       await nextTick();
-      expect(wrapper.find(ExpandButton).text().trim()).not.toBe(text.expanded);
+      expect(wrapper.findComponent(ExpandButton).text().trim()).not.toBe(text.expanded);
     });
 
     describe('when short text is provided', () => {
@@ -145,11 +145,11 @@ describe('Expand button', () => {
       });
 
       it('clicking reveals short text', async () => {
-        expect(wrapper.find(ExpandButton).text().trim()).toBe(text.expanded);
+        expect(wrapper.findComponent(ExpandButton).text().trim()).toBe(text.expanded);
         expanderAppendEl().trigger('click');
 
         await nextTick();
-        expect(wrapper.find(ExpandButton).text().trim()).toBe(text.short);
+        expect(wrapper.findComponent(ExpandButton).text().trim()).toBe(text.short);
       });
     });
   });

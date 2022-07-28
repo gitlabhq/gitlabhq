@@ -114,7 +114,7 @@ describe('BranchToken', () => {
   describe('template', () => {
     const defaultBranches = DEFAULT_NONE_ANY;
     async function showSuggestions() {
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
       await nextTick();
@@ -133,11 +133,11 @@ describe('BranchToken', () => {
     });
 
     it('renders gl-filtered-search-token component', () => {
-      expect(wrapper.find(GlFilteredSearchToken).exists()).toBe(true);
+      expect(wrapper.findComponent(GlFilteredSearchToken).exists()).toBe(true);
     });
 
     it('renders token item when value is selected', () => {
-      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
       expect(tokenSegments).toHaveLength(3);
       expect(tokenSegments.at(2).text()).toBe(mockBranches[0].name);
@@ -150,7 +150,7 @@ describe('BranchToken', () => {
         stubs: { Portal: true },
       });
       await showSuggestions();
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(defaultBranches.length);
       defaultBranches.forEach((branch, index) => {
@@ -166,8 +166,8 @@ describe('BranchToken', () => {
       });
       await showSuggestions();
 
-      expect(wrapper.find(GlFilteredSearchSuggestion).exists()).toBe(false);
-      expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
+      expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
+      expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
     it('renders no suggestions as default', async () => {
@@ -177,7 +177,7 @@ describe('BranchToken', () => {
         stubs: { Portal: true },
       });
       await showSuggestions();
-      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+      const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(0);
     });

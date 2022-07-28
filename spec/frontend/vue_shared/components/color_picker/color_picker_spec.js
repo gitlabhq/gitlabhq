@@ -16,14 +16,14 @@ describe('ColorPicker', () => {
 
   const setColor = '#000000';
   const invalidText = 'Please enter a valid hex (#RRGGBB or #RGB) color value';
-  const findGlFormGroup = () => wrapper.find(GlFormGroup);
+  const findGlFormGroup = () => wrapper.findComponent(GlFormGroup);
   const colorPreview = () => wrapper.find('[data-testid="color-preview"]');
-  const colorPicker = () => wrapper.find(GlFormInput);
+  const colorPicker = () => wrapper.findComponent(GlFormInput);
   const colorInput = () => wrapper.find('input[type="color"]');
-  const colorTextInput = () => wrapper.find(GlFormInputGroup).find('input[type="text"]');
+  const colorTextInput = () => wrapper.findComponent(GlFormInputGroup).find('input[type="text"]');
   const invalidFeedback = () => wrapper.find('.invalid-feedback');
-  const description = () => wrapper.find(GlFormGroup).attributes('description');
-  const presetColors = () => wrapper.findAll(GlLink);
+  const description = () => wrapper.findComponent(GlFormGroup).attributes('description');
+  const presetColors = () => wrapper.findAllComponents(GlLink);
 
   beforeEach(() => {
     gon.suggested_label_colors = {

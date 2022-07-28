@@ -21,7 +21,7 @@ describe('Markdown field header component', () => {
   const findWriteTab = () => wrapper.findByTestId('write-tab');
   const findPreviewTab = () => wrapper.findByTestId('preview-tab');
   const findToolbar = () => wrapper.findByTestId('md-header-toolbar');
-  const findToolbarButtons = () => wrapper.findAll(ToolbarButton);
+  const findToolbarButtons = () => wrapper.findAllComponents(ToolbarButton);
   const findToolbarButtonByProp = (prop, value) =>
     findToolbarButtons()
       .filter((button) => button.props(prop) === value)

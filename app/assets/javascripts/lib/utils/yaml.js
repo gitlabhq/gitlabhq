@@ -16,18 +16,17 @@ function getPath(ancestry) {
 
 function getFirstChildNode(collection) {
   let firstChildKey;
-  let type;
-  switch (collection.constructor.name) {
-    case 'YAMLSeq': // eslint-disable-line @gitlab/require-i18n-strings
-      return collection.items.find((i) => isNode(i));
-    case 'YAMLMap': // eslint-disable-line @gitlab/require-i18n-strings
-      firstChildKey = collection.items[0]?.key;
-      if (!firstChildKey) return undefined;
-      return isScalar(firstChildKey) ? firstChildKey : new Scalar(firstChildKey);
-    default:
-      type = collection.constructor?.name || typeof collection;
-      throw Error(`Cannot identify a child Node for type ${type}`);
+  if (isSeq(collection)) {
+    return collection.items.find((i) => isNode(i));
   }
+  if (isMap(collection)) {
+    firstChildKey = collection.items[0]?.key;
+    if (!firstChildKey) return undefined;
+    return isScalar(firstChildKey) ? firstChildKey : new Scalar(firstChildKey);
+  }
+  throw Error(
+    `Cannot identify a child Node for Collection. Expecting a YAMLMap or a YAMLSeq. Got: ${collection}`,
+  );
 }
 
 function moveMetaPropsToFirstChildNode(collection) {

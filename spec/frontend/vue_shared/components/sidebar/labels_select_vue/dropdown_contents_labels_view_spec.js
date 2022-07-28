@@ -58,7 +58,7 @@ describe('DropdownContentsLabelsView', () => {
   const findDropdownContent = () => wrapper.find('[data-testid="dropdown-content"]');
   const findDropdownTitle = () => wrapper.find('[data-testid="dropdown-title"]');
   const findDropdownFooter = () => wrapper.find('[data-testid="dropdown-footer"]');
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   describe('computed', () => {
     describe('visibleLabels', () => {
@@ -285,7 +285,7 @@ describe('DropdownContentsLabelsView', () => {
 
   describe('template', () => {
     it('renders gl-intersection-observer as component root', () => {
-      expect(wrapper.find(GlIntersectionObserver).exists()).toBe(true);
+      expect(wrapper.findComponent(GlIntersectionObserver).exists()).toBe(true);
     });
 
     it('renders gl-loading-icon component when `labelsFetchInProgress` prop is true', async () => {
@@ -316,20 +316,20 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders dropdown close button element', () => {
-      const closeButtonEl = findDropdownTitle().find(GlButton);
+      const closeButtonEl = findDropdownTitle().findComponent(GlButton);
 
       expect(closeButtonEl.exists()).toBe(true);
       expect(closeButtonEl.props('icon')).toBe('close');
     });
 
     it('renders label search input element', () => {
-      const searchInputEl = wrapper.find(GlSearchBoxByType);
+      const searchInputEl = wrapper.findComponent(GlSearchBoxByType);
 
       expect(searchInputEl.exists()).toBe(true);
     });
 
     it('renders label elements for all labels', () => {
-      expect(wrapper.findAll(LabelItem)).toHaveLength(mockLabels.length);
+      expect(wrapper.findAllComponents(LabelItem)).toHaveLength(mockLabels.length);
     });
 
     it('renders label element with `highlight` set to true when value of `currentHighlightItem` is more than -1', async () => {
@@ -340,7 +340,7 @@ describe('DropdownContentsLabelsView', () => {
       });
 
       await nextTick();
-      const labelItemEl = findDropdownContent().find(LabelItem);
+      const labelItemEl = findDropdownContent().findComponent(LabelItem);
 
       expect(labelItemEl.attributes('highlight')).toBe('true');
     });
@@ -373,7 +373,7 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders footer list items', () => {
-      const footerLinks = findDropdownFooter().findAll(GlLink);
+      const footerLinks = findDropdownFooter().findAllComponents(GlLink);
       const createLabelLink = footerLinks.at(0);
       const manageLabelsLink = footerLinks.at(1);
 
@@ -387,7 +387,7 @@ describe('DropdownContentsLabelsView', () => {
       wrapper.vm.$store.state.allowLabelCreate = false;
 
       await nextTick();
-      const createLabelLink = findDropdownFooter().findAll(GlLink).at(0);
+      const createLabelLink = findDropdownFooter().findAllComponents(GlLink).at(0);
 
       expect(createLabelLink.text()).not.toBe('Create label');
     });

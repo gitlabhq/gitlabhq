@@ -14,7 +14,7 @@ describe('Upload dropzone component', () => {
 
   const findDropzoneCard = () => wrapper.find('.upload-dropzone-card');
   const findDropzoneArea = () => wrapper.find('[data-testid="dropzone-area"]');
-  const findIcon = () => wrapper.find(GlIcon);
+  const findIcon = () => wrapper.findComponent(GlIcon);
   const findUploadText = () => wrapper.find('[data-testid="upload-text"]').text();
   const findFileInput = () => wrapper.find('input[type="file"]');
 

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { GlToast, GlLink } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -22,7 +22,6 @@ import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
-import RunnerCount from '~/runner/components/stat/runner_count.vue';
 import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
@@ -42,7 +41,7 @@ import {
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import allRunnersQuery from 'ee_else_ce/runner/graphql/list/all_runners.query.graphql';
-import allRunnersCountQuery from '~/runner/graphql/list/all_runners_count.query.graphql';
+import allRunnersCountQuery from 'ee_else_ce/runner/graphql/list/all_runners_count.query.graphql';
 import { captureException } from '~/runner/sentry_utils';
 
 import {
@@ -266,22 +265,17 @@ describe('AdminRunnersApp', () => {
 
   describe('when a filter is preselected', () => {
     beforeEach(async () => {
-      setWindowLocation(`?status[]=${STATUS_ONLINE}&runner_type[]=${INSTANCE_TYPE}&tag[]=tag1`);
+      setWindowLocation(`?status[]=${STATUS_ONLINE}&runner_type[]=${INSTANCE_TYPE}&paused[]=true`);
 
-      await createComponent({
-        stubs: {
-          RunnerStats,
-          RunnerCount,
-        },
-      });
+      await createComponent({ mountFn: mountExtended });
     });
 
     it('sets the filters in the search bar', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
         runnerType: INSTANCE_TYPE,
         filters: [
-          { type: 'status', value: { data: STATUS_ONLINE, operator: '=' } },
-          { type: 'tag', value: { data: 'tag1', operator: '=' } },
+          { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
+          { type: PARAM_KEY_PAUSED, value: { data: 'true', operator: '=' } },
         ],
         sort: 'CREATED_DESC',
         pagination: { page: 1 },
@@ -292,7 +286,7 @@ describe('AdminRunnersApp', () => {
       expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         status: STATUS_ONLINE,
         type: INSTANCE_TYPE,
-        tagList: ['tag1'],
+        paused: true,
         sort: DEFAULT_SORT,
         first: RUNNER_PAGE_SIZE,
       });
@@ -302,41 +296,34 @@ describe('AdminRunnersApp', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledWith({
         type: INSTANCE_TYPE,
         status: STATUS_ONLINE,
-        tagList: ['tag1'],
+        paused: true,
       });
     });
   });
 
   describe('when a filter is selected by the user', () => {
-    beforeEach(() => {
-      createComponent({
-        stubs: {
-          RunnerStats,
-          RunnerCount,
-        },
-      });
+    beforeEach(async () => {
+      await createComponent({ mountFn: mountExtended });
 
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
-        filters: [
-          { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
-          { type: PARAM_KEY_TAG, value: { data: 'tag1', operator: '=' } },
-        ],
+        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: CREATED_ASC,
       });
+
+      await nextTick();
     });
 
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: expect.stringContaining('?status[]=ONLINE&tag[]=tag1&sort=CREATED_ASC'),
+        url: expect.stringContaining('?status[]=ONLINE&sort=CREATED_ASC'),
       });
     });
 
     it('requests the runners with filters', () => {
       expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         status: STATUS_ONLINE,
-        tagList: ['tag1'],
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
       });
@@ -344,7 +331,6 @@ describe('AdminRunnersApp', () => {
 
     it('fetches count results for requested status', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledWith({
-        tagList: ['tag1'],
         status: STATUS_ONLINE,
       });
     });

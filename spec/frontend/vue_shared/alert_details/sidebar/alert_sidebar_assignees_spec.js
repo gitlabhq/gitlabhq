@@ -128,7 +128,7 @@ describe('Alert Details Sidebar Assignees', () => {
       wrapper.setData({ isDropdownSearching: false });
 
       await nextTick();
-      wrapper.find(SidebarAssignee).vm.$emit('update-alert-assignees', 'root');
+      wrapper.findComponent(SidebarAssignee).vm.$emit('update-alert-assignees', 'root');
 
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
         mutation: AlertSetAssignees,
@@ -156,7 +156,7 @@ describe('Alert Details Sidebar Assignees', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(errorMutationResult);
 
       await nextTick();
-      const SideBarAssigneeItem = wrapper.findAll(SidebarAssignee).at(0);
+      const SideBarAssigneeItem = wrapper.findAllComponents(SidebarAssignee).at(0);
       await SideBarAssigneeItem.vm.$emit('update-alert-assignees');
       expect(wrapper.emitted('alert-error')).toBeDefined();
     });

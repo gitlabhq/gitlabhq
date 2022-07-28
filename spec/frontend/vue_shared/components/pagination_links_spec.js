@@ -41,7 +41,7 @@ describe('Pagination links component', () => {
 
   beforeEach(() => {
     createComponent();
-    glPagination = wrapper.find(GlPagination);
+    glPagination = wrapper.findComponent(GlPagination);
   });
 
   afterEach(() => {

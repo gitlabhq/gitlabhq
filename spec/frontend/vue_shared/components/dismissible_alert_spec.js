@@ -20,7 +20,7 @@ describe('vue_shared/components/dismissible_alert', () => {
     wrapper.destroy();
   });
 
-  const findAlert = () => wrapper.find(GlAlert);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   describe('default', () => {
     beforeEach(() => {
