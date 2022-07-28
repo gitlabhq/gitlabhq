@@ -30,7 +30,7 @@ RSpec.describe 'Incident Detail', :js do
       project.add_developer(user)
       sign_in(user)
 
-      visit project_issue_path(project, incident)
+      visit project_issues_incident_path(project, incident)
       wait_for_requests
     end
 
@@ -49,72 +49,32 @@ RSpec.describe 'Incident Detail', :js do
           expect(incident_tabs).to have_content('Original alert: #1')
         end
 
+        aggregate_failures 'when on summary tab (default tab)' do
+          hidden_items = find_all('.js-issue-widgets')
+
+          # Linked Issues/MRs and comment box
+          expect(hidden_items.count).to eq(2)
+          expect(hidden_items).to all(be_visible)
+
+          edit_button = find_all('[aria-label="Edit title and description"]')
+          expect(edit_button).to all(be_visible)
+        end
+
         aggregate_failures 'shows the Alert details tab' do
           click_link 'Alert details'
 
           expect(incident_tabs).to have_content('"title": "Alert title"')
           expect(incident_tabs).to have_content('"yet.another": 73')
-        end
-      end
-    end
 
-    context 'when on summary tab' do
-      before do
-        click_link 'Summary'
-      end
-
-      it 'shows the summary tab with all components' do
-        page.within('.issuable-details') do
-          hidden_items = find_all('.js-issue-widgets')
-
-          # Linked Issues/MRs and comment box
-          expect(hidden_items.count).to eq(2)
-
-          expect(hidden_items).to all(be_visible)
-        end
-      end
-
-      it 'shows the edit title and description button' do
-        edit_button = find_all('[aria-label="Edit title and description"]')
-
-        expect(edit_button).to all(be_visible)
-      end
-    end
-
-    context 'when on alert details tab' do
-      before do
-        click_link 'Alert details'
-      end
-
-      it 'does not show the linked issues and notes/comment components' do
-        page.within('.issuable-details') do
+          # does not show the linked issues and notes/comment components' do
           hidden_items = find_all('.js-issue-widgets')
 
           # Linked Issues/MRs and comment box are hidden on page
           expect(hidden_items.count).to eq(0)
-        end
-      end
 
-      it 'does not show the edit title and description button' do
-        edit_button = find_all('[aria-label="Edit title and description"]')
-
-        expect(edit_button.count).to eq(0)
-      end
-    end
-
-    context 'when on timeline events tab from incident route' do
-      before do
-        visit project_issues_incident_path(project, incident)
-        wait_for_requests
-        click_link 'Timeline'
-      end
-
-      it 'does not show the linked issues and notes/comment components' do
-        page.within('.issuable-details') do
-          hidden_items = find_all('.js-issue-widgets')
-
-          # Linked Issues/MRs and comment box are hidden on page
-          expect(hidden_items.count).to eq(0)
+          # does not show the edit title and description button
+          edit_button = find_all('[aria-label="Edit title and description"]')
+          expect(edit_button.count).to eq(0)
         end
       end
     end
@@ -126,7 +86,7 @@ RSpec.describe 'Incident Detail', :js do
         click_link 'Timeline'
       end
 
-      it 'does not show the linked issues and notes/comment commponents' do
+      it 'does not show the linked issues and notes/comment components' do
         page.within('.issuable-details') do
           hidden_items = find_all('.js-issue-widgets')
 
@@ -140,7 +100,7 @@ RSpec.describe 'Incident Detail', :js do
       before do
         stub_feature_flags(incident_timeline: false)
 
-        visit project_issue_path(project, incident)
+        visit project_issues_incident_path(project, incident)
         wait_for_requests
       end
 

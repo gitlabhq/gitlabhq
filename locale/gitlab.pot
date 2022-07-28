@@ -39356,6 +39356,9 @@ msgstr ""
 msgid "There are several size limits in place."
 msgstr ""
 
+msgid "There are unsubmitted review comments."
+msgstr ""
+
 msgid "There is already a repository with that name on disk"
 msgstr ""
 

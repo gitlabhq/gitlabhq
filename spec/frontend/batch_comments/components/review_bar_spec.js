@@ -6,6 +6,8 @@ import createStore from '../create_batch_comments_store';
 describe('Batch comments review bar component', () => {
   let store;
   let wrapper;
+  let addEventListenerSpy;
+  let removeEventListenerSpy;
 
   const createComponent = (propsData = {}) => {
     store = createStore();
@@ -18,25 +20,58 @@ describe('Batch comments review bar component', () => {
 
   beforeEach(() => {
     document.body.className = '';
+
+    addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+    removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
   });
 
   afterEach(() => {
+    addEventListenerSpy.mockRestore();
+    removeEventListenerSpy.mockRestore();
     wrapper.destroy();
   });
 
-  it('it adds review-bar-visible class to body when review bar is mounted', async () => {
-    expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(false);
+  describe('when mounted', () => {
+    it('it adds review-bar-visible class to body', async () => {
+      expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(false);
 
-    createComponent();
+      createComponent();
 
-    expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(true);
+      expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(true);
+    });
+
+    it('it adds a blocking handler to the `beforeunload` window event', () => {
+      expect(addEventListenerSpy).not.toBeCalled();
+
+      createComponent();
+
+      expect(addEventListenerSpy).toHaveBeenCalledTimes(1);
+      expect(addEventListenerSpy).toBeCalledWith('beforeunload', expect.any(Function), {
+        capture: true,
+      });
+    });
   });
 
-  it('it removes review-bar-visible class to body when review bar is destroyed', async () => {
-    createComponent();
+  describe('before destroyed', () => {
+    it('it removes review-bar-visible class to body', async () => {
+      createComponent();
 
-    wrapper.destroy();
+      wrapper.destroy();
 
-    expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(false);
+      expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(false);
+    });
+
+    it('it removes the blocking handler from the `beforeunload` window event', () => {
+      createComponent();
+
+      expect(removeEventListenerSpy).not.toBeCalled();
+
+      wrapper.destroy();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledTimes(1);
+      expect(removeEventListenerSpy).toBeCalledWith('beforeunload', expect.any(Function), {
+        capture: true,
+      });
+    });
   });
 });

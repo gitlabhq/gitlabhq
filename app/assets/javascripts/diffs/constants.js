@@ -71,12 +71,15 @@ export const DIFF_FILE_MANUAL_COLLAPSE = 'manual';
 export const STATE_IDLING = 'idle';
 export const STATE_LOADING = 'loading';
 export const STATE_ERRORED = 'errored';
+export const STATE_PENDING_REVIEW = 'pending_comments';
 
 // State machine transitions
 export const TRANSITION_LOAD_START = 'LOAD_START';
 export const TRANSITION_LOAD_ERROR = 'LOAD_ERROR';
 export const TRANSITION_LOAD_SUCCEED = 'LOAD_SUCCEED';
 export const TRANSITION_ACKNOWLEDGE_ERROR = 'ACKNOWLEDGE_ERROR';
+export const TRANSITION_HAS_PENDING_REVIEW = 'PENDING_REVIEW';
+export const TRANSITION_NO_REVIEW = 'NO_REVIEW';
 
 export const RENAMED_DIFF_TRANSITIONS = {
   [`${STATE_IDLING}:${TRANSITION_LOAD_START}`]: STATE_LOADING,

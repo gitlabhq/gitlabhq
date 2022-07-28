@@ -101,7 +101,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
         write_diff_comment
 
-        visit_overview
+        visit_overview_with_pending_comment
       end
 
       it 'can add comment to review' do
@@ -228,6 +228,14 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
   def visit_overview
     visit project_merge_request_path(merge_request.project, merge_request)
+
+    wait_for_requests
+  end
+
+  def visit_overview_with_pending_comment
+    accept_alert do
+      visit project_merge_request_path(merge_request.project, merge_request)
+    end
 
     wait_for_requests
   end

@@ -14,10 +14,6 @@ class RescheduleBackfillImportedIssueSearchData < Gitlab::Database::Migration[2.
     delete_batched_background_migration(MIGRATION, :issues, :id, [])
 
     # reschedule the migration
-    min_value = Gitlab::Database::BackgroundMigration::BatchedMigration.find_by(
-      job_class_name: "BackfillIssueSearchData"
-    )&.max_value || BATCH_MIN_VALUE
-
     queue_batched_background_migration(
       MIGRATION,
       :issues,
@@ -31,5 +27,22 @@ class RescheduleBackfillImportedIssueSearchData < Gitlab::Database::Migration[2.
 
   def down
     delete_batched_background_migration(MIGRATION, :issues, :id, [])
+  end
+
+  private
+
+  def min_value
+    start_value = Gitlab::Database::BackgroundMigration::BatchedMigration.find_by(
+      job_class_name: "BackfillIssueSearchData"
+    )&.max_value
+
+    return BATCH_MIN_VALUE unless start_value
+
+    max_value = Issue.maximum(:id)
+
+    return BATCH_MIN_VALUE unless max_value
+
+    # Just in case the issue's max ID is now lower than the history in the table
+    [start_value, max_value].min
   end
 end

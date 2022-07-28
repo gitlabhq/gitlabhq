@@ -14,6 +14,9 @@ test it, and publish it to a container registry.
 To run Docker commands in your CI/CD jobs, you must configure
 GitLab Runner to support `docker` commands.
 
+If you want to build Docker images without enabling privileged mode on the runner,
+you can use a [Docker alternative](#docker-alternatives).
+
 ## Enable Docker commands in your CI/CD jobs
 
 To enable Docker commands for your CI/CD jobs, you can use:
@@ -21,9 +24,6 @@ To enable Docker commands for your CI/CD jobs, you can use:
 - [The shell executor](#use-the-shell-executor)
 - [Docker-in-Docker](#use-docker-in-docker)
 - [Docker socket binding](#use-docker-socket-binding)
-
-If you don't want to execute a runner in privileged mode,
-but want to use `docker build`, you can also use [`kaniko`](using_kaniko.md) or [`buildah`](https://github.com/containers/buildah).
 
 If you are using shared runners on GitLab.com,
 [learn more about how these runners are configured](../runners/index.md).
@@ -830,6 +830,44 @@ If you're running multiple runners, you have to modify all configuration files.
 
 Read more about the [runner configuration](https://docs.gitlab.com/runner/configuration/)
 and [using the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
+
+## Docker alternatives
+
+To build Docker images without enabling privileged mode on the runner, you can
+use one of these alternatives:
+
+- [`kaniko`](using_kaniko.md).
+- [`buildah`](https://github.com/containers/buildah).
+
+For example, with `buildah`:
+
+```yaml
+# Some details from https://major.io/2019/05/24/build-containers-in-gitlab-ci-with-buildah/
+
+build:
+  stage: build
+  image: quay.io/buildah/stable
+  variables:
+    # Use vfs with buildah. Docker offers overlayfs as a default, but buildah
+    # cannot stack overlayfs on top of another overlayfs filesystem.
+    STORAGE_DRIVER: vfs
+    # Write all image metadata in the docker format, not the standard OCI format.
+    # Newer versions of docker can handle the OCI format, but older versions, like
+    # the one shipped with Fedora 30, cannot handle the format.
+    BUILDAH_FORMAT: docker
+    # You may need this workaround for some errors: https://stackoverflow.com/a/70438141/1233435
+    BUILDAH_ISOLATION: chroot
+    FQ_IMAGE_NAME: "${CI_REGISTRY_IMAGE}/test"
+  before_script:
+    # Log in to the GitLab container registry
+    - export REGISTRY_AUTH_FILE=${HOME}/auth.json
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  script:
+    - buildah images
+    - buildah build -t $FQ_IMAGE_NAME
+    - buildah images
+    - buildah push $FQ_IMAGE_NAME
+```
 
 ## Use the GitLab Container Registry
 
