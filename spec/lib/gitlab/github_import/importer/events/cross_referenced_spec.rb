@@ -12,8 +12,9 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:user_finder) { Gitlab::GithubImport::UserFinder.new(project, client) }
 
-  let(:issue) { create(:issue, project: project) }
-  let(:referenced_in) { build_stubbed(:issue, project: project) }
+  let(:issue_iid) { 999 }
+  let(:issue) { create(:issue, project: project, iid: issue_iid) }
+  let(:referenced_in) { build_stubbed(:issue, project: project, iid: issue_iid + 1) }
   let(:commit_id) { nil }
 
   let(:issue_event) do
@@ -49,7 +50,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
   end
 
   context 'when referenced in other issue' do
-    let(:expected_note_body) { "mentioned in issue ##{issue.iid}" }
+    let(:expected_note_body) { "mentioned in issue ##{referenced_in.iid}" }
 
     before do
       other_issue_resource = sawyer_stub.new(iid: referenced_in.iid, issuable_type: 'Issue')
@@ -58,7 +59,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
       allow(user_finder).to receive(:find).with(user.id, user.username).and_return(user.id)
     end
 
-    it 'creates expected note', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/368827' do
+    it 'creates expected note' do
       importer.execute(issue_event)
 
       expect(issue.notes.count).to eq 1

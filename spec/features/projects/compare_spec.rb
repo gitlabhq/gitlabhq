@@ -113,7 +113,7 @@ RSpec.describe "Compare", :js do
 
         click_button('Compare')
 
-        page.within('.gl-alert') do
+        page.within('[data-testid="too-many-changes-alert"]') do
           expect(page).to have_text("Too many changes to show. To preserve performance only 3 of 3+ files are displayed.")
         end
       end

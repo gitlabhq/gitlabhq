@@ -46,6 +46,10 @@ module Gitlab
               @metric_options = block
             end
 
+            def timestamp_column(symbol)
+              @metric_timestamp_column = symbol
+            end
+
             def operation(symbol, column: nil, &block)
               raise UnimplementedOperationError unless symbol.in?(IMPLEMENTED_OPERATIONS)
 
@@ -58,7 +62,9 @@ module Gitlab
               @cache_key = cache_key
             end
 
-            attr_reader :metric_operation, :metric_relation, :metric_start, :metric_finish, :metric_operation_block, :column, :cache_key
+            attr_reader :metric_operation, :metric_relation, :metric_start,
+                        :metric_finish, :metric_operation_block,
+                        :column, :cache_key, :metric_timestamp_column
           end
 
           def value
@@ -106,7 +112,7 @@ module Gitlab
           def time_constraints
             case time_frame
             when '28d'
-              monthly_time_range_db_params
+              monthly_time_range_db_params(column: self.class.metric_timestamp_column)
             when 'all'
               {}
             when 'none'

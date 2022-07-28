@@ -160,6 +160,38 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
         end
       end
     end
+
+    context 'with custom timestamp column' do
+      subject do
+        described_class.tap do |metric_class|
+          metric_class.relation { Issue }
+          metric_class.operation :count
+          metric_class.timestamp_column :last_edited_at
+        end.new(time_frame: '28d')
+      end
+
+      it 'calculates a correct result' do
+        create(:issue, last_edited_at: 5.days.ago)
+
+        expect(subject.value).to eq(1)
+      end
+    end
+
+    context 'with default timestamp column' do
+      subject do
+        described_class.tap do |metric_class|
+          metric_class.relation { Issue }
+          metric_class.operation :count
+        end.new(time_frame: '28d')
+      end
+
+      it 'calculates a correct result' do
+        create(:issue, last_edited_at: 5.days.ago)
+        create(:issue, created_at: 5.days.ago)
+
+        expect(subject.value).to eq(1)
+      end
+    end
   end
 
   context 'with unimplemented operation method used' do

@@ -1,6 +1,1 @@
-- "./spec/lib/gitlab/background_migration/copy_ci_builds_columns_to_security_scans_spec.rb"
-- "./spec/lib/gitlab/background_migration/migrate_pages_metadata_spec.rb"
 - "./spec/migrations/20210907211557_finalize_ci_builds_bigint_conversion_spec.rb"
-- "./spec/migrations/associate_existing_dast_builds_with_variables_spec.rb"
-- "./spec/migrations/disable_job_token_scope_when_unused_spec.rb"
-- "./spec/migrations/schedule_copy_ci_builds_columns_to_security_scans2_spec.rb"

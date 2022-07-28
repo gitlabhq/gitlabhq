@@ -250,8 +250,8 @@ using the [`coverage`](../yaml/index.md#coverage) keyword.
 
 ### Add test coverage results using project settings (removed)
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 14.8. Replaced by [`coverage` keyword](../yaml/index.md#coverage).
-> [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 14.8. Replaced by [`coverage` keyword](../yaml/index.md#coverage).
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
 This feature is in its end-of-life process. It was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
 in GitLab 14.8. The feature is [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.

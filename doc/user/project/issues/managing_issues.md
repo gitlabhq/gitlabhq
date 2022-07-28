@@ -123,8 +123,8 @@ example, if the list is scoped to a label `Frontend`, the new issue also has thi
 
 ### By sending an email
 
-> Generated email address format changed in GitLab 11.7.
-> The older format is still supported, so existing aliases and contacts still work.
+> - Generated email address format changed in GitLab 11.7.
+> - The older format is still supported, so existing aliases and contacts still work.
 
 You can send an email to create an issue in a project on the project's
 **Issues List** page.

@@ -536,6 +536,7 @@ module Gitlab
     config.after_initialize do
       config.active_record.yaml_column_permitted_classes = [
         Symbol, Date, Time,
+        BigDecimal, # https://gitlab.com/gitlab-org/gitlab/issues/368846
         Gitlab::Diff::Position,
         # Used in:
         # app/models/concerns/diff_positionable_note.rb
@@ -546,7 +547,8 @@ module Gitlab
         ActiveModel::Attribute.const_get(:FromDatabase, false), # https://gitlab.com/gitlab-org/gitlab/-/issues/368072
         # Used in app/services/web_hooks/log_execution_service.rb: log_execution
         ActiveSupport::TimeWithZone,
-        ActiveSupport::TimeZone
+        ActiveSupport::TimeZone,
+        Gitlab::Color # https://gitlab.com/gitlab-org/gitlab/-/issues/368844
       ]
 
       # on_master_start yields immediately in unclustered environments and runs

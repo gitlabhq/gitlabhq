@@ -6,7 +6,7 @@
 - @left_sidebar = true
 
 - content_for :flash_message do
-  = render "layouts/header/storage_enforcement_banner", namespace: @group
+  = render "layouts/header/storage_enforcement_banner", context: @group
   = dispensable_render_if_exists "shared/namespace_storage_limit_alert"
 
 - content_for :page_specific_javascripts do

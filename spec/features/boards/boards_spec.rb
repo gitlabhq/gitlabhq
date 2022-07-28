@@ -135,6 +135,7 @@ RSpec.describe 'Project issue boards', :js do
           find('.board .board-list')
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+            evaluate_script("window.scrollTo(0, document.body.scrollHeight)")
             evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
           end
 
@@ -144,6 +145,7 @@ RSpec.describe 'Project issue boards', :js do
           find('.board .board-list')
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+            evaluate_script("window.scrollTo(0, document.body.scrollHeight)")
             evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
           end
 
@@ -153,6 +155,7 @@ RSpec.describe 'Project issue boards', :js do
           find('.board .board-list')
 
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+            evaluate_script("window.scrollTo(0, document.body.scrollHeight)")
             evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
           end
 
@@ -400,6 +403,7 @@ RSpec.describe 'Project issue boards', :js do
             find('.board .board-list')
 
             inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+              evaluate_script("window.scrollTo(0, document.body.scrollHeight)")
               evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
             end
 
@@ -409,6 +413,7 @@ RSpec.describe 'Project issue boards', :js do
             find('.board .board-list')
 
             inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+              evaluate_script("window.scrollTo(0, document.body.scrollHeight)")
               evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
             end
 
@@ -417,6 +422,7 @@ RSpec.describe 'Project issue boards', :js do
 
             find('.board .board-list')
             inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+              evaluate_script("window.scrollTo(0, document.body.scrollHeight)")
               evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
             end
 

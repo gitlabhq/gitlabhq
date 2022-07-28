@@ -307,8 +307,7 @@ In these issues, you can also see our friendly neighborhood [Support Bot](#suppo
 
 ### As an end user (issue creator)
 
-> Support for additional email headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346600) in GitLab 14.6.
-> In earlier versions, the Service Desk email address had to be in the "To" field.
+> Support for additional email headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346600) in GitLab 14.6. In earlier versions, the Service Desk email address had to be in the "To" field.
 
 To create a Service Desk issue, an end user does not need to know anything about
 the GitLab instance. They just send an email to the address they are given, and

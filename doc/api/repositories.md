@@ -125,8 +125,8 @@ Supported attributes:
 
 ## Get file archive
 
-> Support for [including Git LFS blobs](../topics/git/lfs/index.md#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-> Support for downloading a subfolder was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28827) in GitLab 14.4.
+> - Support for [including Git LFS blobs](../topics/git/lfs/index.md#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
+> - Support for downloading a subfolder was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28827) in GitLab 14.4.
 
 Get an archive of the repository. This endpoint can be accessed without
 authentication if the repository is publicly accessible.

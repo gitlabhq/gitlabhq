@@ -44,6 +44,7 @@ We have built a domain-specific language (DSL) to define the metrics instrumenta
 - `finish`: Specifies the end value of the batch counting, by default is `relation.maximum(:id)`.
 - `cache_start_and_finish_as`: Specifies the cache key for `start` and `finish` values and sets up caching them. Use this call when `start` and `finish` are expensive queries that should be reused between different metric calculations.
 - `available?`: Specifies whether the metric should be reported. The default is `true`.
+- `timestamp_column`: Optionally specifies timestamp column for metric used to filter records for time constrained metrics. The default is `created_at`.
 
 [Example of a merge request that adds a database metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60022).
 

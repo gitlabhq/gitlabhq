@@ -40,6 +40,10 @@ class Namespace < ApplicationRecord
 
   PATH_TRAILING_VIOLATIONS = %w[.git .atom .].freeze
 
+  # The first date in https://docs.gitlab.com/ee/user/usage_quotas.html#namespace-storage-limit-enforcement-schedule
+  # Determines when we start enforcing namespace storage
+  MIN_STORAGE_ENFORCEMENT_DATE = Date.new(2022, 10, 19)
+
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -560,9 +564,7 @@ class Namespace < ApplicationRecord
   def storage_enforcement_date
     return Date.current if Feature.enabled?(:namespace_storage_limit_bypass_date_check, self)
 
-    # should return something like Date.new(2022, 02, 03)
-    # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
-    nil
+    MIN_STORAGE_ENFORCEMENT_DATE
   end
 
   def certificate_based_clusters_enabled?

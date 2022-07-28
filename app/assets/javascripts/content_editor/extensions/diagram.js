@@ -1,3 +1,4 @@
+import { lowlight } from 'lowlight/lib/core';
 import { textblockTypeInputRule } from '@tiptap/core';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 import languageLoader from '../services/code_block_language_loader';
@@ -9,6 +10,12 @@ export default CodeBlockHighlight.extend({
   name: 'diagram',
 
   isolating: true,
+
+  addOptions() {
+    return {
+      lowlight,
+    };
+  },
 
   addAttributes() {
     return {

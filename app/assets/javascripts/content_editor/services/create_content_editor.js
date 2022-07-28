@@ -1,6 +1,5 @@
 import { Editor } from '@tiptap/vue-2';
 import { isFunction } from 'lodash';
-import { lowlight } from 'lowlight/lib/core';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import Attachment from '../extensions/attachment';
@@ -96,7 +95,7 @@ export const createContentEditor = ({
     BulletList,
     Code,
     ColorChip,
-    CodeBlockHighlight.configure({ lowlight }),
+    CodeBlockHighlight,
     DescriptionItem,
     DescriptionList,
     Details,
@@ -110,7 +109,7 @@ export const createContentEditor = ({
     FootnoteDefinition,
     FootnoteReference,
     FootnotesSection,
-    Frontmatter.configure({ lowlight }),
+    Frontmatter,
     Gapcursor,
     HardBreak,
     Heading,
@@ -127,7 +126,7 @@ export const createContentEditor = ({
     MathInline,
     OrderedList,
     Paragraph,
-    PasteMarkdown.configure({ renderMarkdown, eventHub }),
+    PasteMarkdown,
     Reference,
     Sourcemap,
     Strike,

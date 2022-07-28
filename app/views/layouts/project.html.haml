@@ -8,7 +8,7 @@
 - @content_class = [@content_class, project_classes(@project)].compact.join(" ")
 
 - content_for :flash_message do
-  = render "layouts/header/storage_enforcement_banner", namespace: @project.namespace
+  = render "layouts/header/storage_enforcement_banner", context: @project
   = dispensable_render_if_exists "shared/namespace_storage_limit_alert"
 
 - content_for :project_javascripts do

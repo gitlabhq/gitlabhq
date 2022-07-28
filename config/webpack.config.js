@@ -555,6 +555,11 @@ module.exports = {
         );
       }),
 
+    new webpack.NormalModuleReplacementPlugin(/markdown-it/, (resource) => {
+      // eslint-disable-next-line no-param-reassign
+      resource.request = path.join(ROOT_PATH, 'app/assets/javascripts/lib/markdown_it.js');
+    }),
+
     !IS_JH &&
       new webpack.NormalModuleReplacementPlugin(/^jh_component\/(.*)\.vue/, (resource) => {
         // eslint-disable-next-line no-param-reassign

@@ -57,8 +57,8 @@ RSpec.describe StorageHelper do
     let_it_be(:paid_group) { create(:group) }
 
     before do
-      allow(helper).to receive(:can?).with(current_user, :maintain_namespace, free_group).and_return(true)
-      allow(helper).to receive(:can?).with(current_user, :maintain_namespace, paid_group).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :maintainer_access, free_group).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :maintainer_access, paid_group).and_return(true)
       allow(helper).to receive(:current_user) { current_user }
       allow(paid_group).to receive(:paid?).and_return(true)
 
@@ -84,7 +84,7 @@ RSpec.describe StorageHelper do
         end
 
         it 'returns nil when current_user do not have access usage quotas page' do
-          allow(helper).to receive(:can?).with(current_user, :maintain_namespace, free_group).and_return(false)
+          allow(helper).to receive(:can?).with(current_user, :maintainer_access, free_group).and_return(false)
 
           expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
         end
@@ -97,12 +97,16 @@ RSpec.describe StorageHelper do
 
         context 'when current_user can access the usage quotas page' do
           it 'returns a hash' do
+            used_storage = helper.storage_counter(free_group.root_storage_statistics&.storage_size || 0)
+
             expect(helper.storage_enforcement_banner_info(free_group)).to eql({
-              text: "From #{storage_enforcement_date} storage limits will apply to this namespace. You are currently using 0 Bytes of namespace storage. View and manage your usage from <strong>Group settings &gt; Usage quotas</strong>.",
+              text_paragraph_1: "Effective #{storage_enforcement_date}, <a href=\"https://forum.gitlab.com/t/gitlab-introduces-storage-and-transfer-limits-for-users-on-saas/69883\" >namespace storage limits will apply</a> to the <strong>#{free_group.name}</strong> namespace. View the <a href=\"/help/user/usage_quotas#tbd\" >rollout schedule for this change</a>.",
+              text_paragraph_2: "The namespace is currently using <strong>#{used_storage}</strong> of namespace storage. View and manage your usage from <strong>Group settings &gt; Usage quotas</strong>. <a href=\"/help/user/usage_quotas#manage-your-storage-usage\" >Learn more</a> about how to reduce your storage.",
+              text_paragraph_3: "See our <a href=\"https://about.gitlab.com/pricing/faq-efficient-free-tier/#storage-and-transfer-limits-on-gitlab-saas-free-tier\" >FAQ</a> for more information.",
               variant: 'warning',
+              namespace_id: free_group.id,
               callouts_feature_name: 'storage_enforcement_banner_second_enforcement_threshold',
-              callouts_path: '/-/users/group_callouts',
-              learn_more_link: '<a rel="noopener noreferrer" target="_blank" href="/help//">Learn more.</a>'
+              callouts_path: '/-/users/group_callouts'
             })
           end
 
@@ -112,7 +116,7 @@ RSpec.describe StorageHelper do
             end
 
             it 'returns a hash with the correct storage size text' do
-              expect(helper.storage_enforcement_banner_info(free_group)[:text]).to eql("From #{storage_enforcement_date} storage limits will apply to this namespace. You are currently using 100 KB of namespace storage. View and manage your usage from <strong>Group settings &gt; Usage quotas</strong>.")
+              expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_2]).to eql("The namespace is currently using <strong>100 KB</strong> of namespace storage. View and manage your usage from <strong>Group settings &gt; Usage quotas</strong>. <a href=\"/help/user/usage_quotas#manage-your-storage-usage\" >Learn more</a> about how to reduce your storage.")
             end
           end
 
@@ -120,11 +124,12 @@ RSpec.describe StorageHelper do
             let_it_be(:sub_group) { build(:group) }
 
             before do
+              allow(helper).to receive(:can?).with(current_user, :maintainer_access, sub_group).and_return(true)
               allow(sub_group).to receive(:root_ancestor).and_return(free_group)
             end
 
             it 'returns the banner hash' do
-              expect(helper.storage_enforcement_banner_info(sub_group).keys).to match_array(%i(text variant callouts_feature_name callouts_path learn_more_link))
+              expect(helper.storage_enforcement_banner_info(sub_group).keys).to match_array(%i(text_paragraph_1 text_paragraph_2 text_paragraph_3 variant namespace_id callouts_feature_name callouts_path))
             end
           end
         end
@@ -136,7 +141,7 @@ RSpec.describe StorageHelper do
         end
 
         it 'returns the enforcement info' do
-          expect(helper.storage_enforcement_banner_info(free_group)[:text]).to include("From #{Date.current} storage limits will apply to this namespace.")
+          expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_1]).to include("Effective #{Date.current}, <a href=\"https://forum.gitlab.com/t/gitlab-introduces-storage-and-transfer-limits-for-users-on-saas/69883\" >namespace storage limits will apply</a>")
         end
       end
 

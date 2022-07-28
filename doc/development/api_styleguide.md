@@ -59,7 +59,7 @@ end
 
 ## Declared parameters
 
-> Grape allows you to access only the parameters that have been declared by your
+Grape allows you to access only the parameters that have been declared by your
 `params` block. It filters out the parameters that have been passed, but are not
 allowed.
 
@@ -67,7 +67,7 @@ allowed.
 
 ### Exclude parameters from parent namespaces
 
-> By default `declared(params)`includes parameters that were defined in all
+By default `declared(params)`includes parameters that were defined in all
 parent namespaces.
 
 – <https://github.com/ruby-grape/grape#include-parent-namespaces>

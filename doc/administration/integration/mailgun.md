@@ -18,8 +18,8 @@ After completing the integration, Mailgun `temporary_failure` and `permanent_fai
 
 ## Configure your Mailgun domain
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the `/-/members/mailgun/permanent_failures` URL in GitLab 15.0.
-> [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the URL to handle both temporary and permanent failures in GitLab 15.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the `/-/members/mailgun/permanent_failures` URL in GitLab 15.0.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the URL to handle both temporary and permanent failures in GitLab 15.0.
 
 Before you can enable Mailgun in GitLab, set up your own Mailgun endpoints to receive the webhooks.
 

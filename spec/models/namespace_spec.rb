@@ -2283,9 +2283,8 @@ RSpec.describe Namespace do
       stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
     end
 
-    # Date TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
-    it 'returns nil' do
-      expect(namespace.storage_enforcement_date).to be(nil)
+    it 'returns correct date' do
+      expect(namespace.storage_enforcement_date).to eql(Date.new(2022, 10, 19))
     end
 
     context 'when :storage_banner_bypass_date_check is enabled' do

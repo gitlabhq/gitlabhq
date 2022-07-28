@@ -1,12 +1,12 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { NodeViewWrapper } from '@tiptap/vue-2';
-import { selectedRect as getSelectedRect } from 'prosemirror-tables';
+import { selectedRect as getSelectedRect } from '@_ueberdosis/prosemirror-tables';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TableCellBaseWrapper from '~/content_editor/components/wrappers/table_cell_base.vue';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../../test_utils';
 
-jest.mock('prosemirror-tables');
+jest.mock('@_ueberdosis/prosemirror-tables');
 
 describe('content/components/wrappers/table_cell_base', () => {
   let wrapper;
