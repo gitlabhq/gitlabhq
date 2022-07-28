@@ -2,7 +2,7 @@
   = sprintf(s_('Notify|Merge request %{merge_request} was merged'), { merge_request: merge_request_reference_link(@merge_request) }).html_safe
 
 %p
-  = merge_path_description(@merge_request, 'to')
+  = merge_path_description(@merge_request)
 
 %div
   = sprintf(s_('Notify|Author: %{author_name}'), { author_name: sanitize_name(@merge_request.author_name) })

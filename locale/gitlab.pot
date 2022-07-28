@@ -6657,6 +6657,12 @@ msgstr ""
 msgid "Branches"
 msgstr ""
 
+msgid "Branches: %{source_branch} to %{target_branch}"
+msgstr ""
+
+msgid "Branches: %{source_branch} → %{target_branch}"
+msgstr ""
+
 msgid "Branches|Active"
 msgstr ""
 
@@ -30284,6 +30290,12 @@ msgid "Project was not found or you do not have permission to add this project t
 msgstr ""
 
 msgid "Project: %{name}"
+msgstr ""
+
+msgid "Project:Branches: %{source_project_path}:%{source_branch} to %{target_project_path}:%{target_branch}"
+msgstr ""
+
+msgid "Project:Branches: %{source_project_path}:%{source_branch} → %{target_project_path}:%{target_branch}"
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"

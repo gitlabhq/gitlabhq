@@ -1307,6 +1307,81 @@ RSpec.describe API::Users do
       end
     end
 
+    context 'when user with a primary email exists' do
+      context 'when the primary email is confirmed' do
+        let!(:confirmed_user) { create(:user, email: 'foo@example.com') }
+
+        it 'returns 409 conflict error' do
+          expect do
+            post api('/users', admin),
+              params: {
+                name: 'foo',
+                email: confirmed_user.email,
+                password: 'password',
+                username: 'TEST'
+              }
+          end.to change { User.count }.by(0)
+          expect(response).to have_gitlab_http_status(:conflict)
+          expect(json_response['message']).to eq('Email has already been taken')
+        end
+      end
+
+      context 'when the primary email is unconfirmed' do
+        let!(:unconfirmed_user) { create(:user, :unconfirmed, email: 'foo@example.com') }
+
+        it 'returns 409 conflict error' do
+          expect do
+            post api('/users', admin),
+              params: {
+                name: 'foo',
+                email: unconfirmed_user.email,
+                password: 'password',
+                username: 'TEST'
+              }
+          end.to change { User.count }.by(0)
+          expect(response).to have_gitlab_http_status(:conflict)
+          expect(json_response['message']).to eq('Email has already been taken')
+        end
+      end
+    end
+
+    context 'when user with a secondary email exists' do
+      context 'when the secondary email is confirmed' do
+        let!(:email) { create(:email, :confirmed, email: 'foo@example.com') }
+
+        it 'returns 409 conflict error' do
+          expect do
+            post api('/users', admin),
+              params: {
+                name: 'foo',
+                email: email.email,
+                password: 'password',
+                username: 'TEST'
+              }
+          end.to change { User.count }.by(0)
+          expect(response).to have_gitlab_http_status(:conflict)
+          expect(json_response['message']).to eq('Email has already been taken')
+        end
+      end
+
+      context 'when the secondary email is unconfirmed' do
+        let!(:email) { create(:email, email: 'foo@example.com') }
+
+        it 'does not create user' do
+          expect do
+            post api('/users', admin),
+              params: {
+                name: 'foo',
+                email: email.email,
+                password: 'password',
+                username: 'TEST'
+              }
+          end.to change { User.count }.by(0)
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
+
     context "scopes" do
       let(:user) { admin }
       let(:path) { '/users' }
@@ -1661,6 +1736,54 @@ RSpec.describe API::Users do
 
         expect(response).to have_gitlab_http_status(:conflict)
         expect(@user.reload.username).to eq(@user.username)
+      end
+    end
+
+    context 'when user with a primary email exists' do
+      context 'when the primary email is confirmed' do
+        let!(:confirmed_user) { create(:user, email: 'foo@example.com') }
+
+        it 'returns 409 conflict error' do
+          put api("/users/#{user.id}", admin), params: { email: confirmed_user.email }
+
+          expect(response).to have_gitlab_http_status(:conflict)
+          expect(user.reload.email).not_to eq(confirmed_user.email)
+        end
+      end
+
+      context 'when the primary email is unconfirmed' do
+        let!(:unconfirmed_user) { create(:user, :unconfirmed, email: 'foo@example.com') }
+
+        it 'returns 409 conflict error' do
+          put api("/users/#{user.id}", admin), params: { email: unconfirmed_user.email }
+
+          expect(response).to have_gitlab_http_status(:conflict)
+          expect(user.reload.email).not_to eq(unconfirmed_user.email)
+        end
+      end
+    end
+
+    context 'when user with a secondary email exists' do
+      context 'when the secondary email is confirmed' do
+        let!(:email) { create(:email, :confirmed, email: 'foo@example.com') }
+
+        it 'returns 409 conflict error' do
+          put api("/users/#{user.id}", admin), params: { email: email.email }
+
+          expect(response).to have_gitlab_http_status(:conflict)
+          expect(user.reload.email).not_to eq(email.email)
+        end
+      end
+
+      context 'when the secondary email is unconfirmed' do
+        let!(:email) { create(:email, email: 'foo@example.com') }
+
+        it 'does not update email' do
+          put api("/users/#{user.id}", admin), params: { email: email.email }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(user.reload.email).not_to eq(email.email)
+        end
       end
     end
   end
@@ -2226,6 +2349,50 @@ RSpec.describe API::Users do
       expect(response).to have_gitlab_http_status(:created)
 
       expect(json_response['confirmed_at']).not_to be_nil
+    end
+
+    context 'when user with a primary email exists' do
+      context 'when the primary email is confirmed' do
+        let!(:confirmed_user) { create(:user, email: 'foo@example.com') }
+
+        it 'returns 400 error' do
+          post api("/users/#{user.id}/emails", admin), params: { email: confirmed_user.email }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'when the primary email is unconfirmed' do
+        let!(:unconfirmed_user) { create(:user, :unconfirmed, email: 'foo@example.com') }
+
+        it 'returns 400 error' do
+          post api("/users/#{user.id}/emails", admin), params: { email: unconfirmed_user.email }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
+
+    context 'when user with a secondary email exists' do
+      context 'when the secondary email is confirmed' do
+        let!(:email) { create(:email, :confirmed, email: 'foo@example.com') }
+
+        it 'returns 400 error' do
+          post api("/users/#{user.id}/emails", admin), params: { email: email.email }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'when the secondary email is unconfirmed' do
+        let!(:email) { create(:email, email: 'foo@example.com') }
+
+        it 'returns 400 error' do
+          post api("/users/#{user.id}/emails", admin), params: { email: email.email }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
     end
   end
 

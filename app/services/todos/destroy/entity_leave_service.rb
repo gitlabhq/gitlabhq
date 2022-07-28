@@ -41,9 +41,18 @@ module Todos
       end
 
       def remove_confidential_resource_todos
+        # Deletes todos for confidential issues
         Todo
           .for_target(confidential_issues.select(:id))
           .for_type(Issue.name)
+          .for_user(user)
+          .delete_all
+
+        # Deletes todos for internal notes on unauthorized projects
+        Todo
+          .for_type(Issue.name)
+          .for_internal_notes
+          .for_project(non_authorized_reporter_projects) # Only Reporter+ can read internal notes
           .for_user(user)
           .delete_all
       end

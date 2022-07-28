@@ -5,7 +5,17 @@ require 'spec_helper'
 RSpec.describe Integrations::Campfire do
   include StubRequests
 
+  it_behaves_like Integrations::ResetSecretFields do
+    let(:integration) { described_class.new }
+  end
+
   describe 'Validations' do
+    it { is_expected.to validate_numericality_of(:room).is_greater_than(0).only_integer }
+    it { is_expected.to validate_length_of(:subdomain).is_at_least(1).is_at_most(63).allow_blank }
+    it { is_expected.to allow_value("foo").for(:subdomain) }
+    it { is_expected.not_to allow_value("foo.bar").for(:subdomain) }
+    it { is_expected.not_to allow_value("foo.bar/#").for(:subdomain) }
+
     context 'when integration is active' do
       before do
         subject.active = true

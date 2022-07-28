@@ -2650,11 +2650,26 @@ RSpec.describe User do
       expect(described_class.find_by_any_email(private_email, confirmed: true)).to eq(user)
     end
 
+    it 'finds user through private commit email when user is unconfirmed' do
+      user = create(:user, :unconfirmed)
+      private_email = user.private_commit_email
+
+      expect(described_class.find_by_any_email(private_email)).to eq(user)
+      expect(described_class.find_by_any_email(private_email, confirmed: true)).to eq(user)
+    end
+
     it 'finds by primary email' do
       user = create(:user, email: 'foo@example.com')
 
       expect(described_class.find_by_any_email(user.email)).to eq user
       expect(described_class.find_by_any_email(user.email, confirmed: true)).to eq user
+    end
+
+    it 'finds by primary email when user is unconfirmed according to confirmed argument' do
+      user = create(:user, :unconfirmed, email: 'foo@example.com')
+
+      expect(described_class.find_by_any_email(user.email)).to eq user
+      expect(described_class.find_by_any_email(user.email, confirmed: true)).to be_nil
     end
 
     it 'finds by uppercased email' do
@@ -2665,48 +2680,53 @@ RSpec.describe User do
     end
 
     context 'finds by secondary email' do
-      let(:user) { email.user }
+      context 'when primary email is confirmed' do
+        let(:user) { email.user }
 
-      context 'primary email confirmed' do
-        context 'secondary email confirmed' do
+        context 'when secondary email is confirmed' do
           let!(:email) { create(:email, :confirmed, email: 'foo@example.com') }
 
-          it 'finds user respecting the confirmed flag' do
+          it 'finds user' do
             expect(described_class.find_by_any_email(email.email)).to eq user
             expect(described_class.find_by_any_email(email.email, confirmed: true)).to eq user
           end
         end
 
-        context 'secondary email not confirmed' do
+        context 'when secondary email is unconfirmed' do
           let!(:email) { create(:email, email: 'foo@example.com') }
 
-          it 'finds user respecting the confirmed flag' do
-            expect(described_class.find_by_any_email(email.email)).to eq user
+          it 'does not find user' do
+            expect(described_class.find_by_any_email(email.email)).to be_nil
             expect(described_class.find_by_any_email(email.email, confirmed: true)).to be_nil
           end
         end
       end
 
-      context 'primary email not confirmed' do
+      context 'when primary email is unconfirmed' do
         let(:user) { create(:user, :unconfirmed) }
-        let!(:email) { create(:email, :confirmed, user: user, email: 'foo@example.com') }
 
-        it 'finds user respecting the confirmed flag' do
-          expect(described_class.find_by_any_email(email.email)).to eq user
-          expect(described_class.find_by_any_email(email.email, confirmed: true)).to be_nil
+        context 'when secondary email is confirmed' do
+          let!(:email) { create(:email, :confirmed, user: user, email: 'foo@example.com') }
+
+          it 'finds user according to confirmed argument' do
+            expect(described_class.find_by_any_email(email.email)).to eq user
+            expect(described_class.find_by_any_email(email.email, confirmed: true)).to be_nil
+          end
+        end
+
+        context 'when secondary email is unconfirmed' do
+          let!(:email) { create(:email, user: user, email: 'foo@example.com') }
+
+          it 'does not find user' do
+            expect(described_class.find_by_any_email(email.email)).to be_nil
+            expect(described_class.find_by_any_email(email.email, confirmed: true)).to be_nil
+          end
         end
       end
     end
 
     it 'returns nil when nothing found' do
       expect(described_class.find_by_any_email('')).to be_nil
-    end
-
-    it 'returns nil when user is not confirmed' do
-      user = create(:user, :unconfirmed, email: 'foo@example.com')
-
-      expect(described_class.find_by_any_email(user.email, confirmed: false)).to eq(user)
-      expect(described_class.find_by_any_email(user.email, confirmed: true)).to be_nil
     end
   end
 
@@ -2716,32 +2736,99 @@ RSpec.describe User do
         .to be_a_kind_of(ActiveRecord::Relation)
     end
 
-    it 'returns a relation of users' do
-      user = create(:user)
-
-      expect(described_class.by_any_email(user.email)).to eq([user])
+    it 'returns empty relation of users when nothing found' do
+      expect(described_class.by_any_email('')).to be_empty
     end
 
-    it 'returns a relation of users for confirmed users' do
+    it 'returns a relation of users for confirmed primary emails' do
       user = create(:user)
 
-      expect(described_class.by_any_email(user.email, confirmed: true)).to eq([user])
+      expect(described_class.by_any_email(user.email)).to match_array([user])
+      expect(described_class.by_any_email(user.email, confirmed: true)).to match_array([user])
     end
 
-    it 'finds user through a private commit email' do
+    it 'returns a relation of users for unconfirmed primary emails according to confirmed argument' do
+      user = create(:user, :unconfirmed)
+
+      expect(described_class.by_any_email(user.email)).to match_array([user])
+      expect(described_class.by_any_email(user.email, confirmed: true)).to be_empty
+    end
+
+    it 'finds users through private commit emails' do
       user = create(:user)
       private_email = user.private_commit_email
 
-      expect(described_class.by_any_email(private_email)).to eq([user])
-      expect(described_class.by_any_email(private_email, confirmed: true)).to eq([user])
+      expect(described_class.by_any_email(private_email)).to match_array([user])
+      expect(described_class.by_any_email(private_email, confirmed: true)).to match_array([user])
+    end
+
+    it 'finds unconfirmed users through private commit emails' do
+      user = create(:user, :unconfirmed)
+      private_email = user.private_commit_email
+
+      expect(described_class.by_any_email(private_email)).to match_array([user])
+      expect(described_class.by_any_email(private_email, confirmed: true)).to match_array([user])
     end
 
     it 'finds user through a private commit email in an array' do
       user = create(:user)
       private_email = user.private_commit_email
 
-      expect(described_class.by_any_email([private_email])).to eq([user])
-      expect(described_class.by_any_email([private_email], confirmed: true)).to eq([user])
+      expect(described_class.by_any_email([private_email])).to match_array([user])
+      expect(described_class.by_any_email([private_email], confirmed: true)).to match_array([user])
+    end
+
+    it 'finds by uppercased email' do
+      user = create(:user, email: 'foo@example.com')
+
+      expect(described_class.by_any_email(user.email.upcase)).to match_array([user])
+      expect(described_class.by_any_email(user.email.upcase, confirmed: true)).to match_array([user])
+    end
+
+    context 'finds by secondary email' do
+      context 'when primary email is confirmed' do
+        let(:user) { email.user }
+
+        context 'when secondary email is confirmed' do
+          let!(:email) { create(:email, :confirmed, email: 'foo@example.com') }
+
+          it 'finds user' do
+            expect(described_class.by_any_email(email.email)).to match_array([user])
+            expect(described_class.by_any_email(email.email, confirmed: true)).to match_array([user])
+          end
+        end
+
+        context 'when secondary email is unconfirmed' do
+          let!(:email) { create(:email, email: 'foo@example.com') }
+
+          it 'does not find user' do
+            expect(described_class.by_any_email(email.email)).to be_empty
+            expect(described_class.by_any_email(email.email, confirmed: true)).to be_empty
+          end
+        end
+      end
+
+      context 'when primary email is unconfirmed' do
+        let(:user) { create(:user, :unconfirmed) }
+
+        context 'when secondary email is confirmed' do
+          let!(:email) { create(:email, :confirmed, user: user, email: 'foo@example.com') }
+
+          it 'finds user according to confirmed argument' do
+            expect(described_class.by_any_email(email.email)).to match_array([user])
+            expect(described_class.by_any_email(email.email, confirmed: true)).to be_empty
+          end
+        end
+
+        context 'when secondary email is unconfirmed' do
+          let!(:email) { create(:email, user: user, email: 'foo@example.com') }
+
+          it 'does not find user' do
+            expect(described_class.by_any_email(email.email)).to be_empty
+            expect(described_class.by_any_email(email.email, confirmed: true)).to be_empty
+          end
+        end
+      end
     end
   end
 
@@ -2756,7 +2843,10 @@ RSpec.describe User do
 
       let_it_be(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@example.com') }
       let_it_be(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@example.com') }
-      let_it_be(:email) { create(:email, user: user, email: 'alias@example.com') }
+      let_it_be(:unconfirmed_user) { create(:user, :unconfirmed, name: 'not verified', username: 'notverified') }
+
+      let_it_be(:unconfirmed_secondary_email) { create(:email, user: user, email: 'alias@example.com') }
+      let_it_be(:confirmed_secondary_email) { create(:email, :confirmed, user: user, email: 'alias2@example.com') }
 
       describe 'name user and email relative ordering' do
         let_it_be(:named_alexander) { create(:user, name: 'Alexander Person', username: 'abcd', email: 'abcd@example.com') }
@@ -2814,16 +2904,26 @@ RSpec.describe User do
 
         it 'does not return users with a matching private email' do
           expect(described_class.search(user.email)).to be_empty
-          expect(described_class.search(email.email)).to be_empty
+
+          expect(described_class.search(unconfirmed_secondary_email.email)).to be_empty
+          expect(described_class.search(confirmed_secondary_email.email)).to be_empty
         end
 
         context 'with private emails search' do
-          it 'returns users with matching private email' do
+          it 'returns users with matching private primary email' do
             expect(described_class.search(user.email, with_private_emails: true)).to match_array([user])
           end
 
-          it 'returns users with matching private secondary email' do
-            expect(described_class.search(email.email, with_private_emails: true)).to match_array([user])
+          it 'returns users with matching private unconfirmed primary email' do
+            expect(described_class.search(unconfirmed_user.email, with_private_emails: true)).to match_array([unconfirmed_user])
+          end
+
+          it 'returns users with matching private confirmed secondary email' do
+            expect(described_class.search(confirmed_secondary_email.email, with_private_emails: true)).to match_array([user])
+          end
+
+          it 'does not return users with matching private unconfirmed secondary email' do
+            expect(described_class.search(unconfirmed_secondary_email.email, with_private_emails: true)).to be_empty
           end
         end
       end
@@ -3083,45 +3183,106 @@ RSpec.describe User do
 
   describe '#accept_pending_invitations!' do
     let(:user) { create(:user, email: 'user@email.com') }
+
+    let(:confirmed_secondary_email) { create(:email, :confirmed, email: 'confirmedsecondary@example.com', user: user) }
+    let(:unconfirmed_secondary_email) { create(:email, email: 'unconfirmedsecondary@example.com', user: user) }
+
     let!(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }
     let!(:group_member_invite) { create(:group_member, :invited, invite_email: user.email) }
+
     let!(:external_project_member_invite) { create(:project_member, :invited, invite_email: 'external@email.com') }
     let!(:external_group_member_invite) { create(:group_member, :invited, invite_email: 'external@email.com') }
+
+    let!(:project_member_invite_via_confirmed_secondary_email) { create(:project_member, :invited, invite_email: confirmed_secondary_email.email) }
+    let!(:group_member_invite_via_confirmed_secondary_email) { create(:group_member, :invited, invite_email: confirmed_secondary_email.email) }
+
+    let!(:project_member_invite_via_unconfirmed_secondary_email) { create(:project_member, :invited, invite_email: unconfirmed_secondary_email.email) }
+    let!(:group_member_invite_via_unconfirmed_secondary_email) { create(:group_member, :invited, invite_email: unconfirmed_secondary_email.email) }
 
     it 'accepts all the user members pending invitations and returns the accepted_members' do
       accepted_members = user.accept_pending_invitations!
 
-      expect(accepted_members).to match_array([project_member_invite, group_member_invite])
+      expect(accepted_members).to match_array(
+        [
+          project_member_invite,
+          group_member_invite,
+          project_member_invite_via_confirmed_secondary_email,
+          group_member_invite_via_confirmed_secondary_email
+        ]
+      )
+
       expect(group_member_invite.reload).not_to be_invite
       expect(project_member_invite.reload).not_to be_invite
+
       expect(external_project_member_invite.reload).to be_invite
       expect(external_group_member_invite.reload).to be_invite
+
+      expect(project_member_invite_via_confirmed_secondary_email.reload).not_to be_invite
+      expect(group_member_invite_via_confirmed_secondary_email.reload).not_to be_invite
+
+      expect(project_member_invite_via_unconfirmed_secondary_email.reload).to be_invite
+      expect(group_member_invite_via_unconfirmed_secondary_email.reload).to be_invite
     end
   end
 
   describe '#all_emails' do
     let(:user) { create(:user) }
-    let!(:email_confirmed) { create :email, user: user, confirmed_at: Time.current }
-    let!(:email_unconfirmed) { create :email, user: user }
+    let!(:unconfirmed_secondary_email) { create(:email, user: user) }
+    let!(:confirmed_secondary_email) { create(:email, :confirmed, user: user) }
+
+    it 'returns all emails' do
+      expect(user.all_emails).to contain_exactly(
+        user.email,
+        user.private_commit_email,
+        confirmed_secondary_email.email
+      )
+    end
+
+    context 'when the primary email is confirmed' do
+      it 'includes the primary email' do
+        expect(user.all_emails).to include(user.email)
+      end
+    end
+
+    context 'when the primary email is unconfirmed' do
+      let!(:user) { create(:user, :unconfirmed) }
+
+      it 'includes the primary email' do
+        expect(user.all_emails).to include(user.email)
+      end
+    end
+
+    context 'when the primary email is temp email for oauth' do
+      let!(:user) { create(:omniauth_user, :unconfirmed, email: 'temp-email-for-oauth-user@gitlab.localhost') }
+
+      it 'does not include the primary email' do
+        expect(user.all_emails).not_to include(user.email)
+      end
+    end
 
     context 'when `include_private_email` is true' do
-      it 'returns all emails' do
-        expect(user.reload.all_emails).to contain_exactly(
-          user.email,
-          user.private_commit_email,
-          email_unconfirmed.email,
-          email_confirmed.email
-        )
+      it 'includes the private commit email' do
+        expect(user.all_emails).to include(user.private_commit_email)
       end
     end
 
     context 'when `include_private_email` is false' do
       it 'does not include the private commit email' do
-        expect(user.reload.all_emails(include_private_email: false)).to contain_exactly(
-          user.email,
-          email_unconfirmed.email,
-          email_confirmed.email
+        expect(user.all_emails(include_private_email: false)).not_to include(
+          user.private_commit_email
         )
+      end
+    end
+
+    context 'when the secondary email is confirmed' do
+      it 'includes the secondary email' do
+        expect(user.all_emails).to include(confirmed_secondary_email.email)
+      end
+    end
+
+    context 'when the secondary email is unconfirmed' do
+      it 'does not include the secondary email' do
+        expect(user.all_emails).not_to include(unconfirmed_secondary_email.email)
       end
     end
   end

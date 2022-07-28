@@ -18,11 +18,31 @@ module MergeRequestsHelper
     classes.join(' ')
   end
 
-  def merge_path_description(merge_request, separator)
+  def merge_path_description(merge_request, with_arrow: false)
     if merge_request.for_fork?
-      "Project:Branches: #{@merge_request.source_project_path}:#{@merge_request.source_branch} #{separator} #{@merge_request.target_project.full_path}:#{@merge_request.target_branch}"
+      msg = if with_arrow
+              _("Project:Branches: %{source_project_path}:%{source_branch} → %{target_project_path}:%{target_branch}")
+            else
+              _("Project:Branches: %{source_project_path}:%{source_branch} to %{target_project_path}:%{target_branch}")
+            end
+
+      msg % {
+        source_project_path: merge_request.source_project_path,
+        source_branch: merge_request.source_branch,
+        target_project_path: merge_request.target_project.full_path,
+        target_branch: merge_request.target_branch
+      }
     else
-      "Branches: #{@merge_request.source_branch} #{separator} #{@merge_request.target_branch}"
+      msg = if with_arrow
+              _("Branches: %{source_branch} → %{target_branch}")
+            else
+              _("Branches: %{source_branch} to %{target_branch}")
+            end
+
+      msg % {
+        source_branch: merge_request.source_branch,
+        target_branch: merge_request.target_branch
+      }
     end
   end
 

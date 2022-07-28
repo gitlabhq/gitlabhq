@@ -71,8 +71,6 @@ class Snippet < ApplicationRecord
             },
             if: :content_changed?
 
-  validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
-
   after_create :create_statistics
 
   # Scopes

@@ -3,7 +3,7 @@
                                                                       mr_link: merge_request_reference_link(@merge_request) }
 
 .branch
-  = merge_path_description(@merge_request, 'to')
+  = merge_path_description(@merge_request)
 .author
   Author: #{@merge_request.author_name}
 .assignee

@@ -378,43 +378,27 @@ RSpec.describe AutocompleteController do
   end
 
   context 'GET deploy_keys_with_owners' do
-    let!(:deploy_key) { create(:deploy_key, user: user) }
-    let!(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key) }
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:deploy_key) { create(:deploy_key, user: user) }
+    let_it_be(:deploy_keys_project) do
+      create(:deploy_keys_project, :write_access, project: public_project, deploy_key: deploy_key)
+    end
 
     context 'unauthorized user' do
       it 'returns a not found response' do
-        get(:deploy_keys_with_owners, params: { project_id: project.id })
+        get(:deploy_keys_with_owners, params: { project_id: public_project.id })
 
         expect(response).to have_gitlab_http_status(:redirect)
       end
     end
 
-    context 'when the user who can read the project is logged in' do
+    context 'when the user is logged in' do
       before do
         sign_in(user)
       end
 
-      context 'and they cannot read the project' do
-        it 'returns a not found response' do
-          allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(false)
-
-          get(:deploy_keys_with_owners, params: { project_id: project.id })
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      it 'renders the deploy key in a json payload, with its owner' do
-        get(:deploy_keys_with_owners, params: { project_id: project.id })
-
-        expect(json_response.count).to eq(1)
-        expect(json_response.first['title']).to eq(deploy_key.title)
-        expect(json_response.first['owner']['id']).to eq(deploy_key.user.id)
-        expect(json_response.first['deploy_keys_projects']).to be_nil
-      end
-
-      context 'with an unknown project' do
+      context 'with a non-existing project' do
         it 'returns a not found response' do
           get(:deploy_keys_with_owners, params: { project_id: 9999 })
 
@@ -422,19 +406,46 @@ RSpec.describe AutocompleteController do
         end
       end
 
-      context 'and the user cannot read the owner of the key' do
-        before do
-          allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :read_user, deploy_key.user).and_return(false)
+      context 'with an existing project' do
+        context 'when user cannot admin project' do
+          it 'returns a forbidden response' do
+            get(:deploy_keys_with_owners, params: { project_id: public_project.id })
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
 
-        it 'returns a payload without owner' do
-          get(:deploy_keys_with_owners, params: { project_id: project.id })
+        context 'when user can admin project' do
+          before do
+            public_project.add_maintainer(user)
+          end
 
-          expect(json_response.count).to eq(1)
-          expect(json_response.first['title']).to eq(deploy_key.title)
-          expect(json_response.first['owner']).to be_nil
-          expect(json_response.first['deploy_keys_projects']).to be_nil
+          context 'and user can read owner of key' do
+            it 'renders the deploy keys in a json payload, with owner' do
+              get(:deploy_keys_with_owners, params: { project_id: public_project.id })
+
+              expect(json_response.count).to eq(1)
+              expect(json_response.first['title']).to eq(deploy_key.title)
+              expect(json_response.first['owner']['id']).to eq(deploy_key.user.id)
+              expect(json_response.first['deploy_keys_projects']).to be_nil
+            end
+          end
+
+          context 'and user cannot read owner of key' do
+            before do
+              allow(Ability).to receive(:allowed?).and_call_original
+              allow(Ability).to receive(:allowed?).with(user, :read_user, deploy_key.user).and_return(false)
+            end
+
+            it 'returns a payload without owner' do
+              get(:deploy_keys_with_owners, params: { project_id: public_project.id })
+
+              expect(json_response.count).to eq(1)
+              expect(json_response.first['title']).to eq(deploy_key.title)
+              expect(json_response.first['owner']).to be_nil
+              expect(json_response.first['deploy_keys_projects']).to be_nil
+            end
+          end
         end
       end
     end

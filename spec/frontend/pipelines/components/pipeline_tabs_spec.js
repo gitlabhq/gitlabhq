@@ -24,12 +24,14 @@ describe('The Pipeline Tabs', () => {
 
   const findFailedJobsBadge = () => wrapper.findByTestId('failed-builds-counter');
   const findJobsBadge = () => wrapper.findByTestId('builds-counter');
+  const findTestsBadge = () => wrapper.findByTestId('tests-counter');
 
   const defaultProvide = {
     defaultTabValue: '',
     failedJobsCount: 1,
     failedJobsSummary: [],
     totalJobCount: 10,
+    testsCount: 123,
   };
 
   const createComponent = (provide = {}) => {
@@ -41,7 +43,6 @@ describe('The Pipeline Tabs', () => {
         },
         stubs: {
           GlTab,
-          TestReports: { template: '<div id="tests" />' },
         },
       }),
     );
@@ -82,6 +83,7 @@ describe('The Pipeline Tabs', () => {
       tabName          | badgeComponent         | badgeText
       ${'Jobs'}        | ${findJobsBadge}       | ${String(defaultProvide.totalJobCount)}
       ${'Failed Jobs'} | ${findFailedJobsBadge} | ${String(defaultProvide.failedJobsCount)}
+      ${'Tests'}       | ${findTestsBadge}      | ${String(defaultProvide.testsCount)}
     `('shows badge for $tabName with the correct text', ({ badgeComponent, badgeText }) => {
       createComponent();
 

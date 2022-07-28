@@ -483,10 +483,14 @@ class IssuableFinder
   end
 
   def by_crm_contact(items)
+    return items unless can_filter_by_crm_contact?
+
     Issuables::CrmContactFilter.new(params: original_params).filter(items)
   end
 
   def by_crm_organization(items)
+    return items unless can_filter_by_crm_organization?
+
     Issuables::CrmOrganizationFilter.new(params: original_params).filter(items)
   end
 
@@ -498,5 +502,21 @@ class IssuableFinder
 
   def feature_flag_scope
     params.group || params.project
+  end
+
+  def can_filter_by_crm_contact?
+    current_user&.can?(:read_crm_contact, root_group)
+  end
+
+  def can_filter_by_crm_organization?
+    current_user&.can?(:read_crm_organization, root_group)
+  end
+
+  def root_group
+    strong_memoize(:root_group) do
+      base_group = params.group || params.project&.group
+
+      base_group&.root_ancestor
+    end
   end
 end

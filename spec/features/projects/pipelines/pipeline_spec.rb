@@ -515,18 +515,17 @@ RSpec.describe 'Pipeline', :js do
       let(:pipeline) { create(:ci_pipeline, :with_test_reports, :with_report_results, project: project) }
 
       before do
-        stub_feature_flags(pipeline_tabs_vue: false)
         visit_pipeline
         wait_for_requests
       end
 
       context 'with test reports' do
         it 'shows badge counter in Tests tab' do
-          expect(page.find('.js-test-report-badge-counter').text).to eq(pipeline.test_report_summary.total[:count].to_s)
+          expect(page.find('[data-testid="tests-counter"]').text).to eq(pipeline.test_report_summary.total[:count].to_s)
         end
 
         it 'calls summary.json endpoint', :js do
-          find('.js-tests-tab-link').click
+          find('.gl-tab-nav-item', text: 'Tests').click
 
           expect(page).to have_content('Jobs')
           expect(page).to have_selector('[data-testid="tests-detail"]', visible: :all)
@@ -537,7 +536,7 @@ RSpec.describe 'Pipeline', :js do
         let(:pipeline) { create(:ci_pipeline, project: project) }
 
         it 'shows zero' do
-          expect(page.find('.js-test-report-badge-counter', visible: :all).text).to eq("0")
+          expect(page.find('[data-testid="tests-counter"]', visible: :all).text).to eq("0")
         end
       end
     end

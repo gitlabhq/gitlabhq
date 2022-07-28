@@ -13296,7 +13296,8 @@ ALTER SEQUENCE ci_stages_id_seq OWNED BY ci_stages.id;
 CREATE TABLE ci_subscriptions_projects (
     id bigint NOT NULL,
     downstream_project_id bigint NOT NULL,
-    upstream_project_id bigint NOT NULL
+    upstream_project_id bigint NOT NULL,
+    author_id bigint
 );
 
 CREATE SEQUENCE ci_subscriptions_projects_id_seq
@@ -27831,6 +27832,8 @@ CREATE INDEX index_ci_stages_on_pipeline_id_and_position ON ci_stages USING btre
 
 CREATE INDEX index_ci_stages_on_project_id ON ci_stages USING btree (project_id);
 
+CREATE INDEX index_ci_subscriptions_projects_author_id ON ci_subscriptions_projects USING btree (author_id);
+
 CREATE INDEX index_ci_subscriptions_projects_on_upstream_project_id ON ci_subscriptions_projects USING btree (upstream_project_id);
 
 CREATE UNIQUE INDEX index_ci_subscriptions_projects_unique_subscription ON ci_subscriptions_projects USING btree (downstream_project_id, upstream_project_id);
@@ -29579,6 +29582,10 @@ CREATE INDEX index_requirements_on_title_trigram ON requirements USING gin (titl
 
 CREATE INDEX index_requirements_on_updated_at ON requirements USING btree (updated_at);
 
+CREATE INDEX index_requirements_project_id_user_id_id_and_target_type ON todos USING btree (project_id, user_id, id, target_type);
+
+CREATE INDEX index_requirements_user_id_and_target_type ON todos USING btree (user_id, target_type);
+
 CREATE INDEX index_resource_iteration_events_on_issue_id ON resource_iteration_events USING btree (issue_id);
 
 CREATE INDEX index_resource_iteration_events_on_iteration_id ON resource_iteration_events USING btree (iteration_id);
@@ -29897,11 +29904,7 @@ CREATE INDEX index_todos_on_note_id ON todos USING btree (note_id);
 
 CREATE INDEX index_todos_on_project_id_and_id ON todos USING btree (project_id, id);
 
-CREATE INDEX index_todos_on_project_id_and_user_id_and_id ON todos USING btree (project_id, user_id, id);
-
 CREATE INDEX index_todos_on_target_type_and_target_id ON todos USING btree (target_type, target_id);
-
-CREATE INDEX index_todos_on_user_id ON todos USING btree (user_id);
 
 CREATE INDEX index_todos_on_user_id_and_id_done ON todos USING btree (user_id, id) WHERE ((state)::text = 'done'::text);
 

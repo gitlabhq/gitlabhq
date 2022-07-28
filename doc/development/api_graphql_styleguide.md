@@ -716,7 +716,7 @@ To allow clients to continue to interact with the mutation unchanged, edit the `
 
 ```ruby
 DEPRECATIONS = [
-  Deprecation.new(old_model_name: 'PrometheusService', new_model_name: 'Integrations::Prometheus', milestone: '14.0')
+  Gitlab::Graphql::DeprecationsBase::NameDeprecation.new(old_name: 'PrometheusService', new_name: 'Integrations::Prometheus', milestone: '14.0')
 ].freeze
 ```
 

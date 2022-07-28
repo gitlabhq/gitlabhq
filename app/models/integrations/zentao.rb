@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Zentao < Integration
+  class Zentao < BaseIssueTracker
     include Gitlab::Routing
 
     self.field_storage = :data_fields
@@ -10,11 +10,13 @@ module Integrations
       title: -> { s_('ZentaoIntegration|ZenTao Web URL') },
       placeholder: 'https://www.zentao.net',
       help: -> { s_('ZentaoIntegration|Base URL of the ZenTao instance.') },
+      exposes_secrets: true,
       required: true
 
     field :api_url,
       title: -> { s_('ZentaoIntegration|ZenTao API URL (optional)') },
-      help: -> { s_('ZentaoIntegration|If different from Web URL.') }
+      help: -> { s_('ZentaoIntegration|If different from Web URL.') },
+      exposes_secrets: true
 
     field :api_token,
       type: 'password',
@@ -38,6 +40,17 @@ module Integrations
 
     def data_fields
       zentao_tracker_data || self.build_zentao_tracker_data
+    end
+
+    alias_method :project_url, :url
+
+    def set_default_data
+      return unless issues_tracker.present?
+
+      return if url
+
+      data_fields.url ||= issues_tracker['url']
+      data_fields.api_url ||= issues_tracker['api_url']
     end
 
     def title

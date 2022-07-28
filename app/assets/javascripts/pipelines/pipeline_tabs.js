@@ -5,6 +5,7 @@ import PipelineTabs from 'ee_else_ce/pipelines/components/pipeline_tabs.vue';
 import { removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { TAB_QUERY_PARAM } from '~/pipelines/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import createTestReportsStore from './stores/test_reports';
 import { getPipelineDefaultTab, reportToSentry } from './utils';
 
 Vue.use(VueApollo);
@@ -33,6 +34,13 @@ export const createAppOptions = (selector, apolloProvider) => {
     licenseManagementSettingsPath,
     licensesApiPath,
     canManageLicenses,
+    summaryEndpoint,
+    suiteEndpoint,
+    blobPath,
+    hasTestReport,
+    emptyStateImagePath,
+    artifactsExpiredImagePath,
+    testsCount,
   } = dataset;
 
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
@@ -43,7 +51,15 @@ export const createAppOptions = (selector, apolloProvider) => {
       PipelineTabs,
     },
     apolloProvider,
-    store: new Vuex.Store(),
+    store: new Vuex.Store({
+      modules: {
+        testReports: createTestReportsStore({
+          blobPath,
+          summaryEndpoint,
+          suiteEndpoint,
+        }),
+      },
+    }),
     provide: {
       canGenerateCodequalityReports: parseBoolean(canGenerateCodequalityReports),
       codequalityReportDownloadPath,
@@ -62,6 +78,13 @@ export const createAppOptions = (selector, apolloProvider) => {
       licenseManagementSettingsPath,
       licensesApiPath,
       canManageLicenses: parseBoolean(canManageLicenses),
+      summaryEndpoint,
+      suiteEndpoint,
+      blobPath,
+      hasTestReport,
+      emptyStateImagePath,
+      artifactsExpiredImagePath,
+      testsCount,
     },
     errorCaptured(err, _vm, info) {
       reportToSentry('pipeline_tabs', `error: ${err}, info: ${info}`);

@@ -22,6 +22,7 @@ class WebHookLog < ApplicationRecord
   validates :web_hook, presence: true
 
   before_save :obfuscate_basic_auth
+  before_save :redact_author_email
 
   def self.recent
     where('created_at >= ?', 2.days.ago.beginning_of_day)
@@ -51,5 +52,11 @@ class WebHookLog < ApplicationRecord
 
   def obfuscate_basic_auth
     self.url = safe_url
+  end
+
+  def redact_author_email
+    return unless self.request_data.dig('commit', 'author', 'email').present?
+
+    self.request_data['commit']['author']['email'] = _('[REDACTED]')
   end
 end

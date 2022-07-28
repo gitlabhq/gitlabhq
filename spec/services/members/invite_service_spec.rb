@@ -30,8 +30,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
   end
 
-  context 'when email belongs to an existing user as a secondary email' do
-    let(:secondary_email) { create(:email, email: 'secondary@example.com', user: project_user) }
+  context 'when email belongs to an existing user as a confirmed secondary email' do
+    let(:secondary_email) { create(:email, :confirmed, email: 'secondary@example.com', user: project_user) }
     let(:params) { { email: secondary_email.email } }
 
     it 'adds an existing user to members', :aggregate_failures do
@@ -39,6 +39,18 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       expect(result[:status]).to eq(:success)
       expect(project.users).to include project_user
       expect(project.members.last).not_to be_invite
+    end
+  end
+
+  context 'when email belongs to an existing user as an unconfirmed secondary email' do
+    let(:unconfirmed_secondary_email) { create(:email, email: 'secondary@example.com', user: project_user) }
+    let(:params) { { email: unconfirmed_secondary_email.email } }
+
+    it 'does not link the email with any user and successfully creates a member as an invite for that email' do
+      expect_to_create_members(count: 1)
+      expect(result[:status]).to eq(:success)
+      expect(project.users).not_to include project_user
+      expect(project.members.last).to be_invite
     end
   end
 
@@ -291,6 +303,19 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
+    context 'with unconfirmed primary email' do
+      let_it_be(:unconfirmed_user) { create(:user, :unconfirmed) }
+
+      let(:params) { { email: unconfirmed_user.email } }
+
+      it 'adds an existing user to members' do
+        expect_to_create_members(count: 1)
+        expect(result[:status]).to eq(:success)
+        expect(project.users).to include unconfirmed_user
+        expect(project.members.last).not_to be_invite
+      end
+    end
+
     context 'with user_id' do
       let(:params) { { user_id: project_user.id } }
 
@@ -376,8 +401,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
         expect(existing_member.reset.access_level).to eq ProjectMember::MAINTAINER
       end
 
-      context 'when email belongs to an existing user as a secondary email' do
-        let(:secondary_email) { create(:email, email: 'secondary@example.com', user: existing_member.user) }
+      context 'when email belongs to an existing user as a confirmed secondary email' do
+        let(:secondary_email) { create(:email, :confirmed, email: 'secondary@example.com', user: existing_member.user) }
         let(:params) { { email: "#{secondary_email.email}" } }
 
         it 'allows re-invite to an already invited email' do

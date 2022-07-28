@@ -114,7 +114,11 @@ RSpec.describe Types::GlobalIDType do
       end
 
       before do
-        deprecation = Gitlab::GlobalId::Deprecations::Deprecation.new(old_model_name: 'OldIssue', new_model_name: 'Issue', milestone: '10.0')
+        deprecation = Gitlab::GlobalId::Deprecations::NameDeprecation.new(
+          old_name: 'OldIssue',
+          new_name: 'Issue',
+          milestone: '10.0'
+        )
 
         stub_global_id_deprecations(deprecation)
       end

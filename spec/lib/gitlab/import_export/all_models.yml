@@ -578,7 +578,6 @@ project:
 - remove_source_branch_after_merge
 - deleting_user
 - upstream_projects
-- downstream_projects
 - upstream_project_subscriptions
 - downstream_project_subscriptions
 - service_desk_setting

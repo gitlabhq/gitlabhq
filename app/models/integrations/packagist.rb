@@ -6,14 +6,14 @@ module Integrations
     extend Gitlab::Utils::Override
 
     field :username,
-      title: -> { _('Username') },
+      title: -> { s_('Username') },
       help: -> { s_('Enter your Packagist username.') },
       placeholder: '',
       required: true
 
     field :token,
       type: 'password',
-      title: -> { _('Token') },
+      title: -> { s_('Token') },
       help: -> { s_('Enter your Packagist token.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
@@ -21,9 +21,11 @@ module Integrations
       required: true
 
     field :server,
-      title: -> { _('Server (optional)') },
+      title: -> { s_('Server (optional)') },
       help: -> { s_('Enter your Packagist server. Defaults to https://packagist.org.') },
-      placeholder: 'https://packagist.org'
+      placeholder: 'https://packagist.org',
+      exposes_secrets: true,
+      required: false
 
     validates :username, presence: true, if: :activated?
     validates :token, presence: true, if: :activated?

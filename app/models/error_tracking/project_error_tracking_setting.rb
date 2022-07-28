@@ -44,6 +44,8 @@ module ErrorTracking
       key: Settings.attr_encrypted_db_key_base_32,
       algorithm: 'aes-256-gcm'
 
+    before_validation :reset_token
+
     after_save :clear_reactive_cache!
 
     # When a user enables the integrated error tracking
@@ -181,6 +183,12 @@ module ErrorTracking
     end
 
     private
+
+    def reset_token
+      if api_url_changed? && !encrypted_token_changed?
+        self.token = nil
+      end
+    end
 
     def ensure_issue_belongs_to_project!(project_id_from_api)
       raise 'The Sentry issue appers to be outside of the configured Sentry project' if Integer(project_id_from_api) != ensure_sentry_project_id!

@@ -35,6 +35,8 @@ module Groups
 
       user_ids_for_project_authorizations_refresh = obtain_user_ids_for_project_authorizations_refresh
 
+      destroy_group_bots
+
       group.destroy
 
       if user_ids_for_project_authorizations_refresh.present?
@@ -76,6 +78,19 @@ module Groups
 
       group.users_ids_of_direct_members
     end
+
+    # rubocop:disable CodeReuse/ActiveRecord
+    def destroy_group_bots
+      bot_ids = group.members_and_requesters.joins(:user).merge(User.project_bot).pluck(:user_id)
+      current_user_id = current_user.id
+
+      group.run_after_commit do
+        bot_ids.each do |user_id|
+          DeleteUserWorker.perform_async(current_user_id, user_id, skip_authorization: true)
+        end
+      end
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
   end
 end
 

@@ -31,3 +31,5 @@ module Ci
     rule { ~admin & locked }.prevent :assign_runner
   end
 end
+
+Ci::RunnerPolicy.prepend_mod_with('Ci::RunnerPolicy')

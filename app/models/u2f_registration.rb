@@ -6,21 +6,7 @@ class U2fRegistration < ApplicationRecord
   belongs_to :user
 
   after_create :create_webauthn_registration
-  after_update :update_webauthn_registration, if: :counter_changed?
-
-  def create_webauthn_registration
-    converter = Gitlab::Auth::U2fWebauthnConverter.new(self)
-    WebauthnRegistration.create!(converter.convert)
-  rescue StandardError => ex
-    Gitlab::ErrorTracking.track_exception(ex, u2f_registration_id: self.id)
-  end
-
-  def update_webauthn_registration
-    # When we update the sign count of this registration
-    # we need to update the sign count of the corresponding webauthn registration
-    # as well if it exists already
-    WebauthnRegistration.find_by_credential_xid(webauthn_credential_xid)&.update_attribute(:counter, counter)
-  end
+  after_update :update_webauthn_registration, if: :saved_change_to_counter?
 
   def self.register(user, app_id, params, challenges)
     u2f = U2F::U2F.new(app_id)
@@ -60,10 +46,22 @@ class U2fRegistration < ApplicationRecord
 
   private
 
+  def create_webauthn_registration
+    converter = Gitlab::Auth::U2fWebauthnConverter.new(self)
+    WebauthnRegistration.create!(converter.convert)
+  rescue StandardError => ex
+    Gitlab::ErrorTracking.track_exception(ex, u2f_registration_id: self.id)
+  end
+
+  def update_webauthn_registration
+    # When we update the sign count of this registration
+    # we need to update the sign count of the corresponding webauthn registration
+    # as well if it exists already
+    WebauthnRegistration.find_by_credential_xid(webauthn_credential_xid)
+      &.update_attribute(:counter, counter)
+  end
+
   def webauthn_credential_xid
-    # To find the corresponding webauthn registration, we use that
-    # the key handle of the u2f reg corresponds to the credential xid of the webauthn reg
-    # (with some base64 back and forth)
     Base64.strict_encode64(Base64.urlsafe_decode64(key_handle))
   end
 end
