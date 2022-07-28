@@ -91,7 +91,7 @@ export default {
       modalId: 'set-user-status-modal',
       noEmoji: true,
       availability: isUserBusy(this.currentAvailability),
-      clearStatusAfter: statusTimeRanges[0].label,
+      clearStatusAfter: statusTimeRanges[0],
       clearStatusAfterMessage: sprintf(s__('SetStatusModal|Your status resets on %{date}.'), {
         date: this.currentClearStatusAfter,
       }),
@@ -178,9 +178,7 @@ export default {
         message,
         availability: availability ? AVAILABILITY_STATUS.BUSY : AVAILABILITY_STATUS.NOT_SET,
         clearStatusAfter:
-          clearStatusAfter === statusTimeRanges[0].label
-            ? null
-            : clearStatusAfter.replace(' ', '_'),
+          clearStatusAfter.label === statusTimeRanges[0].label ? null : clearStatusAfter.shortcut,
       })
         .then(this.onUpdateSuccess)
         .catch(this.onUpdateFail);
@@ -279,12 +277,12 @@ export default {
     <div class="form-group">
       <div class="gl-display-flex gl-align-items-baseline">
         <span class="gl-mr-3">{{ s__('SetStatusModal|Clear status after') }}</span>
-        <gl-dropdown :text="clearStatusAfter" data-testid="clear-status-at-dropdown">
+        <gl-dropdown :text="clearStatusAfter.label" data-testid="clear-status-at-dropdown">
           <gl-dropdown-item
             v-for="after in $options.statusTimeRanges"
             :key="after.name"
             :data-testid="after.name"
-            @click="setClearStatusAfter(after.label)"
+            @click="setClearStatusAfter(after)"
             >{{ after.label }}</gl-dropdown-item
           >
         </gl-dropdown>

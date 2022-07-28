@@ -1,24 +1,24 @@
 import { GlAlert } from '@gitlab/ui';
-import MockAxiosAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import SharedRunnersForm from '~/group_settings/components/shared_runners_form.vue';
-import axios from '~/lib/utils/axios_utils';
+import { updateGroup } from '~/api/groups_api';
 
-const UPDATE_PATH = '/test/update';
+jest.mock('~/api/groups_api');
+
+const GROUP_ID = '99';
 const RUNNER_ENABLED_VALUE = 'enabled';
 const RUNNER_DISABLED_VALUE = 'disabled_and_unoverridable';
 const RUNNER_ALLOW_OVERRIDE_VALUE = 'disabled_with_override';
 
 describe('group_settings/components/shared_runners_form', () => {
   let wrapper;
-  let mock;
 
   const createComponent = (provide = {}) => {
     wrapper = shallowMountExtended(SharedRunnersForm, {
       provide: {
-        updatePath: UPDATE_PATH,
+        groupId: GROUP_ID,
         sharedRunnersSetting: RUNNER_ENABLED_VALUE,
         parentSharedRunnersSetting: null,
         runnerEnabledValue: RUNNER_ENABLED_VALUE,
@@ -36,18 +36,19 @@ describe('group_settings/components/shared_runners_form', () => {
       .at(0);
   const findSharedRunnersToggle = () => wrapper.findByTestId('shared-runners-toggle');
   const findOverrideToggle = () => wrapper.findByTestId('override-runners-toggle');
-  const getSharedRunnersSetting = () => JSON.parse(mock.history.put[0].data).shared_runners_setting;
+  const getSharedRunnersSetting = () => {
+    return updateGroup.mock.calls[0][1].shared_runners_setting;
+  };
 
   beforeEach(() => {
-    mock = new MockAxiosAdapter(axios);
-    mock.onPut(UPDATE_PATH).reply(200);
+    updateGroup.mockResolvedValue({});
   });
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
 
-    mock.restore();
+    updateGroup.mockReset();
   });
 
   describe('default state', () => {
@@ -115,7 +116,7 @@ describe('group_settings/components/shared_runners_form', () => {
       findSharedRunnersToggle().vm.$emit('change', false);
       await waitForPromises();
 
-      expect(mock.history.put.length).toBe(1);
+      expect(updateGroup).toHaveBeenCalledTimes(1);
     });
 
     it('is not loading state after completed request', async () => {
@@ -170,12 +171,14 @@ describe('group_settings/components/shared_runners_form', () => {
   });
 
   describe.each`
-    errorObj                        | message
+    errorData                       | message
     ${{}}                           | ${'An error occurred while updating configuration. Refresh the page and try again.'}
     ${{ error: 'Undefined error' }} | ${'Undefined error Refresh the page and try again.'}
-  `(`with error $errorObj`, ({ errorObj, message }) => {
+  `(`with error $errorObj`, ({ errorData, message }) => {
     beforeEach(async () => {
-      mock.onPut(UPDATE_PATH).reply(500, errorObj);
+      updateGroup.mockRejectedValue({
+        response: { data: errorData },
+      });
 
       createComponent();
       findSharedRunnersToggle().vm.$emit('change', false);

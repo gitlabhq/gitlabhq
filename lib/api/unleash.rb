@@ -33,8 +33,10 @@ module API
             end
           end
 
+          # We decrease the urgency of this endpoint until the maxmemory issue of redis-cache has been resolved.
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/365575#note_1033611872 for more information.
           desc 'Get a list of features'
-          get 'client/features' do
+          get 'client/features', urgency: :low do
             if ::Feature.enabled?(:cache_unleash_client_api, project)
               present_feature_flags
             else

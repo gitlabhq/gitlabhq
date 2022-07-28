@@ -27,6 +27,11 @@ export default {
       required: false,
       default: null,
     },
+    canUpdate: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -102,7 +107,7 @@ export default {
   <item-state
     v-if="workItem.state"
     :state="workItem.state"
-    :loading="updateInProgress"
+    :disabled="updateInProgress || !canUpdate"
     @changed="updateWorkItemState"
   />
 </template>

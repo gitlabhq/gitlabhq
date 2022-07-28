@@ -1,6 +1,6 @@
 <script>
 import { GlToggle, GlAlert } from '@gitlab/ui';
-import axios from '~/lib/utils/axios_utils';
+import { updateGroup } from '~/api/groups_api';
 import { I18N_UPDATE_ERROR_MESSAGE, I18N_REFRESH_MESSAGE } from '../constants';
 
 export default {
@@ -9,7 +9,7 @@ export default {
     GlAlert,
   },
   inject: [
-    'updatePath',
+    'groupId',
     'sharedRunnersSetting',
     'parentSharedRunnersSetting',
     'runnerEnabledValue',
@@ -54,8 +54,7 @@ export default {
 
       this.isLoading = true;
 
-      axios
-        .put(this.updatePath, { shared_runners_setting: setting })
+      updateGroup(this.groupId, { shared_runners_setting: setting })
         .then(() => {
           this.value = setting;
         })

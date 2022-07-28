@@ -37,7 +37,7 @@ describe('ItemTitle', () => {
       disabled: true,
     });
 
-    expect(wrapper.classes()).toContain('gl-cursor-not-allowed');
+    expect(wrapper.classes()).toContain('gl-cursor-text');
     expect(findInputEl().attributes('contenteditable')).toBe('false');
   });
 

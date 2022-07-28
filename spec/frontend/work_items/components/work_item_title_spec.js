@@ -20,7 +20,11 @@ describe('WorkItemTitle component', () => {
 
   const findItemTitle = () => wrapper.findComponent(ItemTitle);
 
-  const createComponent = ({ workItemParentId, mutationHandler = mutationSuccessHandler } = {}) => {
+  const createComponent = ({
+    workItemParentId,
+    mutationHandler = mutationSuccessHandler,
+    canUpdate = true,
+  } = {}) => {
     const { id, title, workItemType } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemTitle, {
       apolloProvider: createMockApollo([
@@ -32,6 +36,7 @@ describe('WorkItemTitle component', () => {
         workItemTitle: title,
         workItemType: workItemType.name,
         workItemParentId,
+        canUpdate,
       },
     });
   };
@@ -44,6 +49,20 @@ describe('WorkItemTitle component', () => {
     createComponent();
 
     expect(findItemTitle().props('title')).toBe(workItemQueryResponse.data.workItem.title);
+  });
+
+  describe('item title disabled prop', () => {
+    describe.each`
+      description             | canUpdate | value
+      ${'when cannot update'} | ${false}  | ${true}
+      ${'when can update'}    | ${true}   | ${false}
+    `('$description', ({ canUpdate, value }) => {
+      it(`renders item title component with disabled=${value}`, () => {
+        createComponent({ canUpdate });
+
+        expect(findItemTitle().props('disabled')).toBe(value);
+      });
+    });
   });
 
   describe('when updating the title', () => {

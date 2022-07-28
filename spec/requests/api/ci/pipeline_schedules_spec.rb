@@ -98,7 +98,7 @@ RSpec.describe API::Ci::PipelineSchedules do
     end
 
     matcher :return_pipeline_schedule_sucessfully do
-      match_unless_raises do |reponse|
+      match_unless_raises do |response|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
       end
@@ -202,6 +202,110 @@ RSpec.describe API::Ci::PipelineSchedules do
 
           expect(response).to return_pipeline_schedule_sucessfully
           expect(json_response).not_to have_key('variables')
+        end
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines' do
+    let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
+
+    before do
+      create_list(:ci_pipeline, 2, project: project, pipeline_schedule: pipeline_schedule, source: :schedule)
+    end
+
+    let(:url) { "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/pipelines" }
+
+    matcher :return_pipeline_schedule_pipelines_successfully do
+      match_unless_raises do |reponse|
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(response).to match_response_schema('public_api/v4/pipelines')
+      end
+    end
+
+    shared_examples 'request with project permissions' do
+      context 'authenticated user with project permissions' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'returns the details of pipelines triggered from the pipeline schedule' do
+          get api(url, user)
+
+          expect(response).to return_pipeline_schedule_pipelines_successfully
+        end
+      end
+    end
+
+    shared_examples 'request with schedule ownership' do
+      context 'authenticated user with pipeline schedule ownership' do
+        it 'returns the details of pipelines triggered from the pipeline schedule' do
+          get api(url, developer)
+
+          expect(response).to return_pipeline_schedule_pipelines_successfully
+        end
+      end
+    end
+
+    shared_examples 'request with unauthenticated user' do
+      context 'with unauthenticated user' do
+        it 'does not return the details of pipelines triggered from the pipeline schedule' do
+          get api(url)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    shared_examples 'request with non-existing pipeline_schedule' do
+      it "responds with 404 Not Found if requesting for a non-existing pipeline schedule's pipelines" do
+        get api("/projects/#{project.id}/pipeline_schedules/#{non_existing_record_id}/pipelines", developer)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with private project' do
+      it_behaves_like 'request with schedule ownership'
+      it_behaves_like 'request with project permissions'
+      it_behaves_like 'request with unauthenticated user'
+      it_behaves_like 'request with non-existing pipeline_schedule'
+
+      context 'authenticated user with no project permissions' do
+        it 'does not return the details of pipelines triggered from the pipeline schedule' do
+          get api(url, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'authenticated user with insufficient project permissions' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'does not return the details of pipelines triggered from the pipeline schedule' do
+          get api(url, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'with public project' do
+      let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+
+      it_behaves_like 'request with schedule ownership'
+      it_behaves_like 'request with project permissions'
+      it_behaves_like 'request with unauthenticated user'
+      it_behaves_like 'request with non-existing pipeline_schedule'
+
+      context 'authenticated user with no project permissions' do
+        it 'returns the details of pipelines triggered from the pipeline schedule' do
+          get api(url, user)
+
+          expect(response).to return_pipeline_schedule_pipelines_successfully
         end
       end
     end

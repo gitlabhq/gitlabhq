@@ -206,11 +206,13 @@ export default {
         :work-item-title="workItem.title"
         :work-item-type="workItemType"
         :work-item-parent-id="workItemParentId"
+        :can-update="canUpdate"
         @error="error = $event"
       />
       <work-item-state
         :work-item="workItem"
         :work-item-parent-id="workItemParentId"
+        :can-update="canUpdate"
         @error="error = $event"
       />
       <template v-if="workItemsMvc2Enabled">

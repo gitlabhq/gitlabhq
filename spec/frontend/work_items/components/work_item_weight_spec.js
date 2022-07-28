@@ -135,7 +135,12 @@ describe('WorkItemWeight component', () => {
     describe('when blurred', () => {
       it('calls a mutation to update the weight when the input value is different', () => {
         const mutationSpy = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
-        createComponent({ isEditing: true, weight: 0, mutationHandler: mutationSpy });
+        createComponent({
+          isEditing: true,
+          weight: 0,
+          mutationHandler: mutationSpy,
+          canUpdate: true,
+        });
 
         findInput().vm.$emit('blur', { target: { value: 1 } });
 
@@ -151,7 +156,7 @@ describe('WorkItemWeight component', () => {
 
       it('does not call a mutation to update the weight when the input value is the same', () => {
         const mutationSpy = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
-        createComponent({ isEditing: true, mutationHandler: mutationSpy });
+        createComponent({ isEditing: true, mutationHandler: mutationSpy, canUpdate: true });
 
         findInput().trigger('blur');
 
@@ -170,6 +175,7 @@ describe('WorkItemWeight component', () => {
         createComponent({
           isEditing: true,
           mutationHandler: jest.fn().mockResolvedValue(response),
+          canUpdate: true,
         });
 
         findInput().trigger('blur');
@@ -182,6 +188,7 @@ describe('WorkItemWeight component', () => {
         createComponent({
           isEditing: true,
           mutationHandler: jest.fn().mockRejectedValue(new Error()),
+          canUpdate: true,
         });
 
         findInput().trigger('blur');
@@ -192,7 +199,7 @@ describe('WorkItemWeight component', () => {
 
       it('tracks updating the weight', () => {
         const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-        createComponent();
+        createComponent({ canUpdate: true });
 
         findInput().trigger('blur');
 

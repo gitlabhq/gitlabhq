@@ -3,8 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleSetLegacyOpenSourceLicenseAvailableForNonPublicProjects do
-  context 'on gitlab.com' do
+RSpec.describe RescheduleSetLegacyOpenSourceLicenseAvailableForNonPublicProjects do
+  context 'when on gitlab.com' do
     let(:migration) { described_class::MIGRATION }
 
     before do
@@ -21,6 +21,7 @@ RSpec.describe ScheduleSetLegacyOpenSourceLicenseAvailableForNonPublicProjects d
             column_name: :id,
             interval: described_class::INTERVAL,
             batch_size: described_class::BATCH_SIZE,
+            max_batch_size: described_class::MAX_BATCH_SIZE,
             sub_batch_size: described_class::SUB_BATCH_SIZE
           )
         )
@@ -37,7 +38,7 @@ RSpec.describe ScheduleSetLegacyOpenSourceLicenseAvailableForNonPublicProjects d
     end
   end
 
-  context 'on self-managed instance' do
+  context 'when on self-managed instance' do
     let(:migration) { described_class.new }
 
     before do

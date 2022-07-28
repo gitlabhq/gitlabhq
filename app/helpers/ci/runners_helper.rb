@@ -73,7 +73,7 @@ module Ci
 
     def group_shared_runners_settings_data(group)
       {
-        update_path: api_v4_groups_path(id: group.id),
+        group_id: group.id,
         shared_runners_setting: group.shared_runners_setting,
         parent_shared_runners_setting: group.parent&.shared_runners_setting,
         runner_enabled_value: Namespace::SR_ENABLED,

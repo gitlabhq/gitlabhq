@@ -98,6 +98,7 @@ export default {
       }
     },
     updateWeight(event) {
+      if (!this.canUpdate) return;
       this.isEditing = false;
 
       const weight = Number(event.target.value);

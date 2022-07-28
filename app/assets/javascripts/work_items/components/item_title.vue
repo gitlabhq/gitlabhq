@@ -36,7 +36,7 @@ export default {
 <template>
   <h2
     class="gl-font-weight-normal gl-sm-font-weight-bold gl-mb-5 gl-mt-0 gl-w-full"
-    :class="{ 'gl-cursor-not-allowed': disabled }"
+    :class="{ 'gl-cursor-text': disabled }"
     aria-labelledby="item-title"
   >
     <div
@@ -46,7 +46,8 @@ export default {
       :aria-label="__('Title')"
       :data-placeholder="placeholder"
       :contenteditable="!disabled"
-      class="gl-pseudo-placeholder gl-px-4 gl-py-3 gl-ml-n4 gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base"
+      class="gl-px-4 gl-py-3 gl-ml-n4 gl-border gl-border-white gl-rounded-base"
+      :class="{ 'gl-hover-border-gray-200 gl-pseudo-placeholder': !disabled }"
       @blur="handleBlur"
       @keyup="handleInput"
       @keydown.enter.exact="handleSubmit"

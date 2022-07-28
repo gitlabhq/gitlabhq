@@ -26,7 +26,7 @@ export default {
       type: String,
       required: true,
     },
-    loading: {
+    disabled: {
       type: Boolean,
       required: false,
       default: false,
@@ -61,15 +61,17 @@ export default {
       :id="$options.labelId"
       :value="state"
       :options="$options.states"
-      :disabled="loading"
+      :disabled="disabled"
       class="gl-w-auto hide-select-decoration"
+      :class="{ 'gl-bg-transparent! gl-cursor-text!': disabled }"
       @change="setState"
     />
   </gl-form-group>
 </template>
 
 <style>
-.hide-select-decoration:not(:focus, :hover) {
+.hide-select-decoration:not(:focus, :hover),
+.hide-select-decoration:disabled {
   background-image: none;
   box-shadow: none;
 }

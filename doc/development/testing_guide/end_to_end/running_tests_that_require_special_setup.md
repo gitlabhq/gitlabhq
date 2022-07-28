@@ -385,6 +385,43 @@ To run the LDAP tests on your local with TLS disabled, follow these steps:
    GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_LOG_LEVEL=debug WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
    ```
 
+## SMTP tests
+
+Tests that are tagged with `:smtp` meta tag are orchestrated tests that ensure email notifications are received by a user.
+
+These tests require a GitLab instance with SMTP enabled and integrated with an SMTP server, [MailHog](https://github.com/mailhog/MailHog).
+
+To run these tests locally against the GDK:
+
+1. Add these settings to your `gitlab.yml` file:
+
+   ```yaml
+   smtp:
+     enabled: true
+     address: "mailhog.test"
+     port: 1025
+   ```
+
+1. Start MailHog in a Docker container:
+
+   ```shell
+   docker network create test && docker run \
+     --network test \
+     --hostname mailhog.test \
+     --name mailhog \
+     --publish 1025:1025 \
+     --publish 8025:8025 \
+     mailhog/mailhog:v1.0.0
+   ```
+
+1. Run the test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
+
+   ```shell
+   QA_LOG_LEVEL=debug WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/2_plan/email/trigger_email_notification_spec.rb -- --tag orchestrated
+   ```
+
+For instructions on how to run these tests using the `gitlab-qa` gem, please refer to [the GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationsmtp-ceeefull-image-address).
+
 ## Guide to the mobile suite
 
 ### What are mobile tests
