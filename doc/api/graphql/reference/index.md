@@ -5385,6 +5385,30 @@ Input type: `UpdateSnippetInput`
 | <a id="mutationupdatesnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationupdatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
+### `Mutation.uploadDelete`
+
+Deletes an upload.
+
+Input type: `UploadDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuploaddeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuploaddeletefilename"></a>`filename` | [`String!`](#string) | Upload filename. |
+| <a id="mutationuploaddeletegrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
+| <a id="mutationuploaddeleteprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
+| <a id="mutationuploaddeletesecret"></a>`secret` | [`String!`](#string) | Secret part of upload path. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuploaddeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuploaddeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationuploaddeleteupload"></a>`upload` | [`FileUpload`](#fileupload) | Deleted upload. |
+
 ### `Mutation.userCalloutCreate`
 
 Input type: `UserCalloutCreateInput`
@@ -11844,6 +11868,16 @@ Represents an external issue.
 | <a id="externalissuetitle"></a>`title` | [`String`](#string) | Title of the issue in the external tracker. |
 | <a id="externalissueupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the issue was updated. |
 | <a id="externalissueweburl"></a>`webUrl` | [`String`](#string) | URL to the issue in the external tracker. |
+
+### `FileUpload`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="fileuploadid"></a>`id` | [`UploadID!`](#uploadid) | Global ID of the upload. |
+| <a id="fileuploadpath"></a>`path` | [`String!`](#string) | Path of the upload. |
+| <a id="fileuploadsize"></a>`size` | [`Int!`](#int) | Size of the upload in bytes. |
 
 ### `GeoNode`
 
@@ -21246,6 +21280,12 @@ An example `TodoableID` is: `"gid://gitlab/Todoable/1"`.
 A regexp containing patterns sourced from user input.
 
 ### `Upload`
+
+### `UploadID`
+
+A `UploadID` is a global ID. It is encoded as a string.
+
+An example `UploadID` is: `"gid://gitlab/Upload/1"`.
 
 ### `UserID`
 

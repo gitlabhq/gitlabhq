@@ -393,6 +393,13 @@ RSpec.describe SearchController do
           get(:autocomplete, params: { term: 'foo@bar.com', scope: 'users' })
         end
       end
+
+      it 'can be filtered with params[:filter]' do
+        get :autocomplete, params: { term: 'setting', filter: 'generic' }
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.count).to eq(1)
+        expect(json_response.first['label']).to match(/User settings/)
+      end
     end
 
     describe '#append_info_to_payload' do

@@ -8,8 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use Groups to manage one or more related projects at the same time.
 
-For instructions on how to view, create, and manage groups, see [Groups](index.md).
-
 ## Create a group
 
 To create a group:

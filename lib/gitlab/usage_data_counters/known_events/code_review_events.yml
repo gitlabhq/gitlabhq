@@ -350,3 +350,28 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
+## Code Quality
+- name: i_code_review_merge_request_widget_code_quality_view
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_code_quality_full_report_clicked
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_code_quality_expand
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_code_quality_expand_success
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_code_quality_expand_warning
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_code_quality_expand_failed
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly

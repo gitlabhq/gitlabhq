@@ -151,6 +151,7 @@ module Types
     mount_mutation Mutations::SavedReplies::Update
     mount_mutation Mutations::Pages::MarkOnboardingComplete
     mount_mutation Mutations::SavedReplies::Destroy
+    mount_mutation Mutations::Uploads::Delete
   end
 end
 

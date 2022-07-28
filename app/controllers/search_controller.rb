@@ -83,8 +83,9 @@ class SearchController < ApplicationController
 
     @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?
+    @filter = params[:filter]
 
-    render json: search_autocomplete_opts(term).to_json
+    render json: search_autocomplete_opts(term, filter: @filter).to_json
   end
 
   def opensearch

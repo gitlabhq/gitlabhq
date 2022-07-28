@@ -498,6 +498,8 @@ class ProjectPolicy < BasePolicy
     enable :admin_project_google_cloud
     enable :admin_secure_files
     enable :read_web_hooks
+    enable :read_upload
+    enable :destroy_upload
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do

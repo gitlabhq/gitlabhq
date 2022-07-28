@@ -452,6 +452,12 @@ RSpec.describe PostReceive do
             perform
           end
 
+          it 'updates the snippet model updated_at' do
+            expect(snippet).to receive(:touch)
+
+            perform
+          end
+
           it 'updates snippet statistics' do
             expect(Snippets::UpdateStatisticsService).to receive(:new).with(snippet).and_call_original
 

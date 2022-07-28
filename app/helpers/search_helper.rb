@@ -14,28 +14,42 @@ module SearchHelper
     :project_ids
   ].freeze
 
-  def search_autocomplete_opts(term)
+  def search_autocomplete_opts(term, filter: nil)
     return unless current_user
 
-    resources_results = [
-      recent_items_autocomplete(term),
+    results = case filter&.to_sym
+              when :search
+                resource_results(term)
+              when :generic
+                [
+                  generic_results(term),
+                  recent_items_autocomplete(term)
+                ]
+              else
+                [
+                  generic_results(term),
+                  resource_results(term),
+                  recent_items_autocomplete(term)
+                ]
+              end
+
+    results.flatten { |item| item[:label] }
+  end
+
+  def resource_results(term)
+    [
       groups_autocomplete(term),
       projects_autocomplete(term),
       issue_autocomplete(term)
     ].flatten
+  end
 
+  def generic_results(term)
     search_pattern = Regexp.new(Regexp.escape(term), "i")
 
     generic_results = project_autocomplete + default_autocomplete + help_autocomplete
     generic_results.concat(default_autocomplete_admin) if current_user.admin?
-    generic_results.select! { |result| result[:label] =~ search_pattern }
-
-    [
-      resources_results,
-      generic_results
-    ].flatten do |item|
-      item[:label]
-    end
+    generic_results.select { |result| result[:label] =~ search_pattern }
   end
 
   def recent_items_autocomplete(term)

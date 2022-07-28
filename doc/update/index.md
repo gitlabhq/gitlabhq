@@ -12,11 +12,6 @@ GitLab version is, if you're upgrading to a major version, and so on.
 
 Make sure to read the whole page as it contains information related to every upgrade method.
 
-NOTE:
-Upgrade GitLab to the latest available patch release, for example `13.8.8` rather than `13.8.0`.
-This includes [versions you must stop at on the upgrade path](#upgrade-paths) as there may
-be fixes for issues relating to the upgrade process.
-
 The [maintenance policy documentation](../policy/maintenance.md)
 has additional information about upgrading, including:
 
@@ -387,6 +382,12 @@ accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
 `8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.3.6`](#1430) -> [`14.9.5`](#1490) -> [`14.10.Z`](#14100) -> [`15.0.Z`](#1500) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+
+NOTE:
+When not explicitly specified, upgrade GitLab to the latest available patch
+release rather than the first patch release, for example `13.8.8` instead of `13.8.0`.
+This includes versions you must stop at on the upgrade path as there may
+be fixes for issues relating to the upgrade process.
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.

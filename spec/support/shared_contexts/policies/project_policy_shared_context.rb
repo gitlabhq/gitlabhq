@@ -62,6 +62,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       admin_project admin_project_member admin_snippet admin_terraform_state
       admin_wiki create_deploy_token destroy_deploy_token
       push_to_delete_protected_branch read_deploy_token update_snippet
+      destroy_upload
     ]
   end
 
