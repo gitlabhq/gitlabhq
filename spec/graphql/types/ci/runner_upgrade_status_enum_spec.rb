@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::RunnerUpgradeStatusTypeEnum do
+RSpec.describe Types::Ci::RunnerUpgradeStatusEnum do
   let(:model_only_enum_values) { %w[not_processed] }
   let(:expected_graphql_source_values) do
     Ci::RunnerVersion.statuses.keys - model_only_enum_values
   end
 
-  specify { expect(described_class.graphql_name).to eq('CiRunnerUpgradeStatusType') }
+  specify { expect(described_class.graphql_name).to eq('CiRunnerUpgradeStatus') }
 
   it 'exposes all upgrade status values except not_processed' do
     expect(described_class.values.keys).to match_array(

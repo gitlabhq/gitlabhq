@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Database::SharedModel do
 
       shared_model = shared_model_class.new
 
-      expect(shared_model.connection_db_config). to eq(described_class.connection_db_config)
+      expect(shared_model.connection_db_config).to eq(described_class.connection_db_config)
     end
   end
 end

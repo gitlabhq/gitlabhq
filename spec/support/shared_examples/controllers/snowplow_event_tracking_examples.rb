@@ -2,16 +2,18 @@
 #
 # Requires a context containing:
 # - subject
-# - project
 # - feature_flag_name
 # - category
 # - action
 # - namespace
+# Optionaly, the context can contain:
+# - project
+# - property
 # - user
+# - label
+# - **extra
 
 shared_examples 'Snowplow event tracking' do
-  let(:label) { nil }
-
   it 'is not emitted if FF is disabled' do
     stub_feature_flags(feature_flag_name => false)
 
@@ -21,13 +23,17 @@ shared_examples 'Snowplow event tracking' do
   end
 
   it 'is emitted' do
+    extra ||= {}
+
     params = {
       category: category,
       action: action,
       namespace: namespace,
-      user: user,
-      project: project,
-      label: label
+      user: try(:user),
+      project: try(:project),
+      label: try(:label),
+      property: try(:property),
+      **extra
     }.compact
 
     subject

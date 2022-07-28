@@ -11,7 +11,11 @@ module Gitlab
       #       old_name: 'CiRunnerUpgradeStatusType', new_name: 'CiRunnerUpgradeStatus', milestone: '15.3'
       #     )
       #   ].freeze
-      DEPRECATIONS = [].freeze
+      DEPRECATIONS = [
+        Gitlab::Graphql::DeprecationsBase::NameDeprecation.new(
+          old_name: 'CiRunnerUpgradeStatusType', new_name: 'CiRunnerUpgradeStatus', milestone: '15.3'
+        )
+      ].freeze
 
       def self.map_graphql_name(name)
         name

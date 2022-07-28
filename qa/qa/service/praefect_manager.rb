@@ -30,7 +30,7 @@ module QA
         wait_until_shell_command_matches(dataloss_command, /Outdated repositories/)
       end
 
-      def replicated?(project_id)
+      def replicated?(project_id, project_name_prefix = 'gitaly_cluster')
         Support::Retrier.retry_until(raise_on_failure: false) do
           replicas = wait_until_shell_command(%(docker exec #{@gitlab} bash -c 'gitlab-rake "gitlab:praefect:replicas[#{project_id}]"')) do |line|
             QA::Runtime::Logger.debug(line.chomp)
@@ -40,7 +40,7 @@ module QA
             # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
             # gitaly_cluster-3aff1f2bd14e6c98 | 23c4422629234d62b62adacafd0a33a8364e8619 | 23c4422629234d62b62adacafd0a33a8364e8619 | 23c4422629234d62b62adacafd0a33a8364e8619
             #
-            break line if line.start_with?('gitaly_cluster')
+            break line if line.start_with?(project_name_prefix)
             break nil if line.include?('Something went wrong when getting replicas')
           end
           next false unless replicas

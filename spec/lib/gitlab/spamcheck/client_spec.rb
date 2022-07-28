@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Spamcheck::Client do
                                           context: cxt)
       expect(issue_pb.title).to eq issue.title
       expect(issue_pb.description).to eq issue.description
-      expect(issue_pb.user_in_project). to be false
+      expect(issue_pb.user_in_project).to be false
       expect(issue_pb.project.project_id).to eq issue.project_id
       expect(issue_pb.created_at).to eq timestamp_to_protobuf_timestamp(issue.created_at)
       expect(issue_pb.updated_at).to eq timestamp_to_protobuf_timestamp(issue.updated_at)

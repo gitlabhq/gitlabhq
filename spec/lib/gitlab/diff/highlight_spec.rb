@@ -117,7 +117,7 @@ RSpec.describe Gitlab::Diff::Highlight do
         it 'reports to Sentry if configured' do
           expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).and_call_original
 
-          expect { subject }. to raise_exception(RangeError)
+          expect { subject }.to raise_exception(RangeError)
         end
       end
 

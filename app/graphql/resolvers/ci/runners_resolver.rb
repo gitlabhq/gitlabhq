@@ -36,7 +36,7 @@ module Resolvers
                required: false,
                description: 'Sort order of results.'
 
-      argument :upgrade_status, ::Types::Ci::RunnerUpgradeStatusTypeEnum,
+      argument :upgrade_status, ::Types::Ci::RunnerUpgradeStatusEnum,
                required: false,
                description: 'Filter by upgrade status.'
 

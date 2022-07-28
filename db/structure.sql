@@ -25796,7 +25796,7 @@ ALTER TABLE ONLY scim_oauth_access_tokens
     ADD CONSTRAINT scim_oauth_access_tokens_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_findings
-    ADD CONSTRAINT security_findings_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT security_findings_pkey PRIMARY KEY (id, partition_number);
 
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT security_orchestration_policy_configurations_pkey PRIMARY KEY (id);
@@ -29692,7 +29692,7 @@ CREATE INDEX index_security_findings_on_scanner_id ON security_findings USING bt
 
 CREATE INDEX index_security_findings_on_severity ON security_findings USING btree (severity);
 
-CREATE UNIQUE INDEX index_security_findings_on_uuid_and_scan_id ON security_findings USING btree (uuid, scan_id);
+CREATE UNIQUE INDEX index_security_findings_on_unique_columns ON security_findings USING btree (uuid, scan_id, partition_number);
 
 CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (created_at);
 

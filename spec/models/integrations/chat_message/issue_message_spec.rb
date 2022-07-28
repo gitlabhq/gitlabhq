@@ -65,7 +65,7 @@ RSpec.describe Integrations::ChatMessage::IssueMessage do
       end
 
       it 'returns a message regarding closing of issues' do
-        expect(subject.pretext). to eq(
+        expect(subject.pretext).to eq(
           '[<http://somewhere.com|project_name>] Issue <http://url.com|#100 Issue title> closed by Test User (test.user)')
         expect(subject.attachments).to be_empty
       end
@@ -111,7 +111,7 @@ RSpec.describe Integrations::ChatMessage::IssueMessage do
       end
 
       it 'returns a message regarding closing of issues' do
-        expect(subject.pretext). to eq(
+        expect(subject.pretext).to eq(
           '[[project_name](http://somewhere.com)] Issue [#100 Issue title](http://url.com) closed by Test User (test.user)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq({

@@ -47,6 +47,6 @@ RSpec.describe RemoveDanglingRunningBuilds, :suppress_gitlab_schemas_validate_co
     migrate!
 
     expect(running_metadata.reload).to be_present
-    expect { failed_metadata.reload } .to raise_error(ActiveRecord::RecordNotFound)
+    expect { failed_metadata.reload }.to raise_error(ActiveRecord::RecordNotFound)
   end
 end

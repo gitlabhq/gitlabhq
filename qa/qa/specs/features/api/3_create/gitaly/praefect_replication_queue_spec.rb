@@ -67,7 +67,7 @@ module QA
           project.initialize_with_readme = true
         end
 
-        expect(praefect_manager.replicated?(new_project.id)).to be true
+        expect(praefect_manager.replicated?(new_project.id, new_project.name)).to be true
       end
     end
   end

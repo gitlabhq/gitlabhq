@@ -299,7 +299,7 @@ RSpec.describe Types::BaseField do
           end
 
           it 'returns the correct availability in the description' do
-            expect(field.description). to eq expected_description
+            expect(field.description).to eq expected_description
           end
         end
       end

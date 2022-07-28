@@ -2,8 +2,8 @@
 
 module Types
   module Ci
-    class RunnerUpgradeStatusTypeEnum < BaseEnum
-      graphql_name 'CiRunnerUpgradeStatusType'
+    class RunnerUpgradeStatusEnum < BaseEnum
+      graphql_name 'CiRunnerUpgradeStatus'
 
       ::Ci::RunnerVersion::STATUS_DESCRIPTIONS.each do |status, description|
         status_name_src =

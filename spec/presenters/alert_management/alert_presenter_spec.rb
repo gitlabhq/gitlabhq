@@ -115,7 +115,7 @@ RSpec.describe AlertManagement::AlertPresenter do
     it 'formats the start time of the alert' do
       alert.started_at = Time.utc(2019, 5, 5)
 
-      expect(presenter.start_time). to eq('05 May 2019, 12:00AM (UTC)')
+      expect(presenter.start_time).to eq('05 May 2019, 12:00AM (UTC)')
     end
   end
 

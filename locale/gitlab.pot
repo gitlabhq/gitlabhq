@@ -966,6 +966,16 @@ msgid_plural "%{securityScanner} results are not available because a pipeline ha
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{selectedLabelsCount} label"
+msgid_plural "%{selectedLabelsCount} labels"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{selectedProjectsCount} project"
+msgid_plural "%{selectedProjectsCount} projects"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{size} %{unit}"
 msgstr ""
 
@@ -29047,6 +29057,9 @@ msgstr ""
 msgid "Pipeline|Run for branch name or tag"
 msgstr ""
 
+msgid "Pipeline|Run merge request pipeline"
+msgstr ""
+
 msgid "Pipeline|Run pipeline"
 msgstr ""
 
@@ -29102,6 +29115,9 @@ msgid "Pipeline|This pipeline ran on the contents of this merge request combined
 msgstr ""
 
 msgid "Pipeline|This pipeline ran on the contents of this merge request's source branch, not the target branch."
+msgstr ""
+
+msgid "Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{linkStart}must be configured%{linkEnd} to run in merge request pipelines."
 msgstr ""
 
 msgid "Pipeline|Trigger author"
@@ -36246,10 +36262,10 @@ msgstr ""
 msgid "Showing version #%{versionNumber}"
 msgstr ""
 
-msgid "Shows issues and %{labels_count} label for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
+msgid "Shows issues and 1 label for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
 msgstr ""
 
-msgid "Shows issues and %{labels_count} labels for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
+msgid "Shows issues for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
 msgstr ""
 
 msgid "Side-by-side"
@@ -42650,11 +42666,6 @@ msgstr ""
 msgid "ValueStreamAnalytics|%{stageCount}+ items"
 msgstr ""
 
-msgid "ValueStreamAnalytics|%{subjectFilterText} and %{selectedLabelsCount} label"
-msgid_plural "ValueStreamAnalytics|%{subjectFilterText} and %{selectedLabelsCount} labels"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "ValueStreamAnalytics|%{value}M"
 msgstr ""
 
@@ -42709,10 +42720,16 @@ msgstr ""
 msgid "ValueStreamAnalytics|Percentage of deployments that cause an incident in production."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Shows %{selectedFiltersDescription} for group '%{groupName}' and %{selectedProjectCount} projects from %{createdAfter} to %{createdBefore}"
+msgid "ValueStreamAnalytics|Shows %{selectedSubjectFilterText} and %{labelsCount} for group '%{groupName}' and %{projectsCount} from %{createdAfter} to %{createdBefore}"
 msgstr ""
 
-msgid "ValueStreamAnalytics|Shows %{selectedFiltersDescription} for group '%{groupName}' from %{createdAfter} to %{createdBefore}"
+msgid "ValueStreamAnalytics|Shows %{selectedSubjectFilterText} and %{labelsCount} for group '%{groupName}' from %{createdAfter} to %{createdBefore}"
+msgstr ""
+
+msgid "ValueStreamAnalytics|Shows %{selectedSubjectFilterText} for group '%{groupName}' and %{projectsCount} from %{createdAfter} to %{createdBefore}"
+msgstr ""
+
+msgid "ValueStreamAnalytics|Shows %{selectedSubjectFilterText} for group '%{groupName}' from %{createdAfter} to %{createdBefore}"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Tasks by type"

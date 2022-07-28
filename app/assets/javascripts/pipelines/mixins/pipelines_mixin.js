@@ -1,5 +1,6 @@
 import Visibility from 'visibilityjs';
-import createFlash from '~/flash';
+import createFlash, { createAlert } from '~/flash';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
@@ -198,18 +199,20 @@ export default {
         })
         .catch((e) => {
           const unauthorized = e.response.status === httpStatusCodes.UNAUTHORIZED;
-          const badRequest = e.response.status === httpStatusCodes.BAD_REQUEST;
-
           let errorMessage = __(
             'An error occurred while trying to run a new pipeline for this merge request.',
           );
 
-          if (unauthorized || badRequest) {
+          if (unauthorized) {
             errorMessage = __('You do not have permission to run a pipeline on this branch.');
           }
 
-          createFlash({
+          createAlert({
             message: errorMessage,
+            primaryButton: {
+              text: __('Learn more'),
+              link: helpPagePath('ci/pipelines/merge_request_pipelines.md'),
+            },
           });
         })
         .finally(() => this.store.toggleIsRunningPipeline(false));

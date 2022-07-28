@@ -387,7 +387,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryrunnersstatus"></a>`status` | [`CiRunnerStatus`](#cirunnerstatus) | Filter runners by status. |
 | <a id="queryrunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="queryrunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
-| <a id="queryrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatusType`](#cirunnerupgradestatustype) | Filter by upgrade status. |
+| <a id="queryrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
 
 ### `Query.snippets`
 
@@ -10244,7 +10244,7 @@ CI/CD variables for a project.
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 | <a id="cirunnertokenexpiresat"></a>`tokenExpiresAt` | [`Time`](#time) | Runner token expiration time. |
-| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatusType`](#cirunnerupgradestatustype) | **Introduced** in 14.10. This feature is in Alpha. It can be changed or removed at any time. |
+| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in 14.10. This feature is in Alpha. It can be changed or removed at any time. |
 | <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
 | <a id="cirunnerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
@@ -12681,7 +12681,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouprunnersstatus"></a>`status` | [`CiRunnerStatus`](#cirunnerstatus) | Filter runners by status. |
 | <a id="grouprunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="grouprunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
-| <a id="grouprunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatusType`](#cirunnerupgradestatustype) | Filter by upgrade status. |
+| <a id="grouprunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
 
 ##### `Group.scanExecutionPolicies`
 
@@ -19124,14 +19124,14 @@ Values for sorting runners.
 | <a id="cirunnertypeinstance_type"></a>`INSTANCE_TYPE` | A runner that is instance type. |
 | <a id="cirunnertypeproject_type"></a>`PROJECT_TYPE` | A runner that is project type. |
 
-### `CiRunnerUpgradeStatusType`
+### `CiRunnerUpgradeStatus`
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnerupgradestatustypeavailable"></a>`AVAILABLE` | Upgrade is available for the runner. |
-| <a id="cirunnerupgradestatustypeinvalid"></a>`INVALID` | Runner version is not valid. |
-| <a id="cirunnerupgradestatustypenot_available"></a>`NOT_AVAILABLE` | Upgrade is not available for the runner. |
-| <a id="cirunnerupgradestatustyperecommended"></a>`RECOMMENDED` | Upgrade is available and recommended for the runner. |
+| <a id="cirunnerupgradestatusavailable"></a>`AVAILABLE` | Upgrade is available for the runner. |
+| <a id="cirunnerupgradestatusinvalid"></a>`INVALID` | Runner version is not valid. |
+| <a id="cirunnerupgradestatusnot_available"></a>`NOT_AVAILABLE` | Upgrade is not available for the runner. |
+| <a id="cirunnerupgradestatusrecommended"></a>`RECOMMENDED` | Upgrade is available and recommended for the runner. |
 
 ### `CiVariableType`
 

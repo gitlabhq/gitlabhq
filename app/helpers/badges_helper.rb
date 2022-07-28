@@ -8,13 +8,13 @@ module BadgesHelper
     success: "badge-success",
     warning: "badge-warning",
     danger: "badge-danger"
-  }.tap { |hash| hash.default = hash.fetch(:muted) } .freeze
+  }.tap { |hash| hash.default = hash.fetch(:muted) }.freeze
 
   SIZE_CLASSES = {
     sm: "sm",
     md: "md",
     lg: "lg"
-  }.tap { |hash| hash.default = hash.fetch(:md) } .freeze
+  }.tap { |hash| hash.default = hash.fetch(:md) }.freeze
 
   GL_BADGE_CLASSES = %w[gl-badge badge badge-pill].freeze
 
