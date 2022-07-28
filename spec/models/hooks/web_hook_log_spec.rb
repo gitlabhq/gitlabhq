@@ -30,20 +30,41 @@ RSpec.describe WebHookLog do
   end
 
   describe '#save' do
-    let(:web_hook_log) { build(:web_hook_log, url: url) }
-    let(:url) { 'http://example.com' }
-
-    subject { web_hook_log.save! }
-
-    it { is_expected.to eq(true) }
-
     context 'with basic auth credentials' do
-      let(:url) { 'http://test:123@example.com'}
+      let(:web_hook_log) { build(:web_hook_log, url: 'http://test:123@example.com') }
+
+      subject { web_hook_log.save! }
+
+      it { is_expected.to eq(true) }
 
       it 'obfuscates the basic auth credentials' do
         subject
 
         expect(web_hook_log.url).to eq('http://*****:*****@example.com')
+      end
+    end
+
+    context 'with author email' do
+      let(:author) { create(:user) }
+      let(:web_hook_log) { create(:web_hook_log, request_data: data) }
+      let(:data) do
+        {
+          commit: {
+            author: {
+              name: author.name,
+              email: author.email
+            }
+          }
+        }.deep_stringify_keys
+      end
+
+      it "redacts author's email" do
+        expect(web_hook_log.request_data['commit']).to match a_hash_including(
+          'author' => {
+            'name' => author.name,
+            'email' => _('[REDACTED]')
+          }
+        )
       end
     end
   end

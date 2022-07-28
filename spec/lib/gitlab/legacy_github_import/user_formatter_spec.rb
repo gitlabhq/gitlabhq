@@ -20,17 +20,30 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter do
         expect(user.gitlab_id).to eq gl_user.id
       end
 
-      it 'returns GitLab user id when user primary email matches GitHub email' do
+      it 'returns GitLab user id when user confirmed primary email matches GitHub email' do
         gl_user = create(:user, email: octocat.email)
 
         expect(user.gitlab_id).to eq gl_user.id
       end
 
-      it 'returns GitLab user id when any of user linked emails matches GitHub email' do
+      it 'returns GitLab user id when user unconfirmed primary email matches GitHub email' do
+        gl_user = create(:user, :unconfirmed, email: octocat.email)
+
+        expect(user.gitlab_id).to eq gl_user.id
+      end
+
+      it 'returns GitLab user id when user confirmed secondary email matches GitHub email' do
+        gl_user = create(:user, email: 'johndoe@example.com')
+        create(:email, :confirmed, user: gl_user, email: octocat.email)
+
+        expect(user.gitlab_id).to eq gl_user.id
+      end
+
+      it 'returns nil when user unconfirmed secondary email matches GitHub email' do
         gl_user = create(:user, email: 'johndoe@example.com')
         create(:email, user: gl_user, email: octocat.email)
 
-        expect(user.gitlab_id).to eq gl_user.id
+        expect(user.gitlab_id).to be_nil
       end
     end
 

@@ -15,6 +15,10 @@ module Grafana
     self.reactive_cache_work_type = :external_dependency
     self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
 
+    SUPPORTED_DATASOURCE_PATTERN = %r{\A\d+\z}.freeze
+
+    SUPPORTED_PROXY_PATH = Gitlab::Metrics::Dashboard::Stages::GrafanaFormatter::PROXY_PATH
+
     attr_accessor :project, :datasource_id, :proxy_path, :query_params
 
     # @param project_id [Integer] Project id for which grafana is configured.
@@ -38,6 +42,7 @@ module Grafana
     end
 
     def execute
+      return cannot_proxy_response unless can_proxy?
       return cannot_proxy_response unless client
 
       with_reactive_cache(*cache_key) { |result| result }
@@ -68,6 +73,11 @@ module Grafana
     end
 
     private
+
+    def can_proxy?
+      SUPPORTED_PROXY_PATH == proxy_path &&
+        SUPPORTED_DATASOURCE_PATTERN.match?(datasource_id)
+    end
 
     def client
       project.grafana_integration&.client
