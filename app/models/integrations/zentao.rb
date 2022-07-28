@@ -1,10 +1,33 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Zentao < Integration
+  class Zentao < BaseIssueTracker
     include Gitlab::Routing
 
-    data_field :url, :api_url, :api_token, :zentao_product_xid
+    self.field_storage = :data_fields
+
+    field :url,
+      title: -> { s_('ZentaoIntegration|ZenTao Web URL') },
+      placeholder: 'https://www.zentao.net',
+      help: -> { s_('ZentaoIntegration|Base URL of the ZenTao instance.') },
+      exposes_secrets: true,
+      required: true
+
+    field :api_url,
+      title: -> { s_('ZentaoIntegration|ZenTao API URL (optional)') },
+      help: -> { s_('ZentaoIntegration|If different from Web URL.') },
+      exposes_secrets: true
+
+    field :api_token,
+      type: 'password',
+      title: -> { s_('ZentaoIntegration|ZenTao API token') },
+      non_empty_password_title: -> { s_('ZentaoIntegration|Enter new ZenTao API token') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
+      required: true
+
+    field :zentao_product_xid,
+      title: -> { s_('ZentaoIntegration|ZenTao Product ID') },
+      required: true
 
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
@@ -17,6 +40,17 @@ module Integrations
 
     def data_fields
       zentao_tracker_data || self.build_zentao_tracker_data
+    end
+
+    alias_method :project_url, :url
+
+    def set_default_data
+      return unless issues_tracker.present?
+
+      return if url
+
+      data_fields.url ||= issues_tracker['url']
+      data_fields.api_url ||= issues_tracker['api_url']
     end
 
     def title
@@ -45,39 +79,6 @@ module Integrations
 
     def self.supported_events
       %w()
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'url',
-          title: s_('ZentaoIntegration|ZenTao Web URL'),
-          placeholder: 'https://www.zentao.net',
-          help: s_('ZentaoIntegration|Base URL of the ZenTao instance.'),
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'api_url',
-          title: s_('ZentaoIntegration|ZenTao API URL (optional)'),
-          help: s_('ZentaoIntegration|If different from Web URL.')
-        },
-        {
-          type: 'password',
-          name: 'api_token',
-          title: s_('ZentaoIntegration|ZenTao API token'),
-          non_empty_password_title: s_('ZentaoIntegration|Enter new ZenTao API token'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'zentao_product_xid',
-          title: s_('ZentaoIntegration|ZenTao Product ID'),
-          required: true
-        }
-      ]
     end
 
     private

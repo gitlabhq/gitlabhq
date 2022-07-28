@@ -120,6 +120,65 @@ RSpec.describe Projects::UpdateService do
         end
       end
 
+      context 'when user is not project owner' do
+        let_it_be(:maintainer) { create(:user) }
+
+        before do
+          project.add_maintainer(maintainer)
+        end
+
+        context 'when project is private' do
+          it 'does not update the project to public' do
+            result = update_project(project, maintainer, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+            expect(result).to eq({ status: :error, message: 'New visibility level not allowed!' })
+            expect(project).to be_private
+          end
+
+          it 'does not update the project to public with tricky value' do
+            result = update_project(project, maintainer, visibility_level: Gitlab::VisibilityLevel::PUBLIC.to_s + 'r')
+
+            expect(result).to eq({ status: :error, message: 'New visibility level not allowed!' })
+            expect(project).to be_private
+          end
+        end
+
+        context 'when project is public' do
+          before do
+            project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          end
+
+          it 'does not update the project to private' do
+            result = update_project(project, maintainer, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+            expect(result).to eq({ status: :error, message: 'New visibility level not allowed!' })
+            expect(project).to be_public
+          end
+
+          it 'does not update the project to private with invalid string value' do
+            result = update_project(project, maintainer, visibility_level: 'invalid')
+
+            expect(result).to eq({ status: :error, message: 'New visibility level not allowed!' })
+            expect(project).to be_public
+          end
+
+          it 'does not update the project to private with valid string value' do
+            result = update_project(project, maintainer, visibility_level: 'private')
+
+            expect(result).to eq({ status: :error, message: 'New visibility level not allowed!' })
+            expect(project).to be_public
+          end
+
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/359910
+          it 'does not update the project to private because of Active Record typecasting' do
+            result = update_project(project, maintainer, visibility_level: 'public')
+
+            expect(result).to eq({ status: :success })
+            expect(project).to be_public
+          end
+        end
+      end
+
       context 'when updating shared runners' do
         context 'can enable shared runners' do
           let(:group) { create(:group, shared_runners_enabled: true) }

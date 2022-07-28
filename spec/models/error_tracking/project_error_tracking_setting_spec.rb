@@ -121,6 +121,38 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
         end
       end
     end
+
+    describe 'before_validation :reset_token' do
+      context 'when a token was previously set' do
+        subject { create(:project_error_tracking_setting, project: project) }
+
+        it 'resets token if url changed' do
+          subject.api_url = 'http://sentry.com/api/0/projects/org-slug/proj-slug/'
+
+          expect(subject).not_to be_valid
+          expect(subject.token).to be_nil
+        end
+
+        it "does not reset token if new url is set together with the same token" do
+          subject.api_url = 'http://sentrytest.com/api/0/projects/org-slug/proj-slug/'
+          current_token = subject.token
+          subject.token = current_token
+
+          expect(subject).to be_valid
+          expect(subject.token).to eq(current_token)
+          expect(subject.api_url).to eq('http://sentrytest.com/api/0/projects/org-slug/proj-slug/')
+        end
+
+        it 'does not reset token if new url is set together with a new token' do
+          subject.api_url = 'http://sentrytest.com/api/0/projects/org-slug/proj-slug/'
+          subject.token = 'token'
+
+          expect(subject).to be_valid
+          expect(subject.token).to eq('token')
+          expect(subject.api_url).to eq('http://sentrytest.com/api/0/projects/org-slug/proj-slug/')
+        end
+      end
+    end
   end
 
   describe '.extract_sentry_external_url' do

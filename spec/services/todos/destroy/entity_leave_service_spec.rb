@@ -3,21 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe Todos::Destroy::EntityLeaveService do
-  let_it_be(:user, reload: true)    { create(:user) }
-  let_it_be(:user2, reload: true)   { create(:user) }
+  let_it_be(:user, reload: true) { create(:user) }
+  let_it_be(:user2, reload: true) { create(:user) }
+  let_it_be_with_refind(:group) { create(:group, :private) }
+  let_it_be(:project) { create(:project, :private, group: group) }
 
-  let(:group)   { create(:group, :private) }
-  let(:project) { create(:project, :private, group: group) }
-  let(:issue)                 { create(:issue, project: project) }
-  let(:issue_c)               { create(:issue, project: project, confidential: true) }
-  let!(:todo_group_user)       { create(:todo, user: user, group: group) }
-  let!(:todo_group_user2)      { create(:todo, user: user2, group: group) }
-
-  let(:mr)                  { create(:merge_request, source_project: project) }
-  let!(:todo_mr_user)       { create(:todo, user: user, target: mr, project: project) }
-  let!(:todo_issue_user)    { create(:todo, user: user, target: issue, project: project) }
-  let!(:todo_issue_c_user)  { create(:todo, user: user, target: issue_c, project: project) }
+  let(:issue) { create(:issue, project: project) }
+  let(:issue_c) { create(:issue, project: project, confidential: true) }
+  let!(:todo_group_user) { create(:todo, user: user, group: group) }
+  let!(:todo_group_user2) { create(:todo, user: user2, group: group) }
+  let(:mr) { create(:merge_request, source_project: project) }
+  let!(:todo_mr_user) { create(:todo, user: user, target: mr, project: project) }
+  let!(:todo_issue_user) { create(:todo, user: user, target: issue, project: project) }
+  let!(:todo_issue_c_user) { create(:todo, user: user, target: issue_c, project: project) }
   let!(:todo_issue_c_user2) { create(:todo, user: user2, target: issue_c, project: project) }
+  let(:internal_note) { create(:note, noteable: issue, project: project, confidential: true ) }
+  let!(:todo_for_internal_note) do
+    create(:todo, user: user, target: issue, project: project, note: internal_note)
+  end
 
   shared_examples 'using different access permissions' do
     before do
@@ -34,20 +37,28 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
     it { does_not_remove_any_todos }
   end
 
-  shared_examples 'removes only confidential issues todos' do
-    it { removes_only_confidential_issues_todos }
+  shared_examples 'removes confidential issues and internal notes todos' do
+    it { removes_confidential_issues_and_internal_notes_todos }
+  end
+
+  shared_examples 'removes only internal notes todos' do
+    it { removes_only_internal_notes_todos }
   end
 
   def does_not_remove_any_todos
     expect { subject }.not_to change { Todo.count }
   end
 
-  def removes_only_confidential_issues_todos
-    expect { subject }.to change { Todo.count }.from(6).to(5)
+  def removes_only_internal_notes_todos
+    expect { subject }.to change { Todo.count }.from(7).to(6)
   end
 
-  def removes_confidential_issues_and_merge_request_todos
-    expect { subject }.to change { Todo.count }.from(6).to(4)
+  def removes_confidential_issues_and_internal_notes_todos
+    expect { subject }.to change { Todo.count }.from(7).to(5)
+  end
+
+  def removes_confidential_issues_and_internal_notes_and_merge_request_todos
+    expect { subject }.to change { Todo.count }.from(7).to(4)
     expect(user.todos).to match_array([todo_issue_user, todo_group_user])
   end
 
@@ -70,7 +81,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
       context 'when project is private' do
         context 'when user is not a member of the project' do
           it 'removes project todos for the provided user' do
-            expect { subject }.to change { Todo.count }.from(6).to(3)
+            expect { subject }.to change { Todo.count }.from(7).to(3)
 
             expect(user.todos).to match_array([todo_group_user])
             expect(user2.todos).to match_array([todo_issue_c_user2, todo_group_user2])
@@ -81,11 +92,11 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
           where(:group_access, :project_access, :method_name) do
             [
               [nil,       :reporter, :does_not_remove_any_todos],
-              [nil,       :guest,    :removes_confidential_issues_and_merge_request_todos],
+              [nil,       :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
               [:reporter, nil,       :does_not_remove_any_todos],
-              [:guest,    nil,       :removes_confidential_issues_and_merge_request_todos],
+              [:guest,    nil,       :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
               [:guest,    :reporter, :does_not_remove_any_todos],
-              [:guest,    :guest,    :removes_confidential_issues_and_merge_request_todos]
+              [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos]
             ]
           end
 
@@ -97,11 +108,12 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
 
       # a private project in an internal/public group is valid
       context 'when project is private in an internal/public group' do
-        let(:group) { create(:group, :internal) }
+        let_it_be(:group) { create(:group, :internal) }
+        let_it_be(:project) { create(:project, :private, group: group) }
 
         context 'when user is not a member of the project' do
           it 'removes project todos for the provided user' do
-            expect { subject }.to change { Todo.count }.from(6).to(3)
+            expect { subject }.to change { Todo.count }.from(7).to(3)
 
             expect(user.todos).to match_array([todo_group_user])
             expect(user2.todos).to match_array([todo_issue_c_user2, todo_group_user2])
@@ -112,11 +124,11 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
           where(:group_access, :project_access, :method_name) do
             [
               [nil,       :reporter, :does_not_remove_any_todos],
-              [nil,       :guest,    :removes_confidential_issues_and_merge_request_todos],
+              [nil,       :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
               [:reporter, nil,       :does_not_remove_any_todos],
-              [:guest,    nil,       :removes_confidential_issues_and_merge_request_todos],
+              [:guest,    nil,       :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
               [:guest,    :reporter, :does_not_remove_any_todos],
-              [:guest,    :guest,    :removes_confidential_issues_and_merge_request_todos]
+              [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos]
             ]
           end
 
@@ -142,7 +154,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
 
         context 'confidential issues' do
           context 'when a user is not an author of confidential issue' do
-            it_behaves_like 'removes only confidential issues todos'
+            it_behaves_like 'removes confidential issues and internal notes todos'
           end
 
           context 'when a user is an author of confidential issue' do
@@ -150,7 +162,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
               issue_c.update!(author: user)
             end
 
-            it_behaves_like 'does not remove any todos'
+            it_behaves_like 'removes only internal notes todos'
           end
 
           context 'when a user is an assignee of confidential issue' do
@@ -158,18 +170,18 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
               issue_c.assignees << user
             end
 
-            it_behaves_like 'does not remove any todos'
+            it_behaves_like 'removes only internal notes todos'
           end
 
           context 'access permissions' do
             where(:group_access, :project_access, :method_name) do
               [
                 [nil,       :reporter, :does_not_remove_any_todos],
-                [nil,       :guest,    :removes_only_confidential_issues_todos],
+                [nil,       :guest,    :removes_confidential_issues_and_internal_notes_todos],
                 [:reporter, nil,       :does_not_remove_any_todos],
-                [:guest,    nil,       :removes_only_confidential_issues_todos],
+                [:guest,    nil,       :removes_confidential_issues_and_internal_notes_todos],
                 [:guest,    :reporter, :does_not_remove_any_todos],
-                [:guest,    :guest,    :removes_only_confidential_issues_todos]
+                [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_todos]
               ]
             end
 
@@ -186,7 +198,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
             end
 
             it 'removes only users issue todos' do
-              expect { subject }.to change { Todo.count }.from(6).to(5)
+              expect { subject }.to change { Todo.count }.from(7).to(5)
             end
           end
         end
@@ -199,7 +211,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
       context 'when group is private' do
         context 'when a user leaves a group' do
           it 'removes group and subproject todos for the user' do
-            expect { subject }.to change { Todo.count }.from(6).to(2)
+            expect { subject }.to change { Todo.count }.from(7).to(2)
 
             expect(user.todos).to be_empty
             expect(user2.todos).to match_array([todo_issue_c_user2, todo_group_user2])
@@ -210,11 +222,11 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
           where(:group_access, :project_access, :method_name) do
             [
               [nil,       :reporter, :does_not_remove_any_todos],
-              [nil,       :guest,    :removes_confidential_issues_and_merge_request_todos],
+              [nil,       :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
               [:reporter, nil,       :does_not_remove_any_todos],
-              [:guest,    nil,       :removes_confidential_issues_and_merge_request_todos],
+              [:guest,    nil,       :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
               [:guest,    :reporter, :does_not_remove_any_todos],
-              [:guest,    :guest,    :removes_confidential_issues_and_merge_request_todos]
+              [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos]
             ]
           end
 
@@ -224,12 +236,12 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
         end
 
         context 'with nested groups' do
-          let(:parent_group) { create(:group, :public) }
-          let(:parent_subgroup) { create(:group)}
-          let(:subgroup) { create(:group, :private, parent: group) }
-          let(:subgroup2) { create(:group, :private, parent: group) }
-          let(:subproject) { create(:project, group: subgroup) }
-          let(:subproject2) { create(:project, group: subgroup2) }
+          let_it_be_with_refind(:parent_group) { create(:group, :public) }
+          let_it_be_with_refind(:parent_subgroup) { create(:group) }
+          let_it_be(:subgroup) { create(:group, :private, parent: group) }
+          let_it_be(:subgroup2) { create(:group, :private, parent: group) }
+          let_it_be(:subproject) { create(:project, group: subgroup) }
+          let_it_be(:subproject2) { create(:project, group: subgroup2) }
 
           let!(:todo_subproject_user) { create(:todo, user: user, project: subproject) }
           let!(:todo_subproject2_user) { create(:todo, user: user, project: subproject2) }
@@ -238,6 +250,10 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
           let!(:todo_subproject_user2) { create(:todo, user: user2, project: subproject) }
           let!(:todo_subpgroup_user2)  { create(:todo, user: user2, group: subgroup) }
           let!(:todo_parent_group_user) { create(:todo, user: user, group: parent_group) }
+          let(:subproject_internal_note) { create(:note, noteable: issue, project: project, confidential: true ) }
+          let!(:todo_for_internal_subproject_note) do
+            create(:todo, user: user, target: issue, project: project, note: subproject_internal_note)
+          end
 
           before do
             group.update!(parent: parent_group)
@@ -245,7 +261,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
 
           context 'when the user is not a member of any groups/projects' do
             it 'removes todos for the user including subprojects todos' do
-              expect { subject }.to change { Todo.count }.from(13).to(5)
+              expect { subject }.to change { Todo.count }.from(15).to(5)
 
               expect(user.todos).to eq([todo_parent_group_user])
               expect(user2.todos)
@@ -269,7 +285,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
             end
 
             it 'does not remove group and subproject todos' do
-              expect { subject }.to change { Todo.count }.from(13).to(8)
+              expect { subject }.to change { Todo.count }.from(15).to(8)
 
               expect(user.todos)
                 .to match_array(
@@ -288,7 +304,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
             end
 
             it 'does not remove subproject and group todos' do
-              expect { subject }.to change { Todo.count }.from(13).to(8)
+              expect { subject }.to change { Todo.count }.from(15).to(8)
 
               expect(user.todos)
                 .to match_array(
@@ -319,13 +335,13 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
         context 'access permissions' do
           where(:group_access, :project_access, :method_name) do
             [
-              [nil,       nil,       :removes_only_confidential_issues_todos],
+              [nil,       nil,       :removes_confidential_issues_and_internal_notes_todos],
               [nil,       :reporter, :does_not_remove_any_todos],
-              [nil,       :guest,    :removes_only_confidential_issues_todos],
+              [nil,       :guest,    :removes_confidential_issues_and_internal_notes_todos],
               [:reporter, nil,       :does_not_remove_any_todos],
-              [:guest,    nil,       :removes_only_confidential_issues_todos],
+              [:guest,    nil,       :removes_confidential_issues_and_internal_notes_todos],
               [:guest,    :reporter, :does_not_remove_any_todos],
-              [:guest,    :guest,    :removes_only_confidential_issues_todos]
+              [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_todos]
             ]
           end
 

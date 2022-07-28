@@ -747,12 +747,6 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
   ApplicationSetting.update!(max_yaml_depth: 125)
   ```
 
-To disable this limitation entirely, disable the feature flag in the console:
-
-```ruby
-Feature.disable(:ci_yaml_limit_size)
-```
-
 ### Limit dotenv variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321552) in GitLab 14.5.

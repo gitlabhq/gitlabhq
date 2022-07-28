@@ -35,6 +35,20 @@ RSpec.describe Groups::DestroyService do
       it { expect(NotificationSetting.unscoped.all).not_to include(notification_setting) }
     end
 
+    context 'bot tokens', :sidekiq_might_not_need_inline do
+      it 'removes group bot', :aggregate_failures do
+        bot = create(:user, :project_bot)
+        group.add_developer(bot)
+        token = create(:personal_access_token, user: bot)
+
+        destroy_group(group, user, async)
+
+        expect(PersonalAccessToken.find_by(id: token.id)).to be_nil
+        expect(User.find_by(id: bot.id)).to be_nil
+        expect(User.find_by(id: user.id)).not_to be_nil
+      end
+    end
+
     context 'mattermost team', :sidekiq_might_not_need_inline do
       let!(:chat_team) { create(:chat_team, namespace: group) }
 

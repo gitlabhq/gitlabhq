@@ -151,7 +151,7 @@ class BuildDetailsEntity < Ci::JobEntity
     # We do not return the invalid_dependencies for all scenarios see https://gitlab.com/gitlab-org/gitlab/-/issues/287772#note_914406387
     punctuation = invalid_dependencies.empty? ? '.' : ': '
     _("This job could not start because it could not retrieve the needed artifacts%{punctuation}%{invalid_dependencies}") %
-      { invalid_dependencies: invalid_dependencies, punctuation: punctuation }
+      { invalid_dependencies: html_escape(invalid_dependencies), punctuation: punctuation }
   end
 
   def help_message(docs_url)

@@ -36,8 +36,6 @@ RSpec.describe Snippet do
 
     it { is_expected.to validate_presence_of(:content) }
 
-    it { is_expected.to validate_inclusion_of(:visibility_level).in_array(Gitlab::VisibilityLevel.values) }
-
     it do
       allow(Gitlab::CurrentSettings).to receive(:snippet_size_limit).and_return(1)
 

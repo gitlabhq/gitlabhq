@@ -143,14 +143,28 @@ RSpec.describe InvitesController do
 
           context 'when user exists with the invited email as secondary email' do
             before do
-              secondary_email = create(:email, user: user, email: 'foo@example.com')
               member.update!(invite_email: secondary_email.email)
             end
 
-            it 'is redirected to a new session with invite email param' do
-              request
+            context 'when secondary email is confirmed' do
+              let(:secondary_email) { create(:email, :confirmed, user: user, email: 'foo@example.com') }
 
-              expect(response).to redirect_to(new_user_session_path(invite_email: member.invite_email))
+              it 'is redirected to a new session with invite email param' do
+                request
+
+                expect(response).to redirect_to(new_user_session_path(invite_email: member.invite_email))
+              end
+            end
+
+            context 'when secondary email is unconfirmed' do
+              let(:secondary_email) { create(:email, user: user, email: 'foo@example.com') }
+
+              it 'is redirected to a new registration with invite email param and flash message', :aggregate_failures do
+                request
+
+                expect(response).to redirect_to(new_user_registration_path(invite_email: member.invite_email))
+                expect(flash[:notice]).to eq 'To accept this invitation, create an account or sign in.'
+              end
             end
           end
 
