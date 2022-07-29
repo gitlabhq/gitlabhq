@@ -36,12 +36,16 @@ module Gitlab
           sleep interval_with_jitter
 
           reports.select(&:active?).each do |report|
-            tms = Benchmark.measure do
-              report.run
-            end
+            start_monotonic_time = Gitlab::Metrics::System.monotonic_time
+            start_thread_cpu_time = Gitlab::Metrics::System.thread_cpu_time
 
-            log_report(report_label(report), tms)
-            @report_duration_counter.increment({ report: report_label(report) }, tms.real)
+            report.run
+
+            cpu_s = Gitlab::Metrics::System.thread_cpu_duration(start_thread_cpu_time)
+            duration_s = Gitlab::Metrics::System.monotonic_time - start_monotonic_time
+
+            log_report(label: report_label(report), cpu_s: cpu_s, duration_s: duration_s)
+            @report_duration_counter.increment({ report: report_label(report) }, duration_s)
 
             sleep sleep_between_reports_s
           end
@@ -58,15 +62,14 @@ module Gitlab
         sleep_s + rand(sleep_max_delta_s)
       end
 
-      def log_report(report_label, tms)
+      def log_report(label:, duration_s:, cpu_s:)
         Gitlab::AppLogger.info(
           message: 'finished',
           pid: $$,
           worker_id: worker_id,
-          perf_report: report_label,
-          duration_s: tms.real.round(2),
-          cpu_s: tms.utime.round(2),
-          sys_cpu_s: tms.stime.round(2)
+          perf_report: label,
+          duration_s: duration_s.round(2),
+          cpu_s: cpu_s.round(2)
         )
       end
 

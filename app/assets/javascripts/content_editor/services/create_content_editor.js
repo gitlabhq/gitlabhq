@@ -42,6 +42,7 @@ import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import PasteMarkdown from '../extensions/paste_markdown';
 import Reference from '../extensions/reference';
+import ReferenceDefinition from '../extensions/reference_definition';
 import Sourcemap from '../extensions/sourcemap';
 import Strike from '../extensions/strike';
 import Subscript from '../extensions/subscript';
@@ -128,6 +129,7 @@ export const createContentEditor = ({
     Paragraph,
     PasteMarkdown,
     Reference,
+    ReferenceDefinition,
     Sourcemap,
     Strike,
     Subscript,

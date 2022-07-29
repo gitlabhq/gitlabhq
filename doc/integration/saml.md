@@ -756,7 +756,7 @@ Group SAML on a self-managed instance is limited when compared to the recommende
 [instance-wide SAML](../user/group/saml_sso/index.md). The recommended solution allows you to take advantage of:
 
 - [LDAP compatibility](../administration/auth/ldap/index.md).
-- [LDAP Group Sync](../user/group/index.md#manage-group-memberships-via-ldap).
+- [LDAP Group Sync](../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
 - [Required groups](#required-groups).
 - [Administrator groups](#administrator-groups).
 - [Auditor groups](#auditor-groups).

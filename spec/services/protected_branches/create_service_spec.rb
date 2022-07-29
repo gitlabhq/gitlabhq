@@ -24,6 +24,14 @@ RSpec.describe ProtectedBranches::CreateService do
       expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
     end
 
+    it 'refreshes the cache' do
+      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+        expect(cache_service).to receive(:refresh)
+      end
+
+      service.execute
+    end
+
     context 'when protecting a branch with a name that contains HTML tags' do
       let(:name) { 'foo<b>bar<\b>' }
 

@@ -1,4 +1,4 @@
-import { uniq, isString, omit } from 'lodash';
+import { uniq, isString, omit, isFunction } from 'lodash';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null },
@@ -327,16 +327,25 @@ export function renderCodeBlock(state, node) {
   state.closeBlock(node);
 }
 
-export function preserveUnchanged(render) {
+const expandPreserveUnchangedConfig = (configOrRender) =>
+  isFunction(configOrRender)
+    ? { render: configOrRender, overwriteSourcePreservationStrategy: false }
+    : configOrRender;
+
+export function preserveUnchanged(configOrRender) {
   return (state, node, parent, index) => {
+    const { render, overwriteSourcePreservationStrategy } = expandPreserveUnchangedConfig(
+      configOrRender,
+    );
+
     const { sourceMarkdown } = node.attrs;
     const same = state.options.changeTracker.get(node);
 
-    if (same) {
+    if (same && !overwriteSourcePreservationStrategy) {
       state.write(sourceMarkdown);
       state.closeBlock(node);
     } else {
-      render(state, node, parent, index);
+      render(state, node, parent, index, same, sourceMarkdown);
     }
   };
 }

@@ -926,7 +926,7 @@ PUT /groups/:id
 | `emails_disabled`                                       | boolean | no       | Disable email notifications. |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `mentions_disabled`                                     | boolean | no       | Disable the capability of a group from getting mentioned. |
-| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/index.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
+| `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
 | `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
 | `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication. |
@@ -1481,7 +1481,7 @@ DELETE /groups/:id/share/:group_id
 
 ### Get group push rules **(PREMIUM)**
 
-Get the [push rules](../user/group/index.md#group-push-rules) of a group.
+Get the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
 
 Only available to group owners and administrators.
 
@@ -1524,7 +1524,7 @@ the `commit_committer_check` and `reject_unsigned_commits` parameters:
 
 ### Add group push rule **(PREMIUM)**
 
-Adds [push rules](../user/group/index.md#group-push-rules) to the specified group.
+Adds [push rules](../user/group/access_and_permissions.md#group-push-rules) to the specified group.
 
 Only available to group owners and administrators.
 
@@ -1618,7 +1618,7 @@ Response:
 
 ### Delete group push rule **(PREMIUM)**
 
-Deletes the [push rules](../user/group/index.md#group-push-rules) of a group.
+Deletes the [push rules](../user/group/access_and_permissions.md#group-push-rules) of a group.
 
 Only available to group owners and administrators.
 

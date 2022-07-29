@@ -8,5 +8,6 @@
 
 - content_for :flash_message do
   = render "layouts/header/storage_enforcement_banner", context: current_user.namespace
+  = dispensable_render_if_exists "shared/namespace_storage_limit_alert", context: current_user.namespace
 
 = render template: "layouts/application"

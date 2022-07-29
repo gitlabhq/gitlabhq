@@ -82,6 +82,22 @@ RSpec.describe Projects::CommitController do
       expect(response).to be_successful
     end
 
+    it 'only loads blobs in the current page' do
+      stub_feature_flags(async_commit_diff_files: false)
+      stub_const('Projects::CommitController::COMMIT_DIFFS_PER_PAGE', 1)
+
+      commit = project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863')
+
+      expect_next_instance_of(Repository) do |repository|
+        # This commit contains 3 changed files but we expect only the blobs for the first one to be loaded
+        expect(repository).to receive(:blobs_at).with([[commit.id, '.gitignore']], anything).and_call_original
+      end
+
+      go(id: commit.id)
+
+      expect(response).to be_ok
+    end
+
     shared_examples "export as" do |format|
       it "does generally work" do
         go(id: commit.id, format: format)

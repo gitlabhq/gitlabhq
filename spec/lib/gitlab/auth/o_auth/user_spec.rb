@@ -727,6 +727,7 @@ RSpec.describe Gitlab::Auth::OAuth::User do
       context 'signup with linked omniauth and LDAP account' do
         before do
           stub_omniauth_config(auto_link_ldap_user: true)
+          stub_ldap_setting(enabled: true)
           allow(ldap_user).to receive(:uid) { uid }
           allow(ldap_user).to receive(:username) { uid }
           allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }

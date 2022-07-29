@@ -7,6 +7,8 @@ module ProtectedBranches
 
       save_protected_branch
 
+      refresh_cache
+
       protected_branch
     end
 

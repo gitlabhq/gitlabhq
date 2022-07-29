@@ -16,6 +16,14 @@ RSpec.describe ProtectedBranches::DestroyService do
       expect(protected_branch).to be_destroyed
     end
 
+    it 'refreshes the cache' do
+      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+        expect(cache_service).to receive(:refresh)
+      end
+
+      service.execute(protected_branch)
+    end
+
     context 'when a policy restricts rule deletion' do
       before do
         policy = instance_double(ProtectedBranchPolicy, allowed?: false)

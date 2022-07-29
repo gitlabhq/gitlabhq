@@ -91,7 +91,7 @@ Each user's access is based on:
 Prerequisite:
 
 - You must have the Maintainer or Owner role.
-- Sharing the project with other groups must not be [prevented](../../group/index.md#prevent-a-project-from-being-shared-with-groups).
+- Sharing the project with other groups must not be [prevented](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).
 
 To add groups to a project:
 
@@ -173,7 +173,7 @@ To remove a member from a project:
    user has not forked the private repository or created webhooks. Existing forks continue to receive
    changes from the upstream project, and webhooks continue to receive updates. You may also want to configure your project
    to prevent projects in a group
-   [from being forked outside their group](../../group/index.md#prevent-project-forking-outside-group).
+   [from being forked outside their group](../../group/access_and_permissions.md#prevent-project-forking-outside-group).
 1. Select **Remove member**.
 
 ## Filter and sort members

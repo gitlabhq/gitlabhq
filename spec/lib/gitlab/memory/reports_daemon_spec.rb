@@ -32,7 +32,6 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
         hash_including(
           :duration_s,
           :cpu_s,
-          :sys_cpu_s,
           message: 'finished',
           pid: Process.pid,
           worker_id: 'worker_1',

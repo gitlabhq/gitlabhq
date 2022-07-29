@@ -15,6 +15,7 @@ import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
 import Paragraph from '~/content_editor/extensions/paragraph';
+import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
 import Table from '~/content_editor/extensions/table';
@@ -45,6 +46,7 @@ const tiptapEditor = createTestEditor({
     Link,
     ListItem,
     OrderedList,
+    ReferenceDefinition,
     Sourcemap,
     Strike,
     Table,
@@ -78,6 +80,7 @@ const {
     listItem,
     orderedList,
     pre,
+    referenceDefinition,
     strike,
     table,
     tableRow,
@@ -105,6 +108,7 @@ const {
     listItem: { nodeType: ListItem.name },
     orderedList: { nodeType: OrderedList.name },
     paragraph: { nodeType: Paragraph.name },
+    referenceDefinition: { nodeType: ReferenceDefinition.name },
     strike: { nodeType: Strike.name },
     table: { nodeType: Table.name },
     tableCell: { nodeType: TableCell.name },
@@ -1076,6 +1080,32 @@ _world_.
               paragraph(),
             ),
           ),
+        ),
+      ),
+    },
+    {
+      markdown: `
+[GitLab][gitlab-url]
+
+[gitlab-url]: https://gitlab.com "GitLab"
+
+      `,
+      expectedDoc: doc(
+        paragraph(
+          source('[GitLab][gitlab-url]'),
+          link(
+            { ...source('[GitLab][gitlab-url]'), href: 'https://gitlab.com', title: 'GitLab' },
+            'GitLab',
+          ),
+        ),
+        referenceDefinition(
+          {
+            ...source('[gitlab-url]: https://gitlab.com "GitLab"'),
+            identifier: 'gitlab-url',
+            url: 'https://gitlab.com',
+            title: 'GitLab',
+          },
+          '[gitlab-url]: https://gitlab.com "GitLab"',
         ),
       ),
     },

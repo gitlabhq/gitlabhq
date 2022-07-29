@@ -844,7 +844,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                   'Content-Disposition' => %q(attachment; filename="ci_build_artifacts.zip"; filename*=UTF-8''ci_build_artifacts.zip) }
               end
 
+              before do
+                allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
+              end
+
               it 'downloads artifacts' do
+                expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).once.and_call_original
+
                 download_artifact
 
                 expect(response).to have_gitlab_http_status(:ok)

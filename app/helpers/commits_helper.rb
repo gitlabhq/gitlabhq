@@ -137,7 +137,12 @@ module CommitsHelper
 
   def conditionally_paginate_diff_files(diffs, paginate:, page:, per:)
     if paginate
-      Kaminari.paginate_array(diffs.diff_files.to_a).page(page).per(per)
+      diff_files = diffs.diff_files.to_a
+      Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, diffs.project.repository])
+
+      Kaminari.paginate_array(diff_files).page(page).per(per).tap do |diff_files|
+        diff_files.each(&:add_blobs_to_batch_loader)
+      end
     else
       diffs.diff_files
     end

@@ -16,6 +16,7 @@ import Link from './link';
 import ListItem from './list_item';
 import OrderedList from './ordered_list';
 import Paragraph from './paragraph';
+import ReferenceDefinition from './reference_definition';
 import Strike from './strike';
 import TaskList from './task_list';
 import TaskItem from './task_item';
@@ -45,6 +46,7 @@ export default Extension.create({
           ListItem.name,
           OrderedList.name,
           Paragraph.name,
+          ReferenceDefinition.name,
           Strike.name,
           TaskList.name,
           TaskItem.name,

@@ -41,8 +41,7 @@ module Gitlab
         @unfolded = false
 
         # Ensure items are collected in the the batch
-        new_blob_lazy
-        old_blob_lazy
+        add_blobs_to_batch_loader
       end
 
       def use_semantic_ipynb_diff?
@@ -380,6 +379,11 @@ module Gitlab
 
       def ipynb?
         file_path.ends_with?('.ipynb')
+      end
+
+      def add_blobs_to_batch_loader
+        new_blob_lazy
+        old_blob_lazy
       end
 
       private

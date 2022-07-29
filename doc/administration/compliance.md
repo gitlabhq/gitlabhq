@@ -97,7 +97,7 @@ These features can also help with compliance requirements:
   projects): Search dependencies for their licenses. This lets you determine if
   the licenses of your project's dependencies are compatible with your project's
   license.
-- [**Lock project membership to group**](../user/group/index.md#prevent-members-from-being-added-to-projects-in-a-group)
+- [**Lock project membership to group**](../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group)
   (for groups): Group owners can prevent new members from being added to projects
   within a group.
 - [**LDAP group sync**](auth/ldap/ldap_synchronization.md#group-sync) (for

@@ -1,25 +1,5 @@
 ---
 # Compliance category
-- name: g_compliance_dashboard
-  redis_slot: compliance
-  category: compliance
-  aggregation: weekly
-- name: g_compliance_audit_events
-  category: compliance
-  redis_slot: compliance
-  aggregation: weekly
-- name: i_compliance_audit_events
-  category: compliance
-  redis_slot: compliance
-  aggregation: weekly
-- name: i_compliance_credential_inventory
-  category: compliance
-  redis_slot: compliance
-  aggregation: weekly
-- name: a_compliance_audit_events_api
-  category: compliance
-  redis_slot: compliance
-  aggregation: weekly
 - name: g_edit_by_web_ide
   category: ide_edit
   redis_slot: edit

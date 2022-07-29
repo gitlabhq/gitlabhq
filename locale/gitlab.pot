@@ -11694,7 +11694,19 @@ msgstr ""
 msgid "DastConfig|Enable DAST to automatically test for vulnerabilities in your project's running application, website, or API, in the CI/CD pipeline. Configuration changes must be applied to your .gitlab-ci.yml file to take effect. For details of all configuration options, see the %{linkStart}GitLab DAST documentation%{linkEnd}."
 msgstr ""
 
+msgid "DastConfig|Enabled"
+msgstr ""
+
 msgid "DastConfig|Generate code snippet"
+msgstr ""
+
+msgid "DastConfig|Last scan triggered %{runTimeAgo} in pipeline "
+msgstr ""
+
+msgid "DastConfig|No previous scans found for this project"
+msgstr ""
+
+msgid "DastConfig|Not enabled"
 msgstr ""
 
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
@@ -28580,6 +28592,9 @@ msgstr ""
 msgid "PipelineSchedules|None"
 msgstr ""
 
+msgid "PipelineSchedules|Only the owner of a pipeline schedule can make changes to it. Do you want to take ownership of this schedule?"
+msgstr ""
+
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
@@ -28590,6 +28605,9 @@ msgid "PipelineSchedules|Target"
 msgstr ""
 
 msgid "PipelineSchedules|Variables"
+msgstr ""
+
+msgid "PipelineSchedule|Take ownership to edit"
 msgstr ""
 
 msgid "PipelineSource|API"

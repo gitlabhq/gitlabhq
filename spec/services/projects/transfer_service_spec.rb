@@ -64,6 +64,28 @@ RSpec.describe Projects::TransferService do
       expect(project.namespace).to eq(group)
     end
 
+    context 'EventStore' do
+      let(:group) do
+        create(:group, :nested).tap { |g| g.add_owner(user) }
+      end
+
+      let(:target) do
+        create(:group, :nested).tap { |g| g.add_owner(user) }
+      end
+
+      it 'publishes a ProjectTransferedEvent' do
+        expect { execute_transfer }
+          .to publish_event(Projects::ProjectTransferedEvent)
+          .with(
+            project_id: kind_of(Numeric),
+            old_namespace_id: group.id,
+            old_root_namespace_id: group.parent_id,
+            new_namespace_id: target.id,
+            new_root_namespace_id: target.parent_id
+          )
+      end
+    end
+
     context 'when project has an associated project namespace' do
       it 'keeps project namespace in sync with project' do
         transfer_result = execute_transfer
@@ -297,6 +319,11 @@ RSpec.describe Projects::TransferService do
         disk_path: project.disk_path,
         shard_name: project.repository_storage
       )
+    end
+
+    it 'does not publish a ProjectTransferedEvent' do
+      expect { attempt_project_transfer }
+        .not_to publish_event(Projects::ProjectTransferedEvent)
     end
 
     context 'when project has pending builds', :sidekiq_inline do

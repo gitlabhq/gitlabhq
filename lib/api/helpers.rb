@@ -584,12 +584,12 @@ module API
       end
     end
 
-    def log_artifact_size(file)
+    def log_artifact_file_size(file)
       Gitlab::ApplicationContext.push(artifact: file.model)
     end
 
     def present_artifacts_file!(file, **args)
-      log_artifact_size(file) if file
+      log_artifact_file_size(file) if file
 
       present_carrierwave_file!(file, **args)
     end

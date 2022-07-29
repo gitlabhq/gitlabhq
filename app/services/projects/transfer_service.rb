@@ -121,6 +121,8 @@ module Projects
     # Overridden in EE
     def post_update_hooks(project)
       ensure_personal_project_owner_membership(project)
+
+      publish_event
     end
 
     # Overridden in EE
@@ -267,6 +269,18 @@ module Projects
       return unless @old_group&.root_ancestor != @new_namespace&.root_ancestor
 
       CustomerRelations::IssueContact.delete_for_project(project.id)
+    end
+
+    def publish_event
+      event = ::Projects::ProjectTransferedEvent.new(data: {
+        project_id: project.id,
+        old_namespace_id: old_namespace.id,
+        old_root_namespace_id: old_namespace.root_ancestor.id,
+        new_namespace_id: new_namespace.id,
+        new_root_namespace_id: new_namespace.root_ancestor.id
+      })
+
+      Gitlab::EventStore.publish(event)
     end
   end
 end

@@ -217,7 +217,7 @@ The following table lists project permissions available for each role:
 4. If the [branch is protected](project/protected_branches.md), this depends on the access Developers and Maintainers are given.
 5. Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/index.md#view-a-release-and-download-assets).
 6. Actions are limited only to records owned (referenced) by user.
-7. When [Share Group Lock](group/index.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
+7. When [Share Group Lock](group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
 8. For information on eligible approvers for merge requests, see
    [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers).
 9. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
@@ -412,7 +412,7 @@ The following table lists group permissions available for each role:
 | Delete [group wiki](project/wiki/group.md) pages                                        |       |          | ✓         | ✓          | ✓     |
 | Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓ (2)      | ✓ (2) |
 | List group deploy tokens                                                                |       |          |           | ✓          | ✓     |
-| Manage [group push rules](group/index.md#group-push-rules)                              |       |          |           | ✓          | ✓     |
+| Manage [group push rules](group/access_and_permissions.md#group-push-rules)                              |       |          |           | ✓          | ✓     |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |
 | Create and manage compliance frameworks                                                 |       |          |           |            | ✓     |
 | Create/Delete group deploy tokens                                                       |       |          |           |            | ✓     |
@@ -600,7 +600,7 @@ for more information.
 ## LDAP users permissions
 
 LDAP user permissions can be manually overridden by an administrator.
-Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap) to learn more.
+Read through the documentation on [LDAP users permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap) to learn more.
 
 ## Project aliases
 

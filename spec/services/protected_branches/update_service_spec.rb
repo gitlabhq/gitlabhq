@@ -18,6 +18,14 @@ RSpec.describe ProtectedBranches::UpdateService do
       expect(result.reload.name).to eq(params[:name])
     end
 
+    it 'refreshes the cache' do
+      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+        expect(cache_service).to receive(:refresh)
+      end
+
+      result
+    end
+
     context 'when updating name of a protected branch to one that contains HTML tags' do
       let(:new_name) { 'foo<b>bar<\b>' }
       let(:result) { service.execute(protected_branch) }

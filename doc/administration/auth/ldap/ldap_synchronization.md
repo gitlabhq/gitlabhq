@@ -128,7 +128,7 @@ To take advantage of group sync, group Owners or users with the [Maintainer role
 ### Add group links
 
 For information on adding group links by using CNs and filters, refer to the
-[GitLab groups documentation](../../../user/group/index.md#manage-group-memberships-via-ldap).
+[GitLab groups documentation](../../../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
 
 ### Administrator sync
 

@@ -82,7 +82,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           stub_feature_flags(use_redis_hll_instrumentation_classes: true)
 
           expect(described_class.unique_events_data.keys)
-            .not_to include(*described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS)
+            .not_to include(*described_class.categories_collected_from_metrics_definitions)
         end
       end
 
@@ -91,18 +91,17 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           stub_feature_flags(use_redis_hll_instrumentation_classes: false)
 
           expect(described_class.unique_events_data.keys)
-            .to include(*described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS)
+            .to include(*described_class.categories_collected_from_metrics_definitions)
         end
       end
     end
   end
 
   describe '.categories' do
-    it 'gets all unique category names' do
-      expect(described_class.categories).to contain_exactly(
+    it 'gets CE unique category names' do
+      expect(described_class.categories).to include(
         'deploy_token_packages',
         'user_packages',
-        'compliance',
         'ecosystem',
         'analytics',
         'ide_edit',
@@ -483,7 +482,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
   describe '.weekly_redis_keys' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:weekly_event) { 'g_compliance_dashboard' }
+    let(:weekly_event) { 'i_search_total' }
     let(:redis_event) { described_class.send(:event_for, weekly_event) }
 
     subject(:weekly_redis_keys) { described_class.send(:weekly_redis_keys, events: [redis_event], start_date: DateTime.parse(start_date), end_date: DateTime.parse(end_date)) }
@@ -493,13 +492,13 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       '2020-12-21' | '2020-12-20' | []
       '2020-12-21' | '2020-11-21' | []
       '2021-01-01' | '2020-12-28' | []
-      '2020-12-21' | '2020-12-28' | ['g_{compliance}_dashboard-2020-52']
-      '2020-12-21' | '2021-01-01' | ['g_{compliance}_dashboard-2020-52']
-      '2020-12-27' | '2021-01-01' | ['g_{compliance}_dashboard-2020-52']
-      '2020-12-26' | '2021-01-04' | ['g_{compliance}_dashboard-2020-52', 'g_{compliance}_dashboard-2020-53']
-      '2020-12-26' | '2021-01-11' | ['g_{compliance}_dashboard-2020-52', 'g_{compliance}_dashboard-2020-53', 'g_{compliance}_dashboard-2021-01']
-      '2020-12-26' | '2021-01-17' | ['g_{compliance}_dashboard-2020-52', 'g_{compliance}_dashboard-2020-53', 'g_{compliance}_dashboard-2021-01']
-      '2020-12-26' | '2021-01-18' | ['g_{compliance}_dashboard-2020-52', 'g_{compliance}_dashboard-2020-53', 'g_{compliance}_dashboard-2021-01', 'g_{compliance}_dashboard-2021-02']
+      '2020-12-21' | '2020-12-28' | ['i_{search}_total-2020-52']
+      '2020-12-21' | '2021-01-01' | ['i_{search}_total-2020-52']
+      '2020-12-27' | '2021-01-01' | ['i_{search}_total-2020-52']
+      '2020-12-26' | '2021-01-04' | ['i_{search}_total-2020-52', 'i_{search}_total-2020-53']
+      '2020-12-26' | '2021-01-11' | ['i_{search}_total-2020-52', 'i_{search}_total-2020-53', 'i_{search}_total-2021-01']
+      '2020-12-26' | '2021-01-17' | ['i_{search}_total-2020-52', 'i_{search}_total-2020-53', 'i_{search}_total-2021-01']
+      '2020-12-26' | '2021-01-18' | ['i_{search}_total-2020-52', 'i_{search}_total-2020-53', 'i_{search}_total-2021-01', 'i_{search}_total-2021-02']
     end
 
     with_them do

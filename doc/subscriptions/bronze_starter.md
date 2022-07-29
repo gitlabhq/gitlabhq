@@ -23,11 +23,11 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
 - [Email from GitLab](../user/admin_area/email_from_gitlab.md)
 - Groups:
-  - [Creating group memberships via CN](../user/group/index.md#create-group-links-via-cn)
-  - [Group push rules](../user/group/index.md#group-push-rules)
-  - [Managing group memberships via LDAP](../user/group/index.md#manage-group-memberships-via-ldap)
-  - [Member locking](../user/group/index.md#prevent-members-from-being-added-to-projects-in-a-group)
-  - [Overriding user permissions](../user/group/index.md#override-user-permissions)
+  - [Creating group memberships via CN](../user/group/access_and_permissions.md#create-group-links-via-cn)
+  - [Group push rules](../user/group/access_and_permissions.md#group-push-rules)
+  - [Managing group memberships via LDAP](../user/group/access_and_permissions.md#manage-group-memberships-via-ldap)
+  - [Member locking](../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group)
+  - [Overriding user permissions](../user/group/access_and_permissions.md#override-user-permissions)
   - [User contribution analytics](../user/group/contribution_analytics/index.md)
   - [Kerberos integration](../integration/kerberos.md)
 - Issue boards:

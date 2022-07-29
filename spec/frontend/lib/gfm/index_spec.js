@@ -96,28 +96,60 @@ describe('gfm', () => {
         );
       });
     });
-  });
 
-  describe('when skipping the rendering of code blocks', () => {
-    it('transforms code nodes into codeblock html tags', async () => {
-      const result = await markdownToAST(
-        `
+    describe('when skipping the rendering of code blocks', () => {
+      it('transforms code nodes into codeblock html tags', async () => {
+        const result = await markdownToAST(
+          `
 \`\`\`javascript
 console.log('Hola');
 \`\`\`\
           `,
-        ['code'],
-      );
+          ['code'],
+        );
 
-      expectInRoot(
-        result,
-        expect.objectContaining({
-          tagName: 'codeblock',
-          properties: {
-            language: 'javascript',
-          },
-        }),
-      );
+        expectInRoot(
+          result,
+          expect.objectContaining({
+            tagName: 'codeblock',
+            properties: {
+              language: 'javascript',
+            },
+          }),
+        );
+      });
+    });
+
+    describe('when skipping the rendering of reference definitions', () => {
+      it('transforms code nodes into codeblock html tags', async () => {
+        const result = await markdownToAST(
+          `
+[gitlab][gitlab]
+
+[gitlab]: https://gitlab.com "GitLab"
+          `,
+          ['definition'],
+        );
+
+        expectInRoot(
+          result,
+          expect.objectContaining({
+            type: 'element',
+            tagName: 'referencedefinition',
+            properties: {
+              identifier: 'gitlab',
+              title: 'GitLab',
+              url: 'https://gitlab.com',
+            },
+            children: [
+              {
+                type: 'text',
+                value: '[gitlab]: https://gitlab.com "GitLab"',
+              },
+            ],
+          }),
+        );
+      });
     });
   });
 });

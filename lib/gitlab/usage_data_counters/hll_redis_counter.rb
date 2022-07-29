@@ -114,6 +114,10 @@ module Gitlab
           @categories ||= known_events.map { |event| event[:category] }.uniq
         end
 
+        def categories_collected_from_metrics_definitions
+          CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS
+        end
+
         # @param category [String] the category name
         # @return [Array<String>] list of event names for given category
         def events_for_category(category)
@@ -164,7 +168,7 @@ module Gitlab
 
         def categories_pending_migration
           if ::Feature.enabled?(:use_redis_hll_instrumentation_classes)
-            (categories - CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS)
+            (categories - categories_collected_from_metrics_definitions)
           else
             categories
           end

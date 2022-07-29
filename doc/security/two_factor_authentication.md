@@ -71,7 +71,7 @@ The following are important notes about 2FA:
   2FA for the project. For example, if project *P* belongs to 2FA-enabled group *A* and
   is shared with 2FA-disabled group *B*, members of group *B* can access project *P*
   without 2FA. To ensure this scenario doesn't occur,
-  [prevent sharing of projects](../user/group/index.md#prevent-a-project-from-being-shared-with-groups)
+  [prevent sharing of projects](../user/group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups)
   for the 2FA-enabled group.
 - If you add additional members to a project within a group or subgroup that has
   2FA enabled, 2FA is **not** required for those individually added members.

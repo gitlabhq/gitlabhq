@@ -33,6 +33,7 @@ import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import Reference from '../extensions/reference';
+import ReferenceDefinition from '../extensions/reference_definition';
 import Strike from '../extensions/strike';
 import Subscript from '../extensions/subscript';
 import Superscript from '../extensions/superscript';
@@ -177,6 +178,25 @@ const defaultSerializerConfig = {
     [Reference.name]: (state, node) => {
       state.write(node.attrs.originalText || node.attrs.text);
     },
+    [ReferenceDefinition.name]: preserveUnchanged({
+      render: (state, node, parent, index, same, sourceMarkdown) => {
+        const nextSibling = parent.maybeChild(index + 1);
+
+        state.text(same ? sourceMarkdown : node.textContent, false);
+
+        /**
+         * Do not insert a blank line between reference definitions
+         * because it isn’t necessary and a more compact text format
+         * is preferred.
+         */
+        if (!nextSibling || nextSibling.type.name !== ReferenceDefinition.name) {
+          state.closeBlock(node);
+        } else {
+          state.ensureNewLine();
+        }
+      },
+      overwriteSourcePreservationStrategy: true,
+    }),
     [TableOfContents.name]: (state, node) => {
       state.write('[[_TOC_]]');
       state.closeBlock(node);

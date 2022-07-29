@@ -3884,6 +3884,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -3910,6 +3924,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "the title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"the title\""
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -3938,6 +3966,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo*bar\\]",
+          "url": "my_(url)",
+          "title": "title (with parens)"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo*bar\\]]: my_(url) \"title (with parens)\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -3965,6 +4007,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo bar",
+          "url": "my url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo bar]: my url \"title\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -3991,6 +4047,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "\ntitle\nline1\nline2\n"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"\ntitle\nline1\nline2\n\""
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4052,6 +4122,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4102,6 +4186,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: "
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4154,6 +4252,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url\\bar*baz",
+          "title": "foo\"bar\\baz"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url\\bar*baz \"foo\"bar\\baz\""
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4200,6 +4312,20 @@
             "text": "foo"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: url"
+          }
+        ]
       }
     ]
   }
@@ -4227,6 +4353,34 @@
             "text": "foo"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "first",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: first"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "second",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: second"
+          }
+        ]
       }
     ]
   }
@@ -4234,6 +4388,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4262,6 +4430,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "αγω",
+          "url": "/φου",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[αγω]: /φου"
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4289,7 +4471,18 @@
     "type": "doc",
     "content": [
       {
-        "type": "paragraph"
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
       }
     ]
   }
@@ -4297,6 +4490,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4327,6 +4534,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4447,6 +4668,20 @@
         ]
       },
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
+      {
         "type": "blockquote",
         "attrs": {
           "multiline": false
@@ -4469,6 +4704,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
       {
         "type": "heading",
         "attrs": {
@@ -4509,6 +4758,20 @@
     "type": "doc",
     "content": [
       {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
+      },
+      {
         "type": "paragraph",
         "content": [
           {
@@ -4539,6 +4802,48 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/foo-url",
+          "title": "foo"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /foo-url \"foo\""
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/bar-url",
+          "title": "bar"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /bar-url \"bar\""
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "baz",
+          "url": "/baz-url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[baz]: /baz-url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -4634,7 +4939,18 @@
         },
         "content": [
           {
-            "type": "paragraph"
+            "type": "referenceDefinition",
+            "attrs": {
+              "identifier": "foo",
+              "url": "/url",
+              "title": null
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "[foo]: /url"
+              }
+            ]
           }
         ]
       }
@@ -4645,7 +4961,18 @@
     "type": "doc",
     "content": [
       {
-        "type": "paragraph"
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
       }
     ]
   }
@@ -9572,6 +9899,20 @@
                     "text": "b"
                   }
                 ]
+              },
+              {
+                "type": "referenceDefinition",
+                "attrs": {
+                  "identifier": "ref",
+                  "url": "/url",
+                  "title": null
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "[ref]: /url"
+                  }
+                ]
               }
             ]
           },
@@ -10416,6 +10757,20 @@
             "text": "foo"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/bar*",
+          "title": "ti*tle"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /bar* \"ti*tle\""
+          }
+        ]
       }
     ]
   }
@@ -10586,6 +10941,20 @@
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/föö",
+          "title": "föö"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /föö \"föö\""
           }
         ]
       }
@@ -15592,6 +15961,20 @@
             "text": "foo"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -15619,6 +16002,20 @@
             "text": "link [foo [bar]]"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
+          }
+        ]
       }
     ]
   }
@@ -15644,6 +16041,20 @@
               }
             ],
             "text": "link [bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15739,6 +16150,20 @@
             "text": "#"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
+          }
+        ]
       }
     ]
   }
@@ -15770,6 +16195,20 @@
                 }
               }
             ]
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15821,6 +16260,20 @@
               }
             ],
             "text": "ref"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15886,6 +16339,20 @@
             "text": "ref"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
+          }
+        ]
       }
     ]
   }
@@ -15917,6 +16384,20 @@
             "text": "foo*"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
+          }
+        ]
       }
     ]
   }
@@ -15944,6 +16425,20 @@
             "text": "foo *bar"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
+          }
+        ]
       }
     ]
   }
@@ -15957,6 +16452,20 @@
           {
             "type": "text",
             "text": "[foo "
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -15981,6 +16490,20 @@
               }
             ],
             "text": "][ref]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
           }
         ]
       }
@@ -16014,6 +16537,20 @@
             "text": "http://example.com/?search=][ref]"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref]: /uri"
+          }
+        ]
       }
     ]
   }
@@ -16039,6 +16576,20 @@
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url \"title\""
           }
         ]
       }
@@ -16072,6 +16623,20 @@
             "text": " is a Russian word."
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "толпой",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[толпой]: /url"
+          }
+        ]
       }
     ]
   }
@@ -16079,6 +16644,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo bar",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo bar]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -16130,6 +16709,20 @@
             "text": "bar"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -16161,6 +16754,20 @@
             "text": "bar"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -16168,6 +16775,34 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url2",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url2"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -16201,6 +16836,20 @@
           {
             "type": "text",
             "text": "[bar][foo!]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo!",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo!]: /url"
           }
         ]
       }
@@ -16302,6 +16951,20 @@
             "text": "foo"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "ref\\[",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[ref\\[]: /uri"
+          }
+        ]
       }
     ]
   }
@@ -16309,6 +16972,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar\\\\",
+          "url": "/uri",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar\\\\]: /uri"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -16404,6 +17081,20 @@
             "text": "foo"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -16450,6 +17141,20 @@
             "text": " bar"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -16475,6 +17180,20 @@
               }
             ],
             "text": "Foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -16508,6 +17227,20 @@
             "text": "\n[]"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -16533,6 +17266,20 @@
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -16579,6 +17326,20 @@
               }
             ],
             "text": " bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
           }
         ]
       }
@@ -16635,6 +17396,20 @@
             "text": "]"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -16666,6 +17441,20 @@
             "text": "foo"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
       }
     ]
   }
@@ -16691,6 +17480,20 @@
               }
             ],
             "text": "Foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -16724,6 +17527,20 @@
             "text": " bar"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url"
+          }
+        ]
       }
     ]
   }
@@ -16739,6 +17556,20 @@
             "text": "[foo]"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -16746,6 +17577,20 @@
   {
     "type": "doc",
     "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo*",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo*]: /url"
+          }
+        ]
+      },
       {
         "type": "paragraph",
         "content": [
@@ -16797,6 +17642,34 @@
             "text": "foo"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url2",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url2"
+          }
+        ]
       }
     ]
   }
@@ -16824,6 +17697,20 @@
             "text": "foo"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
+          }
+        ]
       }
     ]
   }
@@ -16849,6 +17736,20 @@
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
           }
         ]
       }
@@ -16882,6 +17783,20 @@
             "text": "(not a link)"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url1"
+          }
+        ]
       }
     ]
   }
@@ -16911,6 +17826,20 @@
               }
             ],
             "text": "bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "baz",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[baz]: /url"
           }
         ]
       }
@@ -16956,6 +17885,34 @@
             "text": "baz"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "baz",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[baz]: /url1"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url2",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url2"
+          }
+        ]
       }
     ]
   }
@@ -16985,6 +17942,34 @@
               }
             ],
             "text": "bar"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "baz",
+          "url": "/url1",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[baz]: /url1"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url2",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url2"
           }
         ]
       }
@@ -17027,6 +18012,20 @@
               "uploading": false,
               "canonicalSrc": null
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo *bar*",
+          "url": "train.jpg",
+          "title": "train & tracks"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo *bar*]: train.jpg \"train & tracks\""
           }
         ]
       }
@@ -17092,6 +18091,20 @@
             }
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo *bar*",
+          "url": "train.jpg",
+          "title": "train & tracks"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo *bar*]: train.jpg \"train & tracks\""
+          }
+        ]
       }
     ]
   }
@@ -17111,6 +18124,20 @@
               "uploading": false,
               "canonicalSrc": null
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foobar",
+          "url": "train.jpg",
+          "title": "train & tracks"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foobar]: train.jpg \"train & tracks\""
           }
         ]
       }
@@ -17222,6 +18249,20 @@
             }
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url"
+          }
+        ]
       }
     ]
   }
@@ -17241,6 +18282,20 @@
               "uploading": false,
               "canonicalSrc": null
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "bar",
+          "url": "/url",
+          "title": null
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[bar]: /url"
           }
         ]
       }
@@ -17264,6 +18319,20 @@
             }
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -17285,6 +18354,20 @@
             }
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -17304,6 +18387,20 @@
               "uploading": false,
               "canonicalSrc": null
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -17331,6 +18428,20 @@
             "text": "\n[]"
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -17352,6 +18463,20 @@
             }
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -17371,6 +18496,20 @@
               "uploading": false,
               "canonicalSrc": null
             }
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "*foo* bar",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[*foo* bar]: /url \"title\""
           }
         ]
       }
@@ -17418,6 +18557,20 @@
             }
           }
         ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
+          }
+        ]
       }
     ]
   }
@@ -17431,6 +18584,20 @@
           {
             "type": "text",
             "text": "![foo]"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }
@@ -17462,6 +18629,20 @@
               }
             ],
             "text": "foo"
+          }
+        ]
+      },
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "foo",
+          "url": "/url",
+          "title": "title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[foo]: /url \"title\""
           }
         ]
       }

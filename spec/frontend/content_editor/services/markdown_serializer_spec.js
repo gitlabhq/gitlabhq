@@ -24,6 +24,7 @@ import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
 import Paragraph from '~/content_editor/extensions/paragraph';
+import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
 import Table from '~/content_editor/extensions/table';
@@ -63,6 +64,7 @@ const tiptapEditor = createTestEditor({
     Link,
     ListItem,
     OrderedList,
+    ReferenceDefinition,
     Sourcemap,
     Strike,
     Table,
@@ -104,6 +106,7 @@ const {
     listItem,
     orderedList,
     paragraph,
+    referenceDefinition,
     strike,
     table,
     tableCell,
@@ -139,6 +142,7 @@ const {
     listItem: { nodeType: ListItem.name },
     orderedList: { nodeType: OrderedList.name },
     paragraph: { nodeType: Paragraph.name },
+    referenceDefinition: { nodeType: ReferenceDefinition.name },
     strike: { markType: Strike.name },
     table: { nodeType: Table.name },
     tableCell: { nodeType: TableCell.name },
@@ -1160,6 +1164,38 @@ Oranges are orange [^1]
 
 [^1]: Oranges are fruits
 `.trimLeft(),
+    );
+  });
+
+  it('correctly serializes reference definition', () => {
+    expect(
+      serialize(
+        referenceDefinition('[gitlab]: https://gitlab.com'),
+        referenceDefinition('[foobar]: foobar.com'),
+      ),
+    ).toBe(
+      `
+[gitlab]: https://gitlab.com
+[foobar]: foobar.com`.trimLeft(),
+    );
+  });
+
+  it('correctly adds a space between a reference definition and a block content', () => {
+    expect(
+      serialize(
+        paragraph('paragraph'),
+        referenceDefinition('[gitlab]: https://gitlab.com'),
+        referenceDefinition('[foobar]: foobar.com'),
+        heading({ level: 2 }, 'heading'),
+      ),
+    ).toBe(
+      `
+paragraph
+
+[gitlab]: https://gitlab.com
+[foobar]: foobar.com
+
+## heading`.trimLeft(),
     );
   });
 

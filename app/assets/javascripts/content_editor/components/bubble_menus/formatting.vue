@@ -10,6 +10,7 @@ import Code from '../../extensions/code';
 import CodeBlockHighlight from '../../extensions/code_block_highlight';
 import Diagram from '../../extensions/diagram';
 import Frontmatter from '../../extensions/frontmatter';
+import ReferenceDefinition from '../../extensions/reference_definition';
 import ToolbarButton from '../toolbar_button.vue';
 
 export default {
@@ -35,6 +36,7 @@ export default {
         Image.name,
         Audio.name,
         Video.name,
+        ReferenceDefinition.name,
       ];
 
       return !exclude.some((type) => editor.isActive(type));

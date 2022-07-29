@@ -19,6 +19,16 @@ const skipRenderingHandlers = {
     h(node.position, 'codeBlock', { language: node.lang, meta: node.meta }, [
       { type: 'text', value: node.value },
     ]),
+  definition: (h, node) => {
+    const title = node.title ? ` "${node.title}"` : '';
+
+    return h(
+      node.position,
+      'referenceDefinition',
+      { identifier: node.identifier, url: node.url, title: node.title },
+      [{ type: 'text', value: `[${node.identifier}]: ${node.url}${title}` }],
+    );
+  },
 };
 
 const createParser = ({ skipRendering = [] }) => {

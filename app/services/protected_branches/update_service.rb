@@ -10,6 +10,8 @@ module ProtectedBranches
 
       if protected_branch.update(params)
         after_execute(protected_branch: protected_branch, old_merge_access_levels: old_merge_access_levels, old_push_access_levels: old_push_access_levels)
+
+        refresh_cache
       end
 
       protected_branch

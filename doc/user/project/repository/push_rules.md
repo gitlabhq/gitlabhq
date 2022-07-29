@@ -25,7 +25,7 @@ For custom push rules use [server hooks](../../../administration/server_hooks.md
 ## Enable global push rules
 
 You can create push rules for all new projects to inherit, but they can be overridden
-at the project level or the [group level](../../group/index.md#group-push-rules).
+at the project level or the [group level](../../group/access_and_permissions.md#group-push-rules).
 All projects created after you configure global push rules inherit this
 configuration. However, each existing project must be updated manually, using the
 process described in [Override global push rules per project](#override-global-push-rules-per-project).

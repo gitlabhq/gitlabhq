@@ -61,29 +61,38 @@ describe('content_editor', () => {
     });
   });
 
-  it('renders footnote ids alongside the footnote definition', async () => {
-    buildWrapper();
+  describe('when preserveUnchangedMarkdown feature flag is enabled', () => {
+    beforeEach(() => {
+      gon.features = { preserveUnchangedMarkdown: true };
+    });
+    afterEach(() => {
+      gon.features = { preserveUnchangedMarkdown: false };
+    });
 
-    renderMarkdown.mockResolvedValue(`
-    <p data-sourcepos="3:1-3:56" dir="auto">
-      This reference tag is a mix of letters and numbers. <sup class="footnote-ref"><a href="#fn-footnote-2717" id="fnref-footnote-2717" data-footnote-ref="">2</a></sup>
-    </p>
-    <section class="footnotes" data-footnotes>
-      <ol>
-        <li id="fn-footnote-2717">
-        <p data-sourcepos="6:7-6:31">This is another footnote. <a href="#fnref-footnote-2717" aria-label="Back to content" class="footnote-backref" data-footnote-backref=""><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
-        </li>
-      </ol>
-    </section>
+    it('processes and renders footnote ids alongside the footnote definition', async () => {
+      buildWrapper();
+
+      await contentEditorService.setSerializedContent(`
+This reference tag is a mix of letters and numbers [^footnote].
+
+[^footnote]: This is another footnote.
     `);
+      await nextTick();
 
-    await contentEditorService.setSerializedContent(`
-    This reference tag is a mix of letters and numbers [^footnote].
+      expect(wrapper.text()).toContain('footnote: This is another footnote');
+    });
 
-    [^footnote]: This is another footnote.
-    `);
-    await nextTick();
+    it('processes and displays reference definitions', async () => {
+      buildWrapper();
 
-    expect(wrapper.text()).toContain('footnote: This is another footnote');
+      await contentEditorService.setSerializedContent(`
+[GitLab][gitlab]
+
+[gitlab]: https://gitlab.com
+      `);
+      await nextTick();
+
+      expect(wrapper.find('pre').text()).toContain('[gitlab]: https://gitlab.com');
+    });
   });
 });
