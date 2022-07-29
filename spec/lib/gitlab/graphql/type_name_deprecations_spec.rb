@@ -1,23 +1,16 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'test_prof/recipes/rspec/let_it_be'
 require_relative '../../../support/helpers/type_name_deprecation_helpers'
-
-TestProf::BeforeAll.adapter = Class.new do
-  def begin_transaction; end
-
-  def rollback_transaction; end
-end.new
 
 RSpec.describe Gitlab::Graphql::TypeNameDeprecations do
   include TypeNameDeprecationHelpers
 
-  let_it_be(:deprecation_1) do
+  let(:deprecation_1) do
     described_class::NameDeprecation.new(old_name: 'Foo::Model', new_name: 'Bar', milestone: '9.0')
   end
 
-  let_it_be(:deprecation_2) do
+  let(:deprecation_2) do
     described_class::NameDeprecation.new(old_name: 'Baz', new_name: 'Qux::Model', milestone: '10.0')
   end
 
