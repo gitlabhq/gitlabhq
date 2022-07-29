@@ -23,7 +23,7 @@ require (
 	github.com/prometheus/client_golang v1.12.2
 	github.com/rafaeljusto/redigomock/v3 v3.1.1
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/stretchr/testify v1.8.0
 	gitlab.com/gitlab-org/gitaly/v15 v15.1.2
@@ -34,8 +34,8 @@ require (
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 	golang.org/x/net v0.0.0-20220531201128-c960675eff93
 	golang.org/x/tools v0.1.11
-	google.golang.org/grpc v1.45.0
-	google.golang.org/protobuf v1.28.0
+	google.golang.org/grpc v1.48.0
+	google.golang.org/protobuf v1.28.1
 	honnef.co/go/tools v0.3.2
 )
 
@@ -106,7 +106,7 @@ require (
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220614162138-6c1b26c55098 // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect

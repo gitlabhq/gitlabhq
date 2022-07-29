@@ -223,7 +223,6 @@ export default {
     >
       <button
         v-if="showExpandDown"
-        v-gl-tooltip.left
         :title="s__('Diffs|Next 20 lines')"
         :disabled="loading.down"
         type="button"
@@ -235,7 +234,6 @@ export default {
       </button>
       <button
         v-if="lineCountBetween !== -1 && lineCountBetween < 20"
-        v-gl-tooltip.left
         :title="s__('Diffs|Expand all lines')"
         :disabled="loading.all"
         type="button"
@@ -247,7 +245,6 @@ export default {
       </button>
       <button
         v-if="showExpandUp"
-        v-gl-tooltip.left
         :title="s__('Diffs|Previous 20 lines')"
         :disabled="loading.up"
         type="button"
