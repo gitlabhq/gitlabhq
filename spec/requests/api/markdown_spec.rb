@@ -131,7 +131,7 @@ RSpec.describe API::Markdown do
           end
 
           context 'when not logged in' do
-            let(:user) { }
+            let(:user) {}
 
             it_behaves_like 'user without proper access'
           end
@@ -176,7 +176,7 @@ RSpec.describe API::Markdown do
           end
 
           context 'when not logged in' do
-            let(:user) { }
+            let(:user) {}
 
             it_behaves_like 'user without proper access'
           end

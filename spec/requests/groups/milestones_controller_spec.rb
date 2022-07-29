@@ -30,7 +30,7 @@ RSpec.describe Groups::MilestonesController do
         milestones = json_response
 
         expect(milestones.count).to eq(3)
-        expect(milestones.map {|x| x['title']}).not_to include(private_milestone.title)
+        expect(milestones.map { |x| x['title'] }).not_to include(private_milestone.title)
       end
     end
 

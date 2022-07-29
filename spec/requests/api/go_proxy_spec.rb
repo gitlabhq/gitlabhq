@@ -318,7 +318,7 @@ RSpec.describe API::GoProxy do
   context 'with a case sensitive project and versions' do
     let_it_be(:project) { create :project_empty_repo, :public, creator: user, path: 'MyGoLib' }
     let_it_be(:base) { "#{Settings.build_gitlab_go_url}/#{project.full_path}" }
-    let_it_be(:base_encoded) { base.gsub(/[A-Z]/) { |s| "!#{s.downcase}"} }
+    let_it_be(:base_encoded) { base.gsub(/[A-Z]/) { |s| "!#{s.downcase}" } }
 
     let_it_be(:modules) do
       create(:go_module_commit, :files,   project: project, files: { 'README.md' => "Hi" })

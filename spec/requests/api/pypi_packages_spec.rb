@@ -41,7 +41,7 @@ RSpec.describe API::PypiPackages do
         it_behaves_like 'deploy token for package GET requests'
 
         context 'with group path as id' do
-          let(:url) { "/groups/#{CGI.escape(group.full_path)}/-/packages/pypi/simple"}
+          let(:url) { "/groups/#{CGI.escape(group.full_path)}/-/packages/pypi/simple" }
 
           it_behaves_like 'deploy token for package GET requests'
         end
@@ -102,7 +102,7 @@ RSpec.describe API::PypiPackages do
         it_behaves_like 'deploy token for package GET requests'
 
         context 'with group path as id' do
-          let(:url) { "/groups/#{CGI.escape(group.full_path)}/-/packages/pypi/simple/#{package_name}"}
+          let(:url) { "/groups/#{CGI.escape(group.full_path)}/-/packages/pypi/simple/#{package_name}" }
 
           it_behaves_like 'deploy token for package GET requests'
         end

@@ -451,7 +451,7 @@ RSpec.describe API::Deployments do
   describe 'DELETE /projects/:id/deployments/:deployment_id' do
     let(:project) { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }
-    let(:commits) { project.repository.commits(nil, { limit: 2 })}
+    let(:commits) { project.repository.commits(nil, { limit: 2 }) }
     let!(:deploy) do
       create(
         :deployment,

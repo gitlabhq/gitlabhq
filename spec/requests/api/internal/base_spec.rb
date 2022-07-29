@@ -1451,7 +1451,7 @@ RSpec.describe API::Internal::Base do
 
   describe 'POST /internal/two_factor_otp_check' do
     let(:key_id) { key.id }
-    let(:otp) { '123456'}
+    let(:otp) { '123456' }
 
     subject do
       post api('/internal/two_factor_otp_check'),
@@ -1472,7 +1472,7 @@ RSpec.describe API::Internal::Base do
 
   describe 'POST /internal/two_factor_manual_otp_check' do
     let(:key_id) { key.id }
-    let(:otp) { '123456'}
+    let(:otp) { '123456' }
 
     subject do
       post api('/internal/two_factor_manual_otp_check'),
@@ -1493,7 +1493,7 @@ RSpec.describe API::Internal::Base do
 
   describe 'POST /internal/two_factor_push_otp_check' do
     let(:key_id) { key.id }
-    let(:otp) { '123456'}
+    let(:otp) { '123456' }
 
     subject do
       post api('/internal/two_factor_push_otp_check'),
@@ -1514,7 +1514,7 @@ RSpec.describe API::Internal::Base do
 
   describe 'POST /internal/two_factor_manual_otp_check' do
     let(:key_id) { key.id }
-    let(:otp) { '123456'}
+    let(:otp) { '123456' }
 
     subject do
       post api('/internal/two_factor_manual_otp_check'),
@@ -1534,7 +1534,7 @@ RSpec.describe API::Internal::Base do
 
   describe 'POST /internal/two_factor_push_otp_check' do
     let(:key_id) { key.id }
-    let(:otp) { '123456'}
+    let(:otp) { '123456' }
 
     subject do
       post api('/internal/two_factor_push_otp_check'),

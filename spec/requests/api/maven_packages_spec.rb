@@ -34,7 +34,7 @@ RSpec.describe API::MavenPackages do
   end
 
   let(:version) { '1.0-SNAPSHOT' }
-  let(:param_path) { "#{package_name}/#{version}"}
+  let(:param_path) { "#{package_name}/#{version}" }
 
   before do
     project.add_developer(user)

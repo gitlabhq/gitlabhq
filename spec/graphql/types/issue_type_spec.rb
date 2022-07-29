@@ -167,7 +167,7 @@ RSpec.describe GitlabSchema.types['Issue'] do
       shared_examples_for 'does not include private notes' do
         it "does not return private notes" do
           notes = subject.dig("data", "project", "issue", "notes", 'edges')
-          notes_body = notes.map {|n| n.dig('node', 'body')}
+          notes_body = notes.map { |n| n.dig('node', 'body') }
 
           expect(notes.size).to eq 1
           expect(notes_body).not_to include(private_note_body)
@@ -178,7 +178,7 @@ RSpec.describe GitlabSchema.types['Issue'] do
       shared_examples_for 'includes private notes' do
         it "returns all notes" do
           notes = subject.dig("data", "project", "issue", "notes", 'edges')
-          notes_body = notes.map {|n| n.dig('node', 'body')}
+          notes_body = notes.map { |n| n.dig('node', 'body') }
 
           expect(notes.size).to eq 2
           expect(notes_body).to include(private_note_body)
@@ -209,7 +209,7 @@ RSpec.describe GitlabSchema.types['Issue'] do
   end
 
   describe 'hidden', :enable_admin_mode do
-    let_it_be(:admin) { create(:user, :admin)}
+    let_it_be(:admin) { create(:user, :admin) }
     let_it_be(:banned_user) { create(:user, :banned) }
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :public) }

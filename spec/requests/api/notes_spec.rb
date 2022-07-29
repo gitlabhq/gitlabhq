@@ -111,7 +111,7 @@ RSpec.describe API::Notes do
                    system: false
           end
 
-          let(:test_url) {"/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes"}
+          let(:test_url) { "/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes" }
 
           shared_examples 'a notes request' do
             it 'is a note array response' do

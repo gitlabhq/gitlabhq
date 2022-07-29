@@ -125,6 +125,7 @@ const factorySpecs = {
     selector: 'img',
     getAttrs: (hastNode) => ({
       src: hastNode.properties.src,
+      canonicalSrc: hastNode.properties.src,
       title: hastNode.properties.title,
       alt: hastNode.properties.alt,
     }),
@@ -154,6 +155,7 @@ const factorySpecs = {
     type: 'mark',
     selector: 'a',
     getAttrs: (hastNode) => ({
+      canonicalSrc: hastNode.properties.href,
       href: hastNode.properties.href,
       title: hastNode.properties.title,
     }),
@@ -182,6 +184,31 @@ const factorySpecs = {
   },
 };
 
+const resolveUrl = (url) => {
+  try {
+    return new URL(url, window.location.origin).toString();
+  } catch {
+    return null;
+  }
+};
+
+const attributeTransformer = {
+  attributes: ['href', 'src'],
+  transform: (url) => {
+    if (!url) {
+      return url;
+    }
+
+    /**
+     * Resolves a URL if provided. The URL is not resolved against
+     * the client origin initially to protect the URL protocol
+     * when it is available, for example, we want to preserve
+     * mailto and application-specific protocols
+     */
+    return resolveUrl(url);
+  },
+};
+
 export default () => {
   return {
     deserialize: async ({ schema, markdown }) => {
@@ -193,6 +220,7 @@ export default () => {
             factorySpecs,
             tree,
             wrappableTags,
+            attributeTransformer,
             markdown,
           }),
         skipRendering: ['footnoteReference', 'footnoteDefinition', 'code', 'definition'],

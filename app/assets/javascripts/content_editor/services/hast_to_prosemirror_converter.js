@@ -21,7 +21,7 @@
 
 import { Mark } from 'prosemirror-model';
 import { visitParents, SKIP } from 'unist-util-visit-parents';
-import { isFunction, isString, noop } from 'lodash';
+import { isFunction, isString, noop, mapValues } from 'lodash';
 
 const NO_ATTRIBUTES = {};
 
@@ -73,28 +73,47 @@ function createSourceMapAttributes(hastNode, markdown) {
 }
 
 /**
- * Compute ProseMirror node’s attributes from a Hast node.
- * By default, this function includes sourcemap position
- * information in the object returned.
+ * Creates a function that resolves the attributes
+ * of a ProseMirror node based on a hast node.
  *
- * Other attributes are retrieved by invoking a getAttrs
- * function provided by the ProseMirror node factory spec.
- *
- * @param {*} proseMirrorNodeSpec ProseMirror node spec object
- * @param {HastNode} hastNode A hast node
- * @param {Array<HastNode>} hastParents All the ancestors of the hastNode
- * @param {String} markdown Markdown source file’s content
- *
- * @returns An object that contains a ProseMirror node’s attributes
+ * @param {Object} params Parameters
+ * @param {String} params.markdown Markdown source from which the AST was generated
+ * @param {Object} params.attributeTransformer An object that allows applying a transformation
+ * function to all the attributes listed in the attributes property.
+ * @param {Array} params.attributeTransformer.attributes A list of attributes names
+ * that the getAttrs function should apply the transformation
+ * @param {Function} params.attributeTransformer.transform A function that applies
+ * a transform operation on an attribute value.
+ * @returns A `getAttrs` function
  */
-function getAttrs(proseMirrorNodeSpec, hastNode, hastParents, markdown) {
-  const { getAttrs: specGetAttrs } = proseMirrorNodeSpec;
+const getAttrsFactory = ({ attributeTransformer, markdown }) =>
+  /**
+   * Compute ProseMirror node’s attributes from a Hast node.
+   * By default, this function includes sourcemap position
+   * information in the object returned.
+   *
+   * Other attributes are retrieved by invoking a getAttrs
+   * function provided by the ProseMirror node factory spec.
+   *
+   * @param {Object} proseMirrorNodeSpec ProseMirror node spec object
+   * @param {Object} hastNode A hast node
+   * @param {Array} hastParents All the ancestors of the hastNode
+   * @param {String} markdown Markdown source file’s content
+   * @returns An object that contains a ProseMirror node’s attributes
+   */
+  function getAttrs(proseMirrorNodeSpec, hastNode, hastParents) {
+    const { getAttrs: specGetAttrs } = proseMirrorNodeSpec;
+    const attributes = {
+      ...createSourceMapAttributes(hastNode, markdown),
+      ...(isFunction(specGetAttrs) ? specGetAttrs(hastNode, hastParents, markdown) : {}),
+    };
 
-  return {
-    ...createSourceMapAttributes(hastNode, markdown),
-    ...(isFunction(specGetAttrs) ? specGetAttrs(hastNode, hastParents, markdown) : {}),
+    return mapValues(attributes, (value, key) =>
+      attributeTransformer.attributes.includes(key)
+        ? attributeTransformer.transform(value, key)
+        : value,
+    );
   };
-}
 
 /**
  * Keeps track of the Hast -> ProseMirror conversion process.
@@ -322,7 +341,13 @@ class HastToProseMirrorConverterState {
  *
  * @returns An object that contains ProseMirror node factories
  */
-const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, markdown) => {
+const createProseMirrorNodeFactories = (
+  schema,
+  proseMirrorFactorySpecs,
+  attributeTransformer,
+  markdown,
+) => {
+  const getAttrs = getAttrsFactory({ attributeTransformer, markdown });
   const factories = {
     root: {
       selector: 'root',
@@ -355,20 +380,20 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, markdow
         const nodeType = schema.nodeType(proseMirrorName);
 
         state.closeUntil(parent);
-        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent, markdown), factory);
+        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent), factory);
       };
     } else if (factory.type === 'inline') {
       const nodeType = schema.nodeType(proseMirrorName);
       factory.handle = (state, hastNode, parent) => {
         state.closeUntil(parent);
-        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent, markdown), factory);
+        state.openNode(nodeType, hastNode, getAttrs(factory, hastNode, parent), factory);
         // Inline nodes do not have children therefore they are immediately closed
         state.closeNode();
       };
     } else if (factory.type === 'mark') {
       const markType = schema.marks[proseMirrorName];
       factory.handle = (state, hastNode, parent) => {
-        state.openMark(markType, hastNode, getAttrs(factory, hastNode, parent, markdown), factory);
+        state.openMark(markType, hastNode, getAttrs(factory, hastNode, parent), factory);
       };
     } else if (factory.type === 'ignore') {
       factory.handle = noop;
@@ -581,9 +606,15 @@ export const createProseMirrorDocFromMdastTree = ({
   factorySpecs,
   wrappableTags,
   tree,
+  attributeTransformer,
   markdown,
 }) => {
-  const proseMirrorNodeFactories = createProseMirrorNodeFactories(schema, factorySpecs, markdown);
+  const proseMirrorNodeFactories = createProseMirrorNodeFactories(
+    schema,
+    factorySpecs,
+    attributeTransformer,
+    markdown,
+  );
   const state = new HastToProseMirrorConverterState();
 
   visitParents(tree, (hastNode, ancestors) => {

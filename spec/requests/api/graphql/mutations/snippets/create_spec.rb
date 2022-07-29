@@ -12,8 +12,8 @@ RSpec.describe 'Creating a Snippet' do
   let(:title) { 'Initial title' }
   let(:visibility_level) { 'public' }
   let(:action) { :create }
-  let(:file_1) { { filePath: 'example_file1', content: 'This is the example file 1' }}
-  let(:file_2) { { filePath: 'example_file2', content: 'This is the example file 2' }}
+  let(:file_1) { { filePath: 'example_file1', content: 'This is the example file 1' } }
+  let(:file_2) { { filePath: 'example_file2', content: 'This is the example file 2' } }
   let(:actions) { [{ action: action }.merge(file_1), { action: action }.merge(file_2)] }
   let(:project_path) { nil }
   let(:uploaded_files) { nil }
@@ -149,7 +149,7 @@ RSpec.describe 'Creating a Snippet' do
     end
 
     context 'when there non ActiveRecord errors' do
-      let(:file_1) { { filePath: 'invalid://file/path', content: 'foobar' }}
+      let(:file_1) { { filePath: 'invalid://file/path', content: 'foobar' } }
 
       it_behaves_like 'a mutation that returns errors in the response', errors: ['Repository Error creating the snippet - Invalid file name']
       it_behaves_like 'does not create snippet'

@@ -61,7 +61,7 @@ RSpec.describe API::Boards do
         delete api(url, user)
 
         expect(response).to have_gitlab_http_status(:no_content)
-      end.to change {board_parent.boards.count}.by(-1)
+      end.to change { board_parent.boards.count }.by(-1)
     end
   end
 

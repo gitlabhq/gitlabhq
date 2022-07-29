@@ -669,3 +669,27 @@ export function constructWebIDEPath({
     webIDEUrl(`/${sourceProjectFullPath}/merge_requests/${iid}`),
   );
 }
+
+/**
+ * Examples
+ *
+ * http://gitlab.com => gitlab.com
+ * https://gitlab.com => gitlab.com
+ *
+ * @param {String} url
+ * @returns A url without a protocol / scheme
+ */
+export const removeUrlProtocol = (url) => url.replace(/^\w+:\/?\/?/, '');
+
+/**
+ * Examples
+ *
+ * https://www.gitlab.com/path/ => https://www.gitlab.com/path
+ * https://www.gitlab.com/?query=search => https://www.gitlab.com?query=search
+ * https://www.gitlab.com/#fragment => https://www.gitlab.com#fragment
+ *
+ * @param {String} url
+ * @returns A URL that does not have a path that ends with slash
+ */
+export const removeLastSlashInUrlPath = (url) =>
+  url.replace(/\/$/, '').replace(/\/(\?|#){1}([^/]*)$/, '$1$2');

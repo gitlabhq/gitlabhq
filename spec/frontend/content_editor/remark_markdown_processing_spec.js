@@ -257,7 +257,12 @@ describe('Client side Markdown processing', () => {
       expectedDoc: doc(
         paragraph(
           source('<img src="bar" alt="foo" />'),
-          image({ ...source('<img src="bar" alt="foo" />'), alt: 'foo', src: 'bar' }),
+          image({
+            ...source('<img src="bar" alt="foo" />'),
+            alt: 'foo',
+            canonicalSrc: 'bar',
+            src: 'http://test.host/bar',
+          }),
         ),
       ),
     },
@@ -275,7 +280,12 @@ describe('Client side Markdown processing', () => {
         ),
         paragraph(
           source('<img src="bar" alt="foo" />'),
-          image({ ...source('<img src="bar" alt="foo" />'), alt: 'foo', src: 'bar' }),
+          image({
+            ...source('<img src="bar" alt="foo" />'),
+            alt: 'foo',
+            src: 'http://test.host/bar',
+            canonicalSrc: 'bar',
+          }),
         ),
       ),
     },
@@ -287,7 +297,8 @@ describe('Client side Markdown processing', () => {
           link(
             {
               ...source('[GitLab](https://gitlab.com "Go to GitLab")'),
-              href: 'https://gitlab.com',
+              href: 'https://gitlab.com/',
+              canonicalSrc: 'https://gitlab.com',
               title: 'Go to GitLab',
             },
             'GitLab',
@@ -305,7 +316,8 @@ describe('Client side Markdown processing', () => {
             link(
               {
                 ...source('[GitLab](https://gitlab.com "Go to GitLab")'),
-                href: 'https://gitlab.com',
+                href: 'https://gitlab.com/',
+                canonicalSrc: 'https://gitlab.com',
                 title: 'Go to GitLab',
               },
               'GitLab',
@@ -322,7 +334,8 @@ describe('Client side Markdown processing', () => {
           link(
             {
               ...source('www.commonmark.org'),
-              href: 'http://www.commonmark.org',
+              canonicalSrc: 'http://www.commonmark.org',
+              href: 'http://www.commonmark.org/',
             },
             'www.commonmark.org',
           ),
@@ -338,6 +351,7 @@ describe('Client side Markdown processing', () => {
           link(
             {
               ...source('www.commonmark.org/help'),
+              canonicalSrc: 'http://www.commonmark.org/help',
               href: 'http://www.commonmark.org/help',
             },
             'www.commonmark.org/help',
@@ -355,6 +369,7 @@ describe('Client side Markdown processing', () => {
           link(
             {
               ...source('hello+xyz@mail.example'),
+              canonicalSrc: 'mailto:hello+xyz@mail.example',
               href: 'mailto:hello+xyz@mail.example',
             },
             'hello+xyz@mail.example',
@@ -373,7 +388,8 @@ describe('Client side Markdown processing', () => {
             {
               sourceMapKey: null,
               sourceMarkdown: null,
-              href: 'https://gitlab.com',
+              canonicalSrc: 'https://gitlab.com',
+              href: 'https://gitlab.com/',
             },
             'https://gitlab.com',
           ),
@@ -402,6 +418,7 @@ hard line break`,
           image({
             ...source('![GitLab Logo](https://gitlab.com/logo.png "GitLab Logo")'),
             alt: 'GitLab Logo',
+            canonicalSrc: 'https://gitlab.com/logo.png',
             src: 'https://gitlab.com/logo.png',
             title: 'GitLab Logo',
           }),
@@ -595,7 +612,12 @@ two
             paragraph(
               source('List item with an image ![bar](foo.png)'),
               'List item with an image',
-              image({ ...source('![bar](foo.png)'), alt: 'bar', src: 'foo.png' }),
+              image({
+                ...source('![bar](foo.png)'),
+                alt: 'bar',
+                canonicalSrc: 'foo.png',
+                src: 'http://test.host/foo.png',
+              }),
             ),
           ),
         ),
@@ -944,8 +966,17 @@ Paragraph
         paragraph(
           source('[![moon](moon.jpg)](/uri)'),
           link(
-            { ...source('[![moon](moon.jpg)](/uri)'), href: '/uri' },
-            image({ ...source('![moon](moon.jpg)'), src: 'moon.jpg', alt: 'moon' }),
+            {
+              ...source('[![moon](moon.jpg)](/uri)'),
+              canonicalSrc: '/uri',
+              href: 'http://test.host/uri',
+            },
+            image({
+              ...source('![moon](moon.jpg)'),
+              canonicalSrc: 'moon.jpg',
+              src: 'http://test.host/moon.jpg',
+              alt: 'moon',
+            }),
           ),
         ),
       ),
@@ -975,12 +1006,26 @@ Paragraph
           source('~[moon](moon.jpg) and [sun](sun.jpg)~'),
           strike(
             source('~[moon](moon.jpg) and [sun](sun.jpg)~'),
-            link({ ...source('[moon](moon.jpg)'), href: 'moon.jpg' }, 'moon'),
+            link(
+              {
+                ...source('[moon](moon.jpg)'),
+                canonicalSrc: 'moon.jpg',
+                href: 'http://test.host/moon.jpg',
+              },
+              'moon',
+            ),
           ),
           strike(source('~[moon](moon.jpg) and [sun](sun.jpg)~'), ' and '),
           strike(
             source('~[moon](moon.jpg) and [sun](sun.jpg)~'),
-            link({ ...source('[sun](sun.jpg)'), href: 'sun.jpg' }, 'sun'),
+            link(
+              {
+                ...source('[sun](sun.jpg)'),
+                href: 'http://test.host/sun.jpg',
+                canonicalSrc: 'sun.jpg',
+              },
+              'sun',
+            ),
           ),
         ),
       ),
@@ -1094,7 +1139,12 @@ _world_.
         paragraph(
           source('[GitLab][gitlab-url]'),
           link(
-            { ...source('[GitLab][gitlab-url]'), href: 'https://gitlab.com', title: 'GitLab' },
+            {
+              ...source('[GitLab][gitlab-url]'),
+              href: 'https://gitlab.com/',
+              canonicalSrc: 'https://gitlab.com',
+              title: 'GitLab',
+            },
             'GitLab',
           ),
         ),

@@ -15,7 +15,7 @@ RSpec.describe 'get board lists' do
   let_it_be(:group_label2)   { create(:group_label, group: group, name: 'Testing') }
 
   let(:params)            { '' }
-  let(:board)             { }
+  let(:board)             {}
   let(:confidential)      { false }
   let(:board_parent_type) { board_parent.class.to_s.downcase }
   let(:board_data)        { graphql_data[board_parent_type]['boards']['nodes'][0] }

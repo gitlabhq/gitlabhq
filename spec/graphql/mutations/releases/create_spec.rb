@@ -11,9 +11,9 @@ RSpec.describe Mutations::Releases::Create do
 
   let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
 
-  let(:tag) { 'v1.1.0'}
-  let(:ref) { 'master'}
-  let(:name) { 'Version 1.0'}
+  let(:tag) { 'v1.1.0' }
+  let(:ref) { 'master' }
+  let(:name) { 'Version 1.0' }
   let(:description) { 'The first release :rocket:' }
   let(:released_at) { Time.parse('2018-12-10') }
   let(:milestones) { [milestone_12_3.title, milestone_12_4.title] }

@@ -3145,11 +3145,11 @@
                   {
                     "type": "link",
                     "attrs": {
-                      "href": "bar",
+                      "href": "http://test.host/bar",
                       "target": "_blank",
                       "class": null,
                       "title": null,
-                      "canonicalSrc": null
+                      "canonicalSrc": "bar"
                     }
                   }
                 ],
@@ -3230,11 +3230,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "foo",
+                  "href": "http://test.host/foo",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo"
                 }
               }
             ],
@@ -3748,11 +3748,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "bar",
+                  "href": "http://test.host/bar",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "bar"
                 }
               }
             ],
@@ -3906,11 +3906,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -3947,11 +3947,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "the title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -3988,11 +3988,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "my_(url)",
+                  "href": "http://test.host/my_(url)",
                   "target": "_blank",
                   "class": null,
                   "title": "title (with parens)",
-                  "canonicalSrc": null
+                  "canonicalSrc": "my_(url)"
                 }
               }
             ],
@@ -4029,11 +4029,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "my%20url",
+                  "href": "http://test.host/my%20url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "my%20url"
                 }
               }
             ],
@@ -4070,11 +4070,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "\ntitle\nline1\nline2\n",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -4144,11 +4144,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -4213,7 +4213,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": ""
                 }
               }
             ],
@@ -4274,11 +4274,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url%5Cbar*baz",
+                  "href": "http://test.host/url%5Cbar*baz",
                   "target": "_blank",
                   "class": null,
                   "title": "foo\"bar\\baz",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url%5Cbar*baz"
                 }
               }
             ],
@@ -4301,11 +4301,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "url"
                 }
               }
             ],
@@ -4342,11 +4342,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "first",
+                  "href": "http://test.host/first",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "first"
                 }
               }
             ],
@@ -4411,11 +4411,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -4452,11 +4452,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/%CF%86%CE%BF%CF%85",
+                  "href": "http://test.host/%CF%86%CE%BF%CF%85",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/%CF%86%CE%BF%CF%85"
                 }
               }
             ],
@@ -4655,11 +4655,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -4739,11 +4739,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -4784,11 +4784,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -4853,11 +4853,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/foo-url",
+                  "href": "http://test.host/foo-url",
                   "target": "_blank",
                   "class": null,
                   "title": "foo",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/foo-url"
                 }
               }
             ],
@@ -4873,11 +4873,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/bar-url",
+                  "href": "http://test.host/bar-url",
                   "target": "_blank",
                   "class": null,
                   "title": "bar",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/bar-url"
                 }
               }
             ],
@@ -4893,11 +4893,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/baz-url",
+                  "href": "http://test.host/baz-url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/baz-url"
                 }
               }
             ],
@@ -4920,11 +4920,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -10683,11 +10683,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://example.com?find=%5C*",
+                  "href": "http://example.com/?find=%5C*",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com?find=%5C*"
                 }
               }
             ],
@@ -10719,11 +10719,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/bar*",
+                  "href": "http://test.host/bar*",
                   "target": "_blank",
                   "class": null,
                   "title": "ti*tle",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/bar*"
                 }
               }
             ],
@@ -10746,11 +10746,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/bar*",
+                  "href": "http://test.host/bar*",
                   "target": "_blank",
                   "class": null,
                   "title": "ti*tle",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/bar*"
                 }
               }
             ],
@@ -10905,11 +10905,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/f%C3%B6%C3%B6",
+                  "href": "http://test.host/f%C3%B6%C3%B6",
                   "target": "_blank",
                   "class": null,
                   "title": "föö",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/f%C3%B6%C3%B6"
                 }
               }
             ],
@@ -10932,11 +10932,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/f%C3%B6%C3%B6",
+                  "href": "http://test.host/f%C3%B6%C3%B6",
                   "target": "_blank",
                   "class": null,
                   "title": "föö",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/f%C3%B6%C3%B6"
                 }
               }
             ],
@@ -11466,11 +11466,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "`",
+                  "href": "http://test.host/%60",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "`"
                 }
               }
             ],
@@ -11517,11 +11517,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://foo.bar.%60baz",
+                  "href": "http://foo.bar.`baz/",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar.%60baz"
                 }
               }
             ],
@@ -12673,11 +12673,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               },
               {
@@ -13143,11 +13143,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               },
               {
@@ -13212,11 +13212,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               },
               {
@@ -13571,11 +13571,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               },
               {
@@ -14477,11 +14477,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -14508,11 +14508,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -14536,11 +14536,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "foo",
+              "src": "http://test.host/foo",
               "alt": null,
               "title": "*",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "foo"
             }
           }
         ]
@@ -14662,7 +14662,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar/?q=**"
                 }
               }
             ],
@@ -14693,7 +14693,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar/?q=__"
                 }
               }
             ],
@@ -14764,11 +14764,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -14791,11 +14791,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -14822,7 +14822,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": ""
                 }
               }
             ],
@@ -14849,7 +14849,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": ""
                 }
               }
             ],
@@ -14887,11 +14887,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/my%20uri",
+                  "href": "http://test.host/my%20uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/my%20uri"
                 }
               }
             ],
@@ -14944,11 +14944,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "b)c",
+                  "href": "http://test.host/b)c",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "b)c"
                 }
               }
             ],
@@ -15010,11 +15010,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "(foo)",
+                  "href": "http://test.host/(foo)",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "(foo)"
                 }
               }
             ],
@@ -15037,11 +15037,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "foo(and(bar))",
+                  "href": "http://test.host/foo(and(bar))",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo(and(bar))"
                 }
               }
             ],
@@ -15064,11 +15064,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "foo(and(bar)",
+                  "href": "http://test.host/foo(and(bar)",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo(and(bar)"
                 }
               }
             ],
@@ -15091,11 +15091,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "foo(and(bar)",
+                  "href": "http://test.host/foo(and(bar)",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo(and(bar)"
                 }
               }
             ],
@@ -15118,11 +15118,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "foo):",
+                  "href": "http://test.host/foo):",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo):"
                 }
               }
             ],
@@ -15145,11 +15145,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "#fragment",
+                  "href": "http://test.host/#fragment",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "#fragment"
                 }
               }
             ],
@@ -15166,11 +15166,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://example.com#fragment",
+                  "href": "http://example.com/#fragment",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com#fragment"
                 }
               }
             ],
@@ -15187,11 +15187,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://example.com?foo=3#frag",
+                  "href": "http://example.com/?foo=3#frag",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com?foo=3#frag"
                 }
               }
             ],
@@ -15214,11 +15214,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "foo%5Cbar",
+                  "href": "http://test.host/foo%5Cbar",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo%5Cbar"
                 }
               }
             ],
@@ -15241,11 +15241,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "foo%20b%C3%A4",
+                  "href": "http://test.host/foo%20b%C3%A4",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "foo%20b%C3%A4"
                 }
               }
             ],
@@ -15268,11 +15268,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "%22title%22",
+                  "href": "http://test.host/%22title%22",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "%22title%22"
                 }
               }
             ],
@@ -15295,11 +15295,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -15322,11 +15322,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title \"\"",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -15349,11 +15349,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url%C2%A0%22title%22",
+                  "href": "http://test.host/url%C2%A0%22title%22",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url%C2%A0%22title%22"
                 }
               }
             ],
@@ -15391,11 +15391,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title \"and\" title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -15418,11 +15418,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -15460,11 +15460,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -15506,11 +15506,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -15533,11 +15533,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -15560,11 +15560,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -15576,11 +15576,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               },
               {
@@ -15595,11 +15595,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               },
               {
@@ -15617,11 +15617,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               },
               {
@@ -15650,21 +15650,21 @@
           {
             "type": "image",
             "attrs": {
-              "src": "moon.jpg",
+              "src": "http://test.host/moon.jpg",
               "alt": "moon",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "moon.jpg"
             },
             "marks": [
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ]
@@ -15690,11 +15690,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -15734,11 +15734,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               },
               {
@@ -15774,11 +15774,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "uri3",
+              "src": "http://test.host/uri3",
               "alt": "[foo](uri2)",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "uri3"
             }
           }
         ]
@@ -15802,11 +15802,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -15829,11 +15829,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "baz*",
+                  "href": "http://test.host/baz*",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "baz*"
                 }
               }
             ],
@@ -15927,7 +15927,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com/?search=%5D(uri)"
                 }
               }
             ],
@@ -15950,11 +15950,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -15991,11 +15991,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -16032,11 +16032,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -16073,11 +16073,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -16089,11 +16089,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               },
               {
@@ -16108,11 +16108,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               },
               {
@@ -16130,11 +16130,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               },
               {
@@ -16177,21 +16177,21 @@
           {
             "type": "image",
             "attrs": {
-              "src": "moon.jpg",
+              "src": "http://test.host/moon.jpg",
               "alt": "moon",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "moon.jpg"
             },
             "marks": [
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ]
@@ -16231,11 +16231,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -16251,11 +16251,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -16305,11 +16305,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               },
               {
@@ -16328,11 +16328,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -16373,11 +16373,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -16414,11 +16414,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -16530,7 +16530,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com/?search=%5D%5Bref%5D"
                 }
               }
             ],
@@ -16567,11 +16567,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -16608,11 +16608,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -16667,11 +16667,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -16698,11 +16698,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -16743,11 +16743,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -16812,11 +16812,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url1",
+                  "href": "http://test.host/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url1"
                 }
               }
             ],
@@ -16940,11 +16940,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -16995,11 +16995,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/uri",
+                  "href": "http://test.host/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/uri"
                 }
               }
             ],
@@ -17070,11 +17070,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17111,11 +17111,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               },
               {
@@ -17130,11 +17130,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17171,11 +17171,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17212,11 +17212,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17257,11 +17257,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17298,11 +17298,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               },
               {
@@ -17317,11 +17317,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17362,11 +17362,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               },
               {
@@ -17381,11 +17381,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17430,11 +17430,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17471,11 +17471,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17512,11 +17512,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17604,11 +17604,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17631,11 +17631,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url2",
+                  "href": "http://test.host/url2",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url2"
                 }
               }
             ],
@@ -17686,11 +17686,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url1",
+                  "href": "http://test.host/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url1"
                 }
               }
             ],
@@ -17731,7 +17731,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": ""
                 }
               }
             ],
@@ -17768,11 +17768,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url1",
+                  "href": "http://test.host/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url1"
                 }
               }
             ],
@@ -17817,11 +17817,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -17858,11 +17858,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url2",
+                  "href": "http://test.host/url2",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url2"
                 }
               }
             ],
@@ -17874,11 +17874,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url1",
+                  "href": "http://test.host/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url1"
                 }
               }
             ],
@@ -17933,11 +17933,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url1",
+                  "href": "http://test.host/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url1"
                 }
               }
             ],
@@ -17985,11 +17985,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18006,11 +18006,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "train.jpg",
+              "src": "http://test.host/train.jpg",
               "alt": "foo bar",
               "title": "train & tracks",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "train.jpg"
             }
           }
         ]
@@ -18041,11 +18041,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url2",
+              "src": "http://test.host/url2",
               "alt": "foo bar",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url2"
             }
           }
         ]
@@ -18062,11 +18062,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url2",
+              "src": "http://test.host/url2",
               "alt": "foo bar",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url2"
             }
           }
         ]
@@ -18083,11 +18083,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "train.jpg",
+              "src": "http://test.host/train.jpg",
               "alt": "foo bar",
               "title": "train & tracks",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "train.jpg"
             }
           }
         ]
@@ -18118,11 +18118,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "train.jpg",
+              "src": "http://test.host/train.jpg",
               "alt": "foo bar",
               "title": "train & tracks",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "train.jpg"
             }
           }
         ]
@@ -18153,11 +18153,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "train.jpg",
+              "src": "http://test.host/train.jpg",
               "alt": "foo",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "train.jpg"
             }
           }
         ]
@@ -18178,11 +18178,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/path/to/train.jpg",
+              "src": "http://test.host/path/to/train.jpg",
               "alt": "foo bar",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/path/to/train.jpg"
             }
           }
         ]
@@ -18199,11 +18199,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "url",
+              "src": "http://test.host/url",
               "alt": "foo",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "url"
             }
           }
         ]
@@ -18220,11 +18220,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18241,11 +18241,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "foo",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18276,11 +18276,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "foo",
               "title": null,
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18311,11 +18311,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18346,11 +18346,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "foo bar",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18381,11 +18381,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "Foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18416,11 +18416,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           },
           {
@@ -18455,11 +18455,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18490,11 +18490,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "foo bar",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18549,11 +18549,11 @@
           {
             "type": "image",
             "attrs": {
-              "src": "/url",
+              "src": "http://test.host/url",
               "alt": "Foo",
               "title": "title",
               "uploading": false,
-              "canonicalSrc": null
+              "canonicalSrc": "/url"
             }
           }
         ]
@@ -18620,11 +18620,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "/url",
+                  "href": "http://test.host/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
-                  "canonicalSrc": null
+                  "canonicalSrc": "/url"
                 }
               }
             ],
@@ -18661,11 +18661,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://foo.bar.baz",
+                  "href": "http://foo.bar.baz/",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar.baz"
                 }
               }
             ],
@@ -18692,7 +18692,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar.baz/test?q=hello&id=22&boolean"
                 }
               }
             ],
@@ -18719,7 +18719,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "irc://foo.bar:2233/baz"
                 }
               }
             ],
@@ -18742,11 +18742,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "MAILTO:FOO@BAR.BAZ",
+                  "href": "mailto:FOO@BAR.BAZ",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "MAILTO:FOO@BAR.BAZ"
                 }
               }
             ],
@@ -18773,7 +18773,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "a+b+c:d"
                 }
               }
             ],
@@ -18800,7 +18800,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "made-up-scheme://foo,bar"
                 }
               }
             ],
@@ -18827,7 +18827,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://../"
                 }
               }
             ],
@@ -18854,7 +18854,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "localhost:5001/foo"
                 }
               }
             ],
@@ -18885,7 +18885,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar/baz"
                 }
               }
             ],
@@ -18916,7 +18916,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com/%5C%5B%5C"
                 }
               }
             ],
@@ -18943,7 +18943,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo@bar.example.com"
                 }
               }
             ],
@@ -18970,7 +18970,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo+special@Bar.baz-bar0.com"
                 }
               }
             ],
@@ -19001,7 +19001,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo+@bar.example.com"
                 }
               }
             ],
@@ -19047,11 +19047,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://foo.bar",
+                  "href": "http://foo.bar/",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://foo.bar"
                 }
               }
             ],
@@ -19108,11 +19108,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://example.com",
+                  "href": "http://example.com/",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://example.com"
                 }
               }
             ],
@@ -19139,7 +19139,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo@bar.example.com"
                 }
               }
             ],
@@ -19162,11 +19162,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://www.commonmark.org",
+                  "href": "http://www.commonmark.org/",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org"
                 }
               }
             ],
@@ -19197,7 +19197,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org/help"
                 }
               }
             ],
@@ -19228,11 +19228,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://www.commonmark.org",
+                  "href": "http://www.commonmark.org/",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org"
                 }
               }
             ],
@@ -19261,7 +19261,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org/a.b"
                 }
               }
             ],
@@ -19292,7 +19292,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=Markup+(business)"
                 }
               }
             ],
@@ -19313,7 +19313,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=Markup+(business)"
                 }
               }
             ],
@@ -19342,7 +19342,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=Markup+(business)"
                 }
               }
             ],
@@ -19371,7 +19371,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=Markup+(business)"
                 }
               }
             ],
@@ -19398,7 +19398,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=(business))+ok"
                 }
               }
             ],
@@ -19425,7 +19425,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=commonmark&hl=en"
                 }
               }
             ],
@@ -19446,7 +19446,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.google.com/search?q=commonmark"
                 }
               }
             ],
@@ -19477,7 +19477,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://www.commonmark.org/he"
                 }
               }
             ],
@@ -19504,11 +19504,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://commonmark.org",
+                  "href": "http://commonmark.org/",
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "http://commonmark.org"
                 }
               }
             ],
@@ -19533,7 +19533,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "https://encrypted.google.com/search?q=Markup+(business)"
                 }
               }
             ],
@@ -19573,7 +19573,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:foo@bar.baz"
                 }
               }
             ],
@@ -19604,7 +19604,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:hello+xyz@mail.example"
                 }
               }
             ],
@@ -19635,7 +19635,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:a.b-c_d@a.b"
                 }
               }
             ],
@@ -19656,7 +19656,7 @@
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": null
+                  "canonicalSrc": "mailto:a.b-c_d@a.b"
                 }
               }
             ],

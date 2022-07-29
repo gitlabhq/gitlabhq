@@ -61,7 +61,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks do
         end
 
         context 'when job has been updated recently' do
-          it { expect { patch_the_trace }.not_to change { job.updated_at }}
+          it { expect { patch_the_trace }.not_to change { job.updated_at } }
 
           it "changes the job's trace" do
             patch_the_trace
@@ -70,7 +70,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks do
           end
 
           context 'when Runner makes a force-patch' do
-            it { expect { force_patch_the_trace }.not_to change { job.updated_at }}
+            it { expect { force_patch_the_trace }.not_to change { job.updated_at } }
 
             it "doesn't change the build.trace" do
               force_patch_the_trace

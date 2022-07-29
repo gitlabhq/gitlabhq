@@ -1093,7 +1093,7 @@ RSpec.describe API::Projects do
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
         expect { post api('/projects', user2), params: { name: 'foo' } }
-          .to change {Project.count}.by(0)
+          .to change { Project.count }.by(0)
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end

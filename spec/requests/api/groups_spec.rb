@@ -864,7 +864,7 @@ RSpec.describe API::Groups do
   end
 
   describe 'PUT /groups/:id' do
-    let(:new_group_name) { 'New Group'}
+    let(:new_group_name) { 'New Group' }
     let(:file_path) { 'spec/fixtures/dk.png' }
 
     it_behaves_like 'group avatar upload' do

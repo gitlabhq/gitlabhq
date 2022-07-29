@@ -59,7 +59,7 @@ RSpec.describe API::Ci::SecureFiles do
 
           expect do
             post api("/projects/#{project.id}/secure_files", maintainer), params: file_params
-          end.not_to change {project.secure_files.count}
+          end.not_to change { project.secure_files.count }
 
           expect(response).to have_gitlab_http_status(:service_unavailable)
         end
@@ -78,7 +78,7 @@ RSpec.describe API::Ci::SecureFiles do
         it 'returns a 201 when uploading a file when the ci_secure_files_read_only feature flag is disabled' do
           expect do
             post api("/projects/#{project.id}/secure_files", maintainer), params: file_params
-          end.to change {project.secure_files.count}.by(1)
+          end.to change { project.secure_files.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
         end
@@ -249,7 +249,7 @@ RSpec.describe API::Ci::SecureFiles do
       it 'creates a secure file' do
         expect do
           post api("/projects/#{project.id}/secure_files", maintainer), params: file_params
-        end.to change {project.secure_files.count}.by(1)
+        end.to change { project.secure_files.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq('upload-keystore.jks')

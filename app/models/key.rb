@@ -40,6 +40,7 @@ class Key < ApplicationRecord
   after_destroy :refresh_user_cache
 
   alias_attribute :fingerprint_md5, :fingerprint
+  alias_attribute :name, :title
 
   scope :preload_users, -> { preload(:user) }
   scope :for_user, -> (user) { where(user: user) }

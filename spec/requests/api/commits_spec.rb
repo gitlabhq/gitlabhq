@@ -988,8 +988,8 @@ RSpec.describe API::Commits do
       it 'returns all refs with no scope' do
         get api(route, current_user), params: { per_page: 100 }
 
-        refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
-        refs.concat(project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]})
+        refs = project.repository.branch_names_contains(commit_id).map { |name| ['branch', name] }
+        refs.concat(project.repository.tag_names_contains(commit_id).map { |name| ['tag', name] })
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_limited_pagination_headers
@@ -1000,8 +1000,8 @@ RSpec.describe API::Commits do
       it 'returns all refs' do
         get api(route, current_user), params: { type: 'all', per_page: 100 }
 
-        refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
-        refs.concat(project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]})
+        refs = project.repository.branch_names_contains(commit_id).map { |name| ['branch', name] }
+        refs.concat(project.repository.tag_names_contains(commit_id).map { |name| ['tag', name] })
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
@@ -1010,7 +1010,7 @@ RSpec.describe API::Commits do
       it 'returns the branch refs' do
         get api(route, current_user), params: { type: 'branch', per_page: 100 }
 
-        refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
+        refs = project.repository.branch_names_contains(commit_id).map { |name| ['branch', name] }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
@@ -1019,7 +1019,7 @@ RSpec.describe API::Commits do
       it 'returns the tag refs' do
         get api(route, current_user), params: { type: 'tag', per_page: 100 }
 
-        refs = project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]}
+        refs = project.repository.tag_names_contains(commit_id).map { |name| ['tag', name] }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
@@ -2036,7 +2036,7 @@ RSpec.describe API::Commits do
     context 'unsigned commit' do
       it_behaves_like '404 response' do
         let(:request) { get api(route, current_user) }
-        let(:message) { '404 Signature Not Found'}
+        let(:message) { '404 Signature Not Found' }
       end
     end
 

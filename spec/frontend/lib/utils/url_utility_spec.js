@@ -1062,4 +1062,28 @@ describe('URL utility', () => {
       expect(urlUtils.PROMO_URL).toBe(url);
     });
   });
+
+  describe('removeUrlProtocol', () => {
+    it.each`
+      input                   | output
+      ${'http://gitlab.com'}  | ${'gitlab.com'}
+      ${'https://gitlab.com'} | ${'gitlab.com'}
+      ${'foo:bar.com'}        | ${'bar.com'}
+      ${'gitlab.com'}         | ${'gitlab.com'}
+    `('transforms $input to $output', ({ input, output }) => {
+      expect(urlUtils.removeUrlProtocol(input)).toBe(output);
+    });
+  });
+
+  describe('removeLastSlashInUrlPath', () => {
+    it.each`
+      input                                     | output
+      ${'https://www.gitlab.com/path/'}         | ${'https://www.gitlab.com/path'}
+      ${'https://www.gitlab.com/?query=search'} | ${'https://www.gitlab.com?query=search'}
+      ${'https://www.gitlab.com/#fragment'}     | ${'https://www.gitlab.com#fragment'}
+      ${'https://www.gitlab.com/hello'}         | ${'https://www.gitlab.com/hello'}
+    `('transforms $input to $output', ({ input, output }) => {
+      expect(urlUtils.removeLastSlashInUrlPath(input)).toBe(output);
+    });
+  });
 });

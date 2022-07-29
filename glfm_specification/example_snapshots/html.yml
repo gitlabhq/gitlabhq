@@ -1682,7 +1682,7 @@
   static: |-
     <div><a href="bar">*foo*</a></div>
   wysiwyg: |-
-    <div><p><a target="_blank" rel="noopener noreferrer nofollow" href="bar">*foo*</a></p></div>
+    <div><p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/bar" canonicalsrc="bar">*foo*</a></p></div>
 04_06__leaf_blocks__html_blocks__013:
   canonical: |
     <table><tr><td>
@@ -1723,7 +1723,7 @@
     *bar*
     </a>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="foo">
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/foo" canonicalsrc="foo">
     *bar*
     </a></p>
 04_06__leaf_blocks__html_blocks__016:
@@ -2065,7 +2065,7 @@
     baz</a></p>
   wysiwyg: |-
     <p>Foo
-    <a target="_blank" rel="noopener noreferrer nofollow" href="bar">
+    <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/bar" canonicalsrc="bar">
     baz</a></p>
 04_06__leaf_blocks__html_blocks__040:
   canonical: |
@@ -2145,7 +2145,7 @@
     <p data-sourcepos="3:1-3:5" dir="auto"><a href="/url" title="title">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url "title"</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__002:
   canonical: |
     <p><a href="/url" title="the title">foo</a></p>
@@ -2153,7 +2153,7 @@
     <p data-sourcepos="5:1-5:5" dir="auto"><a href="/url" title="the title">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url "the title"</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="the title">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="the title" canonicalsrc="/url">foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__003:
   canonical: |
     <p><a href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
@@ -2161,7 +2161,7 @@
     <p data-sourcepos="3:1-3:11" dir="auto"><a href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
   wysiwyg: |-
     <pre>[foo*bar\]]: my_(url) "title (with parens)"</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/my_(url)" title="title (with parens)" canonicalsrc="my_(url)">Foo*bar]</a></p>
 04_07__leaf_blocks__link_reference_definitions__004:
   canonical: |
     <p><a href="my%20url" title="title">Foo bar</a></p>
@@ -2169,7 +2169,7 @@
     <p data-sourcepos="5:1-5:9" dir="auto"><a href="my%20url" title="title">Foo bar</a></p>
   wysiwyg: |-
     <pre>[foo bar]: my url "title"</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="my%20url" title="title">Foo bar</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/my%20url" title="title" canonicalsrc="my%20url">Foo bar</a></p>
 04_07__leaf_blocks__link_reference_definitions__005:
   canonical: |
     <p><a href="/url" title="
@@ -2189,11 +2189,11 @@
     line1
     line2
     "</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="
     title
     line1
     line2
-    ">foo</a></p>
+    " canonicalsrc="/url">foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__006:
   canonical: |
     <p>[foo]: /url 'title</p>
@@ -2214,7 +2214,7 @@
     <p data-sourcepos="4:1-4:5" dir="auto"><a href="/url">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__008:
   canonical: |
     <p>[foo]:</p>
@@ -2232,7 +2232,7 @@
     <p data-sourcepos="3:1-3:5" dir="auto"><a href="">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: </pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="" canonicalsrc="">foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__010:
   canonical: |
     <p>[foo]: <bar>(baz)</p>
@@ -2250,14 +2250,14 @@
     <p data-sourcepos="3:1-3:5" dir="auto"><a href="/url%5Cbar*baz" title='foo"bar\baz'>foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url\bar*baz "foo"bar\baz"</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url%5Cbar*baz" title="foo&quot;bar\baz">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url%5Cbar*baz" title="foo&quot;bar\baz" canonicalsrc="/url%5Cbar*baz">foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__012:
   canonical: |
     <p><a href="url">foo</a></p>
   static: |-
     <p data-sourcepos="1:1-1:5" dir="auto"><a href="url">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="url">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="url">foo</a></p>
     <pre>[foo]: url</pre>
 04_07__leaf_blocks__link_reference_definitions__013:
   canonical: |
@@ -2265,7 +2265,7 @@
   static: |-
     <p data-sourcepos="1:1-1:5" dir="auto"><a href="first">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="first">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/first" canonicalsrc="first">foo</a></p>
     <pre>[foo]: first</pre>
     <pre>[foo]: second</pre>
 04_07__leaf_blocks__link_reference_definitions__014:
@@ -2275,7 +2275,7 @@
     <p data-sourcepos="3:1-3:5" dir="auto"><a href="/url">Foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">Foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__015:
   canonical: |
     <p><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
@@ -2283,7 +2283,7 @@
     <p data-sourcepos="3:1-3:8" dir="auto"><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
   wysiwyg: |-
     <pre>[αγω]: /φου</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/%CF%86%CE%BF%CF%85">αγω</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/%CF%86%CE%BF%CF%85" canonicalsrc="/%CF%86%CE%BF%CF%85">αγω</a></p>
 04_07__leaf_blocks__link_reference_definitions__016:
   canonical: ""
   static: ""
@@ -2367,7 +2367,7 @@
     <p data-sourcepos="3:3-3:5">bar</p>
     </blockquote>
   wysiwyg: |-
-    <h1><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Foo</a></h1>
+    <h1><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">Foo</a></h1>
     <pre>[foo]: /url</pre>
     <blockquote multiline="false"><p>bar</p></blockquote>
 04_07__leaf_blocks__link_reference_definitions__024:
@@ -2381,7 +2381,7 @@
   wysiwyg: |-
     <pre>[foo]: /url</pre>
     <h1>bar</h1>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__025:
   canonical: |
     <p>===
@@ -2392,7 +2392,7 @@
   wysiwyg: |-
     <pre>[foo]: /url</pre>
     <p>===
-    <a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
+    <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">foo</a></p>
 04_07__leaf_blocks__link_reference_definitions__026:
   canonical: |
     <p><a href="/foo-url" title="foo">foo</a>,
@@ -2406,9 +2406,9 @@
     <pre>[foo]: /foo-url "foo"</pre>
     <pre>[bar]: /bar-url "bar"</pre>
     <pre>[baz]: /baz-url</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/foo-url" title="foo">foo</a>,
-    <a target="_blank" rel="noopener noreferrer nofollow" href="/bar-url" title="bar">bar</a>,
-    <a target="_blank" rel="noopener noreferrer nofollow" href="/baz-url">baz</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/foo-url" title="foo" canonicalsrc="/foo-url">foo</a>,
+    <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/bar-url" title="bar" canonicalsrc="/bar-url">bar</a>,
+    <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/baz-url" canonicalsrc="/baz-url">baz</a></p>
 04_07__leaf_blocks__link_reference_definitions__027:
   canonical: |
     <p><a href="/url">foo</a></p>
@@ -2419,7 +2419,7 @@
     <blockquote data-sourcepos="3:1-3:13" dir="auto">
     </blockquote>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">foo</a></p>
     <blockquote multiline="false"><pre>[foo]: /url</pre></blockquote>
 04_07__leaf_blocks__link_reference_definitions__028:
   canonical: ""
@@ -4883,7 +4883,7 @@
   static: |-
     <p data-sourcepos="1:1-1:28" dir="auto"><a href="http://example.com?find=%5C*" rel="nofollow noreferrer noopener" target="_blank">http://example.com?find=\*</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/?find=%5C*" canonicalsrc="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
 06_02__inlines__backslash_escapes__010:
   canonical: |
     <a href="/bar\/)">
@@ -4897,14 +4897,14 @@
   static: |-
     <p data-sourcepos="1:1-1:23" dir="auto"><a href="/bar*" title="ti*tle">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/bar*" title="ti*tle">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/bar*" title="ti*tle" canonicalsrc="/bar*">foo</a></p>
 06_02__inlines__backslash_escapes__012:
   canonical: |
     <p><a href="/bar*" title="ti*tle">foo</a></p>
   static: |-
     <p data-sourcepos="1:1-1:5" dir="auto"><a href="/bar*" title="ti*tle">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/bar*" title="ti*tle">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/bar*" title="ti*tle" canonicalsrc="/bar*">foo</a></p>
     <pre>[foo]: /bar* "ti*tle"</pre>
 06_02__inlines__backslash_escapes__013:
   canonical: |
@@ -4987,14 +4987,14 @@
   static: |-
     <p data-sourcepos="1:1-1:37" dir="auto"><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/f%C3%B6%C3%B6" title="föö" canonicalsrc="/f%C3%B6%C3%B6">foo</a></p>
 06_03__inlines__entity_and_numeric_character_references__009:
   canonical: |
     <p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
   static: |-
     <p data-sourcepos="1:1-1:5" dir="auto"><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/f%C3%B6%C3%B6" title="föö" canonicalsrc="/f%C3%B6%C3%B6">foo</a></p>
     <pre>[foo]: /föö "föö"</pre>
 06_03__inlines__entity_and_numeric_character_references__010:
   canonical: |
@@ -5193,7 +5193,7 @@
   static: |-
     <p data-sourcepos="1:1-1:13" dir="auto"><a href="%60" rel="nofollow noreferrer noopener" target="_blank">`</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="`">`</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/%60" canonicalsrc="`">`</a></p>
 06_04__inlines__code_spans__018:
   canonical: |
     <p><code>&lt;http://foo.bar.</code>baz&gt;`</p>
@@ -5207,7 +5207,7 @@
   static: |-
     <p data-sourcepos="1:1-1:22" dir="auto"><a href="http://foo.bar.%60baz" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar.`baz</a>`</p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar.`baz/" canonicalsrc="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
 06_04__inlines__code_spans__020:
   canonical: |
     <p>```foo``</p>
@@ -5615,7 +5615,7 @@
   static: |-
     <p data-sourcepos="1:1-1:17" dir="auto"><em>foo <a href="/url">bar</a></em></p>
   wysiwyg: |-
-    <p><em>foo </em><a target="_blank" rel="noopener noreferrer nofollow" href="/url"><em>bar</em></a></p>
+    <p><em>foo </em><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url"><em>bar</em></a></p>
 06_05__inlines__emphasis_and_strong_emphasis__055:
   canonical: |
     <p><em>foo
@@ -5723,7 +5723,7 @@
   static: |-
     <p data-sourcepos="1:1-1:19" dir="auto"><em>foo <a href="/url"><em>bar</em></a></em></p>
   wysiwyg: |-
-    <p><em>foo </em><a target="_blank" rel="noopener noreferrer nofollow" href="/url"><em>bar</em></a></p>
+    <p><em>foo </em><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url"><em>bar</em></a></p>
 06_05__inlines__emphasis_and_strong_emphasis__070:
   canonical: |
     <p>** is not an empty emphasis</p>
@@ -5744,7 +5744,7 @@
   static: |-
     <p data-sourcepos="1:1-1:19" dir="auto"><strong>foo <a href="/url">bar</a></strong></p>
   wysiwyg: |-
-    <p><strong>foo </strong><a target="_blank" rel="noopener noreferrer nofollow" href="/url"><strong>bar</strong></a></p>
+    <p><strong>foo </strong><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url"><strong>bar</strong></a></p>
 06_05__inlines__emphasis_and_strong_emphasis__073:
   canonical: |
     <p><strong>foo
@@ -5827,7 +5827,7 @@
   static: |-
     <p data-sourcepos="1:1-1:21" dir="auto"><strong>foo <a href="/url"><em>bar</em></a></strong></p>
   wysiwyg: |-
-    <p><strong>foo </strong><a target="_blank" rel="noopener noreferrer nofollow" href="/url"><strong><em>bar</em></strong></a></p>
+    <p><strong>foo </strong><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url"><strong><em>bar</em></strong></a></p>
 06_05__inlines__emphasis_and_strong_emphasis__084:
   canonical: |
     <p>__ is not an empty emphasis</p>
@@ -6107,21 +6107,21 @@
   static: |-
     <p data-sourcepos="1:1-1:13" dir="auto">*<a href="/url">bar*</a></p>
   wysiwyg: |-
-    <p>*<a target="_blank" rel="noopener noreferrer nofollow" href="/url">bar*</a></p>
+    <p>*<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">bar*</a></p>
 06_05__inlines__emphasis_and_strong_emphasis__124:
   canonical: |
     <p>_foo <a href="/url">bar_</a></p>
   static: |-
     <p data-sourcepos="1:1-1:17" dir="auto">_foo <a href="/url">bar_</a></p>
   wysiwyg: |-
-    <p>_foo <a target="_blank" rel="noopener noreferrer nofollow" href="/url">bar_</a></p>
+    <p>_foo <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">bar_</a></p>
 06_05__inlines__emphasis_and_strong_emphasis__125:
   canonical: |
     <p>*<img src="foo" title="*"/></p>
   static: |-
     <p data-sourcepos="1:1-1:27" dir="auto">*<a class="no-attachment-icon" href="foo" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" title="*" decoding="async" class="lazy" data-src="foo"></a></p>
   wysiwyg: |-
-    <p>*<img src="foo" title="*"></p>
+    <p>*<img src="http://test.host/foo" title="*" data-canonical-src="foo"></p>
 06_05__inlines__emphasis_and_strong_emphasis__126:
   canonical: |
     <p>**<a href="**"></p>
@@ -6156,14 +6156,14 @@
   static: |-
     <p data-sourcepos="1:1-1:25" dir="auto">**a<a href="http://foo.bar/?q=**" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar/?q=**</a></p>
   wysiwyg: |-
-    <p>**a<a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar/?q=**">http://foo.bar/?q=**</a></p>
+    <p>**a<a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar/?q=**" canonicalsrc="http://foo.bar/?q=**">http://foo.bar/?q=**</a></p>
 06_05__inlines__emphasis_and_strong_emphasis__131:
   canonical: |
     <p>__a<a href="http://foo.bar/?q=__">http://foo.bar/?q=__</a></p>
   static: |-
     <p data-sourcepos="1:1-1:25" dir="auto">__a<a href="http://foo.bar/?q=__" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar/?q=__</a></p>
   wysiwyg: |-
-    <p>__a<a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar/?q=__">http://foo.bar/?q=__</a></p>
+    <p>__a<a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar/?q=__" canonicalsrc="http://foo.bar/?q=__">http://foo.bar/?q=__</a></p>
 06_06__inlines__strikethrough_extension__001:
   canonical: |
     <p><del>Hi</del> Hello, world!</p>
@@ -6187,28 +6187,28 @@
   static: |-
     <p data-sourcepos="1:1-1:20" dir="auto"><a href="/uri" title="title">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri" title="title">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" title="title" canonicalsrc="/uri">link</a></p>
 06_07__inlines__links__002:
   canonical: |
     <p><a href="/uri">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:12" dir="auto"><a href="/uri">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">link</a></p>
 06_07__inlines__links__003:
   canonical: |
     <p><a href="">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:8" dir="auto"><a href="">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="" canonicalsrc="">link</a></p>
 06_07__inlines__links__004:
   canonical: |
     <p><a href="">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:10" dir="auto"><a href="">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="" canonicalsrc="">link</a></p>
 06_07__inlines__links__005:
   canonical: |
     <p>[link](/my uri)</p>
@@ -6222,7 +6222,7 @@
   static: |-
     <p data-sourcepos="1:1-1:17" dir="auto"><a href="/my%20uri">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/my%20uri">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/my%20uri" canonicalsrc="/my%20uri">link</a></p>
 06_07__inlines__links__007:
   canonical: |
     <p>[link](foo
@@ -6247,7 +6247,7 @@
   static: |-
     <p data-sourcepos="1:1-1:10" dir="auto"><a href="b)c">a</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="b)c">a</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/b)c" canonicalsrc="b)c">a</a></p>
 06_07__inlines__links__010:
   canonical: |
     <p>[link](&lt;foo&gt;)</p>
@@ -6274,35 +6274,35 @@
   static: |-
     <p data-sourcepos="1:1-1:15" dir="auto"><a href="(foo)">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="(foo)">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/(foo)" canonicalsrc="(foo)">link</a></p>
 06_07__inlines__links__013:
   canonical: |
     <p><a href="foo(and(bar))">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:21" dir="auto"><a href="foo(and(bar))">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="foo(and(bar))">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/foo(and(bar))" canonicalsrc="foo(and(bar))">link</a></p>
 06_07__inlines__links__014:
   canonical: |
     <p><a href="foo(and(bar)">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:23" dir="auto"><a href="foo(and(bar)">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="foo(and(bar)">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/foo(and(bar)" canonicalsrc="foo(and(bar)">link</a></p>
 06_07__inlines__links__015:
   canonical: |
     <p><a href="foo(and(bar)">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:22" dir="auto"><a href="foo(and(bar)">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="foo(and(bar)">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/foo(and(bar)" canonicalsrc="foo(and(bar)">link</a></p>
 06_07__inlines__links__016:
   canonical: |
     <p><a href="foo):">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:15" dir="auto"><a>link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="foo):">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/foo):" canonicalsrc="foo):">link</a></p>
 06_07__inlines__links__017:
   canonical: |
     <p><a href="#fragment">link</a></p>
@@ -6313,30 +6313,30 @@
     <p data-sourcepos="3:1-3:35" dir="auto"><a href="http://example.com#fragment" rel="nofollow noreferrer noopener" target="_blank">link</a></p>
     <p data-sourcepos="5:1-5:37" dir="auto"><a href="http://example.com?foo=3#frag" rel="nofollow noreferrer noopener" target="_blank">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="#fragment">link</a></p>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com#fragment">link</a></p>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com?foo=3#frag">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/#fragment" canonicalsrc="#fragment">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/#fragment" canonicalsrc="http://example.com#fragment">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/?foo=3#frag" canonicalsrc="http://example.com?foo=3#frag">link</a></p>
 06_07__inlines__links__018:
   canonical: |
     <p><a href="foo%5Cbar">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:15" dir="auto"><a href="foo%5Cbar">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="foo%5Cbar">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/foo%5Cbar" canonicalsrc="foo%5Cbar">link</a></p>
 06_07__inlines__links__019:
   canonical: |
     <p><a href="foo%20b%C3%A4">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:21" dir="auto"><a href="foo%20b%C3%A4">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="foo%20b%C3%A4">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/foo%20b%C3%A4" canonicalsrc="foo%20b%C3%A4">link</a></p>
 06_07__inlines__links__020:
   canonical: |
     <p><a href="%22title%22">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:15" dir="auto"><a href="%22title%22">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="%22title%22">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/%22title%22" canonicalsrc="%22title%22">link</a></p>
 06_07__inlines__links__021:
   canonical: |
     <p><a href="/url" title="title">link</a>
@@ -6347,21 +6347,21 @@
     <a href="/url" title="title">link</a>
     <a href="/url" title="title">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">linklinklink</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">linklinklink</a></p>
 06_07__inlines__links__022:
   canonical: |
     <p><a href="/url" title="title &quot;&quot;">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:29" dir="auto"><a href="/url" title='title ""'>link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title &quot;&quot;">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title &quot;&quot;" canonicalsrc="/url">link</a></p>
 06_07__inlines__links__023:
   canonical: |
     <p><a href="/url%C2%A0%22title%22">link</a></p>
   static: |-
     <p data-sourcepos="1:1-1:21" dir="auto"><a href="/url%C2%A0%22title%22">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url%C2%A0%22title%22">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url%C2%A0%22title%22" canonicalsrc="/url%C2%A0%22title%22">link</a></p>
 06_07__inlines__links__024:
   canonical: |
     <p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>
@@ -6375,14 +6375,14 @@
   static: |-
     <p data-sourcepos="1:1-1:32" dir="auto"><a href="/url" title='title "and" title'>link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title &quot;and&quot; title">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title &quot;and&quot; title" canonicalsrc="/url">link</a></p>
 06_07__inlines__links__026:
   canonical: |
     <p><a href="/uri" title="title">link</a></p>
   static: |-
     <p data-sourcepos="1:1-2:12" dir="auto"><a href="/uri" title="title">link</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri" title="title">link</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" title="title" canonicalsrc="/uri">link</a></p>
 06_07__inlines__links__027:
   canonical: |
     <p>[link] (/uri)</p>
@@ -6396,7 +6396,7 @@
   static: |-
     <p data-sourcepos="1:1-1:24" dir="auto"><a href="/uri">link [foo [bar]]</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link [foo [bar]]</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">link [foo [bar]]</a></p>
 06_07__inlines__links__029:
   canonical: |
     <p>[link] bar](/uri)</p>
@@ -6410,63 +6410,63 @@
   static: |-
     <p data-sourcepos="1:1-1:17" dir="auto">[link <a href="/uri">bar</a></p>
   wysiwyg: |-
-    <p>[link <a target="_blank" rel="noopener noreferrer nofollow" href="/uri">bar</a></p>
+    <p>[link <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">bar</a></p>
 06_07__inlines__links__031:
   canonical: |
     <p><a href="/uri">link [bar</a></p>
   static: |-
     <p data-sourcepos="1:1-1:18" dir="auto"><a href="/uri">link [bar</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link [bar</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">link [bar</a></p>
 06_07__inlines__links__032:
   canonical: |
     <p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
   static: |-
     <p data-sourcepos="1:1-1:30" dir="auto"><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link <em>foo </em><strong><em>bar<code>#</code></em></strong></a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">link <em>foo </em><strong><em>bar<code>#</code></em></strong></a></p>
 06_07__inlines__links__033:
   canonical: |
     <p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
   static: |-
     <p data-sourcepos="1:1-1:25" dir="auto"><a href="/uri"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="moon" decoding="async" class="lazy" data-src="moon.jpg"></a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri"><img src="moon.jpg" alt="moon"></a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri"><img src="http://test.host/moon.jpg" alt="moon" data-canonical-src="moon.jpg"></a></p>
 06_07__inlines__links__034:
   canonical: |
     <p>[foo <a href="/uri">bar</a>](/uri)</p>
   static: |-
     <p data-sourcepos="1:1-1:23" dir="auto">[foo <a href="/uri">bar</a>](/uri)</p>
   wysiwyg: |-
-    <p>[foo <a target="_blank" rel="noopener noreferrer nofollow" href="/uri">bar</a>](/uri)</p>
+    <p>[foo <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">bar</a>](/uri)</p>
 06_07__inlines__links__035:
   canonical: |
     <p>[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
   static: |-
     <p data-sourcepos="1:1-1:37" dir="auto">[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
   wysiwyg: |-
-    <p>[foo <em>[bar </em><a target="_blank" rel="noopener noreferrer nofollow" href="/uri"><em>baz</em></a><em>](/uri)</em>](/uri)</p>
+    <p>[foo <em>[bar </em><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri"><em>baz</em></a><em>](/uri)</em>](/uri)</p>
 06_07__inlines__links__036:
   canonical: |
     <p><img src="uri3" alt="[foo](uri2)" /></p>
   static: |-
     <p data-sourcepos="1:1-1:28" dir="auto"><a class="no-attachment-icon" href="uri3" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="[foo](uri2)" decoding="async" class="lazy" data-src="uri3"></a></p>
   wysiwyg: |-
-    <p><img src="uri3" alt="[foo](uri2)"></p>
+    <p><img src="http://test.host/uri3" alt="[foo](uri2)" data-canonical-src="uri3"></p>
 06_07__inlines__links__037:
   canonical: |
     <p>*<a href="/uri">foo*</a></p>
   static: |-
     <p data-sourcepos="1:1-1:13" dir="auto">*<a href="/uri">foo*</a></p>
   wysiwyg: |-
-    <p>*<a target="_blank" rel="noopener noreferrer nofollow" href="/uri">foo*</a></p>
+    <p>*<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">foo*</a></p>
 06_07__inlines__links__038:
   canonical: |
     <p><a href="baz*">foo *bar</a></p>
   static: |-
     <p data-sourcepos="1:1-1:16" dir="auto"><a href="baz*">foo *bar</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="baz*">foo *bar</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/baz*" canonicalsrc="baz*">foo *bar</a></p>
 06_07__inlines__links__039:
   canonical: |
     <p><em>foo [bar</em> baz]</p>
@@ -6494,14 +6494,14 @@
   static: |-
     <p data-sourcepos="1:1-1:39" dir="auto">[foo<a href="http://example.com/?search=%5D(uri)" rel="nofollow noreferrer noopener" target="_blank">http://example.com/?search=](uri)</a></p>
   wysiwyg: |-
-    <p>[foo<a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/?search=%5D(uri)">http://example.com/?search=](uri)</a></p>
+    <p>[foo<a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/?search=%5D(uri)" canonicalsrc="http://example.com/?search=%5D(uri)">http://example.com/?search=](uri)</a></p>
 06_07__inlines__links__043:
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
   static: |-
     <p data-sourcepos="1:1-1:10" dir="auto"><a href="/url" title="title">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">foo</a></p>
     <pre>[bar]: /url "title"</pre>
 06_07__inlines__links__044:
   canonical: |
@@ -6509,7 +6509,7 @@
   static: |-
     <p data-sourcepos="1:1-1:23" dir="auto"><a href="/uri">link [foo [bar]]</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link [foo [bar]]</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">link [foo [bar]]</a></p>
     <pre>[ref]: /uri</pre>
 06_07__inlines__links__045:
   canonical: |
@@ -6517,7 +6517,7 @@
   static: |-
     <p data-sourcepos="1:1-1:17" dir="auto"><a href="/uri">link [bar</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link [bar</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">link [bar</a></p>
     <pre>[ref]: /uri</pre>
 06_07__inlines__links__046:
   canonical: |
@@ -6525,7 +6525,7 @@
   static: |-
     <p data-sourcepos="1:1-1:29" dir="auto"><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link <em>foo </em><strong><em>bar<code>#</code></em></strong></a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">link <em>foo </em><strong><em>bar<code>#</code></em></strong></a></p>
     <pre>[ref]: /uri</pre>
 06_07__inlines__links__047:
   canonical: |
@@ -6533,7 +6533,7 @@
   static: |-
     <p data-sourcepos="1:1-1:24" dir="auto"><a href="/uri"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="moon" decoding="async" class="lazy" data-src="moon.jpg"></a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri"><img src="moon.jpg" alt="moon"></a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri"><img src="http://test.host/moon.jpg" alt="moon" data-canonical-src="moon.jpg"></a></p>
     <pre>[ref]: /uri</pre>
 06_07__inlines__links__048:
   canonical: |
@@ -6541,7 +6541,7 @@
   static: |-
     <p data-sourcepos="1:1-1:22" dir="auto">[foo <a href="/uri">bar</a>]<a href="/uri">ref</a></p>
   wysiwyg: |-
-    <p>[foo <a target="_blank" rel="noopener noreferrer nofollow" href="/uri">bar</a>]<a target="_blank" rel="noopener noreferrer nofollow" href="/uri">ref</a></p>
+    <p>[foo <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">bar</a>]<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">ref</a></p>
     <pre>[ref]: /uri</pre>
 06_07__inlines__links__049:
   canonical: |
@@ -6549,7 +6549,7 @@
   static: |-
     <p data-sourcepos="1:1-1:27" dir="auto">[foo <em>bar <a href="/uri">baz</a></em>]<a href="/uri">ref</a></p>
   wysiwyg: |-
-    <p>[foo <em>bar </em><a target="_blank" rel="noopener noreferrer nofollow" href="/uri"><em>baz</em></a>]<a target="_blank" rel="noopener noreferrer nofollow" href="/uri">ref</a></p>
+    <p>[foo <em>bar </em><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri"><em>baz</em></a>]<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">ref</a></p>
     <pre>[ref]: /uri</pre>
 06_07__inlines__links__050:
   canonical: |
@@ -6557,7 +6557,7 @@
   static: |-
     <p data-sourcepos="1:1-1:12" dir="auto">*<a href="/uri">foo*</a></p>
   wysiwyg: |-
-    <p>*<a target="_blank" rel="noopener noreferrer nofollow" href="/uri">foo*</a></p>
+    <p>*<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">foo*</a></p>
     <pre>[ref]: /uri</pre>
 06_07__inlines__links__051:
   canonical: |
@@ -6565,7 +6565,7 @@
   static: |-
     <p data-sourcepos="1:1-1:15" dir="auto"><a href="/uri">foo *bar</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">foo *bar</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">foo *bar</a></p>
     <pre>[ref]: /uri</pre>
 06_07__inlines__links__052:
   canonical: |
@@ -6589,7 +6589,7 @@
   static: |-
     <p data-sourcepos="1:1-1:39" dir="auto">[foo<a href="http://example.com/?search=%5D%5Bref%5D" rel="nofollow noreferrer noopener" target="_blank">http://example.com/?search=][ref]</a></p>
   wysiwyg: |-
-    <p>[foo<a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/?search=%5D%5Bref%5D">http://example.com/?search=][ref]</a></p>
+    <p>[foo<a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/?search=%5D%5Bref%5D" canonicalsrc="http://example.com/?search=%5D%5Bref%5D">http://example.com/?search=][ref]</a></p>
     <pre>[ref]: /uri</pre>
 06_07__inlines__links__055:
   canonical: |
@@ -6597,7 +6597,7 @@
   static: |-
     <p data-sourcepos="1:1-1:10" dir="auto"><a href="/url" title="title">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">foo</a></p>
     <pre>[bar]: /url "title"</pre>
 06_07__inlines__links__056:
   canonical: |
@@ -6605,7 +6605,7 @@
   static: |-
     <p data-sourcepos="1:1-1:47" dir="auto"><a href="/url">Толпой</a> is a Russian word.</p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Толпой</a> is a Russian word.</p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">Толпой</a> is a Russian word.</p>
     <pre>[толпой]: /url</pre>
 06_07__inlines__links__057:
   canonical: |
@@ -6614,14 +6614,14 @@
     <p data-sourcepos="4:1-4:14" dir="auto"><a href="/url">Baz</a></p>
   wysiwyg: |-
     <pre>[foo bar]: /url</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Baz</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">Baz</a></p>
 06_07__inlines__links__058:
   canonical: |
     <p>[foo] <a href="/url" title="title">bar</a></p>
   static: |-
     <p data-sourcepos="1:1-1:11" dir="auto">[foo] <a href="/url" title="title">bar</a></p>
   wysiwyg: |-
-    <p>[foo] <a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">bar</a></p>
+    <p>[foo] <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">bar</a></p>
     <pre>[bar]: /url "title"</pre>
 06_07__inlines__links__059:
   canonical: |
@@ -6632,7 +6632,7 @@
     <a href="/url" title="title">bar</a></p>
   wysiwyg: |-
     <p>[foo]
-    <a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">bar</a></p>
+    <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">bar</a></p>
     <pre>[bar]: /url "title"</pre>
 06_07__inlines__links__060:
   canonical: |
@@ -6642,7 +6642,7 @@
   wysiwyg: |-
     <pre>[foo]: /url1</pre>
     <pre>[foo]: /url2</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url1">bar</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url1" canonicalsrc="/url1">bar</a></p>
 06_07__inlines__links__061:
   canonical: |
     <p>[bar][foo!]</p>
@@ -6687,7 +6687,7 @@
   static: |-
     <p data-sourcepos="1:1-1:12" dir="auto"><a href="/uri">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">foo</a></p>
     <pre>[ref\[]: /uri</pre>
 06_07__inlines__links__066:
   canonical: |
@@ -6696,7 +6696,7 @@
     <p data-sourcepos="3:1-3:7" dir="auto"><a href="/uri">bar\</a></p>
   wysiwyg: |-
     <pre>[bar\\]: /uri</pre>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">bar\</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/uri" canonicalsrc="/uri">bar\</a></p>
 06_07__inlines__links__067:
   canonical: |
     <p>[]</p>
@@ -6729,7 +6729,7 @@
   static: |-
     <p data-sourcepos="1:1-1:7" dir="auto"><a href="/url" title="title">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">foo</a></p>
     <pre>[foo]: /url "title"</pre>
 06_07__inlines__links__070:
   canonical: |
@@ -6737,7 +6737,7 @@
   static: |-
     <p data-sourcepos="1:1-1:13" dir="auto"><a href="/url" title="title"><em>foo</em> bar</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title"><em>foo</em> bar</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url"><em>foo</em> bar</a></p>
     <pre>[*foo* bar]: /url "title"</pre>
 06_07__inlines__links__071:
   canonical: |
@@ -6745,7 +6745,7 @@
   static: |-
     <p data-sourcepos="1:1-1:7" dir="auto"><a href="/url" title="title">Foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">Foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">Foo</a></p>
     <pre>[foo]: /url "title"</pre>
 06_07__inlines__links__072:
   canonical: |
@@ -6755,7 +6755,7 @@
     <p data-sourcepos="1:1-2:2" dir="auto"><a href="/url" title="title">foo</a>
     []</p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">foo</a>
     []</p>
     <pre>[foo]: /url "title"</pre>
 06_07__inlines__links__073:
@@ -6764,7 +6764,7 @@
   static: |-
     <p data-sourcepos="1:1-1:5" dir="auto"><a href="/url" title="title">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">foo</a></p>
     <pre>[foo]: /url "title"</pre>
 06_07__inlines__links__074:
   canonical: |
@@ -6772,7 +6772,7 @@
   static: |-
     <p data-sourcepos="1:1-1:11" dir="auto"><a href="/url" title="title"><em>foo</em> bar</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title"><em>foo</em> bar</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url"><em>foo</em> bar</a></p>
     <pre>[*foo* bar]: /url "title"</pre>
 06_07__inlines__links__075:
   canonical: |
@@ -6780,7 +6780,7 @@
   static: |-
     <p data-sourcepos="1:1-1:13" dir="auto">[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
   wysiwyg: |-
-    <p>[<a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title"><em>foo</em> bar</a>]</p>
+    <p>[<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url"><em>foo</em> bar</a>]</p>
     <pre>[*foo* bar]: /url "title"</pre>
 06_07__inlines__links__076:
   canonical: |
@@ -6788,7 +6788,7 @@
   static: |-
     <p data-sourcepos="1:1-1:11" dir="auto">[[bar <a href="/url">foo</a></p>
   wysiwyg: |-
-    <p>[[bar <a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
+    <p>[[bar <a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">foo</a></p>
     <pre>[foo]: /url</pre>
 06_07__inlines__links__077:
   canonical: |
@@ -6796,7 +6796,7 @@
   static: |-
     <p data-sourcepos="1:1-1:5" dir="auto"><a href="/url" title="title">Foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">Foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">Foo</a></p>
     <pre>[foo]: /url "title"</pre>
 06_07__inlines__links__078:
   canonical: |
@@ -6804,7 +6804,7 @@
   static: |-
     <p data-sourcepos="1:1-1:9" dir="auto"><a href="/url">foo</a> bar</p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a> bar</p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">foo</a> bar</p>
     <pre>[foo]: /url</pre>
 06_07__inlines__links__079:
   canonical: |
@@ -6821,14 +6821,14 @@
     <p data-sourcepos="3:1-3:7" dir="auto">*<a href="/url">foo*</a></p>
   wysiwyg: |-
     <pre>[foo*]: /url</pre>
-    <p>*<a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo*</a></p>
+    <p>*<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">foo*</a></p>
 06_07__inlines__links__081:
   canonical: |
     <p><a href="/url2">foo</a></p>
   static: |-
     <p data-sourcepos="1:1-1:10" dir="auto"><a href="/url2">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url2">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url2" canonicalsrc="/url2">foo</a></p>
     <pre>[foo]: /url1</pre>
     <pre>[bar]: /url2</pre>
 06_07__inlines__links__082:
@@ -6837,7 +6837,7 @@
   static: |-
     <p data-sourcepos="1:1-1:7" dir="auto"><a href="/url1">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url1">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url1" canonicalsrc="/url1">foo</a></p>
     <pre>[foo]: /url1</pre>
 06_07__inlines__links__083:
   canonical: |
@@ -6845,7 +6845,7 @@
   static: |-
     <p data-sourcepos="1:1-1:7" dir="auto"><a href="">foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="">foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="" canonicalsrc="">foo</a></p>
     <pre>[foo]: /url1</pre>
 06_07__inlines__links__084:
   canonical: |
@@ -6853,7 +6853,7 @@
   static: |-
     <p data-sourcepos="1:1-1:17" dir="auto"><a href="/url1">foo</a>(not a link)</p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url1">foo</a>(not a link)</p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url1" canonicalsrc="/url1">foo</a>(not a link)</p>
     <pre>[foo]: /url1</pre>
 06_07__inlines__links__085:
   canonical: |
@@ -6861,7 +6861,7 @@
   static: |-
     <p data-sourcepos="1:1-1:15" dir="auto">[foo]<a href="/url">bar</a></p>
   wysiwyg: |-
-    <p>[foo]<a target="_blank" rel="noopener noreferrer nofollow" href="/url">bar</a></p>
+    <p>[foo]<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" canonicalsrc="/url">bar</a></p>
     <pre>[baz]: /url</pre>
 06_07__inlines__links__086:
   canonical: |
@@ -6869,7 +6869,7 @@
   static: |-
     <p data-sourcepos="1:1-1:15" dir="auto"><a href="/url2">foo</a><a href="/url1">baz</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/url2">foo</a><a target="_blank" rel="noopener noreferrer nofollow" href="/url1">baz</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url2" canonicalsrc="/url2">foo</a><a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url1" canonicalsrc="/url1">baz</a></p>
     <pre>[baz]: /url1</pre>
     <pre>[bar]: /url2</pre>
 06_07__inlines__links__087:
@@ -6878,7 +6878,7 @@
   static: |-
     <p data-sourcepos="1:1-1:15" dir="auto">[foo]<a href="/url1">bar</a></p>
   wysiwyg: |-
-    <p>[foo]<a target="_blank" rel="noopener noreferrer nofollow" href="/url1">bar</a></p>
+    <p>[foo]<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url1" canonicalsrc="/url1">bar</a></p>
     <pre>[baz]: /url1</pre>
     <pre>[foo]: /url2</pre>
 06_08__inlines__images__001:
@@ -6887,14 +6887,14 @@
   static: |-
     <p data-sourcepos="1:1-1:20" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt="foo" title="title"></p>
+    <p><img src="http://test.host/url" alt="foo" title="title" data-canonical-src="/url"></p>
 06_08__inlines__images__002:
   canonical: |
     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
   static: |-
     <p data-sourcepos="1:1-1:12" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="train &amp; tracks" decoding="async" class="lazy" data-src="train.jpg"></a></p>
   wysiwyg: |-
-    <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks"></p>
+    <p><img src="http://test.host/train.jpg" alt="foo bar" title="train &amp; tracks" data-canonical-src="train.jpg"></p>
     <pre>[foo *bar*]: train.jpg "train &amp; tracks"</pre>
 06_08__inlines__images__003:
   canonical: |
@@ -6902,21 +6902,21 @@
   static: |-
     <p data-sourcepos="1:1-1:26" dir="auto"><a class="no-attachment-icon" href="/url2" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" decoding="async" class="lazy" data-src="/url2"></a></p>
   wysiwyg: |-
-    <p><img src="/url2" alt="foo bar"></p>
+    <p><img src="http://test.host/url2" alt="foo bar" data-canonical-src="/url2"></p>
 06_08__inlines__images__004:
   canonical: |
     <p><img src="/url2" alt="foo bar" /></p>
   static: |-
     <p data-sourcepos="1:1-1:25" dir="auto"><a class="no-attachment-icon" href="/url2" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" decoding="async" class="lazy" data-src="/url2"></a></p>
   wysiwyg: |-
-    <p><img src="/url2" alt="foo bar"></p>
+    <p><img src="http://test.host/url2" alt="foo bar" data-canonical-src="/url2"></p>
 06_08__inlines__images__005:
   canonical: |
     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
   static: |-
     <p data-sourcepos="1:1-1:14" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="train &amp; tracks" decoding="async" class="lazy" data-src="train.jpg"></a></p>
   wysiwyg: |-
-    <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks"></p>
+    <p><img src="http://test.host/train.jpg" alt="foo bar" title="train &amp; tracks" data-canonical-src="train.jpg"></p>
     <pre>[foo *bar*]: train.jpg "train &amp; tracks"</pre>
 06_08__inlines__images__006:
   canonical: |
@@ -6924,7 +6924,7 @@
   static: |-
     <p data-sourcepos="1:1-1:20" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="train &amp; tracks" decoding="async" class="lazy" data-src="train.jpg"></a></p>
   wysiwyg: |-
-    <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks"></p>
+    <p><img src="http://test.host/train.jpg" alt="foo bar" title="train &amp; tracks" data-canonical-src="train.jpg"></p>
     <pre>[foobar]: train.jpg "train &amp; tracks"</pre>
 06_08__inlines__images__007:
   canonical: |
@@ -6932,35 +6932,35 @@
   static: |-
     <p data-sourcepos="1:1-1:17" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="train.jpg"></a></p>
   wysiwyg: |-
-    <p><img src="train.jpg" alt="foo"></p>
+    <p><img src="http://test.host/train.jpg" alt="foo" data-canonical-src="train.jpg"></p>
 06_08__inlines__images__008:
   canonical: |
     <p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
   static: |-
     <p data-sourcepos="1:1-1:45" dir="auto">My <a class="no-attachment-icon" href="/path/to/train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="title" decoding="async" class="lazy" data-src="/path/to/train.jpg"></a></p>
   wysiwyg: |-
-    <p>My <img src="/path/to/train.jpg" alt="foo bar" title="title"></p>
+    <p>My <img src="http://test.host/path/to/train.jpg" alt="foo bar" title="title" data-canonical-src="/path/to/train.jpg"></p>
 06_08__inlines__images__009:
   canonical: |
     <p><img src="url" alt="foo" /></p>
   static: |-
     <p data-sourcepos="1:1-1:13" dir="auto"><a class="no-attachment-icon" href="url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="url"></a></p>
   wysiwyg: |-
-    <p><img src="url" alt="foo"></p>
+    <p><img src="http://test.host/url" alt="foo" data-canonical-src="url"></p>
 06_08__inlines__images__010:
   canonical: |
     <p><img src="/url" alt="" /></p>
   static: |-
     <p data-sourcepos="1:1-1:9" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt=""></p>
+    <p><img src="http://test.host/url" alt="" data-canonical-src="/url"></p>
 06_08__inlines__images__011:
   canonical: |
     <p><img src="/url" alt="foo" /></p>
   static: |-
     <p data-sourcepos="1:1-1:11" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt="foo"></p>
+    <p><img src="http://test.host/url" alt="foo" data-canonical-src="/url"></p>
     <pre>[bar]: /url</pre>
 06_08__inlines__images__012:
   canonical: |
@@ -6968,7 +6968,7 @@
   static: |-
     <p data-sourcepos="1:1-1:11" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt="foo"></p>
+    <p><img src="http://test.host/url" alt="foo" data-canonical-src="/url"></p>
     <pre>[bar]: /url</pre>
 06_08__inlines__images__013:
   canonical: |
@@ -6976,7 +6976,7 @@
   static: |-
     <p data-sourcepos="1:1-1:8" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt="foo" title="title"></p>
+    <p><img src="http://test.host/url" alt="foo" title="title" data-canonical-src="/url"></p>
     <pre>[foo]: /url "title"</pre>
 06_08__inlines__images__014:
   canonical: |
@@ -6984,7 +6984,7 @@
   static: |-
     <p data-sourcepos="1:1-1:14" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt="foo bar" title="title"></p>
+    <p><img src="http://test.host/url" alt="foo bar" title="title" data-canonical-src="/url"></p>
     <pre>[*foo* bar]: /url "title"</pre>
 06_08__inlines__images__015:
   canonical: |
@@ -6992,7 +6992,7 @@
   static: |-
     <p data-sourcepos="1:1-1:8" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt="Foo" title="title"></p>
+    <p><img src="http://test.host/url" alt="Foo" title="title" data-canonical-src="/url"></p>
     <pre>[foo]: /url "title"</pre>
 06_08__inlines__images__016:
   canonical: |
@@ -7002,7 +7002,7 @@
     <p data-sourcepos="1:1-2:2" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a>
     []</p>
   wysiwyg: |-
-    <p><img src="/url" alt="foo" title="title">
+    <p><img src="http://test.host/url" alt="foo" title="title" data-canonical-src="/url">
     []</p>
     <pre>[foo]: /url "title"</pre>
 06_08__inlines__images__017:
@@ -7011,7 +7011,7 @@
   static: |-
     <p data-sourcepos="1:1-1:6" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt="foo" title="title"></p>
+    <p><img src="http://test.host/url" alt="foo" title="title" data-canonical-src="/url"></p>
     <pre>[foo]: /url "title"</pre>
 06_08__inlines__images__018:
   canonical: |
@@ -7019,7 +7019,7 @@
   static: |-
     <p data-sourcepos="1:1-1:12" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt="foo bar" title="title"></p>
+    <p><img src="http://test.host/url" alt="foo bar" title="title" data-canonical-src="/url"></p>
     <pre>[*foo* bar]: /url "title"</pre>
 06_08__inlines__images__019:
   canonical: |
@@ -7037,7 +7037,7 @@
   static: |-
     <p data-sourcepos="1:1-1:6" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
-    <p><img src="/url" alt="Foo" title="title"></p>
+    <p><img src="http://test.host/url" alt="Foo" title="title" data-canonical-src="/url"></p>
     <pre>[foo]: /url "title"</pre>
 06_08__inlines__images__021:
   canonical: |
@@ -7053,7 +7053,7 @@
   static: |-
     <p data-sourcepos="1:1-1:27" dir="auto"><span>!</span><a href="/url" title="title">foo</a></p>
   wysiwyg: |-
-    <p>!<a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
+    <p>!<a target="_blank" rel="noopener noreferrer nofollow" href="http://test.host/url" title="title" canonicalsrc="/url">foo</a></p>
     <pre>[foo]: /url "title"</pre>
 06_09__inlines__autolinks__001:
   canonical: |
@@ -7061,91 +7061,91 @@
   static: |-
     <p data-sourcepos="1:1-1:20" dir="auto"><a href="http://foo.bar.baz" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar.baz</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar.baz">http://foo.bar.baz</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar.baz/" canonicalsrc="http://foo.bar.baz">http://foo.bar.baz</a></p>
 06_09__inlines__autolinks__002:
   canonical: |
     <p><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
   static: |-
     <p data-sourcepos="1:1-1:47" dir="auto"><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean" canonicalsrc="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
 06_09__inlines__autolinks__003:
   canonical: |
     <p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
   static: |-
     <p data-sourcepos="1:1-1:24" dir="auto"><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="irc://foo.bar:2233/baz" canonicalsrc="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
 06_09__inlines__autolinks__004:
   canonical: |
     <p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
   static: |-
     <p data-sourcepos="1:1-1:20" dir="auto"><a href="mailto:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:FOO@BAR.BAZ" canonicalsrc="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
 06_09__inlines__autolinks__005:
   canonical: |
     <p><a href="a+b+c:d">a+b+c:d</a></p>
   static: |-
     <p data-sourcepos="1:1-1:9" dir="auto"><a href="a+b+c:d">a+b+c:d</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="a+b+c:d">a+b+c:d</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="a+b+c:d" canonicalsrc="a+b+c:d">a+b+c:d</a></p>
 06_09__inlines__autolinks__006:
   canonical: |
     <p><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
   static: |-
     <p data-sourcepos="1:1-1:26" dir="auto"><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="made-up-scheme://foo,bar" canonicalsrc="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
 06_09__inlines__autolinks__007:
   canonical: |
     <p><a href="http://../">http://../</a></p>
   static: |-
     <p data-sourcepos="1:1-1:12" dir="auto"><a href="http://../" rel="nofollow noreferrer noopener" target="_blank">http://../</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://../">http://../</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://../" canonicalsrc="http://../">http://../</a></p>
 06_09__inlines__autolinks__008:
   canonical: |
     <p><a href="localhost:5001/foo">localhost:5001/foo</a></p>
   static: |-
     <p data-sourcepos="1:1-1:20" dir="auto"><a href="localhost:5001/foo">localhost:5001/foo</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="localhost:5001/foo">localhost:5001/foo</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="localhost:5001/foo" canonicalsrc="localhost:5001/foo">localhost:5001/foo</a></p>
 06_09__inlines__autolinks__009:
   canonical: |
     <p>&lt;http://foo.bar/baz bim&gt;</p>
   static: |-
     <p data-sourcepos="1:1-1:24" dir="auto">&lt;<a href="http://foo.bar/baz" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar/baz</a> bim&gt;</p>
   wysiwyg: |-
-    <p>&lt;<a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar/baz">http://foo.bar/baz</a> bim&gt;</p>
+    <p>&lt;<a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar/baz" canonicalsrc="http://foo.bar/baz">http://foo.bar/baz</a> bim&gt;</p>
 06_09__inlines__autolinks__010:
   canonical: |
     <p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
   static: |-
     <p data-sourcepos="1:1-1:24" dir="auto"><a href="http://example.com/%5C%5B%5C" rel="nofollow noreferrer noopener" target="_blank">http://example.com/\[\</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/%5C%5B%5C" canonicalsrc="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
 06_09__inlines__autolinks__011:
   canonical: |
     <p><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
   static: |-
     <p data-sourcepos="1:1-1:21" dir="auto"><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo@bar.example.com" canonicalsrc="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
 06_09__inlines__autolinks__012:
   canonical: |
     <p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
   static: |-
     <p data-sourcepos="1:1-1:30" dir="auto"><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo+special@Bar.baz-bar0.com" canonicalsrc="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
 06_09__inlines__autolinks__013:
   canonical: |
     <p>&lt;foo+@bar.example.com&gt;</p>
   static: |-
     <p data-sourcepos="1:1-1:23" dir="auto">&lt;<a href="mailto:foo+@bar.example.com">foo+@bar.example.com</a>&gt;</p>
   wysiwyg: |-
-    <p>&lt;<a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo+@bar.example.com">foo+@bar.example.com</a>&gt;</p>
+    <p>&lt;<a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo+@bar.example.com" canonicalsrc="mailto:foo+@bar.example.com">foo+@bar.example.com</a>&gt;</p>
 06_09__inlines__autolinks__014:
   canonical: |
     <p>&lt;&gt;</p>
@@ -7159,7 +7159,7 @@
   static: |-
     <p data-sourcepos="1:1-1:18" dir="auto">&lt; <a href="http://foo.bar" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar</a> &gt;</p>
   wysiwyg: |-
-    <p>&lt; <a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar">http://foo.bar</a> &gt;</p>
+    <p>&lt; <a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar/" canonicalsrc="http://foo.bar">http://foo.bar</a> &gt;</p>
 06_09__inlines__autolinks__016:
   canonical: |
     <p>&lt;m:abc&gt;</p>
@@ -7180,28 +7180,28 @@
   static: |-
     <p data-sourcepos="1:1-1:18" dir="auto"><a href="http://example.com" rel="nofollow noreferrer noopener" target="_blank">http://example.com</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com">http://example.com</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/" canonicalsrc="http://example.com">http://example.com</a></p>
 06_09__inlines__autolinks__019:
   canonical: |
     <p>foo@bar.example.com</p>
   static: |-
     <p data-sourcepos="1:1-1:19" dir="auto"><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo@bar.example.com" canonicalsrc="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
 06_10__inlines__autolinks_extension__001:
   canonical: |
     <p><a href="http://www.commonmark.org">www.commonmark.org</a></p>
   static: |-
     <p data-sourcepos="1:1-1:18" dir="auto"><a href="http://www.commonmark.org" rel="nofollow noreferrer noopener" target="_blank">www.commonmark.org</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org">www.commonmark.org</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org/" canonicalsrc="http://www.commonmark.org">www.commonmark.org</a></p>
 06_10__inlines__autolinks_extension__002:
   canonical: |
     <p>Visit <a href="http://www.commonmark.org/help">www.commonmark.org/help</a> for more information.</p>
   static: |-
     <p data-sourcepos="1:1-1:51" dir="auto">Visit <a href="http://www.commonmark.org/help" rel="nofollow noreferrer noopener" target="_blank">www.commonmark.org/help</a> for more information.</p>
   wysiwyg: |-
-    <p>Visit <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org/help">www.commonmark.org/help</a> for more information.</p>
+    <p>Visit <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org/help" canonicalsrc="http://www.commonmark.org/help">www.commonmark.org/help</a> for more information.</p>
 06_10__inlines__autolinks_extension__003:
   canonical: |
     <p>Visit <a href="http://www.commonmark.org">www.commonmark.org</a>.</p>
@@ -7210,8 +7210,8 @@
     <p data-sourcepos="1:1-1:25" dir="auto">Visit <a href="http://www.commonmark.org" rel="nofollow noreferrer noopener" target="_blank">www.commonmark.org</a>.</p>
     <p data-sourcepos="3:1-3:29" dir="auto">Visit <a href="http://www.commonmark.org/a.b" rel="nofollow noreferrer noopener" target="_blank">www.commonmark.org/a.b</a>.</p>
   wysiwyg: |-
-    <p>Visit <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org">www.commonmark.org</a>.</p>
-    <p>Visit <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
+    <p>Visit <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org/" canonicalsrc="http://www.commonmark.org">www.commonmark.org</a>.</p>
+    <p>Visit <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org/a.b" canonicalsrc="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
 06_10__inlines__autolinks_extension__004:
   canonical: |
     <p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
@@ -7224,17 +7224,17 @@
     <p data-sourcepos="5:1-5:43" dir="auto">(<a href="http://www.google.com/search?q=Markup+(business)" rel="nofollow noreferrer noopener" target="_blank">www.google.com/search?q=Markup+(business)</a>)</p>
     <p data-sourcepos="7:1-7:42" dir="auto">(<a href="http://www.google.com/search?q=Markup+(business)" rel="nofollow noreferrer noopener" target="_blank">www.google.com/search?q=Markup+(business)</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>))</p>
-    <p>(<a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p>
-    <p>(<a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)" canonicalsrc="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)" canonicalsrc="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>))</p>
+    <p>(<a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)" canonicalsrc="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p>
+    <p>(<a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=Markup+(business)" canonicalsrc="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
 06_10__inlines__autolinks_extension__005:
   canonical: |
     <p><a href="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
   static: |-
     <p data-sourcepos="1:1-1:38" dir="auto"><a href="http://www.google.com/search?q=(business))+ok" rel="nofollow noreferrer noopener" target="_blank">www.google.com/search?q=(business))+ok</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=(business))+ok" canonicalsrc="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
 06_10__inlines__autolinks_extension__006:
   canonical: |
     <p><a href="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p>
@@ -7243,15 +7243,15 @@
     <p data-sourcepos="1:1-1:40" dir="auto"><a href="http://www.google.com/search?q=commonmark&amp;hl=en" rel="nofollow noreferrer noopener" target="_blank">www.google.com/search?q=commonmark&amp;hl=en</a></p>
     <p data-sourcepos="3:1-3:38" dir="auto"><a href="http://www.google.com/search?q=commonmark" rel="nofollow noreferrer noopener" target="_blank">www.google.com/search?q=commonmark</a>&amp;hl;</p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=commonmark">www.google.com/search?q=commonmark</a>&amp;hl;</p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=commonmark&amp;hl=en" canonicalsrc="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com/search?q=commonmark" canonicalsrc="http://www.google.com/search?q=commonmark">www.google.com/search?q=commonmark</a>&amp;hl;</p>
 06_10__inlines__autolinks_extension__007:
   canonical: |
     <p><a href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
   static: |-
     <p data-sourcepos="1:1-1:24" dir="auto"><a href="http://www.commonmark.org/he" rel="nofollow noreferrer noopener" target="_blank">www.commonmark.org/he</a>&lt;lp</p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.commonmark.org/he" canonicalsrc="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
 06_10__inlines__autolinks_extension__008:
   canonical: |
     <p><a href="http://commonmark.org">http://commonmark.org</a></p>
@@ -7262,8 +7262,8 @@
     <p data-sourcepos="3:1-3:63" dir="auto">(Visit <a href="https://encrypted.google.com/search?q=Markup+(business)" rel="nofollow noreferrer noopener" target="_blank">https://encrypted.google.com/search?q=Markup+(business)</a>)</p>
     <p data-sourcepos="5:1-5:48" dir="auto">Anonymous FTP is available at <a href="ftp://foo.bar.baz/">ftp://foo.bar.baz</a>.</p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://commonmark.org">http://commonmark.org</a></p>
-    <p>(Visit <a target="_blank" rel="noopener noreferrer nofollow" href="https://encrypted.google.com/search?q=Markup+(business)">https://encrypted.google.com/search?q=Markup+(business)</a>)</p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="http://commonmark.org/" canonicalsrc="http://commonmark.org">http://commonmark.org</a></p>
+    <p>(Visit <a target="_blank" rel="noopener noreferrer nofollow" href="https://encrypted.google.com/search?q=Markup+(business)" canonicalsrc="https://encrypted.google.com/search?q=Markup+(business)">https://encrypted.google.com/search?q=Markup+(business)</a>)</p>
     <p>Anonymous FTP is available at ftp://foo.bar.baz.</p>
 06_10__inlines__autolinks_extension__009:
   canonical: |
@@ -7271,14 +7271,14 @@
   static: |-
     <p data-sourcepos="1:1-1:11" dir="auto"><a href="mailto:foo@bar.baz">foo@bar.baz</a></p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo@bar.baz">foo@bar.baz</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo@bar.baz" canonicalsrc="mailto:foo@bar.baz">foo@bar.baz</a></p>
 06_10__inlines__autolinks_extension__010:
   canonical: |
     <p>hello@mail+xyz.example isn't valid, but <a href="mailto:hello+xyz@mail.example">hello+xyz@mail.example</a> is.</p>
   static: |-
     <p data-sourcepos="1:1-1:66" dir="auto">hello@mail+xyz.example isn't valid, but <a href="mailto:hello+xyz@mail.example">hello+xyz@mail.example</a> is.</p>
   wysiwyg: |-
-    <p>hello@mail+xyz.example isn't valid, but <a target="_blank" rel="noopener noreferrer nofollow" href="mailto:hello+xyz@mail.example">hello+xyz@mail.example</a> is.</p>
+    <p>hello@mail+xyz.example isn't valid, but <a target="_blank" rel="noopener noreferrer nofollow" href="mailto:hello+xyz@mail.example" canonicalsrc="mailto:hello+xyz@mail.example">hello+xyz@mail.example</a> is.</p>
 06_10__inlines__autolinks_extension__011:
   canonical: |
     <p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a></p>
@@ -7291,8 +7291,8 @@
     <p data-sourcepos="5:1-5:12" dir="auto">a.b-c_d@a.b-</p>
     <p data-sourcepos="7:1-7:12" dir="auto">a.b-c_d@a.b_</p>
   wysiwyg: |-
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a></p>
-    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a>.</p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:a.b-c_d@a.b" canonicalsrc="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a></p>
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:a.b-c_d@a.b" canonicalsrc="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a>.</p>
     <p>a.b-c_d@a.b-</p>
     <p>a.b-c_d@a.b_</p>
 06_11__inlines__raw_html__001:

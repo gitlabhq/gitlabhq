@@ -201,7 +201,7 @@ RSpec.describe API::Branches do
 
       context 'when sort value is not supported' do
         it_behaves_like '400 response' do
-          let(:request) { get api(route, user), params: { sort: 'unknown' }}
+          let(:request) { get api(route, user), params: { sort: 'unknown' } }
         end
       end
     end

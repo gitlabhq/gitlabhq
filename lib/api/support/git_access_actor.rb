@@ -32,6 +32,10 @@ module API
         key || user
       end
 
+      def deploy_key_or_user
+        key.instance_of?(DeployKey) ? key : user
+      end
+
       def username
         user&.username
       end

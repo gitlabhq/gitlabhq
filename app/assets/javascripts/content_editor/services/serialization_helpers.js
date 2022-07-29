@@ -1,4 +1,5 @@
 import { uniq, isString, omit, isFunction } from 'lodash';
+import { removeLastSlashInUrlPath, removeUrlProtocol } from '../../lib/utils/url_utility';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null },
@@ -497,9 +498,7 @@ const linkType = (sourceMarkdown) => {
   return LINK_HTML;
 };
 
-const removeUrlProtocol = (url) => url.replace(/^\w+:\/?\/?/, '');
-
-const normalizeUrl = (url) => decodeURIComponent(removeUrlProtocol(url));
+const normalizeUrl = (url) => decodeURIComponent(removeLastSlashInUrlPath(removeUrlProtocol(url)));
 
 /**
  * Validates that the provided URL is well-formed

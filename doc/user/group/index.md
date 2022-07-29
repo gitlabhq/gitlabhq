@@ -48,29 +48,6 @@ For example, consider a user named Alex:
 | Alex creates a group for their team with the group name `alex-team`. The group and its projects are available at: `https://gitlab.example.com/alex-team`. | The namespace in this case is `alex-team`. |
 | Alex creates a subgroup of `alex-team` with the subgroup name `marketing`. The subgroup and its projects are available at: `https://gitlab.example.com/alex-team/marketing`. | The namespace in this case is `alex-team/marketing`. |
 
-## Mention a group in an issue or merge request
-
-When you mention a group in a comment, every member of the group gets a to-do item
-added to their To-do list.
-
-1. Open the MR or issue.
-1. In a comment, type `@` followed by the user, group, or subgroup namespace.
-   For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
-1. Select **Comment**.
-
-A to-do item is created for all the group and subgroup members.
-
-## Export members as CSV **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
-
-You can export a list of members in a group or subgroup as a CSV.
-
-1. Go to your group or subgroup and select either **Group information > Members** or **Subgroup information > Members**.
-1. Select **Export as CSV**.
-1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
-
 ## Related topics
 
 - [Group wikis](../project/wiki/index.md)

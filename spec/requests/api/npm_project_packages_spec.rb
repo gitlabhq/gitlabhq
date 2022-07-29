@@ -307,8 +307,8 @@ RSpec.describe API::NpmProjectPackages do
           expect { upload_package_with_token }
             .to change { project.packages.count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
-            .and change { Packages::Dependency.count}.by(4)
-            .and change { Packages::DependencyLink.count}.by(6)
+            .and change { Packages::Dependency.count }.by(4)
+            .and change { Packages::DependencyLink.count }.by(6)
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -323,8 +323,8 @@ RSpec.describe API::NpmProjectPackages do
             expect { upload_package_with_token }
               .to change { project.packages.count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
-              .and not_change { Packages::Dependency.count}
-              .and change { Packages::DependencyLink.count}.by(6)
+              .and not_change { Packages::Dependency.count }
+              .and change { Packages::DependencyLink.count }.by(6)
           end
         end
       end

@@ -74,7 +74,7 @@ RSpec.describe 'Adding an AwardEmoji' do
       end
 
       describe 'marking Todos as done' do
-        let(:user) { current_user}
+        let(:user) { current_user }
 
         subject { post_graphql_mutation(mutation, current_user: user) }
 

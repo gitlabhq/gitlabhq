@@ -136,8 +136,8 @@ RSpec.describe API::Ci::Triggers do
       end
 
       context 'when triggered from another running job' do
-        let!(:trigger) { }
-        let!(:trigger_request) { }
+        let!(:trigger) {}
+        let!(:trigger_request) {}
 
         context 'when other job is triggered by a user' do
           let(:trigger_token) { create(:ci_build, :running, project: project, user: user).token }
@@ -242,7 +242,7 @@ RSpec.describe API::Ci::Triggers do
           expect do
             post api("/projects/#{project.id}/triggers", user),
               params: { description: 'trigger' }
-          end.to change {project.triggers.count}.by(1)
+          end.to change { project.triggers.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to include('description' => 'trigger')
@@ -335,7 +335,7 @@ RSpec.describe API::Ci::Triggers do
           delete api("/projects/#{project.id}/triggers/#{trigger.id}", user)
 
           expect(response).to have_gitlab_http_status(:no_content)
-        end.to change {project.triggers.count}.by(-1)
+        end.to change { project.triggers.count }.by(-1)
       end
 
       it 'responds with 404 Not Found if requesting non-existing trigger' do

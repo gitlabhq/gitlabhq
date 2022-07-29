@@ -103,7 +103,7 @@ RSpec.describe 'Update a work item' do
         let(:input) { { 'confidential' => true } }
 
         it_behaves_like 'toggling confidentiality' do
-          let(:values) { { old: false, new: true }}
+          let(:values) { { old: false, new: true } }
         end
       end
 
@@ -115,7 +115,7 @@ RSpec.describe 'Update a work item' do
         end
 
         it_behaves_like 'toggling confidentiality' do
-          let(:values) { { old: true, new: false }}
+          let(:values) { { old: true, new: false } }
         end
       end
     end

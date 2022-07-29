@@ -49,6 +49,18 @@ to all the members of that project's group. This might be interpreted as spam.
 Notifications and mentions can be disabled in
 [a group's settings](../group/manage.md#disable-email-notifications).
 
+### Mention a group in an issue or merge request
+
+When you mention a group in a comment, every member of the group gets a to-do item
+added to their To-do list.
+
+1. Open the MR or issue.
+1. In a comment, type `@` followed by the user, group, or subgroup namespace.
+   For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
+1. Select **Comment**.
+
+A to-do item is created for all the group and subgroup members.
+
 ## Add a comment to a merge request diff
 
 You can add comments to a merge request diff. These comments

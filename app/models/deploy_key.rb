@@ -66,4 +66,9 @@ class DeployKey < Key
 
     query
   end
+
+  # This is used for the internal logic of AuditEvents::BuildService.
+  def impersonated?
+    false
+  end
 end

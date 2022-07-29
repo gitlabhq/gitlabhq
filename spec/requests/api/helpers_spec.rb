@@ -26,8 +26,8 @@ RSpec.describe API::Helpers do
     }
   end
 
-  let(:header) { }
-  let(:request) { Grape::Request.new(env)}
+  let(:header) {}
+  let(:request) { Grape::Request.new(env) }
   let(:params) { request.params }
 
   before do

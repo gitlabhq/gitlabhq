@@ -15,7 +15,7 @@ RSpec.describe 'Updating an existing release' do
   let_it_be(:milestone_12_4) { create(:milestone, project: project, title: '12.4') }
 
   let_it_be(:tag_name) { 'v1.1.0' }
-  let_it_be(:name) { 'Version 7.12.5'}
+  let_it_be(:name) { 'Version 7.12.5' }
   let_it_be(:description) { 'Release 7.12.5 :rocket:' }
   let_it_be(:released_at) { '2018-12-10' }
   let_it_be(:created_at) { '2018-11-05' }

@@ -49,7 +49,7 @@ RSpec.describe 'rendering namespace statistics' do
     it_behaves_like 'a working namespace with storage statistics query'
 
     context 'when the namespace is public' do
-      let(:group) { create(:group, :public)}
+      let(:group) { create(:group, :public) }
 
       it 'hides statistics for unauthenticated requests' do
         post_graphql(query, current_user: nil)

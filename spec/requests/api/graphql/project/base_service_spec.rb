@@ -26,7 +26,7 @@ RSpec.describe 'query Jira service' do
     )
   end
 
-  let(:services) { graphql_data.dig('project', 'services', 'nodes')}
+  let(:services) { graphql_data.dig('project', 'services', 'nodes') }
 
   it_behaves_like 'unauthorized users cannot read services'
 

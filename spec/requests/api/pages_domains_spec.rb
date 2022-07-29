@@ -19,8 +19,8 @@ RSpec.describe API::PagesDomains do
   end
 
   let(:pages_domain_secure_params) { build(:pages_domain, domain: 'ssl.other-domain.test', project: project).slice(:domain, :certificate, :key) }
-  let(:pages_domain_secure_key_missmatch_params) {build(:pages_domain, :with_trusted_chain, project: project).slice(:domain, :certificate, :key) }
-  let(:pages_domain_secure_missing_chain_params) {build(:pages_domain, :with_missing_chain, project: project).slice(:certificate) }
+  let(:pages_domain_secure_key_missmatch_params) { build(:pages_domain, :with_trusted_chain, project: project).slice(:domain, :certificate, :key) }
+  let(:pages_domain_secure_missing_chain_params) { build(:pages_domain, :with_missing_chain, project: project).slice(:certificate) }
 
   let(:route) { "/projects/#{project.id}/pages/domains" }
   let(:route_domain) { "/projects/#{project.id}/pages/domains/#{pages_domain.domain}" }

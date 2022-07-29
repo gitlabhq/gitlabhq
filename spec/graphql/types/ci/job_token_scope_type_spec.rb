@@ -34,7 +34,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'] do
     subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
 
     let(:projects_field) { subject.dig('data', 'project', 'ciJobTokenScope', 'projects', 'nodes') }
-    let(:returned_project_paths) { projects_field.map { |project| project['path']} }
+    let(:returned_project_paths) { projects_field.map { |project| project['path'] } }
 
     context 'with access to scope' do
       before do

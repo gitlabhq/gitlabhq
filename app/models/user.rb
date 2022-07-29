@@ -1809,12 +1809,8 @@ class User < ApplicationRecord
   end
 
   def attention_requested_open_merge_requests_count(force: false)
-    if Feature.enabled?(:uncached_mr_attention_requests_count, self)
+    Rails.cache.fetch(attention_request_cache_key, force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
-    else
-      Rails.cache.fetch(attention_request_cache_key, force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-        MergeRequestsFinder.new(self, attention: self.username, state: 'opened', non_archived: true).execute.count
-      end
     end
   end
 

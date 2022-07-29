@@ -336,6 +336,7 @@ Users with at least the Owner role for a group can list event streaming destinat
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `audit_event_streaming_git_operations`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357211) in GitLab 15.0.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/357211) in GitLab 15.1 by default.
+> - [Added `details.author_class` field](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the
@@ -377,6 +378,7 @@ Fetch:
   "entity_type": "Project",
   "details": {
     "author_name": "Administrator",
+    "author_class": "User",
     "target_id": 29,
     "target_type": "Project",
     "target_details": "example-project",
@@ -408,6 +410,7 @@ Push:
   "entity_type": "Project",
   "details": {
     "author_name": "Administrator",
+    "author_class": "User",
     "target_id": 29,
     "target_type": "Project",
     "target_details": "example-project",
@@ -429,6 +432,42 @@ Push:
 }
 ```
 
+#### Example payloads for SSH events with Deploy Key
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `audit_event_streaming_git_operations_deploy_key_event`. Disabled by default.
+
+Fetch:
+
+```json
+{
+  "id": 1,
+  "author_id": -3,
+  "entity_id": 29,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "deploy-key-name",
+    "author_class": "DeployKey",
+    "target_id": 29,
+    "target_type": "Project",
+    "target_details": "example-project",
+    "custom_message": {
+      "protocol": "ssh",
+      "action": "git-upload-pack"
+    },
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "deploy-key-name",
+  "entity_path": "example-group/example-project",
+  "target_details": "example-project",
+  "created_at": "2022-07-26T05:43:53.662Z",
+  "target_type": "Project",
+  "target_id": 29,
+  "event_type": "repository_git_operation"
+}
+```
+
 ### Example payloads for HTTP and HTTPS events
 
 Fetch:
@@ -441,6 +480,7 @@ Fetch:
   "entity_type": "Project",
   "details": {
     "author_name": "Administrator",
+    "author_class": "User",
     "target_id": 29,
     "target_type": "Project",
     "target_details": "example-project",
@@ -472,6 +512,7 @@ Push:
   "entity_type": "Project",
   "details": {
     "author_name": "Administrator",
+    "author_class": "User",
     "target_id": 29,
     "target_type": "Project",
     "target_details": "example-project",
@@ -493,6 +534,40 @@ Push:
 }
 ```
 
+#### Example payloads for HTTP and HTTPS events with Deploy Token
+
+Fetch:
+
+```json
+{
+  "id": 1,
+  "author_id": -2,
+  "entity_id": 22,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "deploy-token-name",
+    "author_class": "DeployToken",
+    "target_id": 22,
+    "target_type": "Project",
+    "target_details": "example-project",
+    "custom_message": {
+      "protocol": "http",
+      "action": "git-upload-pack"
+    },
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "deploy-token-name",
+  "entity_path": "example-group/example-project",
+  "target_details": "example-project",
+  "created_at": "2022-07-26T05:46:25.850Z",
+  "target_type": "Project",
+  "target_id": 22,
+  "event_type": "repository_git_operation"
+}
+```
+
 ### Example payloads for events from GitLab UI download button
 
 Fetch:
@@ -506,6 +581,7 @@ Fetch:
   "details": {
     "custom_message": "Repository Download Started",
     "author_name": "example_username",
+    "author_class": "User",
     "target_id": 29,
     "target_type": "Project",
     "target_details": "example-group/example-project",

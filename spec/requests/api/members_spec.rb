@@ -187,8 +187,8 @@ RSpec.describe API::Members do
     end
 
     context 'with a subgroup' do
-      let(:group) { create(:group, :private)}
-      let(:subgroup) { create(:group, :private, parent: group)}
+      let(:group) { create(:group, :private) }
+      let(:subgroup) { create(:group, :private, parent: group) }
       let(:project) { create(:project, group: subgroup) }
 
       before do

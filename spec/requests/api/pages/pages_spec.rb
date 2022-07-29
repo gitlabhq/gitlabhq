@@ -19,7 +19,7 @@ RSpec.describe API::Pages do
       end
 
       it_behaves_like '404 response' do
-        let(:request) { delete api("/projects/#{project.id}/pages", admin)}
+        let(:request) { delete api("/projects/#{project.id}/pages", admin) }
       end
     end
 

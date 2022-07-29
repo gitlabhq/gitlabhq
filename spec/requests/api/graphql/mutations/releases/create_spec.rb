@@ -16,10 +16,10 @@ RSpec.describe 'Creation of a new release' do
 
   let(:mutation_name) { :release_create }
 
-  let(:tag_name) { 'v7.12.5'}
+  let(:tag_name) { 'v7.12.5' }
   let(:tag_message) { nil }
-  let(:ref) { 'master'}
-  let(:name) { 'Version 7.12.5'}
+  let(:ref) { 'master' }
+  let(:name) { 'Version 7.12.5' }
   let(:description) { 'Release 7.12.5 :rocket:' }
   let(:released_at) { '2018-12-10' }
   let(:milestones) { [milestone_12_3.title, milestone_12_4.title] }
