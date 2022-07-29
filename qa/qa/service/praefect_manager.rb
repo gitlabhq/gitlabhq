@@ -425,7 +425,7 @@ module QA
       end
 
       def value_for_node(data, node)
-        data.find(-> {{ value: 0 }}) { |item| item[:node] == node }[:value]
+        data.find(-> { { value: 0 } }) { |item| item[:node] == node }[:value]
       end
 
       def wait_for_replication(project_id)

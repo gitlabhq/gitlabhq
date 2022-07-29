@@ -10,6 +10,25 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
   let(:gcp_project_id) { String('gcp_proj_id') }
   let(:operation) { true }
   let(:database_instance) { Google::Apis::SqladminV1beta4::DatabaseInstance.new(state: 'RUNNABLE') }
+  let(:instance_name) { 'mock-instance-name' }
+  let(:root_password) { 'mock-root-password' }
+  let(:database_version) { 'mock-database-version' }
+  let(:region) { 'mock-region' }
+  let(:tier) { 'mock-tier' }
+
+  let(:database_list) do
+    Google::Apis::SqladminV1beta4::ListDatabasesResponse.new(items: [
+      Google::Apis::SqladminV1beta4::Database.new(name: 'db_01', instance: database_instance),
+      Google::Apis::SqladminV1beta4::Database.new(name: 'db_02', instance: database_instance)
+    ])
+  end
+
+  let(:user_list) do
+    Google::Apis::SqladminV1beta4::ListUsersResponse.new(items: [
+      Google::Apis::SqladminV1beta4::User.new(name: 'user_01', instance: database_instance),
+      Google::Apis::SqladminV1beta4::User.new(name: 'user_02', instance: database_instance)
+    ])
+  end
 
   describe '.session_key_for_redirect_uri' do
     let(:state) { 'random_string' }
@@ -342,6 +361,42 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
     end
   end
 
+  describe '#enable_cloud_sql_admin' do
+    subject { client.enable_cloud_sql_admin(gcp_project_id) }
+
+    it 'calls Google Api ServiceUsageService' do
+      expect_any_instance_of(Google::Apis::ServiceusageV1::ServiceUsageService)
+        .to receive(:enable_service)
+              .with("projects/#{gcp_project_id}/services/sqladmin.googleapis.com")
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
+
+  describe '#enable_compute' do
+    subject { client.enable_compute(gcp_project_id) }
+
+    it 'calls Google Api ServiceUsageService' do
+      expect_any_instance_of(Google::Apis::ServiceusageV1::ServiceUsageService)
+        .to receive(:enable_service)
+              .with("projects/#{gcp_project_id}/services/compute.googleapis.com")
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
+
+  describe '#enable_service_networking' do
+    subject { client.enable_service_networking(gcp_project_id) }
+
+    it 'calls Google Api ServiceUsageService' do
+      expect_any_instance_of(Google::Apis::ServiceusageV1::ServiceUsageService)
+        .to receive(:enable_service)
+              .with("projects/#{gcp_project_id}/services/servicenetworking.googleapis.com")
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
+
   describe '#revoke_authorizations' do
     subject { client.revoke_authorizations }
 
@@ -391,6 +446,59 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
               .with(any_args)
               .and_return(database_instance)
       is_expected.to eq(database_instance)
+    end
+  end
+
+  describe '#list_cloudsql_databases' do
+    subject { client.list_cloudsql_databases(:gcp_project_id, :instance_name) }
+
+    it 'calls Google Api SQLAdminService#list_databases' do
+      expect_any_instance_of(Google::Apis::SqladminV1beta4::SQLAdminService)
+        .to receive(:list_databases)
+              .with(any_args)
+              .and_return(database_list)
+      is_expected.to eq(database_list)
+    end
+  end
+
+  describe '#list_cloudsql_users' do
+    subject { client.list_cloudsql_users(:gcp_project_id, :instance_name) }
+
+    it 'calls Google Api SQLAdminService#list_users' do
+      expect_any_instance_of(Google::Apis::SqladminV1beta4::SQLAdminService)
+        .to receive(:list_users)
+              .with(any_args)
+              .and_return(user_list)
+      is_expected.to eq(user_list)
+    end
+  end
+
+  describe '#create_cloudsql_instance' do
+    subject do
+      client.create_cloudsql_instance(
+        gcp_project_id,
+        instance_name,
+        root_password,
+        database_version,
+        region,
+        tier
+      )
+    end
+
+    it 'calls Google Api SQLAdminService#insert_instance' do
+      expect_any_instance_of(Google::Apis::SqladminV1beta4::SQLAdminService)
+        .to receive(:insert_instance)
+              .with(gcp_project_id,
+                    having_attributes(
+                      class: ::Google::Apis::SqladminV1beta4::DatabaseInstance,
+                      name: instance_name,
+                      root_password: root_password,
+                      database_version: database_version,
+                      region: region,
+                      settings: instance_of(Google::Apis::SqladminV1beta4::Settings)
+                    ))
+              .and_return(operation)
+      is_expected.to eq(operation)
     end
   end
 end

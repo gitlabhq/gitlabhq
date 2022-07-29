@@ -135,8 +135,7 @@ stores more than 600 gigabytes of data, and `ci_builds.yaml_variables` more
 than 300 gigabytes (as of February 2021).
 
 It is a lot of data that needs to be reliably moved to a different place.
-Unfortunately, right now, our [background
-migrations](https://docs.gitlab.com/ee/development/background_migrations.html)
+Unfortunately, right now, our [background migrations](../../../development/database/background_migrations.md)
 are not reliable enough to migrate this amount of data at scale. We need to
 build mechanisms that will give us confidence in moving this data between
 columns, tables, partitions or database shards.

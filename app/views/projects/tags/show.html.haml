@@ -42,15 +42,13 @@
       = render partial: 'projects/commit/signature', object: @tag.signature
     - if can?(current_user, :admin_tag, @project)
       = render 'edit_release_button', tag: @tag, project: @project, release: @release
-    = link_to project_tree_path(@project, @tag.name), class: 'btn btn-icon gl-button btn-default controls-item has-tooltip', title: s_('TagsPage|Browse files') do
+    = link_to project_tree_path(@project, @tag.name), class: 'btn btn-icon gl-button btn-default has-tooltip', title: s_('TagsPage|Browse files') do
       = sprite_icon('folder-open', css_class: 'gl-icon')
-    = link_to project_commits_path(@project, @tag.name), class: 'btn btn-icon gl-button btn-default controls-item has-tooltip', title: s_('TagsPage|Browse commits') do
+    = link_to project_commits_path(@project, @tag.name), class: 'btn btn-icon gl-button btn-default has-tooltip', title: s_('TagsPage|Browse commits') do
       = sprite_icon('history', css_class: 'gl-icon')
-    .controls-item
-      = render 'projects/buttons/download', project: @project, ref: @tag.name
+    = render 'projects/buttons/download', project: @project, ref: @tag.name
     - if can?(current_user, :admin_tag, @project)
-      .btn-container.controls-item-full
-        = render 'projects/buttons/remove_tag', project: @project, tag: @tag
+      = render 'projects/buttons/remove_tag', project: @project, tag: @tag
 
   - if @tag.message.present?
     %pre.wrap{ data: { qa_selector: 'tag_message_content' } }

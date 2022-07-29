@@ -414,7 +414,7 @@ RSpec.describe 'GFM autocomplete', :js do
 
       it 'shows all contacts' do
         page.within(find_autocomplete_menu) do
-          expected_data = contacts.map { |c| "#{c.first_name} #{c.last_name} #{c.email}"}
+          expected_data = contacts.map { |c| "#{c.first_name} #{c.last_name} #{c.email}" }
 
           expect(page.all('li').map(&:text)).to match_array(expected_data)
         end

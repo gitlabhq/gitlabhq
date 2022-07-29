@@ -22,7 +22,7 @@ module GoogleCloud
 
     def unique_gcp_project_ids
       filter_params = { key: 'GCP_PROJECT_ID' }
-      ::Ci::VariablesFinder.new(project, filter_params).execute.map(&:value).uniq
+      @unique_gcp_project_ids ||= ::Ci::VariablesFinder.new(project, filter_params).execute.map(&:value).uniq
     end
 
     def group_vars_by_environment(keys)

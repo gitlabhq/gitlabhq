@@ -7,7 +7,7 @@ RSpec.describe 'Pipelines', :js do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:project) { create(:project) }
-  let(:expected_detached_mr_tag) {'merge request'}
+  let(:expected_detached_mr_tag) { 'merge request' }
 
   context 'when user is logged in' do
     let(:user) { create(:user) }

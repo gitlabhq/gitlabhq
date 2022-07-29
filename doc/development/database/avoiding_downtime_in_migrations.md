@@ -93,9 +93,8 @@ class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.0]
 end
 ```
 
-You can consider [enabling lock retries](
-https://docs.gitlab.com/ee/development/migration_style_guide.html#usage-with-transactional-migrations
-) when you run a migration on big tables, because it might take some time to
+You can consider [enabling lock retries](../migration_style_guide.md#usage-with-transactional-migrations)
+when you run a migration on big tables, because it might take some time to
 acquire a lock on this table.
 
 #### B. The removed column has an index or constraint that belongs to it
@@ -126,13 +125,11 @@ end
 In the `down` method, we check to see if the column already exists before adding it again.
 We do this because the migration is non-transactional and might have failed while it was running.
 
-The [`disable_ddl_transaction!`](
-https://docs.gitlab.com/ee/development/migration_style_guide.html#usage-with-non-transactional-migrations-disable_ddl_transaction
-) is used to disable the transaction that wraps the whole migration.
+The [`disable_ddl_transaction!`](../migration_style_guide.md#usage-with-non-transactional-migrations-disable_ddl_transaction)
+is used to disable the transaction that wraps the whole migration.
 
-You can refer to the page [Migration Style Guide](
-https://docs.gitlab.com/ee/development/migration_style_guide.html
-) for more information about database migrations.
+You can refer to the page [Migration Style Guide](../migration_style_guide.md)
+for more information about database migrations.
 
 ### Step 3: Removing the ignore rule (release M+2)
 
@@ -295,8 +292,7 @@ when migrating a column in a large table (for example, `issues`). Background
 migrations spread the work / load over a longer time period, without slowing
 down deployments.
 
-For more information, see [the documentation on cleaning up background
-migrations](background_migrations.md#cleaning-up).
+For more information, see [the documentation on cleaning up background migrations](background_migrations.md#cleaning-up).
 
 ## Adding Indexes
 

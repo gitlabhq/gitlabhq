@@ -6,7 +6,7 @@ RSpec.describe 'User interacts with awards' do
   let(:user) { create(:user) }
 
   describe 'User interacts with awards in an issue', :js do
-    let(:issue) { create(:issue, project: project)}
+    let(:issue) { create(:issue, project: project) }
     let(:project) { create(:project) }
 
     before do

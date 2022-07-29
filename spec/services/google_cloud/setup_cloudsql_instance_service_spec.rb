@@ -5,6 +5,21 @@ require 'spec_helper'
 RSpec.describe GoogleCloud::SetupCloudsqlInstanceService do
   let(:random_user) { create(:user) }
   let(:project) { create(:project) }
+  let(:list_databases_empty) { Google::Apis::SqladminV1beta4::ListDatabasesResponse.new(items: []) }
+  let(:list_users_empty) { Google::Apis::SqladminV1beta4::ListUsersResponse.new(items: []) }
+  let(:list_databases) do
+    Google::Apis::SqladminV1beta4::ListDatabasesResponse.new(items: [
+      Google::Apis::SqladminV1beta4::Database.new(name: 'postgres'),
+      Google::Apis::SqladminV1beta4::Database.new(name: 'main_db')
+    ])
+  end
+
+  let(:list_users) do
+    Google::Apis::SqladminV1beta4::ListUsersResponse.new(items: [
+      Google::Apis::SqladminV1beta4::User.new(name: 'postgres'),
+      Google::Apis::SqladminV1beta4::User.new(name: 'main_user')
+    ])
+  end
 
   context 'when unauthorized user triggers worker' do
     subject do
@@ -76,6 +91,8 @@ RSpec.describe GoogleCloud::SetupCloudsqlInstanceService do
           allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |google_api_client|
             expect(google_api_client).to receive(:get_cloudsql_instance).and_return(get_instance_response_runnable)
             expect(google_api_client).to receive(:create_cloudsql_database).and_return(operation_fail)
+            expect(google_api_client).to receive(:list_cloudsql_databases).and_return(list_databases_empty)
+            expect(google_api_client).to receive(:list_cloudsql_users).and_return(list_users_empty)
           end
 
           message = subject[:message]
@@ -92,6 +109,8 @@ RSpec.describe GoogleCloud::SetupCloudsqlInstanceService do
             expect(google_api_client).to receive(:get_cloudsql_instance).and_return(get_instance_response_runnable)
             expect(google_api_client).to receive(:create_cloudsql_database).and_return(operation_done)
             expect(google_api_client).to receive(:create_cloudsql_user).and_return(operation_fail)
+            expect(google_api_client).to receive(:list_cloudsql_databases).and_return(list_databases_empty)
+            expect(google_api_client).to receive(:list_cloudsql_users).and_return(list_users_empty)
           end
 
           message = subject[:message]
@@ -102,12 +121,59 @@ RSpec.describe GoogleCloud::SetupCloudsqlInstanceService do
         end
       end
 
+      context 'when database and user already exist' do
+        it 'does not try to create a database or user' do
+          allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |google_api_client|
+            expect(google_api_client).to receive(:get_cloudsql_instance).and_return(get_instance_response_runnable)
+            expect(google_api_client).not_to receive(:create_cloudsql_database)
+            expect(google_api_client).not_to receive(:create_cloudsql_user)
+            expect(google_api_client).to receive(:list_cloudsql_databases).and_return(list_databases)
+            expect(google_api_client).to receive(:list_cloudsql_users).and_return(list_users)
+          end
+
+          status = subject[:status]
+          expect(status).to eq(:success)
+        end
+      end
+
+      context 'when database already exists' do
+        it 'does not try to create a database' do
+          allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |google_api_client|
+            expect(google_api_client).to receive(:get_cloudsql_instance).and_return(get_instance_response_runnable)
+            expect(google_api_client).not_to receive(:create_cloudsql_database)
+            expect(google_api_client).to receive(:create_cloudsql_user).and_return(operation_done)
+            expect(google_api_client).to receive(:list_cloudsql_databases).and_return(list_databases)
+            expect(google_api_client).to receive(:list_cloudsql_users).and_return(list_users_empty)
+          end
+
+          status = subject[:status]
+          expect(status).to eq(:success)
+        end
+      end
+
+      context 'when user already exists' do
+        it 'does not try to create a user' do
+          allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |google_api_client|
+            expect(google_api_client).to receive(:get_cloudsql_instance).and_return(get_instance_response_runnable)
+            expect(google_api_client).to receive(:create_cloudsql_database).and_return(operation_done)
+            expect(google_api_client).not_to receive(:create_cloudsql_user)
+            expect(google_api_client).to receive(:list_cloudsql_databases).and_return(list_databases_empty)
+            expect(google_api_client).to receive(:list_cloudsql_users).and_return(list_users)
+          end
+
+          status = subject[:status]
+          expect(status).to eq(:success)
+        end
+      end
+
       context 'when database and user creation succeeds' do
         it 'stores project CI vars' do
           allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |google_api_client|
             expect(google_api_client).to receive(:get_cloudsql_instance).and_return(get_instance_response_runnable)
             expect(google_api_client).to receive(:create_cloudsql_database).and_return(operation_done)
             expect(google_api_client).to receive(:create_cloudsql_user).and_return(operation_done)
+            expect(google_api_client).to receive(:list_cloudsql_databases).and_return(list_databases_empty)
+            expect(google_api_client).to receive(:list_cloudsql_users).and_return(list_users_empty)
           end
 
           subject
@@ -143,6 +209,8 @@ RSpec.describe GoogleCloud::SetupCloudsqlInstanceService do
               expect(google_api_client).to receive(:get_cloudsql_instance).and_return(get_instance_response_runnable)
               expect(google_api_client).to receive(:create_cloudsql_database).and_return(operation_done)
               expect(google_api_client).to receive(:create_cloudsql_user).and_return(operation_done)
+              expect(google_api_client).to receive(:list_cloudsql_databases).and_return(list_databases_empty)
+              expect(google_api_client).to receive(:list_cloudsql_users).and_return(list_users_empty)
             end
 
             subject

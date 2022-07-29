@@ -1518,8 +1518,8 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe '#environment_deployment_tier' do
-    subject { build.environment_deployment_tier }
+  describe '#environment_tier_from_options' do
+    subject { build.environment_tier_from_options }
 
     let(:build) { described_class.new(options: options) }
     let(:options) { { environment: { deployment_tier: 'production' } } }
@@ -1530,6 +1530,30 @@ RSpec.describe Ci::Build do
       let(:options) { { environment: { name: 'production' } } }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#environment_tier' do
+    subject { build.environment_tier }
+
+    let(:options) { { environment: { deployment_tier: 'production' } } }
+    let!(:environment) { create(:environment, name: 'production', tier: 'development', project: project) }
+    let(:build) { described_class.new(options: options, environment: 'production', project: project) }
+
+    it { is_expected.to eq('production') }
+
+    context 'when options does not include deployment_tier' do
+      let(:options) { { environment: { name: 'production' } } }
+
+      it 'uses tier from environment' do
+        is_expected.to eq('development')
+      end
+
+      context 'when persisted environment is absent' do
+        let(:environment) { nil }
+
+        it { is_expected.to be_nil }
+      end
     end
   end
 
@@ -2921,7 +2945,7 @@ RSpec.describe Ci::Build do
           let(:expected_variables) do
             predefined_variables.map { |variable| variable.fetch(:key) } +
               %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
-                 CI_ENVIRONMENT_TIER CI_ENVIRONMENT_ACTION CI_ENVIRONMENT_URL]
+                 CI_ENVIRONMENT_ACTION CI_ENVIRONMENT_TIER CI_ENVIRONMENT_URL]
           end
 
           before do
@@ -3085,6 +3109,16 @@ RSpec.describe Ci::Build do
           end
 
           it_behaves_like 'containing environment variables'
+        end
+      end
+
+      context 'when environment_tier is updated in options' do
+        before do
+          build.update!(options: { environment: { name: 'production', deployment_tier: 'development' } })
+        end
+
+        it 'uses tier from options' do
+          is_expected.to include({ key: 'CI_ENVIRONMENT_TIER', value: 'development', public: true, masked: false })
         end
       end
 

@@ -722,10 +722,12 @@ We include guidance for links in these categories:
 
 - Use inline link Markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. Do not use `[Text][identifier]` reference-style links.
-
 - Use meaningful anchor text.
   For example, instead of writing something like `Read more about merge requests [here](LINK)`,
   write `Read more about [merge requests](LINK)`.
+- Put the entire link on a single line. Some of our [linters](../testing.md) do not
+  validate links when split over multiple lines, and incorrect or broken links could
+  slip through.
 
 ### Links to internal documentation
 

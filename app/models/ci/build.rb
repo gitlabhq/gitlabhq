@@ -523,8 +523,12 @@ module Ci
       self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
     end
 
-    def environment_deployment_tier
+    def environment_tier_from_options
       self.options.dig(:environment, :deployment_tier) if self.options
+    end
+
+    def environment_tier
+      environment_tier_from_options || persisted_environment.try(:tier)
     end
 
     def triggered_by?(current_user)
@@ -581,6 +585,7 @@ module Ci
         variables.concat(persisted_environment.predefined_variables)
 
         variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action)
+        variables.append(key: 'CI_ENVIRONMENT_TIER', value: environment_tier)
 
         # Here we're passing unexpanded environment_url for runner to expand,
         # and we need to make sure that CI_ENVIRONMENT_NAME and

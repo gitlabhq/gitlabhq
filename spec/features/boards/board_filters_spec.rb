@@ -16,7 +16,7 @@ RSpec.describe 'Issue board filters', :js do
   let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: issue_1) }
 
   let(:filtered_search) { find('[data-testid="issue-board-filtered-search"]') }
-  let(:filter_input) { find('.gl-filtered-search-term-input')}
+  let(:filter_input) { find('.gl-filtered-search-term-input') }
   let(:filter_dropdown) { find('.gl-filtered-search-suggestion-list') }
   let(:filter_first_suggestion) { find('.gl-filtered-search-suggestion-list').first('.gl-filtered-search-suggestion') }
   let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
@@ -164,7 +164,7 @@ RSpec.describe 'Issue board filters', :js do
   end
 
   describe 'filters by type' do
-    let_it_be(:incident) { create(:incident, project: project)}
+    let_it_be(:incident) { create(:incident, project: project) }
 
     before do
       set_filter('type')

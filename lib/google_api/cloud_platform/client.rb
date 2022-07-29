@@ -148,14 +148,40 @@ module GoogleApi
         enable_service(gcp_project_id, 'cloudbuild.googleapis.com')
       end
 
+      def enable_cloud_sql_admin(gcp_project_id)
+        enable_service(gcp_project_id, 'sqladmin.googleapis.com')
+      end
+
+      def enable_compute(gcp_project_id)
+        enable_service(gcp_project_id, 'compute.googleapis.com')
+      end
+
+      def enable_service_networking(gcp_project_id)
+        enable_service(gcp_project_id, 'servicenetworking.googleapis.com')
+      end
+
       def revoke_authorizations
         uri = URI(REVOKE_URL)
         Gitlab::HTTP.post(uri, body: { 'token' => access_token })
       end
 
+      def list_cloudsql_databases(gcp_project_id, instance_name)
+        service = Google::Apis::SqladminV1beta4::SQLAdminService.new
+        service.authorization = access_token
+
+        service.list_databases(gcp_project_id, instance_name, options: user_agent_header)
+      end
+
       def create_cloudsql_database(gcp_project_id, instance_name, database_name)
         database = Google::Apis::SqladminV1beta4::Database.new(name: database_name)
         sql_admin_service.insert_database(gcp_project_id, instance_name, database)
+      end
+
+      def list_cloudsql_users(gcp_project_id, instance_name)
+        service = Google::Apis::SqladminV1beta4::SQLAdminService.new
+        service.authorization = access_token
+
+        service.list_users(gcp_project_id, instance_name, options: user_agent_header)
       end
 
       def create_cloudsql_user(gcp_project_id, instance_name, username, password)
@@ -167,6 +193,20 @@ module GoogleApi
 
       def get_cloudsql_instance(gcp_project_id, instance_name)
         sql_admin_service.get_instance(gcp_project_id, instance_name)
+      end
+
+      def create_cloudsql_instance(gcp_project_id, instance_name, root_password, database_version, region, tier)
+        database_instance = Google::Apis::SqladminV1beta4::DatabaseInstance.new(
+          name: instance_name,
+          root_password: root_password,
+          database_version: database_version,
+          region: region,
+          settings: Google::Apis::SqladminV1beta4::Settings.new(tier: tier)
+        )
+
+        service = Google::Apis::SqladminV1beta4::SQLAdminService.new
+        service.authorization = access_token
+        service.insert_instance(gcp_project_id, database_instance)
       end
 
       private

@@ -89,7 +89,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js do
 
   context 'when GraphQL assignees widget feature flag is enabled' do
     let(:sidebar_assignee_dropdown_item) { sidebar_assignee_block.find(".dropdown-item", text: assignee.username ) }
-    let(:sidebar_assignee_dropdown_tooltip) { sidebar_assignee_dropdown_item['title']}
+    let(:sidebar_assignee_dropdown_tooltip) { sidebar_assignee_dropdown_item['title'] }
 
     context 'when user is an owner' do
       before do

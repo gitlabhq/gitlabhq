@@ -20,8 +20,7 @@ GraphQL development and helped to surface the need of improving tooling we use
 to extend the new API.
 
 This document describes the work that is needed to build a stable foundation that
-will support our development efforts and a large-scale usage of the [GraphQL
-API](https://docs.gitlab.com/ee/api/graphql/index.html).
+will support our development efforts and a large-scale usage of the [GraphQL API](../../../api/graphql/index.md).
 
 ## Summary
 

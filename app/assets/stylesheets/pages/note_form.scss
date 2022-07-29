@@ -121,15 +121,6 @@
     border-radius: $label-border-radius;
     padding-top: $gl-vert-padding;
     padding-bottom: $gl-vert-padding;
-
-    .icon svg {
-      position: relative;
-      top: 2px;
-      margin-right: $btn-margin-5;
-      width: $gl-font-size;
-      height: $gl-font-size;
-      fill: $orange-600;
-    }
   }
 }
 

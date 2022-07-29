@@ -395,8 +395,7 @@ We considered using these Rails features as an alternative to foreign keys but t
 For non-trivial objects that need to clean up data outside the
 database (for example, object storage) where you might wish to use `dependent: :destroy`,
 see alternatives in
-[Avoid `dependent: :nullify` and `dependent: :destroy` across
-databases](./multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
+[Avoid `dependent: :nullify` and `dependent: :destroy` across databases](multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
 
 ## Risks of loose foreign keys and possible mitigations
 

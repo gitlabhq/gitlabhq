@@ -121,7 +121,7 @@ RSpec.describe 'Admin Mode Login' do
       end
 
       context 'when logging in via omniauth' do
-        let(:user) { create(:omniauth_user, :admin, :two_factor, extern_uid: 'my-uid', provider: 'saml', password_automatically_set: false)}
+        let(:user) { create(:omniauth_user, :admin, :two_factor, extern_uid: 'my-uid', provider: 'saml', password_automatically_set: false) }
         let(:mock_saml_response) do
           File.read('spec/fixtures/authentication/saml_response.xml')
         end

@@ -18,7 +18,7 @@ RSpec.describe 'Issues > User uses quick actions', :js do
     let!(:label_feature) { create(:label, project: project, title: 'feature') }
     let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
     let(:issuable) { create(:issue, project: project) }
-    let(:source_issuable) { create(:issue, project: project, milestone: milestone, labels: [label_bug, label_feature])}
+    let(:source_issuable) { create(:issue, project: project, milestone: milestone, labels: [label_bug, label_feature]) }
 
     it_behaves_like 'close quick action', :issue
     it_behaves_like 'issuable time tracker', :issue

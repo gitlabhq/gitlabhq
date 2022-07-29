@@ -135,27 +135,8 @@
     }
 
     @include media-breakpoint-down(md) {
-      $controls-margin: $btn-margin-5 - 2px;
       flex: 0 0 100%;
       margin-top: $gl-padding-8;
-
-      .controls-item,
-      .controls-item-full,
-      .controls-item:last-child {
-        flex: 1 1 35%;
-        display: block;
-        width: 100%;
-        margin: $controls-margin;
-
-        .btn,
-        .dropdown {
-          margin: 0;
-        }
-      }
-
-      .controls-item-full {
-        flex: 1 1 100%;
-      }
     }
 
     @include media-breakpoint-down(sm) {

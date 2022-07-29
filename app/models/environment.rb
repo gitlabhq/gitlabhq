@@ -253,7 +253,6 @@ class Environment < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI_ENVIRONMENT_NAME', value: name)
       .append(key: 'CI_ENVIRONMENT_SLUG', value: slug)
-      .append(key: 'CI_ENVIRONMENT_TIER', value: tier)
   end
 
   def recently_updated_on_branch?(ref)

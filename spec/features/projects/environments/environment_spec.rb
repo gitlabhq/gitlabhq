@@ -18,10 +18,10 @@ RSpec.describe 'Environment' do
 
   describe 'environment details page' do
     let!(:environment) { create(:environment, project: project) }
-    let!(:permissions) { }
-    let!(:deployment) { }
-    let!(:action) { }
-    let!(:cluster) { }
+    let!(:permissions) {}
+    let!(:deployment) {}
+    let!(:action) {}
+    let!(:cluster) {}
 
     context 'with auto-stop' do
       let!(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }

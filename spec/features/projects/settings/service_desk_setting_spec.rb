@@ -81,7 +81,7 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache do
         }
       end
 
-      let_it_be_with_reload(:group) { create(:group)}
+      let_it_be_with_reload(:group) { create(:group) }
       let_it_be_with_reload(:project) { create(:project, :custom_repo, group: group, files: issuable_project_template_files) }
       let_it_be(:group_template_repo) { create(:project, :custom_repo, group: group, files: issuable_group_template_files) }
 

@@ -84,7 +84,7 @@ module Deployments
     def renew_deployment_tier
       return unless deployable
 
-      if (tier = deployable.environment_deployment_tier)
+      if (tier = deployable.environment_tier_from_options)
         environment.tier = tier
       end
     end

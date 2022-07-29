@@ -86,7 +86,7 @@ RSpec.describe 'Merge request > User sees diff', :js do
 
     context 'when file contains html' do
       let(:current_user) { project.first_owner }
-      let(:branch_name) {"test_branch"}
+      let(:branch_name) { "test_branch" }
 
       it 'escapes any HTML special characters in the diff chunk header' do
         file_content =

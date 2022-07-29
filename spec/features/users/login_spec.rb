@@ -365,7 +365,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
     end
 
     context 'when logging in via OAuth' do
-      let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')}
+      let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml') }
       let(:mock_saml_response) do
         File.read('spec/fixtures/authentication/saml_response.xml')
       end
