@@ -5,6 +5,7 @@ import { renderKroki } from './render_kroki';
 import renderMath from './render_math';
 import renderSandboxedMermaid from './render_sandboxed_mermaid';
 import renderMetrics from './render_metrics';
+import { renderJSONTable } from './render_json_table';
 
 // Render GitLab flavoured Markdown
 //
@@ -15,6 +16,9 @@ $.fn.renderGFM = function renderGFM() {
   renderKroki(this.find('.js-render-kroki[hidden]').get());
   renderMath(this.find('.js-render-math'));
   renderSandboxedMermaid(this.find('.js-render-mermaid'));
+  renderJSONTable(
+    Array.from(this.find('[lang="json"][data-lang-params="table"]').get()).map((e) => e.parentNode),
+  );
 
   highlightCurrentUser(this.find('.gfm-project_member').get());
 

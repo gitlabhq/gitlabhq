@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Use deploy keys to access repositories that are hosted in GitLab. In most cases, you use deploy keys
 to access a repository from an external host, like a build server or Continuous Integration (CI) server.
 
-Depending on your needs, you might want to use a [deploy token](../deploy_tokens/) to access a repository instead.
+Depending on your needs, you might want to use a [deploy token](../deploy_tokens/index.md) to access a repository instead.
 
 | Attribute        |  Deploy key | Deploy token |
 |------------------|-------------|--------------|

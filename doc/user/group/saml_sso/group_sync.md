@@ -28,7 +28,7 @@ To configure SAML Group Sync:
   1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting.
 - For GitLab.com:
   1. See [SAML SSO for GitLab.com groups](index.md).
-  1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`. 
+  1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`.
 
 NOTE:
 The value for `Groups` or `groups` in the SAML response can be either the group name or the group ID.
@@ -44,8 +44,8 @@ The value for `Groups` or `groups` in the SAML response can be either the group 
 
 Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
 are not accepted as a source of groups.
-See the [SAML troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md)
-for examples on configuring the required attribute name in the SAML identity provider's settings.
+See [examples](../../../user/group/saml_sso/example_saml_config.md)
+for configuring the required attribute name in the SAML identity provider's settings.
 
 ## Configure SAML Group Links
 

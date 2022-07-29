@@ -241,4 +241,4 @@ who are aware of the risks.
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/testing-with-openssl/index.html)
   - [`strace` zine](https://wizardzines.com/zines/strace/)
 - GitLab.com-specific resources:
-  - [Group SAML/SCIM setup](troubleshooting/group_saml_scim.md)
+  - [Example group SAML and SCIM configurations](../user/group/saml_sso/example_saml_config.md)

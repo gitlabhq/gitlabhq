@@ -283,7 +283,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/timezone.md @axil
 /doc/administration/troubleshooting/ @axil
 /doc/administration/troubleshooting/elasticsearch.md @sselhorn
-/doc/administration/troubleshooting/group_saml_scim.md @eread
 /doc/administration/troubleshooting/postgresql.md @aqualls
 /doc/administration/uploads.md @axil
 /doc/administration/user_settings.md @eread
@@ -710,6 +709,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/group/saml_sso/group_managed_accounts.md @eread
 /doc/user/group/saml_sso/index.md @eread
 /doc/user/group/saml_sso/scim_setup.md @eread
+/doc/user/group/saml_sso/example_saml_config.md @eread
 /doc/user/group/settings/group_access_tokens.md @eread
 /doc/user/group/settings/import_export.md @eread
 /doc/user/group/subgroups/index.md @fneill

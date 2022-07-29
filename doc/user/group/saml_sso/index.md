@@ -174,7 +174,7 @@ The recommended attributes and claims settings are:
 
 If using [Group Sync](#group-sync), customize the name of the group claim to match the required attribute.
 
-See the [troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory) for an example configuration.
+See our [example configuration page](example_saml_config.md#azure-active-directory).
 
 ### Google Workspace setup notes
 
@@ -206,7 +206,7 @@ For NameID, the following settings are recommended:
 
 When selecting **Verify SAML Configuration** on the GitLab SAML SSO page, disregard the warning recommending setting the NameID format to "persistent".
 
-See the [troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md#google-workspace) for an example configuration.
+See our [example configuration page](example_saml_config.md#google-workspace).
 
 ### Okta setup notes
 
@@ -445,7 +445,7 @@ To generate a SAML Response:
 
 ### Verifying configuration
 
-For convenience, we've included some [example resources](../../../administration/troubleshooting/group_saml_scim.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
+For convenience, we've included some [example resources](../../../user/group/saml_sso/example_saml_config.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
 
 ### Verifying NameID
 

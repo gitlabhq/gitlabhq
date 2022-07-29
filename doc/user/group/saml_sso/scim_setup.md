@@ -82,7 +82,7 @@ For a list of required attributes, refer to the [SCIM API documentation](../../.
 | `userPrincipalName`              | `emails[type eq "work"].value` |                     |
 | `mailNickname`                   | `userName`                     |                     |
 
-For guidance, you can view [an example configuration in the troubleshooting reference](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory).
+For guidance, you can view [an example configuration](example_saml_config.md#azure-active-directory).
 
 1. Below the mapping list select **Show advanced options > Edit attribute list for AppName**.
 1. Ensure the `id` is the primary and required field, and `externalId` is also required.

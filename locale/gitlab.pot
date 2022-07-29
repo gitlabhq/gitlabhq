@@ -16816,6 +16816,9 @@ msgstr ""
 msgid "Generate site and private keys at"
 msgstr ""
 
+msgid "Generated with JSON data"
+msgstr ""
+
 msgid "Generic"
 msgstr ""
 
@@ -41281,6 +41284,9 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+msgid "Type to search"
+msgstr ""
+
 msgid "U2F Devices (%{length})"
 msgstr ""
 
@@ -41399,6 +41405,9 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to load the merge request widget. Try reloading the page."
+msgstr ""
+
+msgid "Unable to parse JSON"
 msgstr ""
 
 msgid "Unable to parse the vulnerability report's options."

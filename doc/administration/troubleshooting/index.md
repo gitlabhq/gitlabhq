@@ -16,7 +16,7 @@ installation.
 - [Elasticsearch](elasticsearch.md)
 - [Sidekiq](sidekiq.md)
 - [GitLab Rails console cheat sheet](gitlab_rails_cheat_sheet.md)
-- [Group SAML and SCIM troubleshooting](group_saml_scim.md) **(PREMIUM SAAS)**
+- [Example group SAML and SCIM configurations](../../user/group/saml_sso/example_saml_config.md)
 - [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
 - [Linux cheat sheet](linux_cheat_sheet.md)
 - [Parsing GitLab logs with `jq`](../logs/log_parsing.md)
