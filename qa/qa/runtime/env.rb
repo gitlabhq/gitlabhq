@@ -492,6 +492,10 @@ module QA
         ENV.fetch('MAX_CAPYBARA_WAIT_TIME', 10).to_i
       end
 
+      def use_public_ip_api?
+        enabled?(ENV['QA_USE_PUBLIC_IP_API'], default: false)
+      end
+
       private
 
       def remote_grid_credentials

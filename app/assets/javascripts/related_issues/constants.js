@@ -115,7 +115,7 @@ export const PathIdSeparator = {
 
 export const issuablesBlockHeaderTextMap = {
   [issuableTypesMap.ISSUE]: __('Linked items'),
-  [issuableTypesMap.INCIDENT]: __('Related incidents or issues'),
+  [issuableTypesMap.INCIDENT]: __('Linked incidents or issues'),
   [issuableTypesMap.EPIC]: __('Linked epics'),
 };
 

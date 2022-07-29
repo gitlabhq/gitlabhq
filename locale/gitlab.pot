@@ -23553,6 +23553,9 @@ msgstr ""
 msgid "Linked epics"
 msgstr ""
 
+msgid "Linked incidents or issues"
+msgstr ""
+
 msgid "Linked items"
 msgstr ""
 
@@ -32234,9 +32237,6 @@ msgid "Relate to %{issuable_type} %{add_related_issue_link}"
 msgstr ""
 
 msgid "Related feature flags"
-msgstr ""
-
-msgid "Related incidents or issues"
 msgstr ""
 
 msgid "Related issues"
