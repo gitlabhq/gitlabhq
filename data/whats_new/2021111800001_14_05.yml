@@ -1,27 +1,27 @@
-- title: Introducing Infrastructure as Code (IaC) security scanning
-  body: |
+- name: Introducing Infrastructure as Code (IaC) security scanning
+  description: |
     With GitLab 14.5 we're introducing security scanning for Infrastructure as Code (IaC) configuration files. Like all our SAST scanners, we've chosen to make this capability available for all customers for free to encourage secure coding practices with the rise of IaC. The initial version of this IaC security scanner supports configuration files for Terraform, Ansible, AWS CloudFormation, and Kubernetes and is based on the open-source [Keeping Infrastructure as Code Secure (KICS) project](https://kics.io/). This new IaC scanning capability joins our [existing Kubernetes manifest SAST scanner](https://docs.gitlab.com/ee/user/application_security/sast/#enabling-kubesec-analyzer).
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/iac_scanning/'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/iac_scanning/'
   image_url: https://about.gitlab.com/images/14_5/gitlab-iac.png
   published_at: 2021-11-22
   release: 14.5
-- title: Add personal README to profile
-  body: |
+- name: Add personal README to profile
+  description: |
     You can now add a README section to your GitLab profile! This is a great way to tell others about, your interests, how you work, or anything else you want! To add a README section, create a new public project with the same name as your user account and add a new [README file](https://docs.gitlab.com/ee/user/project/repository/index.html#readme-and-index-files). The contents of that file are automatically shown on your GitLab profile.
   stage: Manage
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/profile/#add-details-to-your-profile-with-a-readme'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/profile/#add-details-to-your-profile-with-a-readme'
   image_url: https://about.gitlab.com/images/14_5/user_profiles_readme.png
   published_at: 2021-11-22
   release: 14.5
-- title: Geo provides a single command to promote a secondary node
-  body: |
+- name: Geo provides a single command to promote a secondary node
+  description: |
     When performing a failover, systems administrators use different tools depending on the underlying architecture. On a single-node Geo site, administrators can use the `gitlab-ctl promote-to-primary-node` command. However, multi-node sites did not support this command and required manual editing of configuration. This was cumbersome for large environments because it required updating dozens of configuration files.
 
     Now, administrators can use `gitlab-ctl geo promote` on any node of a Geo secondary site to promote it to a primary. In a disaster recovery scenario or planned failover, this saves precious time and reduces potential errors when promoting a secondary site to a primary. This command also makes it easier to script the failover process.
@@ -30,13 +30,13 @@
   stage: Enablement
   self-managed: true
   gitlab-com: false
-  packages: [Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/administration/geo/disaster_recovery/planned_failover.html'
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/administration/geo/disaster_recovery/planned_failover.html'
   image_url: https://about.gitlab.com/images/growth/enablement.png
   published_at: 2021-11-22
   release: 14.5
-- title: Group-level settings for merge request approvals
-  body: |
+- name: Group-level settings for merge request approvals
+  description: |
     You can now define and enforce values for merge request approval settings at the group level. These values cascade and are used by any projects within the group. Group-level merge request approvals make it easy for organizations to ensure proper separation of duties across all teams. You only have to specify settings in a single location now, rather than needing to update and monitor every project.
 
     When these settings are set at the group level, you:
@@ -46,32 +46,32 @@
   stage: Manage
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/group/#group-approval-rules'
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/group/#group-approval-rules'
   image_url: https://about.gitlab.com/images/14_5/group_level_mr_settings_picture.png
   published_at: 2021-11-22
   release: 14.5
-- title: GitLab Kubernetes Agent available in GitLab Free
-  body: |
+- name: GitLab Kubernetes Agent available in GitLab Free
+  description: |
     Connecting a Kubernetes cluster with the GitLab Kubernetes Agent simplifies the setup for cluster applications and enables secure GitOps deployments to the cluster. Initially, the GitLab Kubernetes Agent was available only for Premium users. In our commitment to the open source ethos, we moved the core features of the GitLab agent for Kubernetes and the ability to use CI/CD with Kubernetes to GitLab Free. We expect that the open-sourced features are compelling to many users without dedicated infrastructure teams and strong requirements around cluster management. Advanced features remain available as part of the GitLab Premium offering.
   stage: Configure
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/clusters/agent/'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/clusters/agent/'
   image_url: https://about.gitlab.com/images/growth/configure.png
   published_at: 2021-11-22
   release: 14.5
-- title: Cleaner diffs for Jupyter Notebook files
-  body: |
+- name: Cleaner diffs for Jupyter Notebook files
+  description: |
     Jupyter notebooks are key to data scientists' and machine learning engineers' workflows, but the file structure makes code review challenging. Often, the files can't be reviewed properly, and users are forced to accept those changes or treat their repositories as stores of data versus collaborative projects.
 
     Now GitLab automatically strips out the noise and displays a cleaner version of the diff for these files. Human-readable diffs make it easier to review the substance of the change, without worrying about the formatting pieces that Jupyter Notebooks need.
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/project/repository/jupyter_notebooks/#cleaner-diffs'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/repository/jupyter_notebooks/#cleaner-diffs'
   image_url: https://about.gitlab.com/images/14_5/create-code-review-jupyter-notebook-diffs.png
   published_at: 2021-11-22
   release: 14.5

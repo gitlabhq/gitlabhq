@@ -9,30 +9,30 @@
 #
 # Please delete this line and above before submitting your merge request.
 
-- title: SAML Group Sync for self-managed GitLab
-  body: |  # Do not modify this line, instead modify the lines below.
+- name: SAML Group Sync for self-managed GitLab
+  description: |  # Do not modify this line, instead modify the lines below.
     You can now map a group in your identity provider to a self-managed GitLab group using SAML group links. Previously, this feature was only available for GitLab.com. Group memberships are updated when a user logs into GitLab through their SAML provider. This new functionality decreases the workload for GitLab administrators and reduces onboarding time for group members.
   stage: manage  # String value of the stage that the feature was created in. e.g., Growth
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/group/saml_sso/group_sync.html
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/saml_sso/group_sync.html
   image_url: https://about.gitlab.com/images/15_1/SAML_Group_Sync.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   published_at: 2022-06-22
   release: 15.1
-- title: Enhancing visibility into Value Stream with DORA metrics
-  body: |  # Do not modify this line, instead modify the lines below.
+- name: Enhancing visibility into Value Stream with DORA metrics
+  description: |  # Do not modify this line, instead modify the lines below.
     With the addition of the four [DORA metrics](https://docs.gitlab.com/ee/user/analytics/#devops-research-and-assessment-dora-key-metrics) tiles to the [Value Stream Analytics](https://docs.gitlab.com/ee/user/group/value_stream_analytics/) dashboard, you can now track team performance and value flow from ideation to customer delivery. Additionally, we added a new trend chart for the DORA [Time to restore service](https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html) metric to provide insights into software stability and reliability trends. This new chart shows information about how long it takes an organization to recover from a failure in production. This is the third DORA chart that's available out of the box in GitLab. We plan to keep improving the visibility into DORA metrics and also add charts for the fourth metric- Change failure rate.
   stage: manage  # String value of the stage that the feature was created in. e.g., Growth
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html
   image_url: https://about.gitlab.com/images/15_1/vsa_dora_n_ttrs.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   published_at: 2022-06-22
   release: 15.1
-- title: "SLSA-2 attestation included for build artifacts"
-  body: |  # Do not modify this line, instead modify the lines below.
+- name: "SLSA-2 attestation included for build artifacts"
+  description: |  # Do not modify this line, instead modify the lines below.
     [Supply-chain Levels for Software Artifacts (SLSA)](https://github.com/slsa-framework/slsa) is a security framework that helps ensure the security and integrity of your software supply chain. By default, GitLab Runner is now capable of generating and producing SLSA-2 compliant attestation metadata for build artifacts.
         If the artifact is stored in a registry, then the attestation metadata is stored alongside the artifact in that registry. Otherwise, the metadata is in rendered in a plain text `.json` file that's stored with the artifact.
         This new attestation information can help you more easily verify that your build artifacts have not been tampered with. To enable this feature, simply set `RUNNER_GENERATE_ARTIFACTS_METADATA = "true"` in your `.gitlab-ci.yml` file.
@@ -40,20 +40,20 @@
   stage: verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/ci/runners/configure_runners.html#artifact-attestation
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/runners/configure_runners.html#artifact-attestation
   image_url: https://img.youtube.com/vi/MlIdqrDgI8U/hqdefault.jpg
   published_at: 2022-06-22
   release: 15.1
-- title: "Link to included CI/CD configuration from the pipeline editor"
-  body: |  # Do not modify this line, instead modify the lines below.
+- name: "Link to included CI/CD configuration from the pipeline editor"
+  description: |  # Do not modify this line, instead modify the lines below.
     A typical CI/CD configuration uses the `include` keyword to import configuration stored in other files or CI/CD templates. When editing or troubleshooting your configuration though, it can be difficult to understand how all the configuration works together because the included configuration is not visible in your `.gitlab-ci-yml`, you only see the `include` entry.
       In this release, we added links to all included configuration files and templates to the pipeline editor. Now you can easily access and view all the CI/CD configuration your pipeline uses, making it much easier to manage large and complex pipelines.
   stage: verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/ci/pipeline_editor/
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/pipeline_editor/
   image_url: https://img.youtube.com/vi/7BNDUYfY_ok/hqdefault.jpg
   published_at: 2022-06-22
   release: 15.1

@@ -1,49 +1,49 @@
 ---
-- title: Manage IT Alerts in GitLab
-  body: |
+- name: Manage IT Alerts in GitLab
+  description: |
     GitLab is excited to introduce Alert Management to aggregate multiple IT service alerts in one interface, helping your team triage alerts and promote them to Incidents.
 
     We’ve added the ability to triage alerts in a [list view](https://gitlab.com/groups/gitlab-org/-/epics/2986), [view alert details](https://gitlab.com/groups/gitlab-org/-/epics/2987), [assign alerts](https://gitlab.com/groups/gitlab-org/-/epics/3349), [update the status of alerts](https://gitlab.com/gitlab-org/gitlab/-/issues/214542), and [create Incident Issues from Alerts](https://gitlab.com/gitlab-org/gitlab/-/issues/213909).
   stage: Monitor
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/operations/incident_management/index.html
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/operations/incident_management/index.html
   image_url: https://about.gitlab.com/images/13_1/alert_management.png
   published_at: 2020-06-22
   release: 13.1
-- title: Accessibility testing merge request widget
-  body: |
+- name: Accessibility testing merge request widget
+  description: |
     Today, developers who want to ensure their application is accessible to everyone suffer from slow feedback loops, which make it difficult to catch degradations in their code.
 
     In GitLab 13.1, merge requests can have a widget that details accessibility degradations related to the changed pages. This will immediately show developers the impact of their changes, which helps prevent degradations before they are merged and deployed.
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/project/merge_requests/accessibility_testing.html#accessibility-merge-request-widget
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/accessibility_testing.html#accessibility-merge-request-widget
   image_url: https://about.gitlab.com/images/13_1/a11y-merge-request-widget.png
   published_at: 2020-06-22
   release: 13.1
-- title: Mark any Design Thread as Resolved
-  body: |
+- name: Mark any Design Thread as Resolved
+  description: |
     When you receive lots of feedback on a Design, the number of comment pins can build up quickly! As your discussion thread grows, it gets hard to know which discussions are complete and which still need work. Now you’ll have the ability to mark any comment as **Resolved** to signify that it is now complete. Even better — your **Resolved Comment** pins will disappear from the Design so you can focus on what’s left!
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/project/issues/design_management.html#resolve-design-threads
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/issues/design_management.html#resolve-design-threads
   image_url: https://about.gitlab.com/images/13_1/resolve-design-comment.gif
   published_at: 2020-06-22
   release: 13.1
-- title: Merge request reviews moved to Free
-  body: |
+- name: Merge request reviews moved to Free
+  description: |
     Originally introduced in GitLab 11.4 as a GitLab Premium feature, merge request reviews allow merge request reviewers to submit multiple comments at once, cutting down on notification noise for the merge request author, and allowing for a more cohesive and streamlined review process.
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/discussions/index.html#merge-request-reviews
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/discussions/index.html#merge-request-reviews
   image_url: https://about.gitlab.com/images/13_1/batch_comments.png
   published_at: 2020-06-22
   release: 13.1

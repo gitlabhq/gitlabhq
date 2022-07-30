@@ -1,77 +1,77 @@
-- title: "Select CI/CD configuration from any job and reuse it"
-  body: |
+- name: "Select CI/CD configuration from any job and reuse it"
+  description: |
     Previously, if you wanted to reuse the same configuration in multiple jobs, you had two options: add YAML anchors, which don't work across different configuration files, or use `extends` to reuse an entire section.
 
     In this release, we've added a new YAML function called `!reference`, which lets you target the exact configuration you want to reuse as part of your CI/CD pipeline, even if it's in another file.
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/ci/yaml/index.html#reference-tags
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/yaml/index.html#reference-tags
   image_url: https://about.gitlab.com/images/13_9/reference.png
   published_at: 2021-02-22
   release: 13.9
-- title: "GPU and smart scheduling support for GitLab Runner"
-  body: |
+- name: "GPU and smart scheduling support for GitLab Runner"
+  description: |
     Specialized compute workloads like those used in machine learning can significantly benefit from access to GPUs. Developers can configure GitLab Runner to leverage GPUs in the Docker executor by forwarding the `--gpu` flag. You can also use this with recent support in [GitLab’s fork of Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html#using-the-forked-version-of-docker-machine), which allows you to [accelerate workloads with attached GPUs](https://cloud.google.com/compute/docs/gpus/create-vm-with-gpus). Doing so can help control costs associated with potentially expensive machine configurations.
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/runner/executors/docker_machine.html#using-gpus-on-google-compute-engine
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/runner/executors/docker_machine.html#using-gpus-on-google-compute-engine
   image_url: https://about.gitlab.com/images/ci/gitlab-ci-cd-logo_2x.png
   published_at: 2021-02-22
   release: 13.9
-- title: "Vault JWT (JSON Web Token) supports GitLab environments"
-  body: |
+- name: "Vault JWT (JSON Web Token) supports GitLab environments"
+  description: |
     To simplify integrations with HashiCorp Vault, we've shipped Vault JWT token support. From the launch, you could restrict access based on data in the JWT. This release gives you a new dimension for restricting access to credentials: the environment a job targets.
 
     This release extends the existing Vault JWT token to support environment-based restrictions too. As the `environment` name could be supplied by the user running the pipeline, we recommend you use the new environment-based restrictions with the already-existing `ref_type` values for maximum security.
   stage: Configure
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
   image_url: https://about.gitlab.com/images/icons/get-a-license.svg
   published_at: 2021-02-22
   release: 13.9
-- title: "SAST Support for .NET 5"
-  body: |
+- name: "SAST Support for .NET 5"
+  description: |
     Microsoft's [release of .NET 5.0](https://docs.microsoft.com/en-us/dotnet/core/dotnet-five) is the next major release of .NET Core which supports more types of apps and more platforms than .NET Core or .NET Framework. We have updated our .NET SAST analyzer, [Security Code Scan](https://security-code-scan.github.io/) to support this new version which is also now supported with [our SAST language detection](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks) allowing GitLab SAST to automatically detect .NET 5 projects. This change was part of a community contribution by [@shaun.burns](https://gitlab.com/shaun.burns).
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#analyzers-data
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#analyzers-data
   image_url: https://about.gitlab.com/images/solutions/icon_sheild-check.svg
   published_at: 2021-02-22
   release: 13.9
-- title: "Create Jira issues from Vulnerabilities"
-  body: |
+- name: "Create Jira issues from Vulnerabilities"
+  description: |
     Many customers use Jira as their single source of truth for tracking issues and engineering work. When using GitLab for SCM and CI/CD, they can take advantage of our existing integration to pass information from MRs and commits into existing Jira issues. However, until now there has been no way to automatically pass information about vulnerabilities detected by security scanners into Jira. This leaves users who rely on Jira to track work no choice but to manually copy vulnerability information into new Jira issues.
 
     To address this, we're introducing a new ability to create Jira issues directly from a vulnerability's details. You will see this as a new option in your existing Jira integration settings. Simply enable the new option and select the desired Jira issue type. Available issue types are pulled automatically based on the currently configured Jira target project. Once enabled, all places in your project where you can create GitLab issues from a vulnerability will instead directly create a Jira issue of the configured type.
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#create-a-gitlab-issue-for-a-vulnerability
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#create-a-gitlab-issue-for-a-vulnerability
   image_url: https://about.gitlab.com/images/13_9/jira-vulnerability-integration.png
   published_at: 2021-02-22
   release: 13.9
-- title: "Security Alert Dashboard for Container Network Policy Alerts"
-  body: |
+- name: "Security Alert Dashboard for Container Network Policy Alerts"
+  description: |
     We're pleased to announce the first release of a dashboard for security alerts! Users can now configure Container Network Policies to send alerts to the security alert dashboard. This is especially useful when traffic must be closely monitored but cannot be blocked entirely without negatively impacting the business. You can configure the alerts at **Security & Compliance > Threat Management > Policies**, and view them at **Security & Compliance > Threat Management > Alerts**.
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: https://docs.gitlab.com/ee/user/application_security/threat_monitoring/#configuring-network-policy-alerts
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/threat_monitoring/#configuring-network-policy-alerts
   image_url: https://about.gitlab.com/images/13_9/security_alert_dashboard.png
   published_at: 2021-02-22
   release: 13.9
-- title: "Maintenance Mode"
-  body: |
+- name: "Maintenance Mode"
+  description: |
     Systems administrators occasionally perform maintenance operations on their GitLab instance to keep it performing optimally. Administrators want to offer the highest level of access to their users while these operations are taking place. For example, you may want to perform a [failover test to a secondary site](https://docs.gitlab.com/ee/administration/geo/disaster_recovery/planned_failover.html) as part of the company's business continuity plan. Prior to the failover, you want to pause changes for a short period to ensure the secondary is fully synchronized. Until GitLab 13.8, you could [restrict users from logging in](https://docs.gitlab.com/omnibus/maintenance/#restrict-users-from-logging-into-gitlab), but this would block the entire UI and would render GitLab inaccessible to users.
 
     GitLab 13.9 introduces [maintenance mode](https://docs.gitlab.com/ee/administration/maintenance_mode/index.html), where write operations are disabled at the application level. This means that GitLab is effectively in a read-only state for all non-administrative users (administrators are still able to edit application settings and [background jobs continue](https://docs.gitlab.com/ee/administration/maintenance_mode/index.html#background-jobs)). Regular users are able to log in to GitLab, view the interface and perform other read-only operations, such as `git clone` or `git pull`. Using maintenance mode, systems administrators can perform maintenance operations, such as failing over to a secondary site, with minimal disruption to regular users.
@@ -80,43 +80,43 @@
   stage: Enablement
   self-managed: true
   gitlab-com: false
-  packages: [Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/administration/maintenance_mode/index.html
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/administration/maintenance_mode/index.html
   image_url: https://about.gitlab.com/images/13_9/maintenance_mode.png
   published_at: 2021-02-22
   release: 13.9
-- title: "New merge request metric: mean time to merge"
-  body: |
+- name: "New merge request metric: mean time to merge"
+  description: |
     A new metric, mean time to merge (MTTM), is available in project-level merge request analytics. MTTM is the average time from when a merge request (MR) is created, until the time it is merged. By selecting different dates in the date range selector, you can see how your time to merge MRs changes over time and understand whether you are becoming more efficient at reviewing and merging code.
   stage: Manage
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/analytics/merge_request_analytics.html#mean-time-to-merge
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/analytics/merge_request_analytics.html#mean-time-to-merge
   image_url: https://about.gitlab.com/images/13_9/mttm.png
   published_at: 2021-02-22
   release: 13.9
-- title: "Filter roadmaps by confidentiality"
-  body: |
+- name: "Filter roadmaps by confidentiality"
+  description: |
     When viewing a roadmap, there used to be no way to hide confidential epics from the main view. This could be frustrating if you wanted to share your roadmap with a public audience. We've updated the search bar filter to include confidentiality so you now have another layer in which you can refine your roadmap.
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/group/roadmap/#sort-and-filter-the-roadmap
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/roadmap/#sort-and-filter-the-roadmap
   image_url: https://about.gitlab.com/images/13_9/roadmap-filter-by-confidentiality.png
   published_at: 2021-02-22
   release: 13.9
-- title: "Allow Deploy Keys to push to protected branches"
-  body: |
+- name: "Allow Deploy Keys to push to protected branches"
+  description: |
     Prior to GitLab 12.0, deploy keys with write access could push commits to protected branches. Support for this was removed due to security concerns, but many users still requested it, as they used deploy keys to ensure that only users with deploy keys could push to their repositories. Removing deploy keys also eliminates the need to use a service user or machine user, which ties up a license for any team that wants to allow deploy keys to push to protected branches just for this use case.
 
     We are excited to announce that we resolved this issue and now deploy keys can push to protected branches once more while abiding by security best practices. By moving towards an isolated permission model for deploy keys, users can now select deploy keys to link to protected branches directly from the **Settings** page on protected branches.
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/project/protected_branches.html#allow-deploy-keys-to-push-to-a-protected-branch
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/protected_branches.html#allow-deploy-keys-to-push-to-a-protected-branch
   image_url: https://about.gitlab.com/images/13_9/deploy_keys.png
   published_at: 2021-02-22
   release: 13.9

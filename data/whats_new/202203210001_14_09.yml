@@ -1,62 +1,62 @@
-- title: "Link an epic to another epic"
-  body: |
+- name: "Link an epic to another epic"
+  description: |
     GitLab now supports linking epics using "related", "blocking," or "blocked" relationships. This feature enables teams to better track and manage epic dependencies across GitLab groups. Effective dependency management is a key component of reducing variability and increasing predictability in value delivery.
   stage: plan
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/group/epics/linked_epics.html'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/group/epics/linked_epics.html'
   image_url: 'https://about.gitlab.com/images/14_9/related_epics_add.png'
   published_at: 2022-03-22
   release: 14.9
-- title: "Rule mode for scan result policies"
-  body: |
+- name: "Rule mode for scan result policies"
+  description: |
     With the GitLab 14.9 release, users can now use rule mode to design and edit scan result policies without needing to edit the policy's YAML directly. This new UI editor makes it easier for users who want to create and manage MR approval rules that are triggered when a given threshold of vulnerabilities are detected in the MR.
 
     To get started with this new rule mode, navigate to **Security & Compliance > Policies** and create a new Scan Result policy.
   stage: protect
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/policies/#policy-editor'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/policies/#policy-editor'
   image_url: 'https://about.gitlab.com/images/14_9/protect-scan-result-policy-rule-mode.png'
   published_at: 2022-03-22
   release: 14.9
-- title: "Deployment Approval on the Environments page"
-  body: |
+- name: "Deployment Approval on the Environments page"
+  description: |
     We are excited to introduce the Deployment Approval capability in the GitLab interface. In GitLab 14.8, we introduced the ability to approve deployments via the [API](https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html#using-the-api). Now, deployment approvers can view a pending deployment and approve or reject it conveniently directly in the Environments page. This update continues our work to enable teams to create workflows for approving software to go to production or other protected environments. With this update, we are now upgrading the feature to beta.
   stage: "Release"
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html#approve-or-reject-a-deployment'
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html#approve-or-reject-a-deployment'
   image_url: 'https://about.gitlab.com/images/growth/release.png'
   published_at: 2022-03-22
   release: 14.9
-- title: "New design for the Environments Page"
-  body: |
+- name: "New design for the Environments Page"
+  description: |
     Previously, the Environments page enabled you to operate and understand deployments but the design hid some important information and was difficult to read. In GitLab 14.9, we made a comprehensive update to the page so that you can answer key questions about your environments and deployments. Now, you can easily see the status of the latest deployment, the status for various environments, and which commits have been deployed.
   stage: "Release"
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/ci/environments/#view-environments-and-deployments'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/environments/#view-environments-and-deployments'
   image_url: 'https://about.gitlab.com/images/14_9/release-enviroments-page-redesign.png'
   published_at: 2022-03-22
   release: 14.9
-- title: "Project Level Time to restore service API"
-  body: |
+- name: "Project Level Time to restore service API"
+  description: |
     In this release, we added API support for Time to Restore Service. This is the 3rd of the 4 [DORA Metrics](https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html#devops-research-and-assessment-dora-key-metrics). This data helps teams continuously improve in their stability metrics.
   stage: manage
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/api/dora/metrics.html'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/api/dora/metrics.html'
   image_url: 'https://about.gitlab.com/images/14_9/ttr_api.png'
   published_at: 2022-03-22
   release: 14.9
-- title: "Integrated security training"
-  body: |
+- name: "Integrated security training"
+  description: |
     GitLab provides a comprehensive set of [security scanning tools](https://docs.gitlab.com/ee/user/application_security/#security-scanning-tools)
     that can identify all manner of security issues. Scanner findings are presented
     in merge requests, pipelines, and in a dedicated Vulnerability Report. When
@@ -78,8 +78,8 @@
   stage: secure
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#enable-security-training-for-vulnerabilities'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#enable-security-training-for-vulnerabilities'
   image_url: 'https://about.gitlab.com/images/14_9/secure-enable-security-training.png'
   published_at: 2022-03-22
   release: 14.9

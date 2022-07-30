@@ -1,16 +1,16 @@
-- title: Scheduled DAST scans
-  body: |
+- name: Scheduled DAST scans
+  description: |
       GitLab’s Dynamic Application Security Testing (DAST) now supports scheduled on-demand scans. Previously, on-demand DAST scans could only be manually triggered, which limited the usability to scans that you wanted to run immediately. With this new scheduler, you can set a DAST scan to run either once at a specific time in the future, or on a recurring basis. If adding DAST to your pipelines is not an option for your organization, or if the security or compliance regulations for your area require a scan to be scheduled, this feature provides an easy way to create a scheduled scan to meet your needs. The scan can be associated with the default branch, which allows for the results to show on the Secure Dashboard and Vulnerability list. Combined with the scan and site profiles, the scheduled on-demand scans give you quick and easy access to DAST results for your application or API, on a schedule that works for your development and security teams.
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/dast/index.html#schedule-an-on-demand-scan'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/dast/index.html#schedule-an-on-demand-scan'
   image_url: https://about.gitlab.com/images/14_4/dast_on_demand_schedule.png
   published_at: 2021-10-22
   release: 14.4
-- title: Remote Repositories for GitLab in Visual Studio Code
-  body: |
+- name: Remote Repositories for GitLab in Visual Studio Code
+  description: |
       When working in your editor you may need to refer to another project or upstream library for additional information. When you don't have that project already cloned locally, you're forced to either leave your editor and browse the project on GitLab, or locate and then clone the project so you can browse it in your editor. Both of those tasks break your current context, introduce delays, and can take you to a less familiar interface for working with code.
 
       [GitLab Workflow](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) version `3.33.0` provides an option to open a remote repository. Open the command palette and use the `GitLab: Open Remote Repository` command to find and then open a project.
@@ -19,41 +19,41 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md#browse-a-repository-without-cloning'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md#browse-a-repository-without-cloning'
   image_url: https://img.youtube.com/vi/p4GTVx_Nd2s/hqdefault.jpg
   published_at: 2021-10-22
   release: 14.4
-- title: The GitLab Operator is Generally Available
-  body: |
+- name: The GitLab Operator is Generally Available
+  description: |
      GitLab 14.4 is proud to announce the general availability of [the GitLab Operator](https://about.gitlab.com/blog/2021/10/12/open-shift-ga/), with the ability to run production instances of GitLab on Kubernetes platforms, including Red Hat OpenShift. The GitLab Operator also automates day 2 operations such as upgrading components, application reconfiguration, and autoscaling. Check out the [GitLab Operator installation documentation](https://docs.gitlab.com/charts/installation/operator.html) for additional information.
   stage: Enablement
   self-managed: true
   gitlab-com: false
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/charts/installation/operator.html'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/charts/installation/operator.html'
   image_url: https://img.youtube.com/vi/sEBnuhzYD2I/hqdefault.jpg
   published_at: 2021-10-22
   release: 14.4
-- title: DevOps Adoption trend graph
-  body: |
+- name: DevOps Adoption trend graph
+  description: |
      In GitLab 14.4, we added a new graph to group-level DevOps Adoption for trend over time. This graph shows you how groups adopt DevOps features over time and can give insights into how quickly groups are adopting additional DevOps processes. This is broken down by Dev, Sec, and Ops functionality.
   stage: Manage
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/group/devops_adoption/#adoption-over-time'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/group/devops_adoption/#adoption-over-time'
   image_url: https://about.gitlab.com/images/14_4/devops_adop_table.png
   published_at: 2021-10-22
   release: 14.4
-- title: Integrated error tracking inside GitLab without a Sentry instance
-  body: |
+- name: Integrated error tracking inside GitLab without a Sentry instance
+  description: |
      Prior to GitLab 14.4, you could integrate with Sentry Error Tracking by supplying an endpoint for a Sentry backend (either self-deployed or in their cloud service). With GitLab 14.4, you now have access to a Sentry-compatible backend built into your GitLab instance. This allows you to quickly instrument your apps so your errors show up directly in GitLab without the need for a separate Sentry instance.
   stage: Manage
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/operations/error_tracking.html#integrated-error-tracking'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/operations/error_tracking.html#integrated-error-tracking'
   image_url: https://about.gitlab.com/images/14_4/monitor-integrated-error-tracking.png
   published_at: 2021-10-22
   release: 14.4

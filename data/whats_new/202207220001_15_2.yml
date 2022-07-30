@@ -1,89 +1,89 @@
-- title: "Live preview diagrams in the wiki WYSIWYG editor" # Match the release post entry
-  body: | # Do not modify this line, instead modify the lines below.
+- name: "Live preview diagrams in the wiki WYSIWYG editor" # Match the release post entry
+  description: | # Do not modify this line, instead modify the lines below.
     GitLab Flavored Markdown includes extensions to support [Mermaid, PlantUML, and Kroki diagrams](https://docs.gitlab.com/ee/user/markdown.html#diagrams-and-flowcharts) but writing anything other than the most basic diagrams can be cumbersome without a live preview. You can toggle between the raw source and static preview and there are external tools you can use to write these diagrams, but the shift away from your content can be distracting.
 
     GitLab 15.2 introduces a live rendered preview of your diagram in the wiki's WYSIWYG editor. Now, as you write your diagram in a specialized code block we will detect the diagram type and display a preview icon. When enabled, the live preview renders above the code block and updates as you type, so you can ensure your formatting is correct and the output will be exactly what you expect.
   stage: create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/project/wiki/#use-the-content-editor
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/wiki/#use-the-content-editor
   image_url: https://about.gitlab.com/images/15_2/create-preview-diagrams-in-wysiwyg.png
   published_at: 2022-07-22
   release: 15.2
-- title: Incident timeline # Match the release post entry
-  body: | # Do not modify this line, instead modify the lines below.
+- name: Incident timeline # Match the release post entry
+  description: | # Do not modify this line, instead modify the lines below.
     Capturing what happened during an incident is an important practice that facilitates learning and the opportunity for improvement. Yet, asking incident responders to take on additional administrative tasks when they're busy fire-fighting, or trying to reconstruct the timeline of events post incident lead to incomplete or less than accurate information.
 
     GitLab incident timeline is designed to make information capture during an incident, or post incident, easy and efficient. In the Incident timeline MVC, we make it possible to add new timeline events manually, delete a timeline event, and view the incident timeline in a dedicated tab within an incident issue.
   stage: monitor
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/operations/incident_management/incidents.html#timeline-events
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/operations/incident_management/incidents.html#timeline-events
   image_url: https://img.youtube.com/vi/a0brUwOajvQ/hqdefault.jpg
   published_at: 2022-07-22
   release: 15.2
-- title: "Merge request reports redesign" # Match the release post entry
-  body: | # Do not modify this line, instead modify the lines below.
+- name: "Merge request reports redesign" # Match the release post entry
+  description: | # Do not modify this line, instead modify the lines below.
     Merge request reports are an important part of code review, providing insights into the impact of changes and improvements to meet project standards.
 
     Report widgets now all follow design guidelines for layout, hierarchy, and content sections, making them consistent, scannable, and utilitarian. These improvements make it easier for you to find actionable information in each report.
   stage: create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/project/wiki/#use-the-content-editor
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/wiki/#use-the-content-editor
   image_url: https://about.gitlab.com/images/15_2/create-merge-request-widget-redesign.png
   published_at: 2022-07-22
   release: 15.2
-- title: "Change failure rate chart for visualizing software stability" # Match the release post entry
-  body: | # Do not modify this line, instead modify the lines below.
+- name: "Change failure rate chart for visualizing software stability" # Match the release post entry
+  description: | # Do not modify this line, instead modify the lines below.
     In this release, we added a new trend chart for the DORA [Change failure rate](https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html) metric. This chart shows the percentage of deployments that cause an incident in a production environment. GitLab measures the change failure rate as the number of [incidents](https://docs.gitlab.com/ee/operations/incident_management/incidents.html) divided by the number of deployments to a production environment during a given time period.
 
     This is the fourth DORA chart available in GitLab that provides insights into [value stream velocity and reliability trends](https://about.gitlab.com/blog/2022/06/20/gitlab-value-stream-management-and-dora/).
   stage: manage
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html#view-change-failure-rate-chart
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html#view-change-failure-rate-chart
   image_url: https://about.gitlab.com/images/15_2/dora4_chart_cfr.png
   published_at: 2022-07-22
   release: 15.2
-- title: "Enforce IP address restrictions for Git over SSH" # Match the release post entry
-  body: | # Do not modify this line, instead modify the lines below.
+- name: "Enforce IP address restrictions for Git over SSH" # Match the release post entry
+  description: | # Do not modify this line, instead modify the lines below.
       Limiting access to requests from a trusted set of IP addresses may improve security. Until now, only the API and UI supported such access restrictions; SSH access was blocked entirely. SSH now also adheres to this restriction, and grants access only to requests coming from IP addresses in your list.
   stage: create
   self-managed: false
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/user/group/#group-access-restriction-by-ip-address
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/#group-access-restriction-by-ip-address
   image_url: https://img.youtube.com/vi/f60EgVK3mWc/hqdefault.jpg
   published_at: 2022-07-22
   release: 15.2
-- title: "Group and subgroup scan execution policies" # Match the release post entry
-  body: | # Do not modify this line, instead modify the lines below.
+- name: "Group and subgroup scan execution policies" # Match the release post entry
+  description: | # Do not modify this line, instead modify the lines below.
     Your security and compliance teams can now apply policies uniformly to all projects by scanning execution policies at the group and subgroup levels. This functionality is especially helpful for large organizations who have a large number of projects. Policies defined for the group or subgroup will flow down and apply to all child projects. To get started, ask your group owner to link a security policy project to your group on the **Security & Compliance > Policies** page.
 
     Currently scan execution policies are the only policy type that is supported at the group and subgroup levels. You can track the efforts to add group and subgroup level support for scan result policies in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7622).
   stage: protect
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: https://docs.gitlab.com/ee/user/application_security/policies/scan-execution-policies.html'
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/scan-execution-policies.html'
   image_url: https://about.gitlab.com/images/15_2/protect_group_policies.png
   published_at: 2022-07-22
   release: 15.2
-- title: "Set the image pull policy in pipeline configuration" # Match the release post entry
-  body: | # Do not modify this line, instead modify the lines below.
+- name: "Set the image pull policy in pipeline configuration" # Match the release post entry
+  description: | # Do not modify this line, instead modify the lines below.
     You can select different [pull policies](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work) for how a GitLab Runner downloads Docker images in CI/CD jobs. `always` (the default behavior) ensures the image is always downloaded, `if-not-present` downloads an image only when a local version does not exist, and `never` only uses the local version (never download an image).
 
     Previously, you could define the pull policy only at the runner level. In this release we've added the ability to define the pull policy at the pipeline level. Use `pull_policy` in your `.gitlab-ci.yml` to define different pull policies at the job or pipeline level. This feature is not supported by shared runners.
   stage: verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/ci/yaml/#imagepull_policy
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/yaml/#imagepull_policy
   image_url: https://about.gitlab.com/images/15_2/pull_policy.png
   published_at: 2022-07-22
   release: 15.2

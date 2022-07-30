@@ -33,7 +33,7 @@ class ReleaseHighlight
       next unless include_item?(item)
 
       begin
-        item.tap {|i| i['body'] = Banzai.render(i['body'], { project: nil }) }
+        item.tap {|i| i['description'] = Banzai.render(i['description'], { project: nil }) }
       rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, file_path: file_path)
 
@@ -116,6 +116,6 @@ class ReleaseHighlight
 
     return true unless Gitlab::CurrentSettings.current_application_settings.whats_new_variant_current_tier?
 
-    item['packages']&.include?(current_package)
+    item['available_in']&.include?(current_package)
   end
 end

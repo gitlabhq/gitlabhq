@@ -25,18 +25,18 @@ RSpec.describe ReleaseHighlights::Validator::Entry do
       it 'returns line numbers in errors' do
         subject.valid?
 
-        expect(entry.errors[:packages].first).to match('(line 6)')
+        expect(entry.errors[:available_in].first).to match('(line 6)')
       end
     end
 
     context 'with a blank entry' do
-      it 'validate presence of title, body and stage' do
+      it 'validate presence of name, description and stage' do
         subject.valid?
 
-        expect(subject.errors[:title]).not_to be_empty
-        expect(subject.errors[:body]).not_to be_empty
+        expect(subject.errors[:name]).not_to be_empty
+        expect(subject.errors[:description]).not_to be_empty
         expect(subject.errors[:stage]).not_to be_empty
-        expect(subject.errors[:packages]).not_to be_empty
+        expect(subject.errors[:available_in]).not_to be_empty
       end
 
       it 'validates boolean value of "self-managed" and "gitlab-com"' do
@@ -52,11 +52,11 @@ RSpec.describe ReleaseHighlights::Validator::Entry do
       it 'validates URI of "url" and "image_url"' do
         stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
         allow(entry).to receive(:value_for).with(:image_url).and_return('https://foobar.x/images/ci/gitlab-ci-cd-logo_2x.png')
-        allow(entry).to receive(:value_for).with(:url).and_return('')
+        allow(entry).to receive(:value_for).with(:documentation_link).and_return('')
 
         subject.valid?
 
-        expect(subject.errors[:url]).to include(/must be a valid URL/)
+        expect(subject.errors[:documentation_link]).to include(/must be a valid URL/)
         expect(subject.errors[:image_url]).to include(/is blocked: Host cannot be resolved or invalid/)
       end
 
@@ -76,12 +76,12 @@ RSpec.describe ReleaseHighlights::Validator::Entry do
         expect(subject.errors[:published_at]).to include(/must be valid Date/)
       end
 
-      it 'validates packages are included in list' do
-        allow(entry).to receive(:value_for).with(:packages).and_return(['ALL'])
+      it 'validates available_in are included in list' do
+        allow(entry).to receive(:value_for).with(:available_in).and_return(['ALL'])
 
         subject.valid?
 
-        expect(subject.errors[:packages].first).to include("must be one of", "Free", "Premium", "Ultimate")
+        expect(subject.errors[:available_in].first).to include("must be one of", "Free", "Premium", "Ultimate")
       end
     end
   end

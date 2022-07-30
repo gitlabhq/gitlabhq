@@ -1,57 +1,57 @@
-- title: Seamless worldwide performance with Geo
-  body: |
+- name: Seamless worldwide performance with Geo
+  description: |
    In GitLab 14.6, Geo secondary sites transparently proxy write requests to the primary site while accelerating most read requests. Systems administrators can provide all GitLab users across their organization with a single URL that automatically uses the Geo site closest to them. Users no longer need to use different configuration to benefit from Geo, or worry about what operations won’t work on Geo secondary sites. Globally distributed teams now benefit from accelerated git clone or git pull commands, and a seamless worldwide experience.
   stage: Enablement
   self-managed: true
   gitlab-com: false
-  packages: [Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/administration/geo/secondary_proxy/'
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/administration/geo/secondary_proxy/'
   image_url: https://about.gitlab.com/images/14_6/geo_secondary_proxy_flow.png
   published_at: 2021-12-22
   release: 14.6
-- title: GitLab Agent's activity information
-  body: |
+- name: GitLab Agent's activity information
+  description: |
     Being able to monitor your cluster's activity helps you detect and troubleshoot faulty events, and rest assured when they succeed. GitLab now ships with an activity list for the GitLab Agent that logs real-time events. This first implementation logs connection and token statuses and will be followed with more events in future releases.
   stage: Configure
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/clusters/agent/install/#view-agent-activity-information'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/clusters/agent/install/#view-agent-activity-information'
   image_url: https://about.gitlab.com/images/14_6/gitlab_agent_activity_events_v14_6.png
   published_at: 2021-12-22
   release: 14.6
-- title: SAST Support for .NET 6
-  body: |
+- name: SAST Support for .NET 6
+  description: |
     We have updated our .NET SAST analyzer, [Security Code Scan](https://security-code-scan.github.io/), to support this new version, which is also now supported with [our SAST language detection](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks), allowing GitLab SAST to automatically detect .NET 6 projects. This change was part of a community contribution by [@vasyl11](https://gitlab.com/vasyl11) at [Clay Solutions](https://my-clay.com/), who we thank for their efforts.
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/sast/analyzers'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/sast/analyzers'
   image_url: https://about.gitlab.com/images/14_6/14_6-cover-image.jpg
   published_at: 2021-12-22
   release: 14.6
-- title: Toggle wiki editors seamlessly
-  body: |
+- name: Toggle wiki editors seamlessly
+  description: |
      Editing wiki pages with the new rich Markdown editor makes it easier for everyone to contribute regardless of how well they know Markdown syntax. You may also prefer to write raw Markdown in some situations, but use the WYSIWYG interface for more complex or tedious formatting tasks, like creating tables.
 
       Previous versions of GitLab required you to save changes before switching between the rich Markdown editor and the Markdown source, adding more steps and friction to your edits. In GitLab 14.6 you can now seamlessly switch between the two editing experiences without committing your changes, choosing the editor that suits your needs at any given moment.
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/project/wiki/#content-editor'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/wiki/#content-editor'
   image_url: https://docs.gitlab.com/ee/user/project/wiki/img/content_editor_v14.6.png
   published_at: 2021-12-22
   release: 14.6
-- title: Custom ruleset composability for SAST and Secret Detection
-  body: |
+- name: Custom ruleset composability for SAST and Secret Detection
+  description: |
      Custom Rulesets let users tailor the behavior of SAST and Secret Detection analyzers to their organization’s preferences. We're introducing the ability to add rules from multiple sources, like Git repositories, local files, and raw source changes. This change makes it easier to synthesize and manage multiple custom rulesets from different locations, which organizations can use to inherit rules across repositories and sources for greater flexibility. Initially, this change is available for our [SAST Semgrep, Nodejs, and Gosec analyzers](https://docs.gitlab.com/ee/user/application_security/sast/#customize-rulesets) and [Secret Detection](https://docs.gitlab.com/ee/user/application_security/secret_detection/#custom-rulesets). We will expand this capability to our other analyzers [in future releases](https://gitlab.com/groups/gitlab-org/-/epics/4179).
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/sast/#customize-rulesets'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/sast/#customize-rulesets'
   image_url: https://docs.gitlab.com/ee/user/application_security/img/mr_security_scanning_results_v14_3.png
   published_at: 2021-12-22
   release: 14.6

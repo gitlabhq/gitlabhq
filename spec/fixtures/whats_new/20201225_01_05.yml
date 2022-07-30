@@ -1,14 +1,14 @@
 ---
-- title: bright and sunshinin' day
-  body: |
+- name: bright and sunshinin' day
+  description: |
     bright and sunshinin' [day](https://en.wikipedia.org/wiki/Day)
   self-managed: true
   gitlab-com: false
-  packages: ["Premium", "Ultimate"]
+  available_in: ["Premium", "Ultimate"]
   release: '01.05'
-- title: I think I can make it now the pain is gone
-  body: |
+- name: I think I can make it now the pain is gone
+  description: |
     ## I think I can make it now the pain is gone
   self-managed: false
   gitlab-com: true
-  packages: ["Premium", "Ultimate"]
+  available_in: ["Premium", "Ultimate"]

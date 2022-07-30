@@ -79,7 +79,7 @@ export default {
           @bottomReached="bottomReached"
         >
           <template #items>
-            <feature v-for="feature in features" :key="feature.title" :feature="feature" />
+            <feature v-for="feature in features" :key="feature.name" :feature="feature" />
           </template>
         </gl-infinite-scroll>
       </template>

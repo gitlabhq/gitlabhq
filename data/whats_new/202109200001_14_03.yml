@@ -1,83 +1,83 @@
-- title: Project-level DAST and secret detection scan execution policies
-  body: |
+- name: Project-level DAST and secret detection scan execution policies
+  description: |
      We have completed the first iterative step [toward our vision](https://about.gitlab.com/direction/protect/security_orchestration/) of bringing unified security policies to GitLab. Users can now require DAST and secret detection scans to run on a regular schedule or as part of project CI pipelines, independent of the `.gitlab-ci.yml` file's contents. This allows security teams to separately manage these scan requirements without allowing developers to change the configuration. You can get started with these policies on the **Security & Compliance > Policies** page.
   stage: Protect
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/policies/'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/policies/'
   image_url: https://about.gitlab.com/images/14_3/security_policies.png
   published_at: 2021-09-22
   release: 14.3
-- title: Next Generation SAST to reduce Ruby false positives
-  body: |
+- name: Next Generation SAST to reduce Ruby false positives
+  description: |
      GitLab SAST historically has been powered by [over a dozen open-source static analysis security analyzers](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks). These analyzers have proactively identified millions of vulnerabilities for developers using GitLab every month. These tools use a variety of different approaches for identifying vulnerabilities from basic regex pattern matching to abstract syntax tree parsing which can lead to issues with false positives. GitLab's Secure tools already offer vulnerability fingerprinting allowing you to dismiss these false positives persistently, however, we want to go a step further and not require this manual triaging.
 
      Today we're releasing the first version of our proprietary static application security testing engine built in-house and maintained by GitLab's Static Analysis and Vulnerability Research groups. Initially, this tool is focused on Ruby and Rails to help reduce false positives.
   stage: Secure
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/application_security/sast/#false-positive-detection'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/sast/#false-positive-detection'
   image_url: https://about.gitlab.com/images/14_3/secure-fp-reduction-ui.png
   published_at: 2021-09-22
   release: 14.3
-- title: Group-level permissions for Protected Environments
-  body: |
+- name: Group-level permissions for Protected Environments
+  description: |
       In this release, we are introducing group-level protected environments, based on the [deployment tier](https://docs.gitlab.com/ee/ci/environments/index.html#deployment-tier-of-environments) as the identifier. This enables operators to responsibly lock down deployments to higher tier environments without unnecessarily preventing developers from doing their work as the maintainers of their individual projects.
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/ci/environments/protected_environments.html#group-level-protected-environments'
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/environments/protected_environments.html#group-level-protected-environments'
   image_url: https://about.gitlab.com/images/growth/release.png
   published_at: 2021-09-22
   release: 14.3
-- title: Edit a table's structure visually in the new wiki editor
-  body: |
+- name: Edit a table's structure visually in the new wiki editor
+  description: |
       Editing a Markdown table that has 9 columns and 25 rows is one thing. But adding a tenth column to that table in Markdown? That involves very repetitive and error-prone edits to every row. One mistake or misplaced `|` and the table fails to render.
 
       The new WYSIWYG Markdown editor in the wiki lets you quickly and easily insert a table using the button in the toolbar. After selecting the initial number of rows and columns, however, dealing with the structure of the table can be more difficult. In GitLab 14.3, you can now click on the caret icon in the top right corner of any selected cell to add or remove columns and rows, either before or after the selected cell. Now, as your content scales, the complexity doesn't follow suit.
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/project/wiki/#content-editor'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/wiki/#content-editor'
   image_url: https://about.gitlab.com/images/14_3/wiki-editor-edit-table-structure.png
   published_at: 2021-09-22
   release: 14.3
-- title: Use variables in other variables
-  body: |
+- name: Use variables in other variables
+  description: |
       CI/CD pipeline execution scenarios can depend on expanding variables declared in a pipeline or using GitLab predefined variables within another variable declaration. In 14.3, we are enabling the "variables inside other variables" feature on GitLab SaaS. Now you can define a variable and use it in another variable definition within the same pipeline. You can also use GitLab predefined variables inside of another variable declaration. This feature simplifies your pipeline definition and eliminates pipeline management issues caused by the duplicating of variable data. Note - for GitLab self-managed customers the feature is disabled by default. To use this feature, your GitLab administrator will need to enable the [feature flag](https://docs.gitlab.com/ee/ci/variables/where_variables_can_be_used.html#nested-variable-expansion).
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/ci/variables/#use-variables-in-other-variables'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/variables/#use-variables-in-other-variables'
   image_url: https://about.gitlab.com/images/growth/verify.png
   published_at: 2021-09-22
   release: 14.3
-- title: Add GitLab CI/CD configuration conditionally with `include`
-  body: |
+- name: Add GitLab CI/CD configuration conditionally with `include`
+  description: |
        [`include`](https://docs.gitlab.com/ee/ci/yaml/index.html#include) is one of the most popular keywords to use when writing a full CI/CD pipeline. If you are building larger pipelines, you are probably using the `include` keyword to bring external YAML configuration into your pipeline.
 
         In this release, we are expanding the power of the keyword so you can use `include` with [`rules`](https://docs.gitlab.com/ee/ci/yaml/index.html#include) conditions. Now, you can decide when external CI/CD configuration should or shouldn't be included. This will help you write a standardized pipeline with the ability to dynamically modify itself based on the conditions you choose.
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/#amazing'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/#amazing'
   image_url: https://about.gitlab.com/images/14_3/conditional_include.png
   published_at: 2021-09-22
   release: 14.3
-- title: Grant group access to the GitLab Kubernetes Agent
-  body: |
+- name: Grant group access to the GitLab Kubernetes Agent
+  description: |
        The GitLab Kubernetes Agent provides a secure connection between a Kubernetes cluster and GitLab. Until GitLab 14.2, the GitLab CI/CD enabled pushing to a cluster only from the same project where the Kubernetes Agent was registered. In GitLab 14.3, the Agent can be authorized to access entire groups. As a result, every project under the authorized group has access to the cluster without the need to register an agent for every project.
   stage: Configure
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/clusters/agent/repository.html#authorize-groups-to-use-an-agent'
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/clusters/agent/repository.html#authorize-groups-to-use-an-agent'
   image_url: https://about.gitlab.com/images/growth/configure.png
   published_at: 2021-09-22
   release: 14.3

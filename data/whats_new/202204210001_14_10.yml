@@ -1,48 +1,48 @@
-- title: "Compliance report individual violation reporting"
-  body: |
+- name: "Compliance report individual violation reporting"
+  description: |
     The compliance report now reports every individual merge request violation for the projects within a group. This is a huge improvement over the previous version, which only showed the latest MR that had one or more violations. The new version allows you to see history and patterns of violations over time.
   stage: manage
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate]
-  url: 'https://docs.gitlab.com/ee/user/compliance/compliance_report/'
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/compliance/compliance_report/'
   image_url: 'https://about.gitlab.com/images/14_10/manage_compliance_report_individual_violation.png'
   published_at: 2022-04-22
   release: 14.10
-- title: "Improved pipeline variables inheritance"
-  body: |
+- name: "Improved pipeline variables inheritance"
+  description: |
     Previously, it was possible to pass some CI/CD variables to a downstream pipeline through a trigger job, but variables added in manual pipeline runs or by using the API could not be forwarded.
 
     In this release we've added a new `trigger:forward` keyword to control what things you forward to downstream parent-child pipelines or multi-project pipelines, which provides a flexible way to handle variable inheritance in downstream pipelines.
   stage: verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/ci/yaml/#triggerforward'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/yaml/#triggerforward'
   image_url: 'https://about.gitlab.com/images/growth/verify.png'
   published_at: 2022-04-22
   release: 14.10
-- title: "Escalating manually created incidents"
-  body: |
+- name: "Escalating manually created incidents"
+  description: |
     Incident Management is set up to trigger escalation policies for new alerts. In this scenario, the on-call responder who is paged can end the paging by acknowledging the alert. If the responder changes the status back to triggered, we restart the escalation policy and begin paging again. When a user creates an incident manually, there is no associated alert and therefore no way to page on-call responders.
 
     This release enables paging on manually created incidents. Responders now have the ability to acknowledge the page on incidents, or restart paging by resetting the status to triggered, just as you can for alerts.
   stage: monitor
   self-managed: true
   gitlab-com: true
-  packages: [Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/operations/incident_management/paging.html#escalating-an-incident'
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/operations/incident_management/paging.html#escalating-an-incident'
   image_url: 'https://about.gitlab.com/images/14_10/manually_escalated_incident.png'
   published_at: 2022-04-22
   release: 14.10
-- title: "Expanded view of group runners"
-  body: |
+- name: "Expanded view of group runners"
+  description: |
     Group runners are now displayed in an expanded view, where you can more easily administer and manage the runners associated with the namespace. To view the new UI, on the left sidebar, select **CI/CD**. This view includes the number of online, offline, and stale runners associated with the group and subgroups.
   stage: verify
   self-managed: true
   gitlab-com: true
-  packages: [Free, Premium, Ultimate]
-  url: 'https://docs.gitlab.com/ee/ci/runners/runners_scope.html#group-runners'
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/runners/runners_scope.html#group-runners'
   image_url: 'https://about.gitlab.com/images/14_10/group-runners-view-new-3.png'
   published_at: 2022-04-22
   release: 14.10

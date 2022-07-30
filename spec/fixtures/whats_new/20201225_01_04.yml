@@ -1,19 +1,19 @@
 ---
-- title: View epics on a board
-  body: |
+- name: View epics on a board
+  description: |
     ## View epics on a board
   self-managed: true
   gitlab-com: false
-  packages: ["Free", "Premium", "Ultimate"]
-- title: View Jira issue details in GitLab
-  body: |
+  available_in: ["Free", "Premium", "Ultimate"]
+- name: View Jira issue details in GitLab
+  description: |
     ## View Jira issue details in GitLab
   self-managed: true
   gitlab-com: false
-  packages: ["Premium", "Ultimate"]
-- title: Integrate any IT alerting tool with GitLab
-  body: |
+  available_in: ["Premium", "Ultimate"]
+- name: Integrate any IT alerting tool with GitLab
+  description: |
     ## Integrate any IT alerting tool with GitLab
   self-managed: true
   gitlab-com: false
-  packages: ["Ultimate"]
+  available_in: ["Ultimate"]
