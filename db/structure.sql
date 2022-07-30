@@ -20606,11 +20606,12 @@ CREATE TABLE sbom_occurrences (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    component_version_id bigint NOT NULL,
+    component_version_id bigint,
     project_id bigint NOT NULL,
     pipeline_id bigint,
     source_id bigint,
-    commit_sha bytea NOT NULL
+    commit_sha bytea NOT NULL,
+    component_id bigint NOT NULL
 );
 
 CREATE SEQUENCE sbom_occurrences_id_seq
@@ -29662,6 +29663,8 @@ CREATE UNIQUE INDEX index_saved_replies_on_name_text_pattern_ops ON saved_replie
 
 CREATE INDEX index_sbom_component_versions_on_component_id ON sbom_component_versions USING btree (component_id);
 
+CREATE INDEX index_sbom_occurrences_on_component_id ON sbom_occurrences USING btree (component_id);
+
 CREATE INDEX index_sbom_occurrences_on_component_version_id ON sbom_occurrences USING btree (component_version_id);
 
 CREATE INDEX index_sbom_occurrences_on_pipeline_id ON sbom_occurrences USING btree (pipeline_id);
@@ -32493,6 +32496,9 @@ ALTER TABLE ONLY ci_pipelines
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT fk_d83a918cb1 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY sbom_occurrences
+    ADD CONSTRAINT fk_d857c6edc1 FOREIGN KEY (component_id) REFERENCES sbom_components(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_d94154aa95 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
