@@ -98,6 +98,12 @@
     - 'i_code_review_merge_request_widget_code_quality_expand_success'
     - 'i_code_review_merge_request_widget_code_quality_expand_warning'
     - 'i_code_review_merge_request_widget_code_quality_expand_failed'
+    - 'i_code_review_merge_request_widget_terraform_view'
+    - 'i_code_review_merge_request_widget_terraform_full_report_clicked'
+    - 'i_code_review_merge_request_widget_terraform_expand'
+    - 'i_code_review_merge_request_widget_terraform_expand_success'
+    - 'i_code_review_merge_request_widget_terraform_expand_warning'
+    - 'i_code_review_merge_request_widget_terraform_expand_failed'
 - name: code_review_category_monthly_active_users
   operator: OR
   source: redis
@@ -184,6 +190,12 @@
     - 'i_code_review_merge_request_widget_code_quality_expand_success'
     - 'i_code_review_merge_request_widget_code_quality_expand_warning'
     - 'i_code_review_merge_request_widget_code_quality_expand_failed'
+    - 'i_code_review_merge_request_widget_terraform_view'
+    - 'i_code_review_merge_request_widget_terraform_full_report_clicked'
+    - 'i_code_review_merge_request_widget_terraform_expand'
+    - 'i_code_review_merge_request_widget_terraform_expand_success'
+    - 'i_code_review_merge_request_widget_terraform_expand_warning'
+    - 'i_code_review_merge_request_widget_terraform_expand_failed'
 - name: code_review_extension_category_monthly_active_users
   operator: OR
   source: redis

@@ -20,6 +20,23 @@ RSpec.describe MergeRequests::ApprovalService do
         allow(merge_request.approvals).to receive(:new).and_return(double(save: false))
       end
 
+      it 'does not reset approvals' do
+        expect(merge_request.approvals).not_to receive(:reset)
+
+        service.execute(merge_request)
+      end
+
+      it 'does not track merge request approve action' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_approve_mr_action).with(user: user)
+
+        service.execute(merge_request)
+      end
+
+      it 'does not publish MergeRequests::ApprovedEvent' do
+        expect { service.execute(merge_request) }.not_to publish_event(MergeRequests::ApprovedEvent)
+      end
+
       it 'does not create an approval note' do
         expect(SystemNoteService).not_to receive(:approve_mr)
 
@@ -32,11 +49,16 @@ RSpec.describe MergeRequests::ApprovalService do
         expect(todo.reload).to be_pending
       end
 
-      it 'does not track merge request approve action' do
-        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-          .not_to receive(:track_approve_mr_action).with(user: user)
+      context 'async_after_approval feature flag is disabled' do
+        before do
+          stub_feature_flags(async_after_approval: false)
+        end
 
-        service.execute(merge_request)
+        it 'does not create approve MR event' do
+          expect(EventCreateService).not_to receive(:new)
+
+          service.execute(merge_request)
+        end
       end
     end
 
@@ -47,22 +69,31 @@ RSpec.describe MergeRequests::ApprovalService do
         allow(service).to receive(:notification_service).and_return(notification_service)
       end
 
+      it 'resets approvals' do
+        expect(merge_request.approvals).to receive(:reset)
+
+        service.execute(merge_request)
+      end
+
+      it 'tracks merge request approve action' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .to receive(:track_approve_mr_action).with(user: user, merge_request: merge_request)
+
+        service.execute(merge_request)
+      end
+
+      it 'publishes MergeRequests::ApprovedEvent' do
+        expect { service.execute(merge_request) }
+          .to publish_event(MergeRequests::ApprovedEvent)
+          .with(current_user_id: user.id, merge_request_id: merge_request.id)
+      end
+
       it 'creates an approval note and marks pending todos as done' do
         expect(SystemNoteService).to receive(:approve_mr).with(merge_request, user)
-        expect(merge_request.approvals).to receive(:reset)
 
         service.execute(merge_request)
 
         expect(todo.reload).to be_done
-      end
-
-      it 'creates approve MR event' do
-        expect_next_instance_of(EventCreateService) do |instance|
-          expect(instance).to receive(:approve_mr)
-            .with(merge_request, user)
-        end
-
-        service.execute(merge_request)
       end
 
       it 'sends a notification when approving' do
@@ -88,11 +119,20 @@ RSpec.describe MergeRequests::ApprovalService do
         end
       end
 
-      it 'tracks merge request approve action' do
-        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-          .to receive(:track_approve_mr_action).with(user: user, merge_request: merge_request)
+      context 'async_after_approval feature flag is disabled' do
+        before do
+          stub_feature_flags(async_after_approval: false)
+          allow(service).to receive(:notification_service).and_return(notification_service)
+        end
 
-        service.execute(merge_request)
+        it 'creates approve MR event' do
+          expect_next_instance_of(EventCreateService) do |instance|
+            expect(instance).to receive(:approve_mr)
+              .with(merge_request, user)
+          end
+
+          service.execute(merge_request)
+        end
       end
     end
 

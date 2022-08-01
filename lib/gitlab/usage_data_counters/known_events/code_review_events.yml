@@ -375,3 +375,28 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
+## Terraform
+- name: i_code_review_merge_request_widget_terraform_view
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_terraform_full_report_clicked
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_terraform_expand
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_terraform_expand_success
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_terraform_expand_warning
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_merge_request_widget_terraform_expand_failed
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly

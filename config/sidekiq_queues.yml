@@ -277,6 +277,8 @@
   - 1
 - - merge_requests_close_issue
   - 1
+- - merge_requests_create_approval_event
+  - 1
 - - merge_requests_delete_source_branch
   - 1
 - - merge_requests_handle_assignees_change

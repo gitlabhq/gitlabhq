@@ -2,7 +2,7 @@
 
 class TagsFinder < GitRefsFinder
   def execute(gitaly_pagination: false)
-    tags = if gitaly_pagination
+    tags = if gitaly_pagination && search.blank?
              repository.tags_sorted_by(sort, pagination_params)
            else
              repository.tags_sorted_by(sort)

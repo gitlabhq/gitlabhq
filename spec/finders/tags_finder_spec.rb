@@ -175,6 +175,16 @@ RSpec.describe TagsFinder do
           end
         end
       end
+
+      context 'pagination and search' do
+        let(:params) { { search: '1.1.1', per_page: 1 } }
+
+        it 'ignores the pagination for search' do
+          result = subject
+
+          expect(result.map(&:name)).to eq(%w(v1.1.1))
+        end
+      end
     end
 
     context 'when Gitaly is unavailable' do

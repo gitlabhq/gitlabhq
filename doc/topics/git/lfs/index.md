@@ -96,7 +96,7 @@ and are not pushed to the remote repository.
 
 ### Migrate an existing repository to Git LFS
 
-Read the documentation on how to [migrate an existing Git repository with Git LFS](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-migrate.1.ronn).
+Read the documentation on how to [migrate an existing Git repository with Git LFS](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-migrate.adoc).
 
 ### Removing objects from LFS
 

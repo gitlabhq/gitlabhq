@@ -13,17 +13,23 @@ They are rendered server-side and can be seamlessly used with template languages
 Refer to the official [documentation](https://viewcomponent.org/) to learn more or
 watch this [introduction video](https://youtu.be/akRhUbvtnmo).
 
+## Browse components with Lookbook
+
+We have a [Lookbook](https://github.com/allmarkedup/lookbook) in [http://gdk.test:3000/rails/lookbook](http://gdk.test:3000/rails/lookbook) (only available in development mode) to browse and interact with ViewComponent previews.
+
 ## Pajamas components
 
 Some of the components of our [Pajamas](https://design.gitlab.com) design system are
 available as a ViewComponent in `app/components/pajamas`.
 
 NOTE:
-We have a small but growing number of Pajamas components. Reach out to the
-[Foundations team](https://about.gitlab.com/handbook/engineering/development/dev/ecosystem/foundations/)
+We are still in the process of creating these components, so not every Pajamas component is available as ViewComponent.
+Reach out to the [Foundations team](https://about.gitlab.com/handbook/engineering/development/dev/ecosystem/foundations/)
 if the component you are looking for is not yet available.
 
 ### Available components
+
+Consider this list a best effort. The full list can be found in [`app/components/pajamas`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/components/pajamas). Also see [our Lookbook](http://gdk.test:3000/rails/lookbook) for a more interactive way to browse our components.
 
 #### Alert
 
@@ -172,3 +178,5 @@ For the full list of options, see its
   over creating plain Haml tags with CSS classes.
 - If you are making changes to an existing Haml view and see, for example, a
   button that is still implemented with plain Haml, consider migrating it to use a ViewComponent.
+- If you decide to create a new component, consider creating [previews](https://viewcomponent.org/guide/previews.html) for it, too.
+  This will help others to discover your component with Lookbook, also it makes it much easier to test its different states.

@@ -50,6 +50,11 @@ describe('Integration Snippets notes', () => {
           'circled latin capital letter m',
         ],
       ],
+      [':', ['100', '1234', '8ball', 'a', 'ab']],
+      // We do not want the search to start with space https://gitlab.com/gitlab-org/gitlab/-/issues/322548
+      [': ', []],
+      // We want to preserve that we can have space INSIDE the search
+      [':red ci', ['large red circle']],
     ])('shows a correct list of matching emojis when user enters %s', async (input, expected) => {
       fillNoteTextarea(input);
 

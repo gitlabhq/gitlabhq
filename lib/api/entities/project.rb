@@ -67,18 +67,18 @@ module API
         Ability.allowed?(options[:current_user], :create_merge_request_in, project)
       end
 
-      expose(:issues_access_level) { |project, options| project.project_feature.string_access_level(:issues) }
-      expose(:repository_access_level) { |project, options| project.project_feature.string_access_level(:repository) }
-      expose(:merge_requests_access_level) { |project, options| project.project_feature.string_access_level(:merge_requests) }
-      expose(:forking_access_level) { |project, options| project.project_feature.string_access_level(:forking) }
-      expose(:wiki_access_level) { |project, options| project.project_feature.string_access_level(:wiki) }
-      expose(:builds_access_level) { |project, options| project.project_feature.string_access_level(:builds) }
-      expose(:snippets_access_level) { |project, options| project.project_feature.string_access_level(:snippets) }
-      expose(:pages_access_level) { |project, options| project.project_feature.string_access_level(:pages) }
-      expose(:operations_access_level) { |project, options| project.project_feature.string_access_level(:operations) }
-      expose(:analytics_access_level) { |project, options| project.project_feature.string_access_level(:analytics) }
-      expose(:container_registry_access_level) { |project, options| project.project_feature.string_access_level(:container_registry) }
-      expose(:security_and_compliance_access_level) { |project, options| project.project_feature.string_access_level(:security_and_compliance) }
+      expose(:issues_access_level) { |project, options| project_feature_string_access_level(project, :issues) }
+      expose(:repository_access_level) { |project, options| project_feature_string_access_level(project, :repository) }
+      expose(:merge_requests_access_level) { |project, options| project_feature_string_access_level(project, :merge_requests) }
+      expose(:forking_access_level) { |project, options| project_feature_string_access_level(project, :forking) }
+      expose(:wiki_access_level) { |project, options| project_feature_string_access_level(project, :wiki) }
+      expose(:builds_access_level) { |project, options| project_feature_string_access_level(project, :builds) }
+      expose(:snippets_access_level) { |project, options| project_feature_string_access_level(project, :snippets) }
+      expose(:pages_access_level) { |project, options| project_feature_string_access_level(project, :pages) }
+      expose(:operations_access_level) { |project, options| project_feature_string_access_level(project, :operations) }
+      expose(:analytics_access_level) { |project, options| project_feature_string_access_level(project, :analytics) }
+      expose(:container_registry_access_level) { |project, options| project_feature_string_access_level(project, :container_registry) }
+      expose(:security_and_compliance_access_level) { |project, options| project_feature_string_access_level(project, :security_and_compliance) }
 
       expose :emails_disabled
       expose :shared_runners_enabled

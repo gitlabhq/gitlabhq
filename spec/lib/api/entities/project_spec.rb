@@ -13,6 +13,19 @@ RSpec.describe ::API::Entities::Project do
 
   subject(:json) { entity.as_json }
 
+  context 'without project feature' do
+    before do
+      project.project_feature.destroy!
+      project.reload
+    end
+
+    it 'returns a response' do
+      expect(json[:issues_access_level]).to be_nil
+      expect(json[:repository_access_level]).to be_nil
+      expect(json[:merge_requests_access_level]).to be_nil
+    end
+  end
+
   describe '.service_desk_address' do
     before do
       allow(project).to receive(:service_desk_enabled?).and_return(true)

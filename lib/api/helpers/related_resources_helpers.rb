@@ -9,6 +9,10 @@ module API
         available?(:issues, project, options[:current_user])
       end
 
+      def project_feature_string_access_level(project, feature)
+        project.project_feature&.string_access_level(feature)
+      end
+
       def mrs_available?(project, options)
         available?(:merge_requests, project, options[:current_user])
       end

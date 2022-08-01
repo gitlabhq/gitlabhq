@@ -401,6 +401,18 @@ RSpec.describe Ci::Bridge do
     end
   end
 
+  describe '#downstream_project_path' do
+    context 'when trigger is defined' do
+      context 'when using variable expansion' do
+        let(:options) { { trigger: { project: 'my/$BRIDGE/project' } } }
+
+        it 'correctly expands variables' do
+          expect(bridge.downstream_project_path).to eq('my/cross/project')
+        end
+      end
+    end
+  end
+
   describe '#target_ref' do
     context 'when trigger is defined' do
       it 'returns a ref name' do

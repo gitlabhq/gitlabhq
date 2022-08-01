@@ -691,33 +691,29 @@ class User < ApplicationRecord
       scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
       scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
 
-      if Feature.enabled?(:use_keyset_aware_user_search_query)
-        order = Gitlab::Pagination::Keyset::Order.build([
-          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-            attribute_name: 'users_match_priority',
-            order_expression: sanitized_order_sql.asc,
-            add_to_projections: true,
-            distinct: false
-          ),
-          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-            attribute_name: 'users_name',
-            order_expression: arel_table[:name].asc,
-            add_to_projections: true,
-            nullable: :not_nullable,
-            distinct: false
-          ),
-          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-            attribute_name: 'users_id',
-            order_expression: arel_table[:id].asc,
-            add_to_projections: true,
-            nullable: :not_nullable,
-            distinct: true
-          )
-        ])
-        scope.reorder(order)
-      else
-        scope.reorder(sanitized_order_sql, :name)
-      end
+      order = Gitlab::Pagination::Keyset::Order.build([
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'users_match_priority',
+          order_expression: sanitized_order_sql.asc,
+          add_to_projections: true,
+          distinct: false
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'users_name',
+          order_expression: arel_table[:name].asc,
+          add_to_projections: true,
+          nullable: :not_nullable,
+          distinct: false
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'users_id',
+          order_expression: arel_table[:id].asc,
+          add_to_projections: true,
+          nullable: :not_nullable,
+          distinct: true
+        )
+      ])
+      scope.reorder(order)
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.

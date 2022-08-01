@@ -11918,6 +11918,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodecisecurefileregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodecisecurefileregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.groupWikiRepositoryRegistries`
 
@@ -11934,6 +11935,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodegroupwikirepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodegroupwikirepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.jobArtifactRegistries`
 
@@ -11950,6 +11952,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodejobartifactregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodejobartifactregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.lfsObjectRegistries`
 
@@ -11966,6 +11969,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodelfsobjectregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodelfsobjectregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.mergeRequestDiffRegistries`
 
@@ -11982,6 +11986,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodemergerequestdiffregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodemergerequestdiffregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.packageFileRegistries`
 
@@ -11998,6 +12003,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodepackagefileregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodepackagefileregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.pagesDeploymentRegistries`
 
@@ -12014,6 +12020,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodepagesdeploymentregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodepagesdeploymentregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.pipelineArtifactRegistries`
 
@@ -12030,6 +12037,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodepipelineartifactregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodepipelineartifactregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.snippetRepositoryRegistries`
 
@@ -12046,6 +12054,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodesnippetrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodesnippetrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.terraformStateVersionRegistries`
 
@@ -12062,6 +12071,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodeterraformstateversionregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeterraformstateversionregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ##### `GeoNode.uploadRegistries`
 
@@ -12078,6 +12088,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="geonodeuploadregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeuploadregistriesreplicationstate"></a>`replicationState` | [`ReplicableStateEnum`](#replicablestateenum) | Filters registries by their replication state. |
 
 ### `GrafanaIntegration`
 
@@ -20186,6 +20197,15 @@ Release tag ID wildcard values.
 | ----- | ----------- |
 | <a id="releasetagwildcardidany"></a>`ANY` | Release tag is assigned. |
 | <a id="releasetagwildcardidnone"></a>`NONE` | No release tag is assigned. |
+
+### `ReplicableStateEnum`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="replicablestateenumfailed"></a>`FAILED` | Replication process finished but failed. |
+| <a id="replicablestateenumpending"></a>`PENDING` | Replication process has not started. |
+| <a id="replicablestateenumstarted"></a>`STARTED` | Replication process is in progress. |
+| <a id="replicablestateenumsynced"></a>`SYNCED` | Replication process finished successfully. |
 
 ### `RequirementState`
 

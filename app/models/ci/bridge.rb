@@ -114,7 +114,12 @@ module Ci
 
     def downstream_project_path
       strong_memoize(:downstream_project_path) do
-        options&.dig(:trigger, :project)
+        project = options&.dig(:trigger, :project)
+        next unless project
+
+        scoped_variables.to_runner_variables.yield_self do |all_variables|
+          ::ExpandVariables.expand(project, all_variables)
+        end
       end
     end
 

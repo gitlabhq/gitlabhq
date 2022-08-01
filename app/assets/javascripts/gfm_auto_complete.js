@@ -254,10 +254,18 @@ class GfmAutoComplete {
       callbacks: {
         ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
-          const regexp = new RegExp(`(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^:]*)$`, 'gi');
+          const regexp = new RegExp(
+            `(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^ :][^:]*)?$`,
+            'gi',
+          );
           const match = regexp.exec(subtext);
 
-          return match && match.length ? match[1] : null;
+          if (match && match.length) {
+            // Since we have "?" on the group, it's possible it is undefined
+            return match[1] || '';
+          }
+
+          return null;
         },
         filter(query, items) {
           if (GfmAutoComplete.isLoading(items)) {
