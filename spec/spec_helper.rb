@@ -506,3 +506,16 @@ module TouchRackUploadedFile
 end
 
 Rack::Test::UploadedFile.prepend(TouchRackUploadedFile)
+
+# Monkey-patch to enable ActiveSupport::Notifications for Redis commands
+module RedisCommands
+  module Instrumentation
+    def process(commands, &block)
+      ActiveSupport::Notifications.instrument('redis.process_commands', commands: commands) do
+        super(commands, &block)
+      end
+    end
+  end
+end
+
+Redis::Client.prepend(RedisCommands::Instrumentation)

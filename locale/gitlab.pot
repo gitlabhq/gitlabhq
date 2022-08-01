@@ -39861,6 +39861,9 @@ msgstr ""
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
 msgstr ""
 
+msgid "This email address does not look right, are you sure you typed it correctly?"
+msgstr ""
+
 msgid "This email supersedes any previous emails about scheduled deletion you may have received for %{project_link}."
 msgstr ""
 

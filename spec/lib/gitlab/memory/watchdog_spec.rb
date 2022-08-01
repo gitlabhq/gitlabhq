@@ -14,12 +14,39 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
     let(:sleep_time) { 0.1 }
     let(:max_heap_fragmentation) { 0.2 }
 
+    # Tests should set this to control the number of loop iterations in `call`.
+    let(:watchdog_iterations) { 1 }
+
     subject(:watchdog) do
       described_class.new(handler: handler, logger: logger, sleep_time_seconds: sleep_time,
-                          max_strikes: max_strikes, max_heap_fragmentation: max_heap_fragmentation)
+                          max_strikes: max_strikes, max_heap_fragmentation: max_heap_fragmentation).tap do |instance|
+        # We need to defuse `sleep` and stop the internal loop after N iterations.
+        iterations = 0
+        expect(instance).to receive(:sleep) do
+          instance.stop if (iterations += 1) >= watchdog_iterations
+        end.at_most(watchdog_iterations)
+      end
+    end
+
+    def stub_prometheus_metrics
+      allow(Gitlab::Metrics).to receive(:gauge)
+        .with(:gitlab_memwd_heap_frag_limit, anything)
+        .and_return(heap_frag_limit_gauge)
+      allow(Gitlab::Metrics).to receive(:counter)
+        .with(:gitlab_memwd_heap_frag_violations_total, anything, anything)
+        .and_return(heap_frag_violations_counter)
+      allow(Gitlab::Metrics).to receive(:counter)
+        .with(:gitlab_memwd_heap_frag_violations_handled_total, anything, anything)
+        .and_return(heap_frag_violations_handled_counter)
+
+      allow(heap_frag_limit_gauge).to receive(:set)
+      allow(heap_frag_violations_counter).to receive(:increment)
+      allow(heap_frag_violations_handled_counter).to receive(:increment)
     end
 
     before do
+      stub_prometheus_metrics
+
       allow(handler).to receive(:on_high_heap_fragmentation).and_return(true)
 
       allow(logger).to receive(:warn)
@@ -30,18 +57,14 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
       allow(::Prometheus::PidProvider).to receive(:worker_id).and_return('worker_1')
     end
 
-    after do
-      watchdog.stop
-    end
-
-    context 'when starting up' do
+    context 'when created' do
       let(:fragmentation) { 0 }
       let(:max_strikes) { 0 }
 
       it 'sets the heap fragmentation limit gauge' do
-        allow(Gitlab::Metrics).to receive(:gauge).with(anything, anything).and_return(heap_frag_limit_gauge)
-
         expect(heap_frag_limit_gauge).to receive(:set).with({}, max_heap_fragmentation)
+
+        watchdog
       end
 
       context 'when no settings are set in the environment' do
@@ -78,72 +101,49 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
       it 'does not signal the handler' do
         expect(handler).not_to receive(:on_high_heap_fragmentation)
 
-        watchdog.start
-
-        sleep sleep_time * 3
+        watchdog.call
       end
     end
 
     context 'when process exceeds heap fragmentation threshold permanently' do
       let(:fragmentation) { max_heap_fragmentation + 0.1 }
-
-      before do
-        expected_labels = { pid: 'worker_1' }
-        allow(Gitlab::Metrics).to receive(:counter)
-          .with(:gitlab_memwd_heap_frag_violations_total, anything, expected_labels)
-          .and_return(heap_frag_violations_counter)
-        allow(Gitlab::Metrics).to receive(:counter)
-          .with(:gitlab_memwd_heap_frag_violations_handled_total, anything, expected_labels)
-          .and_return(heap_frag_violations_handled_counter)
-        allow(heap_frag_violations_counter).to receive(:increment)
-        allow(heap_frag_violations_handled_counter).to receive(:increment)
-      end
+      let(:max_strikes) { 3 }
 
       context 'when process has not exceeded allowed number of strikes' do
-        let(:max_strikes) { 10 }
+        let(:watchdog_iterations) { max_strikes }
 
         it 'does not signal the handler' do
           expect(handler).not_to receive(:on_high_heap_fragmentation)
 
-          watchdog.start
-
-          sleep sleep_time * 3
+          watchdog.call
         end
 
         it 'does not log any events' do
           expect(logger).not_to receive(:warn)
 
-          watchdog.start
-
-          sleep sleep_time * 3
+          watchdog.call
         end
 
         it 'increments the violations counter' do
-          expect(heap_frag_violations_counter).to receive(:increment)
+          expect(heap_frag_violations_counter).to receive(:increment).exactly(watchdog_iterations)
 
-          watchdog.start
-
-          sleep sleep_time * 3
+          watchdog.call
         end
 
         it 'does not increment violations handled counter' do
           expect(heap_frag_violations_handled_counter).not_to receive(:increment)
 
-          watchdog.start
-
-          sleep sleep_time * 3
+          watchdog.call
         end
       end
 
       context 'when process exceeds the allowed number of strikes' do
-        let(:max_strikes) { 1 }
+        let(:watchdog_iterations) { max_strikes + 1 }
 
         it 'signals the handler and resets strike counter' do
           expect(handler).to receive(:on_high_heap_fragmentation).and_return(true)
 
-          watchdog.start
-
-          sleep sleep_time * 3
+          watchdog.call
 
           expect(watchdog.strikes).to eq(0)
         end
@@ -163,18 +163,14 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
             memwd_rss_bytes: 1024
           })
 
-          watchdog.start
-
-          sleep sleep_time * 3
+          watchdog.call
         end
 
         it 'increments both the violations and violations handled counters' do
-          expect(heap_frag_violations_counter).to receive(:increment)
+          expect(heap_frag_violations_counter).to receive(:increment).exactly(watchdog_iterations)
           expect(heap_frag_violations_handled_counter).to receive(:increment)
 
-          watchdog.start
-
-          sleep sleep_time * 3
+          watchdog.call
         end
 
         context 'when enforce_memory_watchdog ops toggle is off' do
@@ -188,35 +184,31 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
               receive(:on_high_heap_fragmentation).with(fragmentation).and_return(true)
             )
 
-            watchdog.start
-
-            sleep sleep_time * 3
+            watchdog.call
           end
         end
-      end
 
-      context 'when handler result is true' do
-        let(:max_strikes) { 1 }
+        context 'when handler result is true' do
+          it 'considers the event handled and stops itself' do
+            expect(handler).to receive(:on_high_heap_fragmentation).once.and_return(true)
+            expect(logger).to receive(:info).with(hash_including(message: 'stopped'))
 
-        it 'considers the event handled and stops itself' do
-          expect(handler).to receive(:on_high_heap_fragmentation).once.and_return(true)
-
-          watchdog.start
-
-          sleep sleep_time * 3
+            watchdog.call
+          end
         end
-      end
 
-      context 'when handler result is false' do
-        let(:max_strikes) { 1 }
+        context 'when handler result is false' do
+          let(:max_strikes) { 0 } # to make sure the handler fires each iteration
+          let(:watchdog_iterations) { 3 }
 
-        it 'keeps running' do
-          # Return true the third time to terminate the daemon.
-          expect(handler).to receive(:on_high_heap_fragmentation).and_return(false, false, true)
+          it 'keeps running' do
+            expect(heap_frag_violations_counter).to receive(:increment).exactly(watchdog_iterations)
+            expect(heap_frag_violations_handled_counter).to receive(:increment).exactly(watchdog_iterations)
+            # Return true the third time to terminate the daemon.
+            expect(handler).to receive(:on_high_heap_fragmentation).and_return(false, false, true)
 
-          watchdog.start
-
-          sleep sleep_time * 4
+            watchdog.call
+          end
         end
       end
     end
@@ -224,6 +216,7 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
     context 'when process exceeds heap fragmentation threshold temporarily' do
       let(:fragmentation) { max_heap_fragmentation }
       let(:max_strikes) { 1 }
+      let(:watchdog_iterations) { 4 }
 
       before do
         allow(Gitlab::Metrics::Memory).to receive(:gc_heap_fragmentation).and_return(
@@ -237,9 +230,7 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
       it 'does not signal the handler' do
         expect(handler).not_to receive(:on_high_heap_fragmentation)
 
-        watchdog.start
-
-        sleep sleep_time * 4
+        watchdog.call
       end
     end
 
@@ -254,9 +245,7 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, :prometheus do
       it 'does not monitor heap fragmentation' do
         expect(Gitlab::Metrics::Memory).not_to receive(:gc_heap_fragmentation)
 
-        watchdog.start
-
-        sleep sleep_time * 3
+        watchdog.call
       end
     end
   end

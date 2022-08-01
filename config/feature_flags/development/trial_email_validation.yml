@@ -1,0 +1,8 @@
+---
+name: trial_email_validation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92762
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/368999
+milestone: '15.3'
+type: development
+group: group::acquisition
+default_enabled: false

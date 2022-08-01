@@ -35,9 +35,10 @@ RSpec.shared_examples 'creates an alert management alert or errors' do
 
     it 'writes a warning to the log' do
       expect(Gitlab::AppLogger).to receive(:warn).with(
-        message: "Unable to create AlertManagement::Alert from #{source}",
+        message: "Unable to create AlertManagement::Alert",
         project_id: project.id,
-        alert_errors: { hosts: ['hosts array is over 255 chars'] }
+        alert_errors: { hosts: ['hosts array is over 255 chars'] },
+        alert_source: source
       )
 
       subject

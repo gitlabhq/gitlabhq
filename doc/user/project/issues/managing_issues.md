@@ -731,4 +731,4 @@ You can do the following **only by using quick actions**:
 - [Publish an issue](#publish-an-issue) (`/publish`).
 - Clone an issue to the same or another project (`/clone`).
 - Close an issue and mark as a duplicate of another issue (`/duplicate`).
-- Copy labels and milestone from another merge request in the project (`/copy_metadata`).
+- Copy labels and milestone from another merge request or issue in the project (`/copy_metadata`).

@@ -229,7 +229,6 @@
     "jest-junit": "^12.0.0",
     "jest-raw-loader": "^1.0.1",
     "jest-transform-graphql": "^2.1.0",
-    "jest-util": "^26.5.2",
     "jest-util": "^27.5.1",
     "markdownlint-cli": "0.31.0",
     "miragejs": "^0.1.40",

@@ -283,6 +283,12 @@ RSpec.describe 'Signup' do
       expect(page).to have_current_path user_registration_path, ignore_query: true
       expect(page.body).not_to match(/#{new_user.password}/)
     end
+
+    context 'with invalid email', :saas, :js do
+      it_behaves_like 'user email validation' do
+        let(:path) { new_user_registration_path }
+      end
+    end
   end
 
   context 'when terms are enforced' do

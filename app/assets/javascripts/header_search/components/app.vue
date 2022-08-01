@@ -262,9 +262,9 @@ export default {
     <div
       v-if="showSearchDropdown"
       data-testid="header-search-dropdown-menu"
-      class="header-search-dropdown-menu gl-absolute gl-w-full gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0"
+      class="header-search-dropdown-menu gl-overflow-y-auto gl-absolute gl-w-full gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0 gl-mt-3"
     >
-      <div class="header-search-dropdown-content gl-overflow-y-auto gl-py-2">
+      <div class="header-search-dropdown-content gl-py-2">
         <dropdown-keyboard-navigation
           v-model="currentFocusIndex"
           :max="searchOptions.length - 1"

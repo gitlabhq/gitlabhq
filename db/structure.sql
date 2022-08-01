@@ -21133,7 +21133,7 @@ CREATE TABLE ssh_signatures (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     project_id bigint NOT NULL,
-    key_id bigint NOT NULL,
+    key_id bigint,
     verification_status smallint DEFAULT 0 NOT NULL,
     commit_sha bytea NOT NULL
 );

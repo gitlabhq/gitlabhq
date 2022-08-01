@@ -39,12 +39,6 @@ module AlertManagement
         SystemNoteService.change_alert_status(alert, User.alert_bot)
 
         close_issue(alert.issue_id) if auto_close_incident?
-      else
-        logger.warn(
-          message: 'Unable to update AlertManagement::Alert status to resolved',
-          project_id: project.id,
-          alert_id: alert.id
-        )
       end
     end
 
@@ -66,9 +60,10 @@ module AlertManagement
         SystemNoteService.create_new_alert(alert, alert_source)
       else
         logger.warn(
-          message: "Unable to create AlertManagement::Alert from #{alert_source}",
+          message: "Unable to create AlertManagement::Alert",
           project_id: project.id,
-          alert_errors: alert.errors.messages
+          alert_errors: alert.errors.messages,
+          alert_source: alert_source
         )
       end
     end

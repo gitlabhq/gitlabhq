@@ -15,7 +15,7 @@ module Gitlab
     #
     # The duration for which a process may be above a given fragmentation
     # threshold is computed as `max_strikes * sleep_time_seconds`.
-    class Watchdog < Daemon
+    class Watchdog
       DEFAULT_SLEEP_TIME_SECONDS = 60
       DEFAULT_HEAP_FRAG_THRESHOLD = 0.5
       DEFAULT_MAX_STRIKES = 5
@@ -91,7 +91,7 @@ module Gitlab
 
       attr_reader :strikes, :max_heap_fragmentation, :max_strikes, :sleep_time_seconds
 
-      def run_thread
+      def call
         @logger.info(log_labels.merge(message: 'started'))
 
         while @alive
@@ -101,6 +101,10 @@ module Gitlab
         end
 
         @logger.info(log_labels.merge(message: 'stopped'))
+      end
+
+      def stop
+        @alive = false
       end
 
       private
@@ -139,10 +143,6 @@ module Gitlab
         return NullHandler.instance unless Feature.enabled?(:enforce_memory_watchdog, type: :ops)
 
         @handler
-      end
-
-      def stop_working
-        @alive = false
       end
 
       def log_labels

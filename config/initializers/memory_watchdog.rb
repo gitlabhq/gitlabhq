@@ -13,7 +13,8 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
       Gitlab::Memory::Watchdog::NullHandler.instance
     end
 
-  Gitlab::Memory::Watchdog.new(
+  watchdog = Gitlab::Memory::Watchdog.new(
     handler: handler, logger: Gitlab::AppLogger
-  ).start
+  )
+  Gitlab::BackgroundTask.new(watchdog).start
 end

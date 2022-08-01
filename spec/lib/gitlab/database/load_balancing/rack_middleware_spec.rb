@@ -30,6 +30,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
       expect(app).to receive(:call).with(env).and_return(10)
 
+      allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original
+
       expect(ActiveSupport::Notifications)
         .to receive(:instrument)
         .with('web_transaction_completed.load_balancing')

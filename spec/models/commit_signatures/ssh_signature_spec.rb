@@ -22,7 +22,7 @@ RSpec.describe CommitSignatures::SshSignature do
   it_behaves_like 'commit signature'
 
   describe 'associations' do
-    it { is_expected.to belong_to(:key).required }
+    it { is_expected.to belong_to(:key).optional }
   end
 
   describe '.by_commit_sha scope' do

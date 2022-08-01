@@ -26,6 +26,14 @@ module Gitlab
         end
       end
 
+      def signed_by_key
+        strong_memoize(:signed_by_key) do
+          next unless key_fingerprint
+
+          Key.find_by_fingerprint_sha256(key_fingerprint)
+        end
+      end
+
       private
 
       def all_attributes_present?
@@ -60,14 +68,6 @@ module Gitlab
 
       def key_fingerprint
         strong_memoize(:key_fingerprint) { signature&.public_key&.fingerprint }
-      end
-
-      def signed_by_key
-        strong_memoize(:signed_by_key) do
-          next unless key_fingerprint
-
-          Key.find_by_fingerprint_sha256(key_fingerprint)
-        end
       end
     end
   end
