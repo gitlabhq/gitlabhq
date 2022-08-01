@@ -1322,6 +1322,8 @@ module Ci
         raise ArgumentError, 'pipeline not fully loaded'
       end
 
+      return 0 unless created_at
+
       (Time.current - created_at).ceil / 60
     end
 

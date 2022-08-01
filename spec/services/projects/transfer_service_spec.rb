@@ -73,15 +73,17 @@ RSpec.describe Projects::TransferService do
         create(:group, :nested).tap { |g| g.add_owner(user) }
       end
 
+      let(:project) { create(:project, namespace: group) }
+
       it 'publishes a ProjectTransferedEvent' do
         expect { execute_transfer }
           .to publish_event(Projects::ProjectTransferedEvent)
           .with(
-            project_id: kind_of(Numeric),
+            project_id: project.id,
             old_namespace_id: group.id,
-            old_root_namespace_id: group.parent_id,
+            old_root_namespace_id: group.root_ancestor.id,
             new_namespace_id: target.id,
-            new_root_namespace_id: target.parent_id
+            new_root_namespace_id: target.root_ancestor.id
           )
       end
     end

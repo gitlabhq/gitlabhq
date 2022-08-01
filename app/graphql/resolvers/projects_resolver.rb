@@ -25,8 +25,8 @@ module Resolvers
              description: 'Sort order of results.'
 
     argument :topics, type: [GraphQL::Types::String],
-             required: false,
-             description: 'Filters projects by topics.'
+                      required: false,
+                      description: 'Filters projects by topics.'
 
     def resolve(**args)
       ProjectsFinder

@@ -5339,6 +5339,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           expect(pipeline.age_in_minutes).to eq 120
         end
       end
+
+      context 'when pipeline has no created_at' do
+        before do
+          pipeline.update!(created_at: nil)
+        end
+
+        it 'returns zero' do
+          expect(pipeline.age_in_minutes).to eq 0
+        end
+      end
     end
 
     context 'when pipeline has been loaded without all attributes' do

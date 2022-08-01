@@ -1,8 +1,10 @@
 <script>
+import $ from 'jquery';
 import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import Autosave from '~/autosave';
 
 export default {
   components: {
@@ -23,6 +25,11 @@ export default {
     ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
   },
   mounted() {
+    this.autosave = new Autosave(
+      $(this.$refs.textarea),
+      `submit_review_dropdown/${this.getNoteableData.id}`,
+    );
+
     // We override the Bootstrap Vue click outside behaviour
     // to allow for clicking in the autocomplete dropdowns
     // without this override the submit dropdown will close
@@ -46,6 +53,8 @@ export default {
       this.isSubmitting = true;
 
       await this.publishReview(noteData);
+
+      this.autosave.reset();
 
       if (window.mrTabs && this.note) {
         window.location.hash = `note_${this.getCurrentUserLastNote.id}`;

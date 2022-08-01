@@ -12,7 +12,7 @@ module Resolvers
              description: 'List of user Global IDs.'
 
     argument :usernames, [GraphQL::Types::String], required: false,
-              description: 'List of usernames.'
+                                                   description: 'List of usernames.'
 
     argument :sort, Types::SortEnum,
              description: 'Sort users by this criteria.',

@@ -75,6 +75,7 @@ at the group level.
 
 > - Support for specifying multiple email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1.
 > - Support for restricting access to projects in the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
+> - Support for restricting group memberships to groups with a subset of the allowed email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/354791) in GitLab 15.1.1
 
 You can prevent users with email addresses in specific domains from being added to a group and its projects.
 
@@ -94,6 +95,13 @@ The most popular public email domains cannot be restricted, such as:
 - `gmail.com`, `yahoo.com`, `aol.com`, `icloud.com`
 - `hotmail.com`, `hotmail.co.uk`, `hotmail.fr`
 - `msn.com`, `live.com`, `outlook.com`
+
+When you share a group, both the source and target namespaces must allow the domains of the members' email addresses.
+
+NOTE:
+Removing a domain from the **Restrict membership by email** list does not remove the users with this email domain from the groups and projects under this group.
+Also, if you share a group or project with another group, the target group can add more email domains to its list that are not in the list of the source group.
+Hence, this feature does not ensure that the current members always conform to the **Restrict membership by email** list.
 
 ## Prevent group sharing outside the group hierarchy
 

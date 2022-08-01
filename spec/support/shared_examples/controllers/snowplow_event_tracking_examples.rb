@@ -14,6 +14,8 @@
 # - **extra
 
 shared_examples 'Snowplow event tracking' do
+  let(:extra) { {} }
+
   it 'is not emitted if FF is disabled' do
     stub_feature_flags(feature_flag_name => false)
 
@@ -23,8 +25,6 @@ shared_examples 'Snowplow event tracking' do
   end
 
   it 'is emitted' do
-    extra ||= {}
-
     params = {
       category: category,
       action: action,
@@ -32,9 +32,8 @@ shared_examples 'Snowplow event tracking' do
       user: try(:user),
       project: try(:project),
       label: try(:label),
-      property: try(:property),
-      **extra
-    }.compact
+      property: try(:property)
+    }.compact.merge(extra)
 
     subject
 

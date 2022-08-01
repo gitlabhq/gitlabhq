@@ -40,8 +40,6 @@ module QA
           find_element(:status_badge).text
         end
 
-        private
-
         def completed?(timeout: 60)
           wait_until(reload: false, sleep_interval: 3.0, max_duration: timeout) do
             COMPLETED_STATUSES.include?(status_badge)

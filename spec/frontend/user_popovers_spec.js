@@ -10,6 +10,8 @@ jest.mock('~/api/user_api', () => ({
 }));
 
 describe('User Popovers', () => {
+  let origGon;
+
   const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';
 
   const selector = '.js-user-link[data-user], .js-user-link[data-user-id]';
@@ -39,7 +41,7 @@ describe('User Popovers', () => {
     el.dispatchEvent(event);
   };
 
-  beforeEach(() => {
+  const setupTestSubject = () => {
     loadHTMLFixture(fixtureTemplate);
 
     const usersCacheSpy = () => Promise.resolve(dummyUser);
@@ -56,147 +58,179 @@ describe('User Popovers', () => {
       document.body.appendChild(mountingRoot);
       popoverInstance.$mount(mountingRoot);
     });
+  };
+
+  beforeEach(() => {
+    origGon = window.gon;
+    window.gon = {};
   });
 
   afterEach(() => {
-    resetHTMLFixture();
+    window.gon = origGon;
   });
 
-  describe('shows a placeholder popover on hover', () => {
-    let linksWithUsers;
+  describe('when signed out', () => {
     beforeEach(() => {
-      linksWithUsers = findFixtureLinks();
+      setupTestSubject();
+    });
+
+    it('does not show a placeholder popover on hover', () => {
+      const linksWithUsers = findFixtureLinks();
       linksWithUsers.forEach((el) => {
         triggerEvent('mouseover', el);
       });
+
+      expect(findPopovers().length).toBe(0);
+    });
+  });
+
+  describe('when signed in', () => {
+    beforeEach(() => {
+      window.gon.current_user_id = 7;
+
+      setupTestSubject();
     });
 
-    it('for initial links', () => {
-      expect(findPopovers().length).toBe(linksWithUsers.length);
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
-    it('for elements added after initial load', async () => {
-      const addedLinks = [createUserLink(), createUserLink()];
-      addedLinks.forEach((link) => {
-        document.body.appendChild(link);
+    describe('shows a placeholder popover on hover', () => {
+      let linksWithUsers;
+      beforeEach(() => {
+        linksWithUsers = findFixtureLinks();
+        linksWithUsers.forEach((el) => {
+          triggerEvent('mouseover', el);
+        });
       });
 
-      jest.runOnlyPendingTimers();
-
-      addedLinks.forEach((link) => {
-        triggerEvent('mouseover', link);
+      it('for initial links', () => {
+        expect(findPopovers().length).toBe(linksWithUsers.length);
       });
 
-      expect(findPopovers().length).toBe(linksWithUsers.length + addedLinks.length);
-    });
-  });
+      it('for elements added after initial load', async () => {
+        const addedLinks = [createUserLink(), createUserLink()];
+        addedLinks.forEach((link) => {
+          document.body.appendChild(link);
+        });
 
-  it('does not initialize the popovers for group references', async () => {
-    const [groupLink] = Array.from(document.querySelectorAll('.js-user-link[data-group]'));
+        jest.runOnlyPendingTimers();
 
-    triggerEvent('mouseover', groupLink);
-    jest.runOnlyPendingTimers();
+        addedLinks.forEach((link) => {
+          triggerEvent('mouseover', link);
+        });
 
-    expect(findPopovers().length).toBe(0);
-  });
-
-  it('does not initialize the popovers for @all references', async () => {
-    const [projectLink] = Array.from(document.querySelectorAll('.js-user-link[data-project]'));
-
-    triggerEvent('mouseover', projectLink);
-    jest.runOnlyPendingTimers();
-
-    expect(findPopovers().length).toBe(0);
-  });
-
-  it('does not initialize the user popovers twice for the same element', async () => {
-    const [firstUserLink] = findFixtureLinks();
-    triggerEvent('mouseover', firstUserLink);
-    jest.runOnlyPendingTimers();
-    triggerEvent('mouseleave', firstUserLink);
-    jest.runOnlyPendingTimers();
-    triggerEvent('mouseover', firstUserLink);
-    jest.runOnlyPendingTimers();
-
-    expect(findPopovers().length).toBe(1);
-  });
-
-  describe('when user link emits mouseenter event with empty user cache', () => {
-    let userLink;
-
-    beforeEach(() => {
-      UsersCache.retrieveById.mockReset();
-
-      [userLink] = findFixtureLinks();
-
-      triggerEvent('mouseover', userLink);
+        expect(findPopovers().length).toBe(linksWithUsers.length + addedLinks.length);
+      });
     });
 
-    it('populates popover with preloaded user data', () => {
-      const { name, userId, username } = userLink.dataset;
+    it('does not initialize the popovers for group references', async () => {
+      const [groupLink] = Array.from(document.querySelectorAll('.js-user-link[data-group]'));
 
-      expect(userLink.user).toEqual(
-        expect.objectContaining({
-          name,
-          userId,
-          username,
-        }),
-      );
-    });
-  });
-
-  describe('when user link emits mouseenter event', () => {
-    let userLink;
-
-    beforeEach(() => {
-      [userLink] = findFixtureLinks();
-
-      triggerEvent('mouseover', userLink);
-    });
-
-    it('removes title attribute from user links', () => {
-      expect(userLink.getAttribute('title')).toBeFalsy();
-      expect(userLink.dataset.originalTitle).toBeFalsy();
-    });
-
-    it('fetches user info and status from the user cache', () => {
-      const { userId } = userLink.dataset;
-
-      expect(UsersCache.retrieveById).toHaveBeenCalledWith(userId);
-      expect(UsersCache.retrieveStatusById).toHaveBeenCalledWith(userId);
-    });
-
-    it('removes aria-describedby attribute from the user link on mouseleave', () => {
-      userLink.setAttribute('aria-describedby', 'popover');
-      triggerEvent('mouseleave', userLink);
-
-      expect(userLink.getAttribute('aria-describedby')).toBe(null);
-    });
-
-    it('updates toggle follow button and `UsersCache` when toggle follow button is clicked', async () => {
-      const [firstPopover] = findPopovers();
-      const withinFirstPopover = within(firstPopover);
-      const findFollowButton = () => withinFirstPopover.queryByRole('button', { name: 'Follow' });
-      const findUnfollowButton = () =>
-        withinFirstPopover.queryByRole('button', { name: 'Unfollow' });
-
+      triggerEvent('mouseover', groupLink);
       jest.runOnlyPendingTimers();
 
-      const { userId } = document.querySelector(selector).dataset;
+      expect(findPopovers().length).toBe(0);
+    });
 
-      triggerEvent('click', findFollowButton());
+    it('does not initialize the popovers for @all references', async () => {
+      const [projectLink] = Array.from(document.querySelectorAll('.js-user-link[data-project]'));
 
-      await waitForPromises();
+      triggerEvent('mouseover', projectLink);
+      jest.runOnlyPendingTimers();
 
-      expect(findUnfollowButton()).not.toBe(null);
-      expect(UsersCache.updateById).toHaveBeenCalledWith(userId, { is_followed: true });
+      expect(findPopovers().length).toBe(0);
+    });
 
-      triggerEvent('click', findUnfollowButton());
+    it('does not initialize the user popovers twice for the same element', async () => {
+      const [firstUserLink] = findFixtureLinks();
+      triggerEvent('mouseover', firstUserLink);
+      jest.runOnlyPendingTimers();
+      triggerEvent('mouseleave', firstUserLink);
+      jest.runOnlyPendingTimers();
+      triggerEvent('mouseover', firstUserLink);
+      jest.runOnlyPendingTimers();
 
-      await waitForPromises();
+      expect(findPopovers().length).toBe(1);
+    });
 
-      expect(findFollowButton()).not.toBe(null);
-      expect(UsersCache.updateById).toHaveBeenCalledWith(userId, { is_followed: false });
+    describe('when user link emits mouseenter event with empty user cache', () => {
+      let userLink;
+
+      beforeEach(() => {
+        UsersCache.retrieveById.mockReset();
+
+        [userLink] = findFixtureLinks();
+
+        triggerEvent('mouseover', userLink);
+      });
+
+      it('populates popover with preloaded user data', () => {
+        const { name, userId, username } = userLink.dataset;
+
+        expect(userLink.user).toEqual(
+          expect.objectContaining({
+            name,
+            userId,
+            username,
+          }),
+        );
+      });
+    });
+
+    describe('when user link emits mouseenter event', () => {
+      let userLink;
+
+      beforeEach(() => {
+        [userLink] = findFixtureLinks();
+
+        triggerEvent('mouseover', userLink);
+      });
+
+      it('removes title attribute from user links', () => {
+        expect(userLink.getAttribute('title')).toBeFalsy();
+        expect(userLink.dataset.originalTitle).toBeFalsy();
+      });
+
+      it('fetches user info and status from the user cache', () => {
+        const { userId } = userLink.dataset;
+
+        expect(UsersCache.retrieveById).toHaveBeenCalledWith(userId);
+        expect(UsersCache.retrieveStatusById).toHaveBeenCalledWith(userId);
+      });
+
+      it('removes aria-describedby attribute from the user link on mouseleave', () => {
+        userLink.setAttribute('aria-describedby', 'popover');
+        triggerEvent('mouseleave', userLink);
+
+        expect(userLink.getAttribute('aria-describedby')).toBe(null);
+      });
+
+      it('updates toggle follow button and `UsersCache` when toggle follow button is clicked', async () => {
+        const [firstPopover] = findPopovers();
+        const withinFirstPopover = within(firstPopover);
+        const findFollowButton = () => withinFirstPopover.queryByRole('button', { name: 'Follow' });
+        const findUnfollowButton = () =>
+          withinFirstPopover.queryByRole('button', { name: 'Unfollow' });
+
+        jest.runOnlyPendingTimers();
+
+        const { userId } = document.querySelector(selector).dataset;
+
+        triggerEvent('click', findFollowButton());
+
+        await waitForPromises();
+
+        expect(findUnfollowButton()).not.toBe(null);
+        expect(UsersCache.updateById).toHaveBeenCalledWith(userId, { is_followed: true });
+
+        triggerEvent('click', findUnfollowButton());
+
+        await waitForPromises();
+
+        expect(findFollowButton()).not.toBe(null);
+        expect(UsersCache.updateById).toHaveBeenCalledWith(userId, { is_followed: false });
+      });
     });
   });
 });

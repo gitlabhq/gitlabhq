@@ -46,8 +46,8 @@ module DatabaseEventTracking
   end
 
   def filtered_record_attributes
-    attributes.select do |key, _value|
-      self.class::SNOWPLOW_ATTRIBUTES.include?(key)
-    end
+    attributes
+      .with_indifferent_access
+      .slice(*self.class::SNOWPLOW_ATTRIBUTES)
   end
 end
