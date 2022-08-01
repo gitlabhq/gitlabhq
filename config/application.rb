@@ -18,8 +18,6 @@ module Gitlab
   class Application < Rails::Application
     config.load_defaults 6.1
 
-    config.view_component.preview_route = "/-/view_component/previews"
-
     config.active_support.hash_digest_class = ::OpenSSL::Digest::SHA256
 
     # This section contains configuration from Rails upgrades to override the new defaults so that we

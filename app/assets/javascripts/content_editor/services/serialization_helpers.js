@@ -501,19 +501,13 @@ const linkType = (sourceMarkdown) => {
 const normalizeUrl = (url) => decodeURIComponent(removeLastSlashInUrlPath(removeUrlProtocol(url)));
 
 /**
- * Validates that the provided URL is well-formed
+ * Validates that the provided URL is a valid GFM autolink
  *
  * @param {String} url
- * @returns Returns true when the browser’s URL constructor
- * can successfully parse the URL string
+ * @returns Returns true when the URL is a valid GFM autolink
  */
-const isValidUrl = (url) => {
-  try {
-    return new URL(url) && true;
-  } catch {
-    return false;
-  }
-};
+const isValidAutolinkURL = (url) =>
+  /(https?:\/\/)?([\w-])+\.{1}([a-zA-Z]{2,63})([/\w-]*)*\/?\??([^#\n\r]*)?#?([^\n\r]*)/.test(url);
 
 const findChildWithMark = (mark, parent) => {
   let child;
@@ -550,7 +544,7 @@ const isAutoLink = (linkMark, parent) => {
   if (
     !child ||
     !child.isText ||
-    !isValidUrl(href) ||
+    !isValidAutolinkURL(href) ||
     normalizeUrl(child.text) !== normalizeUrl(href)
   ) {
     return false;

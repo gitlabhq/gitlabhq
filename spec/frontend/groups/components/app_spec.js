@@ -85,30 +85,6 @@ describe('AppComponent', () => {
     await nextTick();
   });
 
-  describe('computed', () => {
-    describe('groups', () => {
-      it('should return list of groups from store', () => {
-        jest.spyOn(vm.store, 'getGroups').mockImplementation(() => {});
-
-        const { groups } = vm;
-
-        expect(vm.store.getGroups).toHaveBeenCalled();
-        expect(groups).not.toBeDefined();
-      });
-    });
-
-    describe('pageInfo', () => {
-      it('should return pagination info from store', () => {
-        jest.spyOn(vm.store, 'getPaginationInfo').mockImplementation(() => {});
-
-        const { pageInfo } = vm;
-
-        expect(vm.store.getPaginationInfo).toHaveBeenCalled();
-        expect(pageInfo).not.toBeDefined();
-      });
-    });
-  });
-
   describe('methods', () => {
     describe('fetchGroups', () => {
       it('should call `getGroups` with all the params provided', () => {

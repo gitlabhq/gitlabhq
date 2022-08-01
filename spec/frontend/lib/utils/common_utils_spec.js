@@ -292,16 +292,11 @@ describe('common_utils', () => {
       const spy = jest.fn();
       const debouncedSpy = commonUtils.debounceByAnimationFrame(spy);
 
-      return new Promise((resolve) => {
-        window.requestAnimationFrame(() => {
-          debouncedSpy();
-          debouncedSpy();
-          window.requestAnimationFrame(() => {
-            expect(spy).toHaveBeenCalledTimes(1);
-            resolve();
-          });
-        });
-      });
+      debouncedSpy();
+      debouncedSpy();
+      jest.runOnlyPendingTimers();
+
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 

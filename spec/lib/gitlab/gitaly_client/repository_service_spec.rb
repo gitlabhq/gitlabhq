@@ -351,4 +351,16 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
       client.set_full_path(path)
     end
   end
+
+  describe '#full_path' do
+    let(:path) { 'repo/path' }
+
+    it 'sends a full_path message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:full_path)
+        .and_return(double(path: path))
+
+      expect(client.full_path).to eq(path)
+    end
+  end
 end

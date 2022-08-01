@@ -14,6 +14,7 @@ import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
 import RunnersJobs from '~/runner/components/runner_jobs.vue';
+
 import runnerQuery from '~/runner/graphql/show/runner.query.graphql';
 import AdminRunnerShowApp from '~/runner/admin_runner_show/admin_runner_show_app.vue';
 import { captureException } from '~/runner/sentry_utils';
@@ -182,17 +183,19 @@ describe('AdminRunnerShowApp', () => {
   });
 
   describe('When loading', () => {
-    beforeEach(() => {
+    it('does not show runner details', () => {
       mockRunnerQueryResult();
 
       createComponent();
-    });
 
-    it('does not show runner details', () => {
       expect(findRunnerDetails().exists()).toBe(false);
     });
 
     it('does not show runner jobs', () => {
+      mockRunnerQueryResult();
+
+      createComponent();
+
       expect(findRunnersJobs().exists()).toBe(false);
     });
   });

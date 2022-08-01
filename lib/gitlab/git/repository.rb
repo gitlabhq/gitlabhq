@@ -930,6 +930,12 @@ module Gitlab
         gitaly_repository_client.set_full_path(full_path)
       end
 
+      def full_path
+        wrapped_gitaly_errors do
+          gitaly_repository_client.full_path
+        end
+      end
+
       def disconnect_alternates
         wrapped_gitaly_errors do
           gitaly_repository_client.disconnect_alternates

@@ -262,4 +262,54 @@ RSpec.describe API::API do
       end
     end
   end
+
+  describe 'content security policy header' do
+    let_it_be(:user) { create(:user) }
+
+    let(:csp) { nil }
+    let(:report_only) { false }
+
+    subject { get api("/users/#{user.id}", user) }
+
+    before do
+      allow(Rails.application.config).to receive(:content_security_policy).and_return(csp)
+      allow(Rails.application.config).to receive(:content_security_policy_report_only).and_return(report_only)
+    end
+
+    context 'when CSP is not configured globally' do
+      it 'does not set the CSP header' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['Content-Security-Policy']).to be_nil
+      end
+    end
+
+    context 'when CSP is configured globally' do
+      let(:csp) do
+        ActionDispatch::ContentSecurityPolicy.new do |p|
+          p.default_src :self
+        end
+      end
+
+      it 'sets a stricter CSP header' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['Content-Security-Policy']).to eq("default-src 'none'")
+      end
+
+      context 'when report_only is true' do
+        let(:report_only) { true }
+
+        it 'does not set any CSP header' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Content-Security-Policy']).to be_nil
+          expect(response.headers['Content-Security-Policy-Report-Only']).to be_nil
+        end
+      end
+    end
+  end
 end

@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
 import CiValidate from '~/pipeline_editor/components/validate/ci_validate.vue';
@@ -22,6 +23,7 @@ import {
 } from '~/pipeline_editor/constants';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.query.graphql';
+import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.query.graphql';
 import {
   mockBlobContentQueryResponse,
   mockCiLintPath,
@@ -81,6 +83,15 @@ describe('Pipeline editor tabs component', () => {
   const createComponentWithApollo = ({ props, provide = {}, mountFn = shallowMount } = {}) => {
     const handlers = [[getBlobContent, mockBlobContentData]];
     mockApollo = createMockApollo(handlers);
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getAppStatus,
+      data: {
+        app: {
+          __typename: 'PipelineEditorApp',
+          status: EDITOR_APP_STATUS_VALID,
+        },
+      },
+    });
 
     createComponent({
       props,
@@ -203,7 +214,7 @@ describe('Pipeline editor tabs component', () => {
         });
 
         describe('if badge has been dismissed before', () => {
-          beforeEach(() => {
+          it('does not render badge if it has been dismissed before', async () => {
             localStorage.setItem(VALIDATE_TAB_BADGE_DISMISSED_KEY, 'true');
             mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
             createComponentWithApollo({
@@ -217,9 +228,9 @@ describe('Pipeline editor tabs component', () => {
                 validateTabIllustrationPath: 'path/to/svg',
               },
             });
-          });
 
-          it('does not render badge if it has been dismissed before', () => {
+            await waitForPromises();
+
             expect(findBadge().exists()).toBe(false);
           });
         });

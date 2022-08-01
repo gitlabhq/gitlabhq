@@ -19,6 +19,14 @@ import groupRunnersCountData from 'test_fixtures/graphql/runner/list/group_runne
 
 import { RUNNER_PAGE_SIZE } from '~/runner/constants';
 
+const emptyPageInfo = {
+  __typename: 'PageInfo',
+  hasNextPage: false,
+  hasPreviousPage: false,
+  startCursor: '',
+  endCursor: '',
+};
+
 // Other mock data
 
 // Mock searches and their corresponding urls
@@ -233,6 +241,7 @@ export {
   groupRunnersData,
   groupRunnersDataPaginated,
   groupRunnersCountData,
+  emptyPageInfo,
   runnerData,
   runnerWithGroupData,
   runnerProjectsData,

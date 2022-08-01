@@ -50,6 +50,7 @@ import {
   allRunnersDataPaginated,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
+  emptyPageInfo,
   emptyStateSvgPath,
   emptyStateFilteredSvgPath,
 } from '../mock_data';
@@ -380,11 +381,18 @@ describe('AdminRunnersApp', () => {
     beforeEach(async () => {
       mockRunnersHandler.mockResolvedValue({
         data: {
-          runners: { nodes: [] },
+          runners: {
+            nodes: [],
+            pageInfo: emptyPageInfo,
+          },
         },
       });
 
       await createComponent();
+    });
+
+    it('shows no errors', () => {
+      expect(createAlert).not.toHaveBeenCalled();
     });
 
     it('shows an empty state', () => {

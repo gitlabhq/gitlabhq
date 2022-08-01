@@ -9,11 +9,15 @@ query getRunnerProjects(
 ) {
   runner(id: $id) {
     id
+    ownerProject {
+      id
+    }
     projectCount
     projects(first: $first, last: $last, before: $before, after: $after) {
       nodes {
         id
         avatarUrl
+        description
         name
         nameWithNamespace
         webUrl

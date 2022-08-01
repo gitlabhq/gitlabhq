@@ -72,6 +72,8 @@ danger-review-local:
 reviewers-recommender:
   extends:
     - .default-retry
-    - .review:rules:reviewers-recommender
+  # extends generated values cannot overwrite values from included files
+  # Use !reference as a workaround here
+  rules: !reference [".review:rules:reviewers-recommender", rules]
   stage: test
   needs: []

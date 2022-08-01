@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Namespace do
   include ProjectForksHelper
-  include GitHelpers
   include ReloadHelpers
 
   let_it_be(:group_sti_name) { Group.sti_name }
@@ -1076,9 +1075,9 @@ RSpec.describe Namespace do
       it 'updates project full path in .git/config' do
         parent.update!(path: 'mygroup_new')
 
-        expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
-        expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
-        expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
+        expect(project_in_parent_group.reload.repository.full_path).to eq "mygroup_new/#{project_in_parent_group.path}"
+        expect(hashed_project_in_subgroup.reload.repository.full_path).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
+        expect(legacy_project_in_subgroup.reload.repository.full_path).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
       end
 
       it 'updates the project storage location' do
@@ -1091,14 +1090,6 @@ RSpec.describe Namespace do
         expect(repository_project_in_parent_group.reload.disk_path).to eq "mygroup_moved/#{project_in_parent_group.path}"
         expect(repository_hashed_project_in_subgroup.reload.disk_path).to eq hashed_project_in_subgroup.disk_path
         expect(repository_legacy_project_in_subgroup.reload.disk_path).to eq "mygroup_moved/mysubgroup/#{legacy_project_in_subgroup.path}"
-      end
-
-      def project_rugged(project)
-        # Routes are loaded when creating the projects, so we need to manually
-        # reload them for the below code to be aware of the above UPDATE.
-        project.route.reload
-
-        rugged_repo(project.repository)
       end
     end
   end

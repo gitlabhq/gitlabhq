@@ -204,7 +204,7 @@ describe('WorkItemAssignees component', () => {
       expect(findTokenSelector().props('dropdownItems')).toHaveLength(2);
     });
 
-    it('should search for users with correct key after text input', async () => {
+    it('searches for users with correct key after text input', async () => {
       const searchKey = 'Hello';
 
       findTokenSelector().vm.$emit('focus');

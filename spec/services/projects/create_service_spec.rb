@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Projects::CreateService, '#execute' do
   include ExternalAuthorizationServiceHelpers
-  include GitHelpers
 
   let(:user) { create :user }
   let(:project_name) { 'GitLab' }
@@ -769,11 +768,10 @@ RSpec.describe Projects::CreateService, '#execute' do
     create_project(user, opts)
   end
 
-  it 'writes project full path to .git/config' do
+  it 'writes project full path to gitaly' do
     project = create_project(user, opts)
-    rugged = rugged_repo(project.repository)
 
-    expect(rugged.config['gitlab.fullpath']).to eq project.full_path
+    expect(project.repository.full_path).to eq project.full_path
   end
 
   it 'triggers PostCreationWorker' do

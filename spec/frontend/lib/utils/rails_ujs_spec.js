@@ -18,14 +18,12 @@ function mockXHRResponse({ responseText, responseContentType } = {}) {
     .mockReturnValue(responseContentType);
 
   jest.spyOn(global.XMLHttpRequest.prototype, 'send').mockImplementation(function send() {
-    requestAnimationFrame(() => {
-      Object.defineProperties(this, {
-        readyState: { value: XMLHttpRequest.DONE },
-        status: { value: 200 },
-        response: { value: responseText },
-      });
-      this.onreadystatechange();
+    Object.defineProperties(this, {
+      readyState: { value: XMLHttpRequest.DONE },
+      status: { value: 200 },
+      response: { value: responseText },
     });
+    this.onreadystatechange();
   });
 }
 

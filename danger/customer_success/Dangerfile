@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+markdown(customer_success.build_message)

@@ -44,7 +44,7 @@
           - if Feature.enabled?(:moved_mr_sidebar, @project)
             .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.js-expand-sidebar{ class: "gl-lg-display-none!" }
               = render Pajamas::ButtonComponent.new(size: 'small',
-                icon: 'angle-double-left',
+                icon: 'chevron-double-lg-left',
                 button_options: { class: 'js-sidebar-toggle' }) do
                 = _('Expand')
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end

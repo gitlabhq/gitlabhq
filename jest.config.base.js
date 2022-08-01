@@ -173,17 +173,18 @@ module.exports = (path, options = {}) => {
       '^.+\\.(gql|graphql)$': 'jest-transform-graphql',
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
       '^.+\\.js$': 'babel-jest',
-      '^.+\\.vue$': 'vue-jest',
+      '^.+\\.vue$': '@vue/vue2-jest',
       'spec/frontend/editor/schema/ci/yaml_tests/.+\\.(yml|yaml)$':
         './spec/frontend/__helpers__/yaml_transformer.js',
       '^.+\\.(md|zip|png|yml|yaml)$': 'jest-raw-loader',
     },
     transformIgnorePatterns: [`node_modules/(?!(${transformIgnoreNodeModules.join('|')}))`],
-    timers: 'fake',
+    timers: 'legacy',
     testEnvironment: '<rootDir>/spec/frontend/environment.js',
     testEnvironmentOptions: {
       IS_EE,
       IS_JH,
     },
+    testRunner: 'jest-jasmine2',
   };
 };

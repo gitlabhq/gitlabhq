@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import CaptchaModal from '~/captcha/captcha_modal.vue';
 import { waitForCaptchaToBeSolved } from '~/captcha/wait_for_captcha_to_be_solved';
 
@@ -15,7 +16,7 @@ describe('waitForCaptchaToBeSolved', () => {
 
   it('opens a modal, resolves with captcha response on success', async () => {
     CaptchaModal.mounted.mockImplementationOnce(function mounted() {
-      requestAnimationFrame(() => {
+      return nextTick().then(() => {
         this.$emit('receivedCaptchaResponse', response);
         this.$emit('hidden');
       });
@@ -36,7 +37,7 @@ describe('waitForCaptchaToBeSolved', () => {
 
   it("opens a modal, rejects with error in case the captcha isn't solved", async () => {
     CaptchaModal.mounted.mockImplementationOnce(function mounted() {
-      requestAnimationFrame(() => {
+      return nextTick().then(() => {
         this.$emit('receivedCaptchaResponse', null);
         this.$emit('hidden');
       });

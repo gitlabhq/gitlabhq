@@ -34061,6 +34061,9 @@ msgstr ""
 msgid "Runners|upgrade recommended"
 msgstr ""
 
+msgid "Runner|Owner"
+msgstr ""
+
 msgid "Running"
 msgstr ""
 

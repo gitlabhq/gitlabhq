@@ -1,4 +1,5 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import EscalationStatus from '~/sidebar/components/incidents/escalation_status.vue';
@@ -61,6 +62,8 @@ describe('EscalationStatus', () => {
       createComponent();
       // Open dropdown
       await toggleDropdown();
+      jest.runOnlyPendingTimers();
+      await nextTick();
 
       expect(findDropdownMenu().classes('show')).toBe(true);
 
@@ -74,6 +77,8 @@ describe('EscalationStatus', () => {
       createComponent({ preventDropdownClose: true });
       // Open dropdown
       await toggleDropdown();
+      jest.runOnlyPendingTimers();
+      await nextTick();
 
       expect(findDropdownMenu().classes('show')).toBe(true);
 

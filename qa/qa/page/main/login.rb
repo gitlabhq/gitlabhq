@@ -183,8 +183,7 @@ module QA
           switch_to_sign_in_tab if has_sign_in_tab?
           switch_to_standard_tab if has_standard_tab?
 
-          fill_element :login_field, user.username
-          fill_element :password_field, user.password
+          fill_in_credential(user)
 
           if Runtime::Env.running_on_dot_com?
             click_accept_all_cookies if has_accept_all_cookies_button?
@@ -209,6 +208,11 @@ module QA
           end
 
           Page::Main::Menu.validate_elements_present! unless skip_page_validation
+        end
+
+        def fill_in_credential(user)
+          fill_element :login_field, user.username
+          fill_element :password_field, user.password
         end
 
         # Handle request for password change
@@ -236,3 +240,5 @@ module QA
     end
   end
 end
+
+QA::Page::Main::Login.prepend_mod_with('Page::Main::Login', namespace: QA)

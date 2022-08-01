@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis_shared_state do
-  include GitHelpers
-
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project) { create(:project, :repository, :wiki_repo, :design_repo, storage_version: ::Project::HASHED_STORAGE_FEATURES[:repository]) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
@@ -68,12 +66,10 @@ RSpec.describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab
         service.execute
       end
 
-      it 'writes project full path to .git/config' do
+      it 'writes project full path to gitaly' do
         service.execute
 
-        rugged_config = rugged_repo(project.repository).config['gitlab.fullpath']
-
-        expect(rugged_config).to eq project.full_path
+        expect(project.repository.full_path).to eq project.full_path
       end
     end
 

@@ -8,12 +8,12 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 const TEST_TABS = [
   {
     title: 'Lorem',
-    icon: 'angle-up',
+    icon: 'chevron-lg-up',
     views: [{ name: 'lorem-1' }, { name: 'lorem-2' }],
   },
   {
     title: 'Ipsum',
-    icon: 'angle-down',
+    icon: 'chevron-lg-down',
     views: [{ name: 'ipsum-1' }, { name: 'ipsum-2' }],
   },
 ];

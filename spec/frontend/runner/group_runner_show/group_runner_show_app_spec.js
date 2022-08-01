@@ -178,13 +178,10 @@ describe('GroupRunnerShowApp', () => {
   });
 
   describe('When loading', () => {
-    beforeEach(() => {
+    it('does not show runner details', () => {
       mockRunnerQueryResult();
 
       createComponent();
-    });
-
-    it('does not show runner details', () => {
       expect(findRunnerDetails().exists()).toBe(false);
     });
   });

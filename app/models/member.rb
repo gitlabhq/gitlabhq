@@ -456,6 +456,8 @@ class Member < ApplicationRecord
   # transaction has been committed, resulting in the job either throwing an
   # error or not doing any meaningful work.
   # rubocop: disable CodeReuse/ServiceClass
+
+  # This method is overridden in the test environment, see stubbed_member.rb
   def refresh_member_authorized_projects(blocking:)
     UserProjectAccessChangedService.new(user_id).execute(blocking: blocking)
   end

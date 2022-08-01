@@ -30,19 +30,33 @@ RSpec.describe WaitableWorker do
 
   describe '.bulk_perform_and_wait' do
     context '1 job' do
-      it 'inlines the job' do
-        args_list = [[1]]
-        expect(worker).to receive(:bulk_perform_inline).with(args_list).and_call_original
-        expect(Gitlab::AppJsonLogger).to(
-          receive(:info).with(a_hash_including('message' => 'running inline',
-                                               'class' => 'Gitlab::Foo::Bar::DummyWorker',
-                                               'job_status' => 'running',
-                                               'queue' => 'foo_bar_dummy'))
-                        .once)
+      it 'runs the jobs asynchronously' do
+        arguments = [[1]]
 
-        worker.bulk_perform_and_wait(args_list)
+        expect(worker).to receive(:bulk_perform_async).with(arguments)
 
-        expect(worker.counter).to eq(1)
+        worker.bulk_perform_and_wait(arguments)
+      end
+
+      context 'when the feature flag `always_async_project_authorizations_refresh` is turned off' do
+        before do
+          stub_feature_flags(always_async_project_authorizations_refresh: false)
+        end
+
+        it 'inlines the job' do
+          args_list = [[1]]
+          expect(worker).to receive(:bulk_perform_inline).with(args_list).and_call_original
+          expect(Gitlab::AppJsonLogger).to(
+            receive(:info).with(a_hash_including('message' => 'running inline',
+                                                 'class' => 'Gitlab::Foo::Bar::DummyWorker',
+                                                 'job_status' => 'running',
+                                                 'queue' => 'foo_bar_dummy'))
+                          .once)
+
+          worker.bulk_perform_and_wait(args_list)
+
+          expect(worker.counter).to eq(1)
+        end
       end
     end
 

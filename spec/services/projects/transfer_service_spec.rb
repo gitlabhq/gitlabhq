@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Projects::TransferService do
-  include GitHelpers
-
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:group_integration) { create(:integrations_slack, :group, group: group, webhook: 'http://group.slack.com') }
@@ -202,10 +200,10 @@ RSpec.describe Projects::TransferService do
       expect(project.disk_path).to start_with(group.path)
     end
 
-    it 'updates project full path in .git/config' do
+    it 'updates project full path in gitaly' do
       execute_transfer
 
-      expect(rugged_config['gitlab.fullpath']).to eq "#{group.full_path}/#{project.path}"
+      expect(project.repository.full_path).to eq "#{group.full_path}/#{project.path}"
     end
 
     it 'updates storage location' do
@@ -296,10 +294,10 @@ RSpec.describe Projects::TransferService do
       expect(original_path).to eq current_path
     end
 
-    it 'rolls back project full path in .git/config' do
+    it 'rolls back project full path in gitaly' do
       attempt_project_transfer
 
-      expect(rugged_config['gitlab.fullpath']).to eq project.full_path
+      expect(project.repository.full_path).to eq project.full_path
     end
 
     it "doesn't send move notifications" do
@@ -768,10 +766,6 @@ RSpec.describe Projects::TransferService do
         expect { execute_transfer }.to change { CustomerRelations::IssueContact.count }.by(-2)
       end
     end
-  end
-
-  def rugged_config
-    rugged_repo(project.repository).config
   end
 
   def project_namespace_in_sync(group)

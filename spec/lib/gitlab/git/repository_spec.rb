@@ -2017,17 +2017,14 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
   describe '#set_full_path' do
     before do
-      repository_rugged.config["gitlab.fullpath"] = repository_path
+      repository.set_full_path(full_path: repository_path)
     end
 
     context 'is given a path' do
       it 'writes it to disk' do
         repository.set_full_path(full_path: "not-the/real-path.git")
 
-        config = File.read(File.join(repository_path, "config"))
-
-        expect(config).to include("[gitlab]")
-        expect(config).to include("fullpath = not-the/real-path.git")
+        expect(repository.full_path).to eq('not-the/real-path.git')
       end
     end
 
@@ -2035,15 +2032,12 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       it 'does not write it to disk' do
         repository.set_full_path(full_path: "")
 
-        config = File.read(File.join(repository_path, "config"))
-
-        expect(config).to include("[gitlab]")
-        expect(config).to include("fullpath = #{repository_path}")
+        expect(repository.full_path).to eq(repository_path)
       end
     end
 
     context 'repository does not exist' do
-      it 'raises NoRepository and does not call Gitaly WriteConfig' do
+      it 'raises NoRepository and does not call SetFullPath' do
         repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
 
         expect(repository.gitaly_repository_client).not_to receive(:set_full_path)
@@ -2052,6 +2046,18 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
           repository.set_full_path(full_path: 'foo/bar.git')
         end.to raise_error(Gitlab::Git::Repository::NoRepository)
       end
+    end
+  end
+
+  describe '#full_path' do
+    let(:full_path) { 'some/path' }
+
+    before do
+      repository.set_full_path(full_path: full_path)
+    end
+
+    it 'returns the full path' do
+      expect(repository.full_path).to eq(full_path)
     end
   end
 

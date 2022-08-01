@@ -48,6 +48,12 @@ module API
     before do
       header['X-Frame-Options'] = 'SAMEORIGIN'
       header['X-Content-Type-Options'] = 'nosniff'
+
+      if Rails.application.config.content_security_policy && !Rails.application.config.content_security_policy_report_only
+        policy = ActionDispatch::ContentSecurityPolicy.new { |p| p.default_src :none }
+      end
+
+      request.env[ActionDispatch::ContentSecurityPolicy::Request::POLICY] = policy
     end
 
     before do

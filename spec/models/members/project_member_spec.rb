@@ -213,10 +213,11 @@ RSpec.describe ProjectMember do
     let_it_be(:user) { create(:user) }
 
     shared_examples_for 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline to recalculate authorizations' do
-      it 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker' do
-        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).to receive(:bulk_perform_and_wait).with(
-          [[project.id, user.id]]
-        )
+      # this is inline with the overridden behaviour in stubbed_member.rb
+      it 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker inline' do
+        worker_instance = AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.new
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).to receive(:new).and_return(worker_instance)
+        expect(worker_instance).to receive(:perform).with(project.id, user.id)
 
         action
       end

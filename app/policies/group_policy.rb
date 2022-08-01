@@ -180,7 +180,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_deploy_token
     enable :create_jira_connect_subscription
     enable :maintainer_access
-    enable :maintain_namespace
     enable :read_upload
     enable :destroy_upload
   end

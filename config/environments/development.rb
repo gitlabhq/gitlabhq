@@ -43,6 +43,13 @@ Rails.application.configure do
   # Annotate rendered view with template file names as HTML comments
   config.action_view.annotate_rendered_view_with_filenames = true
 
+  # ViewComponent previews
+  config.view_component.default_preview_layout = "component_preview"
+  config.view_component.preview_route = "/-/view_component/previews"
+  config.view_component.preview_paths << "#{config.root}/spec/components/previews"
+  # Push preview path now to prevent FrozenError during view_component's initialzer
+  config.autoload_paths.push("#{config.root}/spec/components/previews")
+
   # Adds additional error checking when serving assets at runtime.
   # Checks for improperly declared sprockets dependencies.
   # Raises helpful error messages.

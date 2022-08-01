@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe RemoteMirror, :mailer do
-  include GitHelpers
-
   before do
     stub_feature_flags(remote_mirror_no_delay: false)
   end
@@ -95,16 +93,6 @@ RSpec.describe RemoteMirror, :mailer do
 
         expect(mirror.url).to eq('http://foo:bar@test.com')
         expect(mirror.credentials).to eq({ user: 'foo', password: 'bar' })
-      end
-
-      it 'does not update the repository config if credentials changed' do
-        mirror = create_mirror(url: 'http://foo:bar@test.com')
-        repo = mirror.project.repository
-        old_config = rugged_repo(repo).config
-
-        mirror.update_attribute(:url, 'http://foo:baz@test.com')
-
-        expect(rugged_repo(repo).config.to_hash).to eq(old_config.to_hash)
       end
     end
   end

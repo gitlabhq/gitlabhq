@@ -166,11 +166,12 @@ RSpec.describe GroupMember do
     let_it_be(:project_c) { create(:project, group: group) }
     let_it_be(:user) { create(:user) }
 
-    shared_examples_for 'calls UserProjectAccessChangedService to recalculate authorizations' do
-      it 'calls UserProjectAccessChangedService to recalculate authorizations' do
-        expect_next_instance_of(UserProjectAccessChangedService, user.id) do |service|
-          expect(service).to receive(:execute).with(blocking: blocking)
-        end
+    shared_examples_for 'calls AuthorizedProjectsWorker inline to recalculate authorizations' do
+      # this is inline with the overridden behaviour in stubbed_member.rb
+      it 'calls AuthorizedProjectsWorker inline to recalculate authorizations' do
+        worker_instance = AuthorizedProjectsWorker.new
+        expect(AuthorizedProjectsWorker).to receive(:new).and_return(worker_instance)
+        expect(worker_instance).to receive(:perform).with(user.id)
 
         action
       end
@@ -178,15 +179,14 @@ RSpec.describe GroupMember do
 
     context 'on create' do
       let(:action) { group.add_member(user, Gitlab::Access::GUEST) }
-      let(:blocking) { true }
 
-      it 'changes access level', :sidekiq_inline do
+      it 'changes access level' do
         expect { action }.to change { user.can?(:guest_access, project_a) }.from(false).to(true)
           .and change { user.can?(:guest_access, project_b) }.from(false).to(true)
           .and change { user.can?(:guest_access, project_c) }.from(false).to(true)
       end
 
-      it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      it_behaves_like 'calls AuthorizedProjectsWorker inline to recalculate authorizations'
     end
 
     context 'on update' do
@@ -195,15 +195,14 @@ RSpec.describe GroupMember do
       end
 
       let(:action) { group.members.find_by(user: user).update!(access_level: Gitlab::Access::DEVELOPER) }
-      let(:blocking) { true }
 
-      it 'changes access level', :sidekiq_inline do
+      it 'changes access level' do
         expect { action }.to change { user.can?(:developer_access, project_a) }.from(false).to(true)
           .and change { user.can?(:developer_access, project_b) }.from(false).to(true)
           .and change { user.can?(:developer_access, project_c) }.from(false).to(true)
       end
 
-      it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      it_behaves_like 'calls AuthorizedProjectsWorker inline to recalculate authorizations'
     end
 
     context 'on destroy' do
@@ -212,7 +211,6 @@ RSpec.describe GroupMember do
       end
 
       let(:action) { group.members.find_by(user: user).destroy! }
-      let(:blocking) { false }
 
       it 'changes access level', :sidekiq_inline do
         expect { action }.to change { user.can?(:guest_access, project_a) }.from(true).to(false)
@@ -220,7 +218,11 @@ RSpec.describe GroupMember do
           .and change { user.can?(:guest_access, project_c) }.from(true).to(false)
       end
 
-      it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      it 'schedules an AuthorizedProjectsWorker job to recalculate authorizations' do
+        expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async).with([[user.id]])
+
+        action
+      end
     end
   end
 end

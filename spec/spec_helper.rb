@@ -208,6 +208,7 @@ RSpec.configure do |config|
 
   include StubFeatureFlags
   include StubSnowplow
+  include StubMember
 
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.

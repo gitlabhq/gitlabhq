@@ -27,7 +27,10 @@ RSpec.describe Members::Groups::CreatorService do
 
     context 'authorized projects update' do
       it 'schedules a single project authorization update job when called multiple times' do
-        expect(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait).once
+        # this is inline with the overridden behaviour in stubbed_member.rb
+        worker_instance = AuthorizedProjectsWorker.new
+        expect(AuthorizedProjectsWorker).to receive(:new).once.and_return(worker_instance)
+        expect(worker_instance).to receive(:perform).with(user.id)
 
         1.upto(3) do
           described_class.add_member(source, user, :maintainer)

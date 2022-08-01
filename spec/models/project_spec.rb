@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Project, factory_default: :keep do
   include ProjectForksHelper
-  include GitHelpers
   include ExternalAuthorizationServiceHelpers
   include ReloadHelpers
   include StubGitlabCalls
@@ -5741,16 +5740,18 @@ RSpec.describe Project, factory_default: :keep do
   describe '#set_full_path' do
     let_it_be(:project) { create(:project, :repository) }
 
+    let(:repository) { project.repository.raw }
+
     it 'writes full path in .git/config when key is missing' do
       project.set_full_path
 
-      expect(rugged_config['gitlab.fullpath']).to eq project.full_path
+      expect(repository.full_path).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
       project.set_full_path(gl_full_path: 'old/path')
 
-      expect { project.set_full_path }.to change { rugged_config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.set_full_path }.to change { repository.full_path }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do
@@ -8434,10 +8435,6 @@ RSpec.describe Project, factory_default: :keep do
   def finish_job(export_job)
     export_job.start
     export_job.finish
-  end
-
-  def rugged_config
-    rugged_repo(project.repository).config
   end
 
   def create_pipeline(project, status = 'success')

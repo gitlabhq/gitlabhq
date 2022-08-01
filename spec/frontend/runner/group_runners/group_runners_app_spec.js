@@ -47,6 +47,7 @@ import {
   groupRunnersCountData,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
+  emptyPageInfo,
   emptyStateSvgPath,
   emptyStateFilteredSvgPath,
 } from '../mock_data';
@@ -331,11 +332,18 @@ describe('GroupRunnersApp', () => {
         data: {
           group: {
             id: '1',
-            runners: { nodes: [] },
+            runners: {
+              edges: [],
+              pageInfo: emptyPageInfo,
+            },
           },
         },
       });
       await createComponent();
+    });
+
+    it('shows no errors', () => {
+      expect(createAlert).not.toHaveBeenCalled();
     });
 
     it('shows an empty state', async () => {
