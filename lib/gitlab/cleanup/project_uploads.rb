@@ -56,7 +56,7 @@ module Gitlab
       # rubocop: enable CodeReuse/ActiveRecord
 
       def move_to_lost_and_found(path, dry_run)
-        new_path = path.sub(/\A#{ProjectUploadFileFinder::ABSOLUTE_UPLOAD_DIR}/, LOST_AND_FOUND)
+        new_path = path.sub(/\A#{ProjectUploadFileFinder::ABSOLUTE_UPLOAD_DIR}/o, LOST_AND_FOUND)
 
         move(path, new_path, 'move to lost and found', dry_run)
       end

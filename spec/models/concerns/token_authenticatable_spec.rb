@@ -442,7 +442,7 @@ RSpec.shared_examples 'prefixed token rotation' do
 
     context 'token is not set' do
       it 'generates a new token' do
-        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/)
+        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/o)
         expect(instance).not_to be_persisted
       end
     end
@@ -453,7 +453,7 @@ RSpec.shared_examples 'prefixed token rotation' do
       end
 
       it 'generates a new token' do
-        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/)
+        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/o)
         expect(instance).not_to be_persisted
       end
     end
@@ -475,7 +475,7 @@ RSpec.shared_examples 'prefixed token rotation' do
 
     context 'token is not set' do
       it 'generates a new token' do
-        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/)
+        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/o)
         expect(instance).to be_persisted
       end
     end
@@ -486,7 +486,7 @@ RSpec.shared_examples 'prefixed token rotation' do
       end
 
       it 'generates a new token' do
-        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/)
+        expect(subject).to match(/^#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}/o)
         expect(instance).to be_persisted
       end
     end

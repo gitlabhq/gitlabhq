@@ -34,9 +34,9 @@ module Gitlab
         return if external_ref =~ GIT_INVALID_URL_REGEX
 
         case external_ref
-        when /\A#{URL_REGEX}\z/
+        when /\A#{URL_REGEX}\z/o
           external_ref
-        when /\A#{REPO_REGEX}\z/
+        when /\A#{REPO_REGEX}\z/o
           github_url(external_ref)
         else
           package_url(name)

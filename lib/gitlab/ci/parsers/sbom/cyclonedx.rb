@@ -16,7 +16,7 @@ module Gitlab
           def parse!
             @data = Gitlab::Json.parse(json_data)
 
-            return unless supported_spec_version?
+            return unless valid?
 
             parse_components
           rescue JSON::ParserError => e
@@ -27,6 +27,14 @@ module Gitlab
 
           attr_reader :json_data, :report, :data
 
+          def schema_validator
+            @schema_validator ||= Validators::CyclonedxSchemaValidator.new(data)
+          end
+
+          def valid?
+            valid_schema? && supported_spec_version?
+          end
+
           def supported_spec_version?
             return true if SUPPORTED_SPEC_VERSIONS.include?(data['specVersion'])
 
@@ -34,6 +42,14 @@ module Gitlab
               "Unsupported CycloneDX spec version. Must be one of: %{versions}" \
               % { versions: SUPPORTED_SPEC_VERSIONS.join(', ') }
             )
+
+            false
+          end
+
+          def valid_schema?
+            return true if schema_validator.valid?
+
+            schema_validator.errors.each { |error| report.add_error(error) }
 
             false
           end

@@ -6,7 +6,7 @@ import GroupItemComponent from '~/groups/components/group_item.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import GroupsComponent from '~/groups/components/groups.vue';
 import eventHub from '~/groups/event_hub';
-import { VISIBILITY_PRIVATE } from '~/groups/constants';
+import { VISIBILITY_LEVEL_PRIVATE } from '~/visibility_level/constants';
 import { mockGroups, mockPageInfo } from '../mock_data';
 
 describe('GroupsComponent', () => {
@@ -26,7 +26,7 @@ describe('GroupsComponent', () => {
         ...propsData,
       },
       provide: {
-        currentGroupVisibility: VISIBILITY_PRIVATE,
+        currentGroupVisibility: VISIBILITY_LEVEL_PRIVATE,
       },
     });
   };

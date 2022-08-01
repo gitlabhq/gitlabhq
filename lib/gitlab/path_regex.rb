@@ -204,7 +204,7 @@ module Gitlab
     end
 
     def namespace_format_regex
-      @namespace_format_regex ||= /\A#{NAMESPACE_FORMAT_REGEX}\z/.freeze
+      @namespace_format_regex ||= /\A#{NAMESPACE_FORMAT_REGEX}\z/o.freeze
     end
 
     def namespace_format_message
@@ -213,7 +213,7 @@ module Gitlab
     end
 
     def project_path_format_regex
-      @project_path_format_regex ||= /\A#{PROJECT_PATH_FORMAT_REGEX}\z/.freeze
+      @project_path_format_regex ||= /\A#{PROJECT_PATH_FORMAT_REGEX}\z/o.freeze
     end
 
     def project_path_format_message

@@ -6,19 +6,20 @@ import ItemActions from '~/groups/components/item_actions.vue';
 import eventHub from '~/groups/event_hub';
 import { getGroupItemMicrodata } from '~/groups/store/utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
+import { ITEM_TYPE } from '~/groups/constants';
 import {
-  ITEM_TYPE,
-  VISIBILITY_INTERNAL,
-  VISIBILITY_PRIVATE,
-  VISIBILITY_PUBLIC,
-} from '~/groups/constants';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+  VISIBILITY_LEVEL_PRIVATE,
+  VISIBILITY_LEVEL_INTERNAL,
+  VISIBILITY_LEVEL_PUBLIC,
+} from '~/visibility_level/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
 
 const createComponent = (
   propsData = { group: mockParentGroupItem, parentGroup: mockChildren[0] },
   provide = {
-    currentGroupVisibility: VISIBILITY_PRIVATE,
+    currentGroupVisibility: VISIBILITY_LEVEL_PRIVATE,
   },
 ) => {
   return mountExtended(GroupItem, {
@@ -289,7 +290,7 @@ describe('GroupItemComponent', () => {
   });
 
   describe('visibility warning popover', () => {
-    const findPopover = () => wrapper.findComponent(GlPopover);
+    const findPopover = () => extendedWrapper(wrapper.findComponent(GlPopover));
 
     const itDoesNotRenderVisibilityWarningPopover = () => {
       it('does not render visibility warning popover', () => {
@@ -319,13 +320,16 @@ describe('GroupItemComponent', () => {
 
     describe('when showing projects', () => {
       describe.each`
-        itemVisibility         | currentGroupVisibility | isPopoverShown
-        ${VISIBILITY_PRIVATE}  | ${VISIBILITY_PUBLIC}   | ${false}
-        ${VISIBILITY_INTERNAL} | ${VISIBILITY_PUBLIC}   | ${false}
-        ${VISIBILITY_PUBLIC}   | ${VISIBILITY_PUBLIC}   | ${false}
-        ${VISIBILITY_PRIVATE}  | ${VISIBILITY_PRIVATE}  | ${false}
-        ${VISIBILITY_INTERNAL} | ${VISIBILITY_PRIVATE}  | ${true}
-        ${VISIBILITY_PUBLIC}   | ${VISIBILITY_PRIVATE}  | ${true}
+        itemVisibility               | currentGroupVisibility       | isPopoverShown
+        ${VISIBILITY_LEVEL_PRIVATE}  | ${VISIBILITY_LEVEL_PUBLIC}   | ${false}
+        ${VISIBILITY_LEVEL_INTERNAL} | ${VISIBILITY_LEVEL_PUBLIC}   | ${false}
+        ${VISIBILITY_LEVEL_PUBLIC}   | ${VISIBILITY_LEVEL_PUBLIC}   | ${false}
+        ${VISIBILITY_LEVEL_PRIVATE}  | ${VISIBILITY_LEVEL_PRIVATE}  | ${false}
+        ${VISIBILITY_LEVEL_INTERNAL} | ${VISIBILITY_LEVEL_PRIVATE}  | ${true}
+        ${VISIBILITY_LEVEL_PUBLIC}   | ${VISIBILITY_LEVEL_PRIVATE}  | ${true}
+        ${VISIBILITY_LEVEL_PRIVATE}  | ${VISIBILITY_LEVEL_INTERNAL} | ${false}
+        ${VISIBILITY_LEVEL_INTERNAL} | ${VISIBILITY_LEVEL_INTERNAL} | ${false}
+        ${VISIBILITY_LEVEL_PUBLIC}   | ${VISIBILITY_LEVEL_INTERNAL} | ${true}
       `(
         'when item visibility is $itemVisibility and parent group visibility is $currentGroupVisibility',
         ({ itemVisibility, currentGroupVisibility, isPopoverShown }) => {
@@ -347,8 +351,17 @@ describe('GroupItemComponent', () => {
           });
 
           if (isPopoverShown) {
-            it('renders visibility warning popover', () => {
-              expect(findPopover().exists()).toBe(true);
+            it('renders visibility warning popover with `Learn more` link', () => {
+              const popover = findPopover();
+
+              expect(popover.exists()).toBe(true);
+              expect(
+                popover.findByRole('link', { name: GroupItem.i18n.learnMore }).attributes('href'),
+              ).toBe(
+                helpPagePath('user/project/members/share_project_with_groups', {
+                  anchor: 'sharing-projects-with-groups-of-a-higher-restrictive-visibility-level',
+                }),
+              );
             });
           } else {
             itDoesNotRenderVisibilityWarningPopover();
@@ -361,7 +374,7 @@ describe('GroupItemComponent', () => {
       wrapper = createComponent({
         group: {
           ...mockParentGroupItem,
-          visibility: VISIBILITY_PUBLIC,
+          visibility: VISIBILITY_LEVEL_PUBLIC,
           type: ITEM_TYPE.PROJECT,
         },
         parentGroup: mockChildren[0],

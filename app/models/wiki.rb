@@ -335,7 +335,7 @@ class Wiki
   end
 
   def wiki_base_path
-    web_url(only_path: true).sub(%r{/#{Wiki::HOMEPAGE}\z}, '')
+    web_url(only_path: true).sub(%r{/#{Wiki::HOMEPAGE}\z}o, '')
   end
 
   # Callbacks for synchronous processing after wiki changes.

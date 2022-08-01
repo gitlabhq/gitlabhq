@@ -16,12 +16,9 @@ import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
-import {
-  VISIBILITY_TYPE_ICON,
-  GROUP_VISIBILITY_TYPE,
-  ITEM_TYPE,
-  VISIBILITY_PRIVATE,
-} from '../constants';
+import { VISIBILITY_LEVELS_ENUM } from '~/visibility_level/constants';
+import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE, ITEM_TYPE } from '../constants';
+
 import eventHub from '../event_hub';
 
 import itemActions from './item_actions.vue';
@@ -114,8 +111,8 @@ export default {
     shouldShowVisibilityWarning() {
       return (
         this.action === 'shared' &&
-        this.currentGroupVisibility === VISIBILITY_PRIVATE &&
-        this.group.visibility !== VISIBILITY_PRIVATE
+        VISIBILITY_LEVELS_ENUM[this.group.visibility] >
+          VISIBILITY_LEVELS_ENUM[this.currentGroupVisibility]
       );
     },
   },
@@ -142,7 +139,7 @@ export default {
   shareProjectsWithGroupsHelpPagePath: helpPagePath(
     'user/project/members/share_project_with_groups',
     {
-      anchor: 'share-a-public-project-with-private-group',
+      anchor: 'sharing-projects-with-groups-of-a-higher-restrictive-visibility-level',
     },
   ),
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },

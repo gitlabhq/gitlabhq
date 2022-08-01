@@ -146,8 +146,8 @@ RSpec.describe Notes::CopyService do
           new_note = to_noteable.notes.first
 
           aggregate_failures do
-            expect(note.note).to match(/Simple text with image: #{FileUploader::MARKDOWN_PATTERN}/)
-            expect(new_note.note).to match(/Simple text with image: #{FileUploader::MARKDOWN_PATTERN}/)
+            expect(note.note).to match(/Simple text with image: #{FileUploader::MARKDOWN_PATTERN}/o)
+            expect(new_note.note).to match(/Simple text with image: #{FileUploader::MARKDOWN_PATTERN}/o)
             expect(note.note).not_to eq(new_note.note)
             expect(note.note_html).not_to eq(new_note.note_html)
           end

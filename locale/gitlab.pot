@@ -11497,6 +11497,9 @@ msgstr ""
 msgid "CycleAnalyticsStage|should be under a group"
 msgstr ""
 
+msgid "CycleAnalytics|%{selectedLabelsCount} selected (%{maxLabels} max)"
+msgstr ""
+
 msgid "CycleAnalytics|'%{name}' is collecting the data. This can take a few minutes."
 msgstr ""
 
@@ -11521,6 +11524,9 @@ msgstr ""
 msgid "CycleAnalytics|Date"
 msgstr ""
 
+msgid "CycleAnalytics|Display chart filters"
+msgstr ""
+
 msgid "CycleAnalytics|If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display."
 msgstr ""
 
@@ -11530,10 +11536,19 @@ msgstr ""
 msgid "CycleAnalytics|Number of tasks"
 msgstr ""
 
+msgid "CycleAnalytics|Only %{maxLabels} labels can be selected at this time"
+msgstr ""
+
 msgid "CycleAnalytics|Project selected"
 msgid_plural "CycleAnalytics|%d projects selected"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "CycleAnalytics|Select labels"
+msgstr ""
+
+msgid "CycleAnalytics|Show"
+msgstr ""
 
 msgid "CycleAnalytics|Stage time: %{title}"
 msgstr ""
@@ -36284,9 +36299,6 @@ msgid "Showing latest version"
 msgstr ""
 
 msgid "Showing version #%{versionNumber}"
-msgstr ""
-
-msgid "Shows issues and 1 label for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
 msgstr ""
 
 msgid "Shows issues for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"

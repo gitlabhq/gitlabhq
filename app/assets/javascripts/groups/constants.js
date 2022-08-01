@@ -1,4 +1,9 @@
 import { __, s__ } from '~/locale';
+import {
+  VISIBILITY_LEVEL_PRIVATE,
+  VISIBILITY_LEVEL_INTERNAL,
+  VISIBILITY_LEVEL_PUBLIC,
+} from '~/visibility_level/constants';
 
 export const MAX_CHILDREN_COUNT = 20;
 
@@ -28,32 +33,30 @@ export const ITEM_TYPE = {
   GROUP: 'group',
 };
 
-export const VISIBILITY_PUBLIC = 'public';
-export const VISIBILITY_INTERNAL = 'internal';
-export const VISIBILITY_PRIVATE = 'private';
-
 export const GROUP_VISIBILITY_TYPE = {
-  [VISIBILITY_PUBLIC]: __(
+  [VISIBILITY_LEVEL_PUBLIC]: __(
     'Public - The group and any public projects can be viewed without any authentication.',
   ),
-  [VISIBILITY_INTERNAL]: __(
+  [VISIBILITY_LEVEL_INTERNAL]: __(
     'Internal - The group and any internal projects can be viewed by any logged in user except external users.',
   ),
-  [VISIBILITY_PRIVATE]: __('Private - The group and its projects can only be viewed by members.'),
+  [VISIBILITY_LEVEL_PRIVATE]: __(
+    'Private - The group and its projects can only be viewed by members.',
+  ),
 };
 
 export const PROJECT_VISIBILITY_TYPE = {
-  [VISIBILITY_PUBLIC]: __('Public - The project can be accessed without any authentication.'),
-  [VISIBILITY_INTERNAL]: __(
+  [VISIBILITY_LEVEL_PUBLIC]: __('Public - The project can be accessed without any authentication.'),
+  [VISIBILITY_LEVEL_INTERNAL]: __(
     'Internal - The project can be accessed by any logged in user except external users.',
   ),
-  [VISIBILITY_PRIVATE]: __(
+  [VISIBILITY_LEVEL_PRIVATE]: __(
     'Private - Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.',
   ),
 };
 
 export const VISIBILITY_TYPE_ICON = {
-  [VISIBILITY_PUBLIC]: 'earth',
-  [VISIBILITY_INTERNAL]: 'shield',
-  [VISIBILITY_PRIVATE]: 'lock',
+  [VISIBILITY_LEVEL_PUBLIC]: 'earth',
+  [VISIBILITY_LEVEL_INTERNAL]: 'shield',
+  [VISIBILITY_LEVEL_PRIVATE]: 'lock',
 };

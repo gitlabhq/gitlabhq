@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx do
   let(:report) { instance_double('Gitlab::Ci::Reports::Sbom::Report') }
+  let(:report_data) { base_report_data }
   let(:raw_report_data) { report_data.to_json }
+  let(:report_valid?) { true }
+  let(:validator_errors) { [] }
 
   let(:base_report_data) do
     {
@@ -15,6 +18,13 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx do
   end
 
   subject(:parse!) { described_class.new(raw_report_data, report).parse! }
+
+  before do
+    allow_next_instance_of(Gitlab::Ci::Parsers::Sbom::Validators::CyclonedxSchemaValidator) do |validator|
+      allow(validator).to receive(:valid?).and_return(report_valid?)
+      allow(validator).to receive(:errors).and_return(validator_errors)
+    end
+  end
 
   context 'when report JSON is invalid' do
     let(:raw_report_data) { '{ ' }
@@ -36,9 +46,19 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx do
     end
   end
 
-  context 'when cyclonedx report has no components' do
-    let(:report_data) { base_report_data }
+  context 'when report does not conform to the CycloneDX schema' do
+    let(:report_valid?) { false }
+    let(:validator_errors) { %w[error1 error2] }
 
+    it 'reports all errors returned by the validator' do
+      expect(report).to receive(:add_error).with("error1")
+      expect(report).to receive(:add_error).with("error2")
+
+      parse!
+    end
+  end
+
+  context 'when cyclonedx report has no components' do
     it 'skips component processing' do
       expect(report).not_to receive(:add_component)
 

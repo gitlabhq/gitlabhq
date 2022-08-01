@@ -29,7 +29,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         # "Route Globbing" syntax (/*page) so that the route helpers do not encode
         # the slash character.
         get 'metrics(/:dashboard_path)(/*page)', constraints: { dashboard_path: /.+\.yml/, page: 'panel/new' },
-          to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
+                                                 to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
 
         namespace :metrics, module: :metrics do
           namespace :dashboards do

@@ -22,7 +22,7 @@ class CustomEmoji < ApplicationRecord
     presence: true,
     length: { maximum: 36 },
 
-    format: { with: /\A#{NAME_REGEXP}\z/ }
+    format: { with: /\A#{NAME_REGEXP}\z/o }
 
   scope :by_name, -> (names) { where(name: names) }
 

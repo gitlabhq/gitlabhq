@@ -3,8 +3,8 @@
 scope path: :uploads do
   # Note attachments and User/Group/Project/Topic avatars
   get "-/system/:model/:mounted_as/:id/:filename",
-      to:           "uploads#show",
-      constraints:  { model: %r{note|user|group|project|projects\/topic}, mounted_as: /avatar|attachment/, filename: %r{[^/]+} }
+      to: "uploads#show",
+      constraints: { model: %r{note|user|group|project|projects\/topic}, mounted_as: /avatar|attachment/, filename: %r{[^/]+} }
 
   # show uploads for models, snippets (notes) available for now
   get '-/system/:model/:id/:secret/:filename',
@@ -18,8 +18,8 @@ scope path: :uploads do
 
   # Appearance
   get "-/system/:model/:mounted_as/:id/:filename",
-      to:           "uploads#show",
-      constraints:  { model: /appearance/, mounted_as: /logo|header_logo|favicon/, filename: /.+/ },
+      to: "uploads#show",
+      constraints: { model: /appearance/, mounted_as: /logo|header_logo|favicon/, filename: /.+/ },
       as: 'appearance_upload'
 
   # Project markdown uploads
@@ -27,7 +27,7 @@ scope path: :uploads do
   # https://gitlab.com/gitlab-org/gitlab/issues/196396
   get ":namespace_id/:project_id/:secret/:filename",
     to: redirect("%{namespace_id}/%{project_id}/uploads/%{secret}/%{filename}"),
-    constraints:  { namespace_id: /[a-zA-Z.0-9_\-]+/, project_id: /[a-zA-Z.0-9_\-]+/, filename: %r{[^/]+} }, format: false, defaults: { format: nil }
+    constraints: { namespace_id: /[a-zA-Z.0-9_\-]+/, project_id: /[a-zA-Z.0-9_\-]+/, filename: %r{[^/]+} }, format: false, defaults: { format: nil }
 
   # create uploads for models, snippets (notes) available for now
   post ':model',
@@ -41,12 +41,12 @@ scope path: :uploads do
 
   # Alert Metric Images
   get "-/system/:model/:mounted_as/:id/:filename",
-      to:           "uploads#show",
-      constraints:  { model: /alert_management_metric_image/, mounted_as: /file/, filename: %r{[^/]+} },
+      to: "uploads#show",
+      constraints: { model: /alert_management_metric_image/, mounted_as: /file/, filename: %r{[^/]+} },
       as: 'alert_metric_image_upload'
 end
 
 # Redirect old note attachments path to new uploads path.
 get "files/note/:id/:filename",
-  to:           redirect("uploads/note/attachment/%{id}/%{filename}"),
-  constraints:  { filename: %r{[^/]+} }
+  to: redirect("uploads/note/attachment/%{id}/%{filename}"),
+  constraints: { filename: %r{[^/]+} }

@@ -23,10 +23,10 @@ resource :profile, only: [:show, :update] do
 
     resource :notifications, only: [:show, :update] do
       scope(path: 'groups/*id',
-        id: Gitlab::PathRegex.full_namespace_route_regex,
-        as: :group,
-        controller: :groups,
-        constraints: { format: /(html|json)/ }) do
+            id: Gitlab::PathRegex.full_namespace_route_regex,
+            as: :group,
+            controller: :groups,
+            constraints: { format: /(html|json)/ }) do
         patch '/', action: :update
         put '/', action: :update
       end
