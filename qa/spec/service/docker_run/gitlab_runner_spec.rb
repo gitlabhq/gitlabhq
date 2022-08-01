@@ -39,7 +39,7 @@ module QA
         it 'sets pertinent information' do
           expect(subject).to have_received_masked_shell_command(/--name #{runner_name} /)
           expect(subject).to have_received_masked_shell_command(/--url #{subject.address} /)
-          expect(subject).to have_received_masked_shell_command(/--registration-token **** /)
+          expect(subject).to have_received_masked_shell_command(/--registration-token \S+/)
         end
 
         it 'masks the registration token' do

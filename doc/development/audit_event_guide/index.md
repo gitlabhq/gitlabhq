@@ -29,13 +29,13 @@ If you have any questions, please reach out to `@gitlab-org/manage/compliance` t
 
 To instrument an audit event, the following attributes should be provided:
 
-| Attribute    | Type                 | Required? | Description                                                      |
-|:-------------|:---------------------|:----------|:-----------------------------------------------------------------|
-| `name`       | String               | false     | Action name to be audited. Used for error tracking               |
-| `author`     | User                 | true      | User who authors the change                                      |
-| `scope`      | User, Project, Group | true      | Scope which the audit event belongs to                           |
-| `target`     | Object               | true      | Target object being audited                                      |
-| `message`    | String               | true      | Message describing the action                                    |
+| Attribute    | Type                 | Required? | Description                                                       |
+|:-------------|:---------------------|:----------|:------------------------------------------------------------------|
+| `name`       | String               | false     | Action name to be audited. Used for error tracking                |
+| `author`     | User                 | true      | User who authors the change                                       |
+| `scope`      | User, Project, Group | true      | Scope which the audit event belongs to                            |
+| `target`     | Object               | true      | Target object being audited                                       |
+| `message`    | String               | true      | Message describing the action ([not translated](#i18n-and-the-audit-event-message-attribute)) |
 | `created_at` | DateTime             | false     | The time when the action occurred. Defaults to `DateTime.current` |
 
 ## How to instrument new Audit Events
@@ -210,3 +210,10 @@ a large amount of data. See [this merge request](https://gitlab.com/gitlab-org/g
 for an example.
 This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/epics/5925) for updates on feature
 development.
+
+### I18N and the Audit Event `:message` attribute
+
+We intentionally do not translate audit event messages because translated messages would be saved in the database and served to users, regardless of their locale settings.
+
+This could mean, for example, that we use the locale for the currently logged in user to record an audit event message and stream the message to an external streaming
+destination in the wrong language for that destination. Users could find that confusing.
