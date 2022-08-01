@@ -22,10 +22,12 @@ namespace :gitlab do
       end
     end
 
-    desc "GitLab | Webhook | Remove a webhook from the projects"
-    task rm: :environment do
+    desc "GitLab | Webhook | Remove a webhook from a namespace"
+    task rm: :environment do |task|
       web_hook_url = ENV['URL']
       namespace_path = ENV['NAMESPACE']
+
+      raise ArgumentError, 'URL is required' unless web_hook_url
 
       web_hooks = find_web_hooks(namespace_path)
 
@@ -36,11 +38,12 @@ namespace :gitlab do
       # we could consider storing a hash of the URL alongside the encrypted
       # value to speed up searches
       count = 0
+      service = WebHooks::AdminDestroyService.new(rake_task: task)
+
       web_hooks.find_each do |hook|
         next unless hook.url == web_hook_url
 
-        user = hook.parent.owners.first
-        result = WebHooks::DestroyService.new(user).execute(hook)
+        result = service.execute(hook)
 
         raise "Unable to destroy Web hook" unless result[:status] == :success
 

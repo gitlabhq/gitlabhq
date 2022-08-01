@@ -13,14 +13,18 @@ module Ci
     include EachBatch
     include Gitlab::Utils::StrongMemoize
 
-    TEST_REPORT_FILE_TYPES = %w[junit].freeze
-    COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze
-    CODEQUALITY_REPORT_FILE_TYPES = %w[codequality].freeze
-    ACCESSIBILITY_REPORT_FILE_TYPES = %w[accessibility].freeze
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze
-    TERRAFORM_REPORT_FILE_TYPES = %w[terraform].freeze
-    SAST_REPORT_TYPES = %w[sast].freeze
-    SECRET_DETECTION_REPORT_TYPES = %w[secret_detection].freeze
+
+    REPORT_FILE_TYPES = {
+      sast: %w[sast],
+      secret_detection: %w[secret_detection],
+      test: %w[junit],
+      accessibility: %w[accessibility],
+      coverage: %w[cobertura],
+      codequality: %w[codequality],
+      terraform: %w[terraform]
+    }.freeze
+
     DEFAULT_FILE_NAMES = {
       archive: nil,
       metadata: nil,
@@ -152,36 +156,14 @@ module Ci
       where(file_type: types)
     end
 
+    REPORT_FILE_TYPES.each do |report_type, file_types|
+      scope "#{report_type}_reports", -> do
+        with_file_types(file_types)
+      end
+    end
+
     scope :all_reports, -> do
       with_file_types(REPORT_TYPES.keys.map(&:to_s))
-    end
-
-    scope :sast_reports, -> do
-      with_file_types(SAST_REPORT_TYPES)
-    end
-
-    scope :secret_detection_reports, -> do
-      with_file_types(SECRET_DETECTION_REPORT_TYPES)
-    end
-
-    scope :test_reports, -> do
-      with_file_types(TEST_REPORT_FILE_TYPES)
-    end
-
-    scope :accessibility_reports, -> do
-      with_file_types(ACCESSIBILITY_REPORT_FILE_TYPES)
-    end
-
-    scope :coverage_reports, -> do
-      with_file_types(COVERAGE_REPORT_FILE_TYPES)
-    end
-
-    scope :codequality_reports, -> do
-      with_file_types(CODEQUALITY_REPORT_FILE_TYPES)
-    end
-
-    scope :terraform_reports, -> do
-      with_file_types(TERRAFORM_REPORT_FILE_TYPES)
     end
 
     scope :erasable, -> do

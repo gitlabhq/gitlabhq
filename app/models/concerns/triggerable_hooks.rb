@@ -2,22 +2,22 @@
 
 module TriggerableHooks
   AVAILABLE_TRIGGERS = {
-    repository_update_hooks:  :repository_update_events,
-    push_hooks:               :push_events,
-    tag_push_hooks:           :tag_push_events,
-    issue_hooks:              :issues_events,
-    confidential_note_hooks:  :confidential_note_events,
+    repository_update_hooks: :repository_update_events,
+    push_hooks: :push_events,
+    tag_push_hooks: :tag_push_events,
+    issue_hooks: :issues_events,
+    confidential_note_hooks: :confidential_note_events,
     confidential_issue_hooks: :confidential_issues_events,
-    note_hooks:               :note_events,
-    merge_request_hooks:      :merge_requests_events,
-    job_hooks:                :job_events,
-    pipeline_hooks:           :pipeline_events,
-    wiki_page_hooks:          :wiki_page_events,
-    deployment_hooks:         :deployment_events,
-    feature_flag_hooks:       :feature_flag_events,
-    release_hooks:            :releases_events,
-    member_hooks:             :member_events,
-    subgroup_hooks:           :subgroup_events
+    note_hooks: :note_events,
+    merge_request_hooks: :merge_requests_events,
+    job_hooks: :job_events,
+    pipeline_hooks: :pipeline_events,
+    wiki_page_hooks: :wiki_page_events,
+    deployment_hooks: :deployment_events,
+    feature_flag_hooks: :feature_flag_events,
+    release_hooks: :releases_events,
+    member_hooks: :member_events,
+    subgroup_hooks: :subgroup_events
   }.freeze
 
   extend ActiveSupport::Concern

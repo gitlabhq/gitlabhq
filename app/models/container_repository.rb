@@ -550,7 +550,7 @@ class ContainerRepository < ApplicationRecord
 
   def self.find_by_path(path)
     self.find_by(project: path.repository_project,
-                  name: path.repository_name)
+                 name: path.repository_name)
   end
 
   private

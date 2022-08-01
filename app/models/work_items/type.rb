@@ -13,11 +13,11 @@ module WorkItems
     # Base types need to exist on the DB on app startup
     # This constant is used by the DB seeder
     BASE_TYPES = {
-      issue:       { name: 'Issue', icon_name: 'issue-type-issue', enum_value: 0 },
-      incident:    { name: 'Incident', icon_name: 'issue-type-incident', enum_value: 1 },
-      test_case:   { name: 'Test Case', icon_name: 'issue-type-test-case', enum_value: 2 }, ## EE-only
+      issue: { name: 'Issue', icon_name: 'issue-type-issue', enum_value: 0 },
+      incident: { name: 'Incident', icon_name: 'issue-type-incident', enum_value: 1 },
+      test_case: { name: 'Test Case', icon_name: 'issue-type-test-case', enum_value: 2 }, ## EE-only
       requirement: { name: 'Requirement', icon_name: 'issue-type-requirements', enum_value: 3 }, ## EE-only
-      task:        { name: 'Task', icon_name: 'issue-type-task', enum_value: 4 }
+      task: { name: 'Task', icon_name: 'issue-type-task', enum_value: 4 }
     }.freeze
 
     WIDGETS_FOR_TYPE = {

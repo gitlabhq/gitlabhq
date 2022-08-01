@@ -505,7 +505,7 @@ module Integrations
           self.project,
           entity_type.to_sym
         ],
-        id:   entity_id,
+        id: entity_id,
         host: Settings.gitlab.base_url
       )
     end

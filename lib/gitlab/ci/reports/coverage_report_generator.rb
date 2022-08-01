@@ -20,7 +20,7 @@ module Gitlab
 
           coverage_report.tap do |coverage_report|
             report_builds.find_each do |build|
-              build.each_report(::Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES) do |file_type, blob|
+              build.each_report(::Ci::JobArtifact::REPORT_FILE_TYPES[:coverage]) do |file_type, blob|
                 Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
                   blob,
                   coverage_report,

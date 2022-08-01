@@ -12,14 +12,14 @@ class WebHook < ApplicationRecord
   BACKOFF_GROWTH_FACTOR = 2.0
 
   attr_encrypted :token,
-                 mode:      :per_attribute_iv,
+                 mode: :per_attribute_iv,
                  algorithm: 'aes-256-gcm',
-                 key:       Settings.attr_encrypted_db_key_base_32
+                 key: Settings.attr_encrypted_db_key_base_32
 
   attr_encrypted :url,
-                 mode:      :per_attribute_iv,
+                 mode: :per_attribute_iv,
                  algorithm: 'aes-256-gcm',
-                 key:       Settings.attr_encrypted_db_key_base_32
+                 key: Settings.attr_encrypted_db_key_base_32
 
   attr_encrypted :url_variables,
                  mode: :per_attribute_iv,

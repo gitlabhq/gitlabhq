@@ -14,18 +14,18 @@ class Event < ApplicationRecord
   default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
 
   ACTIONS = HashWithIndifferentAccess.new(
-    created:    1,
-    updated:    2,
-    closed:     3,
-    reopened:   4,
-    pushed:     5,
-    commented:  6,
-    merged:     7,
-    joined:     8, # User joined project
-    left:       9, # User left project
-    destroyed:  10,
-    expired:    11, # User left project due to expiry
-    approved:   12
+    created: 1,
+    updated: 2,
+    closed: 3,
+    reopened: 4,
+    pushed: 5,
+    commented: 6,
+    merged: 7,
+    joined: 8, # User joined project
+    left: 9, # User left project
+    destroyed: 10,
+    expired: 11, # User left project due to expiry
+    approved: 12
   ).freeze
 
   private_constant :ACTIONS
@@ -36,15 +36,15 @@ class Event < ApplicationRecord
   ISSUE_ACTIONS = [:created, :updated, :closed, :reopened].freeze
 
   TARGET_TYPES = HashWithIndifferentAccess.new(
-    issue:          Issue,
-    milestone:      Milestone,
-    merge_request:  MergeRequest,
-    note:           Note,
-    project:        Project,
-    snippet:        Snippet,
-    user:           User,
-    wiki:           WikiPage::Meta,
-    design:         DesignManagement::Design
+    issue: Issue,
+    milestone: Milestone,
+    merge_request: MergeRequest,
+    note: Note,
+    project: Project,
+    snippet: Snippet,
+    user: User,
+    wiki: WikiPage::Meta,
+    design: DesignManagement::Design
   ).freeze
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour

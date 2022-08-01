@@ -141,8 +141,6 @@ Layout/HashAlignment:
     - 'app/helpers/sorting_helper.rb'
     - 'app/helpers/todos_helper.rb'
     - 'app/helpers/wiki_helper.rb'
-    - 'app/mailers/abuse_report_mailer.rb'
-    - 'app/mailers/emails/projects.rb'
     - 'app/models/bulk_imports/configuration.rb'
     - 'app/models/ci/bridge.rb'
     - 'app/models/ci/build_trace_metadata.rb'

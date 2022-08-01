@@ -1,8 +1,0 @@
----
-name: fix_sliding_list_partitioning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85222
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362246
-milestone: '15.1'
-type: development
-group: group::sharding
-default_enabled: true

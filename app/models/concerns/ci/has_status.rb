@@ -17,8 +17,8 @@ module Ci
     ALIVE_STATUSES = (ACTIVE_STATUSES + ['created']).freeze
     CANCELABLE_STATUSES = (ALIVE_STATUSES + ['scheduled']).freeze
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
-      failed: 4, canceled: 5, skipped: 6, manual: 7,
-      scheduled: 8, preparing: 9, waiting_for_resource: 10 }.freeze
+                      failed: 4, canceled: 5, skipped: 6, manual: 7,
+                      scheduled: 8, preparing: 9, waiting_for_resource: 10 }.freeze
 
     UnknownStatusError = Class.new(StandardError)
 

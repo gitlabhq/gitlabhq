@@ -50,6 +50,10 @@ RSpec.describe 'gitlab:web_hook namespace rake tasks', :silence_stdout do
 
     let(:other_url) { 'http://other.example.com' }
 
+    it 'complains if URL is not provided' do
+      expect { run_rake_task('gitlab:web_hook:rm') }.to raise_error(ArgumentError, 'URL is required')
+    end
+
     it 'removes a web hook from all projects by URL' do
       stub_env('URL' => url)
       run_rake_task('gitlab:web_hook:rm')

@@ -71,7 +71,7 @@ module Integrations
         recipients,
         push_data,
         send_from_committer_email: send_from_committer_email?,
-        disable_diffs:             disable_diffs?
+        disable_diffs: disable_diffs?
       )
     end
 

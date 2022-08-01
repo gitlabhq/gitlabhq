@@ -9,26 +9,27 @@ class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
   self.ignored_columns = %i[partition]
 
   partitioned_by :partition, strategy: :sliding_list,
-    next_partition_if: -> (active_partition) do
-      return false if Feature.disabled?(:lfk_automatic_partition_creation)
+                             next_partition_if: -> (active_partition) do
+                                                  return false if Feature.disabled?(:lfk_automatic_partition_creation)
 
-      oldest_record_in_partition = LooseForeignKeys::DeletedRecord
-        .select(:id, :created_at)
-        .for_partition(active_partition)
-        .order(:id)
-        .limit(1)
-        .take
+                                                  oldest_record_in_partition = LooseForeignKeys::DeletedRecord
+                                                    .select(:id, :created_at)
+                                                    .for_partition(active_partition)
+                                                    .order(:id)
+                                                    .limit(1)
+                                                    .take
 
-      oldest_record_in_partition.present? && oldest_record_in_partition.created_at < PARTITION_DURATION.ago
-    end,
-    detach_partition_if: -> (partition) do
-      return false if Feature.disabled?(:lfk_automatic_partition_dropping)
+                                                  oldest_record_in_partition.present? &&
+                                                    oldest_record_in_partition.created_at < PARTITION_DURATION.ago
+                                                end,
+                             detach_partition_if: -> (partition) do
+                                                    return false if Feature.disabled?(:lfk_automatic_partition_dropping)
 
-      !LooseForeignKeys::DeletedRecord
-        .for_partition(partition)
-        .status_pending
-        .exists?
-    end
+                                                    !LooseForeignKeys::DeletedRecord
+                                                      .for_partition(partition)
+                                                      .status_pending
+                                                      .exists?
+                                                  end
 
   scope :for_table, -> (table) { where(fully_qualified_table_name: table) }
   scope :for_partition, -> (partition) { where(partition: partition) }

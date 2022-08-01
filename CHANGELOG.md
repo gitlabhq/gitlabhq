@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.2.2 (2022-08-01)
+
+### Fixed (6 changes)
+
+- [Upgrade Oj to v3.13.19 to fix a seg fault](gitlab-org/gitlab@758dff584369303f4176a96ac130954724a0e9f5) ([merge request](gitlab-org/gitlab!93652))
+- [Gracefully handle nil created_at values in CI pipelines](gitlab-org/gitlab@492a3dcf6c37f8968282a93cf485f2358ecd7943) ([merge request](gitlab-org/gitlab!93652))
+- [Fix CI artifact sizes not logged for some runner endpoints](gitlab-org/gitlab@97ca5e38b1917239bb62cbd338eb689a0ff15fbb) ([merge request](gitlab-org/gitlab!93652))
+- [Fix RescheduleBackfillImportedIssueSearchData migration](gitlab-org/gitlab@015e908479a44276833e5bb40d6bd613c394f460) ([merge request](gitlab-org/gitlab!93652))
+- [Upgrade oj to v3.3.18 to fix illegal instruction errors](gitlab-org/gitlab@5caf005e1315f7acd145bcbb6d5ced5281a10e56) ([merge request](gitlab-org/gitlab!93652))
+- [Use `CREATE OR REPLACE FUNCTION` to define vulnerability reads triggers](gitlab-org/gitlab@dbfa0d51a1851e940ad243f720cbfe1e25c76111) ([merge request](gitlab-org/gitlab!93652))
+
+### Changed (1 change)
+
+- [Fix ES client for nil password](gitlab-org/gitlab@9bd4fa109c06959f5e9b4668c85327e3503bf55a) ([merge request](gitlab-org/gitlab!93652)) **GitLab Enterprise Edition**
+
 ## 15.2.1 (2022-07-28)
 
 ### Security (18 changes)

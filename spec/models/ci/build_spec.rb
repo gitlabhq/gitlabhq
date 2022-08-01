@@ -4552,7 +4552,7 @@ RSpec.describe Ci::Build do
   end
 
   describe '#each_report' do
-    let(:report_types) { Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES }
+    let(:report_types) { Ci::JobArtifact::REPORT_FILE_TYPES[:coverage] }
 
     let!(:codequality) { create(:ci_job_artifact, :codequality, job: build) }
     let!(:coverage) { create(:ci_job_artifact, :coverage_gocov_xml, job: build) }

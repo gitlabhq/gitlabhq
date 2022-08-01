@@ -984,7 +984,7 @@ module Ci
 
     def collect_test_reports!(test_reports)
       test_reports.get_suite(test_suite_name).tap do |test_suite|
-        each_report(Ci::JobArtifact::TEST_REPORT_FILE_TYPES) do |file_type, blob|
+        each_report(Ci::JobArtifact::REPORT_FILE_TYPES[:test]) do |file_type, blob|
           Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
             blob,
             test_suite,
@@ -995,7 +995,7 @@ module Ci
     end
 
     def collect_accessibility_reports!(accessibility_report)
-      each_report(Ci::JobArtifact::ACCESSIBILITY_REPORT_FILE_TYPES) do |file_type, blob|
+      each_report(Ci::JobArtifact::REPORT_FILE_TYPES[:accessibility]) do |file_type, blob|
         Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, accessibility_report)
       end
 
@@ -1003,7 +1003,7 @@ module Ci
     end
 
     def collect_codequality_reports!(codequality_report)
-      each_report(Ci::JobArtifact::CODEQUALITY_REPORT_FILE_TYPES) do |file_type, blob|
+      each_report(Ci::JobArtifact::REPORT_FILE_TYPES[:codequality]) do |file_type, blob|
         Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, codequality_report)
       end
 
@@ -1011,7 +1011,7 @@ module Ci
     end
 
     def collect_terraform_reports!(terraform_reports)
-      each_report(::Ci::JobArtifact::TERRAFORM_REPORT_FILE_TYPES) do |file_type, blob, report_artifact|
+      each_report(::Ci::JobArtifact::REPORT_FILE_TYPES[:terraform]) do |file_type, blob, report_artifact|
         ::Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, terraform_reports, artifact: report_artifact)
       end
 

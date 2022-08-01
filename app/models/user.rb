@@ -69,8 +69,8 @@ class User < ApplicationRecord
   default_value_for :theme_id, gitlab_config.default_theme
 
   attr_encrypted :otp_secret,
-    key:       Gitlab::Application.secrets.otp_key_base,
-    mode:      :per_attribute_iv_and_salt,
+    key: Gitlab::Application.secrets.otp_key_base,
+    mode: :per_attribute_iv_and_salt,
     insecure_mode: true,
     algorithm: 'aes-256-cbc'
 
@@ -272,10 +272,10 @@ class User < ApplicationRecord
   validate :check_username_format, if: :username_changed?
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
-    message: _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } }
+                                                     message: _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } }
 
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
-    message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
+                                                            message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
 
   validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
 
@@ -991,12 +991,12 @@ class User < ApplicationRecord
   def disable_two_factor!
     transaction do
       update(
-        otp_required_for_login:      false,
-        encrypted_otp_secret:        nil,
-        encrypted_otp_secret_iv:     nil,
-        encrypted_otp_secret_salt:   nil,
+        otp_required_for_login: false,
+        encrypted_otp_secret: nil,
+        encrypted_otp_secret_iv: nil,
+        encrypted_otp_secret_salt: nil,
         otp_grace_period_started_at: nil,
-        otp_backup_codes:            nil
+        otp_backup_codes: nil
       )
       self.u2f_registrations.destroy_all # rubocop: disable Cop/DestroyAll
       self.webauthn_registrations.destroy_all # rubocop: disable Cop/DestroyAll

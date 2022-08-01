@@ -92,7 +92,7 @@ class Compare
 
   def diff_refs
     Gitlab::Diff::DiffRefs.new(
-      base_sha:  @straight ? start_commit_sha : base_commit_sha,
+      base_sha: @straight ? start_commit_sha : base_commit_sha,
       start_sha: start_commit_sha,
       head_sha: head_commit_sha
     )

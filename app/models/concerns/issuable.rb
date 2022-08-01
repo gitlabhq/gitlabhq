@@ -550,7 +550,7 @@ module Issuable
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {
-      'Author'   => author.try(:name),
+      'Author' => author.try(:name),
       'Assignee' => assignee_list
     }
   end

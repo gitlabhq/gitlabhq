@@ -149,7 +149,7 @@ class Group < Namespace
 
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption) ? :optional : :required },
-                                prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
+                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook

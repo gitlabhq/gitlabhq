@@ -2658,7 +2658,7 @@ class Project < ApplicationRecord
 
     {
       repository_storage: repository_storage,
-      pool_repository:    pool_repository || create_new_pool_repository
+      pool_repository: pool_repository || create_new_pool_repository
     }
   end
 

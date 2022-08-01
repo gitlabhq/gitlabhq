@@ -8,8 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44616) in GitLab 13.6.
 
-## Summary
-
 Extensions in the merge request widget enable you to add new features
 into the merge request widget that match the design framework.
 With extensions we get a lot of benefits out of the box without much effort required, like:
@@ -37,6 +35,7 @@ export default {
   expandEvent: '',      // Optional: RedisHLL event name to track expanding content
   enablePolling: false, // Optional: Tells extension to poll for data
   modalComponent: null, // Optional: The component to use for the modal
+  telemetry: true,      // Optional: Reports basic telemetry for the extension. Set to false to disable telemetry
   computed: {
     summary(data) {},     // Required: Level 1 summary text
     statusIcon(data) {},  // Required: Level 1 status icon
@@ -77,7 +76,7 @@ data fetching methods to be used, such as GraphQL or REST API calls.
 ### API calls
 
 For performance reasons, it is best if the collapsed state fetches only the data required to
-render the collapsed state. This fetching happens within the `fetchCollapsedData` method.
+render the collapsed state. This fetching happens in the `fetchCollapsedData` method.
 This method is called with the props as an argument, so you can easily access
 any paths set in the state.
 
@@ -88,7 +87,7 @@ method.
 
 When the user clicks **Expand**, the `fetchFullData` method is called. This method
 also gets called with the props as an argument. This method **must** also return
-the full data. However, this data needs to be correctly formatted to match the format
+the full data. However, this data must be correctly formatted to match the format
 mentioned in the data structure section.
 
 #### Technical debt
@@ -233,7 +232,7 @@ export default {
 };
 ```
 
-If the extension needs to poll multiple endpoints at the same time, then `fetchMultiData`
+If the extension must poll multiple endpoints at the same time, then `fetchMultiData`
 can be used to return an array of functions. A new `poll` object is created for each
 endpoint and they are polled separately. After all endpoints are resolved, polling is
 stopped and `setCollapsedData` is called with an array of `response.data`.
@@ -253,7 +252,8 @@ export default {
 };
 ```
 
-**Important** The function needs to return a `Promise` that resolves the `response` object.
+WARNING:
+The function must return a `Promise` that resolves the `response` object.
 The implementation relies on the `POLL-INTERVAL` header to keep polling, therefore it is
 important not to alter the status code and headers.
 
@@ -279,6 +279,87 @@ export default {
   },
 };
 ```
+
+## Telemetry
+
+The base implementation of the widget extension framework includes some telemetry events.
+Each widget reports:
+
+- `view`: When it is rendered to the screen.
+- `expand`: When it is expanded.
+- `full_report_clicked`: When an (optional) input is clicked to view the full report.
+- Outcome (`expand_success`, `expand_warning`, or `expand_failed`): One of three
+  additional events relating to the status of the widget when it was expanded.
+
+### Add new widgets
+
+When adding new widgets, the above events must be marked as `known`, and have metrics
+created, to be reportable.
+
+NOTE:
+Events that are only for EE should include `--ee` at the end of both shell commands below.
+
+To generate these known events for a single widget:
+
+1. Widgets should be named `Widget${CamelName}`.
+   - For example: a widget for **Test Reports** should be `WidgetTestReports`.
+1. Compute the widget name slug by converting the `${CamelName}` to lower-, snake-case.
+   - The previous example would be `test_reports`.
+1. Add the new widget name slug to `lib/gitlab/usage_data_counters/merge_request_widget_extension_counter.rb`
+   in the `WIDGETS` list.
+1. Ensure the GDK is running (`gdk start`).
+1. Generate known events on the command line with the following command.
+   Replace `test_reports` with your appropriate name slug:
+
+    ```shell
+    bundle exec rails generate gitlab:usage_metric_definition \
+    counts.i_code_review_merge_request_widget_test_reports_count_view \
+    counts.i_code_review_merge_request_widget_test_reports_count_full_report_clicked \
+    counts.i_code_review_merge_request_widget_test_reports_count_expand \
+    counts.i_code_review_merge_request_widget_test_reports_count_expand_success \
+    counts.i_code_review_merge_request_widget_test_reports_count_expand_warning \
+    counts.i_code_review_merge_request_widget_test_reports_count_expand_failed \
+    --dir=all
+    ```
+
+1. Modify each newly generated file to match the existing files for the merge request widget extension telemetry.
+   - Find existing examples by doing a glob search, like: `metrics/**/*_i_code_review_merge_request_widget_*`
+   - Roughly speaking, each file should have these values:
+     1. `description` = A plain English description of this value. Review existing widget extension telemetry files for examples.
+     1. `product_section` = `dev`
+     1. `product_stage` = `create`
+     1. `product_group` = `code_review`
+     1. `product_category` = `code_review`
+     1. `introduced_by_url` = `'[your MR]'`
+     1. `options.events` = (the event in the command from above that generated this file, like `i_code_review_merge_request_widget_test_reports_count_view`)
+         - This value is how the telemetry events are linked to "metrics" so this is probably one of the more important values.
+         1. `data_source` = `redis`
+         1. `data_category` = `optional`
+1. Repeat steps 5 and 6 for the HLL metrics. Replace `test_reports` with your appropriate name slug.
+
+   ```shell
+   bundle exec rails generate gitlab:usage_metric_definition:redis_hll code_review \
+   i_code_review_merge_request_widget_test_reports_view \
+   i_code_review_merge_request_widget_test_reports_full_report_clicked \
+   i_code_review_merge_request_widget_test_reports_expand \
+   i_code_review_merge_request_widget_test_reports_expand_success \
+   i_code_review_merge_request_widget_test_reports_expand_warning \
+   i_code_review_merge_request_widget_test_reports_expand_failed \
+   --class_name=RedisHLLMetric
+   ```
+
+   - In step 6 for HLL, change the `data_source` to `redis_hll`.
+1. Add each of the HLL metrics to `lib/gitlab/usage_data_counters/known_events/code_review_events.yml`:
+    1. `name` = (the event)
+    1. `redis_slot` = `code_review`
+    1. `category` = `code_review`
+    1. `aggregation` = `weekly`
+1. Add each event to the appropriate aggregates in `config/metrics/aggregates/code_review.yml`
+
+### Add new events
+
+If you are adding a new event to our known events, include the new event in the
+`KNOWN_EVENTS` list in `lib/gitlab/usage_data_counters/merge_request_widget_extension_counter.rb`.
 
 ## Icons
 

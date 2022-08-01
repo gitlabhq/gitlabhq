@@ -30,9 +30,9 @@ module Featurable
 
   STRING_OPTIONS = HashWithIndifferentAccess.new({
     'disabled' => DISABLED,
-    'private'  => PRIVATE,
-    'enabled'  => ENABLED,
-    'public'   => PUBLIC
+    'private' => PRIVATE,
+    'enabled' => ENABLED,
+    'public' => PUBLIC
   }).freeze
 
   class_methods do

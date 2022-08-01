@@ -37,7 +37,7 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
   ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
-    'Ci::CompareMetricsReportsService'     => ->(project) { true },
+    'Ci::CompareMetricsReportsService' => ->(project) { true },
     'Ci::CompareCodequalityReportsService' => ->(project) { true }
   }.freeze
 
@@ -47,13 +47,13 @@ class MergeRequest < ApplicationRecord
   belongs_to :iteration, foreign_key: 'sprint_id'
 
   has_internal_id :iid, scope: :target_project, track_if: -> { !importing? },
-    init: ->(mr, scope) do
-      if mr
-        mr.target_project&.merge_requests&.maximum(:iid)
-      elsif scope[:project]
-        where(target_project: scope[:project]).maximum(:iid)
-      end
-    end
+                        init: ->(mr, scope) do
+                                if mr
+                                  mr.target_project&.merge_requests&.maximum(:iid)
+                                elsif scope[:project]
+                                  where(target_project: scope[:project]).maximum(:iid)
+                                end
+                              end
 
   has_many :merge_request_diffs,
     -> { regular }, inverse_of: :merge_request
@@ -927,9 +927,9 @@ class MergeRequest < ApplicationRecord
   # most recent data possible.
   def repository_diff_refs
     Gitlab::Diff::DiffRefs.new(
-      base_sha:  branch_merge_base_sha,
+      base_sha: branch_merge_base_sha,
       start_sha: target_branch_sha,
-      head_sha:  source_branch_sha
+      head_sha: source_branch_sha
     )
   end
 

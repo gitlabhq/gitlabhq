@@ -5,6 +5,8 @@ module Gitlab
     # Wrapper around ExclusiveLease that adds retry logic
     class SleepingLock
       delegate :cancel, to: :@lease
+      MAX_ATTEMPTS = 65
+      DEFAULT_ATTEMPTS = 10
 
       def initialize(key, timeout:, delay:)
         @lease = ::Gitlab::ExclusiveLease.new(key, timeout: timeout)
@@ -12,9 +14,9 @@ module Gitlab
         @attempts = 0
       end
 
-      def obtain(max_attempts)
+      def obtain(max_attempts = DEFAULT_ATTEMPTS)
         until held?
-          raise FailedToObtainLockError, 'Failed to obtain a lock' if attempts >= max_attempts
+          raise FailedToObtainLockError, 'Failed to obtain a lock' if attempts >= [max_attempts, MAX_ATTEMPTS].min
 
           sleep(sleep_sec) unless first_attempt?
           try_obtain
