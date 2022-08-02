@@ -105,7 +105,7 @@ export default {
         </div>
       </reviewer-avatar-link>
       <gl-icon
-        v-if="user.approved"
+        v-if="user.mergeRequestInteraction.approved"
         v-gl-tooltip.left
         :size="16"
         :title="approvedByTooltipTitle(user)"
@@ -121,7 +121,7 @@ export default {
         data-testid="re-request-success"
       />
       <gl-button
-        v-else-if="user.can_update_merge_request && user.reviewed"
+        v-else-if="user.mergeRequestInteraction.canUpdate && user.mergeRequestInteraction.reviewed"
         v-gl-tooltip.left
         :title="$options.i18n.reRequestReview"
         :aria-label="$options.i18n.reRequestReview"

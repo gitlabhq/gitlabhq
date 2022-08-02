@@ -30,7 +30,7 @@ class FinalizeCiBuildsStageIdBigintConversion < ActiveRecord::Migration[6.1]
 
     # Create a copy of the original column's FK on the new column
     add_concurrent_foreign_key TABLE_NAME, :ci_stages, column: :stage_id_convert_to_bigint, on_delete: :cascade,
-      reverse_lock_order: true
+                                                       reverse_lock_order: true
 
     with_lock_retries(raise_on_exhaustion: true) do
       quoted_table_name = quote_table_name(TABLE_NAME)

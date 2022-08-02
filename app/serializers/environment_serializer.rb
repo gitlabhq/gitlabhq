@@ -34,8 +34,8 @@ class EnvironmentSerializer < BaseSerializer
   # rubocop: disable CodeReuse/ActiveRecord
   def itemize(resource)
     items = resource.order('folder ASC')
-      .group('COALESCE(environment_type, name)')
-      .select('COALESCE(environment_type, name) AS folder',
+      .group('COALESCE(environment_type, id::text)', 'COALESCE(environment_type, name)')
+      .select('COALESCE(environment_type, id::text), COALESCE(environment_type, name) AS folder',
               'COUNT(*) AS size', 'MAX(id) AS last_id')
 
     # It makes a difference when you call `paginate` method, because

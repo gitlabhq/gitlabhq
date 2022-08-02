@@ -51,10 +51,11 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator do
       shared_examples 'logs raised exception and terminates validator process group' do
         let(:std) { double(:std, close: nil, value: nil) }
         let(:wait_thr) { double }
+        let(:wait_threads) { [wait_thr, wait_thr] }
 
         before do
           allow(Process).to receive(:getpgid).and_return(2)
-          allow(Open3).to receive(:popen3).and_return([std, std, std, wait_thr])
+          allow(Open3).to receive(:pipeline_r).and_return([std, wait_threads])
           allow(wait_thr).to receive(:[]).with(:pid).and_return(1)
           allow(wait_thr).to receive(:value).and_raise(exception)
         end
@@ -67,7 +68,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator do
               import_upload_archive_size: File.size(filepath),
               message: error_message
             )
-          expect(Process).to receive(:kill).with(-1, 2)
+          expect(Process).to receive(:kill).with(-1, 2).twice
           expect(subject.valid?).to eq(false)
         end
       end

@@ -33,7 +33,7 @@ export default {
       return this.users.length > 2;
     },
     allReviewersCanMerge() {
-      return this.users.every((user) => user.can_merge);
+      return this.users.every((user) => user.mergeRequestInteraction?.canMerge);
     },
     sidebarAvatarCounter() {
       if (this.users.length > DEFAULT_MAX_COUNTER) {
@@ -48,7 +48,7 @@ export default {
       return this.users.slice(0, collapsedLength);
     },
     tooltipTitleMergeStatus() {
-      const mergeLength = this.users.filter((u) => u.can_merge).length;
+      const mergeLength = this.users.filter((u) => u.mergeRequestInteraction?.canMerge).length;
 
       if (mergeLength === this.users.length) {
         return '';

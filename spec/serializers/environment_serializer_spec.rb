@@ -101,6 +101,37 @@ RSpec.describe EnvironmentSerializer do
         expect(subject.third[:latest][:environment_type]).to be_nil
       end
     end
+
+    context 'when folders and standalone environments share the same name' do
+      before do
+        create(:environment, project: project, name: 'staging/my-review-1')
+        create(:environment, project: project, name: 'staging/my-review-2')
+        create(:environment, project: project, name: 'production/my-review-3')
+        create(:environment, project: project, name: 'staging')
+        create(:environment, project: project, name: 'testing')
+      end
+
+      it 'does not group standalone environments with folders that have the same name' do
+        expect(subject.count).to eq 4
+
+        expect(subject.first[:name]).to eq 'production'
+        expect(subject.first[:size]).to eq 1
+        expect(subject.first[:latest][:name]).to eq 'production/my-review-3'
+        expect(subject.first[:latest][:environment_type]).to eq 'production'
+        expect(subject.second[:name]).to eq 'staging'
+        expect(subject.second[:size]).to eq 1
+        expect(subject.second[:latest][:name]).to eq 'staging'
+        expect(subject.second[:latest][:environment_type]).to be_nil
+        expect(subject.third[:name]).to eq 'staging'
+        expect(subject.third[:size]).to eq 2
+        expect(subject.third[:latest][:name]).to eq 'staging/my-review-2'
+        expect(subject.third[:latest][:environment_type]).to eq 'staging'
+        expect(subject.fourth[:name]).to eq 'testing'
+        expect(subject.fourth[:size]).to eq 1
+        expect(subject.fourth[:latest][:name]).to eq 'testing'
+        expect(subject.fourth[:latest][:environment_type]).to be_nil
+      end
+    end
   end
 
   context 'when used with pagination' do

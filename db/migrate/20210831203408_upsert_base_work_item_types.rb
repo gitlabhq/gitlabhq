@@ -6,9 +6,9 @@ class UpsertBaseWorkItemTypes < ActiveRecord::Migration[6.1]
       self.table_name = 'work_item_types'
 
       enum base_type: {
-        issue:       0,
-        incident:    1,
-        test_case:   2,
+        issue: 0,
+        incident: 1,
+        test_case: 2,
         requirement: 3
       }
     end

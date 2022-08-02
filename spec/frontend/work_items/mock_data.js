@@ -219,6 +219,7 @@ export const createWorkItemMutationResponse = {
         },
         widgets: [],
       },
+      errors: [],
     },
   },
 };

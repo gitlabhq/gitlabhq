@@ -40,7 +40,7 @@ class FinalizePushEventPayloadsBigintConversion3 < ActiveRecord::Migration[6.1]
 
     # Add a foreign key on `event_id_convert_to_bigint` before we swap the columns and drop the old FK (fk_36c74129da)
     add_concurrent_foreign_key TABLE_NAME, :events, column: :event_id_convert_to_bigint,
-      on_delete: :cascade, reverse_lock_order: true
+                                                    on_delete: :cascade, reverse_lock_order: true
 
     with_lock_retries(raise_on_exhaustion: true) do
       # We'll need  ACCESS EXCLUSIVE lock on the related tables,

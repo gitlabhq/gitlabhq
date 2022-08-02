@@ -7,6 +7,7 @@ import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
+import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { parsePikadayDate } from './lib/utils/datetime_utility';
@@ -352,8 +353,7 @@ class GfmAutoComplete {
           // Cache assignees & reviewers list for easier filtering later
           assignees =
             SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
-          reviewers =
-            SidebarMediator.singleton?.store?.reviewers?.map(createMemberSearchString) || [];
+          reviewers = state.issuable?.reviewers?.nodes?.map(createMemberSearchString) || [];
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;

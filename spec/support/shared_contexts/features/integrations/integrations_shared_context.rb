@@ -66,7 +66,7 @@ Integration.available_integration_names.each do |integration|
           hash.merge!(k => 'foo@bar.com')
         elsif (integration == 'slack' || integration == 'mattermost') && k == :labels_to_be_notified_behavior
           hash.merge!(k => "match_any")
-        elsif integration == 'campfire' && k = :room
+        elsif integration == 'campfire' && k == :room
           hash.merge!(k => '1234')
         else
           hash.merge!(k => "someword")

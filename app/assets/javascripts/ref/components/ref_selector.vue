@@ -256,6 +256,7 @@ export default {
           :error-message="i18n.branchesErrorMessage"
           :show-header="showSectionHeaders"
           data-testid="branches-section"
+          data-qa-selector="branches_section"
           @selected="selectRef($event)"
         />
 

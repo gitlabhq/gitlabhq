@@ -5,13 +5,13 @@ class PrepareCiBuildsMetadataAndCiBuildAsyncIndexes < ActiveRecord::Migration[6.
 
   def up
     prepare_async_index :ci_builds_metadata, :id_convert_to_bigint, unique: true,
-      name: :index_ci_builds_metadata_on_id_convert_to_bigint
+                                                                    name: :index_ci_builds_metadata_on_id_convert_to_bigint
 
     prepare_async_index :ci_builds_metadata, :build_id_convert_to_bigint, unique: true,
-      name: :index_ci_builds_metadata_on_build_id_convert_to_bigint
+                                                                          name: :index_ci_builds_metadata_on_build_id_convert_to_bigint
 
     prepare_async_index :ci_builds_metadata, :build_id_convert_to_bigint, where: 'has_exposed_artifacts IS TRUE',
-      name: :index_ci_builds_metadata_on_build_id_int8_and_exposed_artifacts
+                                                                          name: :index_ci_builds_metadata_on_build_id_int8_and_exposed_artifacts
 
     prepare_async_index_from_sql(:ci_builds_metadata, :index_ci_builds_metadata_on_build_id_int8_where_interruptible, <<~SQL.squish)
         CREATE INDEX CONCURRENTLY "index_ci_builds_metadata_on_build_id_int8_where_interruptible"
@@ -20,7 +20,7 @@ class PrepareCiBuildsMetadataAndCiBuildAsyncIndexes < ActiveRecord::Migration[6.
     SQL
 
     prepare_async_index :ci_builds, :id_convert_to_bigint, unique: true,
-      name: :index_ci_builds_on_converted_id
+                                                           name: :index_ci_builds_on_converted_id
   end
 
   def down

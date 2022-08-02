@@ -9,7 +9,7 @@ class GroupProtectedEnvironmentsAddIndexAndConstraint < ActiveRecord::Migration[
 
   def up
     add_concurrent_index :protected_environments, [:group_id, :name], unique: true,
-      name: INDEX_NAME, where: 'group_id IS NOT NULL'
+                                                                      name: INDEX_NAME, where: 'group_id IS NOT NULL'
     add_concurrent_foreign_key :protected_environments, :namespaces, column: :group_id, on_delete: :cascade
 
     add_check_constraint :protected_environments,

@@ -504,6 +504,20 @@ FactoryBot.define do
       artifacts_expire_at { 1.minute.ago }
     end
 
+    trait :with_artifacts_paths do
+      options do
+        {
+          artifacts: {
+            name: 'artifacts_file',
+            untracked: false,
+            paths: ['out/'],
+            when: 'always',
+            expire_in: '7d'
+          }
+        }
+      end
+    end
+
     trait :with_commit do
       after(:build) do |build|
         commit = build(:commit, :without_author)

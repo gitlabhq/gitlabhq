@@ -36,8 +36,8 @@ export default {
       return !this.users.length;
     },
     sortedReviewers() {
-      const canMergeUsers = this.users.filter((user) => user.can_merge);
-      const canNotMergeUsers = this.users.filter((user) => !user.can_merge);
+      const canMergeUsers = this.users.filter((user) => user.mergeRequestInteraction?.canMerge);
+      const canNotMergeUsers = this.users.filter((user) => !user.mergeRequestInteraction?.canMerge);
 
       return [...canMergeUsers, ...canNotMergeUsers];
     },

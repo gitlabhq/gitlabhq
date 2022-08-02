@@ -4101,6 +4101,9 @@ msgstr ""
 msgid "An error occurred while fetching reference"
 msgstr ""
 
+msgid "An error occurred while fetching reviewers."
+msgstr ""
+
 msgid "An error occurred while fetching tags. Retry the search."
 msgstr ""
 
@@ -7970,9 +7973,6 @@ msgid "Child epic doesn't exist."
 msgstr ""
 
 msgid "Child issues and epics"
-msgstr ""
-
-msgid "Children"
 msgstr ""
 
 msgid "Chinese language support using"
@@ -27438,6 +27438,9 @@ msgstr ""
 msgid "OperationsDashboard|Operations Dashboard"
 msgstr ""
 
+msgid "OperationsDashboard|The Operations and Environments dashboards share the same list of projects. When you add or remove a project from one, GitLab adds or removes the project from the other. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
 msgid "OperationsDashboard|The operations dashboard provides a summary of each project's operational health, including pipeline and alert statuses."
 msgstr ""
 
@@ -44165,6 +44168,9 @@ msgstr ""
 msgid "WorkItem|Add a task"
 msgstr ""
 
+msgid "WorkItem|Add a title"
+msgstr ""
+
 msgid "WorkItem|Add assignee"
 msgstr ""
 
@@ -44249,6 +44255,9 @@ msgid "WorkItem|Something went wrong when fetching work item types. Please try a
 msgstr ""
 
 msgid "WorkItem|Something went wrong when trying to add a child. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong when trying to create a child. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the work item. Please try again."

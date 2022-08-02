@@ -266,7 +266,7 @@ describe('Description component', () => {
     });
   });
 
-  describe('with work items feature flag is enabled', () => {
+  describe('with work_items_create_from_markdown feature flag enabled', () => {
     describe('empty description', () => {
       beforeEach(() => {
         createComponent({
@@ -275,7 +275,7 @@ describe('Description component', () => {
           },
           provide: {
             glFeatures: {
-              workItems: true,
+              workItemsCreateFromMarkdown: true,
             },
           },
         });
@@ -295,7 +295,7 @@ describe('Description component', () => {
           },
           provide: {
             glFeatures: {
-              workItems: true,
+              workItemsCreateFromMarkdown: true,
             },
           },
         });
@@ -344,7 +344,7 @@ describe('Description component', () => {
               descriptionHtml: descriptionHtmlWithTask,
             },
             provide: {
-              glFeatures: { workItems: true },
+              glFeatures: { workItemsCreateFromMarkdown: true },
             },
           });
           return nextTick();
@@ -406,7 +406,7 @@ describe('Description component', () => {
 
             createComponent({
               props: { descriptionHtml: descriptionHtmlWithTask },
-              provide: { glFeatures: { workItems: true } },
+              provide: { glFeatures: { workItemsCreateFromMarkdown: true } },
             });
 
             expect(showDetailsModal).toHaveBeenCalledTimes(modalOpened);
@@ -422,7 +422,7 @@ describe('Description component', () => {
             descriptionHtml: descriptionHtmlWithTask,
           },
           provide: {
-            glFeatures: { workItems: true },
+            glFeatures: { workItemsCreateFromMarkdown: true },
           },
         });
         return nextTick();

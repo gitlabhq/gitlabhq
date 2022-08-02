@@ -35,3 +35,7 @@ export const WORK_ITEM_STATUS_TEXT = {
   CLOSED: s__('WorkItem|Closed'),
   OPEN: s__('WorkItem|Open'),
 };
+
+export const WORK_ITEM_TYPE_IDS = {
+  TASK: 'gid://gitlab/WorkItems::Type/5',
+};

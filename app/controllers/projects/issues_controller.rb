@@ -53,6 +53,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:realtime_labels, project)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:work_items_hierarchy, project)
+    push_force_frontend_feature_flag(:work_items_create_from_markdown, project&.work_items_create_from_markdown_feature_flag_enabled?)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

@@ -285,7 +285,7 @@ export default {
           :shape="$options.AVATAR_SHAPE_OPTION_RECT"
         />
         <div>
-          <div data-testid="project-name">{{ project.name }}</div>
+          <div data-testid="project-name" data-qa-selector="project_name">{{ project.name }}</div>
           <div class="gl-text-gray-500" data-testid="project-full-path">
             {{ project.fullPath }}
           </div>

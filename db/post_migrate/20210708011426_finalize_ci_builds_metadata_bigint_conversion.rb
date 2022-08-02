@@ -40,7 +40,7 @@ class FinalizeCiBuildsMetadataBigintConversion < Gitlab::Database::Migration[1.0
     # rubocop:enable Migration/PreventIndexCreation
 
     add_concurrent_foreign_key TABLE_NAME, :ci_builds, column: :build_id_convert_to_bigint, on_delete: :cascade,
-                               reverse_lock_order: true
+                                                       reverse_lock_order: true
 
     with_lock_retries(raise_on_exhaustion: true) do
       execute "LOCK TABLE ci_builds, #{TABLE_NAME} IN ACCESS EXCLUSIVE MODE"

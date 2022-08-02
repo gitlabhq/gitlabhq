@@ -95,8 +95,14 @@ export default {
     toggle() {
       this.isOpen = !this.isOpen;
     },
-    toggleAddForm() {
-      this.isShownAddForm = !this.isShownAddForm;
+    showAddForm() {
+      this.isShownAddForm = true;
+      this.$nextTick(() => {
+        this.$refs.wiLinksForm.$refs.wiTitleInput?.$el.focus();
+      });
+    },
+    hideAddForm() {
+      this.isShownAddForm = false;
     },
     addChild(child) {
       this.children = [child, ...this.children];
@@ -122,10 +128,10 @@ export default {
     >
       <h5 class="gl-m-0 gl-line-height-32 gl-flex-grow-1">{{ $options.i18n.title }}</h5>
       <gl-button
-        v-if="!isShownAddForm && canUpdate"
+        v-if="canUpdate"
         category="secondary"
         data-testid="toggle-add-form"
-        @click="toggleAddForm"
+        @click="showAddForm"
       >
         {{ $options.i18n.addChildButtonLabel }}
       </gl-button>
@@ -154,10 +160,11 @@ export default {
         </div>
         <work-item-links-form
           v-if="isShownAddForm"
+          ref="wiLinksForm"
           data-testid="add-links-form"
           :issuable-gid="issuableGid"
           :children-ids="childrenIds"
-          @cancel="toggleAddForm"
+          @cancel="hideAddForm"
           @addWorkItemChild="addChild"
         />
         <div

@@ -31,7 +31,7 @@ class FinalizeEventsBigintConversion < ActiveRecord::Migration[6.1]
     add_concurrent_index TABLE_NAME, [:project_id, :id_convert_to_bigint], name: 'index_events_on_project_id_and_id_convert_to_bigint'
     # This is to replace the existing "index_events_on_project_id_and_id_desc_on_merged_action" btree (project_id, id DESC) WHERE action = 7
     add_concurrent_index TABLE_NAME, [:project_id, :id_convert_to_bigint], order: { id_convert_to_bigint: :desc },
-      where: "action = 7", name: 'index_events_on_project_id_and_id_bigint_desc_on_merged_action'
+                                                                           where: "action = 7", name: 'index_events_on_project_id_and_id_bigint_desc_on_merged_action'
 
     # Add a FK on `push_event_payloads(event_id)` to `id_convert_to_bigint`, the old FK (fk_36c74129da)
     # will be removed when events_pkey constraint is droppped.

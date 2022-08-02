@@ -133,7 +133,7 @@ export default {
   },
   computed: {
     workItemsEnabled() {
-      return this.glFeatures.workItems;
+      return this.glFeatures.workItemsCreateFromMarkdown;
     },
     taskWorkItemType() {
       return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;

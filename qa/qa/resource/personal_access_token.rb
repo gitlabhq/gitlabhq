@@ -17,20 +17,17 @@ module QA
       # If Runtime::Env.admin_personal_access_token is provided, fabricate via the API,
       # else, fabricate via the browser.
       def fabricate_via_api!
-        QA::Resource::PersonalAccessTokenCache.get_token_for_username(user.username).tap do |cached_token|
-          @token = cached_token if cached_token
-        end
-        return if @token
+        return if find_and_set_value
 
         resource = if Runtime::Env.admin_personal_access_token && !@user.nil?
                      self.api_client = Runtime::API::Client.as_admin
-
                      super
                    else
                      fabricate!
                    end
 
-        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, token) if @user
+        self.token = api_response[:token] unless api_response.nil?
+        cache_token
         resource
       end
 
@@ -60,7 +57,17 @@ module QA
         # this particular resource does not expose a web_url property
       end
 
+      def find_and_set_value
+        @token ||= QA::Resource::PersonalAccessTokenCache.get_token_for_username(user.username)
+      end
+
+      def cache_token
+        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, self.token) if @user && self.token
+      end
+
       def fabricate!
+        return if find_and_set_value
+
         Flow::Login.sign_in_unless_signed_in(user: user)
 
         Page::Main::Menu.perform(&:click_edit_profile_link)
@@ -74,6 +81,10 @@ module QA
           token_page.click_create_token_button
 
           self.token = Page::Profile::PersonalAccessTokens.perform(&:created_access_token)
+
+          cache_token
+
+          self.token
         end
       end
     end

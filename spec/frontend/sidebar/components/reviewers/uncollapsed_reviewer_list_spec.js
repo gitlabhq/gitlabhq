@@ -2,7 +2,21 @@ import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
 import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
-import userDataMock from '../../user_data_mock';
+
+const userDataMock = () => ({
+  id: 1,
+  name: 'Root',
+  state: 'active',
+  username: 'root',
+  webUrl: `${TEST_HOST}/root`,
+  avatarUrl: `${TEST_HOST}/avatar/root.png`,
+  mergeRequestInteraction: {
+    canMerge: true,
+    canUpdate: true,
+    reviewed: true,
+    approved: false,
+  },
+});
 
 describe('UncollapsedReviewerList component', () => {
   let wrapper;
@@ -69,7 +83,10 @@ describe('UncollapsedReviewerList component', () => {
       id: 2,
       name: 'nonrooty-nonrootersen',
       username: 'hello-world',
-      approved: true,
+      mergeRequestInteraction: {
+        ...user.mergeRequestInteraction,
+        approved: true,
+      },
     };
 
     beforeEach(() => {
