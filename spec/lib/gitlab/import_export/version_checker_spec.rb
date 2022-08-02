@@ -30,7 +30,7 @@ RSpec.describe Gitlab::ImportExport::VersionChecker do
     end
 
     context 'newer version' do
-      let(:version) { '900.0'}
+      let(:version) { '900.0' }
 
       it 'returns false if export version is newer' do
         expect(described_class.check!(shared: shared)).to be false

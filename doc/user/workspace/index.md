@@ -17,7 +17,7 @@ sole discretion of GitLab Inc.
 NOTE:
 Workspace is currently in development.
 
-Workspace will be above the [top-level namespaces](../group/index.md#namespaces) for you to manage
+Workspace will be above the [top-level namespaces](../namespace/index.md) for you to manage
 everything you do as a GitLab administrator, including:
 
 - Defining and applying settings to all of your groups, subgroups, and projects.

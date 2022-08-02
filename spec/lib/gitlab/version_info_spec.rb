@@ -79,8 +79,8 @@ RSpec.describe Gitlab::VersionInfo do
   describe '.unknown' do
     it { expect(@unknown).not_to be @v0_0_1 }
     it { expect(@unknown).not_to be described_class.new }
-    it { expect {@unknown > @v0_0_1}.to raise_error(ArgumentError) }
-    it { expect {@unknown < @v0_0_1}.to raise_error(ArgumentError) }
+    it { expect { @unknown > @v0_0_1 }.to raise_error(ArgumentError) }
+    it { expect { @unknown < @v0_0_1 }.to raise_error(ArgumentError) }
   end
 
   describe '.parse' do

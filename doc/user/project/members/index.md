@@ -107,7 +107,7 @@ The members of the group are not displayed on the **Members** tab.
 The **Members** tab shows:
 
 - Members who are directly assigned to the project.
-- If the project was created in a group [namespace](../../group/index.md#namespaces), members of that group.
+- If the project was created in a group [namespace](../../namespace/index.md), members of that group.
 
 ## Import users from another project
 

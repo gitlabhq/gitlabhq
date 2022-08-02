@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Pagination::Keyset do
   describe '.available?' do
     subject { described_class }
 
-    let(:request_context) { double("request context", page: page)}
+    let(:request_context) { double("request context", page: page) }
     let(:page) { double("page", order_by: order_by) }
 
     shared_examples_for 'keyset pagination is available' do

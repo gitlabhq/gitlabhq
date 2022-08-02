@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_gitlab_redis_queues do
   let(:middleware) { described_class.new }
   let(:worker) { worker_class.new }
-  let(:location) {'0/D525E3A8' }
+  let(:location) { '0/D525E3A8' }
   let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => location } }
   let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations } }
 

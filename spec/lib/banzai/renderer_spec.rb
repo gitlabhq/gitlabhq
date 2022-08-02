@@ -104,7 +104,7 @@ RSpec.describe Banzai::Renderer do
 
   describe '#post_process' do
     let(:context_options) { {} }
-    let(:html) { 'Consequatur aperiam et nesciunt modi aut assumenda quo id. '}
+    let(:html) { 'Consequatur aperiam et nesciunt modi aut assumenda quo id. ' }
     let(:post_processed_html) { double(html_safe: 'safe doc') }
     let(:doc) { double(to_html: post_processed_html) }
 

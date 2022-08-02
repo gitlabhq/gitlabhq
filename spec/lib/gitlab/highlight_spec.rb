@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Highlight do
 
     context 'diff highlighting' do
       let(:file_name) { 'test.diff' }
-      let(:content) { "+aaa\n+bbb\n- ccc\n ddd\n"}
+      let(:content) { "+aaa\n+bbb\n- ccc\n ddd\n" }
       let(:expected) do
         %q(<span id="LC1" class="line" lang="diff"><span class="gi">+aaa</span></span>
 <span id="LC2" class="line" lang="diff"><span class="gi">+bbb</span></span>

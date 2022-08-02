@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
     end
 
     context 'utf-8 branch' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, 'Ääh-test-utf-8', "files/ruby/popen.rb")}
+      let(:blob) { Gitlab::Git::Blob.find(repository, 'Ääh-test-utf-8', "files/ruby/popen.rb") }
 
       it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
     end

@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Skipped do
   end
 
   describe '.matches?' do
-    subject {described_class.matches?(build, user) }
+    subject { described_class.matches?(build, user) }
 
     context 'when build is skipped' do
       let(:build) { create(:ci_build, :skipped) }

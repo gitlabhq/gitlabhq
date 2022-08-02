@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::DataBuilder::Build do
   let!(:tag_names) { %w(tag-1 tag-2) }
-  let(:runner) { create(:ci_runner, :instance, tag_list: tag_names.map { |n| ActsAsTaggableOn::Tag.create!(name: n)}) }
+  let(:runner) { create(:ci_runner, :instance, tag_list: tag_names.map { |n| ActsAsTaggableOn::Tag.create!(name: n) }) }
   let(:user) { create(:user, :public_email) }
   let(:build) { create(:ci_build, :running, runner: runner, user: user) }
 

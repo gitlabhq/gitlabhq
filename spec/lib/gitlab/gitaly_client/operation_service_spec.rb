@@ -84,37 +84,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       subject
     end
 
-    describe '#user_merge_to_ref' do
-      let(:first_parent_ref) { 'refs/heads/my-branch' }
-      let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
-      let(:ref) { 'refs/merge-requests/x/merge' }
-      let(:message) { 'validación' }
-      let(:response) { Gitaly::UserMergeToRefResponse.new(commit_id: 'new-commit-id') }
-
-      let(:payload) do
-        { source_sha: source_sha, branch: 'branch', target_ref: ref,
-          message: message, first_parent_ref: first_parent_ref, allow_conflicts: true }
-      end
-
-      it 'sends a user_merge_to_ref message' do
-        freeze_time do
-          expect_any_instance_of(Gitaly::OperationService::Stub).to receive(:user_merge_to_ref) do |_, request, options|
-            expect(options).to be_kind_of(Hash)
-            expect(request.to_h).to eq(
-              payload.merge({
-                repository: repository.gitaly_repository.to_h,
-                message: message.dup.force_encoding(Encoding::ASCII_8BIT),
-                user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,
-                timestamp: { nanos: 0, seconds: Time.current.to_i }
-              })
-            )
-          end.and_return(response)
-
-          client.user_merge_to_ref(user, **payload)
-        end
-      end
-    end
-
     context "when pre_receive_error is present" do
       let(:response) do
         Gitaly::UserUpdateBranchResponse.new(pre_receive_error: "GitLab: something failed")
@@ -127,6 +96,37 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
         expect { subject }.to raise_error(
           Gitlab::Git::PreReceiveError, "something failed")
+      end
+    end
+  end
+
+  describe '#user_merge_to_ref' do
+    let(:first_parent_ref) { 'refs/heads/my-branch' }
+    let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
+    let(:ref) { 'refs/merge-requests/x/merge' }
+    let(:message) { 'validación' }
+    let(:response) { Gitaly::UserMergeToRefResponse.new(commit_id: 'new-commit-id') }
+
+    let(:payload) do
+      { source_sha: source_sha, branch: 'branch', target_ref: ref,
+        message: message, first_parent_ref: first_parent_ref, allow_conflicts: true }
+    end
+
+    it 'sends a user_merge_to_ref message' do
+      freeze_time do
+        expect_any_instance_of(Gitaly::OperationService::Stub).to receive(:user_merge_to_ref) do |_, request, options|
+          expect(options).to be_kind_of(Hash)
+          expect(request.to_h).to eq(
+            payload.merge({
+              repository: repository.gitaly_repository.to_h,
+              message: message.dup.force_encoding(Encoding::ASCII_8BIT),
+              user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,
+              timestamp: { nanos: 0, seconds: Time.current.to_i }
+            })
+          )
+        end.and_return(response)
+
+        client.user_merge_to_ref(user, **payload)
       end
     end
   end
@@ -551,7 +551,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       end
 
       let(:expected_error) { Gitlab::Git::Repository::CreateTreeError }
-      let(:expected_error_message) { }
+      let(:expected_error_message) {}
 
       it_behaves_like '#user_cherry_pick with a gRPC error'
     end
@@ -559,7 +559,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
     context 'when a non-detailed gRPC error is raised' do
       let(:raised_error) { GRPC::Internal.new('non-detailed error') }
       let(:expected_error) { GRPC::Internal }
-      let(:expected_error_message) { }
+      let(:expected_error_message) {}
 
       it_behaves_like '#user_cherry_pick with a gRPC error'
     end
@@ -810,6 +810,148 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
 
       it 'raises the correct error' do
         expect { commit_patches }.to raise_error(GRPC::FailedPrecondition)
+      end
+    end
+  end
+
+  describe '#add_tag' do
+    let(:tag_name) { 'some-tag' }
+    let(:tag_message) { nil }
+    let(:target) { 'master' }
+
+    subject(:add_tag) do
+      client.add_tag(tag_name, user, target, tag_message)
+    end
+
+    context 'without tag message' do
+      let(:tag_name) { 'lightweight-tag' }
+
+      it 'creates a lightweight tag' do
+        tag = add_tag
+        expect(tag.name).to eq(tag_name)
+        expect(tag.message).to eq('')
+      end
+    end
+
+    context 'with tag message' do
+      let(:tag_name) { 'annotated-tag' }
+      let(:tag_message) { "tag message" }
+
+      it 'creates an annotated tag' do
+        tag = add_tag
+        expect(tag.name).to eq(tag_name)
+        expect(tag.message).to eq(tag_message)
+      end
+    end
+
+    context 'with preexisting tag' do
+      let(:tag_name) { 'v1.0.0' }
+
+      it 'raises a TagExistsError' do
+        expect { add_tag }.to raise_error(Gitlab::Git::Repository::TagExistsError)
+      end
+    end
+
+    context 'with invalid target' do
+      let(:target) { 'refs/heads/does-not-exist' }
+
+      it 'raises an InvalidRef error' do
+        expect { add_tag }.to raise_error(Gitlab::Git::Repository::InvalidRef)
+      end
+    end
+
+    context 'with pre-receive error' do
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_create_tag)
+          .and_return(Gitaly::UserCreateTagResponse.new(pre_receive_error: "GitLab: something failed"))
+      end
+
+      it 'raises a PreReceiveError' do
+        expect { add_tag }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
+      end
+    end
+
+    context 'with internal error' do
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_create_tag)
+          .and_raise(GRPC::Internal.new('undetailed internal error'))
+      end
+
+      it 'raises an Internal error' do
+        expect { add_tag }.to raise_error do |error|
+          expect(error).to be_a(GRPC::Internal)
+          expect(error.details).to eq('undetailed internal error')
+        end
+      end
+    end
+
+    context 'with structured errors' do
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_create_tag)
+          .and_raise(structured_error)
+      end
+
+      context 'with ReferenceExistsError' do
+        let(:structured_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::ALREADY_EXISTS,
+            'tag exists already',
+            Gitaly::UserCreateTagError.new(
+              reference_exists: Gitaly::ReferenceExistsError.new(
+                reference_name: tag_name,
+                oid: 'something'
+              )))
+        end
+
+        it 'raises a TagExistsError' do
+          expect { add_tag }.to raise_error(Gitlab::Git::Repository::TagExistsError)
+        end
+      end
+
+      context 'with AccessCheckError' do
+        let(:structured_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::PERMISSION_DENIED,
+            "error creating tag",
+            Gitaly::UserCreateTagError.new(
+              access_check: Gitaly::AccessCheckError.new(
+                error_message: "You are not allowed to create this tag.",
+                protocol: "web",
+                user_id: "user-15",
+                changes: "df15b32277d2c55c6c595845a87109b09c913c556 5d6e0f935ad9240655f64e883cd98fad6f9a17ee refs/tags/v1.0.0\n"
+              )))
+        end
+
+        it 'raises a PreReceiveError' do
+          expect { add_tag }.to raise_error do |error|
+            expect(error).to be_a(Gitlab::Git::PreReceiveError)
+            expect(error.message).to eq("You are not allowed to create this tag.")
+          end
+        end
+      end
+
+      context 'with CustomHookError' do
+        let(:structured_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::PERMISSION_DENIED,
+            "custom hook error",
+            Gitaly::UserCreateTagError.new(
+              custom_hook: Gitaly::CustomHookError.new(
+                stdout: "some stdout",
+                stderr: "GitLab: some custom hook error message",
+                hook_type: Gitaly::CustomHookError::HookType::HOOK_TYPE_PRERECEIVE
+              )))
+        end
+
+        it 'raises a PreReceiveError' do
+          expect { add_tag }.to raise_error do |error|
+            expect(error).to be_a(Gitlab::Git::PreReceiveError)
+            expect(error.message).to eq("some custom hook error message")
+          end
+        end
       end
     end
   end

@@ -219,7 +219,7 @@ RSpec.describe Sidebars::Menu do
   end
 
   describe '#link' do
-    let(:foo_path) { '/foo_path'}
+    let(:foo_path) { '/foo_path' }
 
     let(:foo_menu) do
       ::Sidebars::MenuItem.new(

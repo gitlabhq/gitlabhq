@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper do
 
   describe '#image_as_rich_text' do
     let(:img) { 'data:image/png;base64,some_image_here' }
-    let(:line_text) { "     ![](#{img})"}
+    let(:line_text) { "     ![](#{img})" }
 
     subject { dummy.image_as_rich_text(line_text) }
 

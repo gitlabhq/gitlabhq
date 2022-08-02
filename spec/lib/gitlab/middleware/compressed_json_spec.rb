@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Middleware::CompressedJson do
 
   describe '#call' do
     context 'with collector route' do
-      let(:path) { '/api/v4/error_tracking/collector/1/store'}
+      let(:path) { '/api/v4/error_tracking/collector/1/store' }
 
       it_behaves_like 'decompress middleware'
 
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Middleware::CompressedJson do
     end
 
     context 'with collector route under relative url' do
-      let(:path) { '/gitlab/api/v4/error_tracking/collector/1/store'}
+      let(:path) { '/gitlab/api/v4/error_tracking/collector/1/store' }
 
       before do
         stub_config_setting(relative_url_root: '/gitlab')
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Middleware::CompressedJson do
       let(:body_limit) { Gitlab::Middleware::CompressedJson::MAXIMUM_BODY_SIZE }
       let(:decompressed_input) { 'a' * (body_limit + 100) }
       let(:input) { ActiveSupport::Gzip.compress(decompressed_input) }
-      let(:path) { '/api/v4/error_tracking/collector/1/envelope'}
+      let(:path) { '/api/v4/error_tracking/collector/1/envelope' }
 
       it 'reads only limited size' do
         expect(middleware.call(env))

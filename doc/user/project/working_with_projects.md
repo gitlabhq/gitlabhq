@@ -233,7 +233,7 @@ To push your repository and create a project:
       ```
 
    - For `gitlab.example.com`, use the domain name of the machine that hosts your Git repository.
-   - For `namespace`, use the name of your [namespace](../group/index.md#namespaces).
+   - For `namespace`, use the name of your [namespace](../namespace/index.md).
    - For `myproject`, use the name of your project.
    - Optional. To export existing repository tags, append the `--tags` flag to your `git push` command.
 1. Optional. To configure the remote:
@@ -371,7 +371,7 @@ To leave a project:
 1. Select a project.
 1. Select **Leave project**. The **Leave project** option only displays
 on the project dashboard when a project is part of a group under a
-[group namespace](../group/index.md#namespaces).
+[group namespace](../namespace/index.md).
 
 ## Use a project as a Go package
 

@@ -237,4 +237,20 @@ RSpec.describe ::Gitlab::Graphql::Deprecation do
       end
     end
   end
+
+  describe '#alpha?' do
+    let(:options) { { milestone: '10.10', reason: reason } }
+
+    context 'when `reason` is `:alpha`' do
+      let(:reason) { described_class::REASON_ALPHA }
+
+      it { is_expected.to be_alpha }
+    end
+
+    context 'when `reason` is not `:alpha`' do
+      let(:reason) { described_class::REASON_RENAMED }
+
+      it { is_expected.not_to be_alpha }
+    end
+  end
 end

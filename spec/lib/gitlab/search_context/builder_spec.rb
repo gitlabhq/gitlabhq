@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
-  controller(ApplicationController) { }
+  controller(ApplicationController) {}
 
   subject(:builder) { described_class.new(controller.view_context) }
 

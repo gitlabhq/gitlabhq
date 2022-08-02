@@ -408,7 +408,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   end
 
   describe '#select_up_to_date_host' do
-    let(:location) { 'AB/12345'}
+    let(:location) { 'AB/12345' }
     let(:hosts) { lb.host_list.hosts }
     let(:set_host) { request_cache[described_class::CACHE_KEY] }
 
@@ -459,7 +459,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
 
     it 'does not modify connection class pool' do
-      expect { with_replica_pool(5) { } }.not_to change { ActiveRecord::Base.connection_pool }
+      expect { with_replica_pool(5) {} }.not_to change { ActiveRecord::Base.connection_pool }
     end
 
     def with_replica_pool(*args)

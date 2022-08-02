@@ -185,7 +185,7 @@ RSpec.describe API::Helpers do
     context 'support for IDs and paths as argument' do
       let_it_be(:project) { create(:project) }
 
-      let(:user) { project.first_owner}
+      let(:user) { project.first_owner }
 
       before do
         allow(helper).to receive(:current_user).and_return(user)

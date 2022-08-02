@@ -11,9 +11,9 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline do
 
     it 'converts all reference punctuation to literals' do
       reference_chars = Banzai::Filter::MarkdownPreEscapeFilter::REFERENCE_CHARACTERS
-      markdown = reference_chars.split('').map {|char| char.prepend("\\") }.join
+      markdown = reference_chars.split('').map { |char| char.prepend("\\") }.join
       punctuation = Banzai::Filter::MarkdownPreEscapeFilter::REFERENCE_CHARACTERS.split('')
-      punctuation = punctuation.delete_if {|char| char == '&' }
+      punctuation = punctuation.delete_if { |char| char == '&' }
       punctuation << '&amp;'
 
       result = described_class.call(markdown, project: project)

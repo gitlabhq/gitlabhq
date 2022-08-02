@@ -1425,7 +1425,7 @@ module Gitlab
           it 'returns the parallel config' do
             build_options = builds.map { |build| build[:options] }
             parallel_config = {
-              matrix: parallel[:matrix].map { |var| var.transform_values { |v| Array(v).flatten }},
+              matrix: parallel[:matrix].map { |var| var.transform_values { |v| Array(v).flatten } },
               total: build_options.size
             }
 
@@ -1957,7 +1957,7 @@ module Gitlab
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
         context 'no dependencies' do
-          let(:dependencies) { }
+          let(:dependencies) {}
 
           it { is_expected.to be_valid }
         end
@@ -2013,8 +2013,8 @@ module Gitlab
       end
 
       describe "Job Needs" do
-        let(:needs) { }
-        let(:dependencies) { }
+        let(:needs) {}
+        let(:dependencies) {}
 
         let(:config) do
           {

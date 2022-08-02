@@ -570,13 +570,13 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
     describe '#id' do
       subject { super().id }
 
-      it { is_expected.to eq(sample_commit_hash[:id])}
+      it { is_expected.to eq(sample_commit_hash[:id]) }
     end
 
     describe '#message' do
       subject { super().message }
 
-      it { is_expected.to eq(sample_commit_hash[:message])}
+      it { is_expected.to eq(sample_commit_hash[:message]) }
     end
   end
 

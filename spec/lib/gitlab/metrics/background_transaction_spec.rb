@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Metrics::BackgroundTransaction do
     end
 
     it 'removes the transaction from the current thread upon completion' do
-      transaction.run { }
+      transaction.run {}
 
       expect(Thread.current[described_class::THREAD_KEY]).to be_nil
     end

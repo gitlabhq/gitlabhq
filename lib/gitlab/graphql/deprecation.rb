@@ -94,6 +94,10 @@ module Gitlab
         ].compact.join(' ')
       end
 
+      def alpha?
+        reason == REASON_ALPHA
+      end
+
       private
 
       attr_reader :reason, :milestone, :replacement
@@ -127,7 +131,7 @@ module Gitlab
       # Retruns 'Introduced in <milestone>' for :alpha deprecations.
       # Formatted to markdown or plain format.
       def changed_in_milestone(format: :plain)
-        verb = if reason == REASON_ALPHA
+        verb = if alpha?
                  'Introduced'
                else
                  'Deprecated'

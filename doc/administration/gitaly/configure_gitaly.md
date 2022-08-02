@@ -280,8 +280,9 @@ Updates to example must be made at:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. Run `sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`
-   to confirm that Gitaly can perform callbacks to the GitLab internal API.
+1. Confirm that Gitaly can perform callbacks to the GitLab internal API:
+   - For GitLab 15.3 and later, run `sudo /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
+   - For GitLab 15.2 and earlier, run `sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
 
 **For installations from source**
 
@@ -330,8 +331,9 @@ Updates to example must be made at:
    ```
 
 1. Save the files and [restart GitLab](../restart_gitlab.md#installations-from-source).
-1. Run `sudo -u git /home/git/gitaly/gitaly-hooks check /home/git/gitaly/config.toml`
-   to confirm that Gitaly can perform callbacks to the GitLab internal API.
+1. Confirm that Gitaly can perform callbacks to the GitLab internal API:
+   - For GitLab 15.3 and later, run `sudo /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
+   - For GitLab 15.2 and earlier, run `sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
 
 WARNING:
 If directly copying repository data from a GitLab server to Gitaly, ensure that the metadata file,

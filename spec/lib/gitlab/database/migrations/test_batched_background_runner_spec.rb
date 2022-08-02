@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
 
   let(:connection) { ApplicationRecord.connection }
 
-  let(:table_name) { "_test_column_copying"}
+  let(:table_name) { "_test_column_copying" }
 
   before do
     connection.execute(<<~SQL)

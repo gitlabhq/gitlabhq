@@ -283,8 +283,8 @@ module MarkupHelper
 
   def asciidoc_unsafe(text, context = {})
     context.reverse_merge!(
-      commit:         @commit,
-      ref:            @ref,
+      commit: @commit,
+      ref: @ref,
       requested_path: @path
     )
     Gitlab::Asciidoc.render(text, context)
@@ -324,9 +324,9 @@ module MarkupHelper
       current_user: (current_user if defined?(current_user)),
 
       # RepositoryLinkFilter and UploadLinkFilter
-      commit:         @commit,
-      wiki:           @wiki,
-      ref:            @ref,
+      commit: @commit,
+      wiki: @wiki,
+      ref: @ref,
       requested_path: @path
     )
 

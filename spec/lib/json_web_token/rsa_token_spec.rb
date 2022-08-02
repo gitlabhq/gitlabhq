@@ -30,7 +30,7 @@ RSpec.describe JSONWebToken::RSAToken do
 
       subject { JWT.decode(rsa_encoded, rsa_key, true, { algorithm: 'RS256' }) }
 
-      it { expect {subject}.not_to raise_error }
+      it { expect { subject }.not_to raise_error }
       it { expect(subject.first).to include('key' => 'value') }
       it do
         expect(subject.second).to eq(
@@ -45,7 +45,7 @@ RSpec.describe JSONWebToken::RSAToken do
 
       subject { JWT.decode(rsa_encoded, new_key, true, { algorithm: 'RS256' }) }
 
-      it { expect {subject}.to raise_error(JWT::DecodeError) }
+      it { expect { subject }.to raise_error(JWT::DecodeError) }
     end
   end
 end

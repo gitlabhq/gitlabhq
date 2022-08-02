@@ -78,8 +78,8 @@ RSpec.describe Gitlab::Ci::Ansi2json do
       let(:section_duration) { 63.seconds }
       let(:section_start_time) { Time.new(2019, 9, 17).utc }
       let(:section_end_time) { section_start_time + section_duration }
-      let(:section_start) { "section_start:#{section_start_time.to_i}:#{section_name}\r\033[0K"}
-      let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K"}
+      let(:section_start) { "section_start:#{section_start_time.to_i}:#{section_name}\r\033[0K" }
+      let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K" }
 
       it 'marks the first line of the section as header' do
         expect(convert_json("Hello#{section_start}world!")).to eq([
@@ -258,8 +258,8 @@ RSpec.describe Gitlab::Ci::Ansi2json do
         let(:nested_section_duration) { 2.seconds }
         let(:nested_section_start_time) { Time.new(2019, 9, 17).utc }
         let(:nested_section_end_time) { nested_section_start_time + nested_section_duration }
-        let(:nested_section_start) { "section_start:#{nested_section_start_time.to_i}:#{nested_section_name}\r\033[0K"}
-        let(:nested_section_end) { "section_end:#{nested_section_end_time.to_i}:#{nested_section_name}\r\033[0K"}
+        let(:nested_section_start) { "section_start:#{nested_section_start_time.to_i}:#{nested_section_name}\r\033[0K" }
+        let(:nested_section_end) { "section_end:#{nested_section_end_time.to_i}:#{nested_section_name}\r\033[0K" }
 
         it 'adds multiple sections to the lines inside the nested section' do
           trace = "Hello#{section_start}foo#{nested_section_start}bar#{nested_section_end}baz#{section_end}world"
@@ -342,7 +342,7 @@ RSpec.describe Gitlab::Ci::Ansi2json do
       end
 
       context 'with section options' do
-        let(:option_section_start) { "section_start:#{section_start_time.to_i}:#{section_name}[collapsed=true,unused_option=123]\r\033[0K"}
+        let(:option_section_start) { "section_start:#{section_start_time.to_i}:#{section_name}[collapsed=true,unused_option=123]\r\033[0K" }
 
         it 'provides section options when set' do
           trace = "#{option_section_start}hello#{section_end}"
@@ -463,8 +463,8 @@ RSpec.describe Gitlab::Ci::Ansi2json do
         let(:section_duration) { 63.seconds }
         let(:section_start_time) { Time.new(2019, 9, 17).utc }
         let(:section_end_time) { section_start_time + section_duration }
-        let(:section_start) { "section_start:#{section_start_time.to_i}:#{section_name}\r\033[0K"}
-        let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K"}
+        let(:section_start) { "section_start:#{section_start_time.to_i}:#{section_name}\r\033[0K" }
+        let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K" }
 
         context 'with split section body' do
           let(:pre_text) { "#{section_start}this is a header\nand " }

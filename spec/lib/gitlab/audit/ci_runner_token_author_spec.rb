@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor do
   describe '.initialize' do
     subject { described_class.new(audit_event) }
 
-    let(:details) { }
+    let(:details) {}
     let(:audit_event) { instance_double(AuditEvent, details: details, entity_type: 'Project', entity_path: 'd/e') }
 
     context 'with runner_authentication_token' do

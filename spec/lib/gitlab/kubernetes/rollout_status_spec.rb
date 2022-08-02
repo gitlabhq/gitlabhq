@@ -213,7 +213,7 @@ RSpec.describe Gitlab::Kubernetes::RolloutStatus do
 
       let(:specs) { specs_half_finished }
 
-      it { is_expected.to be_falsy}
+      it { is_expected.to be_falsy }
     end
   end
 

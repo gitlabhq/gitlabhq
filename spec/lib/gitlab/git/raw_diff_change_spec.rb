@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Git::RawDiffChange do
-  let(:raw_change) { }
+  let(:raw_change) {}
   let(:change) { described_class.new(raw_change) }
 
   context 'bad input' do

@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Database::Partitioning do
     end
 
     it 'manages partitions for each given model' do
-      expect { described_class.sync_partitions(models)}
+      expect { described_class.sync_partitions(models) }
         .to change { find_partitions(table_names.first).size }.from(0)
         .and change { find_partitions(table_names.last).size }.from(0)
     end

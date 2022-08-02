@@ -286,7 +286,7 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     end
 
     context 'with a invalid format error' do
-      let(:invalid_refs) {['\invali.\d/1', '\.invali/d/2']}
+      let(:invalid_refs) { ['\invali.\d/1', '\.invali/d/2'] }
       let(:invalid_reference_format_error) do
         new_detailed_error(
           GRPC::Core::StatusCodes::INVALID_ARGUMENT,

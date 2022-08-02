@@ -77,7 +77,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
         }
       end
 
-      let(:attributes) {{ 'links' => [link] }}
+      let(:attributes) { { 'links' => [link] } }
 
       it 'restores release links' do
         pipeline.run
@@ -106,7 +106,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
         }
       end
 
-      let(:attributes) {{ 'milestone_releases' => [{ 'milestone' => milestone }] }}
+      let(:attributes) { { 'milestone_releases' => [{ 'milestone' => milestone }] } }
 
       it 'restores release milestone' do
         pipeline.run
@@ -133,7 +133,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
       end
 
       context 'when release is historical' do
-        let(:attributes) {{ 'released_at' => '2018-12-26T10:17:14.621Z' }}
+        let(:attributes) { { 'released_at' => '2018-12-26T10:17:14.621Z' } }
 
         it 'does not create release evidence' do
           expect(::Releases::CreateEvidenceWorker).not_to receive(:perform_async)
@@ -143,7 +143,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
       end
 
       context 'when release is upcoming' do
-        let(:attributes) {{ 'released_at' => Time.zone.now + 30.days }}
+        let(:attributes) { { 'released_at' => Time.zone.now + 30.days } }
 
         it 'does not create release evidence' do
           expect(::Releases::CreateEvidenceWorker).not_to receive(:perform_async)

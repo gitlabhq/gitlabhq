@@ -24,8 +24,8 @@ RSpec.describe Gitlab::Jira::Dvcs do
   end
 
   describe '.encode_project_name' do
-    let(:group) { create(:group)}
-    let(:project) { create(:project, group: group)}
+    let(:group) { create(:group) }
+    let(:project) { create(:project, group: group) }
 
     context 'root group' do
       it 'returns project path' do
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Jira::Dvcs do
     end
 
     context 'nested group' do
-      let(:group) { create(:group, :nested)}
+      let(:group) { create(:group, :nested) }
 
       it 'returns encoded project full path' do
         expect(described_class.encode_project_name(project)).to eq(described_class.encode_slash(project.full_path))

@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Pending do
   end
 
   describe '.matches?' do
-    subject {described_class.matches?(build, user) }
+    subject { described_class.matches?(build, user) }
 
     context 'when build is pending' do
       let(:build) { create(:ci_build, :pending) }

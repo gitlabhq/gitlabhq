@@ -209,7 +209,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
       it_behaves_like 'throttles based on key and scope' do
         let(:threshold) { 1 }
-        let(:interval) { 2.minutes}
+        let(:interval) { 2.minutes }
       end
     end
   end

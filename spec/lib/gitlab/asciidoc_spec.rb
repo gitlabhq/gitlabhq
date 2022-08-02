@@ -791,7 +791,7 @@ module Gitlab
           end
 
           context 'when the file does not exist' do
-            it { is_expected.to include("[ERROR: include::#{include_path}[] - unresolved directive]")}
+            it { is_expected.to include("[ERROR: include::#{include_path}[] - unresolved directive]") }
           end
         end
 

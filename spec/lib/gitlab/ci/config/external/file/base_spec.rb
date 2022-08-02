@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Base do
-  let(:variables) { }
+  let(:variables) {}
   let(:context_params) { { sha: 'HEAD', variables: variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
 
@@ -100,7 +100,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base do
   describe '#to_hash' do
     context 'with includes' do
       let(:location) { 'some/file/config.yml' }
-      let(:content) { 'include: { template: Bash.gitlab-ci.yml }'}
+      let(:content) { 'include: { template: Bash.gitlab-ci.yml }' }
 
       before do
         allow_any_instance_of(test_class)

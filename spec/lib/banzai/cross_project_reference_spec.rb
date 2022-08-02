@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Banzai::CrossProjectReference do
   let(:including_class) { Class.new.include(described_class).new }
-  let(:reference_cache) { Banzai::Filter::References::ReferenceCache.new(including_class, {}, {})}
+  let(:reference_cache) { Banzai::Filter::References::ReferenceCache.new(including_class, {}, {}) }
 
   before do
     allow(including_class).to receive(:context).and_return({})

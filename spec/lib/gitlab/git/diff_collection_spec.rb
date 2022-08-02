@@ -520,7 +520,7 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
     describe '#real_size' do
       subject { super().real_size }
 
-      it { is_expected.to eq('0')}
+      it { is_expected.to eq('0') }
     end
 
     describe '#line_count' do
@@ -595,7 +595,7 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
         end
 
         context 'multi-file collections' do
-          let(:iterator) { [{ diff: 'b' }, { diff: 'a' * 20480 }]}
+          let(:iterator) { [{ diff: 'b' }, { diff: 'a' * 20480 }] }
 
           it 'prunes diffs that are quite big' do
             diff = nil

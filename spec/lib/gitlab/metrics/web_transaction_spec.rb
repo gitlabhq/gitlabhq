@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     end
 
     it 'removes the transaction from the current thread upon completion' do
-      transaction.run { }
+      transaction.run {}
 
       expect(Thread.current[described_class::THREAD_KEY]).to be_nil
       expect(described_class.current).to be_nil

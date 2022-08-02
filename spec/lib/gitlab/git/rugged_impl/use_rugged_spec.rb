@@ -165,7 +165,7 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
     context 'all features are enabled' do
       let(:feature_keys) { [:feature_key_1, :feature_key_2] }
 
-      it { is_expected.to be_truthy}
+      it { is_expected.to be_truthy }
     end
 
     context 'all features are not enabled' do

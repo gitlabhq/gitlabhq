@@ -84,7 +84,7 @@ RSpec.describe Gitlab::DatabaseImporters::CommonMetrics::Importer do
     end
 
     context 'if ID is missing' do
-      let(:query_identifier) { }
+      let(:query_identifier) {}
 
       it 'raises exception' do
         expect { subject.execute }.to raise_error(Gitlab::DatabaseImporters::CommonMetrics::Importer::MissingQueryId)

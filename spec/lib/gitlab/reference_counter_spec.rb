@@ -41,7 +41,7 @@ RSpec.describe Gitlab::ReferenceCounter, :clean_gitlab_redis_shared_state do
     it 'resets reference count down to zero' do
       3.times { reference_counter.increase }
 
-      expect { reference_counter.reset! }.to change { reference_counter.value}.from(3).to(0)
+      expect { reference_counter.reset! }.to change { reference_counter.value }.from(3).to(0)
     end
   end
 

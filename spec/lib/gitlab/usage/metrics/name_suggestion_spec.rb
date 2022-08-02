@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
         let(:key_path) { 'counts.jira_imports_total_imported_issues_count' }
         let(:operation) { :sum }
         let(:relation) { JiraImportState.finished }
-        let(:column) { :imported_issues_count}
+        let(:column) { :imported_issues_count }
         let(:name_suggestion) { /sum_imported_issues_count_from_<adjective describing\: '\(jira_imports\.status = \d+\)'>_jira_imports/ }
       end
     end
@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
         let(:key_path) { 'counts.ci_pipeline_duration' }
         let(:operation) { :average }
         let(:relation) { Ci::Pipeline }
-        let(:column) { :duration}
+        let(:column) { :duration }
         let(:name_suggestion) { /average_duration_from_ci_pipelines/ }
       end
     end

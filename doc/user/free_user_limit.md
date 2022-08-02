@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Free user limit **(FREE SAAS)**
 
 From September 15, 2022, namespaces in GitLab.com on the Free tier
-will be limited to five (5) members per [namespace](group/index.md#namespaces).
+will be limited to five (5) members per [namespace](namespace/index.md).
 This limit applies to top-level groups and personal namespaces.
 
 In a personal namespace, the limit applies across all projects in your personal

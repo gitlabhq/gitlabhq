@@ -44,8 +44,26 @@ module Gitlab
         end
 
         Gitlab::Git::Tag.new(@repository, response.tag)
-      rescue GRPC::FailedPrecondition => e
-        raise Gitlab::Git::Repository::InvalidRef, e
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :access_check
+          access_check_error = detailed_error.access_check
+          # These messages were returned from internal/allowed API calls
+          raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+                                                 fallback_message: e.details)
+        when :reference_exists
+          raise Gitlab::Git::Repository::TagExistsError
+        else
+          if e.code == GRPC::Core::StatusCodes::FAILED_PRECONDITION
+            raise Gitlab::Git::Repository::InvalidRef, e
+          end
+
+          raise
+        end
       end
 
       def user_create_branch(branch_name, user, start_point)

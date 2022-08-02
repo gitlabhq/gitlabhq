@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Spamcheck::Client do
     let(:stub) { double(:spamcheck_stub, check_for_spam_issue: response) }
 
     context 'is tls  ' do
-      let(:endpoint) { 'tls://spamcheck.example.com'}
+      let(:endpoint) { 'tls://spamcheck.example.com' }
 
       it 'uses secure connection' do
         expect(Spamcheck::SpamcheckService::Stub).to receive(:new).with(endpoint.sub(%r{^tls://}, ''),
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Spamcheck::Client do
     end
 
     context 'when user has multiple email addresses' do
-      let(:secondary_email) {create(:email, :confirmed, user: user)}
+      let(:secondary_email) { create(:email, :confirmed, user: user) }
 
       before do
         user.emails << secondary_email

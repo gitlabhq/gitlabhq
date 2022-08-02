@@ -28,7 +28,7 @@ module CommitsHelper
 
   def commit_to_html(commit, ref, project)
     render partial: 'projects/commits/commit', formats: :html,
-      locals: {
+           locals: {
         commit: commit,
         ref: ref,
         project: project

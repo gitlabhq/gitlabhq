@@ -42,7 +42,7 @@ available only:
 - For group owners. The role is inherited for a group's projects.
 - For Administrators.
 
-Personal [namespace](group/index.md#namespaces) owners:
+Personal [namespace](namespace/index.md) owners:
 
 - Are displayed as having the Maintainer role on projects in the namespace, but have the same permissions as a user with the Owner role.
 - In GitLab 14.9 and later, for new projects in the namespace, are displayed as having the Owner role.

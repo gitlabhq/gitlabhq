@@ -67,7 +67,7 @@ you must purchase additional storage. For more details, see [Excess storage usag
 
 ## View storage usage
 
-You can view storage usage for your project or [namespace](../user/group/#namespaces).
+You can view storage usage for your project or [namespace](../user/namespace/index.md).
 
 1. Go to your project or namespace:
    - For a project, on the top bar, select **Menu > Projects** and find your project.

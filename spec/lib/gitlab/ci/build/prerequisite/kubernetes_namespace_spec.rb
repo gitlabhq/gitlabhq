@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
       end
 
       context 'kubernetes namespace does not exist' do
-        let(:namespace_builder) { double(execute: kubernetes_namespace)}
+        let(:namespace_builder) { double(execute: kubernetes_namespace) }
 
         before do
           allow(Clusters::KubernetesNamespaceFinder).to receive(:new)

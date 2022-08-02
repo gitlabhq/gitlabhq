@@ -85,7 +85,7 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
     end
 
     context 'when markdown contains table' do
-      let(:markdown) { '<table><tr><th>table head</th><tr><tr><td>table content</td></tr></table>'}
+      let(:markdown) { '<table><tr><th>table head</th><tr><tr><td>table content</td></tr></table>' }
 
       it { is_expected.to eq('table headtable content') }
     end

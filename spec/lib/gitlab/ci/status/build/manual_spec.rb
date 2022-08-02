@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Manual do
   end
 
   describe '.matches?' do
-    subject {described_class.matches?(build, user) }
+    subject { described_class.matches?(build, user) }
 
     context 'when build is manual' do
       let(:build) { create(:ci_build, :manual) }

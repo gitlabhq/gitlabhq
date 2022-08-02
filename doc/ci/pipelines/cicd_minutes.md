@@ -21,7 +21,7 @@ On GitLab.com:
 
 - CI/CD minutes quotas are enabled for both public and private projects, but public
   projects [consume CI/CD minutes at a slower rate](#cost-factor).
-- The base monthly CI/CD minutes quota for a GitLab.com [namespace](../../user/group/index.md#namespaces)
+- The base monthly CI/CD minutes quota for a GitLab.com [namespace](../../user/namespace/index.md)
   is determined by its [license tier](https://about.gitlab.com/pricing/).
 - You can [purchase additional CI/CD minutes](#purchase-additional-cicd-minutes)
   if you need more than the number of CI/CD minutes in your monthly quota.

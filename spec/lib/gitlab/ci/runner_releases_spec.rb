@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
     end
 
     context 'when request results in timeout' do
-      let(:response) { }
+      let(:response) {}
       let(:expected_releases) { nil }
       let(:expected_releases_by_minor) { nil }
 

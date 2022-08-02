@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Verify do
   let_it_be(:group) { build(:group) }
   let_it_be(:user) { build(:user) }
 
-  subject(:message) { described_class.new(group: group, user: user, series: series)}
+  subject(:message) { described_class.new(group: group, user: user, series: series) }
 
   describe "public methods" do
     context 'with series 0' do

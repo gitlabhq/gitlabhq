@@ -243,7 +243,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
       end
 
       context 'when save_incompleted is false' do
-        let(:save_incompleted) { false}
+        let(:save_incompleted) { false }
 
         it 'adds errors to the pipeline without dropping it' do
           perform!

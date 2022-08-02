@@ -43,18 +43,18 @@ RSpec.describe Gitlab::UsageDataCounters::IpynbDiffActivityCounter, :clean_gitla
       let(:for_commit) { true }
 
       it_behaves_like 'an action that tracks events' do
-        let(:action) {described_class::NOTE_CREATED_IN_IPYNB_DIFF_ACTION}
-        let(:per_user_action) {described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_ACTION}
+        let(:action) { described_class::NOTE_CREATED_IN_IPYNB_DIFF_ACTION }
+        let(:per_user_action) { described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_ACTION }
       end
 
       it_behaves_like 'an action that tracks events' do
-        let(:action) {described_class::NOTE_CREATED_IN_IPYNB_DIFF_COMMIT_ACTION}
-        let(:per_user_action) {described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_COMMIT_ACTION}
+        let(:action) { described_class::NOTE_CREATED_IN_IPYNB_DIFF_COMMIT_ACTION }
+        let(:per_user_action) { described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_COMMIT_ACTION }
       end
 
       it_behaves_like 'an action that does not track events' do
-        let(:action) {described_class::NOTE_CREATED_IN_IPYNB_DIFF_MR_ACTION}
-        let(:per_user_action) {described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_MR_ACTION}
+        let(:action) { described_class::NOTE_CREATED_IN_IPYNB_DIFF_MR_ACTION }
+        let(:per_user_action) { described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_MR_ACTION }
       end
     end
 
@@ -62,35 +62,35 @@ RSpec.describe Gitlab::UsageDataCounters::IpynbDiffActivityCounter, :clean_gitla
       let(:for_mr) { true }
 
       it_behaves_like 'an action that tracks events' do
-        let(:action) {described_class::NOTE_CREATED_IN_IPYNB_DIFF_MR_ACTION}
-        let(:per_user_action) {described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_MR_ACTION}
+        let(:action) { described_class::NOTE_CREATED_IN_IPYNB_DIFF_MR_ACTION }
+        let(:per_user_action) { described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_MR_ACTION }
       end
 
       it_behaves_like 'an action that tracks events' do
-        let(:action) {described_class::NOTE_CREATED_IN_IPYNB_DIFF_ACTION}
-        let(:per_user_action) {described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_ACTION}
+        let(:action) { described_class::NOTE_CREATED_IN_IPYNB_DIFF_ACTION }
+        let(:per_user_action) { described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_ACTION }
       end
 
       it_behaves_like 'an action that does not track events' do
-        let(:action) {described_class::NOTE_CREATED_IN_IPYNB_DIFF_COMMIT_ACTION}
-        let(:per_user_action) {described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_COMMIT_ACTION}
+        let(:action) { described_class::NOTE_CREATED_IN_IPYNB_DIFF_COMMIT_ACTION }
+        let(:per_user_action) { described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_COMMIT_ACTION }
       end
     end
 
     context 'note is for neither MR nor Commit' do
       it_behaves_like 'an action that does not track events' do
-        let(:action) {described_class::NOTE_CREATED_IN_IPYNB_DIFF_ACTION}
-        let(:per_user_action) {described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_ACTION}
+        let(:action) { described_class::NOTE_CREATED_IN_IPYNB_DIFF_ACTION }
+        let(:per_user_action) { described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_ACTION }
       end
 
       it_behaves_like 'an action that does not track events' do
-        let(:action) {described_class::NOTE_CREATED_IN_IPYNB_DIFF_MR_ACTION}
-        let(:per_user_action) {described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_MR_ACTION}
+        let(:action) { described_class::NOTE_CREATED_IN_IPYNB_DIFF_MR_ACTION }
+        let(:per_user_action) { described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_MR_ACTION }
       end
 
       it_behaves_like 'an action that does not track events' do
-        let(:action) {described_class::NOTE_CREATED_IN_IPYNB_DIFF_COMMIT_ACTION}
-        let(:per_user_action) {described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_COMMIT_ACTION}
+        let(:action) { described_class::NOTE_CREATED_IN_IPYNB_DIFF_COMMIT_ACTION }
+        let(:per_user_action) { described_class::USER_CREATED_NOTE_IN_IPYNB_DIFF_COMMIT_ACTION }
       end
     end
   end

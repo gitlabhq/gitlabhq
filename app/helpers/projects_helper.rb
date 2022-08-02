@@ -483,35 +483,35 @@ module ProjectsHelper
 
   def tab_ability_map
     {
-      cycle_analytics:    :read_cycle_analytics,
-      environments:       :read_environment,
+      cycle_analytics: :read_cycle_analytics,
+      environments: :read_environment,
       metrics_dashboards: :metrics_dashboard,
-      milestones:         :read_milestone,
-      snippets:           :read_snippet,
-      settings:           :admin_project,
-      builds:             :read_build,
-      clusters:           :read_cluster,
-      serverless:         :read_cluster,
-      terraform:          :read_terraform_state,
-      error_tracking:     :read_sentry_issue,
-      alert_management:   :read_alert_management_alert,
-      incidents:          :read_issue,
-      labels:             :read_label,
-      issues:             :read_issue,
-      project_members:    :read_project_member,
-      wiki:               :read_wiki,
-      feature_flags:      :read_feature_flag,
-      analytics:          :read_analytics
+      milestones: :read_milestone,
+      snippets: :read_snippet,
+      settings: :admin_project,
+      builds: :read_build,
+      clusters: :read_cluster,
+      serverless: :read_cluster,
+      terraform: :read_terraform_state,
+      error_tracking: :read_sentry_issue,
+      alert_management: :read_alert_management_alert,
+      incidents: :read_issue,
+      labels: :read_label,
+      issues: :read_issue,
+      project_members: :read_project_member,
+      wiki: :read_wiki,
+      feature_flags: :read_feature_flag,
+      analytics: :read_analytics
     }
   end
 
   def search_tab_ability_map
     @search_tab_ability_map ||= tab_ability_map.merge(
-      blobs:          :download_code,
-      commits:        :download_code,
+      blobs: :download_code,
+      commits: :download_code,
       merge_requests: :read_merge_request,
-      notes:          [:read_merge_request, :download_code, :read_issue, :read_snippet],
-      members:        :read_project_member
+      notes: [:read_merge_request, :download_code, :read_issue, :read_snippet],
+      members: :read_project_member
     )
   end
 

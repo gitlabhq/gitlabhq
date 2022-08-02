@@ -128,25 +128,25 @@ RSpec.describe Gitlab::Ci::Config::Entry::Release do
       end
 
       context "when 'ref' is a short commit SHA" do
-        let(:ref) { 'b3235930'}
+        let(:ref) { 'b3235930' }
 
         it_behaves_like 'a valid entry'
       end
 
       context "when 'ref' is a branch name" do
-        let(:ref) { 'fix/123-branch-name'}
+        let(:ref) { 'fix/123-branch-name' }
 
         it_behaves_like 'a valid entry'
       end
 
       context "when 'ref' is a semantic versioning tag" do
-        let(:ref) { 'v1.2.3'}
+        let(:ref) { 'v1.2.3' }
 
         it_behaves_like 'a valid entry'
       end
 
       context "when 'ref' is a semantic versioning tag rc" do
-        let(:ref) { 'v1.2.3-rc'}
+        let(:ref) { 'v1.2.3-rc' }
 
         it_behaves_like 'a valid entry'
       end

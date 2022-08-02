@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ci::JobRequest::Service do
-  let(:ports) { [{ number: 80, protocol: 'http', name: 'name' }]}
+  let(:ports) { [{ number: 80, protocol: 'http', name: 'name' }] }
   let(:service) do
     instance_double(
       ::Gitlab::Ci::Build::Image,

@@ -92,7 +92,7 @@ RSpec.describe Gitlab::BatchPopQueueing do
 
     context 'when the queue key does not exist in Redis' do
       before do
-        allow(queue).to receive(:enqueue) { }
+        allow(queue).to receive(:enqueue) {}
       end
 
       it 'yields empty array' do

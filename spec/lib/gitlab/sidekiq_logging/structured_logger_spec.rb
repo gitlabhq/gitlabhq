@@ -24,7 +24,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          call_subject(job, 'test_queue') { }
+          call_subject(job, 'test_queue') {}
         end
       end
 
@@ -40,7 +40,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          call_subject(wrapped_job, 'test_queue') { }
+          call_subject(wrapped_job, 'test_queue') {}
         end
       end
 
@@ -175,7 +175,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          call_subject(job, 'test_queue') { }
+          call_subject(job, 'test_queue') {}
         end
       end
 
@@ -188,7 +188,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          call_subject(job.except("created_at", "enqueued_at"), 'test_queue') { }
+          call_subject(job.except("created_at", "enqueued_at"), 'test_queue') {}
         end
       end
     end
@@ -204,7 +204,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          call_subject(job, 'test_queue') { }
+          call_subject(job, 'test_queue') {}
         end
       end
     end
@@ -233,7 +233,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
-          call_subject(job, 'test_queue') { }
+          call_subject(job, 'test_queue') {}
         end
       end
     end
@@ -266,7 +266,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload).ordered
 
-          call_subject(job, 'test_queue') { }
+          call_subject(job, 'test_queue') {}
         end
       end
     end
@@ -330,7 +330,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
 
           Gitlab::SafeRequestStore.clear!
 
-          call_subject(job.dup, 'test_queue') { }
+          call_subject(job.dup, 'test_queue') {}
         end
       end
 

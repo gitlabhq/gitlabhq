@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
   let_it_be(:primary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
   let_it_be(:secondary_store) { create_redis_store(redis_store_class.params, db: secondary_db, serializer: nil) }
   let_it_be(:instance_name) { 'TestStore' }
-  let_it_be(:multi_store) { described_class.new(primary_store, secondary_store, instance_name)}
+  let_it_be(:multi_store) { described_class.new(primary_store, secondary_store, instance_name) }
 
   subject { multi_store.send(name, *args) }
 
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
   end
 
   context 'when primary_store is nil' do
-    let(:multi_store) { described_class.new(nil, secondary_store, instance_name)}
+    let(:multi_store) { described_class.new(nil, secondary_store, instance_name) }
 
     it 'fails with exception' do
       expect { multi_store }.to raise_error(ArgumentError, /primary_store is required/)
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
   end
 
   context 'when secondary_store is nil' do
-    let(:multi_store) { described_class.new(primary_store, nil, instance_name)}
+    let(:multi_store) { described_class.new(primary_store, nil, instance_name) }
 
     it 'fails with exception' do
       expect { multi_store }.to raise_error(ArgumentError, /secondary_store is required/)
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
   context 'when instance_name is nil' do
     let(:instance_name) { nil }
-    let(:multi_store) { described_class.new(primary_store, secondary_store, instance_name)}
+    let(:multi_store) { described_class.new(primary_store, secondary_store, instance_name) }
 
     it 'fails with exception' do
       expect { multi_store }.to raise_error(ArgumentError, /instance_name is required/)
@@ -111,8 +111,8 @@ RSpec.describe Gitlab::Redis::MultiStore do
   context 'with READ redis commands' do
     let_it_be(:key1) { "redis:{1}:key_a" }
     let_it_be(:key2) { "redis:{1}:key_b" }
-    let_it_be(:value1) { "redis_value1"}
-    let_it_be(:value2) { "redis_value2"}
+    let_it_be(:value1) { "redis_value1" }
+    let_it_be(:value2) { "redis_value2" }
     let_it_be(:skey) { "redis:set:key" }
     let_it_be(:keys) { [key1, key2] }
     let_it_be(:values) { [value1, value2] }
@@ -330,7 +330,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
         context 'with both primary and secondary store using same redis instance' do
           let(:primary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
           let(:secondary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
-          let(:multi_store) { described_class.new(primary_store, secondary_store, instance_name)}
+          let(:multi_store) { described_class.new(primary_store, secondary_store, instance_name) }
 
           it_behaves_like 'secondary store'
         end
@@ -356,8 +356,8 @@ RSpec.describe Gitlab::Redis::MultiStore do
   context 'with WRITE redis commands' do
     let_it_be(:key1) { "redis:{1}:key_a" }
     let_it_be(:key2) { "redis:{1}:key_b" }
-    let_it_be(:value1) { "redis_value1"}
-    let_it_be(:value2) { "redis_value2"}
+    let_it_be(:value1) { "redis_value1" }
+    let_it_be(:value2) { "redis_value2" }
     let_it_be(:key1_value1) { [key1, value1] }
     let_it_be(:key1_value2) { [key1, value2] }
     let_it_be(:ttl) { 10 }
@@ -395,7 +395,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
     with_them do
       describe "#{name}" do
-        let(:expected_args) {args || no_args }
+        let(:expected_args) { args || no_args }
 
         before do
           allow(primary_store).to receive(name).and_call_original
@@ -496,8 +496,8 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
   RSpec.shared_examples_for 'pipelined command' do |name|
     let_it_be(:key1) { "redis:{1}:key_a" }
-    let_it_be(:value1) { "redis_value1"}
-    let_it_be(:value2) { "redis_value2"}
+    let_it_be(:value1) { "redis_value1" }
+    let_it_be(:value2) { "redis_value2" }
     let_it_be(:expected_value) { value1 }
     let_it_be(:verification_name) { :get }
     let_it_be(:verification_args) { key1 }

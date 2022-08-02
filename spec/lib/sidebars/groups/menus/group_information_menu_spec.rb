@@ -18,13 +18,13 @@ RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu do
     subject { described_class.new(context).title }
 
     context 'when group is a root group' do
-      specify { is_expected.to eq 'Group information'}
+      specify { is_expected.to eq 'Group information' }
     end
 
     context 'when group is a child group' do
       let(:group) { build(:group, parent: root_group) }
 
-      specify { is_expected.to eq 'Subgroup information'}
+      specify { is_expected.to eq 'Subgroup information' }
     end
   end
 
@@ -32,13 +32,13 @@ RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu do
     subject { described_class.new(context).sprite_icon }
 
     context 'when group is a root group' do
-      specify { is_expected.to eq 'group'}
+      specify { is_expected.to eq 'group' }
     end
 
     context 'when group is a child group' do
       let(:group) { build(:group, parent: root_group) }
 
-      specify { is_expected.to eq 'subgroup'}
+      specify { is_expected.to eq 'subgroup' }
     end
   end
 

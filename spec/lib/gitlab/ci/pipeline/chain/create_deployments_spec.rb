@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CreateDeployments do
       end
 
       context 'when the corresponding environment does not exist' do
-        let!(:environment) { }
+        let!(:environment) {}
 
         it 'does not create a deployment record' do
           expect { subject }.not_to change { Deployment.count }

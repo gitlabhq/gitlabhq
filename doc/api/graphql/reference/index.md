@@ -10245,7 +10245,7 @@ CI/CD variables for a project.
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 | <a id="cirunnertokenexpiresat"></a>`tokenExpiresAt` | [`Time`](#time) | Runner token expiration time. |
-| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in 14.10. This feature is in Alpha. It can be changed or removed at any time. |
+| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in 14.10. This feature is in Alpha. It can be changed or removed at any time. Availability of upgrades for the runner. |
 | <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
 | <a id="cirunnerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
@@ -19744,7 +19744,7 @@ Issue type.
 | <a id="issuetypeincident"></a>`INCIDENT` | Incident issue type. |
 | <a id="issuetypeissue"></a>`ISSUE` | Issue issue type. |
 | <a id="issuetyperequirement"></a>`REQUIREMENT` | Requirement issue type. |
-| <a id="issuetypetask"></a>`TASK` **{warning-solid}** | **Introduced** in 15.2. This feature is in Alpha. It can be changed or removed at any time. |
+| <a id="issuetypetask"></a>`TASK` **{warning-solid}** | **Introduced** in 15.2. This feature is in Alpha. It can be changed or removed at any time. Task issue type. Available only when feature flag `work_items` is enabled. |
 | <a id="issuetypetest_case"></a>`TEST_CASE` | Test Case issue type. |
 
 ### `IterationSearchableField`

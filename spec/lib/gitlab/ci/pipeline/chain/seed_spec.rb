@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user, developer_projects: [project]) }
 
-  let(:seeds_block) { }
+  let(:seeds_block) {}
   let(:command) { initialize_command }
   let(:pipeline) { build(:ci_pipeline, project: project) }
 

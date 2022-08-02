@@ -1103,10 +1103,8 @@ Particular attention should be shown to:
    ```
 
 1. Verify on each Gitaly node the Git Hooks can reach GitLab. On each Gitaly node run:
-
-   ```shell
-   /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml
-   ```
+   - For GitLab 15.3 and later, run `sudo /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
+   - For GitLab 15.2 and earlier, run `sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
 
 1. Verify that GitLab can reach Praefect:
 

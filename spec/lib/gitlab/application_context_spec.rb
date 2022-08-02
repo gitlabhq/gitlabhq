@@ -52,7 +52,7 @@ RSpec.describe Gitlab::ApplicationContext do
     end
 
     it 'raises an error when passing invalid options' do
-      expect { described_class.push(no: 'option')}.to raise_error(ArgumentError)
+      expect { described_class.push(no: 'option') }.to raise_error(ArgumentError)
     end
   end
 

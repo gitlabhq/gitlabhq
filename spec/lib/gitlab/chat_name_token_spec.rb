@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ChatNameToken do
   context 'when using unknown token' do
-    let(:token) { }
+    let(:token) {}
 
     subject { described_class.new(token).get }
 

@@ -7,14 +7,14 @@ RSpec.describe Gitlab::Memory::Reports::JemallocStats do
 
   describe '.run' do
     context 'when :report_jemalloc_stats ops FF is enabled' do
-      let(:worker_id) {'puma_1'}
+      let(:worker_id) { 'puma_1' }
 
       before do
         allow(Prometheus::PidProvider).to receive(:worker_id).and_return(worker_id)
       end
 
       context 'when GITLAB_DIAGNOSTIC_REPORTS_PATH env var is set' do
-        let(:reports_dir) {'/empty-dir'}
+        let(:reports_dir) { '/empty-dir' }
 
         before do
           stub_env('GITLAB_DIAGNOSTIC_REPORTS_PATH', reports_dir)
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Memory::Reports::JemallocStats do
                     .from(5).to(3)
 
             # Keeps only the newest reports
-            expect(reports.last(3).all? {|r| File.exist?(r) }).to be true
+            expect(reports.last(3).all? { |r| File.exist?(r) }).to be true
           end
         end
 

@@ -7,10 +7,10 @@ RSpec.describe Gitlab::QuickActions::Extractor do
     Class.new do
       include Gitlab::QuickActions::Dsl
 
-      command(:reopen, :open) { }
-      command(:assign) { }
-      command(:labels) { }
-      command(:power) { }
+      command(:reopen, :open) {}
+      command(:assign) {}
+      command(:labels) {}
+      command(:power) {}
       command(:noop_command)
       substitution(:substitution) { 'foo' }
       substitution :shrug do |comment|

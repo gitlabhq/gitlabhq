@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Composer::Cache do
       cache_file = Packages::Composer::CacheFile.last
 
       freeze_time do
-        expect { subject }.to change { cache_file.reload.delete_at}.from(nil).to(1.day.from_now)
+        expect { subject }.to change { cache_file.reload.delete_at }.from(nil).to(1.day.from_now)
       end
     end
   end

@@ -491,8 +491,8 @@ RSpec.describe Feature, stub_feature_flags: false do
   end
 
   shared_examples_for 'logging' do
-    let(:expected_action) { }
-    let(:expected_extra) { }
+    let(:expected_action) {}
+    let(:expected_extra) {}
 
     it 'logs the event' do
       expect(Feature.logger).to receive(:info).with(key: key, action: expected_action, **expected_extra)

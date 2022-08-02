@@ -2447,7 +2447,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     let(:env) { { 'DISABLE_LOCK_RETRIES' => 'true' } }
 
     it 'sets the migration class name in the logs' do
-      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+      model.with_lock_retries(env: env, logger: in_memory_logger) {}
 
       buffer.rewind
       expect(buffer.read).to include("\"class\":\"#{model.class}\"")
@@ -2461,7 +2461,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
         expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: raise_on_exhaustion)
 
-        model.with_lock_retries(env: env, logger: in_memory_logger, raise_on_exhaustion: raise_on_exhaustion) { }
+        model.with_lock_retries(env: env, logger: in_memory_logger, raise_on_exhaustion: raise_on_exhaustion) {}
       end
     end
 
@@ -2470,7 +2470,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
       expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
 
-      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+      model.with_lock_retries(env: env, logger: in_memory_logger) {}
     end
 
     it 'defaults to allowing subtransactions' do
@@ -2479,7 +2479,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(Gitlab::Database::WithLockRetries).to receive(:new).with(hash_including(allow_savepoints: true)).and_return(with_lock_retries)
       expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
 
-      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+      model.with_lock_retries(env: env, logger: in_memory_logger) {}
     end
   end
 

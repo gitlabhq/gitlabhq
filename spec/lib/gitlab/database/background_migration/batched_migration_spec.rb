@@ -307,7 +307,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '#batch_class' do
-    let(:batch_class) { Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy}
+    let(:batch_class) { Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy }
     let(:batched_migration) { build(:batched_background_migration) }
 
     it 'returns the class of the batch strategy for the migration' do

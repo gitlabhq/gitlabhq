@@ -315,13 +315,16 @@ module Tooling
         def render_deprecation(object, owner, context)
           buff = []
           deprecation = schema_deprecation(owner, object[:name])
+          original_description = deprecation&.original_description || render_description_of(object, owner)
 
-          buff << (deprecation&.original_description || render_description_of(object, owner)) if context == :block
+          buff << original_description if context == :block
           buff << if deprecation
                     deprecation.markdown(context: context)
                   else
                     "**Deprecated:** #{object[:deprecation_reason]}"
                   end
+
+          buff << original_description if context == :inline && deprecation&.alpha?
 
           join(context, buff)
         end

@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
     end
 
     describe '#add_metric' do
-      let(:metric) {'CountIssuesMetric' }
+      let(:metric) { 'CountIssuesMetric' }
 
       it 'computes the suggested name for given metric' do
         expect(described_class.add_metric(metric)).to eq('count_issues')

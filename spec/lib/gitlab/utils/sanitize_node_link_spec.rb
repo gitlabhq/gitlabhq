@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
       describe "#safe_protocol?" do
         let(:doc) { HTML::Pipeline.parse("<a href='#{scheme}alert(1);'>foo</a>") }
         let(:node) { doc.children.first }
-        let(:uri) { Addressable::URI.parse(node['href'])}
+        let(:uri) { Addressable::URI.parse(node['href']) }
 
         it "returns false" do
           expect(object.safe_protocol?(scheme)).to be_falsy

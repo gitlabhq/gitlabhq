@@ -106,7 +106,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
   end
 
   describe '#stop_working' do
-    subject { memory_killer.send(:stop_working)}
+    subject { memory_killer.send(:stop_working) }
 
     it 'changes enable? to false' do
       expect { subject }.to change { memory_killer.send(:enabled?) }

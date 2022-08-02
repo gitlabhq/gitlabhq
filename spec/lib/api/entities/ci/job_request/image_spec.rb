@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ci::JobRequest::Image do
-  let(:ports) { [{ number: 80, protocol: 'http', name: 'name' }]}
+  let(:ports) { [{ number: 80, protocol: 'http', name: 'name' }] }
   let(:image) { double(name: 'image_name', entrypoint: ['foo'], ports: ports, pull_policy: ['if-not-present']) }
   let(:entity) { described_class.new(image) }
 

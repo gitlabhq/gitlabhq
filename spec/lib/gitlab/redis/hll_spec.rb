@@ -64,10 +64,10 @@ RSpec.describe Gitlab::Redis::HLL, :clean_gitlab_redis_shared_state do
     let(:event_2020_33) { '2020-33-{expand_vulnerabilities}' }
     let(:event_2020_34) { '2020-34-{expand_vulnerabilities}' }
 
-    let(:entity1) { 'user_id_1'}
-    let(:entity2) { 'user_id_2'}
-    let(:entity3) { 'user_id_3'}
-    let(:entity4) { 'user_id_4'}
+    let(:entity1) { 'user_id_1' }
+    let(:entity2) { 'user_id_2' }
+    let(:entity3) { 'user_id_3' }
+    let(:entity4) { 'user_id_4' }
 
     before do
       track_event(event_2020_32, entity1)

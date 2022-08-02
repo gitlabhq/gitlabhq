@@ -8,7 +8,7 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
 
   let(:tmpdir) { Dir.mktmpdir }
   let(:uploads_dir_path) { File.join(tmpdir, '72a497a02fe3ee09edae2ed06d390038') }
-  let(:upload_file_path) { File.join(uploads_dir_path, 'upload.txt')}
+  let(:upload_file_path) { File.join(uploads_dir_path, 'upload.txt') }
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let(:context) { BulkImports::Pipeline::Context.new(tracker) }
 

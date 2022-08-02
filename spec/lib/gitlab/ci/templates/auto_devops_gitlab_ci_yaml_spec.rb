@@ -44,7 +44,7 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
 
       context 'when the project is set for deployment to AWS' do
         let(:platform_value) { 'ECS' }
-        let(:review_prod_build_names) { build_names.select {|n| n.include?('review') || n.include?('production')} }
+        let(:review_prod_build_names) { build_names.select { |n| n.include?('review') || n.include?('production') } }
 
         before do
           create(:ci_variable, project: project, key: 'AUTO_DEVOPS_PLATFORM_TARGET', value: platform_value)

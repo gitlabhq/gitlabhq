@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Session do
     end
 
     it 'restores current store after' do
-      described_class.with_session(two: 2) { }
+      described_class.with_session(two: 2) {}
 
       expect(described_class.current).to eq nil
     end

@@ -29,7 +29,7 @@ RSpec.describe Banzai::Filter::BroadcastMessagePlaceholdersFilter do
     end
 
     context 'works with empty text' do
-      let(:text) {" "}
+      let(:text) { " " }
 
       it { expect(subject).to eq(" ") }
     end
@@ -42,13 +42,13 @@ RSpec.describe Banzai::Filter::BroadcastMessagePlaceholdersFilter do
 
     context 'available placeholders' do
       context 'replaces the email of the user' do
-        let(:text) { "{{email}}"}
+        let(:text) { "{{email}}" }
 
         it { expect(subject).to eq(user.email) }
       end
 
       context 'replaces the name of the user' do
-        let(:text) { "{{name}}"}
+        let(:text) { "{{name}}" }
 
         it { expect(subject).to eq(user.name) }
       end

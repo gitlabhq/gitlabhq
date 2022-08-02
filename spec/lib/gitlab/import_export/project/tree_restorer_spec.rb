@@ -589,7 +589,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
 
         it 'issue system note metadata restored successfully' do
           note_content = 'created merge request !1 to address this issue'
-          note = project.issues.first.notes.find { |n| n.note.match(/#{note_content}/)}
+          note = project.issues.first.notes.find { |n| n.note.match(/#{note_content}/) }
 
           expect(note.noteable_type).to eq('Issue')
           expect(note.system).to eq(true)

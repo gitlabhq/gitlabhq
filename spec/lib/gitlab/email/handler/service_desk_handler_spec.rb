@@ -532,7 +532,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
   end
 
   context 'service desk is disabled for the project' do
-    let(:group) { create(:group)}
+    let(:group) { create(:group) }
     let(:project) { create(:project, :public, group: group, path: 'test', service_desk_enabled: false) }
 
     it 'bounces the email' do

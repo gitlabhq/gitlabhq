@@ -40,7 +40,7 @@ If you don't know your current password, select the **I forgot my password** lin
 
 ## Change your username
 
-Your username has a unique [namespace](../group/index.md#namespaces),
+Your username has a unique [namespace](../namespace/index.md),
 which is updated when you change your username. Before you change your username, read about
 [how redirects behave](../project/repository/index.md#what-happens-when-a-repository-path-changes).
 If you do not want to update the namespace, you can create a new user or group and transfer projects to it instead.

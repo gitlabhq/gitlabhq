@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Ci::Status::Processable::WaitingForResource do
   end
 
   describe '.matches?' do
-    subject {described_class.matches?(processable, user) }
+    subject { described_class.matches?(processable, user) }
 
     context 'when processable is waiting for resource' do
       let(:processable) { create(:ci_build, :waiting_for_resource) }
