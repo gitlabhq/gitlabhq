@@ -141,6 +141,7 @@
     "WorkItemWidgetDescription",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetStartAndDueDate",
+    "WorkItemWidgetVerificationStatus",
     "WorkItemWidgetWeight"
   ]
 }

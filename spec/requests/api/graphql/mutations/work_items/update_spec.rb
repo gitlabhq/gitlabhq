@@ -144,6 +144,94 @@ RSpec.describe 'Update a work item' do
       end
     end
 
+    context 'with due and start date widget input' do
+      let(:start_date) { Date.today }
+      let(:due_date) { 1.week.from_now.to_date }
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetStartAndDueDate {
+                startDate
+                dueDate
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      let(:input) do
+        { 'startAndDueDateWidget' => { 'startDate' => start_date.to_s, 'dueDate' => due_date.to_s } }
+      end
+
+      it 'updates start and due date' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          work_item.reload
+        end.to change(work_item, :start_date).from(nil).to(start_date).and(
+          change(work_item, :due_date).from(nil).to(due_date)
+        )
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['workItem']['widgets']).to include(
+          {
+            'startDate' => start_date.to_s,
+            'dueDate' => due_date.to_s,
+            'type' => 'START_AND_DUE_DATE'
+          }
+        )
+      end
+
+      context 'when provided input is invalid' do
+        let(:due_date) { 1.week.ago.to_date }
+
+        it 'returns validation errors without the work item' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(mutation_response['workItem']).to be_nil
+          expect(mutation_response['errors']).to contain_exactly('Due date must be greater than or equal to start date')
+        end
+      end
+
+      context 'when dates were already set for the work item' do
+        before do
+          work_item.update!(start_date: start_date, due_date: due_date)
+        end
+
+        context 'when updating only start date' do
+          let(:input) do
+            { 'startAndDueDateWidget' => { 'startDate' => nil } }
+          end
+
+          it 'allows setting a single date to null' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              work_item.reload
+            end.to change(work_item, :start_date).from(start_date).to(nil).and(
+              not_change(work_item, :due_date).from(due_date)
+            )
+          end
+        end
+
+        context 'when updating only due date' do
+          let(:input) do
+            { 'startAndDueDateWidget' => { 'dueDate' => nil } }
+          end
+
+          it 'allows setting a single date to null' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              work_item.reload
+            end.to change(work_item, :due_date).from(due_date).to(nil).and(
+              not_change(work_item, :start_date).from(start_date)
+            )
+          end
+        end
+      end
+    end
+
     context 'with hierarchy widget input' do
       let(:widgets_response) { mutation_response['workItem']['widgets'] }
       let(:fields) do

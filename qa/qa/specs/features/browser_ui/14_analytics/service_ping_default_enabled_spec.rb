@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Product Intelligence' do
+  RSpec.describe 'Analytics' do
     describe 'Service ping default enabled' do
       context 'when using default enabled from gitlab.yml config', :requires_admin, except: { job: 'review-qa-*' } do
         before do

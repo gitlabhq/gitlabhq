@@ -54,6 +54,7 @@ Exclude these pages from the global nav:
 
 - Legal notices.
 - Pages in the `architecture/blueprints` directory.
+- Pages in the `user/application_security/dast/checks/` directory.
 
 The following pages should probably be in the global nav, but the technical writers
 do not actively work to add them:

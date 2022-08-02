@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Product Intelligence' do
+  RSpec.describe 'Analytics' do
     describe 'Performance bar display', :requires_admin, :skip_live_env do
       context 'when logged in as an admin user' do
         # performance metrics: pg, gitaly, redis, rugged (feature flagged), total (not always provided)

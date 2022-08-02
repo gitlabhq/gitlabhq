@@ -1,6 +1,7 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 
 import { nextTick } from 'vue';
+import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import diffDiscussionHeader from '~/notes/components/diff_discussion_header.vue';
 import createStore from '~/notes/stores';
 
@@ -15,7 +16,7 @@ describe('diff_discussion_header component', () => {
     window.mrTabs = {};
     store = createStore();
 
-    wrapper = mount(diffDiscussionHeader, {
+    wrapper = shallowMount(diffDiscussionHeader, {
       store,
       propsData: { discussion: discussionMock },
     });
@@ -25,15 +26,25 @@ describe('diff_discussion_header component', () => {
     wrapper.destroy();
   });
 
-  it('should render user avatar', async () => {
-    const discussion = { ...discussionMock };
-    discussion.diff_file = mockDiffFile;
-    discussion.diff_discussion = true;
+  describe('Avatar', () => {
+    const firstNoteAuthor = discussionMock.notes[0].author;
+    const findAvatarLink = () => wrapper.find(GlAvatarLink);
+    const findAvatar = () => wrapper.find(GlAvatar);
 
-    wrapper.setProps({ discussion });
+    it('should render user avatar and user avatar link', () => {
+      expect(findAvatar().exists()).toBe(true);
+      expect(findAvatarLink().exists()).toBe(true);
+    });
 
-    await nextTick();
-    expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
+    it('renders avatar of the first note author', () => {
+      const props = findAvatar().props();
+
+      expect(props).toMatchObject({
+        src: firstNoteAuthor.avatar_url,
+        alt: firstNoteAuthor.name,
+        size: { default: 24, md: 32 },
+      });
+    });
   });
 
   describe('action text', () => {

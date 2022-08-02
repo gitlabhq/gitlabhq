@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Product Intelligence' do
+  RSpec.describe 'Analytics' do
     describe 'Service ping disabled', :orchestrated, :service_ping_disabled, :requires_admin do
       context 'when disabled from gitlab.yml config' do
         before do

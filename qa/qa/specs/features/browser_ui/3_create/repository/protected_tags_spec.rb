@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
+  RSpec.describe 'Create' do
     describe 'Repository tags', :reliable do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -104,11 +104,8 @@ module QA
       end
 
       def add_members_to_project(project)
-        @developer_user = developer_user
-        @maintainer_user = maintainer_user
-
-        project.add_member(@developer_user, Resource::Members::AccessLevel::DEVELOPER)
-        project.add_member(@maintainer_user, Resource::Members::AccessLevel::MAINTAINER)
+        project.add_member(developer_user, Resource::Members::AccessLevel::DEVELOPER)
+        project.add_member(maintainer_user, Resource::Members::AccessLevel::MAINTAINER)
       end
     end
   end

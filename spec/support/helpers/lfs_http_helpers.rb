@@ -52,11 +52,9 @@ module LfsHttpHelpers
   end
 
   def request_body(operation, objects)
-    objects = [objects] unless objects.is_a?(Array)
-
     {
       'operation' => operation,
-      'objects' => objects
+      'objects' => Array.wrap(objects)
     }
   end
 end

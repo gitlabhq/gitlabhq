@@ -24,6 +24,9 @@ module Mutations
         argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyUpdateInputType,
                  required: false,
                  description: 'Input for hierarchy widget.'
+        argument :start_and_due_date_widget, ::Types::WorkItems::Widgets::StartAndDueDateUpdateInputType,
+                 required: false,
+                 description: 'Input for start and due date widget.'
       end
     end
   end

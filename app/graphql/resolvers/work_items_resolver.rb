@@ -58,3 +58,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::WorkItemsResolver.prepend_mod_with('Resolvers::WorkItemsResolver')

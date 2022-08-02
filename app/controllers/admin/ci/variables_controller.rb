@@ -41,7 +41,7 @@ class Admin::Ci::VariablesController < Admin::ApplicationController
   end
 
   def variables_params
-    params.permit(variables_attributes: [*variable_params_attributes])
+    params.permit(variables_attributes: Array(variable_params_attributes))
   end
 
   def variable_params_attributes
