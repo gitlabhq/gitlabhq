@@ -39,12 +39,12 @@ module Gitlab
             start_monotonic_time = Gitlab::Metrics::System.monotonic_time
             start_thread_cpu_time = Gitlab::Metrics::System.thread_cpu_time
 
-            report.run
+            file_path = report.run
 
             cpu_s = Gitlab::Metrics::System.thread_cpu_duration(start_thread_cpu_time)
             duration_s = Gitlab::Metrics::System.monotonic_time - start_monotonic_time
 
-            log_report(label: report_label(report), cpu_s: cpu_s, duration_s: duration_s)
+            log_report(label: report_label(report), cpu_s: cpu_s, duration_s: duration_s, size: file_size(file_path))
             @report_duration_counter.increment({ report: report_label(report) }, duration_s)
 
             sleep sleep_between_reports_s
@@ -62,14 +62,15 @@ module Gitlab
         sleep_s + rand(sleep_max_delta_s)
       end
 
-      def log_report(label:, duration_s:, cpu_s:)
+      def log_report(label:, duration_s:, cpu_s:, size:)
         Gitlab::AppLogger.info(
           message: 'finished',
           pid: $$,
           worker_id: worker_id,
           perf_report: label,
           duration_s: duration_s.round(2),
-          cpu_s: cpu_s.round(2)
+          cpu_s: cpu_s.round(2),
+          perf_report_size_bytes: size
         )
       end
 
@@ -93,6 +94,12 @@ module Gitlab
           'Total time elapsed for running diagnostic report',
           default_labels
         )
+      end
+
+      def file_size(file_path)
+        File.size(file_path.to_s)
+      rescue Errno::ENOENT
+        0
       end
     end
   end

@@ -15,7 +15,7 @@ class LfsObject < ApplicationRecord
   scope :for_oids, -> (oids) { where(oid: oids) }
   scope :for_oid_and_size, -> (oid, size) { find_by(oid: oid, size: size) }
 
-  validates :oid, presence: true, uniqueness: true
+  validates :oid, presence: true, uniqueness: true, format: { with: /\A\h{64}\z/ }
 
   mount_file_store_uploader LfsObjectUploader
 

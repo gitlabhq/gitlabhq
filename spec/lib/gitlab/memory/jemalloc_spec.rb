@@ -28,11 +28,12 @@ RSpec.describe Gitlab::Memory::Jemalloc do
 
       describe '.dump_stats' do
         it 'writes stats JSON file' do
-          described_class.dump_stats(path: outdir, format: format)
+          file_path = described_class.dump_stats(path: outdir, format: format)
 
           file = Dir.entries(outdir).find { |e| e.match(/jemalloc_stats\.#{$$}\.\d+\.json$/) }
           expect(file).not_to be_nil
-          expect(File.read(File.join(outdir, file))).to eq(output)
+          expect(file_path).to eq(File.join(outdir, file))
+          expect(File.read(file_path)).to eq(output)
         end
       end
     end

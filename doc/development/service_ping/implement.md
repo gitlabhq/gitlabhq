@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Service Ping consists of two kinds of data:
 
 - **Counters**: Track how often a certain event happened over time, such as how many CI/CD pipelines have run.
-  They are monotonic and always trend up.
+  They are monotonic and usually trend up.
 - **Observations**: Facts collected from one or more GitLab instances and can carry arbitrary data.
   There are no general guidelines for how to collect those, due to the individual nature of that data.
 

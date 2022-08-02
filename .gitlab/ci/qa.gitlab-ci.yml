@@ -1,5 +1,5 @@
 .qa-job-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-${CHROME_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-chrome-103-docker-20.10.14
   extends:
     - .default-retry
     - .qa-cache

@@ -348,6 +348,18 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
+    context 'when archiving a project' do
+      it 'publishes a ProjectTransferedEvent' do
+        expect { update_project(project, user, archived: true) }
+          .to publish_event(Projects::ProjectArchivedEvent)
+          .with(
+            project_id: project.id,
+            namespace_id: project.namespace_id,
+            root_namespace_id: project.root_namespace.id
+          )
+      end
+    end
+
     context 'when changing operations feature visibility' do
       let(:feature_params) { { operations_access_level: ProjectFeature::DISABLED } }
 

@@ -29,16 +29,20 @@ module Gitlab
       # @param [String] path Directory path the dump will be put into
       # @param [String] format `json` or `txt`
       # @param [String] filename_label Optional custom string that will be injected into the file name, e.g. `worker_0`
-      # @return [void]
+      # @return [String] Full path to the resulting dump file
       def dump_stats(path:, format: STATS_DEFAULT_FORMAT, filename_label: nil)
         verify_format!(format)
 
+        format_settings = STATS_FORMATS[format]
+        file_path = File.join(path, file_name(format_settings[:extension], filename_label))
+
         with_malloc_stats_print do |stats_print|
-          format_settings = STATS_FORMATS[format]
-          File.open(File.join(path, file_name(format_settings[:extension], filename_label)), 'wb') do |io|
+          File.open(file_path, 'wb') do |io|
             write_stats(stats_print, io, format_settings)
           end
         end
+
+        file_path
       end
 
       private

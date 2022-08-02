@@ -3,34 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Memory::Reports::JemallocStats do
-  let(:jemalloc_stats) { described_class.new(reports_path: '/empty-dir') }
+  let(:reports_dir) {'/empty-dir'}
+  let(:jemalloc_stats) { described_class.new(reports_path: reports_dir) }
 
   describe '.run' do
     context 'when :report_jemalloc_stats ops FF is enabled' do
-      let(:worker_id) { 'puma_1' }
+      let(:worker_id) {'puma_1'}
+      let(:report_name) {'report.json'}
+      let(:report_path) { File.join(reports_dir, report_name) }
 
       before do
         allow(Prometheus::PidProvider).to receive(:worker_id).and_return(worker_id)
       end
 
-      context 'when GITLAB_DIAGNOSTIC_REPORTS_PATH env var is set' do
-        let(:reports_dir) { '/empty-dir' }
+      it 'invokes Jemalloc.dump_stats and returns file path' do
+        expect(Gitlab::Memory::Jemalloc)
+          .to receive(:dump_stats).with(path: reports_dir, filename_label: worker_id).and_return(report_path)
 
-        before do
-          stub_env('GITLAB_DIAGNOSTIC_REPORTS_PATH', reports_dir)
-        end
-
-        it 'writes reports into custom dir while enabled' do
-          expect(Gitlab::Memory::Jemalloc).to receive(:dump_stats).with(path: reports_dir, filename_label: worker_id)
-
-          jemalloc_stats.run
-        end
-      end
-
-      it 'writes reports into default dir while enabled' do
-        expect(Gitlab::Memory::Jemalloc).to receive(:dump_stats).with(path: '/empty-dir', filename_label: worker_id)
-
-        jemalloc_stats.run
+        expect(jemalloc_stats.run).to eq(report_path)
       end
 
       describe 'reports cleanup' do
@@ -108,10 +98,10 @@ RSpec.describe Gitlab::Memory::Reports::JemallocStats do
         stub_feature_flags(report_jemalloc_stats: false)
       end
 
-      it 'does not run the report' do
+      it 'does not run the report and returns nil' do
         expect(Gitlab::Memory::Jemalloc).not_to receive(:dump_stats)
 
-        jemalloc_stats.run
+        expect(jemalloc_stats.run).to be_nil
       end
     end
   end

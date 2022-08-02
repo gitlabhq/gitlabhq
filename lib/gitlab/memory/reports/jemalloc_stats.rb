@@ -23,8 +23,7 @@ module Gitlab
         def run
           return unless active?
 
-          Gitlab::Memory::Jemalloc.dump_stats(path: reports_path, filename_label: worker_id)
-          cleanup
+          Gitlab::Memory::Jemalloc.dump_stats(path: reports_path, filename_label: worker_id).tap { cleanup }
         end
 
         def active?

@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
 
   describe '#run_thread' do
     let(:report_duration_counter) { instance_double(::Prometheus::Client::Counter) }
+    let(:file_size) { 1_000_000 }
 
     before do
       allow(Gitlab::Metrics).to receive(:counter).and_return(report_duration_counter)
@@ -17,10 +18,12 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
 
       # let alive return 3 times: true, true, false
       allow(daemon).to receive(:alive).and_return(true, true, false)
+
+      allow(File).to receive(:size).with(/#{daemon.reports_path}.*\.json/).and_return(file_size)
     end
 
     it 'runs reports' do
-      expect(daemon.send(:reports)).to all(receive(:run).twice)
+      expect(daemon.send(:reports)).to all(receive(:run).twice.and_call_original)
 
       daemon.send(:run_thread)
     end
@@ -32,6 +35,7 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
         hash_including(
           :duration_s,
           :cpu_s,
+          perf_report_size_bytes: file_size,
           message: 'finished',
           pid: Process.pid,
           worker_id: 'worker_1',
@@ -39,6 +43,18 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
         )).twice
 
       daemon.send(:run_thread)
+    end
+
+    context 'when the report object returns invalid file path' do
+      before do
+        allow(File).to receive(:size).with(/#{daemon.reports_path}.*\.json/).and_raise(Errno::ENOENT)
+      end
+
+      it 'logs `0` as `perf_report_size_bytes`' do
+        expect(Gitlab::AppLogger).to receive(:info).with(hash_including(perf_report_size_bytes: 0)).twice
+
+        daemon.send(:run_thread)
+      end
     end
 
     it 'sets real time duration gauge' do
@@ -58,8 +74,8 @@ RSpec.describe Gitlab::Memory::ReportsDaemon do
 
       allow(daemon).to receive(:reports).and_return([active_report_1, inactive_report, active_report_2])
 
-      expect(active_report_1).to receive(:run).twice
-      expect(active_report_2).to receive(:run).twice
+      expect(active_report_1).to receive(:run).and_return('/tmp/report_1.json').twice
+      expect(active_report_2).to receive(:run).and_return('/tmp/report_2.json').twice
       expect(inactive_report).not_to receive(:run)
 
       daemon.send(:run_thread)
