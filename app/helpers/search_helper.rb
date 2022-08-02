@@ -22,14 +22,14 @@ module SearchHelper
                 resource_results(term)
               when :generic
                 [
-                  generic_results(term),
-                  recent_items_autocomplete(term)
+                  recent_items_autocomplete(term),
+                  generic_results(term)
                 ]
               else
                 [
-                  generic_results(term),
+                  recent_items_autocomplete(term),
                   resource_results(term),
-                  recent_items_autocomplete(term)
+                  generic_results(term)
                 ]
               end
 

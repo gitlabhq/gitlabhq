@@ -11,6 +11,7 @@ RSpec.describe Tooling::FindCodeowners do
       allow(subject).to receive(:load_config).and_return(
         '[Section name]': {
           '@group': {
+            entries: %w[whatever entries],
             allow: {
               keywords: %w[dir0 file],
               patterns: ['/%{keyword}/**/*', '/%{keyword}']
@@ -31,8 +32,11 @@ RSpec.describe Tooling::FindCodeowners do
         end
       end.to output(<<~CODEOWNERS).to_stdout
         [Section name]
+        whatever @group
+        entries @group
         /dir0/dir1/ @group
         /file @group
+
       CODEOWNERS
     end
   end
@@ -57,21 +61,33 @@ RSpec.describe Tooling::FindCodeowners do
                 patterns: ['%{keyword}']
               }
             }
+          },
+          '[Compliance]': {
+            '@gitlab-org/manage/compliance': {
+              entries: %w[
+                /ee/app/services/audit_events/build_service.rb
+              ],
+              allow: {
+                patterns: %w[
+                  /ee/app/services/audit_events/*
+                ]
+              }
+            }
           }
         }
       )
     end
 
     it 'expands the allow and deny list with keywords and patterns' do
-      subject.load_definitions.each do |section, group_defintions|
-        group_defintions.each do |group, definitions|
-          expect(definitions[:allow]).to be_an(Array)
-          expect(definitions[:deny]).to be_an(Array)
-        end
+      group_defintions = subject.load_definitions[:'[Authentication and Authorization]']
+
+      group_defintions.each do |group, definitions|
+        expect(definitions[:allow]).to be_an(Array)
+        expect(definitions[:deny]).to be_an(Array)
       end
     end
 
-    it 'expands the auth group' do
+    it 'expands the patterns for the auth group' do
       auth = subject.load_definitions.dig(
         :'[Authentication and Authorization]',
         :'@gitlab-org/manage/authentication-and-authorization')
@@ -92,6 +108,21 @@ RSpec.describe Tooling::FindCodeowners do
           *author.*
           *author_*
           *authored*
+        ]
+      )
+    end
+
+    it 'retains the array and expands the patterns for the compliance group' do
+      compliance = subject.load_definitions.dig(
+        :'[Compliance]',
+        :'@gitlab-org/manage/compliance')
+
+      expect(compliance).to eq(
+        entries: %w[
+          /ee/app/services/audit_events/build_service.rb
+        ],
+        allow: %w[
+          /ee/app/services/audit_events/*
         ]
       )
     end

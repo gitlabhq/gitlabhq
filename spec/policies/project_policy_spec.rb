@@ -1930,6 +1930,10 @@ RSpec.describe ProjectPolicy do
   describe 'operations feature' do
     using RSpec::Parameterized::TableSyntax
 
+    before do
+      stub_feature_flags(split_operations_visibility_permissions: false)
+    end
+
     let(:guest_operations_permissions) { [:read_environment, :read_deployment] }
 
     let(:developer_operations_permissions) do
@@ -2002,30 +2006,6 @@ RSpec.describe ProjectPolicy do
         end
       end
 
-      def project_subject(project_type)
-        case project_type
-        when :public
-          public_project
-        when :internal
-          internal_project
-        else
-          private_project
-        end
-      end
-
-      def user_subject(role)
-        case role
-        when :maintainer
-          maintainer
-        when :developer
-          developer
-        when :guest
-          guest
-        when :anonymous
-          anonymous
-        end
-      end
-
       def permissions_abilities(role)
         case role
         when :maintainer
@@ -2034,6 +2014,87 @@ RSpec.describe ProjectPolicy do
           developer_operations_permissions
         else
           guest_operations_permissions
+        end
+      end
+    end
+  end
+
+  describe 'environments feature' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:guest_environments_permissions) { [:read_environment, :read_deployment] }
+
+    let(:developer_environments_permissions) do
+      guest_environments_permissions + [
+        :create_environment, :create_deployment, :update_environment, :update_deployment, :destroy_environment
+      ]
+    end
+
+    let(:maintainer_environments_permissions) do
+      developer_environments_permissions + [:admin_environment, :admin_deployment]
+    end
+
+    where(:project_visibility, :access_level, :role, :allowed) do
+      :public   | ProjectFeature::ENABLED   | :maintainer | true
+      :public   | ProjectFeature::ENABLED   | :developer  | true
+      :public   | ProjectFeature::ENABLED   | :guest      | true
+      :public   | ProjectFeature::ENABLED   | :anonymous  | true
+      :public   | ProjectFeature::PRIVATE   | :maintainer | true
+      :public   | ProjectFeature::PRIVATE   | :developer  | true
+      :public   | ProjectFeature::PRIVATE   | :guest      | true
+      :public   | ProjectFeature::PRIVATE   | :anonymous  | false
+      :public   | ProjectFeature::DISABLED  | :maintainer | false
+      :public   | ProjectFeature::DISABLED  | :developer  | false
+      :public   | ProjectFeature::DISABLED  | :guest      | false
+      :public   | ProjectFeature::DISABLED  | :anonymous  | false
+      :internal | ProjectFeature::ENABLED   | :maintainer | true
+      :internal | ProjectFeature::ENABLED   | :developer  | true
+      :internal | ProjectFeature::ENABLED   | :guest      | true
+      :internal | ProjectFeature::ENABLED   | :anonymous  | false
+      :internal | ProjectFeature::PRIVATE   | :maintainer | true
+      :internal | ProjectFeature::PRIVATE   | :developer  | true
+      :internal | ProjectFeature::PRIVATE   | :guest      | true
+      :internal | ProjectFeature::PRIVATE   | :anonymous  | false
+      :internal | ProjectFeature::DISABLED  | :maintainer | false
+      :internal | ProjectFeature::DISABLED  | :developer  | false
+      :internal | ProjectFeature::DISABLED  | :guest      | false
+      :internal | ProjectFeature::DISABLED  | :anonymous  | false
+      :private  | ProjectFeature::ENABLED   | :maintainer | true
+      :private  | ProjectFeature::ENABLED   | :developer  | true
+      :private  | ProjectFeature::ENABLED   | :guest      | false
+      :private  | ProjectFeature::ENABLED   | :anonymous  | false
+      :private  | ProjectFeature::PRIVATE   | :maintainer | true
+      :private  | ProjectFeature::PRIVATE   | :developer  | true
+      :private  | ProjectFeature::PRIVATE   | :guest      | false
+      :private  | ProjectFeature::PRIVATE   | :anonymous  | false
+      :private  | ProjectFeature::DISABLED  | :maintainer | false
+      :private  | ProjectFeature::DISABLED  | :developer  | false
+      :private  | ProjectFeature::DISABLED  | :guest      | false
+      :private  | ProjectFeature::DISABLED  | :anonymous  | false
+    end
+
+    with_them do
+      let(:current_user) { user_subject(role) }
+      let(:project) { project_subject(project_visibility) }
+
+      it 'allows/disallows the abilities based on the environments feature access level' do
+        project.project_feature.update!(environments_access_level: access_level)
+
+        if allowed
+          expect_allowed(*permissions_abilities(role))
+        else
+          expect_disallowed(*permissions_abilities(role))
+        end
+      end
+
+      def permissions_abilities(role)
+        case role
+        when :maintainer
+          maintainer_environments_permissions
+        when :developer
+          developer_environments_permissions
+        else
+          guest_environments_permissions
         end
       end
     end
@@ -2479,6 +2540,30 @@ RSpec.describe ProjectPolicy do
       it do
         expect(subject.can?(:update_sentry_issue)).to be(allowed)
       end
+    end
+  end
+
+  def project_subject(project_type)
+    case project_type
+    when :public
+      public_project
+    when :internal
+      internal_project
+    else
+      private_project
+    end
+  end
+
+  def user_subject(role)
+    case role
+    when :maintainer
+      maintainer
+    when :developer
+      developer
+    when :guest
+      guest
+    when :anonymous
+      anonymous
     end
   end
 end

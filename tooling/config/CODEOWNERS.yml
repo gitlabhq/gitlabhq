@@ -55,3 +55,24 @@
         - '/lib/gitlab/conan_token.rb'
       patterns:
         - '%{keyword}'
+
+'[Compliance]':
+  '@gitlab-org/manage/compliance':
+    entries:
+      - '/ee/app/services/audit_events/build_service.rb'
+      - '/ee/spec/services/audit_events/custom_audit_event_service_spec.rb'
+    allow:
+      keywords:
+        - audit
+      patterns:
+        - '**%{keyword}**'
+    deny:
+      keywords:
+        - '*.png'
+        - '*bundler-audit*'
+        - '/ee/app/services/audit_events/*'
+        - '/ee/spec/services/audit_events/*'
+        - '/ee/spec/services/ci/*'
+        - '/ee/spec/services/personal_access_tokens/*'
+      patterns:
+        - '%{keyword}'

@@ -209,6 +209,7 @@ class ProjectPolicy < BasePolicy
     analytics
     operations
     security_and_compliance
+    environments
   ]
 
   features.each do |f|
@@ -366,7 +367,11 @@ class ProjectPolicy < BasePolicy
     prevent(:metrics_dashboard)
   end
 
-  rule { operations_disabled }.policy do
+  condition(:split_operations_visibility_permissions) do
+    ::Feature.enabled?(:split_operations_visibility_permissions, @subject)
+  end
+
+  rule { ~split_operations_visibility_permissions & operations_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:feature_flag))
     prevent(*create_read_update_admin_destroy(:environment))
     prevent(*create_read_update_admin_destroy(:sentry_issue))
@@ -377,6 +382,11 @@ class ProjectPolicy < BasePolicy
     prevent(:metrics_dashboard)
     prevent(:read_pod_logs)
     prevent(:read_prometheus)
+  end
+
+  rule { split_operations_visibility_permissions & environments_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:environment))
+    prevent(*create_read_update_admin_destroy(:deployment))
   end
 
   rule { can?(:metrics_dashboard) }.policy do

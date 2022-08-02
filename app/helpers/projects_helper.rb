@@ -639,7 +639,8 @@ module ProjectsHelper
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,
       enforceAuthChecksOnUploads: project.enforce_auth_checks_on_uploads?,
       securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
-      containerRegistryAccessLevel: feature.container_registry_access_level
+      containerRegistryAccessLevel: feature.container_registry_access_level,
+      environmentsAccessLevel: feature.environments_access_level
     }
   end
 

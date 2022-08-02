@@ -21,6 +21,7 @@ class ProjectFeature < ApplicationRecord
     security_and_compliance
     container_registry
     package_registry
+    environments
   ].freeze
 
   EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance, :pages]).freeze
