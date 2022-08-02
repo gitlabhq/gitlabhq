@@ -145,11 +145,16 @@ describe('Frequent Items App Component', () => {
       expect(findFrequentItemsList().props()).toEqual(
         expect.objectContaining({
           items: mockSearchedProjects.data.map(
-            ({ avatar_url, web_url, name_with_namespace, ...item }) => ({
+            ({
+              avatar_url: avatarUrl,
+              web_url: webUrl,
+              name_with_namespace: namespace,
+              ...item
+            }) => ({
               ...item,
-              avatarUrl: avatar_url,
-              webUrl: web_url,
-              namespace: name_with_namespace,
+              avatarUrl,
+              webUrl,
+              namespace,
             }),
           ),
           namespace: TEST_NAMESPACE,

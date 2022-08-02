@@ -3,7 +3,7 @@
 
 require 'pathname'
 
-# This script checks if the package-and-qa job should trigger downstream pipelines to run the QA suite.
+# This script checks if the code changes justify running the QA suite.
 #
 # It assumes the first argument is a directory of files containing diffs of changes from an MR
 # (e.g., created by tooling/bin/find_change_diffs). It exits with a success code if there are no diffs, or if the diffs
@@ -11,14 +11,14 @@ require 'pathname'
 #
 # The script will abort (exit code 1) if the argument is missing.
 #
-# The following condition will result in a failure code (2), indicating that package-and-qa should not run:
+# The following condition will result in a failure code (2), indicating that QA tests should not run:
 #
 #   - If the changes only include tests being put in quarantine
 
 abort("ERROR: Please specify the directory containing MR diffs.") if ARGV.empty?
 diffs_dir = Pathname.new(ARGV.shift).expand_path
 
-# Run package-and-qa if there are no diffs. E.g., in scheduled pipelines
+# Run QA tests if there are no diffs. E.g., in scheduled pipelines
 exit 0 if diffs_dir.glob('**/*').empty?
 
 files_count = 0
@@ -35,11 +35,11 @@ diffs_dir.glob('**/*').each do |path|
   quarantine_specs_count += 1 if path.read.match?(/^\+.*, quarantine:/)
 end
 
-# Run package-and-qa if there are no specs. E.g., when the MR changes QA framework files.
+# Run QA tests if there are no specs. E.g., when the MR changes QA framework files.
 exit 0 if specs_count == 0
 
-# Skip package-and-qa if there are only specs being put in quarantine.
+# Skip QA tests if there are only specs being put in quarantine.
 exit 2 if quarantine_specs_count == specs_count && quarantine_specs_count == files_count
 
-# Run package-and-qa under any other circumstances. E.g., if there are specs being put in quarantine but there are also
+# Run QA tests under any other circumstances. E.g., if there are specs being put in quarantine but there are also
 # other changes that might need to be tested.

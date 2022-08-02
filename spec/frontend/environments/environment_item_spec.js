@@ -88,11 +88,11 @@ describe('Environment item', () => {
         it('should render user avatar with link to profile', () => {
           const avatarLink = findLastDeploymentAvatarLink();
           const avatar = findLastDeploymentAvatar();
-          const { username, avatar_url, web_url } = environment.last_deployment.user;
+          const { username, avatar_url: src, web_url } = environment.last_deployment.user;
 
           expect(avatarLink.attributes('href')).toBe(web_url);
           expect(avatar.props()).toMatchObject({
-            src: avatar_url,
+            src,
             entityName: username,
           });
           expect(avatar.attributes()).toMatchObject({
@@ -127,12 +127,12 @@ describe('Environment item', () => {
           it('should render the build ID and user', () => {
             const avatarLink = findUpcomingDeploymentAvatarLink();
             const avatar = findUpcomingDeploymentAvatar();
-            const { username, avatar_url, web_url } = environment.upcoming_deployment.user;
+            const { username, avatar_url: src, web_url } = environment.upcoming_deployment.user;
 
             expect(findUpcomingDeploymentContent().text()).toMatchInterpolatedText('#27 by');
             expect(avatarLink.attributes('href')).toBe(web_url);
             expect(avatar.props()).toMatchObject({
-              src: avatar_url,
+              src,
               entityName: username,
             });
           });
@@ -166,12 +166,12 @@ describe('Environment item', () => {
           it('should still render the build ID and user avatar', () => {
             const avatarLink = findUpcomingDeploymentAvatarLink();
             const avatar = findUpcomingDeploymentAvatar();
-            const { username, avatar_url, web_url } = environment.upcoming_deployment.user;
+            const { username, avatar_url: src, web_url } = environment.upcoming_deployment.user;
 
             expect(findUpcomingDeploymentContent().text()).toMatchInterpolatedText('#27 by');
             expect(avatarLink.attributes('href')).toBe(web_url);
             expect(avatar.props()).toMatchObject({
-              src: avatar_url,
+              src,
               entityName: username,
             });
           });

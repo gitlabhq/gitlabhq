@@ -11,6 +11,7 @@ export const displayAndLogError = (error) =>
 const EVENT_ICONS = {
   comment: 'comment',
   issues: 'issues',
+  label: 'label',
   status: 'status',
   default: 'comment',
 };

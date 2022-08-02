@@ -246,7 +246,7 @@ RSpec.describe Gitlab::MailRoom do
               redis_url: "localhost",
               redis_db: 99,
               namespace: "resque:gitlab",
-              queue: "email_receiver",
+              queue: "default",
               worker: "EmailReceiverWorker",
               sentinels: [{ host: "localhost", port: 1234 }]
             }
@@ -259,7 +259,7 @@ RSpec.describe Gitlab::MailRoom do
               redis_url: "localhost",
               redis_db: 99,
               namespace: "resque:gitlab",
-              queue: "service_desk_email_receiver",
+              queue: "default",
               worker: "ServiceDeskEmailReceiverWorker",
               sentinels: [{ host: "localhost", port: 1234 }]
             }

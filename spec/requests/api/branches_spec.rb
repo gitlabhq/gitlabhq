@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Branches do
   let_it_be(:user) { create(:user) }
 
-  let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+  let(:project) { create(:project, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt') }
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:branch_name) { 'feature' }
   let(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
@@ -17,7 +17,6 @@ RSpec.describe API::Branches do
 
   before do
     project.add_maintainer(user)
-    project.repository.add_branch(user, 'ends-with.txt', branch_sha)
     stub_feature_flags(branch_list_keyset_pagination: false)
   end
 

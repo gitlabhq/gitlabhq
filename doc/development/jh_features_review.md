@@ -62,7 +62,8 @@ For features that build on existing CE/EE features, a module in the `JH`
 namespace injected in the CE/EE class/module is needed. This aligns with
 what we're doing with EE features.
 
-See [EE features based on CE features](ee_features.md#ee-features-based-on-ce-features) for more details.
+See [Extend CE features with EE backend code](ee_features.md#extend-ce-features-with-ee-backend-code)
+for more details.
 
 For example, to prepend a module into the `User` class you would use
 the following approach:

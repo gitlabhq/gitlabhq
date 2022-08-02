@@ -196,7 +196,7 @@
     "yaml": "^2.0.0-10"
   },
   "devDependencies": {
-    "@gitlab/eslint-plugin": "13.1.0",
+    "@gitlab/eslint-plugin": "14.0.0",
     "@gitlab/stylelint-config": "4.1.0",
     "@graphql-eslint/eslint-plugin": "3.10.6",
     "@testing-library/dom": "^7.16.2",
@@ -211,7 +211,7 @@
     "cheerio": "^1.0.0-rc.9",
     "commander": "^2.20.3",
     "custom-jquery-matchers": "^2.1.0",
-    "eslint": "7.32.0",
+    "eslint": "8.19.0",
     "eslint-import-resolver-jest": "3.0.2",
     "eslint-import-resolver-webpack": "0.13.2",
     "eslint-plugin-no-jquery": "2.7.0",

@@ -106,6 +106,7 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
     legendmaxtext="Max"
     legendmintext="Min"
     option="[object Object]"
+    responsive=""
     thresholds=""
   />
 </div>

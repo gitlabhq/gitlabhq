@@ -39,6 +39,7 @@ describe('Pipeline New Form', () => {
   const findSubmitButton = () => wrapper.find('[data-testid="run_pipeline_button"]');
   const findVariableRows = () => wrapper.findAll('[data-testid="ci-variable-row"]');
   const findRemoveIcons = () => wrapper.findAll('[data-testid="remove-ci-variable-row"]');
+  const findDropdowns = () => wrapper.findAll('[data-testid="pipeline-form-ci-variable-type"]');
   const findKeyInputs = () => wrapper.findAll('[data-testid="pipeline-form-ci-variable-key"]');
   const findValueInputs = () => wrapper.findAll('[data-testid="pipeline-form-ci-variable-value"]');
   const findErrorAlert = () => wrapper.find('[data-testid="run-pipeline-error-alert"]');
@@ -102,6 +103,8 @@ describe('Pipeline New Form', () => {
     });
 
     it('displays the correct values for the provided query params', async () => {
+      expect(findDropdowns().at(0).props('text')).toBe('Variable');
+      expect(findDropdowns().at(1).props('text')).toBe('File');
       expect(findRefsDropdown().props('value')).toEqual({ shortName: 'tag-1' });
       expect(findVariableRows()).toHaveLength(3);
     });
@@ -114,6 +117,7 @@ describe('Pipeline New Form', () => {
     it('displays an empty variable for the user to fill out', async () => {
       expect(findKeyInputs().at(2).element.value).toBe('');
       expect(findValueInputs().at(2).element.value).toBe('');
+      expect(findDropdowns().at(2).props('text')).toBe('Variable');
     });
 
     it('does not display remove icon for last row', () => {

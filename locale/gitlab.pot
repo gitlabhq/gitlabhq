@@ -33475,12 +33475,6 @@ msgstr ""
 msgid "RightSidebar|Issue email"
 msgstr ""
 
-msgid "RightSidebar|adding a"
-msgstr ""
-
-msgid "RightSidebar|deleting the"
-msgstr ""
-
 msgid "Roadmap"
 msgstr ""
 
@@ -39372,6 +39366,9 @@ msgstr ""
 msgid "There are no archived test cases"
 msgstr ""
 
+msgid "There are no changed labels"
+msgstr ""
+
 msgid "There are no changes"
 msgstr ""
 
@@ -39547,9 +39544,6 @@ msgid "There was a problem sending the confirmation email"
 msgstr ""
 
 msgid "There was a problem updating the keep latest artifacts setting."
-msgstr ""
-
-msgid "There was an error %{message} to-do item."
 msgstr ""
 
 msgid "There was an error adding a To Do."
@@ -45487,6 +45481,9 @@ msgstr ""
 msgid "assign yourself"
 msgstr ""
 
+msgid "associated parent is confidential and can not have non-confidential children."
+msgstr ""
+
 msgid "at"
 msgstr ""
 
@@ -45565,6 +45562,9 @@ msgid "can't include: %{invalid_storages}"
 msgstr ""
 
 msgid "can't reference a branch that does not exist"
+msgstr ""
+
+msgid "cannot assign a non-confidential work item to a confidential parent. Make the work item confidential and try again."
 msgstr ""
 
 msgid "cannot be a date in the past"
@@ -45979,6 +45979,9 @@ msgid "committed"
 msgstr ""
 
 msgid "compliance violation has already been recorded"
+msgstr ""
+
+msgid "confidential parent can not be used if there are non-confidential children."
 msgstr ""
 
 msgid "contacts can only be added to root groups"

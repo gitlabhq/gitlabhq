@@ -6,8 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Guidelines for implementing Enterprise Edition features
 
-- **Write the code and the tests.**: As with any code, EE features should have
-  good test coverage to prevent regressions.
+- **Place code in `ee/`**: Put all Enterprise Edition (EE) inside the `ee/` top-level directory. The
+  rest of the code must be as close to the Community Edition (CE) files as possible.
+- **Write tests**: As with any code, EE features must have good test coverage to prevent
+  regressions. All `ee/` code must have corresponding tests in `ee/`.
 - **Write documentation.**: Add documentation to the `doc/` directory. Describe
   the feature and include screenshots, if applicable. Indicate [what editions](documentation/styleguide/index.md#product-tier-badges)
   the feature applies to.
@@ -16,54 +18,72 @@ info: To determine the technical writer assigned to the Stage/Group associated w
   [EE features list](https://about.gitlab.com/features/).
 <!-- markdownlint-enable MD044 -->
 
-## Act as SaaS
+## Implement a new EE feature
 
-When developing locally, there are times when you need your instance to act like the SaaS version of the product.
-In those instances, you can simulate SaaS by exporting an environment variable as seen below:
+If you're developing a GitLab Starter, GitLab Premium, or GitLab Ultimate licensed feature, use these steps to
+add your new feature or extend it.
 
-```shell
-export GITLAB_SIMULATE_SAAS=1
-```
+GitLab license features are added to [`ee/app/models/gitlab_subscriptions/features.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/gitlab_subscriptions/features.rb). To determine how
+to modify this file, first discuss how your feature fits into our licensing with your Product Manager.
 
-There are many ways to pass an environment variable to your local GitLab instance.
-For example, you can create a `env.runit` file in the root of your GDK with the above snippet.
+Use the following questions to guide you:
 
-## Act as CE when unlicensed
+1. Is this a new feature, or are you extending an existing licensed feature?
+   - If your feature already exists, you don't have to modify `features.rb`, but you
+     must locate the existing feature identifier to [guard it](#guard-your-ee-feature).
+   - If this is a new feature, decide on an identifier, such as `my_feature_name`, to add to the
+     `features.rb` file.
+1. Is this a **GitLab Starter**, **GitLab Premium**, or **GitLab Ultimate** feature?
+   - Based on the plan you choose to use the feature in, add the feature identifier to `STARTER_FEATURES`,
+     `PREMIUM_FEATURES`, or `ULTIMATE_FEATURES`.
+1. Will this feature be available globally (system-wide at the GitLab instance level)?
+    - Features such as [Geo](../administration/geo/index.md) and
+    [Database Load Balancing](../administration/postgresql/database_load_balancing.md) are used by the entire instance
+    and cannot be restricted to individual user namespaces. These features are defined in the instance license.
+    Add these features to `GLOBAL_FEATURES`.
 
-Since the implementation of
+### Guard your EE feature
+
+A licensed feature can only be available to licensed users. You must add a check or guard
+to determine if users have access to the feature.
+
+To guard your licensed feature:
+
+1. Locate your feature identifier in `ee/app/models/gitlab_subscriptions/features.rb`.
+1. Use the following methods, where `my_feature_name` is your feature
+   identifier:
+
+   - In a project context:
+
+     ```ruby
+     my_project.licensed_feature_available?(:my_feature_name) # true if available for my_project
+     ```
+
+   - In a group or user namespace context:
+
+     ```ruby
+     my_group.licensed_feature_available?(:my_feature_name) # true if available for my_group
+     ```
+
+   - For a global (system-wide) feature:
+
+   ```ruby
+   License.feature_available?(:my_feature_name)  # true if available in this instance
+   ```
+
+1. Optional. If your global feature is also available to namespaces with a paid plan, combine two
+feature identifiers to allow both admins and group users. For example:
+
+    ```ruby
+    License.feature_available?(:my_feature_name) || group.licensed_feature_available?(:my_feature_name_for_namespace) # Both admins and group members can see this EE feature
+    ```
+
+### Simulate a CE instance when unlicensed
+
+After the implementation of
 [GitLab CE features to work with unlicensed EE instance](https://gitlab.com/gitlab-org/gitlab/-/issues/2500)
-GitLab Enterprise Edition should work like GitLab Community Edition
-when no license is active. So EE features always should be guarded by
-`project.feature_available?` or `group.licensed_feature_available?` (or
-`License.feature_available?` if it is a system-wide feature).
-
-Frontend features should be guarded by pushing a flag from the backend by [using `push_licensed_feature`](licensed_feature_availability.md#restricting-frontend-features), and checked using `this.glFeatures.someFeature` in the frontend. For example:
-
-```html
-<script>
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
-export default {
-  mixins: [glFeatureFlagMixin()],
-  components: {
-    EEComponent: () => import('ee_component/components/test.vue'),
-  },
-  computed: {
-    shouldRenderComponent() {
-      return this.glFeatures.myEEFeature;
-    }
-  },
-};
-</script>
-
-<template>
-  <div>
-    <ee-component v-if="shouldRenderComponent"/>
-  </div>
-</template>
-```
-
-Look in `ee/app/models/license.rb` for the names of the licensed features.
+GitLab Enterprise Edition works like GitLab Community Edition
+when no license is active.
 
 CE specs should remain untouched as much as possible and extra specs
 should be added for EE. Licensed features can be stubbed using the
@@ -74,7 +94,7 @@ setting the [`FOSS_ONLY` environment variable](https://gitlab.com/gitlab-org/git
 to something that evaluates as `true`. The same works for running tests
 (for example `FOSS_ONLY=1 yarn jest`).
 
-### Running feature specs as CE
+#### Run feature specs as CE
 
 When running [feature specs](testing_guide/best_practices.md#system--feature-tests)
 as CE, you should ensure that the edition of backend and frontend match.
@@ -98,7 +118,28 @@ To do so:
    bin/rspec spec/features/<path_to_your_spec>
    ```
 
-## CI pipelines in a FOSS context
+### Simulate a SaaS instance
+
+If you're developing locally and need your instance to act like the SaaS version of the product,
+you can simulate SaaS by exporting an environment variable:
+
+```shell
+export GITLAB_SIMULATE_SAAS=1
+```
+
+There are many ways to pass an environment variable to your local GitLab instance.
+For example, you can create a `env.runit` file in the root of your GDK with the above snippet.
+
+#### Allow use of licensed EE feature
+
+To enable plans per namespace turn on the `Allow use of licensed EE features` option from the settings page.
+This will make licensed EE features available to projects only if the project namespace's plan includes the feature
+or if the project is public. To enable it:
+
+1. If you are developing locally, follow the steps in [Simulate a SaaS instance](#simulate-a-saas-instance) to make the option available.
+1. Visit Admin > Settings > General > "Account and limit" and enable "Allow use of licensed EE features".
+
+### Run CI pipelines in a FOSS context
 
 By default, merge request pipelines for development run in an EE-context only. If you are
 developing features that differ between FOSS and EE, you may wish to run pipelines in a
@@ -108,10 +149,7 @@ To run pipelines in both contexts, add the `~"pipeline:run-as-if-foss"` label to
 
 See the [As-if-FOSS jobs](pipelines.md#as-if-foss-jobs) pipelines documentation for more information.
 
-## Separation of EE code
-
-All EE code should be put inside the `ee/` top-level directory. The
-rest of the code should be as close to the CE files as possible.
+## Separation of EE code in the backend
 
 ### EE-only features
 
@@ -144,7 +182,7 @@ To test an EE class that doesn't exist in CE, create the spec file as you normal
 would in the `ee/spec` directory, but without the second `ee/` subdirectory.
 For example, a class `ee/app/models/vulnerability.rb` would have its tests in `ee/spec/models/vulnerability_spec.rb`.
 
-### EE features based on CE features
+### Extend CE features with EE backend code
 
 For features that build on existing CE features, write a module in the `EE`
 namespace and inject it in the CE class, on the last line of the file that the
@@ -633,7 +671,7 @@ might need different strategies to extend it. To apply different strategies
 easily, we would use `extend ActiveSupport::Concern` in the EE module.
 
 Put the EE module files following
-[EE features based on CE features](#ee-features-based-on-ce-features).
+[Extend CE features with EE backend code](#extend-ce-features-with-ee-backend-code).
 
 #### EE API routes
 
@@ -1009,9 +1047,9 @@ FactoryBot.define do
 end
 ```
 
-## JavaScript code in `assets/javascripts/`
+## Separate of EE code in the frontend
 
-To separate EE-specific JS-files we should also move the files into an `ee` folder.
+To separate EE-specific JS-files, move the files into an `ee` folder.
 
 For example there can be an
 `app/assets/javascripts/protected_branches/protected_branches_bundle.js` and an
@@ -1032,40 +1070,123 @@ import bundle from 'ee/protected_branches/protected_branches_bundle.js';
 import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
 ```
 
-See the frontend guide [performance section](fe_guide/performance.md) for
-information on managing page-specific JavaScript within EE.
+### Add new EE-only features in the frontend
 
-## Vue code in `assets/javascript`
+If the feature being developed is not present in CE, add your entry point in
+`ee/`. For example:
 
-### script tag
+```shell
+# Add HTML element to mount
+ee/app/views/admin/geo/designs/index.html.haml
 
-#### Child Component only used in EE
+# Init the application
+ee/app/assets/javascripts/pages/ee_only_feature/index.js
 
-To separate Vue template differences we should [import the components asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
+# Mount the feature
+ee/app/assets/javascripts/ee_only_feature/index.js
+```
 
-Doing this allows for us to load the correct component in EE while in CE
-we can load a empty component that renders nothing. This code **should**
-exist in the CE repository as well as the EE repository.
+Feature guarding `licensed_feature_available?` and `License.feature_available?` typical
+occurs in the controller, as described in the [backend guide](#ee-only-features).
+
+#### Test EE-only features
+
+Add your EE tests to `ee/spec/frontend/` following the same directory structure you use for CE.
+
+### Extend CE features with EE frontend code
+
+Use the [`push_licensed_feature`](#guard-your-ee-feature) to guard frontend features that extend
+existing views:
+
+```ruby
+# ee/app/controllers/ee/admin/my_controller.rb
+before_action do
+  push_licensed_feature(:my_feature_name) # for global features
+end
+```
+
+```ruby
+# ee/app/controllers/ee/group/my_controller.rb
+before_action do
+  push_licensed_feature(:my_feature_name, @group) # for group pages
+end
+```
+
+```ruby
+# ee/app/controllers/ee/project/my_controller.rb
+before_action do
+  push_licensed_feature(:my_feature_name, @group) # for group pages
+  push_licensed_feature(:my_feature_name, @project) # for project pages
+end
+```
+
+Verify your feature appears in `gon.licensed_features` in the browser console.
+
+#### Extend Vue applications with EE Vue components
+
+EE licensed features that enhance existing functionality in the UI add new
+elements or interactions to your Vue application as components.
+
+To separate template differences, use a child EE component to separate Vue template differences.
+You must import the EE component [asynchronously](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
+
+This allows GitLab to load the correct component in EE, while in CE GitLab loads an empty component
+that renders nothing. This code **must** exist in the CE repository, in addition to the EE repository.
+
+A CE component acts as the entry point to your EE feature. To add a EE component,
+locate it the `ee/` directory and add it with `import('ee_component/...')`:
 
 ```html
 <script>
+// app/assets/javascripts/feature/components/form.vue
+
 export default {
+  mixins: [glFeatureFlagMixin()],
   components: {
-    EEComponent: () => import('ee_component/components/test.vue'),
+    // Import an EE component from CE
+    MyEeComponent: () => import('ee_component/components/my_ee_component.vue'),
   },
 };
 </script>
 
 <template>
   <div>
-    <ee-component />
+    <!-- ... -->
+    <my-ee-component/>
+    <!-- ... -->
   </div>
 </template>
 ```
 
-#### For JS code that is EE only, like props, computed properties, methods, etc
+Check `glFeatures` to ensure that the Vue components are guarded. The components render only when
+the license is present.
 
-- Please do not use mixins unless ABSOLUTELY NECESSARY. Please try to find an alternative pattern.
+```html
+<script>
+// ee/app/assets/javascripts/feature/components/special_component.vue
+
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
+export default {
+  mixins: [glFeatureFlagMixin()],
+  computed: {
+    shouldRenderComponent() {
+      // Comes from gon.licensed_features as a camel-case version of `my_feature_name`
+      return this.glFeatures.myFeatureName;
+    }
+  },
+};
+</script>
+
+<template>
+  <div v-if="shouldRenderComponent">
+    <!-- EE licensed feature UI -->
+  </div>
+</template>
+```
+
+NOTE:
+Do not use mixins unless ABSOLUTELY NECESSARY. Try to find an alternative pattern.
 
 ##### Recommended alternative approach (named/scoped slots)
 
@@ -1138,10 +1259,64 @@ export default {
 **For EE components that need different results for the same computed values, we can pass in props to the CE wrapper as seen in the example.**
 
 - **EE Child components**
-  - Since we are using the asynchronous loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
+  - Since we are using the asynchronous loading to check which component to load, we'd still use the component's name, check [this example](#extend-vue-applications-with-ee-vue-components).
 
 - **EE extra HTML**
   - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import
+
+#### Extend other JS code
+
+To extend JS files, complete the following steps:
+
+1. Use the `ee_else_ce` helper, where that EE only code must be inside the `ee/` folder.
+   1. Create an EE file with only the EE, and extend the CE counterpart.
+   1. For code inside functions that can't be extended, move the code to a new file and use `ee_else_ce` helper:
+
+```javascript
+  import eeCode from 'ee_else_ce/ee_code';
+
+  function test() {
+    const test = 'a';
+
+    eeCode();
+
+    return test;
+  }
+```
+
+In some cases, you'll need to extend other logic in your application. To extend your JS
+modules, create an EE version of the file and extend it with your custom logic:
+
+```javascript
+// app/assets/javascripts/feature/utils.js
+
+export const myFunction = () => {
+  // ...
+};
+
+// ... other CE functions ...
+```
+
+```javascript
+// ee/app/assets/javascripts/feature/utils.js
+import {
+  myFunction as ceMyFunction,
+} from '~/feature/utils';
+
+/* eslint-disable import/export */
+
+// Export same utils as CE
+export * from '~/feature/utils';
+
+// Only override `myFunction`
+export const myFunction = () => {
+  const result = ceMyFunction();
+  // add EE feature logic
+  return result;
+};
+
+/* eslint-enable import/export */
+```
 
 #### Testing modules using EE/CE aliases
 
@@ -1185,29 +1360,7 @@ describe('ComponentUnderTest', () => {
 
 ```
 
-### Non Vue Files
-
-For regular JS files, the approach is similar.
-
-1. We keep using the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) helper, this means that EE only code should be inside the `ee/` folder.
-   1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
-   1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
-
-#### Example
-
-```javascript
-  import eeCode from 'ee_else_ce/ee_code';
-
-  function test() {
-    const test = 'a';
-
-    eeCode();
-
-    return test;
-  }
-```
-
-## SCSS code in `assets/stylesheets`
+#### SCSS code in `assets/stylesheets`
 
 If a component you're adding styles for is limited to EE, it is better to have a
 separate SCSS file in an appropriate directory within `app/assets/stylesheets`.
@@ -1218,9 +1371,8 @@ styles are usually kept in a stylesheet that is common for both CE and EE, and i
 to isolate such ruleset from rest of CE rules (along with adding comment describing the same)
 to avoid conflicts during CE to EE merge.
 
-### Bad
-
 ```scss
+// Bad
 .section-body {
   .section-title {
     background: $gl-header-color;
@@ -1234,9 +1386,8 @@ to avoid conflicts during CE to EE merge.
 }
 ```
 
-### Good
-
 ```scss
+// Good
 .section-body {
   .section-title {
     background: $gl-header-color;
@@ -1252,7 +1403,7 @@ to avoid conflicts during CE to EE merge.
 // EE-specific end
 ```
 
-## GitLab-svgs
+### GitLab-svgs
 
 Conflicts in `app/assets/images/icons.json` or `app/assets/images/icons.svg` can
 be resolved simply by regenerating those assets with

@@ -262,8 +262,8 @@ export default {
 
         const selectedUsers = this.preselectedItems
           .filter(({ type }) => type === LEVEL_TYPES.USER)
-          .map(({ user_id, name, username, avatar_url, type }) => ({
-            id: user_id,
+          .map(({ user_id: id, name, username, avatar_url, type }) => ({
+            id,
             name,
             username,
             avatar_url,

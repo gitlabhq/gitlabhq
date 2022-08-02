@@ -564,7 +564,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/iterating_tables_in_batches.md @aqualls
 /doc/development/kubernetes.md @sselhorn
 /doc/development/lfs.md @aqualls
-/doc/development/licensed_feature_availability.md @sselhorn
+/doc/development/ee_features.md @fneill
 /doc/development/logging.md @msedlakjakubowski
 /doc/development/maintenance_mode.md @axil
 /doc/development/new_fe_guide/modules/widget_extensions.md @aqualls

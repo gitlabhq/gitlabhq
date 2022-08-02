@@ -153,9 +153,9 @@ describe('Author Select', () => {
     });
 
     it('has the correct props', async () => {
-      const [{ avatar_url, username }] = authors;
+      const [{ avatar_url: avatarUrl, username }] = authors;
       const result = {
-        avatarUrl: avatar_url,
+        avatarUrl,
         secondaryText: username,
         isChecked: true,
       };

@@ -6017,7 +6017,6 @@ Layout/LineLength:
     - 'spec/services/repository_archive_clean_up_service_spec.rb'
     - 'spec/services/resource_access_tokens/create_service_spec.rb'
     - 'spec/services/resource_access_tokens/revoke_service_spec.rb'
-    - 'spec/services/resource_events/change_labels_service_spec.rb'
     - 'spec/services/resource_events/change_state_service_spec.rb'
     - 'spec/services/resource_events/synthetic_milestone_notes_builder_service_spec.rb'
     - 'spec/services/search/global_service_spec.rb'

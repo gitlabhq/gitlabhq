@@ -16,8 +16,8 @@ export const gqClient = createGqClient(
 );
 
 /**
- * Metrics loaded from project-defined dashboards do not have a metric_id.
- * This method creates a unique ID combining metric_id and id, if either is present.
+ * Metrics loaded from project-defined dashboards do not have a metricId.
+ * This method creates a unique ID combining metricId and id, if either is present.
  * This is hopefully a temporary solution until BE processes metrics before passing to FE
  *
  * Related:
@@ -25,12 +25,11 @@ export const gqClient = createGqClient(
  * https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27447
  *
  * @param {Object} metric - metric
- * @param {Number} metric.metric_id - Database metric id
+ * @param {Number} metric.metricId - Database metric id
  * @param {String} metric.id - User-defined identifier
  * @returns {Object} - normalized metric with a uniqueID
  */
-// eslint-disable-next-line camelcase
-export const uniqMetricsId = ({ metric_id, id }) => `${metric_id || NOT_IN_DB_PREFIX}_${id}`;
+export const uniqMetricsId = ({ metricId, id }) => `${metricId || NOT_IN_DB_PREFIX}_${id}`;
 
 /**
  * Project path has a leading slash that doesn't work well
@@ -100,19 +99,28 @@ export const parseAnnotationsResponse = (response) => {
  * @returns {Object}
  */
 const mapToMetricsViewModel = (metrics) =>
-  metrics.map(({ label, id, metric_id, query_range, prometheus_endpoint_path, ...metric }) => ({
-    label,
-    queryRange: query_range,
-    prometheusEndpointPath: prometheus_endpoint_path,
-    metricId: uniqMetricsId({ metric_id, id }),
+  metrics.map(
+    ({
+      label,
+      id,
+      metric_id: metricId,
+      query_range: queryRange,
+      prometheus_endpoint_path: prometheusEndpointPath,
+      ...metric
+    }) => ({
+      label,
+      queryRange,
+      prometheusEndpointPath,
+      metricId: uniqMetricsId({ metricId, id }),
 
-    // metric data
-    loading: false,
-    result: null,
-    state: null,
+      // metric data
+      loading: false,
+      result: null,
+      state: null,
 
-    ...metric,
-  }));
+      ...metric,
+    }),
+  );
 
 /**
  * Maps X-axis view model
@@ -169,26 +177,26 @@ export const mapPanelToViewModel = ({
   id = null,
   title = '',
   type,
-  x_axis = {}, // eslint-disable-line camelcase
-  x_label,
-  y_label,
-  y_axis = {}, // eslint-disable-line camelcase
+  x_axis: xAxisBase = {},
+  x_label: xLabel,
+  y_label: yLabel,
+  y_axis: yAxisBase = {},
   field,
   metrics = [],
   links = [],
-  min_value,
-  max_value,
+  min_value: minValue,
+  max_value: maxValue,
   split,
   thresholds,
   format,
 }) => {
   // Both `x_axis.name` and `x_label` are supported for now
   // https://gitlab.com/gitlab-org/gitlab/issues/210521
-  const xAxis = mapXAxisToViewModel({ name: x_label, ...x_axis }); // eslint-disable-line camelcase
+  const xAxis = mapXAxisToViewModel({ name: xLabel, ...xAxisBase });
 
   // Both `y_axis.name` and `y_label` are supported for now
   // https://gitlab.com/gitlab-org/gitlab/issues/208385
-  const yAxis = mapYAxisToViewModel({ name: y_label, ...y_axis }); // eslint-disable-line camelcase
+  const yAxis = mapYAxisToViewModel({ name: yLabel, ...yAxisBase });
 
   return {
     id,
@@ -199,8 +207,8 @@ export const mapPanelToViewModel = ({
     yAxis,
     xAxis,
     field,
-    minValue: min_value,
-    maxValue: max_value,
+    minValue,
+    maxValue,
     split,
     thresholds,
     format,
@@ -295,13 +303,13 @@ export const mapToDashboardViewModel = ({
   dashboard = '',
   templating = {},
   links = [],
-  panel_groups = [], // eslint-disable-line camelcase
+  panel_groups: panelGroups = [],
 }) => {
   return {
     dashboard,
     variables: mergeURLVariables(parseTemplatingVariables(templating.variables)),
     links: links.map(mapLinksToViewModel),
-    panelGroups: panel_groups.map(mapToPanelGroupViewModel),
+    panelGroups: panelGroups.map(mapToPanelGroupViewModel),
   };
 };
 

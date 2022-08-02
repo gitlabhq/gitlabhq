@@ -102,7 +102,7 @@ Two scenarios exist where schema items are exempt from the deprecation process,
 and can be removed or changed at any time without notice. These are schema items that either:
 
 - Use the [`feature_flag` property](#feature_flag-property) _and_ the flag is disabled by default.
-- Are [marked as alpha](#marking-schema-items-as-alpha).
+- Are [marked as alpha](#mark-schema-items-as-alpha).
 
 ## Global IDs
 
@@ -539,7 +539,7 @@ return value of the field. This can be done in the resolver, in the
 type, or even in a model method, depending on your preference and
 situation.
 
-Consider also [marking the field as Alpha](#marking-schema-items-as-alpha)
+Consider also [marking the field as Alpha](#mark-schema-items-as-alpha)
 while the value of the field can be toggled. You can
 [change or remove Alpha fields at any time](#breaking-change-exemptions) without needing to deprecate them.
 This also signals to consumers of the public GraphQL API that the field is not
@@ -586,7 +586,7 @@ To deprecate a schema item in GraphQL:
 See also:
 
 - [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
-- [Marking schema items as Alpha](#marking-schema-items-as-alpha).
+- [Marking schema items as Alpha](#mark-schema-items-as-alpha).
 - [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#queries-that-used-a-deprecated-field).
 
 ### Create a deprecation issue
@@ -746,18 +746,22 @@ aware of the support.
 
 The documentation will mention that the old Global ID style is now deprecated.
 
-## Marking schema items as Alpha
+## Mark schema items as alpha
 
-Fields, arguments, enum values, and mutations can be marked as being in
+You can mark fields, arguments, enum values, and mutations as
 [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga).
 
-An item marked as "alpha" is exempt from the deprecation process and can be removed
-at any time without notice.
+An item marked as alpha is exempt from the deprecation process and can be removed
+at any time without notice. This way, you can add an item that might be
+subject to change and is not ready for public use.
 
-This leverages GraphQL deprecations to cause the schema item to appear as deprecated,
-and will be described as being in "alpha" in our generated docs and its GraphQL description.
+You can only mark a new item as alpha. This item then appears as deprecated
+in our generated docs and its GraphQL description. You cannot mark an existing item
+as alpha because it's already public.
 
-To mark a schema item as being in "alpha", use the `alpha:` keyword.
+Like all deprecated schema items, you can test an `alpha` field in [GraphiQL](../api/graphql/index.md#graphiql). However, be aware that the GraphiQL autocomplete editor doesn't suggest deprecated fields.
+
+To mark a schema item as alpha, use the `alpha:` keyword.
 You must provide the `milestone:` that introduced the alpha item.
 
 For example:

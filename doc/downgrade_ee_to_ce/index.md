@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Downgrading from EE to CE
 
 If you ever decide to downgrade your Enterprise Edition back to the
-Community Edition, there are a few steps you need take beforehand. On Omnibus GitLab
+Community Edition, there are a few steps you need to take beforehand. On Omnibus GitLab
 installations, these steps are made before installing the CE package on top of
 the current EE package. On installations from source, they are done before
 you change remotes and fetch the latest CE code.

@@ -19,24 +19,22 @@ export const toYmd = (date) => dateFormat(date, dateFormats.isoDate);
  * @returns {Object}
  */
 export const extractFilterQueryParameters = (url = '') => {
-  /* eslint-disable camelcase */
   const {
-    source_branch_name = null,
-    target_branch_name = null,
-    author_username = null,
-    milestone_title = null,
-    assignee_username = [],
-    label_name = [],
+    source_branch_name: selectedSourceBranch = null,
+    target_branch_name: selectedTargetBranch = null,
+    author_username: selectedAuthor = null,
+    milestone_title: selectedMilestone = null,
+    assignee_username: selectedAssigneeList = [],
+    label_name: selectedLabelList = [],
   } = urlQueryToFilter(url);
-  /* eslint-enable camelcase */
 
   return {
-    selectedSourceBranch: source_branch_name,
-    selectedTargetBranch: target_branch_name,
-    selectedAuthor: author_username,
-    selectedMilestone: milestone_title,
-    selectedAssigneeList: assignee_username,
-    selectedLabelList: label_name,
+    selectedSourceBranch,
+    selectedTargetBranch,
+    selectedAuthor,
+    selectedMilestone,
+    selectedAssigneeList,
+    selectedLabelList,
   };
 };
 

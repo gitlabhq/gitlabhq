@@ -32,7 +32,6 @@ module Gitlab
         issues_edit
         pipeline_authoring
         quickactions
-        search
         user_packages
       ].freeze
 
@@ -43,6 +42,7 @@ module Gitlab
         importer
         incident_management_alerts
         pipeline_authoring
+        search
         secure
         snippets
         source_code

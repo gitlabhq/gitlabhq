@@ -166,7 +166,7 @@ install, and upgrade your Docker-based GitLab installation:
    GitLab:
 
    ```shell
-   docker-compose up -d
+   docker compose up -d
    ```
 
 NOTE:
@@ -510,8 +510,8 @@ To upgrade GitLab that was [installed using Docker Compose](#install-gitlab-usin
 1. Download the newest release and upgrade your GitLab instance:
 
    ```shell
-   docker-compose pull
-   docker-compose up -d
+   docker compose pull
+   docker compose up -d
    ```
 
    If you have used [tags](#use-tagged-versions-of-gitlab) instead, you'll need

@@ -22,14 +22,12 @@ class MockObserver {
 
   takeRecords() {}
 
-  // eslint-disable-next-line camelcase
   $_triggerObserve(node, { entry = {}, options = {} } = {}) {
     if (this.$_hasObserver(node, options)) {
       this.$_cb([{ target: node, ...entry }]);
     }
   }
 
-  // eslint-disable-next-line camelcase
   $_hasObserver(node, options = {}) {
     return this.$_observers.some(
       ([obvNode, obvOptions]) => node === obvNode && isMatch(options, obvOptions),

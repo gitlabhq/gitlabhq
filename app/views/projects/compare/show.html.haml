@@ -17,11 +17,11 @@
     paginate_diffs: true,
     paginate_diffs_per_page: Projects::CompareController::COMMIT_DIFFS_PER_PAGE
 - else
-  .card.gl-bg-gray-50.gl-border-none.gl-p-2
-    .center
+  = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-gray-50 gl-mb-5 gl-border-none gl-text-center" }) do |c|
+    - c.body do
       %h4
         = s_("CompareBranches|There isn't anything to compare.")
-      %p.slead
+      %p.gl-mb-4.gl-line-height-24
         - if params[:to] == params[:from]
           - source_branch = capture do
             %span.ref-name= params[:from]

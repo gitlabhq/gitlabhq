@@ -16,6 +16,8 @@ On this page we detail several best practices to improve performance with these 
 
 It's *strongly* recommended in any Git system that binary or blob files (for example, packages, audio, video, graphics, etc.) are stored as Large File Storage (LFS) objects. In such setup, the Objects are stored elsewhere, such as in Object Storage, and this can reduce the repository size significantly, thus improving performance.
 
+To analyze if the repository has these sorts of objects, it's recommended to run [`git-sizer`](https://github.com/github/git-sizer) to get a detailed analysis. This tool shows in detail what makes up the repository as well as highlights any areas of concern.
+
 Refer to the [Git LFS documentation for more information](../../../topics/git/lfs/index.md).
 
 ## Gitaly Pack Objects Cache
@@ -32,7 +34,7 @@ In these types of setups it's recommended that the GitLab environment used match
 
 ## Gitaly Cluster
 
-Gitaly Cluster can notably improve large repository performance as it holds multiple replicas of the repository across several nodes. As a result, Gitaly Cluster can load balance read requests against those repositories and is also fault tolerant.
+Gitaly Cluster can notably improve large repository performance as it holds multiple replicas of the repository across several nodes. As a result, Gitaly Cluster can load balance read requests against those repositories and is also fault-tolerant.
 
 It's recommended for large repositories, however, Gitaly Cluster is a large solution with additional complexity of setup, and management. Refer to the [Gitaly Cluster documentation for more information](../../../administration/gitaly/index.md), specifically the [Before deploying Gitaly Cluster](../../../administration/gitaly/index.md#before-deploying-gitaly-cluster) section.
 

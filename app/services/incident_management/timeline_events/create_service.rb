@@ -48,6 +48,26 @@ module IncidentManagement
 
           new(incident, user, note: note, occurred_at: occurred_at, action: action, auto_created: true).execute
         end
+
+        def change_labels(incident, user, added_labels: [], removed_labels: [])
+          return if Feature.disabled?(:incident_timeline_events_from_labels, incident.project)
+
+          if added_labels.blank? && removed_labels.blank?
+            return ServiceResponse.error(message: _('There are no changed labels'))
+          end
+
+          labels_note = -> (verb, labels) {
+            "#{verb} #{labels.map(&:to_reference).join(' ')} #{'label'.pluralize(labels.count)}" if labels.present?
+          }
+
+          added_note = labels_note.call('added', added_labels)
+          removed_note = labels_note.call('removed', removed_labels)
+          note = "@#{user.username} #{[added_note, removed_note].compact.join(' and ')}"
+          occurred_at = incident.updated_at
+          action = 'label'
+
+          new(incident, user, note: note, occurred_at: occurred_at, action: action, auto_created: true).execute
+        end
       end
 
       def execute

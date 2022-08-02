@@ -24,7 +24,7 @@ module Mutations
         check_spam_action_response!(issue)
 
         {
-          issue: issue,
+          issue: issue.reset,
           errors: errors_on_object(issue)
         }
       end

@@ -34,6 +34,17 @@ class WorkItem < Issue
 
   private
 
+  override :parent_link_confidentiality
+  def parent_link_confidentiality
+    if confidential? && work_item_children.public_only.exists?
+      errors.add(:confidential, _('confidential parent can not be used if there are non-confidential children.'))
+    end
+
+    if !confidential? && work_item_parent&.confidential?
+      errors.add(:confidential, _('associated parent is confidential and can not have non-confidential children.'))
+    end
+  end
+
   def record_create_action
     super
 

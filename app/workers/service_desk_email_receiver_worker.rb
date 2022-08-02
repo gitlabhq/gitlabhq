@@ -9,9 +9,6 @@ class ServiceDeskEmailReceiverWorker < EmailReceiverWorker # rubocop:disable Sca
   urgency :high
   sidekiq_options retry: 3
 
-  # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1263
-  tags :needs_own_queue
-
   def should_perform?
     ::Gitlab::ServiceDeskEmail.enabled?
   end

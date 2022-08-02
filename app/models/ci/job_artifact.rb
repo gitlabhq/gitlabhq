@@ -52,7 +52,8 @@ module Ci
       cluster_applications: 'gl-cluster-applications.json', # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
       requirements: 'requirements.json',
       coverage_fuzzing: 'gl-coverage-fuzzing.json',
-      api_fuzzing: 'gl-api-fuzzing-report.json'
+      api_fuzzing: 'gl-api-fuzzing-report.json',
+      cyclonedx: 'gl-sbom.cdx.zip'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -92,7 +93,8 @@ module Ci
       terraform: :raw,
       requirements: :raw,
       coverage_fuzzing: :raw,
-      api_fuzzing: :raw
+      api_fuzzing: :raw,
+      cyclonedx: :zip
     }.freeze
 
     DOWNLOADABLE_TYPES = %w[
@@ -116,6 +118,7 @@ module Ci
       secret_detection
       requirements
       cluster_image_scanning
+      cyclonedx
     ].freeze
 
     TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
@@ -207,7 +210,8 @@ module Ci
       browser_performance: 24, ## EE-specific
       load_performance: 25, ## EE-specific
       api_fuzzing: 26, ## EE-specific
-      cluster_image_scanning: 27 ## EE-specific
+      cluster_image_scanning: 27, ## EE-specific
+      cyclonedx: 28 ## EE-specific
     }
 
     # `file_location` indicates where actual files are stored.

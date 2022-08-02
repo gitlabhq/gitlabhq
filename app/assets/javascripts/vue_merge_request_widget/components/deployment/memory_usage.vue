@@ -80,22 +80,26 @@ export default {
     },
     computeGraphData(metrics, deploymentTime) {
       this.loadingMetrics = false;
-      const { memory_before, memory_after, memory_values } = metrics;
+      const {
+        memory_before: memoryBefore,
+        memory_after: memoryAfter,
+        memory_values: memoryValues,
+      } = metrics;
 
       // Both `memory_before` and `memory_after` objects
       // have peculiar structure where accessing only a specific
       // index yeilds correct value that we can use to show memory delta.
-      if (memory_before.length > 0) {
-        this.memoryFrom = this.getMegabytes(memory_before[0].value[1]);
+      if (memoryBefore.length > 0) {
+        this.memoryFrom = this.getMegabytes(memoryBefore[0].value[1]);
       }
 
-      if (memory_after.length > 0) {
-        this.memoryTo = this.getMegabytes(memory_after[0].value[1]);
+      if (memoryAfter.length > 0) {
+        this.memoryTo = this.getMegabytes(memoryAfter[0].value[1]);
       }
 
-      if (memory_values.length > 0) {
+      if (memoryValues.length > 0) {
         this.hasMetrics = true;
-        this.memoryMetrics = memory_values[0].values;
+        this.memoryMetrics = memoryValues[0].values;
         this.deploymentTime = deploymentTime;
       }
     },

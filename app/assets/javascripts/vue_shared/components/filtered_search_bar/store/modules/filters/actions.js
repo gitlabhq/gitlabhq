@@ -30,12 +30,12 @@ export function fetchBranches({ commit, state }, search = '') {
     });
 }
 
-export const fetchMilestones = ({ commit, state }, search_title = '') => {
+export const fetchMilestones = ({ commit, state }, searchTitle = '') => {
   commit(types.REQUEST_MILESTONES);
   const { milestonesEndpoint } = state;
 
   return axios
-    .get(milestonesEndpoint, { params: { search_title } })
+    .get(milestonesEndpoint, { params: { search_title: searchTitle } })
     .then((response) => {
       commit(types.RECEIVE_MILESTONES_SUCCESS, response.data);
       return response;

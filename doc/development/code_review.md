@@ -176,7 +176,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. I have tested this MR in [all supported browsers](../install/requirements.md#supported-web-browsers), or determined that this testing is not needed.
 1. I have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or I have decided that this does not apply.
 1. I have properly separated EE content from FOSS, or this MR is FOSS only.
-    - [Where should EE code go?](ee_features.md#separation-of-ee-code)
+    - [Where should EE code go?](ee_features.md)
 1. I have considered that existing data may be surprisingly varied. For example, a new model validation can break existing records. Consider making validation on existing data optional rather than required if you haven't confirmed that existing data will pass validation.
 
 ##### Performance, reliability, and availability

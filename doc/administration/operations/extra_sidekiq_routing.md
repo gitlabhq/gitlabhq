@@ -179,15 +179,3 @@ sidekiq['routing_rules'] = [
 
 These queues must also be included in at least one [Sidekiq
 queue group](extra_sidekiq_processes.md#start-multiple-processes).
-
-The following table shows the workers that should have their own queue:
-
-| Worker name | Queue name | GitLab issue |
-| --- | --- | --- |
-| `EmailReceiverWorker` | `email_receiver` | [`gitlab-com/gl-infra/scalability#1263`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1263) |
-| `ServiceDeskEmailReceiverWorker` | `service_desk_email_receiver` | [`gitlab-com/gl-infra/scalability#1263`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1263) |
-| `ProjectImportScheduleWorker` | `project_import_schedule` | [`gitlab-org/gitlab#340630`](https://gitlab.com/gitlab-org/gitlab/-/issues/340630) |
-| `HashedStorage::MigratorWorker` | `hashed_storage:hashed_storage_migrator` | [`gitlab-org/gitlab#340629`](https://gitlab.com/gitlab-org/gitlab/-/issues/340629) |
-| `HashedStorage::ProjectMigrateWorker` | `hashed_storage:hashed_storage_project_migrate` | [`gitlab-org/gitlab#340629`](https://gitlab.com/gitlab-org/gitlab/-/issues/340629) |
-| `HashedStorage::ProjectRollbackWorker` | `hashed_storage:hashed_storage_project_rollback` | [`gitlab-org/gitlab#340629`](https://gitlab.com/gitlab-org/gitlab/-/issues/340629) |
-| `HashedStorage::RollbackerWorker` | `hashed_storage:hashed_storage_rollbacker` | [`gitlab-org/gitlab#340629`](https://gitlab.com/gitlab-org/gitlab/-/issues/340629) |

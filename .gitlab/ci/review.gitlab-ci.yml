@@ -23,12 +23,42 @@ review-cleanup:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 
+review-app-pipeline-generate:
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
+  stage: prepare
+  extends:
+    - .review:rules:start-review-app-pipeline
+  artifacts:
+    expire_in: 7d
+    paths:
+      - ${CHANGES_DIFFS_DIR}/*
+      - review-app-pipeline.yml
+  variables:
+    CHANGES_DIFFS_DIR: tmp/diffs
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+    - tooling/bin/find_change_diffs ${CHANGES_DIFFS_DIR}
+  script:
+    - exit_code=0 && tooling/bin/qa/run_qa_check ${CHANGES_DIFFS_DIR} || exit_code=$?
+    - |
+      if [ $exit_code -eq 0 ]; then
+        echo "Review App will use the full pipeline"
+        cp .gitlab/ci/review-apps/main.gitlab-ci.yml review-app-pipeline.yml
+      elif [ $exit_code -eq 2 ]; then
+        echo "Skip Review App because the MR includes only quarantine changes"
+        cp .gitlab/ci/review-apps/skip-qa.gitlab-ci.yml review-app-pipeline.yml
+      else
+        exit $exit_code
+      fi
+
 start-review-app-pipeline:
   extends:
     - .review:rules:start-review-app-pipeline
   resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: review
   needs:
+    - review-app-pipeline-generate
     - job: build-assets-image
       artifacts: false
   # These variables are set in the pipeline schedules.
@@ -39,7 +69,8 @@ start-review-app-pipeline:
     DAST_RUN: $DAST_RUN
   trigger:
     include:
-      - local: .gitlab/ci/review-apps/main.gitlab-ci.yml
+      - artifact: review-app-pipeline.yml
+        job: review-app-pipeline-generate
     strategy: depend
 
 danger-review:

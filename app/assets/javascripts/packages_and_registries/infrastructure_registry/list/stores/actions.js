@@ -26,8 +26,7 @@ export const receivePackagesListSuccess = ({ commit }, { data, headers }) => {
 export const requestPackagesList = ({ dispatch, state }, params = {}) => {
   dispatch('setLoading', true);
 
-  // eslint-disable-next-line camelcase
-  const { page = DEFAULT_PAGE, per_page = DEFAULT_PAGE_SIZE } = params;
+  const { page = DEFAULT_PAGE, per_page: perPage = DEFAULT_PAGE_SIZE } = params;
   const { sort, orderBy } = state.sorting;
   const type = state.config.forceTerraform
     ? TERRAFORM_SEARCH_TYPE
@@ -38,7 +37,7 @@ export const requestPackagesList = ({ dispatch, state }, params = {}) => {
   const apiMethod = state.config.isGroupPage ? 'groupPackages' : 'projectPackages';
 
   return Api[apiMethod](state.config.resourceId, {
-    params: { page, per_page, sort, order_by: orderBy, ...packageFilters },
+    params: { page, per_page: perPage, sort, order_by: orderBy, ...packageFilters },
   })
     .then(({ data, headers }) => {
       dispatch('receivePackagesListSuccess', { data, headers });

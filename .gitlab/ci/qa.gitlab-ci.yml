@@ -97,7 +97,7 @@ populate-qa-tests-var:
     - tooling/bin/find_change_diffs ${CHANGES_DIFFS_DIR}
   script:
     - 'echo "QA_TESTS: $QA_TESTS"'
-    - exit_code=0 && tooling/bin/qa/package_and_qa_check ${CHANGES_DIFFS_DIR} || exit_code=$?
+    - exit_code=0 && tooling/bin/qa/run_qa_check ${CHANGES_DIFFS_DIR} || exit_code=$?
     - echo $exit_code
     - |
       if [ $exit_code -eq 0 ]; then
@@ -105,7 +105,7 @@ populate-qa-tests-var:
       elif [ $exit_code -eq 1 ]; then
         exit 1
       else
-        echo "Downstream jobs will not be triggered because package_and_qa_check exited with code: $exit_code"
+        echo "Downstream jobs will not be triggered because run_qa_check exited with code: $exit_code"
       fi
   # These jobs often time out, so temporarily use private runners and a long timeout: https://gitlab.com/gitlab-org/gitlab/-/issues/238563
   tags:

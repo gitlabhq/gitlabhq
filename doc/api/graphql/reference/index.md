@@ -19801,6 +19801,7 @@ Iteration ID wildcard values.
 | <a id="jobartifactfiletypecodequality"></a>`CODEQUALITY` | CODE QUALITY job artifact file type. |
 | <a id="jobartifactfiletypecontainer_scanning"></a>`CONTAINER_SCANNING` | CONTAINER SCANNING job artifact file type. |
 | <a id="jobartifactfiletypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | COVERAGE FUZZING job artifact file type. |
+| <a id="jobartifactfiletypecyclonedx"></a>`CYCLONEDX` | CYCLONEDX job artifact file type. |
 | <a id="jobartifactfiletypedast"></a>`DAST` | DAST job artifact file type. |
 | <a id="jobartifactfiletypedependency_scanning"></a>`DEPENDENCY_SCANNING` | DEPENDENCY SCANNING job artifact file type. |
 | <a id="jobartifactfiletypedotenv"></a>`DOTENV` | DOTENV job artifact file type. |

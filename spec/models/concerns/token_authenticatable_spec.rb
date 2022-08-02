@@ -126,7 +126,7 @@ RSpec.describe PersonalAccessToken, 'TokenAuthenticatable' do
     end
   end
 
-  let(:token_value) { 'token' }
+  let(:token_value) { Devise.friendly_token }
   let(:token_digest) { Gitlab::CryptoHelper.sha256(token_value) }
   let(:user) { create(:user) }
   let(:personal_access_token) do

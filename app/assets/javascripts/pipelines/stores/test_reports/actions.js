@@ -30,7 +30,6 @@ export const fetchTestSuite = ({ state, commit, dispatch }, index) => {
 
   dispatch('toggleLoading');
 
-  // eslint-disable-next-line camelcase
   const { build_ids = [] } = state.testReports?.test_suites?.[index] || {};
   // Replacing `/:suite_name.json` with the name of the suite. Including the extra characters
   // to ensure that we replace exactly the template part of the URL string

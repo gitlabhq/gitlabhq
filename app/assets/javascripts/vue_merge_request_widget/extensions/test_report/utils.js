@@ -51,14 +51,14 @@ export const recentFailuresTextBuilder = (summary = {}) => {
   return i18n.recentFailureSummary(recentlyFailed, failed);
 };
 
-export const reportSubTextBuilder = ({ suite_errors, summary }) => {
-  if (suite_errors?.head || suite_errors?.base) {
+export const reportSubTextBuilder = ({ suite_errors: suiteErrors, summary }) => {
+  if (suiteErrors?.head || suiteErrors?.base) {
     const errors = [];
-    if (suite_errors?.head) {
-      errors.push(`${i18n.headReportParsingError} ${suite_errors.head}`);
+    if (suiteErrors?.head) {
+      errors.push(`${i18n.headReportParsingError} ${suiteErrors.head}`);
     }
-    if (suite_errors?.base) {
-      errors.push(`${i18n.baseReportParsingError} ${suite_errors.base}`);
+    if (suiteErrors?.base) {
+      errors.push(`${i18n.baseReportParsingError} ${suiteErrors.base}`);
     }
     return errors.join('<br />');
   }

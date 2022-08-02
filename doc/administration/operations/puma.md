@@ -246,7 +246,7 @@ automatically, due to differences between the two application servers.
 To switch from Unicorn to Puma:
 
 1. Determine suitable Puma [worker and thread settings](../../install/requirements.md#puma-settings).
-1. Convert any custom Unicorn settings to Puma.
+1. Convert any custom Unicorn settings to Puma in `/etc/gitlab/gitlab.rb`.
 
    The table below summarizes which Unicorn configuration keys correspond to those
    in Puma when using the Linux package, and which ones have no corresponding counterpart.

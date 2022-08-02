@@ -71,7 +71,7 @@ Consult these topics for information on contributing to specific GitLab features
 
 - [Developing against interacting components or features](interacting_components.md)
 - [Manage feature flags](feature_flags/index.md)
-- [Licensed feature availability](licensed_feature_availability.md)
+- [Implementing Enterprise Edition features](ee_features.md)
 - [Accessing session data](session.md)
 - [How to dump production data to staging](db_dump.md)
 - [Geo development](geo.md)

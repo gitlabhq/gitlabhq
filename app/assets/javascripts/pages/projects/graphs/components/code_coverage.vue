@@ -194,6 +194,7 @@ export default {
       :data="chartData"
       :option="chartOptions"
       :format-tooltip-text="formatTooltipText"
+      responsive
     >
       <template v-if="canShowData" #tooltip-title>
         {{ tooltipTitle }}

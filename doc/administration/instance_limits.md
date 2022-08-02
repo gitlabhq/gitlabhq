@@ -639,6 +639,7 @@ setting is used:
 | `ci_max_artifact_size_secret_detection`           | 0             |
 | `ci_max_artifact_size_terraform`                  | 5 MB ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37018) in GitLab 13.3) |
 | `ci_max_artifact_size_trace`                      | 0             |
+| `ci_max_artifact_size_cyclonedx`                  | 1 MB          |
 
 For example, to set the `ci_max_artifact_size_junit` limit to 10 MB on a self-managed
 installation, run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

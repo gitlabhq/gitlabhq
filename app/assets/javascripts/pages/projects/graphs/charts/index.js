@@ -55,6 +55,7 @@ waitForCSSLoaded(() => {
         },
         attrs: {
           height: LANGUAGE_CHART_HEIGHT,
+          responsive: true,
         },
       });
     },
@@ -103,6 +104,9 @@ waitForCSSLoaded(() => {
           yAxisTitle: __('No. of commits'),
           xAxisType: 'category',
         },
+        attrs: {
+          responsive: true,
+        },
       });
     },
   });
@@ -136,6 +140,9 @@ waitForCSSLoaded(() => {
           yAxisTitle: __('No. of commits'),
           xAxisType: 'category',
         },
+        attrs: {
+          responsive: true,
+        },
       });
     },
   });
@@ -159,6 +166,9 @@ waitForCSSLoaded(() => {
           xAxisTitle: __('Hour (UTC)'),
           yAxisTitle: __('No. of commits'),
           xAxisType: 'category',
+        },
+        attrs: {
+          responsive: true,
         },
       });
     },

@@ -24,7 +24,7 @@ describe('incident utils', () => {
 
   describe('get event icon', () => {
     it('should display a matching event icon name', () => {
-      ['comment', 'issues', 'status'].forEach((name) => {
+      ['comment', 'issues', 'label', 'status'].forEach((name) => {
         expect(getEventIcon(name)).toBe(name);
       });
     });

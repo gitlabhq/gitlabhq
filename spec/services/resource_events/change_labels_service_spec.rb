@@ -5,11 +5,40 @@ require 'spec_helper'
 RSpec.describe ResourceEvents::ChangeLabelsService do
   let_it_be(:project) { create(:project) }
   let_it_be(:author)  { create(:user) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:incident) { create(:incident, project: project) }
 
-  let(:resource) { create(:issue, project: project) }
+  let(:resource) { issue }
 
-  describe '.change_labels' do
-    subject { described_class.new(resource, author).execute(added_labels: added, removed_labels: removed) }
+  describe '#execute' do
+    shared_examples 'creating timeline events' do
+      context 'when resource is not an incident' do
+        let(:resource) { issue }
+
+        it 'does not call create timeline events service' do
+          expect(IncidentManagement::TimelineEvents::CreateService).not_to receive(:change_labels)
+
+          change_labels
+        end
+      end
+
+      context 'when resource is an incident' do
+        let(:resource) { incident }
+
+        it 'calls create timeline events service with correct attributes' do
+          expect(IncidentManagement::TimelineEvents::CreateService)
+            .to receive(:change_labels)
+            .with(resource, author, added_labels: added, removed_labels: removed)
+            .and_call_original
+
+          change_labels
+        end
+      end
+    end
+
+    subject(:change_labels) do
+      described_class.new(resource, author).execute(added_labels: added, removed_labels: removed)
+    end
 
     let_it_be(:labels) { create_list(:label, 2, project: project) }
 
@@ -20,9 +49,9 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
     end
 
     it 'expires resource note etag cache' do
-      expect_any_instance_of(Gitlab::EtagCaching::Store)
-        .to receive(:touch)
-        .with("/#{resource.project.namespace.to_param}/#{resource.project.to_param}/noteable/issue/#{resource.id}/notes")
+      expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(
+        "/#{resource.project.namespace.to_param}/#{resource.project.to_param}/noteable/issue/#{resource.id}/notes"
+      )
 
       described_class.new(resource, author).execute(added_labels: [labels[0]])
     end
@@ -32,10 +61,12 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
       let(:removed) { [] }
 
       it 'creates new label event' do
-        expect { subject }.to change { resource.resource_label_events.count }.from(0).to(1)
+        expect { change_labels }.to change { resource.resource_label_events.count }.from(0).to(1)
 
         expect_label_event(resource.resource_label_events.first, labels[0], 'add')
       end
+
+      it_behaves_like 'creating timeline events'
     end
 
     context 'when removing a label' do
@@ -43,10 +74,12 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
       let(:removed) { [labels[1]] }
 
       it 'creates new label event' do
-        expect { subject }.to change { resource.resource_label_events.count }.from(0).to(1)
+        expect { change_labels }.to change { resource.resource_label_events.count }.from(0).to(1)
 
         expect_label_event(resource.resource_label_events.first, labels[1], 'remove')
       end
+
+      it_behaves_like 'creating timeline events'
     end
 
     context 'when both adding and removing labels' do
@@ -55,8 +88,10 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
 
       it 'creates all label events in a single query' do
         expect(ApplicationRecord).to receive(:legacy_bulk_insert).once.and_call_original
-        expect { subject }.to change { resource.resource_label_events.count }.from(0).to(2)
+        expect { change_labels }.to change { resource.resource_label_events.count }.from(0).to(2)
       end
+
+      it_behaves_like 'creating timeline events'
     end
 
     describe 'usage data' do
@@ -67,7 +102,7 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
         it 'tracks changed labels' do
           expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_label_changed_action)
 
-          subject
+          change_labels
         end
       end
 
@@ -75,9 +110,10 @@ RSpec.describe ResourceEvents::ChangeLabelsService do
         let(:resource) { create(:merge_request, source_project: project) }
 
         it 'does not track changed labels' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_label_changed_action)
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter)
+            .not_to receive(:track_issue_label_changed_action)
 
-          subject
+          change_labels
         end
       end
     end
