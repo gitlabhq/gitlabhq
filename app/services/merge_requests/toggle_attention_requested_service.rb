@@ -62,7 +62,7 @@ module MergeRequests
 
     def update_state(reviewer_or_assignee)
       reviewer_or_assignee&.update(state: reviewer_or_assignee&.attention_requested? ? :reviewed : :attention_requested,
-        updated_state_by: current_user)
+                                   updated_state_by: current_user)
     end
   end
 end

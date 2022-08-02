@@ -78,8 +78,8 @@ module MergeRequests
       lease_key = "mergeability_check:#{merge_request.id}"
 
       lease_opts = {
-        ttl:       1.minute,
-        retries:   retry_lease ? 10 : 0,
+        ttl: 1.minute,
+        retries: retry_lease ? 10 : 0,
         sleep_sec: retry_lease ? 1.second : 0
       }
 

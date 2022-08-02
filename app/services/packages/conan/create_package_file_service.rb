@@ -13,11 +13,11 @@ module Packages
 
       def execute
         package_file = package.package_files.build(
-          file:      file,
-          size:      params['file.size'],
+          file: file,
+          size: params['file.size'],
           file_name: params[:file_name],
           file_sha1: params['file.sha1'],
-          file_md5:  params['file.md5'],
+          file_md5: params['file.md5'],
           conan_file_metadatum_attributes: {
             recipe_revision: params[:recipe_revision],
             package_revision: params[:package_revision],

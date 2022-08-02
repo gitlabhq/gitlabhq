@@ -355,9 +355,6 @@ group :development do
   # Better errors handler
   gem 'better_errors', '~> 2.9.0'
 
-  # thin instead webrick
-  gem 'thin', '~> 1.8.0'
-
   gem 'sprite-factory', '~> 1.7'
 end
 

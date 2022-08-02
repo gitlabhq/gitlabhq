@@ -54,7 +54,7 @@ module Ci
         increment_monitoring_statistics(artifacts_count, artifacts_bytes)
 
         success(destroyed_artifacts_count: artifacts_count,
-          statistics_updates: affected_project_statistics)
+                statistics_updates: affected_project_statistics)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

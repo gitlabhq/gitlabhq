@@ -97,17 +97,17 @@ module Groups
 
       def notify_success
         @logger.info(
-          group_id:   group.id,
+          group_id: group.id,
           group_name: group.name,
-          message:    'Group Import/Export: Import succeeded'
+          message: 'Group Import/Export: Import succeeded'
         )
       end
 
       def notify_error
         @logger.error(
-          group_id:   group.id,
+          group_id: group.id,
           group_name: group.name,
-          message:    "Group Import/Export: Errors occurred, see '#{Gitlab::ErrorTracking::Logger.file_name}' for details"
+          message: "Group Import/Export: Errors occurred, see '#{Gitlab::ErrorTracking::Logger.file_name}' for details"
         )
       end
 

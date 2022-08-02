@@ -142,8 +142,8 @@ class FileUploader < GitlabUploader
 
   def to_h
     {
-      alt:      markdown_name,
-      url:      secure_url,
+      alt: markdown_name,
+      url: secure_url,
       markdown: markdown_link
     }
   end

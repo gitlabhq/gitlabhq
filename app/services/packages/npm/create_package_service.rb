@@ -87,11 +87,11 @@ module Packages
 
       def file_params
         {
-          file:      CarrierWaveStringFile.new(Base64.decode64(attachment['data'])),
-          size:      calculated_package_file_size,
+          file: CarrierWaveStringFile.new(Base64.decode64(attachment['data'])),
+          size: calculated_package_file_size,
           file_sha1: version_data[:dist][:shasum],
           file_name: package_file_name,
-          build:     params[:build]
+          build: params[:build]
         }
       end
 
