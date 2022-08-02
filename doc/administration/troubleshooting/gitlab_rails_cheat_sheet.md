@@ -306,7 +306,7 @@ Project.find_each do |p|
 end
 ```
 
-## Bulk update to change all the Jira integrations to Jira instance-level values
+### Bulk update to change all the Jira integrations to Jira instance-level values
 
 To change all Jira project to use the instance-level integration settings:
 
@@ -320,6 +320,25 @@ To change all Jira project to use the instance-level integration settings:
    ```
 
 1. Modify and save again the instance-level integration from the UI to propagate the changes to all the group-level and project-level integrations.
+
+### Check if Jira Cloud is linked to a namespace
+
+```ruby
+JiraConnectSubscription.where(namespace: Namespace.by_path('group/subgroup'))
+```
+
+### Check if Jira Cloud is linked to a project
+
+```ruby
+Project.find_by_full_path('path/to/project').jira_subscription_exists?
+```
+
+### Check if Jira Cloud URL is linked to any namespace
+
+```ruby
+installation = JiraConnectInstallation.find_by_base_url("https://customer_name.atlassian.net")
+installation.subscriptions
+```
 
 ### Bulk update to disable the Slack Notification service
 

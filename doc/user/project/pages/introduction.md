@@ -74,7 +74,7 @@ to your project's settings through the gear icon in the top right, and then
 navigating to **Pages**. Select the **Remove pages** button to delete your Pages
 website.
 
-![Remove pages](img/remove_pages.png)
+![Remove pages](img/remove_pages_v15_3.png)
 
 ## Subdomains of subdomains
 

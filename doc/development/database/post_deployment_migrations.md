@@ -25,6 +25,10 @@ This however skips post deployment migrations:
 SKIP_POST_DEPLOYMENT_MIGRATIONS=true bundle exec rake db:migrate
 ```
 
+For GitLab.com, these migrations are executed on a daily basis at the discretion of
+release managers through the
+[post-deploy migration pipeline](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md).
+
 ## Deployment Integration
 
 Say you're using Chef for deploying new versions of GitLab and you'd like to run

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'value stream analytics events' do
+  include CycleAnalyticsHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, public_builds: false) }
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }

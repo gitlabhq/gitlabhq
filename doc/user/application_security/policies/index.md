@@ -137,3 +137,13 @@ See [Scan result policies](scan-result-policies.md).
 
 See the [Category Direction page](https://about.gitlab.com/direction/protect/security_orchestration/)
 for more information on the product direction of security policies within GitLab.
+
+## Troubleshooting
+
+### Branch name does not follow the pattern `'update-policy-<timestamp>'`
+
+When you create a new security policy or change an existing policy, a new branch is automatically created with the branch name following the pattern `update-policy-<timestamp>`. For example: `update-policy-1659094451`.
+
+If you have group or instance push rules that do not allow branch name patterns that contain the text `update-policy-<timestamp>`, you will get an error that states `Branch name does not follow the pattern 'update-policy-<timestamp>'`. 
+
+The workaround is to amend your group or instance push rules to allow branches following the pattern `update-policy-` followed by an integer timestamp.

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Value Stream Analytics', :js do
+  include CycleAnalyticsHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:stage_table_selector) { '[data-testid="vsa-stage-table"]' }

@@ -572,7 +572,7 @@ and after that you also need two extra steps.
    postgresql['md5_auth_cidr_addresses'] = ['<primary_site_ip>/32', '<secondary_site_ip>/32']
 
    # Every secondary site needs to have its own slot so specify the number of secondary sites you're going to have
-   postgresql['max_replication_slots'] = 1
+   # postgresql['max_replication_slots'] = 1 # Set this to be the number of Geo secondary nodes if you have more than one
 
    ##
    ## Disable automatic database migrations temporarily

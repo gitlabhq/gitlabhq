@@ -46,8 +46,9 @@ work it needs to perform and how long it takes to complete:
    For example, you might have indices that enforce unique tuples, or that are needed for query performance in critical parts of the application. In cases where the migration would be unacceptably slow, however, a better option might be to guard the feature with a [feature flag](feature_flags/index.md)
    and perform a post-deployment migration instead. The feature can then be turned on after the migration finishes.
 1. [**Post-deployment migrations.**](database/post_deployment_migrations.md) These are Rails migrations in `db/post_migrate` and
-   run _after_ new application code has been deployed (for GitLab.com after the production deployment has finished).
-   They can be used for schema changes that aren't critical for the application to operate, or data migrations that take at most a few minutes.
+   are run independently from the GitLab.com deployments. Pending post migrations are executed on a daily basis at the discretion
+   of release manager through the [post-deploy migration pipeline](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
+   These migrations can be used for schema changes that aren't critical for the application to operate, or data migrations that take at most a few minutes.
    Common examples for schema changes that should run post-deploy include:
      - Clean-ups, like removing unused columns.
      - Adding non-critical indices on high-traffic tables.

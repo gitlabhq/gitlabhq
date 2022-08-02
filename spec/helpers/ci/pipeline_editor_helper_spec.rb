@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineEditorHelper do
+  include CycleAnalyticsHelpers
+
   let_it_be(:project) { create(:project) }
 
   describe 'can_view_pipeline_editor?' do

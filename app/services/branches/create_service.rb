@@ -2,34 +2,83 @@
 
 module Branches
   class CreateService < BaseService
+    def initialize(project, user = nil, params = {})
+      super(project, user, params)
+
+      @errors = []
+    end
+
     def execute(branch_name, ref, create_default_branch_if_empty: true)
       create_default_branch if create_default_branch_if_empty && project.empty_repo?
 
-      result = ::Branches::ValidateNewService.new(project).execute(branch_name)
+      result = branch_validation_service.execute(branch_name)
 
       return result if result[:status] == :error
 
-      begin
-        new_branch = repository.add_branch(current_user, branch_name, ref)
-      rescue Gitlab::Git::CommandError => e
-        return error("Failed to create branch '#{branch_name}': #{e}")
+      create_branch(branch_name, ref)
+    end
+
+    def bulk_create(branches)
+      reset_errors
+
+      created_branches =
+        branches
+          .then { |branches| only_valid_branches(branches) }
+          .then { |branches| create_branches(branches) }
+
+      return error(errors) if errors.present?
+
+      success(branches: created_branches)
+    end
+
+    private
+
+    attr_reader :errors
+
+    def reset_errors
+      @errors = []
+    end
+
+    def only_valid_branches(branches)
+      branches.select do |branch_name, _ref|
+        result = branch_validation_service.execute(branch_name)
+
+        if result[:status] == :error
+          errors << result[:message]
+          next
+        end
+
+        true
       end
+    end
+
+    def create_branches(branches)
+      branches.filter_map do |branch_name, ref|
+        result = create_branch(branch_name, ref)
+
+        if result[:status] == :error
+          errors << result[:message]
+          next
+        end
+
+        result[:branch]
+      end
+    end
+
+    def create_branch(branch_name, ref)
+      new_branch = repository.add_branch(current_user, branch_name, ref)
 
       if new_branch
-        success(new_branch)
+        success(branch: new_branch)
       else
         error("Failed to create branch '#{branch_name}': invalid reference name '#{ref}'")
       end
+    rescue Gitlab::Git::CommandError => e
+      error("Failed to create branch '#{branch_name}': #{e}")
     rescue Gitlab::Git::PreReceiveError => e
       Gitlab::ErrorTracking.log_exception(e, pre_receive_message: e.raw_message, branch_name: branch_name, ref: ref)
       error(e.message)
     end
-
-    def success(branch)
-      super().merge(branch: branch)
-    end
-
-    private
 
     def create_default_branch
       project.repository.create_file(
@@ -39,6 +88,10 @@ module Branches
         message: 'Add README.md',
         branch_name: project.default_branch_or_main
       )
+    end
+
+    def branch_validation_service
+      @branch_validation_service ||= ::Branches::ValidateNewService.new(project)
     end
   end
 end

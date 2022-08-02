@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::CycleAnalytics::StageSummary do
+  include CycleAnalyticsHelpers
+
   let_it_be(:project) { create(:project, :repository) }
 
   let(:options) { { from: 1.day.ago } }

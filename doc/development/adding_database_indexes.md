@@ -259,15 +259,16 @@ end
 
 ### Verify the MR was deployed and the index exists in production
 
-You can verify if the MR was deployed to GitLab.com by executing
-`/chatops run auto_deploy status <merge_sha>`. To verify existence of
-the index, you can:
+You can verify if the post-deploy migration was executed on GitLab.com by:
 
+- Executing `/chatops run auto_deploy status <merge_sha>`. If the output returns `db/gprd`,
+  the post-deploy migration has been executed in the production database. More details in this
+  [guide](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
 - Use a meta-command in #database-lab, such as: `\d <index_name>`.
   - Ensure that the index is not [`invalid`](https://www.postgresql.org/docs/12/sql-createindex.html#:~:text=The%20psql%20%5Cd%20command%20will%20report%20such%20an%20index%20as%20INVALID).
 - Ask someone in #database to check if the index exists.
 - With proper access, you can also verify directly on production or in a
-production clone.
+  production clone.
 
 ### Add a migration to create the index synchronously
 

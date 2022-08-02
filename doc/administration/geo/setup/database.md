@@ -235,9 +235,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    ##
    ## Replication settings
-   ## - set this to be the number of Geo secondary nodes you have
    ##
-   postgresql['max_replication_slots'] = 1
+   # postgresql['max_replication_slots'] = 1 # Set this to be the number of Geo secondary nodes if you have more than one
    # postgresql['max_wal_senders'] = 10
    # postgresql['wal_keep_segments'] = 10
 

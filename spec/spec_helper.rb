@@ -161,7 +161,6 @@ RSpec.configure do |config|
   config.include LicenseHelpers
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
-  config.include CycleAnalyticsHelpers
   config.include FactoryBot::Syntax::Methods
   config.include FixtureHelpers
   config.include NonExistingRecordsHelpers

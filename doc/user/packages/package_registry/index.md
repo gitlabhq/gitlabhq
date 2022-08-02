@@ -66,6 +66,9 @@ For most package types, the following credential types are valid:
   which prevents you from using a job token with internal projects. This bug only impacts self-managed
   GitLab instances.
 
+NOTE:
+If you have not activated the "Packages" feature for your project at **Settings > General > Project features**, you will receive a 403 Forbidden response.
+
 ## Use GitLab CI/CD to build packages
 
 You can use [GitLab CI/CD](../../../ci/index.md) to build packages.

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User searches for commits', :js do
+  include CycleAnalyticsHelpers
+
   let(:project) { create(:project, :repository) }
   let(:sha) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
   let(:user) { create(:user) }

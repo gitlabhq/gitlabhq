@@ -53,7 +53,31 @@ describe('MRWidgetFailedToMerge', () => {
 
       await nextTick();
 
-      expect(wrapper.vm.mergeError).toBe('contains line breaks.');
+      expect(wrapper.find('[data-testid="merge-error"]').text()).toBe('contains line breaks.');
+    });
+
+    it('does not append an extra period', async () => {
+      createComponent({ mr: { mergeError: 'contains a period.' } });
+
+      await nextTick();
+
+      expect(wrapper.find('[data-testid="merge-error"]').text()).toBe('contains a period.');
+    });
+
+    it('does not insert an extra space between the final character and the period', async () => {
+      createComponent({ mr: { mergeError: 'contains a <a href="http://example.com">link</a>.' } });
+
+      await nextTick();
+
+      expect(wrapper.find('[data-testid="merge-error"]').text()).toBe('contains a link.');
+    });
+
+    it('removes extra spaces', async () => {
+      createComponent({ mr: { mergeError: 'contains a      lot of         spaces    .' } });
+
+      await nextTick();
+
+      expect(wrapper.find('[data-testid="merge-error"]').text()).toBe('contains a lot of spaces.');
     });
   });
 

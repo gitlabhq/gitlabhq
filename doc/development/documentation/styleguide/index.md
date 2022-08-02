@@ -150,6 +150,8 @@ the page is rendered to HTML. There can be only **one** level 1 heading per page
 
 - For each subsection, increment the heading level. In other words, increment the number of `#` characters
   in front of the heading.
+- Avoid headings greater than `H5` (`#####`). If you need more than five headings, move the topics to a new page instead.
+  Headings greater than `H5` do not display in the right sidebar navigation.
 - Do not skip a level. For example: `##` > `####`.
 - Leave one blank line before and after the heading.
 

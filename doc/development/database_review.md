@@ -247,9 +247,9 @@ Include in the MR description:
     - Making numerous SQL queries per record in a dataset.
   - Review queries (for example, make sure batch sizes are fine)
   - Because execution time can be longer than for a regular migration,
-    it's suggested to treat background migrations as post migrations:
-    place them in `db/post_migrate` instead of `db/migrate`. Keep in mind
-    that post migrations are executed post-deployment in production.
+    it's suggested to treat background migrations as
+    [post migrations](migration_style_guide.md#choose-an-appropriate-migration-type):
+    place them in `db/post_migrate` instead of `db/migrate`.
   - If a migration [has tracking enabled](database/background_migrations.md#background-jobs-tracking),
     ensure `mark_all_as_succeeded` is called even if no work is done.
 - Check [timing guidelines for migrations](migration_style_guide.md#how-long-a-migration-should-take)
