@@ -88,6 +88,35 @@ RSpec.describe UnnestedInFilters::Rewriter do
       expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
     end
 
+    context 'when the relation has a subquery' do
+      let(:relation) { User.where(state: User.select(:state), user_type: %i(support_bot alert_bot)).limit(1) }
+
+      let(:expected_query) do
+        <<~SQL
+          SELECT
+            "users".*
+          FROM
+            unnest(ARRAY(SELECT "users"."state" FROM "users")::character varying[]) AS "states"("state"),
+            unnest('{1,2}'::smallint[]) AS "user_types"("user_type"),
+            LATERAL (
+              SELECT
+                "users".*
+              FROM
+                "users"
+              WHERE
+                (users."state" = "states"."state") AND
+                (users."user_type" = "user_types"."user_type")
+              LIMIT 1
+            ) AS users
+          LIMIT 1
+        SQL
+      end
+
+      it 'changes the query' do
+        expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+      end
+    end
+
     context 'when there is an order' do
       let(:relation) { User.where(state: %w(active blocked banned)).order(order).limit(2) }
       let(:expected_query) do

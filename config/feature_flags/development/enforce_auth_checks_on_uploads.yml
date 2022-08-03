@@ -1,8 +1,0 @@
----
-name: enforce_auth_checks_on_uploads
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80117
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352291
-milestone: '14.8'
-type: development
-group: group::code review
-default_enabled: false

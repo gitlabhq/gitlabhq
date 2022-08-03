@@ -13,7 +13,6 @@ installation.
 
 - [SSL](ssl.md)
 - [Geo](../geo/replication/troubleshooting.md)
-- [Elasticsearch](elasticsearch.md)
 - [Sidekiq](sidekiq.md)
 - [GitLab Rails console cheat sheet](gitlab_rails_cheat_sheet.md)
 - [Example group SAML and SCIM configurations](../../user/group/saml_sso/example_saml_config.md)

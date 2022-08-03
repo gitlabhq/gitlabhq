@@ -46,10 +46,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:work_items_hierarchy, @project)
   end
 
-  before_action only: :edit do
-    push_frontend_feature_flag(:enforce_auth_checks_on_uploads, @project)
-  end
-
   layout :determine_layout
 
   feature_category :projects, [

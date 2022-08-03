@@ -8,12 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # User file uploads **(FREE)**
 
 > - Enforced authorization checks [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80117) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `enforce_auth_checks_on_uploads`. Disabled by default.
+> - Enforced authorization checks became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352291) in GitLab 15.3. Feature flag `enforce_auth_checks_on_uploads` removed.
 > - Project settings in the user interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88567) in GitLab 15.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is unavailable. To make it available per project or for your entire instance,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `enforce_auth_checks_on_uploads`.
-On GitLab.com, this feature is not available.
 
 In private or internal projects, GitLab restricts access to uploaded files (such as PDFs)
 to authenticated users only. By default, image files are not subject to the same

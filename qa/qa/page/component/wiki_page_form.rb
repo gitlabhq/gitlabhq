@@ -48,7 +48,9 @@ module QA
         end
 
         def use_new_editor
-          click_element(:editing_mode_button, mode: 'Edit rich text')
+          within_element(:editing_mode_button) do
+            find('label', text: 'Rich text').click
+          end
 
           wait_until(reload: false) do
             has_element?(:content_editor_container)

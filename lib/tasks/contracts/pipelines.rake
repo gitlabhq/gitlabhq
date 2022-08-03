@@ -10,6 +10,13 @@ provider = File.expand_path('provider', contracts)
 # rubocop:disable Rails/RakeEnvironment
 namespace :contracts do
   namespace :pipelines do
+    Pact::VerificationTask.new(:create_a_new_pipeline) do |pact|
+      pact.uri(
+        "#{contracts}/contracts/project/pipeline/new/pipelines#new-post_create_a_new_pipeline.json",
+        pact_helper: "#{provider}/pact_helpers/project/pipeline/create_a_new_pipeline_helper.rb"
+      )
+    end
+
     Pact::VerificationTask.new(:get_list_project_pipelines) do |pact|
       pact.uri(
         "#{contracts}/contracts/project/pipeline/index/pipelines#index-get_list_project_pipelines.json",
@@ -34,6 +41,7 @@ namespace :contracts do
     desc 'Run all pipeline contract tests'
     task 'test:pipelines', :contract_mr do |_t, arg|
       errors = %w[
+        create_a_new_pipeline
         get_list_project_pipelines
         get_pipeline_header_data
         delete_pipeline

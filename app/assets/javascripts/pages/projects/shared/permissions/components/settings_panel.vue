@@ -318,13 +318,6 @@ export default {
     packageRegistryAccessLevelEnabled() {
       return this.glFeatures.packageRegistryAccessLevel;
     },
-    showAdditonalSettings() {
-      if (this.glFeatures.enforceAuthChecksOnUploads) {
-        return true;
-      }
-
-      return this.visibilityLevel !== this.visibilityOptions.PRIVATE;
-    },
   },
 
   watch: {
@@ -545,7 +538,7 @@ export default {
             </template>
           </gl-sprintf>
         </span>
-        <div v-if="showAdditonalSettings" class="gl-mt-4">
+        <div class="gl-mt-4">
           <strong class="gl-display-block">{{ s__('ProjectSettings|Additional options') }}</strong>
           <label
             v-if="visibilityLevel !== visibilityOptions.PRIVATE"
@@ -560,9 +553,7 @@ export default {
             {{ s__('ProjectSettings|Users can request access') }}
           </label>
           <label
-            v-if="
-              visibilityLevel !== visibilityOptions.PUBLIC && glFeatures.enforceAuthChecksOnUploads
-            "
+            v-if="visibilityLevel !== visibilityOptions.PUBLIC"
             class="gl-line-height-28 gl-font-weight-normal gl-display-block gl-mb-0"
           >
             <input

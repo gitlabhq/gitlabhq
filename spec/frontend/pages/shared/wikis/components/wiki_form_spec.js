@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlAlert, GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormInput, GlFormGroup, GlSegmentedControl } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -106,6 +106,7 @@ describe('WikiForm', () => {
           MarkdownField,
           GlAlert,
           GlButton,
+          GlSegmentedControl,
           LocalStorageSync: stubComponent(LocalStorageSync),
           GlFormInput,
           GlFormGroup,
@@ -317,20 +318,20 @@ describe('WikiForm', () => {
     });
 
     describe('when content editor is not active', () => {
-      it('displays "Edit rich text" label in the toggle editing mode button', () => {
-        expect(findToggleEditingModeButton().text()).toBe('Edit rich text');
+      it('displays "Source" label in the toggle editing mode button', () => {
+        expect(findToggleEditingModeButton().props().checked).toBe('source');
       });
 
       describe('when clicking the toggle editing mode button', () => {
         beforeEach(async () => {
-          await findToggleEditingModeButton().trigger('click');
+          await findToggleEditingModeButton().vm.$emit('input', 'richText');
         });
 
         it('hides the classic editor', () => {
           expect(findClassicEditor().exists()).toBe(false);
         });
 
-        it('hides the content editor', () => {
+        it('shows the content editor', () => {
           expect(findContentEditor().exists()).toBe(true);
         });
       });
@@ -342,7 +343,7 @@ describe('WikiForm', () => {
         expect(findContentEditor().exists()).toBe(false);
 
         // enable content editor
-        await findLocalStorageSync().vm.$emit('input', true);
+        await findLocalStorageSync().vm.$emit('input', 'richText');
 
         expect(findContentEditor().exists()).toBe(true);
         expect(findClassicEditor().exists()).toBe(false);
@@ -352,17 +353,18 @@ describe('WikiForm', () => {
     describe('when content editor is active', () => {
       let mockContentEditor;
 
-      beforeEach(async () => {
+      beforeEach(() => {
+        createWrapper();
         mockContentEditor = {
           getSerializedContent: jest.fn(),
           setSerializedContent: jest.fn(),
         };
 
-        await findToggleEditingModeButton().trigger('click');
+        findToggleEditingModeButton().vm.$emit('input', 'richText');
       });
 
-      it('displays "Edit source" label in the toggle editing mode button', () => {
-        expect(findToggleEditingModeButton().text()).toBe('Edit source');
+      it('displays "Edit Rich" label in the toggle editing mode button', () => {
+        expect(findToggleEditingModeButton().props().checked).toBe('richText');
       });
 
       describe('when clicking the toggle editing mode button', () => {
@@ -374,7 +376,8 @@ describe('WikiForm', () => {
           );
 
           findContentEditor().vm.$emit('initialized', mockContentEditor);
-          await findToggleEditingModeButton().trigger('click');
+          await findToggleEditingModeButton().vm.$emit('input', 'source');
+          await nextTick();
         });
 
         it('hides the content editor', () => {
@@ -398,7 +401,7 @@ describe('WikiForm', () => {
         createWrapper({ mountFn: mount });
         mock.onPost(/preview-markdown/).reply(400);
 
-        await findToggleEditingModeButton().trigger('click');
+        await findToggleEditingModeButton().vm.$emit('input', 'richText');
 
         // try waiting for content editor to load (but it will never actually load)
         await waitForPromises();
@@ -410,7 +413,7 @@ describe('WikiForm', () => {
 
       describe('toggling editing modes to the classic editor', () => {
         beforeEach(() => {
-          return findToggleEditingModeButton().trigger('click');
+          return findToggleEditingModeButton().vm.$emit('input', 'source');
         });
 
         it('switches to classic editor', () => {
@@ -426,7 +429,7 @@ describe('WikiForm', () => {
 
         mock.onPost(/preview-markdown/).reply(200, { body: '<p>hello <strong>world</strong></p>' });
 
-        await findToggleEditingModeButton().trigger('click');
+        await findToggleEditingModeButton().vm.$emit('input', 'richText');
         await waitForPromises();
       });
 
@@ -463,7 +466,6 @@ describe('WikiForm', () => {
 
         it('triggers tracking events on form submit', async () => {
           await triggerFormSubmit();
-
           expect(trackingSpy).toHaveBeenCalledWith(undefined, SAVED_USING_CONTENT_EDITOR_ACTION, {
             label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
           });

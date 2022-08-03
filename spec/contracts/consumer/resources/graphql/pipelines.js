@@ -16,9 +16,9 @@ export async function getPipelineHeaderDataRequest(endpoint) {
   };
 
   return axios({
+    method: 'POST',
     baseURL: url,
     url: '/api/graphql',
-    method: 'POST',
     headers: { Accept: '*/*' },
     data: graphqlQuery,
   });

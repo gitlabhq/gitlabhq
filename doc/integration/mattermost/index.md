@@ -229,53 +229,60 @@ sudo gitlab-ctl start mattermost
 
 ### Mattermost Command Line Tools (CLI)
 
-NOTE:
-This CLI will be replaced in a future release with the new [`mmctl` Command Line Tool](https://docs.mattermost.com/manage/mmctl-command-line-tool.html).
+[`mmctl`](https://docs.mattermost.com/manage/mmctl-command-line-tool.html) is a CLI tool for the Mattermost server which is installed locally and uses the Mattermost API, but may also be used remotely. You must configure Mattermost either for local connections or authenticate as an administrator with local login credentials (not through GitLab SSO). The executable is located at `/opt/gitlab/embedded/bin/mmctl`.
 
-To use the [Mattermost Command Line Tools (CLI)](https://docs.mattermost.com/administration/command-line-tools.html), ensure that you are in the `/opt/gitlab/embedded/service/mattermost` directory when you run the CLI commands and that you specify the location of the configuration file. The executable is `/opt/gitlab/embedded/bin/mattermost`.
+#### Use `mmctl` through a local connection
+
+For local connections, the `mmctl` binary and Mattermost must be run from the same server. To enable the local socket:
+
+1. Edit `/var/opt/gitlab/mattermost/config.json`, and add the following lines:
+
+   ```json
+   {
+       "ServiceSettings": {
+          ...
+           "EnableLocalMode": true,
+           "LocalModeSocketLocation": "/var/tmp/mattermost_local.socket",
+           ...
+       }
+   } 
+   ```
+
+1. Restart Mattermost:
+
+   ```shell
+   sudo gitlab-ctl restart mattermost
+   ```
+
+You can then use `/opt/gitlab/embedded/bin/mmctl --local` to run `mmctl` commands
+on your Mattermost instance.
+
+For example, to show the list of users:
 
 ```shell
-cd /opt/gitlab/embedded/service/mattermost
+$ /opt/gitlab/embedded/bin/mmctl --local user list
 
-sudo /opt/gitlab/embedded/bin/chpst -e /opt/gitlab/etc/mattermost/env -P -U mattermost:mattermost -u mattermost:mattermost /opt/gitlab/embedded/bin/mattermost --config=/var/opt/gitlab/mattermost/config.json version
+13dzo5bmg7fu8rdox347hbfxde: appsbot (appsbot@localhost)
+tbnkwjdug3dejcoddboo4yuomr: boards (boards@localhost)
+wd3g5zpepjgbfjgpdjaas7yj6a: feedbackbot (feedbackbot@localhost)
+8d3zzgpurp85zgf1q88pef73eo: playbooks (playbooks@localhost)
+There are 4 users on local instance
 ```
 
-Until [#4745](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4745) has been implemented, the command requires quite of bit typing and is hard to remember, so let's make a bash or Zsh alias to make it a bit easier to remember. Add the following to your `~/.bashrc` or `~/.zshrc` file:
+#### Use `mmctl` through a remote connection
+
+For remote connections or local connections where the socket cannot be used,
+create a non SSO user and give that user admin privileges. Those credentials
+can then be used to authenticate `mmctl`:
 
 ```shell
-alias mattermost-cli="cd /opt/gitlab/embedded/service/mattermost && sudo /opt/gitlab/embedded/bin/chpst -e /opt/gitlab/etc/mattermost/env -P -U mattermost:mattermost -u mattermost:mattermost /opt/gitlab/embedded/bin/mattermost --config=/var/opt/gitlab/mattermost/config.json $1"
+$ /opt/gitlab/embedded/bin/mmctl auth login http://mattermost.example.com
+
+Connection name: test
+Username: local-user
+Password: 
+ credentials for "test": "local-user@http://mattermost.example.com" stored
 ```
-
-Then source `~/.zshrc` or `~/.bashrc` with `source ~/.zshrc` or `source ~/.bashrc`.
-
-If successful, you can now run any Mattermost CLI command with your new shell alias `mattermost-cli`:
-
-```shell
-$ mattermost-cli version
-
-[sudo] password for username:
-{"level":"info","ts":1569614421.9058893,"caller":"utils/i18n.go:83","msg":"Loaded system translations for 'en' from '/opt/gitlab/embedded/service/mattermost/i18n/en.json'"}
-{"level":"info","ts":1569614421.9062793,"caller":"app/server_app_adapters.go:58","msg":"Server is initializing..."}
-{"level":"info","ts":1569614421.90976,"caller":"sqlstore/supplier.go:223","msg":"Pinging SQL master database"}
-{"level":"info","ts":1569614422.0515099,"caller":"mlog/log.go:165","msg":"Starting up plugins"}
-{"level":"info","ts":1569614422.0515954,"caller":"app/plugin.go:193","msg":"Syncing plugins from the file store"}
-{"level":"info","ts":1569614422.086005,"caller":"app/plugin.go:228","msg":"Found no files in plugins file store"}
-{"level":"info","ts":1569614423.9337213,"caller":"sqlstore/post_store.go:1301","msg":"Post.Message supports at most 16383 characters (65535 bytes)"}
-{"level":"error","ts":1569614425.6317747,"caller":"go-plugin/stream.go:15","msg":" call to OnConfigurationChange failed, error: Must have a GitLab oauth client id","plugin_id":"com.github.manland.mattermost-plugin-gitlab","source":"plugin_stderr"}
-{"level":"info","ts":1569614425.6875598,"caller":"mlog/sugar.go:19","msg":"Ensuring Surveybot exists","plugin_id":"com.mattermost.nps"}
-{"level":"info","ts":1569614425.6953356,"caller":"app/server.go:216","msg":"Current version is 5.14.0 (5.14.2/Fri Aug 30 20:20:48 UTC 2019/817ee89711bf26d33f840ce7f59fba14da1ed168/none)"}
-{"level":"info","ts":1569614425.6953766,"caller":"app/server.go:217","msg":"Enterprise Enabled: false"}
-{"level":"info","ts":1569614425.6954057,"caller":"app/server.go:219","msg":"Current working directory is /opt/gitlab/embedded/service/mattermost/i18n"}
-{"level":"info","ts":1569614425.6954265,"caller":"app/server.go:220","msg":"Loaded config","source":"file:///var/opt/gitlab/mattermost/config.json"}
-Version: 5.14.0
-Build Number: 5.14.2
-Build Date: Fri Aug 30 20:20:48 UTC 2019
-Build Hash: 817ee89711bf26d33f840ce7f59fba14da1ed168
-Build Enterprise Ready: false
-DB Version: 5.14.0
-```
-
-For more details see [Mattermost Command Line Tools (CLI)](https://docs.mattermost.com/administration/command-line-tools.html) and the [Troubleshooting Mattermost CLI](#troubleshooting-the-mattermost-cli) below.
 
 ## Configuring GitLab and Mattermost integrations
 
@@ -511,14 +518,6 @@ sequenceDiagram
     GitLab->>Mattermost: User details
     Mattermost->>User: Mattermost/GitLab user ready
 ```
-
-## Troubleshooting the Mattermost CLI
-
-### Failed to ping DB retrying in 10 seconds err=dial tcp: lookup dockerhost: no such host
-
-As of version 11.0, majority of the Mattermost settings are now configured via environmental variables. The error is mainly due to the database connection string being commented out in `gitlab.rb` and the database connection settings being set in environmental variables. Additionally, the connection string in the `gitlab.rb` is for MySQL which is no longer supported as of 12.1.
-
-You can fix this by setting up a `mattermost-cli` [shell alias](#mattermost-command-line-tools-cli).
 
 ## Community support resources
 

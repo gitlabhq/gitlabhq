@@ -58,6 +58,20 @@ There are a couple of ways to achieve that:
   ::Gitlab::CurrentSettings.elasticsearch_limit_indexing? # Whether or not Elasticsearch is limited only to certain projects/namespaces
   ```
 
+- Confirm searches use Elasticsearch by accessing the [rails console]
+  (../../administration/operations/rails_console.md) and running the following commands:
+
+  ```rails
+  u = User.find_by_email('email_of_user_doing_search')
+  s = SearchService.new(u, {:search => 'search_term'})
+  pp s.search_objects.class
+  ```
+
+  The output from the last command is the key here. If it shows:
+
+  - `ActiveRecord::Relation`, **it is not** using Elasticsearch.
+  - `Kaminari::PaginatableArray`, **it is** using Elasticsearch.
+
 - If Elasticsearch is limited to specific namespaces and you need to know if
   Elasticsearch is being used for a specific project or namespace, you can use
   the Rails console:
@@ -67,13 +81,57 @@ There are a couple of ways to achieve that:
   ::Gitlab::CurrentSettings.search_using_elasticsearch?(scope: Project.find_by_full_path("/my-namespace/my-project"))
   ```
 
-## I updated GitLab and now I can't find anything
+## Troubleshooting indexing
+
+Troubleshooting indexing issues can be tricky. It can pretty quickly go to either GitLab
+support or your Elasticsearch administrator.
+
+The best place to start is to determine if the issue is with creating an empty index.
+If it is, check on the Elasticsearch side to determine if the `gitlab-production` (the
+name for the GitLab index) exists. If it exists, manually delete it on the Elasticsearch
+side and attempt to recreate it from the
+[`recreate_index`](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks)
+Rake task.
+
+If you still encounter issues, try creating an index manually on the Elasticsearch
+instance. The details of the index aren't important here, as we want to test if indices
+can be made. If the indices:
+
+- Cannot be made, speak with your Elasticsearch administrator.
+- Can be made, Escalate this to GitLab support.
+
+If the issue is not with creating an empty index, the next step is to check for errors
+during the indexing of projects. If errors do occur, they stem from either the indexing:
+
+- On the GitLab side. You need to rectify those. If they are not
+  something you are familiar with, contact GitLab support for guidance.
+- Within the Elasticsearch instance itself. See if the error is [documented and has a fix](../../integration/advanced_search/elasticsearch_troubleshooting.md). If not, speak with your Elasticsearch administrator.
+
+If the indexing process does not present errors, check the status of the indexed projects. You can do this via the following Rake tasks:
+
+- [`sudo gitlab-rake gitlab:elastic:index_projects_status`](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows the overall status)
+- [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows specific projects that are not indexed)
+
+If:
+
+- Everything is showing at 100%, escalate to GitLab support. This could be a potential
+  bug/issue.
+- You do see something not at 100%, attempt to reindex that project. To do this,
+  run `sudo gitlab-rake gitlab:elastic:index_projects ID_FROM=<project ID> ID_TO=<project ID>`.
+
+If reindexing the project shows:
+
+- Errors on the GitLab side, escalate those to GitLab support.
+- Elasticsearch errors or doesn't present any errors at all, reach out to your
+  Elasticsearch administrator to check the instance.
+
+### I updated GitLab and now I can't find anything
 
 We continuously make updates to our indexing strategies and aim to support
 newer versions of Elasticsearch. When indexing changes are made, it may
 be necessary for you to [reindex](elasticsearch.md#zero-downtime-reindexing) after updating GitLab.
 
-## I indexed all the repositories but I can't get any hits for my search term in the UI
+### I indexed all the repositories but I can't get any hits for my search term in the UI
 
 Make sure you [indexed all the database data](elasticsearch.md#enable-advanced-search).
 
@@ -93,7 +151,10 @@ curl --request GET <elasticsearch_server_ip>:9200/gitlab-production/_search?q=<s
 
 More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html) are also possible.
 
-It is important to understand at which level the problem is manifesting (UI, Rails code, Elasticsearch side) to be able to [troubleshoot further](../../administration/troubleshooting/elasticsearch.md#search-results-workflow).
+If the results:
+
+- Sync up, please check that you are using [supported syntax](../../user/search/global_search/advanced_search_syntax.md). Note that Advanced Search does not support [exact substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
+- Do not match up, this indicates a problem with the documents generated from the project. It is best to [re-index that project](../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project)
 
 NOTE:
 The above instructions are not to be used for scenarios that only index a [subset of namespaces](elasticsearch.md#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).
@@ -104,15 +165,15 @@ See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) 
 
 You must re-run all the Rake tasks to reindex the database, repositories, and wikis.
 
-## The indexing process is taking a very long time
+### The indexing process is taking a very long time
 
 The more data present in your GitLab instance, the longer the indexing process takes.
 
-## There are some projects that weren't indexed, but I don't know which ones
+### There are some projects that weren't indexed, but I don't know which ones
 
 You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display projects that aren't indexed.
 
-## No new data is added to the Elasticsearch index when I push code
+### No new data is added to the Elasticsearch index when I push code
 
 NOTE:
 This was [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35936) in GitLab 13.2 and the Rake task is not available for versions greater than that.
@@ -122,6 +183,116 @@ When performing the initial indexing of blobs, we lock all projects until the pr
 ```shell
 sudo gitlab-rake gitlab:elastic:clear_locked_projects
 ```
+
+### Indexing fails with `error: elastic: Error 429 (Too Many Requests)`
+
+If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
+
+- To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
+- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../../administration/operations/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
+
+### Indexing is very slow or fails with `rejected execution of coordinating operation` messages
+
+Bulk requests getting rejected by the Elasticsearch nodes are likely due to load and lack of available memory.
+Ensure that your Elasticsearch cluster meets the [system requirements](elasticsearch.md#system-requirements) and has enough resources
+to perform bulk operations. See also the error ["429 (Too Many Requests)"](#indexing-fails-with-error-elastic-error-429-too-many-requests).
+
+### Last resort to recreate an index
+
+There may be cases where somehow data never got indexed and it's not in the
+queue, or the index is somehow in a state where migrations just cannot
+proceed. It is always best to try to troubleshoot the root cause of the problem
+by [viewing the logs](#view-logs).
+
+If there are no other options, then you always have the option of recreating the
+entire index from scratch. If you have a small GitLab installation, this can
+sometimes be a quick way to resolve a problem, but if you have a large GitLab
+installation, then this might take a very long time to complete. Until the
+index is fully recreated, your index does not serve correct search results,
+so you may want to disable **Search with Elasticsearch** while it is running.
+
+If you are sure you've read the above caveats and want to proceed, then you
+should run the following Rake task to recreate the entire index from scratch:
+
+**For Omnibus installations**
+
+```shell
+# WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
+sudo gitlab-rake gitlab:elastic:index
+```
+
+**For installations from source**
+
+```shell
+# WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:elastic:index
+```
+
+### Troubleshooting performance
+
+Troubleshooting performance can be difficult on Elasticsearch. There is a ton of tuning
+that *can* be done, but the majority of this falls on shoulders of a skilled
+Elasticsearch administrator.
+
+Generally speaking, ensure:
+
+- The Elasticsearch server **is not** running on the same node as GitLab.
+- The Elasticsearch server have enough RAM and CPU cores.
+- That sharding **is** being used.
+
+Going into some more detail here, if Elasticsearch is running on the same server as GitLab, resource contention is **very** likely to occur. Ideally, Elasticsearch, which requires ample resources, should be running on its own server (maybe coupled with Logstash and Kibana).
+
+When it comes to Elasticsearch, RAM is the key resource. Elasticsearch themselves recommend:
+
+- **At least** 8 GB of RAM for a non-production instance.
+- **At least** 16 GB of RAM for a production instance.
+- Ideally, 64 GB of RAM.
+
+For CPU, Elasticsearch recommends at least 2 CPU cores, but Elasticsearch states common
+setups use up to 8 cores. For more details on server specs, check out
+[Elasticsearch's hardware guide](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html).
+
+Beyond the obvious, sharding comes into play. Sharding is a core part of Elasticsearch.
+It allows for horizontal scaling of indices, which is helpful when you are dealing with
+a large amount of data.
+
+With the way GitLab does indexing, there is a **huge** amount of documents being
+indexed. By utilizing sharding, you can speed up Elasticsearch's ability to locate
+data, since each shard is a Lucene index.
+
+If you are not using sharding, you are likely to hit issues when you start using
+Elasticsearch in a production environment.
+
+Keep in mind that an index with only one shard has **no scale factor** and will
+likely encounter issues when called upon with some frequency.
+
+If you need to know how many shards, read
+[Elasticsearch's documentation on capacity planning](https://www.elastic.co/guide/en/elasticsearch/guide/2.x/capacity-planning.html),
+as the answer is not straight forward.
+
+The easiest way to determine if sharding is in use is to check the output of the
+[Elasticsearch Health API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html):
+
+- Red means the cluster is down.
+- Yellow means it is up with no sharding/replication.
+- Green means it is healthy (up, sharding, replicating).
+
+For production use, it should always be green.
+
+Beyond these steps, you get into some of the more complicated things to check,
+such as merges and caching. These can get complicated and it takes some time to
+learn them, so it is best to escalate/pair with an Elasticsearch expert if you need to
+dig further into these.
+
+Feel free to reach out to GitLab support, but this is likely to be something a skilled
+Elasticsearch administrator has more experience with.
+
+## Issues with migrations
+
+Please ensure you've read about [Elasticsearch Migrations](../advanced_search/elasticsearch.md#advanced-search-migrations).
+
+If there is a halted migration and your [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file contain errors, this could potentially be a bug/issue. Escalate to GitLab support if retrying migrations does not succeed.
 
 ## `Can't specify parent if no parent field has been configured` error
 
@@ -160,6 +331,10 @@ This exception is seen when your Elasticsearch cluster is configured to reject r
 
 AWS has [fixed limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/limits.html#network-limits) for this setting ("Maximum size of HTTP request payloads"), based on the size of the underlying instance.
 
+## `Faraday::TimeoutError (execution expired)` error when using a proxy
+
+Set a custom `gitlab_rails['env']` environment variable, called [`no_proxy`](https://docs.gitlab.com/omnibus/settings/environment-variables.html) with the IP address of your Elasticsearch host.
+
 ## My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly
 
 **For a single node Elasticsearch cluster the functional cluster health status is yellow** (never green) because the primary shard is allocated but replicas cannot be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
@@ -196,10 +371,6 @@ reason may be incompatible with our integration. You should try disabling
 plugins so you can rule out the possibility that the plugin is causing the
 problem.
 
-## Low-level troubleshooting
-
-There is a [more structured, lower-level troubleshooting document](../../administration/troubleshooting/elasticsearch.md) for when you experience other issues, including poor performance.
-
 ## Elasticsearch `code_analyzer` doesn't account for all code cases
 
 The `code_analyzer` pattern and filter configuration is being evaluated for improvement. We have fixed [most edge cases](https://gitlab.com/groups/gitlab-org/-/epics/3621#note_363429094) that were not returning expected search results due to our pattern and filter configuration.
@@ -210,57 +381,12 @@ Improvements to the `code_analyzer` pattern and filters are being discussed in [
 
 In GitLab 13.9, a change was made where [binary file names are being indexed](https://gitlab.com/gitlab-org/gitlab/-/issues/301083). However, without indexing all projects' data from scratch, only binary files that are added or updated after the GitLab 13.9 release are searchable.
 
-## Last resort to recreate an index
-
-There may be cases where somehow data never got indexed and it's not in the
-queue, or the index is somehow in a state where migrations just cannot
-proceed. It is always best to try to troubleshoot the root cause of the problem
-by [viewing the logs](#view-logs).
-
-If there are no other options, then you always have the option of recreating the
-entire index from scratch. If you have a small GitLab installation, this can
-sometimes be a quick way to resolve a problem, but if you have a large GitLab
-installation, then this might take a very long time to complete. Until the
-index is fully recreated, your index does not serve correct search results,
-so you may want to disable **Search with Elasticsearch** while it is running.
-
-If you are sure you've read the above caveats and want to proceed, then you
-should run the following Rake task to recreate the entire index from scratch:
-
-**For Omnibus installations**
-
-```shell
-# WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
-sudo gitlab-rake gitlab:elastic:index
-```
-
-**For installations from source**
-
-```shell
-# WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:elastic:index
-```
-
 ## How does Advanced Search handle private projects?
 
 Advanced Search stores all the projects in the same Elasticsearch indices,
 however, searches only surface results that can be viewed by the user.
 Advanced Search honors all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
-
-## Indexing fails with `error: elastic: Error 429 (Too Many Requests)`
-
-If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
-
-- To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
-- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../../administration/operations/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
-
-## Indexing is very slow or fails with `rejected execution of coordinating operation` messages
-
-Bulk requests getting rejected by the Elasticsearch nodes are likely due to load and lack of available memory.
-Ensure that your Elasticsearch cluster meets the [system requirements](elasticsearch.md#system-requirements) and has enough resources
-to perform bulk operations. See also the error ["429 (Too Many Requests)"](#indexing-fails-with-error-elastic-error-429-too-many-requests).
 
 ## Access requirements for the self-managed AWS OpenSearch Service
 

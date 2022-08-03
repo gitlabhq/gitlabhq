@@ -3,6 +3,7 @@
  */
 export const URL = '^(http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$';
 export const URL_PATH = '^/[a-zA-Z0-9#-=?_]+$';
+export const REDIRECT_HTML = 'You are being <a href=\\"(.)+/pipelines/[0-9]+\\">redirected</a>.';
 
 // Pipelines
 export const PIPELINE_GROUPS =

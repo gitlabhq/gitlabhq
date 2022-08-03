@@ -43928,6 +43928,12 @@ msgstr ""
 msgid "Wiki"
 msgstr ""
 
+msgid "Wiki Page|Rich text"
+msgstr ""
+
+msgid "Wiki Page|Source"
+msgstr ""
+
 msgid "Wiki page"
 msgstr ""
 
@@ -44052,12 +44058,6 @@ msgid "WikiPage|Create %{pageTitle}"
 msgstr ""
 
 msgid "WikiPage|Create page"
-msgstr ""
-
-msgid "WikiPage|Edit rich text"
-msgstr ""
-
-msgid "WikiPage|Edit source"
 msgstr ""
 
 msgid "WikiPage|Format"
