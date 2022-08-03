@@ -105,17 +105,22 @@ To download the Chain of Custody report:
 1. On the left sidebar, select **Security & Compliance > Compliance report**.
 1. Select **List of all merge commits**.
 
-### Commit-specific Chain of Custody Report
+### Commit-specific Chain of Custody report
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267629) in GitLab 13.6.
 
-You can generate a commit-specific Chain of Custody report for a given commit SHA.
+Authenticated group owners can generate a commit-specific Chain of Custody report for a given commit SHA, either:
 
-1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Compliance report**.
-1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow (**{chevron-lg-down}**).
-1. Enter the merge commit SHA, and then select **Export commit custody report**.
-   SHA and then select **Export commit custody report**.
+- Using the GitLab UI:
+
+  1. On the top bar, select **Menu > Groups** and find your group.
+  1. On the left sidebar, select **Security & Compliance > Compliance report**.
+  1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow (**{chevron-lg-down}**).
+  1. Enter the merge commit SHA, and then select **Export commit custody report**.
+     SHA and then select **Export commit custody report**.
+
+- Using a direct link: `https://gitlab.com/groups/<group-name>/-/security/merge_commit_reports.csv?commit_sha={optional_commit_sha}`, passing in an optional value to the
+  `commit_sha` query parameter.
 
 NOTE:
 The Chain of Custody report download is a CSV file, with a maximum size of 15 MB.

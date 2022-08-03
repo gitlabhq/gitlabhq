@@ -10,7 +10,10 @@
 #
 # In Rails 7 we will use `config.active_support.report_deprecations = false`
 # instead of this early return.
-return if Rails.env.production?
+if Rails.env.production?
+  ActiveSupport::Deprecation.silenced = true
+  return
+end
 
 # Ban the following deprecation warnings and turn them into runtime errors
 # in `development` and `test` environments.

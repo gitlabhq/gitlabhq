@@ -59,15 +59,12 @@ To enable 2FA with a one-time password:
    1. Select **Enable Two-factor Authentication**.
 1. **On your device (usually your phone):**
    1. Install a compatible application. For example:
-      - [Aegis](https://getaegis.app/)
-      - [Raivo OTP](https://apps.apple.com/us/app/raivo-otp/id1459042137#platform=iphone)
-      - [Authy](https://authy.com/)
-      - [Duo Mobile](https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app)
-      - [LastPass Authenticator](https://lastpass.com/auth/)
-      - [Authenticator](https://mattrubin.me/authenticator/)
-      - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
-      - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app)
-      - [SailOTP](https://openrepos.net/content/seiichiro0185/sailotp)
+      - Cloud-based (recommended because you can restore access if you lose the hardware device):
+        - [Authy](https://authy.com/)
+        - [Duo Mobile](https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app)
+      - Other:
+        - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
+        - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app)
    1. In the application, add a new entry in one of two ways:
       - Scan the code displayed by GitLab with your device's camera to add the entry automatically.
       - Enter the details provided to add the entry manually.

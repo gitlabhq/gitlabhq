@@ -47226,6 +47226,9 @@ msgstr ""
 msgid "toggle collapse"
 msgstr ""
 
+msgid "total must be less than or equal to %{size}"
+msgstr ""
+
 msgid "triggered"
 msgstr ""
 

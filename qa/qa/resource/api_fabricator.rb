@@ -74,6 +74,13 @@ module QA
         response.code == HTTP_STATUS_OK
       end
 
+      # Parameters included in the query URL
+      #
+      # @return [Hash]
+      def query_parameters
+        @query_parameters ||= {}
+      end
+
       private
 
       def resource_web_url(resource)
@@ -87,7 +94,8 @@ module QA
       end
 
       def api_get_from(get_path)
-        request = Runtime::API::Request.new(api_client, get_path)
+        path = "#{get_path}#{query_parameters_to_string}"
+        request = Runtime::API::Request.new(api_client, path)
         response = get(request.url)
 
         if response.code == HTTP_STATUS_SERVER_ERROR
@@ -99,6 +107,15 @@ module QA
         @api_fabrication_http_method = :get # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         response
+      end
+
+      # Query parameters formatted as `?key1=value1&key2=value2...`
+      #
+      # @return [String]
+      def query_parameters_to_string
+        query_parameters.each_with_object([]) do |(k, v), arr|
+          arr << "#{k}=#{v}"
+        end.join('&').prepend('?').chomp('?') # prepend `?` unless the string is blank
       end
 
       def api_post

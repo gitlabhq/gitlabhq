@@ -88,8 +88,13 @@ module Notes
       return if quick_actions_service.commands_executed_count.to_i == 0
 
       if update_params.present?
-        quick_actions_service.apply_updates(update_params, note)
-        note.commands_changes = update_params
+        if check_for_reviewer_validity(message, update_params)
+          quick_actions_service.apply_updates(update_params, note)
+          note.commands_changes = update_params
+        else
+          message = "Reviewers #{MergeRequest.max_number_of_assignees_or_reviewers_message}"
+          note.errors.add(:validation, message)
+        end
       end
 
       # We must add the error after we call #save because errors are reset
@@ -107,6 +112,18 @@ module Notes
         merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
         review_id: params[:review_id]
       }
+    end
+
+    def check_for_reviewer_validity(message, update_params)
+      return true unless Feature.enabled?(:limit_reviewer_and_assignee_size)
+
+      if update_params.key?(:reviewer_ids)
+        possible_reviewers = update_params[:reviewer_ids]&.uniq&.size
+
+        return false if possible_reviewers > MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+      end
+
+      true
     end
 
     def track_event(note, user)

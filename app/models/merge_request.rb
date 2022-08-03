@@ -41,6 +41,8 @@ class MergeRequest < ApplicationRecord
     'Ci::CompareCodequalityReportsService' => ->(project) { true }
   }.freeze
 
+  MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS = 100
+
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
@@ -263,6 +265,7 @@ class MergeRequest < ApplicationRecord
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
   validate :validate_fork, unless: :closed_or_merged_without_fork?
   validate :validate_target_project, on: :create
+  validate :validate_reviewer_and_assignee_size_length, unless: :importing?
 
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
@@ -990,6 +993,20 @@ class MergeRequest < ApplicationRecord
 
     errors.add :validate_fork,
                'Source project is not a fork of the target project'
+  end
+
+  def self.max_number_of_assignees_or_reviewers_message
+    # Assignees will be included in https://gitlab.com/gitlab-org/gitlab/-/issues/368936
+    _("total must be less than or equal to %{size}") % { size: MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS }
+  end
+
+  def validate_reviewer_and_assignee_size_length
+    # Assigness will be added in a subsequent MR https://gitlab.com/gitlab-org/gitlab/-/issues/368936
+    return true unless Feature.enabled?(:limit_reviewer_and_assignee_size)
+    return true unless reviewers.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+
+    errors.add :reviewers,
+      -> (_object, _data) { MergeRequest.max_number_of_assignees_or_reviewers_message }
   end
 
   def merge_ongoing?

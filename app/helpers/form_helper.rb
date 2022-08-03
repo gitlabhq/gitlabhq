@@ -48,6 +48,16 @@ module FormHelper
     end
   end
 
+  def dropdown_max_select(data)
+    return data[:'max-select'] unless Feature.enabled?(:limit_reviewer_and_assignee_size)
+
+    if data[:'max-select'] && data[:'max-select'] < MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+      data[:'max-select']
+    else
+      MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+    end
+  end
+
   def assignees_dropdown_options(issuable_type)
     dropdown_data = {
       toggle_class: 'js-user-search js-assignee-search js-multiselect js-save-user-data',
@@ -165,7 +175,12 @@ module FormHelper
 
     new_options[:title] = _('Select reviewer(s)')
     new_options[:data][:'dropdown-header'] = _('Reviewer(s)')
-    new_options[:data].delete(:'max-select')
+
+    if Feature.enabled?(:limit_reviewer_and_assignee_size)
+      new_options[:data][:'max-select'] = MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+    else
+      new_options[:data].delete(:'max-select')
+    end
 
     new_options
   end

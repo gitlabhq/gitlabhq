@@ -142,9 +142,13 @@ the `remove_after` date has passed.
 ## Renaming Columns
 
 Renaming columns the normal way requires downtime as an application may continue
-using the old column name during/after a database migration. To rename a column
-without requiring downtime we need two migrations: a regular migration, and a
-post-deployment migration. Both these migration can go in the same release.
+to use the old column names during or after a database migration. To rename a column
+without requiring downtime, we need two migrations: a regular migration and a
+post-deployment migration. Both these migrations can go in the same release.
+
+NOTE:
+It's not possible to rename columns with default values. For more details, see
+[this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52032#default-values).
 
 ### Step 1: Add The Regular Migration
 

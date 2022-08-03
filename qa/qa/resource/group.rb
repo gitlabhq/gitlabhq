@@ -61,6 +61,13 @@ module QA
         "/groups/#{CGI.escape(determine_full_path)}"
       end
 
+      # Parameters included in the query URL
+      #
+      # @return [Hash]
+      def query_parameters
+        super.merge({ with_projects: false })
+      end
+
       def api_post_body
         {
           parent_id: sandbox.id,
