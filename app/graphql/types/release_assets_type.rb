@@ -12,10 +12,10 @@ module Types
     present_using ReleasePresenter
 
     field :count, GraphQL::Types::Int, null: true, method: :assets_count,
-          description: 'Number of assets of the release.'
+                                       description: 'Number of assets of the release.'
     field :links, Types::ReleaseAssetLinkType.connection_type, null: true, method: :sorted_links,
-          description: 'Asset links of the release.'
+                                                               description: 'Asset links of the release.'
     field :sources, Types::ReleaseSourceType.connection_type, null: true,
-          description: 'Sources of the release.'
+                                                              description: 'Sources of the release.'
   end
 end

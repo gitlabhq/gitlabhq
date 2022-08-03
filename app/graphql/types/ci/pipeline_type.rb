@@ -13,14 +13,14 @@ module Types
       expose_permissions Types::PermissionTypes::Ci::Pipeline
 
       field :id, GraphQL::Types::ID, null: false,
-            description: 'ID of the pipeline.'
+                                     description: 'ID of the pipeline.'
 
       field :iid, GraphQL::Types::String, null: false,
-            description: 'Internal ID of the pipeline.'
+                                          description: 'Internal ID of the pipeline.'
 
       field :sha, GraphQL::Types::String, null: true,
-            method: :sha,
-            description: "SHA of the pipeline's commit." do
+                                          method: :sha,
+                                          description: "SHA of the pipeline's commit." do
         argument :format,
                  type: Types::ShaFormatEnum,
                  required: false,
@@ -28,46 +28,46 @@ module Types
       end
 
       field :before_sha, GraphQL::Types::String, null: true,
-            description: 'Base SHA of the source branch.'
+                                                 description: 'Base SHA of the source branch.'
 
       field :complete, GraphQL::Types::Boolean, null: false, method: :complete?,
-            description: 'Indicates if a pipeline is complete.'
+                                                description: 'Indicates if a pipeline is complete.'
 
       field :status, PipelineStatusEnum, null: false,
-            description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
+                                         description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
 
       field :warnings, GraphQL::Types::Boolean, null: false, method: :has_warnings?,
-            description: "Indicates if a pipeline has warnings."
+                                                description: "Indicates if a pipeline has warnings."
 
       field :detailed_status, Types::Ci::DetailedStatusType, null: false,
-            description: 'Detailed status of the pipeline.'
+                                                             description: 'Detailed status of the pipeline.'
 
       field :config_source, PipelineConfigSourceEnum, null: true,
-            description: "Configuration source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
+                                                      description: "Configuration source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
 
       field :duration, GraphQL::Types::Int, null: true,
-            description: 'Duration of the pipeline in seconds.'
+                                            description: 'Duration of the pipeline in seconds.'
 
       field :queued_duration, Types::DurationType, null: true,
-            description: 'How long the pipeline was queued before starting.'
+                                                   description: 'How long the pipeline was queued before starting.'
 
       field :coverage, GraphQL::Types::Float, null: true,
-            description: 'Coverage percentage.'
+                                              description: 'Coverage percentage.'
 
       field :created_at, Types::TimeType, null: false,
-            description: "Timestamp of the pipeline's creation."
+                                          description: "Timestamp of the pipeline's creation."
 
       field :updated_at, Types::TimeType, null: false,
-            description: "Timestamp of the pipeline's last activity."
+                                          description: "Timestamp of the pipeline's last activity."
 
       field :started_at, Types::TimeType, null: true,
-            description: 'Timestamp when the pipeline was started.'
+                                          description: 'Timestamp when the pipeline was started.'
 
       field :finished_at, Types::TimeType, null: true,
-            description: "Timestamp of the pipeline's completion."
+                                           description: "Timestamp of the pipeline's completion."
 
       field :committed_at, Types::TimeType, null: true,
-            description: "Timestamp of the pipeline's commit."
+                                            description: "Timestamp of the pipeline's commit."
 
       field :stages,
             type: Types::Ci::StageType.connection_type,
@@ -126,32 +126,32 @@ module Types
             description: 'Job where pipeline was triggered from.'
 
       field :downstream, Types::Ci::PipelineType.connection_type, null: true,
-            description: 'Pipelines this pipeline will trigger.',
-            method: :triggered_pipelines_with_preloads
+                                                                  description: 'Pipelines this pipeline will trigger.',
+                                                                  method: :triggered_pipelines_with_preloads
 
       field :upstream, Types::Ci::PipelineType, null: true,
-            description: 'Pipeline that triggered the pipeline.',
-            method: :triggered_by_pipeline
+                                                description: 'Pipeline that triggered the pipeline.',
+                                                method: :triggered_by_pipeline
 
       field :path, GraphQL::Types::String, null: true,
-            description: "Relative path to the pipeline's page."
+                                           description: "Relative path to the pipeline's page."
 
       field :commit, Types::CommitType, null: true,
-            description: "Git commit of the pipeline.",
-            calls_gitaly: true
+                                        description: "Git commit of the pipeline.",
+                                        calls_gitaly: true
 
       field :commit_path, GraphQL::Types::String, null: true,
-            description: 'Path to the commit that triggered the pipeline.'
+                                                  description: 'Path to the commit that triggered the pipeline.'
 
       field :project, Types::ProjectType, null: true,
-            description: 'Project the pipeline belongs to.'
+                                          description: 'Project the pipeline belongs to.'
 
       field :active, GraphQL::Types::Boolean, null: false, method: :active?,
-            description: 'Indicates if the pipeline is active.'
+                                              description: 'Indicates if the pipeline is active.'
 
       field :uses_needs, GraphQL::Types::Boolean, null: true,
-            method: :uses_needs?,
-            description: 'Indicates if the pipeline has jobs with `needs` dependencies.'
+                                                  method: :uses_needs?,
+                                                  description: 'Indicates if the pipeline has jobs with `needs` dependencies.'
 
       field :test_report_summary,
             Types::Ci::TestReportSummaryType,
@@ -166,17 +166,17 @@ module Types
             resolver: Resolvers::Ci::TestSuiteResolver
 
       field :ref, GraphQL::Types::String, null: true,
-            description: 'Reference to the branch from which the pipeline was triggered.'
+                                          description: 'Reference to the branch from which the pipeline was triggered.'
 
       field :ref_path, GraphQL::Types::String, null: true,
-            description: 'Reference path to the branch from which the pipeline was triggered.',
-            method: :source_ref_path
+                                               description: 'Reference path to the branch from which the pipeline was triggered.',
+                                               method: :source_ref_path
 
       field :warning_messages, [Types::Ci::PipelineMessageType], null: true,
-            description: 'Pipeline warning messages.'
+                                                                 description: 'Pipeline warning messages.'
 
       field :merge_request_event_type, Types::Ci::PipelineMergeRequestEventTypeEnum, null: true,
-            description: "Event type of the pipeline associated with a merge request."
+                                                                                     description: "Event type of the pipeline associated with a merge request."
 
       def detailed_status
         object.detailed_status(current_user)

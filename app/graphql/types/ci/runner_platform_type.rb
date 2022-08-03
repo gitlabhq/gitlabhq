@@ -6,12 +6,14 @@ module Types
     class RunnerPlatformType < BaseObject
       graphql_name 'RunnerPlatform'
 
-      field :architectures, Types::Ci::RunnerArchitectureType.connection_type, null: true,
-        description: 'Runner architectures supported for the platform.'
+      field :architectures,
+            Types::Ci::RunnerArchitectureType.connection_type,
+            null: true,
+            description: 'Runner architectures supported for the platform.'
       field :human_readable_name, GraphQL::Types::String, null: false,
-        description: 'Human readable name of the runner platform.'
+                                                          description: 'Human readable name of the runner platform.'
       field :name, GraphQL::Types::String, null: false,
-        description: 'Name slug of the runner platform.'
+                                           description: 'Name slug of the runner platform.'
     end
   end
 end

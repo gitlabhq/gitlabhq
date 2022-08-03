@@ -11,7 +11,7 @@ module Types
     implements MemberInterface
 
     field :group, Types::GroupType, null: true,
-          description: 'Group that a User is a member of.'
+                                    description: 'Group that a User is a member of.'
 
     field :notification_email,
           resolver: Resolvers::GroupMembers::NotificationEmailResolver,

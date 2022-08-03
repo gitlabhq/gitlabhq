@@ -8,7 +8,7 @@ module Types
       authorize :read_application_setting
 
       field :keep_latest_artifact, GraphQL::Types::Boolean, null: true,
-        description: 'Whether to keep the latest jobs artifacts.'
+                                                            description: 'Whether to keep the latest jobs artifacts.'
     end
   end
 end

@@ -12,9 +12,9 @@ module Types
       authorize :read_design
 
       field :id, GraphQL::Types::ID, null: false,
-            description: 'ID of the design version.'
+                                     description: 'ID of the design version.'
       field :sha, GraphQL::Types::ID, null: false,
-            description: 'SHA of the design version.'
+                                      description: 'SHA of the design version.'
 
       field :designs,
             ::Types::DesignManagement::DesignType.connection_type,
@@ -35,7 +35,7 @@ module Types
 
       field :author, Types::UserType, null: false, description: 'Author of the version.'
       field :created_at, Types::TimeType, null: false,
-            description: 'Timestamp of when the version was created.'
+                                          description: 'Timestamp of when the version was created.'
     end
   end
 end

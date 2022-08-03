@@ -9,9 +9,9 @@ module Types
       authorize :read_design
 
       field :issue, Types::IssueType, null: false,
-            description: 'Issue associated with the design collection.'
+                                      description: 'Issue associated with the design collection.'
       field :project, Types::ProjectType, null: false,
-            description: 'Project associated with the design collection.'
+                                          description: 'Project associated with the design collection.'
 
       field :designs,
             Types::DesignManagement::DesignType.connection_type,

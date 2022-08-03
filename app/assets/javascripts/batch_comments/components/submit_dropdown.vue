@@ -77,6 +77,7 @@ export default {
     ref="dropdown"
     right
     class="submit-review-dropdown"
+    data-qa-selector="submit_review_dropdown"
     variant="info"
     category="secondary"
   >
@@ -133,6 +134,7 @@ export default {
           type="submit"
           class="js-no-auto-disable"
           data-testid="submit-review-button"
+          data-qa-selector="submit_review_button"
         >
           {{ __('Submit review') }}
         </gl-button>

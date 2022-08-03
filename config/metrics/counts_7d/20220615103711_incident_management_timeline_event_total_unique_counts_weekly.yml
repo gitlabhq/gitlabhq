@@ -20,7 +20,6 @@ options:
     - incident_management_timeline_event_edited
     - incident_management_timeline_event_deleted
 performance_indicator_type:
-  - smau
   - gmau
   - paid_gmau
 distribution:

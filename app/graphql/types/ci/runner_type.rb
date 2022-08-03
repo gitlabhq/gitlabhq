@@ -17,77 +17,77 @@ module Types
       alias_method :runner, :object
 
       field :access_level, ::Types::Ci::RunnerAccessLevelEnum, null: false,
-            description: 'Access level of the runner.'
+                                                               description: 'Access level of the runner.'
       field :active, GraphQL::Types::Boolean, null: false,
-            description: 'Indicates the runner is allowed to receive jobs.',
-            deprecated: { reason: 'Use paused', milestone: '14.8' }
+                                              description: 'Indicates the runner is allowed to receive jobs.',
+                                              deprecated: { reason: 'Use paused', milestone: '14.8' }
       field :admin_url, GraphQL::Types::String, null: true,
-            description: 'Admin URL of the runner. Only available for administrators.'
+                                                description: 'Admin URL of the runner. Only available for administrators.'
       field :contacted_at, Types::TimeType, null: true,
-            description: 'Timestamp of last contact from this runner.',
-            method: :contacted_at
+                                            description: 'Timestamp of last contact from this runner.',
+                                            method: :contacted_at
       field :created_at, Types::TimeType, null: true,
-            description: 'Timestamp of creation of this runner.'
+                                          description: 'Timestamp of creation of this runner.'
       field :description, GraphQL::Types::String, null: true,
-            description: 'Description of the runner.'
+                                                  description: 'Description of the runner.'
       field :edit_admin_url, GraphQL::Types::String, null: true,
-            description: 'Admin form URL of the runner. Only available for administrators.'
+                                                     description: 'Admin form URL of the runner. Only available for administrators.'
       field :executor_name, GraphQL::Types::String, null: true,
-            description: 'Executor last advertised by the runner.',
-            method: :executor_name
+                                                    description: 'Executor last advertised by the runner.',
+                                                    method: :executor_name
       field :platform_name, GraphQL::Types::String, null: true,
-            description: 'Platform provided by the runner.',
-            method: :platform
+                                                    description: 'Platform provided by the runner.',
+                                                    method: :platform
       field :architecture_name, GraphQL::Types::String, null: true,
-            description: 'Architecture provided by the the runner.',
-            method: :architecture
+                                                        description: 'Architecture provided by the the runner.',
+                                                        method: :architecture
       field :maintenance_note, GraphQL::Types::String, null: true,
-            description: 'Runner\'s maintenance notes.'
+                                                       description: 'Runner\'s maintenance notes.'
       field :groups, ::Types::GroupType.connection_type, null: true,
-            description: 'Groups the runner is associated with. For group runners only.'
+                                                         description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,
-            description: 'ID of the runner.'
+                                                      description: 'ID of the runner.'
       field :ip_address, GraphQL::Types::String, null: true,
-            description: 'IP address of the runner.'
+                                                 description: 'IP address of the runner.'
       field :job_count, GraphQL::Types::Int, null: true,
-            description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
+                                             description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
       field :jobs, ::Types::Ci::JobType.connection_type, null: true,
-            description: 'Jobs assigned to the runner.',
-            authorize: :read_builds,
-            resolver: ::Resolvers::Ci::RunnerJobsResolver
+                                                         description: 'Jobs assigned to the runner.',
+                                                         authorize: :read_builds,
+                                                         resolver: ::Resolvers::Ci::RunnerJobsResolver
       field :locked, GraphQL::Types::Boolean, null: true,
-            description: 'Indicates the runner is locked.'
+                                              description: 'Indicates the runner is locked.'
       field :maximum_timeout, GraphQL::Types::Int, null: true,
-            description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
+                                                   description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
       field :paused, GraphQL::Types::Boolean, null: false,
-            description: 'Indicates the runner is paused and not available to run jobs.'
+                                              description: 'Indicates the runner is paused and not available to run jobs.'
       field :project_count, GraphQL::Types::Int, null: true,
-            description: 'Number of projects that the runner is associated with.'
+                                                 description: 'Number of projects that the runner is associated with.'
       field :projects, ::Types::ProjectType.connection_type, null: true,
-            description: 'Projects the runner is associated with. For project runners only.'
+                                                             description: 'Projects the runner is associated with. For project runners only.'
       field :revision, GraphQL::Types::String, null: true,
-            description: 'Revision of the runner.'
+                                               description: 'Revision of the runner.'
       field :run_untagged, GraphQL::Types::Boolean, null: false,
-            description: 'Indicates the runner is able to run untagged jobs.'
+                                                    description: 'Indicates the runner is able to run untagged jobs.'
       field :runner_type, ::Types::Ci::RunnerTypeEnum, null: false,
-            description: 'Type of the runner.'
+                                                       description: 'Type of the runner.'
       field :short_sha, GraphQL::Types::String, null: true,
-            description: %q(First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID.)
+                                                description: %q(First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID.)
       field :status,
             Types::Ci::RunnerStatusEnum,
             null: false,
             description: 'Status of the runner.',
             resolver: ::Resolvers::Ci::RunnerStatusResolver # TODO: Remove :resolver in %17.0
       field :tag_list, [GraphQL::Types::String], null: true,
-            description: 'Tags associated with the runner.'
+                                                 description: 'Tags associated with the runner.'
       field :token_expires_at, Types::TimeType, null: true,
-            description: 'Runner token expiration time.',
-            method: :token_expires_at
+                                                description: 'Runner token expiration time.',
+                                                method: :token_expires_at
       field :version, GraphQL::Types::String, null: true,
-            description: 'Version of the runner.'
+                                              description: 'Version of the runner.'
       field :owner_project, ::Types::ProjectType, null: true,
-            description: 'Project that owns the runner. For project runners only.',
-            resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
+                                                  description: 'Project that owns the runner. For project runners only.',
+                                                  resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
 
       markdown_field :maintenance_note_html, null: true
 

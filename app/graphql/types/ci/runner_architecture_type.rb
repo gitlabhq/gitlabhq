@@ -6,10 +6,12 @@ module Types
     class RunnerArchitectureType < BaseObject
       graphql_name 'RunnerArchitecture'
 
-      field :download_location, GraphQL::Types::String, null: false,
-        description: 'Download location for the runner for the platform architecture.'
+      field :download_location,
+            GraphQL::Types::String,
+            null: false,
+            description: 'Download location for the runner for the platform architecture.'
       field :name, GraphQL::Types::String, null: false,
-        description: 'Name of the runner platform architecture.'
+                                           description: 'Name of the runner platform architecture.'
     end
   end
 end

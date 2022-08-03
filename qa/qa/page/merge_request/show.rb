@@ -11,6 +11,7 @@ module QA
           element :review_preview_dropdown
         end
 
+        # Remove once :mr_review_submit_comment ff is enabled by default
         view 'app/assets/javascripts/batch_comments/components/publish_button.vue' do
           element :submit_review_button
         end
@@ -19,8 +20,9 @@ module QA
           element :review_bar_content
         end
 
-        view 'app/assets/javascripts/batch_comments/components/draft_note.vue' do
-          element :draft_note_content
+        view 'app/assets/javascripts/batch_comments/components/submit_dropdown.vue' do
+          element :submit_review_dropdown
+          element :submit_review_button
         end
 
         view 'app/assets/javascripts/diffs/components/compare_dropdown_layout.vue' do
@@ -133,6 +135,11 @@ module QA
           element :cancel_auto_merge_button
         end
 
+        view 'app/views/shared/_broadcast_message.html.haml' do
+          element :broadcast_notification_container
+          element :close_button
+        end
+
         def start_review
           click_element(:start_review_button)
 
@@ -150,16 +157,34 @@ module QA
         end
 
         def submit_pending_reviews
-          has_element?(:submit_review_button)
+          # On test environments we have a broadcast message that can cover the buttons
+
+          if has_element?(:broadcast_notification_container, wait: 5)
+            within_element(:broadcast_notification_container) do
+              click_element(:close_button)
+            end
+          end
+
           within_element(:review_bar_content) do
             click_element(:review_preview_dropdown)
           end
-          within_element(:draft_note_content) do
+
+          # Remove if statement once :mr_review_submit_comment ff is enabled by default
+
+          if has_element?(:submit_review_dropdown, wait: 5)
+            click_element(:submit_review_dropdown)
             click_element(:submit_review_button)
+          else
+            within_element(:review_bar_content) do
+              click_element(:submit_review_button)
+            end
           end
-          # After clicking the button, wait for it to disappear
+
+          # After clicking the button, wait for the review bar to disappear
           # before moving on to the next part of the test
-          has_no_element?(:submit_review_button)
+          wait_until(reload: false) do
+            has_no_element?(:review_bar_content)
+          end
         end
 
         def add_comment_to_diff(text)

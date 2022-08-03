@@ -131,6 +131,8 @@ SSO has the following effects when enabled:
 - Git activity originating from CI/CD jobs do not have the SSO check enforced.
 - Credentials that are not tied to regular users (for example, project and group access tokens, and deploy keys) do not have the SSO check enforced.
 - Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
+- When the **Enforce SSO-only authentication for Git and Dependency Proxy activity for this group** option is enabled, any API endpoint that involves Git activity is under SSO
+  enforcement. For example, creating or deleting a branch, commit, or tag.
 
 When SSO is enforced, users are not immediately revoked. If the user:
 

@@ -5,8 +5,8 @@ module Types
     graphql_name 'UserCallout'
 
     field :dismissed_at, Types::TimeType, null: true,
-      description: 'Date when the callout was dismissed.'
+                                          description: 'Date when the callout was dismissed.'
     field :feature_name, UserCalloutFeatureNameEnum, null: true,
-      description: 'Name of the feature that the callout is for.'
+                                                     description: 'Name of the feature that the callout is for.'
   end
 end

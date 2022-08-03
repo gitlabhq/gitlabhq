@@ -11,118 +11,118 @@ module Types
     expose_permissions Types::PermissionTypes::Project
 
     field :id, GraphQL::Types::ID, null: false,
-          description: 'ID of the project.'
+                                   description: 'ID of the project.'
 
     field :ci_config_path_or_default, GraphQL::Types::String, null: false,
-          description: 'Path of the CI configuration file.'
+                                                              description: 'Path of the CI configuration file.'
     field :full_path, GraphQL::Types::ID, null: false,
-          description: 'Full path of the project.'
+                                          description: 'Full path of the project.'
     field :path, GraphQL::Types::String, null: false,
-          description: 'Path of the project.'
+                                         description: 'Path of the project.'
 
     field :sast_ci_configuration, Types::CiConfiguration::Sast::Type, null: true,
-      calls_gitaly: true,
-      description: 'SAST CI configuration for the project.'
+                                                                      calls_gitaly: true,
+                                                                      description: 'SAST CI configuration for the project.'
 
     field :name, GraphQL::Types::String, null: false,
-          description: 'Name of the project (without namespace).'
+                                         description: 'Name of the project (without namespace).'
     field :name_with_namespace, GraphQL::Types::String, null: false,
-          description: 'Full name of the project with its namespace.'
+                                                        description: 'Full name of the project with its namespace.'
 
     field :description, GraphQL::Types::String, null: true,
-          description: 'Short description of the project.'
+                                                description: 'Short description of the project.'
 
     field :tag_list, GraphQL::Types::String, null: true,
-          deprecated: { reason: 'Use `topics`', milestone: '13.12' },
-          description: 'List of project topics (not Git tags).', method: :topic_list
+                                             deprecated: { reason: 'Use `topics`', milestone: '13.12' },
+                                             description: 'List of project topics (not Git tags).', method: :topic_list
 
     field :topics, [GraphQL::Types::String], null: true,
-          description: 'List of project topics.', method: :topic_list
+                                             description: 'List of project topics.', method: :topic_list
 
     field :http_url_to_repo, GraphQL::Types::String, null: true,
-          description: 'URL to connect to the project via HTTPS.'
+                                                     description: 'URL to connect to the project via HTTPS.'
     field :ssh_url_to_repo, GraphQL::Types::String, null: true,
-          description: 'URL to connect to the project via SSH.'
+                                                    description: 'URL to connect to the project via SSH.'
     field :web_url, GraphQL::Types::String, null: true,
-          description: 'Web URL of the project.'
+                                            description: 'Web URL of the project.'
 
     field :forks_count, GraphQL::Types::Int, null: false, calls_gitaly: true, # 4 times
-          description: 'Number of times the project has been forked.'
+                                             description: 'Number of times the project has been forked.'
     field :star_count, GraphQL::Types::Int, null: false,
-          description: 'Number of times the project has been starred.'
+                                            description: 'Number of times the project has been starred.'
 
     field :created_at, Types::TimeType, null: true,
-          description: 'Timestamp of the project creation.'
+                                        description: 'Timestamp of the project creation.'
     field :last_activity_at, Types::TimeType, null: true,
-          description: 'Timestamp of the project last activity.'
+                                              description: 'Timestamp of the project last activity.'
 
     field :archived, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates the archived status of the project.'
+                                              description: 'Indicates the archived status of the project.'
 
     field :visibility, GraphQL::Types::String, null: true,
-          description: 'Visibility of the project.'
+                                               description: 'Visibility of the project.'
 
     field :lfs_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if the project has Large File Storage (LFS) enabled.'
+                                                 description: 'Indicates if the project has Large File Storage (LFS) enabled.'
     field :merge_requests_ff_only_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.'
+                                                                    description: 'Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.'
     field :shared_runners_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if shared runners are enabled for the project.'
+                                                            description: 'Indicates if shared runners are enabled for the project.'
 
     field :service_desk_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if the project has Service Desk enabled.'
+                                                          description: 'Indicates if the project has Service Desk enabled.'
 
     field :service_desk_address, GraphQL::Types::String, null: true,
-          description: 'E-mail address of the Service Desk.'
+                                                         description: 'E-mail address of the Service Desk.'
 
     field :avatar_url, GraphQL::Types::String, null: true, calls_gitaly: true,
-          description: 'URL to avatar image file of the project.'
+                                               description: 'URL to avatar image file of the project.'
 
     field :jobs_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if CI/CD pipeline jobs are enabled for the current user.'
+                                                  description: 'Indicates if CI/CD pipeline jobs are enabled for the current user.'
 
     field :public_jobs, GraphQL::Types::Boolean, method: :public_builds, null: true,
-          description: 'Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts.'
+                                                 description: 'Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts.'
 
     field :open_issues_count, GraphQL::Types::Int, null: true,
-          description: 'Number of open issues for the project.'
+                                                   description: 'Number of open issues for the project.'
 
     field :allow_merge_on_skipped_pipeline, GraphQL::Types::Boolean, null: true,
-          description: 'If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs.'
+                                                                     description: 'If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs.'
     field :autoclose_referenced_issues, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if issues referenced by merge requests and commits within the default branch are closed automatically.'
+                                                                 description: 'Indicates if issues referenced by merge requests and commits within the default branch are closed automatically.'
     field :import_status, GraphQL::Types::String, null: true,
-          description: 'Status of import background job of the project.'
+                                                  description: 'Status of import background job of the project.'
     field :jira_import_status, GraphQL::Types::String, null: true,
-          description: 'Status of Jira import background job of the project.'
+                                                       description: 'Status of Jira import background job of the project.'
     field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if merge requests of the project can only be merged when all the discussions are resolved.'
+                                                                                      description: 'Indicates if merge requests of the project can only be merged when all the discussions are resolved.'
     field :only_allow_merge_if_pipeline_succeeds, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if merge requests of the project can only be merged with successful jobs.'
+                                                                           description: 'Indicates if merge requests of the project can only be merged with successful jobs.'
     field :printing_merge_request_link_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line.'
+                                                                         description: 'Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line.'
     field :remove_source_branch_after_merge, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project.'
+                                                                      description: 'Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project.'
     field :request_access_enabled, GraphQL::Types::Boolean, null: true,
-          description: 'Indicates if users can request member access to the project.'
+                                                            description: 'Indicates if users can request member access to the project.'
     field :squash_read_only, GraphQL::Types::Boolean, null: false, method: :squash_readonly?,
-          description: 'Indicates if `squashReadOnly` is enabled.'
+                                                      description: 'Indicates if `squashReadOnly` is enabled.'
     field :suggestion_commit_message, GraphQL::Types::String, null: true,
-          description: 'Commit message used to apply merge request suggestions.'
+                                                              description: 'Commit message used to apply merge request suggestions.'
 
     # No, the quotes are not a typo. Used to get around circular dependencies.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27536#note_871009675
     field :group, 'Types::GroupType', null: true,
-          description: 'Group of the project.'
+                                      description: 'Group of the project.'
     field :namespace, Types::NamespaceType, null: true,
-          description: 'Namespace of the project.'
+                                            description: 'Namespace of the project.'
 
     field :statistics, Types::ProjectStatisticsType,
           null: true,
           description: 'Statistics of the project.'
 
     field :repository, Types::RepositoryType, null: true,
-          description: 'Git repository of the project.'
+                                              description: 'Git repository of the project.'
 
     field :merge_requests,
           Types::MergeRequestType.connection_type,
@@ -160,8 +160,8 @@ module Types
           resolver: Resolvers::IssueStatusCountsResolver
 
     field :milestones, Types::MilestoneType.connection_type, null: true,
-          description: 'Milestones of the project.',
-          resolver: Resolvers::ProjectMilestonesResolver
+                                                             description: 'Milestones of the project.',
+                                                             resolver: Resolvers::ProjectMilestonesResolver
 
     field :project_members,
           description: 'Members of the project.',
@@ -355,7 +355,7 @@ module Types
           resolver: Resolvers::ContainerRepositoriesResolver
 
     field :container_repositories_count, GraphQL::Types::Int, null: false,
-          description: 'Number of container repositories in the project.'
+                                                              description: 'Number of container repositories in the project.'
 
     field :label,
           Types::LabelType,
@@ -379,23 +379,23 @@ module Types
           resolver: Resolvers::Terraform::StatesResolver
 
     field :pipeline_analytics, Types::Ci::AnalyticsType, null: true,
-          description: 'Pipeline analytics.',
-          resolver: Resolvers::ProjectPipelineStatisticsResolver
+                                                         description: 'Pipeline analytics.',
+                                                         resolver: Resolvers::ProjectPipelineStatisticsResolver
 
     field :ci_template, Types::Ci::TemplateType, null: true,
-          description: 'Find a single CI/CD template by name.',
-          resolver: Resolvers::Ci::TemplateResolver
+                                                 description: 'Find a single CI/CD template by name.',
+                                                 resolver: Resolvers::Ci::TemplateResolver
 
     field :ci_job_token_scope, Types::Ci::JobTokenScopeType, null: true,
-          description: 'The CI Job Tokens scope of access.',
-          resolver: Resolvers::Ci::JobTokenScopeResolver
+                                                             description: 'The CI Job Tokens scope of access.',
+                                                             resolver: Resolvers::Ci::JobTokenScopeResolver
 
     field :timelogs,
           Types::TimelogType.connection_type, null: true,
-          description: 'Time logged on issues and merge requests in the project.',
-          extras: [:lookahead],
-          complexity: 5,
-          resolver: ::Resolvers::TimelogResolver
+                                              description: 'Time logged on issues and merge requests in the project.',
+                                              extras: [:lookahead],
+                                              complexity: 5,
+                                              resolver: ::Resolvers::TimelogResolver
 
     field :agent_configurations,
           ::Types::Kas::AgentConfigurationType.connection_type,
@@ -455,7 +455,7 @@ module Types
       container_registry: 'Container Registry is'
     }.each do |feature, name_string|
       field "#{feature}_enabled", GraphQL::Types::Boolean, null: true,
-            description: "Indicates if #{name_string} enabled for the current user"
+                                                           description: "Indicates if #{name_string} enabled for the current user"
 
       define_method "#{feature}_enabled" do
         object.feature_available?(feature, context[:current_user])

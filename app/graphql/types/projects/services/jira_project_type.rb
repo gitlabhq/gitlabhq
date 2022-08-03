@@ -8,12 +8,12 @@ module Types
         graphql_name 'JiraProject'
 
         field :key, GraphQL::Types::String, null: false,
-              description: 'Key of the Jira project.'
+                                            description: 'Key of the Jira project.'
         field :name, GraphQL::Types::String, null: true,
-              description: 'Name of the Jira project.'
+                                             description: 'Name of the Jira project.'
         field :project_id, GraphQL::Types::Int, null: false,
-              description: 'ID of the Jira project.',
-              method: :id
+                                                description: 'ID of the Jira project.',
+                                                method: :id
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

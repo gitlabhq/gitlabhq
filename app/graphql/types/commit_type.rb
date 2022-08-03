@@ -11,48 +11,48 @@ module Types
     implements(Types::TodoableInterface)
 
     field :id, type: GraphQL::Types::ID, null: false,
-          description: 'ID (global ID) of the commit.'
+               description: 'ID (global ID) of the commit.'
 
     field :sha, type: GraphQL::Types::String, null: false,
-          description: 'SHA1 ID of the commit.'
+                description: 'SHA1 ID of the commit.'
 
     field :short_id, type: GraphQL::Types::String, null: false,
-          description: 'Short SHA1 ID of the commit.'
+                     description: 'Short SHA1 ID of the commit.'
 
     field :title, type: GraphQL::Types::String, null: true, calls_gitaly: true,
-          description: 'Title of the commit message.'
+                  description: 'Title of the commit message.'
 
     field :full_title, type: GraphQL::Types::String, null: true, calls_gitaly: true,
-          description: 'Full title of the commit message.'
+                       description: 'Full title of the commit message.'
 
     field :description, type: GraphQL::Types::String, null: true,
-          description: 'Description of the commit message.'
+                        description: 'Description of the commit message.'
 
     field :message, type: GraphQL::Types::String, null: true,
-          description: 'Raw commit message.'
+                    description: 'Raw commit message.'
 
     field :authored_date, type: Types::TimeType, null: true,
-          description: 'Timestamp of when the commit was authored.'
+                          description: 'Timestamp of when the commit was authored.'
 
     field :web_url, type: GraphQL::Types::String, null: false,
-          description: 'Web URL of the commit.'
+                    description: 'Web URL of the commit.'
 
     field :web_path, type: GraphQL::Types::String, null: false,
-          description: 'Web path of the commit.'
+                     description: 'Web path of the commit.'
 
     field :signature_html, type: GraphQL::Types::String, null: true, calls_gitaly: true,
-          description: 'Rendered HTML of the commit signature.'
+                           description: 'Rendered HTML of the commit signature.'
 
     field :author_email, type: GraphQL::Types::String, null: true,
-          description: "Commit author's email."
+                         description: "Commit author's email."
     field :author_gravatar, type: GraphQL::Types::String, null: true,
-          description: 'Commit authors gravatar.'
+                            description: 'Commit authors gravatar.'
     field :author_name, type: GraphQL::Types::String, null: true,
-          description: 'Commit authors name.'
+                        description: 'Commit authors name.'
 
     # models/commit lazy loads the author by email
     field :author, type: Types::UserType, null: true,
-          description: 'Author of the commit.'
+                   description: 'Author of the commit.'
 
     field :pipelines,
           null: true,

@@ -8,25 +8,25 @@ module Types
       description 'Total test report statistics.'
 
       field :time, GraphQL::Types::Float, null: true,
-        description: 'Total duration of the tests.'
+                                          description: 'Total duration of the tests.'
 
       field :count, GraphQL::Types::Int, null: true,
-        description: 'Total number of the test cases.'
+                                         description: 'Total number of the test cases.'
 
       field :success, GraphQL::Types::Int, null: true,
-        description: 'Total number of test cases that succeeded.'
+                                           description: 'Total number of test cases that succeeded.'
 
       field :failed, GraphQL::Types::Int, null: true,
-        description: 'Total number of test cases that failed.'
+                                          description: 'Total number of test cases that failed.'
 
       field :skipped, GraphQL::Types::Int, null: true,
-        description: 'Total number of test cases that were skipped.'
+                                           description: 'Total number of test cases that were skipped.'
 
       field :error, GraphQL::Types::Int, null: true,
-        description: 'Total number of test cases that had an error.'
+                                         description: 'Total number of test cases that had an error.'
 
       field :suite_error, GraphQL::Types::String, null: true,
-        description: 'Test suite error message.'
+                                                  description: 'Test suite error message.'
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

@@ -12,7 +12,7 @@ module Types
     authorize :read_project
 
     field :project, Types::ProjectType, null: true,
-          description: 'Project that User is a member of.'
+                                        description: 'Project that User is a member of.'
 
     def project
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.source_id).find

@@ -183,10 +183,10 @@ module Types
           resolver: Resolvers::GroupLabelsResolver
 
     field :timelogs, ::Types::TimelogType.connection_type, null: false,
-          description: 'Time logged on issues and merge requests in the group and its subgroups.',
-          extras: [:lookahead],
-          complexity: 5,
-          resolver: ::Resolvers::TimelogResolver
+                                                           description: 'Time logged on issues and merge requests in the group and its subgroups.',
+                                                           extras: [:lookahead],
+                                                           complexity: 5,
+                                                           resolver: ::Resolvers::TimelogResolver
 
     field :descendant_groups, Types::GroupType.connection_type,
           null: true,
