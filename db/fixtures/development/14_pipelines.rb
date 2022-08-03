@@ -59,6 +59,8 @@ class Gitlab::Seeder::Pipelines
       pipeline.update_duration
       ::Ci::ProcessPipelineService.new(pipeline).execute
     end
+
+    ::Gitlab::Seeder::Ci::DailyBuildGroupReportResult.new(@project).seed if @project.last_pipeline
   end
 
   private

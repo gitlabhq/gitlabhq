@@ -489,7 +489,7 @@ RSpec.describe Ci::Runner do
     let!(:runner3) { create(:ci_runner, :instance, contacted_at: 1.month.ago, created_at: 2.months.ago) }
     let!(:runner4) { create(:ci_runner, :instance, contacted_at: 1.month.ago, created_at: 3.months.ago) }
 
-    it { is_expected.to eq([runner1, runner3, runner4])}
+    it { is_expected.to eq([runner1, runner3, runner4]) }
   end
 
   describe '.active' do
@@ -866,7 +866,7 @@ RSpec.describe Ci::Runner do
 
   describe '#status' do
     let(:runner) { build(:ci_runner, :instance, created_at: 4.months.ago) }
-    let(:legacy_mode) { }
+    let(:legacy_mode) {}
 
     subject { runner.status(legacy_mode) }
 
@@ -1795,7 +1795,7 @@ RSpec.describe Ci::Runner do
     end
 
     context ':recommended' do
-      let(:upgrade_status) { :recommended}
+      let(:upgrade_status) { :recommended }
 
       it 'returns runners whose version is assigned :recommended' do
         is_expected.to contain_exactly(runner_14_1_0)

@@ -76,8 +76,8 @@ RSpec.describe Ci::BuildDependencies do
     end
 
     describe 'jobs from specified dependencies' do
-      let(:dependencies) { }
-      let(:needs) { }
+      let(:dependencies) {}
+      let(:needs) {}
 
       let!(:job) do
         scheduling_type = needs.present? ? :dag : :stage

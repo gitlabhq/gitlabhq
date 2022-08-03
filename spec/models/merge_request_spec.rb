@@ -114,10 +114,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
 
-    let_it_be(:merge_request1) { create(:merge_request, :unique_branches, reviewers: [user1])}
-    let_it_be(:merge_request2) { create(:merge_request, :unique_branches, reviewers: [user2])}
-    let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: [])}
-    let_it_be(:merge_request4) { create(:merge_request, :draft_merge_request)}
+    let_it_be(:merge_request1) { create(:merge_request, :unique_branches, reviewers: [user1]) }
+    let_it_be(:merge_request2) { create(:merge_request, :unique_branches, reviewers: [user2]) }
+    let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: []) }
+    let_it_be(:merge_request4) { create(:merge_request, :draft_merge_request) }
 
     describe '.review_requested' do
       it 'returns MRs that have any review requests' do
@@ -145,8 +145,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     describe '.attention' do
-      let_it_be(:merge_request5) { create(:merge_request, :unique_branches, assignees: [user2])}
-      let_it_be(:merge_request6) { create(:merge_request, :unique_branches, assignees: [user2])}
+      let_it_be(:merge_request5) { create(:merge_request, :unique_branches, assignees: [user2]) }
+      let_it_be(:merge_request6) { create(:merge_request, :unique_branches, assignees: [user2]) }
 
       before do
         assignee = merge_request6.find_assignee(user2)
@@ -2056,7 +2056,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
         context 'when failed to find an actual head pipeline' do
           before do
-            allow(merge_request).to receive(:find_actual_head_pipeline) { }
+            allow(merge_request).to receive(:find_actual_head_pipeline) {}
           end
 
           it 'does not update the current head pipeline' do

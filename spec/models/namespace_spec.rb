@@ -1548,7 +1548,7 @@ RSpec.describe Namespace do
 
   describe '#share_with_group_lock with subgroups' do
     context 'when creating a subgroup' do
-      let(:subgroup) { create(:group, parent: root_group )}
+      let(:subgroup) { create(:group, parent: root_group ) }
 
       context 'under a parent with "Share with group lock" enabled' do
         let(:root_group) { create(:group, share_with_group_lock: true) }
@@ -1569,7 +1569,7 @@ RSpec.describe Namespace do
 
     context 'when enabling the parent group "Share with group lock"' do
       let(:root_group) { create(:group) }
-      let!(:subgroup) { create(:group, parent: root_group )}
+      let!(:subgroup) { create(:group, parent: root_group ) }
 
       it 'the subgroup "Share with group lock" becomes enabled' do
         root_group.update!(share_with_group_lock: true)
@@ -1582,7 +1582,7 @@ RSpec.describe Namespace do
       let(:root_group) { create(:group, share_with_group_lock: true) }
 
       context 'and the subgroup "Share with group lock" is enabled' do
-        let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true )}
+        let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true ) }
 
         it 'the subgroup "Share with group lock" does not change' do
           root_group.update!(share_with_group_lock: false)
@@ -1592,7 +1592,7 @@ RSpec.describe Namespace do
       end
 
       context 'but the subgroup "Share with group lock" is disabled' do
-        let(:subgroup) { create(:group, parent: root_group )}
+        let(:subgroup) { create(:group, parent: root_group ) }
 
         it 'the subgroup "Share with group lock" does not change' do
           root_group.update!(share_with_group_lock: false)
@@ -1607,7 +1607,7 @@ RSpec.describe Namespace do
         let(:root_group) { create(:group, share_with_group_lock: true) }
 
         context 'when the subgroup "Share with group lock" is enabled' do
-          let(:subgroup) { create(:group, share_with_group_lock: true )}
+          let(:subgroup) { create(:group, share_with_group_lock: true ) }
 
           it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
@@ -1618,7 +1618,7 @@ RSpec.describe Namespace do
         end
 
         context 'when the subgroup "Share with group lock" is disabled' do
-          let(:subgroup) { create(:group)}
+          let(:subgroup) { create(:group) }
 
           it 'the subgroup "Share with group lock" becomes enabled' do
             subgroup.parent = root_group
@@ -1633,7 +1633,7 @@ RSpec.describe Namespace do
         let(:root_group) { create(:group) }
 
         context 'when the subgroup "Share with group lock" is enabled' do
-          let(:subgroup) { create(:group, share_with_group_lock: true )}
+          let(:subgroup) { create(:group, share_with_group_lock: true ) }
 
           it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
@@ -1644,7 +1644,7 @@ RSpec.describe Namespace do
         end
 
         context 'when the subgroup "Share with group lock" is disabled' do
-          let(:subgroup) { create(:group)}
+          let(:subgroup) { create(:group) }
 
           it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
@@ -2019,7 +2019,7 @@ RSpec.describe Namespace do
     end
 
     with_them do
-      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners)}
+      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners) }
 
       it 'returns the result' do
         expect(namespace.shared_runners_setting).to eq(shared_runners_setting)
@@ -2043,7 +2043,7 @@ RSpec.describe Namespace do
     end
 
     with_them do
-      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners)}
+      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners) }
 
       it 'returns the result' do
         expect(namespace.shared_runners_setting_higher_than?(other_setting)).to eq(result)

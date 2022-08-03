@@ -772,9 +772,6 @@ msgstr ""
 msgid "%{label_for_message} unavailable"
 msgstr ""
 
-msgid "%{learn_more_link}."
-msgstr ""
-
 msgid "%{lessThan} 1 hour"
 msgstr ""
 
@@ -25649,7 +25646,7 @@ msgstr ""
 msgid "Multiple HTTP integrations are not supported for this project"
 msgstr ""
 
-msgid "Multiple IP address ranges are supported."
+msgid "Multiple IP address ranges are supported. Does not affect access to the group's settings."
 msgstr ""
 
 msgid "Multiple Prometheus integrations are not supported"
@@ -27340,9 +27337,6 @@ msgid "Only required if not using role instance credentials."
 msgstr ""
 
 msgid "Only use lowercase letters, numbers, and underscores."
-msgstr ""
-
-msgid "Only users from the specified IP address ranges can reach this group, including all subgroups, projects, and Git repositories."
 msgstr ""
 
 msgid "Only verified users with an email address in any of these domains can be added to the group. Multiple domains are supported."
@@ -29379,6 +29373,9 @@ msgid "Please provide attributes to update"
 msgstr ""
 
 msgid "Please reach out if you have any questions and we'll be happy to assist."
+msgstr ""
+
+msgid "Please review the %{linkStart}contribution guidelines%{linkEnd} for this project."
 msgstr ""
 
 msgid "Please review the updated escalation policies for %{project_link}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
@@ -43830,6 +43827,9 @@ msgstr ""
 msgid "What are project audit events?"
 msgstr ""
 
+msgid "What does the setting affect?"
+msgstr ""
+
 msgid "What does this command do?"
 msgstr ""
 
@@ -45954,6 +45954,9 @@ msgstr ""
 msgid "ciReport|is loading, errors when loading results"
 msgstr ""
 
+msgid "ci_database"
+msgstr ""
+
 msgid "closed"
 msgstr ""
 
@@ -46021,9 +46024,6 @@ msgid "created by"
 msgstr ""
 
 msgid "data"
-msgstr ""
-
-msgid "database"
 msgstr ""
 
 msgid "date must not be after 9999-12-31"
@@ -46435,6 +46435,9 @@ msgid "loading"
 msgstr ""
 
 msgid "locked by %{path_lock_user_name} %{created_at}"
+msgstr ""
+
+msgid "main_database"
 msgstr ""
 
 msgid "manual"

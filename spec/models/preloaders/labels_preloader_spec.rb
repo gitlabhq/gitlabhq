@@ -6,7 +6,7 @@ RSpec.describe Preloaders::LabelsPreloader do
   let_it_be(:user) { create(:user) }
 
   shared_examples 'an efficient database query' do
-    let(:subscriptions) { labels.each { |l| create(:subscription, subscribable: l, project: l.project, user: user) }}
+    let(:subscriptions) { labels.each { |l| create(:subscription, subscribable: l, project: l.project, user: user) } }
 
     it 'does not make n+1 queries' do
       first_label = labels_with_preloaded_data.first

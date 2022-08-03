@@ -193,7 +193,7 @@ RSpec.describe Ci::JobArtifact do
       it { is_expected.to be_truthy }
 
       context 'when the job does have archived trace' do
-        let!(:artifact) { }
+        let!(:artifact) {}
 
         it { is_expected.to be_falsy }
       end

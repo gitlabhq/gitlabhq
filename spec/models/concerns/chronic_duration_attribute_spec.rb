@@ -95,8 +95,8 @@ end
 
 RSpec.describe 'ChronicDurationAttribute' do
   context 'when default value is not set' do
-    let(:source_field) {:maximum_timeout}
-    let(:virtual_field) {:maximum_timeout_human_readable}
+    let(:source_field) { :maximum_timeout }
+    let(:virtual_field) { :maximum_timeout_human_readable }
     let(:default_value) { nil }
 
     subject { create(:ci_runner) }
@@ -106,8 +106,8 @@ RSpec.describe 'ChronicDurationAttribute' do
   end
 
   context 'when default value is set' do
-    let(:source_field) {:build_timeout}
-    let(:virtual_field) {:build_timeout_human_readable}
+    let(:source_field) { :build_timeout }
+    let(:virtual_field) { :build_timeout_human_readable }
     let(:default_value) { 3600 }
 
     subject { create(:project) }
@@ -118,8 +118,8 @@ RSpec.describe 'ChronicDurationAttribute' do
 end
 
 RSpec.describe 'ChronicDurationAttribute - reader' do
-  let(:source_field) {:timeout}
-  let(:virtual_field) {:timeout_human_readable}
+  let(:source_field) { :timeout }
+  let(:virtual_field) { :timeout_human_readable }
 
   subject { create(:ci_build).ensure_metadata }
 

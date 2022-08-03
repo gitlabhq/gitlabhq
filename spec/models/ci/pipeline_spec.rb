@@ -3241,8 +3241,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
           cancel_running
 
-          latest_status_for_child = child_pipeline.statuses.pluck(:status)
-          expect(latest_status_for_child).to eq %w(created running)
+          latest_status_for_child = child_pipeline.statuses.order_id_desc.pluck(:status)
+          expect(latest_status_for_child).to eq %w(running created)
           expect(latest_status).to eq %w(canceled)
         end
 
@@ -3652,7 +3652,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     context 'when pipeline is a triggered pipeline' do
-      let!(:upstream) { create(:ci_pipeline, project: create(:project), upstream_of: pipeline)}
+      let!(:upstream) { create(:ci_pipeline, project: create(:project), upstream_of: pipeline) }
 
       it 'returns self id' do
         expect(subject).to contain_exactly(pipeline.id)

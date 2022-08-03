@@ -823,14 +823,14 @@ RSpec.describe Note do
       end
 
       context 'with :label action' do
-        let!(:metadata) {create(:system_note_metadata, note: note, action: :label)}
+        let!(:metadata) { create(:system_note_metadata, note: note, action: :label) }
 
         it_behaves_like 'system_note_metadata includes note action'
 
         it { expect(note.system_note_with_references?).to be_falsy }
 
         context 'with cross reference label note' do
-          let(:label) { create(:label, project: issue.project)}
+          let(:label) { create(:label, project: issue.project) }
           let(:note) { create(:system_note, note: "added #{label.to_reference} label", noteable: issue, project: issue.project) }
 
           it { expect(note.system_note_with_references?).to be_truthy }
@@ -838,14 +838,14 @@ RSpec.describe Note do
       end
 
       context 'with :milestone action' do
-        let!(:metadata) {create(:system_note_metadata, note: note, action: :milestone)}
+        let!(:metadata) { create(:system_note_metadata, note: note, action: :milestone) }
 
         it_behaves_like 'system_note_metadata includes note action'
 
         it { expect(note.system_note_with_references?).to be_falsy }
 
         context 'with cross reference milestone note' do
-          let(:milestone) { create(:milestone, project: issue.project)}
+          let(:milestone) { create(:milestone, project: issue.project) }
           let(:note) { create(:system_note, note: "added #{milestone.to_reference} milestone", noteable: issue, project: issue.project) }
 
           it { expect(note.system_note_with_references?).to be_truthy }
@@ -1130,7 +1130,7 @@ RSpec.describe Note do
   end
 
   describe '#cache_markdown_field' do
-    let(:html) { '<p>some html</p>'}
+    let(:html) { '<p>some html</p>' }
 
     before do
       allow(Banzai::Renderer).to receive(:cacheless_render_field).and_call_original

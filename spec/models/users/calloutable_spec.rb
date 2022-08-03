@@ -15,8 +15,8 @@ RSpec.describe Users::Calloutable do
 
   describe '#dismissed_after?' do
     let(:some_feature_name) { Users::Callout.feature_names.keys.second }
-    let(:callout_dismissed_month_ago) { create(:callout, feature_name: some_feature_name, dismissed_at: 1.month.ago )}
-    let(:callout_dismissed_day_ago) { create(:callout, feature_name: some_feature_name, dismissed_at: 1.day.ago )}
+    let(:callout_dismissed_month_ago) { create(:callout, feature_name: some_feature_name, dismissed_at: 1.month.ago ) }
+    let(:callout_dismissed_day_ago) { create(:callout, feature_name: some_feature_name, dismissed_at: 1.day.ago ) }
 
     it 'returns whether a callout dismissed after specified date' do
       expect(callout_dismissed_month_ago.dismissed_after?(15.days.ago)).to eq(false)

@@ -102,7 +102,7 @@ RSpec.describe ApplicationSetting, 'TokenAuthenticatable' do
     subject { described_class.send(:add_authentication_token_field, :runners_registration_token) }
 
     it 'raises error' do
-      expect {subject}.to raise_error(ArgumentError)
+      expect { subject }.to raise_error(ArgumentError)
     end
   end
 end

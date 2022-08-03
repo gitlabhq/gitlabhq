@@ -18,9 +18,10 @@ module Backup
     ].freeze
     IGNORED_ERRORS_REGEXP = Regexp.union(IGNORED_ERRORS).freeze
 
-    def initialize(progress, force:)
+    def initialize(database_name, progress, force:)
       super(progress)
-      @config = ActiveRecord::Base.configurations.find_db_config(Rails.env).configuration_hash
+      @database_name = database_name
+      @config = base_model.connection_db_config.configuration_hash
       @force = force
     end
 
@@ -67,6 +68,13 @@ module Backup
 
     override :restore
     def restore(db_file_name)
+      unless File.exist?(db_file_name)
+        raise(Backup::Error, "Source database file does not exist #{db_file_name}") if main_database?
+
+        progress.puts "Source backup for the database #{@database_name} doesn't exist. Skipping the task"
+        return
+      end
+
       unless force
         progress.puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
         sleep(5)
@@ -138,6 +146,14 @@ module Backup
 
     def database
       @config[:database]
+    end
+
+    def base_model
+      Gitlab::Database.database_base_models[@database_name]
+    end
+
+    def main_database?
+      @database_name == :main
     end
 
     def ignore_error?(line)

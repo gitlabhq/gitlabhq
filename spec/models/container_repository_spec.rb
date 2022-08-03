@@ -1195,7 +1195,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
     described_class::MIGRATION_STATES.each do |state|
       context "when in #{state} migration_state" do
-        let(:container_repository) { create(:container_repository, state.to_sym)}
+        let(:container_repository) { create(:container_repository, state.to_sym) }
 
         it { is_expected.to eq(state == 'importing' || state == 'pre_importing') }
       end
@@ -1207,7 +1207,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
     described_class::MIGRATION_STATES.each do |state|
       context "when in #{state} migration_state" do
-        let(:container_repository) { create(:container_repository, state.to_sym)}
+        let(:container_repository) { create(:container_repository, state.to_sym) }
 
         it { is_expected.to eq(state == 'importing') }
       end
@@ -1219,7 +1219,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
 
     described_class::MIGRATION_STATES.each do |state|
       context "when in #{state} migration_state" do
-        let(:container_repository) { create(:container_repository, state.to_sym)}
+        let(:container_repository) { create(:container_repository, state.to_sym) }
 
         it { is_expected.to eq(state == 'pre_importing') }
       end

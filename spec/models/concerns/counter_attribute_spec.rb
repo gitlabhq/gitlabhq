@@ -13,7 +13,7 @@ RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_
   end
 
   describe 'after_flush callbacks' do
-    let(:attribute) { model.class.counter_attributes.first}
+    let(:attribute) { model.class.counter_attributes.first }
 
     subject { model.flush_increments_to_database!(attribute) }
 

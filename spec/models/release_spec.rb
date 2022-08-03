@@ -233,6 +233,6 @@ RSpec.describe Release do
     let_it_be(:milestone_2) { create(:milestone, project: project, title: 'Milestone 2') }
     let_it_be(:release) { create(:release, project: project, milestones: [milestone_1, milestone_2]) }
 
-    it { expect(release.milestone_titles).to eq("#{milestone_1.title}, #{milestone_2.title}")}
+    it { expect(release.milestone_titles).to eq("#{milestone_1.title}, #{milestone_2.title}") }
   end
 end

@@ -27,6 +27,21 @@ namespace :dev do
     Rails.application.eager_load!
   end
 
+  desc "GitLab | Dev | Load specific fixture"
+  task 'fixtures:load', [:fixture_name] => :environment do |_, args|
+    fixture_name = args.fixture_name
+
+    if fixture_name.nil?
+      puts "No fixture name was provided"
+      next
+    end
+
+    ENV['FIXTURE_PATH'] = 'db/fixtures/development/'
+    ENV['FILTER'] = args.fixture_name
+
+    Rake::Task['db:seed_fu'].invoke
+  end
+
   # If there are any clients connected to the DB, PostgreSQL won't let
   # you drop the database. It's possible that Sidekiq, Puma, or
   # some other client will be hanging onto a connection, preventing

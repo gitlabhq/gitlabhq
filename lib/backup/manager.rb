@@ -22,6 +22,7 @@ module Backup
       :destination_optional, # `true` if the destination might not exist on a successful backup.
       :cleanup_path, # Path to remove after a successful backup. Uses `destination_path` when not specified.
       :task,
+      :task_group,
       keyword_init: true
     ) do
       def enabled?
@@ -122,13 +123,22 @@ module Backup
       @definitions ||= build_definitions
     end
 
-    def build_definitions
+    def build_definitions # rubocop:disable Metrics/AbcSize
       {
-        'db' => TaskDefinition.new(
-          human_name: _('database'),
+        'main_db' => TaskDefinition.new(
+          human_name: _('main_database'),
           destination_path: 'db/database.sql.gz',
           cleanup_path: 'db',
-          task: build_db_task
+          task: build_db_task(:main),
+          task_group: 'db'
+        ),
+        'ci_db' => TaskDefinition.new(
+          human_name: _('ci_database'),
+          destination_path: 'db/ci_database.sql.gz',
+          cleanup_path: 'db',
+          task: build_db_task(:ci),
+          enabled: Gitlab::Database.has_config?(:ci),
+          task_group: 'db'
         ),
         'repositories' => TaskDefinition.new(
           human_name: _('repositories'),
@@ -180,10 +190,11 @@ module Backup
       }.freeze
     end
 
-    def build_db_task
-      force = Gitlab::Utils.to_boolean(ENV['force'], default: false)
+    def build_db_task(database_name)
+      return unless Gitlab::Database.has_config?(database_name) # It will be disabled for a single db setup
 
-      Database.new(progress, force: force)
+      force = Gitlab::Utils.to_boolean(ENV['force'], default: false)
+      Database.new(database_name, progress, force: force)
     end
 
     def build_repositories_task
@@ -233,7 +244,9 @@ module Backup
       verify_backup_version
 
       definitions.keys.each do |task_name|
-        run_restore_task(task_name) if !skipped?(task_name) && enabled_task?(task_name)
+        if !skipped?(task_name) && enabled_task?(task_name)
+          run_restore_task(task_name)
+        end
       end
 
       Rake::Task['gitlab:shell:setup'].invoke
@@ -254,7 +267,9 @@ module Backup
 
     def write_backup_information
       # Make sure there is a connection
-      ActiveRecord::Base.connection.reconnect!
+      ::Gitlab::Database.database_base_models.values.each do |base_model|
+        base_model.connection.reconnect!
+      end
 
       Dir.chdir(backup_path) do
         File.open("#{backup_path}/#{MANIFEST_NAME}", "w+") do |file|
@@ -472,7 +487,7 @@ module Backup
     end
 
     def skipped?(item)
-      skipped.include?(item)
+      skipped.include?(item) || skipped.include?(definitions[item]&.task_group)
     end
 
     def skipped
@@ -483,6 +498,7 @@ module Backup
       list = ENV.fetch(LIST_ENVS[name], '').split(',')
       list += backup_information[name].split(',') if backup_information[name]
       list.uniq!
+      list.compact!
       list
     end
 

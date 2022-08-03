@@ -4616,7 +4616,6 @@ Layout/LineLength:
     - 'spec/lib/atlassian/jira_connect/client_spec.rb'
     - 'spec/lib/atlassian/jira_connect/serializers/feature_flag_entity_spec.rb'
     - 'spec/lib/atlassian/jira_issue_key_extractor_spec.rb'
-    - 'spec/lib/backup/database_spec.rb'
     - 'spec/lib/backup/files_spec.rb'
     - 'spec/lib/backup/gitaly_backup_spec.rb'
     - 'spec/lib/backup/manager_spec.rb'

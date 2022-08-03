@@ -18,7 +18,7 @@
         = f.submit _('Add email address'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'add_email_address_button' }
     %hr
     %h4.gl-mt-0
-      = _('Linked emails (%{email_count})') % { email_count: @emails.load.size + 1 }
+      = _('Linked emails (%{email_count})') % { email_count: @emails.load.size }
     .account-well.gl-mb-3
       %ul
         %li

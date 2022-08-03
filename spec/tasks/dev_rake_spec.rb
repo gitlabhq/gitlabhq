@@ -9,6 +9,7 @@ RSpec.describe 'dev rake tasks' do
     Rake.application.rake_require 'tasks/dev'
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/gitlab/db'
+    Rake.application.rake_require 'tasks/seed_fu'
   end
 
   describe 'setup' do
@@ -35,6 +36,30 @@ RSpec.describe 'dev rake tasks' do
       expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
 
       setup_task
+    end
+  end
+
+  describe 'fixtures:load' do
+    subject(:load_task) { run_rake_task('dev:fixtures:load', task_param) }
+
+    context 'by name' do
+      let(:task_param) { ['fixture_name'] }
+
+      it 'loads fixture' do
+        expect(Rake::Task['db:seed_fu']).to receive(:invoke)
+
+        load_task
+      end
+    end
+
+    context 'by empty name' do
+      let(:task_param) { '' }
+
+      it 'does not load fixture' do
+        expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
+
+        expect { load_task }.to output(/No fixture name was provided/).to_stdout
+      end
     end
   end
 

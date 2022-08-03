@@ -10,7 +10,7 @@ RSpec.describe Packages::Conan::Metadatum, type: :model do
   end
 
   describe 'validations' do
-    let(:fifty_one_characters) { 'f_a' * 17}
+    let(:fifty_one_characters) { 'f_a' * 17 }
 
     it { is_expected.to validate_presence_of(:package) }
     it { is_expected.to validate_presence_of(:package_username) }

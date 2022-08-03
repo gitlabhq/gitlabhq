@@ -591,7 +591,7 @@ RSpec.describe Issue do
     let_it_be(:authorized_issue_a) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_b) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_c) { create(:issue, project: authorized_project2) }
-    let_it_be(:authorized_incident_a) { create(:incident, project: authorized_project )}
+    let_it_be(:authorized_incident_a) { create(:incident, project: authorized_project ) }
 
     let_it_be(:unauthorized_issue) { create(:issue, project: unauthorized_project) }
 
@@ -648,7 +648,7 @@ RSpec.describe Issue do
     subject { issue.can_move?(user) }
 
     context 'user is not a member of project issue belongs to' do
-      it { is_expected.to eq false}
+      it { is_expected.to eq false }
     end
 
     context 'user is reporter in project issue belongs to' do
@@ -1172,7 +1172,7 @@ RSpec.describe Issue do
       end
 
       context 'when issue is moved to a private project' do
-        let(:private_project) { build(:project, :private)}
+        let(:private_project) { build(:project, :private) }
 
         before do
           issue.update!(project: private_project) # move issue to private project

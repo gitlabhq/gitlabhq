@@ -359,7 +359,7 @@ RSpec.describe Group do
     context 'parent is updated' do
       let(:new_parent) { create(:group) }
 
-      subject {group.update!(parent: new_parent, name: 'new name') }
+      subject { group.update!(parent: new_parent, name: 'new name') }
 
       it_behaves_like 'update on column', :traversal_ids
     end
@@ -2848,7 +2848,7 @@ RSpec.describe Group do
       end
 
       context 'for subgroup project' do
-        let_it_be(:subgroup) { create(:group, :private, parent: group)}
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
         let_it_be(:project) { create(:project, group: subgroup, service_desk_enabled: true) }
 
         it { is_expected.to eq(true) }

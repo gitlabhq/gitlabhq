@@ -3123,7 +3123,7 @@ RSpec.describe Repository do
       it 'after_create is not executed' do
         expect(repository).not_to receive(:after_create)
 
-        expect {repository.create_from_bundle(valid_bundle_path)}.to raise_error(::Gitlab::Git::BundleFile::InvalidBundleError)
+        expect { repository.create_from_bundle(valid_bundle_path) }.to raise_error(::Gitlab::Git::BundleFile::InvalidBundleError)
       end
     end
   end

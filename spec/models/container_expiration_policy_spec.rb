@@ -131,7 +131,7 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
     end
 
     context 'when there are no runnable schedules' do
-      let!(:policy) { }
+      let!(:policy) {}
 
       it 'returns an empty array' do
         is_expected.to be_empty

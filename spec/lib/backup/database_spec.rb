@@ -19,7 +19,7 @@ RSpec.describe Backup::Database do
     let(:data) { Rails.root.join("spec/fixtures/pages_empty.tar.gz").to_s }
     let(:force) { true }
 
-    subject { described_class.new(progress, force: force) }
+    subject { described_class.new(Gitlab::Database::MAIN_DATABASE_NAME.to_sym, progress, force: force) }
 
     before do
       allow(subject).to receive(:pg_restore_cmd).and_return(cmd)
@@ -68,7 +68,7 @@ RSpec.describe Backup::Database do
 
     context 'when the restore command prints errors' do
       let(:visible_error) { "This is a test error\n" }
-      let(:noise) { "Table projects does not exist\nmust be owner of extension pg_trgm\nWARNING:  no privileges could be revoked for public\n" }
+      let(:noise) { "must be owner of extension pg_trgm\nWARNING:  no privileges could be revoked for public\n" }
       let(:cmd) { %W[#{Gem.ruby} -e $stderr.write("#{noise}#{visible_error}")] }
 
       it 'filters out noise from errors and has a post restore warning' do
@@ -103,6 +103,26 @@ RSpec.describe Backup::Database do
         expect(output).to include(%("PGPASSWORD"=>"donotchange"))
         expect(output).to include(%("PGPORT"=>"#{config['port']}")) if config['port']
         expect(output).to include(%("PGUSER"=>"#{config['username']}")) if config['username']
+      end
+    end
+
+    context 'when the source file is missing' do
+      let(:main_database) { described_class.new(Gitlab::Database::MAIN_DATABASE_NAME.to_sym, progress, force: force) }
+      let(:ci_database) { described_class.new(Gitlab::Database::CI_DATABASE_NAME.to_sym, progress, force: force) }
+      let(:missing_file) { Rails.root.join("spec/fixtures/missing_file.tar.gz").to_s }
+
+      it 'main database raises an error about missing source file' do
+        expect(Rake::Task['gitlab:db:drop_tables']).not_to receive(:invoke)
+
+        expect do
+          main_database.restore(missing_file)
+        end.to raise_error(Backup::Error, /Source database file does not exist/)
+      end
+
+      it 'ci database tolerates missing source file' do
+        expect(Rake::Task['gitlab:db:drop_tables']).not_to receive(:invoke)
+        skip_if_multiple_databases_not_setup
+        expect { ci_database.restore(missing_file) }.not_to raise_error
       end
     end
   end

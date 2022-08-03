@@ -6,10 +6,11 @@ RSpec.describe 'Query current user groups' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
+  let_it_be(:root_group) { create(:group, name: 'Root group', path: 'root-group') }
   let_it_be(:guest_group) { create(:group, name: 'public guest', path: 'public-guest') }
-  let_it_be(:private_maintainer_group) { create(:group, :private, name: 'b private maintainer', path: 'b-private-maintainer') }
+  let_it_be(:private_maintainer_group) { create(:group, :private, name: 'b private maintainer', path: 'b-private-maintainer', parent: root_group) }
   let_it_be(:public_developer_group) { create(:group, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer') }
-  let_it_be(:public_maintainer_group) { create(:group, name: 'a public maintainer', path: 'a-public-maintainer') }
+  let_it_be(:public_maintainer_group) { create(:group, name: 'a public maintainer', path: 'a-public-maintainer', parent: root_group) }
   let_it_be(:public_owner_group) { create(:group, name: 'a public owner', path: 'a-public-owner') }
 
   let(:group_arguments) { {} }
@@ -77,7 +78,7 @@ RSpec.describe 'Query current user groups' do
     end
 
     context 'when search is provided' do
-      let(:group_arguments) { { permission_scope: :CREATE_PROJECTS, search: 'maintainer' } }
+      let(:group_arguments) { { permission_scope: :CREATE_PROJECTS, search: 'root-group maintainer' } }
 
       specify do
         is_expected.to match(
@@ -126,6 +127,18 @@ RSpec.describe 'Query current user groups' do
           private_maintainer_group
         )
       )
+    end
+
+    context 'when searching for a full path (including parent)' do
+      let(:group_arguments) { { search: 'root-group/b-private-maintainer' } }
+
+      specify do
+        is_expected.to match(
+          expected_group_hash(
+            private_maintainer_group
+          )
+        )
+      end
     end
   end
 

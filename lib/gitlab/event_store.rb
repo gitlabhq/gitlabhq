@@ -41,6 +41,8 @@ module Gitlab
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Projects::ProjectDeletedEvent
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Projects::ProjectCreatedEvent
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Projects::ProjectPathChangedEvent
+      store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Projects::ProjectArchivedEvent
+
       store.subscribe ::MergeRequests::CreateApprovalEventWorker, to: ::MergeRequests::ApprovedEvent
     end
     private_class_method :configure!

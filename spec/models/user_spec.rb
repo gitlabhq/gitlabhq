@@ -6392,7 +6392,7 @@ RSpec.describe User do
     end
 
     context 'when password_automatically_set is true' do
-      let(:user) { create(:omniauth_user, provider: 'ldap')}
+      let(:user) { create(:omniauth_user, provider: 'ldap') }
 
       it_behaves_like 'password expired not applicable'
     end

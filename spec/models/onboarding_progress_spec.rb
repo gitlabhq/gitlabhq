@@ -12,7 +12,7 @@ RSpec.describe OnboardingProgress do
 
   describe 'validations' do
     describe 'namespace_is_root_namespace' do
-      subject(:onboarding_progress) { build(:onboarding_progress, namespace: namespace)}
+      subject(:onboarding_progress) { build(:onboarding_progress, namespace: namespace) }
 
       context 'when associated namespace is root' do
         it { is_expected.to be_valid }

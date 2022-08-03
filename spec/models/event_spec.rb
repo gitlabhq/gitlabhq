@@ -947,7 +947,7 @@ RSpec.describe Event do
     let_it_be(:user) { create(:user) }
     let_it_be(:note_on_project_snippet) { create(:note_on_project_snippet, author: user) }
     let_it_be(:note_on_personal_snippet) { create(:note_on_personal_snippet, author: user) }
-    let_it_be(:other_note) { create(:note_on_issue, author: user)}
+    let_it_be(:other_note) { create(:note_on_issue, author: user) }
     let_it_be(:personal_snippet_event) { create(:event, :commented, project: nil, target: note_on_personal_snippet, author: user) }
     let_it_be(:project_snippet_event) { create(:event, :commented, project: note_on_project_snippet.project, target: note_on_project_snippet, author: user) }
     let_it_be(:other_event) { create(:event, :commented, project: other_note.project, target: other_note, author: user) }

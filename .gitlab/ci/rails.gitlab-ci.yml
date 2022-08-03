@@ -503,6 +503,12 @@ db:backup_and_restore:
         - "lib/backup/**/*"
         - "lib/tasks/gitlab/backup.rake"
 
+db:backup_and_restore single-db:
+  extends:
+    - db:backup_and_restore
+    - .single-db
+    - .rails:rules:single-db
+
 rspec:deprecations:
   extends:
     - .default-retry

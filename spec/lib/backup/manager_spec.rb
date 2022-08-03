@@ -24,7 +24,17 @@ RSpec.describe Backup::Manager do
   describe '#run_create_task' do
     let(:enabled) { true }
     let(:task) { instance_double(Backup::Task) }
-    let(:definitions) { { 'my_task' => Backup::Manager::TaskDefinition.new(task: task, enabled: enabled, destination_path: 'my_task.tar.gz', human_name: 'my task') } }
+    let(:definitions) do
+      {
+        'my_task' => Backup::Manager::TaskDefinition.new(
+          task: task,
+          enabled: enabled,
+          destination_path: 'my_task.tar.gz',
+          human_name: 'my task',
+          task_group: 'group1'
+        )
+      }
+    end
 
     it 'calls the named task' do
       expect(task).to receive(:dump)
@@ -47,6 +57,16 @@ RSpec.describe Backup::Manager do
     describe 'skipped' do
       it 'informs the user' do
         stub_env('SKIP', 'my_task')
+
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... [SKIPPED]')
+
+        subject.run_create_task('my_task')
+      end
+    end
+
+    describe 'task group skipped' do
+      it 'informs the user' do
+        stub_env('SKIP', 'group1')
 
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping my task ... [SKIPPED]')
 
@@ -164,7 +184,7 @@ RSpec.describe Backup::Manager do
 
     before do
       stub_env('INCREMENTAL', incremental_env)
-      allow(ActiveRecord::Base.connection).to receive(:reconnect!)
+      allow(ApplicationRecord.connection).to receive(:reconnect!)
       allow(Gitlab::BackupLogger).to receive(:info)
       allow(Kernel).to receive(:system).and_return(true)
 

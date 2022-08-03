@@ -219,7 +219,7 @@ RSpec.describe RemoteMirror, :mailer do
   end
 
   describe '#hard_retry!' do
-    let(:remote_mirror) { create(:remote_mirror).tap {|mirror| mirror.update_column(:url, 'invalid') } }
+    let(:remote_mirror) { create(:remote_mirror).tap { |mirror| mirror.update_column(:url, 'invalid') } }
 
     it 'transitions an invalid mirror to the to_retry state' do
       remote_mirror.hard_retry!('Invalid')
@@ -230,7 +230,7 @@ RSpec.describe RemoteMirror, :mailer do
   end
 
   describe '#hard_fail!' do
-    let(:remote_mirror) { create(:remote_mirror).tap {|mirror| mirror.update_column(:url, 'invalid') } }
+    let(:remote_mirror) { create(:remote_mirror).tap { |mirror| mirror.update_column(:url, 'invalid') } }
 
     it 'transitions an invalid mirror to the failed state' do
       remote_mirror.hard_fail!('Invalid')

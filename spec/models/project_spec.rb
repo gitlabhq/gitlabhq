@@ -7473,7 +7473,7 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       with_them do
-        it { is_expected.to eq expected_result}
+        it { is_expected.to eq expected_result }
       end
     end
 
@@ -7490,7 +7490,7 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       with_them do
-        it { is_expected.to eq expected_result}
+        it { is_expected.to eq expected_result }
       end
 
       context 'for a different package type' do
@@ -7513,7 +7513,7 @@ RSpec.describe Project, factory_default: :keep do
         end
 
         with_them do
-          it { is_expected.to eq expected_result}
+          it { is_expected.to eq expected_result }
         end
       end
     end
@@ -8435,7 +8435,7 @@ RSpec.describe Project, factory_default: :keep do
 
       expect do
         project.destroy_deployment_by_id(project.deployments.first.id)
-      end.to change {project.deployments.count }.by(-1)
+      end.to change { project.deployments.count }.by(-1)
 
       expect(project.deployments).to match_array([old_deployment])
     end

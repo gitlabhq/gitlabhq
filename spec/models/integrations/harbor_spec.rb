@@ -24,7 +24,7 @@ RSpec.describe Integrations::Harbor do
 
     it { is_expected.not_to allow_value('https://192.168.1.1').for(:url) }
     it { is_expected.not_to allow_value('https://127.0.0.1').for(:url) }
-    it { is_expected.to allow_value('https://demo.goharbor.io').for(:url)}
+    it { is_expected.to allow_value('https://demo.goharbor.io').for(:url) }
   end
 
   describe '#fields' do

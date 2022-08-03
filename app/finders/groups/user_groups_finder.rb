@@ -41,7 +41,7 @@ module Groups
     def by_search(items)
       return items if params[:search].blank?
 
-      items.search(params[:search])
+      items.search(params[:search], include_parents: true)
     end
 
     def by_permission_scope

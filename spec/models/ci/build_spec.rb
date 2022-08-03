@@ -1289,7 +1289,7 @@ RSpec.describe Ci::Build do
     let(:subject) { build.hide_secrets(data) }
 
     context 'hide runners token' do
-      let(:data) { "new #{project.runners_token} data"}
+      let(:data) { "new #{project.runners_token} data" }
 
       it { is_expected.to match(/^new x+ data$/) }
 
@@ -1303,7 +1303,7 @@ RSpec.describe Ci::Build do
     end
 
     context 'hide build token' do
-      let(:data) { "new #{build.token} data"}
+      let(:data) { "new #{build.token} data" }
 
       it { is_expected.to match(/^new x+ data$/) }
 
@@ -1709,7 +1709,7 @@ RSpec.describe Ci::Build do
           end
 
           context 'with a dynamic value' do
-            let(:namespace) { 'deploy-$CI_COMMIT_REF_NAME'}
+            let(:namespace) { 'deploy-$CI_COMMIT_REF_NAME' }
 
             it { is_expected.to eq 'deploy-master' }
           end
@@ -2643,7 +2643,7 @@ RSpec.describe Ci::Build do
         build.update_columns(token_encrypted: nil)
       end
 
-      it { is_expected.to be_nil}
+      it { is_expected.to be_nil }
     end
   end
 
@@ -3534,8 +3534,8 @@ RSpec.describe Ci::Build do
 
       context 'when gitlab-deploy-token does not exist for project' do
         it 'does not include deploy token variables' do
-          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
-          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
+          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD' }).to be_nil
         end
 
         context 'when gitlab-deploy-token exists for group' do
@@ -3553,8 +3553,8 @@ RSpec.describe Ci::Build do
             end
 
             it 'does not include deploy token variables' do
-              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
-              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
+              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER' }).to be_nil
+              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD' }).to be_nil
             end
           end
         end
@@ -3585,10 +3585,10 @@ RSpec.describe Ci::Build do
 
       context 'when harbor_integration does not exist' do
         it 'does not include harbor variables' do
-          expect(subject.find { |v| v[:key] == 'HARBOR_URL'}).to be_nil
-          expect(subject.find { |v| v[:key] == 'HARBOR_PROJECT_NAME'}).to be_nil
-          expect(subject.find { |v| v[:key] == 'HARBOR_USERNAME'}).to be_nil
-          expect(subject.find { |v| v[:key] == 'HARBOR_PASSWORD'}).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_URL' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_PROJECT_NAME' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_USERNAME' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'HARBOR_PASSWORD' }).to be_nil
         end
       end
     end

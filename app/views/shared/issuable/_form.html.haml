@@ -57,9 +57,9 @@
 .gl-mt-5{ class: (is_footer ? "footer-block" : "middle-block") }
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = issuable.project.present.contribution_guide_path)
     .gl-mb-5
-      Please review the
-      %strong= link_to('contribution guidelines', guide_url)
-      for this project.
+      - contribution_guidelines_start = '<strong><a href="%{url}">'.html_safe % {url: strip_tags(guide_url)}
+      - contribution_guidelines_end = '</a></strong>'.html_safe
+      = sanitize(html_escape(_('Please review the %{linkStart}contribution guidelines%{linkEnd} for this project.')) % { linkStart: contribution_guidelines_start, linkEnd: contribution_guidelines_end })
 
   - if issuable.new_record?
     = form.submit "#{_('Create')} #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-confirm gl-mr-2', data: { qa_selector: 'issuable_create_button', track_experiment: 'promote_mr_approvals_in_free', track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }

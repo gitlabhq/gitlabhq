@@ -65,7 +65,7 @@ RSpec.describe Ci::BuildRunnerSession, model: true do
   end
 
   describe '#service_specification' do
-    let(:service) { 'foo'}
+    let(:service) { 'foo' }
     let(:port) { 80 }
     let(:path) { 'path' }
     let(:subprotocols) { nil }
