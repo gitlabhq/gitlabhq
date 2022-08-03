@@ -6,7 +6,7 @@ RSpec.describe Timelogs::DeleteService do
   let_it_be(:author) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800)}
+  let_it_be(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
 
   let(:service) { described_class.new(timelog, user) }
 
@@ -49,7 +49,7 @@ RSpec.describe Timelogs::DeleteService do
 
     context 'when the timelog deletion fails' do
       let(:user) { author }
-      let!(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800)}
+      let!(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800) }
 
       before do
         allow(timelog).to receive(:destroy).and_return(false)

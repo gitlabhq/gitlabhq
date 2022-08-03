@@ -11,15 +11,10 @@ RSpec.describe Packages::Debian::ExtractMetadataService do
   end
 
   RSpec.shared_examples 'Test Debian ExtractMetadata Service' do |expected_file_type, expected_architecture, expected_fields|
-    it "returns file_type #{expected_file_type.inspect}" do
+    it "returns file_type #{expected_file_type.inspect}, architecture #{expected_architecture.inspect} and fields #{expected_fields.nil? ? '' : 'including '}#{expected_fields.inspect}", :aggregate_failures do
       expect(subject[:file_type]).to eq(expected_file_type)
-    end
-
-    it "returns architecture #{expected_architecture.inspect}" do
       expect(subject[:architecture]).to eq(expected_architecture)
-    end
 
-    it "returns fields #{expected_fields.nil? ? '' : 'including '}#{expected_fields.inspect}" do
       if expected_fields.nil?
         expect(subject[:fields]).to be_nil
       else

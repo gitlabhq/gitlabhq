@@ -142,7 +142,12 @@ The one-time password (OTP) verification can be done using a command:
 ssh git@<hostname> 2fa_verify
 ```
 
-After the OTP is verified, Git over SSH operations can be used for a session duration of
+In GitLab 15.3 and later, users can authenticate by either:
+
+- Entering the correct OTP.
+- Responding to a device push notification, if [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-one-time-password-using-fortiauthenticator).
+
+After the successful authentication, Git over SSH operations can be used for a session duration of
 15 minutes (default) with the associated SSH key.
 
 ### Security limitation

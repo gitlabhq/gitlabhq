@@ -136,7 +136,7 @@ RSpec.describe JiraImport::StartImportService do
       end
 
       context 'when multiple Jira imports for same Jira project' do
-        let!(:jira_imports) { create_list(:jira_import_state, 3, :finished, project: project, jira_project_key: fake_key)}
+        let!(:jira_imports) { create_list(:jira_import_state, 3, :finished, project: project, jira_project_key: fake_key) }
 
         it 'creates Jira label title with correct number' do
           jira_import = subject.payload[:import_data]

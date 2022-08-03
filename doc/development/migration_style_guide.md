@@ -581,7 +581,7 @@ end
 Verify the index is not being used anymore with this Thanos query:
 
 ```sql
-sum(rate(pg_stat_user_indexes_idx_tup_read{env="gprd", indexrelname="index_ci_name", type="patroni-ci"}[5m]))
+sum by (type)(rate(pg_stat_user_indexes_idx_scan{env="gprd", indexrelname="index_groups_on_parent_id_id"}[5m]))
 ```
 
 Note that it is not necessary to check if the index exists prior to

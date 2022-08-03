@@ -26,7 +26,7 @@ module Projects
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute
       end
 
-      @project = Project.new(params)
+      @project = Project.new(params.merge(creator: current_user))
 
       validate_import_source_enabled!
 
@@ -45,20 +45,14 @@ module Projects
       set_project_name_from_path
 
       # get namespace id
-      namespace_id = params[:namespace_id]
+      namespace_id = params[:namespace_id] || current_user.namespace_id
+      @project.namespace_id = namespace_id.to_i
 
-      if namespace_id
-        # Find matching namespace and check if it allowed
-        # for current user if namespace_id passed.
-        unless current_user.can?(:create_projects, parent_namespace)
-          @project.namespace_id = nil
-          deny_namespace
-          return @project
-        end
-      else
-        # Set current user namespace if namespace_id is nil
-        @project.namespace_id = current_user.namespace_id
-      end
+      @project.check_personal_projects_limit
+      return @project if @project.errors.any?
+
+      validate_create_permissions
+      return @project if @project.errors.any?
 
       @relations_block&.call(@project)
       yield(@project) if block_given?
@@ -92,7 +86,9 @@ module Projects
 
     protected
 
-    def deny_namespace
+    def validate_create_permissions
+      return if current_user.can?(:create_projects, parent_namespace)
+
       @project.errors.add(:namespace, "is not valid")
     end
 

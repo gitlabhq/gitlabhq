@@ -31,7 +31,7 @@ RSpec.describe Packages::Debian::ExtractDebMetadataService do
     let(:file_name) { 'README.md' }
 
     it 'raise error' do
-      expect {subject.execute}.to raise_error(described_class::CommandFailedError, /is not a Debian format archive/i)
+      expect { subject.execute }.to raise_error(described_class::CommandFailedError, /is not a Debian format archive/i)
     end
   end
 end

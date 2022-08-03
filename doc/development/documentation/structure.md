@@ -148,34 +148,56 @@ Avoid these heading titles:
 
 ## Troubleshooting
 
-Troubleshooting can be one of two categories:
+Troubleshooting topics should be the last topics on a page. They can also be on a standalone page that includes only troubleshooting information.
 
-- **Troubleshooting task.** This information is written the same way as a [standard task](#task).
+Troubleshooting can be one of three categories:
+
+- **An introductory topic.** This topic introduces the troubleshooting section of a page.
+  For example:
+
+  ```markdown
+  ## Troubleshooting
+
+  When working with <x feature>, you might encounter the following issues.
+  ```
+
+- **Troubleshooting task.** The title should be similar to a [standard task](#task).
   For example, "Run debug tools" or "Verify syntax."
-- **Troubleshooting reference.** This information has a specific format.
 
-Troubleshooting reference information should be in this format:
+- **Troubleshooting reference.** This information includes the error message. For example:
 
-```markdown
-# Title (the error message or a description of it)
+  ```markdown
+  ### The error message or a description of it
 
-You might get an error that states <error message>.
+  You might get an error that states <error message>.
 
-This issue occurs when...
+  This issue occurs when...
 
-The workaround is...
-```
+  The workaround is...
+  ```
 
-If multiple causes or workarounds exist, consider putting them into a table format.
+  If multiple causes or workarounds exist, consider putting them into a table format.
 
 ### Troubleshooting headings
 
-For the heading:
+For the heading of a **Troubleshooting reference** topic:
 
 - Consider including at least a partial error message.
 - Use fewer than 70 characters.
 
 If you do not put the full error in the title, include it in the body text.
+
+### Related topics
+
+If inline links are not sufficient, you can create a topic called **Related topics**
+and include an unordered list of related topics. This topic should be above the Troubleshooting section.
+
+```markdown
+# Related topics
+
+- [Configure your pipeline](link-to-topic)
+- [Trigger a pipeline manually](link-to-topic)
+```
 
 ## General heading text guidelines
 
@@ -270,18 +292,6 @@ Complete the following steps to ... .
 
 If you need to add more than one task,
 consider using subsections for each distinct task.
-```
-
-### Related topics
-
-If inline links are not sufficient, you can create a topic called **Related topics**
-and include an unordered list of related topics. This topic should be above the Troubleshooting section.
-
-```markdown
-# Related topics
-
-- [Configure your pipeline](link-to-topic)
-- [Trigger a pipeline manually](link-to-topic)
 ```
 
 ### Topics and resources pages

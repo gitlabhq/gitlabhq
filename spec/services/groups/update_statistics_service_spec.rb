@@ -7,7 +7,7 @@ RSpec.describe Groups::UpdateStatisticsService do
 
   let(:statistics) { %w(wiki_size) }
 
-  subject(:service) { described_class.new(group, statistics: statistics)}
+  subject(:service) { described_class.new(group, statistics: statistics) }
 
   describe '#execute', :aggregate_failures do
     context 'when group is nil' do

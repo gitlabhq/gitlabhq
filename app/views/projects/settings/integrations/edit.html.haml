@@ -6,4 +6,5 @@
 = render 'form', integration: @integration
 
 - if @web_hook_logs
-  = render partial: 'projects/hook_logs/index', locals: { hook: @integration.service_hook, hook_logs: @web_hook_logs, project: @project }
+  %hr
+  = render partial: 'shared/hook_logs/index', locals: { hook: @integration.service_hook, hook_logs: @web_hook_logs, project: @project }

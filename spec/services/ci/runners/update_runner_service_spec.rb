@@ -38,7 +38,7 @@ RSpec.describe Ci::Runners::UpdateRunnerService do
     end
 
     context 'with cost factor params' do
-      let(:params) { { public_projects_minutes_cost_factor: 1.1, private_projects_minutes_cost_factor: 2.2 }}
+      let(:params) { { public_projects_minutes_cost_factor: 1.1, private_projects_minutes_cost_factor: 2.2 } }
 
       it 'updates the runner cost factors' do
         expect(update).to be_truthy

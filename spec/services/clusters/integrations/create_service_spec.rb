@@ -68,7 +68,7 @@ RSpec.describe Clusters::Integrations::CreateService, '#execute' do
     end
 
     it 'errors' do
-      expect { service.execute}.to raise_error(ArgumentError)
+      expect { service.execute }.to raise_error(ArgumentError)
     end
   end
 

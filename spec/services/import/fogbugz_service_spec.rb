@@ -119,7 +119,7 @@ RSpec.describe Import::FogbugzService do
     let(:error_messages_array) { instance_double(Array, join: "something went wrong") }
     let(:errors_double) { instance_double(ActiveModel::Errors, full_messages: error_messages_array, :[] => nil) }
     let(:project_double) { instance_double(Project, persisted?: false, errors: errors_double) }
-    let(:project_creator) { instance_double(Gitlab::FogbugzImport::ProjectCreator, execute: project_double )}
+    let(:project_creator) { instance_double(Gitlab::FogbugzImport::ProjectCreator, execute: project_double ) }
 
     before do
       allow(Gitlab::FogbugzImport::ProjectCreator).to receive(:new).and_return(project_creator)

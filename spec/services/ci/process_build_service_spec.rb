@@ -101,7 +101,7 @@ RSpec.describe Ci::ProcessBuildService, '#execute' do
 
   context 'when build has delayed option' do
     before do
-      allow(Ci::BuildScheduleWorker).to receive(:perform_at) { }
+      allow(Ci::BuildScheduleWorker).to receive(:perform_at) {}
     end
 
     let(:build) { create(:ci_build, :created, :schedulable, user: user, project: project) }

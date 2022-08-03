@@ -87,7 +87,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
 
   describe '#processing_processables' do
     it 'returns processables marked as processing' do
-      expect(collection.processing_processables.map { |processable| processable[:id]} )
+      expect(collection.processing_processables.map { |processable| processable[:id] } )
         .to contain_exactly(build_a.id, build_b.id, test_a.id, test_b.id, deploy.id)
     end
   end

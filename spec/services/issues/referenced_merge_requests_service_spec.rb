@@ -106,7 +106,7 @@ RSpec.describe Issues::ReferencedMergeRequestsService do
   end
 
   describe '#closed_by_merge_requests' do
-    let(:closed_issue) { build(:issue, :closed, project: project)}
+    let(:closed_issue) { build(:issue, :closed, project: project) }
 
     it 'returns the open merge requests that close this issue' do
       create_closing_mr(source_project: project, state: 'closed')

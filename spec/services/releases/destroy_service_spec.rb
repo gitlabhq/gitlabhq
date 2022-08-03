@@ -39,7 +39,7 @@ RSpec.describe Releases::DestroyService do
     end
 
     context 'when release is not found' do
-      let!(:release) { }
+      let!(:release) {}
 
       it 'returns an error' do
         is_expected.to include(status: :error,

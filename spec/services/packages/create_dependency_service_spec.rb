@@ -3,7 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::CreateDependencyService do
   describe '#execute' do
-    let_it_be(:namespace) {create(:namespace)}
+    let_it_be(:namespace) { create(:namespace) }
     let_it_be(:version) { '1.0.1' }
     let_it_be(:package_name) { "@#{namespace.path}/my-app" }
 

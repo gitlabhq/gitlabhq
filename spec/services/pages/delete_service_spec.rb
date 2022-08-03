@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Pages::DeleteService do
   let_it_be(:admin) { create(:admin) }
 
-  let(:project) { create(:project, path: "my.project")}
-  let(:service) { described_class.new(project, admin)}
+  let(:project) { create(:project, path: "my.project") }
+  let(:service) { described_class.new(project, admin) }
 
   before do
     project.mark_pages_as_deployed

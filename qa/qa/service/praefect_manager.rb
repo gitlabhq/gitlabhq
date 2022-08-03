@@ -101,7 +101,7 @@ module QA
         wait_until_shell_command_matches(
           "docker inspect -f {{.State.Running}} #{name}",
           /true/,
-          sleep_interval: 3,
+          sleep_interval: 1,
           max_duration: 180,
           retry_on_exception: true
         )

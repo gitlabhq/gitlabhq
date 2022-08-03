@@ -9,7 +9,7 @@ RSpec.describe WorkItems::ParentLinks::DestroyService do
     let_it_be(:project) { create(:project) }
     let_it_be(:work_item) { create(:work_item, project: project) }
     let_it_be(:task) { create(:work_item, :task, project: project) }
-    let_it_be(:parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item)}
+    let_it_be(:parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item) }
 
     let(:parent_link_class) { WorkItems::ParentLink }
 

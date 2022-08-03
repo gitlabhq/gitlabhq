@@ -573,7 +573,7 @@ RSpec.describe Git::BranchPushService, services: true do
 
     before do
       allow(project).to receive(:default_branch).and_return('feature')
-      expect(project).to receive(:change_head) { 'feature'}
+      expect(project).to receive(:change_head) { 'feature' }
     end
 
     it 'push to first branch updates HEAD' do

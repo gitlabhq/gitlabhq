@@ -7,7 +7,7 @@ RSpec.describe Groups::DestroyService do
   let!(:group)        { create(:group) }
   let!(:nested_group) { create(:group, parent: group) }
   let!(:project)      { create(:project, :repository, :legacy_storage, namespace: group) }
-  let!(:notification_setting) { create(:notification_setting, source: group)}
+  let!(:notification_setting) { create(:notification_setting, source: group) }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:remove_path)  { group.path + "+#{group.id}+deleted" }
 
@@ -271,7 +271,7 @@ RSpec.describe Groups::DestroyService do
         end
 
         context 'the shared_with group is deleted' do
-          let!(:group2_subgroup) { create(:group, :private, parent: group2)}
+          let!(:group2_subgroup) { create(:group, :private, parent: group2) }
           let!(:group2_subgroup_project) { create(:project, :private, group: group2_subgroup) }
 
           it 'updates project authorizations so users of both groups lose access', :aggregate_failures do

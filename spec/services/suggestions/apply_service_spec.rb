@@ -359,7 +359,7 @@ RSpec.describe Suggestions::ApplyService do
       end
 
       context 'multiple suggestions' do
-        let(:author_emails) { suggestions.map {|s| s.note.author.commit_email_or_default } }
+        let(:author_emails) { suggestions.map { |s| s.note.author.commit_email_or_default } }
         let(:first_author) { suggestion.note.author }
         let(:commit) { project.repository.commit }
 

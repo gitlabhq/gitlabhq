@@ -171,7 +171,7 @@ RSpec.describe Terraform::RemoteStateHandler do
       end
 
       context 'with no lock ID (force-unlock)' do
-        let(:lock_id) { }
+        let(:lock_id) {}
 
         it 'unlocks the state' do
           state = handler.unlock!

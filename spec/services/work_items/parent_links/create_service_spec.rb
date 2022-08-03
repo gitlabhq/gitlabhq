@@ -12,10 +12,10 @@ RSpec.describe WorkItems::ParentLinks::CreateService do
     let_it_be(:task1) { create(:work_item, :task, project: project) }
     let_it_be(:task2) { create(:work_item, :task, project: project) }
     let_it_be(:guest_task) { create(:work_item, :task) }
-    let_it_be(:invalid_task) { build_stubbed(:work_item, :task, id: non_existing_record_id)}
+    let_it_be(:invalid_task) { build_stubbed(:work_item, :task, id: non_existing_record_id) }
     let_it_be(:another_project) { (create :project) }
     let_it_be(:other_project_task) { create(:work_item, :task, iid: 100, project: another_project) }
-    let_it_be(:existing_parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item)}
+    let_it_be(:existing_parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item) }
 
     let(:parent_link_class) { WorkItems::ParentLink }
     let(:issuable_type) { :task }

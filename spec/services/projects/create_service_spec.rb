@@ -253,6 +253,39 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'user with project limit' do
+    let_it_be(:user_with_projects_limit) { create(:user, projects_limit: 0) }
+
+    let(:params) { opts.merge!(namespace_id: target_namespace.id) }
+
+    subject(:project) { create_project(user_with_projects_limit, params) }
+
+    context 'under personal namespace' do
+      let(:target_namespace) { user_with_projects_limit.namespace }
+
+      it 'cannot create a project' do
+        expect(project.errors.errors.length).to eq 1
+        expect(project.errors.messages[:limit_reached].first).to eq(_('Personal project creation is not allowed. Please contact your administrator with questions'))
+      end
+    end
+
+    context 'under group namespace' do
+      let_it_be(:group) do
+        create(:group).tap do |group|
+          group.add_owner(user_with_projects_limit)
+        end
+      end
+
+      let(:target_namespace) { group }
+
+      it 'can create a project' do
+        expect(project).to be_valid
+        expect(project).to be_saved
+        expect(project.errors.errors.length).to eq 0
+      end
+    end
+  end
+
   context 'membership overrides', :sidekiq_inline do
     let_it_be(:group) { create(:group, :private) }
     let_it_be(:subgroup_for_projects) { create(:group, :private, parent: group) }

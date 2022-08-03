@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Helm::ProcessFileService do
-  let(:package) { create(:helm_package, without_package_files: true, status: 'processing')}
+  let(:package) { create(:helm_package, without_package_files: true, status: 'processing') }
   let!(:package_file) { create(:helm_package_file, without_loaded_metadatum: true, package: package) }
   let(:channel) { 'stable' }
   let(:service) { described_class.new(channel, package_file) }

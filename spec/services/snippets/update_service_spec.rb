@@ -140,7 +140,7 @@ RSpec.describe Snippets::UpdateService do
 
       context 'when snippet_actions param is used' do
         let(:file_path) { 'CHANGELOG' }
-        let(:created_file_path) { 'New file'}
+        let(:created_file_path) { 'New file' }
         let(:content) { 'foobar' }
         let(:snippet_actions) { [{ action: :move, previous_path: snippet.file_name, file_path: file_path }, { action: :create, file_path: created_file_path, content: content }] }
         let(:base_opts) do

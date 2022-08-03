@@ -207,7 +207,7 @@ RSpec.describe TodoService do
         end
 
         it_behaves_like 'an incident management tracked event', :incident_management_incident_todo do
-          let(:current_user) { john_doe}
+          let(:current_user) { john_doe }
         end
       end
     end
@@ -1139,7 +1139,7 @@ RSpec.describe TodoService do
     it 'updates related todos for the user with the new_state' do
       method_call
 
-      expect(collection.all? { |todo| todo.reload.state?(new_state)}).to be_truthy
+      expect(collection.all? { |todo| todo.reload.state?(new_state) }).to be_truthy
     end
 
     if new_resolved_by

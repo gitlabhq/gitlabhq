@@ -138,7 +138,7 @@ RSpec.describe Notes::CopyService do
 
       context 'notes with upload' do
         let(:uploader) { build(:file_uploader, project: from_noteable.project) }
-        let(:text) { "Simple text with image: #{uploader.markdown_link} "}
+        let(:text) { "Simple text with image: #{uploader.markdown_link} " }
         let!(:note) { create(:note, noteable: from_noteable, note: text, project: from_noteable.project) }
 
         it 'rewrites note content correctly' do

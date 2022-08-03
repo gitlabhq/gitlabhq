@@ -8,7 +8,7 @@ RSpec.describe MarkdownContentRewriterService do
   let_it_be(:target_parent) { create(:project, :public) }
 
   let(:content) { 'My content' }
-  let(:issue) { create(:issue, project: source_parent, description: content)}
+  let(:issue) { create(:issue, project: source_parent, description: content) }
 
   describe '#initialize' do
     it 'raises an error if source_parent is not a Project' do

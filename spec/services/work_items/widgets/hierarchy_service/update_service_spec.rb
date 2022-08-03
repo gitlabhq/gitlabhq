@@ -11,7 +11,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
   let_it_be(:child_work_item) { create(:work_item, :task, project: project) }
   let_it_be(:existing_link) { create(:parent_link, work_item: child_work_item, work_item_parent: work_item) }
 
-  let(:widget) { work_item.widgets.find {|widget| widget.is_a?(WorkItems::Widgets::Hierarchy) } }
+  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Hierarchy) } }
   let(:not_found_error) { 'No matching task found. Make sure that you are adding a valid task ID.' }
 
   shared_examples 'raises a WidgetError' do
@@ -43,7 +43,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
       let_it_be(:child_work_item4) { create(:work_item, :task, project: project) }
 
       context 'when work_items_hierarchy feature flag is disabled' do
-        let(:params) { { children: [child_work_item4] }}
+        let(:params) { { children: [child_work_item4] } }
 
         before do
           stub_feature_flags(work_items_hierarchy: false)
@@ -55,7 +55,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
       end
 
       context 'when user has insufficient permissions to link work items' do
-        let(:params) { { children: [child_work_item4] }}
+        let(:params) { { children: [child_work_item4] } }
 
         it_behaves_like 'raises a WidgetError' do
           let(:message) { not_found_error }
@@ -68,7 +68,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
         end
 
         context 'with valid params' do
-          let(:params) { { children: [child_work_item2, child_work_item3] }}
+          let(:params) { { children: [child_work_item2, child_work_item3] } }
 
           it 'correctly sets work item parent' do
             subject
@@ -79,7 +79,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
         end
 
         context 'when child is already assigned' do
-          let(:params) { { children: [child_work_item] }}
+          let(:params) { { children: [child_work_item] } }
 
           it_behaves_like 'raises a WidgetError' do
             let(:message) { 'Task(s) already assigned' }
@@ -89,7 +89,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
         context 'when child type is invalid' do
           let_it_be(:child_issue) { create(:work_item, project: project) }
 
-          let(:params) { { children: [child_issue] }}
+          let(:params) { { children: [child_issue] } }
 
           it_behaves_like 'raises a WidgetError' do
             let(:message) do
@@ -103,7 +103,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
     context 'when updating parent' do
       let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
-      let(:params) {{ parent: parent_work_item } }
+      let(:params) { { parent: parent_work_item } }
 
       context 'when work_items_hierarchy feature flag is disabled' do
         before do
@@ -152,9 +152,9 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
         end
 
         context 'when type is invalid' do
-          let_it_be(:parent_task) { create(:work_item, :task, project: project)}
+          let_it_be(:parent_task) { create(:work_item, :task, project: project) }
 
-          let(:params) {{ parent: parent_task } }
+          let(:params) { { parent: parent_task } }
 
           it_behaves_like 'raises a WidgetError' do
             let(:message) do

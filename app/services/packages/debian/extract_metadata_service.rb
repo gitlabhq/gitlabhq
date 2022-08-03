@@ -61,12 +61,12 @@ module Packages
       def fields
         strong_memoize(:fields) do
           if file_type_debian?
-            package_file.file.use_file do |file_path|
-              ::Packages::Debian::ExtractDebMetadataService.new(file_path).execute
+            package_file.file.use_open_file(unlink_early: false) do |file|
+              ::Packages::Debian::ExtractDebMetadataService.new(file.file_path).execute
             end
           elsif file_type_meta?
-            package_file.file.use_file do |file_path|
-              ::Packages::Debian::ParseDebian822Service.new(File.read(file_path)).execute.each_value.first
+            package_file.file.use_open_file do |file|
+              ::Packages::Debian::ParseDebian822Service.new(file.read).execute.each_value.first
             end
           end
         end

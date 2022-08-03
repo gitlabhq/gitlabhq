@@ -25,7 +25,7 @@ RSpec.describe Import::ValidateRemoteGitEndpointService do
     end
 
     context 'when uri is using git:// protocol' do
-      subject { described_class.new(url: 'git://demo.host/repo')}
+      subject { described_class.new(url: 'git://demo.host/repo') }
 
       it 'returns success' do
         result = subject.execute

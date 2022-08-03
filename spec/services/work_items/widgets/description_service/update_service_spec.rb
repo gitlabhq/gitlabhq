@@ -17,7 +17,7 @@ RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService do
     )
   end
 
-  let(:widget) { work_item.widgets.find {|widget| widget.is_a?(WorkItems::Widgets::Description) } }
+  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Description) } }
 
   describe '#update' do
     subject { described_class.new(widget: widget, current_user: current_user).before_update_callback(params: params) }

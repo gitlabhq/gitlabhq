@@ -167,8 +167,8 @@ RSpec.describe ::SystemNotes::MergeRequestsService do
   end
 
   describe '.change_branch' do
-    let(:old_branch) { 'old_branch'}
-    let(:new_branch) { 'new_branch'}
+    let(:old_branch) { 'old_branch' }
+    let(:new_branch) { 'new_branch' }
 
     it_behaves_like 'a system note' do
       let(:action) { 'branch' }

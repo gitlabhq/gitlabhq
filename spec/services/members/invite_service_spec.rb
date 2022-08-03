@@ -455,7 +455,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       context 'when access_level is lower than inheriting member' do
-        let(:params) { { user_id: group_member.user_id, access_level: ProjectMember::GUEST }}
+        let(:params) { { user_id: group_member.user_id, access_level: ProjectMember::GUEST } }
 
         it 'does not add the member and returns an error' do
           msg = "Access level should be greater than or equal " \
@@ -467,7 +467,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       context 'when access_level is the same as the inheriting member' do
-        let(:params) { { user_id: group_member.user_id, access_level: ProjectMember::DEVELOPER }}
+        let(:params) { { user_id: group_member.user_id, access_level: ProjectMember::DEVELOPER } }
 
         it 'adds the member with correct access_level' do
           expect_to_create_members(count: 1)
@@ -477,7 +477,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       context 'when access_level is greater than the inheriting member' do
-        let(:params) { { user_id: group_member.user_id, access_level: ProjectMember::MAINTAINER }}
+        let(:params) { { user_id: group_member.user_id, access_level: ProjectMember::MAINTAINER } }
 
         it 'adds the member with correct access_level' do
           expect_to_create_members(count: 1)

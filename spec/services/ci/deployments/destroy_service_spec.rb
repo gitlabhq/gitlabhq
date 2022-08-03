@@ -6,7 +6,7 @@ RSpec.describe ::Ci::Deployments::DestroyService do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:environment) { create(:environment, project: project) }
-  let(:commits) { project.repository.commits(nil, { limit: 3 })}
+  let(:commits) { project.repository.commits(nil, { limit: 3 }) }
   let!(:deploy) do
     create(
       :deployment,

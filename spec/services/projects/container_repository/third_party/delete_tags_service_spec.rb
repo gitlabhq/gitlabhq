@@ -58,7 +58,7 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::DeleteTagsService do
               stub_put_manifest_request('Ba', 500, {})
             end
 
-            it { is_expected.to eq(status: :error, message: "could not delete tags: #{tags.join(', ')}")}
+            it { is_expected.to eq(status: :error, message: "could not delete tags: #{tags.join(', ')}") }
 
             context 'when a large list of tag updates fails' do
               let(:tags) { Array.new(1000) { |i| "tag_#{i}" } }

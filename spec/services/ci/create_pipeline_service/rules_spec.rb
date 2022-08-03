@@ -557,7 +557,7 @@ RSpec.describe Ci::CreatePipelineService do
           end
 
           context 'when the compare_to ref exists' do
-            let(:compare_to) { 'feature_1'}
+            let(:compare_to) { 'feature_1' }
 
             context 'when the rule matches' do
               it 'creates job1 and job2' do
@@ -609,7 +609,7 @@ RSpec.describe Ci::CreatePipelineService do
             EOY
           end
 
-          let(:compare_to) { 'feature_1'}
+          let(:compare_to) { 'feature_1' }
 
           context 'when the rule matches' do
             it 'creates job1' do
