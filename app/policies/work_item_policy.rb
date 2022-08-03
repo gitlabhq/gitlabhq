@@ -8,6 +8,7 @@ class WorkItemPolicy < IssuePolicy
   rule { can?(:destroy_issue) | is_member_and_author }.enable :delete_work_item
 
   rule { can?(:update_issue) }.enable :update_work_item
+  rule { can?(:set_issue_metadata) }.enable :set_work_item_metadata
 
   rule { can?(:read_issue) }.enable :read_work_item
   # because IssuePolicy delegates to ProjectPolicy and

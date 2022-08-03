@@ -427,6 +427,50 @@ RSpec.describe 'Update a work item' do
       end
     end
 
+    context 'when updating assignees' do
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          widgets {
+            type
+            ... on WorkItemWidgetAssignees {
+              assignees {
+                nodes {
+                  id
+                  username
+                }
+              }
+            }
+          }
+        }
+        errors
+        FIELDS
+      end
+
+      let(:input) do
+        { 'assigneesWidget' => { 'assigneeIds' => [developer.to_global_id.to_s] } }
+      end
+
+      it 'updates the work item assignee' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          work_item.reload
+        end.to change(work_item, :assignee_ids).from([]).to([developer.id])
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['workItem']['widgets']).to include(
+          {
+            'type' => 'ASSIGNEES',
+            'assignees' => {
+              'nodes' => [
+                { 'id' => developer.to_global_id.to_s, 'username' => developer.username }
+              ]
+            }
+          }
+        )
+      end
+    end
+
     context 'when unsupported widget input is sent' do
       let_it_be(:test_case) { create(:work_item_type, :default, :test_case, name: 'some_test_case_name') }
       let_it_be(:work_item) { create(:work_item, work_item_type: test_case, project: project) }

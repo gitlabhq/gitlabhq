@@ -27995,6 +27995,9 @@ msgstr ""
 msgid "PackageRegistry|You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more."
 msgstr ""
 
+msgid "PackageRegistry|You will need a %{linkStart}personal access token%{linkEnd}."
+msgstr ""
+
 msgid "PackageRegistry|npm"
 msgstr ""
 

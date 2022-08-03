@@ -352,10 +352,11 @@ RSpec.describe API::Search do
       end
 
       it 'sets global search information for logging' do
-        expect(Gitlab::Instrumentation::GlobalSearchApi).to receive(:set_global_search_information).with(
-          global_search_type: 'basic',
-          global_search_level: 'global',
-          global_search_duration_s: a_kind_of(Numeric)
+        expect(Gitlab::Instrumentation::GlobalSearchApi).to receive(:set_information).with(
+          type: 'basic',
+          level: 'global',
+          scope: 'issues',
+          search_duration_s: a_kind_of(Numeric)
         )
 
         get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }

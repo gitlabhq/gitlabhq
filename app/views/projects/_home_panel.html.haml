@@ -24,9 +24,6 @@
             %span.gl-ml-3.gl-mb-3
               = render 'shared/members/access_request_links', source: @project
 
-          .gl-mt-3.gl-pl-3.gl-w-full
-            = render "shared/projects/topics", project: @project, cache_enabled: cache_enabled
-
     = cache_if(cache_enabled, [@project, :buttons, current_user, @notification_setting], expires_in: 1.day) do
       .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-start.gl-flex-wrap.gl-mt-5
         - if current_user
@@ -49,7 +46,8 @@
           = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
         - else
           = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
-
+  .gl-my-3
+    = render "shared/projects/topics", project: @project, cache_enabled: cache_enabled
   .home-panel-home-desc.mt-1
     - if @project.description.present?
       .home-panel-description.text-break

@@ -305,6 +305,90 @@ describe('init markdown', () => {
       });
     });
 
+    describe('shifting selected lines left or right', () => {
+      const indentEvent = new KeyboardEvent('keydown', { key: ']', metaKey: true });
+      const outdentEvent = new KeyboardEvent('keydown', { key: '[', metaKey: true });
+
+      beforeEach(() => {
+        textArea.addEventListener('keydown', keypressNoteText);
+        textArea.addEventListener('compositionstart', compositionStartNoteText);
+        textArea.addEventListener('compositionend', compositionEndNoteText);
+      });
+
+      it.each`
+        selectionStart | selectionEnd | expected                | expectedSelectionStart | expectedSelectionEnd
+        ${0}           | ${0}         | ${'  012\n456\n89'}     | ${2}                   | ${2}
+        ${5}           | ${5}         | ${'012\n  456\n89'}     | ${7}                   | ${7}
+        ${10}          | ${10}        | ${'012\n456\n  89'}     | ${12}                  | ${12}
+        ${0}           | ${2}         | ${'  012\n456\n89'}     | ${0}                   | ${4}
+        ${1}           | ${2}         | ${'  012\n456\n89'}     | ${3}                   | ${4}
+        ${5}           | ${7}         | ${'012\n  456\n89'}     | ${7}                   | ${9}
+        ${0}           | ${7}         | ${'  012\n  456\n89'}   | ${0}                   | ${11}
+        ${2}           | ${9}         | ${'  012\n  456\n  89'} | ${4}                   | ${15}
+      `(
+        'indents the selected lines two spaces to the right',
+        ({
+          selectionStart,
+          selectionEnd,
+          expected,
+          expectedSelectionStart,
+          expectedSelectionEnd,
+        }) => {
+          const text = '012\n456\n89';
+          textArea.value = text;
+          textArea.setSelectionRange(selectionStart, selectionEnd);
+
+          textArea.dispatchEvent(indentEvent);
+
+          expect(textArea.value).toEqual(expected);
+          expect(textArea.selectionStart).toEqual(expectedSelectionStart);
+          expect(textArea.selectionEnd).toEqual(expectedSelectionEnd);
+        },
+      );
+
+      it.each`
+        selectionStart | selectionEnd | expected              | expectedSelectionStart | expectedSelectionEnd
+        ${0}           | ${0}         | ${'234\n 789\n  34'}  | ${0}                   | ${0}
+        ${3}           | ${3}         | ${'234\n 789\n  34'}  | ${1}                   | ${1}
+        ${7}           | ${7}         | ${'  234\n789\n  34'} | ${6}                   | ${6}
+        ${0}           | ${3}         | ${'234\n 789\n  34'}  | ${0}                   | ${1}
+        ${8}           | ${10}        | ${'  234\n789\n  34'} | ${7}                   | ${9}
+        ${14}          | ${15}        | ${'  234\n 789\n34'}  | ${12}                  | ${13}
+        ${0}           | ${15}        | ${'234\n789\n34'}     | ${0}                   | ${10}
+        ${3}           | ${13}        | ${'234\n789\n34'}     | ${1}                   | ${8}
+      `(
+        'outdents the selected lines two spaces to the left',
+        ({
+          selectionStart,
+          selectionEnd,
+          expected,
+          expectedSelectionStart,
+          expectedSelectionEnd,
+        }) => {
+          const text = '  234\n 789\n  34';
+          textArea.value = text;
+          textArea.setSelectionRange(selectionStart, selectionEnd);
+
+          textArea.dispatchEvent(outdentEvent);
+
+          expect(textArea.value).toEqual(expected);
+          expect(textArea.selectionStart).toEqual(expectedSelectionStart);
+          expect(textArea.selectionEnd).toEqual(expectedSelectionEnd);
+        },
+      );
+
+      it('does not indent if meta is not set', () => {
+        const indentNoMetaEvent = new KeyboardEvent('keydown', { key: ']' });
+        const text = '012\n456\n89';
+        textArea.value = text;
+        textArea.setSelectionRange(0, 0);
+
+        textArea.dispatchEvent(indentNoMetaEvent);
+
+        expect(textArea.value).toEqual(text);
+      });
+    });
+
     describe('with selection', () => {
       let text = 'initial selected value';
       let selected = 'selected';
@@ -375,6 +459,15 @@ describe('init markdown', () => {
         it('does nothing if user preference disabled', () => {
           const event = new KeyboardEvent('keydown', { key: '[' });
           gon.markdown_surround_selection = false;
+
+          textArea.addEventListener('keydown', keypressNoteText);
+          textArea.dispatchEvent(event);
+
+          expect(textArea.value).toEqual(text);
+        });
+
+        it('does nothing if meta is set', () => {
+          const event = new KeyboardEvent('keydown', { key: '[', metaKey: true });
 
           textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(event);

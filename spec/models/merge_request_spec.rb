@@ -5078,6 +5078,12 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '#merge_blocked_by_other_mrs?' do
+    it 'returns false when there is no blocking merge requests' do
+      expect(subject.merge_blocked_by_other_mrs?).to be_falsy
+    end
+  end
+
   describe '#merge_request_reviewers_with' do
     let_it_be(:reviewer1) { create(:user) }
     let_it_be(:reviewer2) { create(:user) }

@@ -181,4 +181,24 @@ RSpec.describe WorkItemPolicy do
       end
     end
   end
+
+  describe 'set_work_item_metadata' do
+    context 'when user is reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_allowed(:set_work_item_metadata) }
+    end
+
+    context 'when user is guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:set_work_item_metadata) }
+
+      context 'when the work item is not persisted yet' do
+        let(:work_item_subject) { build(:work_item, project: project) }
+
+        it { is_expected.to be_allowed(:set_work_item_metadata) }
+      end
+    end
+  end
 end

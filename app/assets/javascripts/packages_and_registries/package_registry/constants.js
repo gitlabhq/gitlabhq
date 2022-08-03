@@ -167,5 +167,6 @@ export const CONAN_HELP_PATH = helpPagePath('user/packages/conan_repository/inde
 export const NUGET_HELP_PATH = helpPagePath('user/packages/nuget_repository/index');
 export const PYPI_HELP_PATH = helpPagePath('user/packages/pypi_repository/index');
 export const COMPOSER_HELP_PATH = helpPagePath('user/packages/composer_repository/index');
+export const PERSONAL_ACCESS_TOKEN_HELP_URL = helpPagePath('user/profile/personal_access_tokens');
 
 export const GRAPHQL_PACKAGE_PIPELINES_PAGE_SIZE = 10;

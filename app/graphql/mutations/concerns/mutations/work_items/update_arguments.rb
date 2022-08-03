@@ -21,6 +21,9 @@ module Mutations
         argument :description_widget, ::Types::WorkItems::Widgets::DescriptionInputType,
                  required: false,
                  description: 'Input for description widget.'
+        argument :assignees_widget, ::Types::WorkItems::Widgets::AssigneesInputType,
+                 required: false,
+                 description: 'Input for assignees widget.'
         argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyUpdateInputType,
                  required: false,
                  description: 'Input for hierarchy widget.'

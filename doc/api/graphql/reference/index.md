@@ -5741,6 +5741,7 @@ Input type: `WorkItemUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationworkitemupdateassigneeswidget"></a>`assigneesWidget` | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Input for assignees widget. |
 | <a id="mutationworkitemupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemupdateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemupdatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
@@ -22537,6 +22538,7 @@ A time-frame defined as a closed inclusive range of two dates.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemupdatedtaskinputassigneeswidget"></a>`assigneesWidget` | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Input for assignees widget. |
 | <a id="workitemupdatedtaskinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="workitemupdatedtaskinputdescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="workitemupdatedtaskinputhierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](#workitemwidgethierarchyupdateinput) | Input for hierarchy widget. |
@@ -22544,6 +22546,14 @@ A time-frame defined as a closed inclusive range of two dates.
 | <a id="workitemupdatedtaskinputstartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="workitemupdatedtaskinputstateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
 | <a id="workitemupdatedtaskinputtitle"></a>`title` | [`String`](#string) | Title of the work item. |
+
+### `WorkItemWidgetAssigneesInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetassigneesinputassigneeids"></a>`assigneeIds` | [`[UserID!]!`](#userid) | Global IDs of assignees. |
 
 ### `WorkItemWidgetDescriptionInput`
 

@@ -198,10 +198,11 @@ RSpec.describe Gitlab::InstrumentationHelper do
 
     context 'when an api call to the search api is made' do
       before do
-        Gitlab::Instrumentation::GlobalSearchApi.set_global_search_information(
-          global_search_type: 'basic',
-          global_search_level: 'global',
-          global_search_duration_s: 0.1
+        Gitlab::Instrumentation::GlobalSearchApi.set_information(
+          type: 'basic',
+          level: 'global',
+          scope: 'issues',
+          search_duration_s: 0.1
         )
       end
 
@@ -211,6 +212,7 @@ RSpec.describe Gitlab::InstrumentationHelper do
         expect(payload).to include({
          'meta.search.type' => 'basic',
          'meta.search.level' => 'global',
+         'meta.search.scope' => 'issues',
          global_search_duration_s: 0.1
         })
       end

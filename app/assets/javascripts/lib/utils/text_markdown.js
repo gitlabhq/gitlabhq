@@ -4,6 +4,8 @@ import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { insertText } from '~/lib/utils/common_utils';
 
 const LINK_TAG_PATTERN = '[{text}](url)';
+const INDENT_CHAR = ' ';
+const INDENT_LENGTH = 2;
 
 // at the start of a line, find any amount of whitespace followed by
 // a bullet point character (*+-) and an optional checkbox ([ ] [x])
@@ -312,9 +314,163 @@ function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagCo
   });
 }
 
+/**
+ * Returns the text lines that encompass the current selection
+ *
+ * @param {Object} textArea - the targeted text area
+ * @returns {Object}
+ */
+function linesFromSelection(textArea) {
+  const text = textArea.value;
+  const { selectionStart, selectionEnd } = textArea;
+
+  let startPos = text[selectionStart] === '\n' ? selectionStart - 1 : selectionStart;
+  startPos = text.lastIndexOf('\n', startPos) + 1;
+
+  let endPos = selectionEnd === selectionStart ? selectionEnd : selectionEnd - 1;
+  endPos = text.indexOf('\n', endPos);
+  if (endPos < 0) endPos = text.length;
+
+  const selectedRange = text.substring(startPos, endPos);
+  const lines = selectedRange.split('\n');
+
+  return {
+    lines,
+    selectionStart,
+    selectionEnd,
+    startPos,
+    endPos,
+  };
+}
+
+/**
+ * Set the selection of a textarea such that it maintains the
+ * previous selection before the lines were indented/outdented
+ *
+ * @param {Object} textArea - the targeted text area
+ * @param {Number} selectionStart - start position of original selection
+ * @param {Number} selectionEnd - end position of original selection
+ * @param {Number} startPos - start pos of first line
+ * @param {Number} firstLineChange - number of characters changed on first line
+ * @param {Number} totalChanged - total number of characters changed
+ */
+function setNewSelectionRange(
+  textArea,
+  selectionStart,
+  selectionEnd,
+  startPos,
+  firstLineChange,
+  totalChanged,
+) {
+  if (selectionStart === selectionEnd) {
+    textArea.setSelectionRange(
+      Math.max(0, selectionStart + firstLineChange),
+      Math.max(0, selectionEnd + firstLineChange),
+    );
+  } else if (selectionStart === startPos) {
+    textArea.setSelectionRange(selectionStart, Math.max(0, selectionEnd + totalChanged));
+  } else {
+    textArea.setSelectionRange(
+      Math.max(0, selectionStart + firstLineChange),
+      Math.max(0, selectionEnd + totalChanged),
+    );
+  }
+}
+
+/**
+ * Indents selected lines to the right by 2 spaces
+ *
+ * @param {Object} textArea - the targeted text area
+ */
+function indentLines(textArea) {
+  const { lines, selectionStart, selectionEnd, startPos, endPos } = linesFromSelection(textArea);
+  const shiftedLines = [];
+  let totalAdded = 0;
+
+  textArea.setSelectionRange(startPos, endPos);
+
+  lines.forEach((line) => {
+    if (line.length > 0) {
+      line = INDENT_CHAR.repeat(INDENT_LENGTH) + line;
+      totalAdded += INDENT_LENGTH;
+    }
+
+    shiftedLines.push(line);
+  });
+
+  const textToInsert = shiftedLines.join('\n');
+
+  insertText(textArea, textToInsert);
+  setNewSelectionRange(textArea, selectionStart, selectionEnd, startPos, INDENT_LENGTH, totalAdded);
+}
+
+/**
+ * Outdents selected lines to the left by 2 spaces
+ *
+ * @param {Object} textArea - the targeted text area
+ */
+function outdentLines(textArea) {
+  const { lines, selectionStart, selectionEnd, startPos, endPos } = linesFromSelection(textArea);
+  const shiftedLines = [];
+  let totalRemoved = 0;
+  let removedFromFirstline = -1;
+  let removedFromLine = 0;
+
+  textArea.setSelectionRange(startPos, endPos);
+
+  lines.forEach((line) => {
+    removedFromLine = 0;
+
+    if (line.length > 0) {
+      // need to count how many spaces are actually removed, so can't use `replace`
+      while (removedFromLine < INDENT_LENGTH && line[removedFromLine] === INDENT_CHAR) {
+        removedFromLine += 1;
+      }
+
+      if (removedFromLine > 0) {
+        line = line.slice(removedFromLine);
+        totalRemoved += removedFromLine;
+      }
+    }
+
+    if (removedFromFirstline === -1) removedFromFirstline = removedFromLine;
+    shiftedLines.push(line);
+  });
+
+  const textToInsert = shiftedLines.join('\n');
+
+  insertText(textArea, textToInsert);
+  setNewSelectionRange(
+    textArea,
+    selectionStart,
+    selectionEnd,
+    startPos,
+    -removedFromFirstline,
+    -totalRemoved,
+  );
+}
+
+function handleIndentOutdent(e, textArea) {
+  if (!e.metaKey) return;
+
+  switch (e.key) {
+    case ']':
+      e.preventDefault();
+      indentLines(textArea);
+      break;
+    case '[':
+      e.preventDefault();
+      outdentLines(textArea);
+      break;
+    default:
+      break;
+  }
+}
+
 /* eslint-disable @gitlab/require-i18n-strings */
 function handleSurroundSelectedText(e, textArea) {
   if (!gon.markdown_surround_selection) return;
+  if (e.metaKey) return;
   if (textArea.selectionStart === textArea.selectionEnd) return;
 
   const keys = {
@@ -419,6 +575,7 @@ export function keypressNoteText(e) {
 
   if ($(textArea).atwho?.('isSelecting')) return;
 
+  handleIndentOutdent(e, textArea);
   handleContinueList(e, textArea);
   handleSurroundSelectedText(e, textArea);
 }

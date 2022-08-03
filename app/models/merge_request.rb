@@ -2002,6 +2002,10 @@ class MergeRequest < ApplicationRecord
     target_branch == project.default_branch
   end
 
+  def merge_blocked_by_other_mrs?
+    false # Overridden in EE
+  end
+
   private
 
   attr_accessor :skip_fetch_ref

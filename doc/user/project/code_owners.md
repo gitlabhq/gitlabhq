@@ -83,7 +83,14 @@ The eligible Code Owners are:
 You can [invite](members/share_project_with_groups.md) **Subgroup Y** to **Project A**
 so that their members also become eligible Code Owners.
 
-![Invite subgroup members to become eligible Code Owners](img/code_owners_invite_members_v13_4.png)
+```mermaid
+graph LR
+    A[Parent group X] -->|owns| B[Project A]
+    A -->|also contains| C[Subgroup Y]
+    C -.->D{Invite Subgroup Y<br/>to Project A?} -.->|yes| F[Approvals can be<br/> required] -.-> B
+    D{Invite Subgroup Y<br/>to Project A?} -.->|no| I[Subgroup Y cannot be<br /> an approver] -.-> B
+    C -.->E{Add Subgroup Y<br/>as Code Owners<br/>to Project A?} -.->|yes| H[Approvals can only<br/>be optional] -.-> B
+```
 
 If you do not invite **Subgroup Y** to **Project A**, but make them Code Owners, their approval
 of the merge request becomes optional.

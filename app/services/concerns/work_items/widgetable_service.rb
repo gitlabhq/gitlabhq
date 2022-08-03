@@ -18,7 +18,7 @@ module WorkItems
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def widget_service_class(widget)
-      "WorkItems::Widgets::#{widget.type.to_s.classify}Service::#{self.class.name.demodulize}".constantize
+      "WorkItems::Widgets::#{widget.type.to_s.camelize}Service::#{self.class.name.demodulize}".constantize
     rescue NameError
       nil
     end

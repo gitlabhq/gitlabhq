@@ -59,7 +59,7 @@ module API
       end
 
       def search(additional_params = {})
-        @global_search_duration_s = Benchmark.realtime do
+        @search_duration_s = Benchmark.realtime do
           @results = search_service(additional_params).search_objects(preload_method)
         end
 
@@ -92,11 +92,16 @@ module API
         'basic'
       end
 
+      def search_scope
+        params[:scope]
+      end
+
       def set_global_search_log_information
-        Gitlab::Instrumentation::GlobalSearchApi.set_global_search_information(
-          global_search_type: search_type,
-          global_search_level: search_service.level,
-          global_search_duration_s: @global_search_duration_s
+        Gitlab::Instrumentation::GlobalSearchApi.set_information(
+          type: search_type,
+          level: search_service.level,
+          scope: search_scope,
+          search_duration_s: @search_duration_s
         )
       end
     end
