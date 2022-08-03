@@ -21,8 +21,9 @@
 
       - else
         %p
-          - register_2fa_token = _('We recommend cloud-based mobile authenticator apps such as Authy, Duo Mobile, and LastPass. They can restore access if you lose your hardware device.')
+          - register_2fa_token = _('We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device.')
           = register_2fa_token.html_safe
+          = link_to _('What are some examples?'), help_page_path('user/profile/account/two_factor_authentication', anchor: 'enable-one-time-password'), target: '_blank', rel: 'noopener noreferrer'
         .row.gl-mb-3
           .col-md-4.gl-min-w-fit-content
             .gl-p-2.gl-mb-3{ style: 'background: #fff' }

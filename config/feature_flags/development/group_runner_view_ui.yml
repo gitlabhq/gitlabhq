@@ -1,8 +1,0 @@
----
-name: group_runner_view_ui
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89638/
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364811
-milestone: '15.1'
-type: development
-group: group::runner
-default_enabled: false

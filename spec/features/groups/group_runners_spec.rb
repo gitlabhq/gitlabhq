@@ -149,79 +149,39 @@ RSpec.describe "Group Runners" do
       create(:ci_runner, :group, groups: [group], description: 'runner-foo', contacted_at: Time.zone.now)
     end
 
-    context 'when group_runner_view_ui is disabled' do
-      before do
-        stub_feature_flags(group_runner_view_ui: false)
-      end
+    it 'user views runner details' do
+      visit group_runner_path(group, runner)
 
-      it 'user edits the runner to be protected' do
-        visit edit_group_runner_path(group, runner)
-
-        expect(page.find_field('runner[access_level]')).not_to be_checked
-
-        check 'runner_access_level'
-        click_button 'Save changes'
-
-        expect(page).to have_content 'Protected Yes'
-      end
-
-      context 'when a runner has a tag' do
-        before do
-          runner.update!(tag_list: ['tag'])
-        end
-
-        it 'user edits runner not to run untagged jobs' do
-          visit edit_group_runner_path(group, runner)
-
-          expect(page.find_field('runner[run_untagged]')).to be_checked
-
-          uncheck 'runner_run_untagged'
-          click_button 'Save changes'
-
-          expect(page).to have_content 'Can run untagged jobs No'
-        end
-      end
+      expect(page).to have_content "#{s_('Runners|Description')} runner-foo"
     end
 
-    context 'when group_runner_view_ui is enabled' do
+    it 'user edits the runner to be protected' do
+      visit edit_group_runner_path(group, runner)
+
+      expect(page.find_field('runner[access_level]')).not_to be_checked
+
+      check 'runner_access_level'
+      click_button _('Save changes')
+
+      expect(page).to have_content "#{s_('Runners|Configuration')} #{s_('Runners|Protected')}"
+    end
+
+    context 'when a runner has a tag' do
       before do
-        stub_feature_flags(group_runner_view_ui: true)
+        runner.update!(tag_list: ['tag1'])
       end
 
-      it 'user views runner details' do
-        visit group_runner_path(group, runner)
-
-        expect(page).to have_content "#{s_('Runners|Description')} runner-foo"
-      end
-
-      it 'user edits the runner to be protected' do
+      it 'user edits runner not to run untagged jobs' do
         visit edit_group_runner_path(group, runner)
 
-        expect(page.find_field('runner[access_level]')).not_to be_checked
+        page.find_field('runner[tag_list]').set('tag1, tag2')
 
-        check 'runner_access_level'
+        uncheck 'runner_run_untagged'
         click_button _('Save changes')
 
-        expect(page).to have_content "#{s_('Runners|Configuration')} #{s_('Runners|Protected')}"
-      end
-
-      context 'when a runner has a tag' do
-        before do
-          runner.update!(tag_list: ['tag1'])
-        end
-
-        it 'user edits runner not to run untagged jobs' do
-          visit edit_group_runner_path(group, runner)
-
-          page.find_field('runner[tag_list]').set('tag1, tag2')
-
-          uncheck 'runner_run_untagged'
-          click_button _('Save changes')
-
-          # Tags can be in any order
-          expect(page).to have_content /#{s_('Runners|Tags')}.*tag1/
-          expect(page).to have_content /#{s_('Runners|Tags')}.*tag2/
-        end
+        # Tags can be in any order
+        expect(page).to have_content /#{s_('Runners|Tags')}.*tag1/
+        expect(page).to have_content /#{s_('Runners|Tags')}.*tag2/
       end
     end
   end

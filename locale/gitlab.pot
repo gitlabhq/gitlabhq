@@ -43512,9 +43512,6 @@ msgstr ""
 msgid "We recommend a work email address."
 msgstr ""
 
-msgid "We recommend cloud-based mobile authenticator apps such as Authy, Duo Mobile, and LastPass. They can restore access if you lose your hardware device."
-msgstr ""
-
 msgid "We recommend leaving all SAST analyzers enabled"
 msgstr ""
 
@@ -43522,6 +43519,9 @@ msgid "We recommend that you buy additional Pipeline minutes to avoid any interr
 msgstr ""
 
 msgid "We recommend that you buy additional Pipeline minutes to resume normal service."
+msgstr ""
+
+msgid "We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device."
 msgstr ""
 
 msgid "We sent you an email with reset password instructions"
@@ -43822,6 +43822,9 @@ msgid "What are instance audit events?"
 msgstr ""
 
 msgid "What are project audit events?"
+msgstr ""
+
+msgid "What are some examples?"
 msgstr ""
 
 msgid "What does the setting affect?"

@@ -36,6 +36,7 @@ RSpec.describe AwarenessChannel, :clean_gitlab_redis_shared_state, type: :channe
           collaborator = {
             id: user.id,
             name: user.name,
+            username: user.username,
             avatar_url: user.avatar_url(size: 36),
             last_activity: Time.zone.now,
             last_activity_humanized: ActionController::Base.helpers.distance_of_time_in_words(

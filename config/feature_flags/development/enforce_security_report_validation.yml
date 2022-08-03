@@ -1,8 +1,0 @@
----
-name: enforce_security_report_validation
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351000
-milestone: '14.9'
-type: development
-group: group::threat insights
-default_enabled: true

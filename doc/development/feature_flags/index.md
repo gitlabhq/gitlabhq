@@ -178,6 +178,9 @@ All validations are skipped when running in `RAILS_ENV=production`.
 
 ## Create a new feature flag
 
+NOTE:
+GitLab Pages uses [a different process](../pages/index.md#feature-flags) for feature flags.
+
 The GitLab codebase provides [`bin/feature-flag`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/feature-flag),
 a dedicated tool to create new feature flag definitions.
 The tool asks various questions about the new feature flag, then creates

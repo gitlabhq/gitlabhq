@@ -3,10 +3,7 @@
 module Ci
   class SecureFile < Ci::ApplicationRecord
     include FileStoreMounter
-    include IgnorableColumns
     include Limitable
-
-    ignore_column :permissions, remove_with: '15.2', remove_after: '2022-06-22'
 
     FILE_SIZE_LIMIT = 5.megabytes.freeze
     CHECKSUM_ALGORITHM = 'sha256'

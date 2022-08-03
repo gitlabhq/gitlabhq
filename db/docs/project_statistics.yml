@@ -3,7 +3,7 @@ table_name: project_statistics
 classes:
 - ProjectStatistics
 feature_categories:
-- source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3ef4f74b1acc9399db320b53dffc592542de0126
-milestone: '9.0'
+- utilization
+description: Records statistics about the usage of various product features
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7754
+milestone: '8.16'
