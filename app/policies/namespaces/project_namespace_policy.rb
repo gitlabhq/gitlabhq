@@ -2,8 +2,8 @@
 
 module Namespaces
   class ProjectNamespacePolicy < Namespaces::GroupProjectNamespaceSharedPolicy
-    # For now users are not granted any permissions on project namespace
-    # as it's completely hidden to them. When we start using project
-    # namespaces in queries, we will have to extend this policy.
+    # TODO: once https://gitlab.com/gitlab-org/gitlab/-/issues/364277 is solved, this
+    # should not be necessary anymore, and should be replaced with `delegate(:project)`.
+    delegate(:reload_project)
   end
 end

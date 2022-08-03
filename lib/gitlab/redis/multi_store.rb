@@ -274,7 +274,7 @@ module Gitlab
 
       # rubocop:disable GitlabSecurity/PublicSend
       def send_command(redis_instance, command_name, *args, **kwargs, &block)
-        if block_given?
+        if block
           # Make sure that block is wrapped and executed only on the redis instance that is executing the block
           redis_instance.send(command_name, *args, **kwargs) do |*params|
             with_instance(redis_instance, *params, &block)

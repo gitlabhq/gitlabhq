@@ -73,7 +73,7 @@ module Gitlab
       begin
         all_args = pop_all
 
-        yield all_args if block_given?
+        yield all_args if block
 
         { status: :finished, new_items: peek_all }
       ensure

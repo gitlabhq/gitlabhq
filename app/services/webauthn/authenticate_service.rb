@@ -30,6 +30,8 @@ module Webauthn
       false
     end
 
+    private
+
     ##
     # Validates that webauthn_credential is syntactically valid
     #

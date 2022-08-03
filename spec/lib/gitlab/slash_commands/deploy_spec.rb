@@ -165,7 +165,7 @@ RSpec.describe Gitlab::SlashCommands::Deploy do
     context 'with ReDoS attempts' do
       def duration_for(&block)
         start = Time.zone.now
-        yield if block_given?
+        yield if block
         Time.zone.now - start
       end
 

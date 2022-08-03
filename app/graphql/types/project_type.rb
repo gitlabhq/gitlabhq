@@ -438,6 +438,16 @@ module Types
                        ' Returns `null` if `work_items` feature flag is disabled.' \
                        ' This flag is disabled by default, because the feature is experimental and is subject to change without notice.'
 
+    field :timelog_categories,
+          Types::TimeTracking::TimelogCategoryType.connection_type,
+          null: true,
+          description: "Timelog categories for the project.",
+          feature_flag: :timelog_categories
+
+    def timelog_categories
+      object.project_namespace.timelog_categories
+    end
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|
         LabelsFinder

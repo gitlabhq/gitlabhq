@@ -35,7 +35,7 @@ module BulkImports
       end
 
       def each_page(method, resource, query = {}, &block)
-        return to_enum(__method__, method, resource, query) unless block_given?
+        return to_enum(__method__, method, resource, query) unless block
 
         next_page = @page
 

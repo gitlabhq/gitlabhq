@@ -35,7 +35,7 @@ module Gitlab
     end
 
     def delete(key, &block)
-      yield(key) if block_given?
+      yield(key) if block
     end
   end
 end

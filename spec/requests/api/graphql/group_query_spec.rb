@@ -122,6 +122,75 @@ RSpec.describe 'getting group information' do
       end
     end
 
+    context 'with timelog categories' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:timelog_category) { create(:timelog_category, namespace: group, name: 'TimelogCategoryTest') }
+
+      context 'when user is guest' do
+        it 'includes empty timelog categories array' do
+          post_graphql(group_query(group), current_user: user2)
+
+          expect(graphql_data_at(:group, :timelogCategories, :nodes)).to match([])
+        end
+      end
+
+      context 'when user has reporter role' do
+        before do
+          group.add_reporter(user2)
+        end
+
+        it 'returns the timelog category with all its fields' do
+          post_graphql(group_query(group), current_user: user2)
+
+          expect(graphql_data_at(:group, :timelogCategories, :nodes))
+            .to contain_exactly(a_graphql_entity_for(timelog_category))
+        end
+      end
+
+      context 'for N+1 queries' do
+        let!(:group1) { create(:group) }
+        let!(:group2) { create(:group) }
+
+        before do
+          group1.add_reporter(user2)
+          group2.add_reporter(user2)
+        end
+
+        it 'avoids N+1 database queries' do
+          pending('See: https://gitlab.com/gitlab-org/gitlab/-/issues/369396')
+
+          ctx = { current_user: user2 }
+
+          baseline_query = <<~GQL
+            query {
+              a: group(fullPath: "#{group1.full_path}") { ... g }
+            }
+
+            fragment g on Group {
+              timelogCategories { nodes { name } }
+            }
+          GQL
+
+          query = <<~GQL
+            query {
+              a: group(fullPath: "#{group1.full_path}") { ... g }
+              b: group(fullPath: "#{group2.full_path}") { ... g }
+            }
+
+            fragment g on Group {
+              timelogCategories { nodes { name } }
+            }
+          GQL
+
+          control = ActiveRecord::QueryRecorder.new do
+            run_with_clean_state(baseline_query, context: ctx)
+          end
+
+          expect { run_with_clean_state(query, context: ctx) }.not_to exceed_query_limit(control)
+        end
+      end
+    end
+
     context "when authenticated as admin" do
       it "returns any existing group" do
         post_graphql(group_query(private_group), current_user: admin)

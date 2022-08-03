@@ -29,7 +29,7 @@ module RedisTracking
   private
 
   def track_unique_redis_hll_event(event_name, &block)
-    custom_id = block_given? ? yield(self) : nil
+    custom_id = block ? yield(self) : nil
 
     unique_id = custom_id || visitor_id
 

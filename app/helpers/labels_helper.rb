@@ -39,7 +39,7 @@ module LabelsHelper
   def link_to_label(label, type: :issue, tooltip: true, small: false, css_class: nil, &block)
     link = label.filter_path(type: type)
 
-    if block_given?
+    if block
       link_to link, class: css_class, &block
     else
       render_label(label, link: link, tooltip: tooltip, small: small)

@@ -15,7 +15,7 @@ module Gitlab
       attr_accessor :request_cache_key_block
 
       def request_cache_key(&block)
-        if block_given?
+        if block
           self.request_cache_key_block = block
         else
           request_cache_key_block

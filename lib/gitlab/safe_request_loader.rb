@@ -14,7 +14,7 @@ module Gitlab
     end
 
     def execute(&block)
-      raise ArgumentError, 'Block is mandatory' unless block_given?
+      raise ArgumentError, 'Block is mandatory' unless block
 
       load_resource_data
       remove_loaded_resource_ids

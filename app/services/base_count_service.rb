@@ -45,7 +45,7 @@ class BaseCountService
   end
 
   def update_cache_for_key(key, &block)
-    Rails.cache.write(key, block_given? ? yield : uncached_count, raw: raw?)
+    Rails.cache.write(key, block ? yield : uncached_count, raw: raw?)
   end
 end
 

@@ -34,7 +34,7 @@ RSpec.describe API::Helpers::Authentication do
       class << cls
         def helpers(*modules, &block)
           modules.each { |m| include m }
-          include Module.new.tap { |m| m.class_eval(&block) } if block_given?
+          include Module.new.tap { |m| m.class_eval(&block) } if block
         end
       end
 

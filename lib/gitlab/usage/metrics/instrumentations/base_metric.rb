@@ -13,7 +13,7 @@ module Gitlab
 
           class << self
             def available?(&block)
-              return @metric_available = block if block_given?
+              return @metric_available = block if block
 
               return @metric_available.call if instance_variable_defined?('@metric_available')
 

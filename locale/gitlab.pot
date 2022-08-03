@@ -16895,6 +16895,9 @@ msgstr ""
 msgid "Geo|%{component} verified"
 msgstr ""
 
+msgid "Geo|%{label} %{timeAgo}"
+msgstr ""
+
 msgid "Geo|%{label} can't be blank"
 msgstr ""
 
@@ -23016,9 +23019,6 @@ msgstr ""
 msgid "Last sign-in at:"
 msgstr ""
 
-msgid "Last successful sync"
-msgstr ""
-
 msgid "Last successful update"
 msgstr ""
 
@@ -26430,9 +26430,6 @@ msgid "None of the group milestones have the same project as the release"
 msgstr ""
 
 msgid "Normal text"
-msgstr ""
-
-msgid "Not Implemented"
 msgstr ""
 
 msgid "Not all browsers support U2F devices. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even when you're using an unsupported browser."

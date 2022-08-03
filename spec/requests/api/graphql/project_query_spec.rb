@@ -190,4 +190,88 @@ RSpec.describe 'getting project information' do
       end
     end
   end
+
+  context 'with timelog categories' do
+    let_it_be(:timelog_category) do
+      create(:timelog_category, namespace: project.project_namespace, name: 'TimelogCategoryTest')
+    end
+
+    let(:project_fields) do
+      <<~GQL
+        timelogCategories {
+          nodes {
+            #{all_graphql_fields_for('TimeTrackingTimelogCategory')}
+          }
+        }
+      GQL
+    end
+
+    context 'when user is guest and the project is public' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      it 'includes empty timelog categories array' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:project, :timelogCategories, :nodes)).to match([])
+      end
+    end
+
+    context 'when user has reporter role' do
+      before do
+        project.add_reporter(current_user)
+      end
+
+      it 'returns the timelog category with all its fields' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:project, :timelogCategories, :nodes))
+          .to contain_exactly(a_graphql_entity_for(timelog_category))
+      end
+    end
+
+    context 'for N+1 queries' do
+      let!(:project1) { create(:project) }
+      let!(:project2) { create(:project) }
+
+      before do
+        project1.add_reporter(current_user)
+        project2.add_reporter(current_user)
+      end
+
+      it 'avoids N+1 database queries' do
+        pending('See: https://gitlab.com/gitlab-org/gitlab/-/issues/369396')
+
+        ctx = { current_user: current_user }
+
+        baseline_query = <<~GQL
+          query {
+            a: project(fullPath: "#{project1.full_path}") { ... p }
+          }
+
+          fragment p on Project {
+            timelogCategories { nodes { name } }
+          }
+        GQL
+
+        query = <<~GQL
+          query {
+            a: project(fullPath: "#{project1.full_path}") { ... p }
+            b: project(fullPath: "#{project2.full_path}") { ... p }
+          }
+
+          fragment p on Project {
+            timelogCategories { nodes { name } }
+          }
+        GQL
+
+        control = ActiveRecord::QueryRecorder.new do
+          run_with_clean_state(baseline_query, context: ctx)
+        end
+
+        expect { run_with_clean_state(query, context: ctx) }.not_to exceed_query_limit(control)
+      end
+    end
+  end
 end

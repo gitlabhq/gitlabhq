@@ -23,25 +23,25 @@ module Gitlab
             private_constant :IMPLEMENTED_OPERATIONS
 
             def start(&block)
-              return @metric_start&.call unless block_given?
+              return @metric_start&.call unless block
 
               @metric_start = block
             end
 
             def finish(&block)
-              return @metric_finish&.call unless block_given?
+              return @metric_finish&.call unless block
 
               @metric_finish = block
             end
 
             def relation(&block)
-              return @metric_relation&.call unless block_given?
+              return @metric_relation&.call unless block
 
               @metric_relation = block
             end
 
             def metric_options(&block)
-              return @metric_options&.call.to_h unless block_given?
+              return @metric_options&.call.to_h unless block
 
               @metric_options = block
             end
@@ -55,7 +55,7 @@ module Gitlab
 
               @metric_operation = symbol
               @column = column
-              @metric_operation_block = block if block_given?
+              @metric_operation_block = block if block
             end
 
             def cache_start_and_finish_as(cache_key)

@@ -1229,4 +1229,12 @@ RSpec.describe GroupPolicy do
     it { is_expected.to be_disallowed(:admin_crm_contact) }
     it { is_expected.to be_disallowed(:admin_crm_organization) }
   end
+
+  it_behaves_like 'checks timelog categories permissions' do
+    let(:group) { create(:group) }
+    let(:namespace) { group }
+    let(:users_container) { group }
+
+    subject { described_class.new(current_user, group) }
+  end
 end

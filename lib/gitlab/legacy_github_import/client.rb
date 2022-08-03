@@ -136,7 +136,7 @@ module Gitlab
 
         last_response = api.last_response
 
-        if block_given?
+        if block
           yield data
           # api.last_response could change while we're yielding (e.g. fetching labels for each PR)
           # so we cache our own last response

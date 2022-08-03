@@ -53,7 +53,7 @@ module BadgesHelper
   #
   # See also https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-badge--default.
   def gl_badge_tag(*args, &block)
-    if block_given?
+    if block
       build_gl_badge_tag(capture(&block), *args)
     else
       build_gl_badge_tag(*args)

@@ -82,6 +82,8 @@ class Namespace < ApplicationRecord
   has_many :work_items, inverse_of: :namespace
   has_many :issues, inverse_of: :namespace
 
+  has_many :timelog_categories, class_name: 'TimeTracking::TimelogCategory'
+
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
     presence: true,

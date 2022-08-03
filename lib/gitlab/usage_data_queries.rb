@@ -53,7 +53,7 @@ module Gitlab
       end
 
       def alt_usage_data(value = nil, fallback: FALLBACK, &block)
-        if block_given?
+        if block
           { alt_usage_data_block: "non-SQL usage data block" }
         else
           { alt_usage_data_value: value }
@@ -61,7 +61,7 @@ module Gitlab
       end
 
       def redis_usage_data(counter = nil, &block)
-        if block_given?
+        if block
           { redis_usage_data_block: "non-SQL usage data block" }
         elsif counter.present?
           { redis_usage_data_counter: counter.to_s }

@@ -30,19 +30,28 @@ RSpec.describe Webauthn::AuthenticateService do
       get_result['clientExtensionResults'] = {}
       service = Webauthn::AuthenticateService.new(user, get_result.to_json, challenge)
 
-      expect(service.execute).to be_truthy
+      expect(service.execute).to eq true
     end
 
-    it 'returns false if the response is valid but no matching stored credential is present' do
-      other_client = WebAuthn::FakeClient.new(origin)
-      other_client.create(challenge: challenge) # rubocop:disable Rails/SaveBang
+    context 'when response is valid but no matching stored credential is present' do
+      it 'returns false' do
+        other_client = WebAuthn::FakeClient.new(origin)
+        other_client.create(challenge: challenge) # rubocop:disable Rails/SaveBang
 
-      get_result = other_client.get(challenge: challenge)
+        get_result = other_client.get(challenge: challenge)
 
-      get_result['clientExtensionResults'] = {}
-      service = Webauthn::AuthenticateService.new(user, get_result.to_json, challenge)
+        get_result['clientExtensionResults'] = {}
+        service = Webauthn::AuthenticateService.new(user, get_result.to_json, challenge)
 
-      expect(service.execute).to be_falsey
+        expect(service.execute).to eq false
+      end
+    end
+
+    context 'when device response includes invalid json' do
+      it 'returns false' do
+        service = Webauthn::AuthenticateService.new(user, 'invalid JSON', '')
+        expect(service.execute).to eq false
+      end
     end
   end
 end

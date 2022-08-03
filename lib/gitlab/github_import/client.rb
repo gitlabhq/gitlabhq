@@ -107,7 +107,7 @@ module Gitlab
       #
       # rubocop: disable GitlabSecurity/PublicSend
       def each_page(method, *args, &block)
-        return to_enum(__method__, method, *args) unless block_given?
+        return to_enum(__method__, method, *args) unless block
 
         page =
           if args.last.is_a?(Hash) && args.last[:page]
@@ -134,7 +134,7 @@ module Gitlab
       # method - The method to send to Octokit for querying data.
       # args - Any arguments to pass to the Octokit method.
       def each_object(method, *args, &block)
-        return to_enum(__method__, method, *args) unless block_given?
+        return to_enum(__method__, method, *args) unless block
 
         each_page(method, *args) do |page|
           page.objects.each do |object|

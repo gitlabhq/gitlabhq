@@ -8925,6 +8925,29 @@ The edge type for [`TestSuiteSummary`](#testsuitesummary).
 | <a id="testsuitesummaryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="testsuitesummaryedgenode"></a>`node` | [`TestSuiteSummary`](#testsuitesummary) | The item at the end of the edge. |
 
+#### `TimeTrackingTimelogCategoryConnection`
+
+The connection type for [`TimeTrackingTimelogCategory`](#timetrackingtimelogcategory).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="timetrackingtimelogcategoryconnectionedges"></a>`edges` | [`[TimeTrackingTimelogCategoryEdge]`](#timetrackingtimelogcategoryedge) | A list of edges. |
+| <a id="timetrackingtimelogcategoryconnectionnodes"></a>`nodes` | [`[TimeTrackingTimelogCategory]`](#timetrackingtimelogcategory) | A list of nodes. |
+| <a id="timetrackingtimelogcategoryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `TimeTrackingTimelogCategoryEdge`
+
+The edge type for [`TimeTrackingTimelogCategory`](#timetrackingtimelogcategory).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="timetrackingtimelogcategoryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="timetrackingtimelogcategoryedgenode"></a>`node` | [`TimeTrackingTimelogCategory`](#timetrackingtimelogcategory) | The item at the end of the edge. |
+
 #### `TimelineEventTypeConnection`
 
 The connection type for [`TimelineEventType`](#timelineeventtype).
@@ -12157,6 +12180,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Total storage limit of the root namespace in bytes. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
 | <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
+| <a id="grouptimelogcategories"></a>`timelogCategories` | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | Timelog categories for the namespace. Available only when feature flag `timelog_categories` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. |
 | <a id="grouptwofactorgraceperiod"></a>`twoFactorGracePeriod` | [`Int`](#int) | Time before two-factor authentication is enforced. |
@@ -14727,6 +14751,7 @@ Contains statistics about a milestone.
 | <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Total storage limit of the root namespace in bytes. |
 | <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
+| <a id="namespacetimelogcategories"></a>`timelogCategories` | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | Timelog categories for the namespace. Available only when feature flag `timelog_categories` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. |
 | <a id="namespacevisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
@@ -15493,6 +15518,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectsuggestioncommitmessage"></a>`suggestionCommitMessage` | [`String`](#string) | Commit message used to apply merge request suggestions. |
 | <a id="projecttaglist"></a>`tagList` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.12. Use `topics`. |
 | <a id="projectterraformstates"></a>`terraformStates` | [`TerraformStateConnection`](#terraformstateconnection) | Terraform states associated with the project. (see [Connections](#connections)) |
+| <a id="projecttimelogcategories"></a>`timelogCategories` | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | Timelog categories for the project. Available only when feature flag `timelog_categories` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 | <a id="projecttopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
@@ -17732,6 +17758,21 @@ Represents the time report stats for timeboxes.
 | <a id="timereportstatscomplete"></a>`complete` | [`TimeboxMetrics`](#timeboxmetrics) | Completed issues metrics. |
 | <a id="timereportstatsincomplete"></a>`incomplete` | [`TimeboxMetrics`](#timeboxmetrics) | Incomplete issues metrics. |
 | <a id="timereportstatstotal"></a>`total` | [`TimeboxMetrics`](#timeboxmetrics) | Total issues metrics. |
+
+### `TimeTrackingTimelogCategory`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="timetrackingtimelogcategorybillable"></a>`billable` | [`Boolean`](#boolean) | Whether the category is billable or not. |
+| <a id="timetrackingtimelogcategorybillingrate"></a>`billingRate` | [`Float`](#float) | Billing rate for the category. |
+| <a id="timetrackingtimelogcategorycolor"></a>`color` | [`Color`](#color) | Color assigned to the category. |
+| <a id="timetrackingtimelogcategorycreatedat"></a>`createdAt` | [`Time!`](#time) | When the category was created. |
+| <a id="timetrackingtimelogcategorydescription"></a>`description` | [`String`](#string) | Description of the category. |
+| <a id="timetrackingtimelogcategoryid"></a>`id` | [`ID!`](#id) | Internal ID of the timelog category. |
+| <a id="timetrackingtimelogcategoryname"></a>`name` | [`String!`](#string) | Name of the category. |
+| <a id="timetrackingtimelogcategoryupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the category was last updated. |
 
 ### `TimeboxMetrics`
 

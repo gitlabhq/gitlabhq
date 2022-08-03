@@ -84,7 +84,7 @@ module Tooling
     # method - The Octokit method to use for getting the data.
     # args - Arguments to pass to the `helm list` command.
     def each_releases_page(args, &block)
-      return to_enum(__method__, args) unless block_given?
+      return to_enum(__method__, args) unless block
 
       page = 0
       final_args = args.dup
@@ -100,7 +100,7 @@ module Tooling
     #
     # args - Any arguments to pass to the `helm list` command.
     def each_release(args, &block)
-      return to_enum(__method__, args) unless block_given?
+      return to_enum(__method__, args) unless block
 
       each_releases_page(args) do |page|
         page.releases.each do |release|

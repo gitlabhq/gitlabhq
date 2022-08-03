@@ -25,7 +25,7 @@ module ErrorTracking
       errors = parse_errors(response)
       return errors if errors
 
-      yield if block_given?
+      yield if block
 
       track_usage_event(params[:tracking_event], current_user.id) if params[:tracking_event]
 

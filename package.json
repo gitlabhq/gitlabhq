@@ -135,7 +135,7 @@
     "lowlight": "^2.6.1",
     "marked": "^0.3.12",
     "mathjax": "3",
-    "mermaid": "^9.1.1",
+    "mermaid": "^9.1.3",
     "micromatch": "^4.0.5",
     "minimatch": "^3.0.4",
     "monaco-editor": "^0.28.0",
