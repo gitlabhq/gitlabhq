@@ -173,12 +173,12 @@ module Repositories
       LfsObjectsProject.link_to_project!(lfs_object, project)
 
       Gitlab::AppJsonLogger.info(message: "LFS object auto-linked to forked project",
-        lfs_object_oid: lfs_object.oid,
-        lfs_object_size: lfs_object.size,
-        source_project_id: project.fork_source.id,
-        source_project_path: project.fork_source.full_path,
-        target_project_id: project.project_id,
-        target_project_path: project.full_path)
+                                 lfs_object_oid: lfs_object.oid,
+                                 lfs_object_size: lfs_object.size,
+                                 source_project_id: project.fork_source.id,
+                                 source_project_path: project.fork_source.full_path,
+                                 target_project_id: project.project_id,
+                                 target_project_path: project.full_path)
     end
   end
 end

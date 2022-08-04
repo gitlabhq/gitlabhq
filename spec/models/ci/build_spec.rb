@@ -1335,6 +1335,43 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe 'state transition metrics' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { build.send(event) }
+
+    where(:ff_enabled, :state, :report_count, :trait) do
+      true  | :success! | 1 | :sast
+      true  | :cancel!  | 1 | :sast
+      true  | :drop!    | 2 | :multiple_report_artifacts
+      true  | :success! | 0 | :allowed_to_fail
+      true  | :skip!    | 0 | :pending
+      false | :success! | 0 | :sast
+    end
+
+    with_them do
+      let(:build) { create(:ci_build, trait, project: project, pipeline: pipeline) }
+      let(:event) { state }
+
+      context "when transitioning to #{params[:state]}" do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+          stub_feature_flags(report_artifact_build_completed_metrics_on_build_completion: ff_enabled)
+        end
+
+        it 'increments build_completed_report_type metric' do
+          expect(
+            ::Gitlab::Ci::Artifacts::Metrics
+          ).to receive(
+            :build_completed_report_type_counter
+          ).exactly(report_count).times.and_call_original
+
+          subject
+        end
+      end
+    end
+  end
+
   describe 'state transition as a deployable' do
     subject { build.send(event) }
 

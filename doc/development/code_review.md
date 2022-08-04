@@ -282,9 +282,15 @@ This saves reviewers time and helps authors catch mistakes earlier.
 
 Verify that the merge request meets all [contribution acceptance criteria](contributing/merge_request_workflow.md#contribution-acceptance-criteria).
 
-If a merge request is too large, fixes more than one issue, or implements more
-than one feature, you should guide the author towards splitting the merge request
-into smaller merge requests.
+You should guide the author towards splitting the merge request into smaller merge requests if it is:
+
+- Too large.
+- Fixes more than one issue.
+- Implements more than one feature.
+- Has a high complexity resulting in additional risk.
+
+The author may choose to request that the current maintainers and reviewers review the split MRs
+or request a new group of maintainers and reviewers.
 
 When you are confident
 that it meets all requirements, you should:
@@ -307,19 +313,6 @@ consistency, and readability.
 Because a maintainer's job only depends on their knowledge of the overall GitLab
 codebase, and not that of any specific domain, they can review, approve, and merge
 merge requests from any team and in any product area.
-
-A maintainer should ask the author to make a merge request smaller if it is:
-
-- Too large.
-- Fixes more than one issue.
-- Implements more than one feature.
-- Has a high complexity resulting in additional risk.
-
-The maintainer, any of the
-reviewers, or a merge request coach can step up to help the author to divide work
-into smaller iterations, and guide the author on how to split the merge request.
-The author may choose to request that the current maintainers and reviewers review the split MRs
-or request a new group of maintainers and reviewers.
 
 Maintainers do their best to also review the specifics of the chosen solution
 before merging, but as they are not necessarily [domain experts](#domain-experts), they may be poorly

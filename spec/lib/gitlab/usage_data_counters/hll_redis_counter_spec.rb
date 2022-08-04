@@ -129,7 +129,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'work_items',
         'ci_users',
         'error_tracking',
-        'manage'
+        'manage',
+        'kubernetes_agent'
       )
     end
   end

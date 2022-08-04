@@ -1,0 +1,5 @@
+mutation destroyPackageFiles($projectPath: ID!, $ids: [PackagesPackageFileID!]!) {
+  destroyPackageFiles(input: { projectPath: $projectPath, ids: $ids }) {
+    errors
+  }
+}

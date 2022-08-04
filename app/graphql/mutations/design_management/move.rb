@@ -16,8 +16,7 @@ module Mutations
       argument :next, DesignID, required: false, as: :next_design,
                description: "ID of the immediately following design."
 
-      field :design_collection, Types::DesignManagement::DesignCollectionType,
-            null: true,
+      field :design_collection, Types::DesignManagement::DesignCollectionType, null: true,
             description: "Current state of the collection."
 
       def resolve(**args)

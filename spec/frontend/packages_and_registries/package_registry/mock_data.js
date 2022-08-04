@@ -221,6 +221,7 @@ export const packageDetailsQuery = (extendPackage) => ({
         id: '1',
         path: 'projectPath',
         name: 'gitlab-test',
+        fullPath: 'gitlab-test',
       },
       tags: {
         nodes: packageTags(),
@@ -231,6 +232,9 @@ export const packageDetailsQuery = (extendPackage) => ({
         __typename: 'PipelineConnection',
       },
       packageFiles: {
+        pageInfo: {
+          hasNextPage: true,
+        },
         nodes: packageFiles(),
         __typename: 'PackageFileConnection',
       },
@@ -310,16 +314,16 @@ export const packageDestroyMutationError = () => ({
   ],
 });
 
-export const packageDestroyFileMutation = () => ({
+export const packageDestroyFilesMutation = () => ({
   data: {
-    destroyPackageFile: {
+    destroyPackageFiles: {
       errors: [],
     },
   },
 });
-export const packageDestroyFileMutationError = () => ({
+export const packageDestroyFilesMutationError = () => ({
   data: {
-    destroyPackageFile: null,
+    destroyPackageFiles: null,
   },
   errors: [
     {
@@ -331,7 +335,7 @@ export const packageDestroyFileMutationError = () => ({
           column: 3,
         },
       ],
-      path: ['destroyPackageFile'],
+      path: ['destroyPackageFiles'],
     },
   ],
 });

@@ -59,7 +59,7 @@ RSpec.describe API::Internal::Kubernetes do
     end
   end
 
-  describe 'POST /internal/kubernetes/usage_metrics' do
+  describe 'POST /internal/kubernetes/usage_metrics', :clean_gitlab_redis_shared_state do
     def send_request(headers: {}, params: {})
       post api('/internal/kubernetes/usage_metrics'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
     end
@@ -69,28 +69,101 @@ RSpec.describe API::Internal::Kubernetes do
     context 'is authenticated for an agent' do
       let!(:agent_token) { create(:cluster_agent_token) }
 
+      # Todo: Remove gitops_sync_count and k8s_api_proxy_request_count in the next milestone
+      #       https://gitlab.com/gitlab-org/gitlab/-/issues/369489
+      #       We're only keeping it for backwards compatibility until KAS is released
+      #       using `counts:` instead
+      context 'deprecated events' do
+        it 'returns no_content for valid events' do
+          send_request(params: { gitops_sync_count: 10, k8s_api_proxy_request_count: 5 })
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        it 'returns no_content for counts of zero' do
+          send_request(params: { gitops_sync_count: 0, k8s_api_proxy_request_count: 0 })
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        it 'returns 400 for non number' do
+          send_request(params: { gitops_sync_count: 'string', k8s_api_proxy_request_count: 1 })
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it 'returns 400 for negative number' do
+          send_request(params: { gitops_sync_count: -1, k8s_api_proxy_request_count: 1 })
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it 'tracks events' do
+          counters = { gitops_sync_count: 10, k8s_api_proxy_request_count: 5 }
+          expected_counters = {
+            kubernetes_agent_gitops_sync: counters[:gitops_sync_count],
+            kubernetes_agent_k8s_api_proxy_request: counters[:k8s_api_proxy_request_count]
+          }
+
+          send_request(params: counters)
+
+          expect(Gitlab::UsageDataCounters::KubernetesAgentCounter.totals).to eq(expected_counters)
+        end
+      end
+
       it 'returns no_content for valid events' do
-        send_request(params: { gitops_sync_count: 10, k8s_api_proxy_request_count: 5 })
+        counters = { gitops_sync: 10, k8s_api_proxy_request: 5 }
+        unique_counters = { agent_users_using_ci_tunnel: [10] }
+
+        send_request(params: { counters: counters, unique_counters: unique_counters })
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
       it 'returns no_content for counts of zero' do
-        send_request(params: { gitops_sync_count: 0, k8s_api_proxy_request_count: 0 })
+        counters = { gitops_sync: 0, k8s_api_proxy_request: 0 }
+        unique_counters = { agent_users_using_ci_tunnel: [] }
+
+        send_request(params: { counters: counters, unique_counters: unique_counters })
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
-      it 'returns 400 for non number' do
-        send_request(params: { gitops_sync_count: 'string', k8s_api_proxy_request_count: 1 })
+      it 'returns 400 for non counter number' do
+        counters = { gitops_sync: 'string', k8s_api_proxy_request: 0 }
+
+        send_request(params: { counters: counters })
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'returns 400 for negative number' do
-        send_request(params: { gitops_sync_count: -1, k8s_api_proxy_request_count: 1 })
+      it 'returns 400 for non unique_counter set' do
+        unique_counters = { agent_users_using_ci_tunnel: 1 }
+
+        send_request(params: { unique_counters: unique_counters })
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'tracks events' do
+        counters = { gitops_sync: 10, k8s_api_proxy_request: 5 }
+        unique_counters = { agent_users_using_ci_tunnel: [10] }
+        expected_counters = {
+          kubernetes_agent_gitops_sync: counters[:gitops_sync],
+          kubernetes_agent_k8s_api_proxy_request: counters[:k8s_api_proxy_request]
+        }
+
+        send_request(params: { counters: counters, unique_counters: unique_counters })
+
+        expect(Gitlab::UsageDataCounters::KubernetesAgentCounter.totals).to eq(expected_counters)
+
+        expect(
+          Gitlab::UsageDataCounters::HLLRedisCounter
+            .unique_events(
+              event_names: 'agent_users_using_ci_tunnel',
+              start_date: Date.current, end_date: Date.current + 10
+            )
+        ).to eq(1)
       end
     end
   end

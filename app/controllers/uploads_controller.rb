@@ -7,13 +7,13 @@ class UploadsController < ApplicationController
   UnknownUploadModelError = Class.new(StandardError)
 
   MODEL_CLASSES = {
-    "user"             => User,
-    "project"          => Project,
-    "note"             => Note,
-    "group"            => Group,
-    "appearance"       => Appearance,
+    "user" => User,
+    "project" => Project,
+    "note" => Note,
+    "group" => Group,
+    "appearance" => Appearance,
     "personal_snippet" => PersonalSnippet,
-    "projects/topic"   => Projects::Topic,
+    "projects/topic" => Projects::Topic,
     'alert_management_metric_image' => ::AlertManagement::MetricImage,
     nil => PersonalSnippet
   }.freeze

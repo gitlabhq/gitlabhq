@@ -1,0 +1,8 @@
+---
+name: track_agent_users_using_ci_tunnel
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92300
+rollout_issue_url:
+milestone: '15.3'
+type: development
+group: group::configure
+default_enabled: false

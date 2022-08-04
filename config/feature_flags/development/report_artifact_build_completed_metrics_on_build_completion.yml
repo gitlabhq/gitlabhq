@@ -1,0 +1,8 @@
+---
+name: report_artifact_build_completed_metrics_on_build_completion
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80334
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369500
+milestone: '15.3'
+type: development
+group: group::static analysis
+default_enabled: false

@@ -8,6 +8,7 @@ module QA
           class Show < QA::Page::Base
             view 'app/views/admin/users/_head.html.haml' do
               element :impersonate_user_link
+              element :impersonation_tokens_tab
             end
 
             view 'app/views/admin/users/show.html.haml' do
@@ -32,6 +33,11 @@ module QA
               click_element(:user_actions_dropdown_toggle, username: user.username)
             end
 
+            def go_to_impersonation_tokens(&block)
+              navigate_to_tab(:impersonation_tokens_tab)
+              Users::Components::ImpersonationTokens.perform(&block)
+            end
+
             def click_impersonate_user
               click_element(:impersonate_user_link)
             end
@@ -49,6 +55,20 @@ module QA
               open_user_actions_dropdown(user)
               click_element :approve_user_button
               click_element :approve_user_confirm_button
+            end
+
+            private
+
+            def navigate_to_tab(element_name)
+              wait_until(reload: false) do
+                click_element element_name unless on_impersontation_tokens_tab?
+
+                on_impersontation_tokens_tab?(wait: 10)
+              end
+            end
+
+            def on_impersontation_tokens_tab?(wait: 1)
+              has_css?(".active", text: 'Impersonation Tokens', wait: wait)
             end
           end
         end

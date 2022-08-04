@@ -6,8 +6,8 @@ module Mutations
       graphql_name 'AwardEmojiToggle'
 
       field :toggled_on, GraphQL::Types::Boolean, null: false,
-            description: 'Indicates the status of the emoji. ' \
-            'True if the toggle awarded the emoji, and false if the toggle removed the emoji.'
+        description: 'Indicates the status of the emoji. ' \
+                     'True if the toggle awarded the emoji, and false if the toggle removed the emoji.'
 
       def resolve(args)
         awardable = authorized_find!(id: args[:awardable_id])

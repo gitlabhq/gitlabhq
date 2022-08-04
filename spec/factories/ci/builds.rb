@@ -659,6 +659,19 @@ FactoryBot.define do
       end
     end
 
+    trait :multiple_report_artifacts do
+      options do
+        {
+            artifacts: {
+              reports: {
+                sast: 'gl-sast-report.json',
+                container_scanning: 'gl-container-scanning-report.json'
+              }
+            }
+        }
+      end
+    end
+
     trait :non_public_artifacts do
       options do
         {

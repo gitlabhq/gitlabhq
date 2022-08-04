@@ -1,5 +1,5 @@
 import { GlEmptyState, GlBadge, GlTabs, GlTab } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -22,6 +22,8 @@ import {
   PACKAGE_TYPE_COMPOSER,
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+  DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
+  DELETE_PACKAGE_FILES_ERROR_MESSAGE,
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_MAVEN,
   PACKAGE_TYPE_CONAN,
@@ -29,7 +31,7 @@ import {
   PACKAGE_TYPE_NPM,
 } from '~/packages_and_registries/package_registry/constants';
 
-import destroyPackageFileMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_file.mutation.graphql';
+import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
 import {
   packageDetailsQuery,
@@ -38,8 +40,8 @@ import {
   dependencyLinks,
   emptyPackageDetailsQuery,
   packageFiles,
-  packageDestroyFileMutation,
-  packageDestroyFileMutationError,
+  packageDestroyFilesMutation,
+  packageDestroyFilesMutationError,
 } from '../mock_data';
 
 jest.mock('~/flash');
@@ -65,14 +67,14 @@ describe('PackagesApp', () => {
 
   function createComponent({
     resolver = jest.fn().mockResolvedValue(packageDetailsQuery()),
-    fileDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFileMutation()),
+    filesDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFilesMutation()),
     routeId = '1',
   } = {}) {
     Vue.use(VueApollo);
 
     const requestHandlers = [
       [getPackageDetails, resolver],
-      [destroyPackageFileMutation, fileDeleteMutationResolver],
+      [destroyPackageFilesMutation, filesDeleteMutationResolver],
     ];
     apolloProvider = createMockApollo(requestHandlers);
 
@@ -110,6 +112,7 @@ describe('PackagesApp', () => {
   const findDeleteButton = () => wrapper.findByTestId('delete-package');
   const findPackageFiles = () => wrapper.findComponent(PackageFiles);
   const findDeleteFileModal = () => wrapper.findByTestId('delete-file-modal');
+  const findDeleteFilesModal = () => wrapper.findByTestId('delete-files-modal');
   const findVersionRows = () => wrapper.findAllComponents(VersionRow);
   const noVersionsMessage = () => wrapper.findByTestId('no-versions-message');
   const findDependenciesCountBadge = () => wrapper.findComponent(GlBadge);
@@ -288,6 +291,7 @@ describe('PackagesApp', () => {
 
       expect(findPackageFiles().props('packageFiles')[0]).toMatchObject(expectedFile);
       expect(findPackageFiles().props('canDelete')).toBe(packageData().canDestroy);
+      expect(findPackageFiles().props('isLoading')).toEqual(false);
     });
 
     it('does not render the package files table when the package is composer', async () => {
@@ -303,12 +307,10 @@ describe('PackagesApp', () => {
     });
 
     describe('deleting a file', () => {
-      let showDeleteFileSpy;
-      let showDeletePackageSpy;
       const [fileToDelete] = packageFiles();
 
-      const doDeleteFile = () => {
-        findPackageFiles().vm.$emit('delete-file', fileToDelete);
+      const doDeleteFile = async () => {
+        findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
 
         findDeleteFileModal().vm.$emit('primary');
 
@@ -320,12 +322,10 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        expect(findDeleteFileModal().exists()).toBe(true);
+        const showDeleteFileSpy = jest.spyOn(wrapper.vm.$refs.deleteFileModal, 'show');
+        const showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
 
-        showDeleteFileSpy = jest.spyOn(wrapper.vm.$refs.deleteFileModal, 'show');
-        showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
-
-        findPackageFiles().vm.$emit('delete-file', fileToDelete);
+        findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
 
         expect(showDeletePackageSpy).not.toBeCalled();
         expect(showDeleteFileSpy).toBeCalled();
@@ -336,6 +336,9 @@ describe('PackagesApp', () => {
         const resolver = jest.fn().mockResolvedValue(
           packageDetailsQuery({
             packageFiles: {
+              pageInfo: {
+                hasNextPage: false,
+              },
               nodes: [packageFile],
               __typename: 'PackageFileConnection',
             },
@@ -348,15 +351,27 @@ describe('PackagesApp', () => {
 
         await waitForPromises();
 
-        expect(findDeleteModal().exists()).toBe(true);
+        const showDeleteFileSpy = jest.spyOn(wrapper.vm.$refs.deleteFileModal, 'show');
+        const showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
 
-        showDeleteFileSpy = jest.spyOn(wrapper.vm.$refs.deleteFileModal, 'show');
-        showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
-
-        findPackageFiles().vm.$emit('delete-file', fileToDelete);
+        findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
 
         expect(showDeletePackageSpy).toBeCalled();
         expect(showDeleteFileSpy).not.toBeCalled();
+      });
+
+      it('confirming on the modal sets the loading state', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        findPackageFiles().vm.$emit('delete-files', [fileToDelete]);
+
+        findDeleteFileModal().vm.$emit('primary');
+
+        await nextTick();
+
+        expect(findPackageFiles().props('isLoading')).toEqual(true);
       });
 
       it('confirming on the modal deletes the file and shows a success message', async () => {
@@ -378,7 +393,7 @@ describe('PackagesApp', () => {
 
       describe('errors', () => {
         it('shows an error when the mutation request fails', async () => {
-          createComponent({ fileDeleteMutationResolver: jest.fn().mockRejectedValue() });
+          createComponent({ filesDeleteMutationResolver: jest.fn().mockRejectedValue() });
           await waitForPromises();
 
           await doDeleteFile();
@@ -392,9 +407,9 @@ describe('PackagesApp', () => {
 
         it('shows an error when the mutation request returns an error payload', async () => {
           createComponent({
-            fileDeleteMutationResolver: jest
+            filesDeleteMutationResolver: jest
               .fn()
-              .mockResolvedValue(packageDestroyFileMutationError()),
+              .mockResolvedValue(packageDestroyFilesMutationError()),
           });
           await waitForPromises();
 
@@ -406,6 +421,117 @@ describe('PackagesApp', () => {
             }),
           );
         });
+      });
+    });
+
+    describe('deleting multiple files', () => {
+      const doDeleteFiles = async () => {
+        findPackageFiles().vm.$emit('delete-files', packageFiles());
+
+        findDeleteFilesModal().vm.$emit('primary');
+
+        return waitForPromises();
+      };
+
+      it('opens delete files confirmation modal', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        const showDeleteFilesSpy = jest.spyOn(wrapper.vm.$refs.deleteFilesModal, 'show');
+
+        findPackageFiles().vm.$emit('delete-files', packageFiles());
+
+        expect(showDeleteFilesSpy).toBeCalled();
+      });
+
+      it('confirming on the modal sets the loading state', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        findPackageFiles().vm.$emit('delete-files', packageFiles());
+
+        findDeleteFilesModal().vm.$emit('primary');
+
+        await nextTick();
+
+        expect(findPackageFiles().props('isLoading')).toEqual(true);
+      });
+
+      it('confirming on the modal deletes the file and shows a success message', async () => {
+        const resolver = jest.fn().mockResolvedValue(packageDetailsQuery());
+        createComponent({ resolver });
+
+        await waitForPromises();
+
+        await doDeleteFiles();
+
+        expect(createFlash).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
+          }),
+        );
+        // we are re-fetching the package details, so we expect the resolver to have been called twice
+        expect(resolver).toHaveBeenCalledTimes(2);
+      });
+
+      describe('errors', () => {
+        it('shows an error when the mutation request fails', async () => {
+          createComponent({ filesDeleteMutationResolver: jest.fn().mockRejectedValue() });
+          await waitForPromises();
+
+          await doDeleteFiles();
+
+          expect(createFlash).toHaveBeenCalledWith(
+            expect.objectContaining({
+              message: DELETE_PACKAGE_FILES_ERROR_MESSAGE,
+            }),
+          );
+        });
+
+        it('shows an error when the mutation request returns an error payload', async () => {
+          createComponent({
+            filesDeleteMutationResolver: jest
+              .fn()
+              .mockResolvedValue(packageDestroyFilesMutationError()),
+          });
+          await waitForPromises();
+
+          await doDeleteFiles();
+
+          expect(createFlash).toHaveBeenCalledWith(
+            expect.objectContaining({
+              message: DELETE_PACKAGE_FILES_ERROR_MESSAGE,
+            }),
+          );
+        });
+      });
+    });
+
+    describe('deleting all files', () => {
+      it('opens the delete package confirmation modal', async () => {
+        const resolver = jest.fn().mockResolvedValue(
+          packageDetailsQuery({
+            packageFiles: {
+              pageInfo: {
+                hasNextPage: false,
+              },
+              nodes: packageFiles(),
+            },
+          }),
+        );
+        createComponent({
+          resolver,
+        });
+
+        await waitForPromises();
+
+        const showDeletePackageSpy = jest.spyOn(wrapper.vm.$refs.deleteModal, 'show');
+
+        findPackageFiles().vm.$emit('delete-files', packageFiles());
+
+        expect(showDeletePackageSpy).toBeCalled();
       });
     });
   });

@@ -322,6 +322,8 @@ module Ci
           build.run_status_commit_hooks!
 
           Ci::BuildFinishedWorker.perform_async(id)
+
+          observe_report_types
         end
       end
 
@@ -1256,6 +1258,20 @@ module Ci
         ['has-available-runners', project.id],
         expires_in: RUNNERS_STATUS_CACHE_EXPIRATION
       ) { yield }
+    end
+
+    def observe_report_types
+      return unless ::Gitlab.com? && Feature.enabled?(:report_artifact_build_completed_metrics_on_build_completion)
+
+      report_types = options&.dig(:artifacts, :reports)&.keys || []
+
+      report_types.each do |report_type|
+        next unless Ci::JobArtifact::REPORT_TYPES.include?(report_type)
+
+        ::Gitlab::Ci::Artifacts::Metrics
+          .build_completed_report_type_counter(report_type)
+          .increment(status: status)
+      end
     end
   end
 end

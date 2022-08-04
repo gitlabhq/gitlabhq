@@ -41,6 +41,7 @@ module Gitlab
         ide_edit
         importer
         incident_management_alerts
+        kubernetes_agent
         pipeline_authoring
         search
         secure

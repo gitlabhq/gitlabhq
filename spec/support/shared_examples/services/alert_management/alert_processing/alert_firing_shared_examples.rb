@@ -23,7 +23,7 @@ RSpec.shared_examples 'creates an alert management alert or errors' do
   end
 
   context 'and fails to save' do
-    let(:errors) { double(messages: { hosts: ['hosts array is over 255 chars'] })}
+    let(:errors) { double(messages: { hosts: ['hosts array is over 255 chars'] }, '[]': [] )}
 
     before do
       allow(service).to receive(:alert).and_call_original
@@ -42,6 +42,46 @@ RSpec.shared_examples 'creates an alert management alert or errors' do
       )
 
       subject
+    end
+  end
+end
+
+RSpec.shared_examples 'handles race condition in alert creation' do
+  let(:other_alert) { create(:alert_management_alert, project: project) }
+
+  context 'when another alert is saved at the same time' do
+    before do
+      allow_next_instance_of(::AlertManagement::Alert) do |alert|
+        allow(alert).to receive(:save) do
+          other_alert.update!(fingerprint: alert.fingerprint)
+
+          raise ActiveRecord::RecordNotUnique
+        end
+      end
+    end
+
+    it 'finds the other alert and increments the counter' do
+      subject
+
+      expect(other_alert.reload.events).to eq(2)
+    end
+  end
+
+  context 'when another alert is saved before the validation runes' do
+    before do
+      allow_next_instance_of(::AlertManagement::Alert) do |alert|
+        allow(alert).to receive(:save).and_wrap_original do |method, *args|
+          other_alert.update!(fingerprint: alert.fingerprint)
+
+          method.call(*args)
+        end
+      end
+    end
+
+    it 'finds the other alert and increments the counter' do
+      subject
+
+      expect(other_alert.reload.events).to eq(2)
     end
   end
 end

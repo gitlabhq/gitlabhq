@@ -1,6 +1,6 @@
-import { GlDropdown, GlButton } from '@gitlab/ui';
+import { GlDropdown, GlButton, GlFormCheckbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import stubChildren from 'helpers/stub_children';
+import { stubComponent } from 'helpers/stub_component';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { packageFiles as packageFilesMock } from 'jest/packages_and_registries/package_registry/mock_data';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
@@ -11,6 +11,7 @@ describe('Package Files', () => {
   let wrapper;
 
   const findAllRows = () => wrapper.findAllByTestId('file-row');
+  const findDeleteSelectedButton = () => wrapper.findByTestId('delete-selected');
   const findFirstRow = () => extendedWrapper(findAllRows().at(0));
   const findSecondRow = () => extendedWrapper(findAllRows().at(1));
   const findFirstRowDownloadLink = () => findFirstRow().findByTestId('download-link');
@@ -22,19 +23,27 @@ describe('Package Files', () => {
   const findActionMenuDelete = () => findFirstActionMenu().findByTestId('delete-file');
   const findFirstToggleDetailsButton = () => findFirstRow().findComponent(GlButton);
   const findFirstRowShaComponent = (id) => wrapper.findByTestId(id);
+  const findCheckAllCheckbox = () => wrapper.findByTestId('package-files-checkbox-all');
+  const findAllRowCheckboxes = () => wrapper.findAllByTestId('package-files-checkbox');
 
   const files = packageFilesMock();
   const [file] = files;
 
-  const createComponent = ({ packageFiles = [file], canDelete = true } = {}) => {
+  const createComponent = ({
+    packageFiles = [file],
+    isLoading = false,
+    canDelete = true,
+    stubs,
+  } = {}) => {
     wrapper = mountExtended(PackageFiles, {
       propsData: {
         canDelete,
+        isLoading,
         packageFiles,
       },
       stubs: {
-        ...stubChildren(PackageFiles),
-        GlTableLite: false,
+        GlTable: false,
+        ...stubs,
       },
     });
   };
@@ -157,46 +166,170 @@ describe('Package Files', () => {
         expect(findSecondRowCommitLink().exists()).toBe(false);
       });
     });
+  });
 
-    describe('action menu', () => {
-      describe('when the user can delete', () => {
-        it('exists', () => {
-          createComponent();
+  describe('action menu', () => {
+    describe('when the user can delete', () => {
+      it('exists', () => {
+        createComponent();
 
-          expect(findFirstActionMenu().exists()).toBe(true);
-          expect(findFirstActionMenu().props('icon')).toBe('ellipsis_v');
-          expect(findFirstActionMenu().props('textSrOnly')).toBe(true);
-          expect(findFirstActionMenu().props('text')).toMatchInterpolatedText('More actions');
-        });
+        expect(findFirstActionMenu().exists()).toBe(true);
+        expect(findFirstActionMenu().props('icon')).toBe('ellipsis_v');
+        expect(findFirstActionMenu().props('textSrOnly')).toBe(true);
+        expect(findFirstActionMenu().props('text')).toMatchInterpolatedText('More actions');
+      });
 
-        describe('menu items', () => {
-          describe('delete file', () => {
-            it('exists', () => {
-              createComponent();
+      describe('menu items', () => {
+        describe('delete file', () => {
+          it('exists', () => {
+            createComponent();
 
-              expect(findActionMenuDelete().exists()).toBe(true);
-            });
+            expect(findActionMenuDelete().exists()).toBe(true);
+          });
 
-            it('emits a delete event when clicked', () => {
-              createComponent();
+          it('emits a delete event when clicked', async () => {
+            createComponent();
 
-              findActionMenuDelete().vm.$emit('click');
+            await findActionMenuDelete().trigger('click');
 
-              const [[{ id }]] = wrapper.emitted('delete-file');
-              expect(id).toBe(file.id);
-            });
+            const [[items]] = wrapper.emitted('delete-files');
+            const [{ id }] = items;
+            expect(id).toBe(file.id);
           });
         });
       });
+    });
 
-      describe('when the user can not delete', () => {
-        const canDelete = false;
+    describe('when the user can not delete', () => {
+      const canDelete = false;
 
-        it('does not exist', () => {
-          createComponent({ canDelete });
+      it('does not exist', () => {
+        createComponent({ canDelete });
 
-          expect(findFirstActionMenu().exists()).toBe(false);
+        expect(findFirstActionMenu().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('multi select', () => {
+    describe('when user can delete', () => {
+      it('delete selected button exists & is disabled', () => {
+        createComponent();
+
+        expect(findDeleteSelectedButton().exists()).toBe(true);
+        expect(findDeleteSelectedButton().text()).toMatchInterpolatedText('Delete selected');
+        expect(findDeleteSelectedButton().props('disabled')).toBe(true);
+      });
+
+      it('delete selected button exists & is disabled when isLoading prop is true', () => {
+        createComponent({ isLoading: true });
+
+        expect(findDeleteSelectedButton().props('disabled')).toBe(true);
+      });
+
+      it('checkboxes to select file are visible', () => {
+        createComponent({ packageFiles: files });
+
+        expect(findCheckAllCheckbox().exists()).toBe(true);
+        expect(findAllRowCheckboxes()).toHaveLength(2);
+      });
+
+      it('selecting a checkbox enables delete selected button', async () => {
+        createComponent();
+
+        const first = findAllRowCheckboxes().at(0);
+
+        await first.setChecked(true);
+
+        expect(findDeleteSelectedButton().props('disabled')).toBe(false);
+      });
+
+      describe('select all checkbox', () => {
+        it('will toggle between selecting all and deselecting all files', async () => {
+          const getChecked = () => findAllRowCheckboxes().filter((x) => x.element.checked === true);
+
+          createComponent({ packageFiles: files });
+
+          expect(getChecked()).toHaveLength(0);
+
+          await findCheckAllCheckbox().setChecked(true);
+
+          expect(getChecked()).toHaveLength(files.length);
+
+          await findCheckAllCheckbox().setChecked(false);
+
+          expect(getChecked()).toHaveLength(0);
         });
+
+        it('will toggle the indeterminate state when some but not all files are selected', async () => {
+          const expectIndeterminateState = (state) =>
+            expect(findCheckAllCheckbox().props('indeterminate')).toBe(state);
+
+          createComponent({
+            packageFiles: files,
+            stubs: { GlFormCheckbox: stubComponent(GlFormCheckbox, { props: ['indeterminate'] }) },
+          });
+
+          expectIndeterminateState(false);
+
+          await findSecondRow().trigger('click');
+
+          expectIndeterminateState(true);
+
+          await findSecondRow().trigger('click');
+
+          expectIndeterminateState(false);
+
+          findCheckAllCheckbox().trigger('click');
+
+          expectIndeterminateState(false);
+
+          await findSecondRow().trigger('click');
+
+          expectIndeterminateState(true);
+        });
+      });
+
+      it('emits a delete event when selected', async () => {
+        createComponent();
+
+        const first = findAllRowCheckboxes().at(0);
+
+        await first.setChecked(true);
+
+        await findDeleteSelectedButton().trigger('click');
+
+        const [[items]] = wrapper.emitted('delete-files');
+        const [{ id }] = items;
+        expect(id).toBe(file.id);
+      });
+
+      it('emits delete event with both items when all are selected', async () => {
+        createComponent({ packageFiles: files });
+
+        await findCheckAllCheckbox().setChecked(true);
+
+        await findDeleteSelectedButton().trigger('click');
+
+        const [[items]] = wrapper.emitted('delete-files');
+        expect(items).toHaveLength(2);
+      });
+    });
+
+    describe('when user cannot delete', () => {
+      const canDelete = false;
+
+      it('delete selected button does not exist', () => {
+        createComponent({ canDelete });
+
+        expect(findDeleteSelectedButton().exists()).toBe(false);
+      });
+
+      it('checkboxes to select file are not visible', () => {
+        createComponent({ packageFiles: files, canDelete });
+
+        expect(findCheckAllCheckbox().exists()).toBe(false);
+        expect(findAllRowCheckboxes()).toHaveLength(0);
       });
     });
   });

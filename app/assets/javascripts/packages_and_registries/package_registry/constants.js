@@ -7,9 +7,12 @@ export {
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
   PULL_PACKAGE_TRACKING_ACTION,
   DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  DELETE_PACKAGE_FILES_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  REQUEST_DELETE_SELECTED_PACKAGE_FILE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
+  SELECT_PACKAGE_FILE_TRACKING_ACTION,
 } from '~/packages_and_registries/shared/constants';
 
 export const PACKAGE_TYPE_CONAN = 'CONAN';
@@ -80,6 +83,12 @@ export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(
 );
 export const DELETE_PACKAGE_FILE_SUCCESS_MESSAGE = s__(
   'PackageRegistry|Package file deleted successfully',
+);
+export const DELETE_PACKAGE_FILES_ERROR_MESSAGE = s__(
+  'PackageRegistry|Something went wrong while deleting the package assets.',
+);
+export const DELETE_PACKAGE_FILES_SUCCESS_MESSAGE = s__(
+  'PackageRegistry|Package assets deleted successfully',
 );
 export const FETCH_PACKAGE_DETAILS_ERROR_MESSAGE = s__(
   'PackageRegistry|Failed to load the package data',

@@ -27753,6 +27753,11 @@ msgstr ""
 msgid "PackageRegistry|Debian"
 msgstr ""
 
+msgid "PackageRegistry|Delete 1 asset"
+msgid_plural "PackageRegistry|Delete %d assets"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "PackageRegistry|Delete Package File"
 msgstr ""
 
@@ -27760,6 +27765,9 @@ msgid "PackageRegistry|Delete Package Version"
 msgstr ""
 
 msgid "PackageRegistry|Delete package"
+msgstr ""
+
+msgid "PackageRegistry|Delete selected"
 msgstr ""
 
 msgid "PackageRegistry|Delete this package"
@@ -27858,6 +27866,9 @@ msgstr ""
 msgid "PackageRegistry|Package Registry"
 msgstr ""
 
+msgid "PackageRegistry|Package assets deleted successfully"
+msgstr ""
+
 msgid "PackageRegistry|Package deleted successfully"
 msgstr ""
 
@@ -27870,6 +27881,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
+msgstr ""
+
+msgid "PackageRegistry|Permanently delete assets"
 msgstr ""
 
 msgid "PackageRegistry|Pip Command"
@@ -27927,6 +27941,9 @@ msgid "PackageRegistry|Show PyPi commands"
 msgstr ""
 
 msgid "PackageRegistry|Show Yarn commands"
+msgstr ""
+
+msgid "PackageRegistry|Something went wrong while deleting the package assets."
 msgstr ""
 
 msgid "PackageRegistry|Something went wrong while deleting the package file."
@@ -27988,6 +28005,11 @@ msgstr ""
 
 msgid "PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?"
 msgstr ""
+
+msgid "PackageRegistry|You are about to delete 1 asset. This operation is irreversible."
+msgid_plural "PackageRegistry|You are about to delete %d assets. This operation is irreversible."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?"
 msgstr ""

@@ -56,6 +56,7 @@ RSpec.describe Projects::Alerting::NotifyService do
 
           it_behaves_like 'processes new firing alert'
           it_behaves_like 'properly assigns the alert properties'
+          include_examples 'handles race condition in alert creation'
 
           it 'passes the integration to alert processing' do
             expect(Gitlab::AlertManagement::Payload)

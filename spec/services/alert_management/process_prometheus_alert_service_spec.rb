@@ -44,6 +44,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
       end
 
       it_behaves_like 'processes new firing alert'
+      include_examples 'handles race condition in alert creation'
 
       context 'with resolving payload' do
         let(:prometheus_status) { 'resolved' }

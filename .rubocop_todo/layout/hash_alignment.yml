@@ -1,23 +1,10 @@
 ---
 # Cop supports --auto-correct.
 Layout/HashAlignment:
-  # Offense count: 3804
+  # Offense count: 630
   # Temporarily disabled due to too many offenses
   Enabled: false
   Exclude:
-    - 'app/controllers/admin/ci/variables_controller.rb'
-    - 'app/controllers/admin/system_info_controller.rb'
-    - 'app/controllers/oauth/token_info_controller.rb'
-    - 'app/controllers/projects/feature_flags_controller.rb'
-    - 'app/controllers/repositories/git_http_client_controller.rb'
-    - 'app/controllers/repositories/lfs_api_controller.rb'
-    - 'app/controllers/repositories/lfs_locks_api_controller.rb'
-    - 'app/controllers/uploads_controller.rb'
-    - 'app/graphql/mutations/award_emojis/toggle.rb'
-    - 'app/graphql/mutations/ci/runner/update.rb'
-    - 'app/graphql/mutations/design_management/move.rb'
-    - 'app/graphql/mutations/issues/set_severity.rb'
-    - 'app/graphql/mutations/security/ci_configuration/base_security_analyzer.rb'
     - 'app/models/bulk_imports/configuration.rb'
     - 'app/models/ci/bridge.rb'
     - 'app/models/ci/build_trace_metadata.rb'

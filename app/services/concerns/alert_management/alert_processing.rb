@@ -58,6 +58,8 @@ module AlertManagement
       if alert.save
         alert.execute_integrations
         SystemNoteService.create_new_alert(alert, alert_source)
+      elsif alert.errors[:fingerprint].any?
+        refind_and_increment_alert
       else
         logger.warn(
           message: "Unable to create AlertManagement::Alert",
@@ -66,6 +68,8 @@ module AlertManagement
           alert_source: alert_source
         )
       end
+    rescue ActiveRecord::RecordNotUnique
+      refind_and_increment_alert
     end
 
     def process_incident_issues
@@ -100,6 +104,12 @@ module AlertManagement
 
     def build_new_alert
       AlertManagement::Alert.new(**incoming_payload.alert_params, ended_at: nil)
+    end
+
+    def refind_and_increment_alert
+      clear_memoization(:alert)
+
+      process_firing_alert
     end
 
     def resolving_alert?

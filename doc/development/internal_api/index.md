@@ -494,10 +494,15 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
 Called from GitLab agent server (`kas`) to increase the usage
 metric counters.
 
-| Attribute | Type   | Required | Description |
-|:----------|:-------|:---------|:------------|
-| `gitops_sync_count` | integer| no | The number to increase the `gitops_sync_count` counter by |
-| `k8s_api_proxy_request_count` | integer| no | The number to increase the `k8s_api_proxy_request_count` counter by |
+| Attribute                                                                  | Type          | Required | Description                                                                                                      |
+|:---------------------------------------------------------------------------|:--------------|:---------|:-----------------------------------------------------------------------------------------------------------------|
+| `gitops_sync_count` (DEPRECATED)                                           | integer       | no | The number to increase the `gitops_sync` counter by                                                              |
+| `k8s_api_proxy_request_count` (DEPRECATED)                                 | integer       | no | The number to increase the `k8s_api_proxy_request` counter by                                                    |
+| `counters`                                                                 | hash          | no | The number to increase the `k8s_api_proxy_request` counter by                                                    |
+| `counters["k8s_api_proxy_request"]`                                        | integer       | no | The number to increase the `k8s_api_proxy_request` counter by                                                    |
+| `counters["gitops_sync"]`                                                  | integer       | no | The number to increase the `gitops_sync` counter by                                                              |
+| `unique_counters`                                                          | hash          | no | The number to increase the `k8s_api_proxy_request` counter by                                                    |
+| `unique_counters["agent_users_using_ci_tunnel"]`                              | integer array | no | The set of unique user ids that have interacted a CI Tunnel to track the `agent_users_using_ci_tunnel` metric event |
 
 ```plaintext
 POST /internal/kubernetes/usage_metrics

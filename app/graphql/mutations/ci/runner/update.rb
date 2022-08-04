@@ -39,15 +39,17 @@ module Mutations
                  required: false,
                  description: 'Indicates the runner is not allowed to receive jobs.'
 
-        argument :locked, GraphQL::Types::Boolean, required: false,
-                 description: 'Indicates the runner is locked.'
+        argument :locked, GraphQL::Types::Boolean,
+                  required: false,
+                  description: 'Indicates the runner is locked.'
 
         argument :run_untagged, GraphQL::Types::Boolean,
                  required: false,
                  description: 'Indicates the runner is able to run untagged jobs.'
 
-        argument :tag_list, [GraphQL::Types::String], required: false,
-                 description: 'Tags associated with the runner.'
+        argument :tag_list, [GraphQL::Types::String],
+                  required: false,
+                  description: 'Tags associated with the runner.'
 
         field :runner,
               Types::Ci::RunnerType,

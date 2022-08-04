@@ -45,5 +45,5 @@
   = gl_tab_link_to _("SSH keys"), keys_admin_user_path(@user)
   = gl_tab_link_to _("Identities"), admin_user_identities_path(@user)
   - if impersonation_enabled?
-    = gl_tab_link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user)
+    = gl_tab_link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user), data: { qa_selector: 'impersonation_tokens_tab' }
 .gl-mb-3
