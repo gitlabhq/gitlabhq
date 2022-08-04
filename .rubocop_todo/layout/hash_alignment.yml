@@ -39,8 +39,6 @@ Layout/HashAlignment:
     - 'app/models/user_status.rb'
     - 'app/models/wiki.rb'
     - 'app/models/work_items/type.rb'
-    - 'ee/app/controllers/ee/search_controller.rb'
-    - 'ee/app/controllers/projects/integrations/zentao/issues_controller.rb'
     - 'ee/app/graphql/mutations/iterations/cadences/create.rb'
     - 'ee/app/graphql/mutations/iterations/cadences/destroy.rb'
     - 'ee/app/graphql/mutations/iterations/cadences/update.rb'

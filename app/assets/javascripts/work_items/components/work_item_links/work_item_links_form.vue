@@ -28,6 +28,11 @@ export default {
       required: false,
       default: () => [],
     },
+    parentConfidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   apollo: {
     availableWorkItems: {
@@ -123,6 +128,7 @@ export default {
               hierarchyWidget: {
                 parentId: this.issuableGid,
               },
+              confidential: this.parentConfidential,
             },
           },
         })

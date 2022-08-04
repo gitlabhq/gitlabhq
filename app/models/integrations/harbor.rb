@@ -21,7 +21,7 @@ module Integrations
     end
 
     def help
-      s_("HarborIntegration|After the Harbor integration is activated, global variables ‘$HARBOR_USERNAME’, ‘$HARBOR_HOST’, ‘$HARBOR_OCI’, ‘$HARBOR_PASSWORD’, ‘$HARBOR_URL’ and ‘$HARBOR_PROJECT’ will be created for CI/CD use.")
+      s_("HarborIntegration|After the Harbor integration is activated, global variables '$HARBOR_USERNAME', '$HARBOR_HOST', '$HARBOR_OCI', '$HARBOR_PASSWORD', '$HARBOR_URL' and '$HARBOR_PROJECT' will be created for CI/CD use.")
     end
 
     class << self

@@ -337,6 +337,7 @@ export const workItemHierarchyEmptyResponse = {
       userPermissions: {
         updateWorkItem: false,
       },
+      confidential: false,
       widgets: [
         {
           type: 'DESCRIPTION',
@@ -369,6 +370,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       userPermissions: {
         updateWorkItem: false,
       },
+      confidential: false,
       widgets: [
         {
           type: 'DESCRIPTION',
@@ -412,6 +414,7 @@ export const workItemHierarchyResponse = {
       userPermissions: {
         updateWorkItem: true,
       },
+      confidential: false,
       widgets: [
         {
           type: 'DESCRIPTION',

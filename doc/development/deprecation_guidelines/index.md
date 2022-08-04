@@ -4,10 +4,10 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deprecation guidelines
+# Deprecating GitLab features
 
-This page includes information about how and when to remove or make [breaking
-changes](../contributing/index.md#breaking-changes) to GitLab features.
+This page includes information about how and when to remove or make
+[breaking changes](../contributing/index.md#breaking-changes) to GitLab features.
 
 ## Terminology
 

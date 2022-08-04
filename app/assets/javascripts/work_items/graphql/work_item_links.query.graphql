@@ -8,6 +8,7 @@ query workItemQuery($id: WorkItemID!) {
     userPermissions {
       updateWorkItem
     }
+    confidential
     widgets {
       type
       ... on WorkItemWidgetHierarchy {

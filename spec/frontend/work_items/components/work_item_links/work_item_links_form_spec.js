@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
+import { WORK_ITEM_TYPE_IDS } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -22,14 +23,17 @@ describe('WorkItemLinksForm', () => {
   const updateMutationResolver = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
   const createMutationResolver = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
 
-  const createComponent = async ({ listResponse = availableWorkItemsResponse } = {}) => {
+  const createComponent = async ({
+    listResponse = availableWorkItemsResponse,
+    parentConfidential = false,
+  } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
       apolloProvider: createMockApollo([
         [projectWorkItemsQuery, jest.fn().mockResolvedValue(listResponse)],
         [updateWorkItemMutation, updateMutationResolver],
         [createWorkItemMutation, createMutationResolver],
       ]),
-      propsData: { issuableGid: 'gid://gitlab/WorkItem/1' },
+      propsData: { issuableGid: 'gid://gitlab/WorkItem/1', parentConfidential },
       provide: {
         projectPath: 'project/path',
       },
@@ -55,14 +59,46 @@ describe('WorkItemLinksForm', () => {
     expect(findForm().exists()).toBe(true);
   });
 
-  it('creates child task', async () => {
+  it('creates child task in non confidential parent', async () => {
     findInput().vm.$emit('input', 'Create task test');
 
     findForm().vm.$emit('submit', {
       preventDefault: jest.fn(),
     });
     await waitForPromises();
-    expect(createMutationResolver).toHaveBeenCalled();
+    expect(createMutationResolver).toHaveBeenCalledWith({
+      input: {
+        title: 'Create task test',
+        projectPath: 'project/path',
+        workItemTypeId: WORK_ITEM_TYPE_IDS.TASK,
+        hierarchyWidget: {
+          parentId: 'gid://gitlab/WorkItem/1',
+        },
+        confidential: false,
+      },
+    });
+  });
+
+  it('creates child task in confidential parent', async () => {
+    await createComponent({ parentConfidential: true });
+
+    findInput().vm.$emit('input', 'Create confidential task');
+
+    findForm().vm.$emit('submit', {
+      preventDefault: jest.fn(),
+    });
+    await waitForPromises();
+    expect(createMutationResolver).toHaveBeenCalledWith({
+      input: {
+        title: 'Create confidential task',
+        projectPath: 'project/path',
+        workItemTypeId: WORK_ITEM_TYPE_IDS.TASK,
+        hierarchyWidget: {
+          parentId: 'gid://gitlab/WorkItem/1',
+        },
+        confidential: true,
+      },
+    });
   });
 
   // Follow up issue to turn this functionality back on https://gitlab.com/gitlab-org/gitlab/-/issues/368757

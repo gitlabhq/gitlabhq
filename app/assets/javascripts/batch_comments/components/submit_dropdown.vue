@@ -1,10 +1,11 @@
 <script>
 import $ from 'jquery';
-import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup } from '@gitlab/ui';
+import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup, GlLink } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import Autosave from '~/autosave';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   components: {
@@ -13,6 +14,7 @@ export default {
     GlIcon,
     GlForm,
     GlFormGroup,
+    GlLink,
     MarkdownField,
   },
   data() {
@@ -69,6 +71,9 @@ export default {
     },
   },
   restrictedToolbarItems: ['full-screen'],
+  helpPagePath: helpPagePath('user/project/merge_requests/reviews/index.html', {
+    anchor: 'submit-a-review',
+  }),
 };
 </script>
 
@@ -86,11 +91,18 @@ export default {
       <gl-icon class="dropdown-chevron" name="chevron-up" />
     </template>
     <gl-form data-testid="submit-gl-form" @submit.prevent="submitReview">
-      <gl-form-group
-        :label="__('Summary comment (optional)')"
-        label-for="review-note-body"
-        label-class="gl-mb-2"
-      >
+      <gl-form-group label-for="review-note-body" label-class="gl-mb-2">
+        <template #label>
+          {{ __('Summary comment (optional)') }}
+          <gl-link
+            :href="$options.helpPagePath"
+            :aria-label="__('More information')"
+            target="_blank"
+            class="gl-ml-2"
+          >
+            <gl-icon name="question-o" />
+          </gl-link>
+        </template>
         <div class="common-note-form gfm-form">
           <div
             class="comment-warning-wrapper gl-border-solid gl-border-1 gl-rounded-base gl-border-gray-100"

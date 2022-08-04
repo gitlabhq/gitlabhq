@@ -1137,7 +1137,6 @@ Layout/LineLength:
     - 'ee/app/controllers/ee/repositories/git_http_client_controller.rb'
     - 'ee/app/controllers/ee/repositories/git_http_controller.rb'
     - 'ee/app/controllers/ee/repositories/lfs_api_controller.rb'
-    - 'ee/app/controllers/ee/search_controller.rb'
     - 'ee/app/controllers/ee/sessions_controller.rb'
     - 'ee/app/controllers/groups/analytics/cycle_analytics/stages_controller.rb'
     - 'ee/app/controllers/groups/analytics/cycle_analytics/summary_controller.rb'

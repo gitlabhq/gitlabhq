@@ -43,7 +43,6 @@ export default {
         };
       },
       update(data) {
-        this.canUpdate = data.workItem.userPermissions.updateWorkItem;
         return (
           data.workItem.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.children
             .nodes ?? []
@@ -54,6 +53,7 @@ export default {
       },
       result({ data }) {
         this.canUpdate = data.workItem.userPermissions.updateWorkItem;
+        this.confidential = data.workItem.confidential;
       },
     },
   },
@@ -63,6 +63,7 @@ export default {
       isOpen: true,
       children: [],
       canUpdate: false,
+      confidential: false,
     };
   },
   computed: {
@@ -164,6 +165,7 @@ export default {
           data-testid="add-links-form"
           :issuable-gid="issuableGid"
           :children-ids="childrenIds"
+          :parent-confidential="confidential"
           @cancel="hideAddForm"
           @addWorkItemChild="addChild"
         />
