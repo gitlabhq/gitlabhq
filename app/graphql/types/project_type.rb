@@ -442,7 +442,7 @@ module Types
           Types::TimeTracking::TimelogCategoryType.connection_type,
           null: true,
           description: "Timelog categories for the project.",
-          feature_flag: :timelog_categories
+          _deprecated_feature_flag: :timelog_categories
 
     def timelog_categories
       object.project_namespace.timelog_categories

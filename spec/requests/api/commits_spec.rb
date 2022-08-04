@@ -206,11 +206,13 @@ RSpec.describe API::Commits do
         let(:page) { 1 }
         let(:per_page) { 5 }
         let(:ref_name) { 'master' }
-        let!(:request) do
+        let(:request) do
           get api("/projects/#{project_id}/repository/commits?page=#{page}&per_page=#{per_page}&ref_name=#{ref_name}", user)
         end
 
         it 'returns correct headers' do
+          request
+
           expect(response).to include_limited_pagination_headers
           expect(response.headers['Link']).to match(/page=1&per_page=5/)
           expect(response.headers['Link']).to match(/page=2&per_page=5/)
@@ -218,6 +220,8 @@ RSpec.describe API::Commits do
 
         context 'viewing the first page' do
           it 'returns the first 5 commits' do
+            request
+
             commit = project.repository.commit
 
             expect(json_response.size).to eq(per_page)
@@ -230,6 +234,8 @@ RSpec.describe API::Commits do
           let(:page) { 3 }
 
           it 'returns the third 5 commits' do
+            request
+
             commit = project.repository.commits('HEAD', limit: per_page, offset: (page - 1) * per_page).first
 
             expect(json_response.size).to eq(per_page)
@@ -238,10 +244,55 @@ RSpec.describe API::Commits do
           end
         end
 
-        context 'when per_page is 0' do
-          let(:per_page) { 0 }
+        context 'when pagination params are invalid' do
+          let_it_be(:project) { create(:project, :repository) }
 
-          it_behaves_like '400 response'
+          using RSpec::Parameterized::TableSyntax
+
+          where(:page, :per_page, :error_message) do
+            0   | nil | 'page does not have a valid value'
+            -1  | nil | 'page does not have a valid value'
+            'a' | nil | 'page is invalid'
+            nil | 0   | 'per_page does not have a valid value'
+            nil | -1  | 'per_page does not have a valid value'
+            nil | 'a' | 'per_page is invalid'
+          end
+
+          with_them do
+            it 'returns 400 response' do
+              request
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['error']).to eq(error_message)
+            end
+          end
+
+          context 'when FF is off' do
+            before do
+              stub_feature_flags(only_positive_pagination_values: false)
+            end
+
+            where(:page, :per_page, :error_message, :status) do
+              0   | nil  | nil                               | :success
+              -10 | nil  | nil                               | :internal_server_error
+              'a' | nil | 'page is invalid'                  | :bad_request
+              nil | 0   | 'per_page has a value not allowed' | :bad_request
+              nil | -1  | nil                                | :success
+              nil | 'a' | 'per_page is invalid'              | :bad_request
+            end
+
+            with_them do
+              it 'returns a response' do
+                request
+
+                expect(response).to have_gitlab_http_status(status)
+
+                if error_message
+                  expect(json_response['error']).to eq(error_message)
+                end
+              end
+            end
+          end
         end
       end
 

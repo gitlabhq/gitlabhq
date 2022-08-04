@@ -24,7 +24,7 @@ RSpec.describe 'Graphql Field feature flags' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true, feature_flag: feature_flag, resolver: new_resolver(test_object)
+        query.field :item, type, null: true, _deprecated_feature_flag: feature_flag, resolver: new_resolver(test_object)
       end
     end
 

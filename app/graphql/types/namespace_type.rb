@@ -61,7 +61,7 @@ module Types
           Types::TimeTracking::TimelogCategoryType.connection_type,
           null: true,
           description: "Timelog categories for the namespace.",
-          feature_flag: :timelog_categories
+          _deprecated_feature_flag: :timelog_categories
 
     markdown_field :description_html, null: true
 

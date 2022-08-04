@@ -932,7 +932,7 @@ Models](mass_insert.md) functionality.
 
 Assuming you are working with ActiveRecord models, you might also find these links helpful:
 
-- [Insert records in batches](insert_into_tables_in_batches.md)
+- [Insert records in batches](database/insert_into_tables_in_batches.md)
 - [BulkInsert gem](https://github.com/jamis/bulk_insert)
 - [ActiveRecord::PgGenerateSeries gem](https://github.com/ryu39/active_record-pg_generate_series)
 

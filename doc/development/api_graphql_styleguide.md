@@ -98,11 +98,8 @@ See the [deprecating schema items](#deprecating-schema-items) section for how to
 
 ### Breaking change exemptions
 
-Two scenarios exist where schema items are exempt from the deprecation process,
-and can be removed or changed at any time without notice. These are schema items that either:
-
-- Use the [`feature_flag` property](#feature_flag-property) _and_ the flag is disabled by default.
-- Are [marked as alpha](#mark-schema-items-as-alpha).
+Schema items [marked as alpha](#mark-schema-items-as-alpha) are exempt from the deprecation process,
+and can be removed or changed at any time without notice.
 
 ## Global IDs
 
@@ -472,92 +469,37 @@ end
 
 ## Feature flags
 
-Developers can add [feature flags](../development/feature_flags/index.md) to GraphQL
-fields in the following ways:
+You can implement [feature flags](../development/feature_flags/index.md) in GraphQL to toggle:
 
-- Add the [`feature_flag` property](#feature_flag-property) to a field. This allows the field to be _hidden_
-  from the GraphQL schema when the flag is disabled.
-- [Toggle the return value](#toggle-the-value-of-a-field) when resolving the field.
+- The return value of a field.
+- The behavior of an argument or mutation.
 
-You can refer to these guidelines to decide which approach to use:
-
-- If your field is experimental, and its name or type is subject to
-  change, use the [`feature_flag` property](#feature_flag-property).
-- If your field is stable and its definition doesn't change, even after the flag is
-  removed, [toggle the return value](#toggle-the-value-of-a-field) of the field instead. Note that
-  [all fields should be nullable](#nullable-fields) anyway.
-- If your field will be accessed from frontend using the `@include` or `@skip` directive, [do not use the `feature_flag` property](#frontend-and-backend-feature-flag-strategies).
-
-### `feature_flag` property
-
-The `feature_flag` property allows you to toggle the field's
-[visibility](https://graphql-ruby.org/authorization/visibility.html)
-in the GraphQL schema. This removes the field from the schema
-when the flag is disabled.
-
-A description is [appended](https://gitlab.com/gitlab-org/gitlab/-/blob/497b556/app/graphql/types/base_field.rb#L44-53)
-to the field indicating that it is behind a feature flag.
-
-WARNING:
-If a client queries for the field when the feature flag is disabled, the query
-fails. Consider this when toggling the visibility of the feature on or off on
-production.
-
-The `feature_flag` property does not allow the use of
-[feature gates based on actors](../development/feature_flags/index.md).
-This means that the feature flag cannot be toggled only for particular
-projects, groups, or users, but instead can only be toggled globally for
-everyone.
-
-Example:
-
-```ruby
-field :test_field, type: GraphQL::Types::String,
-      null: true,
-      description: 'Some test field.',
-      feature_flag: :my_feature_flag
-```
-
-### Frontend and Backend feature flag strategies
-
-#### Directives
-
-When feature flags are used in the frontend to control the `@include` and `@skip` directives, do not use the `feature_flag`
-property on the server-side. For the accepted backend workaround, see [Toggle the value of a field](#toggle-the-value-of-a-field). It is recommended that the feature flag used in this approach be the same for frontend and backend.
-
-Even if the frontend directives evaluate to `@include:false` / `@skip:true`, the guarded entity is sent to the backend and matched
-against the GraphQL schema. We would then get an exception due to a schema mismatch. See the [frontend GraphQL guide](../development/fe_guide/graphql.md#the-include-directive) for more guidance.
-
-#### Different versions of a query
-
-See the guide frontend GraphQL guide for [different versions of a query](../development/fe_guide/graphql.md#different-versions-of-a-query), and [why it is not the preferred approach](../development/fe_guide/graphql.md#avoiding-multiple-query-versions)
-
-### Toggle the value of a field
-
-This method of using feature flags for fields is to toggle the
-return value of the field. This can be done in the resolver, in the
+This can be done in a resolver, in the
 type, or even in a model method, depending on your preference and
 situation.
 
-Consider also [marking the field as Alpha](#mark-schema-items-as-alpha)
-while the value of the field can be toggled. You can
-[change or remove Alpha fields at any time](#breaking-change-exemptions) without needing to deprecate them.
-This also signals to consumers of the public GraphQL API that the field is not
+NOTE:
+It's recommended that you also [mark the item as Alpha](#mark-schema-items-as-alpha) while it is behind a feature flag.
+This signals to consumers of the public GraphQL API that the field is not
 meant to be used yet.
+You can also
+[change or remove Alpha items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
+the schema item by removing its Alpha property to make it public.
 
-When applying a feature flag to toggle the value of a field, the
-`description` of the field must:
+### Descriptions for feature flagged items
 
-- State that the value of the field can be toggled by a feature flag.
+When using a feature flag to toggle the value or behavior of a schema item, the
+`description` of the item must:
+
+- State that the value or behavior can be toggled by a feature flag.
 - Name the feature flag.
-- State what the field returns when the feature flag is disabled (or
+- State what the field returns, or behavior is, when the feature flag is disabled (or
   enabled, if more appropriate).
 
-Example:
+Example of a feature-flagged field:
 
 ```ruby
-field :foo, GraphQL::Types::String,
-      null: true,
+field :foo, GraphQL::Types::String, null: true,
       alpha: { milestone: '10.0' },
       description: 'Some test field. Returns `null`' \
                    'if `my_feature_flag` feature flag is disabled.'
@@ -566,6 +508,26 @@ def foo
   object.foo if Feature.enabled?(:my_feature_flag, object)
 end
 ```
+
+Example of a feature-flagged argument:
+
+```ruby
+argument :foo, type: GraphQL::Types::String, required: false,
+         alpha: { milestone: '10.0' },
+         description: 'Some test argument. Is ignored if ' \
+                      '`my_feature_flag` feature flag is disabled.'
+
+def resolve(args)
+  args.delete(:foo) unless Feature.enabled?(:my_feature_flag, object)
+  # ...
+end
+```
+
+### `feature_flag` property (deprecated)
+
+NOTE:
+This property is deprecated and should no longer be used. The property
+has been temporarily renamed to `_deprecated_feature_flag` and support for it will be removed in [#369202](https://gitlab.com/gitlab-org/gitlab/-/issues/369202).
 
 ## Deprecating schema items
 

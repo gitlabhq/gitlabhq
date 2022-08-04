@@ -37,8 +37,8 @@ module Types
     mount_mutation Mutations::Clusters::AgentTokens::Create
     mount_mutation Mutations::Clusters::AgentTokens::Revoke
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
-    mount_mutation Mutations::CustomEmoji::Create, feature_flag: :custom_emoji
-    mount_mutation Mutations::CustomEmoji::Destroy, feature_flag: :custom_emoji
+    mount_mutation Mutations::CustomEmoji::Create, _deprecated_feature_flag: :custom_emoji
+    mount_mutation Mutations::CustomEmoji::Destroy, _deprecated_feature_flag: :custom_emoji
     mount_mutation Mutations::CustomerRelations::Contacts::Create
     mount_mutation Mutations::CustomerRelations::Contacts::Update
     mount_mutation Mutations::CustomerRelations::Organizations::Create

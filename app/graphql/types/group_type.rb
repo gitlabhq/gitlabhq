@@ -22,7 +22,7 @@ module Types
           type: Types::CustomEmojiType.connection_type,
           null: true,
           description: 'Custom emoji within this namespace.',
-          feature_flag: :custom_emoji
+          _deprecated_feature_flag: :custom_emoji
 
     field :share_with_group_lock,
           type: GraphQL::Types::Boolean,

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 In relational databases (including PostgreSQL), foreign keys provide a way to link
 two database tables together, and ensure data-consistency between them. In GitLab,
-[foreign keys](../foreign_keys.md) are vital part of the database design process.
+[foreign keys](foreign_keys.md) are vital part of the database design process.
 Most of our database tables have foreign keys.
 
 With the ongoing database [decomposition work](https://gitlab.com/groups/gitlab-org/-/epics/6168),

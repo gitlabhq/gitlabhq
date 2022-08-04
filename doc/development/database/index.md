@@ -42,7 +42,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Best practices
 
 - [Adding database indexes](adding_database_indexes.md)
-- [Foreign keys & associations](../foreign_keys.md)
+- [Foreign keys & associations](foreign_keys.md)
 - [Adding a foreign key constraint to an existing column](add_foreign_key_to_existing_column.md)
 - [`NOT NULL` constraints](not_null_constraints.md)
 - [Strings and the Text data type](strings_and_the_text_data_type.md)
@@ -52,7 +52,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Hash indexes](../hash_indexes.md)
 - [Storing SHA1 hashes as binary](../sha1_as_binary.md)
 - [Iterating tables in batches](../iterating_tables_in_batches.md)
-- [Insert into tables in batches](../insert_into_tables_in_batches.md)
+- [Insert into tables in batches](insert_into_tables_in_batches.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](../verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](../database_debugging.md)
@@ -69,8 +69,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Case studies
 
-- [Database case study: Filtering by label](../filtering_by_label.md)
-- [Database case study: Namespaces storage statistics](../namespaces_storage_statistics.md)
+- [Database case study: Filtering by label](filtering_by_label.md)
+- [Database case study: Namespaces storage statistics](namespaces_storage_statistics.md)
 
 ## Miscellaneous
 

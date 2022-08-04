@@ -597,7 +597,7 @@ export default {
 Note that, even if the directive evaluates to `false`, the guarded entity is sent to the backend and
 matched against the GraphQL schema. So this approach requires that the feature-flagged entity
 exists in the schema, even if the feature flag is disabled. When the feature flag is turned off, it
-is recommended that the resolver returns `null` at the very least using the same feature flag as the frontend. See the [API GraphQL guide](../api_graphql_styleguide.md#frontend-and-backend-feature-flag-strategies).
+is recommended that the resolver returns `null` at the very least using the same feature flag as the frontend. See the [API GraphQL guide](../api_graphql_styleguide.md#feature-flags).
 
 ##### Different versions of a query
 

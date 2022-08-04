@@ -145,7 +145,7 @@ module RuboCop
             return unless node.children[opts_index]
 
             node.children[opts_index].each_pair.find do |pair|
-              pair.key.value == :feature_flag
+              pair.key.value == :_deprecated_feature_flag
             end&.value
           else
             arg_index = rugged_method?(node) ? 3 : 2
