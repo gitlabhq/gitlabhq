@@ -43,8 +43,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     RedCloth (4.3.2)
-    acme-client (2.0.9)
-      faraday (>= 0.17, < 2.0.0)
+    acme-client (2.0.11)
+      faraday (>= 1.0, < 3.0.0)
+      faraday-retry (~> 1.0)
     actioncable (6.1.6.1)
       actionpack (= 6.1.6.1)
       activesupport (= 6.1.6.1)
@@ -615,6 +616,7 @@ GEM
       faraday (>= 1.0)
       faraday_middleware
       graphql-client
+    graphlyte (1.0.0)
     graphql (1.13.12)
     graphql-client (0.17.0)
       activesupport (>= 3.0)
@@ -1481,7 +1483,7 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth (~> 4.3.2)
-  acme-client (~> 2.0, >= 2.0.9)
+  acme-client (~> 2.0)
   activerecord-explain-analyze (~> 0.1)
   acts-as-taggable-on (~> 9.0)
   addressable (~> 2.8)
@@ -1593,6 +1595,7 @@ DEPENDENCIES
   grape_logging (~> 1.8)
   graphiql-rails (~> 1.8)
   graphlient (~> 0.5.0)
+  graphlyte (~> 1.0.0)
   graphql (~> 1.13.12)
   graphql-docs (~> 2.1.0)
   grpc (~> 1.42.0)

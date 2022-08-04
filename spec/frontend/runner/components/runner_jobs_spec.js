@@ -73,8 +73,7 @@ describe('RunnerJobs', () => {
     it('Shows jobs', () => {
       const jobs = findRunnerJobsTable().props('jobs');
 
-      expect(jobs).toHaveLength(mockJobs.length);
-      expect(jobs[0]).toMatchObject(mockJobs[0]);
+      expect(jobs).toEqualGraphqlFixture(mockJobs);
     });
 
     describe('When "Next" page is clicked', () => {

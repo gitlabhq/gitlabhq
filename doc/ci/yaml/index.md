@@ -2991,7 +2991,7 @@ released_at: '2021-03-15T08:00:00Z'
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271454) in GitLab 13.12.
 
-Use `release:assets:links` to include [asset links](../../user/project/releases/index.md#release-assets) in the release.
+Use `release:assets:links` to include [asset links](../../user/project/releases/release_fields.md#release-assets) in the release.
 
 Requires `release-cli` version v0.4.0 or later.
 

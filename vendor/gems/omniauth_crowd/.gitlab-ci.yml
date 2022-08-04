@@ -17,10 +17,6 @@ workflow:
   script:
     - bundle exec rspec
 
-rspec-2.6:
-  image: "ruby:2.6"
-  extends: .rspec
-
 rspec-2.7:
   image: "ruby:2.7"
   extends: .rspec

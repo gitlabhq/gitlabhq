@@ -84,6 +84,7 @@ RSpec.describe Gitlab::VersionInfo do
   end
 
   describe '.parse' do
+    it { expect(described_class.parse(described_class.new(1, 0, 0))).to eq(@v1_0_0) }
     it { expect(described_class.parse("1.0.0")).to eq(@v1_0_0) }
     it { expect(described_class.parse("1.0.0.1")).to eq(@v1_0_0) }
     it { expect(described_class.parse("1.0.0-ee")).to eq(@v1_0_0) }

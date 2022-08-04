@@ -29251,6 +29251,8 @@ CREATE INDEX index_path_locks_on_user_id ON path_locks USING btree (user_id);
 
 CREATE INDEX index_pe_approval_rules_on_required_approvals_and_created_at ON protected_environment_approval_rules USING btree (required_approvals, created_at);
 
+CREATE INDEX index_personal_access_tokens_on_id_and_created_at ON personal_access_tokens USING btree (id, created_at);
+
 CREATE UNIQUE INDEX index_personal_access_tokens_on_token_digest ON personal_access_tokens USING btree (token_digest);
 
 CREATE INDEX index_personal_access_tokens_on_user_id ON personal_access_tokens USING btree (user_id);

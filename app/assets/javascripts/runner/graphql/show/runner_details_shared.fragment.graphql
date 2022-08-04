@@ -1,5 +1,4 @@
 fragment RunnerDetailsShared on CiRunner {
-  __typename
   id
   shortSha
   runnerType

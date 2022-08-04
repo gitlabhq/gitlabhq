@@ -31,7 +31,6 @@ query getAllRunners(
       editAdminUrl
     }
     pageInfo {
-      __typename
       ...PageInfo
     }
   }

@@ -36,7 +36,6 @@ query getGroupRunners(
         }
       }
       pageInfo {
-        __typename
         ...PageInfo
       }
     }

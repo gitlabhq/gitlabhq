@@ -167,7 +167,7 @@ describe('AdminRunnersApp', () => {
   it('shows the runners list', async () => {
     await createComponent();
 
-    expect(findRunnerList().props('runners')).toEqual(mockRunners);
+    expect(findRunnerList().props('runners')).toEqualGraphqlFixture(mockRunners);
   });
 
   it('runner item links to the runner admin page', async () => {
@@ -188,7 +188,7 @@ describe('AdminRunnersApp', () => {
     const runnerActions = wrapper.find('tr [data-testid="td-actions"]').find(RunnerActionsCell);
     const runner = mockRunners[0];
 
-    expect(runnerActions.props()).toEqual({
+    expect(runnerActions.props()).toEqualGraphqlFixture({
       runner,
       editUrl: runner.editAdminUrl,
     });

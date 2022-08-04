@@ -214,7 +214,6 @@ Object {
       "selfUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
     },
     "assets": Object {
-      "count": undefined,
       "links": Array [
         Object {
           "directAssetPath": "/binaries/awesome-app-3",
@@ -247,29 +246,22 @@ Object {
       ],
       "sources": Array [],
     },
-    "author": undefined,
     "description": "Best. Release. **Ever.** :rocket:",
     "evidences": Array [],
     "milestones": Array [
       Object {
         "id": "gid://gitlab/Milestone/123",
         "issueStats": Object {},
-        "stats": undefined,
         "title": "12.3",
-        "webPath": undefined,
-        "webUrl": undefined,
       },
       Object {
         "id": "gid://gitlab/Milestone/124",
         "issueStats": Object {},
-        "stats": undefined,
         "title": "12.4",
-        "webPath": undefined,
-        "webUrl": undefined,
       },
     ],
     "name": "The first release",
-    "releasedAt": 2018-12-10T00:00:00.000Z,
+    "releasedAt": "2018-12-10T00:00:00.000Z",
     "tagName": "v1.1",
     "tagPath": "/releases-namespace/releases-project/-/tags/v1.1",
   },
