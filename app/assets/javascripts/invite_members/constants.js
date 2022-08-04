@@ -2,6 +2,8 @@ import { s__ } from '~/locale';
 
 export const CLOSE_TO_LIMIT_COUNT = 2;
 export const SEARCH_DELAY = 200;
+export const VALID_TOKEN_BACKGROUND = 'gl-bg-green-100';
+export const INVALID_TOKEN_BACKGROUND = 'gl-bg-red-100';
 export const INVITE_MEMBERS_FOR_TASK = {
   minimum_access_level: 30,
   name: 'invite_members_for_task',

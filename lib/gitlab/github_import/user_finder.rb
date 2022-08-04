@@ -158,7 +158,7 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def query_id_for_github_email(email)
-        User.by_any_email(email).pluck(:id).first
+        User.by_any_email(email).pick(:id)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

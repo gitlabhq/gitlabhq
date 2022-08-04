@@ -20,7 +20,7 @@ module Gitlab
         parent_batch_relation = relation_scoped_to_range(batch_table, batch_column, start_id, end_id, base_type)
 
         parent_batch_relation.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
-          first, last = sub_batch.pluck(Arel.sql('min(id), max(id)')).first
+          first, last = sub_batch.pick(Arel.sql('min(id), max(id)'))
 
           # The query need to be reconstructed because .each_batch modifies the default scope
           # See: https://gitlab.com/gitlab-org/gitlab/-/issues/330510

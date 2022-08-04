@@ -22,7 +22,7 @@ module Gitlab
           .where("traversal_ids = '{}'")
 
         ranged_query.each_batch(of: sub_batch_size) do |sub_batch|
-          first, last = sub_batch.pluck(Arel.sql('min(id), max(id)')).first
+          first, last = sub_batch.pick(Arel.sql('min(id), max(id)'))
 
           # The query need to be reconstructed because .each_batch modifies the default scope
           # See: https://gitlab.com/gitlab-org/gitlab/-/issues/330510

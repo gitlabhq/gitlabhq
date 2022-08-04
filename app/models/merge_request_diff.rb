@@ -706,8 +706,7 @@ class MergeRequestDiff < ApplicationRecord
     latest_id = MergeRequest
       .where(id: merge_request_id)
       .limit(1)
-      .pluck(:latest_merge_request_diff_id)
-      .first
+      .pick(:latest_merge_request_diff_id)
 
     latest_id && self.id < latest_id
   end

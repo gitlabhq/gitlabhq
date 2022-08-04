@@ -91,8 +91,7 @@ module Gitlab
         relation = yield relation if block_given?
 
         relation
-          .pluck(grouping_column, Arel.sql("#{calculation}(relative_position) AS position"))
-          .first&.last
+          .pick(grouping_column, Arel.sql("#{calculation}(relative_position) AS position"))&.last
       end
 
       def grouping_column
@@ -164,8 +163,7 @@ module Gitlab
           .from(items_with_next_pos, :items)
           .where('next_pos IS NULL OR ABS(pos::bigint - next_pos::bigint) >= ?', MIN_GAP)
           .limit(1)
-          .pluck(:pos, :next_pos)
-          .first
+          .pick(:pos, :next_pos)
 
         return if gap.nil? || gap.first == default_end
 

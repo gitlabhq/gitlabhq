@@ -21,7 +21,7 @@ module Gitlab
       def perform(start_id, end_id)
         batch_query = Namespace.base_query.where(id: start_id..end_id)
         batch_query.each_batch(of: SUB_BATCH_SIZE) do |sub_batch|
-          first, last = sub_batch.pluck(Arel.sql('MIN(id), MAX(id)')).first
+          first, last = sub_batch.pick(Arel.sql('MIN(id), MAX(id)'))
           ranged_query = Namespace.unscoped.base_query.where(id: first..last)
 
           update_sql = <<~SQL

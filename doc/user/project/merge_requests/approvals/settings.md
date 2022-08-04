@@ -19,7 +19,9 @@ To view or edit merge request approval settings:
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
 
-In this section of general settings, you can configure the following settings:
+### Approval settings
+
+These settings limit who can approve merge requests.
 
 | Setting | Description |
 | ------ | ------ |
@@ -27,7 +29,14 @@ In this section of general settings, you can configure the following settings:
 | [Prevent approvals by users who add commits](#prevent-approvals-by-users-who-add-commits) | When enabled, users who have committed to a merge request cannot approve it. |
 | [Prevent editing approval rules in merge requests](#prevent-editing-approval-rules-in-merge-requests) | When enabled, users can't override the project's approval rules on merge requests.  |
 | [Require user password to approve](#require-user-password-to-approve) | Force potential approvers to first authenticate with a password. |
-| [Remove all approvals when commits are added to the source branch](#remove-all-approvals-when-commits-are-added-to-the-source-branch) | When enabled, remove all existing approvals on a merge request when more changes are added to it. |
+
+You can further define what happens to existing approvals when commits are added to the merge request.
+
+| Setting | Description |
+| ------ | ------ |
+| Keep approvals | Do not remove approvals. |
+| [Remove all approvals](#remove-all-approvals-when-commits-are-added-to-the-source-branch) | Remove all existing approvals. |
+| [Remove approvals by Code Owners if their files changed](#remove-approvals-by-code-owners-if-their-files-changed) | If a Code Owner has approved the merge request, and the commit changes files they are the Code Owner for, their approval is removed. |
 
 ## Prevent approval by author
 
@@ -119,8 +128,20 @@ when more changes are added to it:
 1. Select the **Remove all approvals when commits are added to the source branch** checkbox.
 1. Select **Save changes**.
 
-Approvals aren't reset when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods).
+Approvals aren't removed when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)
 However, approvals are reset if the target branch is changed.
+
+## Remove approvals by Code Owners if their files changed
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90578) in GitLab 15.3.
+
+If you only want to remove approvals by Code Owners whose files have been changed:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge request (MR) approvals**.
+1. Select **Remove approvals by Code Owners if their files changed**.
+1. Select **Save changes**.
 
 ## Code coverage check approvals
 

@@ -74,8 +74,8 @@ RSpec.describe 'Groups > Members > Manage members' do
 
       invite_member(user1.name, role: 'Reporter', refresh: false)
 
-      expect(page).to have_selector(invite_modal_selector)
-      expect(page).to have_content("not authorized to update member")
+      invite_modal = page.find(invite_modal_selector)
+      expect(invite_modal).to have_content("not authorized to update member")
 
       page.refresh
 

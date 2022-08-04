@@ -25,7 +25,7 @@ module Gitlab
           parent_batch_relation = relation_scoped_to_range(source_table, source_column, start_id, stop_id)
 
           parent_batch_relation.each_batch(of: SUB_BATCH_SIZE) do |sub_batch|
-            sub_start_id, sub_stop_id = sub_batch.pluck(Arel.sql("MIN(#{source_column}), MAX(#{source_column})")).first
+            sub_start_id, sub_stop_id = sub_batch.pick(Arel.sql("MIN(#{source_column}), MAX(#{source_column})"))
 
             bulk_copy.copy_between(sub_start_id, sub_stop_id)
             sleep(PAUSE_SECONDS)

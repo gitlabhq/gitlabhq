@@ -2,7 +2,7 @@
 import { GlIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { produce } from 'immer';
 import { s__ } from '~/locale';
-import changeWorkItemParentMutation from '../../graphql/change_work_item_parent_link.mutation.graphql';
+import updateWorkItem from '../../graphql/update_work_item.mutation.graphql';
 import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
 import { WIDGET_TYPE_HIERARCHY } from '../../constants';
 
@@ -58,8 +58,10 @@ export default {
     },
     async addChild(data) {
       const { data: resp } = await this.$apollo.mutate({
-        mutation: changeWorkItemParentMutation,
-        variables: { id: this.workItemId, parentId: this.parentWorkItemId },
+        mutation: updateWorkItem,
+        variables: {
+          input: { id: this.workItemId, hierarchyWidget: { parentId: this.parentWorkItemId } },
+        },
         update: this.toggleChildFromCache.bind(this, data),
       });
 
@@ -69,8 +71,8 @@ export default {
     },
     async removeChild() {
       const { data } = await this.$apollo.mutate({
-        mutation: changeWorkItemParentMutation,
-        variables: { id: this.workItemId, parentId: null },
+        mutation: updateWorkItem,
+        variables: { input: { id: this.workItemId, hierarchyWidget: { parentId: null } } },
         update: this.toggleChildFromCache.bind(this, null),
       });
 

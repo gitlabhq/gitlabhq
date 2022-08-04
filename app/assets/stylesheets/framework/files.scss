@@ -478,6 +478,11 @@ span.idiff {
     background-color: transparent;
     border: transparent;
   }
+
+  .gl-dark & {
+    background: transparent;
+    filter: invert(1) hue-rotate(180deg);
+  }
 }
 
 .code-navigation-line:hover {

@@ -149,8 +149,11 @@ const defaultSerializerConfig = {
       state.renderInline(node);
       state.ensureNewLine();
     }),
-    [FootnoteReference.name]: preserveUnchanged((state, node) => {
-      state.write(`[^${node.attrs.identifier}]`);
+    [FootnoteReference.name]: preserveUnchanged({
+      render: (state, node) => {
+        state.write(`[^${node.attrs.identifier}]`);
+      },
+      inline: true,
     }),
     [Frontmatter.name]: (state, node) => {
       const { language } = node.attrs;
@@ -171,7 +174,10 @@ const defaultSerializerConfig = {
     [HardBreak.name]: preserveUnchanged(renderHardBreak),
     [Heading.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.heading),
     [HorizontalRule.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.horizontal_rule),
-    [Image.name]: preserveUnchanged(renderImage),
+    [Image.name]: preserveUnchanged({
+      render: renderImage,
+      inline: true,
+    }),
     [ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
     [OrderedList.name]: preserveUnchanged(renderOrderedList),
     [Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),

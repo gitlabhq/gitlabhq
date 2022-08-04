@@ -10,8 +10,8 @@ RSpec.describe 'value stream analytics events' do
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
 
   describe 'GET /:namespace/:project/value_stream_analytics/events/issues' do
-    let(:first_issue_iid) { project.issues.sort_by_attribute(:created_desc).pluck(:iid).first.to_s }
-    let(:first_mr_iid) { project.merge_requests.sort_by_attribute(:created_desc).pluck(:iid).first.to_s }
+    let(:first_issue_iid) { project.issues.sort_by_attribute(:created_desc).pick(:iid).to_s }
+    let(:first_mr_iid) { project.merge_requests.sort_by_attribute(:created_desc).pick(:iid).to_s }
 
     before do
       project.add_developer(user)

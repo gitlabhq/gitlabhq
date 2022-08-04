@@ -4792,6 +4792,9 @@ msgstr ""
 msgid "ApprovalRule|Try for free"
 msgstr ""
 
+msgid "ApprovalSettings|Keep approvals"
+msgstr ""
+
 msgid "ApprovalSettings|Merge request approval settings have been updated."
 msgstr ""
 
@@ -4810,7 +4813,10 @@ msgstr ""
 msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests."
 msgstr ""
 
-msgid "ApprovalSettings|Remove all approvals when commits are added to the source branch"
+msgid "ApprovalSettings|Remove all approvals"
+msgstr ""
+
+msgid "ApprovalSettings|Remove approvals by Code Owners if their files changed"
 msgstr ""
 
 msgid "ApprovalSettings|Require user password to approve"
@@ -4826,6 +4832,9 @@ msgid "ApprovalSettings|This setting is configured at the instance level and can
 msgstr ""
 
 msgid "ApprovalSettings|This setting is configured in %{groupName} and can only be changed in the group settings by an administrator or group owner."
+msgstr ""
+
+msgid "ApprovalSettings|When a commit is added:"
 msgstr ""
 
 msgid "Approvals are optional."
@@ -23020,9 +23029,6 @@ msgid "Last sign-in at:"
 msgstr ""
 
 msgid "Last successful update"
-msgstr ""
-
-msgid "Last time checked"
 msgstr ""
 
 msgid "Last time verified"
@@ -47114,6 +47120,9 @@ msgid "scan-execution-policy: policy not applied, %{policy_path} file is missing
 msgstr ""
 
 msgid "security Reports|There was an error creating the merge request"
+msgstr ""
+
+msgid "selective_code_owner_removals can only be enabled when retain_approvals_on_push is enabled"
 msgstr ""
 
 msgid "severity|Blocker"

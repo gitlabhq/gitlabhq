@@ -430,8 +430,7 @@ class MergeRequest < ApplicationRecord
   def self.total_time_to_merge
     join_metrics
       .merge(MergeRequest::Metrics.with_valid_time_to_merge)
-      .pluck(MergeRequest::Metrics.time_to_merge_expression)
-      .first
+      .pick(MergeRequest::Metrics.time_to_merge_expression)
   end
 
   after_save :keep_around_commit, unless: :importing?

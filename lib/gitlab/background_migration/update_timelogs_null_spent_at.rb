@@ -12,7 +12,7 @@ module Gitlab
         define_batchable_model('timelogs', connection: connection)
             .where(spent_at: nil, id: start_id..stop_id)
             .each_batch(of: 100) do |subbatch|
-          batch_start, batch_end = subbatch.pluck('min(id), max(id)').first
+          batch_start, batch_end = subbatch.pick('min(id), max(id)')
 
           update_timelogs(batch_start, batch_end)
         end

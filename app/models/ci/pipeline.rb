@@ -390,7 +390,7 @@ module Ci
     end
 
     def self.latest_status(ref = nil)
-      newest_first(ref: ref).pluck(:status).first
+      newest_first(ref: ref).pick(:status)
     end
 
     def self.latest_successful_for_ref(ref)

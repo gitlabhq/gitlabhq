@@ -12,7 +12,7 @@ class ConsumeRemainingEncryptIntegrationPropertyJobs < Gitlab::Database::Migrati
     relation = model.where.not(properties: nil).where(encrypted_properties: nil)
 
     relation.each_batch(of: BATCH_SIZE) do |batch|
-      range = batch.pluck('MIN(id)', 'MAX(id)').first
+      range = batch.pick('MIN(id)', 'MAX(id)')
 
       Gitlab::BackgroundMigration::EncryptIntegrationProperties.new.perform(*range)
     end

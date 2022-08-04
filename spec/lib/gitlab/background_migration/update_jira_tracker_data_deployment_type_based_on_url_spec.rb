@@ -2,10 +2,26 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::UpdateJiraTrackerDataDeploymentTypeBasedOnUrl, schema: 20210421163509 do
-  let(:services_table) { table(:services) }
-  let(:service_jira_cloud) { services_table.create!(id: 1, type: 'JiraService') }
-  let(:service_jira_server) { services_table.create!(id: 2, type: 'JiraService') }
+RSpec.describe Gitlab::BackgroundMigration::UpdateJiraTrackerDataDeploymentTypeBasedOnUrl do
+  let(:integrations_table) { table(:integrations) }
+  let(:service_jira_cloud) { integrations_table.create!(id: 1, type_new: 'JiraService') }
+  let(:service_jira_server) { integrations_table.create!(id: 2, type_new: 'JiraService') }
+  let(:service_jira_unknown) { integrations_table.create!(id: 3, type_new: 'JiraService') }
+
+  let(:table_name) { :jira_tracker_data }
+  let(:batch_column) { :id }
+  let(:sub_batch_size) { 1 }
+  let(:pause_ms) { 0 }
+  let(:migration) do
+    described_class.new(start_id: 1, end_id: 10,
+                        batch_table: table_name, batch_column: batch_column,
+                        sub_batch_size: sub_batch_size, pause_ms: pause_ms,
+                        connection: ApplicationRecord.connection)
+  end
+
+  subject(:perform_migration) do
+    migration.perform
+  end
 
   before do
     jira_tracker_data = Class.new(ApplicationRecord) do
@@ -27,18 +43,21 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateJiraTrackerDataDeploymentTypeB
     end
 
     stub_const('JiraTrackerData', jira_tracker_data)
+
+    stub_const('UNKNOWN', 0)
+    stub_const('SERVER', 1)
+    stub_const('CLOUD', 2)
   end
 
-  let!(:tracker_data_cloud) { JiraTrackerData.create!(id: 1, service_id: service_jira_cloud.id, url: "https://test-domain.atlassian.net", deployment_type: 0) }
-  let!(:tracker_data_server) { JiraTrackerData.create!(id: 2, service_id: service_jira_server.id, url: "http://totally-not-jira-server.company.org", deployment_type: 0) }
-
-  subject { described_class.new.perform(tracker_data_cloud.id, tracker_data_server.id) }
+  let!(:tracker_data_cloud) { JiraTrackerData.create!(id: 1, service_id: service_jira_cloud.id, url: "https://test-domain.atlassian.net", deployment_type: UNKNOWN) }
+  let!(:tracker_data_server) { JiraTrackerData.create!(id: 2, service_id: service_jira_server.id, url: "http://totally-not-jira-server.company.org", deployment_type: UNKNOWN) }
+  let!(:tracker_data_unknown) { JiraTrackerData.create!(id: 3, service_id: service_jira_unknown.id, url: "", deployment_type: UNKNOWN) }
 
   it "changes unknown deployment_types based on URL" do
-    expect(JiraTrackerData.pluck(:deployment_type)).to eq([0, 0])
+    expect(JiraTrackerData.pluck(:deployment_type)).to match_array([UNKNOWN, UNKNOWN, UNKNOWN])
 
-    subject
+    perform_migration
 
-    expect(JiraTrackerData.pluck(:deployment_type)).to eq([2, 1])
+    expect(JiraTrackerData.order(:id).pluck(:deployment_type)).to match_array([CLOUD, SERVER, UNKNOWN])
   end
 end

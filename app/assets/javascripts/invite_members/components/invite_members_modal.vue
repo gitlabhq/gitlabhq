@@ -356,7 +356,7 @@ export default {
         data-testid="alert-member-error"
       >
         {{ $options.labels.memberErrorListText }}
-        <ul class="gl-pl-5">
+        <ul class="gl-pl-5 gl-mb-0">
           <li v-for="(error, member) in invalidMembers" :key="member">
             <strong>{{ tokenName(member) }}:</strong> {{ error }}
           </li>

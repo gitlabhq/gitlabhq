@@ -3,10 +3,10 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleUpdateJiraTrackerDataDeploymentTypeBasedOnUrl, :migration do
-  let(:services_table) { table(:services) }
-  let(:service_jira_cloud) { services_table.create!(id: 1, type: 'JiraService') }
-  let(:service_jira_server) { services_table.create!(id: 2, type: 'JiraService') }
+RSpec.describe UpdateJiraTrackerDataDeploymentTypeBasedOnUrl, :migration do
+  let(:integrations_table) { table(:integrations) }
+  let(:service_jira_cloud) { integrations_table.create!(id: 1, type_new: 'JiraService') }
+  let(:service_jira_server) { integrations_table.create!(id: 2, type_new: 'JiraService') }
 
   before do
     jira_tracker_data = Class.new(ApplicationRecord) do
@@ -29,20 +29,30 @@ RSpec.describe ScheduleUpdateJiraTrackerDataDeploymentTypeBasedOnUrl, :migration
 
     stub_const('JiraTrackerData', jira_tracker_data)
     stub_const("#{described_class}::BATCH_SIZE", 1)
+    stub_const("#{described_class}::SUB_BATCH_SIZE", 1)
   end
 
+  # rubocop:disable Layout/LineLength
+  # rubocop:disable RSpec/ScatteredLet
   let!(:tracker_data_cloud) { JiraTrackerData.create!(id: 1, service_id: service_jira_cloud.id, url: "https://test-domain.atlassian.net", deployment_type: 0) }
   let!(:tracker_data_server) { JiraTrackerData.create!(id: 2, service_id: service_jira_server.id, url: "http://totally-not-jira-server.company.org", deployment_type: 0) }
+  # rubocop:enable Layout/LineLength
+  # rubocop:enable RSpec/ScatteredLet
 
   around do |example|
     freeze_time { Sidekiq::Testing.fake! { example.run } }
   end
 
+  let(:migration) { described_class::MIGRATION } # rubocop:disable RSpec/ScatteredLet
+
   it 'schedules background migration' do
     migrate!
 
-    expect(BackgroundMigrationWorker.jobs.size).to eq(2)
-    expect(described_class::MIGRATION).to be_scheduled_migration(tracker_data_cloud.id, tracker_data_cloud.id)
-    expect(described_class::MIGRATION).to be_scheduled_migration(tracker_data_server.id, tracker_data_server.id)
+    expect(migration).to have_scheduled_batched_migration(
+      table_name: :jira_tracker_data,
+      column_name: :id,
+      interval: described_class::DELAY_INTERVAL,
+      gitlab_schema: :gitlab_main
+    )
   end
 end

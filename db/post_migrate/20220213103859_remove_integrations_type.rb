@@ -73,7 +73,7 @@ class RemoveIntegrationsType < Gitlab::Database::Migration[1.0]
     add_concurrent_index :integrations, :id, where: 'type_new is null', name: tmp_index_name
 
     define_batchable_model(:integrations).where(type_new: nil).each_batch do |batch|
-      min_id, max_id = batch.pluck(Arel.sql('MIN(id), MAX(id)')).first
+      min_id, max_id = batch.pick(Arel.sql('MIN(id), MAX(id)'))
 
       connection.execute(<<~SQL)
           WITH mapping(old_type, new_type) AS (VALUES

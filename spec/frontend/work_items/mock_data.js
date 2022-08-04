@@ -480,14 +480,19 @@ export const changeWorkItemParentMutationResponse = {
   data: {
     workItemUpdate: {
       workItem: {
+        description: null,
         id: 'gid://gitlab/WorkItem/2',
-        workItemType: {
-          id: 'gid://gitlab/WorkItems::Type/5',
-          __typename: 'WorkItemType',
-        },
-        title: 'Foo',
         state: 'OPEN',
-        __typename: 'WorkItem',
+        title: 'Foo',
+        widgets: [
+          {
+            type: 'HIERARCHY',
+            parent: null,
+            children: {
+              nodes: [],
+            },
+          },
+        ],
       },
       errors: [],
       __typename: 'WorkItemUpdatePayload',

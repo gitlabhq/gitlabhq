@@ -27,7 +27,7 @@ module Gitlab
 
       def process_sub_batch(sub_batch)
         # Extract the start/stop IDs from the current sub-batch
-        sub_start_id, sub_stop_id = sub_batch.pluck(Arel.sql('MIN(id), MAX(id)')).first
+        sub_start_id, sub_stop_id = sub_batch.pick(Arel.sql('MIN(id), MAX(id)'))
 
         # This matches the mapping from the INSERT trigger added in
         # db/migrate/20210721135638_add_triggers_to_integrations_type_new.rb

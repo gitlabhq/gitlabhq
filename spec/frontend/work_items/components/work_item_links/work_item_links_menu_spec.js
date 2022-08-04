@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemLinksMenu from '~/work_items/components/work_item_links/work_item_links_menu.vue';
-import changeWorkItemParentMutation from '~/work_items/graphql/change_work_item_parent_link.mutation.graphql';
+import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
 import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
 import { workItemHierarchyResponse, changeWorkItemParentMutationResponse } from '../../mock_data';
@@ -87,8 +87,12 @@ describe('WorkItemLinksMenu', () => {
     await waitForPromises();
 
     expect(mutationHandler).toHaveBeenCalledWith({
-      id: WORK_ITEM_ID,
-      parentId: null,
+      input: {
+        id: WORK_ITEM_ID,
+        hierarchyWidget: {
+          parentId: null,
+        },
+      },
     });
   });
 

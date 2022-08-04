@@ -23,7 +23,7 @@ module Gitlab
           .without_static_object_token_encrypted
 
         ranged_query.each_batch(of: BATCH_SIZE) do |sub_batch|
-          first, last = sub_batch.pluck(Arel.sql('min(id), max(id)')).first
+          first, last = sub_batch.pick(Arel.sql('min(id), max(id)'))
 
           batch_query = User.unscoped
                           .where(id: first..last)

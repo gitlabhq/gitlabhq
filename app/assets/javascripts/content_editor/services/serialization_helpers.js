@@ -330,12 +330,12 @@ export function renderCodeBlock(state, node) {
 
 const expandPreserveUnchangedConfig = (configOrRender) =>
   isFunction(configOrRender)
-    ? { render: configOrRender, overwriteSourcePreservationStrategy: false }
+    ? { render: configOrRender, overwriteSourcePreservationStrategy: false, inline: false }
     : configOrRender;
 
 export function preserveUnchanged(configOrRender) {
   return (state, node, parent, index) => {
-    const { render, overwriteSourcePreservationStrategy } = expandPreserveUnchangedConfig(
+    const { render, overwriteSourcePreservationStrategy, inline } = expandPreserveUnchangedConfig(
       configOrRender,
     );
 
@@ -344,7 +344,10 @@ export function preserveUnchanged(configOrRender) {
 
     if (same && !overwriteSourcePreservationStrategy) {
       state.write(sourceMarkdown);
-      state.closeBlock(node);
+
+      if (!inline) {
+        state.closeBlock(node);
+      }
     } else {
       render(state, node, parent, index, same, sourceMarkdown);
     }
