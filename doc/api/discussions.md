@@ -170,7 +170,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
 
 ### Add note to existing issue thread
 
-Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/#create-a-thread-by-replying-to-a-standard-comment).
+Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/index.md#create-a-thread-by-replying-to-a-standard-comment).
 
 **WARNING**
 Notes can be added to other items than comments, such as system notes, making them threads.
@@ -599,7 +599,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
 ### Add note to existing epic thread
 
 Adds a new note to the thread. This can also
-[create a thread from a single comment](../user/discussions/#create-a-thread-by-replying-to-a-standard-comment).
+[create a thread from a single comment](../user/discussions/index.md#create-a-thread-by-replying-to-a-standard-comment).
 
 ```plaintext
 POST /groups/:id/epics/:epic_id/discussions/:discussion_id/notes
@@ -1021,7 +1021,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
 ### Add note to existing merge request thread
 
 Adds a new note to the thread. This can also
-[create a thread from a single comment](../user/discussions/#create-a-thread-by-replying-to-a-standard-comment).
+[create a thread from a single comment](../user/discussions/index.md#create-a-thread-by-replying-to-a-standard-comment).
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes

@@ -951,6 +951,30 @@ Input type: `BulkEnableDevopsAdoptionNamespacesInput`
 | <a id="mutationbulkenabledevopsadoptionnamespacesenablednamespaces"></a>`enabledNamespaces` | [`[DevopsAdoptionEnabledNamespace!]`](#devopsadoptionenablednamespace) | Enabled namespaces after mutation. |
 | <a id="mutationbulkenabledevopsadoptionnamespaceserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.bulkRunnerDelete`
+
+WARNING:
+**Introduced** in 15.3.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Input type: `BulkRunnerDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbulkrunnerdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkrunnerdeleteids"></a>`ids` | [`[CiRunnerID!]`](#cirunnerid) | IDs of the runners to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbulkrunnerdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbulkrunnerdeletedeletedcount"></a>`deletedCount` | [`Int`](#int) | Number of records effectively deleted. Only present if operation was performed synchronously. |
+| <a id="mutationbulkrunnerdeletedeletedids"></a>`deletedIds` | [`[CiRunnerID!]`](#cirunnerid) | IDs of records effectively deleted. Only present if operation was performed synchronously. |
+| <a id="mutationbulkrunnerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.ciCdSettingsUpdate`
 
 WARNING:

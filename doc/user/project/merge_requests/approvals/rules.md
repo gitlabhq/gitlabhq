@@ -213,7 +213,8 @@ appreciated, but not required. To make an approval rule optional:
 
 ## Approvals for protected branches
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.8.
+> - **All protected branches** target branch option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360930) in GitLab 15.3.
 
 Approval rules are often relevant only to specific branches, like your
 [default branch](../../repository/branches/default.md). To configure an
@@ -223,10 +224,10 @@ approval rule for certain branches:
 1. Go to your project and select **Settings**.
 1. Expand **Merge request (MR) approvals**.
 1. Select a **Target branch**:
-   - To protect all branches, select **All branches**.
-   - To select a specific branch, select it from the list:
+   - To apply the rule to all branches, select **All branches**.
+   - To apply the rule to all protected branches, select **All protected branches** (GitLab 15.3 and later).
+   - To apply the rule to a specific branch, select it from the list:
 
-     ![Scoped to protected branch](img/scoped_to_protected_branch_v13_10.png)
 1. To enable this configuration, read
    [Code Owner's approvals for protected branches](../../protected_branches.md#require-code-owner-approval-on-a-protected-branch).
 

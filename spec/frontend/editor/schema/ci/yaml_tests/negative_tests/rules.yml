@@ -1,0 +1,11 @@
+# unnecessary ref declaration
+rules:
+  - changes:
+      paths:
+        - README.md
+      compare_to: { ref: 'main' }
+
+# wrong path declaration
+rules:
+  - changes:
+    paths: { file: 'DOCKER' }

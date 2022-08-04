@@ -250,27 +250,6 @@ The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a
 either as a `file`, which requires the path to the certificate, or as a variable,
 which requires the text representation of the certificate.
 
-## GitLab Release CLI tool
-
-The [GitLab Release CLI (`release-cli`)](https://gitlab.com/gitlab-org/release-cli) tool
-is a command-line tool for managing releases from the command line or from a CI/CD pipeline.
-You can use the release CLI to create, update, modify, and delete releases.
-
-When you [use a CI/CD job to create a release](#creating-a-release-by-using-a-cicd-job),
-the `release` keyword entries are transformed into Bash commands and sent to the Docker
-container containing the `release-cli` tool. The tool then creates the release.
-
-You can also call the `release-cli` tool directly from a [`script`](../../../ci/yaml/index.md#script).
-For example:
-
-```shell
-release-cli create --name "Release $CI_COMMIT_SHA" --description \
-  "Created using the release-cli $EXTRA_DESCRIPTION" \
-  --tag-name "v${MAJOR}.${MINOR}.${REVISION}" --ref "$CI_COMMIT_SHA" \
-  --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3" \
-  --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\"}
-```
-
 ### Create multiple releases in a single pipeline
 
 A pipeline can have multiple `release` jobs, for example:

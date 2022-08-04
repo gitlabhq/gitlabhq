@@ -1,9 +1,10 @@
 variables:
   AUTO_BUILD_IMAGE_VERSION: 'v1.14.0'
+  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
 
 build:
   stage: build
-  image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:${AUTO_BUILD_IMAGE_VERSION}'
+  image: '${TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-build-image:${AUTO_BUILD_IMAGE_VERSION}'
   variables:
     DOCKER_TLS_CERTDIR: ''
   services:

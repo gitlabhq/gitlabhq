@@ -598,15 +598,15 @@ RSpec/HaveGitlabHttpStatus:
 
 RSpec/ContextWording:
   Prefixes:
-  - when
-  - with
-  - without
-  - for
-  - and
-  - on
-  - in
-  - as
-  - if
+  - 'when'
+  - 'with'
+  - 'without'
+  - 'for'
+  - 'and'
+  - 'on'
+  - 'in'
+  - 'as'
+  - 'if'
 
 Style/MultilineWhenThen:
   Enabled: false

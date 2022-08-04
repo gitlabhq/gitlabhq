@@ -80,6 +80,7 @@ POST /projects/:id/approvals
 > - Moved to GitLab Premium in 13.9.
 > - `protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460) in GitLab 12.7.
 > - Pagination support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31011) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default.
+> - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
 
 You can request information about a project's approval rules using the following endpoint:
 
@@ -148,6 +149,7 @@ Use the `page` and `per_page` [pagination](index.md#offset-based-pagination) par
         "ldap_access": null
       }
     ],
+    "applies_to_all_protected_branches": false,
     "protected_branches": [
       {
         "id": 1,
@@ -180,7 +182,8 @@ Use the `page` and `per_page` [pagination](index.md#offset-based-pagination) par
 
 ### Get a single project-level rule
 
-> Introduced in GitLab 13.7.
+> - Introduced in GitLab 13.7.
+> - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
 
 You can request information about a single project approval rules using the following endpoint:
 
@@ -247,6 +250,7 @@ GET /projects/:id/approval_rules/:approval_rule_id
       "ldap_access": null
     }
   ],
+  "applies_to_all_protected_branches": false,
   "protected_branches": [
     {
       "id": 1,
@@ -281,6 +285,7 @@ GET /projects/:id/approval_rules/:approval_rule_id
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
+> - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
 
 You can create project approval rules using the following endpoint:
 
@@ -290,16 +295,17 @@ POST /projects/:id/approval_rules
 
 **Parameters:**
 
-| Attribute              | Type    | Required | Description                                                      |
-|------------------------|---------|----------|------------------------------------------------------------------|
-| `id`                   | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `name`                 | string  | yes      | The name of the approval rule                                    |
-| `approvals_required`   | integer | yes      | The number of required approvals for this rule                   |
-| `rule_type`            | string  | no       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular`.
-| `user_ids`             | Array   | no       | The ids of users as approvers                                    |
-| `group_ids`            | Array   | no       | The ids of groups as approvers                                   |
-| `protected_branch_ids` | Array   | no       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
-| `report_type` | string   | no       | The report type required when the rule type is `report_approver`. The supported report types are: `license_scanning` and `code_coverage`.|
+| Attribute                           | Type              | Required | Description                                                                                                                                                                                                                     |
+|-------------------------------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding)                                                                                                                                                    |
+| `name`                              | string            | yes      | The name of the approval rule                                                                                                                                                                                                   |
+| `report_type`                       | string            | no       | The report type required when the rule type is `report_approver`. The supported report types are: `license_scanning` and `code_coverage`.                                                                                       |
+| `approvals_required`                | integer           | yes      | The number of required approvals for this rule                                                                                                                                                                                  |
+| `rule_type`                         | string            | no       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular`.                                                                                                  |
+| `user_ids`                          | Array             | no       | The ids of users as approvers                                                                                                                                                                                                   |
+| `group_ids`                         | Array             | no       | The ids of groups as approvers                                                                                                                                                                                                  |
+| `protected_branch_ids`              | Array             | no       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches).                                                                                           |
+| `applies_to_all_protected_branches` | boolean           | no       | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 
 ```json
 {
@@ -353,6 +359,7 @@ POST /projects/:id/approval_rules
       "ldap_access": null
     }
   ],
+  "applies_to_all_protected_branches": false,
   "protected_branches": [
     {
       "id": 1,
@@ -404,6 +411,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11877) in GitLab 12.3.
 > - Moved to GitLab Premium in 13.9.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
+> - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
 
 You can update project approval rules using the following endpoint:
 
@@ -415,15 +423,16 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 
 **Parameters:**
 
-| Attribute              | Type    | Required | Description                                                      |
-|------------------------|---------|----------|------------------------------------------------------------------|
-| `id`                   | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `approval_rule_id`     | integer | yes      | The ID of a approval rule                                        |
-| `name`                 | string  | yes      | The name of the approval rule                                    |
-| `approvals_required`   | integer | yes      | The number of required approvals for this rule                   |
-| `user_ids`             | Array   | no       | The ids of users as approvers                                    |
-| `group_ids`            | Array   | no       | The ids of groups as approvers                                   |
-| `protected_branch_ids` | Array   | no       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
+| Attribute                           | Type              | Required | Description                                                                                                                                                                                                                     |
+|-------------------------------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding)                                                                                                                                                    |
+| `approval_rule_id`                  | integer           | yes      | The ID of a approval rule                                                                                                                                                                                                       |
+| `name`                              | string            | yes      | The name of the approval rule                                                                                                                                                                                                   |
+| `approvals_required`                | integer           | yes      | The number of required approvals for this rule                                                                                                                                                                                  |
+| `user_ids`                          | Array             | no       | The ids of users as approvers                                                                                                                                                                                                   |
+| `group_ids`                         | Array             | no       | The ids of groups as approvers                                                                                                                                                                                                  |
+| `protected_branch_ids`              | Array             | no       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches).                                                                                           |
+| `applies_to_all_protected_branches` | boolean           | no       | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 
 ```json
 {
@@ -477,6 +486,7 @@ PUT /projects/:id/approval_rules/:approval_rule_id
       "ldap_access": null
     }
   ],
+  "applies_to_all_protected_branches": false,
   "protected_branches": [
     {
       "id": 1,
@@ -519,10 +529,10 @@ DELETE /projects/:id/approval_rules/:approval_rule_id
 
 **Parameters:**
 
-| Attribute            | Type    | Required | Description                                               |
-|----------------------|---------|----------|-----------------------------------------------------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `approval_rule_id`   | integer | yes      | The ID of a approval rule
+| Attribute          | Type              | Required | Description                                                                  |
+|--------------------|-------------------|----------|------------------------------------------------------------------------------|
+| `id`               | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
+| `approval_rule_id` | integer           | yes      | The ID of a approval rule                                                    |
 
 ## Merge request-level MR approvals
 
@@ -541,10 +551,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 
 **Parameters:**
 
-| Attribute           | Type    | Required | Description         |
-|---------------------|---------|----------|---------------------|
+| Attribute           | Type              | Required | Description                                                                  |
+|---------------------|-------------------|----------|------------------------------------------------------------------------------|
 | `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid` | integer | yes      | The IID of MR       |
+| `merge_request_iid` | integer           | yes      | The IID of MR                                                                |
 
 ```json
 {
@@ -587,11 +597,11 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
 
 **Parameters:**
 
-| Attribute            | Type    | Required | Description                                |
-|----------------------|---------|----------|--------------------------------------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid`  | integer | yes      | The IID of MR                              |
-| `approvals_required` | integer | yes      | Approvals required before MR can be merged. Deprecated in 12.0 in favor of Approval Rules API. |
+| Attribute            | Type              | Required | Description                                                                                    |
+|----------------------|-------------------|----------|------------------------------------------------------------------------------------------------|
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding)                   |
+| `merge_request_iid`  | integer           | yes      | The IID of MR                                                                                  |
+| `approvals_required` | integer           | yes      | Approvals required before MR can be merged. Deprecated in 12.0 in favor of Approval Rules API. |
 
 ```json
 {
@@ -629,10 +639,10 @@ This includes additional information about the users who have already approved
 
 **Parameters:**
 
-| Attribute            | Type    | Required | Description         |
-|----------------------|---------|----------|---------------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
-| `merge_request_iid`  | integer | yes      | The IID of MR       |
+| Attribute           | Type              | Required | Description                                                                  |
+|---------------------|-------------------|----------|------------------------------------------------------------------------------|
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding) |
+| `merge_request_iid` | integer           | yes      | The IID of MR                                                                |
 
 ```json
 {

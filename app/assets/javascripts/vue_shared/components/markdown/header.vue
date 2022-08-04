@@ -203,6 +203,44 @@ export default {
           :class="{ 'gl-display-none!': previewMarkdown }"
           class="md-header-toolbar gl-ml-auto gl-pb-3 gl-justify-content-center"
         >
+          <template v-if="canSuggest">
+            <toolbar-button
+              ref="suggestButton"
+              :tag="mdSuggestion"
+              :prepend="true"
+              :button-title="__('Insert suggestion')"
+              :cursor-offset="4"
+              :tag-content="lineContent"
+              icon="doc-code"
+              data-qa-selector="suggestion_button"
+              class="js-suggestion-btn"
+              @click="handleSuggestDismissed"
+            />
+            <gl-popover
+              v-if="suggestPopoverVisible"
+              :target="$refs.suggestButton.$el"
+              :css-classes="['diff-suggest-popover']"
+              placement="bottom"
+              :show="suggestPopoverVisible"
+            >
+              <strong>{{ __('New! Suggest changes directly') }}</strong>
+              <p class="mb-2">
+                {{
+                  __(
+                    'Suggest code changes which can be immediately applied in one click. Try it out!',
+                  )
+                }}
+              </p>
+              <gl-button
+                variant="confirm"
+                category="primary"
+                size="small"
+                @click="handleSuggestDismissed"
+              >
+                {{ __('Got it') }}
+              </gl-button>
+            </gl-popover>
+          </template>
           <toolbar-button
             tag="**"
             :button-title="
@@ -245,44 +283,6 @@ export default {
             icon="quote"
             @click="handleQuote"
           />
-          <template v-if="canSuggest">
-            <toolbar-button
-              ref="suggestButton"
-              :tag="mdSuggestion"
-              :prepend="true"
-              :button-title="__('Insert suggestion')"
-              :cursor-offset="4"
-              :tag-content="lineContent"
-              icon="doc-code"
-              data-qa-selector="suggestion_button"
-              class="js-suggestion-btn"
-              @click="handleSuggestDismissed"
-            />
-            <gl-popover
-              v-if="suggestPopoverVisible"
-              :target="$refs.suggestButton.$el"
-              :css-classes="['diff-suggest-popover']"
-              placement="bottom"
-              :show="suggestPopoverVisible"
-            >
-              <strong>{{ __('New! Suggest changes directly') }}</strong>
-              <p class="mb-2">
-                {{
-                  __(
-                    'Suggest code changes which can be immediately applied in one click. Try it out!',
-                  )
-                }}
-              </p>
-              <gl-button
-                variant="confirm"
-                category="primary"
-                size="small"
-                @click="handleSuggestDismissed"
-              >
-                {{ __('Got it') }}
-              </gl-button>
-            </gl-popover>
-          </template>
           <toolbar-button tag="`" tag-block="```" :button-title="__('Insert code')" icon="code" />
           <toolbar-button
             tag="[{text}](url)"

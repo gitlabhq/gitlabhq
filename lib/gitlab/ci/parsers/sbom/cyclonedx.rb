@@ -18,7 +18,7 @@ module Gitlab
 
             return unless valid?
 
-            parse_components
+            parse_report
           rescue JSON::ParserError => e
             report.add_error("Report JSON is invalid: #{e}")
           end
@@ -52,6 +52,17 @@ module Gitlab
             schema_validator.errors.each { |error| report.add_error(error) }
 
             false
+          end
+
+          def parse_report
+            parse_metadata_properties
+            parse_components
+          end
+
+          def parse_metadata_properties
+            properties = data.dig('metadata', 'properties')
+            source = CyclonedxProperties.parse_source(properties)
+            report.set_source(source) if source
           end
 
           def parse_components

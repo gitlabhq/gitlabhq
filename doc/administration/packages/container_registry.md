@@ -739,7 +739,7 @@ auth:
 
 Without these entries, the registry logins cannot authenticate with GitLab.
 GitLab also remains unaware of
-[nested image names](../../user/packages/container_registry/#image-naming-convention)
+[nested image names](../../user/packages/container_registry/index.md#image-naming-convention)
 under the project hierarchy, like
 `registry.example.com/group/project/image-name:tag` or
 `registry.example.com/group/project/my/image-name:tag`, and only recognizes

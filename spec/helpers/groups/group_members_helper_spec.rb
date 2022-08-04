@@ -173,7 +173,7 @@ RSpec.describe Groups::GroupMembersHelper do
 
   describe '#group_member_header_subtext' do
     it 'contains expected text with group name' do
-      expect(helper.group_member_header_subtext(group)).to match("You can invite a new member to .*#{group.name}")
+      expect(helper.group_member_header_subtext(group)).to match("You're viewing members of .*#{group.name}")
     end
   end
 end

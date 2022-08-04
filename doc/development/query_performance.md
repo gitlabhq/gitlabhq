@@ -36,9 +36,9 @@ The first time a query is made, it is made on a "cold cache". Meaning it needs
 to read from disk. If you run the query again, the data can be read from the
 cache, or what PostgreSQL calls shared buffers. This is the "warm cache" query.
 
-When analyzing an [`EXPLAIN` plan](understanding_explain_plans.md), you can see
+When analyzing an [`EXPLAIN` plan](database/understanding_explain_plans.md), you can see
 the difference not only in the timing, but by looking at the output for `Buffers`
-by running your explain with `EXPLAIN(analyze, buffers)`. [Database Lab](understanding_explain_plans.md#database-lab-engine)
+by running your explain with `EXPLAIN(analyze, buffers)`. [Database Lab](database/understanding_explain_plans.md#database-lab-engine)
 automatically includes these options.
 
 If you are making a warm cache query, you see only the `shared hits`.

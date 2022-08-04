@@ -10,11 +10,12 @@
 # which is the lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml
 
 image:
-  name: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
+  name: "$TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/stable:latest"
 
 variables:
   TF_ROOT: ${CI_PROJECT_DIR}  # The relative path to the root directory of the Terraform project
   TF_STATE_NAME: ${TF_STATE_NAME:-default}  # The name of the state file used by the GitLab Managed Terraform state backend
+  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
 
 cache:
   key: "${TF_ROOT}"

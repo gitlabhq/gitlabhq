@@ -7,6 +7,11 @@ export default {
     GlAvatar,
   },
   props: {
+    projectId: {
+      type: Number,
+      default: 0,
+      required: false,
+    },
     projectName: {
       type: String,
       required: true,
@@ -39,6 +44,7 @@ export default {
 <template>
   <gl-avatar
     :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+    :entity-id="projectId"
     :entity-name="projectName"
     :src="projectAvatarUrl"
     :alt="avatarAlt"

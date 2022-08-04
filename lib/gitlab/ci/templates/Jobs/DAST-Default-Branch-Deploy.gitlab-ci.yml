@@ -1,8 +1,9 @@
 variables:
   DAST_AUTO_DEPLOY_IMAGE_VERSION: 'v2.30.0'
+  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
 
 .dast-auto-deploy:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:${DAST_AUTO_DEPLOY_IMAGE_VERSION}"
+  image: "${TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${DAST_AUTO_DEPLOY_IMAGE_VERSION}"
 
 .common_rules: &common_rules
   - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
@@ -57,7 +58,7 @@ stop_dast_environment:
       when: always
 
 .ecs_image:
-  image: 'registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest'
+  image: '${TEMPLATE_REGISTRY_HOST}/gitlab-org/cloud-deploy/aws-ecs:latest'
 
 .ecs_rules: &ecs_rules
   - if: $AUTO_DEVOPS_PLATFORM_TARGET != "ECS"

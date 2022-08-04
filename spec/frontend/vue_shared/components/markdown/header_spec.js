@@ -44,11 +44,11 @@ describe('Markdown field header component', () => {
   describe('markdown header buttons', () => {
     it('renders the buttons with the correct title', () => {
       const buttons = [
+        'Insert suggestion',
         'Add bold text (⌘B)',
         'Add italic text (⌘I)',
         'Add strikethrough text (⌘⇧X)',
         'Insert a quote',
-        'Insert suggestion',
         'Insert code',
         'Add a link (⌘K)',
         'Add a bullet list',

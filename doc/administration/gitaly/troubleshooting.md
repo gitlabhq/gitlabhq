@@ -444,15 +444,15 @@ If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.
 Here are common errors and potential causes:
 
 - 500 response code
-  - **ActionView::Template::Error (7:permission denied)**
+  - `ActionView::Template::Error (7:permission denied)`
     - `praefect['auth_token']` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
-  - **Unable to save project. Error: 7:permission denied**
+  - `Unable to save project. Error: 7:permission denied`
     - Secret token in `praefect['storage_nodes']` on GitLab server does not match the
       value in `gitaly['auth_token']` on one or more Gitaly servers.
 - 503 response code
-  - **GRPC::Unavailable (14:failed to connect to all addresses)**
+  - `GRPC::Unavailable (14:failed to connect to all addresses)`
     - GitLab was unable to reach Praefect.
-  - **GRPC::Unavailable (14:all SubCons are in TransientFailure...)**
+  - `GRPC::Unavailable (14:all SubCons are in TransientFailure...)`
     - Praefect cannot reach one or more of its child Gitaly nodes. Try running
       the Praefect connection checker to diagnose.
 

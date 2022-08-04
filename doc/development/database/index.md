@@ -16,7 +16,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Tooling
 
-- [Understanding EXPLAIN plans](../understanding_explain_plans.md)
+- [Understanding EXPLAIN plans](understanding_explain_plans.md)
 - [explain.depesz.com](https://explain.depesz.com/) or [explain.dalibo.com](https://explain.dalibo.com/) for visualizing the output of `EXPLAIN`
 - [pgFormatter](https://sqlformat.darold.net/) a PostgreSQL SQL syntax beautifier
 - [db:check-migrations job](dbcheck-migrations-job.md)
@@ -30,7 +30,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Testing Rails migrations](../testing_guide/testing_migrations_guide.md) guide
 - [Post deployment migrations](post_deployment_migrations.md)
 - [Background migrations](background_migrations.md)
-- [Swapping tables](../swapping_tables.md)
+- [Swapping tables](swapping_tables.md)
 - [Deleting migrations](deleting_migrations.md)
 - [Partitioning tables](table_partitioning.md)
 
@@ -47,13 +47,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [`NOT NULL` constraints](not_null_constraints.md)
 - [Strings and the Text data type](strings_and_the_text_data_type.md)
 - [Single table inheritance](../single_table_inheritance.md)
-- [Polymorphic associations](../polymorphic_associations.md)
+- [Polymorphic associations](polymorphic_associations.md)
 - [Serializing data](../serializing_data.md)
 - [Hash indexes](../hash_indexes.md)
 - [Storing SHA1 hashes as binary](../sha1_as_binary.md)
 - [Iterating tables in batches](../iterating_tables_in_batches.md)
 - [Insert into tables in batches](../insert_into_tables_in_batches.md)
-- [Ordering table columns](../ordering_table_columns.md)
+- [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](../verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](../database_debugging.md)
 - [Query Count Limits](../query_count_limits.md)

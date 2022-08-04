@@ -22,7 +22,8 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
 
 variables:
-  CS_ANALYZER_IMAGE: registry.gitlab.com/security-products/container-scanning:5
+  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
+  CS_ANALYZER_IMAGE: "$TEMPLATE_REGISTRY_HOST/security-products/container-scanning:5"
 
 container_scanning:
   image: "$CS_ANALYZER_IMAGE$CS_IMAGE_SUFFIX"

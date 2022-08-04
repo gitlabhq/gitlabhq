@@ -53,14 +53,14 @@ that require a more in-depth discussion between the database reviewers and maint
 - [Database Office Hours Agenda](https://docs.google.com/document/d/1wgfmVL30F8SdMg-9yY6Y8djPSxWNvKmhR5XmsvYX1EI/edit).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [YouTube playlist with past recordings](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp-kqXeiF7fF7cFYaKtdqXM).
 
-You should also join the [#database-lab](../understanding_explain_plans.md#database-lab-engine)
+You should also join the [#database-lab](understanding_explain_plans.md#database-lab-engine)
 Slack channel and get familiar with how to use Joe, the Slackbot that provides developers
 with their own clone of the production database.
 
 Understanding and efficiently using `EXPLAIN` plans is at the core of the database review process.
 The following guides provide a quick introduction and links to follow on more advanced topics:
 
-- Guide on [understanding EXPLAIN plans](../understanding_explain_plans.md).
+- Guide on [understanding EXPLAIN plans](understanding_explain_plans.md).
 - [Explaining the unexplainable series in `depesz`](https://www.depesz.com/tag/unexplainable/).
 
 We also have licensed access to The Art of PostgreSQL available, if you are interested in getting access please check out the

@@ -42,6 +42,16 @@ describe('ProjectAvatar', () => {
     });
   });
 
+  describe('with `projectId` prop', () => {
+    it('renders GlAvatar with specified `entityId` prop', () => {
+      const mockProjectId = 1;
+      createComponent({ props: { projectId: mockProjectId } });
+
+      const avatar = findGlAvatar();
+      expect(avatar.props('entityId')).toBe(mockProjectId);
+    });
+  });
+
   describe('with `projectAvatarUrl` prop', () => {
     it('renders GlAvatar with specified `src` prop', () => {
       const mockProjectAvatarUrl = 'https://gitlab.com';

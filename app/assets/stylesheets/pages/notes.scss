@@ -4,7 +4,7 @@ $system-note-svg-size: 16px;
 @mixin vertical-line($left) {
   &::before {
     content: '';
-    border-left: 2px solid $gray-50;
+    border-left: 2px solid $gray-10;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -29,7 +29,7 @@ $system-note-svg-size: 16px;
 
 .issuable-discussion {
   .main-notes-list {
-    @include vertical-line(36px);
+    @include vertical-line(35px);
   }
 }
 
@@ -300,17 +300,17 @@ $system-note-svg-size: 16px;
     .timeline-icon {
       display: flex;
       align-items: center;
-      background-color: $white;
+      background-color: $gray-10;
       width: $system-note-icon-size;
       height: $system-note-icon-size;
-      border: 1px solid $border-color;
+      border: 1px solid $gray-10;
       border-radius: $system-note-icon-size;
       margin: -6px 20px 0 0;
 
       svg {
         width: $system-note-svg-size;
         height: $system-note-svg-size;
-        fill: $gray-darkest;
+        fill: $gray-400;
         display: block;
         margin: 0 auto;
       }

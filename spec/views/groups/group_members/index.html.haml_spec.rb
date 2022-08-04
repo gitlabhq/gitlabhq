@@ -21,7 +21,7 @@ RSpec.describe 'groups/group_members/index', :aggregate_failures do
       render
 
       expect(rendered).to have_content('Group members')
-      expect(rendered).to have_content('You can invite a new member')
+      expect(rendered).to have_content("You're viewing members")
 
       expect(rendered).to have_selector('.js-invite-group-trigger')
       expect(rendered).to have_selector('.js-invite-members-trigger')

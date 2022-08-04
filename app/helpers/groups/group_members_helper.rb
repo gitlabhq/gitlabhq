@@ -21,10 +21,11 @@ module Groups::GroupMembersHelper
   end
 
   def group_member_header_subtext(group)
-    html_escape(_('You can invite a new member to ' \
-                  '%{strong_start}%{group_name}%{strong_end}.')) % { group_name: group.name,
-                                                                     strong_start: '<strong>'.html_safe,
-                                                                     strong_end: '</strong>'.html_safe }
+    html_escape(_("You're viewing members of %{strong_start}%{group_name}%{strong_end}.").html_safe) % {
+      group_name: group.name,
+      strong_start: '<strong>'.html_safe,
+      strong_end: '</strong>'.html_safe
+    }
   end
 
   private

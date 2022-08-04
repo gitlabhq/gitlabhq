@@ -192,7 +192,7 @@ The query execution plan shows that this query is efficient, the database only r
 (6 rows)
 ```
 
-See the [Understanding EXPLAIN plans](../understanding_explain_plans.md) to find more information about reading execution plans.
+See the [Understanding EXPLAIN plans](understanding_explain_plans.md) to find more information about reading execution plans.
 
 Let's visit the 50_000th page:
 

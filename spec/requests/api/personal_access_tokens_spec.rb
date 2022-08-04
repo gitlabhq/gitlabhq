@@ -100,7 +100,7 @@ RSpec.describe API::PersonalAccessTokens do
       it 'fails to return PAT because no PAT exists with this id' do
         get api(invalid_path, admin_user)
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

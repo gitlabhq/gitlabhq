@@ -247,7 +247,7 @@ dast-runner-validation:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "1"
-    SECURE_BINARIES_IMAGE: "registry.gitlab.com/security-products/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"
+    SECURE_BINARIES_IMAGE: "${TEMPLATE_REGISTRY_HOST}/security-products/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&

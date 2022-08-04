@@ -885,6 +885,15 @@ msgstr ""
 msgid "%{openedIssues} open, %{closedIssues} closed"
 msgstr ""
 
+msgid "%{over_limit_message} To get more members, an owner of the group can start a trial or upgrade to a paid tier."
+msgstr ""
+
+msgid "%{over_limit_message} To view and manage members, check the members page for each personal project. We recommend you %{link_start}move your projects to a group%{link_end} so you can easily manage users and features."
+msgstr ""
+
+msgid "%{over_limit_message} To view and manage members, check the members page for each project in your namespace. We recommend you %{link_start}move your projects to a group%{link_end} so you can easily manage users and features."
+msgstr ""
+
 msgid "%{percentageUsed}%% used"
 msgstr ""
 
@@ -6211,6 +6220,9 @@ msgstr ""
 msgid "Billings|Your account has been validated"
 msgstr ""
 
+msgid "Billing|%{overLimitMessage} To ensure all members (active and %{linkStart}over limit%{linkEnd}) can access the group, you can start a trial or upgrade to a paid tier."
+msgstr ""
+
 msgid "Billing|%{user} was successfully approved"
 msgstr ""
 
@@ -6265,8 +6277,10 @@ msgstr ""
 msgid "Billing|Group invite"
 msgstr ""
 
-msgid "Billing|If the group has over %{maxNamespaceSeats} members, only those occupying a seat can access the namespace. To ensure all members (active and %{linkStart}over limit%{linkEnd}) can access the namespace, you can start a trial or upgrade to a paid tier."
-msgstr ""
+msgid "Billing|If the group has over %d member, only those occupying a seat can access the group."
+msgid_plural "Billing|If the group has over %d members, only those occupying a seat can access the group."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Billing|Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member."
 msgstr ""
@@ -6301,10 +6315,12 @@ msgstr ""
 msgid "Billing|You can begin moving members in %{namespaceName} now. A member loses access to the group when you turn off %{strongStart}In a seat%{strongEnd}. If over 5 members have %{strongStart}In a seat%{strongEnd} enabled after October 19, 2022, we'll select the 5 members who maintain access. We'll first count members that have Owner and Maintainer roles, then the most recently active members until we reach 5 members. The remaining members will get a status of Over limit and lose access to the group."
 msgstr ""
 
-msgid "Billing|Your free group is now limited to %{free_user_limit} members"
-msgstr ""
+msgid "Billing|Your free group is now limited to %d member"
+msgid_plural "Billing|Your free group is now limited to %d members"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "Billing|Your group recently changed to use the Free plan. Free groups are limited to %{free_user_limit} members and the remaining members will get a status of over-limit and lose access to the group. You can free up space for new members by removing those who no longer need access or toggling them to over-limit. To get an unlimited number of members, you can %{link_start}upgrade%{link_end} to a paid tier."
+msgid "Billing|Your group recently changed to use the Free plan. %{over_limit_message} You can free up space for new members by removing those who no longer need access or toggling them to over-limit. To get an unlimited number of members, you can %{link_start}upgrade%{link_end} to a paid tier."
 msgstr ""
 
 msgid "Bitbucket Server Import"
@@ -16765,6 +16781,11 @@ msgstr ""
 msgid "Free Trial of GitLab.com Ultimate"
 msgstr ""
 
+msgid "Free groups are limited to %{free_user_limit} member and the remaining members will get a status of over-limit and lose access to the group."
+msgid_plural "Free groups are limited to %{free_user_limit} members and the remaining members will get a status of over-limit and lose access to the group."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Freeze end"
 msgstr ""
 
@@ -16789,11 +16810,15 @@ msgstr ""
 msgid "From %{providerTitle}"
 msgstr ""
 
-msgid "From October 19, 2022, free personal namespaces and top-level groups will be limited to %{free_limit} members"
-msgstr ""
+msgid "From October 19, 2022, free groups will be limited to %d member"
+msgid_plural "From October 19, 2022, free groups will be limited to %d members"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "From October 19, 2022, you can have a maximum of %{free_limit} unique members across all of your personal projects"
-msgstr ""
+msgid "From October 19, 2022, you can have a maximum of %d unique member across all of your personal projects"
+msgid_plural "From October 19, 2022, you can have a maximum of %d unique members across all of your personal projects"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "From issue creation until deploy to production"
 msgstr ""
@@ -21495,7 +21520,7 @@ msgstr ""
 msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge."
 msgstr ""
 
-msgid "InviteMembersModal| To get more members and access to additional paid features, an owner of this namespace can start a trial or upgrade to a paid tier."
+msgid "InviteMembersModal| To get more members and access to additional paid features, an owner of the group can start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions"
@@ -21572,7 +21597,7 @@ msgstr ""
 msgid "InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}"
 msgstr ""
 
-msgid "InviteMembersModal|To get more members an owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
+msgid "InviteMembersModal|To get more members an owner of the group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr ""
 
 msgid "InviteMembersModal|To make more space, you can remove members who no longer need access."
@@ -21585,9 +21610,6 @@ msgid "InviteMembersModal|You cannot add more members, but you can remove member
 msgstr ""
 
 msgid "InviteMembersModal|You only have space for %{count} more %{members} in %{name}"
-msgstr ""
-
-msgid "InviteMembersModal|You only have space for %{count} more %{members} in your personal projects"
 msgstr ""
 
 msgid "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group."
@@ -40718,7 +40740,7 @@ msgstr ""
 msgid "To learn more about this project, read %{link_to_wiki}"
 msgstr ""
 
-msgid "To manage all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
+msgid "To manage seats for all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
 msgstr ""
 
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
@@ -44587,16 +44609,15 @@ msgstr ""
 msgid "You can group test cases using labels. To learn about the future direction of this feature, visit %{linkStart}Quality Management direction page%{linkEnd}."
 msgstr ""
 
-msgid "You can have a maximum of %{free_limit} unique members across all of your personal projects. To view and manage members, check the members page for each project in your namespace. We recommend you %{move_link_start}move your projects to a group%{move_link_end} so you can easily manage users and features."
-msgstr ""
+msgid "You can have a maximum of %{free_user_limit} unique member across all of your personal projects."
+msgid_plural "You can have a maximum of %{free_user_limit} unique members across all of your personal projects."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "You can invite a new member to %{project_name} or invite another group."
 msgstr ""
 
 msgid "You can invite a new member to %{project_name}."
-msgstr ""
-
-msgid "You can invite a new member to %{strong_start}%{group_name}%{strong_end}."
 msgstr ""
 
 msgid "You can invite another group to %{project_name}."
@@ -44653,7 +44674,7 @@ msgstr ""
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
 msgstr ""
 
-msgid "You can't add any more, but you can manage your existing members, for example, by removing inactive members and replacing them with new members. To get more members an owner of this namespace can start a trial or upgrade to a paid tier."
+msgid "You can't add any more, but you can manage your existing members, for example, by removing inactive members and replacing them with new members. To get more members an owner of the group can start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "You cannot %{action} %{state} users."
@@ -44701,8 +44722,10 @@ msgstr ""
 msgid "You could not create a new trigger."
 msgstr ""
 
-msgid "You currently have more than %{free_limit} members across all your personal projects. From October 19, 2022, the %{free_limit} most recently active members will remain active, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access. To view and manage members, check the members page for each project in your namespace. We recommend you %{move_link_start}move your project to a group%{move_link_end} so you can easily manage users and features."
-msgstr ""
+msgid "You currently have more than %{free_user_limit} member across all your personal projects. From October 19, 2022, the %{free_user_limit} most recently active member will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access."
+msgid_plural "You currently have more than %{free_user_limit} members across all your personal projects. From October 19, 2022, the %{free_user_limit} most recently active members will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "You do not have any subscriptions yet"
 msgstr ""
@@ -45036,6 +45059,9 @@ msgstr ""
 msgid "You're receiving this email because you have been mentioned on %{host}. %{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; %{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}"
 msgstr ""
 
+msgid "You're viewing members of %{strong_start}%{group_name}%{strong_end}."
+msgstr ""
+
 msgid "You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication."
 msgstr ""
 
@@ -45046,9 +45072,6 @@ msgid "You've rejected %{user}"
 msgstr ""
 
 msgid "YouTube"
-msgstr ""
-
-msgid "Your %{doc_link_start}namespace%{doc_link_end}, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_limit} members. From October 19, 2022, it will be limited to %{free_limit}, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access to the namespace. You can go to the Usage Quotas page to manage which %{free_limit} members will remain in your namespace. To get more members, an owner can start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "Your %{group} membership will now expire in %{days}."
@@ -45236,6 +45259,11 @@ msgstr ""
 
 msgid "Your first project"
 msgstr ""
+
+msgid "Your group, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_user_limit} member. From October 19, 2022, the %{free_user_limit} most recently active member will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access to the group. You can go to the Usage Quotas page to manage which %{free_user_limit} member will remain in your group."
+msgid_plural "Your group, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_user_limit} members. From October 19, 2022, the %{free_user_limit} most recently active members will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access to the group. You can go to the Usage Quotas page to manage which %{free_user_limit} members will remain in your group."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Your groups"
 msgstr ""

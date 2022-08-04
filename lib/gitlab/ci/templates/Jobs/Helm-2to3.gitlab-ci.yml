@@ -3,9 +3,11 @@
 #
 # To use, set the CI variable MIGRATE_HELM_2TO3 to "true".
 # For more details, go to https://docs.gitlab.com/ee/topics/autodevops/upgrading_auto_deploy_dependencies.html#helm-v3
+variables:
+  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
 
 .helm-2to3-migrate:
-  image: registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/helm-2to3-2.17.0-3.5.3-kube-1.16.15-alpine-3.12
+  image: "${TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/helm-install-image/releases/helm-2to3-2.17.0-3.5.3-kube-1.16.15-alpine-3.12"
   # NOTE: We use the deploy stage because:
   #   - It exists in all versions of Auto DevOps.
   #   - It is _empty_.
@@ -54,7 +56,7 @@
       done
 
 .helm-2to3-cleanup:
-  image: registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/helm-2to3-2.17.0-3.5.3-kube-1.16.15-alpine-3.12
+  image: "${TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/helm-install-image/releases/helm-2to3-2.17.0-3.5.3-kube-1.16.15-alpine-3.12"
   stage: cleanup
   environment:
     action: prepare

@@ -837,7 +837,7 @@ to transfer each affected repository from the primary to the secondary site.
 The following are possible error messages that might be encountered during failover or
 when promoting a secondary to a primary node with strategies to resolve them.
 
-### Message: ActiveRecord::RecordInvalid: Validation failed: Name has already been taken
+### Message: `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
 
 When [promoting a **secondary** site](../disaster_recovery/index.md#step-3-promoting-a-secondary-site),
 you might encounter the following error message:
@@ -873,7 +873,7 @@ or `gitlab-ctl promote-to-primary-node`, either:
   bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
   fixed.
 
-### Message: ActiveRecord::RecordInvalid: Validation failed: Enabled Geo primary node cannot be disabled
+### Message: `ActiveRecord::RecordInvalid: Validation failed: Enabled Geo primary node cannot be disabled`
 
 If you disabled a secondary node, either with the [replication pause task](../index.md#pausing-and-resuming-replication)
 (GitLab 13.2) or by using the user interface (GitLab 13.1 and earlier), you must first
@@ -1146,7 +1146,7 @@ Geo::TrackingBase::SecondaryNotConfigured: Geo secondary database is not configu
 
 On a Geo primary site this error can be ignored.
 
-This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
+This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/index.md#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
 
 ## Fixing client errors
 

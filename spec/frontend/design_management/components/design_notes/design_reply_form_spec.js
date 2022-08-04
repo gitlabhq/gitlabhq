@@ -42,6 +42,18 @@ describe('Design reply form component', () => {
     expect(findTextarea().element).toEqual(document.activeElement);
   });
 
+  it('renders "Attach a file or image" button in markdown toolbar', () => {
+    createComponent();
+
+    expect(wrapper.find('[data-testid="button-attach-file"]').exists()).toBe(true);
+  });
+
+  it('renders file upload progress container', () => {
+    createComponent();
+
+    expect(wrapper.find('.comment-toolbar .uploading-container').exists()).toBe(true);
+  });
+
   it('renders button text as "Comment" when creating a comment', () => {
     createComponent();
 

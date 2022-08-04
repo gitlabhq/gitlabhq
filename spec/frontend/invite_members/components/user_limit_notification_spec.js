@@ -9,6 +9,8 @@ import {
 
 import { freeUsersLimit, membersCount } from '../mock_data/member_modal';
 
+const WARNING_ALERT_TITLE = 'You only have space for 2 more members in name';
+
 describe('UserLimitNotification', () => {
   let wrapper;
 
@@ -33,7 +35,7 @@ describe('UserLimitNotification', () => {
         },
         ...props,
       },
-      provide: { name: 'my group' },
+      provide: { name: 'name' },
       stubs: { GlSprintf },
     });
   };
@@ -50,7 +52,7 @@ describe('UserLimitNotification', () => {
     });
   });
 
-  describe('when close to limit with a personal namepace', () => {
+  describe('when close to limit within a personal namepace', () => {
     beforeEach(() => {
       createComponent(true, false, { membersCount: 3, userNamespace: true });
     });
@@ -58,27 +60,24 @@ describe('UserLimitNotification', () => {
     it('renders the limit for a personal namespace', () => {
       const alert = findAlert();
 
-      expect(alert.attributes('title')).toEqual(
-        'You only have space for 2 more members in your personal projects',
-      );
+      expect(alert.attributes('title')).toEqual(WARNING_ALERT_TITLE);
+
       expect(alert.text()).toEqual(
         'To make more space, you can remove members who no longer need access.',
       );
     });
   });
 
-  describe('when close to limit', () => {
+  describe('when close to limit within a group', () => {
     it("renders user's limit notification", () => {
       createComponent(true, false, { membersCount: 3 });
 
       const alert = findAlert();
 
-      expect(alert.attributes('title')).toEqual(
-        'You only have space for 2 more members in my group',
-      );
+      expect(alert.attributes('title')).toEqual(WARNING_ALERT_TITLE);
 
       expect(alert.text()).toEqual(
-        'To get more members an owner of this namespace can start a trial or upgrade to a paid tier.',
+        'To get more members an owner of the group can start a trial or upgrade to a paid tier.',
       );
     });
   });
@@ -89,7 +88,7 @@ describe('UserLimitNotification', () => {
 
       const alert = findAlert();
 
-      expect(alert.attributes('title')).toEqual("You've reached your 5 members limit for my group");
+      expect(alert.attributes('title')).toEqual("You've reached your 5 members limit for name");
       expect(alert.text()).toEqual(REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE);
     });
 

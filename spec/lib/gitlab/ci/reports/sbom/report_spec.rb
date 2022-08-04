@@ -14,35 +14,24 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Report do
     end
   end
 
-  describe '#add_source' do
-    let_it_be(:sources) do
-      [
-        {
-          'type' => :dependency_file,
-          'data' => {
-            'input_file' => { 'name' => 'package-lock.json' },
-            'package_manager' => { 'name' => 'npm' },
-            'language' => { 'name' => 'JavaScript' }
-          },
-          'fingerprint' => '4ee1623c8f3ddd152b3c1fc340b3ece3cbcf807efa2726307ea34e7d6d36a6c1'
+  describe '#set_source' do
+    let_it_be(:source) do
+      {
+        'type' => :dependency_scanning,
+        'data' => {
+          'input_file' => { 'path' => 'package-lock.json' },
+          'source_file' => { 'path' => 'package.json' },
+          'package_manager' => { 'name' => 'npm' },
+          'language' => { 'name' => 'JavaScript' }
         },
-        {
-          'type' => :dependency_file,
-          'data' => {
-            'input_file' => { 'name' => 'go.sum' },
-            'package_manager' => { 'name' => 'go' },
-            'language' => { 'name' => 'Go' }
-          },
-          'fingerprint' => 'e78eee13d87248d5b7e3df21de67365a4996b3a547e033b8e8b180b24c300fd8'
-        }
-      ]
+        'fingerprint' => 'c01df1dc736c1148717e053edbde56cb3a55d3e31f87cea955945b6f67c17d42'
+      }
     end
 
-    it 'stores each source with the given attributes' do
-      sources.each { |source| report.add_source(source) }
+    it 'stores the source' do
+      report.set_source(source)
 
-      expect(report.sources.size).to eq(2)
-      expect(report.sources).to all(be_a(Gitlab::Ci::Reports::Sbom::Source))
+      expect(report.source).to be_a(Gitlab::Ci::Reports::Sbom::Source)
     end
   end
 

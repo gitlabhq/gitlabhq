@@ -3247,6 +3247,7 @@ branch or merge request pipelines.
 **Possible inputs**:
 
 - An array of file paths. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
+- Alternatively, the array of file paths can be in [`rules:changes:paths`](#ruleschangespaths).
 
 **Example of `rules:changes`**:
 
@@ -3265,6 +3266,8 @@ docker build:
 - If `Dockerfile` has changed, add the job to the pipeline as a manual job, and the pipeline
   continues running even if the job is not triggered (`allow_failure: true`).
 - If `Dockerfile` has not changed, do not add job to any pipeline (same as `when: never`).
+- [`rules:changes:paths`](#ruleschangespaths) is the same as `rules:changes` without
+  any subkeys.
 
 **Additional details**:
 
@@ -3280,18 +3283,29 @@ docker build:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90171) in GitLab 15.2.
 
-`rules:changes:paths` is an alias for `rules:changes`.
+Use `rules:changes` to specify that a job only be added to a pipeline when specific
+files are changed, and use `rules:changes:paths` to specify the files.
+
+`rules:changes:paths` is the same as using [`rules:changes`](#ruleschanges) without
+any subkeys. All additional details and related topics are the same.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Possible inputs**:
 
-- An array of file paths.
+- An array of file paths. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
 
 **Example of `rules:changes:paths`**:
 
 ```yaml
-docker build:
+docker-build-1:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - Dockerfile
+
+docker-build-2:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -3300,8 +3314,7 @@ docker build:
           - Dockerfile
 ```
 
-In this example, the `docker build` job is only included when the `Dockerfile` has changed
-and the pipeline source is a merge request event.
+In this example, both jobs have the same behavior.
 
 ##### `rules:changes:compare_to`
 

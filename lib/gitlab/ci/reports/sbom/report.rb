@@ -5,25 +5,28 @@ module Gitlab
     module Reports
       module Sbom
         class Report
-          attr_reader :components, :sources, :errors
+          attr_reader :components, :source, :errors
 
           def initialize
             @components = []
             @errors = []
-            @sources = []
           end
 
           def add_error(error)
             errors << error
           end
 
-          def add_source(source)
-            sources << Source.new(source)
+          def set_source(source)
+            self.source = Source.new(source)
           end
 
           def add_component(component)
             components << Component.new(component)
           end
+
+          private
+
+          attr_writer :source
         end
       end
     end

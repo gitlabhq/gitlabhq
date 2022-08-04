@@ -5,6 +5,9 @@
 
 # Read more about the feature here: https://docs.gitlab.com/ee/user/project/merge_requests/accessibility_testing.html
 
+variables:
+  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
+
 stages:
   - build
   - test
@@ -13,7 +16,7 @@ stages:
 
 a11y:
   stage: accessibility
-  image: registry.gitlab.com/gitlab-org/ci-cd/accessibility:6.2.3
+  image: "$TEMPLATE_REGISTRY_HOST/gitlab-org/ci-cd/accessibility:6.2.3"
   script:
     - /gitlab-accessibility.sh "$a11y_urls"
   allow_failure: true

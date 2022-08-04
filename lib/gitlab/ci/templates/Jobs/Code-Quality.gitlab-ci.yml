@@ -8,7 +8,8 @@ code_quality:
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.29"
+    TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
+    CODE_QUALITY_IMAGE: "$TEMPLATE_REGISTRY_HOST/gitlab-org/ci-cd/codequality:0.85.29"
   needs: []
   script:
     - export SOURCE_CODE=$PWD

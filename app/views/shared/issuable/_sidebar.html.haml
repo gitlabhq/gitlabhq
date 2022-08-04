@@ -29,6 +29,9 @@
       .block.assignee.qa-assignee-block{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}" }
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
+      - if issuable_sidebar[:supports_severity]
+        #js-severity
+
       - if reviewers
         .block.reviewer.qa-reviewer-block
           = render "shared/issuable/sidebar_reviewers", issuable_sidebar: issuable_sidebar, reviewers: reviewers, signed_in: signed_in
@@ -66,9 +69,6 @@
           .title.hide-collapsed
             = _('Time tracking')
             = gl_loading_icon(inline: true)
-
-      - if issuable_sidebar[:supports_severity]
-        #js-severity
 
       - if issuable_sidebar.dig(:features_available, :health_status)
         .js-sidebar-status-entry-point{ data: sidebar_status_data(issuable_sidebar, @project) }
