@@ -3,6 +3,31 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
+  let(:connection) { Gitlab::Database.database_base_models[:main].connection }
+
+  describe '.job_arguments' do
+    let(:job_class) do
+      Class.new(described_class) do
+        job_arguments :value_a, :value_b
+      end
+    end
+
+    subject(:job_instance) do
+      job_class.new(start_id: 1, end_id: 10,
+                    batch_table: '_test_table',
+                    batch_column: 'id',
+                    sub_batch_size: 2,
+                    pause_ms: 1000,
+                    job_arguments: %w(a b),
+                    connection: connection)
+    end
+
+    it 'defines methods' do
+      expect(job_instance.value_a).to eq('a')
+      expect(job_instance.value_b).to eq('b')
+    end
+  end
+
   describe '#perform' do
     let(:connection) { Gitlab::Database.database_base_models[:main].connection }
 
@@ -21,6 +46,14 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
 
     it 'raises an error if not overridden' do
       expect { perform_job }.to raise_error(NotImplementedError, /must implement perform/)
+    end
+
+    it 'expects descendants to have the same method signature', :eager_load do
+      expected_arity = described_class.instance_method(:perform).arity
+      offences = described_class.descendants.select { |klass| klass.instance_method(:perform).arity != expected_arity }
+
+      expect(offences).to be_empty, "expected no descendants of #{described_class} to accept arguments for #perform, " \
+        "but some do: #{offences.join(", ")}"
     end
 
     context 'when the subclass uses sub-batching' do

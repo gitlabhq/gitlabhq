@@ -1,8 +1,11 @@
 <script>
 import { GlButton, GlBadge, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { produce } from 'immer';
 import { s__ } from '~/locale';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { isMetaKey } from '~/lib/utils/common_utils';
+import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   STATE_OPEN,
   WIDGET_ICONS,
@@ -10,6 +13,8 @@ import {
   WIDGET_TYPE_HIERARCHY,
 } from '../../constants';
 import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
+import updateWorkItem from '../../graphql/update_work_item.mutation.graphql';
+import WorkItemDetailModal from '../work_item_detail_modal.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemLinksMenu from './work_item_links_menu.vue';
 
@@ -21,7 +26,9 @@ export default {
     GlLoadingIcon,
     WorkItemLinksForm,
     WorkItemLinksMenu,
+    WorkItemDetailModal,
   },
+  inject: ['projectPath'],
   props: {
     workItemId: {
       type: String,
@@ -64,6 +71,8 @@ export default {
       children: [],
       canUpdate: false,
       confidential: false,
+      activeChildId: null,
+      activeToast: null,
     };
   },
   computed: {
@@ -106,7 +115,87 @@ export default {
       this.isShownAddForm = false;
     },
     addChild(child) {
-      this.children = [child, ...this.children];
+      const { defaultClient: client } = this.$apollo.provider.clients;
+      this.toggleChildFromCache(child, child.id, client);
+    },
+    openChild(childItemId, e) {
+      if (isMetaKey(e)) {
+        return;
+      }
+      e.preventDefault();
+      this.activeChildId = childItemId;
+      this.$refs.modal.show();
+      this.updateWorkItemIdUrlQuery(childItemId);
+    },
+    closeModal() {
+      this.activeChildId = null;
+      this.updateWorkItemIdUrlQuery(undefined);
+    },
+    handleWorkItemDeleted(childId) {
+      const { defaultClient: client } = this.$apollo.provider.clients;
+      this.toggleChildFromCache(null, childId, client);
+      this.activeToast = this.$toast.show(s__('WorkItem|Task deleted'));
+    },
+    updateWorkItemIdUrlQuery(childItemId) {
+      updateHistory({
+        url: setUrlParams({ work_item_id: getIdFromGraphQLId(childItemId) }),
+        replace: true,
+      });
+    },
+    childPath(childItemId) {
+      return `/${this.projectPath}/-/work_items/${getIdFromGraphQLId(childItemId)}`;
+    },
+    toggleChildFromCache(workItem, childId, store) {
+      const sourceData = store.readQuery({
+        query: getWorkItemLinksQuery,
+        variables: { id: this.issuableGid },
+      });
+
+      const newData = produce(sourceData, (draftState) => {
+        const widgetHierarchy = draftState.workItem.widgets.find(
+          (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
+        );
+
+        const index = widgetHierarchy.children.nodes.findIndex((child) => child.id === childId);
+
+        if (index >= 0) {
+          widgetHierarchy.children.nodes.splice(index, 1);
+        } else {
+          widgetHierarchy.children.nodes.push(workItem);
+        }
+      });
+
+      store.writeQuery({
+        query: getWorkItemLinksQuery,
+        variables: { id: this.issuableGid },
+        data: newData,
+      });
+    },
+    async updateWorkItemMutation(workItem, childId, parentId) {
+      return this.$apollo.mutate({
+        mutation: updateWorkItem,
+        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
+        update: this.toggleChildFromCache.bind(this, workItem, childId),
+      });
+    },
+    async undoChildRemoval(workItem, childId) {
+      const { data } = await this.updateWorkItemMutation(workItem, childId, this.issuableGid);
+
+      if (data.workItemUpdate.errors.length === 0) {
+        this.activeToast?.hide();
+      }
+    },
+    async removeChild(childId) {
+      const { data } = await this.updateWorkItemMutation(null, childId, null);
+
+      if (data.workItemUpdate.errors.length === 0) {
+        this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
+          action: {
+            text: s__('WorkItem|Undo'),
+            onClick: this.undoChildRemoval.bind(this, data.workItemUpdate.workItem, childId),
+          },
+        });
+      }
     },
   },
   i18n: {
@@ -175,9 +264,17 @@ export default {
           class="gl-relative gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-overflow-break-word gl-min-w-0 gl-bg-white gl-mb-3 gl-py-3 gl-px-4 gl-border gl-border-gray-100 gl-rounded-base gl-line-height-32"
           data-testid="links-child"
         >
-          <div>
+          <div class="gl-overflow-hidden">
             <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-3 gl-text-gray-700" />
-            <span class="gl-word-break-all">{{ child.title }}</span>
+            <gl-button
+              :href="childPath(child.id)"
+              category="tertiary"
+              variant="link"
+              class="gl-text-truncate gl-max-w-80 gl-text-black-normal!"
+              @click="openChild(child.id, $event)"
+            >
+              {{ child.title }}
+            </gl-button>
           </div>
           <div
             class="gl-ml-0 gl-sm-ml-auto! gl-mt-3 gl-sm-mt-0 gl-display-inline-flex gl-align-items-center"
@@ -192,9 +289,16 @@ export default {
               :work-item-id="child.id"
               :parent-work-item-id="issuableGid"
               data-testid="links-menu"
+              @removeChild="removeChild(child.id)"
             />
           </div>
         </div>
+        <work-item-detail-modal
+          ref="modal"
+          :work-item-id="activeChildId"
+          @close="closeModal"
+          @workItemDeleted="handleWorkItemDeleted(activeChildId)"
+        />
       </template>
     </div>
   </div>

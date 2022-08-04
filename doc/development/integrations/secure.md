@@ -500,7 +500,7 @@ We recommend that you use the identifiers the GitLab scanners already define:
 | [ELSA](https://linux.oracle.com/security/) | `elsa` | ELSA-2020-0085 |
 | [OSVD](https://cve.mitre.org/data/refs/refmap/source-OSVDB.html) | `osvdb` | OSVDB-113928 |
 | [OWASP](https://owasp.org/Top10/) | `owasp` | A01:2021–Broken Access Control Design |
-| [RHSA](https://access.redhat.com/errata/#/) | `rhsa` | RHSA-2020:0111 |
+| [RHSA](https://access.redhat.com/errata-search/#/) | `rhsa` | RHSA-2020:0111 |
 | [USN](https://ubuntu.com/security/notices) | `usn` | USN-4234-1 |
 | [WASC](http://projects.webappsec.org/Threat-Classification-Reference-Grid)  | `wasc` | WASC-19 |
 

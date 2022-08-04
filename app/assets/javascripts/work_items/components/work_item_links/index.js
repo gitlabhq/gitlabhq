@@ -22,6 +22,8 @@ export default function initWorkItemLinks() {
     return;
   }
 
+  const { projectPath, wiHasIssueWeightsFeature } = workItemLinksRoot.dataset;
+
   // eslint-disable-next-line no-new
   new Vue({
     el: workItemLinksRoot,
@@ -31,7 +33,9 @@ export default function initWorkItemLinks() {
       workItemLinks: WorkItemLinks,
     },
     provide: {
-      projectPath: workItemLinksRoot.dataset.projectPath,
+      projectPath,
+      fullPath: projectPath,
+      hasIssueWeightsFeature: wiHasIssueWeightsFeature,
     },
     render: (createElement) =>
       createElement('work-item-links', {

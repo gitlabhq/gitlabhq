@@ -99,7 +99,7 @@
           s_("Preferences|Show one file at a time on merge request's Changes tab"),
           help_text: s_("Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser.")
       .form-group
-        - supported_characters = %w(" ' ` &#40; [ { < * _).map {|char| "<code>#{char}</code>" }.join(', ')
+        - supported_characters = %w(" ' ` &#40; [ { < * _).map { |char| "<code>#{char}</code>" }.join(', ')
         = f.gitlab_ui_checkbox_component :markdown_surround_selection,
           s_('Preferences|Surround text selection when typing quotes or brackets'),
           help_text: sprintf(s_( "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe

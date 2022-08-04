@@ -235,7 +235,7 @@ Each type of scheduled pipeline generates a static link for the latest test repo
 - [`staging-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity/master/index.html)
 - [`staging-sanity-no-admin`](https://storage.googleapis.com/gitlab-qa-allure-reports/staging-sanity-no-admin/master/index.html)
 - [`canary-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/canary-sanity/master/index.html)
-- [`production`](https://storage.googleapis.com/gitlab-qa-allure-reports/production/master/index.html)
+- [`production`](https://storage.googleapis.com/gitlab-qa-allure-reports/production-full/master/index.html)
 - [`production-sanity`](https://storage.googleapis.com/gitlab-qa-allure-reports/production-sanity/master/index.html)
 
 ## How do I run the tests?

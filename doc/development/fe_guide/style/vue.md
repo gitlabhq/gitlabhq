@@ -448,9 +448,9 @@ Typically, when testing a Vue component, the component should be "re-mounted" in
 To achieve this:
 
 1. Create a mutable `wrapper` variable inside the top-level `describe` block.
-1. Mount the component using [`mount`](https://vue-test-utils.vuejs.org/api/#mount)/
-[`shallowMount`](https://vue-test-utils.vuejs.org/api/#shallowMount).
-1. Reassign the resulting [`Wrapper`](https://vue-test-utils.vuejs.org/api/wrapper/#wrapper)
+1. Mount the component using [`mount`](https://v1.test-utils.vuejs.org/api/#mount)/
+[`shallowMount`](https://v1.test-utils.vuejs.org/api/#shallowMount).
+1. Reassign the resulting [`Wrapper`](https://v1.test-utils.vuejs.org/api/wrapper/#wrapper)
 instance to our `wrapper` variable.
 
 Creating a global, mutable wrapper provides a number of advantages, including the ability to:
@@ -476,8 +476,8 @@ Creating a global, mutable wrapper provides a number of advantages, including th
 
 To avoid duplicating our mounting logic, it's useful to define a `createComponent` factory function
 that we can reuse in each test block. This is a closure which should reassign our `wrapper` variable
-to the result of [`mount`](https://vue-test-utils.vuejs.org/api/#mount) and
-[`shallowMount`](https://vue-test-utils.vuejs.org/api/#shallowMount):
+to the result of [`mount`](https://v1.test-utils.vuejs.org/api/#mount) and
+[`shallowMount`](https://v1.test-utils.vuejs.org/api/#shallowMount):
 
 ```javascript
 import MyComponent from '~/path/to/my_component.vue';
@@ -579,9 +579,9 @@ the mounting function (`mount` or `shallowMount`) to be used to mount the compon
 
 ### Setting component state
 
-1. Avoid using [`setProps`](https://vue-test-utils.vuejs.org/api/wrapper/#setprops) to set
+1. Avoid using [`setProps`](https://v1.test-utils.vuejs.org/api/wrapper/#setprops) to set
 component state wherever possible. Instead, set the component's
-[`propsData`](https://vue-test-utils.vuejs.org/api/options.html#propsdata) when mounting the component:
+[`propsData`](https://v1.test-utils.vuejs.org/api/options.html#propsdata) when mounting the component:
 
     ```javascript
     // bad
@@ -659,7 +659,7 @@ The goal of this accord is to make sure we are all on the same page.
    1. If an outside jQuery Event needs to be listen to inside the Vue application, you may use
    jQuery event listeners.
    1. We avoid adding new jQuery events when they are not required. Instead of adding new jQuery
-   events take a look at [different methods to do the same task](https://vuejs.org/v2/api/#vm-emit).
+   events take a look at [different methods to do the same task](https://v2.vuejs.org/v2/api/#vm-emit).
 1. You may query the `window` object one time, while bootstrapping your application for application
 specific data (for example, `scrollTo` is ok to access anytime). Do this access during the
 bootstrapping of your application.

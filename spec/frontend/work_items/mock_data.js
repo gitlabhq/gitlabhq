@@ -335,6 +335,7 @@ export const workItemHierarchyEmptyResponse = {
       },
       title: 'New title',
       userPermissions: {
+        deleteWorkItem: false,
         updateWorkItem: false,
       },
       confidential: false,
@@ -368,6 +369,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       },
       title: 'New title',
       userPermissions: {
+        deleteWorkItem: false,
         updateWorkItem: false,
       },
       confidential: false,
@@ -412,6 +414,7 @@ export const workItemHierarchyResponse = {
       },
       title: 'New title',
       userPermissions: {
+        deleteWorkItem: true,
         updateWorkItem: true,
       },
       confidential: false,

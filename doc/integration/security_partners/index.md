@@ -12,7 +12,7 @@ each security partner:
 
 <!-- vale gitlab.Spelling = NO -->
 
-- [Anchore](https://docs.anchore.com/current/docs/using/integration/ci_cd/gitlab/)
+- [Anchore](https://docs.anchore.com/current/docs/configuration/integration/ci_cd/gitlab/)
 - [Bridgecrew](https://docs.bridgecrew.io/docs/integrate-with-gitlab-self-managed)
 - [Checkmarx](https://checkmarx.atlassian.net/wiki/spaces/SD/pages/1929937052/GitLab+Integration)
 - [Deepfactor](https://docs.deepfactor.io/hc/en-us/articles/1500008981941)

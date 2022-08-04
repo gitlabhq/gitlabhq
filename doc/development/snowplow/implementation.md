@@ -431,7 +431,7 @@ To test backend Snowplow events, use the `expect_snowplow_event` helper. For mor
 
 ### Performance
 
-We use the [AsyncEmitter](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/ruby-tracker/emitters/#the-asyncemitter-class) when tracking events, which allows for instrumentation calls to be run in a background thread. This is still an active area of development.
+We use the [AsyncEmitter](https://snowplow.github.io/snowplow-ruby-tracker/SnowplowTracker/AsyncEmitter.html) when tracking events, which allows for instrumentation calls to be run in a background thread. This is still an active area of development.
 
 ## Develop and test Snowplow
 

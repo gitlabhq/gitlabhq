@@ -271,7 +271,7 @@ Arguments:
 
 Example of implementation:
 
-Using Redis methods [`INCR`](https://redis.io/commands/incr), [`GET`](https://redis.io/commands/get), and [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb)
+Using Redis methods [`INCR`](https://redis.io/commands/incr/), [`GET`](https://redis.io/commands/get/), and [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb)
 
 ##### `UsageData` API
 
@@ -316,7 +316,7 @@ Enabled by default in GitLab 13.7 and later.
 #### Redis HLL counters
 
 WARNING:
-HyperLogLog (HLL) is a probabilistic algorithm and its **results always includes some small error**. According to [Redis documentation](https://redis.io/commands/pfcount), data from
+HyperLogLog (HLL) is a probabilistic algorithm and its **results always includes some small error**. According to [Redis documentation](https://redis.io/commands/pfcount/), data from
 used HLL implementation is "approximated with a standard error of 0.81%".
 
 NOTE:
@@ -324,7 +324,7 @@ NOTE:
 
 With `Gitlab::UsageDataCounters::HLLRedisCounter` we have available data structures used to count unique values.
 
-Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PFCOUNT](https://redis.io/commands/pfcount).
+Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [PFCOUNT](https://redis.io/commands/pfcount/).
 
 ##### Add new events
 

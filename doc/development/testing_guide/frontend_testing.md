@@ -466,7 +466,7 @@ it('waits for an Ajax call', () => {
 
 #### Vue rendering
 
-Use [`nextTick()`](https://vuejs.org/v2/api/#Vue-nextTick) to wait until a Vue component is
+Use [`nextTick()`](https://v2.vuejs.org/v2/api/#Vue-nextTick) to wait until a Vue component is
 re-rendered.
 
 **in Jest:**

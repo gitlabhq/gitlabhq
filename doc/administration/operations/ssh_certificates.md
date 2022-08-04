@@ -143,8 +143,7 @@ This is because if the `AuthorizedPrincipalsCommand` can't
 authenticate the user, OpenSSH falls back on
 `~/.ssh/authorized_keys` (or the `AuthorizedKeysCommand`).
 
-Therefore there may still be a reason to use the ["Fast lookup of
-authorized SSH keys in the database"](fast_ssh_key_lookup.html) method
+Therefore there may still be a reason to use the [Fast lookup of authorized SSH keys in the database](fast_ssh_key_lookup.md) method
 in conjunction with this. Since you are using SSH certificates for
 all your normal users, and relying on the `~/.ssh/authorized_keys`
 fallback for deploy keys, if you make use of those.

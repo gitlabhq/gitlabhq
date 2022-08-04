@@ -71,7 +71,7 @@ component, is that you avoid creating a fixture or an HTML element in the unit t
 
 ##### `provide` and `inject`
 
-Vue supports dependency injection through [`provide` and `inject`](https://vuejs.org/v2/api/#provide-inject).
+Vue supports dependency injection through [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject).
 In the component the `inject` configuration accesses the values `provide` passes down.
 This example of a Vue app initialization shows how the `provide` configuration passes a value from HAML to the component:
 
@@ -266,7 +266,7 @@ return new Vue({
 
 #### Accessing feature flags
 
-Use the [`provide` and `inject`](https://vuejs.org/v2/api/#provide-inject) mechanisms
+Use the [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject) mechanisms
 in Vue to make feature flags available to any descendant components in a Vue
 application. The `glFeatures` object is already provided in `commons/vue.js`, so
 only the mixin is required to use the flags:
@@ -339,7 +339,7 @@ Check this [page](vuex.md) for more details.
 
 ### Mixing Vue and JavaScript classes (in the data function)
 
-In the [Vue documentation](https://vuejs.org/v2/api/#Options-Data) the Data function/object is defined as follows:
+In the [Vue documentation](https://v2.vuejs.org/v2/api/#Options-Data) the Data function/object is defined as follows:
 
 > The data object for the Vue instance. Vue recursively converts its properties into getter/setters
 to make it "reactive". The object must be plain: native objects such as browser API objects and
@@ -348,7 +348,7 @@ recommended to observe objects with their own stateful behavior.
 
 Based on the Vue guidance:
 
-- **Do not** use or create a JavaScript class in your [data function](https://vuejs.org/v2/api/#data),
+- **Do not** use or create a JavaScript class in your [data function](https://v2.vuejs.org/v2/api/#data),
 such as `user: new User()`.
 - **Do not** add new JavaScript class implementations.
 - **Do** use [GraphQL](../api_graphql_styleguide.md), [Vuex](vuex.md) or a set of components if
@@ -531,7 +531,7 @@ Each Vue component has a unique output. This output is always present in the ren
 Although each method of a Vue component can be tested individually, our goal is to test the output
 of the render function, which represents the state at all times.
 
-Visit the [Vue testing guide](https://vuejs.org/v2/guide/testing.html#Unit-Testing) for help
+Visit the [Vue testing guide](https://v2.vuejs.org/v2/guide/testing.html#Unit-Testing) for help
 testing the rendered output.
 
 Here's an example of a well structured unit test for [this Vue component](#appendix---vue-component-subject-under-test):

@@ -801,8 +801,6 @@ If you have any questions on configuring the SAML app, please contact your provi
 
 ### Okta setup notes
 
-The following guidance is based on this Okta article, on adding a [SAML Application with an Okta Developer account](https://support.okta.com/help/s/article/Why-can-t-I-add-a-SAML-Application-with-an-Okta-Developer-account?language=en_US):
-
 1. In the Okta administrator section, make sure to select Classic UI view in the top left corner. From there, choose to **Add an App**.
 1. When the app screen comes up you see another button to **Create an App** and
    choose SAML 2.0 on the next screen.

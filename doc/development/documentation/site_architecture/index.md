@@ -257,7 +257,7 @@ If you don't specify `editor:`, the simple one is used by default.
 
 ## Algolia search engine
 
-The docs site uses [Algolia DocSearch](https://community.algolia.com/docsearch/)
+The docs site uses [Algolia DocSearch](https://docsearch.algolia.com/)
 for its search function.
 
 Learn more in <https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/docsearch.md>.

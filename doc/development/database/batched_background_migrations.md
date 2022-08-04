@@ -186,6 +186,40 @@ Bump to the [import/export version](../../user/project/settings/import_export.md
 be required, if importing a project from a prior version of GitLab requires the
 data to be in the new format.
 
+## Job arguments
+
+`BatchedMigrationJob` provides the `job_arguments` helper method for job classes to define the job arguments they need.
+
+Batched migrations scheduled with `queue_batched_background_migration` **must** use the helper to define the job arguments:
+
+```ruby
+queue_batched_background_migration(
+  'CopyColumnUsingBackgroundMigrationJob',
+  TABLE_NAME,
+  'name', 'name_convert_to_text',
+  job_interval: DELAY_INTERVAL
+)
+```
+
+In this example, `copy_from` returns `name`, and `copy_to` returns `name_convert_to_text`:
+
+```ruby
+class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
+  job_arguments :copy_from, :copy_to
+
+  def perform
+    from_column = connection.quote_column_name(copy_from)
+    to_column = connection.quote_column_name(copy_to)
+
+    assignment_clause = "#{to_column} = #{from_column}"
+
+    each_sub_batch(operation_name: :update_all) do |relation|
+      relation.update_all(assignment_clause)
+    end
+  end
+end
+```
+
 ## Example
 
 The `routes` table has a `source_type` field that's used for a polymorphic relationship.
@@ -221,8 +255,6 @@ background migration.
    correctly handled by the batched migration framework. Any subclass of
    `BatchedMigrationJob` is initialized with necessary arguments to
    execute the batch, as well as a connection to the tracking database.
-   Additional `job_arguments` set on the migration are passed to the
-   job's `perform` method.
 
 1. Add a new trigger to the database to update newly created and updated routes,
    similar to this example:

@@ -211,7 +211,7 @@ Workhorse supports distributed tracing through [LabKit](https://gitlab.com/gitla
 using [OpenTracing APIs](https://opentracing.io).
 
 By default, no tracing implementation is linked into the binary. You can link in
-different OpenTracing providers with [build tags](https://golang.org/pkg/go/build/#hdr-Build_Constraints)
+different OpenTracing providers with [build tags](https://pkg.go.dev/go/build#hdr-Build_Constraints)
 or build constraints by setting the `BUILD_TAGS` make variable.
 
 For more details of the supported providers, refer to LabKit. For an example of
@@ -278,9 +278,9 @@ trusted_cidrs_for_x_forwarded_for = ["10.0.0.0/8", "127.0.0.1/32"]
 ## Continuous profiling
 
 Workhorse supports continuous profiling through [LabKit](https://gitlab.com/gitlab-org/labkit/)
-using [Stackdriver Profiler](https://cloud.google.com/profiler). By default, the
+using [Stackdriver Profiler](https://cloud.google.com/products/operations). By default, the
 Stackdriver Profiler implementation is linked in the binary using
-[build tags](https://golang.org/pkg/go/build/#hdr-Build_Constraints), though it's not
+[build tags](https://pkg.go.dev/go/build#hdr-Build_Constraints), though it's not
 required and can be skipped. For example:
 
 ```shell

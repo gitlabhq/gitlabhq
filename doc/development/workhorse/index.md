@@ -21,7 +21,7 @@ but that repository is no longer used for development.
 
 ## Install Workhorse
 
-To install GitLab Workhorse you need [Go 1.15 or newer](https://golang.org/dl) and
+To install GitLab Workhorse you need [Go 1.15 or newer](https://go.dev/dl) and
 [GNU Make](https://www.gnu.org/software/make/).
 
 To install into `/usr/local/bin` run `make install`.
@@ -44,7 +44,7 @@ On some operating systems, such as FreeBSD, you may have to use
 
 ### Run time dependencies
 
-Workhorse uses [ExifTool](https://www.sno.phy.queensu.ca/~phil/exiftool/) for
+Workhorse uses [ExifTool](https://exiftool.org/) for
 removing EXIF data (which may contain sensitive information) from uploaded
 images. If you installed GitLab:
 

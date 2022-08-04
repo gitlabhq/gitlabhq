@@ -119,6 +119,13 @@ build:
     - if: $CI_COMMIT_TAG
 ```
 
+## Build a multi-arch image
+
+You can build [multi-arch images](https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/)
+inside a container by using [`manifest-tool`](https://github.com/estesp/manifest-tool).
+
+For a detailed guide on how to build a multi-arch image, read [Building a multi-arch container image in unprivileged containers](https://ingenuity.siemens.com/2022/07/building-a-multi-arch-container-image-in-unprivileged-containers/).
+
 ## Using a registry with a custom certificate
 
 When trying to push to a Docker registry that uses a certificate that is signed

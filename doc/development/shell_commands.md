@@ -17,7 +17,7 @@ These guidelines are meant to make your code more reliable _and_ secure.
 
 ## Use File and FileUtils instead of shell commands
 
-Sometimes we invoke basic Unix commands via the shell when there is also a Ruby API for doing it. Use the Ruby API if it exists. <https://www.ruby-doc.org/stdlib-2.0.0/libdoc/fileutils/rdoc/FileUtils.html#module-FileUtils-label-Module+Functions>
+Sometimes we invoke basic Unix commands via the shell when there is also a Ruby API for doing it. Use [the Ruby API](https://ruby-doc.org/stdlib-2.0.0/libdoc/fileutils/rdoc/FileUtils.html#module-FileUtils-label-Module+Functions) if it exists.
 
 ```ruby
 # Wrong

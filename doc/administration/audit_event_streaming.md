@@ -434,7 +434,7 @@ Push:
 
 #### Example payloads for SSH events with Deploy Key
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `audit_event_streaming_git_operations_deploy_key_event`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3.
 
 Fetch:
 

@@ -64,9 +64,10 @@ module Gitlab
             batch_column: tracking_record.migration_column_name,
             sub_batch_size: tracking_record.sub_batch_size,
             pause_ms: tracking_record.pause_ms,
+            job_arguments: tracking_record.migration_job_arguments,
             connection: connection)
 
-          job_instance.perform(*tracking_record.migration_job_arguments)
+          job_instance.perform
 
           job_instance
         end

@@ -111,7 +111,7 @@ GFM and GLFM each have an official specification, which includes both:
 1. Generic extensions to the CommonMark standard.
 
 For example, GFM adds the
-[`strikethrough` extension](https://github.github.com/gfm/https://github.github.com/gfm/#strikethrough-extension-),
+[`strikethrough` extension](https://github.github.com/gfm/#strikethrough-extension-),
 and GLFM adds the
 [`color chips` extension](../../../user/markdown.md#colors).
 These extensions in the official specifications are not dependent upon any specific

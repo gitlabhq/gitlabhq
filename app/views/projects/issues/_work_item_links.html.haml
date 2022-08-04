@@ -1,2 +1,2 @@
 - if Feature.enabled?(:work_items_hierarchy, @project)
-  .js-work-item-links-root{ data: { issuable_id: @issue.id, project_path: @project.full_path } }
+  .js-work-item-links-root{ data: { issuable_id: @issue.id, project_path: @project.full_path, wi: work_items_index_data(@project) } }

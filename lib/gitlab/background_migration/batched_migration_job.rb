@@ -3,22 +3,36 @@
 module Gitlab
   module BackgroundMigration
     # Base class for batched background migrations. Subclasses should implement the `#perform`
-    # method as the entry point for the job's execution, which will be called with the migration
-    # arguments (if any).
+    # method as the entry point for the job's execution.
+    #
+    # Job arguments needed must be defined explicitly,
+    # see https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#job-arguments.
     class BatchedMigrationJob
       include Gitlab::Database::DynamicModelHelpers
 
-      def initialize(start_id:, end_id:, batch_table:, batch_column:, sub_batch_size:, pause_ms:, connection:)
+      def initialize(
+        start_id:, end_id:, batch_table:, batch_column:, sub_batch_size:, pause_ms:, job_arguments: [], connection:
+      )
+
         @start_id = start_id
         @end_id = end_id
         @batch_table = batch_table
         @batch_column = batch_column
         @sub_batch_size = sub_batch_size
         @pause_ms = pause_ms
+        @job_arguments = job_arguments
         @connection = connection
       end
 
-      def perform(*job_arguments)
+      def self.job_arguments(*args)
+        args.each.with_index do |arg, index|
+          define_method(arg) do
+            @job_arguments[index]
+          end
+        end
+      end
+
+      def perform
         raise NotImplementedError, "subclasses of #{self.class.name} must implement #{__method__}"
       end
 
