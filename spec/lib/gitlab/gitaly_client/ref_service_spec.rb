@@ -120,6 +120,28 @@ RSpec.describe Gitlab::GitalyClient::RefService do
         expect(client.find_tag('')).to be_nil
       end
     end
+
+    context 'when Gitaly returns an Internal error' do
+      it 'raises an Internal error' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:find_tag)
+          .and_raise(GRPC::Internal.new('something went wrong'))
+
+        expect { client.find_tag('v1.0.0') }.to raise_error(GRPC::Internal)
+      end
+    end
+
+    context 'when Gitaly returns a tag_not_found error' do
+      it 'raises an UnknownRef error' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:find_tag)
+          .and_raise(new_detailed_error(GRPC::Core::StatusCodes::NOT_FOUND,
+                                        "tag was not found",
+                                        Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))
+
+        expect { client.find_tag('v1.0.0') }.to raise_error(Gitlab::Git::UnknownRef, 'tag does not exist: v1.0.0')
+      end
+    end
   end
 
   describe '#default_branch_name' do

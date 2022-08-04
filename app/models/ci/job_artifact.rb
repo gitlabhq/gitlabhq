@@ -245,6 +245,10 @@ module Ci
       end
     end
 
+    def self.file_types_for_report(report_type)
+      REPORT_FILE_TYPES.fetch(report_type)
+    end
+
     def self.associated_file_types_for(file_type)
       return unless file_types.include?(file_type)
 

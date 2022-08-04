@@ -13,6 +13,7 @@ module Projects
 
     def execute
       topics = Projects::Topic.order_by_non_private_projects_count
+      topics = by_without_projects(topics)
       by_search(topics)
     end
 
@@ -24,6 +25,12 @@ module Projects
       return topics unless params[:search].present?
 
       topics.search(params[:search]).reorder_by_similarity(params[:search])
+    end
+
+    def by_without_projects(topics)
+      return topics unless params[:without_projects]
+
+      topics.without_assigned_projects
     end
   end
 end

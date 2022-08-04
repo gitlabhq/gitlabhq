@@ -21,13 +21,9 @@ module Issuable
 
       def process_csv
         with_csv_lines.each do |row, line_no|
-          issuable_attributes = {
-            title: row[:title],
-            description: row[:description],
-            due_date: row[:due_date]
-          }
+          attributes = issuable_attributes_for(row)
 
-          if create_issuable(issuable_attributes).persisted?
+          if create_issuable(attributes).persisted?
             @results[:success] += 1
           else
             @results[:error_lines].push(line_no)
@@ -35,6 +31,14 @@ module Issuable
         end
       rescue ArgumentError, CSV::MalformedCSVError
         @results[:parse_error] = true
+      end
+
+      def issuable_attributes_for(row)
+        {
+          title:       row[:title],
+          description: row[:description],
+          due_date:    row[:due_date]
+        }
       end
 
       def with_csv_lines

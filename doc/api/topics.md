@@ -20,11 +20,12 @@ GET /topics
 
 Supported attributes:
 
-| Attribute  | Type    | Required               | Description |
-| ---------- | ------- | ---------------------- | ----------- |
-| `page`     | integer | **{dotted-circle}** No | Page to retrieve. Defaults to `1`.                      |
-| `per_page` | integer | **{dotted-circle}** No | Number of records to return per page. Defaults to `20`. |
-| `search`   | string  | **{dotted-circle}** No | Search topics against their `name`.                     |
+| Attribute          | Type    | Required               | Description |
+| ------------------ | ------- | ---------------------- | ----------- |
+| `page`             | integer | **{dotted-circle}** No | Page to retrieve. Defaults to `1`.                      |
+| `per_page`         | integer | **{dotted-circle}** No | Number of records to return per page. Defaults to `20`. |
+| `search`           | string  | **{dotted-circle}** No | Search topics against their `name`.                     |
+| `without_projects` | boolean | **{dotted-circle}** No | Limit results to topics without assigned projects.      |
 
 Example request:
 

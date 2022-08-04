@@ -46,23 +46,43 @@ comparing the head and base branch's JUnit report format XML files, where:
 - The base branch is the target branch (usually the default branch).
 - The head branch is the source branch (the latest pipeline in each merge request).
 
-The reports panel has a summary showing how many tests failed, how many had errors
+The **Test summary** panel shows how many tests failed, how many had errors,
 and how many were fixed. If no comparison can be done because data for the base branch
-is not available, the panel just shows the list of failed tests for head.
+is not available, the panel shows only the list of failed tests for the source branch.
 
-There are four types of results:
+The types of results are:
 
-1. **Newly failed tests:** Test cases which passed on base branch and failed on head branch
-1. **Newly encountered errors:** Test cases which passed on base branch and failed due to a
-   test error on head branch
-1. **Existing failures:** Test cases which failed on base branch and failed on head branch
-1. **Resolved failures:** Test cases which failed on base branch and passed on head branch
+- **Newly failed tests:** Test cases which passed on the base branch and failed on the head branch.
+- **Newly encountered errors:** Test cases which passed on the base branch and failed due to a
+  test error on the head branch.
+- **Existing failures:** Test cases which failed on the base branch and failed on the head branch.
+- **Resolved failures:** Test cases which failed on the base branch and passed on the head branch.
 
-Each entry in the panel shows the test name and its type from the list
-above. Clicking on the test name opens a modal window with details of its
-execution time and the error output.
+### View failed tests
+
+Each entry in the **Test summary** panel shows the test name and result type.
+Select the test name to open a modal window with details of its execution time and
+the error output.
 
 ![Test Reports Widget](img/junit_test_report.png)
+
+#### Copy failed test names
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91552) in GitLab 15.2.
+
+You can copy the name and path of failed tests when there are failed tests listed
+in the **Test summary** panel. Use name and path to find and rerun the
+test locally for verification.
+
+To copy the name of all failed tests, at the top of the **Test summary** panel,
+select **Copy failed tests**. The failed tests are listed as a string with the tests
+separated by spaces.
+
+To copy the name of a single failed test:
+
+1. Expand the **Test summary** panel by selecting **Show test summary details** (**{angle-down}**).
+1. Select the test you want to review.
+1. Select **Copy test name to rerun locally** (**{copy-to-clipboard}**).
 
 ### Number of recent failures
 

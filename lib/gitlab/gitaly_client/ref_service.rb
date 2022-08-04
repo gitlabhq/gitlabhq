@@ -120,6 +120,16 @@ module Gitlab
         return unless tag
 
         Gitlab::Git::Tag.new(@repository, tag)
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :tag_not_found
+          raise Gitlab::Git::UnknownRef, "tag does not exist: #{tag_name}"
+        else
+          # When this is not a know structured error we simply re-raise the exception.
+          raise e
+        end
       end
 
       def delete_refs(refs: [], except_with_prefixes: [])

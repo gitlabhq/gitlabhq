@@ -30,6 +30,17 @@ RSpec.describe Projects::Topic do
   end
 
   describe 'scopes' do
+    describe 'without_assigned_projects' do
+      let_it_be(:unassigned_topic) { create(:topic, name: 'unassigned topic') }
+      let_it_be(:project) { create(:project, :public, topic_list: 'topic') }
+
+      it 'returns topics without assigned projects' do
+        topics = described_class.without_assigned_projects
+
+        expect(topics).to contain_exactly(unassigned_topic)
+      end
+    end
+
     describe 'order_by_non_private_projects_count' do
       let!(:topic1) { create(:topic, name: 'topicB') }
       let!(:topic2) { create(:topic, name: 'topicC') }

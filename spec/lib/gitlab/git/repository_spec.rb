@@ -1837,6 +1837,47 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#find_tag' do
+    it 'returns a tag' do
+      tag = repository.find_tag('v1.0.0')
+
+      expect(tag).to be_a_kind_of(Gitlab::Git::Tag)
+      expect(tag.name).to eq('v1.0.0')
+    end
+
+    shared_examples 'a nonexistent tag' do
+      it 'returns nil' do
+        expect(repository.find_tag('this-is-garbage')).to be_nil
+      end
+    end
+
+    context 'when asking for a non-existent tag' do
+      it_behaves_like 'a nonexistent tag'
+    end
+
+    context 'when Gitaly returns Internal error' do
+      before do
+        expect(repository.gitaly_ref_client)
+          .to receive(:find_tag)
+          .and_raise(GRPC::Internal, "tag not found")
+      end
+
+      it_behaves_like 'a nonexistent tag'
+    end
+
+    context 'when Gitaly returns tag_not_found error' do
+      before do
+        expect(repository.gitaly_ref_client)
+          .to receive(:find_tag)
+          .and_raise(new_detailed_error(GRPC::Core::StatusCodes::NOT_FOUND,
+                                        "tag was not found",
+                                        Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))
+      end
+
+      it_behaves_like 'a nonexistent tag'
+    end
+  end
+
   describe '#languages' do
     it 'returns exactly the expected results' do
       languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')

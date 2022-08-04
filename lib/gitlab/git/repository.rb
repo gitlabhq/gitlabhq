@@ -135,6 +135,13 @@ module Gitlab
           gitaly_ref_client.find_tag(name)
         end
       rescue CommandError
+        # Gitaly used to return an `Internal` error in case the tag wasn't found, which is being translated to
+        # `CommandError` by the wrapper. This has been converted in v15.3.0 to instead return a structured
+        # error with a `tag_not_found` error, so rescuing from `Internal` errors can be removed in v15.4.0 and
+        # later.
+      rescue Gitlab::Git::UnknownRef
+        # This is the new error returned by `find_tag`, which knows to translate the structured error returned
+        # by Gitaly when the tag does not exist.
       end
 
       def local_branches(sort_by: nil, pagination_params: nil)
