@@ -237,7 +237,7 @@ gem 'redis', '~> 4.4.0'
 gem 'connection_pool', '~> 2.0'
 
 # Redis session store
-gem 'redis-actionpack', '~> 5.2.0'
+gem 'redis-actionpack', '~> 5.3.0'
 
 # Discord integration
 gem 'discordrb-webhooks', '~> 3.4', require: false
@@ -317,7 +317,7 @@ gem 'pg_query', '~> 2.1.0'
 gem 'premailer-rails', '~> 1.10.3'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '~> 0.23.0'
+gem 'gitlab-labkit', '~> 0.24.0'
 # Thrift is a dependency of gitlab-labkit, we want a version higher than 0.14.0
 # because of https://gitlab.com/gitlab-org/gitlab/-/issues/321900
 gem 'thrift', '>= 0.14.0'
@@ -360,7 +360,7 @@ end
 
 group :development, :test do
   gem 'deprecation_toolkit', '~> 1.5.1', require: false
-  gem 'bullet', '~> 6.1.3'
+  gem 'bullet', '~> 7.0.2'
   gem 'pry-byebug'
   gem 'pry-rails', '~> 0.3.9'
   gem 'pry-shell', '~> 0.5.1'

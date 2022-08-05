@@ -162,7 +162,6 @@ module Gitlab
         gap = model_class
           .from(items_with_next_pos, :items)
           .where('next_pos IS NULL OR ABS(pos::bigint - next_pos::bigint) >= ?', MIN_GAP)
-          .limit(1)
           .pick(:pos, :next_pos)
 
         return if gap.nil? || gap.first == default_end
