@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-# Expects usage of 'incident settings enabled' context.
+# Expects usage of 'incident management settings enabled' context.
 #
 # This shared_example includes the following option:
 # - count: number of notifications expected to be sent
 RSpec.shared_examples 'sends alert notification emails if enabled' do |count: 1|
-  include_examples 'sends alert notification emails', count
+  include_examples 'sends alert notification emails', count: count
 
   context 'with email setting disabled' do
     let(:send_email) { false }

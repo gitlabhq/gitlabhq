@@ -12,6 +12,8 @@ require 'logger'
 require 'fileutils'
 require 'bundler'
 
+require_relative '../../../lib/gitlab/utils'
+
 module GitalySetup
   extend self
 
@@ -139,7 +141,7 @@ module GitalySetup
   end
 
   def start_praefect
-    if ENV['GITALY_PRAEFECT_WITH_DB']
+    if praefect_with_db?
       LOGGER.debug 'Starting Praefect with database election strategy'
       start(:praefect, File.join(tmp_tests_gitaly_dir, 'praefect-db.config.toml'))
     else
@@ -290,7 +292,7 @@ module GitalySetup
 
     # In CI we need to pre-generate both config files.
     # For local testing we'll create the correct file on-demand.
-    if ENV['CI'] || ENV['GITALY_PRAEFECT_WITH_DB'].nil?
+    if ENV['CI'] || !praefect_with_db?
       Gitlab::SetupHelper::Praefect.create_configuration(
         gitaly_dir,
         { 'praefect' => repos_path },
@@ -298,7 +300,7 @@ module GitalySetup
       )
     end
 
-    if ENV['CI'] || ENV['GITALY_PRAEFECT_WITH_DB']
+    if ENV['CI'] || praefect_with_db?
       Gitlab::SetupHelper::Praefect.create_configuration(
         gitaly_dir,
         { 'praefect' => repos_path },
@@ -319,7 +321,7 @@ module GitalySetup
   end
 
   def setup_praefect
-    return unless ENV['GITALY_PRAEFECT_WITH_DB']
+    return unless praefect_with_db?
 
     migrate_cmd = service_cmd(:praefect, File.join(tmp_tests_gitaly_dir, 'praefect-db.config.toml')) + ['sql-migrate']
     system(env, *migrate_cmd, [:out, :err] => 'log/praefect-test.log')
@@ -395,5 +397,9 @@ module GitalySetup
 
   def praefect_binary
     File.join(tmp_tests_gitaly_dir, "_build", "bin", "praefect")
+  end
+
+  def praefect_with_db?
+    Gitlab::Utils.to_boolean(ENV['GITALY_PRAEFECT_WITH_DB'], default: false)
   end
 end

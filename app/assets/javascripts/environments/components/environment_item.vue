@@ -627,7 +627,7 @@ export default {
         :title="model.name"
         class="environment-name table-mobile-content"
       >
-        <a class="qa-environment-link" :href="environmentPath">
+        <a data-qa-selector="environment_link" :href="environmentPath">
           <span v-if="model.size === 1">{{ model.name }}</span>
           <span v-else>{{ model.name_without_type }}</span>
         </a>

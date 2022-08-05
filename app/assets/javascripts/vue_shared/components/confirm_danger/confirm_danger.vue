@@ -53,6 +53,7 @@ export default {
       :variant="buttonVariant"
       :disabled="disabled"
       :data-testid="buttonTestid"
+      data-qa-selector="confirm_danger_button"
       >{{ buttonText }}</gl-button
     >
     <confirm-danger-modal

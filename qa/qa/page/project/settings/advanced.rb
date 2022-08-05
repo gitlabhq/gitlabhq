@@ -8,6 +8,10 @@ module QA
           include QA::Page::Component::ConfirmModal
           include Component::NamespaceSelect
 
+          view 'app/assets/javascripts/vue_shared/components/confirm_danger/confirm_danger.vue' do
+            element :confirm_danger_button
+          end
+
           view 'app/views/projects/edit.html.haml' do
             element :project_path_field
             element :change_path_button
@@ -47,7 +51,7 @@ module QA
             # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
             select_namespace(namespace.gsub(%r{([^\s])/([^\s])}, '\1 / \2'))
 
-            click_element(:transfer_button)
+            click_element(:confirm_danger_button)
             fill_confirmation_text(project_name)
             confirm_transfer
           end

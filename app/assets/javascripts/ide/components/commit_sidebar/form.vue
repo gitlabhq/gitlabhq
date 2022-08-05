@@ -156,7 +156,7 @@ export default {
             category="primary"
             variant="confirm"
             block
-            class="qa-begin-commit-button"
+            data-qa-selector="begin_commit_button"
             data-testid="begin-commit-button"
             @click="beginCommit"
           >
@@ -184,7 +184,7 @@ export default {
               :disabled="commitButtonDisabled"
               :loading="submitCommitLoading"
               data-testid="commit-button"
-              class="qa-commit-button"
+              data-qa-selector="commit_button"
               category="primary"
               variant="confirm"
               type="submit"

@@ -82,7 +82,6 @@ describe('Transfer group form', () => {
 
     it('sets the confirm danger properties', () => {
       expect(findConfirmDanger().props()).toMatchObject({
-        buttonClass: 'qa-transfer-button',
         disabled: true,
         buttonText: confirmButtonText,
         phrase: confirmationPhrase,

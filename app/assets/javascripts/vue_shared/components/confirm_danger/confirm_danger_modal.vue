@@ -66,7 +66,13 @@ export default {
     actionPrimary() {
       return {
         text: this.confirmButtonText,
-        attributes: [{ variant: 'danger', disabled: !this.isValid, class: 'qa-confirm-button' }],
+        attributes: [
+          {
+            variant: 'danger',
+            disabled: !this.isValid,
+            'data-qa-selector': 'confirm_danger_modal_button',
+          },
+        ],
       };
     },
     actionCancel() {
@@ -122,7 +128,8 @@ export default {
       <gl-form-input
         id="confirm_name_input"
         v-model="confirmationPhrase"
-        class="form-control qa-confirm-input"
+        class="form-control"
+        data-qa-selector="confirm_danger_field"
         data-testid="confirm-danger-input"
         type="text"
       />

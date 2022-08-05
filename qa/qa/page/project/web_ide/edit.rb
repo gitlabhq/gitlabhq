@@ -24,11 +24,11 @@ module QA
           end
 
           view 'app/assets/javascripts/ide/components/ide_tree_list.vue' do
-            element :file_list
+            element :file_list_container
           end
 
           view 'app/assets/javascripts/ide/components/file_templates/bar.vue' do
-            element :file_templates_bar
+            element :file_templates_container
             element :file_template_dropdown
           end
 
@@ -110,7 +110,7 @@ module QA
           end
 
           def has_file?(file_name)
-            within_element(:file_list) do
+            within_element(:file_list_container) do
               has_element?(:file_name_content, file_name: file_name)
             end
           end
@@ -173,7 +173,7 @@ module QA
             has_no_element?(:new_file_modal)
 
             wait_until(reload: false) do
-              within_element(:file_templates_bar) do
+              within_element(:file_templates_container) do
                 click_element :file_template_dropdown
                 fill_element :dropdown_filter_input, template
 
@@ -291,12 +291,12 @@ module QA
             click_element(:fork_project_button)
             # wait for the fork to be created
             wait_until(reload: true) do
-              has_element?(:file_list)
+              has_element?(:file_list_container)
             end
           end
 
           def upload_file(file_path)
-            within_element(:file_list) do
+            within_element(:file_list_container) do
               find_element(:file_upload_field, visible: false).send_keys(file_path)
             end
           end

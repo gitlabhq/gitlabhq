@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <div class="groups-list-tree-container qa-groups-list-tree-container">
+  <div class="groups-list-tree-container" data-qa-selector="groups_list_tree_container">
     <div
       v-if="searchEmpty"
       class="has-no-search-results gl-font-style-italic gl-text-center gl-text-gray-600 gl-p-5"

@@ -391,6 +391,11 @@ RSpec.configure do |config|
     Gitlab::WithRequestStore.with_request_store { example.run }
   end
 
+  config.around(:example, :enable_rugged) do |example|
+    # Skip tests that need rugged when using praefect DB.
+    example.run unless GitalySetup.praefect_with_db?
+  end
+
   # previous test runs may have left some resources throttled
   config.before do
     ::Gitlab::ExclusiveLease.reset_all!("el:throttle:*")
