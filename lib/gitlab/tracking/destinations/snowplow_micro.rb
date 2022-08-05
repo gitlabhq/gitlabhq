@@ -54,7 +54,7 @@ module Gitlab
           scheme = Gitlab.config.gitlab.https ? 'https' : 'http'
           "#{scheme}://#{url}"
         rescue Settingslogic::MissingSetting
-          ENV['SNOWPLOW_MICRO_URI'] || DEFAULT_URI
+          DEFAULT_URI
         end
       end
     end

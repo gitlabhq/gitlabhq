@@ -552,6 +552,10 @@ RSpec.describe Ci::Runner do
       allow_any_instance_of(described_class).to receive(:cached_attribute).and_call_original
       allow_any_instance_of(described_class).to receive(:cached_attribute)
         .with(:platform).and_return("darwin")
+      allow_any_instance_of(described_class).to receive(:cached_attribute)
+        .with(:version).and_return("14.0.0")
+
+      allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).once
     end
 
     context 'table tests' do
@@ -623,6 +627,10 @@ RSpec.describe Ci::Runner do
       allow_any_instance_of(described_class).to receive(:cached_attribute).and_call_original
       allow_any_instance_of(described_class).to receive(:cached_attribute)
         .with(:platform).and_return("darwin")
+      allow_any_instance_of(described_class).to receive(:cached_attribute)
+        .with(:version).and_return("14.0.0")
+
+      allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).once
     end
 
     context 'no cache value' do
@@ -691,19 +699,6 @@ RSpec.describe Ci::Runner do
     let!(:runner2) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
 
     it { is_expected.to eq([runner1]) }
-  end
-
-  describe '#tick_runner_queue' do
-    it 'sticks the runner to the primary and calls the original method' do
-      runner = create(:ci_runner)
-
-      expect(described_class.sticking).to receive(:stick)
-        .with(:runner, runner.id)
-
-      expect(Gitlab::Workhorse).to receive(:set_key_and_notify)
-
-      runner.tick_runner_queue
-    end
   end
 
   describe '#matches_build?' do
@@ -989,6 +984,16 @@ RSpec.describe Ci::Runner do
     it 'returns a new last_update value' do
       expect(runner.tick_runner_queue).not_to be_empty
     end
+
+    it 'sticks the runner to the primary and calls the original method' do
+      runner = create(:ci_runner)
+
+      expect(described_class.sticking).to receive(:stick).with(:runner, runner.id)
+
+      expect(Gitlab::Workhorse).to receive(:set_key_and_notify)
+
+      runner.tick_runner_queue
+    end
   end
 
   describe '#ensure_runner_queue_value' do
@@ -1055,14 +1060,19 @@ RSpec.describe Ci::Runner do
 
       it 'updates cache' do
         expect_redis_update
+        expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to receive(:perform_async)
 
         heartbeat
+
+        expect(runner.runner_version).to be_nil
       end
     end
 
     context 'when database was not updated recently' do
       before do
         runner.contacted_at = 2.hours.ago
+
+        allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async)
       end
 
       context 'with invalid runner' do
@@ -1075,12 +1085,25 @@ RSpec.describe Ci::Runner do
 
           expect_redis_update
           does_db_update
+
+          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).once
+        end
+      end
+
+      context 'with unchanged runner version' do
+        let(:runner) { create(:ci_runner, version: version) }
+
+        it 'does not schedule ci_runner_versions update' do
+          heartbeat
+
+          expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).not_to have_received(:perform_async)
         end
       end
 
       it 'updates redis cache and database' do
         expect_redis_update
         does_db_update
+        expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async).once
       end
 
       %w(custom shell docker docker-windows docker-ssh ssh parallels virtualbox docker+machine docker-ssh+machine kubernetes some-unknown-type).each do |executor|

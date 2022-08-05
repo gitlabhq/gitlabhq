@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Pages access control **(FREE)**
 
-> Available on GitLab.com in GitLab 12.4.
-
 You can enable Pages access control on your project
 if your administrator has [enabled the access control feature](../../../administration/pages/index.md#access-control)
 on your GitLab instance. When enabled, only authenticated

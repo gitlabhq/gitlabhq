@@ -3,10 +3,10 @@ import { GlButton } from '@gitlab/ui';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
-  SET_CLEANUP_POLICY_BUTTON,
   KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION,
   KEEP_N_DUPLICATED_PACKAGE_FILES_FIELDNAME,
   KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL,
+  SET_CLEANUP_POLICY_BUTTON,
 } from '~/packages_and_registries/settings/project/constants';
 import updatePackagesCleanupPolicyMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_cleanup_policy.mutation.graphql';
 import { formOptionsGenerator } from '~/packages_and_registries/settings/project/utils';
@@ -108,18 +108,17 @@ export default {
 
 <template>
   <form ref="form-element" @submit.prevent="submit">
-    <div class="gl-md-max-w-50p">
-      <expiration-dropdown
-        v-model="prefilledForm.keepNDuplicatedPackageFiles"
-        :disabled="isFieldDisabled"
-        :form-options="$options.formOptions.keepNDuplicatedPackageFiles"
-        :label="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL"
-        :description="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION"
-        name="keep-n-duplicated-package-files"
-        data-testid="keep-n-duplicated-package-files-dropdown"
-        @input="onModelChange($event, 'keepNDuplicatedPackageFiles')"
-      />
-    </div>
+    <expiration-dropdown
+      :value="prefilledForm.keepNDuplicatedPackageFiles"
+      :disabled="isFieldDisabled"
+      :form-options="$options.formOptions.keepNDuplicatedPackageFiles"
+      :label="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_LABEL"
+      :description="$options.i18n.KEEP_N_DUPLICATED_PACKAGE_FILES_DESCRIPTION"
+      dropdown-class="gl-md-max-w-50p gl-sm-pr-5"
+      name="keep-n-duplicated-package-files"
+      data-testid="keep-n-duplicated-package-files-dropdown"
+      @input="onModelChange($event, 'keepNDuplicatedPackageFiles')"
+    />
     <div class="gl-mt-7 gl-display-flex gl-align-items-center">
       <gl-button
         data-testid="save-button"

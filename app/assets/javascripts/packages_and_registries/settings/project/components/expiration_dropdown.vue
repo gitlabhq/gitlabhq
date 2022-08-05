@@ -35,22 +35,34 @@ export default {
       required: false,
       default: '',
     },
+    dropdownClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 };
 </script>
 
 <template>
   <gl-form-group :id="`${name}-form-group`" :label-for="name" :label="label">
-    <gl-form-select :id="name" :value="value" :disabled="disabled" @input="$emit('input', $event)">
-      <option
-        v-for="option in formOptions"
-        :key="option.key"
-        :value="option.key"
-        data-testid="option"
+    <div :class="dropdownClass">
+      <gl-form-select
+        :id="name"
+        :value="value"
+        :disabled="disabled"
+        @input="$emit('input', $event)"
       >
-        {{ option.label }}
-      </option>
-    </gl-form-select>
+        <option
+          v-for="option in formOptions"
+          :key="option.key"
+          :value="option.key"
+          data-testid="option"
+        >
+          {{ option.label }}
+        </option>
+      </gl-form-select>
+    </div>
     <template v-if="description" #description>
       <span data-testid="description" class="gl-text-gray-400">
         {{ description }}

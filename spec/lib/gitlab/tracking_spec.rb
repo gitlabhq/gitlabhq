@@ -90,15 +90,6 @@ RSpec.describe Gitlab::Tracking do
 
         it_behaves_like 'delegates to SnowplowMicro destination with proper options'
       end
-
-      context "enabled with env variable" do
-        before do
-          allow(Gitlab.config).to receive(:snowplow_micro).and_raise(Settingslogic::MissingSetting)
-          stub_env('SNOWPLOW_MICRO_ENABLE', '1')
-        end
-
-        it_behaves_like 'delegates to SnowplowMicro destination with proper options'
-      end
     end
 
     it 'when feature flag is disabled' do
@@ -149,7 +140,6 @@ RSpec.describe Gitlab::Tracking do
 
     context 'when destination is Snowplow' do
       before do
-        stub_env('SNOWPLOW_MICRO_ENABLE', '0')
         allow(Rails.env).to receive(:development?).and_return(true)
       end
 
@@ -158,7 +148,6 @@ RSpec.describe Gitlab::Tracking do
 
     context 'when destination is SnowplowMicro' do
       before do
-        stub_env('SNOWPLOW_MICRO_ENABLE', '1')
         allow(Rails.env).to receive(:development?).and_return(true)
       end
 
@@ -210,6 +199,30 @@ RSpec.describe Gitlab::Tracking do
 
       described_class.definition('filename', category: nil, action: nil, label: 'label', property: '...',
                                   project: project, user: user, namespace: namespace, extra_key_1: 'extra value 1')
+    end
+  end
+
+  describe 'snowplow_micro_enabled?' do
+    before do
+      allow(Rails.env).to receive(:development?).and_return(true)
+    end
+
+    it 'returns true when snowplow_micro is enabled' do
+      stub_config(snowplow_micro: { enabled: true })
+
+      expect(described_class).to be_snowplow_micro_enabled
+    end
+
+    it 'returns false when snowplow_micro is disabled' do
+      stub_config(snowplow_micro: { enabled: false })
+
+      expect(described_class).not_to be_snowplow_micro_enabled
+    end
+
+    it 'returns false when snowplow_micro is not configured' do
+      allow(Gitlab.config).to receive(:snowplow_micro).and_raise(Settingslogic::MissingSetting)
+
+      expect(described_class).not_to be_snowplow_micro_enabled
     end
   end
 end

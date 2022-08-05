@@ -437,7 +437,12 @@ module Ci
         cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
-        self.update_columns(values) if persist_cached_data?
+        if persist_cached_data?
+          version_updated = values.include?(:version) && values[:version] != version
+
+          update_columns(values)
+          schedule_runner_version_update if version_updated
+        end
       end
     end
 
@@ -564,6 +569,12 @@ module Ci
       unless runner_namespaces.one?
         errors.add(:runner, 'needs to be assigned to exactly one group')
       end
+    end
+
+    def schedule_runner_version_update
+      return unless version
+
+      Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(version)
     end
   end
 end

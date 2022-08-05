@@ -84,7 +84,7 @@ export default {
     class="submit-review-dropdown"
     data-qa-selector="submit_review_dropdown"
     variant="info"
-    category="secondary"
+    category="primary"
   >
     <template #button-content>
       {{ __('Finish review') }}
@@ -139,7 +139,7 @@ export default {
           </div>
         </div>
       </gl-form-group>
-      <div class="gl-display-flex gl-justify-content-end gl-mt-5">
+      <div class="gl-display-flex gl-justify-content-start gl-mt-5">
         <gl-button
           :loading="isSubmitting"
           variant="confirm"

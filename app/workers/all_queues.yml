@@ -2136,6 +2136,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_runners_process_runner_version_update
+  :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
+  :feature_category: :runner_fleet
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: create_commit_signature
   :worker_name: CreateCommitSignatureWorker
   :feature_category: :source_code_management

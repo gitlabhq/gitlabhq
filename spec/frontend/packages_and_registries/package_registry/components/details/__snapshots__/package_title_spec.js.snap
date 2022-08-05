@@ -29,19 +29,25 @@ exports[`PackageTitle renders with tags 1`] = `
           <div
             class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-3"
           >
-            <span
+            <div
+              class="gl-display-flex gl-gap-3"
               data-testid="sub-header"
             >
               v
           1.0.0
          published 
               <time-ago-tooltip-stub
-                class="gl-ml-2"
                 cssclass=""
                 time="2020-08-17T14:23:32Z"
                 tooltipplacement="top"
               />
-            </span>
+               
+              <package-tags-stub
+                hidelabel="true"
+                tagdisplaylimit="2"
+                tags="[object Object],[object Object],[object Object]"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -71,15 +77,6 @@ exports[`PackageTitle renders with tags 1`] = `
             size="s"
             text="800.00 KiB"
             texttooltip=""
-          />
-        </div>
-        <div
-          class="gl-display-flex gl-align-items-center gl-mr-5"
-        >
-          <package-tags-stub
-            hidelabel="true"
-            tagdisplaylimit="2"
-            tags="[object Object],[object Object],[object Object]"
           />
         </div>
       </div>
@@ -121,19 +118,21 @@ exports[`PackageTitle renders without tags 1`] = `
           <div
             class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-3"
           >
-            <span
+            <div
+              class="gl-display-flex gl-gap-3"
               data-testid="sub-header"
             >
               v
           1.0.0
          published 
               <time-ago-tooltip-stub
-                class="gl-ml-2"
                 cssclass=""
                 time="2020-08-17T14:23:32Z"
                 tooltipplacement="top"
               />
-            </span>
+               
+              <!---->
+            </div>
           </div>
         </div>
       </div>
