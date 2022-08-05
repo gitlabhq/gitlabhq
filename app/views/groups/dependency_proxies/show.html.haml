@@ -2,4 +2,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
 
 #js-dependency-proxy{ data: { group_path: @group.full_path,
-  no_manifests_illustration: image_path('illustrations/docker-empty-state.svg'), group_id: @group.id } }
+  no_manifests_illustration: image_path('illustrations/docker-empty-state.svg'),
+  group_id: @group.id,
+  can_clear_cache: can?(current_user, :admin_group, @group).to_s } }

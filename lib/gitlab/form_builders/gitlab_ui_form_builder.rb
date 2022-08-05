@@ -3,6 +3,20 @@
 module Gitlab
   module FormBuilders
     class GitlabUiFormBuilder < ActionView::Helpers::FormBuilder
+      def submit(value = nil, options = {})
+        if options[:pajamas_button]
+          @template.render Pajamas::ButtonComponent.new(
+            variant: :confirm,
+            type: :submit,
+            button_options: options.except!(:pajamas_button)
+          ) do
+            value
+          end
+        else
+          super
+        end
+      end
+
       def gitlab_ui_checkbox_component(
         method,
         label = nil,

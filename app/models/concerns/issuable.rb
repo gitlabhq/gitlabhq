@@ -537,6 +537,10 @@ module Issuable
     labels.map(&:hook_attrs)
   end
 
+  def allows_scoped_labels?
+    false
+  end
+
   # Convert this Issuable class name to a format usable by Ability definitions
   #
   # Examples:

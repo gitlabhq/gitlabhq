@@ -1022,6 +1022,40 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(Project.sum(:star_count)).to eq(2 * Project.count)
         end
       end
+
+      context 'when the table is write-locked' do
+        let(:test_table) { '_test_table' }
+        let(:lock_writes_manager) do
+          Gitlab::Database::LockWritesManager.new(
+            table_name: test_table,
+            connection: model.connection,
+            database_name: 'main'
+          )
+        end
+
+        before do
+          model.connection.execute(<<~SQL)
+            CREATE TABLE #{test_table} (id integer NOT NULL, value integer NOT NULL DEFAULT 0);
+
+            INSERT INTO #{test_table} (id, value)
+            VALUES (1, 1), (2, 2), (3, 3)
+          SQL
+
+          lock_writes_manager.lock_writes
+        end
+
+        it 'disables the write-lock trigger function' do
+          expect do
+            model.update_column_in_batches(test_table, :value, Arel.sql('1+1'), disable_lock_writes: true)
+          end.not_to raise_error
+        end
+
+        it 'raises an error if it does not disable the trigger function' do
+          expect do
+            model.update_column_in_batches(test_table, :value, Arel.sql('1+1'), disable_lock_writes: false)
+          end.to raise_error(ActiveRecord::StatementInvalid, /Table: "#{test_table}" is write protected/)
+        end
+      end
     end
 
     context 'when running inside the transaction' do
@@ -1122,6 +1156,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           it 'copies the value to the new column using the type_cast_function', :aggregate_failures do
             expect(model).to receive(:copy_indexes).with(:users, :id, :new)
             expect(model).to receive(:add_not_null_constraint).with(:users, :new)
+            expect(model).to receive(:execute).with("SELECT set_config('lock_writes.users', 'false', true)")
             expect(model).to receive(:execute).with("UPDATE \"users\" SET \"new\" = cast_to_jsonb_with_default(\"users\".\"id\") WHERE \"users\".\"id\" >= #{user.id}")
             expect(copy_trigger).to receive(:create).with(:id, :new, trigger_name: nil)
 
@@ -1178,6 +1213,34 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
             model.rename_column_concurrently(:users, :old, :new)
           end
+        end
+      end
+
+      context 'when the table in the other database is write-locked' do
+        let(:test_table) { '_test_table' }
+        let(:lock_writes_manager) do
+          Gitlab::Database::LockWritesManager.new(
+            table_name: test_table,
+            connection: model.connection,
+            database_name: 'main'
+          )
+        end
+
+        before do
+          model.connection.execute(<<~SQL)
+            CREATE TABLE #{test_table} (id integer NOT NULL, value integer NOT NULL DEFAULT 0);
+
+            INSERT INTO #{test_table} (id, value)
+            VALUES (1, 1), (2, 2), (3, 3)
+          SQL
+
+          lock_writes_manager.lock_writes
+        end
+
+        it 'does not raise an error when renaming the column' do
+          expect do
+            model.rename_column_concurrently(test_table, :value, :new_value)
+          end.not_to raise_error
         end
       end
 

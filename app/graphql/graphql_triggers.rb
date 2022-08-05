@@ -16,4 +16,8 @@ module GraphqlTriggers
   def self.issuable_labels_updated(issuable)
     GitlabSchema.subscriptions.trigger('issuableLabelsUpdated', { issuable_id: issuable.to_gid }, issuable)
   end
+
+  def self.issuable_dates_updated(issuable)
+    GitlabSchema.subscriptions.trigger('issuableDatesUpdated', { issuable_id: issuable.to_gid }, issuable)
+  end
 end

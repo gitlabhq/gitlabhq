@@ -988,6 +988,52 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
     end
 
+    context 'updating dates' do
+      subject(:result) { described_class.new(project: project, current_user: user, params: params).execute(issue) }
+
+      let(:updated_date) { 1.week.from_now.to_date }
+
+      shared_examples 'issue update service that triggers date updates' do
+        it 'triggers graphql date updated subscription' do
+          expect(GraphqlTriggers).to receive(:issuable_dates_updated).with(issue).and_call_original
+
+          result
+        end
+      end
+
+      shared_examples 'issue update service that does not trigger date updates' do
+        it 'does not trigger date updated subscriptions' do
+          expect(GraphqlTriggers).not_to receive(:issuable_dates_updated)
+
+          result
+        end
+      end
+
+      context 'when due_date is updated' do
+        let(:params) { { due_date: updated_date } }
+
+        it_behaves_like 'issue update service that triggers date updates'
+      end
+
+      context 'when start_date is updated' do
+        let(:params) { { start_date: updated_date } }
+
+        it_behaves_like 'issue update service that triggers date updates'
+      end
+
+      context 'when no date is updated' do
+        let(:params) { { title: 'should not trigger date updates' } }
+
+        it_behaves_like 'issue update service that does not trigger date updates'
+      end
+
+      context 'when update is not successful but date is provided' do
+        let(:params) { { title: '', due_date: updated_date } }
+
+        it_behaves_like 'issue update service that does not trigger date updates'
+      end
+    end
+
     context 'updating asssignee_id' do
       it 'does not update assignee when assignee_id is invalid' do
         update_issue(assignee_ids: [-1])

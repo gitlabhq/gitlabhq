@@ -15,5 +15,8 @@ module Types
 
     field :issuable_labels_updated, subscription: Subscriptions::IssuableUpdated, null: true,
                                     description: 'Triggered when the labels of an issuable are updated.'
+
+    field :issuable_dates_updated, subscription: Subscriptions::IssuableUpdated, null: true,
+                                   description: 'Triggered when the due date or start date of an issuable is updated.'
   end
 end

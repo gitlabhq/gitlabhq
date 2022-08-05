@@ -70,6 +70,7 @@ module Issues
       handle_severity_change(issue, old_severity)
       handle_escalation_status_change(issue)
       handle_issue_type_change(issue)
+      handle_date_changes(issue)
     end
 
     def handle_assignee_changes(issue, old_assignees)
@@ -115,6 +116,12 @@ module Issues
     private
 
     attr_reader :spam_params
+
+    def handle_date_changes(issue)
+      return unless issue.previous_changes.slice('due_date', 'start_date').any?
+
+      GraphqlTriggers.issuable_dates_updated(issue)
+    end
 
     def clone_issue(issue)
       target_project = params.delete(:target_clone_project)

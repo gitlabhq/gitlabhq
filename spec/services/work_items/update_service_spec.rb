@@ -36,6 +36,14 @@ RSpec.describe WorkItems::UpdateService do
       stub_spam_services
     end
 
+    shared_examples 'update service that triggers graphql dates updated subscription' do
+      it 'triggers graphql subscription issueableDatesUpdated' do
+        expect(GraphqlTriggers).to receive(:issuable_dates_updated).with(work_item).and_call_original
+
+        update_work_item
+      end
+    end
+
     context 'when title is changed' do
       let(:opts) { { title: 'changed' } }
 
@@ -183,6 +191,32 @@ RSpec.describe WorkItems::UpdateService do
             expect(service).not_to receive(:execute_widgets).with(callback: :update, widget_params: widget_params)
 
             expect { update_work_item }.not_to change(work_item, :description)
+          end
+        end
+      end
+
+      context 'for start and due date widget' do
+        let(:updated_date) { 1.week.from_now.to_date }
+
+        context 'when due_date is updated' do
+          let(:widget_params) { { start_and_due_date_widget: { due_date: updated_date } } }
+
+          it_behaves_like 'update service that triggers graphql dates updated subscription'
+        end
+
+        context 'when start_date is updated' do
+          let(:widget_params) { { start_and_due_date_widget: { start_date: updated_date } } }
+
+          it_behaves_like 'update service that triggers graphql dates updated subscription'
+        end
+
+        context 'when no date param is updated' do
+          let(:opts) { { title: 'should not trigger' } }
+
+          it 'does not trigger date updated subscription' do
+            expect(GraphqlTriggers).not_to receive(:issuable_dates_updated)
+
+            update_work_item
           end
         end
       end

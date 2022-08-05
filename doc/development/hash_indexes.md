@@ -1,26 +1,11 @@
 ---
-stage: Data Stores
-group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+redirect_to: 'database/hash_indexes.md'
+remove_date: '2022-11-06'
 ---
 
-# Hash Indexes
+This document was moved to [another location](database/hash_indexes.md).
 
-PostgreSQL supports hash indexes besides the regular B-tree
-indexes. Hash indexes however are to be avoided at all costs. While they may
-_sometimes_ provide better performance the cost of rehashing can be very high.
-More importantly: at least until PostgreSQL 10.0 hash indexes are not
-WAL-logged, meaning they are not replicated to any replicas. From the PostgreSQL
-documentation:
-
-> Hash index operations are not presently WAL-logged, so hash indexes might need
-> to be rebuilt with REINDEX after a database crash if there were unwritten
-> changes. Also, changes to hash indexes are not replicated over streaming or
-> file-based replication after the initial base backup, so they give wrong
-> answers to queries that subsequently use them. For these reasons, hash index
-> use is presently discouraged.
-
-RuboCop is configured to register an offense when it detects the use of a hash
-index.
-
-Instead of using hash indexes you should use regular B-tree indexes.
+<!-- This redirect file can be deleted after <2022-11-06>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

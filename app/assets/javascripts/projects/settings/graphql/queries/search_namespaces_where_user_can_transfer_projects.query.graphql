@@ -1,0 +1,25 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query searchNamespacesWhereUserCanTransferProjects(
+  $search: String = ""
+  $after: String = ""
+  $first: Int = null
+) {
+  currentUser {
+    id
+    groups(permissionScope: TRANSFER_PROJECTS, search: $search, after: $after, first: $first) {
+      nodes {
+        id
+        fullName
+      }
+      pageInfo {
+        __typename
+        ...PageInfo
+      }
+    }
+    namespace {
+      id
+      fullName
+    }
+  }
+}

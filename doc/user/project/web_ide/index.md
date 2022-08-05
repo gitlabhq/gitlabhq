@@ -16,15 +16,18 @@ Use the <kbd>.</kbd> [keyboard shortcut](../../shortcuts.md) to open the Web IDE
 You can also open the Web IDE when viewing a file, from the repository file list,
 and from merge requests:
 
-- *When viewing a file, or the repository file list* -
+### When viewing a file or the repository file list
+
   1. In the upper right corner of the page, select **Open in Web IDE** if it is visible.
   1. If **Open in Web IDE** is not visible:
      1. Select the (**{chevron-lg-down}**) next to **Edit** or **Gitpod**, depending on your configuration.
      1. Select **Open in Web IDE** from the list to display it as the editing option.
      1. Select **Open in Web IDE** to open the editor.
-- *When viewing a merge request* -
+
+### When viewing a merge request
+
   1. Go to your merge request.
-  1. In the upper right corner, select **Code**, then select **Open in Gitpod**.
+  1. In the upper right corner, select **Code > Open in Web IDE**.
 
 ## File finder
 
@@ -86,7 +89,7 @@ You can pick a theme from your [profile preferences](../../profile/preferences.m
 
 ## Highlight lines
 
-WebIDE is built with the [Web Editor](../repository/web_editor.md). This enables WebIDE to share the
+The Web IDE is built with the [Web Editor](../repository/web_editor.md). This enables the Web IDE to share the
 same core features for highlighting and linking to particular lines in the edited files
 [described for the Web Editor](../repository/web_editor.md#highlight-lines).
 

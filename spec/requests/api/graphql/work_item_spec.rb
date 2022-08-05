@@ -215,6 +215,44 @@ RSpec.describe 'Query.work_item(id)' do
         end
       end
 
+      describe 'labels widget' do
+        let(:labels) { create_list(:label, 2, project: project) }
+        let(:work_item) { create(:work_item, project: project, labels: labels) }
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetLabels {
+                labels {
+                  nodes {
+                    id
+                    title
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'LABELS',
+                'labels' => {
+                  'nodes' => match_array(
+                    labels.map { |a| { 'id' => a.to_gid.to_s, 'title' => a.title } }
+                  )
+                }
+              )
+            )
+          )
+        end
+      end
+
       describe 'start and due date widget' do
         let(:work_item_fields) do
           <<~GRAPHQL

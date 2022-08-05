@@ -479,8 +479,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/models/concerns/geo/syncable.rb'
     - 'ee/app/models/dast/profile_schedule.rb'
     - 'ee/app/models/ee/ci/job_artifact.rb'
-    - 'ee/app/models/ee/namespace/root_excess_storage_size.rb'
-    - 'ee/app/models/ee/namespace/root_storage_size.rb'
     - 'ee/app/models/elastic/reindexing_slice.rb'
     - 'ee/app/models/elastic/reindexing_subtask.rb'
     - 'ee/app/models/elastic/reindexing_task.rb'

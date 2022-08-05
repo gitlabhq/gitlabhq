@@ -41,7 +41,6 @@ RSpec/ScatteredLet:
     - 'ee/spec/models/ci/minutes/notification_spec.rb'
     - 'ee/spec/models/ci/pipeline_spec.rb'
     - 'ee/spec/models/ee/ci/build_dependencies_spec.rb'
-    - 'ee/spec/models/ee/namespace/root_storage_size_spec.rb'
     - 'ee/spec/models/label_note_spec.rb'
     - 'ee/spec/models/sca/license_compliance_spec.rb'
     - 'ee/spec/policies/merge_request_policy_spec.rb'

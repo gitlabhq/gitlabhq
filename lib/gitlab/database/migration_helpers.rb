@@ -505,14 +505,14 @@ module Gitlab
       # case another unique integer column can be used. Example: :user_id
       #
       # rubocop: disable Metrics/AbcSize
-      def update_column_in_batches(table, column, value, batch_size: nil, batch_column_name: :id)
+      def update_column_in_batches(table_name, column, value, batch_size: nil, batch_column_name: :id, disable_lock_writes: false)
         if transaction_open?
           raise 'update_column_in_batches can not be run inside a transaction, ' \
             'you can disable transactions by calling disable_ddl_transaction! ' \
             'in the body of your migration class'
         end
 
-        table = Arel::Table.new(table)
+        table = Arel::Table.new(table_name)
 
         count_arel = table.project(Arel.star.count.as('count'))
         count_arel = yield table, count_arel if block_given?
@@ -559,7 +559,10 @@ module Gitlab
 
           update_arel = yield table, update_arel if block_given?
 
-          execute(update_arel.to_sql)
+          transaction do
+            execute("SELECT set_config('lock_writes.#{table_name}', 'false', true)") if disable_lock_writes
+            execute(update_arel.to_sql)
+          end
 
           # There are no more rows left to update.
           break unless stop_row
@@ -1667,7 +1670,7 @@ into similar problems in the future (e.g. when new tables are created).
 
         Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
           Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
-            update_column_in_batches(table, new, old_value, batch_column_name: batch_column_name)
+            update_column_in_batches(table, new, old_value, batch_column_name: batch_column_name, disable_lock_writes: true)
           end
         end
 

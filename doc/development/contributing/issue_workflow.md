@@ -53,7 +53,7 @@ Most issues will have labels for at least one of the following:
 - Priority: `~"priority::1"`, `~"priority::2"`, `~"priority::3"`, `~"priority::4"`
 - Severity: ~`"severity::1"`, `~"severity::2"`, `~"severity::3"`, `~"severity::4"`
 
-Please add `~"breaking change"` label if the issue can be considered as a [breaking change](index.md#breaking-changes).
+Please add `~"breaking change"` label if the issue can be considered as a [breaking change](../deprecation_guidelines/index.md).
 
 Please add `~security` label if the issue is related to application security.
 

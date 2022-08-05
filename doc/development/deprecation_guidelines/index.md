@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Deprecating GitLab features
 
-This page includes information about how and when to remove or make
-[breaking changes](../contributing/index.md#breaking-changes) to GitLab features.
+This page includes information about how and when to remove or make breaking changes
+to GitLab features.
 
 ## Terminology
 
@@ -36,6 +36,16 @@ This page includes information about how and when to remove or make
 - Begins after removal date has passed.
 
 ![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
+
+**Breaking change**:
+
+A "breaking change" is any change that requires users to make a corresponding change to their code, settings, or workflow. "Users" might be humans, API clients, or even code classes that "use" another class. Examples of breaking changes include:
+
+- Removing a user-facing feature without a replacement/workaround.
+- Changing the definition of an existing API (by doing things like re-naming query parameters or changing routes).
+- Removing a public method from a code class.
+
+A breaking change can be considered major if it affects many users, or represents a significant change in behavior.
 
 ## When can a feature be deprecated?
 

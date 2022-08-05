@@ -5,6 +5,8 @@ import {
   GlDropdownItem,
   GlDropdownSectionHeader,
   GlSearchBoxByType,
+  GlIntersectionObserver,
+  GlLoadingIcon,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 
@@ -32,6 +34,8 @@ export default {
     GlDropdownItem,
     GlDropdownSectionHeader,
     GlSearchBoxByType,
+    GlIntersectionObserver,
+    GlLoadingIcon,
   },
   props: {
     groupNamespaces: {
@@ -69,6 +73,26 @@ export default {
       required: false,
       default: false,
     },
+    hasNextPageOfGroups: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLoadingMoreGroups: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isSearchLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    shouldFilterNamespaces: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -84,10 +108,12 @@ export default {
       return this.groupNamespaces.length;
     },
     filteredGroupNamespaces() {
+      if (!this.shouldFilterNamespaces) return this.groupNamespaces;
       if (!this.hasGroupNamespaces) return [];
       return filterByName(this.groupNamespaces, this.searchTerm);
     },
     filteredUserNamespaces() {
+      if (!this.shouldFilterNamespaces) return this.userNamespaces;
       if (!this.hasUserNamespaces) return [];
       return filterByName(this.userNamespaces, this.searchTerm);
     },
@@ -107,9 +133,15 @@ export default {
       return emptyNamespaceTitle.toLowerCase().includes(searchTerm.toLowerCase());
     },
   },
+  watch: {
+    searchTerm() {
+      this.$emit('search', this.searchTerm);
+    },
+  },
   methods: {
     handleSelect(item) {
       this.selectedNamespace = item;
+      this.searchTerm = '';
       this.$emit('select', item);
     },
     handleSelectEmptyNamespace() {
@@ -122,7 +154,11 @@ export default {
 <template>
   <gl-dropdown :text="selectedNamespaceText" :block="fullWidth" data-qa-selector="namespaces_list">
     <template #header>
-      <gl-search-box-by-type v-model.trim="searchTerm" />
+      <gl-search-box-by-type
+        v-model.trim="searchTerm"
+        :is-loading="isSearchLoading"
+        data-qa-selector="namespaces_list_search"
+      />
     </template>
     <div v-if="filteredEmptyNamespaceTitle">
       <gl-dropdown-item
@@ -133,19 +169,11 @@ export default {
       </gl-dropdown-item>
       <gl-dropdown-divider />
     </div>
-    <div v-if="hasGroupNamespaces" data-qa-selector="namespaces_list_groups">
-      <gl-dropdown-section-header v-if="includeHeaders">{{
-        $options.i18n.GROUPS
-      }}</gl-dropdown-section-header>
-      <gl-dropdown-item
-        v-for="item in filteredGroupNamespaces"
-        :key="item.id"
-        data-qa-selector="namespaces_list_item"
-        @click="handleSelect(item)"
-        >{{ item.humanName }}</gl-dropdown-item
-      >
-    </div>
-    <div v-if="hasUserNamespaces" data-qa-selector="namespaces_list_users">
+    <div
+      v-if="hasUserNamespaces"
+      data-qa-selector="namespaces_list_users"
+      data-testid="namespace-list-users"
+    >
       <gl-dropdown-section-header v-if="includeHeaders">{{
         $options.i18n.USERS
       }}</gl-dropdown-section-header>
@@ -157,5 +185,24 @@ export default {
         >{{ item.humanName }}</gl-dropdown-item
       >
     </div>
+    <div
+      v-if="hasGroupNamespaces"
+      data-qa-selector="namespaces_list_groups"
+      data-testid="namespace-list-groups"
+    >
+      <gl-dropdown-section-header v-if="includeHeaders">{{
+        $options.i18n.GROUPS
+      }}</gl-dropdown-section-header>
+      <gl-dropdown-item
+        v-for="item in filteredGroupNamespaces"
+        :key="item.id"
+        data-qa-selector="namespaces_list_item"
+        @click="handleSelect(item)"
+        >{{ item.humanName }}</gl-dropdown-item
+      >
+    </div>
+    <gl-intersection-observer v-if="hasNextPageOfGroups" @appear="$emit('load-more-groups')">
+      <gl-loading-icon v-if="isLoadingMoreGroups" class="gl-mb-3" size="sm" />
+    </gl-intersection-observer>
   </gl-dropdown>
 </template>

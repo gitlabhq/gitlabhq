@@ -9,6 +9,40 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
 
   let_it_be(:form_builder) { described_class.new(:user, user, fake_action_view_base, {}) }
 
+  describe '#submit' do
+    context 'without pajamas_button enabled' do
+      subject(:submit_html) do
+        form_builder.submit('Save', class: 'gl-button btn-confirm custom-class', data: { test: true })
+      end
+
+      it 'renders a submit input' do
+        expected_html = <<~EOS
+        <input type="submit" name="commit" value="Save" class="gl-button btn-confirm custom-class" data-test="true" data-disable-with="Save" />
+        EOS
+
+        expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
+      end
+    end
+
+    context 'with pajamas_button enabled' do
+      subject(:submit_html) do
+        form_builder.submit('Save', pajamas_button: true, class: 'custom-class', data: { test: true })
+      end
+
+      it 'renders a submit button' do
+        expected_html = <<~EOS
+        <button class="gl-button btn btn-md btn-confirm custom-class" data-test="true" type="submit">
+          <span class="gl-button-text">
+            Save
+          </span>
+        </button>
+        EOS
+
+        expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
+      end
+    end
+  end
+
   describe '#gitlab_ui_checkbox_component' do
     context 'when not using slots' do
       let(:optional_args) { {} }

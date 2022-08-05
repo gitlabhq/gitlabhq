@@ -18,6 +18,7 @@ RSpec.describe Types::WorkItems::WidgetInterface do
       WorkItems::Widgets::Description | Types::WorkItems::Widgets::DescriptionType
       WorkItems::Widgets::Hierarchy   | Types::WorkItems::Widgets::HierarchyType
       WorkItems::Widgets::Assignees   | Types::WorkItems::Widgets::AssigneesType
+      WorkItems::Widgets::Labels      | Types::WorkItems::Widgets::LabelsType
     end
 
     with_them do

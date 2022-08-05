@@ -39,7 +39,7 @@ export default {
   directives: {
     GlModalDirective,
   },
-  inject: ['groupPath', 'groupId', 'noManifestsIllustration'],
+  inject: ['groupPath', 'groupId', 'noManifestsIllustration', 'canClearCache'],
   i18n: {
     proxyImagePrefix: s__('DependencyProxy|Dependency Proxy image prefix'),
     copyImagePrefixText: s__('DependencyProxy|Copy prefix'),
@@ -114,7 +114,7 @@ export default {
       );
     },
     showDeleteDropdown() {
-      return this.group.dependencyProxyManifests?.nodes.length > 0;
+      return this.group.dependencyProxyManifests?.nodes.length > 0 && this.canClearCache;
     },
     showDependencyProxyImagePrefix() {
       return this.group.dependencyProxyImagePrefix?.length > 0;

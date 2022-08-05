@@ -13,6 +13,7 @@ module Types
       ORPHAN_TYPES = [
         ::Types::WorkItems::Widgets::DescriptionType,
         ::Types::WorkItems::Widgets::HierarchyType,
+        ::Types::WorkItems::Widgets::LabelsType,
         ::Types::WorkItems::Widgets::AssigneesType,
         ::Types::WorkItems::Widgets::StartAndDueDateType
       ].freeze
@@ -29,6 +30,8 @@ module Types
           ::Types::WorkItems::Widgets::HierarchyType
         when ::WorkItems::Widgets::Assignees
           ::Types::WorkItems::Widgets::AssigneesType
+        when ::WorkItems::Widgets::Labels
+          ::Types::WorkItems::Widgets::LabelsType
         when ::WorkItems::Widgets::StartAndDueDate
           ::Types::WorkItems::Widgets::StartAndDueDateType
         else

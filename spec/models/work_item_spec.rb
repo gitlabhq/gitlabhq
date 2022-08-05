@@ -43,6 +43,7 @@ RSpec.describe WorkItem do
       is_expected.to include(
         instance_of(WorkItems::Widgets::Description),
         instance_of(WorkItems::Widgets::Hierarchy),
+        instance_of(WorkItems::Widgets::Labels),
         instance_of(WorkItems::Widgets::Assignees),
         instance_of(WorkItems::Widgets::StartAndDueDate)
       )

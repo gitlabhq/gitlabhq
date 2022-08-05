@@ -421,6 +421,8 @@
   - 1
 - - requirements_management_process_requirements_reports
   - 1
+- - sbom_reports
+  - 1
 - - security_auto_fix
   - 1
 - - security_findings_delete_by_job_id

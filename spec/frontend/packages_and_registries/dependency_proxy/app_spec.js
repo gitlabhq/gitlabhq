@@ -50,6 +50,7 @@ describe('DependencyProxyApp', () => {
     groupPath: 'gitlab-org',
     groupId: dummyGrouptId,
     noManifestsIllustration: 'noManifestsIllustration',
+    canClearCache: true,
   };
 
   function createComponent({ provide = provideDefaults } = {}) {
@@ -267,6 +268,23 @@ describe('DependencyProxyApp', () => {
               expect(findClearCacheAlert().text()).toBe(
                 'All items in the cache are scheduled for removal.',
               );
+            });
+
+            describe('when user has no permission to clear cache', () => {
+              beforeEach(() => {
+                createComponent({
+                  provide: {
+                    groupPath: 'gitlab-org',
+                    groupId: dummyGrouptId,
+                    noManifestsIllustration: 'noManifestsIllustration',
+                    canClearCache: false,
+                  },
+                });
+              });
+
+              it('does not show the clear cache dropdown list', () => {
+                expect(findClearCacheDropdownList().exists()).toBe(false);
+              });
             });
           });
         });

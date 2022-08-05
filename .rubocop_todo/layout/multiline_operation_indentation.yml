@@ -55,7 +55,6 @@ Layout/MultilineOperationIndentation:
     - 'ee/app/models/approval_project_rule.rb'
     - 'ee/app/models/concerns/ee/issuable.rb'
     - 'ee/app/models/ee/namespace.rb'
-    - 'ee/app/models/ee/namespace/root_storage_size.rb'
     - 'ee/app/models/ee/project.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/vulnerabilities/finding_signature.rb'

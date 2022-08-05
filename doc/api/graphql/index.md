@@ -16,7 +16,7 @@ GraphQL data is arranged in types, so your client can use
 to consume the API and avoid manual parsing.
 
 There are no fixed endpoints and no data model, so you can add
-to the API without creating [breaking changes](../../development/contributing/#breaking-changes).
+to the API without creating [breaking changes](../../development/deprecation_guidelines/index.md).
 This enables us to have a [versionless API](https://graphql.org/learn/best-practices/#versioning).
 
 ## Vision
@@ -69,7 +69,7 @@ However, GitLab sometimes changes the GraphQL API in a way that is not backward-
 can include removing or renaming fields, arguments, or other parts of the schema.
 When creating a breaking change, GitLab follows a [deprecation and removal process](#deprecation-and-removal-process).
 
-Learn more about [breaking changes](../../development/contributing/#breaking-changes).
+Learn more about [breaking changes](../../development/deprecation_guidelines/index.md).
 
 Fields behind a feature flag and disabled by default do not follow the deprecation and removal process, and can be removed at any time without notice.
 

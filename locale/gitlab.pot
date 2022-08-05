@@ -7306,9 +7306,6 @@ msgstr ""
 msgid "Can't find variable: ZiteReader"
 msgstr ""
 
-msgid "Can't load mermaid module: %{err}"
-msgstr ""
-
 msgid "Can't scan the code?"
 msgstr ""
 
@@ -14551,9 +14548,6 @@ msgid "Enabled Git access protocols"
 msgstr ""
 
 msgid "Enabled OAuth authentication sources"
-msgstr ""
-
-msgid "Encountered an error while rendering: %{err}"
 msgstr ""
 
 msgid "End Time"

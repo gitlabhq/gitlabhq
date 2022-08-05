@@ -22,6 +22,19 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION gitlab_schema_prevent_write() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF COALESCE(NULLIF(current_setting(CONCAT('lock_writes.', TG_TABLE_NAME), true), ''), 'true') THEN
+      RAISE EXCEPTION 'Table: "%" is write protected within this Gitlab database.', TG_TABLE_NAME
+        USING ERRCODE = 'modifying_sql_data_not_permitted',
+        HINT = 'Make sure you are using the right database connection';
+    END IF;
+    RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
