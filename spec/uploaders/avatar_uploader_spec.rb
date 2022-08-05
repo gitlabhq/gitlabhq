@@ -52,7 +52,7 @@ RSpec.describe AvatarUploader do
     # in a stub below so we can set any path.
     let_it_be(:path) { File.join('spec', 'fixtures', 'video_sample.mp4') }
 
-    where(:mime_type) { described_class::MIME_WHITELIST }
+    where(:mime_type) { described_class::MIME_ALLOWLIST }
 
     with_them do
       include_context 'force content type detection to mime_type'

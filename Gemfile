@@ -20,7 +20,7 @@ gem 'default_value_for', '~> 3.4.0'
 gem 'pg', '~> 1.4.0'
 
 gem 'rugged', '~> 1.2'
-gem 'grape-path-helpers', '~> 1.7.0'
+gem 'grape-path-helpers', '~> 1.7.1'
 
 gem 'faraday', '~> 1.0'
 gem 'marginalia', '~> 1.10.0'

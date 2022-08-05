@@ -20,13 +20,13 @@ module DesignManagement
     #
     # We currently choose not to resize `image/svg+xml` for security reasons.
     # See https://gitlab.com/gitlab-org/gitlab/issues/207740#note_302766171
-    MIME_TYPE_WHITELIST = %w(image/png image/jpeg image/bmp image/gif).freeze
+    MIME_TYPE_ALLOWLIST = %w(image/png image/jpeg image/bmp image/gif).freeze
 
     process resize_to_fit: [432, 230]
 
     # Allow CarrierWave to reject files without correct mimetypes.
     def content_type_whitelist
-      MIME_TYPE_WHITELIST
+      MIME_TYPE_ALLOWLIST
     end
 
     # Override `GitlabUploader` and always return false, otherwise local

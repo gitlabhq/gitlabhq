@@ -3,7 +3,7 @@
 require 'airborne'
 
 module QA
-  RSpec.describe 'Package', only: { subdomain: %i[staging pre] } do
+  RSpec.describe 'Package', :reliable, only: { subdomain: %i[staging pre] } do
     include Support::API
     include Support::Helpers::MaskToken
 

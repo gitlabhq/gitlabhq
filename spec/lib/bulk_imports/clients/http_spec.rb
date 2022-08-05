@@ -56,15 +56,17 @@ RSpec.describe BulkImports::Clients::HTTP do
         [
           'http://gitlab.example/api/v4/resource',
           hash_including(
-            follow_redirects: false,
             query: {
               page: described_class::DEFAULT_PAGE,
-              per_page: described_class::DEFAULT_PER_PAGE
+              per_page: described_class::DEFAULT_PER_PAGE,
+              private_token: token
             },
             headers: {
-              'Content-Type' => 'application/json',
-              'Authorization' => "Bearer #{token}"
-            }
+              'Content-Type' => 'application/json'
+            },
+            follow_redirects: true,
+            resend_on_redirect: false,
+            limit: 2
           )
         ]
       end
@@ -106,12 +108,13 @@ RSpec.describe BulkImports::Clients::HTTP do
       def stub_http_get(path, query, response)
         uri = "http://gitlab.example/api/v4/#{path}"
         params = {
-          follow_redirects: false,
-          headers: {
-            "Authorization" => "Bearer token",
-            "Content-Type" => "application/json"
-          }
-        }.merge(query: query)
+          headers: { "Content-Type" => "application/json" },
+          query: { private_token: token },
+          follow_redirects: true,
+          resend_on_redirect: false,
+          limit: 2
+        }
+        params[:query] = params[:query].merge(query)
 
         allow(Gitlab::HTTP).to receive(:get).with(uri, params).and_return(response)
       end
@@ -127,11 +130,17 @@ RSpec.describe BulkImports::Clients::HTTP do
           'http://gitlab.example/api/v4/resource',
           hash_including(
             body: {},
-            follow_redirects: false,
             headers: {
-              'Content-Type' => 'application/json',
-              'Authorization' => "Bearer #{token}"
-            }
+              'Content-Type' => 'application/json'
+            },
+            query: {
+              page: described_class::DEFAULT_PAGE,
+              per_page: described_class::DEFAULT_PER_PAGE,
+              private_token: token
+            },
+            follow_redirects: true,
+            resend_on_redirect: false,
+            limit: 2
           )
         ]
       end
@@ -146,11 +155,17 @@ RSpec.describe BulkImports::Clients::HTTP do
         [
           'http://gitlab.example/api/v4/resource',
           hash_including(
-            follow_redirects: false,
             headers: {
-              'Content-Type' => 'application/json',
-              'Authorization' => "Bearer #{token}"
-            }
+              'Content-Type' => 'application/json'
+            },
+            query: {
+              page: described_class::DEFAULT_PAGE,
+              per_page: described_class::DEFAULT_PER_PAGE,
+              private_token: token
+            },
+            follow_redirects: true,
+            resend_on_redirect: false,
+            limit: 2
           )
         ]
       end
@@ -164,9 +179,16 @@ RSpec.describe BulkImports::Clients::HTTP do
         hash_including(
           stream_body: true,
           headers: {
-            'Content-Type' => 'application/json',
-            'Authorization' => "Bearer #{token}"
-          }
+            'Content-Type' => 'application/json'
+          },
+          query: {
+            page: described_class::DEFAULT_PAGE,
+            per_page: described_class::DEFAULT_PER_PAGE,
+            private_token: token
+          },
+          follow_redirects: true,
+          resend_on_redirect: false,
+          limit: 2
         )
       ]
 

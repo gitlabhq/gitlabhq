@@ -101,22 +101,19 @@ module BulkImports
 
       def default_options
         {
-          headers: request_headers,
-          follow_redirects: false
+          headers: { 'Content-Type' => 'application/json' },
+          query: request_query,
+          follow_redirects: true,
+          resend_on_redirect: false,
+          limit: 2
         }
       end
 
       def request_query
         {
           page: @page,
-          per_page: @per_page
-        }
-      end
-
-      def request_headers
-        {
-          'Content-Type' => 'application/json',
-          'Authorization' => "Bearer #{@token}"
+          per_page: @per_page,
+          private_token: @token
         }
       end
 

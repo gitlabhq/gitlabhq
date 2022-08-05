@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class FaviconUploader < AttachmentUploader
-  EXTENSION_WHITELIST = %w[png ico].freeze
-  MIME_WHITELIST = %w[image/png image/vnd.microsoft.icon].freeze
+  EXTENSION_ALLOWLIST = %w[png ico].freeze
+  MIME_ALLOWLIST = %w[image/png image/vnd.microsoft.icon].freeze
 
   def extension_whitelist
-    EXTENSION_WHITELIST
+    EXTENSION_ALLOWLIST
   end
 
   def content_type_whitelist
-    MIME_WHITELIST
+    MIME_ALLOWLIST
   end
 
   private

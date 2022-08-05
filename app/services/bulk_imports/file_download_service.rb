@@ -55,12 +55,17 @@ module BulkImports
         bytes_downloaded = 0
 
         http_client.stream(relative_url) do |chunk|
+          next if bytes_downloaded == 0 && [301, 302, 303, 307, 308].include?(chunk.code)
+
           bytes_downloaded += chunk.size
 
           validate_size!(bytes_downloaded)
-          raise(ServiceError, "File download error #{chunk.code}") unless chunk.code == 200
 
-          file.write(chunk)
+          if chunk.code == 200
+            file.write(chunk)
+          else
+            raise(ServiceError, "File download error #{chunk.code}")
+          end
         end
       end
     rescue StandardError => e

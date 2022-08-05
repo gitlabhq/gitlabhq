@@ -299,22 +299,22 @@ Use this regex for commonly used test tools.
 
 <!-- vale gitlab.Spelling = NO -->
 
-- Simplecov (Ruby). Example: `\(\d+.\d+\%\) covered`.
-- pytest-cov (Python). Example: `(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$`.
-- Scoverage (Scala). Example: `Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)`.
-- `phpunit --coverage-text --colors=never` (PHP). Example: `^\s*Lines:\s*\d+.\d+\%`.
-- gcovr (C/C++). Example: `^TOTAL.*\s+(\d+\%)$`.
-- `tap --coverage-report=text-summary` (NodeJS). Example: `^Statements\s*:\s*([^%]+)`.
-- `nyc npm test` (NodeJS). Example: `All files[^|]*\|[^|]*\s+([\d\.]+)`.
-- `jest --ci --coverage` (NodeJS). Example: `All files[^|]*\|[^|]*\s+([\d\.]+)`.
-- excoveralls (Elixir). Example: `\[TOTAL\]\s+(\d+\.\d+)%`.
-- `mix test --cover` (Elixir). Example: `\d+.\d+\%\s+\|\s+Total`.
-- JaCoCo (Java/Kotlin). Example: `Total.*?([0-9]{1,3})%`.
-- `go test -cover` (Go). Example: `coverage: \d+.\d+% of statements`.
-- .NET (OpenCover). Example: `(Visited Points).*\((.*)\)`.
-- .NET (`dotnet test` line coverage). Example: `Total\s*\|\s*(\d+(?:\.\d+)?)`.
-- tarpaulin (Rust). Example: `^\d+.\d+% coverage`.
-- Pester (PowerShell). Example: `Covered (\d+\.\d+%)`.
+- Simplecov (Ruby). Example: `/\(\d+.\d+\%\) covered/`.
+- pytest-cov (Python). Example: `/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/`.
+- Scoverage (Scala). Example: `/Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)/`.
+- `phpunit --coverage-text --colors=never` (PHP). Example: `/^\s*Lines:\s*\d+.\d+\%/`.
+- gcovr (C/C++). Example: `/^TOTAL.*\s+(\d+\%)$/`.
+- `tap --coverage-report=text-summary` (NodeJS). Example: `/^Statements\s*:\s*([^%]+)/`.
+- `nyc npm test` (NodeJS). Example: `/All files[^|]*\|[^|]*\s+([\d\.]+)/`.
+- `jest --ci --coverage` (NodeJS). Example: `/All files[^|]*\|[^|]*\s+([\d\.]+)/`.
+- excoveralls (Elixir). Example: `/\[TOTAL\]\s+(\d+\.\d+)%/`.
+- `mix test --cover` (Elixir). Example: `/\d+.\d+\%\s+\|\s+Total/`.
+- JaCoCo (Java/Kotlin). Example: `/Total.*?([0-9]{1,3})%/`.
+- `go test -cover` (Go). Example: `/coverage: \d+.\d+% of statements/`.
+- .NET (OpenCover). Example: `/(Visited Points).*\((.*)\)/`.
+- .NET (`dotnet test` line coverage). Example: `/Total\s*\|\s*(\d+(?:\.\d+)?)/`.
+- tarpaulin (Rust). Example: `/^\d+.\d+% coverage/`.
+- Pester (PowerShell). Example: `/Covered (\d+\.\d+%)/`.
 
 <!-- vale gitlab.Spelling = YES -->
 

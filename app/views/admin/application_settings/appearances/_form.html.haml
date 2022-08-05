@@ -40,7 +40,7 @@
           = f.hidden_field :favicon_cache
           = f.file_field :favicon, class: '', accept: 'image/*'
           .form-text.text-muted
-            = _("Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_whitelist}.") % { favicon_extension_whitelist: favicon_extension_whitelist }
+            = _("Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_allowlist}.") % { favicon_extension_allowlist: favicon_extension_allowlist }
             %br
             = _("Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior.")
 

@@ -1148,6 +1148,27 @@ On a Geo primary site this error can be ignored.
 
 This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/index.md#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
 
+### Secondary site returns 400 error "Request header or cookie too large"
+
+This error can happen when the internal URL of the primary site is incorrect.
+
+For example, when you use a unified URL and the primary site's internal URL is also equal to the external URL. This causes a loop when a secondary site proxies requests to the primary site's internal URL.
+
+To fix this issue, set the primary site's internal URL to a URL that is:
+
+- Unique to the primary site.
+- Accessible from all secondary sites.
+
+1. Enter the [Rails console](../../operations/rails_console.md) on the primary site.
+
+1. Run the following, replacing `https://unique.url.for.primary.site` with your specific internal URL.
+   For example, depending on your network configuration, you could use an IP address, like
+   `http://1.2.3.4`.
+
+   ```ruby
+   GeoNode.where(primary: true).first.update!(internal_url: "https://unique.url.for.primary.site")
+   ```
+
 ## Fixing client errors
 
 ### Authorization errors from LFS HTTP(S) client requests

@@ -43,7 +43,7 @@ module DesignManagement
       end
 
       # Skip attempting to process images that would be rejected by CarrierWave.
-      return unless DesignManagement::DesignV432x230Uploader::MIME_TYPE_WHITELIST.include?(raw_file.content_type)
+      return unless DesignManagement::DesignV432x230Uploader::MIME_TYPE_ALLOWLIST.include?(raw_file.content_type)
 
       # Store and process the file
       action.image_v432x230.store!(raw_file)

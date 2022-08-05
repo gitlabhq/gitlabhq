@@ -3,7 +3,7 @@
 # Construct an `uploader` variable that is configured to `check_upload_type`
 # with `mime_types` and `extensions`.
 # @param uploader [CarrierWave::Uploader::Base] uploader with extension_whitelist method.
-RSpec.shared_context 'ignore extension whitelist check' do
+RSpec.shared_context 'ignore extension allowlist check' do
   before do
     allow(uploader).to receive(:extension_whitelist).and_return(nil)
   end

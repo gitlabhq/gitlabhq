@@ -24256,7 +24256,7 @@ msgstr ""
 msgid "Maximum file size indexed (KiB)"
 msgstr ""
 
-msgid "Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_whitelist}."
+msgid "Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_allowlist}."
 msgstr ""
 
 msgid "Maximum file size is 1MB. Pages are optimized for a 24px tall header logo"
@@ -30484,6 +30484,9 @@ msgstr ""
 msgid "ProjectQualitySummary|Get insight into the overall percentage of tests in your project that succeed, fail and are skipped."
 msgstr ""
 
+msgid "ProjectQualitySummary|Help us improve this page"
+msgstr ""
+
 msgid "ProjectQualitySummary|Latest pipeline results"
 msgstr ""
 
@@ -30494,6 +30497,9 @@ msgid "ProjectQualitySummary|Learn more about test reports"
 msgstr ""
 
 msgid "ProjectQualitySummary|Measure of how much of your code is covered by tests."
+msgstr ""
+
+msgid "ProjectQualitySummary|Provide feedback"
 msgstr ""
 
 msgid "ProjectQualitySummary|See full report"
@@ -30521,6 +30527,9 @@ msgid "ProjectQualitySummary|Test runs"
 msgstr ""
 
 msgid "ProjectQualitySummary|The percentage of tests that succeed, fail, or are skipped."
+msgstr ""
+
+msgid "ProjectQualitySummary|This page helps you understand the code testing trends for your project. Let us know how we can improve it!"
 msgstr ""
 
 msgid "ProjectSelect| or group"

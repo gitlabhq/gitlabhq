@@ -188,7 +188,7 @@ module API
           runner = get_runner(params[:runner_id])
           authenticate_enable_runner!(runner)
 
-          if ::Ci::Runners::AssignRunnerService.new(runner, user_project, current_user).execute
+          if ::Ci::Runners::AssignRunnerService.new(runner, user_project, current_user).execute.success?
             present runner, with: Entities::Ci::Runner
           else
             render_validation_error!(runner)

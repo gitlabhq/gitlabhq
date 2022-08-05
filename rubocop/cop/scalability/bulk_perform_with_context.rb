@@ -20,7 +20,7 @@ module RuboCop
           being scheduled, please disable this cop with a comment explaing which
           context will be applied.
 
-          Read more about it https://docs.gitlab.com/ee/development/sidekiq_style_guide.html#worker-context
+          Read more about it https://docs.gitlab.com/ee/development/sidekiq/logging.html#worker-context
         MSG
 
         BACKGROUND_MIGRATION_WORKER_NAMES = %w[BackgroundMigrationWorker CiDatabaseWorker].freeze

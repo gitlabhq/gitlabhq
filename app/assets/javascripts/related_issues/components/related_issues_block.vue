@@ -149,7 +149,7 @@ export default {
     <div class="card card-slim gl-overflow-hidden">
       <div
         :class="{ 'panel-empty-heading border-bottom-0': !hasBody }"
-        class="card-header gl-display-flex gl-justify-content-space-between"
+        class="card-header gl-display-flex gl-justify-content-space-between gl-bg-gray-10"
       >
         <h3
           class="card-title h5 position-relative gl-my-0 gl-display-flex gl-align-items-center gl-h-7"
@@ -192,7 +192,7 @@ export default {
         <slot name="header-actions"></slot>
       </div>
       <div
-        class="linked-issues-card-body bg-gray-light"
+        class="linked-issues-card-body gl-bg-gray-10"
         :class="{
           'gl-p-5': isFormVisible || shouldShowTokenBody,
         }"

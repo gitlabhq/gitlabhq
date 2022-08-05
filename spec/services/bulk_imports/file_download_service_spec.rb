@@ -136,13 +136,44 @@ RSpec.describe BulkImports::FileDownloadService do
     end
 
     context 'when chunk code is not 200' do
-      let(:chunk_double) { double('chunk', size: 1000, code: 307) }
+      let(:chunk_double) { double('chunk', size: 1000, code: 500) }
 
       it 'raises an error' do
         expect { subject.execute }.to raise_error(
           described_class::ServiceError,
-          'File download error 307'
+          'File download error 500'
         )
+      end
+
+      context 'when chunk code is redirection' do
+        let(:chunk_double) { double('redirection', size: 1000, code: 303) }
+
+        it 'does not write a redirection chunk' do
+          expect { subject.execute }.not_to raise_error
+
+          expect(File.read(filepath)).not_to include('redirection')
+        end
+
+        context 'when redirection chunk appears at a later stage of the download' do
+          it 'raises an error' do
+            another_chunk_double = double('another redirection', size: 1000, code: 303)
+            data_chunk = double('data chunk', size: 1000, code: 200)
+
+            allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+              allow(client).to receive(:head).and_return(response_double)
+              allow(client)
+                .to receive(:stream)
+                .and_yield(chunk_double)
+                .and_yield(data_chunk)
+                .and_yield(another_chunk_double)
+            end
+
+            expect { subject.execute }.to raise_error(
+              described_class::ServiceError,
+              'File download error 303'
+            )
+          end
+        end
       end
     end
 

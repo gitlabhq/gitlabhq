@@ -6,7 +6,7 @@ class AvatarUploader < GitlabUploader
   include ObjectStorage::Concern
   prepend ObjectStorage::Extension::RecordsUploads
 
-  MIME_WHITELIST = %w[image/png image/jpeg image/gif image/bmp image/tiff image/vnd.microsoft.icon].freeze
+  MIME_ALLOWLIST = %w[image/png image/jpeg image/gif image/bmp image/tiff image/vnd.microsoft.icon].freeze
 
   def exists?
     model.avatar.file && model.avatar.file.present?
@@ -29,7 +29,7 @@ class AvatarUploader < GitlabUploader
   end
 
   def content_type_whitelist
-    MIME_WHITELIST
+    MIME_ALLOWLIST
   end
 
   private

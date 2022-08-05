@@ -63,7 +63,7 @@ RSpec.describe DesignManagement::DesignV432x230Uploader do
     # in a stub below so we can set any path.
     let_it_be(:path) { File.join('spec', 'fixtures', 'dk.png') }
 
-    where(:mime_type) { described_class::MIME_TYPE_WHITELIST }
+    where(:mime_type) { described_class::MIME_TYPE_ALLOWLIST }
 
     with_them do
       include_context 'force content type detection to mime_type'
