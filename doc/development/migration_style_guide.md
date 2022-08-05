@@ -89,7 +89,7 @@ Keep in mind that all durations should be measured against GitLab.com.
 |----|----|---|
 | Regular migrations | `<= 3 minutes` | A valid exception are changes without which application functionality or performance would be severely degraded and which cannot be delayed. |
 | Post-deployment migrations | `<= 10 minutes` | A valid exception are schema changes, since they must not happen in background migrations. |
-| Background migrations | `> 10 minutes` | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](query_performance.md#timing-guidelines-for-queries) with cold caches. |
+| Background migrations | `> 10 minutes` | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](database/query_performance.md#timing-guidelines-for-queries) with cold caches. |
 
 ## Decide which database to target
 
@@ -246,7 +246,7 @@ When using a single-transaction migration, a transaction holds a database connec
 for the duration of the migration, so you must make sure the actions in the migration
 do not take too much time: GitLab.com's production database has a `15s` timeout, so
 in general, the cumulative execution time in a migration should aim to fit comfortably
-in that limit. Singular query timings should fit within the [standard limit](query_performance.md#timing-guidelines-for-queries)
+in that limit. Singular query timings should fit within the [standard limit](database/query_performance.md#timing-guidelines-for-queries)
 
 In case you need to insert, update, or delete a significant amount of data, you:
 

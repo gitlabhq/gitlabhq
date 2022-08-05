@@ -33416,10 +33416,10 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-msgid "Retry downstream pipeline"
+msgid "Retry all failed or cancelled jobs"
 msgstr ""
 
-msgid "Retry failed jobs"
+msgid "Retry downstream pipeline"
 msgstr ""
 
 msgid "Retry job"

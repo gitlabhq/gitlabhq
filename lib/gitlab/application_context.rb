@@ -21,6 +21,8 @@ module Gitlab
       :related_class,
       :feature_category,
       :artifact_size,
+      :artifacts_dependencies_size,
+      :artifacts_dependencies_count,
       :root_caller_id
     ].freeze
     private_constant :KNOWN_KEYS
@@ -36,6 +38,8 @@ module Gitlab
       Attribute.new(:related_class, String),
       Attribute.new(:feature_category, String),
       Attribute.new(:artifact, ::Ci::JobArtifact),
+      Attribute.new(:artifacts_dependencies_size, Integer),
+      Attribute.new(:artifacts_dependencies_count, Integer),
       Attribute.new(:root_caller_id, String)
     ].freeze
 
@@ -82,15 +86,18 @@ module Gitlab
     # rubocop: disable Metrics/PerceivedComplexity
     def to_lazy_hash
       {}.tap do |hash|
-        hash[:user] = -> { username } if include_user?
-        hash[:project] = -> { project_path } if include_project?
-        hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
-        hash[:client_id] = -> { client } if include_client?
         assign_hash_if_value(hash, :caller_id)
         assign_hash_if_value(hash, :root_caller_id)
         assign_hash_if_value(hash, :remote_ip)
         assign_hash_if_value(hash, :related_class)
         assign_hash_if_value(hash, :feature_category)
+        assign_hash_if_value(hash, :artifacts_dependencies_size)
+        assign_hash_if_value(hash, :artifacts_dependencies_count)
+
+        hash[:user] = -> { username } if include_user?
+        hash[:project] = -> { project_path } if include_project?
+        hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
+        hash[:client_id] = -> { client } if include_client?
         hash[:pipeline_id] = -> { job&.pipeline_id } if set_values.include?(:job)
         hash[:job_id] = -> { job&.id } if set_values.include?(:job)
         hash[:artifact_size] = -> { artifact&.size } if set_values.include?(:artifact)
@@ -112,7 +119,9 @@ module Gitlab
     end
 
     def assign_hash_if_value(hash, attribute_name)
-      raise ArgumentError unless KNOWN_KEYS.include?(attribute_name)
+      unless KNOWN_KEYS.include?(attribute_name)
+        raise ArgumentError, "unknown attribute `#{attribute_name}`"
+      end
 
       # rubocop:disable GitlabSecurity/PublicSend
       hash[attribute_name] = public_send(attribute_name) if set_values.include?(attribute_name)

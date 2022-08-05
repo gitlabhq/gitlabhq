@@ -73,6 +73,7 @@ Example request with attribute `select = package_file`:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --user "<username>:<Project Access Token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?select=package_file"
 ```

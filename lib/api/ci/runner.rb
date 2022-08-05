@@ -306,7 +306,8 @@ module API
           result = ::Ci::JobArtifacts::CreateService.new(job).execute(artifacts, params, metadata_file: metadata)
 
           if result[:status] == :success
-            log_artifact_size(result[:artifact])
+            log_artifacts_filesize(result[:artifact])
+
             status :created
             body "201"
           else

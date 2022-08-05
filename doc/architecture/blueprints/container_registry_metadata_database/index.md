@@ -160,7 +160,7 @@ Although blobs are shared across repositories, manifest and tag metadata are sco
 
 #### GitLab.com
 
-Due to scale, performance and isolation concerns, for GitLab.com the registry database will be on a separate dedicated PostgreSQL cluster. Please see [#93](https://gitlab.com/gitlab-org/container-registry/-/issues/93) and [GitLab-com/gl-infra/infrastructure#10109](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10109) for additional context.
+Due to scale, performance and isolation concerns, for GitLab.com the registry database will be on a separate dedicated PostgreSQL cluster. Please see [#93](https://gitlab.com/gitlab-org/container-registry/-/issues/93) and [GitLab-com/gl-infra/reliability#10109](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/10109) for additional context.
 
 The diagram below illustrates the architecture of the database cluster:
 
@@ -280,9 +280,9 @@ Database migrations will be idempotent, with guard clauses used whenever necessa
 
 Adding one more component to the system makes it even more critical to guarantee that we have proper observability over the registry's behavior and its dependencies. It should be guaranteed that we have all the necessary tools in place before rolling out the new registry backed by the metadata database.
 
-For this purpose, [error reporting with Sentry](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11297), [improved structured logging](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10933), and [improved HTTP metrics](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10935) were already implemented and released. At the time of writing, the GitLab.com rollout is in progress.
+For this purpose, [error reporting with Sentry](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11297), [improved structured logging](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/10933), and [improved HTTP metrics](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/10935) were already implemented and released. At the time of writing, the GitLab.com rollout is in progress.
 
-Additionally, the Prometheus metrics will be augmented with [details on the database connection pool](https://gitlab.com/gitlab-org/container-registry/-/issues/238). These will be added to the registry Grafana dashboards, joining the existing HTTP API, deployment, and storage metrics. The database cluster for the registry [will also have metrics and alerts](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11447).
+Additionally, the Prometheus metrics will be augmented with [details on the database connection pool](https://gitlab.com/gitlab-org/container-registry/-/issues/238). These will be added to the registry Grafana dashboards, joining the existing HTTP API, deployment, and storage metrics. The database cluster for the registry [will also have metrics and alerts](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11447).
 
 Together, these resources should provide an adequate level of insight into the registry's performance and behavior.
 
@@ -343,7 +343,7 @@ A more detailed list of all tasks, as well as periodic progress updates can be f
 - [Proposal for continuous, on-demand online garbage collection](https://gitlab.com/gitlab-org/container-registry/-/issues/199)
 - [Gradual migration proposal for the GitLab.com container registry](https://gitlab.com/gitlab-org/container-registry/-/issues/191)
 - [Create a self-serve registry deployment](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/316)
-- [Database cluster for container registry](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11154)
+- [Database cluster for container registry](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11154)
 
 ## Who
 

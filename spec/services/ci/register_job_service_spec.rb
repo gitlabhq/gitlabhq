@@ -491,6 +491,48 @@ module Ci
         end
 
         context 'when "dependencies" keyword is specified' do
+          let!(:pre_stage_job) do
+            create(:ci_build, :success, :artifacts, pipeline: pipeline, name: 'test', stage_idx: 0)
+          end
+
+          let!(:pending_job) do
+            create(:ci_build, :pending, :queued,
+              pipeline: pipeline, stage_idx: 1,
+              options: { script: ["bash"], dependencies: dependencies })
+          end
+
+          let(:dependencies) { %w[test] }
+
+          subject { execute(specific_runner) }
+
+          it 'picks a build with a dependency' do
+            picked_build = execute(specific_runner)
+
+            expect(picked_build).to be_present
+          end
+
+          context 'when there are multiple dependencies with artifacts' do
+            let!(:pre_stage_job_second) do
+              create(:ci_build, :success, :artifacts, pipeline: pipeline, name: 'deploy', stage_idx: 0)
+            end
+
+            let(:dependencies) { %w[test deploy] }
+
+            it 'logs build artifacts size' do
+              execute(specific_runner)
+
+              artifacts_size = [pre_stage_job, pre_stage_job_second].sum do |job|
+                job.job_artifacts_archive.size
+              end
+
+              expect(artifacts_size).to eq 107464 * 2
+              expect(Gitlab::ApplicationContext.current).to include({
+                                                                      'meta.artifacts_dependencies_size' => artifacts_size,
+                                                                      'meta.artifacts_dependencies_count' => 2
+                                                                    })
+            end
+          end
+
           shared_examples 'not pick' do
             it 'does not pick the build and drops the build' do
               expect(subject).to be_nil
@@ -577,16 +619,6 @@ module Ci
               it { expect(subject).to eq(pending_job) }
             end
           end
-
-          let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
-
-          let!(:pending_job) do
-            create(:ci_build, :pending, :queued,
-              pipeline: pipeline, stage_idx: 1,
-              options: { script: ["bash"], dependencies: ['test'] })
-          end
-
-          subject { execute(specific_runner) }
 
           it_behaves_like 'validation is active'
         end

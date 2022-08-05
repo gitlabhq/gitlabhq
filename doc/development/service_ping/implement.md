@@ -688,7 +688,7 @@ pry(main)> Gitlab::UsageData.count(User.active)
 Paste the SQL query into `#database-lab` to see how the query performs at scale.
 
 - GitLab.com's production database has a 15 second timeout.
-- Any single query must stay below the [1 second execution time](../query_performance.md#timing-guidelines-for-queries) with cold caches.
+- Any single query must stay below the [1 second execution time](../database/query_performance.md#timing-guidelines-for-queries) with cold caches.
 - Add a specialized index on columns involved to reduce the execution time.
 
 To understand the query's execution, we add the following information

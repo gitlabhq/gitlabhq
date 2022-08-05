@@ -276,7 +276,7 @@ requirements.
    upgrading instructions" section.
 1. Reviewed by relevant reviewers, and all concerns are addressed for Availability, Regressions, and Security. Documentation reviews should take place as soon as possible, but they should not block a merge request.
 1. The [MR acceptance checklist](../code_review.md#acceptance-checklist) has been checked as confirmed in the MR.
-1. Create an issue in the [infrastructure issue tracker](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues) to inform the Infrastructure department when your contribution is changing default settings or introduces a new setting, if relevant.
+1. Create an issue in the [infrastructure issue tracker](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues) to inform the Infrastructure department when your contribution is changing default settings or introduces a new setting, if relevant.
 1. An agreed-upon [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans/).
 1. Your merge request has at least 1 approval, but depending on your changes
    you might need additional approvals. Refer to the [Approval guidelines](../code_review.md#approval-guidelines).

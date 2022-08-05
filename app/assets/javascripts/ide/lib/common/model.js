@@ -51,7 +51,7 @@ export default class Model {
   }
 
   get language() {
-    return this.model.getModeId();
+    return this.model.getLanguageId();
   }
 
   get path() {

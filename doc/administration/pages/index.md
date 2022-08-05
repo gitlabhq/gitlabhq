@@ -78,7 +78,7 @@ among other things.
 Follow [these instructions](https://publicsuffix.org/submit/) to submit your
 GitLab Pages subdomain. For instance, if your domain is `example.io`, you should
 request that `example.io` is added to the Public Suffix List. GitLab.com
-added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/infrastructure/-/issues/230).
+added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/230).
 
 ### DNS configuration
 

@@ -5,6 +5,7 @@ module Ci
     extend ActiveSupport::Concern
 
     include ObjectStorable
+    include Gitlab::Ci::Artifacts::Logger
 
     STORE_COLUMN = :file_store
     NotSupportedAdapterError = Class.new(StandardError)
@@ -30,7 +31,7 @@ module Ci
         raise NotSupportedAdapterError, 'This file format requires a dedicated adapter'
       end
 
-      ::Gitlab::ApplicationContext.push(artifact: file.model)
+      log_artifacts_filesize(file.model)
 
       file.open do |stream|
         file_format_adapter_class.new(stream).each_blob(&blk)

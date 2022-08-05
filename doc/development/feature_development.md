@@ -73,7 +73,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Manage feature flags](feature_flags/index.md)
 - [Implementing Enterprise Edition features](ee_features.md)
 - [Accessing session data](session.md)
-- [How to dump production data to staging](db_dump.md)
+- [How to dump production data to staging](database/db_dump.md)
 - [Geo development](geo.md)
 - [Redis guidelines](redis.md)
   - [Adding a new Redis instance](redis/new_redis_instance.md)

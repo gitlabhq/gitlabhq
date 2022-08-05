@@ -322,7 +322,7 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 
 Some of these settings are in the process being adjusted. For example, the value
 for `shared_buffers` is quite high, and we are
-[considering adjusting it](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/4985).
+[considering adjusting it](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/4985).
 
 ## Puma
 

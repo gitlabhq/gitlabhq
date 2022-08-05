@@ -71,8 +71,8 @@ RSpec.describe API::Ci::Helpers::Runner do
       end
     end
 
-    describe '#log_artifact_size' do
-      subject { runner_helper.log_artifact_size(artifact) }
+    describe '#log_artifacts_filesize' do
+      subject { runner_helper.log_artifacts_filesize(artifact) }
 
       let(:runner_params) { {} }
       let(:artifact) { create(:ci_job_artifact, size: 42) }

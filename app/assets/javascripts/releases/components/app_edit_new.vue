@@ -128,8 +128,13 @@ export default {
   async mounted() {
     await this.initializeRelease();
 
-    // Focus the first non-disabled input or button element
-    this.$el.querySelector('input:enabled, button:enabled').focus();
+    if (this.release?.tagName) {
+      // Focus the release title input if a tag was preselected
+      this.$refs.releaseTitleInput.$el.focus();
+    } else {
+      // Focus the first non-disabled input or button element otherwise
+      this.$el.querySelector('input:enabled, button:enabled').focus();
+    }
   },
   methods: {
     ...mapActions('editNew', [

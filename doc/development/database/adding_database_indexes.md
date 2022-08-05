@@ -190,7 +190,7 @@ There may be times when an index is only needed temporarily.
 
 For example, in a migration, a column of a table might be conditionally
 updated. To query which columns must be updated in the
-[query performance guidelines](../query_performance.md), an index is needed
+[query performance guidelines](query_performance.md), an index is needed
 that would otherwise not be used.
 
 In these cases, consider a temporary index. To specify a

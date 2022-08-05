@@ -6,6 +6,7 @@ module API
     include Helpers::Caching
     include Helpers::Pagination
     include Helpers::PaginationStrategies
+    include Gitlab::Ci::Artifacts::Logger
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
@@ -584,12 +585,8 @@ module API
       end
     end
 
-    def log_artifact_file_size(file)
-      Gitlab::ApplicationContext.push(artifact: file.model)
-    end
-
     def present_artifacts_file!(file, **args)
-      log_artifact_file_size(file) if file
+      log_artifacts_filesize(file&.model)
 
       present_carrierwave_file!(file, **args)
     end
