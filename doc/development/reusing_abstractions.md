@@ -109,7 +109,7 @@ the various abstractions and what they can (not) reuse:
 
 | Abstraction            | Service classes  | Finders  | Presenters  | Serializers   | Model instance method   | Model class methods   | Active Record   | Worker
 |:-----------------------|:-----------------|:---------|:------------|:--------------|:------------------------|:----------------------|:----------------|:--------
-| Controller             | Yes              | Yes      | Yes         | Yes           | Yes                     | No                    | No              | No
+| Controller/API endpoint| Yes              | Yes      | Yes         | Yes           | Yes                     | No                    | No              | No
 | Service class          | Yes              | Yes      | No          | No            | Yes                     | No                    | No              | Yes
 | Finder                 | No               | No       | No          | No            | Yes                     | Yes                   | No              | No
 | Presenter              | No               | Yes      | No          | No            | Yes                     | Yes                   | No              | No
@@ -125,9 +125,11 @@ Everything in `app/controllers`.
 Controllers should not do much work on their own, instead they simply pass input
 to other classes and present the results.
 
-### Grape endpoint
+### API endpoints
 
-Everything in `lib/api`.
+Everything in `lib/api` (the REST API) and `app/graphql` (the GraphQL API).
+
+API endpoints have the same abstraction level as controllers.
 
 ### Service classes
 

@@ -1025,178 +1025,29 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   describe '#last_visible_deployable' do
     subject { environment.last_visible_deployable }
 
-    context 'does not join across databases' do
-      let(:pipeline_a) { create(:ci_pipeline, project: project) }
-      let(:pipeline_b) { create(:ci_pipeline, project: project) }
-      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
-      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
-
-      before do
-        create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
-      end
-
-      it 'for direct call' do
-        with_cross_joins_prevented do
-          expect(subject.id).to eq(ci_build_b.id)
-        end
-      end
-
-      it 'for preload' do
-        environment.reload
-
-        with_cross_joins_prevented do
-          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_deployable: []])
-          expect(subject.id).to eq(ci_build_b.id)
-        end
-      end
+    let!(:deployment) do
+      create(:deployment, :success, project: project, environment: environment, deployable: deployable)
     end
 
-    context 'call after preload' do
-      it 'fetches from association cache' do
-        pipeline = create(:ci_pipeline, project: project)
-        ci_build = create(:ci_build, project: project, pipeline: pipeline)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
+    let!(:deployable) { create(:ci_build, :success, project: project) }
 
-        environment.reload
-        ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_deployable: []])
-
-        query_count = ActiveRecord::QueryRecorder.new do
-          expect(subject.id).to eq(ci_build.id)
-        end.count
-
-        expect(query_count).to eq(0)
-      end
+    it 'fetches the deployable through the last visible deployment' do
+      is_expected.to eq(deployable)
     end
   end
 
   describe '#last_visible_pipeline' do
-    let(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :repository) }
+    subject { environment.last_visible_pipeline }
 
-    let(:environment) { create(:environment, project: project) }
-    let(:commit) { project.commit }
-
-    let(:success_pipeline) do
-      create(:ci_pipeline, :success, project: project, user: user, sha: commit.sha)
+    let!(:deployment) do
+      create(:deployment, :success, project: project, environment: environment, deployable: deployable)
     end
 
-    let(:failed_pipeline) do
-      create(:ci_pipeline, :failed, project: project, user: user, sha: commit.sha)
-    end
+    let!(:deployable) { create(:ci_build, :success, project: project, pipeline: pipeline) }
+    let!(:pipeline) { create(:ci_pipeline, :success, project: project) }
 
-    it 'uses the last deployment even if it failed' do
-      pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
-      ci_build = create(:ci_build, project: project, pipeline: pipeline)
-      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build, sha: commit.sha)
-
-      last_pipeline = environment.last_visible_pipeline
-
-      expect(last_pipeline).to eq(pipeline)
-    end
-
-    it 'returns nil if there is no deployment' do
-      create(:ci_build, project: project, pipeline: success_pipeline)
-
-      expect(environment.last_visible_pipeline).to be_nil
-    end
-
-    it 'does not return an invisible pipeline' do
-      failed_pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
-      ci_build_a = create(:ci_build, project: project, pipeline: failed_pipeline)
-      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_a, sha: commit.sha)
-      pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
-      ci_build_b = create(:ci_build, project: project, pipeline: pipeline)
-      create(:deployment, :created, project: project, environment: environment, deployable: ci_build_b, sha: commit.sha)
-
-      last_pipeline = environment.last_visible_pipeline
-
-      expect(last_pipeline).to eq(failed_pipeline)
-    end
-
-    context 'does not join across databases' do
-      let(:pipeline_a) { create(:ci_pipeline, project: project) }
-      let(:pipeline_b) { create(:ci_pipeline, project: project) }
-      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
-      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
-
-      before do
-        create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
-      end
-
-      subject { environment.last_visible_pipeline }
-
-      it 'for direct call' do
-        with_cross_joins_prevented do
-          expect(subject.id).to eq(pipeline_b.id)
-        end
-      end
-
-      it 'for preload' do
-        environment.reload
-
-        with_cross_joins_prevented do
-          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_pipeline: []])
-          expect(subject.id).to eq(pipeline_b.id)
-        end
-      end
-    end
-
-    context 'for the environment' do
-      it 'returns the last pipeline' do
-        pipeline = create(:ci_pipeline, project: project, user: user, sha: commit.sha)
-        ci_build = create(:ci_build, project: project, pipeline: pipeline)
-        create(:deployment, :success, project: project, environment: environment, deployable: ci_build, sha: commit.sha)
-
-        last_pipeline = environment.last_visible_pipeline
-
-        expect(last_pipeline).to eq(pipeline)
-      end
-
-      context 'with multiple deployments' do
-        it 'returns the last pipeline' do
-          pipeline_a = create(:ci_pipeline, project: project, user: user)
-          pipeline_b = create(:ci_pipeline, project: project, user: user)
-          ci_build_a = create(:ci_build, project: project, pipeline: pipeline_a)
-          ci_build_b = create(:ci_build, project: project, pipeline: pipeline_b)
-          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
-          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_b)
-
-          last_pipeline = environment.last_visible_pipeline
-
-          expect(last_pipeline).to eq(pipeline_b)
-        end
-      end
-
-      context 'with multiple pipelines' do
-        it 'returns the last pipeline' do
-          create(:ci_build, project: project, pipeline: success_pipeline)
-          ci_build_b = create(:ci_build, project: project, pipeline: failed_pipeline)
-          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b, sha: commit.sha)
-
-          last_pipeline = environment.last_visible_pipeline
-
-          expect(last_pipeline).to eq(failed_pipeline)
-        end
-      end
-    end
-
-    context 'call after preload' do
-      it 'fetches from association cache' do
-        pipeline = create(:ci_pipeline, project: project)
-        ci_build = create(:ci_build, project: project, pipeline: pipeline)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
-
-        environment.reload
-        ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_pipeline: []])
-
-        query_count = ActiveRecord::QueryRecorder.new do
-          expect(environment.last_visible_pipeline.id).to eq(pipeline.id)
-        end.count
-
-        expect(query_count).to eq(0)
-      end
+    it 'fetches the pipeline through the last visible deployment' do
+      is_expected.to eq(pipeline)
     end
   end
 

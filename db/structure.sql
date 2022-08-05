@@ -28525,6 +28525,8 @@ CREATE INDEX index_integrations_on_type_new ON integrations USING btree (type_ne
 
 CREATE INDEX index_integrations_on_type_new_and_instance_partial ON integrations USING btree (type_new, instance) WHERE (instance = true);
 
+CREATE INDEX index_integrations_on_type_new_id_when_active_and_has_group ON integrations USING btree (type_new, id, inherit_from_id) WHERE ((active = true) AND (group_id IS NOT NULL));
+
 CREATE INDEX index_integrations_on_type_new_id_when_active_and_has_project ON integrations USING btree (type_new, id) WHERE ((active = true) AND (project_id IS NOT NULL));
 
 CREATE INDEX index_integrations_on_unique_group_id_and_type_new ON integrations USING btree (group_id, type_new);

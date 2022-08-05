@@ -21,7 +21,9 @@ module Mutations
         container_repository = authorized_find!(id: id)
 
         container_repository.delete_scheduled!
+        # rubocop:disable CodeReuse/Worker
         DeleteContainerRepositoryWorker.perform_async(current_user.id, container_repository.id)
+        # rubocop:enable CodeReuse/Worker
         track_event(:delete_repository, :container)
 
         {
