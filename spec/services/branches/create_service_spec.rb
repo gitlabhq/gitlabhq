@@ -93,7 +93,12 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching do
       let(:branches) { { 'master' => 'master', '' => 'master', 'failed_branch' => 'master' } }
 
       it 'returns all errors' do
-        allow(project.repository).to receive(:add_branch).with(user, 'failed_branch', 'master').and_return(false)
+        allow(project.repository).to receive(:add_branch).with(
+          user,
+          'failed_branch',
+          'master',
+          expire_cache: false
+        ).and_return(false)
 
         expect(subject[:status]).to eq(:error)
         expect(subject[:message]).to match_array(
@@ -115,6 +120,26 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching do
         control = RedisCommands::Recorder.new(pattern: ':branch_names:') { subject }
 
         expect(control.by_command(:sadd).count).to eq(1)
+      end
+    end
+
+    context 'without N+1 branch cache expiration' do
+      let(:branches) { { 'branch_1' => 'master', 'branch_2' => 'master', 'branch_3' => 'master' } }
+
+      it 'triggers branch cache expiration only once' do
+        expect(project.repository).to receive(:expire_branches_cache).once
+
+        subject
+      end
+
+      context 'when branches were not added' do
+        let(:branches) { { 'master' => 'master' } }
+
+        it 'does not trigger branch expiration' do
+          expect(project.repository).not_to receive(:expire_branches_cache)
+
+          subject
+        end
       end
     end
   end

@@ -290,7 +290,7 @@ and GitLab features. For example, restrict the token by:
   of specific users.
 - Setting Vault time limits for TTL of the token as specified in [`token_explicit_max_ttl`](https://www.vaultproject.io/api-docs/auth/jwt#token_explicit_max_ttl),
   where the token expires after authentication.
-- Scoping the JWT to [GitLab projected branches](../../../user/project/protected_branches.md)
+- Scoping the JWT to [GitLab protected branches](../../../user/project/protected_branches.md)
   that are restricted to a subset of project users.
-- Scoping the JWT to [GitLab projected tags](../../../user/project/protected_tags.md),
+- Scoping the JWT to [GitLab protected tags](../../../user/project/protected_tags.md),
   that are restricted to a subset of project users.

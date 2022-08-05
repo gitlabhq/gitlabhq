@@ -25,6 +25,7 @@ module Branches
         branches
           .then { |branches| only_valid_branches(branches) }
           .then { |branches| create_branches(branches) }
+          .then { |branches| expire_branches_cache(branches) }
 
       return error(errors) if errors.present?
 
@@ -54,7 +55,7 @@ module Branches
 
     def create_branches(branches)
       branches.filter_map do |branch_name, ref|
-        result = create_branch(branch_name, ref)
+        result = create_branch(branch_name, ref, expire_cache: false)
 
         if result[:status] == :error
           errors << result[:message]
@@ -65,8 +66,14 @@ module Branches
       end
     end
 
-    def create_branch(branch_name, ref)
-      new_branch = repository.add_branch(current_user, branch_name, ref)
+    def expire_branches_cache(branches)
+      repository.expire_branches_cache if branches.present?
+
+      branches
+    end
+
+    def create_branch(branch_name, ref, expire_cache: true)
+      new_branch = repository.add_branch(current_user, branch_name, ref, expire_cache: expire_cache)
 
       if new_branch
         success(branch: new_branch)

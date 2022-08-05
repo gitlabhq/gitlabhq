@@ -259,6 +259,74 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION update_namespace_details_from_namespaces() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+INSERT INTO
+  namespace_details (
+    description,
+    description_html,
+    cached_markdown_version,
+    updated_at,
+    created_at,
+    namespace_id
+  )
+VALUES
+  (
+    NEW.description,
+    NEW.description_html,
+    NEW.cached_markdown_version,
+    NEW.updated_at,
+    NEW.updated_at,
+    NEW.id
+  ) ON CONFLICT (namespace_id) DO
+UPDATE
+SET
+  description = NEW.description,
+  description_html = NEW.description_html,
+  cached_markdown_version = NEW.cached_markdown_version,
+  updated_at = NEW.updated_at
+WHERE
+  namespace_details.namespace_id = NEW.id;RETURN NULL;
+
+END
+$$;
+
+CREATE FUNCTION update_namespace_details_from_projects() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+INSERT INTO
+  namespace_details (
+    description,
+    description_html,
+    cached_markdown_version,
+    updated_at,
+    created_at,
+    namespace_id
+  )
+VALUES
+  (
+    NEW.description,
+    NEW.description_html,
+    NEW.cached_markdown_version,
+    NEW.updated_at,
+    NEW.updated_at,
+    NEW.project_namespace_id
+  ) ON CONFLICT (namespace_id) DO
+UPDATE
+SET
+  description = NEW.description,
+  description_html = NEW.description_html,
+  cached_markdown_version = NEW.cached_markdown_version,
+  updated_at = NEW.updated_at
+WHERE
+  namespace_details.namespace_id = NEW.project_namespace_id;RETURN NULL;
+
+END
+$$;
+
 CREATE FUNCTION update_vulnerability_reads_from_vulnerability() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -17555,6 +17623,17 @@ CREATE TABLE namespace_ci_cd_settings (
     allow_stale_runner_pruning boolean DEFAULT false NOT NULL
 );
 
+CREATE TABLE namespace_details (
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    cached_markdown_version integer,
+    description text,
+    description_html text,
+    CONSTRAINT check_2df620eaf6 CHECK ((char_length(description_html) <= 255)),
+    CONSTRAINT check_2f563eec0f CHECK ((char_length(description) <= 255))
+);
+
 CREATE TABLE namespace_limits (
     additional_purchased_storage_size bigint DEFAULT 0 NOT NULL,
     additional_purchased_storage_ends_on date,
@@ -25371,6 +25450,9 @@ ALTER TABLE ONLY namespace_bans
 ALTER TABLE ONLY namespace_ci_cd_settings
     ADD CONSTRAINT namespace_ci_cd_settings_pkey PRIMARY KEY (namespace_id);
 
+ALTER TABLE ONLY namespace_details
+    ADD CONSTRAINT namespace_details_pkey PRIMARY KEY (namespace_id);
+
 ALTER TABLE ONLY namespace_limits
     ADD CONSTRAINT namespace_limits_pkey PRIMARY KEY (namespace_id);
 
@@ -31743,6 +31825,14 @@ CREATE TRIGGER trigger_projects_parent_id_on_insert AFTER INSERT ON projects FOR
 
 CREATE TRIGGER trigger_projects_parent_id_on_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((old.namespace_id IS DISTINCT FROM new.namespace_id)) EXECUTE FUNCTION insert_projects_sync_event();
 
+CREATE TRIGGER trigger_update_details_on_namespace_insert AFTER INSERT ON namespaces FOR EACH ROW WHEN (((new.type)::text <> 'Project'::text)) EXECUTE FUNCTION update_namespace_details_from_namespaces();
+
+CREATE TRIGGER trigger_update_details_on_namespace_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((((new.type)::text <> 'Project'::text) AND (((old.description)::text IS DISTINCT FROM (new.description)::text) OR (old.description_html IS DISTINCT FROM new.description_html) OR (old.cached_markdown_version IS DISTINCT FROM new.cached_markdown_version)))) EXECUTE FUNCTION update_namespace_details_from_namespaces();
+
+CREATE TRIGGER trigger_update_details_on_project_insert AFTER INSERT ON projects FOR EACH ROW EXECUTE FUNCTION update_namespace_details_from_projects();
+
+CREATE TRIGGER trigger_update_details_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN (((old.description IS DISTINCT FROM new.description) OR (old.description_html IS DISTINCT FROM new.description_html) OR (old.cached_markdown_version IS DISTINCT FROM new.cached_markdown_version))) EXECUTE FUNCTION update_namespace_details_from_projects();
+
 CREATE TRIGGER trigger_update_has_issues_on_vulnerability_issue_links_delete AFTER DELETE ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION unset_has_issues_on_vulnerability_reads();
 
 CREATE TRIGGER trigger_update_has_issues_on_vulnerability_issue_links_update AFTER INSERT ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION set_has_issues_on_vulnerability_reads();
@@ -33936,6 +34026,9 @@ ALTER TABLE ONLY boards_epic_board_positions
 
 ALTER TABLE ONLY vulnerability_finding_links
     ADD CONSTRAINT fk_rails_cbdfde27ce FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY namespace_details
+    ADD CONSTRAINT fk_rails_cc11a451f8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_cc5d88bbb0 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

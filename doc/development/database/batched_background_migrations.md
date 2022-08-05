@@ -352,7 +352,7 @@ The default batching strategy provides an efficient way to iterate over primary 
 However, if you need to iterate over columns where values are not unique, you must use a
 different batching strategy.
 
-The `LooseIndexScanBatchingStrategy` batching strategy uses a special version of [`EachBatch`](../iterating_tables_in_batches.md#loose-index-scan-with-distinct_each_batch)
+The `LooseIndexScanBatchingStrategy` batching strategy uses a special version of [`EachBatch`](iterating_tables_in_batches.md#loose-index-scan-with-distinct_each_batch)
 to provide efficient and stable iteration over the distinct column values.
 
 This example shows a batched background migration where the `issues.project_id` column is used as
@@ -475,7 +475,7 @@ We can accomplish this by:
    end
    ```
 
-When applying a batching strategy, it is important to ensure the filter properly covered by an index to optimize `EachBatch` performance. See [the `EachBatch` docs for more information](../iterating_tables_in_batches.md).
+When applying a batching strategy, it is important to ensure the filter properly covered by an index to optimize `EachBatch` performance. See [the `EachBatch` docs for more information](iterating_tables_in_batches.md).
 
 ## Testing
 

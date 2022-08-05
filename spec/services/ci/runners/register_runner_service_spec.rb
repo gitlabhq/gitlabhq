@@ -6,6 +6,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
   let(:registration_token) { 'abcdefg123456' }
   let(:token) {}
   let(:args) { {} }
+  let(:runner) { execute.payload[:runner] }
 
   before do
     stub_feature_flags(runner_registration_control: false)
@@ -13,21 +14,25 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
     stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
   end
 
-  subject(:runner) { described_class.new.execute(token, args) }
+  subject(:execute) { described_class.new.execute(token, args) }
 
   context 'when no token is provided' do
     let(:token) { '' }
 
-    it 'returns nil' do
-      is_expected.to be_nil
+    it 'returns error response' do
+      expect(execute).to be_error
+      expect(execute.message).to eq 'invalid token supplied'
+      expect(execute.http_status).to eq :forbidden
     end
   end
 
   context 'when invalid token is provided' do
     let(:token) { 'invalid' }
 
-    it 'returns nil' do
-      is_expected.to be_nil
+    it 'returns error response' do
+      expect(execute).to be_error
+      expect(execute.message).to eq 'invalid token supplied'
+      expect(execute.http_status).to eq :forbidden
     end
   end
 
@@ -36,12 +41,14 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
       let(:token) { registration_token }
 
       it 'creates runner with default values' do
-        is_expected.to be_an_instance_of(::Ci::Runner)
-        expect(subject.persisted?).to be_truthy
-        expect(subject.run_untagged).to be true
-        expect(subject.active).to be true
-        expect(subject.token).not_to eq(registration_token)
-        expect(subject).to be_instance_type
+        expect(execute).to be_success
+
+        expect(runner).to be_an_instance_of(::Ci::Runner)
+        expect(runner.persisted?).to be_truthy
+        expect(runner.run_untagged).to be true
+        expect(runner.active).to be true
+        expect(runner.token).not_to eq(registration_token)
+        expect(runner).to be_instance_type
       end
 
       context 'with non-default arguments' do
@@ -67,25 +74,27 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
         end
 
         it 'creates runner with specified values', :aggregate_failures do
-          is_expected.to be_an_instance_of(::Ci::Runner)
-          expect(subject.active).to eq args[:active]
-          expect(subject.locked).to eq args[:locked]
-          expect(subject.run_untagged).to eq args[:run_untagged]
-          expect(subject.tags).to contain_exactly(
+          expect(execute).to be_success
+
+          expect(runner).to be_an_instance_of(::Ci::Runner)
+          expect(runner.active).to eq args[:active]
+          expect(runner.locked).to eq args[:locked]
+          expect(runner.run_untagged).to eq args[:run_untagged]
+          expect(runner.tags).to contain_exactly(
             an_object_having_attributes(name: 'tag1'),
             an_object_having_attributes(name: 'tag2')
           )
-          expect(subject.access_level).to eq args[:access_level]
-          expect(subject.maximum_timeout).to eq args[:maximum_timeout]
-          expect(subject.name).to eq args[:name]
-          expect(subject.version).to eq args[:version]
-          expect(subject.revision).to eq args[:revision]
-          expect(subject.platform).to eq args[:platform]
-          expect(subject.architecture).to eq args[:architecture]
-          expect(subject.ip_address).to eq args[:ip_address]
+          expect(runner.access_level).to eq args[:access_level]
+          expect(runner.maximum_timeout).to eq args[:maximum_timeout]
+          expect(runner.name).to eq args[:name]
+          expect(runner.version).to eq args[:version]
+          expect(runner.revision).to eq args[:revision]
+          expect(runner.platform).to eq args[:platform]
+          expect(runner.architecture).to eq args[:architecture]
+          expect(runner.ip_address).to eq args[:ip_address]
 
-          expect(Ci::Runner.tagged_with('tag1')).to include(subject)
-          expect(Ci::Runner.tagged_with('tag2')).to include(subject)
+          expect(Ci::Runner.tagged_with('tag1')).to include(runner)
+          expect(Ci::Runner.tagged_with('tag2')).to include(runner)
         end
       end
 
@@ -95,8 +104,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
         end
 
         it 'creates runner with token expiration' do
-          is_expected.to be_an_instance_of(::Ci::Runner)
-          expect(subject.token_expires_at).to eq(5.days.from_now)
+          expect(execute).to be_success
+
+          expect(runner).to be_an_instance_of(::Ci::Runner)
+          expect(runner.token_expires_at).to eq(5.days.from_now)
         end
       end
     end
@@ -106,12 +117,14 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
       let(:token) { project.runners_token }
 
       it 'creates project runner' do
-        is_expected.to be_an_instance_of(::Ci::Runner)
+        expect(execute).to be_success
+
+        expect(runner).to be_an_instance_of(::Ci::Runner)
         expect(project.runners.size).to eq(1)
-        is_expected.to eq(project.runners.first)
-        expect(subject.token).not_to eq(registration_token)
-        expect(subject.token).not_to eq(project.runners_token)
-        expect(subject).to be_project_type
+        expect(runner).to eq(project.runners.first)
+        expect(runner.token).not_to eq(registration_token)
+        expect(runner.token).not_to eq(project.runners_token)
+        expect(runner).to be_project_type
       end
 
       context 'when it exceeds the application limits' do
@@ -121,9 +134,13 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
         end
 
         it 'does not create runner' do
-          is_expected.to be_an_instance_of(::Ci::Runner)
-          expect(subject.persisted?).to be_falsey
-          expect(subject.errors.messages).to eq('runner_projects.base': ['Maximum number of ci registered project runners (1) exceeded'])
+          expect(execute).to be_success
+
+          expect(runner).to be_an_instance_of(::Ci::Runner)
+          expect(runner.persisted?).to be_falsey
+          expect(runner.errors.messages).to eq(
+            'runner_projects.base': ['Maximum number of ci registered project runners (1) exceeded']
+          )
           expect(project.runners.reload.size).to eq(1)
         end
       end
@@ -135,8 +152,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
         end
 
         it 'creates runner' do
-          is_expected.to be_an_instance_of(::Ci::Runner)
-          expect(subject.errors).to be_empty
+          expect(execute).to be_success
+
+          expect(runner).to be_an_instance_of(::Ci::Runner)
+          expect(runner.errors).to be_empty
           expect(project.runners.reload.size).to eq(2)
           expect(project.runners.recent.size).to eq(1)
         end
@@ -153,15 +172,18 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
           end
 
           it 'returns 403 error' do
-            is_expected.to be_nil
+            expect(execute).to be_error
+            expect(execute.http_status).to eq :forbidden
           end
         end
 
         context 'when feature flag is disabled' do
           it 'registers the runner' do
-            is_expected.to be_an_instance_of(::Ci::Runner)
-            expect(subject.errors).to be_empty
-            expect(subject.active).to be true
+            expect(execute).to be_success
+
+            expect(runner).to be_an_instance_of(::Ci::Runner)
+            expect(runner.errors).to be_empty
+            expect(runner.active).to be true
           end
         end
       end
@@ -172,12 +194,14 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
       let(:token) { group.runners_token }
 
       it 'creates a group runner' do
-        is_expected.to be_an_instance_of(::Ci::Runner)
-        expect(subject.errors).to be_empty
+        expect(execute).to be_success
+
+        expect(runner).to be_an_instance_of(::Ci::Runner)
+        expect(runner.errors).to be_empty
         expect(group.runners.reload.size).to eq(1)
-        expect(subject.token).not_to eq(registration_token)
-        expect(subject.token).not_to eq(group.runners_token)
-        expect(subject).to be_group_type
+        expect(runner.token).not_to eq(registration_token)
+        expect(runner.token).not_to eq(group.runners_token)
+        expect(runner).to be_group_type
       end
 
       context 'when it exceeds the application limits' do
@@ -187,9 +211,13 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
         end
 
         it 'does not create runner' do
-          is_expected.to be_an_instance_of(::Ci::Runner)
-          expect(subject.persisted?).to be_falsey
-          expect(subject.errors.messages).to eq('runner_namespaces.base': ['Maximum number of ci registered group runners (1) exceeded'])
+          expect(execute).to be_success
+
+          expect(runner).to be_an_instance_of(::Ci::Runner)
+          expect(runner.persisted?).to be_falsey
+          expect(runner.errors.messages).to eq(
+            'runner_namespaces.base': ['Maximum number of ci registered group runners (1) exceeded']
+          )
           expect(group.runners.reload.size).to eq(1)
         end
       end
@@ -202,8 +230,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
         end
 
         it 'creates runner' do
-          is_expected.to be_an_instance_of(::Ci::Runner)
-          expect(subject.errors).to be_empty
+          expect(execute).to be_success
+
+          expect(runner).to be_an_instance_of(::Ci::Runner)
+          expect(runner.errors).to be_empty
           expect(group.runners.reload.size).to eq(3)
           expect(group.runners.recent.size).to eq(1)
         end
@@ -219,16 +249,18 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute' do
             stub_feature_flags(runner_registration_control: true)
           end
 
-          it 'returns nil' do
-            is_expected.to be_nil
+          it 'returns error response' do
+            is_expected.to be_error
           end
         end
 
         context 'when feature flag is disabled' do
           it 'registers the runner' do
-            is_expected.to be_an_instance_of(::Ci::Runner)
-            expect(subject.errors).to be_empty
-            expect(subject.active).to be true
+            expect(execute).to be_success
+
+            expect(runner).to be_an_instance_of(::Ci::Runner)
+            expect(runner.errors).to be_empty
+            expect(runner.active).to be true
           end
         end
       end

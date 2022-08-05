@@ -332,6 +332,7 @@ namespace_package_settings: :gitlab_main
 namespace_root_storage_statistics: :gitlab_main
 namespace_ci_cd_settings: :gitlab_main
 namespace_settings: :gitlab_main
+namespace_details: :gitlab_main
 namespaces: :gitlab_main
 namespaces_sync_events: :gitlab_main
 namespace_statistics: :gitlab_main

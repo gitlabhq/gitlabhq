@@ -35,6 +35,10 @@ before we remove them.
 |-----------------------|--------------------------|
 | GitLab 15.0 or later  | OpenSearch 1.x or later  |
 
+If your version of Elasticsearch or OpenSearch is incompatible, to prevent data loss, indexing pauses and
+a message is logged in the
+[`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file.
+
 If you are using a compatible version and after connecting to OpenSearch, you get the message `Elasticsearch version not compatible`, [unpause indexing](#unpause-indexing).
 
 ## System requirements

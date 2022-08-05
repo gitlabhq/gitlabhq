@@ -783,7 +783,7 @@ Enum values can be deprecated using the
 
 ### Defining GraphQL enums dynamically from Rails enums
 
-If your GraphQL enum is backed by a [Rails enum](creating_enums.md), then consider
+If your GraphQL enum is backed by a [Rails enum](database/creating_enums.md), then consider
 using the Rails enum to dynamically define the GraphQL enum values. Doing so
 binds the GraphQL enum values to the Rails enum definition, so if values are
 ever added to the Rails enum then the GraphQL enum automatically reflects the change.

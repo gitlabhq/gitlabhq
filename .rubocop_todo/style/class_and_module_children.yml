@@ -292,6 +292,7 @@ Style/ClassAndModuleChildren:
     - 'app/models/merge_request/metrics.rb'
     - 'app/models/namespace/admin_note.rb'
     - 'app/models/namespace/aggregation_schedule.rb'
+    - 'app/models/namespace/detail.rb'
     - 'app/models/namespace/package_setting.rb'
     - 'app/models/namespace/root_storage_statistics.rb'
     - 'app/models/namespaces/sync_event.rb'

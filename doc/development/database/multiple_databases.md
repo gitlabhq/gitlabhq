@@ -246,7 +246,7 @@ where projects_with_ci_feature_usage.ci_feature = 'code_coverage'
 ```
 
 The above example uses as a text column for simplicity but we should probably
-use an [enum](../creating_enums.md) to save space.
+use an [enum](creating_enums.md) to save space.
 
 The downside of this new design is that this may need to be
 updated (removed if the `ci_daily_build_group_report_results` is deleted).

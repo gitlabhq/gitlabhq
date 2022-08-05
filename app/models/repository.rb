@@ -244,10 +244,10 @@ class Repository
     end
   end
 
-  def add_branch(user, branch_name, ref)
+  def add_branch(user, branch_name, ref, expire_cache: true)
     branch = raw_repository.add_branch(branch_name, user: user, target: ref)
 
-    after_create_branch
+    after_create_branch(expire_cache: expire_cache)
 
     branch
   rescue Gitlab::Git::Repository::InvalidRef

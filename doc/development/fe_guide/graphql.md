@@ -2001,7 +2001,11 @@ relative to `app/graphql/queries` folder: for example, if we need a
 
 ### Mocked client returns empty objects instead of mock response
 
-If your unit test is failing because response contains empty objects instead of mock data, you would need to add `__typename` field to the mocked response. This happens because mocked client (unlike the real one) does not populate the response with typenames and in some cases we need to do it manually so the client is able to recognize a GraphQL type.
+If your unit test is failing because the response contains empty objects instead of mock data, add
+`__typename` field to the mocked responses.
+
+Alternatively, [GraphQL query fixtures](../testing_guide/frontend_testing.md#graphql-query-fixtures)
+automatically adds the `__typename` for you upon generation.
 
 ### Warning about losing cache data
 

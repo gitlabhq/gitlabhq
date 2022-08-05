@@ -13,9 +13,15 @@ module Ci
       end
 
       def execute
-        return false unless @user.present? && @user.can?(:assign_runner, @runner)
+        unless @user.present? && @user.can?(:assign_runner, @runner)
+          return ServiceResponse.error(message: 'user not allowed to assign runner')
+        end
 
-        @runner_project.destroy
+        if @runner_project.destroy
+          ServiceResponse.success
+        else
+          ServiceResponse.error(message: 'failed to destroy runner project')
+        end
       end
 
       private

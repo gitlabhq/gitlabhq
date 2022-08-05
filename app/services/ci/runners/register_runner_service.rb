@@ -6,7 +6,7 @@ module Ci
       def execute(registration_token, attributes)
         runner_type_attrs = extract_runner_type_attrs(registration_token)
 
-        return unless runner_type_attrs
+        return ServiceResponse.error(message: 'invalid token supplied', http_status: :forbidden) unless runner_type_attrs
 
         runner = ::Ci::Runner.new(attributes.merge(runner_type_attrs))
 
@@ -20,7 +20,7 @@ module Ci
           end
         end
 
-        runner
+        ServiceResponse.success(payload: { runner: runner })
       end
 
       private

@@ -412,7 +412,7 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :operation_service,
                                      :user_commit_files, req_enum, timeout: GitalyClient.long_timeout,
-                                     remote_storage: start_repository.storage)
+                                     remote_storage: start_repository&.storage)
 
         if (pre_receive_error = response.pre_receive_error.presence)
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -535,7 +535,7 @@ module Gitlab
           commit_author_name: encode_binary(author_name),
           commit_author_email: encode_binary(author_email),
           start_branch_name: encode_binary(start_branch_name),
-          start_repository: start_repository.gitaly_repository,
+          start_repository: start_repository&.gitaly_repository,
           force: force,
           start_sha: encode_binary(start_sha),
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)

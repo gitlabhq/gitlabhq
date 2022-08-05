@@ -1469,6 +1469,20 @@ RSpec.describe Repository do
         expect(repository.find_branch(branch_name)).to be_nil
       end
     end
+
+    it 'expires branches cache' do
+      expect(repository).to receive(:expire_branches_cache)
+
+      subject
+    end
+
+    context 'when expire_cache: false' do
+      it 'does not expire branches cache' do
+        expect(repository).not_to receive(:expire_branches_cache)
+
+        repository.add_branch(user, branch_name, target, expire_cache: false)
+      end
+    end
   end
 
   shared_examples 'asymmetric cached method' do |method|

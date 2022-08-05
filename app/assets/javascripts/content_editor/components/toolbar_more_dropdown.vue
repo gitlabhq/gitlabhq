@@ -33,8 +33,12 @@ export default {
       this.$emit('execute', { contentType: listType });
     },
 
-    execute(command, contentType) {
-      this.tiptapEditor.chain().focus()[command]().run();
+    execute(command, contentType, ...args) {
+      this.tiptapEditor
+        .chain()
+        .focus()
+        [command](...args)
+        .run();
 
       this.$emit('execute', { contentType });
     },
@@ -66,6 +70,9 @@ export default {
     </gl-dropdown-item>
     <gl-dropdown-item @click="insert('diagram', { language: 'plantuml' })">
       {{ __('PlantUML diagram') }}
+    </gl-dropdown-item>
+    <gl-dropdown-item @click="execute('insertTableOfContents', 'tableOfContents')">
+      {{ __('Table of contents') }}
     </gl-dropdown-item>
   </gl-dropdown>
 </template>

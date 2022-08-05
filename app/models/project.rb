@@ -131,6 +131,8 @@ class Project < ApplicationRecord
 
   after_save :save_topics
 
+  after_save :reload_project_namespace_details
+
   after_create -> { create_or_load_association(:project_feature) }
 
   after_create -> { create_or_load_association(:ci_cd_settings) }
@@ -3255,6 +3257,12 @@ class Project < ApplicationRecord
     end
 
     project_namespace.assign_attributes(attributes_to_sync)
+  end
+
+  def reload_project_namespace_details
+    return unless (previous_changes.keys & %w(description description_html cached_markdown_version)).any? && project_namespace.namespace_details.present?
+
+    project_namespace.namespace_details.reset
   end
 
   # SyncEvents are created by PG triggers (with the function `insert_projects_sync_event`)

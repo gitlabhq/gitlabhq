@@ -47,7 +47,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures do
     it 'executes a limited number of queries' do
       control_count = ActiveRecord::QueryRecorder.new { subject }.count
 
-      expect(control_count).to be <= 108
+      expect(control_count).to be <= 109
     end
 
     it 'schedules an import using a namespace' do

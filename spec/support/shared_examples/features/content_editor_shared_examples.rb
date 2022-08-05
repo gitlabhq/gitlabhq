@@ -13,9 +13,8 @@ RSpec.shared_examples 'edits content using the content editor' do
       expect(page).to have_css('[data-testid="formatting-bubble-menu"]')
     end
 
-    it 'does not show a formatting bubble menu for code' do
-      find(content_editor_testid).send_keys 'This is a `code`'
-      find(content_editor_testid).send_keys [:shift, :left]
+    it 'does not show a formatting bubble menu for code blocks' do
+      find(content_editor_testid).send_keys '```js '
 
       expect(page).not_to have_css('[data-testid="formatting-bubble-menu"]')
     end

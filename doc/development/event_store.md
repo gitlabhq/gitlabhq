@@ -223,6 +223,15 @@ Gitlab::EventStore.publish(
 )
 ```
 
+Events should be dispatched from the relevant Service class whenever possible. Some
+exceptions exist where we may allow models to publish events, like in state machine transitions.
+For example, instead of scheduling `Ci::BuildFinishedWorker`, which runs a collection of side effects,
+we could publish a `Ci::BuildFinishedEvent` and let other domains react asynchronously.
+
+`ActiveRecord` callbacks are too low-level to represent a domain event. They represent more database
+record changes. There might be cases where it would make sense, but we should consider
+those exceptions.
+
 ## Create a subscriber
 
 A subscriber is a Sidekiq worker that includes the `Gitlab::EventStore::Subscriber` module.
@@ -320,7 +329,7 @@ it 'publishes a ProjectCreatedEvent with project id and namespace id' do
   # The project ID will only be generated when the `create_project`
   # is called in the expect block.
   expected_data = { project_id: kind_of(Numeric), namespace_id: group_id }
-  
+
   expect { create_project(user, name: 'Project', path: 'project', namespace_id: group_id) }
     .to publish_event(Projects::ProjectCreatedEvent)
     .with(expected_data)

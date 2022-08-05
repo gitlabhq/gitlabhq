@@ -14,7 +14,7 @@ module Ci
 
       def execute
         unless @user.present? && @user.can?(:assign_runner, @runner)
-          return ServiceResponse.error(message: 'user not allowed to assign runner')
+          return ServiceResponse.error(message: 'user not allowed to assign runner', http_status: :forbidden)
         end
 
         if @runner.assign_to(@project, @user)

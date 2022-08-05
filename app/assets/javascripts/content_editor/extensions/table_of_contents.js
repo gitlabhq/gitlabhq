@@ -1,6 +1,8 @@
 import { Node, InputRule } from '@tiptap/core';
-import { s__ } from '~/locale';
+import { VueNodeViewRenderer } from '@tiptap/vue-2';
+import { __ } from '~/locale';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
+import TableOfContentsWrapper from '../components/wrappers/table_of_contents.vue';
 
 export default Node.create({
   name: 'tableOfContents',
@@ -25,8 +27,17 @@ export default Node.create({
         class:
           'table-of-contents gl-border-1 gl-border-solid gl-text-center gl-border-gray-100 gl-mb-5',
       },
-      s__('ContentEditor|Table of Contents'),
+      __('Table of contents'),
     ];
+  },
+  addNodeView() {
+    return VueNodeViewRenderer(TableOfContentsWrapper);
+  },
+
+  addCommands() {
+    return {
+      insertTableOfContents: () => ({ commands }) => commands.insertContent({ type: this.name }),
+    };
   },
 
   addInputRules() {

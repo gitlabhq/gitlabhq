@@ -15,7 +15,7 @@ RSpec.describe ::Ci::Runners::ResetRegistrationTokenService, '#execute' do
       it 'does not reset registration token and returns error response' do
         expect(scope).not_to receive(token_reset_method_name)
 
-        is_expected.to be_error
+        expect(execute).to be_error
       end
     end
 
@@ -25,7 +25,7 @@ RSpec.describe ::Ci::Runners::ResetRegistrationTokenService, '#execute' do
       it 'does not reset registration token and returns error response' do
         expect(scope).not_to receive(token_reset_method_name)
 
-        is_expected.to be_error
+        expect(execute).to be_error
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe ::Ci::Runners::ResetRegistrationTokenService, '#execute' do
           expect(scope).to receive(token_method_name).once.and_return("#{token_method_name} return value")
         end
 
-        is_expected.to be_success
+        expect(execute).to be_success
         expect(execute.payload[:new_registration_token]).to eq("#{token_method_name} return value")
       end
     end

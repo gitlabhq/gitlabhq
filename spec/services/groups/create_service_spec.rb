@@ -176,6 +176,15 @@ RSpec.describe Groups::CreateService, '#execute' do
     end
   end
 
+  describe 'creating a details record' do
+    let(:service) { described_class.new(user, group_params) }
+
+    it 'create the details record connected to the group' do
+      group = subject
+      expect(group.namespace_details).to be_persisted
+    end
+  end
+
   describe 'create service for the group' do
     let(:service) { described_class.new(user, group_params) }
     let(:created_group) { service.execute }

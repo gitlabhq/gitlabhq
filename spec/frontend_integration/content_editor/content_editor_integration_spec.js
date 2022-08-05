@@ -95,4 +95,35 @@ This reference tag is a mix of letters and numbers [^footnote].
       expect(wrapper.find('pre').text()).toContain('[gitlab]: https://gitlab.com');
     });
   });
+
+  it('renders table of contents', async () => {
+    jest.useFakeTimers();
+
+    buildWrapper();
+
+    renderMarkdown.mockResolvedValue(`
+<ul class="section-nav">
+</ul>
+<h1 dir="auto" data-sourcepos="3:1-3:11">
+  Heading 1
+</h1>
+<h2 dir="auto" data-sourcepos="5:1-5:12">
+  Heading 2
+</h2>
+    `);
+
+    await contentEditorService.setSerializedContent(`
+[TOC]
+
+# Heading 1
+
+## Heading 2
+    `);
+
+    await nextTick();
+    jest.runAllTimers();
+
+    expect(wrapper.findByTestId('table-of-contents').text()).toContain('Heading 1');
+    expect(wrapper.findByTestId('table-of-contents').text()).toContain('Heading 2');
+  });
 });

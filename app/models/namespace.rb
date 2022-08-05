@@ -50,6 +50,7 @@ class Namespace < ApplicationRecord
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
   has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true
+  has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: true
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
@@ -127,6 +128,7 @@ class Namespace < ApplicationRecord
            to: :namespace_settings, allow_nil: true
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_parent_id? }
+  after_save :reload_namespace_details
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
@@ -674,6 +676,12 @@ class Namespace < ApplicationRecord
     elsif group_namespace?
       errors.add(:parent_id, _('user namespace cannot be the parent of another namespace')) if parent.user_namespace?
     end
+  end
+
+  def reload_namespace_details
+    return unless !project_namespace? && (previous_changes.keys & %w(description description_html cached_markdown_version)).any? && namespace_details.present?
+
+    namespace_details.reset
   end
 
   def sync_share_with_group_lock_with_parent

@@ -3,14 +3,11 @@ import { GlButtonGroup } from '@gitlab/ui';
 import { BubbleMenu } from '@tiptap/vue-2';
 import { BUBBLE_MENU_TRACKING_ACTION } from '../../constants';
 import trackUIControl from '../../services/track_ui_control';
-import Image from '../../extensions/image';
+import Paragraph from '../../extensions/paragraph';
+import Heading from '../../extensions/heading';
 import Audio from '../../extensions/audio';
 import Video from '../../extensions/video';
-import Code from '../../extensions/code';
-import CodeBlockHighlight from '../../extensions/code_block_highlight';
-import Diagram from '../../extensions/diagram';
-import Frontmatter from '../../extensions/frontmatter';
-import ReferenceDefinition from '../../extensions/reference_definition';
+import Image from '../../extensions/image';
 import ToolbarButton from '../toolbar_button.vue';
 
 export default {
@@ -28,18 +25,13 @@ export default {
     shouldShow: ({ editor, from, to }) => {
       if (from === to) return false;
 
-      const exclude = [
-        Code.name,
-        CodeBlockHighlight.name,
-        Diagram.name,
-        Frontmatter.name,
-        Image.name,
-        Audio.name,
-        Video.name,
-        ReferenceDefinition.name,
-      ];
+      const includes = [Paragraph.name, Heading.name];
+      const excludes = [Image.name, Audio.name, Video.name];
 
-      return !exclude.some((type) => editor.isActive(type));
+      return (
+        includes.some((type) => editor.isActive(type)) &&
+        !excludes.some((type) => editor.isActive(type))
+      );
     },
   },
 };
