@@ -125,8 +125,7 @@ to your instance and then upgrade it for any relevant features you're using.
   - Account for any [version-specific update instructions](index.md#version-specific-upgrading-instructions).
   - Account for any [version-specific changes](package/index.md#version-specific-changes).
   - Check the [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
-- Due to background migrations, plan to pause any further upgrades after upgrading
-  to a new major version.
+- Due to background migrations, plan to pause before any further upgrades.
   [All migrations must finish running](index.md#checking-for-background-migrations-before-upgrading)
   before the next upgrade.
 - If available in your starting version, consider
