@@ -5,24 +5,20 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
   using RSpec::Parameterized::TableSyntax
 
+  subject(:instance) { described_class.new(gitlab_version, runner_releases) }
+
   describe '#check_runner_upgrade_suggestion' do
-    subject(:result) { described_class.instance.check_runner_upgrade_suggestion(runner_version) }
+    subject(:result) { instance.check_runner_upgrade_suggestion(runner_version) }
 
     let(:gitlab_version) { '14.1.1' }
     let(:parsed_runner_version) { ::Gitlab::VersionInfo.parse(runner_version, parse_suffix: true) }
-
-    before do
-      allow(described_class.instance).to receive(:gitlab_version)
-        .and_return(::Gitlab::VersionInfo.parse(gitlab_version))
-    end
+    let(:runner_releases) { instance_double(Gitlab::Ci::RunnerReleases) }
 
     context 'with failing Gitlab::Ci::RunnerReleases request' do
       let(:runner_version) { '14.1.123' }
-      let(:runner_releases_double) { instance_double(Gitlab::Ci::RunnerReleases) }
 
       before do
-        allow(Gitlab::Ci::RunnerReleases).to receive(:instance).and_return(runner_releases_double)
-        allow(runner_releases_double).to receive(:releases).and_return(nil)
+        allow(runner_releases).to receive(:releases).and_return(nil)
       end
 
       it 'returns :error' do
@@ -31,10 +27,13 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
     end
 
     context 'with available_runner_releases configured' do
-      before do
-        url = ::Gitlab::CurrentSettings.current_application_settings.public_runner_releases_url
+      let(:runner_releases) { Gitlab::Ci::RunnerReleases.instance }
+      let(:runner_releases_url) do
+        ::Gitlab::CurrentSettings.current_application_settings.public_runner_releases_url
+      end
 
-        WebMock.stub_request(:get, url).to_return(
+      before do
+        WebMock.stub_request(:get, runner_releases_url).to_return(
           body: available_runner_releases.map { |v| { name: v } }.to_json,
           status: 200,
           headers: { 'Content-Type' => 'application/json' }

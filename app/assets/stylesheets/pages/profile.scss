@@ -29,23 +29,6 @@
   }
 }
 
-// Middle dot divider between each element in a list of items.
-.middle-dot-divider {
-  @include middle-dot-divider;
-}
-
-.middle-dot-divider-sm {
-  @include media-breakpoint-up(sm) {
-    @include middle-dot-divider;
-  }
-}
-
-.profile-user-bio {
-  // Limits the width of the user bio for readability.
-  max-width: 600px;
-  margin: 10px auto;
-}
-
 .user-avatar-button {
   .file-name {
     display: inline-block;
@@ -153,71 +136,6 @@
 .created-personal-access-token-container {
   .btn-clipboard {
     border: 1px solid $border-color;
-  }
-}
-
-.user-profile {
-  .profile-header {
-    margin: 0 $gl-padding;
-
-    &.with-no-profile-tabs {
-      margin-bottom: $gl-padding-24;
-    }
-
-    .avatar-holder {
-      width: 90px;
-      margin: 0 auto 10px;
-    }
-  }
-
-  .user-profile-nav {
-    font-size: 0;
-  }
-
-  .fade-right {
-    right: 0;
-  }
-
-  .fade-left {
-    left: 0;
-  }
-
-  .activities-block {
-    .event-item {
-      padding-left: 40px;
-    }
-
-    .gl-label-scoped {
-      --label-inset-border: inset 0 0 0 1px currentColor;
-    }
-
-    @include media-breakpoint-up(lg) {
-      margin-right: 5px;
-    }
-  }
-
-  .projects-block {
-    @include media-breakpoint-up(lg) {
-      margin-left: 5px;
-    }
-  }
-
-  @include media-breakpoint-down(xs) {
-    .cover-block {
-      padding-top: 20px;
-    }
-
-    .user-profile-nav {
-      a {
-        margin-right: 0;
-      }
-    }
-
-    .activities-block {
-      .event-item {
-        padding-left: 0;
-      }
-    }
   }
 }
 
@@ -365,16 +283,4 @@ table.u2f-registrations {
 
 .gitlab-slack-slack-logo {
   transform: scale(200%); // Slack logo SVG is scaled down 50% and has empty space around it
-}
-
-.skype-icon {
-  color: $skype;
-}
-
-.linkedin-icon {
-  color: $linkedin;
-}
-
-.twitter-icon {
-  color: $twitter;
 }

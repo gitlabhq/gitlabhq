@@ -37,7 +37,9 @@ RSpec.describe 'Query.runners' do
     end
 
     before do
-      allow(Gitlab::Ci::RunnerUpgradeCheck.instance).to receive(:check_runner_upgrade_suggestion)
+      allow_next_instance_of(::Gitlab::Ci::RunnerUpgradeCheck) do |instance|
+        allow(instance).to receive(:check_runner_upgrade_suggestion)
+      end
 
       post_graphql(query, current_user: current_user)
     end

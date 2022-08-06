@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute' do
+  include RunnerReleasesHelper
+
   subject(:execute) { described_class.new.execute }
 
   let_it_be(:runner_14_0_1) { create(:ci_runner, version: '14.0.1') }
@@ -11,12 +13,12 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
   end
 
   context 'with RunnerUpgradeCheck recommending 14.0.2' do
+    let(:upgrade_check) { instance_double(::Gitlab::Ci::RunnerUpgradeCheck) }
+
     before do
       stub_const('Ci::Runners::ReconcileExistingRunnerVersionsService::VERSION_BATCH_SIZE', 1)
 
-      allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
-        .to receive(:check_runner_upgrade_suggestion)
-        .and_return([::Gitlab::VersionInfo.new(14, 0, 2), :recommended])
+      allow(::Gitlab::Ci::RunnerUpgradeCheck).to receive(:new).and_return(upgrade_check).once
     end
 
     context 'with runner with new version' do
@@ -25,8 +27,9 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
       let!(:runner_14_0_0) { create(:ci_runner, version: '14.0.0') }
 
       before do
-        allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
-          .to receive(:check_runner_upgrade_suggestion)
+        allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)
+          .and_return([::Gitlab::VersionInfo.new(14, 0, 2), :recommended])
+        allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)
           .with('14.0.2')
           .and_return([::Gitlab::VersionInfo.new(14, 0, 2), :not_available])
           .once
@@ -58,8 +61,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
       let!(:runner_version_14_0_2) { create(:ci_runner_version, version: '14.0.2', status: :not_available) }
 
       before do
-        allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
-          .to receive(:check_runner_upgrade_suggestion)
+        allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)
           .and_return([::Gitlab::VersionInfo.new(14, 0, 2), :not_available])
       end
 
@@ -80,8 +82,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
 
     context 'with no runner version changes' do
       before do
-        allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
-          .to receive(:check_runner_upgrade_suggestion)
+        allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)
           .and_return([::Gitlab::VersionInfo.new(14, 0, 1), :not_available])
       end
 
@@ -100,8 +101,7 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
 
     context 'with failing version check' do
       before do
-        allow(::Gitlab::Ci::RunnerUpgradeCheck.instance)
-          .to receive(:check_runner_upgrade_suggestion)
+        allow(upgrade_check).to receive(:check_runner_upgrade_suggestion)
           .and_return([::Gitlab::VersionInfo.new(14, 0, 1), :error])
       end
 
@@ -120,18 +120,8 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
   end
 
   context 'integration testing with Gitlab::Ci::RunnerUpgradeCheck' do
-    let(:available_runner_releases) do
-      %w[14.0.0 14.0.1]
-    end
-
     before do
-      url = ::Gitlab::CurrentSettings.current_application_settings.public_runner_releases_url
-
-      WebMock.stub_request(:get, url).to_return(
-        body: available_runner_releases.map { |v| { name: v } }.to_json,
-        status: 200,
-        headers: { 'Content-Type' => 'application/json' }
-      )
+      stub_runner_releases(%w[14.0.0 14.0.1])
     end
 
     it 'does not modify ci_runner_versions entries', :aggregate_failures do

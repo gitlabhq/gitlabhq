@@ -28,9 +28,10 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
   end
 
   before do
-    allow(Gitlab::Ci::RunnerUpgradeCheck.instance)
-      .to receive(:check_runner_upgrade_suggestion)
-      .and_return([nil, :not_available])
+    allow_next_instance_of(::Gitlab::Ci::RunnerUpgradeCheck) do |instance|
+      allow(instance).to receive(:check_runner_upgrade_suggestion)
+        .and_return([nil, :not_available])
+    end
   end
 
   describe 'as admin', GraphQL::Query do

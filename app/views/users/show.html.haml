@@ -4,6 +4,7 @@
 - page_title       user_display_name(@user)
 - page_description @user.bio unless @user.blocked? || !@user.confirmed?
 - page_itemtype    'http://schema.org/Person'
+- add_page_specific_style 'page_bundles/profile'
 - link_classes = "flex-grow-1 mx-1 "
 
 = content_for :meta_tags do

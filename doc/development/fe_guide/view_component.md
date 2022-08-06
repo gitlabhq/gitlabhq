@@ -153,6 +153,39 @@ If you want to add custom attributes to any of these or the card itself, use the
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/card_component.rb).
 
+#### Checkbox tag
+
+The `Pajamas::CheckboxTagComponent` follows the [Pajamas Checkbox](https://design.gitlab.com/components/checkbox) specification.
+
+The `name` argument and `label` slot are required.
+
+For example:
+
+```haml
+= render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_sast]',
+  checkbox_options: { data: { qa_selector: 'initialize_with_sast_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' } }) do |c|
+  = c.label do
+    = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
+  = c.help_text do
+    = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
+    = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
+```
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/checkbox_tag_component.rb).
+
+#### Checkbox
+
+The `Pajamas::CheckboxComponent` follows the [Pajamas Checkbox](https://design.gitlab.com/components/checkbox) specification.
+
+NOTE:
+`Pajamas::CheckboxComponent` is used internally by the [GitLab UI form builder](haml.md#use-the-gitlab-ui-form-builder) and requires an instance of [ActionView::Helpers::FormBuilder](https://api.rubyonrails.org/v6.1.0/classes/ActionView/Helpers/FormBuilder.html) to be passed as the `form` argument.
+It is preferred to use the [gitlab_ui_checkbox_component](haml.md#gitlab_ui_checkbox_component) method to render this ViewComponent.
+To use a checkbox without an instance of [ActionView::Helpers::FormBuilder](https://api.rubyonrails.org/v6.1.0/classes/ActionView/Helpers/FormBuilder.html) use [CheckboxTagComponent](#checkbox-tag).
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/checkbox_component.rb).
+
 #### Toggle
 
 The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitlab.com/components/toggle) specification.

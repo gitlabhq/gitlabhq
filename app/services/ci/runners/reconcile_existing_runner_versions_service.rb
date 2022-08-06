@@ -22,7 +22,7 @@ module Ci
       private
 
       def upgrade_check
-        Gitlab::Ci::RunnerUpgradeCheck.instance
+        @runner_upgrade_check ||= Gitlab::Ci::RunnerUpgradeCheck.new(::Gitlab::VERSION)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

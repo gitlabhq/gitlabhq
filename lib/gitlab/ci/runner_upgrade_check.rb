@@ -3,7 +3,10 @@
 module Gitlab
   module Ci
     class RunnerUpgradeCheck
-      include Singleton
+      def initialize(gitlab_version, runner_releases_store = nil)
+        @gitlab_version = ::Gitlab::VersionInfo.parse(gitlab_version, parse_suffix: true)
+        @releases_store = runner_releases_store
+      end
 
       def check_runner_upgrade_suggestion(runner_version)
         check_runner_upgrade_suggestions(runner_version).first
@@ -11,12 +14,8 @@ module Gitlab
 
       private
 
-      def gitlab_version
-        @gitlab_version ||= ::Gitlab::VersionInfo.parse(::Gitlab::VERSION, parse_suffix: true)
-      end
-
       def runner_releases_store
-        RunnerReleases.instance
+        @releases_store ||= RunnerReleases.instance
       end
 
       def add_suggestion(suggestions, runner_version, version, status)
@@ -54,12 +53,12 @@ module Gitlab
 
         # Consider the edge case of pre-release runner versions that get registered, but are never published.
         # In this case, suggest the latest compatible runner version
-        latest_release = runner_releases_store.releases_by_minor.values.select { |v| v < gitlab_version }.max
+        latest_release = runner_releases_store.releases_by_minor.values.select { |v| v < @gitlab_version }.max
         add_suggestion(suggestions, runner_version, latest_release, :recommended)
       end
 
       def add_available_runner_release(runner_version, suggestions)
-        available_version = runner_releases_store.releases_by_minor[gitlab_version.without_patch]
+        available_version = runner_releases_store.releases_by_minor[@gitlab_version.without_patch]
         unless suggestions.include?(available_version)
           add_suggestion(suggestions, runner_version, available_version, :available)
         end
@@ -76,12 +75,12 @@ module Gitlab
           outside_window = minor_releases_with_index.count - runner_minor_version_index > 3
 
           if outside_window
-            recommended_version = runner_releases_store.releases_by_minor[gitlab_version.without_patch]
+            recommended_version = runner_releases_store.releases_by_minor[@gitlab_version.without_patch]
             return add_suggestion(suggestions, runner_version, recommended_version, :recommended)
           end
         else
           # If unknown runner version, then recommend the latest version for the GitLab instance
-          return add_recommended_runner_release_update(gitlab_version, suggestions)
+          return add_recommended_runner_release_update(@gitlab_version, suggestions)
         end
 
         false

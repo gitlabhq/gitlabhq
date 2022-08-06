@@ -34,11 +34,7 @@ module Backup
 
     def initialize(progress, definitions: nil)
       @progress = progress
-
-      @incremental = Feature.feature_flags_available? &&
-        Feature.enabled?(:incremental_repository_backup) &&
-        Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
-
+      @incremental = Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
       @definitions = definitions
     end
 

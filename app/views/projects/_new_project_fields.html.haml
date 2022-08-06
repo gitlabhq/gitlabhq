@@ -63,18 +63,20 @@
     = s_('ProjectsNew|Project Configuration')
 
   .form-group
-    .form-check.gl-mb-3
-      = check_box_tag 'project[initialize_with_readme]', '1', true, class: 'form-check-input', data: { qa_selector: 'initialize_with_readme_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_readme' }
-      = label_tag 'project[initialize_with_readme]', s_('ProjectsNew|Initialize repository with a README'), class: 'form-check-label'
-      .form-text.text-muted
+    = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_readme]',
+      checked: true,
+      checkbox_options: { data: { qa_selector: 'initialize_with_readme_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_readme' } }) do |c|
+      = c.label do
+        = s_('ProjectsNew|Initialize repository with a README')
+      = c.help_text do
         = s_('ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.')
 
   .form-group
-    .form-check.gl-mb-3
-      = check_box_tag 'project[initialize_with_sast]', '1', false, class: 'form-check-input', data: { qa_selector: 'initialize_with_sast_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' }
-      = label_tag 'project[initialize_with_sast]', class: 'form-check-label' do
+    = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_sast]',
+      checkbox_options: { data: { qa_selector: 'initialize_with_sast_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' } }) do |c|
+      = c.label do
         = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
-      .form-text.text-muted
+      = c.help_text do
         = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
         = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 

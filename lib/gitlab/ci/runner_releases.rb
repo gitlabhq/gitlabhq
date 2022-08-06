@@ -74,7 +74,7 @@ module Gitlab
         releases = response.parsed_response
           .map { |release| parse_runner_release(release) }
           .select(&:valid?)
-          .sort!
+          .sort
 
         return if releases.empty? && response.parsed_response.present?
 

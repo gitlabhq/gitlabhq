@@ -20,7 +20,7 @@ module Ci
       private
 
       def upgrade_check_service
-        Gitlab::Ci::RunnerUpgradeCheck.instance
+        @runner_upgrade_check ||= Gitlab::Ci::RunnerUpgradeCheck.new(::Gitlab::VERSION)
       end
     end
   end

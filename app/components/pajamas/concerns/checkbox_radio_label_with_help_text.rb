@@ -7,6 +7,10 @@ module Pajamas
         form.label(method, formatted_label_options) { label_entry }
       end
 
+      def render_label_tag_with_help_text
+        label_tag(name, formatted_label_options) { label_entry }
+      end
+
       private
 
       def label_entry

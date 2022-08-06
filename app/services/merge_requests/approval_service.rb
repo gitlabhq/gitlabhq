@@ -25,9 +25,9 @@ module MergeRequests
         )
       else
         create_event(merge_request)
+        stream_audit_event(merge_request)
       end
 
-      stream_audit_event(merge_request)
       create_approval_note(merge_request)
       mark_pending_todos_as_done(merge_request)
       execute_approval_hooks(merge_request, current_user)

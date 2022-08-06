@@ -290,6 +290,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/pipelines.css"
     config.assets.precompile << "page_bundles/pipeline_editor.css"
     config.assets.precompile << "page_bundles/productivity_analytics.css"
+    config.assets.precompile << "page_bundles/profile.css"
     config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
     config.assets.precompile << "page_bundles/project.css"
     config.assets.precompile << "page_bundles/projects_edit.css"

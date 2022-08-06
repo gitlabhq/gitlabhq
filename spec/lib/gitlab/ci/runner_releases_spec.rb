@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::RunnerReleases do
   subject { described_class.instance }
 
-  let(:runner_releases_url) { 'the release API URL' }
+  let(:runner_releases_url) { 'http://testurl.com/runner_public_releases' }
 
   def releases
     subject.releases
@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
   before do
     subject.reset_backoff!
 
-    stub_application_setting(public_runner_releases_url: runner_releases_url)
+    allow(subject).to receive(:runner_releases_url).and_return(runner_releases_url)
   end
 
   describe 'caching behavior', :use_clean_rails_memory_store_caching do

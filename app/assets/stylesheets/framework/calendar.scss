@@ -1,30 +1,3 @@
-.calendar-block {
-  padding-left: 0;
-  padding-right: 0;
-  border-top: 0;
-
-  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
-    overflow-x: auto;
-  }
-}
-
-.user-calendar-activities {
-  direction: ltr;
-
-  .str-truncated {
-    max-width: 70%;
-  }
-}
-
-.user-calendar {
-  text-align: center;
-  min-height: 172px;
-
-  .calendar {
-    display: inline-block;
-  }
-}
-
 .user-contrib-cell {
   &:hover {
     cursor: pointer;
@@ -40,18 +13,6 @@
       fill: $color;
     }
   }
-}
-
-.user-contrib-text {
-  font-size: 12px;
-  fill: $calendar-user-contrib-text;
-}
-
-.calendar-hint {
-  font-size: 12px;
-  direction: ltr;
-  margin-top: -23px;
-  float: right;
 }
 
 .pika-single.gitlab-theme {

@@ -8,12 +8,6 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
   let_it_be(:label) { "Show one file at a time on merge request's Changes tab" }
   let_it_be(:help_text) { 'Instead of all the files changed, show only one file at a time.' }
 
-  RSpec.shared_examples 'it renders unchecked checkbox with value of `1`' do
-    it 'renders unchecked checkbox with value of `1`' do
-      expect(page).to have_unchecked_field(label, with: '1')
-    end
-  end
-
   context 'with default options' do
     before do
       fake_form_for do |form|

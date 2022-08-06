@@ -28,14 +28,14 @@ Before running the consumer tests, go to `spec/contracts/consumer` and run `npm 
 
 ### Run the provider tests
 
-Before running the provider tests, make sure your GDK (GitLab Development Kit) is fully set up and running. You can follow the setup instructions detailed in the [GDK repository](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main). To run the provider tests, you use Rake tasks that are defined in [`./lib/tasks/contracts.rake`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/tasks/contracts.rake). To get a list of all the Rake tasks related to the provider tests, run `bundle exec rake -T contracts`. For example:
+Before running the provider tests, make sure your GDK (GitLab Development Kit) is fully set up and running. You can follow the setup instructions detailed in the [GDK repository](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main). To run the provider tests, you use Rake tasks that can be found in [`./lib/tasks/contracts`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/tasks/contracts). To get a list of all the Rake tasks related to the provider tests, run `bundle exec rake -T contracts`. For example:
 
 ```shell
 $ bundle exec rake -T contracts
-rake contracts:mr:pact:verify:diffs                # Verify provider against the consumer pacts for diffs
-rake contracts:mr:pact:verify:discussions          # Verify provider against the consumer pacts for discussions
-rake contracts:mr:pact:verify:metadata             # Verify provider against the consumer pacts for metadata
-rake contracts:mr:test:merge_request[contract_mr]  # Run all merge request contract tests
+rake contracts:merge_requests:pact:verify:diffs_batch                                   # Verify provider against the consumer pacts for diffs_batch
+rake contracts:merge_requests:pact:verify:diffs_metadata                                # Verify provider against the consumer pacts for diffs_metadata
+rake contracts:merge_requests:pact:verify:discussions                                   # Verify provider against the consumer pacts for discussions
+rake contracts:merge_requests:test:merge_requests[contract_merge_requests]              # Run all merge request contract tests
 ```
 
 ## Test suite folder structure and naming conventions
