@@ -261,7 +261,7 @@ resynchronize the information:
    - To complete a *full sync*, press `Shift` and select the sync icon.
 
 For more information, read
-[Atlassian's documentation](https://support.atlassian.com/jira-cloud-administration/docs/synchronize-jira-cloud-to-bitbucket/).
+[Atlassian's documentation](https://support.atlassian.com/jira-cloud-administration/docs/integrate-with-development-tools/).
 
 ### `Sync Failed` error when refreshing repository data
 

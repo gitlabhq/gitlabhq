@@ -95,7 +95,7 @@ module QA
         end
 
         def disable_initialize_with_readme
-          uncheck_element(:initialize_with_readme_checkbox)
+          uncheck_element(:initialize_with_readme_checkbox, true)
         end
       end
     end

@@ -12,7 +12,7 @@ Twitter OAuth 2.0 support is [not yet supported](https://gitlab.com/gitlab-org/g
 To enable the Twitter OmniAuth provider you must register your application with
 Twitter. Twitter generates a client ID and secret key for you to use.
 
-1. Sign in to [Twitter Application Management](https://apps.twitter.com).
+1. Sign in to [Twitter Application Management](https://developer.twitter.com/apps).
 
 1. Select "Create new app".
 

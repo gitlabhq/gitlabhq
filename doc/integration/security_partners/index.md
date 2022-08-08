@@ -19,11 +19,11 @@ each security partner:
 - [GrammaTech](https://www.grammatech.com/codesonar-gitlab-integration)
 - [Indeni](https://docs.cloudrail.app/#/integrations/gitlab)
 - [JScrambler](https://docs.jscrambler.com/code-integrity/documentation/gitlab-ci-integration)
+- [Mend](https://www.mend.io/gitlab/)
 - [Semgrep](https://semgrep.dev/for/gitlab)
 - [StackHawk](https://docs.stackhawk.com/continuous-integration/gitlab.html)
 - [Tenable](https://docs.tenable.com/tenableio/Content/ContainerSecurity/GetStarted.htm)
 - [Venafi](https://marketplace.venafi.com/details/gitlab-ci-cd/)
 - [Veracode](https://community.veracode.com/s/knowledgeitem/gitlab-ci-MCEKSYPRWL35BRTGOVI55SK5RI4A)
-- [WhiteSource](https://www.whitesourcesoftware.com/gitlab/)
 
 <!-- vale gitlab.Spelling = YES -->

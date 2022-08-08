@@ -1,5 +1,4 @@
-#import "ee_else_ce/runner/graphql/list/list_item.fragment.graphql"
-#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/runner/graphql/list/group_runner_connection.fragment.graphql"
 
 query getGroupRunners(
   $groupFullPath: ID!
@@ -27,17 +26,7 @@ query getGroupRunners(
       search: $search
       sort: $sort
     ) {
-      edges {
-        webUrl
-        editUrl
-        node {
-          ...ListItem
-          projectCount # Used to determine why some project runners can't be deleted
-        }
-      }
-      pageInfo {
-        ...PageInfo
-      }
+      ...GroupRunnerConnection
     }
   }
 }

@@ -13,6 +13,7 @@ import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
+import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
 
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
@@ -37,7 +38,7 @@ import {
   RUNNER_PAGE_SIZE,
   I18N_EDIT,
 } from '~/runner/constants';
-import groupRunnersQuery from '~/runner/graphql/list/group_runners.query.graphql';
+import groupRunnersQuery from 'ee_else_ce/runner/graphql/list/group_runners.query.graphql';
 import groupRunnersCountQuery from 'ee_else_ce/runner/graphql/list/group_runners_count.query.graphql';
 import GroupRunnersApp from '~/runner/group_runners/group_runners_app.vue';
 import { captureException } from '~/runner/sentry_utils';
@@ -196,6 +197,7 @@ describe('GroupRunnersApp', () => {
         type: PARAM_KEY_STATUS,
         options: expect.any(Array),
       }),
+      upgradeStatusTokenConfig,
     ]);
   });
 

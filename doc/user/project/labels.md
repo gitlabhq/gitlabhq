@@ -446,12 +446,13 @@ To learn what happens when you sort by priority or label priority, see
 
 ## Real-time changes to labels
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357370#note_991987201) in GitLab 15.1.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an
 administrator to [enable the feature flag](../../administration/feature_flags.md) named `realtime_labels`.
-On GitLab.com, this feature is unavailable.
+On GitLab.com, this feature is available.
 
 Changed labels are immediately visible to other users, without refreshing the page, on the following:
 

@@ -65,7 +65,7 @@ Because file system performance may affect the overall performance of GitLab,
 [we don't recommend using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
 
 NOTE:
-[NFS for Git repository storage is deprecated](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#nfs-for-git-repository-storage-deprecated). See our official [Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for further information.
+[NFS for Git repository storage is deprecated](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#nfs-for-git-repository-storage-deprecated). See our official [Statement of Support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs) for further information.
 
 ### CPU
 
@@ -84,7 +84,7 @@ Memory requirements are dependent on the number of users and expected workload. 
 The following is the recommended minimum Memory hardware guidance for a handful of example GitLab user base sizes.
 
 - **4GB RAM** is the **required** minimum memory size and supports up to 500 users
-  - Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/memory/) is working to reduce the memory requirement.
+  - Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/memory/) is working to reduce the memory requirement.
 - 8GB RAM supports up to 1000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
@@ -326,7 +326,7 @@ GitLab supports the following web browsers:
 
 - [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/)
 - [Google Chrome](https://www.google.com/chrome/)
-- [Chromium](https://www.chromium.org/getting-involved/dev-channel)
+- [Chromium](https://www.chromium.org/getting-involved/dev-channel/)
 - [Apple Safari](https://www.apple.com/safari/)
 - [Microsoft Edge](https://www.microsoft.com/en-us/edge)
 

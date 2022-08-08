@@ -299,7 +299,7 @@ gem 'gon', '~> 6.4.0'
 gem 'request_store', '~> 1.5'
 gem 'base32', '~> 0.3.0'
 
-gem 'gitlab-license', '~> 2.2.0'
+gem 'gitlab-license', '~> 2.2.1'
 
 # Protect against bruteforcing
 gem 'rack-attack', '~> 6.6.0'

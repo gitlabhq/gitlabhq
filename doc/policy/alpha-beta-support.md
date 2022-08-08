@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-<!-- any changes made to this page should be reflected in https://about.gitlab.com/support/statement-of-support.html#alpha--beta-features and https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga -->
+<!-- any changes made to this page should be reflected in https://about.gitlab.com/support/statement-of-support/#alpha-beta-features and https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga -->
 
 # Support for Alpha, Beta, Limited Availability, and Generally Available Features **(PREMIUM)**
 

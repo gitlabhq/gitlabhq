@@ -3,6 +3,14 @@ import { GlLink } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
+import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
+import {
+  fromUrlQueryToSearch,
+  fromSearchToUrl,
+  fromSearchToVariables,
+  isSearchFiltered,
+} from 'ee_else_ce/runner/runner_search_utils';
+import groupRunnersQuery from 'ee_else_ce/runner/graphql/list/group_runners.query.graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -22,13 +30,6 @@ import {
   PROJECT_TYPE,
   I18N_FETCH_ERROR,
 } from '../constants';
-import groupRunnersQuery from '../graphql/list/group_runners.query.graphql';
-import {
-  fromUrlQueryToSearch,
-  fromSearchToUrl,
-  fromSearchToVariables,
-  isSearchFiltered,
-} from '../runner_search_utils';
 import { captureException } from '../sentry_utils';
 
 export default {
@@ -123,7 +124,7 @@ export default {
       return !this.runnersLoading && !this.runners.items.length;
     },
     searchTokens() {
-      return [pausedTokenConfig, statusTokenConfig];
+      return [pausedTokenConfig, statusTokenConfig, upgradeStatusTokenConfig];
     },
     filteredSearchNamespace() {
       return `${GROUP_FILTERED_SEARCH_NAMESPACE}/${this.groupFullPath}`;

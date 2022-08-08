@@ -882,7 +882,6 @@ RSpec.describe Trigger do
       let(:ops_gitlab_client) { double('ops_gitlab_client') }
 
       let(:downstream_gitlab_client_endpoint) { ops_api_endpoint }
-      let(:downstream_gitlab_client_token) { ops_api_token }
       let(:downstream_gitlab_client) { ops_gitlab_client }
 
       let(:ref) { 'master' }
@@ -890,7 +889,6 @@ RSpec.describe Trigger do
 
       let(:env) do
         super().merge(
-          'GITLABCOM_DATABASE_TESTING_ACCESS_TOKEN' => ops_api_token,
           'GITLABCOM_DATABASE_TESTING_TRIGGER_TOKEN' => trigger_token
         )
       end
@@ -902,6 +900,13 @@ RSpec.describe Trigger do
             private_token: com_api_token
           )
           .and_return(com_gitlab_client)
+
+        allow(Gitlab).to receive(:client)
+          .with(
+            endpoint: downstream_gitlab_client_endpoint
+          )
+          .and_return(downstream_gitlab_client)
+
         allow(com_gitlab_client).to receive(:merge_request_notes)
           .with(
             env['CI_PROJECT_PATH'],

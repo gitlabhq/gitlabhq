@@ -57,7 +57,7 @@ each node should have:
 ## Install Elasticsearch
 
 Elasticsearch is *not* included in the Omnibus packages or when you install from
-source. You must [install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/install-elasticsearch.html "Elasticsearch 7.x installation documentation") and ensure you select your version. Detailed information on how to install Elasticsearch is out of the scope of this page.
+source. You must [install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.16/install-elasticsearch.html "Elasticsearch 7.x installation documentation") and ensure you select your version. Detailed information on how to install Elasticsearch is out of the scope of this page.
 
 You can install Elasticsearch yourself, or use a cloud hosted offering such as [Elasticsearch Service](https://www.elastic.co/elasticsearch/service) (available on AWS, GCP, or Azure) or the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gsg.html)
 service.
