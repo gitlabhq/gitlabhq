@@ -221,8 +221,9 @@ that includes `rspec-profile` in their name.
 
 ### Logging
 
-- Rails logging to `log/test.log` is disabled by default in CI [for
-  performance reasons](https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4). To override this setting, provide the
+- Rails logging to `log/test.log` is disabled by default in CI 
+  [for performance reasons](https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4). 
+  To override this setting, provide the
   `RAILS_ENABLE_TEST_LOG` environment variable.
 
 ## Review app jobs
