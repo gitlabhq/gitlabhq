@@ -374,14 +374,6 @@ RSpec.describe Namespace do
 
     context 'linear' do
       it_behaves_like 'namespace traversal scopes'
-
-      context 'without inner join ancestors query' do
-        before do
-          stub_feature_flags(use_traversal_ids_for_ancestor_scopes_with_inner_join: false)
-        end
-
-        it_behaves_like 'namespace traversal scopes'
-      end
     end
 
     shared_examples 'makes recursive queries' do

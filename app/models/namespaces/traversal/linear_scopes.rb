@@ -27,15 +27,9 @@ module Namespaces
         def self_and_ancestors(include_self: true, upto: nil, hierarchy_order: nil)
           return super unless use_traversal_ids_for_ancestor_scopes?
 
-          if Feature.enabled?(:use_traversal_ids_for_ancestor_scopes_with_inner_join)
-            self_and_ancestors_from_inner_join(include_self: include_self,
-                                               upto: upto, hierarchy_order:
-                                               hierarchy_order)
-          else
-            self_and_ancestors_from_ancestors_cte(include_self: include_self,
-                                                  upto: upto,
-                                                  hierarchy_order: hierarchy_order)
-          end
+          self_and_ancestors_from_inner_join(include_self: include_self,
+                                             upto: upto, hierarchy_order:
+                                             hierarchy_order)
         end
 
         def self_and_ancestor_ids(include_self: true)
@@ -115,37 +109,6 @@ module Namespaces
         def use_traversal_ids_for_self_and_hierarchy_scopes?
           Feature.enabled?(:use_traversal_ids_for_self_and_hierarchy_scopes) &&
             use_traversal_ids?
-        end
-
-        def self_and_ancestors_from_ancestors_cte(include_self: true, upto: nil, hierarchy_order: nil)
-          base_cte = all.select('namespaces.id', 'namespaces.traversal_ids').as_cte(:base_ancestors_cte)
-
-          # We have to alias id with 'AS' to avoid ambiguous column references by calling methods.
-          ancestors_cte = unscoped
-            .unscope(where: [:type])
-            .select('id as base_id',
-                    "#{unnest_func(base_cte.table['traversal_ids']).to_sql} as ancestor_id")
-            .from(base_cte.table)
-            .as_cte(:ancestors_cte)
-
-          namespaces = Arel::Table.new(:namespaces)
-
-          records = unscoped
-            .with(base_cte.to_arel, ancestors_cte.to_arel)
-            .distinct
-            .from([ancestors_cte.table, namespaces])
-            .where(namespaces[:id].eq(ancestors_cte.table[:ancestor_id]))
-            .order_by_depth(hierarchy_order)
-
-          unless include_self
-            records = records.where(ancestors_cte.table[:base_id].not_eq(ancestors_cte.table[:ancestor_id]))
-          end
-
-          if upto
-            records = records.where.not(id: unscoped.where(id: upto).select('unnest(traversal_ids)'))
-          end
-
-          records
         end
 
         def self_and_ancestors_from_inner_join(include_self: true, upto: nil, hierarchy_order: nil)

@@ -2,12 +2,13 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Tag, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
+RSpec.describe Gitlab::Git::Tag do
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository.raw }
 
   describe '#tags' do
-    describe 'first tag' do
-      let(:tag) { repository.tags.first }
+    describe 'unsigned tag' do
+      let(:tag) { repository.tags.detect { |t| t.name == 'v1.0.0' } }
 
       it { expect(tag.name).to eq("v1.0.0") }
       it { expect(tag.target).to eq("f4e6814c3e4e7a0de82a9e7cd20c626cc963a2f8") }
@@ -22,29 +23,13 @@ RSpec.describe Gitlab::Git::Tag, :seed_helper do
       it { expect(tag.tagger.timezone).to eq("+0200") }
     end
 
-    describe 'last tag' do
-      let(:tag) { repository.tags.last }
-
-      it { expect(tag.name).to eq("v1.2.1") }
-      it { expect(tag.target).to eq("2ac1f24e253e08135507d0830508febaaccf02ee") }
-      it { expect(tag.dereferenced_target.sha).to eq("fa1b1e6c004a68b7d8763b86455da9e6b23e36d6") }
-      it { expect(tag.message).to eq("Version 1.2.1") }
-      it { expect(tag.has_signature?).to be_falsey }
-      it { expect(tag.signature_type).to eq(:NONE) }
-      it { expect(tag.signature).to be_nil }
-      it { expect(tag.tagger.name).to eq("Douwe Maan") }
-      it { expect(tag.tagger.email).to eq("douwe@selenight.nl") }
-      it { expect(tag.tagger.date).to eq(Google::Protobuf::Timestamp.new(seconds: 1427789449)) }
-      it { expect(tag.tagger.timezone).to eq("+0200") }
-    end
-
     describe 'signed tag' do
-      let(:project) { create(:project, :repository) }
-      let(:tag) { project.repository.find_tag('v1.1.1') }
+      let(:tag) { repository.tags.detect { |t| t.name == 'v1.1.1' } }
 
+      it { expect(tag.name).to eq("v1.1.1") }
       it { expect(tag.target).to eq("8f03acbcd11c53d9c9468078f32a2622005a4841") }
       it { expect(tag.dereferenced_target.sha).to eq("189a6c924013fc3fe40d6f1ec1dc20214183bc97") }
-      it { expect(tag.message).to eq("x509 signed tag" + "\n" + X509Helpers::User1.signed_tag_signature.chomp) }
+      it { expect(tag.message).to eq("x509 signed tag\n" + X509Helpers::User1.signed_tag_signature.chomp) }
       it { expect(tag.has_signature?).to be_truthy }
       it { expect(tag.signature_type).to eq(:X509) }
       it { expect(tag.signature).not_to be_nil }
@@ -54,11 +39,11 @@ RSpec.describe Gitlab::Git::Tag, :seed_helper do
       it { expect(tag.tagger.timezone).to eq("+0100") }
     end
 
-    it { expect(repository.tags.size).to eq(SeedRepo::Repo::TAGS.size) }
+    it { expect(repository.tags.size).to be > 0 }
   end
 
   describe '.get_message' do
-    let(:tag_ids) { %w[f4e6814c3e4e7a0de82a9e7cd20c626cc963a2f8 8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b] }
+    let(:tag_ids) { %w[f4e6814c3e4e7a0de82a9e7cd20c626cc963a2f8 8f03acbcd11c53d9c9468078f32a2622005a4841] }
 
     subject do
       tag_ids.map { |id| described_class.get_message(repository, id) }
@@ -66,7 +51,7 @@ RSpec.describe Gitlab::Git::Tag, :seed_helper do
 
     it 'gets tag messages' do
       expect(subject[0]).to eq("Release\n")
-      expect(subject[1]).to eq("Version 1.1.0\n")
+      expect(subject[1]).to eq("x509 signed tag\n" + X509Helpers::User1.signed_tag_signature)
     end
 
     it 'gets messages in one batch', :request_store do

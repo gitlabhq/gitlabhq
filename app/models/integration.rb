@@ -89,7 +89,6 @@ class Integration < ApplicationRecord
 
   belongs_to :project, inverse_of: :integrations
   belongs_to :group, inverse_of: :integrations
-  has_one :service_hook, inverse_of: :integration, foreign_key: :service_id
 
   validates :project_id, presence: true, unless: -> { instance_level? || group_level? }
   validates :group_id, presence: true, unless: -> { instance_level? || project_level? }

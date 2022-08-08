@@ -20,7 +20,7 @@ module Projects
 
       override :hook
       def hook
-        @hook ||= integration.service_hook || not_found
+        @hook ||= integration.try(:service_hook) || not_found
       end
     end
   end

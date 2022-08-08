@@ -75,7 +75,7 @@ describe('Edit Actions component', () => {
   it('renders all buttons as enabled', () => {
     const buttons = findEditButtons().wrappers;
     buttons.forEach((button) => {
-      expect(button.attributes('disabled')).toBeFalsy();
+      expect(button.attributes('disabled')).toBeUndefined();
     });
   });
 
