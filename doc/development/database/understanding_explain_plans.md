@@ -252,8 +252,8 @@ A scan on an index that required retrieving some data from the table.
 
 Bitmap scans fall between sequential scans and index scans. These are typically
 used when we would read too much data from an index scan, but too little to
-perform a sequential scan. A bitmap scan uses what is known as a [bitmap
-index](https://en.wikipedia.org/wiki/Bitmap_index) to perform its work.
+perform a sequential scan. A bitmap scan uses what is known as a 
+[bitmap index](https://en.wikipedia.org/wiki/Bitmap_index) to perform its work.
 
 The [source code of PostgreSQL](https://gitlab.com/postgres/postgres/blob/REL_11_STABLE/src/include/nodes/plannodes.h#L441)
 states the following on bitmap scans:
@@ -794,8 +794,8 @@ Execution time: 0.113 ms
 
 ### ChatOps
 
-[GitLab team members can also use our ChatOps solution, available in Slack using the
-`/chatops` slash command](../chatops_on_gitlabcom.md).
+GitLab team members can also use our ChatOps solution, available in Slack
+using the [`/chatops` slash command](../chatops_on_gitlabcom.md).
 
 NOTE:
 While ChatOps is still available, the recommended way to generate execution plans is to use [Database Lab Engine](#database-lab-engine).

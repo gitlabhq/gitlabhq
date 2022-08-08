@@ -11,7 +11,7 @@ Notes are comments on:
 - Snippets
 - Issues
 - Merge requests
-- Epics **(PREMIUM)**
+- [Epics](../user/group/epics/index.md)
 
 This includes system notes, which are notes about changes to the object (for example, when an
 assignee changes, GitLab posts a system note).
@@ -447,7 +447,7 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/7/notes/1602"
 ```
 
-## Epics **(ULTIMATE)**
+## Epics **(PREMIUM)**
 
 ### List all epic notes
 

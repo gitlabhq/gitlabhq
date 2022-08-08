@@ -33,26 +33,12 @@ export default class MergeRequestStore {
 
     this.setData(data);
     this.initCodeQualityReport(data);
-    this.initSecurityReport(data);
     this.setGitpodData(data);
   }
 
   initCodeQualityReport(data) {
     this.blobPath = data.blob_path;
     this.codeQuality = data.codequality_reports_path;
-  }
-
-  initSecurityReport(data) {
-    // TODO: check if gl.mrWidgetData can be safely removed after we migrate to the
-    // widget extension.
-    this.securityReportPaths = {
-      apiFuzzingReportPath: data.api_fuzzing_comparison_path,
-      coverageFuzzingReportPath: data.coverage_fuzzing_comparison_path,
-      sastReportPath: data.sast_comparison_path,
-      dastReportPath: data.dast_comparison_path,
-      secretDetectionReportPath: data.secret_detection_comparison_path,
-      dependencyScanningReportPath: data.dependency_scanning_comparison_path,
-    };
   }
 
   setData(data, isRebased) {

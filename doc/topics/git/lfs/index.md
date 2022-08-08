@@ -115,8 +115,7 @@ See the documentation on [File Locking](../../../user/project/file_lock.md).
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46572) in GitLab 13.6.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62539) in GitLab 14.0. Feature flag `include_lfs_blobs_in_archive` removed.
 
-Prior to GitLab 13.5, [project source
-downloads](../../../user/project/repository/index.md) would include Git
+Prior to GitLab 13.5, [project source downloads](../../../user/project/repository/index.md) would include Git
 LFS pointers instead of the actual objects. For example, LFS pointers
 look like the following:
 

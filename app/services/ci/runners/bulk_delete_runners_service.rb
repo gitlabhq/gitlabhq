@@ -15,10 +15,10 @@ module Ci
       def execute
         if @runners
           # Delete a few runners immediately
-          return delete_runners
+          return ServiceResponse.success(payload: delete_runners)
         end
 
-        { deleted_count: 0, deleted_ids: [] }
+        ServiceResponse.success(payload: { deleted_count: 0, deleted_ids: [] })
       end
 
       private

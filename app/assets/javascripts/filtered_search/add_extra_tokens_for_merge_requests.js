@@ -1,8 +1,8 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
   const reviewerToken = {
-    formattedKey: __('Reviewer'),
+    formattedKey: s__('SearchToken|Reviewer'),
     key: 'reviewer',
     type: 'string',
     param: 'username',

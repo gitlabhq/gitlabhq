@@ -45,7 +45,7 @@ describe('vue_shared/components/dismissible_alert', () => {
       });
 
       it('emmits alertDismissed', () => {
-        expect(wrapper.emitted('alertDismissed')).toBeTruthy();
+        expect(wrapper.emitted()).toHaveProperty('alertDismissed');
       });
     });
   });

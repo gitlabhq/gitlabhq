@@ -953,12 +953,6 @@ RSpec.describe 'project routing' do
     end
   end
 
-  describe Projects::Ci::SecureFilesController, 'routing' do
-    it 'to #show' do
-      expect(get('/gitlab/gitlabhq/-/ci/secure_files')).to route_to('projects/ci/secure_files#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
-    end
-  end
-
   context 'with a non-existent project' do
     it 'routes to 404 with get request' do
       expect(get: "/gitlab/not_exist").to route_to(

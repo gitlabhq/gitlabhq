@@ -8,8 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Instance-level analytics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12077) in GitLab 12.2.
-
 Instance-level analytics make it possible to aggregate analytics across
 GitLab, so that users can view information across multiple projects and groups
 in one place.
@@ -18,8 +16,7 @@ in one place.
 
 ## Group-level analytics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195979) in GitLab 12.8.
-> - Moved to GitLab Premium in 13.9.
+> Moved to GitLab Premium in 13.9.
 
 GitLab provides several analytics features at the group level. Some of these features require you to use a higher tier than GitLab Free.
 

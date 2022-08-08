@@ -38,8 +38,8 @@ The examples in this document all use the instance-level prefix.
 /packages/conan/v1
 ```
 
-When using the instance-level routes, be aware that there is a [naming
-restriction](../../user/packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)
+When using the instance-level routes, be aware that there is a 
+[naming restriction](../../user/packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)
 for Conan recipes.
 
 ### Project-level

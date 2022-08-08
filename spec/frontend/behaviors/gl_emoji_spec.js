@@ -121,7 +121,7 @@ describe('gl_emoji', () => {
     window.gon.emoji_sprites_css_path = testPath;
 
     expect(document.head.querySelector(`link[href="${testPath}"]`)).toBe(null);
-    expect(window.gon.emoji_sprites_css_added).toBeFalsy();
+    expect(window.gon.emoji_sprites_css_added).toBe(undefined);
 
     markupToDomElement(
       '<gl-emoji data-fallback-sprite-class="emoji-bomb" data-name="bomb"></gl-emoji>',

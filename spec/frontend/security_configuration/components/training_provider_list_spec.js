@@ -402,7 +402,7 @@ describe('TrainingProviderList component', () => {
 
       it('has disabled state for radio', () => {
         findPrimaryProviderRadios().wrappers.forEach((radio) => {
-          expect(radio.attributes('disabled')).toBeTruthy();
+          expect(radio.attributes('disabled')).toBe('true');
         });
       });
 

@@ -31,7 +31,7 @@ module Mutations
             runners = find_all_runners_by_ids(model_ids_of(ids))
 
             result = ::Ci::Runners::BulkDeleteRunnersService.new(runners: runners).execute
-            result.slice(:deleted_count, :deleted_ids).merge(errors: [])
+            result.payload.slice(:deleted_count, :deleted_ids).merge(errors: [])
           else
             { errors: [] }
           end

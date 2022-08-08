@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute' do
-  subject { described_class.new(**service_args).execute }
+  subject(:execute) { described_class.new(**service_args).execute }
 
   let(:service_args) { { runners: runners_arg } }
   let(:runners_arg) { }
@@ -17,7 +17,8 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute' do
       it 'destroys runners', :aggregate_failures do
         expect { subject }.to change { Ci::Runner.count }.by(-2)
 
-        is_expected.to eq({ deleted_count: 2, deleted_ids: [instance_runner.id, project_runner.id] })
+        is_expected.to be_success
+        expect(execute.payload).to eq({ deleted_count: 2, deleted_ids: [instance_runner.id, project_runner.id] })
         expect(instance_runner[:errors]).to be_nil
         expect(project_runner[:errors]).to be_nil
         expect { project_runner.runner_projects.first.reload }.to raise_error(ActiveRecord::RecordNotFound)
@@ -36,7 +37,8 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute' do
         it 'destroys runners and returns only deleted runners', :aggregate_failures do
           expect { subject }.to change { Ci::Runner.count }.by(-1)
 
-          is_expected.to eq({ deleted_count: 1, deleted_ids: [project_runner.id] })
+          is_expected.to be_success
+          expect(execute.payload).to eq({ deleted_count: 1, deleted_ids: [project_runner.id] })
           expect(instance_runner[:errors]).to be_nil
           expect(project_runner[:errors]).to be_nil
           expect { project_runner.reload }.to raise_error(ActiveRecord::RecordNotFound)
@@ -51,7 +53,8 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute' do
         it 'deletes only first RUNNER_LIMIT runners' do
           expect { subject }.to change { Ci::Runner.count }.by(-1)
 
-          is_expected.to eq({ deleted_count: 1, deleted_ids: [instance_runner.id] })
+          is_expected.to be_success
+          expect(execute.payload).to eq({ deleted_count: 1, deleted_ids: [instance_runner.id] })
         end
       end
     end
@@ -72,7 +75,8 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute' do
       let(:runners_arg) { nil }
 
       it 'returns 0 deleted runners' do
-        is_expected.to eq({ deleted_count: 0, deleted_ids: [] })
+        is_expected.to be_success
+        expect(execute.payload).to eq({ deleted_count: 0, deleted_ids: [] })
       end
     end
   end

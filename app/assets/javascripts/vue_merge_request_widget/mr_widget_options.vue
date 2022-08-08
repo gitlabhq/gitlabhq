@@ -1,7 +1,6 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import securityReportExtension from 'ee_else_ce/vue_merge_request_widget/extensions/security_reports';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
@@ -39,6 +38,7 @@ import ShaMismatch from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import WorkInProgressState from './components/states/work_in_progress.vue';
 import ExtensionsContainer from './components/extensions/container';
+import WidgetContainer from './components/widget/app.vue';
 import { STATE_MACHINE, stateToComponentMap } from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
@@ -58,6 +58,7 @@ export default {
   components: {
     Loading,
     ExtensionsContainer,
+    WidgetContainer,
     'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
     MrWidgetAlertMessage,
@@ -260,11 +261,6 @@ export default {
     shouldRenderTestReport(newVal) {
       if (newVal) {
         this.registerTestReportExtension();
-      }
-    },
-    shouldRenderSecurityReport(newVal) {
-      if (newVal) {
-        this.registerSecurityReportExtension();
       }
     },
   },
@@ -522,11 +518,6 @@ export default {
         registerExtension(testReportExtension);
       }
     },
-    registerSecurityReportExtension() {
-      if (this.shouldRenderSecurityReport && this.shouldShowSecurityExtension) {
-        registerExtension(securityReportExtension);
-      }
-    },
   },
 };
 </script>
@@ -587,7 +578,11 @@ export default {
           </template>
         </mr-widget-alert-message>
       </div>
+
       <extensions-container :mr="mr" />
+
+      <widget-container v-if="mr" :mr="mr" />
+
       <grouped-codequality-reports-app
         v-if="shouldRenderCodeQuality && !shouldShowCodeQualityExtension"
         :head-blob-path="mr.headBlobPath"

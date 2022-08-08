@@ -1,5 +1,5 @@
 import { flattenDeep } from 'lodash';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
 
 export const tokenKeys = [
@@ -13,7 +13,7 @@ export const tokenKeys = [
     tag: '@author',
   },
   {
-    formattedKey: __('Assignee'),
+    formattedKey: s__('SearchToken|Assignee'),
     key: 'assignee',
     type: 'string',
     param: 'username',

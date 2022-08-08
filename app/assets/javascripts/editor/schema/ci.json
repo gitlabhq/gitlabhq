@@ -292,7 +292,7 @@
             "project": {
               "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project`.",
               "type": "string",
-              "pattern": "\\S/\\S"
+              "pattern": "\\S/\\S|\\$(\\S+)"
             },
             "ref": {
               "description": "Branch/Tag/Commit-hash for the target project.",
