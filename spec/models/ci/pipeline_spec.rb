@@ -3060,19 +3060,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
-    context 'with retries' do
-      context 'when feature ci_parent_pipeline_cancels_children is disabled' do
-        before do
-          stub_feature_flags(ci_parent_pipeline_cancels_children: false)
-        end
-
-        it_behaves_like 'retries'
-      end
-
-      context 'when feature ci_parent_pipeline_cancels_children is enabled' do
-        it_behaves_like 'retries'
-      end
-    end
+    it_behaves_like 'retries'
 
     context 'when auto canceled' do
       let!(:canceled_by) { create(:ci_empty_pipeline) }
@@ -3211,23 +3199,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           expect(latest_status_for_child).to eq %w(failed)
           expect(latest_status).to eq %w(canceled)
         end
-
-        context 'when feature ci_parent_pipeline_cancels_children is disabled' do
-          before do
-            stub_feature_flags(ci_parent_pipeline_cancels_children: false)
-          end
-
-          it 'does not cancel child pipeline builds' do
-            create(:ci_build, :created, pipeline: child_pipeline)
-            create(:ci_build, :running, pipeline: child_pipeline)
-
-            cancel_running
-
-            latest_status_for_child = child_pipeline.statuses.pluck(:status)
-            expect(latest_status_for_child).not_to include('canceled')
-            expect(latest_status).to eq %w(canceled)
-          end
-        end
       end
 
       context 'when cascade_to_children is false' do
@@ -3254,23 +3225,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           latest_status_for_child = child_pipeline.statuses.pluck(:status)
           expect(latest_status_for_child).to eq %w(failed)
           expect(latest_status).to eq %w(canceled)
-        end
-
-        context 'when feature ci_parent_pipeline_cancels_children is disabled' do
-          before do
-            stub_feature_flags(ci_parent_pipeline_cancels_children: false)
-          end
-
-          it 'cancels parent but not children pipeline builds' do
-            create(:ci_build, :created, pipeline: child_pipeline)
-            create(:ci_build, :running, pipeline: child_pipeline)
-
-            cancel_running
-
-            latest_status_for_child = child_pipeline.statuses.pluck(:status)
-            expect(latest_status_for_child).not_to include('canceled')
-            expect(latest_status).to eq %w(canceled)
-          end
         end
       end
     end

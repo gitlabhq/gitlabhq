@@ -458,8 +458,8 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster:
    ```
 
 1. If you have an in-cluster PostgreSQL database installed with
-   `AUTO_DEVOPS_POSTGRES_CHANNEL` set to `1`, follow the [guide to upgrade
-   PostgreSQL](upgrading_postgresql.md).
+   `AUTO_DEVOPS_POSTGRES_CHANNEL` set to `1`, follow the
+   [guide to upgrade PostgreSQL](upgrading_postgresql.md).
 
 1. If you are deploying your application for the first time and are using
    GitLab 12.9 or 12.10, set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`.

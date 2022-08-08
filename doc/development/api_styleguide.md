@@ -110,15 +110,15 @@ Model.create(foo: params[:foo])
 
 With Grape v1.3+, Array types must be defined with a `coerce_with`
 block, or parameters, fails to validate when passed a string from an
-API request. See the [Grape upgrading
-documentation](https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions)
+API request. See the 
+[Grape upgrading documentation](https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions)
 for more details.
 
 ### Automatic coercion of nil inputs
 
 Prior to Grape v1.3.3, Array parameters with `nil` values would
-automatically be coerced to an empty Array. However, due to [this pull
-request in v1.3.3](https://github.com/ruby-grape/grape/pull/2040), this
+automatically be coerced to an empty Array. However, due to 
+[this pull request in v1.3.3](https://github.com/ruby-grape/grape/pull/2040), this
 is no longer the case. For example, suppose you define a PUT `/test`
 request that has an optional parameter:
 
@@ -259,8 +259,8 @@ In situations where the same model has multiple entities in the API
 discretion with applying this scope. It may be that you optimize for the
 most basic entity, with successive entities building upon that scope.
 
-The `with_api_entity_associations` scope also [automatically preloads
-data](https://gitlab.com/gitlab-org/gitlab/-/blob/19f74903240e209736c7668132e6a5a735954e7c/app%2Fmodels%2Ftodo.rb#L34)
+The `with_api_entity_associations` scope also 
+[automatically preloads data](https://gitlab.com/gitlab-org/gitlab/-/blob/19f74903240e209736c7668132e6a5a735954e7c/app%2Fmodels%2Ftodo.rb#L34)
 for `Todo` _targets_ when returned in the [to-dos API](../api/todos.md).
 
 For more context and discussion about preloading see

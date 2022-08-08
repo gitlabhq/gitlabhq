@@ -331,8 +331,7 @@ Be sure to restart PostgreSQL for this to take effect. See the
 This occurs when PostgreSQL does not have a replication slot for the
 **secondary** node by that name.
 
-You may want to rerun the [replication
-process](../setup/database.md) on the **secondary** node .
+You may want to rerun the [replication process](../setup/database.md) on the **secondary** node .
 
 ### Message: "Command exceeded allowed execution time" when setting up replication?
 
@@ -869,9 +868,8 @@ or `gitlab-ctl promote-to-primary-node`, either:
   ```
 
 - Upgrade to GitLab 12.6.3 or later if it is safe to do so. For example,
-  if the failover was just a test. A [caching-related
-  bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
-  fixed.
+  if the failover was just a test. A 
+  [caching-related bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was fixed.
 
 ### Message: `ActiveRecord::RecordInvalid: Validation failed: Enabled Geo primary node cannot be disabled`
 

@@ -10,8 +10,8 @@ GitLab officially supports LTS versions of operating systems. While OSs like
 Ubuntu have a clear distinction between LTS and non-LTS versions, there are
 other OSs, openSUSE for example, that don't follow the LTS concept. Hence to
 avoid confusion, the official policy is that at any point of time, all the
-operating systems supported by GitLab are listed in the [installation
-page](https://about.gitlab.com/install/).
+operating systems supported by GitLab are listed in the 
+[installation page](https://about.gitlab.com/install/).
 
 The following lists the currently supported OSs and their possible EOL dates.
 

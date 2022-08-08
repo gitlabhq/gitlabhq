@@ -145,18 +145,16 @@ Go GitLab linter plugins are maintained in the [`gitlab-org/language-tools/go/li
 ## Dependencies
 
 Dependencies should be kept to the minimum. The introduction of a new
-dependency should be argued in the merge request, as per our [Approval
-Guidelines](../code_review.md#approval-guidelines). Both [License
-Scanning](../../user/compliance/license_compliance/index.md)
-**(ULTIMATE)** and [Dependency
-Scanning](../../user/application_security/dependency_scanning/index.md)
-**(ULTIMATE)** should be activated on all projects to ensure new dependencies
+dependency should be argued in the merge request, as per our [Approval Guidelines](../code_review.md#approval-guidelines). 
+Both [License Scanning](../../user/compliance/license_compliance/index.md)
+and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
+should be activated on all projects to ensure new dependencies
 security status and license compatibility.
 
 ### Modules
 
-In Go 1.11 and later, a standard dependency system is available behind the name [Go
-Modules](https://github.com/golang/go/wiki/Modules). It provides a way to
+In Go 1.11 and later, a standard dependency system is available behind the name 
+[Go Modules](https://github.com/golang/go/wiki/Modules). It provides a way to
 define and lock dependencies for reproducible builds. It should be used
 whenever possible.
 
@@ -168,8 +166,8 @@ projects, and makes merge requests easier to review.
 In some cases, such as building a Go project for it to act as a dependency of a
 CI run for another project, removing the `vendor/` directory means the code must
 be downloaded repeatedly, which can lead to intermittent problems due to rate
-limiting or network failures. In these circumstances, you should [cache the
-downloaded code between](../../ci/caching/index.md#cache-go-dependencies).
+limiting or network failures. In these circumstances, you should 
+[cache the downloaded code between](../../ci/caching/index.md#cache-go-dependencies).
 
 There was a
 [bug on modules checksums](https://github.com/golang/go/issues/29278) in Go versions earlier than v1.11.4, so make
@@ -330,18 +328,15 @@ A few things to keep in mind when adding context:
 ### References for working with errors
 
 - [Go 1.13 errors](https://go.dev/blog/go1.13-errors).
-- [Programing with
-  errors](https://peter.bourgon.org/blog/2019/09/11/programming-with-errors.html).
-- [Don't just check errors, handle them
-  gracefully](https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully).
+- [Programing with errors](https://peter.bourgon.org/blog/2019/09/11/programming-with-errors.html).
+- [Don't just check errors, handle them gracefully](https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully).
 
 ## CLIs
 
 Every Go program is launched from the command line.
 [`cli`](https://github.com/urfave/cli) is a convenient package to create command
 line apps. It should be used whether the project is a daemon or a simple CLI
-tool. Flags can be mapped to [environment
-variables](https://github.com/urfave/cli#values-from-the-environment) directly,
+tool. Flags can be mapped to [environment variables](https://github.com/urfave/cli#values-from-the-environment) directly,
 which documents and centralizes at the same time all the possible command line
 interactions with the program. Don't use `os.GetEnv`, it hides variables deep
 in the code.
@@ -362,8 +357,7 @@ Every binary ideally must have structured (JSON) logging in place as it helps
 with searching and filtering the logs. At GitLab we use structured logging in
 JSON format, as all our infrastructure assumes that. When using
 [Logrus](https://github.com/sirupsen/logrus) you can turn on structured
-logging simply by using the build in [JSON
-formatter](https://github.com/sirupsen/logrus#formatters). This follows the
+logging simply by using the build in [JSON formatter](https://github.com/sirupsen/logrus#formatters). This follows the
 same logging type we use in our [Ruby applications](../logging.md#use-structured-json-logging).
 
 #### How to use Logrus
@@ -414,8 +408,7 @@ should be used in functions that can block and passed as the first parameter.
 Every project should have a `Dockerfile` at the root of their repository, to
 build and run the project. Since Go program are static binaries, they should
 not require any external dependency, and shells in the final image are useless.
-We encourage [Multistage
-builds](https://docs.docker.com/develop/develop-images/multistage-build/):
+We encourage [Multistage builds](https://docs.docker.com/develop/develop-images/multistage-build/):
 
 - They let the user build the project with the right Go version and
   dependencies.

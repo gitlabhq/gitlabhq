@@ -140,8 +140,8 @@ a flaky test we first want to make sure that it's no longer flaky.
 We can do that using the `ce:custom-parallel` and `ee:custom-parallel` jobs.
 Both are manual jobs that you can configure using custom variables.
 When clicking the name (not the play icon) of one of the parallel jobs,
-you are prompted to enter variables. You can use any of [the variables
-that can be used with `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables)
+you are prompted to enter variables. You can use any of 
+[the variables that can be used with `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables)
 as well as these:
 
 | Variable | Description |
@@ -150,8 +150,9 @@ as well as these:
 | `QA_TESTS` | The tests to run (no default, which means run all the tests in the scenario). Use file paths as you would when running tests via RSpec, for example, `qa/specs/features/ee/browser_ui` would include all the `EE` UI tests. |
 | `QA_RSPEC_TAGS` | The RSpec tags to add (no default) |
 
-For now, [manual jobs with custom variables don't use the same variable
-when retried](https://gitlab.com/gitlab-org/gitlab/-/issues/31367), so if you want to run the same tests multiple times,
+For now, 
+[manual jobs with custom variables don't use the same variable when retried](https://gitlab.com/gitlab-org/gitlab/-/issues/31367), 
+so if you want to run the same tests multiple times,
 specify the same variables in each `custom-parallel` job (up to as
 many of the 10 available jobs that you want to run).
 
@@ -164,8 +165,8 @@ automatically started: it runs the QA smoke suite against the
 You can also manually start the `review-qa-all`: it runs the full QA suite
 against the [Review App](../review_apps.md).
 
-**This runs end-to-end tests against a Review App based on [the official GitLab
-Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), itself deployed with custom
+**This runs end-to-end tests against a Review App based on 
+[the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), itself deployed with custom
 [Cloud Native components](https://gitlab.com/gitlab-org/build/CNG) built from your merge request's changes.**
 
 See [Review Apps](../review_apps.md) for more details about Review Apps.
@@ -243,8 +244,8 @@ Each type of scheduled pipeline generates a static link for the latest test repo
 If you are not [testing code in a merge request](#testing-code-in-merge-requests),
 there are two main options for running the tests. If you want to run
 the existing tests against a live GitLab instance or against a pre-built Docker image,
-use the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md). See also [examples
-of the test scenarios you can run via the orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#examples).
+use the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md). See also 
+[examples of the test scenarios you can run via the orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#examples).
 
 On the other hand, if you would like to run against a local development GitLab
 environment, you can use the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/).
@@ -262,8 +263,8 @@ architecture. See the [documentation about it](https://gitlab.com/gitlab-org/git
 
 Once you decided where to put [test environment orchestration scenarios](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/lib/gitlab/qa/scenario) and
 [instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features), take a look at the [GitLab QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md),
-the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md), and [the already existing
-instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features).
+the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md), 
+and [the already existing instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features).
 
 ### Consider **not** writing an end-to-end test
 

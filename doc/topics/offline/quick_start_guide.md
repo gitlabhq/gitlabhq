@@ -139,8 +139,7 @@ sudo cp /etc/gitlab/ssl/my-host.internal.crt /etc/gitlab-runner/certs/ca.crt
 
 ## Enabling GitLab Runner
 
-[Following a similar process to the steps for installing our GitLab Runner as a
-Docker service](https://docs.gitlab.com/runner/install/docker.html#docker-image-installation), we must first register our runner:
+[Following a similar process to the steps for installing our GitLab Runner as a Docker service](https://docs.gitlab.com/runner/install/docker.html#install-the-docker-image-and-start-the-container), we must first register our runner:
 
 ```shell
 $ sudo docker run --rm -it -v /etc/gitlab-runner:/etc/gitlab-runner gitlab/gitlab-runner register

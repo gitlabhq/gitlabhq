@@ -11,8 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/9) in GitLab 12.8.
 
 To have some more information about workers in the logs, we add
-[metadata to the jobs in the form of an
-`ApplicationContext`](../logging.md#logging-context-metadata-through-rails-or-grape-requests).
+[metadata to the jobs in the form of an `ApplicationContext`](../logging.md#logging-context-metadata-through-rails-or-grape-requests).
 In most cases, when scheduling a job from a request, this context is already
 deducted from the request and added to the scheduled job.
 

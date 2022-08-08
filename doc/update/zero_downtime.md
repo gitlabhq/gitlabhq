@@ -53,8 +53,8 @@ migrating data. Background migrations are only added in the monthly releases.
 Certain major/minor releases may require a set of background migrations to be
 finished. To guarantee this, such a release processes any remaining jobs
 before continuing the upgrading procedure. While this doesn't require downtime
-(if the above conditions are met) we require that you [wait for background
-migrations to complete](index.md#checking-for-background-migrations-before-upgrading)
+(if the above conditions are met) we require that you 
+[wait for background migrations to complete](index.md#checking-for-background-migrations-before-upgrading)
 between each major/minor release upgrade.
 The time necessary to complete these migrations can be reduced by
 increasing the number of Sidekiq workers that can process jobs in the

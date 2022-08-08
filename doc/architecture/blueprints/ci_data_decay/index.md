@@ -48,8 +48,8 @@ PostgreSQL database running on GitLab.com.
 This volume contributes to significant performance problems, development
 challenges and is often related to production incidents.
 
-We also expect a [significant growth in the number of builds executed on
-GitLab.com](../ci_scale/index.md) in the upcoming years.
+We also expect a [significant growth in the number of builds executed on GitLab.com](../ci_scale/index.md) 
+in the upcoming years.
 
 ## Opportunity
 
@@ -61,8 +61,8 @@ pipelines that are older than a few months might help us to move this data out
 of the primary database, to a different storage, that is more performant and
 cost effective.
 
-It is already possible to prevent processing builds [that have been
-archived](../../../user/admin_area/settings/continuous_integration.md#archive-jobs).
+It is already possible to prevent processing builds 
+[that have been archived](../../../user/admin_area/settings/continuous_integration.md#archive-jobs).
 When a build gets archived it will not be possible to retry it, but we still do
 keep all the processing metadata in the database, and it consumes resources
 that are scarce in the primary database.

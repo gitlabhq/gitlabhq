@@ -1203,12 +1203,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   describe 'redis_hll_counters' do
     subject { described_class.redis_hll_counters }
 
-    let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
+    let(:migrated_categories) do
+      ::Gitlab::UsageDataCounters::HLLRedisCounter.categories_collected_from_metrics_definitions
+    end
 
+    let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories - migrated_categories }
     let(:ignored_metrics) { ["i_package_composer_deploy_token_weekly"] }
 
     it 'has all known_events' do
-      stub_feature_flags(use_redis_hll_instrumentation_classes: false)
       expect(subject).to have_key(:redis_hll_counters)
 
       expect(subject[:redis_hll_counters].keys).to match_array(categories)

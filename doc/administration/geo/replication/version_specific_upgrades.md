@@ -243,8 +243,8 @@ the recommended procedure, see the
 ## Upgrading to GitLab 12.9
 
 WARNING:
-GitLab 12.9.0 through GitLab 12.9.3 are affected by [a bug that stops
-repository verification](https://gitlab.com/gitlab-org/gitlab/-/issues/213523).
+GitLab 12.9.0 through GitLab 12.9.3 are affected by 
+[a bug that stops repository verification](https://gitlab.com/gitlab-org/gitlab/-/issues/213523).
 The issue is fixed in GitLab 12.9.4. Upgrade to GitLab 12.9.4 or later.
 
 By default, GitLab 12.9 attempts to upgrade the embedded PostgreSQL server
@@ -397,6 +397,6 @@ For the recommended procedure, see the
 ## Upgrading to GitLab 12.0
 
 WARNING:
-This version is affected by a [bug that results in new LFS objects not being
-replicated to Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
+This version is affected by a 
+[bug that results in new LFS objects not being replicated to Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
 The issue is fixed in GitLab 12.1. Be sure to upgrade to GitLab 12.1 or later.

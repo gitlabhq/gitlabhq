@@ -129,8 +129,8 @@ sudo apt-get install libkrb5-dev
 
 ### Git
 
-From GitLab 13.6, we recommend you use the [Git version provided by
-Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
+From GitLab 13.6, we recommend you use the 
+[Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
 that:
 
 - Is always at the version required by GitLab.
@@ -239,8 +239,8 @@ sudo make install
 
 GitLab has several daemons written in Go. To install
 GitLab we need a Go compiler. The instructions below assume you use 64-bit
-Linux. You can find downloads for other platforms at the [Go download
-page](https://go.dev/dl).
+Linux. You can find downloads for other platforms at the 
+[Go download page](https://go.dev/dl).
 
 ```shell
 # Remove former Go installation folder

@@ -126,8 +126,7 @@ test:
 
 ## Limitations and known issues
 
-- All the limitations mentioned in our [beta
-  definition](../../../policy/alpha-beta-support.md#beta-features).
+- All the limitations mentioned in our [beta definition](../../../policy/alpha-beta-support.md#beta-features).
 - The average provisioning time for a new Windows VM is 5 minutes.
   This means that you may notice slower build start times
   on the Windows runner fleet during the beta. In a future

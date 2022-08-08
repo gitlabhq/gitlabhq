@@ -995,8 +995,7 @@ An on-demand scan can be run in active or passive mode:
 
 - _Passive mode_ is the default and runs a ZAP Baseline Scan.
 - _Active mode_ runs a ZAP Full Scan which is potentially harmful to the site being scanned. To
-  minimize the risk of accidental damage, running an active scan requires a [validated site
-  profile](#site-profile-validation).
+  minimize the risk of accidental damage, running an active scan requires a [validated site profile](#site-profile-validation).
 
 ### View on-demand DAST scans
 

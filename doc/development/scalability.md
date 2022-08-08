@@ -35,8 +35,8 @@ The application has a tight coupling to the database schema. When the
 application starts, Rails queries the database schema, caching the tables and
 column types for the data requested. Because of this schema cache, dropping a
 column or table while the application is running can produce 500 errors to the
-user. This is why we have a [process for dropping columns and other
-no-downtime changes](database/avoiding_downtime_in_migrations.md).
+user. This is why we have a 
+[process for dropping columns and other no-downtime changes](database/avoiding_downtime_in_migrations.md).
 
 #### Multi-tenancy
 
@@ -61,11 +61,11 @@ There are two ways to deal with this:
 - Sharding. Distribute data across multiple databases.
 
 Partitioning is a built-in PostgreSQL feature and requires minimal changes
-in the application. However, it [requires PostgreSQL
-11](https://www.2ndquadrant.com/en/blog/partitioning-evolution-postgresql-11/).
+in the application. However, it 
+[requires PostgreSQL 11](https://www.2ndquadrant.com/en/blog/partitioning-evolution-postgresql-11/).
 
-For example, a natural way to partition is to [partition tables by
-dates](https://gitlab.com/groups/gitlab-org/-/epics/2023). For example,
+For example, a natural way to partition is to 
+[partition tables by dates](https://gitlab.com/groups/gitlab-org/-/epics/2023). For example,
 the `events` and `audit_events` table are natural candidates for this
 kind of partitioning.
 
@@ -77,10 +77,10 @@ to abstract data access into API calls that abstract the database from
 the application, but this is a significant amount of work.
 
 There are solutions that may help abstract the sharding to some extent
-from the application. For example, we want to look at [Citus
-Data](https://www.citusdata.com/product/community) closely. Citus Data
-provides a Rails plugin that adds a [tenant ID to ActiveRecord
-models](https://www.citusdata.com/blog/2017/01/05/easily-scale-out-multi-tenant-apps/).
+from the application. For example, we want to look at 
+[Citus Data](https://www.citusdata.com/product/community) closely. Citus Data
+provides a Rails plugin that adds a 
+[tenant ID to ActiveRecord models](https://www.citusdata.com/blog/2017/01/05/easily-scale-out-multi-tenant-apps/).
 
 Sharding can also be done based on feature verticals. This is the
 microservice approach to sharding, where each service represents a
@@ -97,12 +97,12 @@ systems.
 
 #### Database size
 
-A recent [database checkup shows a breakdown of the table sizes on
-GitLab.com](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/8022#master-1022016101-8).
+A recent 
+[database checkup shows a breakdown of the table sizes on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/8022#master-1022016101-8).
 Since `merge_request_diff_files` contains over 1 TB of data, we want to
-reduce/eliminate this table first. GitLab has support for [storing diffs in
-object storage](../administration/merge_request_diffs.md), which we [want to do on
-GitLab.com](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/7356).
+reduce/eliminate this table first. GitLab has support for 
+[storing diffs in object storage](../administration/merge_request_diffs.md), which we 
+[want to do on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/7356).
 
 #### High availability
 
@@ -128,8 +128,7 @@ some actions that aren't traditionally available in standard load balancers. For
 example, the application considers a replica only if its replication lag is low
 (for example, WAL data behind by less than 100 MB).
 
-More [details are in a blog
-post](https://about.gitlab.com/blog/2017/10/02/scaling-the-gitlab-database/).
+More [details are in a blog post](https://about.gitlab.com/blog/2017/10/02/scaling-the-gitlab-database/).
 
 ### PgBouncer
 
@@ -150,8 +149,8 @@ limitation:
 - Use a multi-threaded connection pooler (for example,
   [Odyssey](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/7776).
 
-On some Linux systems, it's possible to run [multiple PgBouncer instances on
-the same port](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4796).
+On some Linux systems, it's possible to run 
+[multiple PgBouncer instances on the same port](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4796).
 
 On GitLab.com, we run multiple PgBouncer instances on different ports to
 avoid saturating a single core.

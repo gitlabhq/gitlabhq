@@ -190,8 +190,8 @@ editor. Once closed, Git presents you with a new text editor instance to edit
 the commit message of commit B. Add the trailer, then save and quit the editor.
 If all went well, commit B is now updated.
 
-For more information about interactive rebases, take a look at [the Git
-documentation](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History).
+For more information about interactive rebases, take a look at 
+[the Git documentation](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History).
 
 ---
 

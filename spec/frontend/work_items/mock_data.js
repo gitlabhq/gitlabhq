@@ -101,6 +101,14 @@ export const updateWorkItemMutationResponse = {
               ],
             },
           },
+          {
+            __typename: 'WorkItemWidgetAssignees',
+            type: 'ASSIGNEES',
+            allowsMultipleAssignees: true,
+            assignees: {
+              nodes: [mockAssignees[0]],
+            },
+          },
         ],
       },
     },

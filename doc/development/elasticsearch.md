@@ -277,8 +277,8 @@ These Advanced Search migrations, like any other GitLab changes, need to support
 
 Depending on the order of deployment, it's possible that the migration
 has started or finished and there's still a server running the application code from before the
-migration. We need to take this into consideration until we can [ensure all Advanced Search migrations
-start after the deployment has finished](https://gitlab.com/gitlab-org/gitlab/-/issues/321619).
+migration. We need to take this into consideration until we can 
+[ensure all Advanced Search migrations start after the deployment has finished](https://gitlab.com/gitlab-org/gitlab/-/issues/321619).
 
 ### Reverting a migration
 
@@ -317,9 +317,8 @@ safely can.
 
 We choose to use GitLab major version upgrades as a safe time to remove
 backwards compatibility for indices that have not been fully migrated. We
-[document this in our upgrade
-documentation](../update/index.md#upgrading-to-a-new-major-version). We also
-choose to replace the migration code with the halted migration
+[document this in our upgrade documentation](../update/index.md#upgrading-to-a-new-major-version). 
+We also choose to replace the migration code with the halted migration
 and remove tests so that:
 
 - We don't need to maintain any code that is called from our Advanced Search
@@ -400,16 +399,15 @@ that may contain information to help diagnose performance issues.
 
 ### Performance Bar
 
-Elasticsearch requests will be displayed in the [`Performance
-Bar`](../administration/monitoring/performance/performance_bar.md), which can
+Elasticsearch requests will be displayed in the 
+[`Performance Bar`](../administration/monitoring/performance/performance_bar.md), which can
 be used both locally in development and on any deployed GitLab instance to
 diagnose poor search performance. This will show the exact queries being made,
 which is useful to diagnose why a search might be slow.
 
 ### Correlation ID and `X-Opaque-Id`
 
-Our [correlation
-ID](distributed_tracing.md#developer-guidelines-for-working-with-correlation-ids)
+Our [correlation ID](distributed_tracing.md#developer-guidelines-for-working-with-correlation-ids)
 is forwarded by all requests from Rails to Elasticsearch as the
 [`X-Opaque-Id`](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html#_identifying_running_tasks)
 header which allows us to track any
@@ -497,8 +495,8 @@ theoretically be used to figure out what needs to be replayed are:
    These updates can be replayed by triggering another
    `ElasticDeleteProjectWorker`.
 
-With the above methods and taking regular [Elasticsearch
-snapshots](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html)
+With the above methods and taking regular 
+[Elasticsearch snapshots](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html)
 we should be able to recover from different kinds of data loss issues in a
 relatively short period of time compared to indexing everything from
 scratch.

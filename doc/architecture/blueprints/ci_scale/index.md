@@ -89,8 +89,8 @@ environment.
 
 We also expect a significant, exponential growth in the upcoming years.
 
-One of the forecasts done using [Facebook's
-Prophet](https://facebook.github.io/prophet/) shows that in the first half of
+One of the forecasts done using [Facebook's Prophet](https://facebook.github.io/prophet/)
+shows that in the first half of
 2024 we expect seeing 20M builds created on GitLab.com each day. In comparison
 to around 2M we see created today, this is 10x growth our product might need to
 sustain in upcoming years.
@@ -115,17 +115,14 @@ of the CI/CD Apdex score, and sometimes even causes a significant performance
 degradation in the production environment.
 
 There are multiple other strategies that can improve performance and
-reliability. We can use [Redis
-queuing](https://gitlab.com/gitlab-org/gitlab/-/issues/322972), or [a separate
-table that will accelerate SQL queries used to build
-queues](https://gitlab.com/gitlab-org/gitlab/-/issues/322766) and we want to
-explore them.
+reliability. We can use [Redis queuing](https://gitlab.com/gitlab-org/gitlab/-/issues/322972), or 
+[a separate table that will accelerate SQL queries used to build queues](https://gitlab.com/gitlab-org/gitlab/-/issues/322766)
+and we want to explore them.
 
-**Status**: As of October 2021 the new architecture [has been implemented on
-GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/5909#note_680407908).
-The following epic tracks making it generally available: [Make the new pending
-builds architecture generally available](
-https://gitlab.com/groups/gitlab-org/-/epics/6954).
+**Status**: As of October 2021 the new architecture 
+[has been implemented on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/5909#note_680407908).
+The following epic tracks making it generally available: 
+[Make the new pending builds architecture generally available](https://gitlab.com/groups/gitlab-org/-/epics/6954).
 
 ### Moving big amounts of data is challenging
 

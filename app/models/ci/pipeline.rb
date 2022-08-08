@@ -603,7 +603,7 @@ module Ci
 
       cancel_jobs(cancelable_statuses, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
 
-      if cascade_to_children && project.cascade_cancel_pipelines_enabled?
+      if cascade_to_children
         # cancel any bridges that could spin up new child pipelines
         cancel_jobs(bridges_in_self_and_descendants.cancelable, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
         cancel_children(auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id, execute_async: execute_async)

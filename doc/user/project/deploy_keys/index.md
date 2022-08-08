@@ -146,8 +146,8 @@ What happens to the deploy key when it is disabled depends on the following:
 
 ### Deploy key cannot push to a protected branch
 
-There are a few scenarios where a deploy key will fail to push to a [protected
-branch](../protected_branches.md).
+There are a few scenarios where a deploy key will fail to push to a
+[protected branch](../protected_branches.md).
 
 - The owner associated to a deploy key does not have access to the protected branch.
 - The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.

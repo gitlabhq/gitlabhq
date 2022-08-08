@@ -246,8 +246,7 @@ end
 NOTE:
 For specifics on implementation, see [Pagination implementation](#pagination-implementation).
 
-GraphQL uses [cursor based
-pagination](https://graphql.org/learn/pagination/#pagination-and-edges)
+GraphQL uses [cursor based pagination](https://graphql.org/learn/pagination/#pagination-and-edges)
 to expose collections of items. This provides the clients with a lot
 of flexibility while also allowing the backend to use different
 pagination models.
@@ -1608,8 +1607,8 @@ correctly rendered to the clients.
 
 ### Errors in mutations
 
-We encourage following the practice of [errors as
-data](https://graphql-ruby.org/mutations/mutation_errors) for mutations, which
+We encourage following the practice of 
+[errors as data](https://graphql-ruby.org/mutations/mutation_errors) for mutations, which
 distinguishes errors by who they are relevant to, defined by who can deal with
 them.
 

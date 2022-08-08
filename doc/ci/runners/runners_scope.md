@@ -28,8 +28,8 @@ If you are using a self-managed instance of GitLab:
   going to your project's **Settings > CI/CD**, expanding the **Runners** section,
   and clicking **Show runner installation instructions**.
   These instructions are also available [in the documentation](https://docs.gitlab.com/runner/install/index.html).
-- The administrator can also configure a maximum number of shared runner [CI/CD minutes for
-  each group](../pipelines/cicd_minutes.md#set-the-quota-of-cicd-minutes-for-a-specific-namespace).
+- The administrator can also configure a maximum number of shared runner 
+  [CI/CD minutes for each group](../pipelines/cicd_minutes.md#set-the-quota-of-cicd-minutes-for-a-specific-namespace).
 
 If you are using GitLab.com:
 

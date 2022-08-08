@@ -77,7 +77,8 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
         allow(Gitlab::HTTP).to receive(:get).with(runner_releases_url, anything) do
           http_call_timestamp_offsets << Time.now.utc - start_time
 
-          raise Net::OpenTimeout if opts&.dig(:raise_timeout)
+          err_class = opts&.dig(:raise_error)
+          raise err_class if err_class
 
           mock_http_response(response)
         end
@@ -118,7 +119,8 @@ RSpec.describe Gitlab::Ci::RunnerReleases do
       let(:expected_releases_by_minor) { nil }
 
       it_behaves_like 'requests that follow cache status', 5.seconds
-      it_behaves_like 'a service implementing exponential backoff', raise_timeout: true
+      it_behaves_like 'a service implementing exponential backoff', raise_error: Net::OpenTimeout
+      it_behaves_like 'a service implementing exponential backoff', raise_error: Errno::ETIMEDOUT
     end
 
     context 'when response is nil' do

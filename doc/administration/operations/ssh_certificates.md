@@ -35,10 +35,10 @@ uploading user SSH keys to GitLab entirely.
 ## Setting up SSH certificate lookup via GitLab Shell
 
 How to fully set up SSH certificates is outside the scope of this
-document. See [OpenSSH's
-`PROTOCOL.certkeys`](https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.certkeys?annotate=HEAD)
-for how it works, for example [RedHat's documentation about
-it](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-using_openssh_certificate_authentication).
+document. See
+[OpenSSH's`PROTOCOL.certkeys`](https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.certkeys?annotate=HEAD)
+for how it works, for example
+[RedHat's documentation about it](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-using_openssh_certificate_authentication).
 
 We assume that you already have SSH certificates set up, and have
 added the `TrustedUserCAKeys` of your CA to your `sshd_config`, for example:
@@ -159,8 +159,8 @@ users (especially if they're renewed) than you have deploy keys.
 Users can still bypass SSH certificate authentication by manually
 uploading an SSH public key to their profile, relying on the
 `~/.ssh/authorized_keys` fallback to authenticate it. There's
-currently no feature to prevent this, [but there's an open request for
-adding it](https://gitlab.com/gitlab-org/gitlab/-/issues/23260).
+currently no feature to prevent this, 
+[but there's an open request for adding it](https://gitlab.com/gitlab-org/gitlab/-/issues/23260).
 
 Such a restriction can currently be hacked in by, for example, providing a
 custom `AuthorizedKeysCommand` which checks if the discovered key-ID

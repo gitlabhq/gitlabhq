@@ -168,11 +168,7 @@ module Gitlab
         private
 
         def categories_pending_migration
-          if ::Feature.enabled?(:use_redis_hll_instrumentation_classes)
-            (categories - categories_collected_from_metrics_definitions)
-          else
-            categories
-          end
+          (categories - categories_collected_from_metrics_definitions)
         end
 
         def track(values, event_name, context: '', time: Time.zone.now)

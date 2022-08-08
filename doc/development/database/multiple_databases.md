@@ -7,9 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Multiple Databases
 
 To allow GitLab to scale further we
-[decomposed the GitLab application database into multiple
-databases](https://gitlab.com/groups/gitlab-org/-/epics/6168). The two databases
-are `main` and `ci`. GitLab supports being run with either one database or two databases.
+[decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168). 
+The two databases are `main` and `ci`. GitLab supports being run with either one database or two databases.
 On GitLab.com we are using two separate databases.
 
 ## GitLab Schema

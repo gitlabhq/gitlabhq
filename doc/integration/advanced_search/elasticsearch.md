@@ -466,8 +466,7 @@ Before doing a major version GitLab upgrade, you should have completed all
 migrations that exist up until the latest minor version before that major
 version. If you have halted migrations, these need to be resolved and
 [retried](#retry-a-halted-migration) before proceeding with a major version
-upgrade. Read more about [upgrading to a new major
-version](../../update/index.md#upgrading-to-a-new-major-version).
+upgrade. Read more about [upgrading to a new major version](../../update/index.md#upgrading-to-a-new-major-version).
 
 ## GitLab Advanced Search Rake tasks
 
@@ -577,9 +576,9 @@ due to large volumes of data being indexed.
 
 WARNING:
 Indexing a large instance generates a lot of Sidekiq jobs.
-Make sure to prepare for this task by having a [Scalable and Highly Available
-Setup](../../administration/reference_architectures/index.md) or creating [extra
-Sidekiq processes](../../administration/operations/extra_sidekiq_processes.md).
+Make sure to prepare for this task by having a 
+[Scalable and Highly Available Setup](../../administration/reference_architectures/index.md) or creating 
+[extra Sidekiq processes](../../administration/operations/extra_sidekiq_processes.md).
 
 1. [Configure your Elasticsearch host and port](#enable-advanced-search).
 1. Create empty indices:

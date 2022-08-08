@@ -18,8 +18,8 @@ GitLab implements Git object deduplication.
 
 ### Understanding Git alternates
 
-At the Git level, we achieve deduplication by using [Git
-alternates](https://git-scm.com/docs/gitrepository-layout#gitrepository-layout-objects).
+At the Git level, we achieve deduplication by using 
+[Git alternates](https://git-scm.com/docs/gitrepository-layout#gitrepository-layout-objects).
 Git alternates is a mechanism that lets a repository borrow objects from
 another repository on the same machine.
 
@@ -44,8 +44,8 @@ reliable decide if an object is no longer needed.
 
 ### Git alternates in GitLab: pool repositories
 
-GitLab organizes this object borrowing by [creating special **pool
-repositories**](../administration/repository_storage_types.md) which are hidden from the user. We then use Git
+GitLab organizes this object borrowing by [creating special **pool repositories**](../administration/repository_storage_types.md)
+which are hidden from the user. We then use Git
 alternates to let a collection of project repositories borrow from a
 single pool repository. We call such a collection of project
 repositories a pool. Pools form star-shaped networks of repositories
@@ -99,9 +99,8 @@ are as follows:
 
 ### Assumptions
 
-- All repositories in a pool must use [hashed
-  storage](../administration/repository_storage_types.md). This is so
-  that we don't have to ever worry about updating paths in
+- All repositories in a pool must use [hashed storage](../administration/repository_storage_types.md). 
+  This is so that we don't have to ever worry about updating paths in
   `object/info/alternates` files.
 - All repositories in a pool must be on the same Gitaly storage shard.
   The Git alternates mechanism relies on direct disk access across

@@ -86,13 +86,11 @@ but that always reduces work.
 To do this, we want to calculate the expected increase in total execution time
 and RPS (throughput) for the new shard. We can get these values from:
 
-- The [Queue Detail
-  dashboard](https://dashboards.gitlab.net/d/sidekiq-queue-detail/sidekiq-queue-detail)
+- The [Queue Detail dashboard](https://dashboards.gitlab.net/d/sidekiq-queue-detail/sidekiq-queue-detail)
   has values for the queue itself. For a new queue, we can look for
   queues that have similar patterns or are scheduled in similar
   circumstances.
-- The [Shard Detail
-  dashboard](https://dashboards.gitlab.net/d/sidekiq-shard-detail/sidekiq-shard-detail)
+- The [Shard Detail dashboard](https://dashboards.gitlab.net/d/sidekiq-shard-detail/sidekiq-shard-detail)
   has Total Execution Time and Throughput (RPS). The Shard Utilization
   panel displays if there is currently any excess capacity for this
   shard.

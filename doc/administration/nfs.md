@@ -65,8 +65,7 @@ Read:
 ## Known kernel version incompatibilities
 
 RedHat Enterprise Linux (RHEL) and CentOS v7.7 and v7.8 ship with kernel
-version `3.10.0-1127`, which [contains a
-bug](https://bugzilla.redhat.com/show_bug.cgi?id=1783554) that causes
+version `3.10.0-1127`, which [contains a bug](https://bugzilla.redhat.com/show_bug.cgi?id=1783554) that causes
 [uploads to fail to copy over NFS](https://gitlab.com/gitlab-org/gitlab/-/issues/218999). The
 following GitLab versions include a fix to work properly with that
 kernel version:

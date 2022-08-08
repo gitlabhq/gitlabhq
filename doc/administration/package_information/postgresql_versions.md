@@ -20,8 +20,7 @@ For example:
 - Omnibus 12.7.6 shipped with PostgreSQL 9.6.14 and 10.9.
 - Omnibus 12.7.7 shipped with PostgreSQL 9.6.17 and 10.12.
 
-[Find out which versions of PostgreSQL (and other components) ship with
-each Omnibus GitLab release](https://gitlab-org.gitlab.io/omnibus-gitlab/licenses.html).
+[Find out which versions of PostgreSQL (and other components) ship with each Omnibus GitLab release](https://gitlab-org.gitlab.io/omnibus-gitlab/licenses.html).
 
 The lowest supported PostgreSQL versions are listed in the
 [installation requirements](../../install/requirements.md#postgresql-requirements).

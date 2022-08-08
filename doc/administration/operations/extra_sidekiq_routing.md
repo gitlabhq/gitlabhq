@@ -76,9 +76,9 @@ workers.
 ## Worker matching query
 
 GitLab provides a query syntax to match a worker based on its
-attributes. This query syntax is employed by both [Queue routing
-rules](#queue-routing-rules) and [Queue
-selector](extra_sidekiq_processes.md#queue-selector). A query includes two
+attributes. This query syntax is employed by both 
+[Queue routing rules](#queue-routing-rules) and 
+[Queue selector](extra_sidekiq_processes.md#queue-selector). A query includes two
 components:
 
 - Attributes that can be selected.
@@ -92,8 +92,8 @@ Queue matching query works upon the worker attributes, described in
 [Sidekiq style guide](../../development/sidekiq/index.md). We support querying
 based on a subset of worker attributes:
 
-- `feature_category` - the [GitLab feature
-  category](https://about.gitlab.com/direction/maturity/#category-maturity) the
+- `feature_category` - the 
+  [GitLab feature category](https://about.gitlab.com/direction/maturity/#category-maturity) the
   queue belongs to. For example, the `merge` queue belongs to the
   `source_code_management` category.
 - `has_external_dependencies` - whether or not the queue connects to external
@@ -122,10 +122,10 @@ that have tags `a`, `b`, or both. `tags!=a,b` selects queues that have
 neither of those tags.
 
 The attributes of each worker are hard-coded in the source code. For
-convenience, we generate a [list of all available attributes in
-GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_queues.yml)
-and a [list of all available attributes in
-GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/all_queues.yml).
+convenience, we generate a 
+[list of all available attributes in GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_queues.yml)
+and a 
+[list of all available attributes in GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/all_queues.yml).
 
 ### Available operators
 
@@ -160,8 +160,7 @@ entire queue group selects all queues.
 After the Sidekiq routing rules are changed, administrators must take care
 with the migration to avoid losing jobs entirely, especially in a system with
 long queues of jobs. The migration can be done by following the migration steps
-mentioned in [Sidekiq job
-migration](../../raketasks/sidekiq_job_migration.md)
+mentioned in [Sidekiq job migration](../../raketasks/sidekiq_job_migration.md)
 
 ### Workers that cannot be migrated
 
@@ -177,5 +176,5 @@ sidekiq['routing_rules'] = [
 ]
 ```
 
-These queues must also be included in at least one [Sidekiq
-queue group](extra_sidekiq_processes.md#start-multiple-processes).
+These queues must also be included in at least one 
+[Sidekiq queue group](extra_sidekiq_processes.md#start-multiple-processes).

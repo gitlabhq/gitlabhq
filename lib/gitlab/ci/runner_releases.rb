@@ -36,6 +36,9 @@ module Gitlab
 
           reset_backoff!
           extract_releases(response)
+        rescue Errno::ETIMEDOUT
+          @backoff_expire_time = next_backoff.from_now
+          break nil
         end
       end
 

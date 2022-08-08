@@ -233,6 +233,7 @@ The following job, when run for the default branch, is able to read secrets unde
 
 ```yaml
 read_secrets:
+  image: vault:latest
   script:
     # Check job's ref name
     - echo $CI_COMMIT_REF_NAME
@@ -261,6 +262,7 @@ The following job is able to authenticate using the `myproject-production` role 
 
 ```yaml
 read_secrets:
+  image: vault:latest
   script:
     # Check job's ref name
     - echo $CI_COMMIT_REF_NAME

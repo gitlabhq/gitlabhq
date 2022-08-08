@@ -1044,12 +1044,6 @@ class Project < ApplicationRecord
     !emails_disabled?
   end
 
-  def cascade_cancel_pipelines_enabled?
-    strong_memoize(:cascade_cancel_pipelines_enabled) do
-      Feature.enabled?(:ci_parent_pipeline_cancels_children, self)
-    end
-  end
-
   override :lfs_enabled?
   def lfs_enabled?
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?

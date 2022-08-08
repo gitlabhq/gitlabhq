@@ -394,8 +394,8 @@ query for every mention of `@alice`.
 Caching data per transaction can be done using
 [RequestStore](https://github.com/steveklabnik/request_store) (use
 `Gitlab::SafeRequestStore` to avoid having to remember to check
-`RequestStore.active?`). Caching data in Redis can be done using [Rails' caching
-system](https://guides.rubyonrails.org/caching_with_rails.html).
+`RequestStore.active?`). Caching data in Redis can be done using 
+[Rails' caching system](https://guides.rubyonrails.org/caching_with_rails.html).
 
 ## Pagination
 
@@ -414,8 +414,7 @@ The main styles of pagination are:
 
 The ultimately scalable solution for pagination is to use Keyset-based pagination.
 However, we don't have support for that at GitLab at that moment. You
-can follow the progress looking at [API: Keyset Pagination
-](https://gitlab.com/groups/gitlab-org/-/epics/2039).
+can follow the progress looking at [API: Keyset Pagination](https://gitlab.com/groups/gitlab-org/-/epics/2039).
 
 Take into consideration the following when choosing a pagination strategy:
 

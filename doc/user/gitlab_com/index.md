@@ -336,8 +336,8 @@ documentation.
 
 When a request is rate limited, GitLab responds with a `429` status
 code. The client should wait before attempting the request again. There
-are also informational headers with this response detailed in [rate
-limiting responses](#rate-limiting-responses).
+are also informational headers with this response detailed in 
+[rate limiting responses](#rate-limiting-responses).
 
 The following table describes the rate limits for GitLab.com, both before and
 after the limits change in January, 2021:
@@ -358,9 +358,9 @@ after the limits change in January, 2021:
 | **Pipeline creation** requests (for a given **project, user, and commit**) |                               | **25** requests per minute              |
 | **Alert integration endpoint** requests (for a given **project**)          |                               | **3600** requests per hour |
 
-More details are available on the rate limits for [protected
-paths](#protected-paths-throttle) and [raw
-endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
+More details are available on the rate limits for 
+[protected paths](#protected-paths-throttle) and 
+[raw endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
 
 GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most

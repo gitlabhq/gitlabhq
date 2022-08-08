@@ -18,15 +18,14 @@ several possible situations:
 
 ## Adding new workers
 
-On GitLab.com, we [do not currently have a Sidekiq deployment in the
-canary stage](https://gitlab.com/gitlab-org/gitlab/-/issues/19239). This
-means that a new worker than can be scheduled from an HTTP endpoint may
+On GitLab.com, we 
+[do not currently have a Sidekiq deployment in the canary stage](https://gitlab.com/gitlab-org/gitlab/-/issues/19239). 
+This means that a new worker than can be scheduled from an HTTP endpoint may
 be scheduled from canary but not run on Sidekiq until the full
 production deployment is complete. This can be several hours later than
 scheduling the job. For some workers, this will not be a problem. For
-others - particularly [latency-sensitive
-jobs](worker_attributes.md#latency-sensitive-jobs) - this will result in a poor user
-experience.
+others - particularly [latency-sensitive jobs](worker_attributes.md#latency-sensitive-jobs) - 
+this will result in a poor user experience.
 
 This only applies to new worker classes when they are first introduced.
 As we recommend [using feature flags](../feature_flags/) as a general

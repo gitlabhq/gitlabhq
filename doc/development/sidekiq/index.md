@@ -31,8 +31,7 @@ the [routing rules](../../administration/operations/extra_sidekiq_routing.md#que
 
 ## Retries
 
-Sidekiq defaults to using [25
-retries](https://github.com/mperham/sidekiq/wiki/Error-Handling#automatic-job-retry),
+Sidekiq defaults to using [25 retries](https://github.com/mperham/sidekiq/wiki/Error-Handling#automatic-job-retry),
 with back-off between each retry. 25 retries means that the last retry
 would happen around three weeks after the first attempt (assuming all 24
 prior retries failed).
@@ -179,8 +178,7 @@ in the default execution mode - using
 [`sidekiq-cluster`](../../administration/operations/extra_sidekiq_processes.md)
 does not account for weights.
 
-As we are [moving towards using `sidekiq-cluster` in
-Free](https://gitlab.com/gitlab-org/gitlab/-/issues/34396), newly-added
+As we are [moving towards using `sidekiq-cluster` in Free](https://gitlab.com/gitlab-org/gitlab/-/issues/34396), newly-added
 workers do not need to have weights specified. They can use the
 default weight, which is 1.
 

@@ -77,22 +77,9 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
 
     describe '.unique_events_data' do
-      context 'with use_redis_hll_instrumentation_classes feature enabled' do
-        it 'does not include instrumented categories' do
-          stub_feature_flags(use_redis_hll_instrumentation_classes: true)
-
-          expect(described_class.unique_events_data.keys)
-            .not_to include(*described_class.categories_collected_from_metrics_definitions)
-        end
-      end
-
-      context 'with use_redis_hll_instrumentation_classes feature disabled' do
-        it 'includes instrumented categories' do
-          stub_feature_flags(use_redis_hll_instrumentation_classes: false)
-
-          expect(described_class.unique_events_data.keys)
-            .to include(*described_class.categories_collected_from_metrics_definitions)
-        end
+      it 'does not include instrumented categories' do
+        expect(described_class.unique_events_data.keys)
+          .not_to include(*described_class.categories_collected_from_metrics_definitions)
       end
     end
   end

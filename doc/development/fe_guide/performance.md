@@ -77,9 +77,9 @@ performance.getEntriesByType('mark');
 performance.getEntriesByType('measure');
 ```
 
-Using `getEntriesByName()` or `getEntriesByType()` returns an Array of [the PerformanceMeasure
-objects](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceMeasure) which contain
-information about the measurement's start time and duration.
+Using `getEntriesByName()` or `getEntriesByType()` returns an Array of 
+[the PerformanceMeasure objects](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceMeasure) 
+which contain information about the measurement's start time and duration.
 
 ### User Timing API utility
 

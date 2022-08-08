@@ -126,8 +126,8 @@ you list. In this example, we exclude all import-related jobs from a Sidekiq nod
 > - [Renamed from `experimental_queue_selector` to `queue_selector`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/147) in GitLab 13.6.
 
 In addition to selecting queues by name, as above, the `queue_selector` option
-allows queue groups to be selected in a more general way using a [worker matching
-query](extra_sidekiq_routing.md#worker-matching-query). After `queue_selector`
+allows queue groups to be selected in a more general way using a 
+[worker matching query](extra_sidekiq_routing.md#worker-matching-query). After `queue_selector`
 is set, all `queue_groups` must follow the aforementioned syntax.
 
 In `/etc/gitlab/gitlab.rb`:
@@ -201,8 +201,8 @@ have the concurrency tuned according to:
 - The throughput achieved.
 
 Each thread requires a Redis connection, so adding threads may increase Redis
-latency and potentially cause client timeouts. See the [Sidekiq documentation
-about Redis](https://github.com/mperham/sidekiq/wiki/Using-Redis) for more
+latency and potentially cause client timeouts. See the 
+[Sidekiq documentation about Redis](https://github.com/mperham/sidekiq/wiki/Using-Redis) for more
 details.
 
 #### When running Sidekiq cluster (default)

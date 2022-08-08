@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Rails console **(FREE SELF)**
 
-At the heart of GitLab is a web application [built using the Ruby on Rails
-framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
+At the heart of GitLab is a web application 
+[built using the Ruby on Rails framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
 The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
 provides a way to interact with your GitLab instance from the command line, and also grants access to the amazing tools built right into Rails.
 
@@ -19,8 +19,8 @@ with no consequences, you are strongly advised to do so in a test environment.
 
 The Rails console is for GitLab system administrators who are troubleshooting
 a problem or need to retrieve some data that can only be done through direct
-access of the GitLab application. Basic knowledge of Ruby is needed (try [this
-30-minute tutorial](https://try.ruby-lang.org/) for a quick introduction).
+access of the GitLab application. Basic knowledge of Ruby is needed (try 
+[this 30-minute tutorial](https://try.ruby-lang.org/) for a quick introduction).
 Rails experience is useful but not required.
 
 ## Starting a Rails console session
@@ -136,8 +136,8 @@ root
 1
 ```
 
-Some basic knowledge of Ruby will be very useful. Try [this
-30-minute tutorial](https://try.ruby-lang.org/) for a quick introduction.
+Some basic knowledge of Ruby will be very useful. Try 
+[this 30-minute tutorial](https://try.ruby-lang.org/) for a quick introduction.
 Rails experience is helpful but not essential.
 
 ### Troubleshooting Rails Runner

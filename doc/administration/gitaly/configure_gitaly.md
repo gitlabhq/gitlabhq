@@ -1143,8 +1143,7 @@ gitaly['pack_objects_cache_enabled'] = true
 #### `enabled` defaults to `false`
 
 The cache is disabled by default. This is because in some cases, it
-can create an [extreme
-increase](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4010#note_534564684)
+can create an [extreme increase](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4010#note_534564684)
 in the number of bytes written to disk. On GitLab.com, we have verified
 that our repository storage disks can handle this extra workload, but
 we felt we cannot assume this is true everywhere.

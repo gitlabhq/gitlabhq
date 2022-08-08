@@ -452,8 +452,9 @@ gitlab_rails['backup_upload_storage_options'] = {
 
 ##### SSE-KMS
 
-To enable SSE-KMS, you'll need the [KMS key via its Amazon Resource Name (ARN)
-in the `arn:aws:kms:region:acct-id:key/key-id` format](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html). Under the `backup_upload_storage_options` configuration setting, set:
+To enable SSE-KMS, you'll need the 
+[KMS key via its Amazon Resource Name (ARN) in the `arn:aws:kms:region:acct-id:key/key-id` format](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html). 
+Under the `backup_upload_storage_options` configuration setting, set:
 
 - `server_side_encryption` to `aws:kms`.
 - `server_side_encryption_kms_key_id` to the ARN of the key.

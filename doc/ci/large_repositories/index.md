@@ -116,8 +116,7 @@ you could add [`--no-tags`](https://git-scm.com/docs/git-fetch#Documentation/git
 to the extra flags to make your fetches faster and more compact.
 
 Also in the case where you repository does _not_ contain a lot of
-tags, `--no-tags` can [make a big difference in some
-cases](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/746).
+tags, `--no-tags` can [make a big difference in some cases](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/746).
 If your CI builds do not depend on Git tags it is worth trying.
 
 See the [`GIT_FETCH_EXTRA_FLAGS` documentation](../runners/configure_runners.md#git-fetch-extra-flags)

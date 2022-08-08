@@ -487,16 +487,14 @@ Before taking the decision to merge:
 - If the MR contains both Quality and non-Quality-related changes, the MR should be merged by the relevant maintainer for user-facing changes (backend, frontend, or database) after the Quality related changes are approved by a Software Engineer in Test.
 
 If a merge request is fundamentally ready, but needs only trivial fixes (such as
-typos), consider demonstrating a [bias for
-action](https://about.gitlab.com/handbook/values/#bias-for-action) by making
-those changes directly without going back to the author. You can do this by
+typos), consider demonstrating a [bias for action](https://about.gitlab.com/handbook/values/#bias-for-action) 
+by making those changes directly without going back to the author. You can do this by
 using the [suggest changes](../user/project/merge_requests/reviews/suggestions.md) feature to apply
 your own suggestions to the merge request. Note that:
 
 - If the changes are not straightforward, please prefer allowing the author to make the change.
 - **Before applying suggestions**, edit the merge request to make sure
-  [squash and
-  merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
+  [squash and merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
   is enabled, otherwise, the pipeline's Danger job fails.
   - If a merge request does not have squash and merge enabled, and it
     has more than one commit, then see the note below about rewriting
@@ -511,8 +509,7 @@ When ready to merge:
 WARNING:
 **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
 
-- Consider using the [Squash and
-  merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
+- Consider using the [Squash and merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
   feature when the merge request has a lot of commits.
   When merging code, a maintainer should only use the squash feature if the
   author has already set this option, or if the merge request clearly contains a
@@ -532,8 +529,7 @@ WARNING:
     enough to `main`.
 - When you set the MR to "Merge When Pipeline Succeeds", you should take over
   subsequent revisions for anything that would be spotted after that.
-- For merge requests that have had [Squash and
-  merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge) set,
+- For merge requests that have had [Squash and merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge) set,
   the squashed commit's default commit message is taken from the merge request title.
   You're encouraged to [select a commit with a more informative commit message](../user/project/merge_requests/squash_and_merge.md) before merging.
 

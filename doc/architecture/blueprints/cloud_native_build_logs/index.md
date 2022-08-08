@@ -12,8 +12,8 @@ Cloud native and the adoption of Kubernetes has been recognised by GitLab to be
 one of the top two biggest tailwinds that are helping us grow faster as a
 company behind the project.
 
-This effort is described in a more details [in the infrastructure team
-handbook](https://about.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/).
+This effort is described in a more details 
+[in the infrastructure team handbook](https://about.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/).
 
 ## Traditional build logs
 
@@ -88,9 +88,8 @@ even tried to replace NFS with
 
 Since that time it has become apparent that the cost of operations and
 maintenance of a NFS cluster is significant and that if we ever decide to
-migrate to Kubernetes [we need to decouple GitLab from a shared local storage
-and
-NFS](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/426#note_375646396).
+migrate to Kubernetes 
+[we need to decouple GitLab from a shared local storage and NFS](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/426#note_375646396).
 
 1. NFS might be a single point of failure
 1. NFS can only be reliably scaled vertically
@@ -112,12 +111,10 @@ of complexity, maintenance cost and enormous, negative impact on availability.
 1. ✓ Rollout the feature into production environment incrementally
 
 The work needed to make the new architecture production ready and enabled on
-GitLab.com had been tracked in [Cloud Native Build Logs on
-GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/4275) epic.
+GitLab.com had been tracked in [Cloud Native Build Logs on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/4275) epic.
 
-Enabling this feature on GitLab.com is a subtask of [making the new
-architecture generally
-available](https://gitlab.com/groups/gitlab-org/-/epics/3791) for everyone.
+Enabling this feature on GitLab.com is a subtask of 
+[making the new architecture generally available](https://gitlab.com/groups/gitlab-org/-/epics/3791) for everyone.
 
 ## Status
 

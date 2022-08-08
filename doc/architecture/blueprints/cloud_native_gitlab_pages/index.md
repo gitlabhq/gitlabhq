@@ -17,8 +17,8 @@ Cloud Native and the adoption of Kubernetes has been recognised by GitLab to be
 one of the top two biggest tailwinds that are helping us grow faster as a
 company behind the project.
 
-This effort is described in more detail [in the infrastructure team handbook
-page](https://about.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/).
+This effort is described in more detail 
+[in the infrastructure team handbook page](https://about.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/).
 
 GitLab Pages is tightly coupled with NFS and in order to unblock Kubernetes
 migration a significant change to GitLab Pages' architecture is required. This
@@ -55,9 +55,8 @@ even tried to replace NFS with
 
 Since that time it has become apparent that the cost of operations and
 maintenance of a NFS cluster is significant and that if we ever decide to
-migrate to Kubernetes [we need to decouple GitLab from a shared local storage
-and
-NFS](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/426#note_375646396).
+migrate to Kubernetes 
+[we need to decouple GitLab from a shared local storage and NFS](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/426#note_375646396).
 
 1. NFS might be a single point of failure
 1. NFS can only be reliably scaled vertically
@@ -84,8 +83,8 @@ graph TD
   C -- Serves static content --> E(Visitors)
 ```
 
-This new architecture has been briefly described in [the blog
-post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/)
+This new architecture has been briefly described in 
+[the blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/)
 too.
 
 ## Iterations

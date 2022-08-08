@@ -927,8 +927,7 @@ SOME_CONSTANT = 'bar'
 
 You might want millions of project rows in your local database, for example,
 in order to compare relative query performance, or to reproduce a bug. You could
-do this by hand with SQL commands or using [Mass Inserting Rails
-Models](mass_insert.md) functionality.
+do this by hand with SQL commands or using [Mass Inserting Rails Models](mass_insert.md) functionality.
 
 Assuming you are working with ActiveRecord models, you might also find these links helpful:
 

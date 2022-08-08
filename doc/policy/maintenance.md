@@ -16,8 +16,8 @@ Our current policy is:
 - Backporting security fixes **to the previous two monthly releases in addition to the current stable release**. (See [security releases](#security-releases).)
 
 In rare cases, release managers may make an exception and backport to more than
-the last two monthly releases. See [Backporting to older
-releases](#backporting-to-older-releases) for more information.
+the last two monthly releases. See 
+[Backporting to older releases](#backporting-to-older-releases) for more information.
 
 ## Versioning
 

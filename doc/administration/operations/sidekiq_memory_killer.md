@@ -57,8 +57,7 @@ The MemoryKiller is controlled using environment variables.
   the restart is aborted.
 
   The default value for Omnibus packages is set
-  [in the Omnibus GitLab
-  repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/attributes/default.rb).
+  [in the Omnibus GitLab repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/attributes/default.rb).
 
 - `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` (KB): is used by _daemon_ mode. If the Sidekiq
   process RSS (expressed in kilobytes) exceeds `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`,

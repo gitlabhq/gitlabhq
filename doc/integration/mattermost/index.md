@@ -447,8 +447,7 @@ mattermost['env'] = {
                     }
 ```
 
-Refer to the [Mattermost Configuration Settings
-documentation](https://docs.mattermost.com/administration/config-settings.html)
+Refer to the [Mattermost Configuration Settings documentation](https://docs.mattermost.com/administration/config-settings.html)
 for details about categories and configuration values.
 
 There are a few exceptions to this rule:

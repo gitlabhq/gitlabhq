@@ -26,8 +26,8 @@ The notification email address can also be set and retrieved
 
 ## Reporting abuse
 
-To find out more about reporting abuse, see [abuse reports user
-documentation](../report_abuse.md).
+To find out more about reporting abuse, see 
+[abuse reports user documentation](../report_abuse.md).
 
 ## Resolving abuse reports
 

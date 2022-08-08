@@ -729,8 +729,9 @@ In this case, we can either:
 - Skip passing a cursor.
 - Pass `null` explicitly to `after`.
 
-After data is fetched, we can use the `update`-hook as an opportunity [to customize
-the data that is set in the Vue component property](https://apollo.vuejs.org/api/smart-query.html#options). This allows us to get a hold of the `pageInfo` object among other data.
+After data is fetched, we can use the `update`-hook as an opportunity 
+[to customize the data that is set in the Vue component property](https://apollo.vuejs.org/api/smart-query.html#options). 
+This allows us to get a hold of the `pageInfo` object among other data.
 
 In the `result`-hook, we can inspect the `pageInfo` object to see if we need to fetch
 the next page. Note that we also keep a `requestCount` to ensure that the application

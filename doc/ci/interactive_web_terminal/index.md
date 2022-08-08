@@ -18,8 +18,8 @@ taken to protect the users.
 
 NOTE:
 [Shared runners on GitLab.com](../runners/index.md) do not
-provide an interactive web terminal. Follow [this
-issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24674) for progress on
+provide an interactive web terminal. Follow 
+[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24674) for progress on
 adding support. For groups and projects hosted on GitLab.com, interactive web
 terminals are available when using your own group or project runner.
 
@@ -27,8 +27,8 @@ terminals are available when using your own group or project runner.
 
 Two things need to be configured for the interactive web terminal to work:
 
-- The runner needs to have [`[session_server]` configured
-  properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
+- The runner needs to have 
+  [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
@@ -54,8 +54,8 @@ Not all executors are
 NOTE:
 The `docker` executor does not keep running
 after the build script is finished. At that point, the terminal automatically
-disconnects and does not wait for the user to finish. Please follow [this
-issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
+disconnects and does not wait for the user to finish. Please follow 
+[this issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
 improving this behavior.
 
 Sometimes, when a job is running, things don't go as you would expect, and it
@@ -63,8 +63,7 @@ would be helpful if one can have a shell to aid debugging. When a job is
 running, on the right panel you can see a button `debug` that opens the terminal
 for the current job.
 
-![Example of job running with terminal
-available](img/interactive_web_terminal_running_job.png)
+![Example of job running with terminal available](img/interactive_web_terminal_running_job.png)
 
 When clicked, a new tab opens to the terminal page where you can access
 the terminal and type commands like a normal shell.

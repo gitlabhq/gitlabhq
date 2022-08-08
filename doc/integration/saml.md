@@ -939,8 +939,8 @@ Make sure this information is provided.
 
 Another issue that can result in this error is when the correct information is being sent by
 the IdP, but the attributes don't match the names in the OmniAuth `info` hash. In this case,
-you must set `attribute_statements` in the SAML configuration to [map the attribute names in
-your SAML Response to the corresponding OmniAuth `info` hash names](#attribute_statements).
+you must set `attribute_statements` in the SAML configuration to 
+[map the attribute names in your SAML Response to the corresponding OmniAuth `info` hash names](#attribute_statements).
 
 ### Key validation error, Digest mismatch or Fingerprint mismatch
 

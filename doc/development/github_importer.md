@@ -71,8 +71,8 @@ This worker imports all pull requests. For every pull request a job for the
 
 ### 5. Stage::ImportPullRequestsMergedByWorker
 
-This worker imports the pull requests' _merged-by_ user information. The [_List pull
-requests_](https://docs.github.com/en/rest/pulls#list-pull-requests)
+This worker imports the pull requests' _merged-by_ user information. The 
+[_List pull requests_](https://docs.github.com/en/rest/pulls#list-pull-requests)
 API doesn't provide this information. Therefore, this stage must fetch each merged pull request
 individually to import this information. A
 `Gitlab::GithubImport::ImportPullRequestMergedByWorker` job is scheduled for each fetched pull

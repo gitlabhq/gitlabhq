@@ -319,8 +319,8 @@ request:
 We allow engineering time to fix small problems (with or without an
 issue) that are incremental improvements, such as:
 
-1. Unprioritized bug fixes (for example, [Banner alerting of project move is
-showing up everywhere](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18985))
+1. Unprioritized bug fixes (for example,
+   [Banner alerting of project move is showing up everywhere](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18985))
 1. Documentation improvements
 1. RuboCop or Code Quality improvements
 

@@ -18,11 +18,17 @@ import { n__, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import localUpdateWorkItemMutation from '../graphql/local_update_work_item.mutation.graphql';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 
 function isTokenSelectorElement(el) {
-  return el?.classList.contains('gl-token-close') || el?.classList.contains('dropdown-item');
+  return (
+    el?.classList.contains('gl-token-close') ||
+    el?.classList.contains('dropdown-item') ||
+    // TODO: replace this logic when we have a class added to clear-all button in GitLab UI
+    (el?.classList.contains('gl-button') &&
+      el?.closest('.form-control')?.classList.contains('gl-token-selector'))
+  );
 }
 
 function addClass(el) {
@@ -130,7 +136,7 @@ export default {
         if (this.searchUsers.some((user) => user.username === this.currentUser.username)) {
           return this.moveCurrentUserToStart(this.searchUsers);
         }
-        return [this.currentUser, ...this.searchUsers];
+        return [addClass(this.currentUser), ...this.searchUsers];
       }
       return this.searchUsers;
     },
@@ -142,12 +148,18 @@ export default {
         ? s__('WorkItem|Add assignees')
         : s__('WorkItem|Add assignee');
     },
+    assigneeIds() {
+      return this.localAssignees.map(({ id }) => id);
+    },
   },
   watch: {
-    assignees(newVal) {
-      if (!this.isEditing) {
-        this.localAssignees = newVal.map(addClass);
-      }
+    assignees: {
+      handler(newVal) {
+        if (!this.isEditing) {
+          this.localAssignees = newVal.map(addClass);
+        }
+      },
+      deep: true,
     },
   },
   created() {
@@ -169,19 +181,33 @@ export default {
     handleBlur(e) {
       if (isTokenSelectorElement(e.relatedTarget) || !this.isEditing) return;
       this.isEditing = false;
-      this.setAssignees(this.localAssignees);
+      this.setAssignees(this.assigneeIds);
     },
-    setAssignees(assignees) {
-      this.$apollo.mutate({
-        mutation: localUpdateWorkItemMutation,
-        variables: {
-          input: {
-            id: this.workItemId,
-            assignees,
+    async setAssignees(assigneeIds) {
+      try {
+        const {
+          data: {
+            workItemUpdate: { errors },
           },
-        },
-      });
-      this.track('updated_assignees');
+        } = await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
+          variables: {
+            input: {
+              id: this.workItemId,
+              assigneesWidget: {
+                assigneeIds,
+              },
+            },
+          },
+        });
+        if (errors.length > 0) {
+          this.throwUpdateError();
+          return;
+        }
+        this.track('updated_assignees');
+      } catch {
+        this.throwUpdateError();
+      }
     },
     handleFocus() {
       this.isEditing = true;
@@ -205,12 +231,24 @@ export default {
     },
     moveCurrentUserToStart(users = []) {
       if (this.currentUser) {
-        return [this.currentUser, ...users.filter((user) => user.id !== this.currentUser.id)];
+        return [
+          addClass(this.currentUser),
+          ...users.filter((user) => user.id !== this.currentUser.id),
+        ];
       }
       return users;
     },
     closeDropdown() {
       this.$refs.tokenSelector.closeDropdown();
+    },
+    assignToCurrentUser() {
+      this.setAssignees([this.currentUser.id]);
+      this.localAssignees = [addClass(this.currentUser)];
+    },
+    throwUpdateError() {
+      this.$emit('error', i18n.updateError);
+      // If mutation is rejected, we're rolling back to initial state
+      this.localAssignees = this.assignees.map(addClass);
     },
   },
 };
@@ -227,11 +265,12 @@ export default {
       ref="tokenSelector"
       :selected-tokens="localAssignees"
       :container-class="containerClass"
-      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0!"
       :class="{ 'gl-hover-border-gray-200': canUpdate }"
       :dropdown-items="dropdownItems"
       :loading="isLoadingUsers"
       :view-only="!canUpdate"
+      :allow-clear-all="isEditing"
+      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0!"
       @input="handleAssigneesInput"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"
@@ -251,7 +290,7 @@ export default {
             size="small"
             class="assign-myself"
             data-testid="assign-self"
-            @click.stop="setAssignees([currentUser])"
+            @click.stop="assignToCurrentUser"
             >{{ __('Assign myself') }}</gl-button
           >
         </div>

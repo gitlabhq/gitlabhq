@@ -269,5 +269,5 @@ For more information, read about the [monthly release process](https://gitlab.co
 
 ## Review Apps for documentation merge requests
 
-If you are contributing to GitLab docs read how to [create a Review App with each
-merge request](../index.md#previewing-the-changes-live).
+If you are contributing to GitLab docs read how to 
+[create a Review App with each merge request](../index.md#previewing-the-changes-live).

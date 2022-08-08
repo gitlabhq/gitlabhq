@@ -509,8 +509,8 @@ which is shared by some of the analyzers that GitLab maintains. You can [contrib
 new generic identifiers to if needed. Analyzers may also produce vendor-specific or product-specific
 identifiers, which don't belong in the [common library](https://gitlab.com/gitlab-org/security-products/analyzers/common).
 
-The first item of the `identifiers` array is called the [primary
-identifier](../../user/application_security/terminology/#primary-identifier).
+The first item of the `identifiers` array is called the 
+[primary identifier](../../user/application_security/terminology/index.md#primary-identifier).
 The primary identifier is particularly important, because it is used to
 [track vulnerabilities](#tracking-and-merging-vulnerabilities) as new commits are pushed to the repository.
 Identifiers are also used to [merge duplicate vulnerabilities](#tracking-and-merging-vulnerabilities)
