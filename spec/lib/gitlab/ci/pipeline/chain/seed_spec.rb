@@ -205,6 +205,30 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       end
     end
 
+    describe '#rule_variables' do
+      let(:config) do
+        {
+          variables: { VAR1: 11 },
+          workflow: {
+            rules: [{ if: '$CI_PIPELINE_SOURCE',
+                      variables: { SYMBOL: :symbol, STRING: "string", INTEGER: 1 } },
+                    { when: 'always' }]
+          },
+          rspec: { script: 'rake' }
+        }
+      end
+
+      let(:rspec_variables) { command.pipeline_seed.stages[0].statuses[0].variables.to_hash }
+
+      it 'correctly parses rule variables' do
+        run_chain
+
+        expect(rspec_variables['SYMBOL']).to eq("symbol")
+        expect(rspec_variables['STRING']).to eq("string")
+        expect(rspec_variables['INTEGER']).to eq("1")
+      end
+    end
+
     context 'N+1 queries' do
       it 'avoids N+1 queries when calculating variables of jobs', :use_sql_query_cache do
         warm_up_pipeline, warm_up_command = prepare_pipeline1

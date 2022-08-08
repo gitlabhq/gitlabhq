@@ -79,7 +79,7 @@ export default {
           :title="$options.i18n.copyTrigger"
           css-class="gl-border-none gl-py-0 gl-px-2"
         />
-        <div class="label-container">
+        <div class="gl-display-inline-block gl-ml-3">
           <gl-badge v-if="!item.canAccessProject" variant="danger">
             <span
               v-gl-tooltip.viewport
@@ -95,7 +95,7 @@ export default {
           :title="item.description"
           truncate-target="child"
           placement="top"
-          class="trigger-description gl-display-flex"
+          class="gl-max-w-15 gl-display-flex"
         >
           <div class="gl-flex-grow-1 gl-text-truncate">{{ item.description }}</div>
         </tooltip-on-truncate>

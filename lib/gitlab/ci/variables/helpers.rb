@@ -21,7 +21,7 @@ module Gitlab
           end
 
           def transform_from_yaml_variables(vars)
-            return vars.stringify_keys if vars.is_a?(Hash)
+            return vars.stringify_keys.transform_values(&:to_s) if vars.is_a?(Hash)
 
             vars.to_a.to_h { |var| [var[:key].to_s, var[:value]] }
           end

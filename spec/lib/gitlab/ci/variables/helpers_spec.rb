@@ -99,6 +99,18 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
 
       it { is_expected.to eq(result) }
     end
+
+    context 'when variables contain integers and symbols' do
+      let(:variables) do
+        { key1: 1, key2: :value2 }
+      end
+
+      let(:result1) do
+        { 'key1' => '1', 'key2' => 'value2' }
+      end
+
+      it { is_expected.to eq(result1) }
+    end
   end
 
   describe '.inherit_yaml_variables' do

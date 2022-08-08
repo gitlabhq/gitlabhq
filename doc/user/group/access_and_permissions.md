@@ -132,8 +132,9 @@ To prevent sharing outside of the group's hierarchy:
 
 ## Prevent a project from being shared with groups
 
-Prevent projects in a group from [sharing
-a project with another group](../project/members/share_project_with_groups.md) to enable tighter control over project access.
+Prevent projects in a group from 
+[sharing a project with another group](../project/members/share_project_with_groups.md) 
+to enable tighter control over project access.
 
 To prevent a project from being shared with other groups:
 

@@ -197,22 +197,16 @@ or by running commands or programs that output ANSI escape codes.
 
 For example, using [Bash with color codes](https://misc.flogisoft.com/bash/tip_colors_and_formatting):
 
-<!-- vale gitlab.MultiLineLinks = NO -->
-
 ```yaml
 job:
   script:
     - echo -e "\e[31mThis text is red,\e[0m but this text isn't\e[31m however this text is red again."
 ```
 
-<!-- vale gitlab.MultiLineLinks = YES -->
-
 You can define the color codes in Shell environment variables, or even [custom CI/CD variables](../variables/index.md#custom-cicd-variables),
 which makes the commands easier to read and reusable.
 
 For example, using the same example as above and environment variables defined in a `before_script`:
-
-<!-- vale gitlab.MultiLineLinks = NO -->
 
 ```yaml
 job:
@@ -222,8 +216,6 @@ job:
     - echo -e "${TXT_RED}This text is red,${TXT_CLEAR} but this part isn't${TXT_RED} however this part is again."
     - echo "This text is not colored"
 ```
-
-<!-- vale gitlab.MultiLineLinks = YES -->
 
 Or with [PowerShell color codes](https://superuser.com/a/1259916):
 

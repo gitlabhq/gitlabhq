@@ -243,12 +243,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def import_csv
-    if uploader = UploadService.new(project, params[:file]).execute
-      ImportIssuesCsvWorker.perform_async(current_user.id, project.id, uploader.upload.id) # rubocop:disable CodeReuse/Worker
+    result = Issues::PrepareImportCsvService.new(project, current_user, file: params[:file]).execute
 
-      flash[:notice] = _("Your issues are being imported. Once finished, you'll get a confirmation email.")
+    if result.success?
+      flash[:notice] = result.message
     else
-      flash[:alert] = _("File upload error.")
+      flash[:alert] = result.message
     end
 
     redirect_to project_issues_path(project)

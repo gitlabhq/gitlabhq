@@ -1607,22 +1607,32 @@ RSpec.describe Projects::IssuesController do
         project.add_developer(user)
       end
 
-      it "returns 302 for project members with developer role" do
-        import_csv
+      context 'when upload proceeds correctly' do
+        it "returns 302 for project members with developer role" do
+          import_csv
 
-        expect(flash[:notice]).to eq(_("Your issues are being imported. Once finished, you'll get a confirmation email."))
-        expect(response).to redirect_to(project_issues_path(project))
-      end
-
-      it "shows error when upload fails" do
-        expect_next_instance_of(UploadService) do |upload_service|
-          expect(upload_service).to receive(:execute).and_return(nil)
+          expect(flash[:notice]).to eq(_("Your issues are being imported. Once finished, you'll get a confirmation email."))
+          expect(response).to redirect_to(project_issues_path(project))
         end
 
-        import_csv
+        it 'enqueues an import job' do
+          expect(ImportIssuesCsvWorker).to receive(:perform_async).with(user.id, project.id, Integer)
 
-        expect(flash[:alert]).to include(_('File upload error.'))
-        expect(response).to redirect_to(project_issues_path(project))
+          import_csv
+        end
+      end
+
+      context 'when upload fails' do
+        it "shows error when upload fails" do
+          expect_next_instance_of(UploadService) do |upload_service|
+            expect(upload_service).to receive(:execute).and_return(nil)
+          end
+
+          import_csv
+
+          expect(flash[:alert]).to include(_('File upload error.'))
+          expect(response).to redirect_to(project_issues_path(project))
+        end
       end
     end
 

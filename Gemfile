@@ -169,7 +169,7 @@ gem 'asciidoctor-include-ext', '~> 0.4.0', require: false
 gem 'asciidoctor-plantuml', '~> 0.0.12'
 gem 'asciidoctor-kroki', '~> 0.5.0', require: false
 gem 'rouge', '~> 3.30.0'
-gem 'truncato', '~> 0.7.11'
+gem 'truncato', '~> 0.7.12'
 gem 'bootstrap_form', '~> 4.2.0'
 gem 'nokogiri', '~> 1.13.0'
 gem 'escape_utils', '~> 1.1'

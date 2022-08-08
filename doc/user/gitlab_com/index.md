@@ -424,13 +424,9 @@ For performance reasons, if a query returns more than 10,000 records, [GitLab ex
 
 ### Visibility settings
 
-If created before GitLab 12.2 (July 2019), these items have the
+Projects, groups, and snippets have the
 [Internal visibility](../public_access.md#internal-projects-and-groups)
-setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388):
-
-- Projects
-- Groups
-- Snippets
+setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
 ### SSH maximum number of connections
 

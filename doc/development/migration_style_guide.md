@@ -45,6 +45,8 @@ work it needs to perform and how long it takes to complete:
    One exception is a migration that takes longer but is absolutely critical for the application to operate correctly.
    For example, you might have indices that enforce unique tuples, or that are needed for query performance in critical parts of the application. In cases where the migration would be unacceptably slow, however, a better option might be to guard the feature with a [feature flag](feature_flags/index.md)
    and perform a post-deployment migration instead. The feature can then be turned on after the migration finishes.
+
+   Migrations used to add new models are also part of these regular schema migrations. The only differences are the Rails command used to generate the migrations and the additional generated files, one for the model and one for the model's spec.
 1. [**Post-deployment migrations.**](database/post_deployment_migrations.md) These are Rails migrations in `db/post_migrate` and
    are run independently from the GitLab.com deployments. Pending post migrations are executed on a daily basis at the discretion
    of release manager through the [post-deploy migration pipeline](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
@@ -108,6 +110,20 @@ bundle exec rails g migration migration_name_here
 ```
 
 This generates the migration file in `db/migrate`.
+
+### Regular schema migrations to add new models
+
+To create a new model you can use the following Rails generator:
+
+```shell
+bundle exec rails g model model_name_here
+```
+
+This will generate:
+
+- the migration file in `db/migrate`
+- the model file in `app/models`
+- the spec file in `spec/models`
 
 ## Schema Changes
 
@@ -269,7 +285,7 @@ which is a "versioned" class. For new migrations, the latest version should be u
 can be looked up in `Gitlab::Database::Migration::MIGRATION_CLASSES`) to use the latest version
 of migration helpers.
 
-In this example, we use version 1.0 of the migration class:
+In this example, we use version 2.0 of the migration class:
 
 ```ruby
 class TestMigration < Gitlab::Database::Migration[2.0]

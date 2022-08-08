@@ -42,14 +42,13 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
           .once
           .and_call_original
 
-        result = nil
-        expect { result = execute }
+        expect { execute }
           .to change { runner_version_14_0_0.reload.status }.from('not_available').to('recommended')
           .and change { runner_version_14_0_1.reload.status }.from('not_available').to('recommended')
           .and change { ::Ci::RunnerVersion.find_by(version: '14.0.2')&.status }.from(nil).to('not_available')
 
-        expect(result).to eq({
-          status: :success,
+        expect(execute).to be_success
+        expect(execute.payload).to eq({
           total_inserted: 1, # 14.0.2 is inserted
           total_updated: 3, # 14.0.0, 14.0.1 are updated, and newly inserted 14.0.2's status is calculated
           total_deleted: 0
@@ -66,13 +65,12 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
       end
 
       it 'deletes orphan ci_runner_versions entry', :aggregate_failures do
-        result = nil
-        expect { result = execute }
+        expect { execute }
           .to change { ::Ci::RunnerVersion.find_by_version('14.0.2')&.status }.from('not_available').to(nil)
           .and not_change { runner_version_14_0_1.reload.status }.from('not_available')
 
-        expect(result).to eq({
-          status: :success,
+        expect(execute).to be_success
+        expect(execute.payload).to eq({
           total_inserted: 0,
           total_updated: 0,
           total_deleted: 1 # 14.0.2 is deleted
@@ -87,11 +85,10 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
       end
 
       it 'does not modify ci_runner_versions entries', :aggregate_failures do
-        result = nil
-        expect { result = execute }.not_to change { runner_version_14_0_1.reload.status }.from('not_available')
+        expect { execute }.not_to change { runner_version_14_0_1.reload.status }.from('not_available')
 
-        expect(result).to eq({
-          status: :success,
+        expect(execute).to be_success
+        expect(execute.payload).to eq({
           total_inserted: 0,
           total_updated: 0,
           total_deleted: 0
@@ -106,11 +103,10 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
       end
 
       it 'makes no changes to ci_runner_versions', :aggregate_failures do
-        result = nil
-        expect { result = execute }.not_to change { runner_version_14_0_1.reload.status }.from('not_available')
+        expect { execute }.not_to change { runner_version_14_0_1.reload.status }.from('not_available')
 
-        expect(result).to eq({
-          status: :success,
+        expect(execute).to be_success
+        expect(execute.payload).to eq({
           total_inserted: 0,
           total_updated: 0,
           total_deleted: 0
@@ -125,11 +121,10 @@ RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute'
     end
 
     it 'does not modify ci_runner_versions entries', :aggregate_failures do
-      result = nil
-      expect { result = execute }.not_to change { runner_version_14_0_1.reload.status }.from('not_available')
+      expect { execute }.not_to change { runner_version_14_0_1.reload.status }.from('not_available')
 
-      expect(result).to eq({
-        status: :success,
+      expect(execute).to be_success
+      expect(execute.payload).to eq({
         total_inserted: 0,
         total_updated: 0,
         total_deleted: 0

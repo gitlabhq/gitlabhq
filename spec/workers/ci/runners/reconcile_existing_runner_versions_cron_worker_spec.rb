@@ -21,7 +21,7 @@ RSpec.describe Ci::Runners::ReconcileExistingRunnerVersionsCronWorker do
 
         it 'executes the service' do
           expect_next_instance_of(Ci::Runners::ReconcileExistingRunnerVersionsService) do |service|
-            expect(service).to receive(:execute).and_return({})
+            expect(service).to receive(:execute).and_return(ServiceResponse.success)
           end.exactly(worker_exec_times)
 
           perform
@@ -30,7 +30,8 @@ RSpec.describe Ci::Runners::ReconcileExistingRunnerVersionsCronWorker do
 
       it 'logs the service result' do
         expect_next_instance_of(Ci::Runners::ReconcileExistingRunnerVersionsService) do |service|
-          expect(service).to receive(:execute).and_return({ some_job_result_key: 'some_value' })
+          expect(service).to receive(:execute)
+            .and_return(ServiceResponse.success(payload: { some_job_result_key: 'some_value' }))
         end
 
         worker.perform(false)

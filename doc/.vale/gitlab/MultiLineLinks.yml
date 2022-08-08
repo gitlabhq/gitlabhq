@@ -10,5 +10,5 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: warning
 scope: raw
 raw:
-  - '\[[^\]]*?\n[^\]]*?\]\([^\)]*?\)|'
-  - '\[[^\]]*?\]\([^\)]*?\n[^\)]*\)'
+  - '\[[^\[\]]*?\n[^\[\]]*?\]\([^\)]*?\)|'
+  - '\[[^\[\]]*?\]\([^\)]*?\n[^\)]*\)'

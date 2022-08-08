@@ -6,7 +6,7 @@
     - else
       %span= trigger.short_token
 
-    .label-container
+    .gl-display-inline-block.gl-ml-3
       - unless trigger.can_access_project?
         = gl_badge_tag s_('Trigger|invalid'), { variant: :danger }, { title: s_('Trigger|Trigger user has insufficient permissions to project'), data: { toggle: 'tooltip', container: 'body' } }
 
@@ -27,7 +27,7 @@
     - else
       Never
 
-  %td.text-right.trigger-actions
+  %td.text-right.gl-white-space-nowrap
     - revoke_trigger_confirmation = "By revoking a trigger you will break any processes making use of it. Are you sure?"
     - if can?(current_user, :admin_trigger, trigger)
       = link_to edit_project_trigger_path(@project, trigger), method: :get, title: "Edit", class: "gl-button btn btn-default btn-icon" do

@@ -23,19 +23,30 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Migrations
 
+- [Different types of migrations](../migration_style_guide.md#choose-an-appropriate-migration-type)
+- [Create a regular migration](../migration_style_guide.md#create-a-regular-schema-migration), including creating new models
+- [Post-deployment migrations guidelines](post_deployment_migrations.md) and [how to create one](post_deployment_migrations.md#creating-migrations)
+- [Background migrations guidelines](background_migrations.md)
+- [Batched background migrations guidelines](batched_background_migrations.md)
+- [Deleting migrations](deleting_migrations.md)
+- [Running database migrations](database_debugging.md#migration-wrangling)
 - [Migrations for multiple databases](migrations_for_multiple_databases.md)
 - [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md)
-- [SQL guidelines](../sql.md) for working with SQL queries
+- [When and how to write Rails migrations tests](../testing_guide/testing_migrations_guide.md)
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations
 - [Testing Rails migrations](../testing_guide/testing_migrations_guide.md) guide
 - [Post deployment migrations](post_deployment_migrations.md)
 - [Background migrations](background_migrations.md)
 - [Swapping tables](swapping_tables.md)
 - [Deleting migrations](deleting_migrations.md)
+- [SQL guidelines](../sql.md) for working with SQL queries
 - [Partitioning tables](table_partitioning.md)
 
 ## Debugging
 
+- [Resetting the database](database_debugging.md#delete-everything-and-start-over)
+- [Accessing the database](database_debugging.md#manually-access-the-database)
+- [Troubleshooting and debugging the database](database_debugging.md)
 - Tracing the source of an SQL query using query comments with [Marginalia](database_query_comments.md)
 - Tracing the source of an SQL query in Rails console using [Verbose Query Logs](https://guides.rubyonrails.org/debugging_rails_applications.html#verbose-query-logs)
 
@@ -55,7 +66,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Insert into tables in batches](insert_into_tables_in_batches.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](verifying_database_capabilities.md)
-- [Database Debugging and Troubleshooting](database_debugging.md)
 - [Query Count Limits](query_count_limits.md)
 - [Creating enums](creating_enums.md)
 - [Client-side connection-pool](client_side_connection_pool.md)

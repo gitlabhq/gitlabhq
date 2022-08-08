@@ -45,8 +45,8 @@ To create multi-project pipelines, you can:
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
-When you create a multi-project pipeline in your `.gitlab-ci.yml` file,
-you create what is called a *trigger job*. For example:
+When you use the [`trigger`](../yaml/index.md#trigger) keyword to create a multi-project
+pipeline in your `.gitlab-ci.yml` file, you create what is called a *trigger job*. For example:
 
 ```yaml
 rspec:

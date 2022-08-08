@@ -3889,7 +3889,9 @@ Use `trigger` to start a downstream pipeline that is either:
 
 **Possible inputs**:
 
-- For multi-project pipelines, path to the downstream project.
+- For multi-project pipelines, path to the downstream project. CI/CD variables
+  [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
+  in GitLab 15.3 and later.
 - For child pipelines, path to the child pipeline CI/CD configuration file.
 
 **Example of `trigger` for multi-project pipeline**:

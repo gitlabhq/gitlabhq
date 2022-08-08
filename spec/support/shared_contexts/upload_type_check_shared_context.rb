@@ -16,3 +16,15 @@ RSpec.shared_context 'force content type detection to mime_type' do
     allow(Gitlab::Utils::MimeType).to receive(:from_io).and_return(mime_type)
   end
 end
+
+def mock_upload(success = true)
+  allow(UploadService).to receive(:new).with(project, file).and_return(upload_service)
+
+  if success
+    allow(upload_service).to receive(:execute).and_return(uploader)
+    allow(uploader).to receive(:upload).and_return(upload)
+    allow(upload).to receive(:id).and_return(upload_id)
+  else
+    allow(upload_service).to receive(:execute).and_return(nil)
+  end
+end
