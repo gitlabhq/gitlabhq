@@ -348,15 +348,13 @@ describe('URL utility', () => {
   describe('urlContainsSha', () => {
     it('returns true when there is a valid 40-character SHA1 hash in the URL', () => {
       shas.valid.forEach((sha) => {
-        expect(
-          urlUtils.urlContainsSha({ url: `http://urlstuff/${sha}/moreurlstuff` }),
-        ).toBeTruthy();
+        expect(urlUtils.urlContainsSha({ url: `http://urlstuff/${sha}/moreurlstuff` })).toBe(true);
       });
     });
 
     it('returns false when there is not a valid 40-character SHA1 hash in the URL', () => {
       shas.invalid.forEach((str) => {
-        expect(urlUtils.urlContainsSha({ url: `http://urlstuff/${str}/moreurlstuff` })).toBeFalsy();
+        expect(urlUtils.urlContainsSha({ url: `http://urlstuff/${str}/moreurlstuff` })).toBe(false);
       });
     });
   });
@@ -813,13 +811,13 @@ describe('URL utility', () => {
     });
 
     it('should compare against the window location if no compare value is provided', () => {
-      expect(urlUtils.urlIsDifferent('different')).toBeTruthy();
-      expect(urlUtils.urlIsDifferent(current)).toBeFalsy();
+      expect(urlUtils.urlIsDifferent('different')).toBe(true);
+      expect(urlUtils.urlIsDifferent(current)).toBe(false);
     });
 
     it('should use the provided compare value', () => {
-      expect(urlUtils.urlIsDifferent('different', current)).toBeTruthy();
-      expect(urlUtils.urlIsDifferent(current, current)).toBeFalsy();
+      expect(urlUtils.urlIsDifferent('different', current)).toBe(true);
+      expect(urlUtils.urlIsDifferent(current, current)).toBe(false);
     });
   });
 

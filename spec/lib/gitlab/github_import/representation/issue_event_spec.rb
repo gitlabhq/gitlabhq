@@ -25,8 +25,8 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         expect(issue_event.source).to eq({ type: 'issue', id: 123456 })
       end
 
-      it 'includes the issue_db_id' do
-        expect(issue_event.issue_db_id).to eq(100500)
+      it 'includes the issue data' do
+        expect(issue_event.issue).to eq({ number: 2, pull_request: pull_request })
       end
 
       context 'when actor data present' do
@@ -119,6 +119,24 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
       end
     end
 
+    describe '#issuable_id' do
+      it 'returns issuable_id' do
+        expect(issue_event.issuable_id).to eq(2)
+      end
+    end
+
+    describe '#issuable_type' do
+      context 'when event related to issue' do
+        it { expect(issue_event.issuable_type).to eq('Issue') }
+      end
+
+      context 'when event related to pull request' do
+        let(:pull_request) { { url: FFaker::Internet.http_url } }
+
+        it { expect(issue_event.issuable_type).to eq('MergeRequest') }
+      end
+    end
+
     describe '#github_identifiers' do
       it 'returns a hash with needed identifiers' do
         expect(issue_event.github_identifiers).to eq({ id: 6501124486 })
@@ -130,7 +148,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
     let(:response) do
       event_resource = Struct.new(
         :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone,
-        :source, :assignee, :assigner, :issue_db_id, :created_at, :performed_via_github_app,
+        :source, :assignee, :assigner, :issue, :created_at, :performed_via_github_app,
         keyword_init: true
       )
       user_resource = Struct.new(:id, :login, keyword_init: true)
@@ -149,7 +167,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         source: { type: 'issue', id: 123456 },
         assignee: with_assignee ? user_resource.new(id: 5, login: 'tom') : nil,
         assigner: with_assignee ? user_resource.new(id: 6, login: 'jerry') : nil,
-        issue_db_id: 100500,
+        issue: { 'number' => 2, 'pull_request' => pull_request },
         created_at: '2022-04-26 18:30:53 UTC',
         performed_via_github_app: nil
       )
@@ -160,6 +178,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
     let(:with_rename) { true }
     let(:with_milestone) { true }
     let(:with_assignee) { true }
+    let(:pull_request) { nil }
 
     it_behaves_like 'an IssueEvent' do
       let(:issue_event) { described_class.from_api_response(response) }
@@ -185,7 +204,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
           'source' => { 'type' => 'issue', 'id' => 123456 },
           'assignee' => (with_assignee ? { 'id' => 5, 'login' => 'tom' } : nil),
           'assigner' => (with_assignee ? { 'id' => 6, 'login' => 'jerry' } : nil),
-          "issue_db_id" => 100500,
+          'issue' => { 'number' => 2, 'pull_request' => pull_request },
           'created_at' => '2022-04-26 18:30:53 UTC',
           'performed_via_github_app' => nil
         }
@@ -196,6 +215,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
       let(:with_rename) { true }
       let(:with_milestone) { true }
       let(:with_assignee) { true }
+      let(:pull_request) { nil }
 
       let(:issue_event) { described_class.from_json_hash(hash) }
     end

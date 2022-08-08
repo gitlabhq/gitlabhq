@@ -272,7 +272,7 @@ Don't see the event you want in any of the epics linked above? You can either:
 - Use the **Audit Event Proposal** issue template to
   [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Audit%20Event%20Proposal) to
   request it.
-- [Add it yourself](../development/audit_event_guide/).
+- [Add it yourself](../development/audit_event_guide/index.md).
 
 ### Removed events
 

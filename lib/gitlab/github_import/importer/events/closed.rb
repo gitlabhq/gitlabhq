@@ -18,7 +18,7 @@ module Gitlab
               author_id: author_id(issue_event),
               action: 'closed',
               target_type: Issue.name,
-              target_id: issue_event.issue_db_id,
+              target_id: issuable_db_id(issue_event),
               created_at: issue_event.created_at,
               updated_at: issue_event.created_at
             )
@@ -27,7 +27,7 @@ module Gitlab
           def create_state_event(issue_event)
             ResourceStateEvent.create!(
               user_id: author_id(issue_event),
-              issue_id: issue_event.issue_db_id,
+              issue_id: issuable_db_id(issue_event),
               source_commit: issue_event.commit_id,
               state: 'closed',
               close_after_error_tracking_resolve: false,

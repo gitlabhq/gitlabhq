@@ -1049,7 +1049,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/services/audit_event_service.rb @gitlab-org/manage/compliance
 /app/services/concerns/audit_event_save_type.rb @gitlab-org/manage/compliance
 /app/views/profiles/audit_log.html.haml @gitlab-org/manage/compliance
-/config/feature_flags/development/custom_headers_streaming_audit_events_ui.yml @gitlab-org/manage/compliance
 /data/deprecations/14-3-repository-push-audit-events.yml @gitlab-org/manage/compliance
 /data/removals/15_0/removal_manage_repository_push_audit_event.yml @gitlab-org/manage/compliance
 /db/docs/audit_events.yml @gitlab-org/manage/compliance

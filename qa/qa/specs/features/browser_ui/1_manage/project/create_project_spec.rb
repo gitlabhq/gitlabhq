@@ -10,7 +10,6 @@ module QA
             expect(project_page).to have_content(
               /Project \S?#{project_name}\S+ was successfully created/
             )
-            expect(project_page).to have_content('create awesome project test')
             expect(project_page).to have_content('The repository for this project is empty')
           end
         end
@@ -26,7 +25,7 @@ module QA
         let(:project) do
           Resource::Project.fabricate_via_browser_ui! do |project|
             project.name = project_name
-            project.description = 'create awesome project test'
+            project.description = nil
           end
         end
 
@@ -38,8 +37,8 @@ module QA
         let(:project) do
           Resource::Project.fabricate_via_browser_ui! do |project|
             project.name = project_name
-            project.description = 'create awesome project test'
             project.personal_namespace = Runtime::User.username
+            project.description = nil
           end
         end
 

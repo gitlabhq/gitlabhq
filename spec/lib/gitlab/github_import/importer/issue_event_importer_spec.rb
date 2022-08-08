@@ -33,7 +33,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
       specific_importer = double(importer_class.name) # rubocop:disable RSpec/VerifiedDoubles
 
       expect(importer_class)
-        .to receive(:new).with(project, anything)
+        .to receive(:new).with(project, client)
         .and_return(specific_importer)
       expect(specific_importer).to receive(:execute).with(issue_event)
 

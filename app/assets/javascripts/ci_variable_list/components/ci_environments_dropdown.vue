@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlDropdownDivider, GlSearchBoxByType } from '@gitlab/ui';
-import { mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
+import { convertEnvironmentScope } from '../utils';
 
 export default {
   name: 'CiEnvironmentsDropdown',
@@ -12,7 +12,11 @@ export default {
     GlSearchBoxByType,
   },
   props: {
-    value: {
+    environments: {
+      type: Array,
+      required: true,
+    },
+    selectedEnvironmentScope: {
       type: String,
       required: false,
       default: '',
@@ -24,31 +28,36 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['joinedEnvironments']),
     composedCreateButtonLabel() {
       return sprintf(__('Create wildcard: %{searchTerm}'), { searchTerm: this.searchTerm });
     },
-    shouldRenderCreateButton() {
-      return this.searchTerm && !this.joinedEnvironments.includes(this.searchTerm);
-    },
-    filteredResults() {
+    filteredEnvironments() {
       const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
-      return this.joinedEnvironments.filter((resultString) =>
+      return this.environments.filter((resultString) =>
         resultString.toLowerCase().includes(lowerCasedSearchTerm),
       );
+    },
+    shouldRenderCreateButton() {
+      return this.searchTerm && !this.environments.includes(this.searchTerm);
+    },
+    environmentScopeLabel() {
+      return convertEnvironmentScope(this.selectedEnvironmentScope);
     },
   },
   methods: {
     selectEnvironment(selected) {
-      this.$emit('selectEnvironment', selected);
-      this.searchTerm = '';
+      this.$emit('select-environment', selected);
+      this.clearSearch();
     },
-    createClicked() {
-      this.$emit('createClicked', this.searchTerm);
-      this.searchTerm = '';
+    convertEnvironmentScopeValue(scope) {
+      return convertEnvironmentScope(scope);
+    },
+    createEnvironmentScope() {
+      this.$emit('create-environment-scope', this.searchTerm);
+      this.selectEnvironment(this.searchTerm);
     },
     isSelected(env) {
-      return this.value === env;
+      return this.selectedEnvironmentScope === env;
     },
     clearSearch() {
       this.searchTerm = '';
@@ -57,23 +66,23 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown :text="value" @show="clearSearch">
+  <gl-dropdown :text="environmentScopeLabel" @show="clearSearch">
     <gl-search-box-by-type v-model.trim="searchTerm" data-testid="ci-environment-search" />
     <gl-dropdown-item
-      v-for="environment in filteredResults"
+      v-for="environment in filteredEnvironments"
       :key="environment"
       :is-checked="isSelected(environment)"
       is-check-item
       @click="selectEnvironment(environment)"
     >
-      {{ environment }}
+      {{ convertEnvironmentScopeValue(environment) }}
     </gl-dropdown-item>
-    <gl-dropdown-item v-if="!filteredResults.length" ref="noMatchingResults">{{
+    <gl-dropdown-item v-if="!filteredEnvironments.length" ref="noMatchingResults">{{
       __('No matching results')
     }}</gl-dropdown-item>
     <template v-if="shouldRenderCreateButton">
       <gl-dropdown-divider />
-      <gl-dropdown-item data-testid="create-wildcard-button" @click="createClicked">
+      <gl-dropdown-item data-testid="create-wildcard-button" @click="createEnvironmentScope">
         {{ composedCreateButtonLabel }}
       </gl-dropdown-item>
     </template>

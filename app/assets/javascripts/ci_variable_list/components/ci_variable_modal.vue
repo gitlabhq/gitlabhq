@@ -14,22 +14,26 @@ import {
   GlModal,
   GlSprintf,
 } from '@gitlab/ui';
-import { mapActions, mapState } from 'vuex';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { mapComputed } from '~/vuex_shared/bindings';
+
 import {
+  allEnvironments,
   AWS_TOKEN_CONSTANTS,
   ADD_CI_VARIABLE_MODAL_ID,
   AWS_TIP_DISMISSED_COOKIE_NAME,
   AWS_TIP_MESSAGE,
   CONTAINS_VARIABLE_REFERENCE_MESSAGE,
+  defaultVariableState,
   ENVIRONMENT_SCOPE_LINK_TITLE,
   EVENT_LABEL,
   EVENT_ACTION,
+  EDIT_VARIABLE_ACTION,
+  VARIABLE_ACTIONS,
+  variableOptions,
 } from '../constants';
+
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
 
@@ -58,65 +62,74 @@ export default {
     GlModal,
     GlSprintf,
   },
-  mixins: [glFeatureFlagsMixin(), trackingMixin],
+  mixins: [trackingMixin],
+  inject: [
+    'awsLogoSvgPath',
+    'awsTipCommandsLink',
+    'awsTipDeployLink',
+    'awsTipLearnLink',
+    'containsVariableReferenceLink',
+    'environmentScopeLink',
+    'isProtectedByDefault',
+    'maskedEnvironmentVariablesLink',
+    'maskableRegex',
+    'protectedEnvironmentVariablesLink',
+  ],
+  props: {
+    areScopedVariablesAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    environments: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    mode: {
+      type: String,
+      required: true,
+      validator(val) {
+        return VARIABLE_ACTIONS.includes(val);
+      },
+    },
+    selectedVariable: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+  },
   data() {
     return {
       isTipDismissed: getCookie(AWS_TIP_DISMISSED_COOKIE_NAME) === 'true',
+      typeOptions: variableOptions,
       validationErrorEventProperty: '',
+      variable: { ...defaultVariableState, ...this.selectedVariable },
     };
   },
   computed: {
-    ...mapState([
-      'projectId',
-      'environments',
-      'typeOptions',
-      'variable',
-      'variableBeingEdited',
-      'isGroup',
-      'maskableRegex',
-      'selectedEnvironment',
-      'isProtectedByDefault',
-      'awsLogoSvgPath',
-      'awsTipDeployLink',
-      'awsTipCommandsLink',
-      'awsTipLearnLink',
-      'containsVariableReferenceLink',
-      'protectedEnvironmentVariablesLink',
-      'maskedEnvironmentVariablesLink',
-      'environmentScopeLink',
-    ]),
-    ...mapComputed(
-      [
-        { key: 'key', updateFn: 'updateVariableKey' },
-        { key: 'secret_value', updateFn: 'updateVariableValue' },
-        { key: 'variable_type', updateFn: 'updateVariableType' },
-        { key: 'environment_scope', updateFn: 'setEnvironmentScope' },
-        { key: 'protected_variable', updateFn: 'updateVariableProtected' },
-        { key: 'masked', updateFn: 'updateVariableMasked' },
-      ],
-      false,
-      'variable',
-    ),
-    isTipVisible() {
-      return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
-    },
-    canSubmit() {
-      return (
-        this.variableValidationState &&
-        this.variable.key !== '' &&
-        this.variable.secret_value !== ''
-      );
-    },
     canMask() {
       const regex = RegExp(this.maskableRegex);
-      return regex.test(this.variable.secret_value);
+      return regex.test(this.variable.value);
+    },
+    canSubmit() {
+      return this.variableValidationState && this.variable.key !== '' && this.variable.value !== '';
     },
     containsVariableReference() {
       const regex = /\$/;
-      return regex.test(this.variable.secret_value);
+      return regex.test(this.variable.value);
     },
     displayMaskedError() {
       return !this.canMask && this.variable.masked;
+    },
+    isEditing() {
+      return this.mode === EDIT_VARIABLE_ACTION;
+    },
+    isTipVisible() {
+      return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
+    },
+    maskedFeedback() {
+      return this.displayMaskedError ? __('This variable can not be masked.') : '';
     },
     maskedState() {
       if (this.displayMaskedError) {
@@ -125,10 +138,7 @@ export default {
       return true;
     },
     modalActionText() {
-      return this.variableBeingEdited ? __('Update variable') : __('Add variable');
-    },
-    maskedFeedback() {
-      return this.displayMaskedError ? __('This variable can not be masked.') : '';
+      return this.isEditing ? __('Update variable') : __('Add variable');
     },
     tokenValidationFeedback() {
       const tokenSpecificFeedback = this.$options.tokens?.[this.variable.key]?.invalidMessage;
@@ -141,19 +151,16 @@ export default {
       const validator = this.$options.tokens?.[this.variable.key]?.validation;
 
       if (validator) {
-        return validator(this.variable.secret_value);
+        return validator(this.variable.value);
       }
 
       return true;
-    },
-    scopedVariablesAvailable() {
-      return !this.isGroup || this.glFeatures.groupScopedCiVariables;
     },
     variableValidationFeedback() {
       return `${this.tokenValidationFeedback} ${this.maskedFeedback}`;
     },
     variableValidationState() {
-      return this.variable.secret_value === '' || (this.tokenValidationState && this.maskedState);
+      return this.variable.value === '' || (this.tokenValidationState && this.maskedState);
     },
   },
   watch: {
@@ -165,19 +172,18 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      'addVariable',
-      'updateVariable',
-      'resetEditing',
-      'displayInputValue',
-      'clearModal',
-      'deleteVariable',
-      'setEnvironmentScope',
-      'addWildCardScope',
-      'resetSelectedEnvironment',
-      'setSelectedEnvironment',
-      'setVariableProtected',
-    ]),
+    addVariable() {
+      this.$emit('add-variable', this.variable);
+    },
+    createEnvironmentScope(env) {
+      this.$emit('create-environment-scope', env);
+    },
+    deleteVariable() {
+      this.$emit('delete-variable', this.variable);
+    },
+    updateVariable() {
+      this.$emit('update-variable', this.variable);
+    },
     dismissTip() {
       setCookie(AWS_TIP_DISMISSED_COOKIE_NAME, 'true', { expires: 90 });
       this.isTipDismissed = true;
@@ -190,16 +196,22 @@ export default {
       this.$refs.modal.hide();
     },
     resetModalHandler() {
-      if (this.variableBeingEdited) {
-        this.resetEditing();
-      }
-
-      this.clearModal();
-      this.resetSelectedEnvironment();
+      this.resetVariableData();
       this.resetValidationErrorEvents();
+
+      this.$emit('hideModal');
+    },
+    resetVariableData() {
+      this.variable = { ...defaultVariableState };
+    },
+    setEnvironmentScope(scope) {
+      this.variable = { ...this.variable, environmentScope: scope };
+    },
+    setVariableProtected() {
+      this.variable = { ...this.variable, protected: true };
     },
     updateOrAddVariable() {
-      if (this.variableBeingEdited) {
+      if (this.isEditing) {
         this.updateVariable();
       } else {
         this.addVariable();
@@ -207,7 +219,7 @@ export default {
       this.hideModal();
     },
     setVariableProtectedByDefault() {
-      if (this.isProtectedByDefault && !this.variableBeingEdited) {
+      if (this.isProtectedByDefault && !this.isEditing) {
         this.setVariableProtected();
       }
     },
@@ -220,11 +232,11 @@ export default {
     },
     getTrackingErrorProperty() {
       let property;
-      if (this.variable.secret_value?.length && !property) {
+      if (this.variable.value?.length && !property) {
         if (this.displayMaskedError && this.maskableRegex?.length) {
           const supportedChars = this.maskableRegex.replace('^', '').replace(/{(\d,)}\$/, '');
           const regex = new RegExp(supportedChars, 'g');
-          property = this.variable.secret_value.replace(regex, '');
+          property = this.variable.value.replace(regex, '');
         }
         if (this.containsVariableReference) {
           property = '$';
@@ -237,6 +249,7 @@ export default {
       this.validationErrorEventProperty = '';
     },
   },
+  defaultScope: allEnvironments.text,
 };
 </script>
 
@@ -252,7 +265,7 @@ export default {
   >
     <form>
       <gl-form-combobox
-        v-model="key"
+        v-model="variable.key"
         :token-list="$options.tokenList"
         :label-text="__('Key')"
         data-qa-selector="ci_variable_key_field"
@@ -267,7 +280,7 @@ export default {
         <gl-form-textarea
           id="ci-variable-value"
           ref="valueField"
-          v-model="secret_value"
+          v-model="variable.value"
           :state="variableValidationState"
           rows="3"
           max-rows="6"
@@ -278,7 +291,11 @@ export default {
 
       <div class="d-flex">
         <gl-form-group :label="__('Type')" label-for="ci-variable-type" class="w-50 gl-mr-5">
-          <gl-form-select id="ci-variable-type" v-model="variable_type" :options="typeOptions" />
+          <gl-form-select
+            id="ci-variable-type"
+            v-model="variable.variableType"
+            :options="typeOptions"
+          />
         </gl-form-group>
 
         <gl-form-group label-for="ci-variable-env" class="w-50" data-testid="environment-scope">
@@ -294,22 +311,24 @@ export default {
             </gl-link>
           </template>
           <ci-environments-dropdown
-            v-if="scopedVariablesAvailable"
-            class="w-100"
-            :value="environment_scope"
-            @selectEnvironment="setEnvironmentScope"
-            @createClicked="addWildCardScope"
+            v-if="areScopedVariablesAvailable"
+            class="gl-w-full"
+            :selected-environment-scope="variable.environmentScope"
+            :environments="environments"
+            @select-environment="setEnvironmentScope"
+            @create-environment-scope="createEnvironmentScope"
           />
 
-          <gl-form-input v-else v-model="environment_scope" class="w-100" readonly />
+          <gl-form-input v-else :value="$options.defaultScope" class="gl-w-full" readonly />
         </gl-form-group>
       </div>
 
       <gl-form-group :label="__('Flags')" label-for="ci-variable-flags">
         <gl-form-checkbox
-          v-model="protected_variable"
-          class="mb-0"
+          v-model="variable.protected"
+          class="gl-mb-0"
           data-testid="ci-variable-protected-checkbox"
+          :data-is-protected-checked="variable.protected"
         >
           {{ __('Protect variable') }}
           <gl-link target="_blank" :href="protectedEnvironmentVariablesLink">
@@ -322,7 +341,7 @@ export default {
 
         <gl-form-checkbox
           ref="masked-ci-variable"
-          v-model="masked"
+          v-model="variable.masked"
           data-testid="ci-variable-masked-checkbox"
         >
           {{ __('Mask variable') }}
@@ -403,7 +422,7 @@ export default {
     <template #modal-footer>
       <gl-button @click="hideModal">{{ __('Cancel') }}</gl-button>
       <gl-button
-        v-if="variableBeingEdited"
+        v-if="isEditing"
         ref="deleteCiVariable"
         variant="danger"
         category="secondary"

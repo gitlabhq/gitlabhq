@@ -13,7 +13,7 @@ module Gitlab
 
           def create_event(issue_event)
             ResourceLabelEvent.create!(
-              issue_id: issue_event.issue_db_id,
+              issue_id: issuable_db_id(issue_event),
               user_id: author_id(issue_event),
               label_id: label_finder.id_for(issue_event.label_title),
               action: action(issue_event.event),

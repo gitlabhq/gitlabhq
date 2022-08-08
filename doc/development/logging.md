@@ -44,8 +44,7 @@ These logs suffer from a number of problems:
 Note that currently on GitLab.com, any messages in `production.log` aren't
 indexed by Elasticsearch due to the sheer volume and noise. They
 do end up in Google Stackdriver, but it is still harder to search for
-logs there. See the [GitLab.com logging
-documentation](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging)
+logs there. See the [GitLab.com logging documentation](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging)
 for more details.
 
 ## Use structured (JSON) logging
@@ -386,18 +385,18 @@ end
 ## Additional steps with new log files
 
 1. Consider log retention settings. By default, Omnibus rotates any
-   logs in `/var/log/gitlab/gitlab-rails/*.log` every hour and [keep at
-   most 30 compressed files](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
+   logs in `/var/log/gitlab/gitlab-rails/*.log` every hour and 
+   [keep at most 30 compressed files](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
    On GitLab.com, that setting is only 6 compressed files. These settings should suffice
    for most users, but you may need to tweak them in [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).
 
-1. If you add a new file, submit an issue to the [production
-   tracker](https://gitlab.com/gitlab-com/gl-infra/production/-/issues) or
+1. If you add a new file, submit an issue to the
+   [production tracker](https://gitlab.com/gitlab-com/gl-infra/production/-/issues) or
    a merge request to the [`gitlab_fluentd`](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
    project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/-/merge_requests/51/diffs).
 
-1. Be sure to update the [GitLab CE/EE documentation](../administration/logs/index.md) and the [GitLab.com
-   runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/docs/logging/README.md).
+1. Be sure to update the [GitLab CE/EE documentation](../administration/logs/index.md) and the 
+   [GitLab.com runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/docs/logging/README.md).
 
 ## Control logging visibility
 

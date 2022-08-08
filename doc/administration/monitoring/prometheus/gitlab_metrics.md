@@ -390,8 +390,8 @@ Some basic Ruby runtime metrics are available:
 ## Redis metrics
 
 These client metrics are meant to complement Redis server metrics.
-These metrics are broken down per [Redis
-instance](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances).
+These metrics are broken down per 
+[Redis instance](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances).
 These metrics all have a `storage` label which indicates the Redis
 instance (`cache`, `shared_state`, and so on).
 

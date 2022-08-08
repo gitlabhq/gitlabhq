@@ -438,7 +438,7 @@ export default class LabelsSelect {
       [
         '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
         "<span class='font-weight-bold scoped-label-tooltip-title'>Scoped label</span>",
-        '<br />',
+        '<br>',
         '<%= escapeStr(label.description) %>',
         '<% } else { %>',
         '<%= escapeStr(label.description) %>',

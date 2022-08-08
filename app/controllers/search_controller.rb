@@ -7,9 +7,13 @@ class SearchController < ApplicationController
   include ProductAnalyticsTracking
   include SearchRateLimitable
 
-  RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete].freeze
+  RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
 
   track_event :show, name: 'i_search_total', destinations: [:redis_hll, :snowplow]
+
+  def self.search_rate_limited_endpoints
+    %i[show count autocomplete]
+  end
 
   around_action :allow_gitaly_ref_name_caching
 
@@ -19,7 +23,7 @@ class SearchController < ApplicationController
     search_term_present = params[:search].present? || params[:term].present?
     search_term_present && !params[:project_id].present?
   end
-  before_action :check_search_rate_limit!, only: [:show, :count, :autocomplete]
+  before_action :check_search_rate_limit!, only: search_rate_limited_endpoints
 
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
 
@@ -31,8 +35,6 @@ class SearchController < ApplicationController
   def show
     @project = search_service.project
     @group = search_service.group
-
-    return if params[:search].blank?
 
     return unless search_term_valid?
 
@@ -53,7 +55,6 @@ class SearchController < ApplicationController
       @search_results = @search_service.search_results
       @search_objects = @search_service.search_objects
       @search_highlight = @search_service.search_highlight
-      @aggregations = @search_service.search_aggregations
     end
 
     increment_search_counters
@@ -99,6 +100,8 @@ class SearchController < ApplicationController
   end
 
   def search_term_valid?
+    return false if params[:search].blank?
+
     unless search_service.valid_query_length?
       flash[:alert] = t('errors.messages.search_chars_too_long', count: Gitlab::Search::Params::SEARCH_CHAR_LIMIT)
       return false
@@ -151,7 +154,7 @@ class SearchController < ApplicationController
     payload[:metadata]['meta.search.filters.state'] = params[:state]
     payload[:metadata]['meta.search.force_search_results'] = params[:force_search_results]
     payload[:metadata]['meta.search.project_ids'] = params[:project_ids]
-    payload[:metadata]['meta.search.language'] = params[:language]
+    payload[:metadata]['meta.search.filters.language'] = params[:language]
     payload[:metadata]['meta.search.type'] = @search_type if @search_type.present?
     payload[:metadata]['meta.search.level'] = @search_level if @search_level.present?
     payload[:metadata][:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?
@@ -207,7 +210,7 @@ class SearchController < ApplicationController
     case action_name.to_sym
     when :count
       render json: {}, status: :request_timeout
-    when :autocomplete
+    when :autocomplete, :aggregations
       render json: [], status: :request_timeout
     else
       render status: :request_timeout

@@ -20,7 +20,7 @@ module Gitlab
             Note.create!(
               system: true,
               noteable_type: Issue.name,
-              noteable_id: issue_event.issue_db_id,
+              noteable_id: issuable_db_id(issue_event),
               project: project,
               author_id: assigner_id,
               note: note_body,

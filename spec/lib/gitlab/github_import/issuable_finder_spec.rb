@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_cache do
   let(:project) { double(:project, id: 4, group: nil) }
   let(:issue) do
-    double(:issue, issuable_type: MergeRequest, iid: 1)
+    double(:issue, issuable_type: MergeRequest, issuable_id: 1)
   end
 
   let(:finder) { described_class.new(project, issue) }

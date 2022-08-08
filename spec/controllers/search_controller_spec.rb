@@ -12,47 +12,6 @@ RSpec.describe SearchController do
       sign_in(user)
     end
 
-    shared_examples_for 'when the user cannot read cross project' do |action, params|
-      before do
-        allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?)
-                            .with(user, :read_cross_project, :global) { false }
-      end
-
-      it 'blocks access without a project_id' do
-        get action, params: params
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
-      it 'allows access with a project_id' do
-        get action, params: params.merge(project_id: create(:project, :public).id)
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-
-    shared_examples_for 'with external authorization service enabled' do |action, params|
-      let(:project) { create(:project, namespace: user.namespace) }
-      let(:note) { create(:note_on_issue, project: project) }
-
-      before do
-        enable_external_authorization_service_check
-      end
-
-      it 'renders a 403 when no project is given' do
-        get action, params: params
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
-      it 'renders a 200 when a project was set' do
-        get action, params: params.merge(project_id: project.id)
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-
     shared_examples_for 'support for active record query timeouts' do |action, params, method_to_stub, format|
       before do
         allow_next_instance_of(SearchService) do |service|
@@ -133,10 +92,11 @@ RSpec.describe SearchController do
               {
                 chars_under_limit: (('a' * (term_char_limit - 1) + ' ') * (term_limit - 1))[0, char_limit],
                 chars_over_limit: (('a' * (term_char_limit - 1) + ' ') * (term_limit - 1))[0, char_limit + 1],
-                 terms_under_limit: ('abc ' * (term_limit - 1)),
+                terms_under_limit: ('abc ' * (term_limit - 1)),
                 terms_over_limit: ('abc ' * (term_limit + 1)),
                 term_length_over_limit: ('a' * (term_char_limit + 1)),
-                term_length_under_limit: ('a' * (term_char_limit - 1))
+                term_length_under_limit: ('a' * (term_char_limit - 1)),
+                blank: ''
               }
             end
 
@@ -147,6 +107,7 @@ RSpec.describe SearchController do
               :terms_over_limit        | :set_terms_flash
               :term_length_under_limit | :not_to_set_flash
               :term_length_over_limit  | :not_to_set_flash # abuse, so do nothing.
+              :blank                   | :not_to_set_flash
             end
 
             with_them do
@@ -417,7 +378,7 @@ RSpec.describe SearchController do
           expect(payload[:metadata]['meta.search.project_ids']).to eq(%w(456 789))
           expect(payload[:metadata]['meta.search.type']).to eq('basic')
           expect(payload[:metadata]['meta.search.level']).to eq('global')
-          expect(payload[:metadata]['meta.search.language']).to eq('ruby')
+          expect(payload[:metadata]['meta.search.filters.language']).to eq('ruby')
         end
 
         get :show, params: {

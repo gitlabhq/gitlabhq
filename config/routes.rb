@@ -88,6 +88,10 @@ InitializerConnections.with_disabled_database_connections do
     get 'search/count' => 'search#count', as: :search_count
     get 'search/opensearch' => 'search#opensearch', as: :search_opensearch
 
+    Gitlab.ee do
+      get 'search/aggregations' => 'search#aggregations', as: :search_aggregations
+    end
+
     # JSON Web Token
     get 'jwt/auth' => 'jwt#auth'
 

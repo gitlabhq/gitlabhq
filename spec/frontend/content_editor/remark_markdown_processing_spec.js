@@ -1170,7 +1170,7 @@ _world_.
       const trimmed = markdown.trim();
       const document = await deserialize(trimmed);
 
-      expect(expectedDoc).not.toBeFalsy();
+      expect(expectedDoc).not.toBe(false);
       expect(document.toJSON()).toEqual(expectedDoc.toJSON());
       expect(serialize(document)).toEqual(expectedMarkdown ?? trimmed);
     },

@@ -34,7 +34,7 @@ module Gitlab
             Note.create!(
               system: true,
               noteable_type: Issue.name,
-              noteable_id: issue_event.issue_db_id,
+              noteable_id: issuable_db_id(issue_event),
               project: project,
               author_id: user_id,
               note: note_body,
@@ -66,7 +66,7 @@ module Gitlab
               iid: number, issuable_type: record_class.name
             )
 
-            Gitlab::GithubImport::IssuableFinder.new(project, mentioned_in_adapter).database_id
+            issuable_db_id(mentioned_in_adapter)
           end
 
           def cross_reference_note_content(gfm_reference)

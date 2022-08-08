@@ -18,13 +18,16 @@ module Gitlab
             { project: project.id, collection: collection_method }
         end
 
+        # In single endpoint there is no issue info to which associated related
+        # To make it possible to identify issue in separated worker we need to patch
+        # Sawyer instances here with issue number
         def each_associated(parent_record, associated)
           compose_associated_id!(parent_record, associated)
           return if already_imported?(associated)
 
           Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
-          associated.issue_db_id = parent_record.id
+          associated.issue = { 'number' => parent_record.iid }
           yield(associated)
 
           mark_as_imported(associated)

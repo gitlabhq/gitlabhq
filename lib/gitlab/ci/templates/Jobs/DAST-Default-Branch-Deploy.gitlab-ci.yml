@@ -1,5 +1,5 @@
 variables:
-  DAST_AUTO_DEPLOY_IMAGE_VERSION: 'v2.30.0'
+  DAST_AUTO_DEPLOY_IMAGE_VERSION: 'v2.33.0'
   TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
 
 .dast-auto-deploy:

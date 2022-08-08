@@ -10,8 +10,7 @@ module Gitlab
         attr_reader :attributes
 
         expose_attribute :id, :actor, :event, :commit_id, :label_title, :old_title, :new_title,
-                         :milestone_title, :source, :assignee, :assigner, :created_at
-        expose_attribute :issue_db_id # set in SingleEndpointIssueEventsImporter#each_associated
+                         :milestone_title, :issue, :source, :assignee, :assigner, :created_at
 
         # attributes - A Hash containing the event details. The keys of this
         #              Hash (and any nested hashes) must be symbols.
@@ -21,6 +20,14 @@ module Gitlab
 
         def github_identifiers
           { id: id }
+        end
+
+        def issuable_type
+          issue && issue[:pull_request].present? ? 'MergeRequest' : 'Issue'
+        end
+
+        def issuable_id
+          issue && issue[:number]
         end
 
         class << self
@@ -37,10 +44,10 @@ module Gitlab
               old_title: event.rename && event.rename[:from],
               new_title: event.rename && event.rename[:to],
               milestone_title: event.milestone && event.milestone[:title],
+              issue: event.issue&.to_h&.symbolize_keys,
               source: event.source,
               assignee: user_representation(event.assignee),
               assigner: user_representation(event.assigner),
-              issue_db_id: event.issue_db_id,
               created_at: event.created_at
             )
           end

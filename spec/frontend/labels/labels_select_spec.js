@@ -101,6 +101,12 @@ describe('LabelsSelect', () => {
         expect($labelEl.find('a').attr('data-html')).toBe('true');
       });
 
+      it('generated label item template has correct title for tooltip', () => {
+        expect($labelEl.find('a').attr('title')).toBe(
+          "<span class='font-weight-bold scoped-label-tooltip-title'>Scoped label</span><br>Foobar",
+        );
+      });
+
       it('generated label item template has correct label styles and classes', () => {
         expect($labelEl.find('span.gl-label-text').attr('style')).toBe(
           `background-color: ${label.color};`,

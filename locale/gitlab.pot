@@ -5629,7 +5629,7 @@ msgstr ""
 msgid "Automatically resolved"
 msgstr ""
 
-msgid "Automatically update this project's branches and tags from the upstream repository every hour."
+msgid "Automatically update this project's branches and tags from the upstream repository."
 msgstr ""
 
 msgid "Autosave|Note"
@@ -19491,6 +19491,9 @@ msgid "How do I use a web terminal?"
 msgstr ""
 
 msgid "How do I use file templates?"
+msgstr ""
+
+msgid "How does pull mirroring work?"
 msgstr ""
 
 msgid "How many seconds an IP counts toward the IP address limit."
@@ -34911,6 +34914,9 @@ msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More
 msgstr ""
 
 msgid "SecurityOrchestration|Failed to load cluster agents."
+msgstr ""
+
+msgid "SecurityOrchestration|Failed to load vulnerability scanners."
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."

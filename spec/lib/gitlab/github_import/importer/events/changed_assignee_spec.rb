@@ -3,14 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee do
-  subject(:importer) { described_class.new(project, user_finder) }
+  subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:assignee) { create(:user) }
   let_it_be(:assigner) { create(:user) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
-  let(:user_finder) { Gitlab::GithubImport::UserFinder.new(project, client) }
   let(:issue) { create(:issue, project: project) }
 
   let(:issue_event) do
@@ -22,7 +21,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee do
       'created_at' => '2022-04-26 18:30:53 UTC',
       'assigner' => { 'id' => assigner.id, 'login' => assigner.username },
       'assignee' => { 'id' => assignee.id, 'login' => assignee.username },
-      'issue_db_id' => issue.id
+      'issue' => { 'number' => issue.iid }
     )
   end
 
@@ -70,8 +69,13 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee do
 
   describe '#execute' do
     before do
-      allow(user_finder).to receive(:find).with(assignee.id, assignee.username).and_return(assignee.id)
-      allow(user_finder).to receive(:find).with(assigner.id, assigner.username).and_return(assigner.id)
+      allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
+        allow(finder).to receive(:database_id).and_return(issue.id)
+      end
+      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+        allow(finder).to receive(:find).with(assignee.id, assignee.username).and_return(assignee.id)
+        allow(finder).to receive(:find).with(assigner.id, assigner.username).and_return(assigner.id)
+      end
     end
 
     context 'when importing an assigned event' do

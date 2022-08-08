@@ -2,16 +2,49 @@ import { __ } from '~/locale';
 
 export const ADD_CI_VARIABLE_MODAL_ID = 'add-ci-variable';
 
+// This const will be deprecated once we remove VueX from the section
 export const displayText = {
   variableText: __('Variable'),
   fileText: __('File'),
   allEnvironmentsText: __('All (default)'),
 };
 
+export const variableTypes = {
+  variableType: 'ENV_VAR',
+  fileType: 'FILE',
+};
+
+// Once REST is removed, we won't need `types`
 export const types = {
   variableType: 'env_var',
   fileType: 'file',
-  allEnvironmentsType: '*',
+};
+
+export const allEnvironments = {
+  type: '*',
+  text: __('All (default)'),
+};
+
+// Once REST is removed, we won't need `types` key
+export const variableText = {
+  [types.variableType]: __('Variable'),
+  [types.fileType]: __('File'),
+  [variableTypes.variableType]: __('Variable'),
+  [variableTypes.fileType]: __('File'),
+};
+
+export const variableOptions = [
+  { value: types.variableType, text: variableText[types.variableType] },
+  { value: types.fileType, text: variableText[types.fileType] },
+];
+
+export const defaultVariableState = {
+  environmentScope: allEnvironments.type,
+  key: '',
+  masked: false,
+  protected: false,
+  value: '',
+  variableType: types.variableType,
 };
 
 export const AWS_TIP_DISMISSED_COOKIE_NAME = 'ci_variable_list_constants_aws_tip_dismissed';
@@ -33,3 +66,20 @@ export const CONTAINS_VARIABLE_REFERENCE_MESSAGE = __(
 );
 
 export const ENVIRONMENT_SCOPE_LINK_TITLE = __('Learn more');
+
+export const ADD_VARIABLE_ACTION = 'ADD_VARIABLE';
+export const EDIT_VARIABLE_ACTION = 'EDIT_VARIABLE';
+export const VARIABLE_ACTIONS = [ADD_VARIABLE_ACTION, EDIT_VARIABLE_ACTION];
+
+export const GRAPHQL_PROJECT_TYPE = 'Project';
+export const GRAPHQL_GROUP_TYPE = 'Group';
+
+export const ADD_MUTATION_ACTION = 'add';
+export const UPDATE_MUTATION_ACTION = 'update';
+export const DELETE_MUTATION_ACTION = 'delete';
+
+export const environmentFetchErrorText = __(
+  'There was an error fetching the environments information.',
+);
+export const genericMutationErrorText = __('Something went wrong on our end. Please try again.');
+export const variableFetchErrorText = __('There was an error fetching the variables.');

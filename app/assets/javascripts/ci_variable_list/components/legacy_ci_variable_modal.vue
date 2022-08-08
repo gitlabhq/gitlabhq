@@ -30,7 +30,7 @@ import {
   EVENT_LABEL,
   EVENT_ACTION,
 } from '../constants';
-import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
+import LegacyCiEnvironmentsDropdown from './legacy_ci_environments_dropdown.vue';
 import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
 
 const trackingMixin = Tracking.mixin({ label: EVENT_LABEL });
@@ -43,7 +43,7 @@ export default {
   containsVariableReferenceMessage: CONTAINS_VARIABLE_REFERENCE_MESSAGE,
   environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
   components: {
-    CiEnvironmentsDropdown,
+    LegacyCiEnvironmentsDropdown,
     GlAlert,
     GlButton,
     GlCollapse,
@@ -293,7 +293,7 @@ export default {
               <gl-icon name="question" :size="12" />
             </gl-link>
           </template>
-          <ci-environments-dropdown
+          <legacy-ci-environments-dropdown
             v-if="scopedVariablesAvailable"
             class="w-100"
             :value="environment_scope"

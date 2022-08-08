@@ -3,14 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_gitlab_redis_cache do
-  subject(:importer) { described_class.new(project, user_finder) }
+  subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
-  let(:sawyer_stub) { Struct.new(:iid, :issuable_type, keyword_init: true) }
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
-  let(:user_finder) { Gitlab::GithubImport::UserFinder.new(project, client) }
 
   let(:issue_iid) { 999 }
   let(:issue) { create(:issue, project: project, iid: issue_iid) }
@@ -32,7 +30,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
         }
       },
       'created_at' => '2022-04-26 18:30:53 UTC',
-      'issue_db_id' => issue.id
+      'issue' => { 'number' => issue.iid }
     )
   end
 
@@ -41,7 +39,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
     {
       system: true,
       noteable_type: Issue.name,
-      noteable_id: issue_event.issue_db_id,
+      noteable_id: issue.id,
       project_id: project.id,
       author_id: user.id,
       note: expected_note_body,
@@ -53,10 +51,13 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
     let(:expected_note_body) { "mentioned in issue ##{referenced_in.iid}" }
 
     before do
-      other_issue_resource = sawyer_stub.new(iid: referenced_in.iid, issuable_type: 'Issue')
-      Gitlab::GithubImport::IssuableFinder.new(project, other_issue_resource)
-        .cache_database_id(referenced_in.iid)
-      allow(user_finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+      allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
+        allow(finder).to receive(:database_id).and_return(referenced_in.iid)
+        allow(finder).to receive(:database_id).and_return(issue.id)
+      end
+      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+        allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+      end
     end
 
     it 'creates expected note' do
@@ -75,11 +76,13 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
     let(:expected_note_body) { "mentioned in merge request !#{referenced_in.iid}" }
 
     before do
-      other_issue_resource =
-        sawyer_stub.new(iid: referenced_in.iid, issuable_type: 'MergeRequest')
-      Gitlab::GithubImport::IssuableFinder.new(project, other_issue_resource)
-        .cache_database_id(referenced_in.iid)
-      allow(user_finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+      allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
+        allow(finder).to receive(:database_id).and_return(referenced_in.iid)
+        allow(finder).to receive(:database_id).and_return(issue.id)
+      end
+      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+        allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+      end
     end
 
     it 'creates expected note' do

@@ -13,7 +13,8 @@ module QA
                     :github_personal_access_token,
                     :github_repository_path,
                     :gitlab_repository_path,
-                    :personal_namespace
+                    :personal_namespace,
+                    :description
 
       attr_reader :repository_storage
 
@@ -21,7 +22,6 @@ module QA
                  :name,
                  :path,
                  :add_name_uuid,
-                 :description,
                  :runners_token,
                  :visibility,
                  :template_name,
@@ -108,7 +108,7 @@ module QA
           end
 
           new_page.choose_name(@name)
-          new_page.add_description(@description)
+          new_page.add_description(@description) if @description
           new_page.set_visibility(@visibility)
           new_page.disable_initialize_with_sast
           new_page.disable_initialize_with_readme unless @initialize_with_readme

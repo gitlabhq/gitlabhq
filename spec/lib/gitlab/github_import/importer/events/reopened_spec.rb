@@ -3,13 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_failures do
-  subject(:importer) { described_class.new(project, user_finder) }
+  subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
-  let(:user_finder) { Gitlab::GithubImport::UserFinder.new(project, client) }
   let(:issue) { create(:issue, project: project) }
 
   let(:issue_event) do
@@ -20,7 +19,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_fail
       'actor' => { 'id' => user.id, 'login' => user.username },
       'event' => 'reopened',
       'created_at' => '2022-04-26 18:30:53 UTC',
-      'issue_db_id' => issue.id
+      'issue' => { 'number' => issue.iid }
     )
   end
 
@@ -45,7 +44,12 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :aggregate_fail
   end
 
   before do
-    allow(user_finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+    allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
+      allow(finder).to receive(:database_id).and_return(issue.id)
+    end
+    allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+      allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
+    end
   end
 
   it 'creates expected event and state event' do

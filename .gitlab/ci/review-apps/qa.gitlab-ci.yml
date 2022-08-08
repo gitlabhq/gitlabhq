@@ -88,10 +88,8 @@ download-knapsack-report:
     - .bundle-base
     - .review:rules:review-qa-reliable
   stage: prepare
-  variables:
-    QA_KNAPSACK_REPORTS: review-qa-reliable,review-qa-all
   script:
-    - bundle exec rake "knapsack:download"
+    - bundle exec rake "knapsack:download[qa]"
   allow_failure: true
   artifacts:
     paths:

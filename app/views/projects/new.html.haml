@@ -13,7 +13,7 @@
   .row{ 'v-cloak': true }
     #blank-project-pane.tab-pane.active
       = gitlab_ui_form_for @project, html: { class: 'new_project gl-mt-3' } do |f|
-        = render 'new_project_fields', f: f, project_name_id: "blank-project-name"
+        = render 'new_project_fields', f: f, project_name_id: "blank-project-name", include_description: false
 
     #create-from-template-pane.tab-pane
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-my-5' }) do |c|

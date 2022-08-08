@@ -80,20 +80,20 @@ describe('MemoryUsage', () => {
     it('should have default data', () => {
       const data = MemoryUsage.data();
 
-      expect(Array.isArray(data.memoryMetrics)).toBeTruthy();
+      expect(Array.isArray(data.memoryMetrics)).toBe(true);
       expect(data.memoryMetrics.length).toBe(0);
 
       expect(typeof data.deploymentTime).toBe('number');
       expect(data.deploymentTime).toBe(0);
 
       expect(typeof data.hasMetrics).toBe('boolean');
-      expect(data.hasMetrics).toBeFalsy();
+      expect(data.hasMetrics).toBe(false);
 
       expect(typeof data.loadFailed).toBe('boolean');
-      expect(data.loadFailed).toBeFalsy();
+      expect(data.loadFailed).toBe(false);
 
       expect(typeof data.loadingMetrics).toBe('boolean');
-      expect(data.loadingMetrics).toBeTruthy();
+      expect(data.loadingMetrics).toBe(true);
 
       expect(typeof data.backOffRequestCounter).toBe('number');
       expect(data.backOffRequestCounter).toBe(0);
@@ -144,7 +144,7 @@ describe('MemoryUsage', () => {
         vm.computeGraphData(metrics, deployment_time);
         const { hasMetrics, memoryMetrics, deploymentTime, memoryFrom, memoryTo } = vm;
 
-        expect(hasMetrics).toBeTruthy();
+        expect(hasMetrics).toBe(true);
         expect(memoryMetrics.length).toBeGreaterThan(0);
         expect(deploymentTime).toEqual(deployment_time);
         expect(memoryFrom).toEqual('9.13');
@@ -171,7 +171,7 @@ describe('MemoryUsage', () => {
 
   describe('template', () => {
     it('should render template elements correctly', () => {
-      expect(el.classList.contains('mr-memory-usage')).toBeTruthy();
+      expect(el.classList.contains('mr-memory-usage')).toBe(true);
       expect(el.querySelector('.js-usage-info')).toBeDefined();
     });
 

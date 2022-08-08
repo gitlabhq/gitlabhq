@@ -18,7 +18,7 @@ module Gitlab
 
           def create_event(issue_event)
             ResourceMilestoneEvent.create!(
-              issue_id: issue_event.issue_db_id,
+              issue_id: issuable_db_id(issue_event),
               user_id: author_id(issue_event),
               created_at: issue_event.created_at,
               milestone_id: project.milestones.find_by_title(issue_event.milestone_title)&.id,

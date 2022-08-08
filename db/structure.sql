@@ -22547,7 +22547,8 @@ CREATE TABLE vulnerability_state_transitions (
     to_state smallint NOT NULL,
     from_state smallint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    author_id bigint
 );
 
 CREATE SEQUENCE vulnerability_state_transitions_id_seq
@@ -30326,6 +30327,8 @@ CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id O
 
 CREATE INDEX index_vulnerability_state_transitions_id_and_vulnerability_id ON vulnerability_state_transitions USING btree (vulnerability_id, id);
 
+CREATE INDEX index_vulnerability_state_transitions_on_author_id ON vulnerability_state_transitions USING btree (author_id);
+
 CREATE INDEX index_vulnerability_statistics_on_latest_pipeline_id ON vulnerability_statistics USING btree (latest_pipeline_id);
 
 CREATE INDEX index_vulnerability_statistics_on_letter_grade ON vulnerability_statistics USING btree (letter_grade);
@@ -32653,6 +32656,9 @@ ALTER TABLE ONLY gitlab_subscriptions
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_e719a85f8a FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY vulnerability_state_transitions
+    ADD CONSTRAINT fk_e719dc63df FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY issue_links
     ADD CONSTRAINT fk_e71bb44f1f FOREIGN KEY (target_id) REFERENCES issues(id) ON DELETE CASCADE;
