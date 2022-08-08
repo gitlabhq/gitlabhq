@@ -17,13 +17,7 @@ module Types
         description: 'Value of the variable.'
 
       field :variable_type, ::Types::Ci::VariableTypeEnum, null: true,
-        description: 'Type of the variable.'
-
-      field :protected, GraphQL::Types::Boolean, null: true,
-        description: 'Indicates whether the variable is protected.'
-
-      field :masked, GraphQL::Types::Boolean, null: true,
-        description: 'Indicates whether the variable is masked.'
+            description: 'Type of the variable.'
 
       field :raw, GraphQL::Types::Boolean, null: true,
         description: 'Indicates whether the variable is raw.'

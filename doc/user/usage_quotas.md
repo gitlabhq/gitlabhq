@@ -44,14 +44,14 @@ Only GitLab SaaS users are impacted - the limits are not applicable to self-mana
 
 The following table describes the enforcement schedule, which is subject to change.
 
-| Target enforcement date | Limit | Status |
+| Planned enforcement date | Limit | Status |
 | ----------------------- | ----- | ------ |
-| October 19, 2022 | 45,000 GB | Pending (**{hourglass}**)|
-| October 20, 2022 | 7,500 GB | Pending (**{hourglass}**)|
-| October 24, 2022 | 500 GB | Pending (**{hourglass}**)|
-| October 27, 2022 | 75 GB | Pending (**{hourglass}**)|
-| November 2, 2022 | 10 GB | Pending (**{hourglass}**)|
-| November 9, 2022 | 5 GB | Pending (**{hourglass}**)|
+| October 19, 2022 | 45,000 GB | Not enforced |
+| October 20, 2022 | 7,500 GB | Not enforced |
+| October 24, 2022 | 500 GB | Not enforced |
+| October 27, 2022 | 75 GB | Not enforced |
+| November 2, 2022 | 10 GB | Not enforced |
+| November 9, 2022 | 5 GB | Not enforced |
 
 Namespaces that reach the enforced limit will have their projects locked. To unlock your project, you will have to [manage its storage](#manage-your-storage-usage).
 

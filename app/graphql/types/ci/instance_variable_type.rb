@@ -16,6 +16,12 @@ module Types
             },
             description: 'Scope defining the environments that can use the variable.'
 
+      field :protected, GraphQL::Types::Boolean, null: true,
+            description: 'Indicates whether the variable is protected.'
+
+      field :masked, GraphQL::Types::Boolean, null: true,
+            description: 'Indicates whether the variable is masked.'
+
       def environment_scope
         nil
       end

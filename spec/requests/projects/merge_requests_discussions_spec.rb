@@ -264,27 +264,9 @@ RSpec.describe 'merge requests discussions' do
         end
       end
 
-      context 'when mr_discussions_http_cache is disabled' do
-        before do
-          stub_feature_flags(mr_discussions_http_cache: false)
-          send_request
-        end
-
-        it_behaves_like 'cache hit'
-      end
-
       context 'when disabled_mr_discussions_redis_cache is disabled' do
         before do
           stub_feature_flags(disabled_mr_discussions_redis_cache: false)
-          send_request
-        end
-
-        it_behaves_like 'cache hit'
-      end
-
-      context 'when mr_discussions_http_cache and disabled_mr_discussions_redis_cache are disabled' do
-        before do
-          stub_feature_flags(mr_discussions_http_cache: false, disabled_mr_discussions_redis_cache: false)
           send_request
         end
 

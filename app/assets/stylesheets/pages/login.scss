@@ -41,6 +41,20 @@
     font-size: 13px;
   }
 
+  .borderless {
+    .login-box,
+    .omniauth-container {
+      box-shadow: none;
+    }
+
+    .g-recaptcha {
+      > div {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+  }
+
   .login-box,
   .omniauth-container {
     box-shadow: 0 0 0 1px $border-color;

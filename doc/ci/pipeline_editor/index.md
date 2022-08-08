@@ -41,8 +41,8 @@ is invalid, a tip is shown to help you fix the problem:
 ## Lint CI configuration
 
 NOTE:
-The **Lint** tab is replaced with the **Validate** tab when [pipeline simulations](#simulate-a-cicd-pipeline)
-are enabled.
+The **Lint** tab is replaced with the **Validate** tab in GitLab 15.3. The lint results are included
+in a successful [pipeline simulation](#simulate-a-cicd-pipeline).
 
 To test the validity of your GitLab CI/CD configuration before committing the changes,
 you can use the CI lint tool. To access it, go to **CI/CD > Editor** and select the **Lint** tab.
@@ -57,12 +57,7 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 
 ## Simulate a CI/CD pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337282) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `simulate_pipeline`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `simulate_pipeline`.
-The feature is not ready for production use. When this feature is enabled, it replaces the **Lint** tab.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337282) in GitLab 15.3.
 
 To look for pipeline syntax and logic issues, you can simulate the creation of a
 GitLab CI/CD pipeline in the **Validate** tab. A pipeline simulation can help find

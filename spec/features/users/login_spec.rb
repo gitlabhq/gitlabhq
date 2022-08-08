@@ -216,7 +216,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
       before do
         gitlab_sign_in(user, remember: true)
 
-        expect(page).to have_content('Two-Factor Authentication')
+        expect(page).to have_content('Two-factor authentication code')
       end
 
       it 'does not show a "You are already signed in." error message' do
@@ -407,7 +407,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
 
           sign_in_using_saml!
 
-          expect(page).to have_content('Two-Factor Authentication')
+          expect(page).to have_content('Two-factor authentication code')
 
           enter_code(user.current_otp)
 

@@ -3,7 +3,7 @@
     = render_if_exists 'devise/sessions/new_base_user_login_label', form: f
     = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input top js-username-field', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('This field is required.'), data: { qa_selector: 'login_field', testid: 'username-field' }
   .form-group.gl-px-5
-    = f.label :password, class: 'label-bold'
+    = f.label :password, class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
     = f.password_field :password, class: 'form-control gl-form-input bottom', autocomplete: 'current-password', required: true, title: _('This field is required.'), data: { qa_selector: 'password_field' }
   - if devise_mapping.rememberable?
     .gl-px-5
@@ -23,3 +23,6 @@
 
   .submit-container.move-submit-down.gl-px-5
     = f.button _('Sign in'), type: :submit, class: "gl-button btn btn-block btn-confirm js-sign-in-button#{' js-no-auto-disable' if Feature.enabled?(:arkose_labs_login_challenge)}", data: { qa_selector: 'sign_in_button', testid: 'sign-in-button' }
+    - if Gitlab::CurrentSettings.sign_in_text.present? && Feature.enabled?(:restyle_login_page, @project)
+      .gl-px-5
+      = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)

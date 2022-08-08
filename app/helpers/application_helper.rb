@@ -223,6 +223,16 @@ module ApplicationHelper
     ApplicationHelper.promo_host
   end
 
+  # This needs to be used outside of Rails
+  def self.community_forum
+    'https://forum.gitlab.com'
+  end
+
+  # Convenient method for Rails helper
+  def community_forum
+    ApplicationHelper.community_forum
+  end
+
   def promo_url
     'https://' + promo_host
   end

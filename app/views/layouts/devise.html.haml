@@ -4,39 +4,61 @@
   %body.login-page.application.navless{ class: "#{user_application_theme} #{client_class_list}", data: { page: body_data_page, qa_selector: 'login_page' } }
     = header_message
     = render "layouts/init_client_detection_flags"
-    .page-wrap
-      = render "layouts/header/empty"
-      .login-page-broadcast
-        = render "layouts/broadcast"
-      .container.navless-container
-        .content
-          = render "layouts/flash"
-          .row.mt-3
-            .col-sm-12
-              %h1.mb-3.font-weight-normal
-                = current_appearance&.title.presence || _('GitLab')
-          .row.mb-3
-            .col-md-6.order-12.order-sm-1.brand-holder
-              - unless recently_confirmed_com?
-                = brand_image
+    - if Feature.enabled?(:restyle_login_page, @project)
+      .page-wrap.borderless
+        .login-page-broadcast
+          = render "layouts/broadcast"
+        .container.navless-container
+          .content
+            = render "layouts/flash"
+            .mt-3
+              .col-sm-12.gl-text-center
+                %img.gl-w-10{ :alt => _("GitLab Logo"), :src => image_path('logo.svg') }
+                %h1.mb-3.gl-font-size-h2
+                  = current_appearance&.title.presence || _('GitLab')
                 - if current_appearance&.description?
                   = brand_text
-                - else
-                  %h3.gl-sm-mt-0
-                    = _('A complete DevOps platform')
+            .mb-3
+              .gl-w-half.gl-xs-w-full.gl-ml-auto.gl-mr-auto.bar
+                = yield
+                = render_if_exists 'layouts/devise_help_text'
 
-                  %p
-                    = _('GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security.')
 
-                  %p
-                    = _('This is a self-managed instance of GitLab.')
+        = render 'devise/shared/footer', footer_message: footer_message
+    - else
+      .page-wrap
+        = render "layouts/header/empty"
+        .login-page-broadcast
+          = render "layouts/broadcast"
+        .container.navless-container
+          .content
+            = render "layouts/flash"
+            .row.mt-3
+              .col-sm-12
+                %h1.mb-3.font-weight-normal
+                  = current_appearance&.title.presence || _('GitLab')
+            .row.mb-3
+              .col-md-6.order-12.order-sm-1.brand-holder
+                - unless recently_confirmed_com?
+                  = brand_image
+                  - if current_appearance&.description?
+                    = brand_text
+                  - else
+                    %h3.gl-sm-mt-0
+                      = _('A complete DevOps platform')
 
-              - if Gitlab::CurrentSettings.sign_in_text.present?
-                = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
+                    %p
+                      = _('GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security.')
 
-              = render_if_exists 'layouts/devise_help_text'
+                    %p
+                      = _('This is a self-managed instance of GitLab.')
 
-            .col-md-6.order-1.new-session-forms-container{ class: recently_confirmed_com? ? 'order-sm-first' : 'order-sm-12' }
-              = yield
+                - if Gitlab::CurrentSettings.sign_in_text.present?
+                  = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
 
-      = render 'devise/shared/footer', footer_message: footer_message
+                = render_if_exists 'layouts/devise_help_text'
+
+              .col-md-6.order-1.new-session-forms-container{ class: recently_confirmed_com? ? 'order-sm-first' : 'order-sm-12' }
+                = yield
+
+        = render 'devise/shared/footer', footer_message: footer_message

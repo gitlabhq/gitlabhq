@@ -188,7 +188,7 @@ If anything doesn't go as planned:
   - [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) if
     you installed GitLab using the Helm Charts.
 - For support:
-  - [Contact GitLab Support](https://support.gitlab.com/hc) and,
+  - [Contact GitLab Support](https://support.gitlab.com) and,
     if you have one, your Technical Account Manager.
   - If [the situation qualifies](https://about.gitlab.com/support/#definitions-of-support-impact)
     and [your plan includes emergency support](https://about.gitlab.com/support/#priority-support),

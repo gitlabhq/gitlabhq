@@ -398,7 +398,7 @@ following section.
 
 If you receive a `403 Forbidden` error for all requests to GitLab.com,
 check for any automated processes that may be triggering a block. For
-assistance, contact [GitLab Support](https://support.gitlab.com/hc/en-us)
+assistance, contact [GitLab Support](https://support.gitlab.com)
 with details, such as the affected IP address.
 
 #### Git and container registry failed authentication ban

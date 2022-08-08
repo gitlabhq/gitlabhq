@@ -10214,8 +10214,6 @@ CI/CD variables given to a manual job.
 | <a id="cimanualvariableenvironmentscope"></a>`environmentScope` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.3. No longer used, only available for GroupVariableType and ProjectVariableType. |
 | <a id="cimanualvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="cimanualvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
-| <a id="cimanualvariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
-| <a id="cimanualvariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
 | <a id="cimanualvariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
 | <a id="cimanualvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="cimanualvariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
@@ -21620,8 +21618,6 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="civariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="civariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
-| <a id="civariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
-| <a id="civariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
 | <a id="civariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
 | <a id="civariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="civariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |

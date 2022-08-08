@@ -59,7 +59,7 @@ describe('Multi-file editor library model manager', () => {
 
   describe('hasCachedModel', () => {
     it('returns false when no models exist', () => {
-      expect(instance.hasCachedModel('path')).toBeFalsy();
+      expect(instance.hasCachedModel('path')).toBe(false);
     });
 
     it('returns true when model exists', () => {
@@ -67,7 +67,7 @@ describe('Multi-file editor library model manager', () => {
 
       instance.addModel(f);
 
-      expect(instance.hasCachedModel(f.key)).toBeTruthy();
+      expect(instance.hasCachedModel(f.key)).toBe(true);
     });
   });
 

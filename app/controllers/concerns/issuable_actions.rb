@@ -183,14 +183,10 @@ module IssuableActions
   private
 
   def render_mr_discussions(discussions, serializer, cache_context)
-    if Feature.enabled?(:mr_discussions_http_cache, project)
-      return unless stale?(etag: [cache_context, discussions])
+    return unless stale?(etag: [cache_context, discussions])
 
-      if Feature.enabled?(:disabled_mr_discussions_redis_cache, project)
-        render json: serializer.represent(discussions, context: self)
-      else
-        render_cached_discussions(discussions, serializer, cache_context)
-      end
+    if Feature.enabled?(:disabled_mr_discussions_redis_cache, project)
+      render json: serializer.represent(discussions, context: self)
     else
       render_cached_discussions(discussions, serializer, cache_context)
     end

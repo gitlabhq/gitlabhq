@@ -1,11 +1,22 @@
 - register_omniauth_params = Feature.enabled?(:update_oauth_registration_flow) ? { intent: :register } : {}
-
-%label.gl-font-weight-bold
-  = _("Create an account using:")
-.gl-display-flex.gl-justify-content-between.gl-flex-wrap
-  - providers.each do |provider|
-    = link_to omniauth_authorize_path(:user, provider, register_omniauth_params), method: :post, class: "btn gl-button btn-default gl-w-full gl-mb-3 js-oauth-login #{qa_class_for_provider(provider)}", data: { provider: provider }, id: "oauth-login-#{provider}" do
-      - if provider_has_icon?(provider)
-        = provider_image_tag(provider)
-      %span.gl-button-text
-        = label_for_provider(provider)
+- if Feature.enabled?(:restyle_login_page, @project)
+  .gl-text-center.gl-pt-5
+    %label.gl-font-weight-normal
+      = _("Create an account using:")
+    .gl-text-center.gl-w-90p.gl-ml-auto.gl-mr-auto
+      - providers.each do |provider|
+        = link_to omniauth_authorize_path(:user, provider, register_omniauth_params), method: :post, class: "btn gl-button btn-default gl-ml-2 gl-mr-2 gl-mb-2 js-oauth-login #{qa_class_for_provider(provider)}", data: { provider: provider }, id: "oauth-login-#{provider}" do
+          - if provider_has_icon?(provider)
+            = provider_image_tag(provider)
+          %span.gl-button-text
+            = label_for_provider(provider)
+- else
+  %label.gl-font-weight-bold
+    = _("Create an account using:")
+  .gl-display-flex.gl-justify-content-between.gl-flex-wrap
+    - providers.each do |provider|
+      = link_to omniauth_authorize_path(:user, provider, register_omniauth_params), method: :post, class: "btn gl-button btn-default gl-w-full gl-mb-3 js-oauth-login #{qa_class_for_provider(provider)}", data: { provider: provider }, id: "oauth-login-#{provider}" do
+        - if provider_has_icon?(provider)
+          = provider_image_tag(provider)
+        %span.gl-button-text
+          = label_for_provider(provider)

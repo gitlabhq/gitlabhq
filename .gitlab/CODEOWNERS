@@ -7,7 +7,7 @@
 *.rake @gitlab-org/maintainers/rails-backend
 
 ^[Frontend]
-*.scss @annabeldunstone @gitlab-org/maintainers/frontend
+*.scss @gitlab-org/maintainers/frontend
 *.js @gitlab-org/maintainers/frontend
 /app/assets/ @gitlab-org/maintainers/frontend
 /ee/app/assets/ @gitlab-org/maintainers/frontend

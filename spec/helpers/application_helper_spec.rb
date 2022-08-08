@@ -192,6 +192,14 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe '#community_forum' do
+    subject { helper.community_forum }
+
+    it 'returns the url' do
+      is_expected.to eq("https://forum.gitlab.com")
+    end
+  end
+
   describe '#support_url' do
     context 'when alternate support url is specified' do
       let(:alternate_url) { 'http://company.example.com/getting-help' }

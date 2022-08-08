@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.HeadingDepth
+# Warning: gitlab.HeadingDepth
 #
 # Checks that there are no headings greater than 3 levels
 #

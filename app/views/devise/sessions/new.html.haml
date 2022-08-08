@@ -18,10 +18,9 @@
       = _('No authentication methods configured.')
 
   - if allow_signup?
-    %p.gl-mt-3
+    %p{ class: "gl-mt-3 #{'gl-text-center' if Feature.enabled?(:restyle_login_page, @project)}" }
       = _("Don't have an account yet?")
-      = link_to _("Register now"), new_registration_path(:user, invite_email: @invite_email), data: { qa_selector: 'register_link' }
-
+      = link_to _("Register now"), new_registration_path(:user, invite_email: @invite_email), data: { qa_selector: 'register_link' }, class: "#{'gl-font-weight-bold' if Feature.enabled?(:restyle_login_page, @project)} "
   - if omniauth_enabled? && devise_mapping.omniauthable? && button_based_providers_enabled?
     .clearfix
       = render 'devise/shared/omniauth_box'

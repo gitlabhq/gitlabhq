@@ -17601,6 +17601,9 @@ msgstr ""
 msgid "GitLab KAS"
 msgstr ""
 
+msgid "GitLab Logo"
+msgstr ""
+
 msgid "GitLab Pages"
 msgstr ""
 
@@ -32962,6 +32965,9 @@ msgid "Reports|Vulnerability"
 msgstr ""
 
 msgid "Reports|Vulnerability Name"
+msgstr ""
+
+msgid "Reports|metrics report"
 msgstr ""
 
 msgid "Reports|no changed test results"

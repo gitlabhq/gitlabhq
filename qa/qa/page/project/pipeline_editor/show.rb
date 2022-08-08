@@ -120,12 +120,6 @@ module QA
             go_to_tab('Visualize')
           end
 
-          # TODO: Remove when FF :simulate_pipeline is removed
-          # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/364257
-          def go_to_lint_tab
-            go_to_tab('Lint')
-          end
-
           def go_to_view_merged_yaml_tab
             go_to_tab('View merged YAML')
           end

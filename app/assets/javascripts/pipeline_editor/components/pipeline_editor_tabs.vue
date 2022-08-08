@@ -2,7 +2,6 @@
 import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   CREATE_TAB,
@@ -11,7 +10,6 @@ import {
   EDITOR_APP_STATUS_LOADING,
   EDITOR_APP_STATUS_VALID,
   EDITOR_APP_STATUS_LINT_UNAVAILABLE,
-  LINT_TAB,
   MERGED_TAB,
   TAB_QUERY_PARAM,
   TABS_INDEX,
@@ -22,7 +20,6 @@ import {
 import getAppStatus from '../graphql/queries/client/app_status.query.graphql';
 import CiConfigMergedPreview from './editor/ci_config_merged_preview.vue';
 import CiEditorHeader from './editor/ci_editor_header.vue';
-import CiLint from './lint/ci_lint.vue';
 import CiValidate from './validate/ci_validate.vue';
 import TextEditor from './editor/text_editor.vue';
 import EditorTab from './ui/editor_tab.vue';
@@ -56,7 +53,6 @@ export default {
   },
   tabConstants: {
     CREATE_TAB,
-    LINT_TAB,
     MERGED_TAB,
     VALIDATE_TAB,
     VISUALIZE_TAB,
@@ -64,7 +60,6 @@ export default {
   components: {
     CiConfigMergedPreview,
     CiEditorHeader,
-    CiLint,
     CiValidate,
     EditorTab,
     GlAlert,
@@ -74,7 +69,6 @@ export default {
     TextEditor,
     WalkthroughPopover,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     ciConfigData: {
       type: Object,
@@ -212,7 +206,6 @@ export default {
       <pipeline-graph v-else :pipeline-data="ciConfigData" />
     </editor-tab>
     <editor-tab
-      v-if="glFeatures.simulatePipeline"
       class="gl-mb-3"
       data-testid="validate-tab"
       :badge-title="validateTabBadgeTitle"
@@ -220,19 +213,6 @@ export default {
       @click="setCurrentTab($options.tabConstants.VALIDATE_TAB)"
     >
       <ci-validate :ci-file-content="ciFileContent" />
-    </editor-tab>
-    <editor-tab
-      v-else
-      class="gl-mb-3"
-      :empty-message="$options.i18n.empty.lint"
-      :is-empty="isEmpty"
-      :is-unavailable="isLintUnavailable"
-      :title="$options.i18n.tabLint"
-      data-testid="lint-tab"
-      @click="setCurrentTab($options.tabConstants.LINT_TAB)"
-    >
-      <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
-      <ci-lint v-else :is-valid="isValid" :ci-config="ciConfigData" />
     </editor-tab>
     <editor-tab
       class="gl-mb-3"
