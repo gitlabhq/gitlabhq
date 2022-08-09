@@ -48,8 +48,8 @@ class Admin::ProjectsController < Admin::ApplicationController
     flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
 
     redirect_to admin_projects_path, status: :found
-  rescue Projects::DestroyService::DestroyError => ex
-    redirect_to admin_projects_path, status: :found, alert: ex.message
+  rescue Projects::DestroyService::DestroyError => e
+    redirect_to admin_projects_path, status: :found, alert: e.message
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

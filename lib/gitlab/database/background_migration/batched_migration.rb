@@ -231,6 +231,12 @@ module Gitlab
           "BatchedMigration[id: #{id}]"
         end
 
+        def progress
+          return unless total_tuple_count.to_i > 0
+
+          100 * migrated_tuple_count / total_tuple_count
+        end
+
         private
 
         def validate_batched_jobs_status

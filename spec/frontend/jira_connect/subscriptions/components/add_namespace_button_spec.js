@@ -38,7 +38,6 @@ describe('AddNamespaceButton', () => {
   it('button is bound to the modal', () => {
     const { value } = getBinding(findButton().element, 'gl-modal');
 
-    expect(value).toBeTruthy();
     expect(value).toBe(ADD_NAMESPACE_MODAL_ID);
   });
 });

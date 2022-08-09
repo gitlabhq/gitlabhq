@@ -1760,8 +1760,8 @@ class Project < ApplicationRecord
     repository.after_create
 
     true
-  rescue StandardError => err
-    Gitlab::ErrorTracking.track_exception(err, project: { id: id, full_path: full_path, disk_path: disk_path })
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(e, project: { id: id, full_path: full_path, disk_path: disk_path })
     errors.add(:base, _('Failed to create repository'))
     false
   end

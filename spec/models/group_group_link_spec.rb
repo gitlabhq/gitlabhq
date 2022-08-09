@@ -30,6 +30,54 @@ RSpec.describe GroupGroupLink do
       end
     end
 
+    describe '.with_owner_or_maintainer_access' do
+      let_it_be(:group_group_link_maintainer) { create :group_group_link, :maintainer }
+      let_it_be(:group_group_link_owner) { create :group_group_link, :owner }
+      let_it_be(:group_group_link_reporter) { create :group_group_link, :reporter }
+      let_it_be(:group_group_link_guest) { create :group_group_link, :guest }
+
+      it 'returns all records which have OWNER or MAINTAINER access' do
+        expect(described_class.with_owner_or_maintainer_access).to match_array([
+                                                                                  group_group_link_maintainer,
+                                                                                  group_group_link_owner
+                                                                              ])
+      end
+    end
+
+    context 'access via group shares' do
+      let_it_be(:shared_with_group_1) { create(:group) }
+      let_it_be(:shared_with_group_2) { create(:group) }
+      let_it_be(:shared_with_group_3) { create(:group) }
+      let_it_be(:shared_group_1) { create(:group) }
+      let_it_be(:shared_group_2) { create(:group) }
+      let_it_be(:shared_group_3) { create(:group) }
+      let_it_be(:shared_group_1_subgroup) { create(:group, parent: shared_group_1) }
+
+      before do
+        create :group_group_link, shared_with_group: shared_with_group_1, shared_group: shared_group_1
+        create :group_group_link, shared_with_group: shared_with_group_2, shared_group: shared_group_2
+        create :group_group_link, shared_with_group: shared_with_group_3, shared_group: shared_group_3
+      end
+
+      describe '.groups_accessible_via' do
+        it 'returns other groups that you can get access to, via the group shares of the specified groups' do
+          group_ids = [shared_with_group_1.id, shared_with_group_2.id]
+          expected_result = Group.id_in([shared_group_1.id, shared_group_1_subgroup.id, shared_group_2.id])
+
+          expect(described_class.groups_accessible_via(group_ids)).to match_array(expected_result)
+        end
+      end
+
+      describe '.groups_having_access_to' do
+        it 'returns all other groups that are having access to these specified groups, via group share' do
+          group_ids = [shared_group_1.id, shared_group_2.id]
+          expected_result = Group.id_in([shared_with_group_1.id, shared_with_group_2.id])
+
+          expect(described_class.groups_having_access_to(group_ids)).to match_array(expected_result)
+        end
+      end
+    end
+
     describe '.distinct_on_shared_with_group_id_with_group_access' do
       let_it_be(:sub_shared_group) { create(:group, parent: shared_group) }
       let_it_be(:other_group) { create(:group) }

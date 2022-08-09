@@ -193,8 +193,8 @@ class ProjectsController < Projects::ApplicationController
     flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
 
     redirect_to dashboard_projects_path, status: :found
-  rescue Projects::DestroyService::DestroyError => ex
-    redirect_to edit_project_path(@project), status: :found, alert: ex.message
+  rescue Projects::DestroyService::DestroyError => e
+    redirect_to edit_project_path(@project), status: :found, alert: e.message
   end
 
   def new_issuable_address
@@ -227,10 +227,10 @@ class ProjectsController < Projects::ApplicationController
       project_path(@project),
       notice: _("Housekeeping successfully started")
     )
-  rescue ::Repositories::HousekeepingService::LeaseTaken => ex
+  rescue ::Repositories::HousekeepingService::LeaseTaken => e
     redirect_to(
       edit_project_path(@project, anchor: 'js-project-advanced-settings'),
-      alert: ex.to_s
+      alert: e.to_s
     )
   end
 
@@ -241,10 +241,10 @@ class ProjectsController < Projects::ApplicationController
       edit_project_path(@project, anchor: 'js-export-project'),
       notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
-  rescue Project::ExportLimitExceeded => ex
+  rescue Project::ExportLimitExceeded => e
     redirect_to(
       edit_project_path(@project, anchor: 'js-export-project'),
-      alert: ex.to_s
+      alert: e.to_s
     )
   end
 

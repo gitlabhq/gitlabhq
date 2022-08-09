@@ -342,8 +342,8 @@ module Ci
             # rubocop: disable CodeReuse/ServiceClass
             Ci::RetryJobService.new(build.project, build.user).execute(build)
             # rubocop: enable CodeReuse/ServiceClass
-          rescue Gitlab::Access::AccessDeniedError => ex
-            Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{ex}"
+          rescue Gitlab::Access::AccessDeniedError => e
+            Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{e}"
           end
         end
       end

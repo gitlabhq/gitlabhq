@@ -451,6 +451,7 @@ function outdentLines(textArea) {
 }
 
 function handleIndentOutdent(e, textArea) {
+  if (e.altKey || e.ctrlKey || e.shiftKey) return;
   if (!e.metaKey) return;
 
   switch (e.key) {

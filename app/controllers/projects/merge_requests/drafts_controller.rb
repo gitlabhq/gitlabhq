@@ -72,9 +72,9 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     strong_memoize(:draft_note) do
       draft_notes.find(params[:id])
     end
-  rescue ActiveRecord::RecordNotFound => ex
+  rescue ActiveRecord::RecordNotFound => e
     # draft_note is allowed to be nil in #publish
-    raise ex unless allow_nil
+    raise e unless allow_nil
   end
 
   def draft_notes

@@ -1103,7 +1103,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>"\
 Gets a list of all discussion items for a single commit.
 
 ```plaintext
-GET /projects/:id/commits/:commit_id/discussions
+GET /projects/:id/repository/commits/:commit_id/discussions
 ```
 
 | Attribute           | Type             | Required   | Description  |
@@ -1237,7 +1237,7 @@ Diff comments contain also position:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>"\
-  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions"
+  "https://gitlab.example.com/api/v4/projects/5/repository/commits/11/discussions"
 ```
 
 ### Get single commit discussion item
@@ -1245,7 +1245,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>"\
 Returns a single discussion item for a specific project commit
 
 ```plaintext
-GET /projects/:id/commits/:commit_id/discussions/:discussion_id
+GET /projects/:id/repository/commits/:commit_id/discussions/:discussion_id
 ```
 
 Parameters:
@@ -1258,7 +1258,7 @@ Parameters:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>"\
-  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/<discussion_id>"
+  "https://gitlab.example.com/api/v4/projects/5/repository/commits/11/discussions/<discussion_id>"
 ```
 
 ### Create new commit thread
@@ -1267,7 +1267,7 @@ Creates a new thread to a single project commit. This is similar to creating
 a note but other comments (replies) can be added to it later.
 
 ```plaintext
-POST /projects/:id/commits/:commit_id/discussions
+POST /projects/:id/repository/commits/:commit_id/discussions
 ```
 
 Parameters:
@@ -1294,7 +1294,7 @@ Parameters:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
-  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions?body=comment"
+  "https://gitlab.example.com/api/v4/projects/5/repository/commits/11/discussions?body=comment"
 ```
 
 The rules for creating the API request are the same as when
@@ -1306,7 +1306,7 @@ with the exception of `base_sha`, `start_sha`, and `head_sha` attributes.
 Adds a new note to the thread.
 
 ```plaintext
-POST /projects/:id/commits/:commit_id/discussions/:discussion_id/notes
+POST /projects/:id/repository/commits/:commit_id/discussions/:discussion_id/notes
 ```
 
 Parameters:
@@ -1322,7 +1322,7 @@ Parameters:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
-  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/<discussion_id>/notes?body=comment
+  "https://gitlab.example.com/api/v4/projects/5/repository/commits/11/discussions/<discussion_id>/notes?body=comment
 ```
 
 ### Modify an existing commit thread note
@@ -1330,7 +1330,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
 Modify or resolve an existing thread note of a commit.
 
 ```plaintext
-PUT /projects/:id/commits/:commit_id/discussions/:discussion_id/notes/:note_id
+PUT /projects/:id/repository/commits/:commit_id/discussions/:discussion_id/notes/:note_id
 ```
 
 Parameters:
@@ -1345,14 +1345,14 @@ Parameters:
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
-  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/<discussion_id>/notes/1108?body=comment"
+  "https://gitlab.example.com/api/v4/projects/5/repository/commits/11/discussions/<discussion_id>/notes/1108?body=comment"
 ```
 
 Resolving a note:
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
-  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/<discussion_id>/notes/1108?resolved=true"
+  "https://gitlab.example.com/api/v4/projects/5/repository/commits/11/discussions/<discussion_id>/notes/1108?resolved=true"
 ```
 
 ### Delete a commit thread note
@@ -1360,7 +1360,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"\
 Deletes an existing thread note of a commit.
 
 ```plaintext
-DELETE /projects/:id/commits/:commit_id/discussions/:discussion_id/notes/:note_id
+DELETE /projects/:id/repository/commits/:commit_id/discussions/:discussion_id/notes/:note_id
 ```
 
 Parameters:
@@ -1374,5 +1374,5 @@ Parameters:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>"\
-  "https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/636"
+  "https://gitlab.example.com/api/v4/projects/5/repository/commits/11/discussions/636"
 ```

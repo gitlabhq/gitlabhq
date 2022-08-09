@@ -176,6 +176,16 @@ class Group < Namespace
       .where(project_authorizations: { user_id: user_ids })
   end
 
+  scope :project_creation_allowed, -> do
+    permitted_levels = [
+      ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
+      ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+      nil
+    ]
+
+    where(project_creation_level: permitted_levels)
+  end
+
   class << self
     def sort_by_attribute(method)
       if method == 'storage_size_desc'

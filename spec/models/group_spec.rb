@@ -806,6 +806,20 @@ RSpec.describe Group do
       end
     end
 
+    describe '.project_creation_allowed' do
+      let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
+      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_4) { create(:group, project_creation_level: nil) }
+
+      it 'only includes groups where project creation is allowed' do
+        result = described_class.project_creation_allowed
+
+        expect(result).to include(group_2, group_3, group_4)
+        expect(result).not_to include(group_1)
+      end
+    end
+
     describe 'by_ids_or_paths' do
       let(:group_path) { 'group_path' }
       let!(:group) { create(:group, path: group_path) }

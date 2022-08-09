@@ -70,8 +70,8 @@ module Integrations
 
       prometheus_client.ping
       { success: true, result: 'Checked API endpoint' }
-    rescue Gitlab::PrometheusClient::Error => err
-      { success: false, result: err }
+    rescue Gitlab::PrometheusClient::Error => e
+      { success: false, result: e }
     end
 
     def prometheus_client

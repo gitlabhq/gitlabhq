@@ -57,10 +57,10 @@ module PerformanceMonitoring
 
       self.class.from_json(reload_schema)
       []
-    rescue Gitlab::Metrics::Dashboard::Errors::LayoutError => error
-      [error.message]
-    rescue ActiveModel::ValidationError => exception
-      exception.model.errors.map { |attr, error| "#{attr}: #{error}" }
+    rescue Gitlab::Metrics::Dashboard::Errors::LayoutError => e
+      [e.message]
+    rescue ActiveModel::ValidationError => e
+      e.model.errors.map { |attr, error| "#{attr}: #{error}" }
     end
 
     private

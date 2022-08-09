@@ -51,7 +51,7 @@ describe('Changed file icon', () => {
       showTooltip: false,
     });
 
-    expect(findTooltipText()).toBeFalsy();
+    expect(findTooltipText()).toBeUndefined();
   });
 
   describe.each`
@@ -87,7 +87,7 @@ describe('Changed file icon', () => {
     });
 
     it('does not have tooltip text', () => {
-      expect(findTooltipText()).toBeFalsy();
+      expect(findTooltipText()).toBeUndefined();
     });
   });
 

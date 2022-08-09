@@ -62,8 +62,8 @@ module PrometheusAdapter
         data: data,
         last_update: Time.current.utc
       }
-    rescue Gitlab::PrometheusClient::Error => err
-      { success: false, result: err.message }
+    rescue Gitlab::PrometheusClient::Error => e
+      { success: false, result: e.message }
     end
 
     def query_klass_for(query_name)

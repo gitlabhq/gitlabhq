@@ -264,6 +264,28 @@ Users with the Owner role for a group can list streaming destinations and see th
 1. On the main area, select the **Streams**.
 1. View the verification token on the right side of each item.
 
+## Payload schema
+
+> Documentation for an audit event streaming schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358149) in GitLab 15.3.
+
+Streamed audit events have a predictable schema in the body of the response.
+
+| Field            | Description                                                | Notes                                                                             |
+|------------------|------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| `author_id`      | User ID of the user who triggered the event                |                                                                                   |
+| `author_name`    | Human-readable name of the author that triggered the event | Helpful when the author no longer exists                                          |
+| `created_at`     | Timestamp when event was triggered                         |                                                                                   |
+| `details`        | JSON object containing additional metadata                 | Has no defined schema but often contains additional information about an event    |
+| `entity_id`      | ID of the audit event's entity                             |                                                                                   |
+| `entity_path`    | Full path of the entity affected by the auditable event    |                                                                                   |
+| `entity_type`    | String representation of the type of entity                | Acceptable values include `User`, `Group`, and `Key`. This list is not exhaustive |
+| `event_type`     | String representation of the type of audit event           |                                                                                   |
+| `id`             | Unique identifier for the audit event                      | Can be used for deduplication if required                                         |
+| `ip_address`     | IP address of the host used to trigger the event           |                                                                                   |
+| `target_details` | Additional details about the target                        |                                                                                   |
+| `target_id`      | ID of the audit event's target                             |                                                                                   |
+| `target_type`    | String representation of the target's type                 |                                                                                   |
+
 ## Audit event streaming on Git operations
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `audit_event_streaming_git_operations`. Disabled by default.

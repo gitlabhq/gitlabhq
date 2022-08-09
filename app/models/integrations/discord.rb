@@ -88,8 +88,8 @@ module Integrations
           embed.timestamp = Time.now.utc
         end
       end
-    rescue RestClient::Exception => error
-      log_error(error.message)
+    rescue RestClient::Exception => e
+      log_error(e.message)
       false
     end
 

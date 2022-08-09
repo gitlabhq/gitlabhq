@@ -100,8 +100,8 @@ module Integrations
           message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
           result = true
         end
-      rescue Gitlab::HTTP::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
-        message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{error.message}"
+      rescue Gitlab::HTTP::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => e
+        message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{e.message}"
       end
       log_info(message)
       result

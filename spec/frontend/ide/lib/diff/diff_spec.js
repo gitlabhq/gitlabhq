@@ -18,8 +18,8 @@ describe('Multi-file editor library diff calculator', () => {
         ({ originalContent, newContent, lineNumber }) => {
           const diff = computeDiff(originalContent, newContent)[0];
 
-          expect(diff.added).toBeTruthy();
-          expect(diff.modified).toBeTruthy();
+          expect(diff.added).toBe(true);
+          expect(diff.modified).toBe(true);
           expect(diff.removed).toBeUndefined();
           expect(diff.lineNumber).toBe(lineNumber);
         },
@@ -36,7 +36,7 @@ describe('Multi-file editor library diff calculator', () => {
         ({ originalContent, newContent, lineNumber }) => {
           const diff = computeDiff(originalContent, newContent)[0];
 
-          expect(diff.added).toBeTruthy();
+          expect(diff.added).toBe(true);
           expect(diff.modified).toBeUndefined();
           expect(diff.removed).toBeUndefined();
           expect(diff.lineNumber).toBe(lineNumber);
@@ -56,7 +56,7 @@ describe('Multi-file editor library diff calculator', () => {
 
           expect(diff.added).toBeUndefined();
           expect(diff.modified).toBe(modified);
-          expect(diff.removed).toBeTruthy();
+          expect(diff.removed).toBe(true);
           expect(diff.lineNumber).toBe(lineNumber);
         },
       );

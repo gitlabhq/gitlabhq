@@ -1,19 +1,19 @@
-- page_title _("Import repository")
+- page_title _('Import repository')
 %h1.page-title.gl-font-size-h-display
   = _('Import repository')
 
 %hr
 
 - if @project.import_failed?
-  .card.border-danger
-    .card-header.bg-danger.text-white The repository could not be imported.
-    .card-body
-      %pre
-        :preserve
-          #{h(@project.import_state.last_error)}
+  = render Pajamas::AlertComponent.new(title: s_('Import|The repository could not be imported.'),
+    dismissible: false,
+    variant: :danger,
+    alert_options: { class: 'gl-mb-5' }) do |c|
+    = c.body do
+      = @project.import_state.last_error
 
 = gitlab_ui_form_for @project, url: project_import_path(@project), method: :post, html: { class: 'js-project-import' } do |f|
-  = render "shared/import_form", f: f
+  = render 'shared/import_form', f: f
 
   .form-actions
-    = f.submit 'Start import', class: "gl-button btn btn-confirm", data: { disable_with: false }
+    = f.submit 'Start import', class: 'gl-button btn btn-confirm', data: { disable_with: false }

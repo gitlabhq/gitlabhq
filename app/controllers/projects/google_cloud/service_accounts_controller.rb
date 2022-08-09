@@ -26,9 +26,9 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
 
       track_event('service_accounts#index', 'success', js_data)
     end
-  rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => error
-    track_event('service_accounts#index', 'error_gcp', error)
-    flash[:warning] = _('Google Cloud Error - %{error}') % { error: error }
+  rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => e
+    track_event('service_accounts#index', 'error_gcp', e)
+    flash[:warning] = _('Google Cloud Error - %{error}') % { error: e }
     redirect_to project_google_cloud_configuration_path(project)
   end
 
@@ -45,9 +45,9 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
 
     track_event('service_accounts#create', 'success', response)
     redirect_to project_google_cloud_configuration_path(project), notice: response.message
-  rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => error
-    track_event('service_accounts#create', 'error_gcp', error)
-    flash[:warning] = _('Google Cloud Error - %{error}') % { error: error }
+  rescue Google::Apis::ClientError, Google::Apis::ServerError, Google::Apis::AuthorizationError => e
+    track_event('service_accounts#create', 'error_gcp', e)
+    flash[:warning] = _('Google Cloud Error - %{error}') % { error: e }
     redirect_to project_google_cloud_configuration_path(project)
   end
 end

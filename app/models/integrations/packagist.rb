@@ -56,8 +56,8 @@ module Integrations
       begin
         result = execute(data)
         return { success: false, result: result[:message] } if result[:http_status] != 202
-      rescue StandardError => error
-        return { success: false, result: error }
+      rescue StandardError => e
+        return { success: false, result: e }
       end
 
       { success: true, result: result[:message] }

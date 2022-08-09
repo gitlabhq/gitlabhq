@@ -19,8 +19,8 @@ module Mutations
 
         begin
           moved_issue = ::Issues::MoveService.new(project: source_project, current_user: current_user).execute(issue, target_project)
-        rescue ::Issues::MoveService::MoveError => error
-          errors = error.message
+        rescue ::Issues::MoveService::MoveError => e
+          errors = e.message
         end
 
         {

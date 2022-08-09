@@ -646,8 +646,8 @@ class Repository
     return if licensee_object.name.blank?
 
     licensee_object
-  rescue Licensee::InvalidLicense => ex
-    Gitlab::ErrorTracking.track_exception(ex)
+  rescue Licensee::InvalidLicense => e
+    Gitlab::ErrorTracking.track_exception(e)
     nil
   end
   memoize_method :license
@@ -1072,9 +1072,9 @@ class Repository
     ) do |commit_id|
       merge_request.update!(rebase_commit_sha: commit_id, merge_error: nil)
     end
-  rescue StandardError => error
+  rescue StandardError => e
     merge_request.update!(rebase_commit_sha: nil)
-    raise error
+    raise e
   end
 
   def squash(user, merge_request, message)

@@ -49,8 +49,8 @@ class U2fRegistration < ApplicationRecord
   def create_webauthn_registration
     converter = Gitlab::Auth::U2fWebauthnConverter.new(self)
     WebauthnRegistration.create!(converter.convert)
-  rescue StandardError => ex
-    Gitlab::ErrorTracking.track_exception(ex, u2f_registration_id: self.id)
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(e, u2f_registration_id: self.id)
   end
 
   def update_webauthn_registration

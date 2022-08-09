@@ -146,8 +146,8 @@ class Wiki
     repository.create_if_not_exists(default_branch)
 
     raise CouldNotCreateWikiError unless repository_exists?
-  rescue StandardError => err
-    Gitlab::ErrorTracking.track_exception(err, wiki: {
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(e, wiki: {
       container_type: container.class.name,
       container_id: container.id,
       full_path: full_path,
@@ -364,9 +364,9 @@ class Wiki
          Gitlab::Git::CommitError,
          Gitlab::Git::PreReceiveError,
          Gitlab::Git::CommandError,
-         ArgumentError => error
+         ArgumentError => e
 
-    Gitlab::ErrorTracking.log_exception(error, action: action, wiki_id: id)
+    Gitlab::ErrorTracking.log_exception(e, action: action, wiki_id: id)
 
     false
   end

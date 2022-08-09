@@ -187,6 +187,7 @@ To group issues by label:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5077) in GitLab 14.1 [with a flag](../../../administration/feature_flags.md), named `iteration_cadences`. Disabled by default.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/354977) in GitLab 15.0: All scheduled iterations must start on the same day of the week as the cadence start day. Start date of cadence cannot be edited after the first iteration starts.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/354878) in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/367493) in GitLab 15.3: A new automation start date can be selected for cadence. Upcoming iterations will be scheduled to start on the same day of the week as the changed start date.
 
 Iteration cadences automate iteration scheduling. You can use them to
 automate creating iterations every 1, 2, 3, or 4 weeks. You can also
@@ -207,7 +208,7 @@ To create an iteration cadence:
 1. Select **New iteration cadence**.
 1. Complete the fields.
    - Enter the title and description of the iteration cadence.
-   - Enter the first iteration start date of the iteration cadence. Iterations will be scheduled to
+   - Select the automation start date of the iteration cadence. Iterations will be scheduled to
      begin on the same day of the week as the day of the week of the start date.
    - From the **Duration** dropdown list, select how many weeks each iteration should last.
    - From the **Upcoming iterations** dropdown list, select how many upcoming iterations should be
@@ -227,10 +228,9 @@ To edit an iteration cadence:
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select **Edit iteration cadence**.
 
-When you edit the **Duration**, **Upcoming iterations**, or **First iteration start date** fields,
-only upcoming iterations are affected.
-
-You can edit the first iteration start date of a cadence if the cadence has not started yet.
+When you edit the **Automation start date** field,
+you must set a new start date that doesn't overlap with the existing
+current or past iterations.
 
 Editing **Upcoming iterations** is a non-destructive action.
 If ten upcoming iterations already exist, changing the number under **Upcoming iterations** to `2`
@@ -273,24 +273,11 @@ To upgrade the iteration cadence to use the automation features:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select the three-dot menu (**{ellipsis_v}**) > **Edit cadence** for the cadence you want to upgrade.
-1. Complete the required fields **Duration** and **Upcoming iterations**.
+1. Complete the required fields **Duration**, **Upcoming iterations**, and **Automation start date**.
+For **Automation start date**, you can select any date that doesn't overlap with the existing open iterations.
+If you have upcoming iterations, the automatic scheduling adjusts them appropriately to fit
+your chosen duration. 
 1. Select **Save changes**.
-
-#### Start dates of converted cadences
-
-The first iteration start date of your converted cadence is set to the start date of its
-**first** existing iteration.
-
-If you attempt to set a new start date, the conversion fails with an error message.
-If your manual cadence is empty, converting it to use automatic scheduling is effectively
-the same as creating a new automated cadence.
-
-GitLab will start scheduling new iterations on the same day of the week as the start date,
-starting from the nearest such day from the current date.
-
-During the conversion process GitLab does not delete or modify existing **ongoing** or
-**closed** iterations. If you have iterations with start dates in the future,
-they are updated to fit your cadence settings.
 
 #### Converted cadences example
 
@@ -300,20 +287,21 @@ For example, suppose it's Friday, April 15, and you have three iterations in a m
 - Tuesday, April 12 - Friday, April 15 (ongoing)
 - Tuesday, May 3 - Friday, May 6 (upcoming)
 
-On Friday, April 15, you convert the manual cadence
-to automate scheduling iterations every week, up to two upcoming iterations.
+The earliest possible **Automation start date** you can choose
+is Saturday, April 16 in this scenario, because April 15 overlaps with
+the ongoing iteration.
 
-The first iteration is closed, and the second iteration is ongoing,
-so they aren't deleted or modified in the conversion process.
-
-To observe the weekly duration, the third iteration is updated so that it:
-
-- Starts on Monday, April 18 - which is the nearest date that is Monday.
-- Ends on Sunday, April 24.
-
-Finally, to always have two upcoming iterations, an additional iteration is scheduled:
+If you select Monday, April 18 as the automation start date to
+automate scheduling iterations every week up to two upcoming iterations,
+after the conversion you have the following iterations:
 
 - Monday, April 4 - Friday, April 8 (closed)
 - Tuesday, April 12 - Friday, April 15 (ongoing)
 - Monday, April 18 - Sunday, April 24 (upcoming)
 - Monday, April 25 - Sunday, May 1 (upcoming)
+
+Your existing upcoming iteration "Tuesday, April 12 - Friday, April 15" 
+is changed to "April 18 - Sunday, April 24".
+
+An additional upcoming iteration "April 25 - Sunday, May 1" is scheduled
+to satisfy the requirement that there are at least two upcoming iterations scheduled.

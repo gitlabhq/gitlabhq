@@ -15,9 +15,13 @@ module Pages
           .clear_cache
       end
 
-      if event.data[:root_namespace_id]
+      event.data.values_at(
+        :root_namespace_id,
+        :old_root_namespace_id,
+        :new_root_namespace_id
+      ).compact.uniq.each do |namespace_id|
         ::Gitlab::Pages::CacheControl
-          .for_namespace(event.data[:root_namespace_id])
+          .for_namespace(namespace_id)
           .clear_cache
       end
     end

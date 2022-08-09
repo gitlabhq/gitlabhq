@@ -125,10 +125,6 @@
     padding-right: 25px;
   }
 
-  .fa {
-    color: $gray-darkest;
-  }
-
   &:hover {
     border-color: $gray-darkest;
   }
@@ -147,10 +143,6 @@
   position: relative;
   text-overflow: ellipsis;
   width: 160px;
-
-  .fa {
-    position: absolute;
-  }
 
   .gl-spinner {
     position: absolute;
@@ -387,10 +379,6 @@
         margin: 0;
         text-align: left;
         text-overflow: inherit;
-
-        &.btn .fa:not(:last-child) {
-          margin-left: 5px;
-        }
       }
 
       > button.dropdown-epic-button {
@@ -651,14 +639,12 @@
     border-color: $blue-300;
     box-shadow: 0 0 4px $dropdown-input-focus-shadow;
 
-    ~ .fa,
     ~ .dropdown-input-clear {
       color: $gray-700;
     }
   }
 
   &:hover {
-    ~ .fa,
     ~ .dropdown-input-clear {
       color: $gray-700;
     }
@@ -716,14 +702,6 @@
   z-index: 9;
   background-color: $dropdown-loading-bg;
   font-size: 28px;
-
-  .fa {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -14px;
-    margin-left: -14px;
-  }
 }
 
 .dropdown-label-box {

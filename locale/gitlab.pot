@@ -19991,6 +19991,9 @@ msgstr[1] ""
 msgid "Importing..."
 msgstr ""
 
+msgid "Import|The repository could not be imported."
+msgstr ""
+
 msgid "Import|There is not a valid Git repository at this URL. If your HTTP repository is not publicly accessible, verify your credentials."
 msgstr ""
 
@@ -22029,13 +22032,31 @@ msgstr ""
 msgid "Iterations"
 msgstr ""
 
+msgid "IterationsCadence|Manual iteration cadences are deprecated. Only automatic iteration cadences are allowed."
+msgstr ""
+
+msgid "IterationsCadence|The automation start date must come after the active iteration %{iteration_dates}."
+msgstr ""
+
+msgid "IterationsCadence|The automation start date must come after the past iteration %{iteration_dates}."
+msgstr ""
+
+msgid "IterationsCadence|The automation start date would retroactively create a past iteration. %{start_date} is the earliest possible start date."
+msgstr ""
+
 msgid "Iterations|Add iteration"
 msgstr ""
 
 msgid "Iterations|All"
 msgstr ""
 
+msgid "Iterations|All scheduled iterations will remain scheduled even if you use a smaller number."
+msgstr ""
+
 msgid "Iterations|Automatic scheduling"
+msgstr ""
+
+msgid "Iterations|Automation start date"
 msgstr ""
 
 msgid "Iterations|Cadence configuration is invalid."
@@ -22096,9 +22117,6 @@ msgid "Iterations|Enable roll over"
 msgstr ""
 
 msgid "Iterations|Error loading iteration cadences."
-msgstr ""
-
-msgid "Iterations|First iteration start date"
 msgstr ""
 
 msgid "Iterations|Iteration cadences"
@@ -22164,13 +22182,13 @@ msgstr ""
 msgid "Iterations|Start date"
 msgstr ""
 
+msgid "Iterations|The date of the first iteration to schedule. This date determines the day of the week when each iteration starts."
+msgstr ""
+
 msgid "Iterations|The duration of each iteration (in weeks)."
 msgstr ""
 
 msgid "Iterations|The iteration has been deleted."
-msgstr ""
-
-msgid "Iterations|The start date of the first iteration determines when your cadence begins."
 msgstr ""
 
 msgid "Iterations|This cadence can be converted to use automated scheduling"
@@ -44702,9 +44720,6 @@ msgid "You cannot access the raw file. Please wait a minute."
 msgstr ""
 
 msgid "You cannot approve your own deployment."
-msgstr ""
-
-msgid "You cannot change the start date after the cadence has started. Please create a new cadence."
 msgstr ""
 
 msgid "You cannot combine replace_ids with add_ids or remove_ids"

@@ -14,45 +14,45 @@ describe('diffs helper', () => {
 
   describe('hasInlineLines', () => {
     it('is false when the file does not exist', () => {
-      expect(diffsHelper.hasInlineLines()).toBeFalsy();
+      expect(diffsHelper.hasInlineLines()).toBe(false);
     });
 
     it('is false when the file does not have the highlighted_diff_lines property', () => {
       const missingInline = getDiffFile({ highlighted_diff_lines: undefined });
 
-      expect(diffsHelper.hasInlineLines(missingInline)).toBeFalsy();
+      expect(diffsHelper.hasInlineLines(missingInline)).toBe(false);
     });
 
     it('is false when the file has zero highlighted_diff_lines', () => {
       const emptyInline = getDiffFile({ highlighted_diff_lines: [] });
 
-      expect(diffsHelper.hasInlineLines(emptyInline)).toBeFalsy();
+      expect(diffsHelper.hasInlineLines(emptyInline)).toBe(false);
     });
 
     it('is true when the file has at least 1 highlighted_diff_lines', () => {
-      expect(diffsHelper.hasInlineLines(getDiffFile())).toBeTruthy();
+      expect(diffsHelper.hasInlineLines(getDiffFile())).toBe(true);
     });
   });
 
   describe('hasParallelLines', () => {
     it('is false when the file does not exist', () => {
-      expect(diffsHelper.hasParallelLines()).toBeFalsy();
+      expect(diffsHelper.hasParallelLines()).toBe(false);
     });
 
     it('is false when the file does not have the parallel_diff_lines property', () => {
       const missingInline = getDiffFile({ parallel_diff_lines: undefined });
 
-      expect(diffsHelper.hasParallelLines(missingInline)).toBeFalsy();
+      expect(diffsHelper.hasParallelLines(missingInline)).toBe(false);
     });
 
     it('is false when the file has zero parallel_diff_lines', () => {
       const emptyInline = getDiffFile({ parallel_diff_lines: [] });
 
-      expect(diffsHelper.hasParallelLines(emptyInline)).toBeFalsy();
+      expect(diffsHelper.hasParallelLines(emptyInline)).toBe(false);
     });
 
     it('is true when the file has at least 1 parallel_diff_lines', () => {
-      expect(diffsHelper.hasParallelLines(getDiffFile())).toBeTruthy();
+      expect(diffsHelper.hasParallelLines(getDiffFile())).toBe(true);
     });
   });
 
@@ -61,16 +61,16 @@ describe('diffs helper', () => {
       const noParallelLines = getDiffFile({ parallel_diff_lines: undefined });
       const emptyParallelLines = getDiffFile({ parallel_diff_lines: [] });
 
-      expect(diffsHelper.isSingleViewStyle(noParallelLines)).toBeTruthy();
-      expect(diffsHelper.isSingleViewStyle(emptyParallelLines)).toBeTruthy();
+      expect(diffsHelper.isSingleViewStyle(noParallelLines)).toBe(true);
+      expect(diffsHelper.isSingleViewStyle(emptyParallelLines)).toBe(true);
     });
 
     it('is true when the file has at least 1 parallel line but no inline lines for any reason', () => {
       const noInlineLines = getDiffFile({ highlighted_diff_lines: undefined });
       const emptyInlineLines = getDiffFile({ highlighted_diff_lines: [] });
 
-      expect(diffsHelper.isSingleViewStyle(noInlineLines)).toBeTruthy();
-      expect(diffsHelper.isSingleViewStyle(emptyInlineLines)).toBeTruthy();
+      expect(diffsHelper.isSingleViewStyle(noInlineLines)).toBe(true);
+      expect(diffsHelper.isSingleViewStyle(emptyInlineLines)).toBe(true);
     });
 
     it('is true when the file does not have any inline lines or parallel lines for any reason', () => {
@@ -83,13 +83,13 @@ describe('diffs helper', () => {
         parallel_diff_lines: [],
       });
 
-      expect(diffsHelper.isSingleViewStyle(noLines)).toBeTruthy();
-      expect(diffsHelper.isSingleViewStyle(emptyLines)).toBeTruthy();
-      expect(diffsHelper.isSingleViewStyle()).toBeTruthy();
+      expect(diffsHelper.isSingleViewStyle(noLines)).toBe(true);
+      expect(diffsHelper.isSingleViewStyle(emptyLines)).toBe(true);
+      expect(diffsHelper.isSingleViewStyle()).toBe(true);
     });
 
     it('is false when the file has both inline and parallel lines', () => {
-      expect(diffsHelper.isSingleViewStyle(getDiffFile())).toBeFalsy();
+      expect(diffsHelper.isSingleViewStyle(getDiffFile())).toBe(false);
     });
   });
 

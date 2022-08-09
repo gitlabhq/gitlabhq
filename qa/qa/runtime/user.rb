@@ -55,3 +55,5 @@ module QA
     end
   end
 end
+
+QA::Runtime::User.extend_mod_with('Runtime::User', namespace: QA)

@@ -58,8 +58,8 @@ class PersonalAccessToken < ApplicationRecord
 
       begin
         Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
-      rescue StandardError => ex
-        logger.warn "Failed to decrypt #{self.name} value stored in Redis for key ##{redis_key}: #{ex.class}"
+      rescue StandardError => e
+        logger.warn "Failed to decrypt #{self.name} value stored in Redis for key ##{redis_key}: #{e.class}"
         encrypted_token
       end
     end

@@ -369,7 +369,7 @@ describe('Design management index page', () => {
       findDropzone().vm.$emit('change', [{ name: 'test' }]);
       expect(mutate).toHaveBeenCalledWith(mutationVariables);
       expect(wrapper.vm.filesToBeSaved).toEqual([{ name: 'test' }]);
-      expect(wrapper.vm.isSaving).toBeTruthy();
+      expect(wrapper.vm.isSaving).toBe(true);
       expect(dropzoneClasses()).toContain('design-list-item');
       expect(dropzoneClasses()).toContain('design-list-item-new');
     });
@@ -399,7 +399,7 @@ describe('Design management index page', () => {
       await nextTick();
 
       expect(wrapper.vm.filesToBeSaved).toEqual([]);
-      expect(wrapper.vm.isSaving).toBeFalsy();
+      expect(wrapper.vm.isSaving).toBe(false);
       expect(wrapper.vm.isLatestVersion).toBe(true);
     });
 
@@ -412,7 +412,7 @@ describe('Design management index page', () => {
       wrapper.vm.onUploadDesignError();
       await nextTick();
       expect(wrapper.vm.filesToBeSaved).toEqual([]);
-      expect(wrapper.vm.isSaving).toBeFalsy();
+      expect(wrapper.vm.isSaving).toBe(false);
       expect(findDesignUpdateAlert().exists()).toBe(true);
       expect(findDesignUpdateAlert().text()).toBe(UPLOAD_DESIGN_ERROR);
     });

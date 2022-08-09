@@ -364,8 +364,8 @@ module Integrations
       )
 
       true
-    rescue StandardError => error
-      log_exception(error, message: 'Issue transition failed', client_url: client_url)
+    rescue StandardError => e
+      log_exception(e, message: 'Issue transition failed', client_url: client_url)
       false
     end
 
@@ -560,9 +560,9 @@ module Integrations
     # Handle errors when doing Jira API calls
     def jira_request
       yield
-    rescue StandardError => error
-      @error = error
-      log_exception(error, message: 'Error sending message', client_url: client_url)
+    rescue StandardError => e
+      @error = e
+      log_exception(e, message: 'Error sending message', client_url: client_url)
       nil
     end
 

@@ -92,8 +92,8 @@ class Projects::MilestonesController < Projects::ApplicationController
         render json: { url: project_milestones_path(project) }
       end
     end
-  rescue Milestones::PromoteService::PromoteMilestoneError => error
-    redirect_to milestone, alert: error.message
+  rescue Milestones::PromoteService::PromoteMilestoneError => e
+    redirect_to milestone, alert: e.message
   end
 
   def flash_notice_for(milestone, group)
