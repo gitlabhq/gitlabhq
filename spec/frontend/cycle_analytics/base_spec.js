@@ -11,7 +11,6 @@ import ValueStreamFilters from '~/cycle_analytics/components/value_stream_filter
 import { NOT_ENOUGH_DATA_ERROR } from '~/cycle_analytics/constants';
 import initState from '~/cycle_analytics/store/state';
 import {
-  permissions,
   transformedProjectStagePathData,
   selectedStage,
   issueEvents,
@@ -34,7 +33,6 @@ let wrapper;
 
 const { id: groupId, path: groupPath } = currentGroup;
 const defaultState = {
-  permissions,
   currentGroup,
   createdBefore,
   createdAfter,
@@ -237,24 +235,6 @@ describe('Value stream analytics component', () => {
       it('renders the empty stage with `There is too much data to calculate` message', () => {
         expect(findEmptyStageTitle()).toBe('There is too much data to calculate');
       });
-    });
-  });
-
-  describe('without enough permissions', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        initialState: {
-          selectedStage,
-          permissions: {
-            ...permissions,
-            [selectedStage.id]: false,
-          },
-        },
-      });
-    });
-
-    it('renders the empty stage with `You need permission.` message', () => {
-      expect(findEmptyStageTitle()).toBe('You need permission.');
     });
   });
 

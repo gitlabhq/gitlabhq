@@ -80,7 +80,7 @@ separated by spaces.
 
 To copy the name of a single failed test:
 
-1. Expand the **Test summary** panel by selecting **Show test summary details** (**{angle-down}**).
+1. Expand the **Test summary** panel by selecting **Show test summary details** (**{chevron-lg-down}**).
 1. Select the test you want to review.
 1. Select **Copy test name to rerun locally** (**{copy-to-clipboard}**).
 

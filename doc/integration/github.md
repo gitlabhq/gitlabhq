@@ -157,13 +157,29 @@ To fix this issue, you must disable SSL verification:
 
 1. Change the global Git `sslVerify` option to `false` on the GitLab server.
 
-   - **For Omnibus installations**
+   - **For Omnibus installations in [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later**:
+
+     ```ruby
+     gitaly['gitconfig'] = [
+        {key: "http.sslVerify", value: "false"},
+     ]
+     ```
+
+   - **For Omnibus installations in GitLab 15.2 and earlier (legacy method)**:
 
      ```ruby
      omnibus_gitconfig['system'] = { "http" => ["sslVerify = false"] }
      ```
 
-   - **For installations from source**
+   - **For installations from source in [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later**, edit the Gitaly configuration (`gitaly.toml`):
+
+     ```toml
+     [[git.config]]
+     key = "http.sslVerify"
+     value = "false"
+     ```
+
+   - **For installations from source in GitLab 15.2 and earlier (legacy method)**:
 
      ```shell
      git config --global http.sslVerify false

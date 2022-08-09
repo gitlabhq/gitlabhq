@@ -208,7 +208,27 @@ See [the documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/p
 Everything in `app/serializers`, used for presenting the response to a request,
 typically in JSON.
 
-### Model class methods
+### Models
+
+Classes and modules in `app/models` represent domain concepts that encapsulate both
+[data and behavior](https://en.wikipedia.org/wiki/Domain_model).
+
+These classes can interact directly with a data store (like ActiveRecord models) or
+can be a thin wrapper (Plain Old Ruby Objects) on top of ActiveRecord models to express a
+richer domain concept.
+
+[Entities and Value Objects](https://martinfowler.com/bliki/EvansClassification.html)
+that represent domain concepts are considered domain models.
+
+Some examples:
+
+- [`DesignManagement::DesignAtVersion`](https://gitlab.com/gitlab-org/gitlab/-/blob/b62ce98cff8e0530210670f9cb0314221181b77f/app/models/design_management/design_at_version.rb)
+  is a model that leverages validations to combine designs and versions.
+- [`Ci::Minutes::Usage`](https://gitlab.com/gitlab-org/gitlab/-/blob/ec52f19f7325410177c00fef06379f55ab7cab67/ee/app/models/ci/minutes/usage.rb)
+  is a Value Object that provides [CI/CD minutes usage](../ci/pipelines/cicd_minutes.md)
+  for a given namespace.
+
+#### Model class methods
 
 These are class methods defined by _GitLab itself_, including the following
 methods provided by Active Record:
@@ -222,7 +242,7 @@ methods provided by Active Record:
 Any other methods such as `find_by(some_column: X)` are not included, and
 instead fall under the "Active Record" abstraction.
 
-### Model instance methods
+#### Model instance methods
 
 Instance methods defined on Active Record models by _GitLab itself_. Methods
 provided by Active Record are not included, except for the following methods:
@@ -232,7 +252,7 @@ provided by Active Record are not included, except for the following methods:
 - `destroy`
 - `delete`
 
-### Active Record
+#### Active Record
 
 The API provided by Active Record itself, such as the `where` method, `save`,
 `delete_all`, and so on.

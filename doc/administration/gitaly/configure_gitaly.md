@@ -1303,14 +1303,26 @@ process repositories that do not pass consistency checks.
 For Omnibus GitLab installations, edit `/etc/gitlab/gitlab.rb` and set the
 following keys (in this example, to disable the `hasDotgit` consistency check):
 
-```ruby
-ignored_git_errors = ["hasDotgit = ignore"]
-omnibus_gitconfig['system'] = {
-        "fsck" => ignored_git_errors,
-        "fetch.fsck" => ignored_git_errors,
-        "receive.fsck" => ignored_git_errors,
-}
-```
+- In [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later:
+
+  ```ruby
+  gitaly['gitconfig'] = [
+   { key: "fsck.hasDotgit", value: "ignore" },
+   { key: "fetch.fsck.hasDotgit", value: "ignore" },
+   { key: "receive.fsck.hasDotgit", value: "ignore "},
+  ]
+  ```
+
+- In GitLab 15.2 and earlier (legacy method):
+
+  ```ruby
+  ignored_git_errors = ["hasDotgit = ignore"]
+  omnibus_gitconfig['system'] = {
+    "fsck" => ignored_git_errors,
+    "fetch.fsck" => ignored_git_errors,
+    "receive.fsck" => ignored_git_errors,
+  }
+  ```
 
 For source installs, edit the Gitaly configuration (`gitaly.toml`) to do the
 equivalent:

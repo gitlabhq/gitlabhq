@@ -153,6 +153,19 @@ describe('Project Value Stream Analytics actions', () => {
         });
       });
     });
+
+    describe('with no value stream stages available', () => {
+      it('will return SET_NO_ACCESS_ERROR', () => {
+        state = { ...state, stages: [] };
+        testAction({
+          action: actions.setInitialStage,
+          state,
+          payload: null,
+          expectedMutations: [{ type: 'SET_NO_ACCESS_ERROR' }],
+          expectedActions: [],
+        });
+      });
+    });
   });
 
   describe('updateStageTablePagination', () => {
@@ -167,46 +180,6 @@ describe('Project Value Stream Analytics actions', () => {
         expectedMutations: [{ type: 'SET_PAGINATION' }],
         expectedActions: [{ type: 'fetchStageData', payload: selectedStage.id }],
       });
-    });
-  });
-
-  describe('fetchCycleAnalyticsData', () => {
-    beforeEach(() => {
-      state = { ...defaultState, endpoints: mockEndpoints };
-      mock = new MockAdapter(axios);
-      mock.onGet(mockRequestPath).reply(httpStatusCodes.OK);
-    });
-
-    it(`dispatches the 'setSelectedStage' and 'fetchStageData' actions`, () =>
-      testAction({
-        action: actions.fetchCycleAnalyticsData,
-        state,
-        payload: {},
-        expectedMutations: [
-          { type: 'REQUEST_CYCLE_ANALYTICS_DATA' },
-          { type: 'RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS' },
-        ],
-        expectedActions: [],
-      }));
-
-    describe('with a failing request', () => {
-      beforeEach(() => {
-        state = { endpoints: mockEndpoints };
-        mock = new MockAdapter(axios);
-        mock.onGet(mockRequestPath).reply(httpStatusCodes.BAD_REQUEST);
-      });
-
-      it(`commits the 'RECEIVE_CYCLE_ANALYTICS_DATA_ERROR' mutation`, () =>
-        testAction({
-          action: actions.fetchCycleAnalyticsData,
-          state,
-          payload: {},
-          expectedMutations: [
-            { type: 'REQUEST_CYCLE_ANALYTICS_DATA' },
-            { type: 'RECEIVE_CYCLE_ANALYTICS_DATA_ERROR' },
-          ],
-          expectedActions: [],
-        }));
     });
   });
 
@@ -529,14 +502,13 @@ describe('Project Value Stream Analytics actions', () => {
   });
 
   describe('fetchValueStreamStageData', () => {
-    it('will dispatch the fetchCycleAnalyticsData, fetchStageData, fetchStageMedians and fetchStageCountValues actions', () =>
+    it('will dispatch the fetchStageData, fetchStageMedians and fetchStageCountValues actions', () =>
       testAction({
         action: actions.fetchValueStreamStageData,
         state,
         payload: {},
         expectedMutations: [],
         expectedActions: [
-          { type: 'fetchCycleAnalyticsData' },
           { type: 'fetchStageData' },
           { type: 'fetchStageMedians' },
           { type: 'fetchStageCountValues' },

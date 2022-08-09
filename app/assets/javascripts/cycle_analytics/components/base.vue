@@ -47,15 +47,13 @@ export default {
       'selectedStage',
       'selectedStageEvents',
       'selectedStageError',
-      'stages',
-      'summary',
-      'permissions',
       'stageCounts',
       'endpoints',
       'features',
       'createdBefore',
       'createdAfter',
       'pagination',
+      'hasNoAccessError',
     ]),
     ...mapGetters(['pathNavigationData', 'filterParams']),
     isLoaded() {
@@ -69,9 +67,7 @@ export default {
       return !this.isLoadingStage && this.isEmptyStage;
     },
     displayNoAccess() {
-      return (
-        !this.isLoadingStage && this.selectedStage?.id && !this.isUserAllowed(this.selectedStage.id)
-      );
+      return !this.isLoadingStage && this.hasNoAccessError;
     },
     displayPathNavigation() {
       return this.isLoading || (this.selectedStage && this.pathNavigationData.length);
@@ -136,10 +132,6 @@ export default {
     dismissOverviewDialog() {
       this.isOverviewDialogDismissed = true;
       setCookie(OVERVIEW_DIALOG_COOKIE, '1');
-    },
-    isUserAllowed(id) {
-      const { permissions } = this;
-      return Boolean(permissions?.[id]);
     },
     onHandleUpdatePagination(data) {
       this.updateStageTablePagination(data);

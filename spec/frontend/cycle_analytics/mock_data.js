@@ -101,28 +101,10 @@ export const selectedStage = {
   ...issueStage,
   value: null,
   active: false,
-  isUserAllowed: true,
   emptyStageText:
     'The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.',
 
   slug: 'issue',
-};
-
-export const stats = [issueStage, planStage, codeStage, testStage, reviewStage, stagingStage];
-
-export const permissions = {
-  issue: true,
-  plan: true,
-  code: true,
-  test: true,
-  review: true,
-  staging: true,
-};
-
-export const rawData = {
-  summary,
-  stats,
-  permissions,
 };
 
 export const convertedData = {

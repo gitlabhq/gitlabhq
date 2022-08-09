@@ -324,6 +324,15 @@ When transferring groups, note:
 - Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.
 - Transfers fail if [packages](../packages/index.md) exist in any of the projects in the group, or in any of its subgroups.
 
+To transfer a group:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Advanced** section.
+1. In the **Remove group** section, select **Transfer group**.
+1. Select the group name in the drop down menu.
+1. Select **Transfer group**.
+
 ## Enable delayed project deletion **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.

@@ -38,31 +38,24 @@ describe('Project Value Stream Analytics mutations', () => {
   });
 
   it.each`
-    mutation                                      | stateKey                 | value
-    ${types.REQUEST_VALUE_STREAMS}                | ${'valueStreams'}        | ${[]}
-    ${types.RECEIVE_VALUE_STREAMS_ERROR}          | ${'valueStreams'}        | ${[]}
-    ${types.REQUEST_VALUE_STREAM_STAGES}          | ${'stages'}              | ${[]}
-    ${types.RECEIVE_VALUE_STREAM_STAGES_ERROR}    | ${'stages'}              | ${[]}
-    ${types.REQUEST_CYCLE_ANALYTICS_DATA}         | ${'isLoading'}           | ${true}
-    ${types.REQUEST_CYCLE_ANALYTICS_DATA}         | ${'hasError'}            | ${false}
-    ${types.RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS} | ${'hasError'}            | ${false}
-    ${types.RECEIVE_CYCLE_ANALYTICS_DATA_ERROR}   | ${'isLoading'}           | ${false}
-    ${types.RECEIVE_CYCLE_ANALYTICS_DATA_ERROR}   | ${'hasError'}            | ${true}
-    ${types.REQUEST_STAGE_DATA}                   | ${'isLoadingStage'}      | ${true}
-    ${types.REQUEST_STAGE_DATA}                   | ${'isEmptyStage'}        | ${false}
-    ${types.REQUEST_STAGE_DATA}                   | ${'hasError'}            | ${false}
-    ${types.REQUEST_STAGE_DATA}                   | ${'selectedStageEvents'} | ${[]}
-    ${types.RECEIVE_STAGE_DATA_SUCCESS}           | ${'isLoadingStage'}      | ${false}
-    ${types.RECEIVE_STAGE_DATA_SUCCESS}           | ${'selectedStageEvents'} | ${[]}
-    ${types.RECEIVE_STAGE_DATA_SUCCESS}           | ${'hasError'}            | ${false}
-    ${types.RECEIVE_STAGE_DATA_ERROR}             | ${'isLoadingStage'}      | ${false}
-    ${types.RECEIVE_STAGE_DATA_ERROR}             | ${'selectedStageEvents'} | ${[]}
-    ${types.RECEIVE_STAGE_DATA_ERROR}             | ${'hasError'}            | ${true}
-    ${types.RECEIVE_STAGE_DATA_ERROR}             | ${'isEmptyStage'}        | ${true}
-    ${types.REQUEST_STAGE_MEDIANS}                | ${'medians'}             | ${{}}
-    ${types.RECEIVE_STAGE_MEDIANS_ERROR}          | ${'medians'}             | ${{}}
-    ${types.REQUEST_STAGE_COUNTS}                 | ${'stageCounts'}         | ${{}}
-    ${types.RECEIVE_STAGE_COUNTS_ERROR}           | ${'stageCounts'}         | ${{}}
+    mutation                                   | stateKey                 | value
+    ${types.REQUEST_VALUE_STREAMS}             | ${'valueStreams'}        | ${[]}
+    ${types.RECEIVE_VALUE_STREAMS_ERROR}       | ${'valueStreams'}        | ${[]}
+    ${types.REQUEST_VALUE_STREAM_STAGES}       | ${'stages'}              | ${[]}
+    ${types.RECEIVE_VALUE_STREAM_STAGES_ERROR} | ${'stages'}              | ${[]}
+    ${types.REQUEST_STAGE_DATA}                | ${'isLoadingStage'}      | ${true}
+    ${types.REQUEST_STAGE_DATA}                | ${'isEmptyStage'}        | ${false}
+    ${types.REQUEST_STAGE_DATA}                | ${'selectedStageEvents'} | ${[]}
+    ${types.RECEIVE_STAGE_DATA_SUCCESS}        | ${'isLoadingStage'}      | ${false}
+    ${types.RECEIVE_STAGE_DATA_SUCCESS}        | ${'selectedStageEvents'} | ${[]}
+    ${types.RECEIVE_STAGE_DATA_ERROR}          | ${'isLoadingStage'}      | ${false}
+    ${types.RECEIVE_STAGE_DATA_ERROR}          | ${'selectedStageEvents'} | ${[]}
+    ${types.RECEIVE_STAGE_DATA_ERROR}          | ${'isEmptyStage'}        | ${true}
+    ${types.REQUEST_STAGE_MEDIANS}             | ${'medians'}             | ${{}}
+    ${types.RECEIVE_STAGE_MEDIANS_ERROR}       | ${'medians'}             | ${{}}
+    ${types.REQUEST_STAGE_COUNTS}              | ${'stageCounts'}         | ${{}}
+    ${types.RECEIVE_STAGE_COUNTS_ERROR}        | ${'stageCounts'}         | ${{}}
+    ${types.SET_NO_ACCESS_ERROR}               | ${'hasNoAccessError'}    | ${true}
   `('$mutation will set $stateKey to $value', ({ mutation, stateKey, value }) => {
     mutations[mutation](state);
 

@@ -41,6 +41,9 @@ export default {
       direction: direction || PAGINATION_SORT_DIRECTION_DESC,
     });
   },
+  [types.SET_NO_ACCESS_ERROR](state) {
+    state.hasNoAccessError = true;
+  },
   [types.REQUEST_VALUE_STREAMS](state) {
     state.valueStreams = [];
   },
@@ -59,23 +62,12 @@ export default {
   [types.RECEIVE_VALUE_STREAM_STAGES_ERROR](state) {
     state.stages = [];
   },
-  [types.REQUEST_CYCLE_ANALYTICS_DATA](state) {
-    state.isLoading = true;
-    state.hasError = false;
-  },
-  [types.RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS](state, data) {
-    state.permissions = data?.permissions || {};
-    state.hasError = false;
-  },
-  [types.RECEIVE_CYCLE_ANALYTICS_DATA_ERROR](state) {
-    state.isLoading = false;
-    state.hasError = true;
-  },
   [types.REQUEST_STAGE_DATA](state) {
     state.isLoadingStage = true;
     state.isEmptyStage = false;
     state.selectedStageEvents = [];
-    state.hasError = false;
+
+    state.hasNoAccessError = false;
   },
   [types.RECEIVE_STAGE_DATA_SUCCESS](state, events = []) {
     state.isLoadingStage = false;
@@ -83,13 +75,14 @@ export default {
     state.selectedStageEvents = events.map((ev) =>
       convertObjectPropsToCamelCase(ev, { deep: true }),
     );
-    state.hasError = false;
+
+    state.hasNoAccessError = false;
   },
   [types.RECEIVE_STAGE_DATA_ERROR](state, error) {
     state.isLoadingStage = false;
     state.isEmptyStage = true;
     state.selectedStageEvents = [];
-    state.hasError = true;
+
     state.selectedStageError = error;
   },
   [types.REQUEST_STAGE_MEDIANS](state) {

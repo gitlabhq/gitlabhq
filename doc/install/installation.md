@@ -556,19 +556,6 @@ sudo -u git -H cp config/puma.rb.example config/puma.rb
 # cores you have available. You can get that number via the `nproc` command.
 sudo -u git -H editor config/puma.rb
 
-# Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
-sudo -u git -H git config --global gc.auto 0
-
-# Enable packfile bitmaps
-sudo -u git -H git config --global repack.writeBitmaps true
-
-# Enable push options
-# Refer to https://docs.gitlab.com/ee/user/project/push_options.html for more information.
-sudo -u git -H git config --global receive.advertisePushOptions true
-
-# Enable fsyncObjectFiles to reduce risk of repository corruption if the server crashes
-sudo -u git -H git config --global core.fsyncObjectFiles true
-
 # Configure Redis connection settings
 sudo -u git -H cp config/resque.yml.example config/resque.yml
 sudo -u git -H cp config/cable.yml.example config/cable.yml
