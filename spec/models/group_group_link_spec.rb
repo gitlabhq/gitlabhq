@@ -24,8 +24,8 @@ RSpec.describe GroupGroupLink do
 
       it 'returns all records which are greater than Guests access' do
         expect(described_class.non_guests).to match_array([
-                                                           group_group_link_reporter, group_group_link,
-                                                           group_group_link_maintainer, group_group_link_owner
+                                                            group_group_link_reporter, group_group_link,
+                                                            group_group_link_maintainer, group_group_link_owner
                                                           ])
       end
     end
@@ -38,13 +38,13 @@ RSpec.describe GroupGroupLink do
 
       it 'returns all records which have OWNER or MAINTAINER access' do
         expect(described_class.with_owner_or_maintainer_access).to match_array([
-                                                                                  group_group_link_maintainer,
-                                                                                  group_group_link_owner
-                                                                              ])
+                                                                                 group_group_link_maintainer,
+                                                                                 group_group_link_owner
+                                                                               ])
       end
     end
 
-    context 'access via group shares' do
+    context 'for access via group shares' do
       let_it_be(:shared_with_group_1) { create(:group) }
       let_it_be(:shared_with_group_2) { create(:group) }
       let_it_be(:shared_with_group_3) { create(:group) }

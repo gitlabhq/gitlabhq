@@ -53,4 +53,4 @@
           = form.label :due_date, _('Due date'), class: "col-12"
           .col-12
             .issuable-form-select-holder
-              = form.text_field :due_date, id: "issuable-due-date", class: "datepicker form-control", placeholder: _('Select due date'), autocomplete: 'off'
+              = form.gitlab_ui_datepicker :due_date, placeholder: _('Select due date'), autocomplete: 'off', id: "issuable-due-date"

@@ -151,8 +151,6 @@ module API
         requires :deployment_id, type: Integer, desc: 'The deployment ID'
       end
       delete ':id/deployments/:deployment_id' do
-        not_found! unless Feature.enabled?(:delete_deployments_api, user_project)
-
         deployment = user_project.deployments.find(params[:deployment_id])
 
         authorize!(:destroy_deployment, deployment)

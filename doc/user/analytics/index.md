@@ -47,7 +47,7 @@ You can use GitLab to review analytics at the project level. Some of these featu
 
 The following analytics features are available for users to create personalized views:
 
-- [Application Security](../application_security/security_dashboard/#security-center)
+- [Application Security](../application_security/security_dashboard/index.md#security-center)
 
 Be sure to review the documentation page for this feature for GitLab tier requirements.
 

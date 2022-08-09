@@ -27,7 +27,7 @@
   .row
     .col
       .js-access-tokens-expires-at{ data: expires_at_field_data }
-        = f.text_field :expires_at, class: 'datepicker gl-datepicker-input form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off', data: { js_name: 'expiresAt' }
+        = f.text_field :expires_at, class: 'gl-datepicker-input form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off', data: { js_name: 'expiresAt' }
 
   - if resource
     .row

@@ -299,7 +299,7 @@ The [layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/global_
 is fed by the [data file](#data-file), builds the global nav, and is rendered by the
 [default](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/default.html) layout.
 
-The global nav contains links from all [four upstream projects](index.md#architecture).
+The global nav contains links from all [four upstream projects](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/architecture.md).
 The [global nav URL](#urls) has a different prefix depending on the documentation file you change.
 
 | Repository                                                     | Link prefix | Final URL                          |

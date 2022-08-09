@@ -229,6 +229,45 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
     end
   end
 
+  describe '#gitlab_ui_datepicker' do
+    subject(:datepicker_html) do
+      form_builder.gitlab_ui_datepicker(
+        :expires_at,
+        **optional_args
+      )
+    end
+
+    let(:optional_args) { {} }
+
+    context 'without optional arguments' do
+      it 'renders correct html' do
+        expected_html = <<~EOS
+          <input class="datepicker form-control gl-form-input" type="text" name="user[expires_at]" id="user_expires_at" />
+        EOS
+
+        expect(html_strip_whitespace(datepicker_html)).to eq(html_strip_whitespace(expected_html))
+      end
+    end
+
+    context 'with optional arguments' do
+      let(:optional_args) do
+        {
+          id: 'milk_gone_bad',
+          data: { action: 'throw' },
+          value: '2022-08-01'
+        }
+      end
+
+      it 'renders correct html' do
+        expected_html = <<~EOS
+          <input id="milk_gone_bad" data-action="throw" value="2022-08-01" class="datepicker form-control gl-form-input" type="text" name="user[expires_at]" />
+        EOS
+
+        expect(html_strip_whitespace(datepicker_html)).to eq(html_strip_whitespace(expected_html))
+      end
+    end
+  end
+
   private
 
   def html_strip_whitespace(html)

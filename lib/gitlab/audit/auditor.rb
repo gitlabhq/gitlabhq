@@ -107,8 +107,8 @@ module Gitlab
 
         event = AuthenticationEvent.new(authentication_event_payload)
         event.save!
-      rescue ActiveRecord::RecordInvalid => error
-        ::Gitlab::ErrorTracking.track_exception(error, audit_operation: @name)
+      rescue ActiveRecord::RecordInvalid => e
+        ::Gitlab::ErrorTracking.track_exception(e, audit_operation: @name)
       end
 
       def authentication_event_payload
@@ -146,8 +146,8 @@ module Gitlab
 
       def log_to_database(events)
         AuditEvent.bulk_insert!(events)
-      rescue ActiveRecord::RecordInvalid => error
-        ::Gitlab::ErrorTracking.track_exception(error, audit_operation: @name)
+      rescue ActiveRecord::RecordInvalid => e
+        ::Gitlab::ErrorTracking.track_exception(e, audit_operation: @name)
       end
 
       def log_to_file(events)

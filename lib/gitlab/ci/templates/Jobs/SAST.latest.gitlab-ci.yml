@@ -47,7 +47,7 @@ bandit-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /bandit/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.py'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
@@ -68,7 +68,7 @@ brakeman-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.rb'
         - '**/Gemfile'
@@ -91,7 +91,7 @@ eslint-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /eslint/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.html'
         - '**/*.js'
@@ -120,7 +120,7 @@ flawfinder-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /flawfinder/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.c'
         - '**/*.cc'
@@ -152,7 +152,7 @@ kubesec-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /kubesec/
       when: never
     # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_MERGE_REQUEST_IID &&
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $SCAN_KUBERNETES_MANIFESTS == 'true'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
@@ -172,7 +172,7 @@ gosec-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /gosec/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.go'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
@@ -197,7 +197,7 @@ mobsf-android-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
       when: never
     # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_MERGE_REQUEST_IID &&
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
       exists:
         - '**/*.apk'
@@ -219,7 +219,7 @@ mobsf-ios-sast:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
       when: never
     # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_MERGE_REQUEST_IID &&
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $SAST_EXPERIMENTAL_FEATURES == 'true'
       exists:
         - '**/*.ipa'
@@ -245,7 +245,7 @@ nodejs-scan-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /nodejs-scan/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/package.json'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
@@ -266,7 +266,7 @@ phpcs-security-audit-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /phpcs-security-audit/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.php'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
@@ -287,7 +287,7 @@ pmd-apex-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /pmd-apex/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.cls'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
@@ -308,7 +308,7 @@ security-code-scan-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /security-code-scan/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.csproj'
         - '**/*.vbproj'
@@ -332,7 +332,7 @@ semgrep-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.py'
         - '**/*.js'
@@ -367,7 +367,7 @@ sobelow-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /sobelow/
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - 'mix.exs'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
@@ -392,7 +392,7 @@ spotbugs-sast:
       when: never
     - if: $SAST_DISABLED
       when: never
-    - if: $CI_MERGE_REQUEST_IID    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Add the job to merge request pipelines if there's an open merge request.
       exists:
         - '**/*.groovy'
         - '**/*.java'

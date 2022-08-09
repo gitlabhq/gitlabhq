@@ -17642,9 +17642,7 @@ CREATE TABLE namespace_details (
     updated_at timestamp with time zone,
     cached_markdown_version integer,
     description text,
-    description_html text,
-    CONSTRAINT check_2df620eaf6 CHECK ((char_length(description_html) <= 255)),
-    CONSTRAINT check_2f563eec0f CHECK ((char_length(description) <= 255))
+    description_html text
 );
 
 CREATE TABLE namespace_limits (

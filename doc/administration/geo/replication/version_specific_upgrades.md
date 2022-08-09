@@ -178,11 +178,15 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab 
 
 ## Upgrading to GitLab 13.7
 
-We've detected an issue with the `FetchRemove` call used by Geo secondaries.
-This causes performance issues as we execute reference transaction hooks for
-each upgraded reference. Delay any upgrade attempts until this is in the
-[13.7.5 patch release.](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3002).
-More details are available [in this issue](https://gitlab.com/gitlab-org/git/-/issues/79).
+- We've detected an issue with the `FetchRemove` call used by Geo secondaries.
+  This causes performance issues as we execute reference transaction hooks for
+  each upgraded reference. Delay any upgrade attempts until this is in the
+  [13.7.5 patch release.](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3002).
+  More details are available [in this issue](https://gitlab.com/gitlab-org/git/-/issues/79).
+- A new secret is generated in `/etc/gitlab/gitlab-secrets.json`. 
+  In an HA GitLab or GitLab Geo environment, secrets need to be the same on all nodes. 
+  Ensure this new secret is also accounted for if you are manually syncing the file across
+  nodes, or manually specifying secrets in `/etc/gitlab/gitlab.rb`.
 
 ## Upgrading to GitLab 13.5
 

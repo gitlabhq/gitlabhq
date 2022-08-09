@@ -483,18 +483,6 @@ RSpec.describe API::Deployments do
       end
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(delete_deployments_api: false)
-      end
-
-      it 'is not found' do
-        delete api("/projects/#{project.id}/deployments/#{old_deploy.id}", user)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'as a developer' do
       let(:developer) { create(:user) }
 

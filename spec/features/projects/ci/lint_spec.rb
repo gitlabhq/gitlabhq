@@ -16,10 +16,6 @@ RSpec.describe 'CI Lint', :js do
 
     visit project_ci_lint_path(project)
     editor_set_value(yaml_content)
-
-    wait_for('YAML content') do
-      find(content_selector).text.present?
-    end
   end
 
   describe 'YAML parsing' do

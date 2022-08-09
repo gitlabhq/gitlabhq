@@ -59,6 +59,10 @@ module Gitlab
         ).render_in(@template, &block)
       end
 
+      def gitlab_ui_datepicker(method, options = {})
+        @template.text_field @object_name, method, options.merge(class: "datepicker form-control gl-form-input")
+      end
+
       private
 
       def format_options(options)

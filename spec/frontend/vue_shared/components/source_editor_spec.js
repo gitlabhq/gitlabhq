@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import { EDITOR_READY_EVENT } from '~/editor/constants';
 import Editor from '~/editor/source_editor';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
+import * as helpers from 'jest/editor/helpers';
 
 jest.mock('~/editor/source_editor');
 
@@ -13,6 +14,7 @@ describe('Source Editor component', () => {
   const value = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
   const fileName = 'lorem.txt';
   const fileGlobalId = 'snippet_777';
+  const useSpy = jest.fn();
   const createInstanceMock = jest.fn().mockImplementation(() => {
     mockInstance = {
       onDidChangeModelContent: jest.fn(),
@@ -20,6 +22,7 @@ describe('Source Editor component', () => {
       getValue: jest.fn(),
       setValue: jest.fn(),
       dispose: jest.fn(),
+      use: useSpy,
     };
     return mockInstance;
   });
@@ -83,8 +86,25 @@ describe('Source Editor component', () => {
         blobPath: fileName,
         blobGlobalId: fileGlobalId,
         blobContent: value,
-        extensions: null,
       });
+    });
+
+    it.each`
+      description                           | extensions                                                                                                          | toBeCalled
+      ${'no extension when `undefined` is'} | ${undefined}                                                                                                        | ${false}
+      ${'no extension when {} is'}          | ${{}}                                                                                                               | ${false}
+      ${'no extension when [] is'}          | ${[]}                                                                                                               | ${false}
+      ${'single extension'}                 | ${{ definition: helpers.SEClassExtension }}                                                                         | ${true}
+      ${'single extension with options'}    | ${{ definition: helpers.SEWithSetupExt, setupOptions: { foo: 'bar' } }}                                             | ${true}
+      ${'multiple extensions'}              | ${[{ definition: helpers.SEClassExtension }, { definition: helpers.SEWithSetupExt }]}                               | ${true}
+      ${'multiple extensions with options'} | ${[{ definition: helpers.SEClassExtension }, { definition: helpers.SEWithSetupExt, setupOptions: { foo: 'bar' } }]} | ${true}
+    `('installs $description passed as a prop', ({ extensions, toBeCalled }) => {
+      createComponent({ extensions });
+      if (toBeCalled) {
+        expect(useSpy).toHaveBeenCalledWith(extensions);
+      } else {
+        expect(useSpy).not.toHaveBeenCalled();
+      }
     });
 
     it('reacts to the changes in fileName', () => {

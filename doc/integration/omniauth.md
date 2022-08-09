@@ -107,6 +107,65 @@ To change these settings:
 After configuring these settings, you can configure
 your chosen [provider](#supported-providers).
 
+### Per-provider configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89379) in GitLab 15.3.
+
+If `allow_single_sign_on` is set, GitLab uses one of the following fields returned in the OmniAuth `auth_hash` to establish a username in GitLab for the user signing in,
+choosing the first that exists:
+
+- `username`.
+- `nickname`.
+- `email`.
+
+You can create GitLab configuration on a per-provider basis, which is supplied to the [provider](#supported-providers) using `args`. If you set the `gitlab_username_claim`
+variable in `args` for a provider, you can select another claim to use for the GitLab username. The chosen claim must be unique to avoid collisions.
+
+- **For Omnibus installations**
+
+  ```ruby
+  gitlab_rails['omniauth_providers'] = [
+
+    # The generic pattern for configuring a provider with name PROVIDER_NAME
+
+    gitlab_rails['omniauth_providers'] = {
+      name: "PROVIDER_NAME"
+      ...
+      args: { gitlab_username_claim: 'sub' } # For users signing in with the provider you configure, the GitLab username will be set to the "sub" received from the provider
+    },
+
+    # Here are examples using GitHub and Crowd
+
+    gitlab_rails['omniauth_providers'] = {
+      name: "github"
+      ...
+      args: { gitlab_username_claim: 'name' } # For users signing in with GitHub, the GitLab username will be set to the "name" received from GitHub
+    },
+    {
+      name: "crowd"
+      ...
+      args: { gitlab_username_claim: 'uid' } # For users signing in with Crowd, the GitLab username will be set to the "uid" received from Crowd
+    },
+  ]
+  ```
+
+- **For installations from source**
+
+  ```yaml
+  - { name: 'PROVIDER_NAME',
+    ...
+    args: { gitlab_username_claim: 'sub' }
+  }
+  - { name: 'github',
+    ...
+    args: { gitlab_username_claim: 'name' }
+  }
+  - { name: 'crowd',
+    ...
+    args: { gitlab_username_claim: 'uid' }
+  }
+  ```
+
 ### Passwords for users created via OmniAuth
 
 The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md)

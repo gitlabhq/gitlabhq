@@ -209,7 +209,12 @@ monthlyBugsCreated:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 15.3.
 
-The `data_source` parameter was introduced to allow visualizing data from different data sources. Currently `issuable` is the only supported value.
+The `data_source` parameter was introduced to allow visualizing data from different data sources.
+
+Supported values are:
+
+- `issuables`: Exposes merge request or issue data.
+- `dora`: Exposes DORA metrics data.
 
 #### `Issuable` query parameters
 
@@ -259,7 +264,7 @@ monthlyBugsCreated:
         - regression
 ```
 
-#### `query.params.collection_labels`
+##### `query.params.collection_labels`
 
 Group "issuable" by the configured labels.
 
@@ -286,7 +291,7 @@ weeklyBugsBySeverity:
         - S4
 ```
 
-#### `query.group_by`
+##### `query.group_by`
 
 Define the X-axis of your chart.
 
@@ -296,7 +301,7 @@ Supported values are:
 - `week`: Group data per week.
 - `month`: Group data per month.
 
-#### `query.period_limit`
+##### `query.period_limit`
 
 Define how far "issuables" are queried in the past (using the `query.period_field`).
 
@@ -332,6 +337,68 @@ The `period_field` is automatically set to:
 NOTE:
 Until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/26911), is resolved,
 you may see `created_at` in place of `merged_at`. `created_at` is used instead.
+
+#### `DORA` query parameters
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367248) in GitLab 15.3.
+
+An example DORA chart definition:
+
+```yaml
+dora:
+  title: "DORA charts"
+  charts:
+    - title: "DORA deployment frequency"
+      type: bar
+      query:
+        data_source: dora
+        params:
+          metric: deployment_frequency
+          group_by: day
+          period_limit: 10
+      projects:
+        only:
+          - 38
+    - title: "DORA lead time for changes"
+      description: "DORA lead time for changes"
+      type: bar
+      query:
+        data_source: dora
+        params:
+          metric: lead_time_for_changes
+          group_by: day
+          environment_tiers:
+            - staging
+          period_limit: 30
+```
+
+#### `query.metric`
+
+Defines which DORA metric to query. The available values are:
+
+- `deployment_frequency` (default)
+- `lead_time_for_changes`
+- `time_to_restore_service`
+- `change_failure_rate`
+
+The metrics are described on the [DORA API](../../../api/dora/metrics.md#the-value-field) page.
+
+##### `query.group_by`
+
+Define the X-axis of your chart.
+
+Supported values are:
+
+- `day` (default): Group data per day.
+- `month`: Group data per month.
+
+##### `query.period_limit`
+
+Define how far the metrics are queried in the past (default: 15). Maximum lookback period is 180 days or 6 months.
+
+##### `query.environment_tiers`
+
+An array of environments to include into the calculation (default: production).
 
 ### `projects`
 

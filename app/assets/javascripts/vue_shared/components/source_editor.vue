@@ -1,5 +1,5 @@
 <script>
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import { CONTENT_UPDATE_DEBOUNCE, EDITOR_READY_EVENT } from '~/editor/constants';
 import Editor from '~/editor/source_editor';
 
@@ -37,9 +37,9 @@ export default {
       default: '',
     },
     extensions: {
-      type: [String, Array],
+      type: [Object, Array],
       required: false,
-      default: () => null,
+      default: () => ({}),
     },
     editorOptions: {
       type: Object,
@@ -74,11 +74,13 @@ export default {
       blobPath: this.fileName,
       blobContent: this.value,
       blobGlobalId: this.fileGlobalId,
-      extensions: this.extensions,
       ...this.editorOptions,
     });
 
     this.editor.onDidChangeModelContent(debounce(this.onFileChange.bind(this), this.debounceValue));
+    if (!isEmpty(this.extensions)) {
+      this.editor.use(this.extensions);
+    }
   },
   beforeDestroy() {
     this.editor.dispose();

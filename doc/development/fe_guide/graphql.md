@@ -896,6 +896,51 @@ export default new VueApollo({
 This is similar to the `DesignCollection` example above as new page results are appended to the
 previous ones.
 
+For some cases, it's hard to define the correct `keyArgs` for the field because all
+the fields are updated. In this case, we can set `keyArgs` to `false`. This instructs
+Apollo Client to not perform any automatic merge, and fully rely on the logic we
+put into the `merge` function.
+
+For example, we have a query like this:
+
+```javascript
+query searchGroupsWhereUserCanTransfer {
+  currentUser {
+    id
+    groups {
+      nodes {
+        id
+        fullName
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}
+```
+
+Here, the `groups` field doesn't have a good candidate for `keyArgs`: both
+`nodes` and `pageInfo` will be updated when we're fetching a second page.
+Setting `keyArgs` to `false` makes the update work as intended:
+
+```javascript
+typePolicies: {
+  UserCore: {
+    fields: {
+      groups: {
+        keyArgs: false,
+      },
+    },
+  },
+  GroupConnection: {
+    fields: {
+      nodes: concatPagination(),
+    },
+  },
+}
+```
+
 #### Using a recursive query in components
 
 When it is necessary to fetch all paginated data initially an Apollo query can do the trick for us.

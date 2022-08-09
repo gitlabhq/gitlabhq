@@ -6,6 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Wiki **(FREE)**
 
+> - Page loading [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/336792) to asynchronous in GitLab 14.9.
+> - Page slug encoding method [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71753) to `ERB::Util.url_encode` in GitLab 14.9.
+
 If you don't want to keep your documentation in your repository, but you want
 to keep it in the same project as your code, you can use the wiki GitLab provides
 in each GitLab project. Every wiki is a separate Git repository, so you can create
@@ -370,3 +373,12 @@ For the status of the ongoing development for CommonMark and GitLab Flavored Mar
 - [Group repository storage moves API](../../../api/group_repository_storage_moves.md)
 - [Group wikis API](../../../api/group_wikis.md)
 - [Wiki keyboard shortcuts](../../shortcuts.md#wiki-pages)
+
+## Troubleshooting
+
+### Page slug rendering with Apache reverse proxy
+
+In GitLab 14.9 and later, page slugs are now encoded using the
+[`ERB::Util.url_encode`](https://www.rubydoc.info/stdlib/erb/ERB%2FUtil.url_encode) method.
+If you use an Apache reverse proxy, you can add a `nocanon` argument to the `ProxyPass`
+line of your Apache configuration to ensure your page slugs render correctly.
