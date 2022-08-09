@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Group'] do
+  include GraphqlHelpers
+
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Group) }
 
   specify { expect(described_class.graphql_name).to eq('Group') }
@@ -55,5 +57,43 @@ RSpec.describe GitlabSchema.types['Group'] do
 
   it_behaves_like 'a GraphQL type with labels' do
     let(:labels_resolver_arguments) { [:search_term, :includeAncestorGroups, :includeDescendantGroups, :onlyGroupLabels] }
+  end
+
+  describe 'milestones' do
+    let(:user) { create(:user) }
+    let(:subgroup) { create(:group, parent: create(:group)) }
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{subgroup.full_path}") {
+            milestones {
+              nodes {
+                id
+                title
+                projectMilestone
+                groupMilestone
+                subgroupMilestone
+              }
+            }
+          }
+        }
+      )
+    end
+
+    def clean_state_query
+      run_with_clean_state(query, context: { current_user: user })
+    end
+
+    it 'avoids N+1 queries' do
+      subgroup.add_reporter(user)
+
+      create(:milestone, group: subgroup)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { clean_state_query }
+
+      create_list(:milestone, 2, group: subgroup)
+
+      expect { clean_state_query }.not_to exceed_all_query_limit(control)
+    end
   end
 end

@@ -559,8 +559,8 @@ RSpec.describe ::SystemNotes::IssuablesService do
       let(:action) { 'task' }
     end
 
-    it "posts the 'marked the task as complete' system note" do
-      expect(subject.note).to eq("marked the task **task** as completed")
+    it "posts the 'marked the checklist item as complete' system note" do
+      expect(subject.note).to eq("marked the checklist item **task** as completed")
     end
   end
 

@@ -1,5 +1,4 @@
 ---
-# Cop supports --auto-correct.
 Layout/HashAlignment:
   # Offense count: 630
   # Temporarily disabled due to too many offenses
@@ -40,17 +39,6 @@ Layout/HashAlignment:
     - 'app/models/wiki.rb'
     - 'app/models/work_items/type.rb'
     - 'ee/app/graphql/types/vulnerability_request_response_header_type.rb'
-    - 'ee/app/models/allowed_email_domain.rb'
-    - 'ee/app/models/ci/minutes/usage.rb'
-    - 'ee/app/models/ee/application_setting.rb'
-    - 'ee/app/models/elastic/reindexing_task.rb'
-    - 'ee/app/models/gitlab_subscriptions/features.rb'
-    - 'ee/app/models/gitlab_subscriptions/upcoming_reconciliation.rb'
-    - 'ee/app/models/historical_data.rb'
-    - 'ee/app/models/incident_management/escalation_rule.rb'
-    - 'ee/app/models/incident_management/oncall_rotation.rb'
-    - 'ee/app/models/scim_identity.rb'
-    - 'ee/app/models/status_page/project_setting.rb'
     - 'ee/app/serializers/ee/evidences/release_entity.rb'
     - 'ee/app/services/ci/external_pull_requests/process_github_event_service.rb'
     - 'ee/app/services/ci_cd/setup_project.rb'

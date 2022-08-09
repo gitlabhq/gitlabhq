@@ -70,7 +70,7 @@ describe('RightSidebar', () => {
 
     it('should not hide collapsed icons', () => {
       [].forEach.call(document.querySelectorAll('.sidebar-collapsed-icon'), (el) => {
-        expect(el.querySelector('.fa, svg').classList.contains('hidden')).toBeFalsy();
+        expect(el.querySelector('.fa, svg').classList.contains('hidden')).toBe(false);
       });
     });
   });

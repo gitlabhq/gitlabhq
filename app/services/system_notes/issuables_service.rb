@@ -273,12 +273,12 @@ module SystemNotes
     #
     # Example Note text:
     #
-    #   "marked the task Whatever as completed."
+    #   "marked the checklist item Whatever as completed."
     #
     # Returns the created Note object
     def change_task_status(new_task)
       status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
-      body = "marked the task **#{new_task.source}** as #{status_label}"
+      body = "marked the checklist item **#{new_task.source}** as #{status_label}"
 
       issue_activity_counter.track_issue_description_changed_action(author: author) if noteable.is_a?(Issue)
 

@@ -85,6 +85,7 @@ module Types
 
     field :milestones,
           description: 'Milestones of the group.',
+          extras: [:lookahead],
           resolver: Resolvers::GroupMilestonesResolver
 
     field :boards,

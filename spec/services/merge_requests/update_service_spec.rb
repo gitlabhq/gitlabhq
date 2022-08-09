@@ -980,8 +980,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         end
 
         it 'creates system note about task status change' do
-          note1 = find_note('marked the task **Task 1** as completed')
-          note2 = find_note('marked the task **Task 2** as completed')
+          note1 = find_note('marked the checklist item **Task 1** as completed')
+          note2 = find_note('marked the checklist item **Task 2** as completed')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -998,8 +998,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         end
 
         it 'creates system note about task status change' do
-          note1 = find_note('marked the task **Task 1** as incomplete')
-          note2 = find_note('marked the task **Task 2** as incomplete')
+          note1 = find_note('marked the checklist item **Task 1** as incomplete')
+          note2 = find_note('marked the checklist item **Task 2** as incomplete')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil

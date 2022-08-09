@@ -45,5 +45,9 @@ module Resolvers
         options: { include_subgroups: true }
       ).execute
     end
+
+    def preloads
+      super.merge({ subgroup_milestone: :group })
+    end
   end
 end
