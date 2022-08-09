@@ -170,7 +170,9 @@ RSpec.describe BulkInsertSafe do
         all_items = bulk_insert_item_class.valid_list(10) + bulk_insert_item_class.invalid_list(10)
 
         expect do
-          bulk_insert_item_class.bulk_insert!(all_items, batch_size: 2) rescue nil
+          bulk_insert_item_class.bulk_insert!(all_items, batch_size: 2)
+        rescue StandardError
+          nil
         end.not_to change { bulk_insert_item_class.count }
       end
 

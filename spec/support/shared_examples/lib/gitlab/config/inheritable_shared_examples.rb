@@ -86,7 +86,10 @@ RSpec.shared_examples 'with inheritable CI config' do
             expect do
               # we ignore exceptions as `#overwrite_entry`
               # can raise exception on duplicates
-              entry.send(:inherit!, deps) rescue described_class::InheritError
+
+              entry.send(:inherit!, deps)
+            rescue described_class::InheritError
+              nil
             end.not_to change { entry[entry_key] }
           end
         end

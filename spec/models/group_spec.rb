@@ -2603,7 +2603,11 @@ RSpec.describe Group do
 
         it 'does not enable shared runners' do
           expect do
-            subject rescue nil
+            begin
+              subject
+            rescue StandardError
+              nil
+            end
 
             parent.reload
             group.reload
@@ -2704,7 +2708,11 @@ RSpec.describe Group do
 
         it 'does not allow descendants to override' do
           expect do
-            subject rescue nil
+            begin
+              subject
+            rescue StandardError
+              nil
+            end
 
             parent.reload
             group.reload

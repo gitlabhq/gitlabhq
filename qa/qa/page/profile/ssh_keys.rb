@@ -31,7 +31,11 @@ module QA
 
         def fill_expiry_date(date)
           date = date.strftime('%m/%d/%Y') if date.is_a?(Date)
-          Date.strptime(date, '%m/%d/%Y') rescue ArgumentError raise "Expiry date must be in mm/dd/yyyy format"
+          begin
+            Date.strptime(date, '%m/%d/%Y')
+          rescue ArgumentError
+            raise "Expiry date must be in mm/dd/yyyy format"
+          end
 
           fill_element(:key_expiry_date_field, date)
         end

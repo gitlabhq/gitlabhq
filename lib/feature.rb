@@ -31,7 +31,11 @@ module Feature
 
     def feature_flags_available?
       # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised
-      active_db_connection = ActiveRecord::Base.connection.active? rescue false # rubocop:disable Database/MultipleDatabases
+      active_db_connection = begin
+        ActiveRecord::Base.connection.active? # rubocop:disable Database/MultipleDatabases
+      rescue StandardError
+        false
+      end
 
       active_db_connection && Feature::FlipperFeature.table_exists?
     rescue ActiveRecord::NoDatabaseError

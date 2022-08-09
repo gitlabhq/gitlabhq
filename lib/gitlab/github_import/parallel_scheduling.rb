@@ -63,7 +63,7 @@ module Gitlab
       # Imports all the objects in sequence in the current thread.
       def sequential_import
         each_object_to_import do |object|
-          repr = representation_class.from_api_response(object)
+          repr = representation_class.from_api_response(object, additional_object_data)
 
           importer_class.new(repr, project, client).execute
         end
@@ -72,26 +72,9 @@ module Gitlab
       # Imports all objects in parallel by scheduling a Sidekiq job for every
       # individual object.
       def parallel_import
-        if parallel_import_batch.present?
-          spread_parallel_import
-        else
-          parallel_import_deprecated
-        end
-      end
+        raise 'Batch settings must be defined for parallel import' if parallel_import_batch.blank?
 
-      def parallel_import_deprecated
-        waiter = JobWaiter.new
-
-        each_object_to_import do |object|
-          repr = representation_class.from_api_response(object)
-
-          sidekiq_worker_class
-            .perform_async(project.id, repr.to_hash, waiter.key)
-
-          waiter.jobs_remaining += 1
-        end
-
-        waiter
+        spread_parallel_import
       end
 
       def spread_parallel_import
@@ -100,7 +83,7 @@ module Gitlab
         import_arguments = []
 
         each_object_to_import do |object|
-          repr = representation_class.from_api_response(object)
+          repr = representation_class.from_api_response(object, additional_object_data)
 
           import_arguments << [project.id, repr.to_hash, waiter.key]
 
@@ -222,6 +205,10 @@ module Gitlab
       end
 
       private
+
+      def additional_object_data
+        {}
+      end
 
       def info(project_id, extra = {})
         Logger.info(log_attributes(project_id, extra))

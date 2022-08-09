@@ -39,7 +39,11 @@ module Pajamas
           # Users show a gravatar instead of an identicon. Also avatars of
           # blocked users are only shown if the current_user is an admin.
           # To not duplicate this logic, we are using existing helpers here.
-          current_user = helpers.current_user rescue nil
+          current_user = begin
+            helpers.current_user
+          rescue StandardError
+            nil
+          end
           helpers.avatar_icon_for_user(@record, @size, current_user: current_user)
         elsif @record.try(:avatar_url)
           "#{@record.avatar_url}?width=#{@size}"

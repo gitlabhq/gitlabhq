@@ -48,6 +48,9 @@ class Integration < ApplicationRecord
   SECTION_TYPE_CONNECTION = 'connection'
   SECTION_TYPE_TRIGGER = 'trigger'
 
+  SNOWPLOW_EVENT_ACTION = 'perform_integrations_action'
+  SNOWPLOW_EVENT_LABEL = 'redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly'
+
   attr_encrypted :properties,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_32,

@@ -142,14 +142,18 @@ RSpec.describe DesignManagement::Version do
 
     it 'does not leave invalid versions around if creation fails' do
       expect do
-        described_class.create_for_designs([], 'abcdef', author) rescue nil
+        described_class.create_for_designs([], 'abcdef', author)
+      rescue StandardError
+        nil
       end.not_to change { described_class.count }
     end
 
     it 'does not leave orphaned design-versions around if creation fails' do
       actions = as_actions(designs)
       expect do
-        described_class.create_for_designs(actions, '', author) rescue nil
+        described_class.create_for_designs(actions, '', author)
+      rescue StandardError
+        nil
       end.not_to change { DesignManagement::Action.count }
     end
 

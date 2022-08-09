@@ -63,7 +63,11 @@ module Gitlab
 
       return unless containers.present? && pod_name.present? && phase == "Running"
 
-      created_at = DateTime.parse(metadata["creationTimestamp"]) rescue nil
+      created_at = begin
+        DateTime.parse(metadata["creationTimestamp"])
+      rescue StandardError
+        nil
+      end
 
       containers.map do |container|
         {

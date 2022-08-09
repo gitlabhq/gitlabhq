@@ -84,7 +84,11 @@ module Gitlab
 
       def connect_to_db?
         # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised
-        active_db_connection = ::ApplicationSetting.connection.active? rescue false
+        active_db_connection = begin
+          ::ApplicationSetting.connection.active?
+        rescue StandardError
+          false
+        end
 
         active_db_connection &&
           ApplicationSetting.database.cached_table_exists?

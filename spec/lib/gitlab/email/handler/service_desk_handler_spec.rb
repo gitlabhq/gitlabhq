@@ -493,11 +493,19 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
       end
 
       it 'does not create an issue' do
-        expect { receiver.execute rescue nil }.not_to change { Issue.count }
+        expect do
+          receiver.execute
+        rescue StandardError
+          nil
+        end.not_to change { Issue.count }
       end
 
       it 'does not send thank you email' do
-        expect { receiver.execute rescue nil }.not_to have_enqueued_job.on_queue('mailers')
+        expect do
+          receiver.execute
+        rescue StandardError
+          nil
+        end.not_to have_enqueued_job.on_queue('mailers')
       end
     end
 
@@ -540,7 +548,11 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
     end
 
     it "doesn't create an issue" do
-      expect { receiver.execute rescue nil }.not_to change { Issue.count }
+      expect do
+        receiver.execute
+      rescue StandardError
+        nil
+      end.not_to change { Issue.count }
     end
   end
 end

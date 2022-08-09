@@ -82,14 +82,20 @@ module Ci
     end
 
     def start_date
-      start_date = Date.strptime(params[:start_date], DATE_FORMAT_ALLOWED) rescue REPORT_WINDOW.ago.to_date
+      start_date = begin
+        Date.strptime(params[:start_date], DATE_FORMAT_ALLOWED)
+      rescue StandardError
+        REPORT_WINDOW.ago.to_date
+      end
 
       # The start_date cannot be older than `end_date - 90 days`
       [start_date, end_date - REPORT_WINDOW].max
     end
 
     def end_date
-      Date.strptime(params[:end_date], DATE_FORMAT_ALLOWED) rescue Date.current
+      Date.strptime(params[:end_date], DATE_FORMAT_ALLOWED)
+    rescue StandardError
+      Date.current
     end
   end
 end

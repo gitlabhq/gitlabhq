@@ -2500,38 +2500,19 @@ RSpec.describe API::MergeRequests do
           .not_to change { merge_request.reload.merged? }
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response['message']).to eq("Failed to merge branch")
+        expect(json_response['message']).to eq("Branch cannot be merged")
       end
     end
 
-    context 'when change_response_code_merge_status is enabled' do
-      it "returns 422 if branch can't be merged" do
-        allow_next_found_instance_of(MergeRequest) do |merge_request|
-          allow(merge_request).to receive(:can_be_merged?).and_return(false)
-        end
-
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
-
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response['message']).to eq('Branch cannot be merged')
-      end
-    end
-
-    context 'when change_response_code_merge_status is disabled' do
-      before do
-        stub_feature_flags(change_response_code_merge_status: false)
+    it "returns 422 if branch can't be merged" do
+      allow_next_found_instance_of(MergeRequest) do |merge_request|
+        allow(merge_request).to receive(:can_be_merged?).and_return(false)
       end
 
-      it "returns 406 if branch can't be merged" do
-        allow_next_found_instance_of(MergeRequest) do |merge_request|
-          allow(merge_request).to receive(:can_be_merged?).and_return(false)
-        end
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
-
-        expect(response).to have_gitlab_http_status(:not_acceptable)
-        expect(json_response['message']).to eq('Branch cannot be merged')
-      end
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['message']).to eq('Branch cannot be merged')
     end
 
     it "returns 405 if merge_request is not open" do

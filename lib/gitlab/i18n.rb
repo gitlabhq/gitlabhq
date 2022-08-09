@@ -67,7 +67,7 @@ module Gitlab
       'uk' => 49,
       'zh_CN' => 99,
       'zh_HK' => 2,
-      'zh_TW' => 4
+      'zh_TW' => 100
     }.freeze
     private_constant :TRANSLATION_LEVELS
 

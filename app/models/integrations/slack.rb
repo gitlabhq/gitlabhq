@@ -9,6 +9,7 @@ module Integrations
       push issue confidential_issue merge_request note confidential_note
       tag_push wiki_page deployment
     ].freeze
+    SNOWPLOW_EVENT_CATEGORY = self.name
 
     prop_accessor EVENT_CHANNEL['alert']
 
@@ -54,6 +55,22 @@ module Integrations
       key = "i_ecosystem_slack_service_#{event}_notification"
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(key, values: user_id)
+
+      return unless Feature.enabled?(:route_hll_to_snowplow_phase2)
+
+      optional_arguments = {
+        project: project,
+        namespace: group || project&.namespace
+      }.compact
+
+      Gitlab::Tracking.event(
+        SNOWPLOW_EVENT_CATEGORY,
+        Integration::SNOWPLOW_EVENT_ACTION,
+        label: Integration::SNOWPLOW_EVENT_LABEL,
+        property: key,
+        user: User.find(user_id),
+        **optional_arguments
+      )
     end
 
     override :configurable_channels?

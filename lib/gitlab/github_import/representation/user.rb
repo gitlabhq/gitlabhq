@@ -14,7 +14,7 @@ module Gitlab
         # Builds a user from a GitHub API response.
         #
         # user - An instance of `Sawyer::Resource` containing the user details.
-        def self.from_api_response(user)
+        def self.from_api_response(user, additional_data = {})
           new(
             id: user.id,
             login: user.login

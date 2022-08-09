@@ -89,17 +89,29 @@ module Gitlab
       def to_h(context)
         desc = description
         if desc.respond_to?(:call)
-          desc = context.instance_exec(&desc) rescue ''
+          desc = begin
+            context.instance_exec(&desc)
+          rescue StandardError
+            ''
+          end
         end
 
         warn = warning
         if warn.respond_to?(:call)
-          warn = context.instance_exec(&warn) rescue ''
+          warn = begin
+            context.instance_exec(&warn)
+          rescue StandardError
+            ''
+          end
         end
 
         prms = params
         if prms.respond_to?(:call)
-          prms = Array(context.instance_exec(&prms)) rescue params
+          prms = begin
+            Array(context.instance_exec(&prms))
+          rescue StandardError
+            params
+          end
         end
 
         {

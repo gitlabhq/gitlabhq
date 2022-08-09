@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cache do
+  let_it_be(:work_item_type_id) { ::WorkItems::Type.default_issue_type.id }
+
   let(:project) { create(:project) }
   let(:client) { double(:client) }
   let(:user) { create(:user) }
@@ -25,7 +27,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
       author: Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice'),
       created_at: created_at,
       updated_at: updated_at,
-      pull_request: false
+      pull_request: false,
+      work_item_type_id: work_item_type_id
     )
   end
 
@@ -116,6 +119,17 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
         .and_return(milestone.id)
     end
 
+    it 'creates issues with a work item type id' do
+      allow(importer.user_finder)
+        .to receive(:author_id_for)
+        .with(issue)
+        .and_return([user.id, true])
+
+      issue_id = importer.create_issue
+
+      expect(Issue.find(issue_id).work_item_type_id).to eq(work_item_type_id)
+    end
+
     context 'when the issue author could be found' do
       it 'creates the issue with the found author as the issue author' do
         allow(importer.user_finder)
@@ -136,7 +150,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
               milestone_id: milestone.id,
               state_id: 1,
               created_at: created_at,
-              updated_at: updated_at
+              updated_at: updated_at,
+              work_item_type_id: work_item_type_id
             },
             project.issues
           )
@@ -166,7 +181,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
               milestone_id: milestone.id,
               state_id: 1,
               created_at: created_at,
-              updated_at: updated_at
+              updated_at: updated_at,
+              work_item_type_id: work_item_type_id
             },
             project.issues
           )

@@ -238,7 +238,11 @@ class Todo < ApplicationRecord
   # override to return commits, which are not active record
   def target
     if for_commit?
-      project.commit(commit_id) rescue nil
+      begin
+        project.commit(commit_id)
+      rescue StandardError
+        nil
+      end
     else
       super
     end

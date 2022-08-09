@@ -19,8 +19,6 @@ module Integrations
     SECTION_TYPE_JIRA_ISSUES = 'jira_issues'
 
     SNOWPLOW_EVENT_CATEGORY = self.name
-    SNOWPLOW_EVENT_ACTION = 'perform_integrations_action'
-    SNOWPLOW_EVENT_LABEL = 'redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly'
 
     validates :url, public_url: true, presence: true, if: :activated?
     validates :api_url, public_url: true, allow_blank: true
@@ -372,7 +370,11 @@ module Integrations
     end
 
     def transition_issue_to_done(issue)
-      transitions = issue.transitions rescue []
+      transitions = begin
+        issue.transitions
+      rescue StandardError
+        []
+      end
 
       transition = transitions.find do |transition|
         status = transition&.to&.statusCategory
@@ -398,8 +400,8 @@ module Integrations
 
       Gitlab::Tracking.event(
         SNOWPLOW_EVENT_CATEGORY,
-        SNOWPLOW_EVENT_ACTION,
-        label: SNOWPLOW_EVENT_LABEL,
+        Integration::SNOWPLOW_EVENT_ACTION,
+        label: Integration::SNOWPLOW_EVENT_LABEL,
         property: key,
         user: user,
         **optional_arguments

@@ -28,9 +28,11 @@ module Gitlab
             if line =~ /^@@ -/
               type = "match"
 
-              line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
-              line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
+              diff_hunk = Gitlab::WordDiff::Segments::DiffHunk.new(line)
+              line_old = diff_hunk.pos_old
+              line_new = diff_hunk.pos_new
 
+              # not using diff_hunk.first_line? because of defaults
               next if line_old <= 1 && line_new <= 1 # top of file
 
               yielder << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new, parent_file: diff_file)

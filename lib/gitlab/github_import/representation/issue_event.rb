@@ -34,7 +34,7 @@ module Gitlab
           # Builds an event from a GitHub API response.
           #
           # event - An instance of `Sawyer::Resource` containing the event details.
-          def from_api_response(event)
+          def from_api_response(event, additional_data = {})
             new(
               id: event.id,
               actor: user_representation(event.actor),

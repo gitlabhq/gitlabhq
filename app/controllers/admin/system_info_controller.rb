@@ -37,8 +37,16 @@ class Admin::SystemInfoController < Admin::ApplicationController
   ].freeze
 
   def show
-    @cpus = Vmstat.cpu rescue nil
-    @memory = Vmstat.memory rescue nil
+    @cpus = begin
+      Vmstat.cpu
+    rescue StandardError
+      nil
+    end
+    @memory = begin
+      Vmstat.memory
+    rescue StandardError
+      nil
+    end
     mounts = Sys::Filesystem.mounts
 
     @disks = []

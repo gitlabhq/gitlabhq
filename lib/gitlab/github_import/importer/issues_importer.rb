@@ -6,6 +6,12 @@ module Gitlab
       class IssuesImporter
         include ParallelScheduling
 
+        def initialize(project, client, parallel: true)
+          super
+
+          @work_item_type_id = ::WorkItems::Type.default_issue_type.id
+        end
+
         def importer_class
           IssueAndLabelLinksImporter
         end
@@ -32,6 +38,12 @@ module Gitlab
 
         def collection_options
           { state: 'all', sort: 'created', direction: 'asc' }
+        end
+
+        private
+
+        def additional_object_data
+          { work_item_type_id: @work_item_type_id }
         end
       end
     end

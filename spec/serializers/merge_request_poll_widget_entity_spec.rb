@@ -184,38 +184,8 @@ RSpec.describe MergeRequestPollWidgetEntity do
   end
 
   describe '#mergeable_discussions_state?' do
-    context 'when change_response_code_merge_status is true' do
-      before do
-        stub_feature_flags(change_response_code_merge_status: true)
-      end
-
-      it 'returns mergeable discussions state' do
-        expect(subject[:mergeable_discussions_state]).to eq(true)
-      end
-    end
-
-    context 'when change_response_code_merge_status is false' do
-      context 'when merge request is in a mergeable state' do
-        before do
-          stub_feature_flags(change_response_code_merge_status: false)
-          allow(resource).to receive(:mergeable_discussions_state?).and_return(true)
-        end
-
-        it 'returns mergeable discussions state' do
-          expect(subject[:mergeable_discussions_state]).to eq(true)
-        end
-      end
-
-      context 'when merge request is not in a mergeable state' do
-        before do
-          stub_feature_flags(change_response_code_merge_status: false)
-          allow(resource).to receive(:mergeable_state?).and_return(false)
-        end
-
-        it 'returns mergeable discussions state' do
-          expect(subject[:mergeable_discussions_state]).to eq(false)
-        end
-      end
+    it 'returns mergeable discussions state' do
+      expect(subject[:mergeable_discussions_state]).to eq(true)
     end
   end
 end

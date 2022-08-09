@@ -213,21 +213,23 @@ export default {
 <template>
   <div class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10">
     <div
-      class="gl-p-4 gl-display-flex gl-justify-content-space-between"
+      class="gl-px-5 gl-py-3 gl-display-flex gl-justify-content-space-between"
       :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': isOpen }"
     >
-      <h5 class="gl-m-0 gl-line-height-32 gl-flex-grow-1">{{ $options.i18n.title }}</h5>
+      <h5 class="gl-m-0 gl-line-height-24 gl-flex-grow-1">{{ $options.i18n.title }}</h5>
       <gl-button
         v-if="canUpdate"
         category="secondary"
+        size="small"
         data-testid="toggle-add-form"
         @click="showAddForm"
       >
         {{ $options.i18n.addChildButtonLabel }}
       </gl-button>
-      <div class="gl-border-l-1 gl-border-l-solid gl-border-l-gray-50 gl-pl-4 gl-ml-3">
+      <div class="gl-border-l-1 gl-border-l-solid gl-border-l-gray-50 gl-pl-3 gl-ml-3">
         <gl-button
           category="tertiary"
+          size="small"
           :icon="toggleIcon"
           :aria-label="toggleLabel"
           data-testid="toggle-links"
@@ -237,14 +239,14 @@ export default {
     </div>
     <div
       v-if="isOpen"
-      class="gl-bg-gray-10 gl-p-4 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+      class="gl-bg-gray-10 gl-p-5 gl-pb-3 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
       data-testid="links-body"
     >
       <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-3" />
 
       <template v-else>
         <div v-if="isChildrenEmpty && !isShownAddForm" data-testid="links-empty">
-          <p class="gl-my-3">
+          <p class="gl-mt-3 gl-mb-4">
             {{ $options.i18n.emptyStateMessage }}
           </p>
         </div>

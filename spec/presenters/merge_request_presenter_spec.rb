@@ -17,29 +17,8 @@ RSpec.describe MergeRequestPresenter do
       allow(resource).to receive(:mergeable_discussions_state?).and_return(discussions_state)
     end
 
-    context 'when change_response_code_merge_status is enabled' do
-      it 'returns the mergeable_discussions_state' do
-        is_expected.to eq(discussions_state)
-      end
-    end
-
-    context 'when change_response_code_merge_status is disabled' do
-      before do
-        stub_feature_flags(change_response_code_merge_status: false)
-      end
-
-      context 'when it is not mergeable' do
-        it 'returns false' do
-          resource.close!
-          is_expected.to eq(false)
-        end
-      end
-
-      context 'when it is mergeable' do
-        it 'returns the mergeable_discussions_state' do
-          is_expected.to eq(discussions_state)
-        end
-      end
+    it 'returns the mergeable_discussions_state' do
+      is_expected.to eq(discussions_state)
     end
   end
 

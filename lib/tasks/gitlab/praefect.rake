@@ -3,7 +3,9 @@
 namespace :gitlab do
   namespace :praefect do
     def int?(string)
-      true if Integer(string) rescue false
+      true if Integer(string)
+    rescue StandardError
+      false
     end
 
     def print_checksums(header, row)
