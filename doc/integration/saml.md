@@ -709,7 +709,6 @@ args: {
   security: {
     authn_requests_signed: true,  # enable signature on AuthNRequest
     want_assertions_signed: true,  # enable the requirement of signed assertion
-    embed_sign: true,  # embedded signature or HTTP GET parameter signature
     metadata_signed: false,  # enable signature on Metadata
     signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
     digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',

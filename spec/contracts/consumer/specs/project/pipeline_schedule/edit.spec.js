@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { pactWith } from 'jest-pact';
 
 import { UpdatePipelineSchedule } from '../../../fixtures/project/pipeline_schedule/update_pipeline_schedule.fixture';
@@ -41,5 +39,3 @@ pactWith(
     });
   },
 );
-
-/* eslint-enable @gitlab/require-i18n-strings */

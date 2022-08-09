@@ -19,6 +19,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_create_proxy_build!, only: :proxy_websocket_authorize
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :push_job_log_search, only: [:show]
+  before_action :push_job_log_jump_to_failures, only: [:show]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
 
   layout 'project'
@@ -251,5 +252,9 @@ class Projects::JobsController < Projects::ApplicationController
 
   def push_job_log_search
     push_frontend_feature_flag(:job_log_search, @project)
+  end
+
+  def push_job_log_jump_to_failures
+    push_frontend_feature_flag(:job_log_jump_to_failures, @project)
   end
 end

@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { pactWith } from 'jest-pact';
 
 import { NewProjectPipeline } from '../../../fixtures/project/pipeline/create_a_new_pipeline.fixture';
@@ -41,5 +39,3 @@ pactWith(
     });
   },
 );
-
-/* eslint-enable @gitlab/require-i18n-strings */

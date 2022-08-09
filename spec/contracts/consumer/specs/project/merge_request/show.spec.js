@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { pactWith } from 'jest-pact';
 
 import { DiffsBatch } from '../../../fixtures/project/merge_request/diffs_batch.fixture';
@@ -9,7 +7,7 @@ import {
   getDiffsBatch,
   getDiffsMetadata,
   getDiscussions,
-} from '../../../endpoints/project/merge_requests';
+} from '../../../resources/api/project/merge_requests';
 
 const CONSUMER_NAME = 'MergeRequest#show';
 const CONSUMER_LOG = '../logs/consumer.log';
@@ -31,19 +29,19 @@ pactWith(
     describe(DIFFS_BATCH_PROVIDER_NAME, () => {
       beforeEach(() => {
         const interaction = {
-          state: 'a merge request with diffs exists',
+          ...DiffsBatch.scenario,
           ...DiffsBatch.request,
           willRespondWith: DiffsBatch.success,
         };
         provider.addInteraction(interaction);
       });
 
-      it('returns a successful body', () => {
-        return getDiffsBatch({
+      it('returns a successful body', async () => {
+        const diffsBatch = await getDiffsBatch({
           url: provider.mockService.baseUrl,
-        }).then((diffsBatch) => {
-          expect(diffsBatch).toEqual(DiffsBatch.body);
         });
+
+        expect(diffsBatch).toEqual(DiffsBatch.body);
       });
     });
   },
@@ -61,19 +59,19 @@ pactWith(
     describe(DISCUSSIONS_PROVIDER_NAME, () => {
       beforeEach(() => {
         const interaction = {
-          state: 'a merge request with discussions exists',
+          ...Discussions.scenario,
           ...Discussions.request,
           willRespondWith: Discussions.success,
         };
         provider.addInteraction(interaction);
       });
 
-      it('return a successful body', () => {
-        return getDiscussions({
+      it('return a successful body', async () => {
+        const discussions = await getDiscussions({
           url: provider.mockService.baseUrl,
-        }).then((discussions) => {
-          expect(discussions).toEqual(Discussions.body);
         });
+
+        expect(discussions).toEqual(Discussions.body);
       });
     });
   },
@@ -91,22 +89,20 @@ pactWith(
     describe(DIFFS_METADATA_PROVIDER_NAME, () => {
       beforeEach(() => {
         const interaction = {
-          state: 'a merge request exists',
+          ...DiffsMetadata.scenario,
           ...DiffsMetadata.request,
           willRespondWith: DiffsMetadata.success,
         };
         provider.addInteraction(interaction);
       });
 
-      it('return a successful body', () => {
-        return getDiffsMetadata({
+      it('return a successful body', async () => {
+        const diffsMetadata = await getDiffsMetadata({
           url: provider.mockService.baseUrl,
-        }).then((diffsMetadata) => {
-          expect(diffsMetadata).toEqual(DiffsMetadata.body);
         });
+
+        expect(diffsMetadata).toEqual(DiffsMetadata.body);
       });
     });
   },
 );
-
-/* eslint-enable @gitlab/require-i18n-strings */

@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { Matchers } from '@pact-foundation/pact';
 
 const body = {
@@ -81,8 +79,12 @@ const DiffsMetadata = {
     body,
   },
 
+  scenario: {
+    state: 'a merge request exists',
+    uponReceiving: 'a request for diffs metadata',
+  },
+
   request: {
-    uponReceiving: 'a request for Diffs Metadata',
     withRequest: {
       method: 'GET',
       path: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_metadata.json',
@@ -94,5 +96,3 @@ const DiffsMetadata = {
 };
 
 export { DiffsMetadata };
-
-/* eslint-enable @gitlab/require-i18n-strings */

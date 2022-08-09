@@ -7,7 +7,7 @@
   },
   "interactions": [
     {
-      "description": "a request for Diffs Metadata",
+      "description": "a request for diffs metadata",
       "providerState": "a merge request exists",
       "request": {
         "method": "GET",

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../../../spec_helper'
-require_relative '../../../states/project/pipeline/new_state'
+require_relative '../../../../spec_helper'
+require_relative '../../../../states/project/pipeline/new_state'
 
 module Provider
   module CreateNewPipelineHelper

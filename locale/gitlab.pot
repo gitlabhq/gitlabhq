@@ -22656,6 +22656,9 @@ msgstr ""
 msgid "Job|Scroll to bottom"
 msgstr ""
 
+msgid "Job|Scroll to next failure"
+msgstr ""
+
 msgid "Job|Scroll to top"
 msgstr ""
 

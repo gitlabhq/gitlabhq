@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../../../spec_helper'
-require_relative '../../../states/project/merge_request/discussions_state'
+require_relative '../../../../spec_helper'
+require_relative '../../../../states/project/merge_request/show_state'
 
 module Provider
   module DiscussionsHelper

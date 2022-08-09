@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { Matchers } from '@pact-foundation/pact';
 import {
   JOB_STATUSES,
@@ -83,6 +81,11 @@ const PipelineHeaderData = {
     body,
   },
 
+  scenario: {
+    state: 'a pipeline for a project exists',
+    uponReceiving: 'a request for the pipeline header data',
+  },
+
   request: {
     method: 'POST',
     path: '/api/graphql',
@@ -95,5 +98,3 @@ const PipelineHeaderData = {
 };
 
 export { PipelineHeaderData };
-
-/* eslint-enable @gitlab/require-i18n-strings */

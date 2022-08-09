@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { Matchers } from '@pact-foundation/pact';
 import { REDIRECT_HTML } from '../../../helpers/common_regex_patterns';
 
@@ -39,5 +37,3 @@ const NewProjectPipeline = {
 };
 
 export { NewProjectPipeline };
-
-/* eslint-enable @gitlab/require-i18n-strings */

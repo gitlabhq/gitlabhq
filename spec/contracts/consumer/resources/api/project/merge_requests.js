@@ -1,9 +1,9 @@
-import { request } from 'axios';
+import axios from 'axios';
 
-export function getDiffsMetadata(endpoint) {
+export async function getDiffsMetadata(endpoint) {
   const { url } = endpoint;
 
-  return request({
+  return axios({
     method: 'GET',
     baseURL: url,
     url: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_metadata.json',
@@ -11,10 +11,10 @@ export function getDiffsMetadata(endpoint) {
   }).then((response) => response.data);
 }
 
-export function getDiscussions(endpoint) {
+export async function getDiscussions(endpoint) {
   const { url } = endpoint;
 
-  return request({
+  return axios({
     method: 'GET',
     baseURL: url,
     url: '/gitlab-org/gitlab-qa/-/merge_requests/1/discussions.json',
@@ -22,10 +22,10 @@ export function getDiscussions(endpoint) {
   }).then((response) => response.data);
 }
 
-export function getDiffsBatch(endpoint) {
+export async function getDiffsBatch(endpoint) {
   const { url } = endpoint;
 
-  return request({
+  return axios({
     method: 'GET',
     baseURL: url,
     url: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_batch.json?page=0',

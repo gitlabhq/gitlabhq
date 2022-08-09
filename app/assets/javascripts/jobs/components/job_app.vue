@@ -287,6 +287,7 @@ export default {
             :is-scroll-top-disabled="isScrollTopDisabled"
             :is-job-log-size-visible="isJobLogSizeVisible"
             :is-scrolling-down="isScrollingDown"
+            :is-complete="isJobLogComplete"
             :job-log="jobLog"
             @scrollJobLogTop="scrollTop"
             @scrollJobLogBottom="scrollBottom"

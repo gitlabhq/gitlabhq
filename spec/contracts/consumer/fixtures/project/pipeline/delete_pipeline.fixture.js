@@ -6,6 +6,11 @@ const DeletePipeline = {
     },
   },
 
+  scenario: {
+    state: 'a pipeline for a project exists',
+    uponReceiving: 'a request to delete the pipeline',
+  },
+
   request: {
     method: 'POST',
     path: '/api/graphql',

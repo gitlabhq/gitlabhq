@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { Matchers } from '@pact-foundation/pact';
 
 const body = Matchers.eachLike({
@@ -70,8 +68,12 @@ const Discussions = {
     body,
   },
 
-  request: {
+  scenario: {
+    state: 'a merge request with discussions exists',
     uponReceiving: 'a request for discussions',
+  },
+
+  request: {
     withRequest: {
       method: 'GET',
       path: '/gitlab-org/gitlab-qa/-/merge_requests/1/discussions.json',
@@ -83,5 +85,3 @@ const Discussions = {
 };
 
 export { Discussions };
-
-/* eslint-enable @gitlab/require-i18n-strings */

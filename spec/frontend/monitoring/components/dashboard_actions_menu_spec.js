@@ -316,7 +316,7 @@ describe('Actions menu', () => {
     });
 
     it('is not disabled', () => {
-      expect(findStarDashboardItem().attributes('disabled')).toBeFalsy();
+      expect(findStarDashboardItem().attributes('disabled')).toBeUndefined();
     });
 
     it('is disabled when starring is taking place', async () => {

@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { pactWith } from 'jest-pact';
 import { GraphQLInteraction } from '@pact-foundation/pact';
 
@@ -32,8 +30,8 @@ pactWith(
           'app/assets/javascripts/pipelines/graphql/queries/get_pipeline_header_data.query.graphql',
         );
         const graphqlQuery = new GraphQLInteraction()
-          .given('a pipeline for a project exists')
-          .uponReceiving('a request for the pipeline header data')
+          .given(PipelineHeaderData.scenario.state)
+          .uponReceiving(PipelineHeaderData.scenario.uponReceiving)
           .withQuery(query)
           .withRequest(PipelineHeaderData.request)
           .withVariables(PipelineHeaderData.variables)
@@ -69,8 +67,8 @@ pactWith(
           'app/assets/javascripts/pipelines/graphql/mutations/delete_pipeline.mutation.graphql',
         );
         const graphqlQuery = new GraphQLInteraction()
-          .given('a pipeline for a project exists')
-          .uponReceiving('a request to delete the pipeline')
+          .given(DeletePipeline.scenario.state)
+          .uponReceiving(DeletePipeline.scenario.uponReceiving)
           .withQuery(query)
           .withRequest(DeletePipeline.request)
           .withVariables(DeletePipeline.variables)
@@ -89,5 +87,3 @@ pactWith(
     });
   },
 );
-
-/* eslint-enable @gitlab/require-i18n-strings */

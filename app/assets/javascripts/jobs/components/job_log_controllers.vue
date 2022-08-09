@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton, GlSearchBoxByClick } from '@gitlab/ui';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement, backOff } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __, s__, sprintf } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -10,6 +10,7 @@ export default {
   i18n: {
     scrollToBottomButtonLabel: s__('Job|Scroll to bottom'),
     scrollToTopButtonLabel: s__('Job|Scroll to top'),
+    scrollToNextFailureButtonLabel: s__('Job|Scroll to next failure'),
     showRawButtonLabel: s__('Job|Show complete raw'),
     searchPlaceholder: s__('Job|Search job log'),
     noResults: s__('Job|No search results found'),
@@ -55,6 +56,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    isComplete: {
+      type: Boolean,
+      required: true,
+    },
     jobLog: {
       type: Array,
       required: true,
@@ -64,6 +69,8 @@ export default {
     return {
       searchTerm: '',
       searchResults: [],
+      failureCount: null,
+      failureIndex: 0,
     };
   },
   computed: {
@@ -75,13 +82,49 @@ export default {
     showJobLogSearch() {
       return this.glFeatures.jobLogSearch;
     },
+    showJumpToFailures() {
+      return this.glFeatures.jobLogJumpToFailures;
+    },
+    hasFailures() {
+      return this.failureCount > 0;
+    },
+    shouldDisableJumpToFailures() {
+      return !this.hasFailures;
+    },
+  },
+  mounted() {
+    this.checkFailureCount();
   },
   methods: {
+    checkFailureCount() {
+      if (this.glFeatures.jobLogJumpToFailures) {
+        backOff((next, stop) => {
+          this.failureCount = document.querySelectorAll('.term-fg-l-red').length;
+
+          if (this.hasFailures || (this.isComplete && !this.hasFailures)) {
+            stop();
+          } else {
+            next();
+          }
+        });
+      }
+    },
+    handleScrollToNextFailure() {
+      const failures = document.querySelectorAll('.term-fg-l-red');
+      const nextFailure = failures[this.failureIndex];
+
+      if (nextFailure) {
+        nextFailure.scrollIntoView({ block: 'center' });
+        this.failureIndex = (this.failureIndex + 1) % failures.length;
+      }
+    },
     handleScrollToTop() {
       this.$emit('scrollJobLogTop');
+      this.failureIndex = 0;
     },
     handleScrollToBottom() {
       this.$emit('scrollJobLogBottom');
+      this.failureIndex = 0;
     },
     searchJobLog() {
       this.searchResults = [];
@@ -135,10 +178,10 @@ export default {
 };
 </script>
 <template>
-  <div class="top-bar">
+  <div class="top-bar gl-display-flex gl-justify-content-space-between">
     <!-- truncate information -->
     <div
-      class="truncated-info gl-display-none gl-sm-display-block gl-float-left"
+      class="truncated-info gl-display-none gl-sm-display-flex gl-flex-wrap gl-align-items-center"
       data-testid="log-truncated-info"
     >
       <template v-if="isJobLogSizeVisible">
@@ -154,7 +197,7 @@ export default {
     </div>
     <!-- eo truncate information -->
 
-    <div class="controllers gl-float-right">
+    <div class="controllers">
       <template v-if="showJobLogSearch">
         <gl-search-box-by-click
           v-model="searchTerm"
@@ -187,6 +230,18 @@ export default {
       <!-- eo links -->
 
       <!-- scroll buttons -->
+      <gl-button
+        v-if="showJumpToFailures"
+        v-gl-tooltip
+        :title="$options.i18n.scrollToNextFailureButtonLabel"
+        :aria-label="$options.i18n.scrollToNextFailureButtonLabel"
+        :disabled="shouldDisableJumpToFailures"
+        class="btn-scroll gl-ml-3"
+        data-testid="job-controller-scroll-to-failure"
+        icon="soft-wrap"
+        @click="handleScrollToNextFailure"
+      />
+
       <div v-gl-tooltip :title="$options.i18n.scrollToTopButtonLabel" class="gl-ml-3">
         <gl-button
           :disabled="isScrollTopDisabled"
