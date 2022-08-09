@@ -924,8 +924,7 @@ Please check the [Release Process documentation](https://gitlab.com/gitlab-org/s
 
 ## Contributing to the vulnerability database
 
-You can search the [`gemnasium-db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) project
-to find a vulnerability in the GitLab Advisory Database.
+To find a vulnerability, you can search the [`GitLab Advisory Database`](https://advisories.gitlab.com/).
 You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
 
 ## Running dependency scanning in an offline environment

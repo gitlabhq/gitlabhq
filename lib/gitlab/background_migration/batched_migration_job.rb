@@ -24,11 +24,19 @@ module Gitlab
         @connection = connection
       end
 
+      def self.job_arguments_count
+        0
+      end
+
       def self.job_arguments(*args)
         args.each.with_index do |arg, index|
           define_method(arg) do
             @job_arguments[index]
           end
+        end
+
+        define_singleton_method(:job_arguments_count) do
+          args.count
         end
       end
 

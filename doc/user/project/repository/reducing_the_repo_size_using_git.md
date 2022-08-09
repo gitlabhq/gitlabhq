@@ -195,8 +195,8 @@ When using repository cleanup, note:
 
 - Project statistics are cached. You may need to wait 5-10 minutes to see a reduction in storage utilization.
 - The cleanup prunes loose objects older than 30 minutes. This means objects added or referenced in the last 30 minutes
-  are not be removed immediately. If you have access to the
-  [Gitaly](../../../administration/gitaly/index.md) server, you may slip that delay and run `git gc --prune=now` to
+  are not removed immediately. If you have access to the
+  [Gitaly](../../../administration/gitaly/index.md) server, you may skip that delay and run `git gc --prune=now` to
   prune all loose objects immediately.
 - This process removes some copies of the rewritten commits from the GitLab cache and database,
   but there are still numerous gaps in coverage and some of the copies may persist indefinitely.
@@ -207,7 +207,7 @@ When using repository cleanup, note:
 
 Repository size limits:
 
-- Can [be set by an administrator](../../admin_area/settings/account_and_limit_settings.md#account-and-limit-settings)
+- Can [be set by an administrator](../../admin_area/settings/account_and_limit_settings.md#account-and-limit-settings).
 - Can [be set by an administrator](../../admin_area/settings/account_and_limit_settings.md) on self-managed instances.
 - Are [set for GitLab.com](../../gitlab_com/index.md#account-and-limit-settings).
 

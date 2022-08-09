@@ -107,6 +107,11 @@ module Gitlab
             status_event: status_event
           )
 
+          if migration.job_class.respond_to?(:job_arguments_count) && migration.job_class.job_arguments_count != job_arguments.count
+            raise "Wrong number of job arguments for #{migration.job_class_name} " \
+              "(given #{job_arguments.count}, expected #{migration.job_class.job_arguments_count})"
+          end
+
           # Below `BatchedMigration` attributes were introduced after the
           # initial `batched_background_migrations` table was created, so any
           # migrations that ran relying on initial table schema would not know

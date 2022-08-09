@@ -117,6 +117,7 @@ export default {
       isDirty: false,
       contentEditorRenderFailed: false,
       contentEditorEmpty: false,
+      switchEditingControlDisabled: false,
     };
   },
   computed: {
@@ -300,6 +301,14 @@ export default {
         },
       });
     },
+
+    enableSwitchEditingControl() {
+      this.switchEditingControlDisabled = false;
+    },
+
+    disableSwitchEditingControl() {
+      this.switchEditingControlDisabled = true;
+    },
   },
 };
 </script>
@@ -382,9 +391,10 @@ export default {
             <gl-segmented-control
               data-testid="toggle-editing-mode-button"
               data-qa-selector="editing_mode_button"
-              :checked="editingMode"
               class="gl-display-flex"
+              :checked="editingMode"
               :options="$options.switchEditingControlOptions"
+              :disabled="switchEditingControlDisabled"
               @input="toggleEditingMode"
             />
           </div>
@@ -428,6 +438,9 @@ export default {
               :uploads-path="pageInfo.uploadsPath"
               @initialized="loadInitialContent"
               @change="handleContentEditorChange"
+              @loading="disableSwitchEditingControl"
+              @loadingSuccess="enableSwitchEditingControl"
+              @loadingError="enableSwitchEditingControl"
             />
             <input id="wiki_content" v-model.trim="content" type="hidden" name="wiki[content]" />
           </div>

@@ -62,6 +62,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
         options[:allow_tree_conflicts]
       ]
 
+      if Feature.enabled?(:etag_merge_request_diff_batches, @merge_request.project)
+        return unless stale?(etag: [cache_context, diffs])
+      end
+
       render_cached(
         diffs,
         with: PaginatedDiffSerializer.new(current_user: current_user),

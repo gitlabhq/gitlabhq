@@ -25,6 +25,17 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob do
     it 'defines methods' do
       expect(job_instance.value_a).to eq('a')
       expect(job_instance.value_b).to eq('b')
+      expect(job_class.job_arguments_count).to eq(2)
+    end
+
+    context 'when no job arguments are defined' do
+      let(:job_class) do
+        Class.new(described_class)
+      end
+
+      it 'job_arguments_count is 0' do
+        expect(job_class.job_arguments_count).to eq(0)
+      end
     end
   end
 

@@ -105,10 +105,15 @@ for more details.
 
 ## Batched background migrations for EE-only features
 
-All the background migration classes for EE-only features should be present in GitLab CE.
-For this purpose, create an empty class for GitLab CE, and extend it for GitLab EE
+All the background migration classes for EE-only features should be present in GitLab FOSS.
+For this purpose, create an empty class for GitLab FOSS, and extend it for GitLab EE
 as explained in the guidelines for
 [implementing Enterprise Edition features](../ee_features.md#code-in-libgitlabbackground_migration).
+
+NOTE:
+Background migration classes for EE-only features that use job arguments should define them
+in the GitLab FOSS class. This is required to prevent job arguments validation from failing when
+migration is scheduled in GitLab FOSS context.
 
 Batched Background migrations are simple classes that define a `perform` method. A
 Sidekiq worker then executes such a class, passing any arguments to it. All
@@ -131,6 +136,10 @@ queue_batched_background_migration(
   JOB_INTERVAL
   )
 ```
+
+NOTE:
+This helper raises an error if the number of provided job arguments does not match
+the number of [job arguments](#job-arguments) defined in `JOB_CLASS_NAME`.
 
 Make sure the newly-created data is either migrated, or
 saved in both the old and new version upon creation. Removals in
@@ -200,6 +209,10 @@ queue_batched_background_migration(
   job_interval: DELAY_INTERVAL
 )
 ```
+
+NOTE:
+If the number of defined job arguments does not match the number of job arguments provided when
+scheduling the migration, `queue_batched_background_migration` raises an error.
 
 In this example, `copy_from` returns `name`, and `copy_to` returns `name_convert_to_text`:
 

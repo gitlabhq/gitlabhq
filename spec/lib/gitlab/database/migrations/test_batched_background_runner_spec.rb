@@ -50,17 +50,15 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
   context 'with jobs to run' do
     let(:migration_name) { 'TestBackgroundMigration' }
 
-    before do
-      migration.queue_batched_background_migration(
-        migration_name, table_name, :id, job_interval: 5.minutes, batch_size: 100
-      )
-    end
-
     it 'samples jobs' do
       calls = []
       define_background_migration(migration_name) do |*args|
         calls << args
       end
+
+      migration.queue_batched_background_migration(migration_name, table_name, :id,
+                                                   job_interval: 5.minutes,
+                                                   batch_size: 100)
 
       described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 3.minutes)
 
@@ -70,6 +68,9 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
     context 'with multiple jobs to run' do
       it 'runs all jobs created within the last 3 hours' do
         old_migration = define_background_migration(migration_name)
+        migration.queue_batched_background_migration(migration_name, table_name, :id,
+                                             job_interval: 5.minutes,
+                                             batch_size: 100)
 
         travel 4.hours
 

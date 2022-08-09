@@ -392,6 +392,38 @@ describe('WikiForm', () => {
           expect(findContent().element.value).toBe(contentEditorFakeSerializedContent);
         });
       });
+
+      describe('when content editor is loading', () => {
+        beforeEach(async () => {
+          findContentEditor().vm.$emit('loading');
+
+          await nextTick();
+        });
+
+        it('disables toggle editing mode button', () => {
+          expect(findToggleEditingModeButton().attributes().disabled).toBe('true');
+        });
+
+        describe('when content editor loads successfully', () => {
+          it('enables toggle editing mode button', async () => {
+            findContentEditor().vm.$emit('loadingSuccess');
+
+            await nextTick();
+
+            expect(findToggleEditingModeButton().attributes().disabled).not.toBeDefined();
+          });
+        });
+
+        describe('when content editor fails to load', () => {
+          it('enables toggle editing mode button', async () => {
+            findContentEditor().vm.$emit('loadingError');
+
+            await nextTick();
+
+            expect(findToggleEditingModeButton().attributes().disabled).not.toBeDefined();
+          });
+        });
+      });
     });
   });
 
