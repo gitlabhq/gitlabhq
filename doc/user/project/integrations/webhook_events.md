@@ -878,7 +878,9 @@ Payload example:
     "source_branch": "ms-viewport",
     "source_project_id": 14,
     "author_id": 51,
+    "assignee_ids": [6],
     "assignee_id": 6,
+    "reviewer_ids": [6],
     "title": "MS-Viewport",
     "created_at": "2013-12-03T17:23:34Z",
     "updated_at": "2013-12-03T17:23:34Z",
@@ -945,12 +947,7 @@ Payload example:
       "type": "ProjectLabel",
       "group_id": 41
     }],
-    "action": "open",
-    "assignee": {
-      "name": "User1",
-      "username": "user1",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
-    }
+    "action": "open"
   },
   "labels": [{
     "id": 206,
@@ -999,7 +996,23 @@ Payload example:
         "group_id": 41
       }]
     }
-  }
+  },
+  "assignees": [
+    {
+      "id": 6,
+      "name": "User1",
+      "username": "user1",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    }
+  ],
+  "reviewers": [
+    {
+      "id": 6,
+      "name": "User1",
+      "username": "user1",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    }
+  ]
 }
 ```
 

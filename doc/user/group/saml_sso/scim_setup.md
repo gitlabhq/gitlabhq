@@ -106,7 +106,7 @@ Before you start this section:
 
 - Check that you are using Okta [Lifecycle Management](https://www.okta.com/products/lifecycle-management/) product. This product tier is required to use SCIM on Okta. To check which Okta product you are using, check your signed Okta contract, contact your Okta AE, CSM, or Okta support.
 - Complete the [GitLab configuration](#gitlab-configuration) process.
-- Complete the setup for SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/overview/), as described in the [Okta setup notes](index.md#okta-setup-notes).
+- Complete the setup for SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/), as described in the [Okta setup notes](index.md#okta-setup-notes).
 - Check that your Okta SAML setup matches our documentation exactly, especially the NameID configuration. Otherwise, the Okta SCIM app may not work properly.
 
 After the above steps are complete:

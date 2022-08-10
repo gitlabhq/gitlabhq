@@ -427,10 +427,10 @@
       padding-inline-start: 28px;
       margin-inline-start: 0 !important;
 
-      input.task-list-item-checkbox {
+      > input.task-list-item-checkbox {
         position: absolute;
-        inset-inline-start: $gl-padding-8;
-        inset-block-start: 5px;
+        inset-inline-start: 8px;
+        top: 5px;
       }
     }
   }

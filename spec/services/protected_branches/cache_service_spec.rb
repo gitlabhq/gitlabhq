@@ -63,6 +63,38 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache do
         expect(service.fetch('not-found') { true }).to eq(true)
       end
     end
+
+    context 'when dry_run is on' do
+      it 'does not use cached value' do
+        expect(service.fetch('main', dry_run: true) { true }).to eq(true)
+        expect(service.fetch('main', dry_run: true) { false }).to eq(false)
+      end
+
+      context 'when cache mismatch' do
+        it 'logs an error' do
+          expect(service.fetch('main', dry_run: true) { true }).to eq(true)
+
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            'class' => described_class.name,
+            'message' => /Cache mismatch/,
+            'project_id' => project.id,
+            'project_path' => project.full_path
+          )
+
+          expect(service.fetch('main', dry_run: true) { false }).to eq(false)
+        end
+      end
+
+      context 'when cache matches' do
+        it 'does not log an error' do
+          expect(service.fetch('main', dry_run: true) { true }).to eq(true)
+
+          expect(Gitlab::AppLogger).not_to receive(:error)
+
+          expect(service.fetch('main', dry_run: true) { true }).to eq(true)
+        end
+      end
+    end
   end
 
   describe '#refresh' do

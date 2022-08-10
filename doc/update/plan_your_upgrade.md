@@ -14,7 +14,7 @@ General notes:
 - If possible, we recommend you test out the upgrade in a test environment before
   updating your production instance. Ideally, your test environment should mimic
   your production environment as closely as possible.
-- If [working with Support](https://about.gitlab.com/support/scheduling-upgrade-assistance.html)
+- If [working with Support](https://about.gitlab.com/support/scheduling-upgrade-assistance/)
   to create your plan, share details of your architecture, including:
   - How is GitLab installed?
   - What is the operating system of the node?

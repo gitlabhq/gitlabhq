@@ -1,24 +1,77 @@
 @import 'mixins_and_variables_and_functions';
 
 .description {
-  ul.task-list > li.task-list-item {
-    margin-inline-start: 0.5rem !important; /* Override typography.scss */
+  ul,
+  ol {
+    /* We're changing list-style-position to inside because the default of
+     * outside doesn't move negative margin to the left of the bullet. */
+    list-style-position: inside;
   }
 
   li {
     position: relative;
-    margin-inline-start: 2.25rem;
-
-    &.task-list-item > .drag-icon {
-      inset-inline-start: -0.6rem;
-    }
+    /* In the browser, the li element comes after (to the right of) the bullet point, so hovering
+     * over the left of the bullet point doesn't trigger a row hover. To trigger hovering on the
+     * left, we're applying negative margin here to shift the li element left. */
+    margin-inline-start: -1rem;
+    padding-inline-start: 2.5rem;
 
     .drag-icon {
       position: absolute;
       inset-block-start: 0.3rem;
-      inset-inline-start: -2.3rem;
-      padding-inline-end: 1rem;
-      width: 2rem;
+      inset-inline-start: 1rem;
+    }
+
+    /* The inside bullet aligns itself to the bottom, which we see when text to the right of
+     * a multi-line list item wraps. We fix this by aligning it to the top, and excluding
+     * other elements. Targeting ::marker doesn't seem to work, instead we exclude custom elements
+     * or anything with a class */
+    > *:not(gl-emoji, code, [class]) {
+      vertical-align: top;
+    }
+
+    /* The inside bullet is treated like an element inside the li element, so when we have a
+     * multi-paragraph list item, the text doesn't start on the right of the bullet because
+     * it is a block level p element. We make it inline to fix this. */
+    > p:first-of-type {
+      display: inline-block;
+      max-width: calc(100% - 1.5rem);
+    }
+
+    /* We fix the other paragraphs not indenting to the
+     * right of the bullet due to the inside bullet. */
+    p ~ a,
+    p ~ blockquote,
+    p ~ code,
+    p ~ details,
+    p ~ dl,
+    p ~ h1,
+    p ~ h2,
+    p ~ h3,
+    p ~ h4,
+    p ~ h5,
+    p ~ h6,
+    p ~ hr,
+    p ~ ol,
+    p ~ p,
+    p ~ table:not(.code), /* We need :not(.code) to override typography.scss */
+    p ~ ul,
+    p ~ .markdown-code-block {
+      margin-inline-start: 1rem;
+    }
+  }
+
+  ul.task-list {
+    > li.task-list-item {
+      /* We're using !important to override the same selector in typography.scss */
+      margin-inline-start: -1rem !important;
+      padding-inline-start: 2.5rem;
+
+      > input.task-list-item-checkbox {
+        position: static;
+        vertical-align: middle;
+        margin-block-start: -2px;
+      }
     }
   }
 }

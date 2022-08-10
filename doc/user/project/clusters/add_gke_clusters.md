@@ -37,7 +37,7 @@ Prerequisites:
   set up with access.
 - Kubernetes Engine API and related services enabled. It should work immediately but may
   take up to 10 minutes after you create a project. For more information see the
-  ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin).
+  ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster#before-you-begin).
 
 Note the following:
 

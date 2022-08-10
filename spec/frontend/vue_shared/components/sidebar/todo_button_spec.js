@@ -37,7 +37,7 @@ describe('Todo Button', () => {
     createComponent({}, mount);
     wrapper.findComponent(GlButton).trigger('click');
 
-    expect(wrapper.emitted().click).toBeTruthy();
+    expect(wrapper.emitted().click).toHaveLength(1);
   });
 
   it('calls dispatchDocumentEvent to update global To-Do counter correctly', () => {

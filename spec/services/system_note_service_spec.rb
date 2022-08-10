@@ -134,15 +134,15 @@ RSpec.describe SystemNoteService do
     end
   end
 
-  describe '.change_due_date' do
-    let(:due_date) { double }
+  describe '.change_start_date_or_due_date' do
+    let(:changed_dates) { double }
 
     it 'calls TimeTrackingService' do
       expect_next_instance_of(::SystemNotes::TimeTrackingService) do |service|
-        expect(service).to receive(:change_due_date).with(due_date)
+        expect(service).to receive(:change_start_date_or_due_date).with(changed_dates)
       end
 
-      described_class.change_due_date(noteable, project, author, due_date)
+      described_class.change_start_date_or_due_date(noteable, project, author, changed_dates)
     end
   end
 

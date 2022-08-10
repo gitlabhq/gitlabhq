@@ -73,9 +73,6 @@ module Types
     mount_mutation Mutations::MergeRequests::SetDraft, calls_gitaly: true
     mount_mutation Mutations::MergeRequests::SetAssignees
     mount_mutation Mutations::MergeRequests::ReviewerRereview
-    mount_mutation Mutations::MergeRequests::RequestAttention
-    mount_mutation Mutations::MergeRequests::RemoveAttentionRequest
-    mount_mutation Mutations::MergeRequests::ToggleAttentionRequested
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Create
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Delete
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true

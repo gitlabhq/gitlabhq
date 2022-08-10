@@ -35,7 +35,7 @@ you need a [Google Cloud Platform account](https://console.cloud.google.com).
 Sign in with an existing Google account, such as the one you use to access Gmail
 or Google Drive, or create a new one.
 
-1. Follow the steps described in the ["Before you begin" section](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin)
+1. Follow the steps described in the ["Before you begin" section](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster#before-you-begin)
    of the Kubernetes Engine documentation to enable the required APIs and related services.
 1. Ensure you've created a [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
    with Google Cloud Platform.

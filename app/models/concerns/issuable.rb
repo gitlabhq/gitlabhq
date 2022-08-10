@@ -515,11 +515,23 @@ module Issuable
     changes
   end
 
+  def hook_reviewer_changes(old_associations)
+    changes = {}
+    old_reviewers = old_associations.fetch(:reviewers, reviewers)
+
+    if old_reviewers != reviewers
+      changes[:reviewers] = [old_reviewers.map(&:hook_attrs), reviewers.map(&:hook_attrs)]
+    end
+
+    changes
+  end
+
   def to_hook_data(user, old_associations: {})
     changes = previous_changes
 
     if old_associations.present?
       changes.merge!(hook_association_changes(old_associations))
+      changes.merge!(hook_reviewer_changes(old_associations)) if allows_reviewers?
     end
 
     Gitlab::DataBuilder::Issuable.new(self).build(user: user, changes: changes)

@@ -29,7 +29,7 @@
         - if current_user
           - if current_user.admin?
             = link_to [:admin, @project], class: 'btn gl-button btn-icon gl-align-self-start gl-py-2! gl-mr-3', title: _('View project in admin area'),
-              data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              data: {toggle: 'tooltip', placement: 'top', container: 'body'} do
               = sprite_icon('admin')
           .gl-display-flex.gl-align-items-start.gl-mr-3
             - if @notification_setting

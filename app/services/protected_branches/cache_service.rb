@@ -7,17 +7,24 @@ module ProtectedBranches
     CACHE_EXPIRE_IN = 1.day
     CACHE_LIMIT = 1000
 
-    def fetch(ref_name)
+    def fetch(ref_name, dry_run: false)
       record = OpenSSL::Digest::SHA256.hexdigest(ref_name)
 
       Gitlab::Redis::Cache.with do |redis|
         cached_result = redis.hget(redis_key, record)
 
-        break Gitlab::Redis::Boolean.decode(cached_result) unless cached_result.nil?
+        decoded_result = Gitlab::Redis::Boolean.decode(cached_result) unless cached_result.nil?
 
-        value = yield
+        # If we're dry-running, don't break because we need to check against
+        # the real value to ensure the cache is working properly.
+        # If the result is nil we'll need to run the block, so don't break yet.
+        break decoded_result unless dry_run || decoded_result.nil?
 
-        redis.hset(redis_key, record, Gitlab::Redis::Boolean.encode(value))
+        calculated_value = yield
+
+        check_and_log_discrepancy(decoded_result, calculated_value, ref_name) if dry_run
+
+        redis.hset(redis_key, record, Gitlab::Redis::Boolean.encode(calculated_value))
 
         # We don't want to extend cache expiration time
         if redis.ttl(redis_key) == TTL_UNSET
@@ -30,7 +37,7 @@ module ProtectedBranches
           redis.unlink(redis_key)
         end
 
-        value
+        calculated_value
       end
     end
 
@@ -39,6 +46,20 @@ module ProtectedBranches
     end
 
     private
+
+    def check_and_log_discrepancy(cached_value, real_value, ref_name)
+      return if cached_value.nil?
+      return if cached_value == real_value
+
+      encoded_ref_name = Gitlab::EncodingHelper.encode_utf8_with_replacement_character(ref_name)
+
+      log_error(
+        'class' => self.class.name,
+        'message' => "Cache mismatch '#{encoded_ref_name}': cached value: #{cached_value}, real value: #{real_value}",
+        'project_id' => @project.id,
+        'project_path' => @project.full_path
+      )
+    end
 
     def redis_key
       @redis_key ||= [CACHE_ROOT_KEY, @project.id].join(':')

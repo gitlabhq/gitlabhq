@@ -8,6 +8,37 @@ RSpec.describe Issuable::CommonSystemNotesService do
 
   let(:issuable) { create(:issue, project: project) }
 
+  shared_examples 'system note for issuable date changes' do
+    it 'creates a system note for due_date set' do
+      issuable.update!(due_date: Date.today)
+
+      expect { subject }.to change(issuable.notes, :count).from(0).to(1)
+      expect(issuable.notes.last.note).to match('changed due date to')
+    end
+
+    it 'creates a system note for start_date set' do
+      issuable.update!(start_date: Date.today)
+
+      expect { subject }.to change(issuable.notes, :count).from(0).to(1)
+      expect(issuable.notes.last.note).to match('changed start date to')
+    end
+
+    it 'creates a note when both start and due date are changed' do
+      issuable.update!(start_date: Date.today, due_date: 1.week.from_now)
+
+      expect { subject }.to change { issuable.notes.count }.from(0).to(1)
+      expect(issuable.notes.last.note).to match(/changed start date to.+and changed due date to/)
+    end
+
+    it 'does not call SystemNoteService if no dates are changed' do
+      issuable.update!(title: 'new title')
+
+      expect(SystemNoteService).not_to receive(:change_start_date_or_due_date)
+
+      subject
+    end
+  end
+
   context 'on issuable update' do
     it_behaves_like 'system note creation', { title: 'New title' }, 'changed title'
     it_behaves_like 'system note creation', { description: 'New description' }, 'changed the description'
@@ -61,6 +92,12 @@ RSpec.describe Issuable::CommonSystemNotesService do
         end
       end
     end
+
+    context 'when changing dates' do
+      it_behaves_like 'system note for issuable date changes' do
+        subject { described_class.new(project: project, current_user: user).execute(issuable) }
+      end
+    end
   end
 
   context 'on issuable create' do
@@ -102,12 +139,8 @@ RSpec.describe Issuable::CommonSystemNotesService do
       end
     end
 
-    it 'creates a system note for due_date set' do
-      issuable.due_date = Date.today
-      issuable.save!
-
-      expect { subject }.to change { issuable.notes.count }.from(0).to(1)
-      expect(issuable.notes.last.note).to match('changed due date')
+    context 'when changing dates' do
+      it_behaves_like 'system note for issuable date changes'
     end
   end
 end

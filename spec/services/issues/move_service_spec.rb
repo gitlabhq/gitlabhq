@@ -140,7 +140,8 @@ RSpec.describe Issues::MoveService do
         end
 
         before do
-          SystemNoteService.change_due_date(old_issue, old_project, author, old_issue.due_date)
+          old_issue.update!(due_date: Date.today)
+          SystemNoteService.change_start_date_or_due_date(old_issue, old_project, author, old_issue.previous_changes.slice('due_date'))
         end
 
         it 'does not create extra system notes' do

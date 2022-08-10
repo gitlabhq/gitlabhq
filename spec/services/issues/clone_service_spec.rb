@@ -182,19 +182,21 @@ RSpec.describe Issues::CloneService do
 
       context 'issue with due date' do
         let(:date) { Date.parse('2020-01-10') }
+        let(:new_date) { date + 1.week }
 
         let(:old_issue) do
           create(:issue, title: title, description: description, project: old_project, author: author, due_date: date)
         end
 
         before do
-          SystemNoteService.change_due_date(old_issue, old_project, author, old_issue.due_date)
+          old_issue.update!(due_date: new_date)
+          SystemNoteService.change_start_date_or_due_date(old_issue, old_project, author, old_issue.previous_changes.slice('due_date'))
         end
 
         it 'keeps the same due date' do
           new_issue = clone_service.execute(old_issue, new_project)
 
-          expect(new_issue.due_date).to eq(date)
+          expect(new_issue.due_date).to eq(old_issue.due_date)
         end
       end
 

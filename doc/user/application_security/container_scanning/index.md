@@ -680,7 +680,7 @@ It's possible to run the [GitLab container scanning tool](https://gitlab.com/git
 against a Docker container without needing to run it within the context of a CI job. To scan an
 image directly, follow these steps:
 
-1. Run [Docker Desktop](https://www.docker.com/products/docker-desktop)
+1. Run [Docker Desktop](https://www.docker.com/products/docker-desktop/)
    or [Docker Machine](https://github.com/docker/machine).
 
 1. Run the analyzer's Docker image, passing the image and tag you want to analyze in the

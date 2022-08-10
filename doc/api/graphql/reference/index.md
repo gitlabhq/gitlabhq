@@ -3634,48 +3634,6 @@ Input type: `MergeRequestCreateInput`
 | <a id="mutationmergerequestcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestcreatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
-### `Mutation.mergeRequestRemoveAttentionRequest`
-
-Input type: `MergeRequestRemoveAttentionRequestInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequestremoveattentionrequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestremoveattentionrequestiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
-| <a id="mutationmergerequestremoveattentionrequestprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
-| <a id="mutationmergerequestremoveattentionrequestuserid"></a>`userId` | [`UserID!`](#userid) | User ID of the user for attention request removal. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequestremoveattentionrequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestremoveattentionrequesterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestremoveattentionrequestmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
-
-### `Mutation.mergeRequestRequestAttention`
-
-Input type: `MergeRequestRequestAttentionInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequestrequestattentionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestrequestattentioniid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
-| <a id="mutationmergerequestrequestattentionprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
-| <a id="mutationmergerequestrequestattentionuserid"></a>`userId` | [`UserID!`](#userid) | User ID of the user to request attention. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequestrequestattentionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestrequestattentionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestrequestattentionmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
-
 ### `Mutation.mergeRequestReviewerRereview`
 
 Input type: `MergeRequestReviewerRereviewInput`
@@ -3824,27 +3782,6 @@ Input type: `MergeRequestSetSubscriptionInput`
 | <a id="mutationmergerequestsetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetsubscriptionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestsetsubscriptionmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
-
-### `Mutation.mergeRequestToggleAttentionRequested`
-
-Input type: `MergeRequestToggleAttentionRequestedInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequesttoggleattentionrequestedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequesttoggleattentionrequestediid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
-| <a id="mutationmergerequesttoggleattentionrequestedprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
-| <a id="mutationmergerequesttoggleattentionrequesteduserid"></a>`userId` | [`UserID!`](#userid) | User ID for the user to toggle attention requested. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequesttoggleattentionrequestedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequesttoggleattentionrequestederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequesttoggleattentionrequestedmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestUpdate`
 

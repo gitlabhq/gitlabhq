@@ -74,7 +74,7 @@ allowlist:
 The allowed entries can be separated by semicolons, commas or whitespaces
 (including newlines) and be in different formats like hostnames, IP addresses and/or
 IP ranges. IPv6 is supported. Hostnames that contain Unicode characters should
-use [Internationalized Domain Names in Applications](https://www.icann.org/resources/pages/glossary-2014-02-04-en#i)
+use [Internationalized Domain Names in Applications](https://www.icann.org/en/icann-acronyms-and-terms/internationalized-domain-names-in-applications-en)
 (IDNA) encoding.
 
 The allowlist can hold a maximum of 1000 entries. Each entry can be a maximum of

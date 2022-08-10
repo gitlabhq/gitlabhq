@@ -2,8 +2,9 @@
 
 module SystemNotes
   class TimeTrackingService < ::SystemNotes::BaseService
-    # Called when the due_date of a Noteable is changed
+    # Called when the start_date or due_date of an Issue/WorkItem is changed
     #
+    # start_date  - Start date being assigned, or nil
     # due_date  - Due date being assigned, or nil
     #
     # Example Note text:
@@ -11,14 +12,20 @@ module SystemNotes
     #   "removed due date"
     #
     #   "changed due date to September 20, 2018"
+
+    #   "changed start date to September 20, 2018 and changed due date to September 25, 2018"
     #
     # Returns the created Note object
-    def change_due_date(due_date)
-      body = due_date ? "changed due date to #{due_date.to_s(:long)}" : 'removed due date'
+    def change_start_date_or_due_date(changed_dates = {})
+      return if changed_dates.empty?
 
-      issue_activity_counter.track_issue_due_date_changed_action(author: author) if noteable.is_a?(Issue)
+      if noteable.is_a?(Issue) && changed_dates.key?('due_date')
+        issue_activity_counter.track_issue_due_date_changed_action(author: author)
+      end
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'due_date'))
+      create_note(
+        NoteSummary.new(noteable, project, author, changed_date_body(changed_dates), action: 'start_date_or_due_date')
+      )
     end
 
     # Called when the estimated time of a Noteable is changed
@@ -115,6 +122,27 @@ module SystemNotes
     end
 
     private
+
+    def changed_date_body(changed_dates)
+      %w[start_date due_date].each_with_object([]) do |date_field, word_array|
+        next unless changed_dates.key?(date_field)
+
+        word_array << 'and' if word_array.any?
+
+        word_array << message_for_changed_date(changed_dates, date_field)
+      end.join(' ')
+    end
+
+    def message_for_changed_date(changed_dates, date_key)
+      changed_date = changed_dates[date_key].last
+      readable_date = date_key.humanize.downcase
+
+      if changed_date.nil?
+        "removed #{readable_date}"
+      else
+        "changed #{readable_date} to #{changed_date.to_s(:long)}"
+      end
+    end
 
     def issue_activity_counter
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter

@@ -6,38 +6,94 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
   let_it_be(:author)   { create(:user) }
   let_it_be(:project)  { create(:project, :repository) }
 
-  describe '#change_due_date' do
-    subject { described_class.new(noteable: noteable, project: project, author: author).change_due_date(due_date) }
+  describe '#change_start_date_or_due_date' do
+    subject(:note) { described_class.new(noteable: noteable, project: project, author: author).change_start_date_or_due_date(changed_dates) }
 
-    let(:due_date) { Date.today }
+    let(:start_date) { Date.today }
+    let(:due_date) { 1.week.from_now.to_date }
+    let(:changed_dates) { { 'due_date' => [nil, due_date], 'start_date' => [nil, start_date] } }
+
+    let_it_be(:noteable) { create(:issue, project: project) }
 
     context 'when noteable is an issue' do
-      let_it_be(:noteable) { create(:issue, project: project) }
-
       it_behaves_like 'a note with overridable created_at'
 
       it_behaves_like 'a system note' do
-        let(:action) { 'due_date' }
+        let(:action) { 'start_date_or_due_date' }
       end
 
-      context 'when due date added' do
-        it 'sets the note text' do
-          expect(subject.note).to eq "changed due date to #{due_date.to_s(:long)}"
+      context 'when both dates are added' do
+        it 'sets the correct note message' do
+          expect(note.note).to eq("changed start date to #{start_date.to_s(:long)} and changed due date to #{due_date.to_s(:long)}")
         end
       end
 
-      context 'when due date removed' do
-        let(:due_date) { nil }
+      context 'when both dates are removed' do
+        let(:changed_dates) { { 'due_date' => [due_date, nil], 'start_date' => [start_date, nil] } }
 
-        it 'sets the note text' do
-          expect(subject.note).to eq 'removed due date'
+        before do
+          noteable.update!(start_date: start_date, due_date: due_date)
+        end
+
+        it 'sets the correct note message' do
+          expect(note.note).to eq('removed start date and removed due date')
         end
       end
 
-      it 'tracks the issue event in usage ping' do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_due_date_changed_action).with(author: author)
+      context 'when due date is added' do
+        let(:changed_dates) { { 'due_date' => [nil, due_date] } }
 
-        subject
+        it 'tracks the issue event in usage ping' do
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_due_date_changed_action).with(author: author)
+
+          subject
+        end
+
+        it 'sets the correct note message' do
+          expect(note.note).to eq("changed due date to #{due_date.to_s(:long)}")
+        end
+
+        context 'and start date removed' do
+          let(:changed_dates) { { 'due_date' => [nil, due_date], 'start_date' => [start_date, nil] } }
+
+          it 'sets the correct note message' do
+            expect(note.note).to eq("removed start date and changed due date to #{due_date.to_s(:long)}")
+          end
+        end
+      end
+
+      context 'when start_date is added' do
+        let(:changed_dates) { { 'start_date' => [nil, start_date] } }
+
+        it 'does not track the issue event in usage ping' do
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_due_date_changed_action)
+
+          subject
+        end
+
+        it 'sets the correct note message' do
+          expect(note.note).to eq("changed start date to #{start_date.to_s(:long)}")
+        end
+
+        context 'and due date removed' do
+          let(:changed_dates) { { 'due_date' => [due_date, nil], 'start_date' => [nil, start_date] } }
+
+          it 'sets the correct note message' do
+            expect(note.note).to eq("changed start date to #{start_date.to_s(:long)} and removed due date")
+          end
+        end
+      end
+
+      context 'when no dates are changed' do
+        let(:changed_dates) { {} }
+
+        it 'does not create a note and returns nil' do
+          expect do
+            note
+          end.to not_change(Note, :count)
+
+          expect(note).to be_nil
+        end
       end
     end
 
@@ -45,7 +101,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
       let_it_be(:noteable) { create(:merge_request, source_project: project) }
 
       it 'does not track the issue event in usage ping' do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_due_date_changed_action).with(author: author)
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_due_date_changed_action)
 
         subject
       end

@@ -113,6 +113,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
         expect(data[:assignees].first).to eq(user.hook_attrs)
         expect(data).not_to have_key(:assignee)
+        expect(data).not_to have_key(:reviewers)
       end
     end
 
@@ -124,6 +125,26 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
         expect(data[:assignees].first).to eq(user.hook_attrs)
         expect(data).not_to have_key(:assignee)
+      end
+    end
+
+    context 'merge_request is assigned reviewers' do
+      let(:merge_request) { create(:merge_request, reviewers: [user]) }
+      let(:data) { described_class.new(merge_request).build(user: user) }
+
+      it 'returns correct hook data' do
+        expect(data[:object_attributes]['reviewer_ids']).to match_array([user.id])
+        expect(data[:reviewers].first).to eq(user.hook_attrs)
+      end
+    end
+
+    context 'when merge_request does not have reviewers and assignees' do
+      let(:merge_request) { create(:merge_request) }
+      let(:data) { described_class.new(merge_request).build(user: user) }
+
+      it 'returns correct hook data' do
+        expect(data).not_to have_key(:assignees)
+        expect(data).not_to have_key(:reviewers)
       end
     end
   end

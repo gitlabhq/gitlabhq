@@ -21,13 +21,20 @@ module Issuable
           create_discussion_lock_note if issuable.previous_changes.include?('discussion_locked')
         end
 
-        create_due_date_note if issuable.previous_changes.include?('due_date')
+        handle_start_date_or_due_date_change_note
         create_milestone_change_event(old_milestone) if issuable.previous_changes.include?('milestone_id')
         create_labels_note(old_labels) if old_labels && issuable.labels != old_labels
       end
     end
 
     private
+
+    def handle_start_date_or_due_date_change_note
+      # Type check needed as some issuables do their own date change handling for date fields other than due_date
+      change_date_fields = issuable.is_a?(Issue) ? %w[due_date start_date] : %w[due_date]
+      changed_dates = issuable.previous_changes.slice(*change_date_fields)
+      create_start_date_or_due_date_note(changed_dates)
+    end
 
     def handle_time_tracking_note
       if issuable.previous_changes.include?('time_estimate')
@@ -99,8 +106,10 @@ module Issuable
         .execute
     end
 
-    def create_due_date_note
-      SystemNoteService.change_due_date(issuable, issuable.project, current_user, issuable.due_date)
+    def create_start_date_or_due_date_note(changed_dates)
+      return if changed_dates.blank?
+
+      SystemNoteService.change_start_date_or_due_date(issuable, issuable.project, current_user, changed_dates)
     end
 
     def create_discussion_lock_note

@@ -57,7 +57,7 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: noteable.project, author: user).unrelate_issuable(noteable_ref)
   end
 
-  # Called when the due_date of a Noteable is changed
+  # Called when the due_date or start_date of a Noteable is changed
   #
   # noteable  - Noteable object
   # project   - Project owning noteable
@@ -68,11 +68,15 @@ module SystemNoteService
   #
   #   "removed due date"
   #
-  #   "changed due date to September 20, 2018"
+  #   "changed due date to September 20, 2018 and changed start date to September 25, 2018"
   #
   # Returns the created Note object
-  def change_due_date(noteable, project, author, due_date)
-    ::SystemNotes::TimeTrackingService.new(noteable: noteable, project: project, author: author).change_due_date(due_date)
+  def change_start_date_or_due_date(noteable, project, author, changed_dates)
+    ::SystemNotes::TimeTrackingService.new(
+      noteable: noteable,
+      project: project,
+      author: author
+    ).change_start_date_or_due_date(changed_dates)
   end
 
   # Called when the estimated time of a Noteable is changed

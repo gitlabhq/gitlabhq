@@ -16030,9 +16030,6 @@ msgstr ""
 msgid "Failed to remove a to-do item for the design."
 msgstr ""
 
-msgid "Failed to remove attention because no user was found."
-msgstr ""
-
 msgid "Failed to remove mirror."
 msgstr ""
 
@@ -16046,9 +16043,6 @@ msgid "Failed to remove user identity."
 msgstr ""
 
 msgid "Failed to remove user key."
-msgstr ""
-
-msgid "Failed to request attention because no user was found."
 msgstr ""
 
 msgid "Failed to retrieve page"
@@ -32514,12 +32508,6 @@ msgstr ""
 msgid "Remove assignee"
 msgstr ""
 
-msgid "Remove attention request"
-msgstr ""
-
-msgid "Remove attention request(s)"
-msgstr ""
-
 msgid "Remove avatar"
 msgstr ""
 
@@ -32661,9 +32649,6 @@ msgstr ""
 msgid "Removed an issue from an epic."
 msgstr ""
 
-msgid "Removed attention from %{users_sentence}."
-msgstr ""
-
 msgid "Removed group can not be restored!"
 msgstr ""
 
@@ -32710,9 +32695,6 @@ msgid "Removes all labels."
 msgstr ""
 
 msgid "Removes an issue from an epic."
-msgstr ""
-
-msgid "Removes attention from %{users_sentence}."
 msgstr ""
 
 msgid "Removes parent epic %{epic_ref}."
@@ -33191,15 +33173,6 @@ msgstr ""
 msgid "Request a new one"
 msgstr ""
 
-msgid "Request attention from %{users_sentence}."
-msgstr ""
-
-msgid "Request attention from assignee or reviewer"
-msgstr ""
-
-msgid "Request attention from assignee(s) or reviewer(s)"
-msgstr ""
-
 msgid "Request data is too large"
 msgstr ""
 
@@ -33222,9 +33195,6 @@ msgid "Requested"
 msgstr ""
 
 msgid "Requested %{time_ago}"
-msgstr ""
-
-msgid "Requested attention from %{users_sentence}."
 msgstr ""
 
 msgid "Requested design version does not exist."

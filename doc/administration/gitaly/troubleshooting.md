@@ -360,6 +360,17 @@ push, which causes a significant delay.
 
 If Git pushes are too slow when Dynatrace is enabled, disable Dynatrace.
 
+### Find storage resource details
+
+You can run the following commands in a [Rails conosole](../operations/rails_console.md#starting-a-rails-console-session) to determine the available and used space on a
+Gitaly storage:
+
+```ruby
+Gitlab::GitalyClient::ServerService.new("default").storage_disk_statistics
+# For Gitaly Cluster
+Gitlab::GitalyClient::ServerService.new("<storage name>").disk_statistics
+```
+
 ## Troubleshoot Praefect (Gitaly Cluster)
 
 The following sections provide possible solutions to Gitaly Cluster errors.

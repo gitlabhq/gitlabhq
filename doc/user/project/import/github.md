@@ -241,3 +241,35 @@ Feature.disable(:github_importer_lower_per_page_limit, group)
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](index.md#automate-group-and-project-import).
+
+## Troubleshooting
+
+### Manually continue a previously failed import process
+
+In some cases, the GitHub import process can fail to import the repository. This causes GitLab to abort the project import process and requires the
+repository to be imported manually. Administrators can manually import the repository for a failed import process:
+
+1. Open a Rails console.
+1. Run the following series of commands in the console:
+
+   ```ruby
+   project_id = <PROJECT_ID> 
+   github_access_token =  <GITHUB_ACCESS_TOKEN> 
+   github_repository_path = '<GROUP>/<REPOSITORY>'
+
+   github_repository_url = "https://#{github_access_token}@github.com/#{github_repository_path}.git"
+
+   # Find project by ID
+   project = Project.find(project_id)
+   # Set import URL and credentials
+   project.import_url = github_repository_url
+   project.import_type = 'github'
+   project.import_source = github_repository_path
+   project.save!
+   # Create an import state if the project was created manually and not from a failed import
+   project.create_import_state if project.import_state.blank?
+   # Set state to start
+   project.import_state.force_start
+   # Trigger import from second step
+   Gitlab::GithubImport::Stage::ImportRepositoryWorker.perform_async(project.id)
+   ```
