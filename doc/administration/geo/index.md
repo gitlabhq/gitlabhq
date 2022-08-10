@@ -283,7 +283,7 @@ For information on using Geo in disaster recovery situations to mitigate data-lo
 
 ### Replicating the Container Registry
 
-For more information on how to replicate the Container Registry, see [Docker Registry for a **secondary** site](replication/docker_registry.md).
+For more information on how to replicate the Container Registry, see [Container Registry for a **secondary** site](replication/container_registry.md).
 
 ### Geo secondary proxy
 

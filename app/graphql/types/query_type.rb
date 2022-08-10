@@ -184,7 +184,7 @@ module Types
     end
 
     def ci_variables
-      return unless current_user.can_admin_all_resources?
+      return unless current_user&.can_admin_all_resources?
 
       ::Ci::InstanceVariable.all
     end

@@ -1551,15 +1551,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: pipeline_background:archive_trace
-  :worker_name: ArchiveTraceWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: pipeline_background:ci_archive_trace
   :worker_name: Ci::ArchiveTraceWorker
   :feature_category: :continuous_integration
@@ -1774,15 +1765,6 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
-  :idempotent: false
-  :tags: []
-- :name: pipeline_processing:build_finished
-  :worker_name: BuildFinishedWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :cpu
-  :weight: 5
   :idempotent: false
   :tags: []
 - :name: pipeline_processing:build_queue

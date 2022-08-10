@@ -1,9 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/HashEachMethods:
-  # Offense count: 95
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
     - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'
     - 'app/graphql/types/alert_management/severity_enum.rb'
@@ -12,6 +9,7 @@ Style/HashEachMethods:
     - 'app/graphql/types/ci/job_artifact_file_type_enum.rb'
     - 'app/graphql/types/ci/pipeline_config_source_enum.rb'
     - 'app/graphql/types/ci/runner_access_level_enum.rb'
+    - 'app/graphql/types/ci/variable_type_enum.rb'
     - 'app/graphql/types/clusters/agent_token_status_enum.rb'
     - 'app/graphql/types/container_repository_status_enum.rb'
     - 'app/graphql/types/data_visualization_palette/color_enum.rb'
@@ -34,6 +32,7 @@ Style/HashEachMethods:
     - 'config/initializers/8_gitaly.rb'
     - 'ee/app/graphql/types/compliance_management/merge_requests/compliance_violation_reason_enum.rb'
     - 'ee/app/graphql/types/compliance_management/merge_requests/compliance_violation_severity_enum.rb'
+    - 'ee/app/graphql/types/incident_management/issuable_resource_link_type_enum.rb'
     - 'ee/app/graphql/types/incident_management/oncall_rotation_length_unit_enum.rb'
     - 'ee/app/graphql/types/security_report_summary_type.rb'
     - 'ee/app/graphql/types/vulnerabilities_count_by_day_type.rb'
@@ -69,7 +68,6 @@ Style/HashEachMethods:
     - 'spec/helpers/application_helper_spec.rb'
     - 'spec/lib/gitlab/ci/status/build/failed_spec.rb'
     - 'spec/lib/gitlab/metrics/samplers/ruby_sampler_spec.rb'
-    - 'spec/lib/gitlab/template/gitlab_ci_yml_template_spec.rb'
     - 'spec/lib/gitlab/usage_data_spec.rb'
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/job_artifact_spec.rb'
@@ -77,6 +75,7 @@ Style/HashEachMethods:
     - 'spec/models/clusters/cluster_spec.rb'
     - 'spec/models/concerns/has_user_type_spec.rb'
     - 'spec/models/packages/package_spec.rb'
+    - 'spec/models/project_spec.rb'
     - 'spec/models/user_spec.rb'
     - 'spec/presenters/ci/pipeline_presenter_spec.rb'
     - 'spec/presenters/commit_status_presenter_spec.rb'

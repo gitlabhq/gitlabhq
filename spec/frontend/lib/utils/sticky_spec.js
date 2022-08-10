@@ -34,13 +34,13 @@ describe('sticky', () => {
       isSticky(el, 0, el.offsetTop);
       isSticky(el, 0, el.offsetTop);
 
-      expect(el.classList.contains('is-stuck')).toBeTruthy();
+      expect(el.classList.contains('is-stuck')).toBe(true);
     });
 
     it('adds is-stuck class', () => {
       isSticky(el, 0, el.offsetTop);
 
-      expect(el.classList.contains('is-stuck')).toBeTruthy();
+      expect(el.classList.contains('is-stuck')).toBe(true);
     });
 
     it('inserts placeholder element', () => {
@@ -64,7 +64,7 @@ describe('sticky', () => {
     it('does not add is-stuck class', () => {
       isSticky(el, 0, 0);
 
-      expect(el.classList.contains('is-stuck')).toBeFalsy();
+      expect(el.classList.contains('is-stuck')).toBe(false);
     });
 
     it('removes placeholder', () => {

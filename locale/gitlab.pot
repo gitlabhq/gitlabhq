@@ -12439,6 +12439,9 @@ msgstr ""
 msgid "Delete file"
 msgstr ""
 
+msgid "Delete identity"
+msgstr ""
+
 msgid "Delete image"
 msgstr ""
 
@@ -17095,9 +17098,6 @@ msgstr ""
 msgid "Geo|In progress"
 msgstr ""
 
-msgid "Geo|In sync"
-msgstr ""
-
 msgid "Geo|Internal URL"
 msgstr ""
 
@@ -17153,9 +17153,6 @@ msgid "Geo|No Geo site found"
 msgstr ""
 
 msgid "Geo|No available replication slots"
-msgstr ""
-
-msgid "Geo|Not synced yet"
 msgstr ""
 
 msgid "Geo|Nothing found…"
@@ -17411,9 +17408,6 @@ msgid "Geo|Unhealthy"
 msgstr ""
 
 msgid "Geo|Unknown"
-msgstr ""
-
-msgid "Geo|Unknown state"
 msgstr ""
 
 msgid "Geo|Updated %{timeAgo}"
@@ -19678,6 +19672,9 @@ msgid "IdentityVerification|Your account has been successfully verified. You'll 
 msgstr ""
 
 msgid "IdentityVerification|Your verification code expires after %{expires_in_minutes} minutes."
+msgstr ""
+
+msgid "Identity|Provider ID"
 msgstr ""
 
 msgid "If any indexed field exceeds this limit, it is truncated to this number of characters. The rest of the content is neither indexed nor searchable. This does not apply to repository and wiki indexing. For unlimited characters, set this to 0."

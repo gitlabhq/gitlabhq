@@ -65,9 +65,9 @@ connectivity between your sites, your hardware, and so on.
 
 That's totally fine. We use HTTP(s) to fetch repository changes from the **primary** site to all **secondary** sites.
 
-## Is this possible to set up a Docker Registry for a **secondary** site that mirrors the one on the **primary** site?
+## Is this possible to set up a Container Registry for a **secondary** site that mirrors the one on the **primary** site?
 
-Yes. See [Docker Registry for a **secondary** site](docker_registry.md).
+Yes. See [Container Registry for a **secondary** site](container_registry.md).
 
 ## Can you log in to a secondary site?
 

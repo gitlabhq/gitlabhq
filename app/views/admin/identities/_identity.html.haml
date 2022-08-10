@@ -1,12 +1,24 @@
 %tr
   %td
-    #{Gitlab::Auth::OAuth::Provider.label_for(identity.provider)} (#{identity.provider}) #{identity.saml_provider_id.present? ? "for #{link_to identity.saml_provider.group.path, identity.saml_provider.group} ID: #{identity.saml_provider_id}".html_safe : ""}
+    = label_for_identity_provider(identity)
+  %td{ data: { testid: provider_id_cell_testid(identity) } }
+    = provider_id(identity)
+  %td{ data: { testid: saml_group_cell_testid(identity) } }
+    = saml_group_link(identity)
   %td
     = identity.extern_uid
-  %td
-    = link_to edit_admin_user_identity_path(@user, identity), class: 'gl-button btn btn-sm btn-grouped' do
-      = _("Edit")
-    = link_to [:admin, @user, identity], method: :delete,
-      class: 'gl-button btn btn-sm btn-danger',
-      data: { confirm: _("Are you sure you want to remove this identity?") } do
-      = _('Delete')
+  %td{ class: 'gl-py-0!' }
+    - button_classes = 'has-tooltip gl-my-3'
+    = render Pajamas::ButtonComponent.new(category: :tertiary,
+      href: edit_admin_user_identity_path(@user, identity),
+      icon: 'pencil',
+      button_options: { title: _('Edit'),
+        'aria-label' => _('Edit'),
+        class: button_classes } )
+    = render Pajamas::ButtonComponent.new(category: :tertiary,
+      href: url_for([:admin, @user, identity]),
+      icon: 'remove',
+      button_options: { title: _('Delete'),
+       'aria-label' => _('Delete identity'),
+        class: button_classes,
+        data: { method: :delete, confirm: _("Are you sure you want to remove this identity?") } } )

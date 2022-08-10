@@ -114,6 +114,19 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
+# Incident management linked resources
+- name: incident_management_issuable_resource_link_created
+  redis_slot: incident_management
+  category: incident_management
+  aggregation: weekly
+- name: incident_management_issuable_resource_link_deleted
+  redis_slot: incident_management
+  category: incident_management
+  aggregation: weekly
+- name: incident_management_issuable_resource_link_visited
+  redis_slot: incident_management
+  category: incident_management
+  aggregation: weekly
 # Incident management alerts
 - name: incident_management_alert_create_incident
   redis_slot: incident_management

@@ -334,6 +334,9 @@ RSpec.configure do |config|
       # See https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
       stub_feature_flags(legacy_merge_request_state_check_for_merged_result_pipelines: false)
 
+      # Will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/369875
+      stub_feature_flags(override_group_level_protected_environment_settings_permission: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

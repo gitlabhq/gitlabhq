@@ -140,7 +140,7 @@ RSpec.describe Admin::UsersController do
       it 'displays the rejection message' do
         subject
 
-        expect(response).to redirect_to(admin_users_path)
+        expect(response).to redirect_to(admin_user_path(user))
         expect(flash[:notice]).to eq("You've rejected #{user.name}")
       end
 

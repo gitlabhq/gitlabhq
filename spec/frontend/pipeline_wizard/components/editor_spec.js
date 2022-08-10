@@ -42,7 +42,7 @@ describe('Pages Yaml Editor wrapper', () => {
 
       it('does not cause the touch event to be emitted', () => {
         wrapper.setProps({ doc });
-        expect(wrapper.emitted('touch')).not.toBeTruthy();
+        expect(wrapper.emitted('touch')).toBeUndefined();
       });
     });
 
@@ -63,7 +63,7 @@ describe('Pages Yaml Editor wrapper', () => {
 
     it('emits touch if content is changed in editor', async () => {
       await wrapper.vm.editor.setValue('foo: boo');
-      expect(wrapper.emitted('touch')).toBeTruthy();
+      expect(wrapper.emitted('touch')).toEqual([expect.any(Array)]);
     });
   });
 });

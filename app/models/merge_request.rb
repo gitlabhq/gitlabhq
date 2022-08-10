@@ -123,7 +123,8 @@ class MergeRequest < ApplicationRecord
     :force_remove_source_branch,
     :commit_message,
     :squash_commit_message,
-    :sha
+    :sha,
+    :skip_ci
   ].freeze
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 

@@ -365,7 +365,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def rebase
-    @merge_request.rebase_async(current_user.id)
+    @merge_request.rebase_async(current_user.id, skip_ci: Gitlab::Utils.to_boolean(merge_params[:skip_ci], default: false))
 
     head :ok
   rescue MergeRequest::RebaseLockTimeout => e

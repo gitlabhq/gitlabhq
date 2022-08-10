@@ -111,7 +111,6 @@ module API
       end
       expose :build_timeout
       expose :auto_cancel_pending_pipelines
-      expose :build_coverage_regex
       expose :ci_config_path, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       expose :shared_with_groups do |project, options|
         user = options[:current_user]

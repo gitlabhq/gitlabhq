@@ -211,9 +211,10 @@ describe('recurrence', () => {
 
     describe('eject', () => {
       it('removes the handler assigned to the particular count slot', () => {
-        recurInstance.handle(1, jest.fn());
+        const func = jest.fn();
+        recurInstance.handle(1, func);
 
-        expect(recurInstance.handlers[1]).toBeTruthy();
+        expect(recurInstance.handlers[1]).toStrictEqual(func);
 
         recurInstance.eject(1);
 

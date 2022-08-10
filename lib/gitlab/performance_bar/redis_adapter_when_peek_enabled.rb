@@ -17,7 +17,7 @@ module Gitlab
       # to a structured log
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def enqueue_stats_job(request_id)
-        return unless Feature.enabled?(:performance_bar_stats)
+        return unless Feature.enabled?(:performance_bar_stats, type: :ops)
 
         @client.sadd(GitlabPerformanceBarStatsWorker::STATS_KEY, request_id)
 

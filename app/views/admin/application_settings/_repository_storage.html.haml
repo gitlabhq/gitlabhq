@@ -23,7 +23,7 @@
             = link_to s_('Learn more.'), help_page_path('administration/repository_storage_paths.md'), target: '_blank', rel: 'noopener noreferrer'
         .form-check
           = f.fields_for :repository_storages_weighted, storage_weights do |storage_form|
-            - Gitlab.config.repositories.storages.keys.each do |storage|
+            - Gitlab.config.repositories.storages.each_key do |storage|
               = storage_form.text_field storage, class: 'form-text-input'
               = storage_form.label storage, storage, class: 'label-bold form-check-label'
               %br

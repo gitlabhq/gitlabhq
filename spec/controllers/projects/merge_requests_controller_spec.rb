@@ -2036,25 +2036,50 @@ RSpec.describe Projects::MergeRequestsController do
   end
 
   describe 'POST #rebase' do
+    let(:other_params) { {} }
+    let(:params) { { namespace_id: project.namespace, project_id: project, id: merge_request }.merge(other_params) }
+
     def post_rebase
-      post :rebase, params: { namespace_id: project.namespace, project_id: project, id: merge_request }
+      post :rebase, params: params
     end
 
     before do
       allow(RebaseWorker).to receive(:with_status).and_return(RebaseWorker)
     end
 
-    def expect_rebase_worker_for(user)
-      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, false)
+    def expect_rebase_worker_for(user, skip_ci: false)
+      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, skip_ci)
     end
 
     context 'successfully' do
-      it 'enqeues a RebaseWorker' do
-        expect_rebase_worker_for(user)
+      shared_examples 'successful rebase scheduler' do
+        it 'enqueues a RebaseWorker' do
+          expect_rebase_worker_for(user, skip_ci: skip_ci)
 
-        post_rebase
+          post_rebase
 
-        expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'with skip_ci not specified' do
+        let(:skip_ci) { false }
+
+        it_behaves_like 'successful rebase scheduler'
+      end
+
+      context 'with skip_ci enabled' do
+        let(:skip_ci) { true }
+        let(:other_params) { { skip_ci: 'true' } }
+
+        it_behaves_like 'successful rebase scheduler'
+      end
+
+      context 'with skip_ci disabled' do
+        let(:skip_ci) { false }
+        let(:other_params) { { skip_ci: 'false' } }
+
+        it_behaves_like 'successful rebase scheduler'
       end
     end
 

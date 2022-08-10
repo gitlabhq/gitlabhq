@@ -45,7 +45,7 @@ be adapted for use with any other file-based data, such as [GitLab Pages](../../
 ### Container registry
 
 By default, the container registry is not automatically replicated to secondary
-sites and this needs to be manually configured, see [Docker Registry for a secondary site](../replication/docker_registry.md).
+sites and this needs to be manually configured, see [Container Registry for a secondary site](../replication/container_registry.md).
 
 If you are using local storage on your current primary site for the container
 registry, you can `rsync` the container registry objects to the secondary

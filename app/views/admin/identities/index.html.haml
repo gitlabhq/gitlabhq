@@ -3,14 +3,18 @@
 - page_title _("Identities"), @user.name, _("Users")
 = render 'admin/users/head'
 
-- if @identities.present?
-  .table-holder
-    %table.table
-      %thead
-        %tr
-          %th= _('Provider')
-          %th= _('Identifier')
-          %th
-      = render @identities
-- else
-  %h4= _('This user has no identities')
+%table.table.gl-table
+  %thead
+    %tr
+      %th{ class: 'gl-border-t-0!' }= _('Provider')
+      %th{ class: 'gl-border-t-0!' }= s_('Identity|Provider ID')
+      %th{ class: 'gl-border-t-0!' }= _('Group')
+      %th{ class: 'gl-border-t-0!' }= _('Identifier')
+      %th{ class: 'gl-border-t-0!' }= _('Actions')
+  = render @identities
+  - if @identities.blank?
+    %tbody
+      %tr
+        %td{ colspan: '5' }
+          .text-center.my-2
+            = _('This user has no identities')

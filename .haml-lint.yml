@@ -134,6 +134,7 @@ linters:
       - Style/NegatedIf
       - Style/NestedTernaryOperator
       - Style/SelfAssignment
+      - Style/StringConcatenation
       - Style/TernaryParentheses
       - Style/TrailingCommaInHashLiteral
       - Style/UnlessElse

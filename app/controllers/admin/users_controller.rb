@@ -88,7 +88,7 @@ class Admin::UsersController < Admin::ApplicationController
     result = Users::RejectService.new(current_user).execute(user)
 
     if result[:status] == :success
-      redirect_to admin_users_path, status: :found, notice: _("You've rejected %{user}" % { user: user.name })
+      redirect_back_or_admin_user(notice: _("You've rejected %{user}" % { user: user.name }))
     else
       redirect_back_or_admin_user(alert: result[:message])
     end
