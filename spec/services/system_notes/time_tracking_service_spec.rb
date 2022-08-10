@@ -3,19 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe ::SystemNotes::TimeTrackingService do
-  let_it_be(:author)   { create(:user) }
-  let_it_be(:project)  { create(:project, :repository) }
+  let_it_be(:author)  { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
 
   describe '#change_start_date_or_due_date' do
+    let_it_be(:issue)     { create(:issue, project: project) }
+    let_it_be(:work_item) { create(:work_item, project: project) }
+
     subject(:note) { described_class.new(noteable: noteable, project: project, author: author).change_start_date_or_due_date(changed_dates) }
 
     let(:start_date) { Date.today }
     let(:due_date) { 1.week.from_now.to_date }
     let(:changed_dates) { { 'due_date' => [nil, due_date], 'start_date' => [nil, start_date] } }
 
-    let_it_be(:noteable) { create(:issue, project: project) }
-
-    context 'when noteable is an issue' do
+    shared_examples 'issuable getting date change notes' do
       it_behaves_like 'a note with overridable created_at'
 
       it_behaves_like 'a system note' do
@@ -43,14 +44,14 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
       context 'when due date is added' do
         let(:changed_dates) { { 'due_date' => [nil, due_date] } }
 
-        it 'tracks the issue event in usage ping' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_due_date_changed_action).with(author: author)
-
-          subject
-        end
-
         it 'sets the correct note message' do
           expect(note.note).to eq("changed due date to #{due_date.to_s(:long)}")
+        end
+
+        it 'tracks the issue event in usage ping' do
+          expect(activity_counter_class).to receive(activity_counter_method).with(author: author)
+
+          subject
         end
 
         context 'and start date removed' do
@@ -97,11 +98,66 @@ RSpec.describe ::SystemNotes::TimeTrackingService do
       end
     end
 
-    context 'when noteable is a merge request' do
-      let_it_be(:noteable) { create(:merge_request, source_project: project) }
+    context 'when noteable is an issue' do
+      let(:noteable) { issue }
+      let(:activity_counter_class) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter }
+      let(:activity_counter_method) { :track_issue_due_date_changed_action }
+
+      it_behaves_like 'issuable getting date change notes'
+
+      it 'does not track the work item event in usage ping' do
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).not_to receive(:track_work_item_date_changed_action)
+
+        subject
+      end
+
+      it 'tracks the issue event in usage ping' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_due_date_changed_action).with(author: author)
+
+        subject
+      end
+
+      context 'when only start_date is added' do
+        let(:changed_dates) { { 'start_date' => [nil, start_date] } }
+
+        it 'does not track the issue event in usage ping' do
+          expect(activity_counter_class).not_to receive(activity_counter_method)
+
+          subject
+        end
+      end
+    end
+
+    context 'when noteable is a work item' do
+      let(:noteable) { work_item }
+      let(:activity_counter_class) { Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter }
+      let(:activity_counter_method) { :track_work_item_date_changed_action }
+
+      it_behaves_like 'issuable getting date change notes'
 
       it 'does not track the issue event in usage ping' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_due_date_changed_action)
+
+        subject
+      end
+
+      context 'when only start_date is added' do
+        let(:changed_dates) { { 'start_date' => [nil, start_date] } }
+
+        it 'tracks the issue event in usage ping' do
+          expect(activity_counter_class).to receive(activity_counter_method).with(author: author)
+
+          subject
+        end
+      end
+    end
+
+    context 'when noteable is a merge request' do
+      let(:noteable) { create(:merge_request, source_project: project) }
+
+      it 'does not track the issue event in usage ping' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_due_date_changed_action)
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).not_to receive(:track_work_item_date_changed_action)
 
         subject
       end

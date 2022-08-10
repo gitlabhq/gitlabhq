@@ -19,9 +19,12 @@ module SystemNotes
     def change_start_date_or_due_date(changed_dates = {})
       return if changed_dates.empty?
 
-      if noteable.is_a?(Issue) && changed_dates.key?('due_date')
+      # Using instance_of because WorkItem < Issue. We don't want to track work item updates as issue updates
+      if noteable.instance_of?(Issue) && changed_dates.key?('due_date')
         issue_activity_counter.track_issue_due_date_changed_action(author: author)
       end
+
+      work_item_activity_counter.track_work_item_date_changed_action(author: author) if noteable.is_a?(WorkItem)
 
       create_note(
         NoteSummary.new(noteable, project, author, changed_date_body(changed_dates), action: 'start_date_or_due_date')
@@ -146,6 +149,10 @@ module SystemNotes
 
     def issue_activity_counter
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter
+    end
+
+    def work_item_activity_counter
+      Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter
     end
   end
 end

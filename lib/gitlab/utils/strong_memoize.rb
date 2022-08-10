@@ -113,7 +113,7 @@ module Gitlab
 
           # Methods defined within a class method are already public by default, so we don't need to
           # explicitly make them public.
-          scope = %i(private protected).find do |scope|
+          scope = %i[private protected].find do |scope|
             klass.send("#{scope}_instance_methods") # rubocop:disable GitlabSecurity/PublicSend
               .include? method_name
           end

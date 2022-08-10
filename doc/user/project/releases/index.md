@@ -124,10 +124,8 @@ You can create a release directly as part of the GitLab CI/CD pipeline by using 
 The release is created only if the job processes without error. If the API returns an error during
 release creation, the release job fails.
 
-Methods for creating a release using a CI/CD job include:
-
-- Create a release when a Git tag is created.
-- Create a release when a commit is merged to the default branch.
+For examples of how you can create a release of your application in the CI/CD pipeline,
+see [Release CI/CD examples](release_cicd_examples.md).
 
 ### Use a custom SSL CA certificate authority
 

@@ -66,6 +66,16 @@ RSpec.describe WorkItems::UpdateService do
       end
     end
 
+    context 'when dates are changed' do
+      let(:opts) { { start_date: Date.today } }
+
+      it 'tracks users updating work item dates' do
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_date_changed_action).with(author: current_user)
+
+        update_work_item
+      end
+    end
+
     context 'when updating state_event' do
       context 'when state_event is close' do
         let(:opts) { { state_event: 'close' } }

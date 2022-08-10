@@ -22,6 +22,7 @@ The steps below should be followed in the order they appear. **Make sure the Git
 
 If you installed GitLab using the Omnibus packages (highly recommended):
 
+1. Confirm the [requirements for running Geo](../index.md#requirements-for-running-geo) are met.
 1. [Install GitLab Enterprise Edition](https://about.gitlab.com/install/) on the nodes that serve as the **secondary** site. **Do not create an account or log in** to the new **secondary** site. The **GitLab version must match** across primary and secondary sites.
 1. [Add the GitLab License](../../../user/admin_area/license.md) on the **primary** site to unlock Geo. The license must be for [GitLab Premium](https://about.gitlab.com/pricing/) or higher.
 1. [Confirm network connectivity](../index.md#firewall-rules) between the **primary** and **secondary** site.

@@ -95,7 +95,7 @@ To connect to a clone using `psql`:
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run
    the command to start SSH port forwarding for the clone.
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run the `psql` connection string.
-   Use the password provided at setup.
+   Use the password provided at setup and set the `dbname` to `gitlabhq_dblab` (or check what databases are available by using `psql -l` with the same query string but `dbname=postgres`).
 
 After you connect, use clone like you would any `psql` console in production, but with
 the added benefit and safety of an isolated writeable environment.

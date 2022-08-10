@@ -5,6 +5,7 @@ module Gitlab
     module WorkItemActivityUniqueCounter
       WORK_ITEM_CREATED = 'users_creating_work_items'
       WORK_ITEM_TITLE_CHANGED = 'users_updating_work_item_title'
+      WORK_ITEM_DATE_CHANGED = 'users_updating_work_item_dates'
 
       class << self
         def track_work_item_created_action(author:)
@@ -13,6 +14,10 @@ module Gitlab
 
         def track_work_item_title_changed_action(author:)
           track_unique_action(WORK_ITEM_TITLE_CHANGED, author)
+        end
+
+        def track_work_item_date_changed_action(author:)
+          track_unique_action(WORK_ITEM_DATE_CHANGED, author)
         end
 
         private
