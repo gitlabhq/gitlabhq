@@ -18,9 +18,9 @@ RSpec.shared_examples 'a Taskable' do
 
     it 'returns the correct task status' do
       expect(subject.task_status).to match('2 of')
-      expect(subject.task_status).to match('5 tasks completed')
+      expect(subject.task_status).to match('5 checklist items completed')
       expect(subject.task_status_short).to match('2/')
-      expect(subject.task_status_short).to match('5 tasks')
+      expect(subject.task_status_short).to match('5 checklist items')
     end
 
     describe '#tasks?' do
@@ -53,9 +53,9 @@ RSpec.shared_examples 'a Taskable' do
 
     it 'returns the correct task status' do
       expect(subject.task_status).to match('3 of')
-      expect(subject.task_status).to match('9 tasks completed')
+      expect(subject.task_status).to match('9 checklist items completed')
       expect(subject.task_status_short).to match('3/')
-      expect(subject.task_status_short).to match('9 tasks')
+      expect(subject.task_status_short).to match('9 checklist items')
     end
   end
 
@@ -68,9 +68,9 @@ RSpec.shared_examples 'a Taskable' do
 
     it 'returns the correct task status' do
       expect(subject.task_status).to match('0 of')
-      expect(subject.task_status).to match('1 task completed')
+      expect(subject.task_status).to match('1 checklist item completed')
       expect(subject.task_status_short).to match('0/')
-      expect(subject.task_status_short).to match('1 task')
+      expect(subject.task_status_short).to match('1 checklist item')
     end
   end
 
@@ -87,9 +87,9 @@ RSpec.shared_examples 'a Taskable' do
 
     it 'returns the correct task status' do
       expect(subject.task_status).to match('0 of')
-      expect(subject.task_status).to match('0 tasks completed')
+      expect(subject.task_status).to match('0 checklist items completed')
       expect(subject.task_status_short).to match('0/')
-      expect(subject.task_status_short).to match('0 task')
+      expect(subject.task_status_short).to match('0 checklist items')
     end
   end
 
@@ -102,9 +102,9 @@ RSpec.shared_examples 'a Taskable' do
 
     it 'returns the correct task status' do
       expect(subject.task_status).to match('1 of')
-      expect(subject.task_status).to match('1 task completed')
+      expect(subject.task_status).to match('1 checklist item completed')
       expect(subject.task_status_short).to match('1/')
-      expect(subject.task_status_short).to match('1 task')
+      expect(subject.task_status_short).to match('1 checklist item')
     end
   end
 
@@ -123,9 +123,9 @@ RSpec.shared_examples 'a Taskable' do
 
     it 'returns the correct task status' do
       expect(subject.task_status).to match('2 of')
-      expect(subject.task_status).to match('4 tasks completed')
+      expect(subject.task_status).to match('4 checklist items completed')
       expect(subject.task_status_short).to match('2/')
-      expect(subject.task_status_short).to match('4 tasks')
+      expect(subject.task_status_short).to match('4 checklist items')
     end
   end
 end

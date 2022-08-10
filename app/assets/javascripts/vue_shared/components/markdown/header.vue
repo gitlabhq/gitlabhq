@@ -314,7 +314,7 @@ export default {
             v-if="!restrictedToolBarItems.includes('task-list')"
             :prepend="true"
             tag="- [ ] "
-            :button-title="__('Add a task list')"
+            :button-title="__('Add a checklist')"
             icon="list-task"
           />
           <toolbar-button

@@ -2,7 +2,6 @@ import fs from 'fs';
 import jsYaml from 'js-yaml';
 import { memoize } from 'lodash';
 import { createContentEditor } from '~/content_editor';
-import { setTestTimeoutOnce } from 'helpers/timeout';
 
 const getFocusedMarkdownExamples = memoize(
   () => process.env.FOCUSED_MARKDOWN_EXAMPLES?.split(',') || [],
@@ -76,9 +75,6 @@ export const describeMarkdownProcessing = (description, markdownYamlPath) => {
       }
 
       it(exampleName, async () => {
-        if (name === 'frontmatter_toml') {
-          setTestTimeoutOnce(2000);
-        }
         await testSerializesHtmlToMarkdownForElement(example);
       });
     });

@@ -5,8 +5,9 @@ module Mutations
     class SetSeverity < Base
       graphql_name 'IssueSetSeverity'
 
-      argument :severity, Types::IssuableSeverityEnum, required: true,
-               description: 'Set the incident severity level.'
+      argument :severity, Types::IssuableSeverityEnum,
+        required: true,
+        description: 'Set the incident severity level.'
 
       authorize :admin_issue
 

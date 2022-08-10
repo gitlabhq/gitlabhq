@@ -124,13 +124,13 @@ describe('MrWidgetOptions', () => {
         it('should return true when hasCI is true', () => {
           wrapper.vm.mr.hasCI = true;
 
-          expect(wrapper.vm.shouldRenderPipelines).toBeTruthy();
+          expect(wrapper.vm.shouldRenderPipelines).toBe(true);
         });
 
         it('should return false when hasCI is false', () => {
           wrapper.vm.mr.hasCI = false;
 
-          expect(wrapper.vm.shouldRenderPipelines).toBeFalsy();
+          expect(wrapper.vm.shouldRenderPipelines).toBe(false);
         });
       });
 
@@ -303,7 +303,7 @@ describe('MrWidgetOptions', () => {
             expect(wrapper.vm.service.checkStatus).toHaveBeenCalled();
             expect(wrapper.vm.mr.setData).toHaveBeenCalled();
             expect(wrapper.vm.handleNotification).toHaveBeenCalledWith(mockData);
-            expect(isCbExecuted).toBeTruthy();
+            expect(isCbExecuted).toBe(true);
           });
         });
       });

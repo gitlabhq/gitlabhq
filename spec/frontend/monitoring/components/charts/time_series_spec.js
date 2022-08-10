@@ -9,7 +9,6 @@ import { mount, shallowMount } from '@vue/test-utils';
 import timezoneMock from 'timezone-mock';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
-import { setTestTimeout } from 'helpers/timeout';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import { panelTypes, chartHeight } from '~/monitoring/constants';
@@ -58,10 +57,6 @@ describe('Time series component', () => {
       attachTo: document.body,
     });
   };
-
-  beforeEach(() => {
-    setTestTimeout(1000);
-  });
 
   afterEach(() => {
     wrapper.destroy();

@@ -511,8 +511,8 @@ msgstr ""
 msgid "%{completedCount} completed weight"
 msgstr ""
 
-msgid "%{completedCount} of %{count} task completed"
-msgid_plural "%{completedCount} of %{count} tasks completed"
+msgid "%{completedCount} of %{count} checklist item completed"
+msgid_plural "%{completedCount} of %{count} checklist items completed"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2130,6 +2130,9 @@ msgstr ""
 msgid "Add a bullet list"
 msgstr ""
 
+msgid "Add a checklist"
+msgstr ""
+
 msgid "Add a collapsible section"
 msgstr ""
 
@@ -2167,9 +2170,6 @@ msgid "Add a suffix to Service Desk email address. %{linkStart}Learn more.%{link
 msgstr ""
 
 msgid "Add a table"
-msgstr ""
-
-msgid "Add a task list"
 msgstr ""
 
 msgid "Add a title..."

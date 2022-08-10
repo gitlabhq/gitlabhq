@@ -51,15 +51,12 @@ The default timeout for Jest is set in
 If your test exceeds that time, it fails.
 
 If you cannot improve the performance of the tests, you can increase the timeout
-for a specific test using
-[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/__helpers__/timeout.js).
+for a specific test using [`jest.setTimeout`](https://jestjs.io/docs/27.x/jest-object#jestsettimeouttimeout)
 
 ```javascript
-import { setTestTimeout } from 'helpers/timeout';
-
 describe('Component', () => {
   it('does something amazing', () => {
-    setTestTimeout(500);
+    jest.setTimeout(500);
     // ...
   });
 });

@@ -249,7 +249,7 @@ describe('Description component', () => {
       await nextTick();
 
       expect(document.querySelector('.issuable-meta #task_status_short').textContent.trim()).toBe(
-        '1/1 task',
+        '1/1 checklist item',
       );
     });
 

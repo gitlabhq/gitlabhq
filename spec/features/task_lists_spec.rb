@@ -89,7 +89,7 @@ RSpec.describe 'Task Lists', :js do
       it 'provides a summary on Issues#index' do
         visit project_issues_path(project)
 
-        expect(page).to have_content("2 of 6 tasks completed")
+        expect(page).to have_content("2 of 6 checklist items completed")
       end
     end
 
@@ -108,7 +108,7 @@ RSpec.describe 'Task Lists', :js do
       it 'provides a summary on Issues#index' do
         visit project_issues_path(project)
 
-        expect(page).to have_content("0 of 1 task completed")
+        expect(page).to have_content("0 of 1 checklist item completed")
       end
     end
 
@@ -127,7 +127,7 @@ RSpec.describe 'Task Lists', :js do
       it 'provides a summary on Issues#index' do
         visit project_issues_path(project)
 
-        expect(page).to have_content("1 of 1 task completed")
+        expect(page).to have_content("1 of 1 checklist item completed")
       end
     end
   end
@@ -253,7 +253,7 @@ RSpec.describe 'Task Lists', :js do
       it 'provides a summary on MergeRequests#index' do
         visit project_merge_requests_path(project)
 
-        expect(page).to have_content("2 of 6 tasks completed")
+        expect(page).to have_content("2 of 6 checklist items completed")
       end
     end
 
@@ -278,7 +278,7 @@ RSpec.describe 'Task Lists', :js do
       it 'provides a summary on MergeRequests#index' do
         visit project_merge_requests_path(project)
 
-        expect(page).to have_content("0 of 1 task completed")
+        expect(page).to have_content("0 of 1 checklist item completed")
       end
     end
 
@@ -297,7 +297,7 @@ RSpec.describe 'Task Lists', :js do
       it 'provides a summary on MergeRequests#index' do
         visit project_merge_requests_path(project)
 
-        expect(page).to have_content("1 of 1 task completed")
+        expect(page).to have_content("1 of 1 checklist item completed")
       end
     end
   end

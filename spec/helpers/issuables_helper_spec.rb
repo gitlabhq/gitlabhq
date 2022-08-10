@@ -299,7 +299,7 @@ RSpec.describe IssuablesHelper do
         initialTitleText: issue.title,
         initialDescriptionHtml: '<p dir="auto">issue text</p>',
         initialDescriptionText: 'issue text',
-        initialTaskStatus: '0 of 0 tasks completed',
+        initialTaskStatus: '0 of 0 checklist items completed',
         issueType: 'issue',
         iid: issue.iid.to_s,
         isHidden: false

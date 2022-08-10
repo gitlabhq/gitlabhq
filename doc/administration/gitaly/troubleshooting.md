@@ -24,6 +24,17 @@ as GitLab to ensure full compatibility:
 1. On the left sidebar, select **Overview > Gitaly Servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
 
+### Find storage resource details
+
+You can run the following commands in a [Rails console](../operations/rails_console.md#starting-a-rails-console-session)
+to determine the available and used space on a Gitaly storage:
+
+```ruby
+Gitlab::GitalyClient::ServerService.new("default").storage_disk_statistics
+# For Gitaly Cluster
+Gitlab::GitalyClient::ServerService.new("<storage name>").disk_statistics
+```
+
 ### Use `gitaly-debug`
 
 The `gitaly-debug` command provides "production debugging" tools for Gitaly and Git
@@ -359,17 +370,6 @@ to take several seconds to start up and shut down. `gitaly-hooks` is executed tw
 push, which causes a significant delay.
 
 If Git pushes are too slow when Dynatrace is enabled, disable Dynatrace.
-
-### Find storage resource details
-
-You can run the following commands in a [Rails conosole](../operations/rails_console.md#starting-a-rails-console-session) to determine the available and used space on a
-Gitaly storage:
-
-```ruby
-Gitlab::GitalyClient::ServerService.new("default").storage_disk_statistics
-# For Gitaly Cluster
-Gitlab::GitalyClient::ServerService.new("<storage name>").disk_statistics
-```
 
 ## Troubleshoot Praefect (Gitaly Cluster)
 

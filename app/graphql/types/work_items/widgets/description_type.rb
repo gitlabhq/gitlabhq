@@ -12,8 +12,9 @@ module Types
 
         implements Types::WorkItems::WidgetInterface
 
-        field :description, GraphQL::Types::String, null: true,
-              description: 'Description of the work item.'
+        field :description, GraphQL::Types::String,
+          null: true,
+          description: 'Description of the work item.'
 
         markdown_field :description_html, null: true do |resolved_object|
           resolved_object.work_item

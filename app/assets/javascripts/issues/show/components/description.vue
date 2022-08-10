@@ -302,7 +302,9 @@ export default {
       if (taskRegexMatches) {
         $tasks.text(this.taskStatus);
         $tasksShort.text(
-          `${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`,
+          `${taskRegexMatches[1]}/${taskRegexMatches[2]} checklist item${
+            taskRegexMatches[2] > 1 ? 's' : ''
+          }`,
         );
       } else {
         $tasks.text('');

@@ -125,7 +125,7 @@ describe('IssuableHeader', () => {
       createComponent();
 
       expect(findTaskStatusEl().exists()).toBe(true);
-      expect(findTaskStatusEl().text()).toContain('0 of 5 tasks completed');
+      expect(findTaskStatusEl().text()).toContain('0 of 5 checklist items completed');
     });
 
     it('does not render task status text when tasks count is 0', () => {

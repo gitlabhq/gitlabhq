@@ -169,6 +169,7 @@ module.exports = (path, options = {}) => {
     resolver: './jest_resolver.js',
     setupFilesAfterEnv: [`<rootDir>/${path}/test_setup.js`, 'jest-canvas-mock'],
     restoreMocks: true,
+    slowTestThreshold: process.env.CI ? 6000 : 500,
     transform: {
       '^.+\\.(gql|graphql)$': 'jest-transform-graphql',
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',

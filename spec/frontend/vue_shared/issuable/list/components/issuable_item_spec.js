@@ -349,7 +349,7 @@ describe('IssuableItem', () => {
       wrapper = createComponent();
 
       const taskStatus = wrapper.find('[data-testid="task-status"]');
-      const expected = `${mockIssuable.taskCompletionStatus.completedCount} of ${mockIssuable.taskCompletionStatus.count} tasks completed`;
+      const expected = `${mockIssuable.taskCompletionStatus.completedCount} of ${mockIssuable.taskCompletionStatus.count} checklist items completed`;
 
       expect(taskStatus.text()).toBe(expected);
     });

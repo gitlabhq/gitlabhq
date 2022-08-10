@@ -9,18 +9,21 @@ module Types
 
       implements(VariableInterface)
 
-      field :environment_scope, GraphQL::Types::String, null: true,
-            deprecated: {
-              reason: 'No longer used, only available for GroupVariableType and ProjectVariableType',
-              milestone: '15.3'
-            },
-            description: 'Scope defining the environments that can use the variable.'
+      field :environment_scope, GraphQL::Types::String,
+        null: true,
+        deprecated: {
+          reason: 'No longer used, only available for GroupVariableType and ProjectVariableType',
+          milestone: '15.3'
+        },
+        description: 'Scope defining the environments that can use the variable.'
 
-      field :protected, GraphQL::Types::Boolean, null: true,
-            description: 'Indicates whether the variable is protected.'
+      field :protected, GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates whether the variable is protected.'
 
-      field :masked, GraphQL::Types::Boolean, null: true,
-            description: 'Indicates whether the variable is masked.'
+      field :masked, GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates whether the variable is masked.'
 
       def environment_scope
         nil

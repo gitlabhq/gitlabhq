@@ -3,7 +3,6 @@ import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import { nextTick } from 'vue';
-import { setTestTimeout } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
 
 import MonitorAnomalyChart from '~/monitoring/components/charts/anomaly.vue';
@@ -72,8 +71,6 @@ describe('Dashboard Panel', () => {
   };
 
   beforeEach(() => {
-    setTestTimeout(1000);
-
     store = createStore();
     state = store.state.monitoringDashboard;
 

@@ -1,7 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import { setTestTimeout } from 'helpers/timeout';
 import Clusters from '~/clusters/clusters_bundle';
 import axios from '~/lib/utils/axios_utils';
 import initProjectSelectDropdown from '~/project_select';
@@ -12,8 +11,6 @@ jest.mock('~/project_select');
 useMockLocationHelper();
 
 describe('Clusters', () => {
-  setTestTimeout(1000);
-
   let cluster;
   let mock;
 

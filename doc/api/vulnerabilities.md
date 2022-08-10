@@ -281,7 +281,7 @@ with the GraphQL API.
 
 ### GraphQL - Single vulnerability
 
-Use [`Query.vulnerability`](graphql/reference/#queryvulnerability).
+Use [`Query.vulnerability`](graphql/reference/index.md#queryvulnerability).
 
 ```graphql
 {
@@ -337,7 +337,7 @@ Example response:
 
 ### GraphQL - Confirm vulnerability
 
-Use [`Mutation.vulnerabilityConfirm`](graphql/reference/#mutationvulnerabilityconfirm).
+Use [`Mutation.vulnerabilityConfirm`](graphql/reference/index.md#mutationvulnerabilityconfirm).
 
 ```graphql
 mutation {
@@ -367,7 +367,7 @@ Example response:
 
 ### GraphQL - Resolve vulnerability
 
-Use [`Mutation.vulnerabilityResolve`](graphql/reference/#mutationvulnerabilityresolve).
+Use [`Mutation.vulnerabilityResolve`](graphql/reference/index.md#mutationvulnerabilityresolve).
 
 ```graphql
 mutation {
@@ -397,7 +397,7 @@ Example response:
 
 ### GraphQL - Dismiss vulnerability
 
-Use [`Mutation.vulnerabilityDismiss`](graphql/reference/#mutationvulnerabilitydismiss).
+Use [`Mutation.vulnerabilityDismiss`](graphql/reference/index.md#mutationvulnerabilitydismiss).
 
 ```graphql
 mutation {
@@ -427,7 +427,7 @@ Example response:
 
 ### GraphQL - Revert vulnerability to detected state
 
-Use [`Mutation.vulnerabilityRevertToDetected`](graphql/reference/#mutationvulnerabilityreverttodetected).
+Use [`Mutation.vulnerabilityRevertToDetected`](graphql/reference/index.md#mutationvulnerabilityreverttodetected).
 
 ```graphql
 mutation {

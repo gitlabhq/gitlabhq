@@ -12,10 +12,12 @@ module Types
 
         implements Types::WorkItems::WidgetInterface
 
-        field :due_date, Types::DateType, null: true,
-              description: 'Due date of the work item.'
-        field :start_date, Types::DateType, null: true,
-              description: 'Start date of the work item.'
+        field :due_date, Types::DateType,
+          null: true,
+          description: 'Due date of the work item.'
+        field :start_date, Types::DateType,
+          null: true,
+          description: 'Start date of the work item.'
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

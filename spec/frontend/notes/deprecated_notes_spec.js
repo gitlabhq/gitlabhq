@@ -7,7 +7,6 @@ import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createSpyObj } from 'helpers/jest_helpers';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import { setTestTimeoutOnce } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
 
@@ -48,7 +47,6 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
     // random failures.
     // It seems that running tests in parallel increases failure rate.
     jest.setTimeout(4000);
-    setTestTimeoutOnce(4000);
   });
 
   afterEach(async () => {

@@ -118,8 +118,8 @@ export default {
 
       return sprintf(
         n__(
-          '%{completedCount} of %{count} task completed',
-          '%{completedCount} of %{count} tasks completed',
+          '%{completedCount} of %{count} checklist item completed',
+          '%{completedCount} of %{count} checklist items completed',
           count,
         ),
         { completedCount, count },

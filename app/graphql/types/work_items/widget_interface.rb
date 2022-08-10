@@ -7,8 +7,9 @@ module Types
 
       graphql_name 'WorkItemWidget'
 
-      field :type, ::Types::WorkItems::WidgetTypeEnum, null: true,
-            description: 'Widget type.'
+      field :type, ::Types::WorkItems::WidgetTypeEnum,
+        null: true,
+        description: 'Widget type.'
 
       ORPHAN_TYPES = [
         ::Types::WorkItems::Widgets::DescriptionType,

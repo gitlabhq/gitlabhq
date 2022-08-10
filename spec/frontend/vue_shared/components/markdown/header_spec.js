@@ -53,7 +53,7 @@ describe('Markdown field header component', () => {
         'Add a link (⌘K)',
         'Add a bullet list',
         'Add a numbered list',
-        'Add a task list',
+        'Add a checklist',
         'Add a collapsible section',
         'Add a table',
         'Go full screen',

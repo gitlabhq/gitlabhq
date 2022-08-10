@@ -12,11 +12,14 @@ module Types
 
         implements Types::WorkItems::WidgetInterface
 
-        field :labels, Types::LabelType.connection_type, null: true,
-              description: 'Labels assigned to the work item.'
+        field :labels, Types::LabelType.connection_type,
+          null: true,
+          description: 'Labels assigned to the work item.'
 
-        field :allows_scoped_labels, GraphQL::Types::Boolean, null: true, method: :allows_scoped_labels?,
-              description: 'Indicates whether a scoped label is allowed.'
+        field :allows_scoped_labels, GraphQL::Types::Boolean,
+          null: true,
+          method: :allows_scoped_labels?,
+          description: 'Indicates whether a scoped label is allowed.'
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

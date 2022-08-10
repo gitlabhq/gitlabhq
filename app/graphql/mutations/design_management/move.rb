@@ -7,17 +7,21 @@ module Mutations
 
       DesignID = ::Types::GlobalIDType[::DesignManagement::Design]
 
-      argument :id, DesignID, required: true, as: :current_design,
-               description: "ID of the design to move."
+      argument :id, DesignID,
+        required: true, as: :current_design,
+        description: "ID of the design to move."
 
-      argument :previous, DesignID, required: false, as: :previous_design,
-               description: "ID of the immediately preceding design."
+      argument :previous, DesignID,
+        required: false, as: :previous_design,
+        description: "ID of the immediately preceding design."
 
-      argument :next, DesignID, required: false, as: :next_design,
-               description: "ID of the immediately following design."
+      argument :next, DesignID,
+        required: false, as: :next_design,
+        description: "ID of the immediately following design."
 
-      field :design_collection, Types::DesignManagement::DesignCollectionType, null: true,
-            description: "Current state of the collection."
+      field :design_collection, Types::DesignManagement::DesignCollectionType,
+        null: true,
+        description: "Current state of the collection."
 
       def resolve(**args)
         service = ::DesignManagement::MoveDesignsService.new(current_user, parameters(**args))

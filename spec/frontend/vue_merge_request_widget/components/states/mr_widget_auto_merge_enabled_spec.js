@@ -137,7 +137,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
             await waitForPromises();
 
-            expect(wrapper.vm.isCancellingAutoMerge).toBeTruthy();
+            expect(wrapper.vm.isCancellingAutoMerge).toBe(true);
             if (mergeRequestWidgetGraphql) {
               expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
             } else {
