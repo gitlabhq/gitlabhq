@@ -3,7 +3,7 @@
     .context-header
       = link_to profile_path, title: _('Profile Settings'), class: 'has-tooltip', data: { container: 'body', placement: 'right' } do
         %span{ class: ['avatar-container', 'settings-avatar', 's32'] }
-          = image_tag avatar_icon_for_user(current_user, 32), class: ['avatar', 'avatar-tile', 'js-sidebar-user-avatar', 's32'], alt: current_user.name, data: { testid: 'sidebar-user-avatar' }
+          = image_tag avatar_icon_for_user(current_user, 32), class: ['avatar', 'avatar-tile', 'js-sidebar-user-avatar', 's32', 'gl-rounded-full!'], alt: current_user.name, data: { testid: 'sidebar-user-avatar' }
         %span.sidebar-context-title= _('User Settings')
     %ul.sidebar-top-level-items
       = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do

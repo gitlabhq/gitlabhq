@@ -188,6 +188,24 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/maste
   end
   ```
 
+  Alternatively, use the `strong_memoize_attr` helper to memoize the method for you:
+
+  ```ruby
+  class Find
+    include Gitlab::Utils::StrongMemoize
+
+    def result
+      search
+    end
+    strong_memoize_attr :result
+
+    strong_memoize_attr :enabled?, :enabled
+    def enabled?
+      Feature.enabled?(:some_feature)
+    end
+  end
+  ```
+
 - Clear memoization
 
   ```ruby

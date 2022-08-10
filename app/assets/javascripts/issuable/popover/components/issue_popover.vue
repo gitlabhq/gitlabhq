@@ -1,14 +1,24 @@
 <script>
-import { GlPopover, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlPopover, GlSkeletonLoader, GlTooltipDirective } from '@gitlab/ui';
+import query from 'ee_else_ce/issuable/popover/queries/issue.query.graphql';
+import IssueDueDate from '~/boards/components/issue_due_date.vue';
+import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import StatusBox from '~/issuable/components/status_box.vue';
+import { IssuableStatus } from '~/issues/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import query from '../queries/issue.query.graphql';
 
 export default {
   components: {
+    GlIcon,
     GlPopover,
     GlSkeletonLoader,
+    IssueDueDate,
+    IssueMilestone,
+    IssueWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
     StatusBox,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [timeagoMixin],
   props: {
@@ -44,6 +54,9 @@ export default {
     showDetails() {
       return Object.keys(this.issue).length > 0;
     },
+    isIssueClosed() {
+      return this.issue?.state === IssuableStatus.Closed;
+    },
   },
   apollo: {
     issue: {
@@ -69,6 +82,14 @@ export default {
     </gl-skeleton-loader>
     <div v-else-if="showDetails" class="gl-display-flex gl-align-items-center">
       <status-box issuable-type="issue" :initial-state="issue.state" />
+      <gl-icon
+        v-if="issue.confidential"
+        v-gl-tooltip
+        name="eye-slash"
+        :title="__('Confidential')"
+        class="gl-text-orange-500 gl-mr-2"
+        :aria-label="__('Confidential')"
+      />
       <span class="gl-text-secondary">
         {{ __('Opened') }} <time :datetime="issue.createdAt">{{ formattedTime }}</time>
       </span>
@@ -79,5 +100,27 @@ export default {
       {{ `${projectPath}#${iid}` }}
     </div>
     <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
+
+    <div v-if="!$apollo.queries.issue.loading" class="gl-display-flex gl-text-secondary gl-mt-2">
+      <issue-due-date
+        v-if="issue.dueDate"
+        :date="issue.dueDate.toString()"
+        :closed="isIssueClosed"
+        tooltip-placement="top"
+        class="gl-mr-4"
+        css-class="gl-display-flex gl-white-space-nowrap"
+      />
+      <issue-weight
+        v-if="issue.weight"
+        :weight="issue.weight"
+        tag-name="span"
+        class="gl-display-flex gl-mr-4"
+      />
+      <issue-milestone
+        v-if="issue.milestone"
+        :milestone="issue.milestone"
+        class="gl-display-flex gl-overflow-hidden"
+      />
+    </div>
   </gl-popover>
 </template>

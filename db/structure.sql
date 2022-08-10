@@ -16597,7 +16597,6 @@ ALTER SEQUENCE issue_metrics_id_seq OWNED BY issue_metrics.id;
 
 CREATE TABLE issue_tracker_data (
     id bigint NOT NULL,
-    service_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     encrypted_project_url character varying,
@@ -16605,7 +16604,9 @@ CREATE TABLE issue_tracker_data (
     encrypted_issues_url character varying,
     encrypted_issues_url_iv character varying,
     encrypted_new_issue_url character varying,
-    encrypted_new_issue_url_iv character varying
+    encrypted_new_issue_url_iv character varying,
+    integration_id integer,
+    CONSTRAINT check_7ca00cd891 CHECK ((integration_id IS NOT NULL))
 );
 
 CREATE SEQUENCE issue_tracker_data_id_seq
@@ -28671,7 +28672,7 @@ CREATE INDEX index_issue_metrics_on_issue_id_and_timestamps ON issue_metrics USI
 
 CREATE INDEX index_issue_on_project_id_state_id_and_blocking_issues_count ON issues USING btree (project_id, state_id, blocking_issues_count);
 
-CREATE INDEX index_issue_tracker_data_on_service_id ON issue_tracker_data USING btree (service_id);
+CREATE INDEX index_issue_tracker_data_on_integration_id ON issue_tracker_data USING btree (integration_id);
 
 CREATE UNIQUE INDEX index_issue_user_mentions_on_note_id ON issue_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
@@ -32039,6 +32040,9 @@ ALTER TABLE ONLY approvals
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_319256d87a FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY issue_tracker_data
+    ADD CONSTRAINT fk_33921c0ee1 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_3448c97865 FOREIGN KEY (push_rule_id) REFERENCES push_rules(id) ON DELETE SET NULL;
 
@@ -34054,9 +34058,6 @@ ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
 
 ALTER TABLE ONLY operations_strategies_user_lists
     ADD CONSTRAINT fk_rails_ccb7e4bc0b FOREIGN KEY (user_list_id) REFERENCES operations_user_lists(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY issue_tracker_data
-    ADD CONSTRAINT fk_rails_ccc0840427 FOREIGN KEY (service_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_milestone_events
     ADD CONSTRAINT fk_rails_cedf8cce4d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

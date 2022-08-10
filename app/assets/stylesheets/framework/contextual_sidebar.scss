@@ -134,16 +134,6 @@
   .avatar-container {
     @include gl-font-weight-normal;
     flex: none;
-    box-shadow: $avatar-box-shadow;
-
-    &.rect-avatar {
-      @include gl-border-none;
-
-      .avatar.s32 {
-        border-radius: $border-radius-default;
-        box-shadow: $avatar-box-shadow;
-      }
-    }
   }
 }
 

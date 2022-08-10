@@ -1125,12 +1125,6 @@ Geo secondary sites continue to replicate and verify data, and the secondary sit
 
 This bug was [fixed in GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/292983).
 
-### GitLab Pages return 404 errors after promoting
-
-This is due to [Pages data not being managed by Geo](datatypes.md#limitations-on-replicationverification).
-Find advice to resolve those error messages in the
-[Pages administration documentation](../../../administration/pages/index.md#404-error-after-promoting-a-geo-secondary-to-a-primary-node).
-
 ### Primary site returns 500 error when accessing `/admin/geo/replication/projects`
 
 Navigating to **Admin > Geo > Replication** (or `/admin/geo/replication/projects`) on a primary Geo site, shows a 500 error, while that same link on the secondary works fine. The primary's `production.log` has a similar entry to the following:

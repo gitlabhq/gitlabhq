@@ -1043,7 +1043,7 @@ kbd {
   text-align: left;
 }
 .context-header .avatar-container {
-  flex: 0 0 40px;
+  flex: 0 0 32px;
   background-color: #333;
 }
 .context-header .sidebar-context-title {
@@ -1376,18 +1376,6 @@ kbd {
 .nav-sidebar-inner-scroll > div.context-header a .avatar-container {
   font-weight: 400;
   flex: none;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-}
-.nav-sidebar-inner-scroll > div.context-header a .avatar-container.rect-avatar {
-  border-style: none;
-}
-.nav-sidebar-inner-scroll
-  > div.context-header
-  a
-  .avatar-container.rect-avatar
-  .avatar.s32 {
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .sidebar-top-level-items {
   margin-bottom: 60px;
@@ -1400,18 +1388,6 @@ kbd {
 .sidebar-top-level-items .context-header a .avatar-container {
   font-weight: 400;
   flex: none;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-}
-.sidebar-top-level-items .context-header a .avatar-container.rect-avatar {
-  border-style: none;
-}
-.sidebar-top-level-items
-  .context-header
-  a
-  .avatar-container.rect-avatar
-  .avatar.s32 {
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .sidebar-top-level-items
   > li.active
@@ -1628,7 +1604,6 @@ svg.s16 {
   float: left;
   margin-right: 16px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .avatar.s16,
 .avatar-container.s16 {
@@ -1649,7 +1624,7 @@ svg.s16 {
   padding: 0;
   background: #222;
   overflow: hidden;
-  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 .avatar.avatar-tile {
   border-radius: 0;
@@ -1714,7 +1689,13 @@ svg.s16 {
 .rect-avatar.s16 {
   border-radius: 2px;
 }
+.rect-avatar.s16 .avatar {
+  border-radius: 2px;
+}
 .rect-avatar.s32 {
+  border-radius: 4px;
+}
+.rect-avatar.s32 .avatar {
   border-radius: 4px;
 }
 :root {
@@ -1816,6 +1797,10 @@ body.gl-dark {
 .close-nav-button {
   background-color: #262626;
   border-right: 1px solid #303030;
+}
+.avatar-container,
+.avatar {
+  background: rgba(255, 255, 255, 0.04);
 }
 .nav-sidebar li a {
   color: var(--gray-600);

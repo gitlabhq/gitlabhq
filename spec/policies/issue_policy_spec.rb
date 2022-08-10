@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe IssuePolicy do
+  include_context 'ProjectPolicyTable context'
   include ExternalAuthorizationServiceHelpers
+  include ProjectHelpers
 
   let(:guest) { create(:user) }
   let(:author) { create(:user) }
@@ -50,6 +52,19 @@ RSpec.describe IssuePolicy do
     end
   end
 
+  shared_examples 'grants the expected permissions' do |policy|
+    specify do
+      enable_admin_mode!(user) if admin_mode
+      update_feature_access_level(project, feature_access_level)
+
+      if expected_count == 1
+        expect(permissions(user, issue)).to be_allowed(policy)
+      else
+        expect(permissions(user, issue)).to be_disallowed(policy)
+      end
+    end
+  end
+
   context 'a private project' do
     let(:project) { create(:project, :private) }
     let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
@@ -85,7 +100,6 @@ RSpec.describe IssuePolicy do
 
     it 'allows reporters from group links to read, update, and admin issues' do
       expect(permissions(reporter_from_group_link, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
-      expect(permissions(reporter_from_group_link, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
       expect(permissions(reporter_from_group_link, new_issue)).to be_allowed(:create_issue, :set_issue_metadata, :set_confidentiality)
     end
 
@@ -217,7 +231,7 @@ RSpec.describe IssuePolicy do
 
     it 'allows reporters from group links to read, update, reopen and admin issues' do
       expect(permissions(reporter_from_group_link, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :reopen_issue, :set_issue_metadata, :set_confidentiality)
-      expect(permissions(reporter_from_group_link, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :reopen_issue, :set_issue_metadata, :set_confidentiality)
+      expect(permissions(reporter_from_group_link, issue_no_assignee)).to be_allowed(:reopen_issue)
       expect(permissions(reporter_from_group_link, issue_locked)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
       expect(permissions(reporter_from_group_link, issue_locked)).to be_disallowed(:reopen_issue)
       expect(permissions(reporter, new_issue)).to be_allowed(:create_issue, :set_issue_metadata, :set_confidentiality)
@@ -454,7 +468,7 @@ RSpec.describe IssuePolicy do
       end
     end
 
-    context 'when peronsal namespace' do
+    context 'when personal namespace' do
       let(:project) { create(:project) }
 
       it 'is disallowed' do
@@ -462,6 +476,36 @@ RSpec.describe IssuePolicy do
 
         expect(policies).to be_disallowed(:read_crm_contacts)
         expect(policies).to be_disallowed(:set_issue_crm_contacts)
+      end
+    end
+  end
+
+  context 'when user is an inherited member from the group' do
+    let(:user) { create_user_from_membership(group, membership) }
+    let(:project) { create(:project, project_level, group: group) }
+    let(:issue) { create(:issue, project: project) }
+
+    context 'and policy allows guest access' do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
+        permission_table_for_guest_feature_access
+      end
+
+      with_them do
+        it_behaves_like 'grants the expected permissions', :read_issue
+        it_behaves_like 'grants the expected permissions', :read_issue_iid
+      end
+    end
+
+    context 'and policy allows reporter access' do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
+        permission_table_for_reporter_issue_access
+      end
+
+      with_them do
+        it_behaves_like 'grants the expected permissions', :update_issue
+        it_behaves_like 'grants the expected permissions', :admin_issue
+        it_behaves_like 'grants the expected permissions', :set_issue_metadata
+        it_behaves_like 'grants the expected permissions', :set_confidentiality
       end
     end
   end

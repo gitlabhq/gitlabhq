@@ -6,6 +6,14 @@ query issue($projectPath: ID!, $iid: String!) {
       title
       createdAt
       state
+      confidential
+      dueDate
+      milestone {
+        id
+        title
+        startDate
+        dueDate
+      }
     }
   }
 }

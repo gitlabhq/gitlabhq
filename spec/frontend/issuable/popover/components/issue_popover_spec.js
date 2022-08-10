@@ -1,33 +1,20 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import issueQueryResponse from 'test_fixtures/graphql/issuable/popover/queries/issue.query.graphql.json';
+import issueQuery from 'ee_else_ce/issuable/popover/queries/issue.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import IssueDueDate from '~/boards/components/issue_due_date.vue';
+import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import StatusBox from '~/issuable/components/status_box.vue';
 import IssuePopover from '~/issuable/popover/components/issue_popover.vue';
-import issueQuery from '~/issuable/popover/queries/issue.query.graphql';
 
 describe('Issue Popover', () => {
   let wrapper;
 
   Vue.use(VueApollo);
-
-  const issueQueryResponse = {
-    data: {
-      project: {
-        __typename: 'Project',
-        id: '1',
-        issue: {
-          __typename: 'Issue',
-          id: 'gid://gitlab/Issue/1',
-          createdAt: '2020-07-01T04:08:01Z',
-          state: 'opened',
-          title: 'Issue title',
-        },
-      },
-    },
-  };
 
   const mountComponent = ({
     queryResponse = jest.fn().mockResolvedValue(issueQueryResponse),
@@ -76,6 +63,32 @@ describe('Issue Popover', () => {
 
     it('shows reference', () => {
       expect(wrapper.text()).toContain('foo/bar#1');
+    });
+
+    it('shows confidential icon', () => {
+      const icon = wrapper.findComponent(GlIcon);
+
+      expect(icon.exists()).toBe(true);
+      expect(icon.props('name')).toBe('eye-slash');
+    });
+
+    it('shows due date', () => {
+      const component = wrapper.findComponent(IssueDueDate);
+
+      expect(component.exists()).toBe(true);
+      expect(component.props('date')).toBe('2020-07-05');
+      expect(component.props('closed')).toBe(false);
+    });
+
+    it('shows milestone', () => {
+      const component = wrapper.findComponent(IssueMilestone);
+
+      expect(component.exists()).toBe(true);
+      expect(component.props('milestone')).toMatchObject({
+        title: '15.2',
+        startDate: '2020-07-01',
+        dueDate: '2020-07-30',
+      });
     });
   });
 });

@@ -37,7 +37,7 @@ $avatar-sizes: (
   ),
   60: (
     font-size: 32px,
-    line-height: 58px,
+    line-height: 60px,
     border-radius: $border-radius-large
   ),
   64: (
@@ -47,7 +47,7 @@ $avatar-sizes: (
   ),
   90: (
     font-size: 36px,
-    line-height: 88px,
+    line-height: 90px,
     border-radius: $border-radius-large
   ),
   96: (
@@ -72,7 +72,6 @@ $avatar-sizes: (
   float: left;
   margin-right: $gl-padding;
   border-radius: $avatar-radius;
-  border: 1px solid $t-gray-a-08;
 
   @each $size, $size-config in $avatar-sizes {
     &.s#{$size} {
@@ -83,13 +82,12 @@ $avatar-sizes: (
 
 .avatar {
   transition-property: none;
-
   width: 40px;
   height: 40px;
   padding: 0;
   background: $gray-lightest;
   overflow: hidden;
-  border-color: rgba($black, $gl-avatar-border-opacity);
+  box-shadow: inset 0 0 0 1px rgba($gray-950, $gl-avatar-border-opacity);
 
   &.avatar-inline {
     float: none;
@@ -180,6 +178,10 @@ $avatar-sizes: (
   @each $size, $size-config in $avatar-sizes {
     &.s#{$size} {
       border-radius: map-get($size-config, 'border-radius');
+
+      .avatar {
+        border-radius: map-get($size-config, 'border-radius');
+      }
     }
   }
 }

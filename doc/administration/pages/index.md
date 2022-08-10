@@ -1319,25 +1319,6 @@ and in your Pages log shows this error:
    sudo gitlab-ctl restart gitlab-pages
    ```
 
-### 404 error after promoting a Geo secondary to a primary node
-
-Pages files are not among the
-[supported data types](../geo/replication/datatypes.md#limitations-on-replicationverification) for replication in Geo. After a secondary node is promoted to a primary node, attempts to access a Pages site result in a `404 Not Found` error.
-
-It is possible to copy the subfolders and files in the [Pages path](#change-storage-path)
-to the new primary node to resolve this.
-For example, you can adapt the `rsync` strategy from the
-[moving repositories documentation](../operations/moving_repositories.md).
-Alternatively, run the CI pipelines of those projects that contain a `pages` job again.
-
-### 404 or 500 error when accessing GitLab Pages in a Geo setup
-
-Pages sites are only available on the primary Geo site, while the codebase of the project is available on all sites.
-
-If you try to access a Pages page on a secondary site, a 404 or 500 HTTP code is returned depending on the access control.
-
-Read more which [features don't support Geo replication/verification](../geo/replication/datatypes.md#limitations-on-replicationverification).
-
 ### Failed to connect to the internal GitLab API
 
 If you see the following error:

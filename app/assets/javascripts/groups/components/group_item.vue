@@ -179,6 +179,7 @@ export default {
       >
         <gl-avatar
           :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+          :entity-id="group.id"
           :entity-name="group.name"
           :src="group.avatarUrl"
           :alt="group.name"
