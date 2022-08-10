@@ -37,6 +37,9 @@
     - else
       = s_("TagsPage|Can't find HEAD commit for this tag")
 
+    - if @release
+      = render 'release_link', project: @project, release: @release
+
   .nav-controls
     - if @tag.has_signature?
       = render partial: 'projects/commit/signature', object: @tag.signature

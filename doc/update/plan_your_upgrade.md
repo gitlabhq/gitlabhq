@@ -129,7 +129,7 @@ to your instance and then upgrade it for any relevant features you're using.
   [All migrations must finish running](index.md#checking-for-background-migrations-before-upgrading)
   before the next upgrade.
 - If available in your starting version, consider
-  [turning on maintenance mode](../administration/maintenance_mode/) during the
+  [turning on maintenance mode](../administration/maintenance_mode/index.md) during the
   upgrade.
 - About PostgreSQL:
   - On the top bar, select **Menu > Admin**, and look for the version of

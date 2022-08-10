@@ -2,34 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User views tags', :feature do
-  context 'with html' do
-    let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-    let(:user) { create(:user) }
-    let(:tag_name) { "stable" }
-    let!(:release) { create(:release, project: project, tag: tag_name) }
-
-    before do
-      project.add_developer(user)
-      project.repository.add_tag(user, tag_name, project.default_branch_or_main)
-
-      sign_in(user)
-    end
-
-    shared_examples 'renders the tag index page' do
-      it do
-        visit project_tags_path(project)
-
-        expect(page).to have_content tag_name
-      end
-    end
-
-    it_behaves_like 'renders the tag index page'
-
-    context 'when tag name contains a slash' do
-      let(:tag_name) { "stable/v0.1" }
-
-      it_behaves_like 'renders the tag index page'
-    end
+  include_examples 'user views tag' do
+    let(:tag_page) { project_tags_path(project) }
   end
 
   context 'rss' do

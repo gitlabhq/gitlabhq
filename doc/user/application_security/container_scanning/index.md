@@ -20,7 +20,7 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
-GitLab offers both Container Scanning and [Dependency Scanning](../dependency_scanning/)
+GitLab offers both Container Scanning and [Dependency Scanning](../dependency_scanning/index.md)
 to ensure coverage for all of these dependency types. To cover as much of your risk area as
 possible, we encourage you to use all of our security scanners.
 
@@ -224,7 +224,7 @@ container_scanning:
     CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN: "false"
 ```
 
-When you enable this feature, you may see [duplicate findings](../terminology/#duplicate-finding)
+When you enable this feature, you may see [duplicate findings](../terminology/index.md#duplicate-finding)
 in the [Vulnerability Report](../vulnerability_report/)
 if [Dependency Scanning](../dependency_scanning/)
 is enabled for your project. This happens because GitLab can't automatically deduplicate findings

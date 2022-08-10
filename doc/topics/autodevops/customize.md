@@ -460,7 +460,7 @@ The following table lists variables used to disable jobs.
 
 | **Job Name**                           | **CI/CDVariable**               | **GitLab version**    | **Description** |
 |----------------------------------------|---------------------------------|-----------------------|-----------------|
-| `.fuzz_base`                           | `COVFUZZ_DISABLED`              | [From GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34984) | [Read more](../../user/application_security/coverage_fuzzing/) about how `.fuzz_base` provide capability for your own jobs. If the variable is present, your jobs aren't created. |
+| `.fuzz_base`                           | `COVFUZZ_DISABLED`              | [From GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34984) | [Read more](../../user/application_security/coverage_fuzzing/index.md) about how `.fuzz_base` provide capability for your own jobs. If the variable is present, your jobs aren't created. |
 | `apifuzzer_fuzz`                       | `API_FUZZING_DISABLED`          | [From GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39135) | If the variable is present, the job isn't created. |
 | `build`                                | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
 | `build_artifact`                       | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |

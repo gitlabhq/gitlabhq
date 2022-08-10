@@ -22546,7 +22546,9 @@ CREATE TABLE vulnerability_state_transitions (
     from_state smallint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    author_id bigint
+    author_id bigint,
+    comment text,
+    CONSTRAINT check_fca4a7ca39 CHECK ((char_length(comment) <= 255))
 );
 
 CREATE SEQUENCE vulnerability_state_transitions_id_seq

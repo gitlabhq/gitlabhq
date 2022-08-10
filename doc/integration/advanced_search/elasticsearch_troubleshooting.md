@@ -161,7 +161,7 @@ The above instructions are not to be used for scenarios that only index a [subse
 
 See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 
-## I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything
+### I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything
 
 You must re-run all the Rake tasks to reindex the database, repositories, and wikis.
 

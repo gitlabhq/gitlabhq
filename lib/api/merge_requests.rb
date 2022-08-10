@@ -121,6 +121,10 @@ module API
           merge_request.permits_force_push?
       end
 
+      def recheck_mergeability_of(merge_requests:)
+        merge_requests.each { |mr| mr.check_mergeability(async: true) }
+      end
+
       params :merge_requests_params do
         use :merge_requests_base_params
         use :optional_merge_requests_search_params
@@ -206,7 +210,9 @@ module API
         options = serializer_options_for(merge_requests).merge(project: user_project)
         options[:project] = user_project
 
-        present_cached merge_requests, expires_in: 2.days, **options
+        recheck_mergeability_of(merge_requests: merge_requests) unless options[:skip_merge_status_recheck]
+
+        present_cached merge_requests, expires_in: 8.hours, cache_context: -> (mr) { "#{current_user&.cache_key}:#{mr.merge_status}" }, **options
       end
 
       desc 'Create a merge request' do

@@ -88,7 +88,7 @@ RSpec.describe API::MergeRequests do
 
         context 'with merge status recheck projection' do
           it 'checks mergeability asynchronously' do
-            expect_next_instance_of(check_service_class) do |service|
+            expect_next_instances_of(check_service_class, (1..2)) do |service|
               expect(service).not_to receive(:execute)
               expect(service).to receive(:async_execute).and_call_original
             end
@@ -595,6 +595,22 @@ RSpec.describe API::MergeRequests do
     end
   end
 
+  RSpec.shared_examples 'a non-cached MergeRequest api request' do |call_count|
+    it 'serializes merge request' do
+      expect(API::Entities::MergeRequestBasic).to receive(:represent).exactly(call_count).times.and_call_original
+
+      get api(endpoint_path)
+    end
+  end
+
+  RSpec.shared_examples 'a cached MergeRequest api request' do
+    it 'serializes merge request' do
+      expect(API::Entities::MergeRequestBasic).not_to receive(:represent)
+
+      get api(endpoint_path)
+    end
+  end
+
   describe 'route shadowing' do
     include GrapePathHelpers::NamedRouteMatcher
 
@@ -979,12 +995,42 @@ RSpec.describe API::MergeRequests do
     end
   end
 
-  describe "GET /projects/:id/merge_requests" do
+  describe "GET /projects/:id/merge_requests", :use_clean_rails_memory_store_caching do
     include_context 'with merge requests'
 
     let(:endpoint_path) { "/projects/#{project.id}/merge_requests" }
 
     it_behaves_like 'merge requests list'
+
+    context 'caching' do
+      let(:params) { {} }
+
+      before do
+        get api(endpoint_path)
+      end
+
+      context 'when it is cached' do
+        it_behaves_like 'a cached MergeRequest api request'
+      end
+
+      context 'when it is not cached' do
+        context 'when the status changes' do
+          before do
+            merge_request.mark_as_unchecked!
+          end
+
+          it_behaves_like 'a non-cached MergeRequest api request', 1
+        end
+
+        context 'when another user requests' do
+          before do
+            sign_in(user2)
+          end
+
+          it_behaves_like 'a non-cached MergeRequest api request', 4
+        end
+      end
+    end
 
     it "returns 404 for non public projects" do
       project = create(:project, :private)

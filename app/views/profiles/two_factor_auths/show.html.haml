@@ -29,17 +29,19 @@
             .gl-p-2.gl-mb-3{ style: 'background: #fff' }
               = raw @qr_code
           .col-md-8
-            .account-well
-              %p.gl-mt-0.gl-mb-0
-                = _("Can't scan the code?")
-              %p.gl-mt-0.gl-mb-0
-                = _('To add the entry manually, provide the following details to the application on your phone.')
-              %p.gl-mt-0.gl-mb-0
-                = _('Account: %{account}') % { account: @account_string }
-              %p.gl-mt-0.gl-mb-0.two-factor-secret{ data: { qa_selector: 'otp_secret_content' } }
-                = _('Key: %{key}') %{ key: current_user.otp_secret.scan(/.{4}/).join(' ') }
-              %p.two-factor-new-manual-content
-                = _('Time based: Yes')
+            .gl-card
+              .gl-card-body
+                %p.gl-mt-0.gl-mb-3.gl-font-weight-bold
+                  = _("Can't scan the code?")
+                %p.gl-mt-0.gl-mb-3
+                  = _('To add the entry manually, provide the following details to the application on your phone.')
+                %p.gl-mt-0.gl-mb-0
+                  = _('Account: %{account}') % { account: @account_string }
+                %p.gl-mt-0.gl-mb-0{ data: { qa_selector: 'otp_secret_content' } }
+                  = _('Key:')
+                  %code.two-factor-secret= current_user.otp_secret.scan(/.{4}/).join(' ')
+                %p.gl-mb-0.two-factor-new-manual-content
+                  = _('Time based: Yes')
         = form_tag profile_two_factor_auth_path, method: :post do |f|
           - if @error
             = render Pajamas::AlertComponent.new(title: @error[:message],

@@ -22798,7 +22798,7 @@ msgstr ""
 msgid "Key (PEM)"
 msgstr ""
 
-msgid "Key: %{key}"
+msgid "Key:"
 msgstr ""
 
 msgid "Keyboard shortcuts"
