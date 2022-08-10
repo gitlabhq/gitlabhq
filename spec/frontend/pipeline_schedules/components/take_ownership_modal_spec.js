@@ -49,6 +49,6 @@ describe('Take ownership modal', () => {
   it('emits the cancel event when clicking on cancel', async () => {
     findModal().vm.$emit('cancel');
 
-    expect(findModal().emitted('cancel')).toBeTruthy();
+    expect(findModal().emitted('cancel')).toHaveLength(1);
   });
 });

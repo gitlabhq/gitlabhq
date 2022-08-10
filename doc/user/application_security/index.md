@@ -152,17 +152,6 @@ does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker imag
 the instructions for 
 [Running container scanning in an offline environment](container_scanning/index.md#running-container-scanning-in-an-offline-environment).
 
-### Use security scanning tools with merge request pipelines
-
-By default, the application security jobs are configured to run for branch pipelines only.
-To use them with [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md),
-you may need to override the default `rules:` configuration to add:
-
-```yaml
-rules:
-  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-```
-
 ## Default behavior of GitLab security scanning tools
 
 ### Secure jobs in your pipeline

@@ -69,6 +69,14 @@ module QA
             end
           end
 
+          def go_to_pages_settings
+            hover_settings do
+              within_submenu do
+                click_element(:sidebar_menu_item_link, menu_item: 'Pages')
+              end
+            end
+          end
+
           private
 
           def hover_settings

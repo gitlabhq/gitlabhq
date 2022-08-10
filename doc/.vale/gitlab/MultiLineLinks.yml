@@ -7,7 +7,7 @@
 extends: existence
 message: 'Link "%s" must be on a single line, even if very long.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#basic-link-criteria
-level: warning
+level: error
 scope: raw
 raw:
   - '\[[^\[\]]*?\n[^\[\]]*?\]\([^\)]*?\)|'

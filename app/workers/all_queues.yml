@@ -2577,11 +2577,29 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_create_approval_note
+  :worker_name: MergeRequests::CreateApprovalNoteWorker
+  :feature_category: :code_review
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_delete_source_branch
   :worker_name: MergeRequests::DeleteSourceBranchWorker
   :feature_category: :source_code_management
   :has_external_dependencies: false
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_execute_approval_hooks
+  :worker_name: MergeRequests::ExecuteApprovalHooksWorker
+  :feature_category: :code_review
+  :has_external_dependencies: true
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -2600,6 +2618,15 @@
   :feature_category: :code_review
   :has_external_dependencies: false
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_resolve_todos_after_approval
+  :worker_name: MergeRequests::ResolveTodosAfterApprovalWorker
+  :feature_category: :code_review
+  :has_external_dependencies: false
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

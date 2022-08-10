@@ -3,7 +3,8 @@
 module QA
   RSpec.describe 'Create' do
     describe 'SSH keys support', :smoke do
-      key_title = "key for ssh tests #{Time.now.to_f}"
+      let(:key_title) { "key for ssh tests #{Time.now.to_f}" }
+
       key = nil
 
       before do

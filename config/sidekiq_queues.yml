@@ -281,11 +281,17 @@
   - 1
 - - merge_requests_create_approval_event
   - 1
+- - merge_requests_create_approval_note
+  - 1
 - - merge_requests_delete_source_branch
+  - 1
+- - merge_requests_execute_approval_hooks
   - 1
 - - merge_requests_handle_assignees_change
   - 1
 - - merge_requests_resolve_todos
+  - 1
+- - merge_requests_resolve_todos_after_approval
   - 1
 - - merge_requests_stream_approval_audit_event
   - 1

@@ -18508,7 +18508,7 @@ msgstr ""
 msgid "GroupSAML|Before enforcing SSO, enable SAML authentication."
 msgstr ""
 
-msgid "GroupSAML|Before enforcing SSO-only authentication for Git activity, enable SSO-only authentication for web activity."
+msgid "GroupSAML|Before enforcing SSO-only authentication for Git activity of all users, enable SSO-only authentication for web activity."
 msgstr ""
 
 msgid "GroupSAML|Certificate fingerprint"

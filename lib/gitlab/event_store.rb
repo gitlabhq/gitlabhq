@@ -45,6 +45,9 @@ module Gitlab
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Projects::ProjectTransferedEvent
 
       store.subscribe ::MergeRequests::CreateApprovalEventWorker, to: ::MergeRequests::ApprovedEvent
+      store.subscribe ::MergeRequests::CreateApprovalNoteWorker, to: ::MergeRequests::ApprovedEvent
+      store.subscribe ::MergeRequests::ResolveTodosAfterApprovalWorker, to: ::MergeRequests::ApprovedEvent
+      store.subscribe ::MergeRequests::ExecuteApprovalHooksWorker, to: ::MergeRequests::ApprovedEvent
     end
     private_class_method :configure!
   end

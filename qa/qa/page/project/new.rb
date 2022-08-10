@@ -81,9 +81,9 @@ module QA
 
         # Disable experiment for SAST at project creation https://gitlab.com/gitlab-org/gitlab/-/issues/333196
         def disable_initialize_with_sast
-          return unless has_element?(:initialize_with_sast_checkbox)
+          return unless has_element?(:initialize_with_sast_checkbox, visible: false)
 
-          uncheck_element(:initialize_with_sast_checkbox)
+          uncheck_element(:initialize_with_sast_checkbox, true)
         end
 
         def click_github_link

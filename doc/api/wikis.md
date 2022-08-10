@@ -32,8 +32,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Example response:
 
-<!-- vale gitlab.MultiLineLinks = NO -->
-
 ```json
 [
   {
@@ -58,8 +56,6 @@ Example response:
   }
 ]
 ```
-
-<!-- vale gitlab.MultiLineLinks = YES -->
 
 ## Get a wiki page
 

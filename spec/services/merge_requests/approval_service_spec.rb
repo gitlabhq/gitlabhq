@@ -37,18 +37,6 @@ RSpec.describe MergeRequests::ApprovalService do
         expect { service.execute(merge_request) }.not_to publish_event(MergeRequests::ApprovedEvent)
       end
 
-      it 'does not create an approval note' do
-        expect(SystemNoteService).not_to receive(:approve_mr)
-
-        service.execute(merge_request)
-      end
-
-      it 'does not mark pending todos as done' do
-        service.execute(merge_request)
-
-        expect(todo.reload).to be_pending
-      end
-
       context 'async_after_approval feature flag is disabled' do
         before do
           stub_feature_flags(async_after_approval: false)
@@ -59,16 +47,22 @@ RSpec.describe MergeRequests::ApprovalService do
 
           service.execute(merge_request)
         end
+
+        it 'does not create an approval note' do
+          expect(SystemNoteService).not_to receive(:approve_mr)
+
+          service.execute(merge_request)
+        end
+
+        it 'does not mark pending todos as done' do
+          service.execute(merge_request)
+
+          expect(todo.reload).to be_pending
+        end
       end
     end
 
     context 'with valid approval' do
-      let(:notification_service) { NotificationService.new }
-
-      before do
-        allow(service).to receive(:notification_service).and_return(notification_service)
-      end
-
       it 'resets approvals' do
         expect(merge_request.approvals).to receive(:reset)
 
@@ -88,21 +82,6 @@ RSpec.describe MergeRequests::ApprovalService do
           .with(current_user_id: user.id, merge_request_id: merge_request.id)
       end
 
-      it 'creates an approval note and marks pending todos as done' do
-        expect(SystemNoteService).to receive(:approve_mr).with(merge_request, user)
-
-        service.execute(merge_request)
-
-        expect(todo.reload).to be_done
-      end
-
-      it 'sends a notification when approving' do
-        expect(notification_service).to receive_message_chain(:async, :approve_mr)
-          .with(merge_request, user)
-
-        service.execute(merge_request)
-      end
-
       it 'removes attention requested state' do
         expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
           .with(project: project, current_user: user, merge_request: merge_request, user: user)
@@ -111,15 +90,9 @@ RSpec.describe MergeRequests::ApprovalService do
         service.execute(merge_request)
       end
 
-      context 'with remaining approvals' do
-        it 'fires an approval webhook' do
-          expect(service).to receive(:execute_hooks).with(merge_request, 'approved')
-
-          service.execute(merge_request)
-        end
-      end
-
       context 'async_after_approval feature flag is disabled' do
+        let(:notification_service) { NotificationService.new }
+
         before do
           stub_feature_flags(async_after_approval: false)
           allow(service).to receive(:notification_service).and_return(notification_service)
@@ -132,6 +105,33 @@ RSpec.describe MergeRequests::ApprovalService do
           end
 
           service.execute(merge_request)
+        end
+
+        it 'creates an approval note' do
+          expect(SystemNoteService).to receive(:approve_mr).with(merge_request, user)
+
+          service.execute(merge_request)
+        end
+
+        it 'marks pending todos as done' do
+          service.execute(merge_request)
+
+          expect(todo.reload).to be_done
+        end
+
+        it 'sends a notification when approving' do
+          expect(notification_service).to receive_message_chain(:async, :approve_mr)
+            .with(merge_request, user)
+
+          service.execute(merge_request)
+        end
+
+        context 'with remaining approvals' do
+          it 'fires an approval webhook' do
+            expect(service).to receive(:execute_hooks).with(merge_request, 'approved')
+
+            service.execute(merge_request)
+          end
         end
       end
     end

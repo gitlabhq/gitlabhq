@@ -13,7 +13,7 @@ describe('NothingToMerge', () => {
     });
 
     it('should have correct elements', () => {
-      expect(vm.$el.classList.contains('mr-widget-body')).toBeTruthy();
+      expect(vm.$el.classList.contains('mr-widget-body')).toBe(true);
       expect(vm.$el.querySelector('[data-testid="createFileButton"]').href).toContain(newBlobPath);
       expect(vm.$el.innerText).toContain('Use merge requests to propose changes to your project');
     });

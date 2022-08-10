@@ -110,7 +110,7 @@ describe('IssuableShowRoot', () => {
 
         issuableBody.vm.$emit('edit-issuable');
 
-        expect(wrapper.emitted('edit-issuable')).toBeTruthy();
+        expect(wrapper.emitted('edit-issuable')).toHaveLength(1);
       });
 
       it('component emits `task-list-update-success` event bubbled via issuable-body', () => {
@@ -121,7 +121,7 @@ describe('IssuableShowRoot', () => {
 
         issuableBody.vm.$emit('task-list-update-success', eventParam);
 
-        expect(wrapper.emitted('task-list-update-success')).toBeTruthy();
+        expect(wrapper.emitted('task-list-update-success')).toHaveLength(1);
         expect(wrapper.emitted('task-list-update-success')[0]).toEqual([eventParam]);
       });
 
@@ -130,7 +130,7 @@ describe('IssuableShowRoot', () => {
 
         issuableBody.vm.$emit('task-list-update-failure');
 
-        expect(wrapper.emitted('task-list-update-failure')).toBeTruthy();
+        expect(wrapper.emitted('task-list-update-failure')).toHaveLength(1);
       });
 
       it.each(['keydown-title', 'keydown-description'])(
@@ -149,7 +149,7 @@ describe('IssuableShowRoot', () => {
 
           issuableBody.vm.$emit(eventName, eventObj, issuableMeta);
 
-          expect(wrapper.emitted(eventName)).toBeTruthy();
+          expect(wrapper.emitted()).toHaveProperty(eventName);
           expect(wrapper.emitted(eventName)[0]).toMatchObject([eventObj, issuableMeta]);
         },
       );

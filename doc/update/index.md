@@ -112,13 +112,13 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::Ba
 For GitLab 14.0-14.9:
 
 ```shell
-sudo gitlab-rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
 ```
 
 For GitLab 14.10 and later:
 
 ```shell
-sudo gitlab-rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
 **For installations from source:**
@@ -127,14 +127,14 @@ For GitLab 14.0-14.9:
 
 ```shell
 cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
 ```
 
 For GitLab 14.10 and later:
 
 ```shell
 cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
 ### Batched background migrations
