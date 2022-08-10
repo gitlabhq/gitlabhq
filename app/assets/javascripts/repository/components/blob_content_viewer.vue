@@ -8,7 +8,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo, getLocationHash } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
@@ -63,6 +63,28 @@ export default {
         };
       },
       result() {
+        const urlHash = getLocationHash();
+        const plain = this.$route?.query?.plain;
+
+        // When the 'plain' URL param is present, its value determines which viewer to render:
+        // - when 0 and the rich viewer is available we render with it
+        // - otherwise we render the simple viewer
+        if (plain !== undefined) {
+          if (plain === '0' && this.hasRichViewer) {
+            this.switchViewer(RICH_BLOB_VIEWER);
+          } else {
+            this.switchViewer(SIMPLE_BLOB_VIEWER);
+          }
+          return;
+        }
+
+        // If there is a code line hash in the URL we render with the simple viewer
+        if (urlHash && urlHash.startsWith('L')) {
+          this.switchViewer(SIMPLE_BLOB_VIEWER);
+          return;
+        }
+
+        // By default, if present, use the rich viewer to render
         this.switchViewer(this.hasRichViewer ? RICH_BLOB_VIEWER : SIMPLE_BLOB_VIEWER);
       },
       error() {
@@ -173,6 +195,21 @@ export default {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
     },
   },
+  watch: {
+    // Watch the URL 'plain' query value to know if the viewer needs changing.
+    // This is the case when the user switches the viewer and then goes back
+    // through the hystory.
+    '$route.query.plain': {
+      handler(plainValue) {
+        this.switchViewer(
+          this.hasRichViewer && (plainValue === undefined || plainValue === '0')
+            ? RICH_BLOB_VIEWER
+            : SIMPLE_BLOB_VIEWER,
+          plainValue !== undefined,
+        );
+      },
+    },
+  },
   methods: {
     onError() {
       this.useFallback = true;
@@ -223,6 +260,22 @@ export default {
         this.loadLegacyViewer();
       }
     },
+    updateRouteQuery() {
+      const plain = this.activeViewerType === SIMPLE_BLOB_VIEWER ? '1' : '0';
+
+      if (this.$route?.query?.plain === plain) {
+        return;
+      }
+
+      this.$router.push({
+        path: this.$route.path,
+        query: { ...this.$route.query, plain },
+      });
+    },
+    handleViewerChanged(newViewer) {
+      this.switchViewer(newViewer);
+      this.updateRouteQuery();
+    },
     editBlob(target) {
       if (this.showForkSuggestion) {
         this.setForkTarget(target);
@@ -254,7 +307,7 @@ export default {
         :has-render-error="hasRenderError"
         :show-path="false"
         :override-copy="glFeatures.highlightJs"
-        @viewer-changed="switchViewer"
+        @viewer-changed="handleViewerChanged"
         @copy="onCopy"
       >
         <template #actions>

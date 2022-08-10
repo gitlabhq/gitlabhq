@@ -34,8 +34,8 @@ RSpec.describe UpdateJiraTrackerDataDeploymentTypeBasedOnUrl, :migration do
 
   # rubocop:disable Layout/LineLength
   # rubocop:disable RSpec/ScatteredLet
-  let!(:tracker_data_cloud) { JiraTrackerData.create!(id: 1, service_id: service_jira_cloud.id, url: "https://test-domain.atlassian.net", deployment_type: 0) }
-  let!(:tracker_data_server) { JiraTrackerData.create!(id: 2, service_id: service_jira_server.id, url: "http://totally-not-jira-server.company.org", deployment_type: 0) }
+  let!(:tracker_data_cloud) { JiraTrackerData.create!(id: 1, integration_id: service_jira_cloud.id, url: "https://test-domain.atlassian.net", deployment_type: 0) }
+  let!(:tracker_data_server) { JiraTrackerData.create!(id: 2, integration_id: service_jira_server.id, url: "http://totally-not-jira-server.company.org", deployment_type: 0) }
   # rubocop:enable Layout/LineLength
   # rubocop:enable RSpec/ScatteredLet
 

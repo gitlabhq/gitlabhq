@@ -150,7 +150,7 @@ export default {
         } = await this.$apollo.mutate({
           mutation: lintCiMutation,
           variables: {
-            dry_run: true,
+            dry: true,
             content: this.yaml,
             endpoint: this.ciLintPath,
           },

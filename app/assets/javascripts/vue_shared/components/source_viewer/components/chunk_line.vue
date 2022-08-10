@@ -1,12 +1,9 @@
 <script>
-import { GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { setAttributes } from '~/lib/utils/dom_utils';
 import { BIDI_CHARS, BIDI_CHARS_CLASS_LIST, BIDI_CHAR_TOOLTIP } from '../constants';
 
 export default {
-  components: {
-    GlLink,
-  },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
   },
@@ -60,15 +57,16 @@ export default {
 <template>
   <div class="gl-display-flex">
     <div class="gl-p-0! gl-absolute gl-z-index-3 gl-border-r diff-line-num line-numbers">
-      <gl-link
+      <a
         :id="`L${number}`"
         class="gl-user-select-none gl-ml-5 gl-pr-3 gl-shadow-none! file-line-num diff-line-num"
         :class="firstLineClass"
-        :to="`#L${number}`"
+        :href="`#L${number}`"
         :data-line-number="number"
+        data-testid="line-number-anchor"
       >
         {{ number }}
-      </gl-link>
+      </a>
     </div>
 
     <pre

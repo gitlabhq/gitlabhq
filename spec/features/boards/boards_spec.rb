@@ -275,7 +275,7 @@ RSpec.describe 'Project issue boards', :js do
         context 'issue card' do
           it 'shows assignee' do
             page.within(find('.board:nth-child(2)')) do
-              expect(page).to have_selector('.avatar', count: 1)
+              expect(page).to have_selector('.gl-avatar', count: 1)
             end
           end
 

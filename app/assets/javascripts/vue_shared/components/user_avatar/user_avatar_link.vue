@@ -55,7 +55,7 @@ export default {
       default: '',
     },
     imgSize: {
-      type: Number,
+      type: [Number, Object],
       required: false,
       default: 20,
     },
@@ -74,12 +74,19 @@ export default {
       required: false,
       default: '',
     },
+    enforceGlAvatar: {
+      type: Boolean,
+      required: false,
+    },
   },
 };
 </script>
 
 <template>
-  <user-avatar-link-new v-if="glFeatures.glAvatarForAllUserAvatars" v-bind="$props">
+  <user-avatar-link-new
+    v-if="glFeatures.glAvatarForAllUserAvatars || enforceGlAvatar"
+    v-bind="$props"
+  >
     <slot></slot>
     <template #avatar-badge>
       <slot name="avatar-badge"></slot>

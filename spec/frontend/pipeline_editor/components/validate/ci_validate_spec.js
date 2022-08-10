@@ -159,7 +159,7 @@ describe('Pipeline Editor Validate Tab', () => {
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
         mutation: lintCIMutation,
         variables: {
-          dry_run: true,
+          dry: true,
           content: mockCiYml,
           endpoint: mockCiLintPath,
         },
@@ -243,7 +243,7 @@ describe('Pipeline Editor Validate Tab', () => {
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
         mutation: lintCIMutation,
         variables: {
-          dry_run: true,
+          dry: true,
           content: 'new yaml content',
           endpoint: mockCiLintPath,
         },

@@ -21,7 +21,8 @@ module Users
       namespace_storage_limit_banner_info_threshold: 10, # EE-only
       namespace_storage_limit_banner_warning_threshold: 11, # EE-only
       namespace_storage_limit_banner_alert_threshold: 12, # EE-only
-      namespace_storage_limit_banner_error_threshold: 13 # EE-only
+      namespace_storage_limit_banner_error_threshold: 13, # EE-only
+      usage_quota_trial_alert: 14 # EE-only
     }
 
     validates :group, presence: true

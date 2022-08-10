@@ -163,8 +163,8 @@ describe('Code Coverage', () => {
 
       await nextTick();
 
-      expect(findFirstDropdownItem().attributes('ischecked')).toBeFalsy();
-      expect(findSecondDropdownItem().attributes('ischecked')).toBeTruthy();
+      expect(findFirstDropdownItem().attributes('ischecked')).toBe(undefined);
+      expect(findSecondDropdownItem().attributes('ischecked')).toBe('true');
     });
 
     it('updates the graph data when selecting a different option in dropdown', async () => {

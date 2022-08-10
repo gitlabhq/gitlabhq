@@ -153,7 +153,8 @@ Prerequisites:
 
 - The parent project's [CI/CD configuration file](../yaml/index.md) must be configured to
   [run jobs in merge request pipelines](#prerequisites).
-- You must be a member of the parent project and have at least the [Developer role](../../user/permissions.md).
+- You must be a member of the parent project with [permissions to run CI/CD pipelines](../../user/permissions.md#gitlab-cicd-permissions).
+  You might need additional permissions if the branch is protected.
 - The fork project must be [visible](../../user/public_access.md) to the
   user running the pipeline. Otherwise, the **Pipelines** tab does not display
   in the merge request.
@@ -162,6 +163,10 @@ To use the UI to run a pipeline in the parent project for a merge request from a
 
 1. In the merge request, go to the **Pipelines** tab.
 1. Select **Run pipeline**. You must read and accept the warning, or the pipeline does not run.
+
+You can disable this feature by using [the projects API](../../api/projects.md#edit-project)
+to disable the `ci_allow_fork_pipelines_to_run_in_parent_project` setting.
+The setting is `enabled` by default.
 
 ## Available predefined variables
 

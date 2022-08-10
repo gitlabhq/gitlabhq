@@ -418,10 +418,7 @@ end
 
 # Gems required in omnibus-gitlab pipeline
 group :development, :test, :omnibus do
-  # Using a fork until https://github.com/pivotal/LicenseFinder/pull/816 is
-  # resolved. For details, check discussion in
-  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74881
-  gem 'gitlab-license_finder', '~> 6.0', require: false
+  gem 'license_finder', '~> 7.0', require: false
 end
 
 group :test do

@@ -601,7 +601,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/operations/feature_flags.md @rdickenson
 /doc/operations/product_analytics.md @claytoncornell
 /doc/policy/alpha-beta-support.md @axil
-/doc/policy/maintenance.md @axil
+/doc/policy/maintenance.md @axil @gitlab-org/delivery
 /doc/raketasks/ @axil
 /doc/raketasks/generate_sample_prometheus_data.md @msedlakjakubowski
 /doc/raketasks/migrate_snippets.md @aqualls

@@ -56,7 +56,7 @@ export default {
       default: '',
     },
     imgSize: {
-      type: Number,
+      type: [Number, Object],
       required: false,
       default: 20,
     },
@@ -74,6 +74,10 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    enforceGlAvatar: {
+      type: Boolean,
+      required: false,
     },
   },
   computed: {
@@ -97,6 +101,7 @@ export default {
       :tooltip-text="avatarTooltipText"
       :tooltip-placement="tooltipPlacement"
       :lazy="lazy"
+      :enforce-gl-avatar="enforceGlAvatar"
     >
       <slot></slot>
     </user-avatar-image>

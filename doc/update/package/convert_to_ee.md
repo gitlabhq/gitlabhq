@@ -69,7 +69,7 @@ The steps can be summed up to:
    If you want to use `dpkg`/`rpm` instead of `apt-get`/`yum`, go through the first
    step to find the current GitLab version, then follow
    [Update using a manually-downloaded package](index.md#upgrade-using-a-manually-downloaded-package),
-   and then [add your license](../../user/admin_area/license.md). 
+   and then [add your license](../../user/admin_area/license.md).
 
 1. Install the `gitlab-ee` package. The install automatically
    uninstalls the `gitlab-ce` package on your GitLab server. `reconfigure`

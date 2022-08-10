@@ -1,10 +1,8 @@
 ---
 # Cop supports --auto-correct.
 Style/Next:
-  # Offense count: 41
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
+    - 'app/models/concerns/integrations/slack_mattermost_notifier.rb'
     - 'app/models/preloaders/environments/deployment_preloader.rb'
     - 'app/models/route.rb'
     - 'app/services/authorized_project_update/find_records_due_for_refresh_service.rb'
@@ -16,6 +14,7 @@ Style/Next:
     - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/services/gitlab_subscriptions/fetch_purchase_eligible_namespaces_service.rb'
     - 'ee/app/services/security/auto_fix_service.rb'
+    - 'ee/app/services/security/ingestion/tasks/update_vulnerability_uuids.rb'
     - 'ee/db/fixtures/development/20_vulnerabilities.rb'
     - 'ee/lib/ee/audit/protected_branches_changes_auditor.rb'
     - 'ee/lib/gitlab/elastic/search_results.rb'
@@ -36,10 +35,9 @@ Style/Next:
     - 'lib/gitlab/metrics/samplers/base_sampler.rb'
     - 'lib/gitlab/pagination/keyset/in_operator_optimization/strategies/record_loader_strategy.rb'
     - 'lib/gitlab/reference_extractor.rb'
-    - 'lib/gitlab/tree_summary.rb'
     - 'lib/tasks/gitlab/assets.rake'
     - 'lib/tasks/gitlab/db/validate_config.rake'
-    - 'rubocop/cop/static_translation_definition.rb'
     - 'scripts/perf/query_limiting_report.rb'
+    - 'scripts/qa/quarantine-types-check'
     - 'spec/lib/gitlab/import_export/import_test_coverage_spec.rb'
     - 'spec/presenters/packages/npm/package_presenter_spec.rb'

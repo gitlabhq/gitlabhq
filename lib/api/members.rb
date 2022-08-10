@@ -91,7 +91,7 @@ module API
 
           authorize_read_source_member!(source_type, source)
 
-          members = find_all_members(source)
+          members = find_all_members(source).order(access_level: :desc)
           member = members.find_by!(user_id: params[:user_id])
 
           present_members member

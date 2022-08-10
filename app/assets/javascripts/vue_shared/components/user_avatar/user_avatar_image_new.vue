@@ -16,6 +16,7 @@
     */
 
 import { GlTooltip, GlAvatar } from '@gitlab/ui';
+import { isObject } from 'lodash';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { __ } from '~/locale';
 import { placeholderImage } from '~/lazy_loader';
@@ -48,7 +49,7 @@ export default {
       default: __('user avatar'),
     },
     size: {
-      type: Number,
+      type: [Number, Object],
       required: false,
       default: 20,
     },
@@ -71,8 +72,15 @@ export default {
       let baseSrc = this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
       // Only adds the width to the URL if its not a base64 data image
       if (!(baseSrc.indexOf('data:') === 0) && !baseSrc.includes('?'))
-        baseSrc += `?width=${this.size}`;
+        baseSrc += `?width=${this.maximumSize}`;
       return baseSrc;
+    },
+    maximumSize() {
+      if (isObject(this.size)) {
+        return Math.max(...Object.values(this.size));
+      }
+
+      return this.size;
     },
     resultantSrcAttribute() {
       return this.lazy ? placeholderImage : this.sanitizedSource;

@@ -1,9 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/EmptyElse:
-  # Offense count: 59
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
     - 'app/controllers/concerns/issuable_collections_action.rb'
     - 'app/controllers/concerns/sends_blob.rb'
@@ -15,8 +12,8 @@ Style/EmptyElse:
     - 'app/graphql/mutations/concerns/mutations/spam_protection.rb'
     - 'app/graphql/resolvers/group_milestones_resolver.rb'
     - 'app/graphql/types/ci/detailed_status_type.rb'
+    - 'app/graphql/types/packages/package_base_type.rb'
     - 'app/graphql/types/packages/package_file_type.rb'
-    - 'app/graphql/types/packages/package_type.rb'
     - 'app/helpers/submodule_helper.rb'
     - 'app/models/commit.rb'
     - 'app/models/legacy_diff_discussion.rb'
@@ -27,6 +24,7 @@ Style/EmptyElse:
     - 'app/models/resource_timebox_event.rb'
     - 'app/services/award_emojis/add_service.rb'
     - 'app/services/merge_requests/update_service.rb'
+    - 'app/workers/gitlab/github_import/stage/import_issue_events_worker.rb'
     - 'app/workers/post_receive.rb'
     - 'config/initializers/doorkeeper_openid_connect.rb'
     - 'ee/app/controllers/admin/audit_logs_controller.rb'
@@ -38,13 +36,14 @@ Style/EmptyElse:
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/app/services/gitlab_subscriptions/check_future_renewal_service.rb'
     - 'ee/app/services/projects/update_mirror_service.rb'
-    - 'ee/app/workers/audit_events/audit_event_streaming_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/notify_seats_exceeded_worker.rb'
     - 'ee/db/fixtures/development/20_vulnerabilities.rb'
     - 'ee/lib/elastic/latest/note_instance_proxy.rb'
+    - 'ee/lib/gitlab/analytics/cycle_analytics/summary/change_failure_rate.rb'
     - 'ee/lib/gitlab/geo/oauth/logout_token.rb'
     - 'lib/api/subscriptions.rb'
     - 'lib/gitlab/auth/o_auth/provider.rb'
+    - 'lib/gitlab/ci/variables/collection.rb'
     - 'lib/gitlab/database/load_balancing/sidekiq_server_middleware.rb'
     - 'lib/gitlab/database/sha256_attribute.rb'
     - 'lib/gitlab/diff/parser.rb'

@@ -90,7 +90,7 @@ describe('IntegrationOverrides', () => {
 
       const table = findGlTable();
       expect(table.exists()).toBe(true);
-      expect(table.attributes('busy')).toBeFalsy();
+      expect(table.attributes('busy')).toBeUndefined();
     });
 
     it('renders IntegrationTabs with count', async () => {

@@ -15,47 +15,37 @@ const PROVIDED_PROPS = {
 describe('User Avatar Link Component', () => {
   let wrapper;
 
+  const createWrapper = (props = {}, { glAvatarForAllUserAvatars } = {}) => {
+    wrapper = shallowMount(UserAvatarLink, {
+      propsData: {
+        ...PROVIDED_PROPS,
+        ...props,
+      },
+      provide: {
+        glFeatures: {
+          glAvatarForAllUserAvatars,
+        },
+      },
+    });
+  };
+
   afterEach(() => {
     wrapper.destroy();
   });
 
-  describe('when `glAvatarForAllUserAvatars` feature flag enabled', () => {
-    beforeEach(() => {
-      wrapper = shallowMount(UserAvatarLink, {
-        propsData: {
-          ...PROVIDED_PROPS,
-        },
-        provide: {
-          glFeatures: {
-            glAvatarForAllUserAvatars: true,
-          },
-        },
+  describe.each([
+    [false, true, true],
+    [true, false, true],
+    [true, true, true],
+    [false, false, false],
+  ])(
+    'when glAvatarForAllUserAvatars=%s and enforceGlAvatar=%s',
+    (glAvatarForAllUserAvatars, enforceGlAvatar, isUsingNewVersion) => {
+      it(`will render ${isUsingNewVersion ? 'new' : 'old'} version`, () => {
+        createWrapper({ enforceGlAvatar }, { glAvatarForAllUserAvatars });
+        expect(wrapper.findComponent(UserAvatarLinkNew).exists()).toBe(isUsingNewVersion);
+        expect(wrapper.findComponent(UserAvatarLinkOld).exists()).toBe(!isUsingNewVersion);
       });
-    });
-
-    it('should render `UserAvatarLinkNew` component', () => {
-      expect(wrapper.findComponent(UserAvatarLinkNew).exists()).toBe(true);
-      expect(wrapper.findComponent(UserAvatarLinkOld).exists()).toBe(false);
-    });
-  });
-
-  describe('when `glAvatarForAllUserAvatars` feature flag disabled', () => {
-    beforeEach(() => {
-      wrapper = shallowMount(UserAvatarLink, {
-        propsData: {
-          ...PROVIDED_PROPS,
-        },
-        provide: {
-          glFeatures: {
-            glAvatarForAllUserAvatars: false,
-          },
-        },
-      });
-    });
-
-    it('should render `UserAvatarLinkOld` component', () => {
-      expect(wrapper.findComponent(UserAvatarLinkNew).exists()).toBe(false);
-      expect(wrapper.findComponent(UserAvatarLinkOld).exists()).toBe(true);
-    });
-  });
+    },
+  );
 });

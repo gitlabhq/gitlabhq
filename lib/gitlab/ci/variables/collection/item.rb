@@ -25,6 +25,10 @@ module Gitlab
             @variable.fetch(:raw)
           end
 
+          def file?
+            @variable.fetch(:file)
+          end
+
           def [](key)
             @variable.fetch(key)
           end

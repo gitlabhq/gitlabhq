@@ -147,6 +147,9 @@ export default {
     showReferencePath() {
       return !this.isProjectBoard && this.itemReferencePath;
     },
+    avatarSize() {
+      return { default: 16, lg: 24 };
+    },
   },
   methods: {
     ...mapActions(['performSearch', 'setError']),
@@ -359,17 +362,17 @@ export default {
           </span>
         </span>
       </div>
-      <div class="board-card-assignee gl-display-flex">
+      <div class="board-card-assignee gl-display-flex gl-gap-3">
         <user-avatar-link
           v-for="assignee in cappedAssignees"
           :key="assignee.id"
           :link-href="assigneeUrl(assignee)"
           :img-alt="avatarUrlTitle(assignee)"
           :img-src="avatarUrl(assignee)"
-          :img-size="24"
-          img-css-classes="avatar gl-mr-0!"
+          :img-size="avatarSize"
           class="js-no-trigger"
           tooltip-placement="bottom"
+          :enforce-gl-avatar="true"
         >
           <span class="js-assignee-tooltip">
             <span class="gl-font-weight-bold gl-display-block">{{ __('Assignee') }}</span>

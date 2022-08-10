@@ -1,4 +1,3 @@
-import { GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ChunkLine from '~/vue_shared/components/source_viewer/components/chunk_line.vue';
 import {
@@ -20,7 +19,7 @@ describe('Chunk Line component', () => {
     wrapper = shallowMountExtended(ChunkLine, { propsData: { ...DEFAULT_PROPS, ...props } });
   };
 
-  const findLink = () => wrapper.findComponent(GlLink);
+  const findLink = () => wrapper.findByTestId('line-number-anchor');
   const findContent = () => wrapper.findByTestId('content');
   const findWrappedBidiChars = () => wrapper.findAllByTestId('bidi-wrapper');
 
@@ -50,7 +49,7 @@ describe('Chunk Line component', () => {
     it('renders a line number', () => {
       expect(findLink().attributes()).toMatchObject({
         'data-line-number': `${DEFAULT_PROPS.number}`,
-        to: `#L${DEFAULT_PROPS.number}`,
+        href: `#L${DEFAULT_PROPS.number}`,
         id: `L${DEFAULT_PROPS.number}`,
       });
 

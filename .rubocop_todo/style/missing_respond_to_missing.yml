@@ -1,8 +1,5 @@
 ---
 Style/MissingRespondToMissing:
-  # Offense count: 21
-  # Temporarily disabled due to too many offenses
-  Enabled: false
   Exclude:
     - 'app/controllers/projects/application_controller.rb'
     - 'app/models/network/commit.rb'

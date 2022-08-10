@@ -873,6 +873,12 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
 
+    describe '#ci_allow_fork_pipelines_to_run_in_parent_project?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :allow_fork_pipelines_to_run_in_parent_project? }
+      end
+    end
+
     describe '#ci_job_token_scope_enabled?' do
       it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
         let(:delegated_method) { :job_token_scope_enabled? }

@@ -435,6 +435,10 @@ Naming/PredicateName:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93828#note_1050812797
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
+
 RSpec/FactoriesInMigrationSpecs:
   Enabled: true
   Include:

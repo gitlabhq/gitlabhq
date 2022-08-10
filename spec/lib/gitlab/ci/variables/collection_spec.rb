@@ -302,6 +302,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
                      .append(key: 'CI_BUILD_ID', value: '1')
                      .append(key: 'RAW_VAR', value: '$TEST1', raw: true)
                      .append(key: 'TEST1', value: 'test-3')
+                     .append(key: 'FILEVAR1', value: 'file value 1', file: true)
     end
 
     context 'table tests' do
@@ -311,28 +312,23 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
         {
           "empty value": {
             value: '',
-            result: '',
-            keep_undefined: false
+            result: ''
           },
           "simple expansions": {
             value: 'key$TEST1-$CI_BUILD_ID',
-            result: 'keytest-3-1',
-            keep_undefined: false
+            result: 'keytest-3-1'
           },
           "complex expansion": {
             value: 'key${TEST1}-${CI_JOB_NAME}',
-            result: 'keytest-3-test-1',
-            keep_undefined: false
+            result: 'keytest-3-test-1'
           },
           "complex expansions with raw variable": {
             value: 'key${RAW_VAR}-${CI_JOB_NAME}',
-            result: 'key$TEST1-test-1',
-            keep_undefined: false
+            result: 'key$TEST1-test-1'
           },
           "missing variable not keeping original": {
             value: 'key${MISSING_VAR}-${CI_JOB_NAME}',
-            result: 'key-test-1',
-            keep_undefined: false
+            result: 'key-test-1'
           },
           "missing variable keeping original": {
             value: 'key${MISSING_VAR}-${CI_JOB_NAME}',
@@ -341,14 +337,24 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
           },
           "escaped characters are kept intact": {
             value: 'key-$TEST1-%%HOME%%-$${HOME}',
-            result: 'key-test-3-%%HOME%%-$${HOME}',
-            keep_undefined: false
+            result: 'key-test-3-%%HOME%%-$${HOME}'
+          },
+          "file variable with expand_file_vars: true": {
+            value: 'key-$FILEVAR1-$TEST1',
+            result: 'key-file value 1-test-3'
+          },
+          "file variable with expand_file_vars: false": {
+            value: 'key-$FILEVAR1-$TEST1',
+            result: 'key-$FILEVAR1-test-3',
+            expand_file_vars: false
           }
         }
       end
 
       with_them do
-        subject { collection.expand_value(value, keep_undefined: keep_undefined) }
+        let(:options) { { keep_undefined: keep_undefined, expand_file_vars: expand_file_vars }.compact }
+
+        subject(:result) { collection.expand_value(value, **options) }
 
         it 'matches expected expansion' do
           is_expected.to eq(result)

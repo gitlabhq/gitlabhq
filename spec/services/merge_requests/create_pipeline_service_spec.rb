@@ -74,6 +74,16 @@ RSpec.describe MergeRequests::CreatePipelineService do
           expect(response.payload.project).to eq(project)
         end
 
+        context 'when the feature is disabled in CI/CD settings' do
+          before do
+            project.update!(ci_allow_fork_pipelines_to_run_in_parent_project: false)
+          end
+
+          it 'creates a pipeline in the source project' do
+            expect(response.payload.project).to eq(source_project)
+          end
+        end
+
         context 'when source branch is protected' do
           context 'when actor does not have permission to update the protected branch in target project' do
             let!(:protected_branch) { create(:protected_branch, name: '*', project: project) }

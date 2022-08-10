@@ -50,7 +50,7 @@ export default {
       default: __('user avatar'),
     },
     size: {
-      type: Number,
+      type: [Number, Object],
       required: false,
       default: 20,
     },
@@ -64,12 +64,19 @@ export default {
       required: false,
       default: 'top',
     },
+    enforceGlAvatar: {
+      type: Boolean,
+      required: false,
+    },
   },
 };
 </script>
 
 <template>
-  <user-avatar-image-new v-if="glFeatures.glAvatarForAllUserAvatars" v-bind="$props">
+  <user-avatar-image-new
+    v-if="glFeatures.glAvatarForAllUserAvatars || enforceGlAvatar"
+    v-bind="$props"
+  >
     <slot></slot>
   </user-avatar-image-new>
   <user-avatar-image-old v-else v-bind="$props">

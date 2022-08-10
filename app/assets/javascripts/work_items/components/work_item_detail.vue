@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlSkeletonLoader, GlIcon, GlButton } from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader, GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
@@ -24,6 +24,9 @@ import WorkItemInformation from './work_item_information.vue';
 
 export default {
   i18n,
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   components: {
     GlAlert,
     GlButton,
@@ -156,17 +159,25 @@ export default {
       <div class="gl-display-flex gl-align-items-center">
         <ul
           v-if="parentWorkItem"
-          class="list-unstyled gl-display-flex gl-mr-auto"
+          class="list-unstyled gl-display-flex gl-mr-auto gl-max-w-26 gl-md-max-w-50p gl-min-w-0 gl-mb-0"
           data-testid="work-item-parent"
         >
-          <li class="gl-ml-n4">
-            <gl-button icon="issues" category="tertiary" :href="parentUrl">{{
-              parentWorkItem.title
-            }}</gl-button>
-            <gl-icon name="chevron-right" :size="16" />
+          <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-overflow-hidden">
+            <gl-button
+              v-gl-tooltip.hover
+              class="gl-text-truncate gl-max-w-full"
+              icon="issues"
+              category="tertiary"
+              :href="parentUrl"
+              :title="parentWorkItem.title"
+              >{{ parentWorkItem.title }}</gl-button
+            >
+            <gl-icon name="chevron-right" :size="16" class="gl-flex-shrink-0" />
           </li>
-          <li class="gl-px-4 gl-py-3 gl-line-height-0">
-            <gl-icon name="task-done" />
+          <li
+            class="gl-px-4 gl-py-3 gl-line-height-0 gl-display-flex gl-align-items-center gl-overflow-hidden gl-flex-shrink-0"
+          >
+            <gl-icon name="task-done" class="gl-mr-2 gl-flex-shrink-0" />
             {{ workItemType }}
           </li>
         </ul>

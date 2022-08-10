@@ -888,6 +888,9 @@ msgstr ""
 msgid "%{over_limit_message} To get more members, an owner of the group can start a trial or upgrade to a paid tier."
 msgstr ""
 
+msgid "%{over_limit_message} To get more seats, %{link_start}upgrade to a paid tier%{link_end}."
+msgstr ""
+
 msgid "%{over_limit_message} To view and manage members, check the members page for each personal project. We recommend you %{link_start}move your projects to a group%{link_end} so you can easily manage users and features."
 msgstr ""
 
@@ -6172,6 +6175,9 @@ msgstr ""
 msgid "Billings|Free groups are limited to %{number} seats."
 msgstr ""
 
+msgid "Billings|Free tier and trial groups can invite a maximum of 20 members per day."
+msgstr ""
+
 msgid "Billings|In a seat"
 msgstr ""
 
@@ -6220,9 +6226,6 @@ msgstr ""
 msgid "Billings|Your account has been validated"
 msgstr ""
 
-msgid "Billing|%{overLimitMessage} To ensure all members (active and %{linkStart}over limit%{linkEnd}) can access the group, you can start a trial or upgrade to a paid tier."
-msgstr ""
-
 msgid "Billing|%{user} was successfully approved"
 msgstr ""
 
@@ -6268,17 +6271,14 @@ msgstr ""
 msgid "Billing|Export list"
 msgstr ""
 
-msgid "Billing|Free groups on GitLab are limited to %{maxNamespaceSeats} seats"
-msgstr ""
-
 msgid "Billing|From October 19, 2022, free groups will be limited to 5 members"
 msgstr ""
 
 msgid "Billing|Group invite"
 msgstr ""
 
-msgid "Billing|If the group has over %d member, only those occupying a seat can access the group."
-msgid_plural "Billing|If the group has over %d members, only those occupying a seat can access the group."
+msgid "Billing|Groups in the Free tier are limited to %d seat"
+msgid_plural "Billing|Groups in the Free tier are limited to %d seats"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -6295,6 +6295,9 @@ msgid "Billing|Project invite"
 msgstr ""
 
 msgid "Billing|Remove user %{username} from your subscription"
+msgstr ""
+
+msgid "Billing|To ensure all members can access the group when your trial ends, you can upgrade to a paid tier."
 msgstr ""
 
 msgid "Billing|Toggle seat details"
@@ -18346,9 +18349,6 @@ msgstr ""
 msgid "Group overview content"
 msgstr ""
 
-msgid "Group owners can register group runners in the %{link}"
-msgstr ""
-
 msgid "Group path is already taken. We've suggested one that is available."
 msgstr ""
 
@@ -26907,6 +26907,11 @@ msgstr ""
 msgid "On"
 msgstr ""
 
+msgid "On %{end_date}, your trial will end and %{namespace_name} will be limited to %{free_user_limit} member"
+msgid_plural "On %{end_date}, your trial will end and %{namespace_name} will be limited to %{free_user_limit} members"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "On track"
 msgstr ""
 
@@ -34019,6 +34024,9 @@ msgstr ""
 msgid "Runners|To install Runner in a container follow the instructions described in the GitLab documentation"
 msgstr ""
 
+msgid "Runners|To register them, go to the %{link_start}group's Runners page%{link_end}."
+msgstr ""
+
 msgid "Runners|Up to date"
 msgstr ""
 
@@ -34154,6 +34162,9 @@ msgstr ""
 msgid "SHA256"
 msgstr ""
 
+msgid "SSH Fingerprints"
+msgstr ""
+
 msgid "SSH Key"
 msgstr ""
 
@@ -34161,6 +34172,9 @@ msgid "SSH Keys"
 msgstr ""
 
 msgid "SSH Keys Help"
+msgstr ""
+
+msgid "SSH fingerprints verify that the client is connecting to the correct host. Check the %{config_link_start}current instance configuration%{config_link_end}."
 msgstr ""
 
 msgid "SSH host key fingerprints"
@@ -43952,6 +43966,11 @@ msgstr ""
 msgid "When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, pipeline minutes, and users, and start a trial or upgrade to a paid tier."
 msgstr ""
 
+msgid "When your trial ends, you'll move to the Free tier, which has a limit of %{free_user_limit} seat. %{free_user_limit} seat will remain active, and members not occupying a seat will have the %{link_start}Over limit status%{link_end} and lose access to this group."
+msgid_plural "When your trial ends, you'll move to the Free tier, which has a limit of %{free_user_limit} seats. %{free_user_limit} seats will remain active, and members not occupying a seat will have the %{link_start}Over limit status%{link_end} and lose access to this group."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "When:"
 msgstr ""
 
@@ -45093,7 +45112,7 @@ msgstr ""
 msgid "Your %{spammable_entity_type} has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."
 msgstr ""
 
-msgid "Your %{strong}%{plan_name}%{strong_close} subscription expires on %{strong}%{expires_on}%{strong_close}. After that date, you cannot create issues or merge requests, or use many other features."
+msgid "Your %{strong}%{plan_name}%{strong_close} subscription expires on %{strong}%{expires_on}%{strong_close}. If you do not renew, you will lose access to your paid features on %{strong}%{downgrades_on}%{strong_close}. After that date, you can't create issues or merge requests, or use many other features."
 msgstr ""
 
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
@@ -45396,10 +45415,8 @@ msgid_plural "Your subscription has %{remaining_seat_count} out of %{total_seat_
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Your subscription will expire in %{remaining_days} day."
-msgid_plural "Your subscription will expire in %{remaining_days} days."
-msgstr[0] ""
-msgstr[1] ""
+msgid "Your subscription will expire on %{expires_on}"
+msgstr ""
 
 msgid "Your update failed. You can only upload one design when dropping onto an existing design."
 msgstr ""
@@ -46280,9 +46297,6 @@ msgid "group access tokens"
 msgstr ""
 
 msgid "group members"
-msgstr ""
-
-msgid "group's CI/CD settings."
 msgstr ""
 
 msgid "groups"

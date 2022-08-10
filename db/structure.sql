@@ -16795,7 +16795,6 @@ ALTER SEQUENCE jira_imports_id_seq OWNED BY jira_imports.id;
 
 CREATE TABLE jira_tracker_data (
     id bigint NOT NULL,
-    service_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     encrypted_url character varying,
@@ -16813,7 +16812,9 @@ CREATE TABLE jira_tracker_data (
     vulnerabilities_issuetype text,
     vulnerabilities_enabled boolean DEFAULT false NOT NULL,
     jira_issue_transition_automatic boolean DEFAULT false NOT NULL,
+    integration_id integer,
     CONSTRAINT check_0bf84b76e9 CHECK ((char_length(vulnerabilities_issuetype) <= 255)),
+    CONSTRAINT check_0fbd71d9f2 CHECK ((integration_id IS NOT NULL)),
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255))
 );
 
@@ -19406,7 +19407,8 @@ CREATE TABLE project_ci_cd_settings (
     job_token_scope_enabled boolean DEFAULT false NOT NULL,
     runner_token_expiration_interval integer,
     separated_caches boolean DEFAULT true NOT NULL,
-    opt_in_jwt boolean DEFAULT false NOT NULL
+    opt_in_jwt boolean DEFAULT false NOT NULL,
+    allow_fork_pipelines_to_run_in_parent_project boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq
@@ -28737,7 +28739,7 @@ CREATE INDEX index_jira_imports_on_project_id_and_jira_project_key ON jira_impor
 
 CREATE INDEX index_jira_imports_on_user_id ON jira_imports USING btree (user_id);
 
-CREATE INDEX index_jira_tracker_data_on_service_id ON jira_tracker_data USING btree (service_id);
+CREATE INDEX index_jira_tracker_data_on_integration_id ON jira_tracker_data USING btree (integration_id);
 
 CREATE INDEX index_job_artifact_states_failed_verification ON ci_job_artifact_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 
@@ -32550,6 +32552,9 @@ ALTER TABLE ONLY agent_activity_events
 ALTER TABLE ONLY issue_links
     ADD CONSTRAINT fk_c900194ff2 FOREIGN KEY (source_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY jira_tracker_data
+    ADD CONSTRAINT fk_c98abcd54c FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY external_approval_rules_protected_branches
     ADD CONSTRAINT fk_c9a037a926 FOREIGN KEY (external_approval_rule_id) REFERENCES external_approval_rules(id) ON DELETE CASCADE;
 
@@ -33785,9 +33790,6 @@ ALTER TABLE ONLY vulnerability_user_mentions
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_rails_a27c483435 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY jira_tracker_data
-    ADD CONSTRAINT fk_rails_a299066916 FOREIGN KEY (service_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_environments
     ADD CONSTRAINT fk_rails_a354313d11 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

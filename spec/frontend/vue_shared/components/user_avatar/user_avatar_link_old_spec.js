@@ -54,6 +54,7 @@ describe('User Avatar Link Component', () => {
       size: defaultProps.imgSize,
       tooltipPlacement: defaultProps.tooltipPlacement,
       tooltipText: '',
+      enforceGlAvatar: false,
     });
   });
 

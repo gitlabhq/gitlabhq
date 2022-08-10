@@ -231,6 +231,33 @@ RSpec.describe API::Members do
           end
         end
       end
+
+      context 'with ancestral membership' do
+        shared_examples 'response with correct access levels' do
+          it do
+            get api("/#{source_type.pluralize}/#{source.id}/members/#{all ? 'all/' : ''}#{developer.id}", developer)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['access_level']).to eq(Member::MAINTAINER)
+          end
+        end
+
+        before do
+          source.add_maintainer(developer)
+        end
+
+        include_examples 'response with correct access levels'
+
+        context 'having email invite' do
+          before do
+            Member
+              .find_by(source: group, user: developer)
+              .update!(invite_email: 'email@email.com')
+          end
+
+          include_examples 'response with correct access levels'
+        end
+      end
     end
   end
 

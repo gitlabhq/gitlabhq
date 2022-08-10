@@ -49,9 +49,9 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateJiraTrackerDataDeploymentTypeB
     stub_const('CLOUD', 2)
   end
 
-  let!(:tracker_data_cloud) { JiraTrackerData.create!(id: 1, service_id: service_jira_cloud.id, url: "https://test-domain.atlassian.net", deployment_type: UNKNOWN) }
-  let!(:tracker_data_server) { JiraTrackerData.create!(id: 2, service_id: service_jira_server.id, url: "http://totally-not-jira-server.company.org", deployment_type: UNKNOWN) }
-  let!(:tracker_data_unknown) { JiraTrackerData.create!(id: 3, service_id: service_jira_unknown.id, url: "", deployment_type: UNKNOWN) }
+  let!(:tracker_data_cloud) { JiraTrackerData.create!(id: 1, integration_id: service_jira_cloud.id, url: "https://test-domain.atlassian.net", deployment_type: UNKNOWN) }
+  let!(:tracker_data_server) { JiraTrackerData.create!(id: 2, integration_id: service_jira_server.id, url: "http://totally-not-jira-server.company.org", deployment_type: UNKNOWN) }
+  let!(:tracker_data_unknown) { JiraTrackerData.create!(id: 3, integration_id: service_jira_unknown.id, url: "", deployment_type: UNKNOWN) }
 
   it "changes unknown deployment_types based on URL" do
     expect(JiraTrackerData.pluck(:deployment_type)).to match_array([UNKNOWN, UNKNOWN, UNKNOWN])

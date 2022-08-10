@@ -7,6 +7,12 @@
       = page_title
     %p
       = _('SSH keys allow you to establish a secure connection between your computer and GitLab.')
+    %br
+    %h4.gl-mt-0
+      = _('SSH Fingerprints')
+    %p
+      - config_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_instance_configuration_url }
+      = html_escape(s_('SSH fingerprints verify that the client is connecting to the correct host. Check the %{config_link_start}current instance configuration%{config_link_end}.')) % { config_link_start: config_link_start, config_link_end: '</a>'.html_safe }
   .col-lg-8
     %h5.gl-mt-0
       = _('Add an SSH key')

@@ -6,7 +6,6 @@ module Integrations
 
     LEGACY_FOREIGN_KEY_NAME = %w(
       Integrations::IssueTrackerData
-      Integrations::JiraTrackerData
     ).freeze
 
     included do
