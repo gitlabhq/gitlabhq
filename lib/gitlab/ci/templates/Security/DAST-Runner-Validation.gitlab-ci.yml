@@ -11,12 +11,11 @@ stages:
 
 variables:
   DAST_RUNNER_VALIDATION_VERSION: 1
-  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
 
 validation:
   stage: dast
   image:
-    name: "$TEMPLATE_REGISTRY_HOST/security-products/dast-runner-validation:$DAST_RUNNER_VALIDATION_VERSION"
+    name: "$CI_TEMPLATE_REGISTRY_HOST/security-products/dast-runner-validation:$DAST_RUNNER_VALIDATION_VERSION"
   variables:
     GIT_STRATEGY: none
   allow_failure: false

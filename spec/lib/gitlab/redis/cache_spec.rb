@@ -15,4 +15,16 @@ RSpec.describe Gitlab::Redis::Cache do
       expect(subject.send(:raw_config_hash)).to eq(url: 'redis://localhost:6380' )
     end
   end
+
+  describe '.active_support_config' do
+    it 'has a default ttl of 2 weeks' do
+      expect(described_class.active_support_config[:expires_in]).to eq(2.weeks)
+    end
+
+    it 'allows configuring the TTL through an env variable' do
+      stub_env('GITLAB_RAILS_CACHE_DEFAULT_TTL_SECONDS' => '86400')
+
+      expect(described_class.active_support_config[:expires_in]).to eq(1.day)
+    end
+  end
 end

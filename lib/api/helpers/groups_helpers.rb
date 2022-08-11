@@ -9,8 +9,8 @@ module API
       params :optional_params_ce do
         optional :description, type: String, desc: 'The description of the group'
         optional :visibility, type: String,
-                 values: Gitlab::VisibilityLevel.string_values,
-                 desc: 'The visibility of the group'
+                              values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'The visibility of the group'
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
         optional :avatar, type: File, desc: 'Avatar image for the group' # rubocop:disable Scalability/FileUploads
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'

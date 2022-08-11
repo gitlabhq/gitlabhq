@@ -24,17 +24,29 @@ module API
       end
       params do
         use :pagination
-        optional :order_by, type: String, values: %w[created_at name version type project_path], default: 'created_at',
-                            desc: 'Return packages ordered by `created_at`, `name`, `version` or `type` fields.'
-        optional :sort, type: String, values: %w[asc desc], default: 'asc',
-                        desc: 'Return packages sorted in `asc` or `desc` order.'
-        optional :package_type, type: String, values: Packages::Package.package_types.keys,
-                                desc: 'Return packages of a certain type'
-        optional :package_name, type: String,
-                                desc: 'Return packages with this name'
-        optional :include_versionless, type: Boolean,
-                                       desc: 'Returns packages without a version'
-        optional :status, type: String, values: Packages::Package.statuses.keys,
+        optional :order_by,
+                 type: String,
+                 values: %w[created_at name version type project_path],
+                 default: 'created_at',
+                 desc: 'Return packages ordered by `created_at`, `name`, `version` or `type` fields.'
+        optional :sort,
+                 type: String,
+                 values: %w[asc desc],
+                 default: 'asc',
+                 desc: 'Return packages sorted in `asc` or `desc` order.'
+        optional :package_type,
+                 type: String,
+                 values: Packages::Package.package_types.keys,
+                 desc: 'Return packages of a certain type'
+        optional :package_name,
+                 type: String,
+                 desc: 'Return packages with this name'
+        optional :include_versionless,
+                 type: Boolean,
+                 desc: 'Returns packages without a version'
+        optional :status,
+                 type: String,
+                 values: Packages::Package.statuses.keys,
                  desc: 'Return packages with specified status'
       end
       get ':id/packages' do

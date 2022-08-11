@@ -404,7 +404,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
 
   context 'when streaming has to retry', :aggregate_failures do
     let(:shared) { double('shared', export_path: exportable_path) }
-    let(:logger) { Gitlab::Import::Logger.build }
+    let(:logger) { Gitlab::Export::Logger.build }
     let(:serializer) { double('serializer') }
     let(:error_class) { Net::OpenTimeout }
     let(:info_params) do

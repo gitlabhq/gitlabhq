@@ -24,7 +24,6 @@
 
 variables:
   TEST_ROOT: ${CI_PROJECT_DIR}/my_folder_with_terraform_content
-  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
 
 default:
   before_script:
@@ -32,7 +31,7 @@ default:
 
 init_and_plan:
   stage: build
-  image: "$TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/releases/0.13"
+  image: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/releases/0.13"
   rules:
     - if: $SAST_DISABLED
       when: never

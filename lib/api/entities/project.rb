@@ -47,8 +47,9 @@ module API
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :resolve_outdated_diff_discussions
-      expose :container_expiration_policy, using: Entities::ContainerExpirationPolicy,
-        if: -> (project, _) { project.container_expiration_policy }
+      expose :container_expiration_policy,
+             using: Entities::ContainerExpirationPolicy,
+             if: -> (project, _) { project.container_expiration_policy }
 
       # Expose old field names with the new permissions methods to keep API compatible
       # TODO: remove in API v5, replaced by *_access_level

@@ -24,8 +24,7 @@
 variables:
   # Setting this variable affects all Security templates
   # (SAST, Dependency Scanning, ...)
-  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
-  SECURE_ANALYZERS_PREFIX: "$TEMPLATE_REGISTRY_HOST/security-products"
+  SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
   #
   DAST_API_VERSION: "2"
   DAST_API_IMAGE_SUFFIX: ""

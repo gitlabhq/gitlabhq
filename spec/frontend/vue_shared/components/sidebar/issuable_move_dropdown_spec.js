@@ -308,7 +308,7 @@ describe('IssuableMoveDropdown', () => {
       it('collapsed state element emits `toggle-collapse` event on component when clicked', () => {
         wrapper.find('[data-testid="move-collapsed"]').trigger('click');
 
-        expect(wrapper.emitted('toggle-collapse')).toBeTruthy();
+        expect(wrapper.emitted('toggle-collapse')).toHaveLength(1);
       });
 
       it('gl-dropdown component calls `fetchProjects` on `shown` event', () => {
@@ -337,7 +337,7 @@ describe('IssuableMoveDropdown', () => {
       it('gl-dropdown component emits `dropdown-close` event on component from `hide` event', async () => {
         findDropdownEl().vm.$emit('hide');
 
-        expect(wrapper.emitted('dropdown-close')).toBeTruthy();
+        expect(wrapper.emitted('dropdown-close')).toHaveLength(1);
       });
 
       it('close icon in dropdown header closes the dropdown when clicked', () => {
@@ -372,7 +372,7 @@ describe('IssuableMoveDropdown', () => {
         wrapper.find('[data-testid="footer"]').findComponent(GlButton).vm.$emit('click');
 
         expect(wrapper.vm.$refs.dropdown.hide).toHaveBeenCalled();
-        expect(wrapper.emitted('move-issuable')).toBeTruthy();
+        expect(wrapper.emitted('move-issuable')).toHaveLength(1);
         expect(wrapper.emitted('move-issuable')[0]).toEqual([mockProjects[0]]);
       });
     });

@@ -4,10 +4,6 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml
 
 # Read more about the feature here: https://docs.gitlab.com/ee/user/project/merge_requests/accessibility_testing.html
-
-variables:
-  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
-
 stages:
   - build
   - test
@@ -16,7 +12,7 @@ stages:
 
 a11y:
   stage: accessibility
-  image: "$TEMPLATE_REGISTRY_HOST/gitlab-org/ci-cd/accessibility:6.2.3"
+  image: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/ci-cd/accessibility:6.2.3"
   script:
     - /gitlab-accessibility.sh "$a11y_urls"
   allow_failure: true

@@ -21,17 +21,17 @@ module API
         helpers do
           params :optional_scope do
             optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
-                            values: ::CommitStatus::AVAILABLE_STATUSES,
-                           coerce_with: ->(scope) {
-                             case scope
-                             when String
-                               [scope]
-                             when ::Array
-                               scope
-                             else
-                               ['unknown']
-                             end
-                           }
+                             values: ::CommitStatus::AVAILABLE_STATUSES,
+                             coerce_with: ->(scope) {
+                                            case scope
+                                            when String
+                                              [scope]
+                                            when ::Array
+                                              scope
+                                            else
+                                              ['unknown']
+                                            end
+                                          }
           end
         end
 

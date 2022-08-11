@@ -7,11 +7,8 @@
 # then result in potentially breaking your future pipelines.
 #
 # More about including CI templates: https://docs.gitlab.com/ee/ci/yaml/#includetemplate
-variables:
-  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
-
 .ecs_image:
-  image: '${TEMPLATE_REGISTRY_HOST}/gitlab-org/cloud-deploy/aws-ecs:latest'
+  image: '${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cloud-deploy/aws-ecs:latest'
 
 .deploy_to_ecs:
   extends: .ecs_image

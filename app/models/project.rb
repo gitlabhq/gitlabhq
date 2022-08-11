@@ -2259,6 +2259,7 @@ class Project < ApplicationRecord
         .concat(dependency_proxy_variables)
         .concat(auto_devops_variables)
         .concat(api_variables)
+        .concat(ci_template_variables)
     end
   end
 
@@ -2309,6 +2310,12 @@ class Project < ApplicationRecord
   def api_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: 'CI_API_V4_URL', value: API::Helpers::Version.new('v4').root_url)
+    end
+  end
+
+  def ci_template_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_TEMPLATE_REGISTRY_HOST', value: 'registry.gitlab.com')
     end
   end
 

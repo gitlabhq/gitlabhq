@@ -73,10 +73,10 @@ module API
             bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:debian_max_file_size, params[:file].size)
 
             file_params = {
-              file:        params['file'],
-              file_name:   params['file_name'],
-              file_sha1:   params['file.sha1'],
-              file_md5:    params['file.md5']
+              file: params['file'],
+              file_name: params['file_name'],
+              file_sha1: params['file.sha1'],
+              file_md5: params['file.md5']
             }
 
             package = ::Packages::Debian::FindOrCreateIncomingService.new(authorized_user_project, current_user).execute

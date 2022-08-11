@@ -89,7 +89,21 @@ RSpec.describe Projects::ImportExport::ExportService do
 
     context 'when all saver services succeed' do
       before do
-        allow(service).to receive(:save_services).and_return(true)
+        allow(service).to receive(:save_exporters).and_return(true)
+      end
+
+      it 'logs a successful message' do
+        allow(Gitlab::ImportExport::Saver).to receive(:save).and_return(true)
+
+        expect(service.instance_variable_get(:@logger)).to receive(:info).ordered.with(
+          hash_including({ message: 'Project export started', project_id: project.id })
+        )
+
+        expect(service.instance_variable_get(:@logger)).to receive(:info).ordered.with(
+          hash_including({ message: 'Project successfully exported', project_id: project.id })
+        )
+
+        service.execute
       end
 
       it 'saves the project in the file system' do
@@ -111,6 +125,7 @@ RSpec.describe Projects::ImportExport::ExportService do
       end
 
       it 'calls the after export strategy' do
+        allow(Gitlab::ImportExport::Saver).to receive(:save).and_return(true)
         expect(after_export_strategy).to receive(:execute)
 
         service.execute(after_export_strategy)
@@ -119,7 +134,7 @@ RSpec.describe Projects::ImportExport::ExportService do
       context 'when after export strategy fails' do
         before do
           allow(after_export_strategy).to receive(:execute).and_return(false)
-          expect(Gitlab::ImportExport::Saver).to receive(:save).with(exportable: project, shared: shared).and_return(true)
+          allow(Gitlab::ImportExport::Saver).to receive(:save).and_return(true)
         end
 
         after do
@@ -140,7 +155,9 @@ RSpec.describe Projects::ImportExport::ExportService do
         end
 
         it 'notifies logger' do
-          expect(service.instance_variable_get(:@logger)).to receive(:error)
+          expect(service.instance_variable_get(:@logger)).to receive(:error).with(
+            hash_including({ message: 'Project export error', project_id: project.id })
+          )
         end
       end
     end

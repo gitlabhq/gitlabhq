@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Build do
+  include Ci::TemplateHelpers
   let_it_be(:user) { create(:user) }
   let_it_be(:group, reload: true) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
@@ -2865,6 +2866,7 @@ RSpec.describe Ci::Build do
             public: true,
             masked: false },
           { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true, masked: false },
+          { key: 'CI_TEMPLATE_REGISTRY_HOST', value: template_registry_host, public: true, masked: false },
           { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true, masked: false },
           { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true, masked: false },
           { key: 'CI_PIPELINE_CREATED_AT', value: pipeline.created_at.iso8601, public: true, masked: false },

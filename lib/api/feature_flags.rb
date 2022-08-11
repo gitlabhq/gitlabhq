@@ -24,8 +24,10 @@ module API
           success ::API::Entities::FeatureFlag
         end
         params do
-          optional :scope, type: String, desc: 'The scope of feature flags',
-                                         values: %w[enabled disabled]
+          optional :scope,
+                   type: String,
+                   desc: 'The scope of feature flags',
+                   values: %w[enabled disabled]
           use :pagination
         end
         get do

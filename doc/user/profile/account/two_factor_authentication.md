@@ -355,8 +355,7 @@ After you use a recovery code, you cannot re-use it. You can still use the other
 
 ### Generate new recovery codes using SSH
 
-Users often forget to save their recovery codes when enabling 2FA. If you added an SSH key to your
-GitLab account, you can generate a new set of recovery codes with SSH:
+If you forget to save your recovery codes when enabling 2FA, and you added an SSH key to your GitLab account, you can generate a new set of recovery codes with SSH:
 
 1. In a terminal, run:
 

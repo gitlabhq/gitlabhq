@@ -100,7 +100,7 @@ module API
           ).execute(:helm, name: ::Packages::Helm::TEMPORARY_PACKAGE_NAME)
 
           chart_params = {
-            file:      params[:chart],
+            file: params[:chart],
             file_name: PACKAGE_FILENAME
           }
 

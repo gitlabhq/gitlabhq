@@ -1,12 +1,9 @@
-variables:
-  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
-
 stages:
   - review
   - production
 
 .push-and-deploy:
-  image: '${TEMPLATE_REGISTRY_HOST}/gitlab-org/cloud-deploy/aws-ec2:latest'
+  image: '${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cloud-deploy/aws-ec2:latest'
   script:
     - gl-ec2 push-to-s3
     - gl-ec2 deploy-to-ec2

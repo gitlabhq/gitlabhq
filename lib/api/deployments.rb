@@ -156,7 +156,11 @@ module API
         authorize!(:destroy_deployment, deployment)
 
         destroy_conditionally!(deployment) do
-          ::Ci::Deployments::DestroyService.new(user_project, current_user).execute(deployment)
+          result = ::Ci::Deployments::DestroyService.new(user_project, current_user).execute(deployment)
+
+          if result[:status] == :error
+            render_api_error!(result[:message], result[:http_status] || 400)
+          end
         end
       end
 

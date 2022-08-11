@@ -1,9 +1,8 @@
 variables:
   AUTO_DEPLOY_IMAGE_VERSION: 'v2.33.0'
-  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
 
 .auto-deploy:
-  image: "${TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
+  image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
   dependencies: []
 
 review:

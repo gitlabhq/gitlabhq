@@ -451,7 +451,7 @@ RSpec.describe API::Deployments do
   describe 'DELETE /projects/:id/deployments/:deployment_id' do
     let(:project) { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }
-    let(:commits) { project.repository.commits(nil, { limit: 2 }) }
+    let(:commits) { project.repository.commits(nil, { limit: 3 }) }
     let!(:deploy) do
       create(
         :deployment,
@@ -475,11 +475,29 @@ RSpec.describe API::Deployments do
       )
     end
 
+    let!(:running_deploy) do
+      create(
+        :deployment,
+        :running,
+        project: project,
+        environment: environment,
+        deployable: nil,
+        sha: commits[2].sha
+      )
+    end
+
     context 'as an maintainer' do
       it 'deletes a deployment' do
         delete api("/projects/#{project.id}/deployments/#{old_deploy.id}", user)
 
         expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'will not delete a running deployment' do
+        delete api("/projects/#{project.id}/deployments/#{running_deploy.id}", user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.body).to include("Cannot destroy running deployment")
       end
     end
 

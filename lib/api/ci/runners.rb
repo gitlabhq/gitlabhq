@@ -16,7 +16,7 @@ module API
         end
         params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
-                          desc: 'The scope of specific runners to show'
+                           desc: 'The scope of specific runners to show'
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                           desc: 'The type of the runners to show'
           optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
@@ -38,7 +38,7 @@ module API
         end
         params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_SCOPES,
-                          desc: 'The scope of specific runners to show'
+                           desc: 'The scope of specific runners to show'
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                           desc: 'The type of the runners to show'
           optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
@@ -159,7 +159,7 @@ module API
         end
         params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_SCOPES,
-                          desc: 'The scope of specific runners to show'
+                           desc: 'The scope of specific runners to show'
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
                           desc: 'The type of the runners to show'
           optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
@@ -225,10 +225,10 @@ module API
         end
         params do
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
-                  desc: 'The type of the runners to show'
+                          desc: 'The type of the runners to show'
           optional :paused, type: Boolean, desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
-                  desc: 'The status of the runners to show'
+                            desc: 'The status of the runners to show'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The tags of the runners to show'
           use :pagination
         end
