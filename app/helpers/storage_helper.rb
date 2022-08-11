@@ -37,12 +37,12 @@ module StorageHelper
                            "about how to reduce your storage.")).html_safe % text_args[:p2]
                        else
                          html_escape_once(s_("UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. " \
-                           "View and manage your usage from %{strong_start}Group settings &gt; Usage quotas%{strong_end}. %{docs_link_start}Learn more%{link_end} " \
-                           "about how to reduce your storage.")).html_safe % text_args[:p2]
+                                             "Group owners can view namespace storage usage and purchase more from %{strong_start}Group settings &gt; Usage quotas%{strong_end}. %{docs_link_start}Learn more.%{link_end}" \
+                                            )).html_safe % text_args[:p2]
                        end
 
     {
-      text_paragraph_1: html_escape_once(s_("UsageQuota|Effective %{storage_enforcement_date}, %{announcement_link_start}namespace storage limits will apply%{link_end} " \
+      text_paragraph_1: html_escape_once(s_("UsageQuota|Effective %{storage_enforcement_date}, namespace storage limits will apply " \
             "to the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}" \
             "View the %{rollout_link_start}rollout schedule for this change%{link_end}.")).html_safe % text_args[:p1],
       text_paragraph_2: text_paragraph_2,
@@ -92,8 +92,7 @@ module StorageHelper
         storage_enforcement_date: root_ancestor.storage_enforcement_date,
         namespace_name: root_ancestor.name,
         extra_message: extra_message,
-        announcement_link_start: '<a href="%{url}" >'.html_safe % { url: "#{Gitlab::Saas.community_forum_url}/t/gitlab-introduces-storage-and-transfer-limits-for-users-on-saas/69883" },
-        rollout_link_start: '<a href="%{url}" >'.html_safe % { url: help_page_path('user/usage_quotas', anchor: 'tbd') },
+        rollout_link_start: '<a href="%{url}" >'.html_safe % { url: help_page_path('user/usage_quotas', anchor: 'namespace-storage-limit-enforcement-schedule') },
         link_end: "</a>".html_safe
       }.merge(strong_tags),
       p2: {
@@ -102,7 +101,7 @@ module StorageHelper
         link_end: "</a>".html_safe
       }.merge(strong_tags),
       p3: {
-        faq_link_start: '<a href="%{url}" >'.html_safe % { url: "#{Gitlab::Saas.about_pricing_url}faq-efficient-free-tier/#storage-and-transfer-limits-on-gitlab-saas-free-tier" },
+        faq_link_start: '<a href="%{url}" >'.html_safe % { url: "#{Gitlab::Saas.about_pricing_url}faq-efficient-free-tier/#storage-limits-on-gitlab-saas-free-tier" },
         link_end: "</a>".html_safe
       }
     }

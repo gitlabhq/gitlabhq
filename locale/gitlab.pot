@@ -41934,7 +41934,7 @@ msgstr ""
 msgid "UsageQuota|Dependency proxy"
 msgstr ""
 
-msgid "UsageQuota|Effective %{storage_enforcement_date}, %{announcement_link_start}namespace storage limits will apply%{link_end} to the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}View the %{rollout_link_start}rollout schedule for this change%{link_end}."
+msgid "UsageQuota|Effective %{storage_enforcement_date}, namespace storage limits will apply to the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}View the %{rollout_link_start}rollout schedule for this change%{link_end}."
 msgstr ""
 
 msgid "UsageQuota|File attachments and smaller design graphics."
@@ -42045,7 +42045,7 @@ msgstr ""
 msgid "UsageQuota|The %{strong_start}%{context_name}%{strong_end} project will be affected by this. "
 msgstr ""
 
-msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. View and manage your usage from %{strong_start}Group settings &gt; Usage quotas%{strong_end}. %{docs_link_start}Learn more%{link_end} about how to reduce your storage."
+msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. Group owners can view namespace storage usage and purchase more from %{strong_start}Group settings &gt; Usage quotas%{strong_end}. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. View and manage your usage from %{strong_start}User settings &gt; Usage quotas%{strong_end}. %{docs_link_start}Learn more%{link_end} about how to reduce your storage."
@@ -47168,6 +47168,9 @@ msgid "repositories"
 msgstr ""
 
 msgid "repository:"
+msgstr ""
+
+msgid "role's base access level does not match the access level of the membership"
 msgstr ""
 
 msgid "satisfied"

@@ -9,6 +9,9 @@ RSpec.shared_context 'with API::Markdown Snapshot shared context' do |glfm_speci
   # rubocop:enable Layout/LineLength
   include ApiHelpers
 
+  let_it_be(:user) { create(:user) }
+  let_it_be(:api_url) { api('/markdown', user) }
+
   markdown_examples, html_examples = %w[markdown.yml html.yml].map do |file_name|
     yaml = File.read("#{glfm_specification_dir}/example_snapshots/#{file_name}")
     YAML.safe_load(yaml, symbolize_names: true, aliases: true)
@@ -29,8 +32,6 @@ RSpec.shared_context 'with API::Markdown Snapshot shared context' do |glfm_speci
       let(:normalizations) { normalizations_by_example_name.dig(name, :html, :static, :snapshot) }
 
       it "verifies conversion of GLFM to HTML", :unlimited_max_formatted_output_length do
-        api_url = api "/markdown"
-
         # noinspection RubyResolve
         normalized_html = normalize_html(html, normalizations)
 

@@ -5,9 +5,11 @@ require "spec_helper"
 RSpec.describe API::Markdown do
   describe "POST /markdown" do
     let(:user) {} # No-op. It gets overwritten in the contexts below.
+    let(:disable_authenticate_markdown_api) { false }
 
     before do
       stub_commonmark_sourcepos_disabled
+      stub_feature_flags(authenticate_markdown_api: false) if disable_authenticate_markdown_api
 
       post api("/markdown", user), params: params
     end
@@ -21,25 +23,51 @@ RSpec.describe API::Markdown do
       end
     end
 
-    shared_examples "404 Project Not Found" do
-      it "responses with 404 Not Found" do
+    shared_examples '404 Project Not Found' do
+      it 'responds with 404 Not Found' do
         expect(response).to have_gitlab_http_status(:not_found)
         expect(response.headers["Content-Type"]).to eq("application/json")
         expect(json_response).to be_a(Hash)
-        expect(json_response["message"]).to eq("404 Project Not Found")
+        expect(json_response['message']).to eq('404 Project Not Found')
       end
     end
 
-    context "when arguments are invalid" do
-      context "when text is missing" do
+    shared_examples '400 Bad Request' do
+      it 'responds with 400 Bad Request' do
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(json_response).to be_a(Hash)
+        expect(json_response['error']).to eq('text is missing')
+      end
+    end
+
+    context 'when not logged in' do
+      let(:user) {}
+      let(:params) { {} }
+
+      context 'and authenticate_markdown_api turned on' do
+        it 'responds with 401 Unathorized' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(response.headers['Content-Type']).to eq('application/json')
+          expect(json_response).to be_a(Hash)
+          expect(json_response['message']).to eq('401 Unauthorized')
+        end
+      end
+
+      context 'and authenticate_markdown_api turned off' do
+        let(:disable_authenticate_markdown_api) { true }
+
+        it_behaves_like '400 Bad Request'
+      end
+    end
+
+    context 'when arguments are invalid' do
+      let(:user) { create(:user) }
+
+      context 'when text is missing' do
         let(:params) { {} }
 
-        it "responses with 400 Bad Request" do
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.headers["Content-Type"]).to eq("application/json")
-          expect(json_response).to be_a(Hash)
-          expect(json_response["error"]).to eq("text is missing")
-        end
+        it_behaves_like '400 Bad Request'
       end
 
       context "when project is not found" do
@@ -53,6 +81,7 @@ RSpec.describe API::Markdown do
       let_it_be(:project) { create(:project) }
       let_it_be(:issue) { create(:issue, project: project) }
 
+      let(:user) { create(:user) }
       let(:issue_url) { "http://#{Gitlab.config.gitlab.host}/#{issue.project.namespace.path}/#{issue.project.path}/-/issues/#{issue.iid}" }
       let(:text) { ":tada: Hello world! :100: #{issue.to_reference}" }
 
@@ -132,13 +161,12 @@ RSpec.describe API::Markdown do
 
           context 'when not logged in' do
             let(:user) {}
+            let(:disable_authenticate_markdown_api) { true }
 
             it_behaves_like 'user without proper access'
           end
 
           context 'when logged in as user without access' do
-            let(:user) { create(:user) }
-
             it_behaves_like 'user without proper access'
           end
 
@@ -175,8 +203,9 @@ RSpec.describe API::Markdown do
             end
           end
 
-          context 'when not logged in' do
+          context 'when not logged in and authenticate_markdown_api turned off' do
             let(:user) {}
+            let(:disable_authenticate_markdown_api) { true }
 
             it_behaves_like 'user without proper access'
           end

@@ -1,5 +1,4 @@
-#import "ee_else_ce/runner/graphql/list/list_item.fragment.graphql"
-#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/runner/graphql/list/all_runners_connection.fragment.graphql"
 
 query getAllRunners(
   $before: String
@@ -25,13 +24,6 @@ query getAllRunners(
     search: $search
     sort: $sort
   ) {
-    nodes {
-      ...ListItem
-      adminUrl
-      editAdminUrl
-    }
-    pageInfo {
-      ...PageInfo
-    }
+    ...AllRunnersConnection
   }
 }

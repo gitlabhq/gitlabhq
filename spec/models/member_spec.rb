@@ -167,6 +167,36 @@ RSpec.describe Member do
         end
       end
     end
+
+    context 'member role access level' do
+      let_it_be(:member) { create(:group_member, access_level: Gitlab::Access::DEVELOPER) }
+
+      context 'no member role is associated' do
+        it 'is valid' do
+          expect(member).to be_valid
+        end
+      end
+
+      context 'member role is associated' do
+        let_it_be(:member_role) do
+          create(:member_role, members: [member])
+        end
+
+        context 'member role matches access level' do
+          it 'is valid' do
+            expect(member).to be_valid
+          end
+        end
+
+        context 'member role does not match access level' do
+          it 'is invalid' do
+            member_role.base_access_level = Gitlab::Access::MAINTAINER
+
+            expect(member).not_to be_valid
+          end
+        end
+      end
+    end
   end
 
   describe 'Scopes & finders' do

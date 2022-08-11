@@ -382,6 +382,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'ProjectScheduleBulkRepositoryShardMovesWorker' => 3,
         'ProjectTemplateExportWorker' => false,
         'ProjectUpdateRepositoryStorageWorker' => 3,
+        'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker' => 3,
         'Projects::GitGarbageCollectWorker' => false,
         'Projects::InactiveProjectsDeletionNotificationWorker' => 3,
         'Projects::PostCreationWorker' => 3,

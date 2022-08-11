@@ -5,7 +5,6 @@ class AutocompleteController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [:users, :award_emojis, :merge_request_target_branches]
   before_action :check_search_rate_limit!, only: [:users, :projects]
-  before_action :authorize_admin_project, only: :deploy_keys_with_owners
 
   feature_category :users, [:users, :user]
   feature_category :projects, [:projects]
@@ -61,7 +60,9 @@ class AutocompleteController < ApplicationController
   end
 
   def deploy_keys_with_owners
-    deploy_keys = DeployKey.with_write_access_for_project(project)
+    deploy_keys = Autocomplete::DeployKeysWithWriteAccessFinder
+      .new(current_user, project)
+      .execute
 
     render json: DeployKeys::BasicDeployKeySerializer.new.represent(
       deploy_keys, { with_owner: true, user: current_user }
@@ -69,10 +70,6 @@ class AutocompleteController < ApplicationController
   end
 
   private
-
-  def authorize_admin_project
-    render_403 unless Ability.allowed?(current_user, :admin_project, project)
-  end
 
   def project
     @project ||= Autocomplete::ProjectFinder

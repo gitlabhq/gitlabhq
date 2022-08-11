@@ -2,7 +2,9 @@
 
 module API
   class Markdown < ::API::Base
-    feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
+    before { authenticate! if Feature.enabled?(:authenticate_markdown_api, type: :ops) }
+
+    feature_category :team_planning
 
     params do
       requires :text, type: String, desc: "The markdown text to render"

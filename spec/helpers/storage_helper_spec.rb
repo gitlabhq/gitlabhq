@@ -100,9 +100,9 @@ RSpec.describe StorageHelper do
             used_storage = helper.storage_counter(free_group.root_storage_statistics&.storage_size || 0)
 
             expect(helper.storage_enforcement_banner_info(free_group)).to eql({
-              text_paragraph_1: "Effective #{storage_enforcement_date}, <a href=\"https://forum.gitlab.com/t/gitlab-introduces-storage-and-transfer-limits-for-users-on-saas/69883\" >namespace storage limits will apply</a> to the <strong>#{free_group.name}</strong> namespace. View the <a href=\"/help/user/usage_quotas#tbd\" >rollout schedule for this change</a>.",
-              text_paragraph_2: "The namespace is currently using <strong>#{used_storage}</strong> of namespace storage. View and manage your usage from <strong>Group settings &gt; Usage quotas</strong>. <a href=\"/help/user/usage_quotas#manage-your-storage-usage\" >Learn more</a> about how to reduce your storage.",
-              text_paragraph_3: "See our <a href=\"https://about.gitlab.com/pricing/faq-efficient-free-tier/#storage-and-transfer-limits-on-gitlab-saas-free-tier\" >FAQ</a> for more information.",
+              text_paragraph_1: "Effective #{storage_enforcement_date}, namespace storage limits will apply to the <strong>#{free_group.name}</strong> namespace. View the <a href=\"/help/user/usage_quotas#namespace-storage-limit-enforcement-schedule\" >rollout schedule for this change</a>.",
+              text_paragraph_2: "The namespace is currently using <strong>#{used_storage}</strong> of namespace storage. Group owners can view namespace storage usage and purchase more from <strong>Group settings &gt; Usage quotas</strong>. <a href=\"/help/user/usage_quotas#manage-your-storage-usage\" >Learn more.</a>",
+              text_paragraph_3: "See our <a href=\"https://about.gitlab.com/pricing/faq-efficient-free-tier/#storage-limits-on-gitlab-saas-free-tier\" >FAQ</a> for more information.",
               variant: 'warning',
               namespace_id: free_group.id,
               callouts_feature_name: 'storage_enforcement_banner_second_enforcement_threshold',
@@ -116,7 +116,7 @@ RSpec.describe StorageHelper do
             end
 
             it 'returns a hash with the correct storage size text' do
-              expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_2]).to eql("The namespace is currently using <strong>100 KB</strong> of namespace storage. View and manage your usage from <strong>Group settings &gt; Usage quotas</strong>. <a href=\"/help/user/usage_quotas#manage-your-storage-usage\" >Learn more</a> about how to reduce your storage.")
+              expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_2]).to eql("The namespace is currently using <strong>100 KB</strong> of namespace storage. Group owners can view namespace storage usage and purchase more from <strong>Group settings &gt; Usage quotas</strong>. <a href=\"/help/user/usage_quotas#manage-your-storage-usage\" >Learn more.</a>")
             end
           end
 
@@ -141,7 +141,8 @@ RSpec.describe StorageHelper do
         end
 
         it 'returns the enforcement info' do
-          expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_1]).to include("Effective #{Date.current}, <a href=\"https://forum.gitlab.com/t/gitlab-introduces-storage-and-transfer-limits-for-users-on-saas/69883\" >namespace storage limits will apply</a>")
+          puts helper.storage_enforcement_banner_info(free_group)[:text_paragraph_1]
+          expect(helper.storage_enforcement_banner_info(free_group)[:text_paragraph_1]).to include("Effective #{Date.current}, namespace storage limits will apply")
         end
       end
 

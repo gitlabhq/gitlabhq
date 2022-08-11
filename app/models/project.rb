@@ -669,6 +669,7 @@ class Project < ApplicationRecord
   scope :imported_from, -> (type) { where(import_type: type) }
   scope :imported, -> { where.not(import_type: nil) }
   scope :with_enabled_error_tracking, -> { joins(:error_tracking_setting).where(project_error_tracking_settings: { enabled: true }) }
+  scope :last_activity_before, -> (time) { where('projects.last_activity_at < ?', time) }
 
   scope :with_service_desk_key, -> (key) do
     # project_key is not indexed for now

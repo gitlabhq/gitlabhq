@@ -99,6 +99,7 @@ class Issue < ApplicationRecord
   validates :project, presence: true
   validates :issue_type, presence: true
   validates :namespace, presence: true, if: -> { project.present? }
+  validates :work_item_type, presence: true
 
   validate :due_date_after_start_date
   validate :parent_link_confidentiality
@@ -204,7 +205,7 @@ class Issue < ApplicationRecord
   scope :with_null_relative_position, -> { where(relative_position: nil) }
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
 
-  before_validation :ensure_namespace_id
+  before_validation :ensure_namespace_id, :ensure_work_item_type
 
   after_commit :expire_etag_cache, unless: :importing?
   after_save :ensure_metrics, unless: :importing?
@@ -731,6 +732,12 @@ class Issue < ApplicationRecord
 
   def ensure_namespace_id
     self.namespace = project.project_namespace if project
+  end
+
+  def ensure_work_item_type
+    return if work_item_type_id.present? || work_item_type_id_change&.last.present?
+
+    self.work_item_type = WorkItems::Type.default_by_type(issue_type)
   end
 end
 

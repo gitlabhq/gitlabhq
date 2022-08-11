@@ -22,6 +22,18 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
   let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
   let(:transfer_service) { described_class.new(group, user) }
 
+  shared_examples 'publishes a GroupTransferedEvent' do
+    it do
+      expect { transfer_service.execute(target) }
+        .to publish_event(Groups::GroupTransferedEvent)
+        .with(
+          group_id: group.id,
+          old_root_namespace_id: group.root_ancestor.id,
+          new_root_namespace_id: target.root_ancestor.id
+        )
+    end
+  end
+
   context 'handling packages' do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:new_group) { create(:group, :public) }
@@ -895,6 +907,10 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           expect { transfer_service.execute(root_group) }
             .not_to change { CustomerRelations::IssueContact.count }
         end
+
+        it_behaves_like 'publishes a GroupTransferedEvent' do
+          let(:target) { root_group }
+        end
       end
 
       context 'moving down' do
@@ -904,6 +920,10 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           expect { transfer_service.execute(another_subgroup) }
           .not_to change { CustomerRelations::IssueContact.count }
         end
+
+        it_behaves_like 'publishes a GroupTransferedEvent' do
+          let(:target) { another_subgroup }
+        end
       end
 
       context 'moving sideways' do
@@ -912,6 +932,10 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         it 'retains issue contacts' do
           expect { transfer_service.execute(another_subgroup) }
           .not_to change { CustomerRelations::IssueContact.count }
+        end
+
+        it_behaves_like 'publishes a GroupTransferedEvent' do
+          let(:target) { another_subgroup }
         end
       end
 
@@ -931,6 +955,10 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         it 'retains issue contacts' do
           expect { transfer_service.execute(new_parent_group) }
             .not_to change { CustomerRelations::IssueContact.count }
+        end
+
+        it_behaves_like 'publishes a GroupTransferedEvent' do
+          let(:target) { new_parent_group }
         end
       end
 
@@ -953,6 +981,10 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
             expect { transfer_service.execute(subgroup_in_new_parent_group) }
               .not_to change { CustomerRelations::IssueContact.count }
           end
+
+          it_behaves_like 'publishes a GroupTransferedEvent' do
+            let(:target) { subgroup_in_new_parent_group }
+          end
         end
 
         context 'with permission on the subgroup' do
@@ -964,6 +996,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
             transfer_service.execute(subgroup_in_new_parent_group)
 
             expect(transfer_service.error).to eq("Transfer failed: Group contains contacts/organizations and you don't have enough permissions to move them to the new root group.")
+          end
+
+          it 'does not publish a GroupTransferedEvent' do
+            expect { transfer_service.execute(subgroup_in_new_parent_group) }
+              .not_to publish_event(Groups::GroupTransferedEvent)
           end
         end
       end

@@ -59,6 +59,7 @@ class Member < ApplicationRecord
     },
     if: :project_bot?
   validate :access_level_inclusion
+  validate :validate_member_role_access_level
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -427,6 +428,14 @@ class Member < ApplicationRecord
     return if access_level.in?(Gitlab::Access.all_values)
 
     errors.add(:access_level, "is not included in the list")
+  end
+
+  def validate_member_role_access_level
+    return unless member_role_id
+
+    if access_level != member_role.base_access_level
+      errors.add(:member_role_id, _("role's base access level does not match the access level of the membership"))
+    end
   end
 
   def send_invite

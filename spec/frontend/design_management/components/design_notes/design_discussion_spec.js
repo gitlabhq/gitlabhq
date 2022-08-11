@@ -351,7 +351,7 @@ describe('Design discussions component', () => {
     createComponent();
     findReplyPlaceholder().vm.$emit('focus');
 
-    expect(wrapper.emitted('open-form')).toBeTruthy();
+    expect(wrapper.emitted('open-form')).toHaveLength(1);
   });
 
   describe('when user is not logged in', () => {

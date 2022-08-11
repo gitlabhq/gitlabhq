@@ -222,6 +222,61 @@ RSpec.describe Issue do
       end
     end
 
+    describe '#ensure_work_item_type' do
+      let_it_be(:issue_type) { create(:work_item_type, :issue, :default) }
+      let_it_be(:task_type) { create(:work_item_type, :issue, :default) }
+      let_it_be(:project) { create(:project) }
+
+      context 'when a type was already set' do
+        let_it_be(:issue, refind: true) { create(:issue, project: project) }
+
+        it 'does not fetch a work item type from the DB' do
+          expect(issue.work_item_type_id).to eq(issue_type.id)
+          expect(WorkItems::Type).not_to receive(:default_by_type)
+
+          expect(issue).to be_valid
+        end
+
+        it 'does not fetch a work item type from the DB when updating the type' do
+          expect(issue.work_item_type_id).to eq(issue_type.id)
+          expect(WorkItems::Type).not_to receive(:default_by_type)
+
+          issue.update!(work_item_type: task_type, issue_type: 'task')
+
+          expect(issue.work_item_type_id).to eq(task_type.id)
+        end
+
+        it 'ensures a work item type if updated to nil' do
+          expect(issue.work_item_type_id).to eq(issue_type.id)
+
+          expect do
+            issue.update!(work_item_type: nil)
+          end.to not_change(issue, :work_item_type).from(issue_type)
+        end
+      end
+
+      context 'when no type was set' do
+        let_it_be(:issue, refind: true) { build(:issue, project: project, work_item_type: nil).tap { |issue| issue.save!(validate: false) } }
+
+        it 'sets a work item type before validation' do
+          expect(issue.work_item_type_id).to be_nil
+
+          issue.save!
+
+          expect(issue.work_item_type_id).to eq(issue_type.id)
+        end
+
+        it 'does not fetch type from DB if provided during update' do
+          expect(issue.work_item_type_id).to be_nil
+          expect(WorkItems::Type).not_to receive(:default_by_type)
+
+          issue.update!(work_item_type: task_type, issue_type: 'task')
+
+          expect(issue.work_item_type_id).to eq(task_type.id)
+        end
+      end
+    end
+
     describe '#record_create_action' do
       it 'records the creation action after saving' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_created_action)
@@ -387,7 +442,7 @@ RSpec.describe Issue do
 
   # TODO: Remove when NOT NULL constraint is added to the relationship
   describe '#work_item_type' do
-    let(:issue) { create(:issue, :incident, project: reusable_project, work_item_type: nil) }
+    let(:issue) { build(:issue, :incident, project: reusable_project, work_item_type: nil).tap { |issue| issue.save!(validate: false) } }
 
     it 'returns a default type if the legacy issue does not have a work item type associated yet' do
       expect(issue.work_item_type_id).to be_nil
