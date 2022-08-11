@@ -137,6 +137,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
     it { is_expected.to have_many(:namespace_callouts).class_name('Users::NamespaceCallout') }
+    it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout') }
 
     describe '#user_detail' do
       it 'does not persist `user_detail` by default' do
@@ -6671,6 +6672,40 @@ RSpec.describe User do
     end
   end
 
+  describe '#dismissed_callout_for_project?' do
+    let_it_be(:user, refind: true) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:feature_name) { Users::ProjectCallout.feature_names.each_key.first }
+
+    context 'when no callout dismissal record exists' do
+      it 'returns false when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project)).to eq false
+      end
+    end
+
+    context 'when dismissed callout exists' do
+      before_all do
+        create(:project_callout,
+              user: user,
+              project_id: project.id,
+              feature_name: feature_name,
+              dismissed_at: 4.months.ago)
+      end
+
+      it 'returns true when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project)).to eq true
+      end
+
+      it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project, ignore_dismissal_earlier_than: 6.months.ago)).to eq true
+      end
+
+      it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
+        expect(user.dismissed_callout_for_project?(feature_name: feature_name, project: project, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+      end
+    end
+  end
+
   describe '#find_or_initialize_group_callout' do
     let_it_be(:user, refind: true) { create(:user) }
     let_it_be(:group) { create(:group) }
@@ -6706,6 +6741,50 @@ RSpec.describe User do
 
         it 'initializes a new callout' do
           expect(callout_with_source).to be_a_new(Users::GroupCallout)
+        end
+
+        it 'is not valid' do
+          expect(callout_with_source).not_to be_valid
+        end
+      end
+    end
+  end
+
+  describe '#find_or_initialize_project_callout' do
+    let_it_be(:user, refind: true) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:feature_name) { Users::ProjectCallout.feature_names.each_key.first }
+
+    subject(:callout_with_source) do
+      user.find_or_initialize_project_callout(feature_name, project.id)
+    end
+
+    context 'when callout exists' do
+      let!(:callout) do
+        create(:project_callout, user: user, feature_name: feature_name, project_id: project.id)
+      end
+
+      it 'returns existing callout' do
+        expect(callout_with_source).to eq(callout)
+      end
+    end
+
+    context 'when callout does not exist' do
+      context 'when feature name is valid' do
+        it 'initializes a new callout' do
+          expect(callout_with_source).to be_a_new(Users::ProjectCallout)
+        end
+
+        it 'is valid' do
+          expect(callout_with_source).to be_valid
+        end
+      end
+
+      context 'when feature name is not valid' do
+        let(:feature_name) { 'notvalid' }
+
+        it 'initializes a new callout' do
+          expect(callout_with_source).to be_a_new(Users::ProjectCallout)
         end
 
         it 'is not valid' do

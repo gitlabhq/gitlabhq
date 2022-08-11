@@ -109,6 +109,8 @@ maximum of two directory levels from the repository's root. For example, the
 `gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
 `api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is `api/v1/client/Gemfile`.
 
+For Java and Python, when a supported depedency file is detected, Dependency Scanning attempts to build the project and execute some Java or Python commands to get the list of dependencies. For all other projects, the lock file is parsed to obtain the list of dependencies without needing to build the project first.
+
 When a supported dependency file is detected, all dependencies, including transitive dependencies are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
 
 The following languages and dependency managers are supported:
@@ -148,14 +150,13 @@ table.supported-languages ul {
       <th>Language Versions</th>
       <th>Package Manager</th>
       <th>Supported files</th>
-      <th>Analyzer</th>
       <th><a href="#how-multiple-files-are-processed">Processes multiple files?</a></th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Ruby</td>
-      <td>Not applicable</td>
+      <td>All versions</td>
       <td><a href="https://bundler.io/">Bundler</a></td>
       <td>
         <ul>
@@ -163,23 +164,20 @@ table.supported-languages ul {
             <li><code>gems.locked</code></li>
         </ul>
       </td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>Y</td>
     </tr>
     <tr>
       <td>PHP</td>
-      <td>Not applicable</td>
+      <td>All versions</td>
       <td><a href="https://getcomposer.org/">Composer</a></td>
       <td><code>composer.lock</code></td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>Y</td>
     </tr>
     <tr>
       <td>C</td>
-      <td rowspan="2">Not applicable</td>
+      <td rowspan="2">All versions</td>
       <td rowspan="2"><a href="https://conan.io/">Conan</a></td>
       <td rowspan="2"><a href="https://docs.conan.io/en/latest/versioning/lockfiles.html"><code>conan.lock</code></a></td>
-      <td rowspan="2"><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td rowspan="2">Y</td>
     </tr>
     <tr>
@@ -187,10 +185,9 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td>Go</td>
-      <td>Not applicable</td>
+      <td>All versions</td>
       <td><a href="https://go.dev/">Go</a></td>
       <td><code>go.sum</code></td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>Y</td>
     </tr>
     <tr>
@@ -211,41 +208,36 @@ table.supported-languages ul {
             <li><code>build.gradle.kts</code></li>
         </ul>
       </td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>N</td>
     </tr>
     <tr>
       <td><a href="https://maven.apache.org/">Maven</a></td>
       <td><code>pom.xml</code></td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>N</td>
     </tr>
     <tr>
       <td rowspan="2">JavaScript</td>
-      <td>Not applicable</td>
+      <td>All versions</td>
       <td><a href="https://www.npmjs.com/">npm</a></td>
       <td>
         <ul>
-            <li><code>package-lock.json</code></li>
+            <li><code>package-lock.json</code><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></li>
             <li><code>npm-shrinkwrap.json</code></li>
         </ul>
       </td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>Y</td>
     </tr>
     <tr>
-      <td>Not applicable</td>
+      <td>All versions</td>
       <td><a href="https://classic.yarnpkg.com/en/">yarn</a></td>
       <td><code>yarn.lock</code></td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>Y</td>
     </tr>
     <tr>
       <td>.NET</td>
-      <td rowspan="2">Not applicable</td>
+      <td rowspan="2">All versions</td>
       <td rowspan="2"><a href="https://www.nuget.org/">NuGet</a></td>
       <td rowspan="2"><a href="https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file"><code>packages.lock.json</code></a></td>
-      <td rowspan="2"><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td rowspan="2">Y</td>
     </tr>
     <tr>
@@ -256,7 +248,6 @@ table.supported-languages ul {
       <td rowspan="4">3.9</td>
       <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
       <td><code>setup.py</code></td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>N</td>
     </tr>
     <tr>
@@ -268,7 +259,6 @@ table.supported-languages ul {
             <li><code>requires.txt</code></li>
         </ul>
       </td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>N</td>
     </tr>
     <tr>
@@ -276,24 +266,21 @@ table.supported-languages ul {
       <td>
         <ul>
             <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile</code></a></li>
-            <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile.lock</code></a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></li>
+            <li><a href="https://pipenv.pypa.io/en/latest/basics/#example-pipfile-pipfile-lock"><code>Pipfile.lock</code></a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></li>
         </ul>
       </td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>N</td>
     </tr>
     <tr>
       <td><a href="https://python-poetry.org/">Poetry</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
       <td><code>poetry.lock</code></td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>N</td>
     </tr>
     <tr>
       <td>Scala</td>
-      <td>Not applicable</td>
-      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></td>
+      <td>All versions</td>
+      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-6">6</a></b></sup></td>
       <td><code>build.sbt</code></td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
       <td>N</td>
     </tr>
   </tbody>
@@ -317,6 +304,12 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
     <p>
+      npm is only supported when `lockfileVersion = 1` or `lockfileVersion = 2`. Work to add support for `lockfileVersion = 3` is being tracked in issue <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">GitLab#365176</a>.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
+    <p>
       The presence of a <code>Pipfile.lock</code> file alone will <i>not</i> trigger the analyzer; the presence of a <code>Pipfile</code> is
       still required in order for the analyzer to be executed. However, if a <code>Pipfile.lock</code> file is found, it will be used by
       <code>Gemnasium</code> to scan the exact package versions listed in this file.
@@ -328,17 +321,17 @@ table.supported-languages ul {
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
-    <p>
-      Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.
-    </p>
-  </li>
-  <li>
     <a id="notes-regarding-supported-languages-and-package-managers-5"></a>
     <p>
       Support for <a href="https://python-poetry.org/">Poetry</a> projects with a <code>poetry.lock</code> file was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/7006">added in GitLab 15.0</a>.
       Support for projects without a <code>poetry.lock</code> file is tracked in issue:
       <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/32774">Poetry's pyproject.toml support for dependency scanning.</a>
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-6"></a>
+    <p>
+      Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.
     </p>
   </li>
 </ol>

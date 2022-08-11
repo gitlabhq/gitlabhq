@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { s__ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import RunnerBulkDelete from '~/runner/components/runner_bulk_delete.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -17,8 +18,8 @@ describe('RunnerBulkDelete', () => {
   let mockState;
   let mockCheckedRunnerIds;
 
-  const findClearBtn = () => wrapper.findByTestId('clear-btn');
-  const findDeleteBtn = () => wrapper.findByTestId('delete-btn');
+  const findClearBtn = () => wrapper.findByText(s__('Runners|Clear selection'));
+  const findDeleteBtn = () => wrapper.findByText(s__('Runners|Delete selected'));
 
   const createComponent = () => {
     const { cacheConfig, localMutations } = mockState;

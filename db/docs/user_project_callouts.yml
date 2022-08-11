@@ -1,0 +1,9 @@
+---
+table_name: user_project_callouts
+classes:
+- Users::ProjectCallout
+feature_categories:
+- navigation
+description: Adds the ability to track a user callout being dismissed by project
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94144
+milestone: '15.3'

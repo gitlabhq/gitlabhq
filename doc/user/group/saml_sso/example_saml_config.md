@@ -68,13 +68,21 @@ fingerprint.
 
 ## Okta
 
-Basic SAML app configuration:
+Basic SAML app configuration for GitLab.com groups:
 
-![Okta basic SAML](img/Okta-SAMLsetup.png)
+![Okta basic SAML](img/Okta-GroupSAML.png)
+
+Basic SAML app configuration for GitLab self-managed:
+
+![Okta admin panel view](img/Okta-SM.png)
 
 User claims and attributes:
 
 ![Okta Attributes](img/Okta-attributes.png)
+
+Groups attribute:
+
+![Okta Group attribute](img/Okta-GroupAttribute.png)
 
 Advanced SAML app settings (defaults):
 
@@ -87,10 +95,6 @@ IdP Links and Certificate:
 Sign on settings:
 
 ![Okta SAML settings](img/okta_saml_settings.png)
-
-Self-managed instance example:
-
-![Okta admin panel view](img/okta_admin_panel_v13_9.png)
 
 Setting the username for the newly provisioned users when assigning them the SCIM app:
 

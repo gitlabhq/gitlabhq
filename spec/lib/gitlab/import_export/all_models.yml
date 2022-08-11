@@ -627,6 +627,7 @@ project:
 - security_trainings
 - vulnerability_reads
 - build_artifacts_size_refresh
+- project_callouts
 award_emoji:
 - awardable
 - user

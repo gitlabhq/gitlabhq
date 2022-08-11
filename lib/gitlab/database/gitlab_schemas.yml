@@ -531,6 +531,7 @@ user_custom_attributes: :gitlab_main
 user_details: :gitlab_main
 user_follow_users: :gitlab_main
 user_group_callouts: :gitlab_main
+user_project_callouts: :gitlab_main
 user_highest_roles: :gitlab_main
 user_interacted_projects: :gitlab_main
 user_permission_export_uploads: :gitlab_main

@@ -7,6 +7,20 @@ const vNodeContainsText = (vnode, text) =>
   (vnode.children && vnode.children.filter((child) => vNodeContainsText(child, text)).length);
 
 /**
+ * Create a VTU wrapper from an element.
+ *
+ * If a Vue instance manages the element, the wrapper is created
+ * with that Vue instance.
+ *
+ * @param {HTMLElement} element
+ * @param {Object} options
+ * @returns VTU wrapper
+ */
+const createWrapperFromElement = (element, options) =>
+  // eslint-disable-next-line no-underscore-dangle
+  createWrapper(element.__vue__ || element, options || {});
+
+/**
  * Determines whether a `shallowMount` Wrapper contains text
  * within one of it's slots. This will also work on Wrappers
  * acquired with `find()`, but only if it's parent Wrapper
@@ -85,8 +99,7 @@ export const extendedWrapper = (wrapper) => {
             if (!elements.length) {
               return new ErrorWrapper(query);
             }
-
-            return createWrapper(elements[0], this.options || {});
+            return createWrapperFromElement(elements[0], this.options);
           },
         },
       };
@@ -104,7 +117,7 @@ export const extendedWrapper = (wrapper) => {
             );
 
             const wrappers = elements.map((element) => {
-              const elementWrapper = createWrapper(element, this.options || {});
+              const elementWrapper = createWrapperFromElement(element, this.options);
               elementWrapper.selector = text;
 
               return elementWrapper;

@@ -99,10 +99,10 @@ export default {
         </gl-sprintf>
       </div>
       <div class="gl-ml-auto">
-        <gl-button data-testid="clear-btn" variant="default" @click="onClearChecked">{{
+        <gl-button variant="default" @click="onClearChecked">{{
           s__('Runners|Clear selection')
         }}</gl-button>
-        <gl-button data-testid="delete-btn" variant="danger" @click="onClickDelete">{{
+        <gl-button variant="danger" @click="onClickDelete">{{
           s__('Runners|Delete selected')
         }}</gl-button>
       </div>

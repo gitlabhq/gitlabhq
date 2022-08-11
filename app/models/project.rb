@@ -291,6 +291,8 @@ class Project < ApplicationRecord
   has_many :project_members, -> { where(requested_at: nil) },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
+  has_many :project_callouts, class_name: 'Users::ProjectCallout', foreign_key: :project_id
+
   alias_method :members, :project_members
   has_many :users, through: :project_members
 

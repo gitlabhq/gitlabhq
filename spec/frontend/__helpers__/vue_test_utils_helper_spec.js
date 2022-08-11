@@ -6,6 +6,7 @@ import {
   WrapperArray as VTUWrapperArray,
   ErrorWrapper as VTUErrorWrapper,
 } from '@vue/test-utils';
+import Vue from 'vue';
 import {
   extendedWrapper,
   shallowMountExtended,
@@ -139,9 +140,12 @@ describe('Vue test utils helpers', () => {
       const text = 'foo bar';
       const options = { selector: 'div' };
       const mockDiv = document.createElement('div');
+      const mockVm = new Vue({ render: (h) => h('div') }).$mount();
 
       let wrapper;
       beforeEach(() => {
+        jest.spyOn(vtu, 'createWrapper');
+
         wrapper = extendedWrapper(
           shallowMount({
             template: `<div>foo bar</div>`,
@@ -164,7 +168,6 @@ describe('Vue test utils helpers', () => {
       describe('when element is found', () => {
         beforeEach(() => {
           jest.spyOn(testingLibrary, expectedQuery).mockImplementation(() => [mockDiv]);
-          jest.spyOn(vtu, 'createWrapper');
         });
 
         it('returns a VTU wrapper', () => {
@@ -172,14 +175,27 @@ describe('Vue test utils helpers', () => {
 
           expect(vtu.createWrapper).toHaveBeenCalledWith(mockDiv, wrapper.options);
           expect(result).toBeInstanceOf(VTUWrapper);
+          expect(result.vm).toBeUndefined();
         });
       });
 
+      describe('when a Vue instance element is found', () => {
+        beforeEach(() => {
+          jest.spyOn(testingLibrary, expectedQuery).mockImplementation(() => [mockVm.$el]);
+        });
+
+        it('returns a VTU wrapper', () => {
+          const result = wrapper[findMethod](text, options);
+
+          expect(vtu.createWrapper).toHaveBeenCalledWith(mockVm, wrapper.options);
+          expect(result).toBeInstanceOf(VTUWrapper);
+          expect(result.vm).toBeInstanceOf(Vue);
+        });
+      });
       describe('when multiple elements are found', () => {
         beforeEach(() => {
           const mockSpan = document.createElement('span');
           jest.spyOn(testingLibrary, expectedQuery).mockImplementation(() => [mockDiv, mockSpan]);
-          jest.spyOn(vtu, 'createWrapper');
         });
 
         it('returns the first element as a VTU wrapper', () => {
@@ -187,6 +203,24 @@ describe('Vue test utils helpers', () => {
 
           expect(vtu.createWrapper).toHaveBeenCalledWith(mockDiv, wrapper.options);
           expect(result).toBeInstanceOf(VTUWrapper);
+          expect(result.vm).toBeUndefined();
+        });
+      });
+
+      describe('when multiple Vue instances are found', () => {
+        beforeEach(() => {
+          const mockVm2 = new Vue({ render: (h) => h('span') }).$mount();
+          jest
+            .spyOn(testingLibrary, expectedQuery)
+            .mockImplementation(() => [mockVm.$el, mockVm2.$el]);
+        });
+
+        it('returns the first element as a VTU wrapper', () => {
+          const result = wrapper[findMethod](text, options);
+
+          expect(vtu.createWrapper).toHaveBeenCalledWith(mockVm, wrapper.options);
+          expect(result).toBeInstanceOf(VTUWrapper);
+          expect(result.vm).toBeInstanceOf(Vue);
         });
       });
 
@@ -211,11 +245,16 @@ describe('Vue test utils helpers', () => {
       ${'findAllByAltText'}         | ${'queryAllByAltText'}
     `('$findMethod', ({ findMethod, expectedQuery }) => {
       const text = 'foo bar';
-      const options = { selector: 'div' };
+      const options = { selector: 'li' };
       const mockElements = [
         document.createElement('li'),
         document.createElement('li'),
         document.createElement('li'),
+      ];
+      const mockVms = [
+        new Vue({ render: (h) => h('li') }).$mount(),
+        new Vue({ render: (h) => h('li') }).$mount(),
+        new Vue({ render: (h) => h('li') }).$mount(),
       ];
 
       let wrapper;
@@ -245,9 +284,13 @@ describe('Vue test utils helpers', () => {
         );
       });
 
-      describe('when elements are found', () => {
+      describe.each`
+        case                       | mockResult      | isVueInstance
+        ${'HTMLElements'}          | ${mockElements} | ${false}
+        ${'Vue instance elements'} | ${mockVms}      | ${true}
+      `('when $case are found', ({ mockResult, isVueInstance }) => {
         beforeEach(() => {
-          jest.spyOn(testingLibrary, expectedQuery).mockImplementation(() => mockElements);
+          jest.spyOn(testingLibrary, expectedQuery).mockImplementation(() => mockResult);
         });
 
         it('returns a VTU wrapper array', () => {
@@ -257,7 +300,9 @@ describe('Vue test utils helpers', () => {
           expect(
             result.wrappers.every(
               (resultWrapper) =>
-                resultWrapper instanceof VTUWrapper && resultWrapper.options === wrapper.options,
+                resultWrapper instanceof VTUWrapper &&
+                resultWrapper.vm instanceof Vue === isVueInstance &&
+                resultWrapper.options === wrapper.options,
             ),
           ).toBe(true);
           expect(result.length).toBe(3);
