@@ -48,24 +48,24 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       allow_tree_conflicts: display_merge_conflicts_in_diff?
     }
 
+    # NOTE: Any variables that would affect the resulting json needs to be added to the cache_context to avoid stale cache issues.
+    cache_context = [
+      current_user&.cache_key,
+      unfoldable_positions.map(&:to_h),
+      diff_view,
+      params[:w],
+      params[:expanded],
+      params[:page],
+      params[:per_page],
+      options[:merge_ref_head_diff],
+      options[:allow_tree_conflicts]
+    ]
+
+    if Feature.enabled?(:etag_merge_request_diff_batches, @merge_request.project)
+      return unless stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
+    end
+
     if diff_options_hash[:paths].blank?
-      # NOTE: Any variables that would affect the resulting json needs to be added to the cache_context to avoid stale cache issues.
-      cache_context = [
-        current_user&.cache_key,
-        unfoldable_positions.map(&:to_h),
-        diff_view,
-        params[:w],
-        params[:expanded],
-        params[:page],
-        params[:per_page],
-        options[:merge_ref_head_diff],
-        options[:allow_tree_conflicts]
-      ]
-
-      if Feature.enabled?(:etag_merge_request_diff_batches, @merge_request.project)
-        return unless stale?(etag: [cache_context, diffs])
-      end
-
       render_cached(
         diffs,
         with: PaginatedDiffSerializer.new(current_user: current_user),

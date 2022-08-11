@@ -9,10 +9,12 @@ class AddTempIndexForContainerRegistrySizeMigration < Gitlab::Database::Migratio
   def up
     # Temporary index used in 20220622080547_backfill_project_statistics_with_container_registry_size
     # Temporary index to be remove via https://gitlab.com/gitlab-org/gitlab/-/issues/366392
-    add_concurrent_index :container_repositories, [:project_id], name: INDEX_CONTAINER_REGISTRY_SIZE,
-                         where: "migration_state = 'import_done' OR created_at >= '2022-01-23'"
-    add_concurrent_index :project_statistics, [:project_id], name: INDEX_PROJECT_STATS_CONT_REG_SIZE,
-                     where: "container_registry_size = 0"
+    add_concurrent_index :container_repositories, [:project_id],
+      name: INDEX_CONTAINER_REGISTRY_SIZE,
+      where: "migration_state = 'import_done' OR created_at >= '2022-01-23'"
+    add_concurrent_index :project_statistics, [:project_id],
+      name: INDEX_PROJECT_STATS_CONT_REG_SIZE,
+      where: "container_registry_size = 0"
   end
 
   def down

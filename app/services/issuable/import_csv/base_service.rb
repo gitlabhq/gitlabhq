@@ -35,9 +35,9 @@ module Issuable
 
       def issuable_attributes_for(row)
         {
-          title:       row[:title],
+          title: row[:title],
           description: row[:description],
-          due_date:    row[:due_date]
+          due_date: row[:due_date]
         }
       end
 

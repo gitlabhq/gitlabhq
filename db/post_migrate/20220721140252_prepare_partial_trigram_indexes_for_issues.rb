@@ -5,11 +5,13 @@ class PreparePartialTrigramIndexesForIssues < Gitlab::Database::Migration[2.0]
   DESCRIPTION_INDEX_NAME = 'index_issues_on_description_trigram_non_latin'
 
   def up
-    prepare_async_index :issues, :title, name: TITLE_INDEX_NAME,
+    prepare_async_index :issues, :title,
+      name: TITLE_INDEX_NAME,
       using: :gin, opclass: { description: :gin_trgm_ops },
       where: "title NOT SIMILAR TO '[\\u0000-\\u218F]*' OR description NOT SIMILAR TO '[\\u0000-\\u218F]*'"
 
-    prepare_async_index :issues, :description, name: DESCRIPTION_INDEX_NAME,
+    prepare_async_index :issues, :description,
+      name: DESCRIPTION_INDEX_NAME,
       using: :gin, opclass: { description: :gin_trgm_ops },
       where: "title NOT SIMILAR TO '[\\u0000-\\u218F]*' OR description NOT SIMILAR TO '[\\u0000-\\u218F]*'"
   end

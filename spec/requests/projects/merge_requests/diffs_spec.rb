@@ -252,14 +252,48 @@ RSpec.describe 'Merge Requests Diffs' do
       end
 
       context 'when the paths is given' do
-        subject { go(page: 0, per_page: 5, paths: %w[README CHANGELOG]) }
+        subject { go(headers: headers, page: 0, per_page: 5, paths: %w[README CHANGELOG]) }
 
-        it 'does not use cache' do
-          expect(Rails.cache).not_to receive(:fetch).with(/cache:gitlab:PaginatedDiffSerializer/).and_call_original
+        before do
+          go(page: 0, per_page: 5, paths: %w[README CHANGELOG])
+        end
 
-          subject
+        context 'when using ETag caching' do
+          let(:headers) { { 'If-None-Match' => response.etag } }
 
-          expect(response).to have_gitlab_http_status(:success)
+          context 'when etag_merge_request_diff_batches is true' do
+            it 'does not serialize diffs' do
+              expect(PaginatedDiffSerializer).not_to receive(:new)
+
+              subject
+
+              expect(response).to have_gitlab_http_status(:not_modified)
+            end
+          end
+
+          context 'when etag_merge_request_diff_batches is false' do
+            before do
+              stub_feature_flags(etag_merge_request_diff_batches: false)
+            end
+
+            it 'does not use cache' do
+              expect(Rails.cache).not_to receive(:fetch).with(/cache:gitlab:PaginatedDiffSerializer/).and_call_original
+
+              subject
+
+              expect(response).to have_gitlab_http_status(:success)
+            end
+          end
+        end
+
+        context 'when not using ETag caching' do
+          it 'does not use cache' do
+            expect(Rails.cache).not_to receive(:fetch).with(/cache:gitlab:PaginatedDiffSerializer/).and_call_original
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
         end
       end
     end

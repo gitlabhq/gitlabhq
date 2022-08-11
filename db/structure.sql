@@ -21008,7 +21008,6 @@ ALTER SEQUENCE shards_id_seq OWNED BY shards.id;
 
 CREATE TABLE slack_integrations (
     id integer NOT NULL,
-    service_id integer NOT NULL,
     team_id character varying NOT NULL,
     team_name character varying NOT NULL,
     alias character varying NOT NULL,
@@ -21018,7 +21017,9 @@ CREATE TABLE slack_integrations (
     bot_user_id text,
     encrypted_bot_access_token bytea,
     encrypted_bot_access_token_iv bytea,
-    CONSTRAINT check_bc553aea8a CHECK ((char_length(bot_user_id) <= 255))
+    integration_id integer,
+    CONSTRAINT check_bc553aea8a CHECK ((char_length(bot_user_id) <= 255)),
+    CONSTRAINT check_c9ca9ae80d CHECK ((integration_id IS NOT NULL))
 );
 
 CREATE SEQUENCE slack_integrations_id_seq
@@ -29875,7 +29876,7 @@ CREATE UNIQUE INDEX index_shards_on_name ON shards USING btree (name);
 
 CREATE UNIQUE INDEX index_site_profile_secret_variables_on_site_profile_id_and_key ON dast_site_profile_secret_variables USING btree (dast_site_profile_id, key);
 
-CREATE INDEX index_slack_integrations_on_service_id ON slack_integrations USING btree (service_id);
+CREATE INDEX index_slack_integrations_on_integration_id ON slack_integrations USING btree (integration_id);
 
 CREATE UNIQUE INDEX index_slack_integrations_on_team_id_and_alias ON slack_integrations USING btree (team_id, alias);
 
@@ -32595,6 +32596,9 @@ ALTER TABLE ONLY external_approval_rules_protected_branches
 ALTER TABLE ONLY external_approval_rules_protected_branches
     ADD CONSTRAINT fk_ca2ffb55e6 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY slack_integrations
+    ADD CONSTRAINT fk_cbe270434e FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY external_status_checks_protected_branches
     ADD CONSTRAINT fk_cc0dcc36d1 FOREIGN KEY (external_status_check_id) REFERENCES external_status_checks(id) ON DELETE CASCADE;
 
@@ -33536,9 +33540,6 @@ ALTER TABLE ONLY dast_scanner_profiles
 
 ALTER TABLE ONLY vulnerability_historical_statistics
     ADD CONSTRAINT fk_rails_72b73ed023 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY slack_integrations
-    ADD CONSTRAINT fk_rails_73db19721a FOREIGN KEY (service_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY custom_emoji
     ADD CONSTRAINT fk_rails_745925b412 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

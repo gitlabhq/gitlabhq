@@ -84,11 +84,12 @@ module Projects
       end
 
       def project_tree_saver
-        @project_tree_saver ||= tree_saver_class.new(project: project,
-                                  current_user: current_user,
-                                  shared: shared,
-                                  params: params,
-                                  logger: logger)
+        @project_tree_saver ||= tree_saver_class.new(
+          project: project,
+          current_user: current_user,
+          shared: shared,
+          params: params,
+          logger: logger)
       end
 
       def tree_saver_class

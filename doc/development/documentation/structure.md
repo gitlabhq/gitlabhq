@@ -148,7 +148,7 @@ Avoid these heading titles:
 
 ## Troubleshooting
 
-Troubleshooting topics should be the last topics on a page. They can also be on a standalone page that includes only troubleshooting information.
+Troubleshooting topics should be the last topics on a page.
 
 Troubleshooting can be one of three categories:
 
@@ -177,6 +177,8 @@ Troubleshooting can be one of three categories:
   ```
 
   If multiple causes or workarounds exist, consider putting them into a table format.
+
+If a page has more than five troubleshooting topics, put the content on a separate page that has troubleshooting information exclusively. Name the page `Troubleshooting <featurename>`.
 
 ### Troubleshooting headings
 

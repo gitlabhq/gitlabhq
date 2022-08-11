@@ -6,7 +6,8 @@ class AddPartialTrigramIndexForIssueDescription < Gitlab::Database::Migration[2.
   INDEX_NAME = 'index_issues_on_description_trigram_non_latin'
 
   def up
-    add_concurrent_index :issues, :description, name: INDEX_NAME,
+    add_concurrent_index :issues, :description,
+      name: INDEX_NAME,
       using: :gin, opclass: { description: :gin_trgm_ops },
       where: "title NOT SIMILAR TO '[\\u0000-\\u218F]*' OR description NOT SIMILAR TO '[\\u0000-\\u218F]*'"
   end
