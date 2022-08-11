@@ -245,6 +245,10 @@
             "terraform": {
               "$ref": "#/definitions/string_file_list",
               "description": "Path to file or list of files with terraform plan(s)."
+            },
+            "cyclonedx": {
+              "$ref": "#/definitions/string_file_list",
+              "markdownDescription": "Path to file or list of files with cyclonedx report(s). [Learn More](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscyclonedx)."
             }
           }
         }

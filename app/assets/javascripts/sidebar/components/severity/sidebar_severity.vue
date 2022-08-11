@@ -149,23 +149,25 @@ export default {
     </div>
 
     <div class="hide-collapsed">
-      <p
-        class="gl-line-height-20 gl-mb-2 gl-text-gray-900 gl-display-flex gl-justify-content-space-between"
+      <div
+        class="gl-display-flex gl-align-items-center gl-line-height-20 gl-text-gray-900 gl-font-weight-bold"
       >
         {{ $options.i18n.SEVERITY }}
         <gl-button
           v-if="canUpdate"
           category="tertiary"
           size="small"
+          class="gl-ml-auto hide-collapsed gl-mr-n2"
           data-testid="editButton"
           @click="toggleFormDropdown"
           @keydown.esc="hideDropdown"
         >
           {{ $options.i18n.EDIT }}
         </gl-button>
-      </p>
+      </div>
 
       <gl-dropdown
+        class="gl-mt-3"
         :class="dropdownClass"
         block
         :header-text="__('Assign severity')"

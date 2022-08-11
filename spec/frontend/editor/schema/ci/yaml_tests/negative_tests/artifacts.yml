@@ -1,0 +1,18 @@
+# invalid artifact:reports:cyclonedx
+
+cyclonedx no paths:
+  artifacts:
+    reports:
+      cyclonedx:
+
+cyclonedx not a report:
+  artifacts:
+    cyclonedx: foo
+
+cyclonedx not an array or string:
+  artifacts:
+    reports:
+      cyclonedx:
+        paths:
+          - foo
+          - bar

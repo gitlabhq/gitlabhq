@@ -1,0 +1,25 @@
+# valid artifact:reports:cyclonedx
+
+cyclonedx string path:
+  artifacts:
+    reports:
+      cyclonedx: foo
+
+cyclonedx glob path:
+  artifacts:
+    reports:
+      cyclonedx: "*.foo"
+
+cylonedx list of string paths:
+  artifacts:
+    reports:
+      cyclonedx:
+        - foo
+        - ./bar/baz
+
+cylonedx mixed list of string paths and globs:
+  artifacts:
+    reports:
+      cyclonedx:
+        - ./foo
+        - "bar/*.baz"

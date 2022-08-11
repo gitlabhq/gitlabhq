@@ -14,21 +14,21 @@ describe('IDE commit module getters', () => {
 
   describe('discardDraftButtonDisabled', () => {
     it('returns true when commitMessage is empty', () => {
-      expect(getters.discardDraftButtonDisabled(state)).toBeTruthy();
+      expect(getters.discardDraftButtonDisabled(state)).toBe(true);
     });
 
     it('returns false when commitMessage is not empty & loading is false', () => {
       state.commitMessage = 'test';
       state.submitCommitLoading = false;
 
-      expect(getters.discardDraftButtonDisabled(state)).toBeFalsy();
+      expect(getters.discardDraftButtonDisabled(state)).toBe(false);
     });
 
     it('returns true when commitMessage is not empty & loading is true', () => {
       state.commitMessage = 'test';
       state.submitCommitLoading = true;
 
-      expect(getters.discardDraftButtonDisabled(state)).toBeTruthy();
+      expect(getters.discardDraftButtonDisabled(state)).toBe(true);
     });
   });
 
@@ -152,13 +152,13 @@ describe('IDE commit module getters', () => {
     it('returns false if NOT creating a new branch', () => {
       state.commitAction = COMMIT_TO_CURRENT_BRANCH;
 
-      expect(getters.isCreatingNewBranch(state)).toBeFalsy();
+      expect(getters.isCreatingNewBranch(state)).toBe(false);
     });
 
     it('returns true if creating a new branch', () => {
       state.commitAction = COMMIT_TO_NEW_BRANCH;
 
-      expect(getters.isCreatingNewBranch(state)).toBeTruthy();
+      expect(getters.isCreatingNewBranch(state)).toBe(true);
     });
   });
 
@@ -183,7 +183,7 @@ describe('IDE commit module getters', () => {
       });
 
       it('should never hide "New MR" option', () => {
-        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeNull();
       });
     });
 
@@ -195,13 +195,13 @@ describe('IDE commit module getters', () => {
       it('should NOT hide "New MR" option if user can NOT push to the current branch', () => {
         rootGetters.canPushToBranch = false;
 
-        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBe(false);
       });
 
       it('should hide "New MR" option if user can push to the current branch', () => {
         rootGetters.canPushToBranch = true;
 
-        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeTruthy();
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBe(true);
       });
     });
 
@@ -211,7 +211,7 @@ describe('IDE commit module getters', () => {
       });
 
       it('should never hide "New MR" option', () => {
-        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeNull();
       });
     });
 
@@ -223,13 +223,13 @@ describe('IDE commit module getters', () => {
       it('should NOT hide "New MR" option if there is NO existing MR for the current branch', () => {
         rootGetters.hasMergeRequest = false;
 
-        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeNull();
       });
 
       it('should hide "New MR" option if there is existing MR for the current branch', () => {
         rootGetters.hasMergeRequest = true;
 
-        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeTruthy();
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBe(true);
       });
     });
 
@@ -247,17 +247,13 @@ describe('IDE commit module getters', () => {
         it('should hide "New MR" when there is an existing MR', () => {
           rootGetters.hasMergeRequest = true;
 
-          expect(
-            getters.shouldHideNewMrOption(state, localGetters, null, rootGetters),
-          ).toBeTruthy();
+          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBe(true);
         });
 
         it('should hide "New MR" when there is no existing MR', () => {
           rootGetters.hasMergeRequest = false;
 
-          expect(
-            getters.shouldHideNewMrOption(state, localGetters, null, rootGetters),
-          ).toBeTruthy();
+          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBe(true);
         });
       });
 
@@ -270,17 +266,17 @@ describe('IDE commit module getters', () => {
           rootGetters.hasMergeRequest = false;
           rootGetters.canPushToBranch = true;
 
-          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBe(false);
 
           rootGetters.hasMergeRequest = true;
           rootGetters.canPushToBranch = true;
 
-          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBe(false);
 
           rootGetters.hasMergeRequest = false;
           rootGetters.canPushToBranch = false;
 
-          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBe(false);
         });
       });
     });
@@ -292,7 +288,7 @@ describe('IDE commit module getters', () => {
       rootGetters.hasMergeRequest = true;
       rootGetters.canPushToBranch = true;
 
-      expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+      expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBe(false);
     });
   });
 

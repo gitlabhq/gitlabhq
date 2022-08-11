@@ -16,7 +16,7 @@ describe('Blob Header Editing', () => {
     });
   };
   const findDeleteButton = () =>
-    wrapper.findAll(GlButton).wrappers.find((x) => x.text() === 'Delete file');
+    wrapper.findAllComponents(GlButton).wrappers.find((x) => x.text() === 'Delete file');
 
   beforeEach(() => {
     createComponent();
@@ -32,7 +32,7 @@ describe('Blob Header Editing', () => {
     });
 
     it('contains a form input field', () => {
-      expect(wrapper.find(GlFormInput).exists()).toBe(true);
+      expect(wrapper.findComponent(GlFormInput).exists()).toBe(true);
     });
 
     it('does not show delete button', () => {
@@ -42,7 +42,7 @@ describe('Blob Header Editing', () => {
 
   describe('functionality', () => {
     it('emits input event when the blob name is changed', async () => {
-      const inputComponent = wrapper.find(GlFormInput);
+      const inputComponent = wrapper.findComponent(GlFormInput);
       const newValue = 'bar.txt';
 
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details

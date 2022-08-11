@@ -351,7 +351,7 @@ describe('User Popover Component', () => {
         await axios.waitForAll();
 
         expect(wrapper.emitted().follow.length).toBe(1);
-        expect(wrapper.emitted().unfollow).toBeFalsy();
+        expect(wrapper.emitted().unfollow).toBeUndefined();
       });
 
       itTracksToggleFollowButtonClick('follow_from_user_popover');
@@ -376,8 +376,8 @@ describe('User Popover Component', () => {
         it('emits no events', async () => {
           await axios.waitForAll();
 
-          expect(wrapper.emitted().follow).toBe(undefined);
-          expect(wrapper.emitted().unfollow).toBe(undefined);
+          expect(wrapper.emitted().follow).toBeUndefined();
+          expect(wrapper.emitted().unfollow).toBeUndefined();
         });
       });
     });
@@ -423,8 +423,8 @@ describe('User Popover Component', () => {
         });
 
         it('emits no events', () => {
-          expect(wrapper.emitted().follow).toBe(undefined);
-          expect(wrapper.emitted().unfollow).toBe(undefined);
+          expect(wrapper.emitted().follow).toBeUndefined();
+          expect(wrapper.emitted().unfollow).toBeUndefined();
         });
       });
     });

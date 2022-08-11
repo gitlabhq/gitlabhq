@@ -181,5 +181,5 @@ function danger_as_local() {
   # Force danger to skip CI source GitLab and fallback to "local only git repo".
   unset GITLAB_CI
   # We need to base SHA to help danger determine the base commit for this shallow clone.
-  bundle exec danger dry_run --fail-on-errors=true --verbose --base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}" --head="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
+  bundle exec danger dry_run --fail-on-errors=true --verbose --base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}" --head="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}" --dangerfile="${DANGER_DANGERFILE:-Dangerfile}"
 }

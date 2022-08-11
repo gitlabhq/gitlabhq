@@ -9,7 +9,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
 
       self.table_name = 'application_setting_terms'
 
-      self::SNOWPLOW_ATTRIBUTES = %w[id].freeze # rubocop:disable Rspec/LeakyConstantDeclaration
+      self::SNOWPLOW_ATTRIBUTES = %w[id].freeze # rubocop:disable RSpec/LeakyConstantDeclaration
     end
   end
 
@@ -17,7 +17,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
 
   context 'if event emmiter failed' do
     before do
-      allow(Gitlab::Tracking).to receive(:event).and_raise(StandardError) # rubocop:disable Rspec/ExpectGitlabTracking
+      allow(Gitlab::Tracking).to receive(:event).and_raise(StandardError) # rubocop:disable RSpec/ExpectGitlabTracking
     end
 
     it 'tracks the exception' do

@@ -58,7 +58,7 @@
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
               - top_level_link = assigned_mrs_dashboard_path
-              = link_to top_level_link, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
+              = link_to top_level_link, class: 'dashboard-shortcuts-merge_requests has-tooltip', title: _('Merge requests'), aria: { label: _('Merge requests') },
                 data: { qa_selector: 'merge_requests_shortcut_button',
                 toggle: "dropdown",
                 placement: 'bottom',

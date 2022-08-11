@@ -369,7 +369,7 @@ describe('ReadyToMerge', () => {
 
         const params = wrapper.vm.service.merge.mock.calls[0][0];
 
-        expect(params.should_remove_source_branch).toBeTruthy();
+        expect(params.should_remove_source_branch).toBe(true);
         expect(params.auto_merge_strategy).toBeUndefined();
       });
 
@@ -393,7 +393,7 @@ describe('ReadyToMerge', () => {
 
         const params = wrapper.vm.service.merge.mock.calls[0][0];
 
-        expect(params.should_remove_source_branch).toBeTruthy();
+        expect(params.should_remove_source_branch).toBe(true);
         expect(params.auto_merge_strategy).toBeUndefined();
       });
 
@@ -469,8 +469,8 @@ describe('ReadyToMerge', () => {
 
         expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [false]);
 
-        expect(cpc).toBeFalsy();
-        expect(spc).toBeTruthy();
+        expect(cpc).toBe(false);
+        expect(spc).toBe(true);
       });
 
       it('should continue polling until MR is merged', async () => {
@@ -492,8 +492,8 @@ describe('ReadyToMerge', () => {
 
         await waitForPromises();
 
-        expect(cpc).toBeTruthy();
-        expect(spc).toBeFalsy();
+        expect(cpc).toBe(true);
+        expect(spc).toBe(false);
       });
     });
   });
@@ -527,13 +527,13 @@ describe('ReadyToMerge', () => {
           mr: { commitsCount: 2, enableSquashBeforeMerge: true },
         });
 
-        expect(findCheckboxElement().exists()).toBeTruthy();
+        expect(findCheckboxElement().exists()).toBe(true);
       });
 
       it('should not be rendered when squash before merge is disabled', () => {
         createComponent({ mr: { commitsCount: 2, enableSquashBeforeMerge: false } });
 
-        expect(findCheckboxElement().exists()).toBeFalsy();
+        expect(findCheckboxElement().exists()).toBe(false);
       });
 
       it('should be rendered when there is only 1 commit', () => {
@@ -710,7 +710,7 @@ describe('ReadyToMerge', () => {
       it('should not be rendered if squash is disabled', () => {
         createComponent();
 
-        expect(findCommitDropdownElement().exists()).toBeFalsy();
+        expect(findCommitDropdownElement().exists()).toBe(false);
       });
 
       it('should  be rendered if squash is enabled and there is more than 1 commit', async () => {
@@ -720,7 +720,7 @@ describe('ReadyToMerge', () => {
 
         await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
-        expect(findCommitDropdownElement().exists()).toBeTruthy();
+        expect(findCommitDropdownElement().exists()).toBe(true);
       });
     });
 

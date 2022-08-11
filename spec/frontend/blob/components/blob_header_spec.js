@@ -31,7 +31,7 @@ describe('Blob Header Default Actions', () => {
   });
 
   describe('rendering', () => {
-    const findDefaultActions = () => wrapper.find(DefaultActions);
+    const findDefaultActions = () => wrapper.findComponent(DefaultActions);
 
     const slots = {
       prepend: 'Foo Prepend',
@@ -45,17 +45,17 @@ describe('Blob Header Default Actions', () => {
 
     it('renders all components', () => {
       createComponent();
-      expect(wrapper.find(TableContents).exists()).toBe(true);
-      expect(wrapper.find(ViewerSwitcher).exists()).toBe(true);
+      expect(wrapper.findComponent(TableContents).exists()).toBe(true);
+      expect(wrapper.findComponent(ViewerSwitcher).exists()).toBe(true);
       expect(findDefaultActions().exists()).toBe(true);
-      expect(wrapper.find(BlobFilepath).exists()).toBe(true);
+      expect(wrapper.findComponent(BlobFilepath).exists()).toBe(true);
     });
 
     it('does not render viewer switcher if the blob has only the simple viewer', () => {
       createComponent({
         richViewer: null,
       });
-      expect(wrapper.find(ViewerSwitcher).exists()).toBe(false);
+      expect(wrapper.findComponent(ViewerSwitcher).exists()).toBe(false);
     });
 
     it('does not render viewer switcher if a corresponding prop is passed', () => {
@@ -66,7 +66,7 @@ describe('Blob Header Default Actions', () => {
           hideViewerSwitcher: true,
         },
       );
-      expect(wrapper.find(ViewerSwitcher).exists()).toBe(false);
+      expect(wrapper.findComponent(ViewerSwitcher).exists()).toBe(false);
     });
 
     it('does not render default actions is corresponding prop is passed', () => {
@@ -77,7 +77,7 @@ describe('Blob Header Default Actions', () => {
           hideDefaultActions: true,
         },
       );
-      expect(wrapper.find(DefaultActions).exists()).toBe(false);
+      expect(wrapper.findComponent(DefaultActions).exists()).toBe(false);
     });
 
     Object.keys(slots).forEach((slot) => {

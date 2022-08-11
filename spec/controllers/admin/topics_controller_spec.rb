@@ -173,4 +173,44 @@ RSpec.describe Admin::TopicsController do
       end
     end
   end
+
+  describe 'POST #merge' do
+    let_it_be(:source_topic) { create(:topic, name: 'source_topic') }
+    let_it_be(:project) { create(:project, topic_list: source_topic.name ) }
+
+    it 'merges source topic into target topic' do
+      post :merge, params: { source_topic_id: source_topic.id, target_topic_id: topic.id }
+
+      expect(response).to redirect_to(admin_topics_path)
+      expect(topic.projects).to contain_exactly(project)
+      expect { source_topic.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'renders a 404 error for non-existing id' do
+      post :merge, params: { source_topic_id: non_existing_record_id, target_topic_id: topic.id }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect { topic.reload }.not_to raise_error
+    end
+
+    it 'renders a 400 error for identical topic ids' do
+      post :merge, params: { source_topic_id: topic, target_topic_id: topic.id }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect { topic.reload }.not_to raise_error
+    end
+
+    context 'as a normal user' do
+      before do
+        sign_in(user)
+      end
+
+      it 'renders a 404 error' do
+        post :merge, params: { source_topic_id: source_topic.id, target_topic_id: topic.id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect { source_topic.reload }.not_to raise_error
+      end
+    end
+  end
 end

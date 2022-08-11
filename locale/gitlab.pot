@@ -41010,6 +41010,9 @@ msgstr ""
 msgid "TopNav|Go back"
 msgstr ""
 
+msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."
+msgstr ""
+
 msgid "Topic %{topic_name} was successfully created."
 msgstr ""
 

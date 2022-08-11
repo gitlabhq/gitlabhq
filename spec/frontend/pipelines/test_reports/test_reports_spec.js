@@ -94,8 +94,8 @@ describe('Test reports app', () => {
     beforeEach(() => createComponent());
 
     it('sets testReports and shows tests', () => {
-      expect(wrapper.vm.testReports).toBeTruthy();
-      expect(wrapper.vm.showTests).toBeTruthy();
+      expect(wrapper.vm.testReports).toEqual(expect.any(Object));
+      expect(wrapper.vm.showTests).toBe(true);
     });
 
     it('shows tests details', () => {

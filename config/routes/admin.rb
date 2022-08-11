@@ -65,6 +65,7 @@ namespace :admin do
     resource :avatar, controller: 'topics/avatars', only: [:destroy]
     collection do
       post :preview_markdown
+      post :merge
     end
   end
 

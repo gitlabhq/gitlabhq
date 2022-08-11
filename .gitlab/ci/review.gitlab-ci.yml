@@ -85,12 +85,13 @@ danger-review:
     - bundle_install_script "--with danger"
     - run_timed_command "retry yarn install --frozen-lockfile"
   script:
+    # ${DANGER_DANGERFILE} is used by Jihulab for customizing danger support: https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml
     - >
       if [ -z "$DANGER_GITLAB_API_TOKEN" ]; then
         run_timed_command danger_as_local
       else
         danger_id=$(echo -n ${DANGER_GITLAB_API_TOKEN} | md5sum | awk '{print $1}' | cut -c5-10)
-        run_timed_command "bundle exec danger --fail-on-errors=true --verbose --danger_id=${danger_id}"
+        run_timed_command "bundle exec danger --fail-on-errors=true --verbose --danger_id=\"${danger_id}\" --dangerfile=\"${DANGER_DANGERFILE:-Dangerfile}\""
       fi
 
 danger-review-local:

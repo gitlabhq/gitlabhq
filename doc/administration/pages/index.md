@@ -1476,7 +1476,7 @@ In GitLab 14.0-14.2 you can temporarily enable legacy storage and configuration 
 
 To do that:
 
-1. Please describe the issue you're seeing in the [migration feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331699).
+1. Describe the issue you're seeing in the [migration feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331699).
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 

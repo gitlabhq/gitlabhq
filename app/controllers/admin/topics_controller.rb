@@ -45,6 +45,22 @@ class Admin::TopicsController < Admin::ApplicationController
                 notice: _('Topic %{topic_name} was successfully removed.') % { topic_name: @topic.title_or_name }
   end
 
+  def merge
+    source_topic = Projects::Topic.find(merge_params[:source_topic_id])
+    target_topic = Projects::Topic.find(merge_params[:target_topic_id])
+
+    begin
+      ::Topics::MergeService.new(source_topic, target_topic).execute
+    rescue ArgumentError => e
+      return render status: :bad_request, json: { type: :alert, message: e.message }
+    end
+
+    message = _('Topic %{source_topic} was successfully merged into topic %{target_topic}.')
+    redirect_to admin_topics_path,
+                status: :found,
+                notice: message % { source_topic: source_topic.name, target_topic: target_topic.name }
+  end
+
   private
 
   def topic
@@ -62,5 +78,9 @@ class Admin::TopicsController < Admin::ApplicationController
       :name,
       :title
     ]
+  end
+
+  def merge_params
+    params.permit([:source_topic_id, :target_topic_id])
   end
 end

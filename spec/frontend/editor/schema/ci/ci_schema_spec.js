@@ -24,12 +24,14 @@ import ReleaseAssetsLinksMissingJson from './json_tests/negative_tests/release_a
 import RetryUnknownWhenJson from './json_tests/negative_tests/retry_unknown_when.json';
 
 // YAML POSITIVE TEST
+import ArtifactsYaml from './yaml_tests/positive_tests/artifacts.yml';
 import CacheYaml from './yaml_tests/positive_tests/cache.yml';
 import FilterYaml from './yaml_tests/positive_tests/filter.yml';
 import IncludeYaml from './yaml_tests/positive_tests/include.yml';
 import RulesYaml from './yaml_tests/positive_tests/rules.yml';
 
 // YAML NEGATIVE TEST
+import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
 import CacheNegativeYaml from './yaml_tests/negative_tests/cache.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
 
@@ -63,6 +65,7 @@ describe('positive tests', () => {
       FilterYaml,
       IncludeYaml,
       RulesYaml,
+      ArtifactsYaml,
     }),
   )('schema validates %s', (_, input) => {
     expect(input).toValidateJsonSchema(schema);
@@ -84,6 +87,7 @@ describe('negative tests', () => {
       // YAML
       CacheNegativeYaml,
       IncludeNegativeYaml,
+      ArtifactsNegativeYaml,
     }),
   )('schema validates %s', (_, input) => {
     expect(input).not.toValidateJsonSchema(schema);

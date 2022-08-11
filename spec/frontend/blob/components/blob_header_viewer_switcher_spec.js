@@ -35,8 +35,8 @@ describe('Blob Header Viewer Switcher', () => {
 
     beforeEach(() => {
       createComponent();
-      btnGroup = wrapper.find(GlButtonGroup);
-      buttons = wrapper.findAll(GlButton);
+      btnGroup = wrapper.findComponent(GlButtonGroup);
+      buttons = wrapper.findAllComponents(GlButton);
     });
 
     it('renders gl-button-group component', () => {
@@ -58,7 +58,7 @@ describe('Blob Header Viewer Switcher', () => {
 
     function factory(propsData = {}) {
       createComponent(propsData);
-      buttons = wrapper.findAll(GlButton);
+      buttons = wrapper.findAllComponents(GlButton);
       simpleBtn = buttons.at(0);
       richBtn = buttons.at(1);
 

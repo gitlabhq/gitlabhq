@@ -33,7 +33,7 @@ describe('DismissibleContainer', () => {
 
       button.trigger('click');
 
-      expect(wrapper.emitted().dismiss).toBeTruthy();
+      expect(wrapper.emitted().dismiss).toEqual(expect.any(Array));
     });
   });
 

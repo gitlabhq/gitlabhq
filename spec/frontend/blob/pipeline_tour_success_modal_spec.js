@@ -52,7 +52,7 @@ describe('PipelineTourSuccessModal', () => {
     });
 
     it('renders the path from the commit cookie for back to the merge request button', () => {
-      const goToMrBtn = wrapper.find({ ref: 'goToMergeRequest' });
+      const goToMrBtn = wrapper.findComponent({ ref: 'goToMergeRequest' });
 
       expect(goToMrBtn.attributes('href')).toBe(expectedMrPath);
     });
@@ -67,16 +67,16 @@ describe('PipelineTourSuccessModal', () => {
     });
 
     it('renders the path from projectMergeRequestsPath for back to the merge request button', () => {
-      const goToMrBtn = wrapper.find({ ref: 'goToMergeRequest' });
+      const goToMrBtn = wrapper.findComponent({ ref: 'goToMergeRequest' });
 
       expect(goToMrBtn.attributes('href')).toBe(expectedMrPath);
     });
   });
 
   it('has expected structure', () => {
-    const modal = wrapper.find(GlModal);
-    const sprintf = modal.find(GlSprintf);
-    const emoji = modal.find(GlEmoji);
+    const modal = wrapper.findComponent(GlModal);
+    const sprintf = modal.findComponent(GlSprintf);
+    const emoji = modal.findComponent(GlEmoji);
 
     expect(wrapper.text()).toContain("That's it, well done!");
     expect(sprintf.exists()).toBe(true);
@@ -84,7 +84,7 @@ describe('PipelineTourSuccessModal', () => {
   });
 
   it('renders the link for codeQualityLink', () => {
-    expect(wrapper.find(GlLink).attributes('href')).toBe('/code-quality-link');
+    expect(wrapper.findComponent(GlLink).attributes('href')).toBe('/code-quality-link');
   });
 
   it('calls to remove cookie', () => {
@@ -103,7 +103,7 @@ describe('PipelineTourSuccessModal', () => {
 
     it('send an event when go to pipelines is clicked', () => {
       trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
-      const goToBtn = wrapper.find({ ref: 'goToPipelines' });
+      const goToBtn = wrapper.findComponent({ ref: 'goToPipelines' });
       triggerEvent(goToBtn.element);
 
       expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_button', {
@@ -115,7 +115,7 @@ describe('PipelineTourSuccessModal', () => {
 
     it('sends an event when back to the merge request is clicked', () => {
       trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
-      const goToBtn = wrapper.find({ ref: 'goToMergeRequest' });
+      const goToBtn = wrapper.findComponent({ ref: 'goToMergeRequest' });
       triggerEvent(goToBtn.element);
 
       expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_button', {

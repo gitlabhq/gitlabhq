@@ -148,6 +148,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
         expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
           payload = Gitlab::Json.parse(params[:body])
 
+          expect(payload['total_builds_count']).to eq(0)
+
           builds = payload['builds']
           expect(builds.count).to eq(2)
           expect(builds[0]['services']).to be_nil
@@ -159,6 +161,23 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
         end
 
         perform!
+      end
+
+      context "with existing jobs from other project's alive pipelines" do
+        before do
+          create(:ci_pipeline, :with_job, user: user)
+          create(:ci_pipeline, :with_job)
+        end
+
+        it 'returns the expected total_builds_count' do
+          expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
+            payload = Gitlab::Json.parse(params[:body])
+
+            expect(payload['total_builds_count']).to eq(1)
+          end
+
+          perform!
+        end
       end
     end
 

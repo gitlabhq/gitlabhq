@@ -18,9 +18,9 @@ describe('PDF renderer', () => {
     });
   };
 
-  const findLoading = () => wrapper.find(GlLoadingIcon);
-  const findPdfLab = () => wrapper.find(PdfLab);
-  const findLoadError = () => wrapper.find({ ref: 'loadError' });
+  const findLoading = () => wrapper.findComponent(GlLoadingIcon);
+  const findPdfLab = () => wrapper.findComponent(PdfLab);
+  const findLoadError = () => wrapper.findComponent({ ref: 'loadError' });
 
   beforeEach(() => {
     mountComponent();

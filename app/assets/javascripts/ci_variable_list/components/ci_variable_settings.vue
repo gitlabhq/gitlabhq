@@ -1,9 +1,93 @@
 <script>
-export default {};
+import { ADD_VARIABLE_ACTION, EDIT_VARIABLE_ACTION, VARIABLE_ACTIONS } from '../constants';
+import { createJoinedEnvironments } from '../utils';
+import CiVariableTable from './ci_variable_table.vue';
+import CiVariableModal from './ci_variable_modal.vue';
+
+export default {
+  components: {
+    CiVariableTable,
+    CiVariableModal,
+  },
+  props: {
+    areScopedVariablesAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    environments: {
+      type: Array,
+      required: true,
+    },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    variables: {
+      type: Array,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      selectedVariable: {},
+      mode: null,
+    };
+  },
+  computed: {
+    joinedEnvironments() {
+      return createJoinedEnvironments(this.variables, this.environments);
+    },
+    showModal() {
+      return VARIABLE_ACTIONS.includes(this.mode);
+    },
+  },
+  methods: {
+    addVariable(variable) {
+      this.$emit('add-variable', variable);
+    },
+    deleteVariable(variable) {
+      this.$emit('delete-variable', variable);
+    },
+    updateVariable(variable) {
+      this.$emit('update-variable', variable);
+    },
+    hideModal() {
+      this.mode = null;
+    },
+    setSelectedVariable(variable = null) {
+      if (!variable) {
+        this.selectedVariable = {};
+        this.mode = ADD_VARIABLE_ACTION;
+      } else {
+        this.selectedVariable = variable;
+        this.mode = EDIT_VARIABLE_ACTION;
+      }
+    },
+  },
+};
 </script>
 
 <template>
   <div class="row">
-    <div class="col-lg-12"></div>
+    <div class="col-lg-12">
+      <ci-variable-table
+        :is-loading="isLoading"
+        :variables="variables"
+        @set-selected-variable="setSelectedVariable"
+      />
+      <ci-variable-modal
+        v-if="showModal"
+        :are-scoped-variables-available="areScopedVariablesAvailable"
+        :environments="joinedEnvironments"
+        :mode="mode"
+        :selected-variable="selectedVariable"
+        @add-variable="addVariable"
+        @delete-variable="deleteVariable"
+        @hideModal="hideModal"
+        @update-variable="updateVariable"
+      />
+    </div>
   </div>
 </template>

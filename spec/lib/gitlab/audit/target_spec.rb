@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Audit::Target do
-  let(:object) { double('object') } # rubocop:disable Rspec/VerifiedDoubles
+  let(:object) { double('object') } # rubocop:disable RSpec/VerifiedDoubles
 
   subject { described_class.new(object) }
 
