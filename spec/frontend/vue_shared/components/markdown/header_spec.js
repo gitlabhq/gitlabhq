@@ -125,8 +125,8 @@ describe('Markdown field header component', () => {
       ),
     ]);
 
-    expect(wrapper.emitted('preview-markdown')).toBeFalsy();
-    expect(wrapper.emitted('write-markdown')).toBeFalsy();
+    expect(wrapper.emitted('preview-markdown')).toBeUndefined();
+    expect(wrapper.emitted('write-markdown')).toBeUndefined();
   });
 
   it('blurs preview link after click', () => {

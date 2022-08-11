@@ -30,7 +30,7 @@ describe('IDE store merge request mutations', () => {
       const newMr = localState.projects.abcproject.mergeRequests[1];
 
       expect(newMr.title).toBe('mr');
-      expect(newMr.active).toBeTruthy();
+      expect(newMr.active).toBe(true);
     });
 
     it('keeps original data', () => {

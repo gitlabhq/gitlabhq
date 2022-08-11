@@ -137,9 +137,15 @@ However, approvals are reset if the target branch is changed.
 
 If you only want to remove approvals by Code Owners whose files have been changed:
 
+Prerequisite:
+
+- You must have at least the Maintainer role for a project.
+
+To do this:
+
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge request (MR) approvals**.
+1. Expand **Merge request approvals**.
 1. Select **Remove approvals by Code Owners if their files changed**.
 1. Select **Save changes**.
 

@@ -967,7 +967,8 @@ RSpec.describe ProjectsHelper do
         showDefaultAwardEmojis: project.show_default_award_emojis?,
         securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
         containerRegistryAccessLevel: project.project_feature.container_registry_access_level,
-        environmentsAccessLevel: project.project_feature.environments_access_level
+        environmentsAccessLevel: project.project_feature.environments_access_level,
+        featureFlagsAccessLevel: project.project_feature.feature_flags_access_level
       )
     end
 

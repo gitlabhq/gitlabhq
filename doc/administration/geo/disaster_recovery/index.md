@@ -581,7 +581,7 @@ and after that you also need two extra steps.
    gitlab_rails['auto_migrate'] = false
    ```
 
-   (For more details about these settings you can read [Configure the primary server](../setup/database.md#step-1-configure-the-primary-server))
+   (For more details about these settings you can read [Configure the primary server](../setup/database.md#step-1-configure-the-primary-site))
 
 1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied:

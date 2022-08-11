@@ -286,6 +286,7 @@ included_attributes:
     - :container_registry_access_level
     - :package_registry_access_level
     - :environments_access_level
+    - :feature_flags_access_level
   prometheus_metrics:
     - :created_at
     - :updated_at
@@ -691,6 +692,7 @@ included_attributes:
     - :container_registry_access_level
     - :package_registry_access_level
     - :environments_access_level
+    - :feature_flags_access_level
     - :allow_merge_on_skipped_pipeline
     - :auto_devops_deploy_strategy
     - :auto_devops_enabled

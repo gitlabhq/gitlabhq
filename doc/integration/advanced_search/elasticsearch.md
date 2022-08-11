@@ -163,6 +163,12 @@ If you see an error such as `Permission denied - /home/git/gitlab-elasticsearch-
 may need to set the `production -> elasticsearch -> indexer_path` setting in your `gitlab.yml` file to
 `/usr/local/bin/gitlab-elasticsearch-indexer`, which is where the binary is installed.
 
+### View indexing errors
+
+Errors from the [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer) are reported in
+the [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) file with a `json.exception.class` of `Gitlab::Elastic::Indexer::Error`.
+These errors may occur when indexing Git repository data.
+
 ## Enable Advanced Search
 
 For GitLab instances with more than 50GB repository data you can follow the instructions for [how to index large instances efficiently](#how-to-index-large-instances-efficiently) below.
@@ -576,8 +582,8 @@ due to large volumes of data being indexed.
 
 WARNING:
 Indexing a large instance generates a lot of Sidekiq jobs.
-Make sure to prepare for this task by having a 
-[Scalable and Highly Available Setup](../../administration/reference_architectures/index.md) or creating 
+Make sure to prepare for this task by having a
+[scalable setup](../../administration/reference_architectures/index.md) or creating
 [extra Sidekiq processes](../../administration/operations/extra_sidekiq_processes.md).
 
 1. [Configure your Elasticsearch host and port](#enable-advanced-search).

@@ -24,6 +24,7 @@ module RuboCop
           security_and_compliance
           container_registry
           environments
+          feature_flags
         ].freeze
         EE_FEATURES = %i[requirements].freeze
         ALL_FEATURES = (FEATURES + EE_FEATURES).freeze

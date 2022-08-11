@@ -424,8 +424,8 @@ describe('DiffsStoreUtils', () => {
         expect(firstChar).not.toBe('+');
         expect(firstChar).not.toBe('-');
 
-        expect(preparedDiff.diff_files[0].renderIt).toBeTruthy();
-        expect(preparedDiff.diff_files[0].collapsed).toBeFalsy();
+        expect(preparedDiff.diff_files[0].renderIt).toBe(true);
+        expect(preparedDiff.diff_files[0].collapsed).toBe(false);
       });
 
       it('guarantees an empty array for both diff styles', () => {
@@ -506,8 +506,8 @@ describe('DiffsStoreUtils', () => {
       });
 
       it('sets the renderIt and collapsed attribute on files', () => {
-        expect(preparedDiffFiles[0].renderIt).toBeTruthy();
-        expect(preparedDiffFiles[0].collapsed).toBeFalsy();
+        expect(preparedDiffFiles[0].renderIt).toBe(true);
+        expect(preparedDiffFiles[0].collapsed).toBeUndefined();
       });
 
       it('guarantees an empty array of lines for both diff styles', () => {

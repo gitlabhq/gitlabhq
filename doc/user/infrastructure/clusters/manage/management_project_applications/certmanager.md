@@ -18,6 +18,17 @@ uncomment this line from your `helmfile.yaml`:
   - path: applications/cert-manager/helmfile.yaml
 ```
 
+And update the `applications/cert-manager/helmfile.yaml` with a valid email address.
+
+```yaml
+  values:
+    - letsEncryptClusterIssuer:
+        #
+        # IMPORTANT: This value MUST be set to a valid email.
+        #
+        email: example@example.com
+```
+
 NOTE:
 If your Kubernetes version is earlier than 1.20 and you are 
 [migrating from GitLab Managed Apps to a cluster management project](../../../../clusters/migrating_from_gma_to_project_template.md), 

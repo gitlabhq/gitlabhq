@@ -210,6 +210,7 @@ class ProjectPolicy < BasePolicy
     operations
     security_and_compliance
     environments
+    feature_flags
   ]
 
   features.each do |f|
@@ -387,6 +388,12 @@ class ProjectPolicy < BasePolicy
   rule { split_operations_visibility_permissions & environments_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:environment))
     prevent(*create_read_update_admin_destroy(:deployment))
+  end
+
+  rule { split_operations_visibility_permissions & feature_flags_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:feature_flag))
+    prevent(:admin_feature_flags_user_lists)
+    prevent(:admin_feature_flags_client)
   end
 
   rule { can?(:metrics_dashboard) }.policy do

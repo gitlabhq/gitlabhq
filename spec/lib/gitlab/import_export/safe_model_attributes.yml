@@ -584,6 +584,7 @@ ProjectFeature:
 - container_registry_access_level
 - package_registry_access_level
 - environments_access_level
+- feature_flags_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:

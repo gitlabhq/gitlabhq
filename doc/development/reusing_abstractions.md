@@ -147,6 +147,27 @@ Legacy classes inherited from `BaseService` for historical reasons.
 
 In Service classes the use of `execute` and `#execute` is preferred over `call` and `#call`.
 
+Model properties should be passed to the constructor in a `params` hash, and will be assigned directly.
+
+To pass extra parameters (which need to be processed, and are not model properties),
+include an `options` hash in the constructor and store it in an instance variable:
+
+```ruby
+# container: Project, or Group
+# current_user: Current user
+# params: Model properties from the controller, already allowlisted with strong parameters
+# options: Configuration for this service, can be any of the following:
+#   notify: Whether to send a notifcation to the current user
+#   cc: Email address to copy when sending a notification 
+def initialize(container:, current_user: nil, params: {}, options: {})
+  super(container, current_user, params)
+  @options = options
+end
+```
+
+View the [initial discussion](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90008#note_988744060)
+and [further discussion](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90853#note_1053425083).
+
 Classes that are not service objects should be [created elsewhere](directory_structure.md#use-namespaces-to-define-bounded-contexts), such as in `lib`.
 
 #### ServiceResponse

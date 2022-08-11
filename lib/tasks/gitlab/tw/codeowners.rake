@@ -51,7 +51,7 @@ namespace :tw do
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
       CodeOwnerRule.new('Integrations', '@kpaizee'),
       CodeOwnerRule.new('Knowledge', '@aqualls'),
-      CodeOwnerRule.new('Memory', '@sselhorn'),
+      CodeOwnerRule.new('Application Performance', '@sselhorn'),
       CodeOwnerRule.new('Monitor', '@msedlakjakubowski'),
       CodeOwnerRule.new('Observability', 'msedlakjakubowski'),
       CodeOwnerRule.new('Optimize', '@fneill'),

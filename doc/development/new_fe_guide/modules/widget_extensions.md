@@ -311,16 +311,16 @@ To generate these known events for a single widget:
 1. Generate known events on the command line with the following command.
    Replace `test_reports` with your appropriate name slug:
 
-    ```shell
-    bundle exec rails generate gitlab:usage_metric_definition \
-    counts.i_code_review_merge_request_widget_test_reports_count_view \
-    counts.i_code_review_merge_request_widget_test_reports_count_full_report_clicked \
-    counts.i_code_review_merge_request_widget_test_reports_count_expand \
-    counts.i_code_review_merge_request_widget_test_reports_count_expand_success \
-    counts.i_code_review_merge_request_widget_test_reports_count_expand_warning \
-    counts.i_code_review_merge_request_widget_test_reports_count_expand_failed \
-    --dir=all
-    ```
+   ```shell
+   bundle exec rails generate gitlab:usage_metric_definition \
+   counts.i_code_review_merge_request_widget_test_reports_count_view \
+   counts.i_code_review_merge_request_widget_test_reports_count_full_report_clicked \
+   counts.i_code_review_merge_request_widget_test_reports_count_expand \
+   counts.i_code_review_merge_request_widget_test_reports_count_expand_success \
+   counts.i_code_review_merge_request_widget_test_reports_count_expand_warning \
+   counts.i_code_review_merge_request_widget_test_reports_count_expand_failed \
+   --dir=all
+   ```
 
 1. Modify each newly generated file to match the existing files for the merge request widget extension telemetry.
    - Find existing examples by doing a glob search, like: `metrics/**/*_i_code_review_merge_request_widget_*`
@@ -333,9 +333,10 @@ To generate these known events for a single widget:
      1. `introduced_by_url` = `'[your MR]'`
      1. `options.events` = (the event in the command from above that generated this file, like `i_code_review_merge_request_widget_test_reports_count_view`)
          - This value is how the telemetry events are linked to "metrics" so this is probably one of the more important values.
-         1. `data_source` = `redis`
-         1. `data_category` = `optional`
-1. Repeat steps 5 and 6 for the HLL metrics. Replace `test_reports` with your appropriate name slug.
+     1. `data_source` = `redis`
+     1. `data_category` = `optional`
+1. Generate known HLL events on the command line with the following command.
+   Replace `test_reports` with your appropriate name slug.
 
    ```shell
    bundle exec rails generate gitlab:usage_metric_definition:redis_hll code_review \
@@ -348,7 +349,7 @@ To generate these known events for a single widget:
    --class_name=RedisHLLMetric
    ```
 
-   - In step 6 for HLL, change the `data_source` to `redis_hll`.
+1. Repeat step 6, but change the `data_source` to `redis_hll`.
 1. Add each of the HLL metrics to `lib/gitlab/usage_data_counters/known_events/code_review_events.yml`:
     1. `name` = (the event)
     1. `redis_slot` = `code_review`
@@ -397,14 +398,14 @@ Every placeholder contains starting and ending tags. For example, `success` uses
 `Hello %{success_start}world%{success_end}`. The extension then
 adds the start and end tags with the correct styling classes.
 
-| Placeholder | Style |
-|---|---|
-| success | `gl-font-weight-bold gl-text-green-500` |
-| danger | `gl-font-weight-bold gl-text-red-500` |
-| critical | `gl-font-weight-bold gl-text-red-800` |
-| same | `gl-font-weight-bold gl-text-gray-700` |
-| strong | `gl-font-weight-bold` |
-| small | `gl-font-sm` |
+| Placeholder | Style                                   |
+|-------------|-----------------------------------------|
+| success     | `gl-font-weight-bold gl-text-green-500` |
+| danger      | `gl-font-weight-bold gl-text-red-500`   |
+| critical    | `gl-font-weight-bold gl-text-red-800`   |
+| same        | `gl-font-weight-bold gl-text-gray-700`  |
+| strong      | `gl-font-weight-bold`                   |
+| small       | `gl-font-sm`                            |
 
 ## Action buttons
 

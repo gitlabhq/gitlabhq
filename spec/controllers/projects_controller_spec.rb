@@ -878,28 +878,79 @@ RSpec.describe ProjectsController do
     end
 
     context 'with project feature attributes' do
-      using RSpec::Parameterized::TableSyntax
+      let(:initial_value) { ProjectFeature::PRIVATE }
+      let(:update_to) { ProjectFeature::ENABLED }
 
-      where(:feature, :initial_value, :update_to) do
-        :metrics_dashboard_access_level  | ProjectFeature::PRIVATE | ProjectFeature::ENABLED
-        :container_registry_access_level | ProjectFeature::ENABLED | ProjectFeature::PRIVATE
+      before do
+        project.project_feature.update!(feature_access_level => initial_value)
+      end
+
+      def update_project_feature
+        put :update, params: {
+          namespace_id: project.namespace,
+          id: project.path,
+          project: {
+            project_feature_attributes: {
+              feature_access_level.to_s => update_to
+            }
+          }
+        }
+      end
+
+      shared_examples 'feature update success' do
+        it 'updates access level successfully' do
+          expect { update_project_feature }.to change {
+            project.reload.project_feature.public_send(feature_access_level)
+          }.from(initial_value).to(update_to)
+        end
+      end
+
+      shared_examples 'feature update failure' do
+        it 'cannot update access level' do
+          expect { update_project_feature }.not_to change {
+            project.reload.project_feature.public_send(feature_access_level)
+          }
+        end
+      end
+
+      where(:feature_access_level) do
+        %i[
+          metrics_dashboard_access_level
+          container_registry_access_level
+          environments_access_level
+          feature_flags_access_level
+        ]
       end
 
       with_them do
-        it "updates the project_feature new" do
-          params = {
-            namespace_id: project.namespace,
-            id: project.path,
-            project: {
-              project_feature_attributes: {
-                "#{feature}": update_to
-              }
-            }
-          }
+        it_behaves_like 'feature update success'
+      end
 
-          expect { put :update, params: params }.to change {
-            project.reload.project_feature.public_send(feature)
-          }.from(initial_value).to(update_to)
+      context 'for feature_access_level operations_access_level' do
+        let(:feature_access_level) { :operations_access_level }
+
+        include_examples 'feature update failure'
+      end
+
+      context 'with feature flag split_operations_visibility_permissions disabled' do
+        before do
+          stub_feature_flags(split_operations_visibility_permissions: false)
+        end
+
+        context 'for feature_access_level operations_access_level' do
+          let(:feature_access_level) { :operations_access_level }
+
+          include_examples 'feature update success'
+        end
+
+        where(:feature_access_level) do
+          %i[
+            environments_access_level feature_flags_access_level
+          ]
+        end
+
+        with_them do
+          it_behaves_like 'feature update failure'
         end
       end
     end

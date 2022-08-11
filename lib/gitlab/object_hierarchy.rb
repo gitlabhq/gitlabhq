@@ -65,7 +65,8 @@ module Gitlab
     # Note: By default the order is breadth-first
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_ancestors(upto: nil, hierarchy_order: nil)
-      cte = base_and_ancestors_cte(upto, hierarchy_order)
+      upto_id = upto.try(:id) || upto
+      cte = base_and_ancestors_cte(upto_id, hierarchy_order)
 
       recursive_query = if hierarchy_order
                           # othewise depth won't be available for outer query

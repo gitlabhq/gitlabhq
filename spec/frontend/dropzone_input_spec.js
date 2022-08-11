@@ -29,7 +29,9 @@ describe('dropzone_input', () => {
   it('returns valid dropzone when successfully initialize', () => {
     const dropzone = dropzoneInput($(TEMPLATE));
 
-    expect(dropzone.version).toBeTruthy();
+    expect(dropzone).toMatchObject({
+      version: expect.any(String),
+    });
   });
 
   describe('handlePaste', () => {

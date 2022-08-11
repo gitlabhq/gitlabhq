@@ -55,7 +55,7 @@ describe('CreateTokenModal', () => {
   const findAgentInstructions = () => findModal().findComponent(AgentToken);
   const findButtonByVariant = (variant) =>
     findModal()
-      .findAll(GlButton)
+      .findAllComponents(GlButton)
       .wrappers.find((button) => button.props('variant') === variant);
   const findActionButton = () => findButtonByVariant('confirm');
   const findCancelButton = () => wrapper.findByTestId('agent-token-close-button');

@@ -93,7 +93,7 @@ describe('BoardNewItem', () => {
         titleInput().setValue('Foo');
         await glForm().trigger('submit');
 
-        expect(wrapper.emitted('form-submit')).toBeTruthy();
+        expect(wrapper.emitted('form-submit')).toHaveLength(1);
         expect(wrapper.emitted('form-submit')[0]).toEqual([
           {
             title: 'Foo',
@@ -131,7 +131,7 @@ describe('BoardNewItem', () => {
         await glForm().trigger('reset');
 
         expect(titleInput().element.value).toBe('');
-        expect(wrapper.emitted('form-cancel')).toBeTruthy();
+        expect(wrapper.emitted('form-cancel')).toHaveLength(1);
       });
     });
   });

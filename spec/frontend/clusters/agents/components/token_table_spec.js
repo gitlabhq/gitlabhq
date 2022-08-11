@@ -136,8 +136,8 @@ describe('ClusterAgentTokenTable', () => {
       const token = tokens.at(lineNumber);
 
       expect(token.text()).toContain(description);
-      expect(token.find(GlTruncate).exists()).toBe(truncatesText);
-      expect(token.find(GlTooltip).exists()).toBe(hasTooltip);
+      expect(token.findComponent(GlTruncate).exists()).toBe(truncatesText);
+      expect(token.findComponent(GlTooltip).exists()).toBe(hasTooltip);
     },
   );
 

@@ -32,8 +32,8 @@ describe('ClusterIntegrationForm', () => {
     wrapper = null;
   };
 
-  const findSubmitButton = () => wrapper.find(GlButton);
-  const findGlToggle = () => wrapper.find(GlToggle);
+  const findSubmitButton = () => wrapper.findComponent(GlButton);
+  const findGlToggle = () => wrapper.findComponent(GlToggle);
 
   afterEach(() => {
     destroyWrapper();

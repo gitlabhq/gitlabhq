@@ -25,7 +25,9 @@ rails7_deprecation_warnings = [
   # https://gitlab.com/gitlab-org/gitlab/-/issues/342492
   /Rendering actions with '\.' in the name is deprecated/,
   # https://gitlab.com/gitlab-org/gitlab/-/issues/333086
-  /default_hash is deprecated/
+  /default_hash is deprecated/,
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/369970
+  /Passing an Active Record object to `\w+` directly is deprecated/
 ]
 
 ActiveSupport::Deprecation.disallowed_warnings.concat rails7_deprecation_warnings

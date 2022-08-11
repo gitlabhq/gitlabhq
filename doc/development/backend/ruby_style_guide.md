@@ -16,6 +16,8 @@ document the new rule. For every new guideline, add it in a new section and link
 [version history note](../documentation/versions.md#add-a-version-history-item)
 to provide context and serve as a reference.
 
+See also [guidelines for reusing abstractions](../reusing_abstractions.md).
+
 Everything listed here can be [reopened for discussion](https://about.gitlab.com/handbook/values/#disagree-commit-and-disagree).
 
 ## Instance variable access using `attr_reader`
