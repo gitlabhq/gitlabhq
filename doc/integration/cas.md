@@ -4,7 +4,11 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# CAS OmniAuth Provider **(FREE SELF)**
+# CAS OmniAuth provider (deprecated) **(FREE SELF)**
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369127) in GitLab 15.3 and is planned for
+removal in 16.0.
 
 To enable the CAS OmniAuth provider you must register your application with your
 CAS instance. This requires the service URL GitLab supplies to CAS. It should be

@@ -47,47 +47,49 @@ sole discretion of GitLab Inc.
 
 ## Announced in 15.3
 
+<div class="deprecation removal-160 breaking-change">
+
+### Atlassian Crowd OmniAuth provider
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth provider will be removed in our
+next major release, GitLab 16.0. This gem sees very little use and its
+[lack of compatibility](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is
+[blocking our upgrade](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### CAS OmniAuth provider
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `omniauth-cas3` gem that provides GitLab with the CAS OmniAuth provider will be removed in our next major
+release, GitLab 16.0. This gem sees very little use and its lack of upstream maintenance is preventing GitLab's
+[upgrade to OmniAuth 2.0](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
+
+</div>
+
 <div class="deprecation removal-160">
 
 ### Maximum number of active pipelines per project limit (`ci_active_pipelines`)
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
-The [**Maximum number of active pipelines per project** limit](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits) was never enabled by default and will be removed in GitLab 16.0. This limit can also be configured in the rails console under [`ci_active_pipelines`](https://docs.gitlab.com/ee/administration/instance_limits.html#number-of-pipelines-running-concurrently). Instead, use the other recommended rate limits that offer similar protection:
+The [**Maximum number of active pipelines per project** limit](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits) was never enabled by default and will be removed in GitLab 16.0. This limit can also be configured in the Rails console under [`ci_active_pipelines`](https://docs.gitlab.com/ee/administration/instance_limits.html#number-of-pipelines-running-concurrently). Instead, use the other recommended rate limits that offer similar protection:
 
 - [**Pipelines rate limits**](https://docs.gitlab.com/ee/user/admin_area/settings/rate_limit_on_pipelines_creation.html).
 - [**Total number of jobs in currently active pipelines**](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits).
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### `omniauth-cas3` gem
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The `omniauth-cas3` gem will be removed in our next major release, GitLab 16.0. This gem sees very little use and
-its lack of upstream maintence is preventing GitLab's [upgrade to OmniAuth 2.0](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### `omniauth_crowd` gem
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The `omniauth_crowd` gem will be removed in our next major release, GitLab 16.0. This gem sees very little use and
-its [lack of compatability](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is blocking
-our upgrade.
 
 </div>
 </div>

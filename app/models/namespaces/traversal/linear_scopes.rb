@@ -144,25 +144,15 @@ module Namespaces
         end
 
         def self_and_descendants_with_comparison_operators(include_self: true)
-          base = all.select(:traversal_ids)
-          base = base.select(:id) if Feature.enabled?(:linear_scopes_superset)
+          base = all.select(:id, :traversal_ids)
           base_cte = base.as_cte(:descendants_base_cte)
 
           namespaces = Arel::Table.new(:namespaces)
 
-          withs = [base_cte.to_arel]
-          froms = []
-
-          if Feature.enabled?(:linear_scopes_superset)
-            superset_cte = self.superset_cte(base_cte.table.name)
-            withs += [superset_cte.to_arel]
-            froms = [superset_cte.table]
-          else
-            froms = [base_cte.table]
-          end
-
+          superset_cte = self.superset_cte(base_cte.table.name)
+          withs = [base_cte.to_arel, superset_cte.to_arel]
           # Order is important. namespace should be last to handle future joins.
-          froms += [namespaces]
+          froms = [superset_cte.table, namespaces]
 
           base_ref = froms.first
 

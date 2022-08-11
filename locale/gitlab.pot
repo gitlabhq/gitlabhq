@@ -11627,7 +11627,7 @@ msgstr ""
 msgid "DORA4Metrics|Change failure rate"
 msgstr ""
 
-msgid "DORA4Metrics|Change failure rate (%%)"
+msgid "DORA4Metrics|Change failure rate (percentage)"
 msgstr ""
 
 msgid "DORA4Metrics|Date"

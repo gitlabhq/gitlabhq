@@ -18,7 +18,6 @@ GitLab supports the following OmniAuth providers.
 | Provider documentation                                              | OmniAuth provider name     |
 |---------------------------------------------------------------------|----------------------------|
 | [AliCloud](alicloud.md)                                             | `alicloud`                 |
-| [Atlassian Crowd](../administration/auth/crowd.md)                  | `crowd`                    |
 | [Atlassian](../administration/auth/atlassian.md)                    | `atlassian_oauth2`         |
 | [Auth0](auth0.md)                                                   | `auth0`                    |
 | [Authentiq](../administration/auth/authentiq.md)                    | `authentiq`                |
@@ -26,7 +25,6 @@ GitLab supports the following OmniAuth providers.
 | [Azure v2](azure.md)                                                | `azure_activedirectory_v2` |
 | [Azure v1](azure.md)                                                | `azure_oauth2`             |
 | [Bitbucket Cloud](bitbucket.md)                                     | `bitbucket`                |
-| [CAS](cas.md)                                                       | `cas3`                     |
 | [DingTalk](ding_talk.md)                                            | `dingtalk`                |
 | [Facebook](facebook.md)                                             | `facebook`                 |
 | [Generic OAuth 2.0](oauth2_generic.md)                              | `oauth2_generic`           |
@@ -49,7 +47,7 @@ Setting                    | Description | Default value
 ---------------------------|-------------|--------------
 `allow_single_sign_on`     | Enables you to list the providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | The default is `false`. If `false`, users must be created manually, or they can't sign in using OmniAuth.
 `auto_link_ldap_user`      | If enabled, creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have the [LDAP (ActiveDirectory)](../administration/auth/ldap/index.md) integration enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | The default is `false`.
-`block_auto_created_users` | If enabled, blocks users that are automatically created from signing in until they are approved by an administrator. | The default is `true`. If you set the value to `false`, make sure you only define providers for `allow_single_sign_on` that you can control, like SAML, Crowd, or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
+`block_auto_created_users` | If enabled, blocks users that are automatically created from signing in until they are approved by an administrator. | The default is `true`. If you set the value to `false`, make sure you only define providers for `allow_single_sign_on` that you can control, like SAML or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
 
 To change these settings:
 
@@ -134,7 +132,7 @@ variable in `args` for a provider, you can select another claim to use for the G
       args: { gitlab_username_claim: 'sub' } # For users signing in with the provider you configure, the GitLab username will be set to the "sub" received from the provider
     },
 
-    # Here are examples using GitHub and Crowd
+    # Here are examples using GitHub and Kerberos
 
     gitlab_rails['omniauth_providers'] = {
       name: "github"
@@ -142,9 +140,9 @@ variable in `args` for a provider, you can select another claim to use for the G
       args: { gitlab_username_claim: 'name' } # For users signing in with GitHub, the GitLab username will be set to the "name" received from GitHub
     },
     {
-      name: "crowd"
+      name: "kerberos"
       ...
-      args: { gitlab_username_claim: 'uid' } # For users signing in with Crowd, the GitLab username will be set to the "uid" received from Crowd
+      args: { gitlab_username_claim: 'uid' } # For users signing in with Kerberos, the GitLab username will be set to the "uid" received from Kerberos
     },
   ]
   ```
@@ -160,7 +158,7 @@ variable in `args` for a provider, you can select another claim to use for the G
     ...
     args: { gitlab_username_claim: 'name' }
   }
-  - { name: 'crowd',
+  - { name: 'kerberos',
     ...
     args: { gitlab_username_claim: 'uid' }
   }
@@ -442,5 +440,4 @@ then override the icon in one of two ways:
 ## Limitations
 
 Most supported OmniAuth providers don't support Git over HTTP password authentication.
-The only exception is [Atlassian Crowd](../administration/auth/crowd.md) (since GitLab [13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46935)).
 As a workaround, you can authenticate using a [personal access token](../user/profile/personal_access_tokens.md).

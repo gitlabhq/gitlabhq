@@ -12,12 +12,13 @@ module Gitlab
 
         private
 
-        attr_reader :project, :current_user, :lock_file
+        attr_reader :project, :current_user, :lock_file, :logger
 
         public
 
         def initialize(attributes = {})
           @options = attributes
+          @logger = Gitlab::Export::Logger.build
         end
 
         def method_missing(method, *args)
@@ -43,6 +44,10 @@ module Gitlab
 
           true
         rescue StandardError => e
+          payload = { message: "After export strategy failed" }
+          Gitlab::ExceptionLogFormatter.format!(e, payload)
+          log_error(payload)
+
           project.import_export_shared.error(e)
           false
         ensure
@@ -107,6 +112,18 @@ module Gitlab
 
         def log_validation_errors
           errors.full_messages.each { |msg| project.import_export_shared.add_error_message(msg) }
+        end
+
+        def log_info(params)
+          logger.info(log_default_params.merge(params))
+        end
+
+        def log_error(params)
+          logger.error(log_default_params.merge(params))
+        end
+
+        def log_default_params
+          { project_name: project.name, project_id: project.id }
         end
       end
     end

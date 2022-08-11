@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlIcon, GlButton } from '@gitlab/ui';
+import { __ } from '~/locale';
 import {
   issuableIconMap,
   issuableQaClassMap,
@@ -96,6 +97,11 @@ export default {
       default: true,
     },
   },
+  data() {
+    return {
+      isOpen: true,
+    };
+  },
   computed: {
     hasRelatedIssues() {
       return this.relatedIssues.length > 0;
@@ -139,6 +145,17 @@ export default {
     qaClass() {
       return issuableQaClassMap[this.issuableType];
     },
+    toggleIcon() {
+      return this.isOpen ? 'chevron-lg-up' : 'chevron-lg-down';
+    },
+    toggleLabel() {
+      return this.isOpen ? __('Collapse') : __('Expand');
+    },
+  },
+  methods: {
+    handleToggle() {
+      this.isOpen = !this.isOpen;
+    },
   },
   linkedIssueTypesTextMap,
 };
@@ -148,8 +165,8 @@ export default {
   <div id="related-issues" class="related-issues-block gl-mt-5">
     <div class="card card-slim gl-overflow-hidden">
       <div
-        :class="{ 'panel-empty-heading border-bottom-0': !hasBody }"
-        class="card-header gl-display-flex gl-justify-content-space-between gl-bg-gray-10"
+        :class="{ 'panel-empty-heading border-bottom-0': !hasBody, 'gl-border-b-0': !isOpen }"
+        class="card-header gl-display-flex gl-justify-content-space-between gl-align-items-center gl-bg-gray-10"
       >
         <h3
           class="card-title h5 position-relative gl-my-0 gl-display-flex gl-align-items-center gl-h-7"
@@ -182,6 +199,7 @@ export default {
             <gl-button
               v-if="canAdmin"
               data-qa-selector="related_issues_plus_button"
+              data-testid="add-button"
               icon="plus"
               :aria-label="addIssuableButtonText"
               :class="qaClass"
@@ -190,12 +208,23 @@ export default {
           </div>
         </h3>
         <slot name="header-actions"></slot>
+        <div class="gl-pl-4 gl-ml-3">
+          <gl-button
+            category="tertiary"
+            :icon="toggleIcon"
+            :aria-label="toggleLabel"
+            data-testid="toggle-links"
+            @click="handleToggle"
+          />
+        </div>
       </div>
       <div
+        v-if="isOpen"
         class="linked-issues-card-body gl-bg-gray-10"
         :class="{
           'gl-p-5': isFormVisible || shouldShowTokenBody,
         }"
+        data-testid="related-issues-body"
       >
         <div
           v-if="isFormVisible"

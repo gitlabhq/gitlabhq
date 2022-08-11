@@ -883,13 +883,15 @@ gitaly['cgroups_repositories_cpu_shares'] => 512
   on the repository the command is for. A circular hashing algorithm assigns
   Git commands to these cgroups, so a Git command for a repository is
   always assigned to the same cgroup.
-- `cgroups_repositories_memory_bytes` is the total memory limit that is imposed collectively on all
-  Git processes that Gitaly spawns. 0 implies no limit. This value cannot exceed
-  that of the top level `cgroups_memory_bytes`.
-- `cgroups_repositories_cpu_shares` is the CPU limit that is imposed collectively on all Git
-  processes Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
-  which represents 100% of CPU. This value cannot exceed that of the top
-  level`cgroups_cpu_shares`.
+- `cgroups_repositories_memory_bytes` is the total memory limit imposed on all Git processes contained in a repository cgroup.
+  A repository cgroup is one that contains Git processes for one or more repositories.
+  A consistent hash is used to assign repositories to these cgroups such that a Git process for a given repository always ends up in the same cgroup.
+  0 implies no limit. This value cannot exceed that of the top level `cgroups_memory_bytes`.
+- `cgroups_repositories_cpu_shares` is the CPU limit that is imposed on all Git processes contained in a repository cgroup.
+  A repository cgroup is one that contains Git processes for one or more repositories.
+  A consistent hash is used to assign repositories to these cgroups such that a Git process for a given repository always ends up in the same cgroup.
+  0 implies no limit. The maximum is 1024 shares, which represents 100% of CPU.
+  This value cannot exceed that of the top level`cgroups_cpu_shares`.
 
 #### Configure cgroups (legacy method)
 

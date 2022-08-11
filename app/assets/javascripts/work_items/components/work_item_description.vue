@@ -172,7 +172,7 @@ export default {
 <template>
   <gl-form-group
     v-if="isEditing"
-    class="gl-my-5"
+    class="gl-my-5 gl-border-t gl-pt-6"
     :label="__('Description')"
     label-for="work-item-description"
   >
@@ -182,7 +182,7 @@ export default {
       :is-submitting="isSubmitting"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="$options.markdownDocsPath"
-      class="gl-p-3 bordered-box"
+      class="gl-p-3 bordered-box gl-mt-5"
     >
       <template #textarea>
         <textarea
@@ -217,9 +217,9 @@ export default {
       }}</gl-button>
     </div>
   </gl-form-group>
-  <div v-else class="gl-mb-5">
-    <div class="gl-display-flex gl-align-items-center gl-mb-5">
-      <h3 class="gl-font-base gl-my-0">{{ __('Description') }}</h3>
+  <div v-else class="gl-mb-5 gl-border-t">
+    <div class="gl-display-inline-flex gl-align-items-center gl-mb-5">
+      <label class="d-block col-form-label gl-mr-5">{{ __('Description') }}</label>
       <gl-button
         v-if="canEdit"
         class="gl-ml-auto"

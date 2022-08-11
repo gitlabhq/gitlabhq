@@ -23,7 +23,17 @@ module Gitlab
         protected
 
         def strategy_execute
-          handle_response_error(send_file)
+          log_info(message: "Started uploading project", export_size: export_size)
+
+          upload_duration = Benchmark.realtime do
+            if Feature.enabled?(:import_export_web_upload_stream) && !project.export_file.file_storage?
+              upload_project_as_remote_stream
+            else
+              handle_response_error(send_file)
+            end
+          end
+
+          log_info(message: "Finished uploading project", export_size: export_size, upload_duration: upload_duration)
         end
 
         def handle_response_error(response)
@@ -44,8 +54,22 @@ module Gitlab
           export_file.close if export_file
         end
 
+        def upload_project_as_remote_stream
+          Gitlab::ImportExport::RemoteStreamUpload.new(
+            download_url: project.export_file.url,
+            upload_url: url,
+            options: {
+              upload_method: http_method.downcase.to_sym,
+              upload_content_type: 'application/gzip'
+            }).execute
+        rescue Gitlab::ImportExport::RemoteStreamUpload::StreamError => e
+          log_error(message: e.message, response_body: e.response_body.truncate(3000))
+
+          raise
+        end
+
         def export_file
-          project.export_file.open
+          @export_file ||= project.export_file.open
         end
 
         def send_file_options

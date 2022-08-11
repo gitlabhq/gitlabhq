@@ -1,5 +1,6 @@
-import { GlButton, GlIcon } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { GlIcon } from '@gitlab/ui';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   issuable1,
   issuable2,
@@ -17,7 +18,9 @@ import {
 describe('RelatedIssuesBlock', () => {
   let wrapper;
 
-  const findIssueCountBadgeAddButton = () => wrapper.find(GlButton);
+  const findIssueCountBadgeAddButton = () => wrapper.findByTestId('add-button');
+  const findToggleButton = () => wrapper.findByTestId('toggle-links');
+  const findRelatedIssuesBody = () => wrapper.findByTestId('related-issues-body');
 
   afterEach(() => {
     if (wrapper) {
@@ -28,7 +31,7 @@ describe('RelatedIssuesBlock', () => {
 
   describe('with defaults', () => {
     beforeEach(() => {
-      wrapper = mount(RelatedIssuesBlock, {
+      wrapper = mountExtended(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           issuableType: issuableTypesMap.ISSUE,
@@ -43,7 +46,7 @@ describe('RelatedIssuesBlock', () => {
     `(
       'displays "$titleText" in the header, "$helpLinkText" aria-label for help link, and "$addButtonText" aria-label for add button when issuableType is set to "$issuableType"',
       ({ issuableType, pathIdSeparator, titleText, helpLinkText, addButtonText }) => {
-        wrapper = mount(RelatedIssuesBlock, {
+        wrapper = mountExtended(RelatedIssuesBlock, {
           propsData: {
             pathIdSeparator,
             issuableType,
@@ -73,7 +76,7 @@ describe('RelatedIssuesBlock', () => {
     it('displays header text slot data', () => {
       const headerText = '<div>custom header text</div>';
 
-      wrapper = shallowMount(RelatedIssuesBlock, {
+      wrapper = shallowMountExtended(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           issuableType: 'issue',
@@ -89,7 +92,7 @@ describe('RelatedIssuesBlock', () => {
     it('displays header actions slot data', () => {
       const headerActions = '<button data-testid="custom-button">custom button</button>';
 
-      wrapper = shallowMount(RelatedIssuesBlock, {
+      wrapper = shallowMountExtended(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           issuableType: 'issue',
@@ -103,7 +106,7 @@ describe('RelatedIssuesBlock', () => {
 
   describe('with isFetching=true', () => {
     beforeEach(() => {
-      wrapper = mount(RelatedIssuesBlock, {
+      wrapper = mountExtended(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           isFetching: true,
@@ -119,7 +122,7 @@ describe('RelatedIssuesBlock', () => {
 
   describe('with canAddRelatedIssues=true', () => {
     beforeEach(() => {
-      wrapper = mount(RelatedIssuesBlock, {
+      wrapper = mountExtended(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           canAdmin: true,
@@ -135,7 +138,7 @@ describe('RelatedIssuesBlock', () => {
 
   describe('with isFormVisible=true', () => {
     beforeEach(() => {
-      wrapper = mount(RelatedIssuesBlock, {
+      wrapper = mountExtended(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           isFormVisible: true,
@@ -159,7 +162,7 @@ describe('RelatedIssuesBlock', () => {
     const categorizedHeadings = () => wrapper.findAll('h4');
     const headingTextAt = (index) => categorizedHeadings().at(index).text();
     const mountComponent = (showCategorizedIssues) => {
-      wrapper = mount(RelatedIssuesBlock, {
+      wrapper = mountExtended(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
           relatedIssues: [issuable1, issuable2, issuable3],
@@ -217,7 +220,7 @@ describe('RelatedIssuesBlock', () => {
       },
     ].forEach(({ issuableType, icon }) => {
       it(`issuableType=${issuableType} is passed`, () => {
-        wrapper = shallowMount(RelatedIssuesBlock, {
+        wrapper = shallowMountExtended(RelatedIssuesBlock, {
           propsData: {
             pathIdSeparator: PathIdSeparator.Issue,
             issuableType,
@@ -228,6 +231,30 @@ describe('RelatedIssuesBlock', () => {
         expect(iconComponent.exists()).toBe(true);
         expect(iconComponent.props('name')).toBe(icon);
       });
+    });
+  });
+
+  describe('toggle', () => {
+    beforeEach(() => {
+      wrapper = shallowMountExtended(RelatedIssuesBlock, {
+        propsData: {
+          pathIdSeparator: PathIdSeparator.Issue,
+          issuableType: issuableTypesMap.ISSUE,
+        },
+      });
+    });
+
+    it('is expanded by default', () => {
+      expect(findToggleButton().props('icon')).toBe('chevron-lg-up');
+      expect(findRelatedIssuesBody().exists()).toBe(true);
+    });
+
+    it('expands on click toggle button', async () => {
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findToggleButton().props('icon')).toBe('chevron-lg-down');
+      expect(findRelatedIssuesBody().exists()).toBe(false);
     });
   });
 });

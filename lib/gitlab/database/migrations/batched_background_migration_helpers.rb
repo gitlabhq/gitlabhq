@@ -24,7 +24,7 @@ module Gitlab
         # class must be present in the Gitlab::BackgroundMigration module, and the batch class (if specified) must be
         # present in the Gitlab::BackgroundMigration::BatchingStrategies module.
         #
-        # If migration with same job_class_name, table_name, column_name, and job_aruments already exists, this helper
+        # If migration with same job_class_name, table_name, column_name, and job_arguments already exists, this helper
         # will log an warning and not create a new one.
         #
         # job_class_name - The background migration job class as a string
