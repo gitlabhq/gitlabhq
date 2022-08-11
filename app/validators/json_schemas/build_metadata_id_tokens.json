@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "CI builds metadata ID tokens",
+  "type": "object",
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "patternProperties": {
+        "^id_token$": {
+          "type": "object",
+          "required": ["aud"],
+          "properties": {
+            "aud": { "type": "string" },
+            "field": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

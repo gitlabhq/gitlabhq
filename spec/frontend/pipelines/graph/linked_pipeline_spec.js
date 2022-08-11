@@ -426,7 +426,7 @@ describe('Linked pipeline', () => {
       jest.spyOn(wrapper.vm, '$emit');
       findButton().trigger('click');
 
-      expect(wrapper.emitted().pipelineClicked).toBeTruthy();
+      expect(wrapper.emitted().pipelineClicked).toHaveLength(1);
     });
 
     it(`should emit ${BV_HIDE_TOOLTIP} to close the tooltip`, () => {

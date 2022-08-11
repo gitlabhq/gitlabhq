@@ -215,6 +215,7 @@ export default {
       type="submit"
       :disabled="search.length === 0"
       data-testid="add-child-button"
+      class="gl-mr-2"
     >
       {{ $options.i18n.createChildOptionLabel }}
     </gl-button>

@@ -17,7 +17,7 @@ describe('Delete user modal', () => {
 
   const findButton = (variant, category) =>
     wrapper
-      .findAll(GlButton)
+      .findAllComponents(GlButton)
       .filter((w) => w.attributes('variant') === variant && w.attributes('category') === category)
       .at(0);
   const findForm = () => wrapper.find('form');

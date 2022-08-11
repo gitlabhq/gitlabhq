@@ -34,7 +34,7 @@ export const mockSearchExamples = [
   {
     name: 'a default query',
     urlQuery: '',
-    search: { runnerType: null, filters: [], pagination: { page: 1 }, sort: 'CREATED_DESC' },
+    search: { runnerType: null, filters: [], pagination: {}, sort: 'CREATED_DESC' },
     graphqlVariables: { sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
     isDefault: true,
   },
@@ -44,7 +44,7 @@ export const mockSearchExamples = [
     search: {
       runnerType: null,
       filters: [{ type: 'status', value: { data: 'ACTIVE', operator: '=' } }],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: { status: 'ACTIVE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
@@ -60,7 +60,7 @@ export const mockSearchExamples = [
           value: { data: 'something' },
         },
       ],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: { search: 'something', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
@@ -80,7 +80,7 @@ export const mockSearchExamples = [
           value: { data: 'else' },
         },
       ],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: { search: 'something else', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
@@ -91,7 +91,7 @@ export const mockSearchExamples = [
     search: {
       runnerType: 'INSTANCE_TYPE',
       filters: [],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: { type: 'INSTANCE_TYPE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
@@ -105,7 +105,7 @@ export const mockSearchExamples = [
         { type: 'status', value: { data: 'ACTIVE', operator: '=' } },
         { type: 'status', value: { data: 'PAUSED', operator: '=' } },
       ],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: { status: 'ACTIVE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
@@ -116,7 +116,7 @@ export const mockSearchExamples = [
     search: {
       runnerType: 'INSTANCE_TYPE',
       filters: [{ type: 'status', value: { data: 'ACTIVE', operator: '=' } }],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_ASC',
     },
     graphqlVariables: {
@@ -132,7 +132,7 @@ export const mockSearchExamples = [
     search: {
       runnerType: null,
       filters: [{ type: 'tag', value: { data: 'tag-1', operator: '=' } }],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: {
@@ -150,7 +150,7 @@ export const mockSearchExamples = [
         { type: 'tag', value: { data: 'tag-1', operator: '=' } },
         { type: 'tag', value: { data: 'tag-2', operator: '=' } },
       ],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: {
@@ -161,22 +161,22 @@ export const mockSearchExamples = [
   },
   {
     name: 'the next page',
-    urlQuery: '?page=2&after=AFTER_CURSOR',
+    urlQuery: '?after=AFTER_CURSOR',
     search: {
       runnerType: null,
       filters: [],
-      pagination: { page: 2, after: 'AFTER_CURSOR' },
+      pagination: { after: 'AFTER_CURSOR' },
       sort: 'CREATED_DESC',
     },
     graphqlVariables: { sort: 'CREATED_DESC', after: 'AFTER_CURSOR', first: RUNNER_PAGE_SIZE },
   },
   {
     name: 'the previous page',
-    urlQuery: '?page=2&before=BEFORE_CURSOR',
+    urlQuery: '?before=BEFORE_CURSOR',
     search: {
       runnerType: null,
       filters: [],
-      pagination: { page: 2, before: 'BEFORE_CURSOR' },
+      pagination: { before: 'BEFORE_CURSOR' },
       sort: 'CREATED_DESC',
     },
     graphqlVariables: { sort: 'CREATED_DESC', before: 'BEFORE_CURSOR', last: RUNNER_PAGE_SIZE },
@@ -184,7 +184,7 @@ export const mockSearchExamples = [
   {
     name: 'the next page filtered by a status, an instance type, tags and a non default sort',
     urlQuery:
-      '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&tag[]=tag-1&tag[]=tag-2&sort=CREATED_ASC&page=2&after=AFTER_CURSOR',
+      '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&tag[]=tag-1&tag[]=tag-2&sort=CREATED_ASC&after=AFTER_CURSOR',
     search: {
       runnerType: 'INSTANCE_TYPE',
       filters: [
@@ -192,7 +192,7 @@ export const mockSearchExamples = [
         { type: 'tag', value: { data: 'tag-1', operator: '=' } },
         { type: 'tag', value: { data: 'tag-2', operator: '=' } },
       ],
-      pagination: { page: 2, after: 'AFTER_CURSOR' },
+      pagination: { after: 'AFTER_CURSOR' },
       sort: 'CREATED_ASC',
     },
     graphqlVariables: {
@@ -210,7 +210,7 @@ export const mockSearchExamples = [
     search: {
       runnerType: null,
       filters: [{ type: 'paused', value: { data: 'true', operator: '=' } }],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: { paused: true, sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
@@ -221,7 +221,7 @@ export const mockSearchExamples = [
     search: {
       runnerType: null,
       filters: [{ type: 'paused', value: { data: 'false', operator: '=' } }],
-      pagination: { page: 1 },
+      pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: { paused: false, sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },

@@ -15,7 +15,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         BATCH_SIZE = 100
-        MIN_RECORDS_SIZE = 5
+        MIN_RECORDS_SIZE = 1
 
         # @param relation_object [Object] Object of a project/group, e.g. an issue
         # @param relation_key [String] Name of the object association to group/project, e.g. :issues

@@ -103,6 +103,13 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
         it 'has merge request resource label events' do
           expect(subject.first['resource_label_events']).not_to be_empty
         end
+
+        it 'has merge request assignees' do
+          reviewer = subject.first['merge_request_assignees'].first
+
+          expect(reviewer).not_to be_nil
+          expect(reviewer['user_id']).to eq(user.id)
+        end
       end
 
       context 'with snippets' do
@@ -468,7 +475,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
     create(:label_link, label: group_label, target: issue)
     create(:label_priority, label: group_label, priority: 1)
     milestone = create(:milestone, project: project)
-    merge_request = create(:merge_request, source_project: project, milestone: milestone)
+    merge_request = create(:merge_request, source_project: project, milestone: milestone, assignees: [user])
 
     ci_build = create(:ci_build, project: project, when: nil)
     ci_build.pipeline.update!(project: project)

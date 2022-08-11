@@ -289,6 +289,17 @@ module API
         present paginate(participants), with: Entities::UserBasic
       end
 
+      desc 'Get the reviewers of a merge request' do
+        success Entities::MergeRequestReviewer
+      end
+      get ':id/merge_requests/:merge_request_iid/reviewers', feature_category: :code_review, urgency: :low do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+
+        reviewers = ::Kaminari.paginate_array(merge_request.merge_request_reviewers)
+
+        present paginate(reviewers), with: Entities::MergeRequestReviewer
+      end
+
       desc 'Get the commits of a merge request' do
         success Entities::Commit
       end

@@ -32,7 +32,7 @@ module Projects
       attr_reader :project, :payload, :integration
 
       def valid_payload_size?
-        Gitlab::Utils::DeepSize.new(payload).valid?
+        Gitlab::Utils::DeepSize.new(payload.to_h).valid?
       end
 
       override :alert_source

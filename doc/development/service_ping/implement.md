@@ -371,14 +371,15 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
    - In the controller using the `RedisTracking` module and the following format:
 
      ```ruby
-     track_redis_hll_event(*controller_actions, name:, if: nil, &block)
+     track_event(*controller_actions, name:, conditions: nil, destinations: [:redis_hll], &block)
      ```
 
      Arguments:
 
      - `controller_actions`: the controller actions to track.
      - `name`: the event name.
-     - `if`: optional custom conditions. Uses the same format as Rails callbacks.
+     - `conditions`: optional custom conditions. Uses the same format as Rails callbacks.
+     - `destinations`: optional list of destinations. Currently supports `:redis_hll` and `:snowplow`. Default: [:redis_hll].
      - `&block`: optional block that computes and returns the `custom_id` that we want to track. This overrides the `visitor_id`.
 
      Example:
@@ -389,7 +390,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
        include RedisTracking
 
        skip_before_action :authenticate_user!, only: :show
-       track_redis_hll_event :index, :show, name: 'users_visiting_projects'
+       track_event :index, :show, name: 'users_visiting_projects'
 
        def index
          render html: 'index'

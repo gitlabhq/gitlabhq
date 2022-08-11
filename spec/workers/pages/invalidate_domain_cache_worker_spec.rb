@@ -92,6 +92,18 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
       { type: :namespace, id: 5 }
     ]
 
+  it_behaves_like 'clears caches with',
+    event_class: Groups::GroupTransferedEvent,
+    event_data: {
+      group_id: 1,
+      old_root_namespace_id: 3,
+      new_root_namespace_id: 5
+    },
+    caches: [
+      { type: :namespace, id: 3 },
+      { type: :namespace, id: 5 }
+    ]
+
   context 'when namespace based cache keys are duplicated' do
     # de-dups namespace cache keys
     it_behaves_like 'clears caches with',

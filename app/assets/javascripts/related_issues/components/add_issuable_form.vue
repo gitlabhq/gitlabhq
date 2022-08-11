@@ -208,7 +208,7 @@ export default {
     <p v-if="hasError" class="gl-field-error">
       {{ addRelatedErrorMessage }}
     </p>
-    <div class="gl-mt-5 gl-clearfix">
+    <div class="gl-mt-5">
       <gl-button
         ref="addButton"
         category="primary"
@@ -216,12 +216,13 @@ export default {
         :disabled="isSubmitButtonDisabled"
         :loading="isSubmitting"
         type="submit"
-        class="gl-float-left"
+        size="small"
+        class="gl-mr-2"
         data-qa-selector="add_issue_button"
       >
         {{ __('Add') }}
       </gl-button>
-      <gl-button class="gl-float-right" @click="onFormCancel">
+      <gl-button size="small" @click="onFormCancel">
         {{ __('Cancel') }}
       </gl-button>
     </div>

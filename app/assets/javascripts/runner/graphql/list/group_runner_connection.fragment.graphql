@@ -11,7 +11,6 @@ fragment GroupRunnerConnection on CiRunnerConnection {
     }
   }
   pageInfo {
-    __typename
     ...PageInfo
   }
 }

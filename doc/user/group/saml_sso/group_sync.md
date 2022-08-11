@@ -161,3 +161,9 @@ graph TB
    GitLabGroupD --> |Member|GitLabUserC
    GitLabGroupD --> |Member|GitLabUserD
 ```
+
+### Use the API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
+
+You can use the GitLab API to [list, add, and delete](../../../api/groups.md#saml-group-links) SAML group links.

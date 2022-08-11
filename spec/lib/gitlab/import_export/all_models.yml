@@ -653,6 +653,7 @@ search_data:
 merge_request_assignees:
 - merge_request
 - assignee
+- updated_state_by
 lfs_file_locks:
 - user
 project_badges:

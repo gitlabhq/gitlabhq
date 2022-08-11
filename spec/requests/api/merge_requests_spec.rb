@@ -1512,6 +1512,45 @@ RSpec.describe API::MergeRequests do
     end
   end
 
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/reviewers' do
+    it 'returns reviewers' do
+      reviewer = create(:user)
+      merge_request.merge_request_reviewers.create!(reviewer: reviewer)
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reviewers", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(merge_request.merge_request_reviewers.size)
+
+      expect(json_response.last['user']['id']).to eq(reviewer.id)
+      expect(json_response.last['user']['name']).to eq(reviewer.name)
+      expect(json_response.last['user']['username']).to eq(reviewer.username)
+      expect(json_response.last['state']).to eq('unreviewed')
+      expect(json_response.last['updated_state_by']).to be_nil
+      expect(json_response.last['created_at']).to be_present
+    end
+
+    it 'returns a 404 when iid does not exist' do
+      get api("/projects/#{project.id}/merge_requests/#{non_existing_record_iid}/reviewers", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns a 404 when id is used instead of iid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/reviewers", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/reviewers" }
+      end
+    end
+  end
+
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/commits' do
     include_context 'with merge requests'
 

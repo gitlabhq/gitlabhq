@@ -30,10 +30,10 @@ describe('AdminUsersTable component', () => {
   const fetchGroupCountsResponse = createFetchGroupCount([{ id: user.id, groupCount: 5 }]);
 
   const findUserGroupCount = (id) => wrapper.findByTestId(`user-group-count-${id}`);
-  const findUserGroupCountLoader = (id) => findUserGroupCount(id).find(GlSkeletonLoader);
+  const findUserGroupCountLoader = (id) => findUserGroupCount(id).findComponent(GlSkeletonLoader);
   const getCellByLabel = (trIdx, label) => {
     return wrapper
-      .find(GlTable)
+      .findComponent(GlTable)
       .find('tbody')
       .findAll('tr')
       .at(trIdx)
@@ -72,7 +72,7 @@ describe('AdminUsersTable component', () => {
     });
 
     it('renders the user actions', () => {
-      expect(wrapper.find(AdminUserActions).exists()).toBe(true);
+      expect(wrapper.findComponent(AdminUserActions).exists()).toBe(true);
     });
 
     it.each`
@@ -81,7 +81,7 @@ describe('AdminUsersTable component', () => {
       ${AdminUserDate}   | ${'Created on'}
       ${AdminUserDate}   | ${'Last activity'}
     `('renders the component for column $label', ({ component, label }) => {
-      expect(getCellByLabel(0, label).find(component).exists()).toBe(true);
+      expect(getCellByLabel(0, label).findComponent(component).exists()).toBe(true);
     });
   });
 

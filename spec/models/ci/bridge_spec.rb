@@ -25,6 +25,8 @@ RSpec.describe Ci::Bridge do
     expect(bridge).to have_many(:sourced_pipelines)
   end
 
+  it_behaves_like 'has ID tokens', :ci_bridge
+
   it 'has one downstream pipeline' do
     expect(bridge).to have_one(:sourced_pipeline)
     expect(bridge).to have_one(:downstream_pipeline)

@@ -102,7 +102,6 @@ export const PARAM_KEY_TAG = 'tag';
 export const PARAM_KEY_SEARCH = 'search';
 
 export const PARAM_KEY_SORT = 'sort';
-export const PARAM_KEY_PAGE = 'page';
 export const PARAM_KEY_AFTER = 'after';
 export const PARAM_KEY_BEFORE = 'before';
 

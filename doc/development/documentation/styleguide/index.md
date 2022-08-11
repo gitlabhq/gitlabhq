@@ -791,45 +791,15 @@ section of GitLab.
 
 ### Links to external documentation
 
-When describing interactions with external software, it's often helpful to
-include links to external documentation. When possible, make sure that you're
-linking to an [**authoritative** source](#authoritative-sources). For example,
-if you're describing a feature in Microsoft's Active Directory, include a link
-to official Microsoft documentation.
+When possible, avoid links to external documentation. These links can easily become outdated, and are difficult to maintain.
 
-### Authoritative sources
+- [They lead to link rot](https://en.wikipedia.org/wiki/Link_rot).
+- [They create issues with maintenance](https://gitlab.com/gitlab-org/gitlab/-/issues/368300).
 
-When citing external information, use sources that are written by the people who
-created the item or product in question. These sources are the most likely to be
-accurate and remain up to date.
+Sometimes links are required. They might clarify troubleshooting steps or help prevent duplication of content.
+Sometimes they are more precise and will be maintained more actively.
 
-Examples of authoritative sources include:
-
-- Specifications, such as a [Request for Comments](https://www.ietf.org/standards/rfcs/)
-  document from the Internet Engineering Task Force.
-- Official documentation for a product. For example, if you're setting up an
-  interface with the Google OAuth 2 authorization server, include a link to
-  Google's documentation.
-- Official documentation for a project. For example, if you're citing NodeJS
-  functionality, refer directly to [NodeJS documentation](https://nodejs.org/en/docs/).
-- Books from an authoritative publisher.
-
-Examples of sources to avoid include:
-
-- Personal blog posts.
-- Wikipedia.
-- Non-trustworthy articles.
-- Discussions on forums such as Stack Overflow.
-- Documentation from a company that describes another company's product.
-
-While many of these sources to avoid can help you learn skills and or features,
-they can become obsolete quickly. Nobody is obliged to maintain any of these
-sites. Therefore, we should avoid using them as reference literature.
-
-NOTE:
-Non-authoritative sources are acceptable only if there is no equivalent
-authoritative source. Even then, focus on non-authoritative sources that are
-extensively cited or peer-reviewed.
+For each external link you add, weigh the customer benefit with the maintenance difficulties.
 
 ### Links requiring permissions
 

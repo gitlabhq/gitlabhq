@@ -12,7 +12,7 @@ import { paths } from '../../mock_data';
 describe('Action components', () => {
   let wrapper;
 
-  const findDropdownItem = () => wrapper.find(GlDropdownItem);
+  const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
 
   const initComponent = ({ component, props } = {}) => {
     wrapper = shallowMount(component, {

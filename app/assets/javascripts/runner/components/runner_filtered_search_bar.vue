@@ -64,19 +64,19 @@ export default {
   },
   methods: {
     onFilter(filters) {
-      // Apply new filters, from page 1
+      // Apply new filters, resetting pagination
       this.$emit('input', {
         ...this.value,
         filters,
-        pagination: { page: 1 },
+        pagination: {},
       });
     },
     onSort(sort) {
-      // Apply new sort, from page 1
+      // Apply new sort, resetting pagination
       this.$emit('input', {
         ...this.value,
         sort,
-        pagination: { page: 1 },
+        pagination: {},
       });
     },
   },

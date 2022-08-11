@@ -84,7 +84,7 @@ describe('AdminRunnersApp', () => {
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
-  const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
+  const findRunnerPaginationNext = () => findRunnerPagination().findByText(s__('Pagination|Next'));
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
 
   const createComponent = ({
@@ -279,7 +279,7 @@ describe('AdminRunnersApp', () => {
           { type: PARAM_KEY_PAUSED, value: { data: 'true', operator: '=' } },
         ],
         sort: 'CREATED_DESC',
-        pagination: { page: 1 },
+        pagination: {},
       });
     });
 
@@ -340,6 +340,7 @@ describe('AdminRunnersApp', () => {
   it('when runners have not loaded, shows a loading state', () => {
     createComponent();
     expect(findRunnerList().props('loading')).toBe(true);
+    expect(findRunnerPagination().attributes('disabled')).toBe('true');
   });
 
   describe('when bulk delete is enabled', () => {
@@ -434,10 +435,16 @@ describe('AdminRunnersApp', () => {
   });
 
   describe('Pagination', () => {
+    const { pageInfo } = allRunnersDataPaginated.data.runners;
+
     beforeEach(async () => {
       mockRunnersHandler.mockResolvedValue(allRunnersDataPaginated);
 
       await createComponent({ mountFn: mountExtended });
+    });
+
+    it('passes the page info', () => {
+      expect(findRunnerPagination().props('pageInfo')).toEqualGraphqlFixture(pageInfo);
     });
 
     it('navigates to the next page', async () => {
@@ -446,7 +453,7 @@ describe('AdminRunnersApp', () => {
       expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         sort: CREATED_DESC,
         first: RUNNER_PAGE_SIZE,
-        after: allRunnersDataPaginated.data.runners.pageInfo.endCursor,
+        after: pageInfo.endCursor,
       });
     });
   });

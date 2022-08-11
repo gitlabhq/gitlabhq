@@ -82,7 +82,7 @@ describe('GroupRunnersApp', () => {
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
   const findRunnerRow = (id) => extendedWrapper(wrapper.findByTestId(`runner-row-${id}`));
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
-  const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
+  const findRunnerPaginationNext = () => findRunnerPagination().findByText(s__('Pagination|Next'));
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
@@ -263,7 +263,7 @@ describe('GroupRunnersApp', () => {
         runnerType: INSTANCE_TYPE,
         filters: [{ type: 'status', value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: 'CREATED_DESC',
-        pagination: { page: 1 },
+        pagination: {},
       });
     });
 
@@ -326,6 +326,7 @@ describe('GroupRunnersApp', () => {
   it('when runners have not loaded, shows a loading state', () => {
     createComponent();
     expect(findRunnerList().props('loading')).toBe(true);
+    expect(findRunnerPagination().attributes('disabled')).toBe('true');
   });
 
   describe('when no runners are found', () => {
@@ -372,10 +373,16 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('Pagination', () => {
+    const { pageInfo } = groupRunnersDataPaginated.data.group.runners;
+
     beforeEach(async () => {
       mockGroupRunnersHandler.mockResolvedValue(groupRunnersDataPaginated);
 
       await createComponent({ mountFn: mountExtended });
+    });
+
+    it('passes the page info', () => {
+      expect(findRunnerPagination().props('pageInfo')).toEqualGraphqlFixture(pageInfo);
     });
 
     it('navigates to the next page', async () => {
@@ -385,7 +392,7 @@ describe('GroupRunnersApp', () => {
         groupFullPath: mockGroupFullPath,
         sort: CREATED_DESC,
         first: RUNNER_PAGE_SIZE,
-        after: groupRunnersDataPaginated.data.group.runners.pageInfo.endCursor,
+        after: pageInfo.endCursor,
       });
     });
   });

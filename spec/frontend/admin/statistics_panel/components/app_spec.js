@@ -41,7 +41,7 @@ describe('Admin statistics app', () => {
         store.dispatch('requestStatistics');
         createComponent();
 
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
     });
 

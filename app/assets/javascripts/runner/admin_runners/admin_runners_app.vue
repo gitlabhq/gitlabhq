@@ -152,6 +152,9 @@ export default {
         isChecked,
       });
     },
+    onPaginationInput(value) {
+      this.search.pagination = value;
+    },
   },
   filteredSearchNamespace: ADMIN_FILTERED_SEARCH_NAMESPACE,
   INSTANCE_TYPE,
@@ -217,11 +220,13 @@ export default {
           />
         </template>
       </runner-list>
-      <runner-pagination
-        v-model="search.pagination"
-        class="gl-mt-3"
-        :page-info="runners.pageInfo"
-      />
     </template>
+
+    <runner-pagination
+      class="gl-mt-3"
+      :disabled="runnersLoading"
+      :page-info="runners.pageInfo"
+      @input="onPaginationInput"
+    />
   </div>
 </template>

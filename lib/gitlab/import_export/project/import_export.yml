@@ -55,6 +55,7 @@ tree:
     - merge_requests:
       - :metrics
       - :award_emoji
+      - :merge_request_assignees
       - notes:
         - :author
         - :award_emoji
@@ -329,7 +330,6 @@ included_attributes:
     - :source_branch
     - :source_project_id
     - :author_id
-    - :assignee_id
     - :title
     - :created_at
     - :updated_at
@@ -588,6 +588,10 @@ included_attributes:
     - :author_id
   issue_assignees:
     - :user_id
+  merge_request_assignees:
+    - :user_id
+    - :created_at
+    - :state
   sentry_issue:
     - :sentry_issue_identifier
   zoom_meetings:

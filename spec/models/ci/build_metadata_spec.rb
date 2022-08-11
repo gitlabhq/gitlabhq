@@ -105,6 +105,13 @@ RSpec.describe Ci::BuildMetadata do
             }
           }
         }
+        metadata.id_tokens = {
+          TEST_JWT_TOKEN: {
+            id_token: {
+              aud: 'https://gitlab.test'
+            }
+          }
+        }
 
         expect(metadata).to be_valid
       end
@@ -113,10 +120,14 @@ RSpec.describe Ci::BuildMetadata do
     context 'when data is invalid' do
       it 'returns errors' do
         metadata.secrets = { DATABASE_PASSWORD: { vault: {} } }
+        metadata.id_tokens = { TEST_JWT_TOKEN: { id_token: { aud: nil } } }
 
         aggregate_failures do
           expect(metadata).to be_invalid
-          expect(metadata.errors.full_messages).to eq(["Secrets must be a valid json schema"])
+          expect(metadata.errors.full_messages).to contain_exactly(
+            'Secrets must be a valid json schema',
+            'Id tokens must be a valid json schema'
+          )
         end
       end
     end

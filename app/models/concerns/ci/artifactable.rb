@@ -11,6 +11,7 @@ module Ci
     NotSupportedAdapterError = Class.new(StandardError)
     FILE_FORMAT_ADAPTERS = {
       gzip: Gitlab::Ci::Build::Artifacts::Adapters::GzipStream,
+      zip: Gitlab::Ci::Build::Artifacts::Adapters::ZipStream,
       raw: Gitlab::Ci::Build::Artifacts::Adapters::RawStream
     }.freeze
 

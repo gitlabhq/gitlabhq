@@ -1418,6 +1418,51 @@ DELETE /groups/:id/ldap_group_links
 NOTE:
 To delete the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
+## SAML Group Links **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
+
+List, add, and delete SAML group links.
+
+### List SAML group links
+
+Lists SAML group links.
+
+```plaintext
+GET /groups/:id/saml_group_links
+```
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+
+### Add SAML group link
+
+Adds a SAML group link for a group.
+
+```plaintext
+POST /groups/:id/saml_group_links
+```
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `saml_group_name`      | string         | yes       | The name of a SAML group |
+| `access_level`  | string         | yes       | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+
+### Delete SAML group link
+
+Deletes a SAML group link for the group.
+
+```plaintext
+DELETE /groups/:id/saml_group_links/:saml_group_name
+```
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `saml_group_name`      | string         | yes      | The name of an SAML group |
+
 ## Namespaces in groups
 
 By default, groups only get 20 namespaces at a time because the API results are paginated.

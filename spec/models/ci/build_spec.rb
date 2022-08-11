@@ -82,6 +82,8 @@ RSpec.describe Ci::Build do
     end
   end
 
+  it_behaves_like 'has ID tokens', :ci_build
+
   describe '.manual_actions' do
     let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }
     let!(:manual_but_succeeded) { create(:ci_build, :manual, status: :success, pipeline: pipeline) }

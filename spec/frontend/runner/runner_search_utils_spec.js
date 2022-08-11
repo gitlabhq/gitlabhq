@@ -24,11 +24,14 @@ describe('search_params.js', () => {
     });
 
     it.each`
-      query                    | updatedQuery
-      ${'status[]=ACTIVE'}     | ${'paused[]=false'}
-      ${'status[]=ACTIVE&a=b'} | ${'a=b&paused[]=false'}
-      ${'status[]=ACTIVE'}     | ${'paused[]=false'}
-      ${'status[]=PAUSED'}     | ${'paused[]=true'}
+      query                                   | updatedQuery
+      ${'status[]=ACTIVE'}                    | ${'paused[]=false'}
+      ${'status[]=ACTIVE&a=b'}                | ${'a=b&paused[]=false'}
+      ${'status[]=ACTIVE'}                    | ${'paused[]=false'}
+      ${'status[]=PAUSED'}                    | ${'paused[]=true'}
+      ${'page=2&after=AFTER'}                 | ${'after=AFTER'}
+      ${'page=2&before=BEFORE'}               | ${'before=BEFORE'}
+      ${'status[]=PAUSED&page=2&after=AFTER'} | ${'after=AFTER&paused[]=true'}
     `('updates "$query" to "$updatedQuery"', ({ query, updatedQuery }) => {
       const mockUrl = 'http://test.host/admin/runners?';
 
@@ -48,24 +51,6 @@ describe('search_params.js', () => {
         { type: 'filtered-search-term', value: { data: 'my' } },
         { type: 'filtered-search-term', value: { data: 'text' } },
       ]);
-    });
-
-    it('When a page cannot be parsed as a number, it defaults to `1`', () => {
-      expect(fromUrlQueryToSearch('?page=NONSENSE&after=AFTER_CURSOR').pagination).toEqual({
-        page: 1,
-      });
-    });
-
-    it('When a page is less than 1, it defaults to `1`', () => {
-      expect(fromUrlQueryToSearch('?page=0&after=AFTER_CURSOR').pagination).toEqual({
-        page: 1,
-      });
-    });
-
-    it('When a page with no cursor is given, it defaults to `1`', () => {
-      expect(fromUrlQueryToSearch('?page=2').pagination).toEqual({
-        page: 1,
-      });
     });
   });
 
@@ -143,8 +128,11 @@ describe('search_params.js', () => {
       });
     });
 
-    it('given a missing pagination, evaluates as not filtered', () => {
-      expect(isSearchFiltered({ pagination: null })).toBe(false);
-    });
+    it.each([null, undefined, {}])(
+      'given a missing pagination, evaluates as not filtered',
+      (mockPagination) => {
+        expect(isSearchFiltered({ pagination: mockPagination })).toBe(false);
+      },
+    );
   });
 });

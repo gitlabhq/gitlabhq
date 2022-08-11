@@ -555,6 +555,12 @@ this setting. However, disabling the Container Registry disables all Container R
 
 ## Troubleshooting the GitLab Container Registry
 
+## Migrating OCI container images to GitLab Container Registry
+
+Migrating built container images to the GitLab registry is not a current feature. However, an [epic](https://gitlab.com/groups/gitlab-org/-/epics/5210) is open to track the work on this feature.
+
+Some third-party tools can help migrate container images, for example, [skopeo](https://github.com/containers/skopeo), which can [copy container images](https://github.com/containers/skopeo#copying-images) between various storage mechanisms. You can use skopeo to copy from container registries, container storage backends, local directories, and local OCI-layout directories to the GitLab Container Registry.
+
 ### Docker connection error
 
 A Docker connection error can occur when there are special characters in either the group,

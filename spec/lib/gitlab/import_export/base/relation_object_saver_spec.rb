@@ -58,8 +58,8 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver do
     end
 
     context 'when subrelation collection count is small' do
-      let(:notes) { build_list(:note, 2, project: project, importing: true) }
-      let(:relation_object) { build(:issue, project: project, notes: notes) }
+      let(:note) { build(:note, project: project, importing: true) }
+      let(:relation_object) { build(:issue, project: project, notes: [note]) }
       let(:relation_definition) { { 'notes' => {} } }
 
       it 'saves subrelation as part of the relation object itself' do
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver do
         saver.execute
 
         issue = project.issues.last
-        expect(issue.notes.count).to eq(2)
+        expect(issue.notes.count).to eq(1)
       end
     end
 

@@ -31741,16 +31741,34 @@ msgstr ""
 msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
 msgstr ""
 
+msgid "ProtectedEnvironment|All environments specivied with the deployment tiers below are protected by a parent group. %{link_start}Learn More%{link_end}."
+msgstr ""
+
 msgid "ProtectedEnvironment|Allowed to deploy"
 msgstr ""
 
+msgid "ProtectedEnvironment|Allowed to deploy to %{project} / %{environment}"
+msgstr ""
+
 msgid "ProtectedEnvironment|Environment"
+msgstr ""
+
+msgid "ProtectedEnvironment|Environments protected upstream"
+msgstr ""
+
+msgid "ProtectedEnvironment|Failed to load details for this group."
+msgstr ""
+
+msgid "ProtectedEnvironment|No environments in this project are projected."
 msgstr ""
 
 msgid "ProtectedEnvironment|Only specified groups can execute deployments in protected environments."
 msgstr ""
 
 msgid "ProtectedEnvironment|Only specified users can execute deployments in a protected environment."
+msgstr ""
+
+msgid "ProtectedEnvironment|Parent group"
 msgstr ""
 
 msgid "ProtectedEnvironment|Protect"
@@ -34931,6 +34949,9 @@ msgstr ""
 msgid "SecurityOrchestration|Failed to load cluster agents."
 msgstr ""
 
+msgid "SecurityOrchestration|Failed to load images."
+msgstr ""
+
 msgid "SecurityOrchestration|Failed to load vulnerability scanners."
 msgstr ""
 
@@ -35274,6 +35295,9 @@ msgid "SecurityReports|Failed to get security report information. Please reload 
 msgstr ""
 
 msgid "SecurityReports|Hide dismissed"
+msgstr ""
+
+msgid "SecurityReports|Image"
 msgstr ""
 
 msgid "SecurityReports|Issue Created"
@@ -45778,6 +45802,9 @@ msgid "ciReport|API fuzzing"
 msgstr ""
 
 msgid "ciReport|All clusters"
+msgstr ""
+
+msgid "ciReport|All images"
 msgstr ""
 
 msgid "ciReport|All projects"
