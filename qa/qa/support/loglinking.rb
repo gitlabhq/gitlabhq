@@ -8,18 +8,18 @@ module QA
       PRODUCTION_ADDRESS  = 'https://gitlab.com'
       PRE_PROD_ADDRESS    = 'https://pre.gitlab.com'
       SENTRY_ENVIRONMENTS = {
-        staging:        'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',
+        staging: 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',
         staging_canary: 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg-cny',
-        staging_ref:    'https://sentry.gitlab.net/gitlab/staging-ref/?environment=gstg-ref',
-        pre:            'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=pre',
-        canary:         'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd',
-        production:     'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd-cny'
+        staging_ref: 'https://sentry.gitlab.net/gitlab/staging-ref/?environment=gstg-ref',
+        pre: 'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=pre',
+        canary: 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd',
+        production: 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd-cny'
       }.freeze
       KIBANA_ENVIRONMENTS = {
-        staging:        'https://nonprod-log.gitlab.net/',
+        staging: 'https://nonprod-log.gitlab.net/',
         staging_canary: 'https://nonprod-log.gitlab.net/',
-        canary:         'https://log.gprd.gitlab.net/',
-        production:     'https://log.gprd.gitlab.net/'
+        canary: 'https://log.gprd.gitlab.net/',
+        production: 'https://log.gprd.gitlab.net/'
       }.freeze
 
       def self.failure_metadata(correlation_id)

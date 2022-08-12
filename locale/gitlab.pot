@@ -2247,6 +2247,9 @@ msgstr ""
 msgid "Add existing confidential %{issuableType}"
 msgstr ""
 
+msgid "Add existing issue"
+msgstr ""
+
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
 msgstr ""
 
@@ -11218,6 +11221,9 @@ msgid "Credit card:"
 msgstr ""
 
 msgid "Critical vulnerabilities present"
+msgstr ""
+
+msgid "Crm|Active"
 msgstr ""
 
 msgid "Crm|Contact"

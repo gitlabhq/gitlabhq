@@ -166,11 +166,9 @@ export default {
     <div class="card card-slim gl-overflow-hidden">
       <div
         :class="{ 'panel-empty-heading border-bottom-0': !hasBody, 'gl-border-b-0': !isOpen }"
-        class="card-header gl-display-flex gl-justify-content-space-between gl-align-items-center gl-bg-gray-10"
+        class="gl-display-flex gl-justify-content-space-between gl-line-height-24 gl-py-3 gl-px-5 gl-bg-gray-10 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
       >
-        <h3
-          class="card-title h5 position-relative gl-my-0 gl-display-flex gl-align-items-center gl-h-7"
-        >
+        <h3 class="card-title h5 gl-my-0 gl-display-flex gl-align-items-center gl-flex-grow-1">
           <gl-link
             id="user-content-related-issues"
             class="anchor position-absolute gl-text-decoration-none"
@@ -189,28 +187,30 @@ export default {
             <gl-icon name="question" :size="12" />
           </gl-link>
 
-          <div class="gl-display-inline-flex">
-            <div class="js-related-issues-header-issue-count gl-display-inline-flex gl-mx-5">
-              <span class="gl-display-inline-flex gl-align-items-center">
-                <gl-icon :name="issuableTypeIcon" class="gl-mr-2 gl-text-gray-500" />
-                {{ badgeLabel }}
-              </span>
-            </div>
-            <gl-button
-              v-if="canAdmin"
-              data-qa-selector="related_issues_plus_button"
-              data-testid="add-button"
-              icon="plus"
-              :aria-label="addIssuableButtonText"
-              :class="qaClass"
-              @click="$emit('toggleAddRelatedIssuesForm', $event)"
-            />
+          <div class="js-related-issues-header-issue-count gl-display-inline-flex gl-mx-3">
+            <span class="gl-display-inline-flex gl-align-items-center">
+              <gl-icon :name="issuableTypeIcon" class="gl-mr-2 gl-text-gray-500" />
+              {{ badgeLabel }}
+            </span>
           </div>
         </h3>
         <slot name="header-actions"></slot>
-        <div class="gl-pl-4 gl-ml-3">
+        <gl-button
+          v-if="canAdmin"
+          size="small"
+          data-qa-selector="related_issues_plus_button"
+          data-testid="related-issues-plus-button"
+          :aria-label="addIssuableButtonText"
+          :class="qaClass"
+          class="gl-ml-3"
+          @click="$emit('toggleAddRelatedIssuesForm', $event)"
+        >
+          <slot name="add-button-text">{{ __('Add') }}</slot>
+        </gl-button>
+        <div class="gl-pl-3 gl-ml-3 gl-border-l-1 gl-border-l-solid gl-border-l-gray-100">
           <gl-button
             category="tertiary"
+            size="small"
             :icon="toggleIcon"
             :aria-label="toggleLabel"
             data-testid="toggle-links"

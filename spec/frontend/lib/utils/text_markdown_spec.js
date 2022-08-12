@@ -346,6 +346,17 @@ describe('init markdown', () => {
         },
       );
 
+      it('indents a blank line two spaces to the right', () => {
+        textArea.value = '012\n\n89';
+        textArea.setSelectionRange(4, 4);
+
+        textArea.dispatchEvent(indentEvent);
+
+        expect(textArea.value).toEqual('012\n  \n89');
+        expect(textArea.selectionStart).toEqual(6);
+        expect(textArea.selectionEnd).toEqual(6);
+      });
+
       it.each`
         selectionStart | selectionEnd | expected              | expectedSelectionStart | expectedSelectionEnd
         ${0}           | ${0}         | ${'234\n 789\n  34'}  | ${0}                   | ${0}
@@ -356,6 +367,7 @@ describe('init markdown', () => {
         ${14}          | ${15}        | ${'  234\n 789\n34'}  | ${12}                  | ${13}
         ${0}           | ${15}        | ${'234\n789\n34'}     | ${0}                   | ${10}
         ${3}           | ${13}        | ${'234\n789\n34'}     | ${1}                   | ${8}
+        ${6}           | ${6}         | ${'  234\n789\n  34'} | ${6}                   | ${6}
       `(
         'outdents the selected lines two spaces to the left',
         ({
@@ -376,6 +388,17 @@ describe('init markdown', () => {
           expect(textArea.selectionEnd).toEqual(expectedSelectionEnd);
         },
       );
+
+      it('outdent a blank line has no effect', () => {
+        textArea.value = '012\n\n89';
+        textArea.setSelectionRange(4, 4);
+
+        textArea.dispatchEvent(outdentEvent);
+
+        expect(textArea.value).toEqual('012\n\n89');
+        expect(textArea.selectionStart).toEqual(4);
+        expect(textArea.selectionEnd).toEqual(4);
+      });
 
       it('does not indent if meta is not set', () => {
         const indentNoMetaEvent = new KeyboardEvent('keydown', { key: ']' });

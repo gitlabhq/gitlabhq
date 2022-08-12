@@ -15,6 +15,7 @@ import UrlSync from '~/vue_shared/components/url_sync.vue';
 const mockOverrides = Array(DEFAULT_PER_PAGE * 3)
   .fill(1)
   .map((_, index) => ({
+    id: index,
     name: `test-proj-${index}`,
     avatar_url: `avatar-${index}`,
     full_path: `test-proj-${index}`,
@@ -59,6 +60,7 @@ describe('IntegrationOverrides', () => {
         const avatar = link.findComponent(ProjectAvatar);
 
         return {
+          id: avatar.props('projectId'),
           href: link.attributes('href'),
           avatarUrl: avatar.props('projectAvatarUrl'),
           avatarName: avatar.props('projectName'),
@@ -109,6 +111,7 @@ describe('IntegrationOverrides', () => {
       it('renders overrides as rows in table', () => {
         expect(findRowsAsModel()).toEqual(
           mockOverrides.map((x) => ({
+            id: x.id,
             href: x.full_path,
             avatarUrl: x.avatar_url,
             avatarName: x.name,

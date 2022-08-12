@@ -29,8 +29,6 @@
           %th
             = _('Callback URL')
           %th
-            = _('Clients')
-          %th
             = _('Trusted')
           %th
             = _('Confidential')
@@ -41,7 +39,6 @@
           %tr{ id: "application_#{application.id}" }
             %td= link_to application.name, admin_application_path(application)
             %td= application.redirect_uri
-            %td= @application_counts[application.id].to_i
             %td= application.trusted? ? _('Yes'): _('No')
             %td= application.confidential? ? _('Yes'): _('No')
             %td= link_to 'Edit', edit_admin_application_path(application), class: 'gl-button btn btn-link'

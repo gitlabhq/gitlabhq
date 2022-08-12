@@ -171,11 +171,11 @@ Use `include:local` instead of symbolic links.
 
 **Possible inputs**:
 
-- A full path relative to the root directory (`/`).
+A full path relative to the root directory (`/`):
+
 - The YAML file must have the extension `.yml` or `.yaml`.
 - You can [use `*` and `**` wildcards in the file path](includes.md#use-includelocal-with-wildcard-file-paths).
-
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:local`**:
 
@@ -208,10 +208,10 @@ use `include:file`. You can use `include:file` in combination with `include:proj
 
 **Possible inputs**:
 
-- A full path, relative to the root directory (`/`). The YAML file must have the
-  extension `.yml` or `.yaml`.
+A full path, relative to the root directory (`/`):
 
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- The YAML file must have the extension `.yml` or `.yaml`.
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:file`**:
 
@@ -268,10 +268,11 @@ Use `include:remote` with a full URL to include a file from a different location
 
 **Possible inputs**:
 
-- A public URL accessible by an HTTP/HTTPS `GET` request. Authentication with the
-  remote URL is not supported. The YAML file must have the extension `.yml` or `.yaml`.
+A public URL accessible by an HTTP/HTTPS `GET` request:
 
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- Authentication with the remote URL is not supported.
+- The YAML file must have the extension `.yml` or `.yaml`.
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:remote`**:
 
@@ -296,9 +297,12 @@ Use `include:template` to include [`.gitlab-ci.yml` templates](https://gitlab.co
 
 **Possible inputs**:
 
-- [`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+A [CI/CD template](../examples/index.md#cicd-templates):
 
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- Templates are stored in [`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+  Not all templates are designed to be used with `include:template`, so check template
+  comments before using one.
+- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:template`**:
 

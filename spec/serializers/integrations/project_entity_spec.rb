@@ -16,6 +16,7 @@ RSpec.describe Integrations::ProjectEntity do
 
     it 'contains needed attributes' do
       expect(subject).to include(
+        id: project.id,
         avatar_url: include('uploads'),
         name: project.name,
         full_path: project_path(project),

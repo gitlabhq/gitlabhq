@@ -230,6 +230,96 @@ In the upstream pipeline:
          artifacts: true
    ```
 
+#### Pass artifacts to a downstream pipeline
+
+You can pass artifacts to a downstream pipeline by using [`needs:project`](../yaml/index.md#needsproject).
+
+1. In a job in the upstream pipeline, save the artifacts using the [`artifacts`](../yaml/index.md#artifacts) keyword.
+1. Trigger the downstream pipeline with a trigger job:
+
+   ```yaml
+   build_artifacts:
+     stage: build
+     script:
+       - echo "This is a test artifact!" >> artifact.txt
+     artifacts:
+       paths:
+         - artifact.txt
+
+   deploy:
+     stage: deploy
+     trigger: my/downstream_project
+   ```
+
+1. In a job in the downstream pipeline, fetch the artifacts from the upstream pipeline
+   by using `needs:project`. Set `job` to the job in the upstream pipeline to fetch artifacts from,
+   `ref` to the branch, and `artifacts: true`.
+
+   ```yaml
+   test:
+     stage: test
+     script:
+       - cat artifact.txt
+     needs:
+       - project: my/upstream_project
+         job: build_artifacts
+         ref: main
+         artifacts: true
+   ```
+
+#### Pass artifacts to a downstream pipeline from a Merge Request pipeline
+
+When you use `needs:project` to [pass artifacts to a downstream pipeline](#pass-artifacts-to-a-downstream-pipeline),
+the `ref` value is usually a branch name, like `main` or `development`.
+
+For merge request pipelines, the `ref` value is in the form of `refs/merge-requests/<id>/head`,
+where `id` is the merge request ID. You can retrieve this ref with the [`CI_MERGE_REQUEST_REF_PATH`](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines)
+CI/CD variable. Do not use a branch name as the `ref` with merge request pipelines,
+because the downstream pipeline attempts to fetch artifacts from the latest branch pipeline.
+
+To fetch the artifacts from the upstream `merge request` pipeline instead of the `branch` pipeline,
+pass this variable to the downstream pipeline using variable inheritance:
+
+1. In a job in the upstream pipeline, save the artifacts using the [`artifacts`](../yaml/index.md#artifacts) keyword.
+1. In the job that triggers the downstream pipeline, pass the `$CI_MERGE_REQUEST_REF_PATH` variable by using
+   [variable inheritance](#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword):
+
+   ```yaml
+   build_artifacts:
+     stage: build
+     script:
+       - echo "This is a test artifact!" >> artifact.txt
+     artifacts:
+       paths:
+         - artifact.txt
+
+   upstream_job:
+     variables:
+       UPSTREAM_REF: $CI_MERGE_REQUEST_REF_PATH
+     trigger:
+       project: my/downstream_project
+       branch: my-branch
+   ```
+
+1. In a job in the downstream pipeline, fetch the artifacts from the upstream pipeline
+   by using `needs:project`. Set the `ref` to the `UPSTREAM_REF` variable, and `job`
+   to the job in the upstream pipeline to fetch artifacts from:
+
+   ```yaml
+   test:
+     stage: test
+     script:
+       - cat artifact.txt
+     needs:
+       - project: my/upstream_project
+         job: build_artifacts
+         ref: UPSTREAM_REF
+         artifacts: true
+   ```
+
+This method works for fetching artifacts from a regular merge request parent pipeline,
+but fetching artifacts from [merge results](merged_results_pipelines.md) pipelines is not supported.
+
 #### Use `rules` or `only`/`except` with multi-project pipelines
 
 You can use CI/CD variables or the [`rules`](../yaml/index.md#rulesif) keyword to

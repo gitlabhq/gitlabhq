@@ -28,7 +28,7 @@ others - particularly [latency-sensitive jobs](worker_attributes.md#latency-sens
 this will result in a poor user experience.
 
 This only applies to new worker classes when they are first introduced.
-As we recommend [using feature flags](../feature_flags/) as a general
+As we recommend [using feature flags](../feature_flags/index.md) as a general
 development process, it's best to control the entire change (including
 scheduling of the new Sidekiq worker) with a feature flag.
 

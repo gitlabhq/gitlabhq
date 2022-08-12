@@ -391,7 +391,7 @@ git checkout <default-branch>
 git merge <feature-branch>
 ```
 
-In GitLab, you typically use a [merge request](../user/project/merge_requests/) to merge your changes, instead of using the command line.
+In GitLab, you typically use a [merge request](../user/project/merge_requests/index.md) to merge your changes, instead of using the command line.
 
 To create a merge request from a fork to an upstream repository, see the
 [forking workflow](../user/project/repository/forking_workflow.md).

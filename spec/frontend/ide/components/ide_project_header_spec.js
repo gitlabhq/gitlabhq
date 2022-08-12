@@ -3,6 +3,7 @@ import IDEProjectHeader from '~/ide/components/ide_project_header.vue';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 
 const mockProject = {
+  id: 1,
   name: 'test proj',
   avatar_url: 'https://gitlab.com',
   path_with_namespace: 'path/with-namespace',
@@ -30,6 +31,7 @@ describe('IDE project header', () => {
 
     it('renders ProjectAvatar with correct props', () => {
       expect(findProjectAvatar().props()).toMatchObject({
+        projectId: mockProject.id,
         projectName: mockProject.name,
         projectAvatarUrl: mockProject.avatar_url,
       });

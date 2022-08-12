@@ -232,7 +232,9 @@ RSpec.describe 'Related issues', :js do
       it 'add related issue' do
         click_button 'Add a related issue'
         fill_in 'Paste issue link', with: "#{issue_b.to_reference(project)} "
-        click_button 'Add'
+        page.within('.linked-issues-card-body') do
+          click_button 'Add'
+        end
 
         wait_for_requests
 
@@ -249,7 +251,9 @@ RSpec.describe 'Related issues', :js do
       it 'add cross-project related issue' do
         click_button 'Add a related issue'
         fill_in 'Paste issue link', with: "#{issue_project_b_a.to_reference(project)} "
-        click_button 'Add'
+        page.within('.linked-issues-card-body') do
+          click_button 'Add'
+        end
 
         wait_for_requests
 
@@ -359,7 +363,9 @@ RSpec.describe 'Related issues', :js do
       it 'add related issue' do
         click_button 'Add a related issue'
         fill_in 'Paste issue link', with: "##{issue_d.iid} "
-        click_button 'Add'
+        page.within('.linked-issues-card-body') do
+          click_button 'Add'
+        end
 
         wait_for_requests
 
@@ -375,7 +381,9 @@ RSpec.describe 'Related issues', :js do
       it 'add invalid related issue' do
         click_button 'Add a related issue'
         fill_in 'Paste issue link', with: '#9999999 '
-        click_button 'Add'
+        page.within('.linked-issues-card-body') do
+          click_button 'Add'
+        end
 
         wait_for_requests
 
@@ -390,7 +398,9 @@ RSpec.describe 'Related issues', :js do
       it 'add unauthorized related issue' do
         click_button 'Add a related issue'
         fill_in 'Paste issue link', with: "#{issue_project_unauthorized_a.to_reference(project)} "
-        click_button 'Add'
+        page.within('.linked-issues-card-body') do
+          click_button 'Add'
+        end
 
         wait_for_requests
 

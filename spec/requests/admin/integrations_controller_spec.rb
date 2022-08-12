@@ -38,6 +38,7 @@ RSpec.describe Admin::IntegrationsController, :enable_admin_mode do
         expect(response).to include_pagination_headers
         expect(json_response).to contain_exactly(
           {
+            'id' => project.id,
             'avatar_url' => project.avatar_url,
             'full_name' => project.full_name,
             'name' => project.name,

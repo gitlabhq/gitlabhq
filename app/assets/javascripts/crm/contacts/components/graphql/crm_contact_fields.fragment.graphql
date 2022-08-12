@@ -6,6 +6,7 @@ fragment ContactFragment on CustomerRelationsContact {
   email
   phone
   description
+  active
   organization {
     __typename
     id

@@ -74,7 +74,7 @@ export default {
       return { groupId: this.groupGraphQLId };
     },
     fields() {
-      return [
+      const fields = [
         { name: 'firstName', label: __('First name'), required: true },
         { name: 'lastName', label: __('Last name'), required: true },
         { name: 'email', label: __('Email'), required: true },
@@ -86,6 +86,11 @@ export default {
         },
         { name: 'description', label: __('Description') },
       ];
+
+      if (this.isEditMode)
+        fields.push({ name: 'active', label: s__('Crm|Active'), required: true, bool: true });
+
+      return fields;
     },
     organizationSelectValues() {
       const values = this.organizations.map((o) => {

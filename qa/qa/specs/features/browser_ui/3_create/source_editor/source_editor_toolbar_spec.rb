@@ -33,7 +33,7 @@ module QA
         # wait_until required due to feature_caching. Remove along with feature flag removal.
         Page::File::Edit.perform do |file|
           Support::Waiter.wait_until(sleep_interval: 2, max_duration: 60, reload_page: page,
-            retry_on_exception: true) do
+                                     retry_on_exception: true) do
             expect(file).to have_element(:editor_toolbar_button)
           end
           file.remove_content

@@ -37,14 +37,14 @@ RSpec.describe QA::Support::Loglinking do
   describe '.sentry_url' do
     let(:url_hash) do
       {
-        :staging =>         'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',
-        :staging_canary =>  'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg-cny',
-        :staging_ref =>     'https://sentry.gitlab.net/gitlab/staging-ref/?environment=gstg-ref',
-        :pre =>             'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=pre',
-        :canary =>          'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd',
-        :production =>      'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd-cny',
-        :foo =>             nil,
-        nil =>              nil
+        :staging => 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',
+        :staging_canary => 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg-cny',
+        :staging_ref => 'https://sentry.gitlab.net/gitlab/staging-ref/?environment=gstg-ref',
+        :pre => 'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=pre',
+        :canary => 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd',
+        :production => 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd-cny',
+        :foo => nil,
+        nil => nil
       }
     end
 
@@ -60,14 +60,14 @@ RSpec.describe QA::Support::Loglinking do
   describe '.kibana_url' do
     let(:url_hash) do
       {
-        :staging =>         'https://nonprod-log.gitlab.net/',
-        :staging_canary =>  'https://nonprod-log.gitlab.net/',
-        :staging_ref =>     nil,
-        :pre =>             nil,
-        :canary =>          'https://log.gprd.gitlab.net/',
-        :production =>      'https://log.gprd.gitlab.net/',
-        :foo =>             nil,
-        nil =>              nil
+        :staging => 'https://nonprod-log.gitlab.net/',
+        :staging_canary => 'https://nonprod-log.gitlab.net/',
+        :staging_ref => nil,
+        :pre => nil,
+        :canary => 'https://log.gprd.gitlab.net/',
+        :production => 'https://log.gprd.gitlab.net/',
+        :foo => nil,
+        nil => nil
       }
     end
 

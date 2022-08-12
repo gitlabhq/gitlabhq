@@ -1,4 +1,4 @@
-import { GlAlert, GlFormInput, GlFormSelect, GlFormGroup } from '@gitlab/ui';
+import { GlAlert, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormGroup } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -78,6 +78,7 @@ describe('Reusable form component', () => {
   const findSaveButton = () => wrapper.findByTestId('save-button');
   const findForm = () => wrapper.find('form');
   const findError = () => wrapper.findComponent(GlAlert);
+  const findFormGroup = (at) => wrapper.findAllComponents(GlFormGroup).at(at);
 
   const mountComponent = (propsData) => {
     wrapper = shallowMountExtended(Form, {
@@ -92,7 +93,7 @@ describe('Reusable form component', () => {
     });
   };
 
-  const mountContact = ({ propsData } = {}) => {
+  const mountContact = ({ propsData, extraFields = [] } = {}) => {
     mountComponent({
       fields: [
         { name: 'firstName', label: 'First name', required: true },
@@ -108,6 +109,7 @@ describe('Reusable form component', () => {
             { key: 'gid://gitlab/CustomerRelations::Organization/2', value: 'ABC Corp' },
           ],
         },
+        ...extraFields,
       ],
       getQuery: {
         query: getGroupContactsQuery,
@@ -136,7 +138,8 @@ describe('Reusable form component', () => {
       mutation: updateContactMutation,
       existingId: 'gid://gitlab/CustomerRelations::Contact/12',
     };
-    mountContact({ propsData });
+    const extraFields = [{ name: 'active', label: 'Active', required: true, bool: true }];
+    mountContact({ propsData, extraFields });
   };
 
   const mountOrganization = ({ propsData } = {}) => {
@@ -285,24 +288,30 @@ describe('Reusable form component', () => {
     });
 
     it.each`
-      index | id                  | componentName     | value
-      ${0}  | ${'firstName'}      | ${'GlFormInput'}  | ${'Marty'}
-      ${1}  | ${'lastName'}       | ${'GlFormInput'}  | ${'McFly'}
-      ${2}  | ${'email'}          | ${'GlFormInput'}  | ${'example@gitlab.com'}
-      ${4}  | ${'description'}    | ${'GlFormInput'}  | ${undefined}
-      ${3}  | ${'phone'}          | ${'GlFormInput'}  | ${undefined}
-      ${5}  | ${'organizationId'} | ${'GlFormSelect'} | ${'gid://gitlab/CustomerRelations::Organization/2'}
+      index | id                  | component       | value
+      ${0}  | ${'firstName'}      | ${GlFormInput}  | ${'Marty'}
+      ${1}  | ${'lastName'}       | ${GlFormInput}  | ${'McFly'}
+      ${2}  | ${'email'}          | ${GlFormInput}  | ${'example@gitlab.com'}
+      ${4}  | ${'description'}    | ${GlFormInput}  | ${undefined}
+      ${3}  | ${'phone'}          | ${GlFormInput}  | ${undefined}
+      ${5}  | ${'organizationId'} | ${GlFormSelect} | ${'gid://gitlab/CustomerRelations::Organization/2'}
     `(
-      'should render a $componentName for #$id with the value "$value"',
-      ({ index, id, componentName, value }) => {
-        const component = componentName === 'GlFormInput' ? GlFormInput : GlFormSelect;
-        const findFormGroup = (at) => wrapper.findAllComponents(GlFormGroup).at(at);
+      'should render the correct component for #$id with the value "$value"',
+      ({ index, id, component, value }) => {
         const findFormElement = () => findFormGroup(index).find(component);
 
         expect(findFormElement().attributes('id')).toBe(id);
         expect(findFormElement().attributes('value')).toBe(value);
       },
     );
+
+    it('should render a checked GlFormCheckbox for #active', () => {
+      const activeCheckboxIndex = 6;
+      const findFormElement = () => findFormGroup(activeCheckboxIndex).find(GlFormCheckbox);
+
+      expect(findFormElement().attributes('id')).toBe('active');
+      expect(findFormElement().attributes('checked')).toBe('true');
+    });
 
     it('should include updated values in update mutation', () => {
       wrapper.find('#firstName').vm.$emit('input', 'Michael');
@@ -314,6 +323,7 @@ describe('Reusable form component', () => {
 
       expect(handler).toHaveBeenCalledWith('updateContact', {
         input: {
+          active: true,
           description: null,
           email: 'example@gitlab.com',
           firstName: 'Michael',

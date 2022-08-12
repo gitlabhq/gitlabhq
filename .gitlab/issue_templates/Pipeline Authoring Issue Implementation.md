@@ -12,6 +12,21 @@
 
 ## Proposal
 
+## Additional details
+<!--
+_NOTE: If the issue has addressed all of these questions, this separate section can be removed._
+-->
+
+Some relevant technical details, if applicable, such as:
+
+- Does this need a ~"feature flag"?
+- Is there an example response showing the data structure that should be returned (new endpoints only)?
+- What permissions should be used?
+- Is this EE or CE?
+    - [ ] EE
+    - [ ] CE
+- Additional comments:
+
 ## Implementation Table
 
 <!--

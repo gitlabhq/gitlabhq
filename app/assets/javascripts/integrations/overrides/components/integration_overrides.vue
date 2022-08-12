@@ -125,6 +125,7 @@ export default {
         >
           <project-avatar
             class="gl-mr-3"
+            :project-id="item.id"
             :project-avatar-url="item.avatar_url"
             :project-name="item.name"
             aria-hidden="true"

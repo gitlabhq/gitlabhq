@@ -350,7 +350,7 @@ function linesFromSelection(textArea) {
  * @param {Object} textArea - the targeted text area
  * @param {Number} selectionStart - start position of original selection
  * @param {Number} selectionEnd - end position of original selection
- * @param {Number} startPos - start pos of first line
+ * @param {Number} lineStart - start pos of first line
  * @param {Number} firstLineChange - number of characters changed on first line
  * @param {Number} totalChanged - total number of characters changed
  */
@@ -358,23 +358,20 @@ function setNewSelectionRange(
   textArea,
   selectionStart,
   selectionEnd,
-  startPos,
+  lineStart,
   firstLineChange,
   totalChanged,
 ) {
+  let newStart = Math.max(lineStart, selectionStart + firstLineChange);
+  let newEnd = Math.max(lineStart, selectionEnd + totalChanged);
+
   if (selectionStart === selectionEnd) {
-    textArea.setSelectionRange(
-      Math.max(0, selectionStart + firstLineChange),
-      Math.max(0, selectionEnd + firstLineChange),
-    );
-  } else if (selectionStart === startPos) {
-    textArea.setSelectionRange(selectionStart, Math.max(0, selectionEnd + totalChanged));
-  } else {
-    textArea.setSelectionRange(
-      Math.max(0, selectionStart + firstLineChange),
-      Math.max(0, selectionEnd + totalChanged),
-    );
+    newEnd = newStart;
+  } else if (selectionStart === lineStart) {
+    newStart = lineStart;
   }
+
+  textArea.setSelectionRange(newStart, newEnd);
 }
 
 /**
@@ -390,10 +387,8 @@ function indentLines(textArea) {
   textArea.setSelectionRange(startPos, endPos);
 
   lines.forEach((line) => {
-    if (line.length > 0) {
-      line = INDENT_CHAR.repeat(INDENT_LENGTH) + line;
-      totalAdded += INDENT_LENGTH;
-    }
+    line = INDENT_CHAR.repeat(INDENT_LENGTH) + line;
+    totalAdded += INDENT_LENGTH;
 
     shiftedLines.push(line);
   });
@@ -439,7 +434,8 @@ function outdentLines(textArea) {
 
   const textToInsert = shiftedLines.join('\n');
 
-  insertText(textArea, textToInsert);
+  if (totalRemoved > 0) insertText(textArea, textToInsert);
+
   setNewSelectionRange(
     textArea,
     selectionStart,

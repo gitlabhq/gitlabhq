@@ -18,9 +18,10 @@ import {
 describe('RelatedIssuesBlock', () => {
   let wrapper;
 
-  const findIssueCountBadgeAddButton = () => wrapper.findByTestId('add-button');
   const findToggleButton = () => wrapper.findByTestId('toggle-links');
   const findRelatedIssuesBody = () => wrapper.findByTestId('related-issues-body');
+  const findIssueCountBadgeAddButton = () =>
+    wrapper.find('[data-testid="related-issues-plus-button"]');
 
   afterEach(() => {
     if (wrapper) {

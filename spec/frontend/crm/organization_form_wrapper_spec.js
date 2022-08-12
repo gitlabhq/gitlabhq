@@ -49,7 +49,7 @@ describe('Customer relations organization form wrapper', () => {
       mountComponent({ isEditMode: true });
 
       const organizationForm = findOrganizationForm();
-      expect(organizationForm.props('fields')).toHaveLength(3);
+      expect(organizationForm.props('fields')).toHaveLength(4);
       expect(organizationForm.props('title')).toBe('Edit organization');
       expect(organizationForm.props('successMessage')).toBe('Organization has been updated.');
       expect(organizationForm.props('mutation')).toBe(updateOrganizationMutation);

@@ -1224,10 +1224,6 @@ module Ci
       stages.find_by(name: name)
     end
 
-    def find_stage_by_name!(name)
-      stages.find_by!(name: name)
-    end
-
     def full_error_messages
       errors ? errors.full_messages.to_sentence : ""
     end

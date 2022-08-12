@@ -244,7 +244,7 @@ export default {
       >
         {{ $options.i18n.addChildButtonLabel }}
       </gl-button>
-      <div class="gl-border-l-1 gl-border-l-solid gl-border-l-gray-50 gl-pl-3 gl-ml-3">
+      <div class="gl-border-l-1 gl-border-l-solid gl-border-l-gray-100 gl-pl-3 gl-ml-3">
         <gl-button
           category="tertiary"
           size="small"
