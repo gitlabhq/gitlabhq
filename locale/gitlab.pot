@@ -33618,6 +33618,11 @@ msgstr ""
 msgid "Runners page."
 msgstr ""
 
+msgid "Runners|%d selected runner deleted"
+msgid_plural "Runners|%d selected runners deleted"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Runners|%{percentage} spot."
 msgstr ""
 
@@ -33975,6 +33980,9 @@ msgid "Runners|Show runner installation and registration instructions"
 msgstr ""
 
 msgid "Runners|Show runner installation instructions"
+msgstr ""
+
+msgid "Runners|Something went wrong while deleting. Please refresh the page to try again."
 msgstr ""
 
 msgid "Runners|Something went wrong while fetching runner data."

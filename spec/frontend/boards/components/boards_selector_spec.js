@@ -53,7 +53,7 @@ describe('BoardsSelector', () => {
   };
 
   const fillSearchBox = (filterTerm) => {
-    const searchBox = wrapper.find({ ref: 'searchBox' });
+    const searchBox = wrapper.findComponent({ ref: 'searchBox' });
     const searchBoxInput = searchBox.find('input');
     searchBoxInput.setValue(filterTerm);
     searchBoxInput.trigger('input');

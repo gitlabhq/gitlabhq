@@ -61,7 +61,7 @@ this dashboard.
 
 You can customize the cost dashboard by editing the `.gitlab/dashboards/default_costs.yml`
 file or creating similar dashboard configuration files. To learn more, read about
-[customizing dashboards in our documentation](/ee/operations/metrics/dashboards/).
+[customizing dashboards in our documentation](../../operations/metrics/dashboards/index.md).
 
 #### Available metrics
 

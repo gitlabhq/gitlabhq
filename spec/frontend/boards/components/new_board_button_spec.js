@@ -53,13 +53,13 @@ describe('NewBoardButton', () => {
     it('renders nothing when `canAdminBoard` is `false`', () => {
       wrapper = createComponent({ canAdminBoard: false });
 
-      expect(wrapper.find(GlButton).exists()).toBe(false);
+      expect(wrapper.findComponent(GlButton).exists()).toBe(false);
     });
 
     it('renders nothing when `multipleIssueBoardsAvailable` is `false`', () => {
       wrapper = createComponent({ multipleIssueBoardsAvailable: false });
 
-      expect(wrapper.find(GlButton).exists()).toBe(false);
+      expect(wrapper.findComponent(GlButton).exists()).toBe(false);
     });
 
     it('emits `showBoardModal` when button is clicked', () => {
@@ -67,7 +67,7 @@ describe('NewBoardButton', () => {
 
       wrapper = createComponent();
 
-      wrapper.find(GlButton).vm.$emit('click', { preventDefault: () => {} });
+      wrapper.findComponent(GlButton).vm.$emit('click', { preventDefault: () => {} });
 
       expect(eventHub.$emit).toHaveBeenCalledWith('showBoardModal', 'new');
     });

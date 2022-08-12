@@ -359,7 +359,7 @@ describe('IssuableListRoot', () => {
 
       findIssuableTabs().vm.$emit('click');
 
-      expect(wrapper.emitted('click-tab')).toBeTruthy();
+      expect(wrapper.emitted('click-tab')).toHaveLength(1);
     });
 
     it('sets all issuables as checked when filtered-search-bar component emits `checked-input` event', () => {
@@ -369,7 +369,7 @@ describe('IssuableListRoot', () => {
 
       searchEl.vm.$emit('checked-input', true);
 
-      expect(searchEl.emitted('checked-input')).toBeTruthy();
+      expect(searchEl.emitted('checked-input')).toHaveLength(1);
       expect(searchEl.emitted('checked-input').length).toBe(1);
 
       expect(wrapper.vm.checkedIssuables[mockIssuables[0].iid]).toEqual({
@@ -384,9 +384,9 @@ describe('IssuableListRoot', () => {
       const searchEl = findFilteredSearchBar();
 
       searchEl.vm.$emit('onFilter');
-      expect(wrapper.emitted('filter')).toBeTruthy();
+      expect(wrapper.emitted('filter')).toHaveLength(1);
       searchEl.vm.$emit('onSort');
-      expect(wrapper.emitted('sort')).toBeTruthy();
+      expect(wrapper.emitted('sort')).toHaveLength(1);
     });
 
     it('sets an issuable as checked when issuable-item component emits `checked-input` event', () => {
@@ -396,7 +396,7 @@ describe('IssuableListRoot', () => {
 
       issuableItem.vm.$emit('checked-input', true);
 
-      expect(issuableItem.emitted('checked-input')).toBeTruthy();
+      expect(issuableItem.emitted('checked-input')).toHaveLength(1);
       expect(issuableItem.emitted('checked-input').length).toBe(1);
 
       expect(wrapper.vm.checkedIssuables[mockIssuables[0].iid]).toEqual({
@@ -425,7 +425,7 @@ describe('IssuableListRoot', () => {
       wrapper = createComponent({ data, props: { showPaginationControls: true } });
 
       findGlPagination().vm.$emit('input');
-      expect(wrapper.emitted('page-change')).toBeTruthy();
+      expect(wrapper.emitted('page-change')).toHaveLength(1);
     });
 
     it.each`

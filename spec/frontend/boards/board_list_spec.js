@@ -56,7 +56,7 @@ describe('Board list component', () => {
     });
 
     it('renders issues', () => {
-      expect(wrapper.findAll(BoardCard).length).toBe(1);
+      expect(wrapper.findAllComponents(BoardCard).length).toBe(1);
     });
 
     it('sets data attribute with issue id', () => {

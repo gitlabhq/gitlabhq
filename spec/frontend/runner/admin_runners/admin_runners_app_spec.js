@@ -19,6 +19,7 @@ import { createLocalState } from '~/runner/graphql/list/local_state';
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
+import RunnerBulkDelete from '~/runner/components/runner_bulk_delete.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
@@ -36,8 +37,6 @@ import {
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
   STATUS_ONLINE,
-  STATUS_OFFLINE,
-  STATUS_STALE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import allRunnersQuery from 'ee_else_ce/runner/graphql/list/all_runners.query.graphql';
@@ -72,15 +71,19 @@ jest.mock('~/lib/utils/url_utility', () => ({
 Vue.use(VueApollo);
 Vue.use(GlToast);
 
+const COUNT_QUERIES = 7; // 4 tabs + 3 status queries
+
 describe('AdminRunnersApp', () => {
   let wrapper;
   let cacheConfig;
   let localMutations;
+  let showToast;
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
+  const findRunnerBulkDelete = () => wrapper.findComponent(RunnerBulkDelete);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
@@ -117,6 +120,8 @@ describe('AdminRunnersApp', () => {
       ...options,
     });
 
+    showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
+
     return waitForPromises();
   };
 
@@ -128,15 +133,8 @@ describe('AdminRunnersApp', () => {
   afterEach(() => {
     mockRunnersHandler.mockReset();
     mockRunnersCountHandler.mockReset();
+    showToast.mockReset();
     wrapper.destroy();
-  });
-
-  it('shows the runner tabs with a runner count for each type', async () => {
-    await createComponent({ mountFn: mountExtended });
-
-    expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
-      `All ${mockRunnersCount} Instance ${mockRunnersCount} Group ${mockRunnersCount} Project ${mockRunnersCount}`,
-    );
   });
 
   it('shows the runner setup instructions', () => {
@@ -146,27 +144,38 @@ describe('AdminRunnersApp', () => {
     expect(findRegistrationDropdown().props('type')).toBe(INSTANCE_TYPE);
   });
 
-  it('shows total runner counts', async () => {
-    await createComponent({ mountFn: mountExtended });
+  describe('shows total runner counts', () => {
+    beforeEach(async () => {
+      await createComponent({ mountFn: mountExtended });
+    });
 
-    expect(mockRunnersCountHandler).toHaveBeenCalledWith({ status: STATUS_ONLINE });
-    expect(mockRunnersCountHandler).toHaveBeenCalledWith({ status: STATUS_OFFLINE });
-    expect(mockRunnersCountHandler).toHaveBeenCalledWith({ status: STATUS_STALE });
+    it('fetches counts', () => {
+      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
+    });
 
-    expect(findRunnerStats().text()).toContain(
-      `${s__('Runners|Online runners')} ${mockRunnersCount}`,
-    );
-    expect(findRunnerStats().text()).toContain(
-      `${s__('Runners|Offline runners')} ${mockRunnersCount}`,
-    );
-    expect(findRunnerStats().text()).toContain(
-      `${s__('Runners|Stale runners')} ${mockRunnersCount}`,
-    );
+    it('shows the runner tabs', () => {
+      expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
+        `All ${mockRunnersCount} Instance ${mockRunnersCount} Group ${mockRunnersCount} Project ${mockRunnersCount}`,
+      );
+    });
+
+    it('shows the total', () => {
+      expect(findRunnerStats().text()).toContain(
+        `${s__('Runners|Online runners')} ${mockRunnersCount}`,
+      );
+      expect(findRunnerStats().text()).toContain(
+        `${s__('Runners|Offline runners')} ${mockRunnersCount}`,
+      );
+      expect(findRunnerStats().text()).toContain(
+        `${s__('Runners|Stale runners')} ${mockRunnersCount}`,
+      );
+    });
   });
 
   it('shows the runners list', async () => {
     await createComponent();
 
+    expect(mockRunnersHandler).toHaveBeenCalledTimes(1);
     expect(findRunnerList().props('runners')).toEqualGraphqlFixture(mockRunners);
   });
 
@@ -226,18 +235,13 @@ describe('AdminRunnersApp', () => {
   });
 
   describe('Single runner row', () => {
-    let showToast;
-
     const { id: graphqlId, shortSha } = mockRunners[0];
     const id = getIdFromGraphQLId(graphqlId);
-    const COUNT_QUERIES = 7; // Smart queries that display a filtered count of runners
-    const FILTERED_COUNT_QUERIES = 4; // Smart queries that display a count of runners in tabs
 
     beforeEach(async () => {
       mockRunnersCountHandler.mockClear();
 
       await createComponent({ mountFn: mountExtended });
-      showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
     });
 
     it('Links to the runner page', async () => {
@@ -252,7 +256,7 @@ describe('AdminRunnersApp', () => {
 
       findRunnerActionsCell().vm.$emit('toggledPaused');
 
-      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES + FILTERED_COUNT_QUERIES);
+      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES * 2);
       expect(showToast).toHaveBeenCalledTimes(0);
     });
 
@@ -344,36 +348,70 @@ describe('AdminRunnersApp', () => {
   });
 
   describe('when bulk delete is enabled', () => {
-    beforeEach(() => {
-      createComponent({
-        provide: {
-          glFeatures: { adminRunnersBulkDelete: true },
-        },
+    describe('Before runners are deleted', () => {
+      beforeEach(async () => {
+        await createComponent({
+          provide: {
+            glFeatures: { adminRunnersBulkDelete: true },
+          },
+        });
+      });
+
+      it('runner bulk delete is available', () => {
+        expect(findRunnerBulkDelete().exists()).toBe(true);
+      });
+
+      it('runner list is checkable', () => {
+        expect(findRunnerList().props('checkable')).toBe(true);
+      });
+
+      it('responds to checked items by updating the local cache', () => {
+        const setRunnerCheckedMock = jest
+          .spyOn(localMutations, 'setRunnerChecked')
+          .mockImplementation(() => {});
+
+        const runner = mockRunners[0];
+
+        expect(setRunnerCheckedMock).toHaveBeenCalledTimes(0);
+
+        findRunnerList().vm.$emit('checked', {
+          runner,
+          isChecked: true,
+        });
+
+        expect(setRunnerCheckedMock).toHaveBeenCalledTimes(1);
+        expect(setRunnerCheckedMock).toHaveBeenCalledWith({
+          runner,
+          isChecked: true,
+        });
       });
     });
 
-    it('runner list is checkable', () => {
-      expect(findRunnerList().props('checkable')).toBe(true);
-    });
-
-    it('responds to checked items by updating the local cache', () => {
-      const setRunnerCheckedMock = jest
-        .spyOn(localMutations, 'setRunnerChecked')
-        .mockImplementation(() => {});
-
-      const runner = mockRunners[0];
-
-      expect(setRunnerCheckedMock).toHaveBeenCalledTimes(0);
-
-      findRunnerList().vm.$emit('checked', {
-        runner,
-        isChecked: true,
+    describe('When runners are deleted', () => {
+      beforeEach(async () => {
+        await createComponent({
+          mountFn: mountExtended,
+          provide: {
+            glFeatures: { adminRunnersBulkDelete: true },
+          },
+        });
       });
 
-      expect(setRunnerCheckedMock).toHaveBeenCalledTimes(1);
-      expect(setRunnerCheckedMock).toHaveBeenCalledWith({
-        runner,
-        isChecked: true,
+      it('count data is refetched', async () => {
+        expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
+
+        findRunnerBulkDelete().vm.$emit('deleted', { message: 'Runners deleted' });
+
+        expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES * 2);
+      });
+
+      it('toast is shown', async () => {
+        expect(showToast).toHaveBeenCalledTimes(0);
+
+        findRunnerBulkDelete().vm.$emit('deleted', { message: 'Runners deleted' });
+
+        expect(showToast).toHaveBeenCalledTimes(1);
+        expect(showToast).toHaveBeenCalledWith('Runners deleted');
       });
     });
   });

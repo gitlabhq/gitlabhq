@@ -6,7 +6,7 @@ import BoardSidebarItem from '~/boards/components/sidebar/board_editable_item.vu
 describe('boards sidebar remove issue', () => {
   let wrapper;
 
-  const findLoader = () => wrapper.find(GlLoadingIcon);
+  const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findEditButton = () => wrapper.find('[data-testid="edit-button"]');
   const findTitle = () => wrapper.find('[data-testid="title"]');
   const findCollapsed = () => wrapper.find('[data-testid="collapsed-content"]');

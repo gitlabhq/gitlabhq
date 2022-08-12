@@ -39,7 +39,7 @@ describe('BoardAddNewColumnTrigger', () => {
     });
 
     it('renders an enabled button', () => {
-      const button = wrapper.find(GlButton);
+      const button = wrapper.findComponent(GlButton);
 
       expect(button.props('disabled')).toBe(false);
     });
@@ -47,7 +47,7 @@ describe('BoardAddNewColumnTrigger', () => {
 
   describe('when button is disabled', () => {
     it('shows the tooltip', async () => {
-      wrapper.find(GlButton).vm.$emit('click');
+      wrapper.findComponent(GlButton).vm.$emit('click');
 
       await nextTick();
 

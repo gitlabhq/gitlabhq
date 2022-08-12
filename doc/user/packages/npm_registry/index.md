@@ -585,7 +585,7 @@ NPM_TOKEN=<your_token> npm install
 If you get this error, ensure that:
 
 - The Package Registry is enabled in your project settings. Although the Package Registry is enabled
-  by default, it's possible to [disable it](../package_registry/#disable-the-package-registry).
+  by default, it's possible to [disable it](../package_registry/index.md#disable-the-package-registry).
 - Your token is not expired and has appropriate permissions.
 - A package with the same name or version doesn't already exist within the given scope.
 - The scoped packages URL includes a trailing slash:
@@ -634,7 +634,7 @@ This might be accompanied by another error:
 This is usually a permissions issue with either:
 
 - `'packages_storage_path'` default `/var/opt/gitlab/gitlab-rails/shared/packages/`.
-- The remote bucket if [object storage](../../../administration/packages/#using-object-storage)
+- The remote bucket if [object storage](../../../administration/packages/index.md#using-object-storage)
   is used.
 
 In the latter case, ensure the bucket exists and GitLab has write access to it.

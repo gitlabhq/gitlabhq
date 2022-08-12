@@ -1,5 +1,7 @@
 import { __, s__ } from '~/locale';
 
+export const RUNNER_TYPENAME = 'CiRunner'; // __typename
+
 export const RUNNER_PAGE_SIZE = 20;
 export const RUNNER_JOB_COUNT_LIMIT = 1000;
 

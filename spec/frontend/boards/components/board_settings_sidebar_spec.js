@@ -57,10 +57,10 @@ describe('BoardSettingsSidebar', () => {
       }),
     );
   };
-  const findLabel = () => wrapper.find(GlLabel);
-  const findDrawer = () => wrapper.find(GlDrawer);
-  const findModal = () => wrapper.find(GlModal);
-  const findRemoveButton = () => wrapper.find(GlButton);
+  const findLabel = () => wrapper.findComponent(GlLabel);
+  const findDrawer = () => wrapper.findComponent(GlDrawer);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findRemoveButton = () => wrapper.findComponent(GlButton);
 
   afterEach(() => {
     jest.restoreAllMocks();
@@ -71,7 +71,7 @@ describe('BoardSettingsSidebar', () => {
   it('finds a MountingPortal component', () => {
     createComponent();
 
-    expect(wrapper.find(MountingPortal).props()).toMatchObject({
+    expect(wrapper.findComponent(MountingPortal).props()).toMatchObject({
       mountTo: '#js-right-sidebar-portal',
       append: true,
       name: 'board-settings-sidebar',
@@ -93,7 +93,7 @@ describe('BoardSettingsSidebar', () => {
 
         await nextTick();
 
-        expect(wrapper.find(GlDrawer).exists()).toBe(false);
+        expect(wrapper.findComponent(GlDrawer).exists()).toBe(false);
       });
 
       it('closes the sidebar when emitting the correct event', async () => {
@@ -103,7 +103,7 @@ describe('BoardSettingsSidebar', () => {
 
         await nextTick();
 
-        expect(wrapper.find(GlDrawer).exists()).toBe(false);
+        expect(wrapper.findComponent(GlDrawer).exists()).toBe(false);
       });
     });
 

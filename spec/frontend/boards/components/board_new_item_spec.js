@@ -44,7 +44,7 @@ describe('BoardNewItem', () => {
       it('finds an enabled create button', async () => {
         expect(wrapper.findByTestId('create-button').props('disabled')).toBe(true);
 
-        wrapper.find(GlFormInput).vm.$emit('input', 'hello');
+        wrapper.findComponent(GlFormInput).vm.$emit('input', 'hello');
         await nextTick();
 
         expect(wrapper.findByTestId('create-button').props('disabled')).toBe(false);
@@ -53,7 +53,7 @@ describe('BoardNewItem', () => {
 
     describe('when the user types in a string with only spaces', () => {
       it('disables the Create Issue button', async () => {
-        wrapper.find(GlFormInput).vm.$emit('input', '    ');
+        wrapper.findComponent(GlFormInput).vm.$emit('input', '    ');
 
         await nextTick();
 

@@ -60,8 +60,8 @@ describe('Board card layout', () => {
   });
 
   const formTitle = () => wrapper.findByTestId('board-add-column-form-title').text();
-  const findSearchInput = () => wrapper.find(GlSearchBoxByType);
-  const findSearchLabelFormGroup = () => wrapper.find(GlFormGroup);
+  const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
+  const findSearchLabelFormGroup = () => wrapper.findComponent(GlFormGroup);
   const cancelButton = () => wrapper.findByTestId('cancelAddNewColumn');
   const submitButton = () => wrapper.findByTestId('addNewColumnButton');
   const findDropdown = () => wrapper.findComponent(GlDropdown);

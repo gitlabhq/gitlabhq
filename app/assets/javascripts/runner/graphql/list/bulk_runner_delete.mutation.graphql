@@ -1,0 +1,6 @@
+mutation bulkRunnerDelete($input: BulkRunnerDeleteInput!) {
+  bulkRunnerDelete(input: $input) {
+    deletedIds
+    errors
+  }
+}

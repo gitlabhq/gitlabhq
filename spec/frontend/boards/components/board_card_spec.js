@@ -88,7 +88,7 @@ describe('Board card', () => {
       createStore({ initialState: { isShowingLabels: true } });
       mountComponent({ mountFn: mount, stubs: {} });
 
-      wrapper.find(GlLabel).trigger('mouseup');
+      wrapper.findComponent(GlLabel).trigger('mouseup');
 
       expect(mockActions.toggleBoardItem).toHaveBeenCalledTimes(0);
     });

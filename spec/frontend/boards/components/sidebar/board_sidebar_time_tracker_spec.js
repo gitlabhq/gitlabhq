@@ -47,7 +47,7 @@ describe('BoardSidebarTimeTracker', () => {
     (timeTrackingLimitToHours) => {
       createComponent({ provide: { timeTrackingLimitToHours } });
 
-      expect(wrapper.find(IssuableTimeTracker).props()).toEqual({
+      expect(wrapper.findComponent(IssuableTimeTracker).props()).toEqual({
         limitToHours: timeTrackingLimitToHours,
         showCollapsed: false,
         issuableId: '1',
