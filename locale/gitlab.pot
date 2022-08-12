@@ -32068,9 +32068,6 @@ msgstr ""
 msgid "Quick range"
 msgstr ""
 
-msgid "Quickly and easily edit multiple files in your project."
-msgstr ""
-
 msgid "Quota of CI/CD minutes"
 msgstr ""
 
@@ -43718,6 +43715,12 @@ msgid "WebIDE|Go to fork"
 msgstr ""
 
 msgid "WebIDE|Merge request"
+msgstr ""
+
+msgid "WebIDE|Quickly and easily edit multiple files in your project."
+msgstr ""
+
+msgid "WebIDE|Quickly and easily edit multiple files in your project. Press . to open"
 msgstr ""
 
 msgid "WebIDE|This project does not accept unsigned commits."

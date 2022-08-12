@@ -44,7 +44,7 @@ describe('Design management router', () => {
     it('pushes home component', () => {
       const wrapper = factory(routeArg);
 
-      expect(wrapper.find(Designs).exists()).toBe(true);
+      expect(wrapper.findComponent(Designs).exists()).toBe(true);
     });
   });
 
@@ -55,7 +55,7 @@ describe('Design management router', () => {
         const wrapper = factory(routeArg);
 
         return nextTick().then(() => {
-          const detail = wrapper.find(DesignDetail);
+          const detail = wrapper.findComponent(DesignDetail);
           expect(detail.exists()).toBe(true);
           expect(detail.props('id')).toEqual('1');
         });

@@ -81,6 +81,36 @@ This requires you to either:
 
 ### Documentation link tests
 
+Merge requests containing changes to Markdown (`.md`) files run a `docs-lint links`
+job, which runs two types of link checks. In both cases, links with destinations
+that begin with `http` or `https` are considered external links, and skipped:
+
+- `bundle exec nanoc check internal_links`: Tests links to internal pages.
+- `bundle exec nanoc check internal_anchors`: Tests links to subheadings (anchors) on internal pages.
+
+Failures from these tests are displayed at the end of the test results in the **Issues found!** area.
+For example, failures in the `internal_anchors` test follow this format:
+
+```plaintext
+[ ERROR ] internal_anchors - Broken anchor detected!
+  - source file `/tmp/gitlab-docs/public/ee/user/application_security/api_fuzzing/index.html`
+  - destination `/tmp/gitlab-docs/public/ee/development/code_review.html`
+  - link `../../../development/code_review.html#review-response-slo`
+  - anchor `#review-response-slo`
+```
+
+- **Source file**: The full path to the file containing the error. To find the
+  file in the `gitlab` repository, replace `/tmp/gitlab-docs/public/ee` with `doc`, and `.html` with `.md`.
+- **Destination**: The full path to the file not found by the test. To find the
+  file in the `gitlab` repository, replace `/tmp/gitlab-docs/public/ee` with `doc`, and `.html` with `.md`.
+- **Link**: The actual link the script attempted to find.
+- **Anchor**: If present, the subheading (anchor) the script attempted to find.
+
+Check for multiple instances of the same broken link on each page reporting an error.
+Even if a specific broken link appears multiple times on a page, the test reports it only once.
+
+#### Run document link tests locally
+
 To execute documentation link tests locally:
 
 1. Navigate to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.

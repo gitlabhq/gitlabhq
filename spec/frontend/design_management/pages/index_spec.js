@@ -111,8 +111,8 @@ describe('Design management index page', () => {
   const findDropzoneWrapper = () => wrapper.findByTestId('design-dropzone-wrapper');
   const findFirstDropzoneWithDesign = () => wrapper.findAllComponents(DesignDropzone).at(1);
   const findDesignsWrapper = () => wrapper.findByTestId('designs-root');
-  const findDesigns = () => wrapper.findAll(Design);
-  const draggableAttributes = () => wrapper.find(VueDraggable).vm.$attrs;
+  const findDesigns = () => wrapper.findAllComponents(Design);
+  const draggableAttributes = () => wrapper.findComponent(VueDraggable).vm.$attrs;
   const findDesignUploadButton = () => wrapper.findByTestId('design-upload-button');
   const findDesignToolbarWrapper = () => wrapper.findByTestId('design-toolbar-wrapper');
   const findDesignUpdateAlert = () => wrapper.findByTestId('design-update-alert');
@@ -120,8 +120,8 @@ describe('Design management index page', () => {
   async function moveDesigns(localWrapper) {
     await waitForPromises();
 
-    localWrapper.find(VueDraggable).vm.$emit('input', reorderedDesigns);
-    localWrapper.find(VueDraggable).vm.$emit('change', {
+    localWrapper.findComponent(VueDraggable).vm.$emit('input', reorderedDesigns);
+    localWrapper.findComponent(VueDraggable).vm.$emit('change', {
       moved: {
         newIndex: 0,
         element: designToMove,

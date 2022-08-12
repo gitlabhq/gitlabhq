@@ -376,7 +376,7 @@ RSpec.describe API::GoProxy do
       end
 
       it 'returns ok with a job token' do
-        get_resource(oauth_access_token: job)
+        get_resource(access_token: job)
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -395,7 +395,7 @@ RSpec.describe API::GoProxy do
 
       it 'returns unauthorized with a failed job token' do
         job.update!(status: :failed)
-        get_resource(oauth_access_token: job)
+        get_resource(access_token: job)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -445,7 +445,7 @@ RSpec.describe API::GoProxy do
       end
 
       it 'returns not found with a job token' do
-        get_resource(oauth_access_token: job)
+        get_resource(access_token: job)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

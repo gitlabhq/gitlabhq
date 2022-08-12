@@ -26,11 +26,11 @@ describe('Wip', () => {
     it('should have props', () => {
       const { mr, service } = WorkInProgress.props;
 
-      expect(mr.type instanceof Object).toBeTruthy();
-      expect(mr.required).toBeTruthy();
+      expect(mr.type instanceof Object).toBe(true);
+      expect(mr.required).toBe(true);
 
-      expect(service.type instanceof Object).toBeTruthy();
-      expect(service.required).toBeTruthy();
+      expect(service.type instanceof Object).toBe(true);
+      expect(service.required).toBe(true);
     });
   });
 
@@ -64,7 +64,7 @@ describe('Wip', () => {
 
         await waitForPromises();
 
-        expect(vm.isMakingRequest).toBeTruthy();
+        expect(vm.isMakingRequest).toBe(true);
         expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
         expect(toast).toHaveBeenCalledWith('Marked as ready. Merging is now allowed.');
       });
@@ -81,7 +81,7 @@ describe('Wip', () => {
     });
 
     it('should have correct elements', () => {
-      expect(el.classList.contains('mr-widget-body')).toBeTruthy();
+      expect(el.classList.contains('mr-widget-body')).toBe(true);
       expect(el.innerText).toContain(
         "Merge blocked: merge request must be marked as ready. It's still marked as draft.",
       );
@@ -95,7 +95,7 @@ describe('Wip', () => {
 
       await nextTick();
 
-      expect(el.querySelector('.js-remove-draft')).toEqual(null);
+      expect(el.querySelector('.js-remove-draft')).toBeNull();
     });
   });
 });

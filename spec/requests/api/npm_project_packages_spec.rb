@@ -59,7 +59,7 @@ RSpec.describe API::NpmProjectPackages do
       end
 
       context 'with access token' do
-        let(:headers) { build_token_auth_header(token.token) }
+        let(:headers) { build_token_auth_header(token.plaintext_token) }
 
         it_behaves_like 'successfully downloads the file'
         it_behaves_like 'a package tracking event', 'API::NpmPackages', 'pull_package'
@@ -95,7 +95,7 @@ RSpec.describe API::NpmProjectPackages do
       it_behaves_like 'a package file that requires auth'
 
       context 'with guest' do
-        let(:headers) { build_token_auth_header(token.token) }
+        let(:headers) { build_token_auth_header(token.plaintext_token) }
 
         it 'denies download when not enough permissions' do
           project.add_guest(user)
@@ -356,7 +356,7 @@ RSpec.describe API::NpmProjectPackages do
     end
 
     def upload_with_token(package_name, params = {})
-      upload_package(package_name, params.merge(access_token: token.token))
+      upload_package(package_name, params.merge(access_token: token.plaintext_token))
     end
 
     def upload_with_job_token(package_name, params = {})

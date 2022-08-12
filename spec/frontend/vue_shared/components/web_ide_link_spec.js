@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
+import WebIdeLink, { i18n } from '~/vue_shared/components/web_ide_link.vue';
 import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
 
 import { stubComponent } from 'helpers/stub_component';
@@ -37,8 +37,8 @@ const ACTION_EDIT_CONFIRM_FORK = {
 const ACTION_WEB_IDE = {
   href: TEST_WEB_IDE_URL,
   key: 'webide',
-  secondaryText: 'Quickly and easily edit multiple files in your project.',
-  tooltip: '',
+  secondaryText: i18n.webIdeText,
+  tooltip: i18n.webIdeTooltip,
   text: 'Web IDE',
   attrs: {
     'data-qa-selector': 'web_ide_button',

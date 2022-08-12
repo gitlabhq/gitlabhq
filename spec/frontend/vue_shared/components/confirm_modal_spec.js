@@ -104,7 +104,7 @@ describe('vue_shared/components/confirm_modal', () => {
       });
 
       it('renders GlModal with data', () => {
-        expect(findModal().exists()).toBeTruthy();
+        expect(findModal().exists()).toBe(true);
         expect(findModal().attributes()).toEqual(
           expect.objectContaining({
             oktitle: MOCK_MODAL_DATA.modalAttributes.okTitle,

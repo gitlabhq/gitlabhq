@@ -15,9 +15,9 @@ describe('Design reply form component', () => {
   let wrapper;
 
   const findTextarea = () => wrapper.find('textarea');
-  const findSubmitButton = () => wrapper.find({ ref: 'submitButton' });
-  const findCancelButton = () => wrapper.find({ ref: 'cancelButton' });
-  const findModal = () => wrapper.find({ ref: 'cancelCommentModal' });
+  const findSubmitButton = () => wrapper.findComponent({ ref: 'submitButton' });
+  const findCancelButton = () => wrapper.findComponent({ ref: 'cancelButton' });
+  const findModal = () => wrapper.findComponent({ ref: 'cancelCommentModal' });
 
   function createComponent(props = {}, mountOptions = {}) {
     wrapper = mount(DesignReplyForm, {

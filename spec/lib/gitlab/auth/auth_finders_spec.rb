@@ -127,7 +127,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       let(:doorkeeper_access_token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api') }
 
       before do
-        set_bearer_token(doorkeeper_access_token.token)
+        set_bearer_token(doorkeeper_access_token.plaintext_token)
       end
 
       it { is_expected.to eq user }
@@ -577,7 +577,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
 
     context 'passed as header' do
       before do
-        set_bearer_token(doorkeeper_access_token.token)
+        set_bearer_token(doorkeeper_access_token.plaintext_token)
       end
 
       it 'returns token if valid oauth_access_token' do
@@ -587,7 +587,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
 
     context 'passed as param' do
       it 'returns user if valid oauth_access_token' do
-        set_param(:access_token, doorkeeper_access_token.token)
+        set_param(:access_token, doorkeeper_access_token.plaintext_token)
 
         expect(find_oauth_access_token.token).to eq doorkeeper_access_token.token
       end

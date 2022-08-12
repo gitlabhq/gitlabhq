@@ -234,14 +234,14 @@ describe('RunnerInstructionsModal component', () => {
         MockResizeObserver.mockResize('xs');
         await nextTick();
 
-        expect(findPlatformButtonGroup().attributes('vertical')).toBeTruthy();
+        expect(findPlatformButtonGroup().attributes('vertical')).toEqual('true');
       });
 
       it('to a non-xs viewport', async () => {
         MockResizeObserver.mockResize('sm');
         await nextTick();
 
-        expect(findPlatformButtonGroup().props('vertical')).toBeFalsy();
+        expect(findPlatformButtonGroup().props('vertical')).toBeUndefined();
       });
     });
   });

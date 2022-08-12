@@ -26,13 +26,13 @@ describe('Design discussions component', () => {
   const originalGon = window.gon;
   let wrapper;
 
-  const findDesignNotes = () => wrapper.findAll(DesignNote);
-  const findReplyPlaceholder = () => wrapper.find(ReplyPlaceholder);
-  const findReplyForm = () => wrapper.find(DesignReplyForm);
-  const findRepliesWidget = () => wrapper.find(ToggleRepliesWidget);
+  const findDesignNotes = () => wrapper.findAllComponents(DesignNote);
+  const findReplyPlaceholder = () => wrapper.findComponent(ReplyPlaceholder);
+  const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
+  const findRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
   const findResolveButton = () => wrapper.find('[data-testid="resolve-button"]');
   const findResolvedMessage = () => wrapper.find('[data-testid="resolved-message"]');
-  const findResolveLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findResolveLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findResolveCheckbox = () => wrapper.find('[data-testid="resolve-checkbox"]');
   const findApolloMutation = () => wrapper.findComponent(ApolloMutation);
 
@@ -307,7 +307,7 @@ describe('Design discussions component', () => {
 
         expect(
           wrapper
-            .findAll(DesignNote)
+            .findAllComponents(DesignNote)
             .wrappers.every((designNote) => designNote.classes('gl-bg-blue-50')),
         ).toBe(true);
       },

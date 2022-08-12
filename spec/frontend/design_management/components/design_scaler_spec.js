@@ -6,7 +6,7 @@ import DesignScaler from '~/design_management/components/design_scaler.vue';
 describe('Design management design scaler component', () => {
   let wrapper;
 
-  const getButtons = () => wrapper.findAll(GlButton);
+  const getButtons = () => wrapper.findAllComponents(GlButton);
   const getDecreaseScaleButton = () => getButtons().at(0);
   const getResetScaleButton = () => getButtons().at(1);
   const getIncreaseScaleButton = () => getButtons().at(2);

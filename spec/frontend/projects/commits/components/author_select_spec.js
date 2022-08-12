@@ -71,7 +71,7 @@ describe('Author Select', () => {
       wrapper.setData({ hasSearchParam: true });
 
       await nextTick();
-      expect(findDropdownContainer().attributes('disabled')).toBe(undefined);
+      expect(findDropdownContainer().attributes('disabled')).toBeUndefined();
     });
 
     it('has correct tooltip message', async () => {
@@ -91,7 +91,7 @@ describe('Author Select', () => {
       wrapper.setData({ hasSearchParam: false });
 
       await nextTick();
-      expect(findDropdown().attributes('disabled')).toBe(undefined);
+      expect(findDropdown().attributes('disabled')).toBeUndefined();
     });
 
     it('hasSearchParam if user types a truthy string', () => {

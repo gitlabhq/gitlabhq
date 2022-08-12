@@ -539,7 +539,7 @@ RSpec.describe API::Helpers do
       let(:token) { create(:oauth_access_token) }
 
       before do
-        env['HTTP_AUTHORIZATION'] = "Bearer #{token.token}"
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token.plaintext_token}"
       end
 
       it_behaves_like 'sudo'

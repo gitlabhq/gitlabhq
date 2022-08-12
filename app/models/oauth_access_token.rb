@@ -16,4 +16,14 @@ class OauthAccessToken < Doorkeeper::AccessToken
       super
     end
   end
+
+  # this method overrides a shortcoming upstream, more context:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/367888
+  def self.find_by_fallback_token(attr, plain_secret)
+    return unless fallback_secret_strategy && fallback_secret_strategy == Doorkeeper::SecretStoring::Plain
+    # token is hashed, don't allow plaintext comparison
+    return if plain_secret.starts_with?("$")
+
+    super
+  end
 end

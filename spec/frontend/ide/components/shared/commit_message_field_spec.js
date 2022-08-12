@@ -79,7 +79,7 @@ describe('CommitMessageField', () => {
         await fillText(text);
 
         expect(findHighlightsText().text()).toEqual(text);
-        expect(findHighlightsMark().text()).toBeFalsy();
+        expect(findHighlightsMark().text()).toBe('');
       });
 
       it('highlights characters over 50 length', async () => {

@@ -263,7 +263,7 @@ describe('DiffFileHeader component', () => {
             },
           },
         });
-        expect(findModeChangedLine().exists()).toBeFalsy();
+        expect(findModeChangedLine().exists()).toBe(false);
       },
     );
 
