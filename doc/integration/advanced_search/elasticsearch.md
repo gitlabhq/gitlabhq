@@ -584,7 +584,7 @@ WARNING:
 Indexing a large instance generates a lot of Sidekiq jobs.
 Make sure to prepare for this task by having a
 [scalable setup](../../administration/reference_architectures/index.md) or creating
-[extra Sidekiq processes](../../administration/operations/extra_sidekiq_processes.md).
+[extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
 1. [Configure your Elasticsearch host and port](#enable-advanced-search).
 1. Create empty indices:
@@ -783,8 +783,8 @@ additional process dedicated to indexing a set of queues (or queue group). This 
 ensure that indexing queues always have a dedicated worker, while the rest of the queues have
 another dedicated worker to avoid contention.
 
-For this purpose, use the [queue selector](../../administration/operations/extra_sidekiq_processes.md#queue-selector)
-option that allows a more general selection of queue groups using a [worker matching query](../../administration/operations/extra_sidekiq_routing.md#worker-matching-query).
+For this purpose, use the [queue selector](../../administration/sidekiq/extra_sidekiq_processes.md#queue-selector)
+option that allows a more general selection of queue groups using a [worker matching query](../../administration/sidekiq/extra_sidekiq_routing.md#worker-matching-query).
 
 To handle these two queue groups, we generally recommend one of the following two options. You can either:
 
@@ -818,7 +818,7 @@ WARNING:
 When starting multiple processes, the number of processes cannot exceed the number of CPU
 cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
 to the available workload and concurrency settings. For more details, see how to
-[run multiple Sidekiq processes](../../administration/operations/extra_sidekiq_processes.md).
+[run multiple Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
 ### Two nodes, one process for each
 

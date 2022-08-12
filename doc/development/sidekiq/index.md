@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 We use [Sidekiq](https://github.com/mperham/sidekiq) as our background
 job processor. These guides are for writing jobs that will work well on
 GitLab.com and be consistent with our existing worker classes. For
-information on administering GitLab, see [configuring Sidekiq](../../administration/sidekiq.md).
+information on administering GitLab, see [configuring Sidekiq](../../administration/sidekiq/index.md).
 
 There are pages with additional detail on the following topics:
 
@@ -27,7 +27,7 @@ There are pages with additional detail on the following topics:
 
 All workers should include `ApplicationWorker` instead of `Sidekiq::Worker`,
 which adds some convenience methods and automatically sets the queue based on
-the [routing rules](../../administration/operations/extra_sidekiq_routing.md#queue-routing-rules).
+the [routing rules](../../administration/sidekiq/extra_sidekiq_routing.md#queue-routing-rules).
 
 ## Retries
 
@@ -63,7 +63,7 @@ error rate.
 Previously, each worker had its own queue, which was automatically set based on the
 worker class name. For a worker named `ProcessSomethingWorker`, the queue name
 would be `process_something`. You can now route workers to a specific queue using
-[queue routing rules](../../administration/operations/extra_sidekiq_routing.md#queue-routing-rules).
+[queue routing rules](../../administration/sidekiq/extra_sidekiq_routing.md#queue-routing-rules).
 In GDK, new workers are routed to a queue named `default`.
 
 If you're not sure what queue a worker uses,
@@ -74,7 +74,7 @@ After adding a new worker, run `bin/rake
 gitlab:sidekiq:all_queues_yml:generate` to regenerate
 `app/workers/all_queues.yml` or `ee/app/workers/all_queues.yml` so that
 it can be picked up by
-[`sidekiq-cluster`](../../administration/operations/extra_sidekiq_processes.md)
+[`sidekiq-cluster`](../../administration/sidekiq/extra_sidekiq_processes.md)
 in installations that don't use routing rules. To learn more about potential changes,
 read [Use routing rules by default and deprecate queue selectors for self-managed](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/596).
 
@@ -175,7 +175,7 @@ available in Sidekiq. There are possible workarounds such as:
 
 Some jobs have a weight declared. This is only used when running Sidekiq
 in the default execution mode - using
-[`sidekiq-cluster`](../../administration/operations/extra_sidekiq_processes.md)
+[`sidekiq-cluster`](../../administration/sidekiq/extra_sidekiq_processes.md)
 does not account for weights.
 
 As we are [moving towards using `sidekiq-cluster` in Free](https://gitlab.com/gitlab-org/gitlab/-/issues/34396), newly-added

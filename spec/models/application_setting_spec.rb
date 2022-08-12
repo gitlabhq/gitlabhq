@@ -1438,4 +1438,10 @@ RSpec.describe ApplicationSetting do
       end
     end
   end
+
+  context 'personal accesss token prefix' do
+    it 'sets the correct default value' do
+      expect(setting.personal_access_token_prefix).to eql('glpat-')
+    end
+  end
 end

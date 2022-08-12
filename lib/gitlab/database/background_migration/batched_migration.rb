@@ -206,7 +206,7 @@ module Gitlab
         end
 
         def health_context
-          HealthStatus::Context.new([table_name])
+          HealthStatus::Context.new(connection, [table_name])
         end
 
         def hold!(until_time: 10.minutes.from_now)

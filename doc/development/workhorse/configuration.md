@@ -234,7 +234,7 @@ When a user makes an HTTP request, such as creating a new project, the
 initial request is routed through Workhorse to another service, which
 may in turn, make other requests. To help trace the request as it flows
 across services, Workhorse generates a random value called a
-[correlation ID](../../administration/troubleshooting/tracing_correlation_id.md).
+[correlation ID](../../administration/logs/tracing_correlation_id.md).
 Workhorse sends this correlation ID via the `X-Request-Id` HTTP header.
 
 Some GitLab services, such as GitLab Shell, generate their own

@@ -95,7 +95,7 @@ The approach here depends on the data volume and the cleanup strategy. If we can
 records by doing a database query and the record count is not high, then the data migration can
 be executed in a Rails migration.
 
-In case the data volume is higher (>1000 records), it's better to create a background migration. If unsure, please contact the database team for advice.
+In case the data volume is higher (>1000 records), it's better to create a background migration. If unsure, contact the database team for advice.
 
 Example for cleaning up records in the `emails` table in a database migration:
 

@@ -39,6 +39,7 @@ module ProductAnalyticsTracking
     return unless destinations.include?(:snowplow) && event_enabled?(name)
 
     optional_arguments = {
+      namespace: tracking_namespace_source,
       project: tracking_project_source
     }.compact
 
@@ -48,7 +49,6 @@ module ProductAnalyticsTracking
       user: current_user,
       property: name,
       label: label,
-      namespace: tracking_namespace_source,
       **optional_arguments
     )
   end
@@ -60,7 +60,13 @@ module ProductAnalyticsTracking
       i_search_paid: :route_hll_to_snowplow_phase2,
       i_search_total: :route_hll_to_snowplow_phase2,
       i_search_advanced: :route_hll_to_snowplow_phase2,
-      i_ecosystem_jira_service_list_issues: :route_hll_to_snowplow_phase2
+      i_ecosystem_jira_service_list_issues: :route_hll_to_snowplow_phase2,
+      users_viewing_analytics_group_devops_adoption: :route_hll_to_snowplow_phase2,
+      i_analytics_dev_ops_adoption: :route_hll_to_snowplow_phase2,
+      i_analytics_dev_ops_score: :route_hll_to_snowplow_phase2,
+      p_analytics_merge_request: :route_hll_to_snowplow_phase2,
+      i_analytics_instance_statistics: :route_hll_to_snowplow_phase2,
+      g_analytics_contribution: :route_hll_to_snowplow_phase2
     }
 
     Feature.enabled?(events_to_ff[event.to_sym], tracking_namespace_source)

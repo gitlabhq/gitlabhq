@@ -366,6 +366,15 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
         expect { migration_run }.to change { migration.reload.on_hold? }.from(false).to(true)
       end
+
+      it 'puts migration on hold when the pending WAL count is above the limit' do
+        sql = Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::WriteAheadLog::PENDING_WAL_COUNT_SQL
+        limit = Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::WriteAheadLog::LIMIT
+
+        expect(connection).to receive(:execute).with(sql).and_return([{ 'pending_wal_count' => limit + 1 }])
+
+        expect { migration_run }.to change { migration.reload.on_hold? }.from(false).to(true)
+      end
     end
   end
 end

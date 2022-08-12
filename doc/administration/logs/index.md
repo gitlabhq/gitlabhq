@@ -1176,3 +1176,7 @@ to run it, read [the GitLabSOS documentation](https://gitlab.com/gitlab-com/supp
 for creating and comparing performance statistics from GitLab logs.
 For more details and instructions to run it, read the
 [documentation for fast-stats](https://gitlab.com/gitlab-com/support/toolbox/fast-stats#usage).
+
+## Find relevant log entries with a correlation ID
+
+Most requests have a log ID that can be used to [find relevant log entries](tracing_correlation_id.md).

@@ -135,7 +135,7 @@ post-deployment migration or a background data migration:
 - If the data volume is less than `1000` records, then the data migration can be executed within the post-migration.
 - If the data volume is higher than `1000` records, it's advised to create a background migration.
 
-When unsure about which option to use, please contact the Database team for advice.
+When unsure about which option to use, contact the Database team for advice.
 
 Back to our example, the epics table is not considerably large nor frequently accessed,
 so we add a post-deployment migration for the 13.0 milestone (current),
@@ -206,6 +206,6 @@ In that rare case you need 3 releases end-to-end:
 1. Release `N.M+1` - Cleanup the background migration.
 1. Release `N.M+2` - Validate the `NOT NULL` constraint.
 
-For these cases, please consult the database team early in the update cycle. The `NOT NULL`
+For these cases, consult the database team early in the update cycle. The `NOT NULL`
 constraint may not be required or other options could exist that do not affect really large
 or frequently accessed tables.

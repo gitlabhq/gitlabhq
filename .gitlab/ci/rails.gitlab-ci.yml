@@ -84,12 +84,6 @@
     - .use-pg12
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests"]
 
-.rspec-base-pg12-as-if-jh:
-  extends:
-    - .rspec-base
-    - .use-pg12
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-jh", "detect-tests", "add-jh-folder"]
-
 .rspec-base-pg13:
   extends:
     - .rspec-base
@@ -116,11 +110,6 @@
     - .rspec-base
     - .use-pg12-opensearch1-ee
     - .rails:rules:run-search-tests
-
-.rspec-jh-base-pg12:
-  extends:
-    - .rspec-base-pg12-as-if-jh
-    - .use-pg12-ee
 
 .rspec-ee-base-pg13:
   extends:
@@ -744,31 +733,6 @@ rspec system pg12-as-if-foss single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
-rspec migration pg12-as-if-jh:
-  extends:
-    - .rspec-base-pg12-as-if-jh
-    - .rspec-base-migration
-    - .rails:rules:as-if-jh-rspec
-    - .rspec-migration-parallel
-
-rspec unit pg12-as-if-jh:
-  extends:
-    - .rspec-base-pg12-as-if-jh
-    - .rails:rules:as-if-jh-rspec
-    - .rspec-unit-parallel
-
-rspec integration pg12-as-if-jh:
-  extends:
-    - .rspec-base-pg12-as-if-jh
-    - .rails:rules:as-if-jh-rspec
-    - .rspec-integration-parallel
-
-rspec system pg12-as-if-jh:
-  extends:
-    - .rspec-base-pg12-as-if-jh
-    - .rails:rules:as-if-jh-rspec
-    - .rspec-system-parallel
-
 rspec-ee migration pg12:
   extends:
     - .rspec-ee-base-pg12
@@ -871,52 +835,6 @@ rspec-ee system pg12 single-db:
     - rspec-ee system pg12
     - .single-db-rspec
     - .rails:rules:single-db
-
-rspec-ee migration pg12-as-if-jh:
-  extends:
-    - .rspec-jh-base-pg12
-    - .rspec-base-migration
-    - .rails:rules:as-if-jh-rspec
-    - .rspec-ee-migration-parallel
-
-rspec-ee unit pg12-as-if-jh:
-  extends:
-    - .rspec-jh-base-pg12
-    - .rails:rules:as-if-jh-rspec
-    - .rspec-ee-unit-parallel
-
-rspec-ee integration pg12-as-if-jh:
-  extends:
-    - .rspec-jh-base-pg12
-    - .rails:rules:as-if-jh-rspec
-    - .rspec-ee-integration-parallel
-
-rspec-ee system pg12-as-if-jh:
-  extends:
-    - .rspec-jh-base-pg12
-    - .rails:rules:as-if-jh-rspec
-    - .rspec-ee-system-parallel
-
-rspec-jh migration pg12-as-if-jh:
-  extends:
-    - .rspec-jh-base-pg12
-    - .rspec-base-migration
-    - .rails:rules:as-if-jh-rspec
-
-rspec-jh unit pg12-as-if-jh:
-  extends:
-    - .rspec-jh-base-pg12
-    - .rails:rules:as-if-jh-rspec
-
-rspec-jh integration pg12-as-if-jh:
-  extends:
-    - .rspec-jh-base-pg12
-    - .rails:rules:as-if-jh-rspec
-
-rspec-jh system pg12-as-if-jh:
-  extends:
-    - .rspec-jh-base-pg12
-    - .rails:rules:as-if-jh-rspec
 
 db:rollback geo:
   extends:

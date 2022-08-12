@@ -172,22 +172,3 @@ detect-previous-failed-tests:
     expire_in: 7d
     paths:
       - ${PREVIOUS_FAILED_TESTS_DIR}
-
-add-jh-folder:
-  extends: .setup:rules:add-jh-folder
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
-  stage: prepare
-  before_script:
-    - source ./scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - JH_BRANCH=$(./scripts/setup/find-jh-branch.rb)
-    - 'echo "JH_BRANCH: ${JH_BRANCH}"'
-    - curl --location -o "jh-folder.tar.gz" "https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab/-/archive/${JH_BRANCH}/gitlab-${JH_BRANCH}.tar.gz?path=jh"
-    - tar -xf "jh-folder.tar.gz"
-    - mv "gitlab-${JH_BRANCH}-jh/jh/" ./
-    - ls -l jh/
-  artifacts:
-    expire_in: 2d
-    paths:
-      - jh/

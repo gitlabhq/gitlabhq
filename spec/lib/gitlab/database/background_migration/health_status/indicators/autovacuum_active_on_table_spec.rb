@@ -20,9 +20,9 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus::Indicators::
       swapout_view_for_table(:postgres_autovacuum_activity)
     end
 
-    let(:context) { Gitlab::Database::BackgroundMigration::HealthStatus::Context.new(tables) }
     let(:tables) { [table] }
     let(:table) { 'users' }
+    let(:context) { Gitlab::Database::BackgroundMigration::HealthStatus::Context.new(connection, tables) }
 
     context 'without autovacuum activity' do
       it 'returns Normal signal' do

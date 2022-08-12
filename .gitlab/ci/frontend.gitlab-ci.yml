@@ -65,12 +65,6 @@ compile-test-assets as-if-foss:
     - .frontend:rules:compile-test-assets-as-if-foss
     - .as-if-foss
 
-compile-test-assets as-if-jh:
-  extends:
-    - compile-test-assets
-    - .frontend:rules:compile-test-assets-as-if-jh
-  needs: ["add-jh-folder"]
-
 update-assets-compile-production-cache:
   extends:
     - compile-production-assets
@@ -149,18 +143,6 @@ rspec-all frontend_fixture as-if-foss:
   needs:
     - !reference [.frontend-fixtures-base, needs]
     - "compile-test-assets as-if-foss"
-
-# Builds FOSS, EE, and JH fixtures in the EE project, with the `jh/` folder added (due to `as-if-jh`).
-rspec-all frontend_fixture as-if-jh:
-  extends:
-    - .frontend-fixtures-base
-    - .frontend:rules:default-frontend-jobs-as-if-jh
-  needs:
-    - !reference [.frontend-fixtures-base, needs]
-    - "compile-test-assets as-if-jh"
-    - "add-jh-folder"
-  script:
-    - echo "This job is currently doing nothing since there's no specific JH fixtures yet. To enable this job, remove this line."
 
 graphql-schema-dump:
   variables:
@@ -261,14 +243,6 @@ jest-as-if-foss:
     - .as-if-foss
   needs: ["rspec-all frontend_fixture as-if-foss"]
   parallel: 2
-
-jest-as-if-jh:
-  extends:
-    - .jest-base
-    - .frontend:rules:default-frontend-jobs-as-if-jh
-  needs: ["rspec-all frontend_fixture as-if-jh", "add-jh-folder"]
-  script:
-    - echo "This job is currently doing nothing since there's no specific JH Jest tests yet. To enable this job, remove this line."
 
 coverage-frontend:
   extends:

@@ -13,7 +13,7 @@
 # - label
 # - **extra
 
-shared_examples 'Snowplow event tracking' do
+shared_examples 'Snowplow event tracking' do |overrides: {}|
   let(:extra) { {} }
 
   it 'is not emitted if FF is disabled' do
@@ -33,7 +33,7 @@ shared_examples 'Snowplow event tracking' do
       project: try(:project),
       label: try(:label),
       property: try(:property)
-    }.compact.merge(extra)
+    }.merge(overrides).compact.merge(extra)
 
     subject
 

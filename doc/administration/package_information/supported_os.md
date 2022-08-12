@@ -10,7 +10,7 @@ GitLab officially supports LTS versions of operating systems. While OSs like
 Ubuntu have a clear distinction between LTS and non-LTS versions, there are
 other OSs, openSUSE for example, that don't follow the LTS concept. Hence to
 avoid confusion, the official policy is that at any point of time, all the
-operating systems supported by GitLab are listed in the 
+operating systems supported by GitLab are listed in the
 [installation page](https://about.gitlab.com/install/).
 
 The following lists the currently supported OSs and their possible EOL dates.
@@ -19,7 +19,6 @@ The following lists the currently supported OSs and their possible EOL dates.
 | ------------------------------------------------------------ | ------------------------------ | --------------- | :----------------------------------------------------------: | ---------- | ------------------------------------------------------------ |
 | AlmaLinux 8                                                  | GitLab CE / GitLab EE 14.5.0   | x86_64, aarch64 | [AlmaLinux Install Documentation](https://about.gitlab.com/install/#almalinux-8) | 2029       | <https://almalinux.org/>                                     |
 | CentOS 7                                                     | GitLab CE / GitLab EE 7.10.0   | x86_64          | [CentOS Install Documentation](https://about.gitlab.com/install/#centos-7) | June 2024  | <https://wiki.centos.org/About/Product>                      |
-| Debian 9                                                     | GitLab CE / GitLab EE 9.3.0    | amd64           | [Debian Install Documentation](https://about.gitlab.com/install/#debian) | 2022       | <https://wiki.debian.org/LTS>                                |
 | Debian 10                                                    | GitLab CE / GitLab EE 12.2.0   | amd64, arm64    | [Debian Install Documentation](https://about.gitlab.com/install/#debian) | 2024       | <https://wiki.debian.org/LTS>                                |
 | Debian 11                                                    | GitLab CE / GitLab EE 14.6.0   | amd64, arm64    | [Debian Install Documentation](https://about.gitlab.com/install/#debian) | 2026       | <https://wiki.debian.org/LTS>                                |
 | OpenSUSE 15.3                                                | GitLab CE / GitLab EE 14.5.0   | x86_64, aarch64 | [OpenSUSE Install Documentation](https://about.gitlab.com/install/#opensuse-leap-15-3) | Nov 2022   | <https://en.opensuse.org/Lifetime>                           |
@@ -87,6 +86,7 @@ release for them can be found below:
 | OpenSUSE 15.1   | [November 2020](https://en.opensuse.org/Lifetime#Discontinued_distributions)       | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-13.12&dist=opensuse%2F15.1) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-13.12&dist=opensuse%2F15.1) 13.12    |
 | Ubuntu 16.04    | [April 2021](https://ubuntu.com/info/release-end-of-life)                          | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_13.12&dist=ubuntu%2Fxenial) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_13.12&dist=ubuntu%2Fxenial) 13.12    |
 | OpenSUSE 15.2   | [December 2021](https://en.opensuse.org/Lifetime#Discontinued_distributions)       | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce-14.7&dist=opensuse%2F15.2) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee-14.7&dist=opensuse%2F15.2) 14.7       |
+| Debian 9 "Stretch" | [June 2022](https://lists.debian.org/debian-lts-announce/2022/07/msg00002.html) | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_15.2&dist=debian%2Fstretch) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_15.2&dist=debian%2Fstretch) 15.2     |
 
 NOTE:
 An exception to this deprecation policy is when we are unable to provide

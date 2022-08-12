@@ -248,6 +248,9 @@ The intent is to ensure that a change doesn't introduce a failure after `gitlab-
 
 ## As-if-JH jobs
 
+NOTE:
+This is disabled for now.
+
 The `* as-if-jh` jobs run the GitLab test suite "as if JiHu", meaning as if the jobs would run in the context
 of [GitLab JH](jh_features_review.md). These jobs are only created in the following cases:
 
@@ -262,11 +265,17 @@ The intent is to ensure that a change doesn't introduce a failure after `gitlab-
 
 ### When to consider applying `pipeline:run-as-if-jh` label
 
+NOTE:
+This is disabled for now.
+
 If a Ruby file is renamed and there's a corresponding [`prepend_mod` line](jh_features_review.md#jh-features-based-on-ce-or-ee-features),
 it's likely that GitLab JH is relying on it and requires a corresponding
 change to rename the module or class it's prepending.
 
 ### Corresponding JH branch
+
+NOTE:
+This is disabled for now.
 
 You can create a corresponding JH branch on [GitLab JH](https://jihulab.com/gitlab-cn/gitlab) by
 appending `-jh` to the branch name. If a corresponding JH branch is found,

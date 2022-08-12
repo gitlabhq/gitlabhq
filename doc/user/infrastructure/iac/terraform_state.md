@@ -68,16 +68,33 @@ To configure GitLab CI/CD as a backend:
    }
    ```
 
-1. In the root directory of your project repository, create a `.gitlab-ci.yml` file. Use
-   [this file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
-   to populate it.
-
+1. In the root directory of your project repository, create a `.gitlab-ci.yml` file. Use the
+   [`Terraform.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
+   template to populate it.
 1. Push your project to GitLab. This action triggers a pipeline, which
    runs the `gitlab-terraform init`, `gitlab-terraform validate`, and
    `gitlab-terraform plan` commands.
-1. Trigger the manual `terraform apply` job from the previous pipeline to provision the defined infrastructure.
+1. Trigger the manual `deploy` job from the previous pipeline, which runs `gitlab-terraform apply` command, to provision the defined infrastructure.
 
 The output from the above `terraform` commands should be viewable in the job logs.
+
+The `gitlab-terraform` CLI is a wrapper around the `terraform` CLI. You can [view the source code of `gitlab-terraform`](https://gitlab.com/gitlab-org/terraform-images/-/blob/master/src/bin/gitlab-terraform.sh) if you're interested.
+
+If you prefer to call the `terraform` commands explicitly, you can override
+the template, and instead, use it as reference for what you can achieve.
+
+### Customizing your Terraform environment variables
+
+When you use the `Terraform.gitlab-ci.yml` template, you can use [Terraform HTTP configuration variables](https://www.terraform.io/language/settings/backends/http#configuration-variables) when you define your CI/CD jobs.
+
+To customize your `terraform init` and override the Terraform configuration,
+use environment variables instead of the `terraform init -backend-config=...` approach.
+When you use `-backend-config`, the configuration is:
+
+- Cached in the output of the `terraform plan` command.
+- Usually passed forward to the `terraform apply` command.
+
+This configuration can lead to problems like [being unable to lock Terraform state files in CI jobs](troubleshooting.md#unable-to-lock-terraform-state-files-in-ci-jobs-for-terraform-apply-using-a-plan-created-in-a-previous-job).
 
 ## Access the state from your local machine
 

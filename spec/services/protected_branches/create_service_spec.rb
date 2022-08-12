@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ProtectedBranches::CreateService do
-  let(:project) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project) }
+
   let(:user) { project.first_owner }
   let(:params) do
     {
@@ -13,10 +14,10 @@ RSpec.describe ProtectedBranches::CreateService do
     }
   end
 
+  subject(:service) { described_class.new(project, user, params) }
+
   describe '#execute' do
     let(:name) { 'master' }
-
-    subject(:service) { described_class.new(project, user, params) }
 
     it 'creates a new protected branch' do
       expect { service.execute }.to change(ProtectedBranch, :count).by(1)
@@ -34,8 +35,6 @@ RSpec.describe ProtectedBranches::CreateService do
 
     context 'when protecting a branch with a name that contains HTML tags' do
       let(:name) { 'foo<b>bar<\b>' }
-
-      subject(:service) { described_class.new(project, user, params) }
 
       it 'creates a new protected branch' do
         expect { service.execute }.to change(ProtectedBranch, :count).by(1)
@@ -60,16 +59,18 @@ RSpec.describe ProtectedBranches::CreateService do
     end
 
     context 'when a policy restricts rule creation' do
-      before do
-        policy = instance_double(ProtectedBranchPolicy, allowed?: false)
-        expect(ProtectedBranchPolicy).to receive(:new).and_return(policy)
-      end
-
       it "prevents creation of the protected branch rule" do
+        disallow(:create_protected_branch, an_instance_of(ProtectedBranch))
+
         expect do
           service.execute
         end.to raise_error(Gitlab::Access::AccessDeniedError)
       end
     end
+  end
+
+  def disallow(ability, protected_branch)
+    allow(Ability).to receive(:allowed?).and_call_original
+    allow(Ability).to receive(:allowed?).with(user, ability, protected_branch).and_return(false)
   end
 end

@@ -421,6 +421,25 @@ RSpec.describe UsersHelper do
     end
   end
 
+  describe '#user_email_help_text' do
+    subject(:user_email_help_text) { helper.user_email_help_text(user) }
+
+    context 'when `user.unconfirmed_email` is not set' do
+      it 'contains avatar detection text' do
+        expect(user_email_help_text).to include _('We also use email for avatar detection if no avatar is uploaded.')
+      end
+    end
+
+    context 'when `user.unconfirmed_email` is set' do
+      let(:user) { create(:user, :unconfirmed, unconfirmed_email: 'foo@bar.com') }
+
+      it 'contains resend confirmation e-mail text' do
+        expect(user_email_help_text).to include _('Resend confirmation e-mail')
+        expect(user_email_help_text).to include _('Please click the link in the confirmation email before continuing. It was sent to ')
+      end
+    end
+  end
+
   describe '#admin_user_actions_data_attributes' do
     subject(:data) { helper.admin_user_actions_data_attributes(user) }
 

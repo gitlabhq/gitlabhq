@@ -22,6 +22,10 @@ module Gitlab
             def log_info?
               false
             end
+
+            def stop?
+              false
+            end
             # :nocov:
 
             private
@@ -36,6 +40,10 @@ module Gitlab
           class Stop < Base
             # :nocov:
             def log_info?
+              true
+            end
+
+            def stop?
               true
             end
             # :nocov:

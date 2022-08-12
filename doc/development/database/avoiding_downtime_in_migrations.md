@@ -199,7 +199,7 @@ class CleanupUsersUpdatedAtRename < Gitlab::Database::Migration[1.0]
 end
 ```
 
-If you're renaming a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3), please carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
+If you're renaming a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3), carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
 With [Canary](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/) it is possible that the system runs in this state for a significant amount of time.
 
 ## Changing Column Constraints

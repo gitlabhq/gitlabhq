@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe ProtectedBranches::DestroyService do
-  let(:protected_branch) { create(:protected_branch) }
-  let(:project) { protected_branch.project }
+  let_it_be_with_reload(:project) { create(:project) }
+
+  let(:protected_branch) { create(:protected_branch, project: project) }
   let(:user) { project.first_owner }
 
-  describe '#execute' do
-    subject(:service) { described_class.new(project, user) }
+  subject(:service) { described_class.new(project, user) }
 
+  describe '#execute' do
     it 'destroys a protected branch' do
       service.execute(protected_branch)
 
@@ -25,16 +26,18 @@ RSpec.describe ProtectedBranches::DestroyService do
     end
 
     context 'when a policy restricts rule deletion' do
-      before do
-        policy = instance_double(ProtectedBranchPolicy, allowed?: false)
-        expect(ProtectedBranchPolicy).to receive(:new).and_return(policy)
-      end
-
       it "prevents deletion of the protected branch rule" do
+        disallow(:destroy_protected_branch, protected_branch)
+
         expect do
           service.execute(protected_branch)
         end.to raise_error(Gitlab::Access::AccessDeniedError)
       end
     end
+  end
+
+  def disallow(ability, protected_branch)
+    allow(Ability).to receive(:allowed?).and_call_original
+    allow(Ability).to receive(:allowed?).with(user, ability, protected_branch).and_return(false)
   end
 end

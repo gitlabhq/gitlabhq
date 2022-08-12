@@ -97,6 +97,8 @@ As a result, to create a plan and later use the same plan in another CI job, you
 `Error: Error acquiring the state lock` errors when using `-backend-config=password=$CI_JOB_TOKEN`.
 This happens because the value of `$CI_JOB_TOKEN` is only valid for the duration of the current job.
 
+Another possible error message for the same problem could be: `Error: Error loading state: HTTP remote state endpoint requires auth`.
+
 As a workaround, use [http backend configuration variables](https://www.terraform.io/docs/language/settings/backends/http.html#configuration-variables) in your CI job,
 which is what happens behind the scenes when following the
 [Get started using GitLab CI](terraform_state.md#initialize-a-terraform-state-as-a-backend-by-using-gitlab-cicd) instructions.

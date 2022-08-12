@@ -189,7 +189,7 @@ migration or a background data migration:
 - If the data volume is less than `1,000` records, then the data migration can be executed within the post-migration.
 - If the data volume is higher than `1,000` records, it's advised to create a background migration.
 
-When unsure about which option to use, please contact the Database team for advice.
+When unsure about which option to use, contact the Database team for advice.
 
 Back to our example, the issues table is considerably large and frequently accessed, so we are going
 to add a background migration for the 13.0 milestone (current),

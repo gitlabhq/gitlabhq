@@ -83,7 +83,7 @@ Background migrations and batched migrations are not the same, so you should che
 complete before updating.
 
 Decrease the time required to complete these migrations by increasing the number of
-[Sidekiq workers](../administration/operations/extra_sidekiq_processes.md)
+[Sidekiq workers](../administration/sidekiq/extra_sidekiq_processes.md)
 that can process jobs in the `background_migration` queue.
 
 ### Background migrations
@@ -471,7 +471,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   [upgraded to 15.1](#1510) before upgrading to 15.2 (and later) due to a
   configuration change in Rails that can result in inconsistent ETag key
   generation.
-- Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../raketasks/sidekiq_job_migration.md#future-jobs) before starting the upgrade to GitLab 15.2.0.
+- Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../administration/sidekiq/sidekiq_job_migration.md#future-jobs) before starting the upgrade to GitLab 15.2.0.
 
 ### 15.1.0
 
