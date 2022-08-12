@@ -132,7 +132,7 @@
   // stylelint-disable-next-line length-zero-no-unit
   bottom: var(--review-bar-height, 0px);
   right: 0;
-  transition: width $sidebar-transition-duration;
+  transition: width $gl-transition-duration-medium;
   background-color: $white;
   z-index: 200;
   overflow: hidden;

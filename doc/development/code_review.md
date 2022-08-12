@@ -62,6 +62,9 @@ Team members' domain expertise can be viewed on the [engineering projects](https
 
 ### Reviewer roulette
 
+NOTE:
+Reviewer roulette is an internal tool for use on GitLab.com, and not available for use on customer installations.
+
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It only makes
 **recommendations** and you should override it if you think someone else is a better
@@ -487,7 +490,7 @@ Before taking the decision to merge:
 - If the MR contains both Quality and non-Quality-related changes, the MR should be merged by the relevant maintainer for user-facing changes (backend, frontend, or database) after the Quality related changes are approved by a Software Engineer in Test.
 
 If a merge request is fundamentally ready, but needs only trivial fixes (such as
-typos), consider demonstrating a [bias for action](https://about.gitlab.com/handbook/values/#bias-for-action) 
+typos), consider demonstrating a [bias for action](https://about.gitlab.com/handbook/values/#bias-for-action)
 by making those changes directly without going back to the author. You can do this by
 using the [suggest changes](../user/project/merge_requests/reviews/suggestions.md) feature to apply
 your own suggestions to the merge request. Note that:

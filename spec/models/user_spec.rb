@@ -1083,20 +1083,6 @@ RSpec.describe User do
       end
     end
 
-    describe '.by_id_and_login' do
-      let_it_be(:user) { create(:user) }
-
-      it 'finds a user regardless of case' do
-        expect(described_class.by_id_and_login(user.id, user.username.upcase))
-          .to contain_exactly(user)
-      end
-
-      it 'finds a user when login is an email address regardless of case' do
-        expect(described_class.by_id_and_login(user.id, user.email.upcase))
-          .to contain_exactly(user)
-      end
-    end
-
     describe '.for_todos' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }
@@ -3003,17 +2989,53 @@ RSpec.describe User do
     end
   end
 
-  describe '.by_login' do
-    let(:username) { 'John' }
-    let!(:user) { create(:user, username: username) }
+  shared_examples "find user by login" do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:invalid_login) { "#{user.username}-NOT-EXISTS" }
 
-    it 'gets the correct user' do
-      expect(described_class.by_login(user.email.upcase)).to eq user
-      expect(described_class.by_login(user.email)).to eq user
-      expect(described_class.by_login(username.downcase)).to eq user
-      expect(described_class.by_login(username)).to eq user
-      expect(described_class.by_login(nil)).to be_nil
-      expect(described_class.by_login('')).to be_nil
+    context 'when login is nil or empty' do
+      it 'returns nil' do
+        expect(login_method(nil)).to be_nil
+        expect(login_method('')).to be_nil
+      end
+    end
+
+    context 'when login is invalid' do
+      it 'returns nil' do
+        expect(login_method(invalid_login)).to be_nil
+      end
+    end
+
+    context 'when login is username' do
+      it 'returns user' do
+        expect(login_method(user.username)).to eq(user)
+        expect(login_method(user.username.downcase)).to eq(user)
+        expect(login_method(user.username.upcase)).to eq(user)
+      end
+    end
+
+    context 'when login is email' do
+      it 'returns user' do
+        expect(login_method(user.email)).to eq(user)
+        expect(login_method(user.email.downcase)).to eq(user)
+        expect(login_method(user.email.upcase)).to eq(user)
+      end
+    end
+  end
+
+  describe '.by_login' do
+    it_behaves_like "find user by login" do
+      def login_method(login)
+        described_class.by_login(login).take
+      end
+    end
+  end
+
+  describe '.find_by_login' do
+    it_behaves_like "find user by login" do
+      def login_method(login)
+        described_class.find_by_login(login)
+      end
     end
   end
 

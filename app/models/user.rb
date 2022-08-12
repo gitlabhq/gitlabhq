@@ -448,6 +448,11 @@ class User < ApplicationRecord
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :by_name, -> (names) { iwhere(name: Array(names)) }
+  scope :by_login, -> (login) do
+    return none if login.blank?
+
+    login.include?('@') ? iwhere(email: login) : iwhere(username: login)
+  end
   scope :by_user_email, -> (emails) { iwhere(email: Array(emails)) }
   scope :by_emails, -> (emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id).distinct) }
@@ -482,7 +487,6 @@ class User < ApplicationRecord
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
   scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last, arel_table[:id].asc) }
   scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first, arel_table[:id].desc) }
-  scope :by_id_and_login, ->(id, login) { where(id: id).where('username = LOWER(:login) OR email = LOWER(:login)', login: login) }
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
@@ -765,14 +769,8 @@ class User < ApplicationRecord
       true
     end
 
-    def by_login(login)
-      return unless login
-
-      if login.include?('@')
-        unscoped.iwhere(email: login).take
-      else
-        unscoped.iwhere(username: login).take
-      end
+    def find_by_login(login)
+      by_login(login).take
     end
 
     def find_by_username(username)

@@ -92,7 +92,7 @@ module Gitlab
         return unless authenticate_using_internal_or_ldap_password?
 
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-          user = User.by_login(login)
+          user = User.find_by_login(login)
 
           break if user && !user.can_log_in_with_non_expired_password?
 
@@ -279,7 +279,7 @@ module Gitlab
           if deploy_key_matches
             DeployKey.find(deploy_key_matches[1])
           else
-            User.by_login(login)
+            User.find_by_login(login)
           end
 
         return unless actor

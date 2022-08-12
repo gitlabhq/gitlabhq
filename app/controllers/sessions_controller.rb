@@ -215,11 +215,11 @@ class SessionsController < Devise::SessionsController
   def find_user
     strong_memoize(:find_user) do
       if session[:otp_user_id] && user_params[:login]
-        User.by_id_and_login(session[:otp_user_id], user_params[:login]).first
+        User.by_login(user_params[:login]).find_by_id(session[:otp_user_id])
       elsif session[:otp_user_id]
         User.find(session[:otp_user_id])
       elsif user_params[:login]
-        User.by_login(user_params[:login])
+        User.find_by_login(user_params[:login])
       end
     end
   end

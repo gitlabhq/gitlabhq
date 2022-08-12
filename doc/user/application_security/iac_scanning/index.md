@@ -64,7 +64,7 @@ variables:
   SAST_IMAGE_SUFFIX: '-fips'
 
 include:
-  - template: Security/SAST-IaC.latest.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
 ```
 
 ### Making IaC analyzers available to all GitLab tiers
@@ -98,11 +98,11 @@ To configure IaC Scanning for a project you can:
 ### Configure IaC Scanning manually
 
 To enable IaC Scanning you must [include](../../../ci/yaml/index.md#includetemplate) the
-[`SAST-IaC.latest.gitlab-ci.yml template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST-IaC.latest.gitlab-ci.yml) provided as part of your GitLab installation. Here is an example of how to include it:
+[`SAST-IaC.gitlab-ci.yml template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml) provided as part of your GitLab installation. Here is an example of how to include it:
 
 ```yaml
 include:
-  - template: Security/SAST-IaC.latest.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
 ```
 
 The included template creates IaC scanning jobs in your CI/CD pipeline and scans

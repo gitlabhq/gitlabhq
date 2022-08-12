@@ -189,11 +189,14 @@ and are protected at the same time.
 
 ### Configure group-level memberships
 
+> - Operators are required to have Owner+ role from the original Maintainer+ role and this role change is introduced from GitLab 15.3 [with a flag](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) named `group_level_protected_environment_settings_permission`. Disabled by default.
+> - Original behavior where Operators are required to have Maintainer+ role can be achieved by enabling [flag](https://gitlab.com/gitlab-org/gitlab/-/issues/369875) named `override_group_level_protected_environment_settings_permission`. Disabled by default.
+
 To maximize the effectiveness of group-level protected environments,
 [group-level memberships](../../user/group/index.md) must be correctly
 configured:
 
-- Operators should be given at least the Maintainer role
+- Operators should be given at least the Owner role
   for the top-level group. They can maintain CI/CD configurations for
   the higher environments (such as production) in the group-level settings page,
   which includes group-level protected environments,
@@ -203,7 +206,7 @@ configured:
   This ensures that only operators can configure the organization-wide
   deployment ruleset.
 - Developers should be given no more than the Developer role
-  for the top-level group, or explicitly given the Maintainer role for a child project
+  for the top-level group, or explicitly given the Owner role for a child project
   They do *not* have access to the CI/CD configurations in the
   top-level group, so operators can ensure that the critical configuration won't
   be accidentally changed by the developers.
