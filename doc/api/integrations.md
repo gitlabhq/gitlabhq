@@ -383,6 +383,51 @@ Get Unify Circuit integration settings for a project.
 GET /projects/:id/integrations/unify-circuit
 ```
 
+## Pumble
+
+Pumble chat tool.
+
+### Create/Edit Pumble integration
+
+Set Pumble integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/pumble
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Pumble webhook. For example, `https://api.pumble.com/workspaces/x/...`. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default is `default`. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable Pumble integration
+
+Disable the Pumble integration for a project. Integration settings are preserved.
+
+```plaintext
+DELETE /projects/:id/integrations/pumble
+```
+
+### Get Pumble integration settings
+
+Get Pumble integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/pumble
+```
+
 ## Webex Teams
 
 Webex Teams collaboration tool.

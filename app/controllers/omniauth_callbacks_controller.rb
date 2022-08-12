@@ -6,6 +6,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthHelper
   include InitializesCurrentUserMode
   include KnownSignIn
+  include AcceptsPendingInvitations
 
   after_action :verify_known_sign_in
 
@@ -159,6 +160,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def sign_in_user_flow(auth_user_class)
     auth_user = build_auth_user(auth_user_class)
+    new_user = auth_user.new?
     user = auth_user.find_and_update!
 
     if auth_user.valid_sign_in?
@@ -178,6 +180,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
           flash[:notice] = _('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
         end
 
+        accept_pending_invitations(user: user) if new_user
         store_after_sign_up_path_for_user if intent_to_register?
         sign_in_and_redirect(user, event: :authentication)
       end

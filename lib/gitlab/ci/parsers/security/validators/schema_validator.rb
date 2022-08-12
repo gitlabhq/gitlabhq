@@ -38,13 +38,14 @@ module Gitlab
               def initialize(report_type, report_version)
                 @report_type = report_type.to_sym
                 @report_version = report_version.to_s
+                @supported_versions = SUPPORTED_VERSIONS[@report_type]
               end
 
               delegate :validate, to: :schemer
 
               private
 
-              attr_reader :report_type, :report_version
+              attr_reader :report_type, :report_version, :supported_versions
 
               def schemer
                 JSONSchemer.schema(pathname)
@@ -60,8 +61,22 @@ module Gitlab
                 report_declared_version = File.join(root_path, report_version, file_name)
                 return report_declared_version if File.file?(report_declared_version)
 
+                if latest_vendored_patch_version
+                  latest_vendored_patch_version_file = File.join(root_path, latest_vendored_patch_version, file_name)
+                  return latest_vendored_patch_version_file if File.file?(latest_vendored_patch_version)
+                end
+
                 earliest_supported_version = SUPPORTED_VERSIONS[report_type].min
                 File.join(root_path, earliest_supported_version, file_name)
+              end
+
+              def latest_vendored_patch_version
+                ::Security::ReportSchemaVersionMatcher.new(
+                  report_declared_version: report_version,
+                  supported_versions: supported_versions
+                ).call
+              rescue ArgumentError
+                nil
               end
 
               def file_name
@@ -79,25 +94,85 @@ module Gitlab
               @warnings = []
               @deprecation_warnings = []
 
-              populate_errors
-              populate_warnings
+              populate_schema_version_errors
+              populate_validation_errors
               populate_deprecation_warnings
             end
 
-            def valid?
-              errors.empty?
+            def populate_schema_version_errors
+              add_schema_version_errors if add_schema_version_error?
             end
 
-            def populate_errors
+            def add_schema_version_errors
+              if report_version.nil?
+                template = _("Report version not provided,"\
+                " %{report_type} report type supports versions: %{supported_schema_versions}."\
+                " GitLab will attempt to validate this report against the earliest supported versions of this report"\
+                " type, to show all the errors but will not ingest the report")
+                message = format(template, report_type: report_type, supported_schema_versions: supported_schema_versions)
+              else
+                template = _("Version %{report_version} for report type %{report_type} is unsupported, supported versions"\
+                " for this report type are: %{supported_schema_versions}."\
+                " GitLab will attempt to validate this report against the earliest supported versions of this report"\
+                " type, to show all the errors but will not ingest the report")
+                message = format(template, report_version: report_version, report_type: report_type, supported_schema_versions: supported_schema_versions)
+              end
+
+              log_warnings(problem_type: 'using_unsupported_schema_version')
+              add_message_as(level: :error, message: message)
+            end
+
+            def add_schema_version_error?
+              !report_uses_supported_schema_version? &&
+                !report_uses_deprecated_schema_version? &&
+                !report_uses_supported_major_and_minor_schema_version?
+            end
+
+            def report_uses_deprecated_schema_version?
+              DEPRECATED_VERSIONS[report_type].include?(report_version)
+            end
+
+            def report_uses_supported_schema_version?
+              SUPPORTED_VERSIONS[report_type].include?(report_version)
+            end
+
+            def report_uses_supported_major_and_minor_schema_version?
+              if !find_latest_patch_version.nil?
+                add_supported_major_minor_behavior_warning
+                true
+              else
+                false
+              end
+            end
+
+            def find_latest_patch_version
+              ::Security::ReportSchemaVersionMatcher.new(
+                report_declared_version: report_version,
+                supported_versions: SUPPORTED_VERSIONS[report_type]
+              ).call
+            rescue ArgumentError
+              nil
+            end
+
+            def add_supported_major_minor_behavior_warning
+              template = _("This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match"\
+                " any vendored schema version. Validation will be attempted against version"\
+                " %{find_latest_patch_version}")
+
+              message = format(template, find_latest_patch_version: find_latest_patch_version)
+
+              add_message_as(
+                level: :warning,
+                message: message
+              )
+            end
+
+            def populate_validation_errors
               schema_validation_errors = schema.validate(report_data).map { |error| JSONSchemer::Errors.pretty(error) }
 
               log_warnings(problem_type: 'schema_validation_fails') unless schema_validation_errors.empty?
 
               @errors += schema_validation_errors
-            end
-
-            def populate_warnings
-              add_unsupported_report_version_message if !report_uses_supported_schema_version? && !report_uses_deprecated_schema_version?
             end
 
             def populate_deprecation_warnings
@@ -107,8 +182,17 @@ module Gitlab
             def add_deprecated_report_version_message
               log_warnings(problem_type: 'using_deprecated_schema_version')
 
-              message = "Version #{report_version} for report type #{report_type} has been deprecated, supported versions for this report type are: #{supported_schema_versions}"
+              template = _("Version %{report_version} for report type %{report_type} has been deprecated,"\
+              " supported versions for this report type are: %{supported_schema_versions}."\
+              " GitLab will attempt to parse and ingest this report if valid.")
+
+              message = format(template, report_version: report_version, report_type: report_type, supported_schema_versions: supported_schema_versions)
+
               add_message_as(level: :deprecation_warning, message: message)
+            end
+
+            def valid?
+              errors.empty?
             end
 
             def log_warnings(problem_type:)
@@ -121,30 +205,6 @@ module Gitlab
                 security_report_scanner_id: @scanner&.dig('id'),
                 security_report_scanner_version: @scanner&.dig('version')
               )
-            end
-
-            def add_unsupported_report_version_message
-              log_warnings(problem_type: 'using_unsupported_schema_version')
-
-              handle_unsupported_report_version
-            end
-
-            def report_uses_deprecated_schema_version?
-              DEPRECATED_VERSIONS[report_type].include?(report_version)
-            end
-
-            def report_uses_supported_schema_version?
-              SUPPORTED_VERSIONS[report_type].include?(report_version)
-            end
-
-            def handle_unsupported_report_version
-              if report_version.nil?
-                message = "Report version not provided, #{report_type} report type supports versions: #{supported_schema_versions}"
-              else
-                message = "Version #{report_version} for report type #{report_type} is unsupported, supported versions for this report type are: #{supported_schema_versions}"
-              end
-
-              add_message_as(level: :error, message: message)
             end
 
             def supported_schema_versions

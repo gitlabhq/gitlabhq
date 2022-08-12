@@ -32,9 +32,9 @@ module API
         optional :package_name, type: String,
                                 desc: 'Return packages with this name'
         optional :include_versionless, type: Boolean,
-                       desc: 'Returns packages without a version'
+                                       desc: 'Returns packages without a version'
         optional :status, type: String, values: Packages::Package.statuses.keys,
-                 desc: 'Return packages with specified status'
+                          desc: 'Return packages with specified status'
       end
       get ':id/packages' do
         packages = ::Packages::PackagesFinder.new(

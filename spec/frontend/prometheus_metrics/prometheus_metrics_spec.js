@@ -54,25 +54,25 @@ describe('PrometheusMetrics', () => {
     it('should show loading state when called with `loading`', () => {
       prometheusMetrics.showMonitoringMetricsPanelState(PANEL_STATE.LOADING);
 
-      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeFalsy();
-      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBeTruthy();
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBe(false);
+      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBe(true);
+      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBe(true);
     });
 
     it('should show metrics list when called with `list`', () => {
       prometheusMetrics.showMonitoringMetricsPanelState(PANEL_STATE.LIST);
 
-      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBe(true);
+      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBe(true);
+      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBe(false);
     });
 
     it('should show empty state when called with `empty`', () => {
       prometheusMetrics.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
 
-      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeFalsy();
-      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBeTruthy();
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBe(true);
+      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBe(false);
+      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBe(true);
     });
   });
 
@@ -88,8 +88,8 @@ describe('PrometheusMetrics', () => {
 
       const $metricsListLi = prometheusMetrics.$monitoredMetricsList.find('li');
 
-      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBe(true);
+      expect(prometheusMetrics.$monitoredMetricsList.hasClass('hidden')).toBe(false);
 
       expect(prometheusMetrics.$monitoredMetricsCount.text()).toEqual(
         '3 exporters with 12 metrics were found',
@@ -102,8 +102,8 @@ describe('PrometheusMetrics', () => {
     it('should show missing environment variables list', () => {
       prometheusMetrics.populateActiveMetrics(missingVarMetrics);
 
-      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$missingEnvVarPanel.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBe(true);
+      expect(prometheusMetrics.$missingEnvVarPanel.hasClass('hidden')).toBe(false);
 
       expect(prometheusMetrics.$missingEnvVarMetricCount.text()).toEqual('2');
       expect(prometheusMetrics.$missingEnvVarPanel.find('li').length).toEqual(2);
@@ -143,12 +143,12 @@ describe('PrometheusMetrics', () => {
 
       prometheusMetrics.loadActiveMetrics();
 
-      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBe(false);
       expect(axios.get).toHaveBeenCalledWith(prometheusMetrics.activeMetricsEndpoint);
 
       await waitForPromises();
 
-      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBe(true);
     });
 
     it('should show empty state if response failed to load', async () => {
@@ -158,8 +158,8 @@ describe('PrometheusMetrics', () => {
 
       await waitForPromises();
 
-      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeFalsy();
+      expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBe(true);
+      expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBe(false);
     });
 
     it('should populate metrics list once response is loaded', async () => {

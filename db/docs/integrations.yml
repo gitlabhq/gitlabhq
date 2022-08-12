@@ -38,6 +38,7 @@ classes:
 - Integrations::PipelinesEmail
 - Integrations::Pivotaltracker
 - Integrations::Prometheus
+- Integrations::Pumble
 - Integrations::Pushover
 - Integrations::Redmine
 - Integrations::Shimo

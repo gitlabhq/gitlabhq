@@ -102,7 +102,7 @@ describe('Pipelines filtered search', () => {
   it('emits filterPipelines on submit with correct filter', () => {
     findFilteredSearch().vm.$emit('submit', mockSearch);
 
-    expect(wrapper.emitted('filterPipelines')).toBeTruthy();
+    expect(wrapper.emitted('filterPipelines')).toHaveLength(1);
     expect(wrapper.emitted('filterPipelines')[0]).toEqual([mockSearch]);
   });
 

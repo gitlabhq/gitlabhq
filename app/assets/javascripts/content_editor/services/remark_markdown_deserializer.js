@@ -1,4 +1,5 @@
 import { render } from '~/lib/gfm';
+import { isValidAttribute } from '~/lib/dompurify';
 import { createProseMirrorDocFromMdastTree } from './hast_to_prosemirror_converter';
 
 const wrappableTags = ['img', 'br', 'code', 'i', 'em', 'b', 'strong', 'a', 'strike', 's', 'del'];
@@ -184,28 +185,34 @@ const factorySpecs = {
   },
 };
 
-const resolveUrl = (url) => {
-  try {
-    return new URL(url, window.location.origin).toString();
-  } catch {
+const SANITIZE_ALLOWLIST = ['level', 'identifier', 'numeric', 'language', 'url'];
+
+const sanitizeAttribute = (attributeName, attributeValue, hastNode) => {
+  if (!attributeValue || SANITIZE_ALLOWLIST.includes(attributeName)) {
+    return attributeValue;
+  }
+
+  /**
+   * This is a workaround to validate the value of the canonicalSrc
+   * attribute using DOMPurify without passing the attribute name. canonicalSrc
+   * is not an allowed attribute in DOMPurify therefore the library will remove
+   * it regardless of its value.
+   *
+   * We want to preserve canonicalSrc, and we also want to make sure that its
+   * value is sanitized.
+   */
+  const validateAttributeAs = attributeName === 'canonicalSrc' ? 'src' : attributeName;
+
+  if (!isValidAttribute(hastNode.tagName, validateAttributeAs, attributeValue)) {
     return null;
   }
+
+  return attributeValue;
 };
 
 const attributeTransformer = {
-  attributes: ['href', 'src'],
-  transform: (url) => {
-    if (!url) {
-      return url;
-    }
-
-    /**
-     * Resolves a URL if provided. The URL is not resolved against
-     * the client origin initially to protect the URL protocol
-     * when it is available, for example, we want to preserve
-     * mailto and application-specific protocols
-     */
-    return resolveUrl(url);
+  transform: (attributeName, attributeValue, hastNode) => {
+    return sanitizeAttribute(attributeName, attributeValue, hastNode);
   },
 };
 

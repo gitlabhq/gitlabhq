@@ -94,7 +94,7 @@ module Backup
     def build_env
       {
         'SSL_CERT_FILE' => Gitlab::X509::Certificate.default_cert_file,
-        'SSL_CERT_DIR'  => Gitlab::X509::Certificate.default_cert_dir
+        'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir
       }.merge(ENV)
     end
 

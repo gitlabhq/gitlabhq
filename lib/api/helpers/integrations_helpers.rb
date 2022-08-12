@@ -678,6 +678,15 @@ module API
               desc: 'Contents of the credentials.json file of your service account, like: { "type": "service_account", "project_id": ... }'
             }
           ],
+          'pumble' => [
+            {
+              required: true,
+              name: :webhook,
+              type: String,
+              desc: 'The Pumble chat webhook. For example, https://api.pumble.com/workspaces/x/...'
+            },
+            chat_notification_events
+          ].flatten,
           'pushover' => [
             {
               required: true,

@@ -159,7 +159,7 @@ module API
       params do
         use :merge_requests_params
         optional :non_archived, type: Boolean, desc: 'Return merge requests from non archived projects',
-        default: true
+                                default: true
       end
       get ":id/merge_requests", feature_category: :code_review, urgency: :low do
         validate_anonymous_search_access! if declared_params[:search].present?

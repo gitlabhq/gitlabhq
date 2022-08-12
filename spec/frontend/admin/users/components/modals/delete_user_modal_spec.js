@@ -87,8 +87,8 @@ describe('Delete user modal', () => {
     });
 
     it('has disabled buttons', () => {
-      expect(findPrimaryButton().attributes('disabled')).toBeTruthy();
-      expect(findSecondaryButton().attributes('disabled')).toBeTruthy();
+      expect(findPrimaryButton().attributes('disabled')).toBe('true');
+      expect(findSecondaryButton().attributes('disabled')).toBe('true');
     });
   });
 
@@ -105,8 +105,8 @@ describe('Delete user modal', () => {
     });
 
     it('has disabled buttons', () => {
-      expect(findPrimaryButton().attributes('disabled')).toBeTruthy();
-      expect(findSecondaryButton().attributes('disabled')).toBeTruthy();
+      expect(findPrimaryButton().attributes('disabled')).toBe('true');
+      expect(findSecondaryButton().attributes('disabled')).toBe('true');
     });
   });
 
@@ -123,8 +123,8 @@ describe('Delete user modal', () => {
     });
 
     it('has enabled buttons', () => {
-      expect(findPrimaryButton().attributes('disabled')).toBeFalsy();
-      expect(findSecondaryButton().attributes('disabled')).toBeFalsy();
+      expect(findPrimaryButton().attributes('disabled')).toBeUndefined();
+      expect(findSecondaryButton().attributes('disabled')).toBeUndefined();
     });
 
     describe('when primary action is clicked', () => {

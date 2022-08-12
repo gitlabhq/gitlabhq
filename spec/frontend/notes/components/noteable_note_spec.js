@@ -357,7 +357,7 @@ describe('issue_note', () => {
       createWrapper();
       updateActions();
       wrapper.findComponent(NoteBody).vm.$emit('handleFormUpdate', params);
-      expect(wrapper.emitted('handleUpdateNote')).toBeTruthy();
+      expect(wrapper.emitted('handleUpdateNote')).toHaveLength(1);
     });
 
     it('does not stringify empty position', () => {

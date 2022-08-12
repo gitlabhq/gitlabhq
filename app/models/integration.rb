@@ -21,7 +21,7 @@ class Integration < ApplicationRecord
     asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord
     drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat harbor irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
-    pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack zentao
+    pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack zentao
   ].freeze
 
   # TODO Shimo is temporary disabled on group and instance-levels.

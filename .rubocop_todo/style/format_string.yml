@@ -118,6 +118,7 @@ Style/FormatString:
     - 'app/models/integrations/mattermost.rb'
     - 'app/models/integrations/pipelines_email.rb'
     - 'app/models/integrations/pivotaltracker.rb'
+    - 'app/models/integrations/pumble.rb'
     - 'app/models/integrations/pushover.rb'
     - 'app/models/integrations/redmine.rb'
     - 'app/models/integrations/unify_circuit.rb'

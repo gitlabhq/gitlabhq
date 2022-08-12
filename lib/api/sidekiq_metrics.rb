@@ -22,14 +22,14 @@ module API
       def process_metrics
         Sidekiq::ProcessSet.new(false).map do |process|
           {
-            hostname:    process['hostname'],
-            pid:         process['pid'],
-            tag:         process['tag'],
-            started_at:  Time.at(process['started_at']),
-            queues:      process['queues'],
-            labels:      process['labels'],
+            hostname: process['hostname'],
+            pid: process['pid'],
+            tag: process['tag'],
+            started_at: Time.at(process['started_at']),
+            queues: process['queues'],
+            labels: process['labels'],
             concurrency: process['concurrency'],
-            busy:        process['busy']
+            busy: process['busy']
           }
         end
       end

@@ -283,12 +283,12 @@ module API
           ''
         else
           file_params = {
-            file:      params[:file],
-            size:      params['file.size'],
+            file: params[:file],
+            size: params['file.size'],
             file_name: file_name,
             file_type: params['file.type'],
             file_sha1: params['file.sha1'],
-            file_md5:  params['file.md5']
+            file_md5: params['file.md5']
           }
 
           ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute

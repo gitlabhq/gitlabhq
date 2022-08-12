@@ -58,7 +58,7 @@ describe('Ci variable modal', () => {
     });
 
     it('button is disabled when no key/value pair are present', () => {
-      expect(findAddorUpdateButton().attributes('disabled')).toBeTruthy();
+      expect(findAddorUpdateButton().attributes('disabled')).toBe('true');
     });
   });
 
@@ -71,7 +71,7 @@ describe('Ci variable modal', () => {
     });
 
     it('button is enabled when key/value pair are present', () => {
-      expect(findAddorUpdateButton().attributes('disabled')).toBeFalsy();
+      expect(findAddorUpdateButton().attributes('disabled')).toBeUndefined();
     });
 
     it('Add variable button dispatches addVariable action', () => {
@@ -249,7 +249,7 @@ describe('Ci variable modal', () => {
       });
 
       it('disables the submit button', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBeTruthy();
+        expect(findAddorUpdateButton().attributes('disabled')).toBe('disabled');
       });
 
       it('shows the correct error text', () => {
@@ -316,7 +316,7 @@ describe('Ci variable modal', () => {
       });
 
       it('does not disable the submit button', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBeFalsy();
+        expect(findAddorUpdateButton().attributes('disabled')).toBeUndefined();
       });
     });
   });

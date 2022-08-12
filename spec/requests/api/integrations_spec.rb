@@ -66,6 +66,7 @@ RSpec.describe API::Integrations do
             mattermost: %i[deployment_channel labels_to_be_notified],
             mock_ci: %i[enable_ssl_verification],
             prometheus: %i[manual_configuration],
+            pumble: %i[branches_to_be_notified notify_only_broken_pipelines],
             slack: %i[alert_events alert_channel deployment_channel labels_to_be_notified],
             unify_circuit: %i[branches_to_be_notified notify_only_broken_pipelines],
             webex_teams: %i[branches_to_be_notified notify_only_broken_pipelines]

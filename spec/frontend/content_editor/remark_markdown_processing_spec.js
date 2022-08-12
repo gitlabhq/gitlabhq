@@ -261,7 +261,7 @@ describe('Client side Markdown processing', () => {
             ...source('<img src="bar" alt="foo" />'),
             alt: 'foo',
             canonicalSrc: 'bar',
-            src: 'http://test.host/bar',
+            src: 'bar',
           }),
         ),
       ),
@@ -283,7 +283,7 @@ describe('Client side Markdown processing', () => {
           image({
             ...source('<img src="bar" alt="foo" />'),
             alt: 'foo',
-            src: 'http://test.host/bar',
+            src: 'bar',
             canonicalSrc: 'bar',
           }),
         ),
@@ -297,7 +297,7 @@ describe('Client side Markdown processing', () => {
           link(
             {
               ...source('[GitLab](https://gitlab.com "Go to GitLab")'),
-              href: 'https://gitlab.com/',
+              href: 'https://gitlab.com',
               canonicalSrc: 'https://gitlab.com',
               title: 'Go to GitLab',
             },
@@ -316,7 +316,7 @@ describe('Client side Markdown processing', () => {
             link(
               {
                 ...source('[GitLab](https://gitlab.com "Go to GitLab")'),
-                href: 'https://gitlab.com/',
+                href: 'https://gitlab.com',
                 canonicalSrc: 'https://gitlab.com',
                 title: 'Go to GitLab',
               },
@@ -335,7 +335,7 @@ describe('Client side Markdown processing', () => {
             {
               ...source('www.commonmark.org'),
               canonicalSrc: 'http://www.commonmark.org',
-              href: 'http://www.commonmark.org/',
+              href: 'http://www.commonmark.org',
             },
             'www.commonmark.org',
           ),
@@ -389,7 +389,7 @@ describe('Client side Markdown processing', () => {
               sourceMapKey: null,
               sourceMarkdown: null,
               canonicalSrc: 'https://gitlab.com',
-              href: 'https://gitlab.com/',
+              href: 'https://gitlab.com',
             },
             'https://gitlab.com',
           ),
@@ -616,7 +616,7 @@ two
                 ...source('![bar](foo.png)'),
                 alt: 'bar',
                 canonicalSrc: 'foo.png',
-                src: 'http://test.host/foo.png',
+                src: 'foo.png',
               }),
             ),
           ),
@@ -969,12 +969,12 @@ Paragraph
             {
               ...source('[![moon](moon.jpg)](/uri)'),
               canonicalSrc: '/uri',
-              href: 'http://test.host/uri',
+              href: '/uri',
             },
             image({
               ...source('![moon](moon.jpg)'),
               canonicalSrc: 'moon.jpg',
-              src: 'http://test.host/moon.jpg',
+              src: 'moon.jpg',
               alt: 'moon',
             }),
           ),
@@ -1010,7 +1010,7 @@ Paragraph
               {
                 ...source('[moon](moon.jpg)'),
                 canonicalSrc: 'moon.jpg',
-                href: 'http://test.host/moon.jpg',
+                href: 'moon.jpg',
               },
               'moon',
             ),
@@ -1021,7 +1021,7 @@ Paragraph
             link(
               {
                 ...source('[sun](sun.jpg)'),
-                href: 'http://test.host/sun.jpg',
+                href: 'sun.jpg',
                 canonicalSrc: 'sun.jpg',
               },
               'sun',
@@ -1141,7 +1141,7 @@ _world_.
           link(
             {
               ...source('[GitLab][gitlab-url]'),
-              href: 'https://gitlab.com/',
+              href: 'https://gitlab.com',
               canonicalSrc: 'https://gitlab.com',
               title: 'GitLab',
             },
@@ -1235,4 +1235,72 @@ body {
       expect(tiptapEditor.getHTML()).toEqual(expectedHtml);
     },
   );
+
+  describe('attribute sanitization', () => {
+    // eslint-disable-next-line no-script-url
+    const protocolBasedInjectionSimpleNoSpaces = "javascript:alert('XSS');";
+    // eslint-disable-next-line no-script-url
+    const protocolBasedInjectionSimpleSpacesBefore = "javascript:    alert('XSS');";
+
+    const docWithImageFactory = (urlInput, urlOutput) => {
+      const input = `<img src="${urlInput}">`;
+
+      return {
+        input,
+        expectedDoc: doc(
+          paragraph(
+            source(input),
+            image({
+              ...source(input),
+              src: urlOutput,
+              canonicalSrc: urlOutput,
+            }),
+          ),
+        ),
+      };
+    };
+
+    const docWithLinkFactory = (urlInput, urlOutput) => {
+      const input = `<a href="${urlInput}">foo</a>`;
+
+      return {
+        input,
+        expectedDoc: doc(
+          paragraph(
+            source(input),
+            link({ ...source(input), href: urlOutput, canonicalSrc: urlOutput }, 'foo'),
+          ),
+        ),
+      };
+    };
+
+    it.each`
+      desc                                                                     | urlInput                                                                                                                                                                                                             | urlOutput
+      ${'protocol-based JS injection: simple, no spaces'}                      | ${protocolBasedInjectionSimpleNoSpaces}                                                                                                                                                                              | ${null}
+      ${'protocol-based JS injection: simple, spaces before'}                  | ${"javascript    :alert('XSS');"}                                                                                                                                                                                    | ${null}
+      ${'protocol-based JS injection: simple, spaces after'}                   | ${protocolBasedInjectionSimpleSpacesBefore}                                                                                                                                                                          | ${null}
+      ${'protocol-based JS injection: simple, spaces before and after'}        | ${"javascript    :   alert('XSS');"}                                                                                                                                                                                 | ${null}
+      ${'protocol-based JS injection: UTF-8 encoding'}                         | ${'javascript&#58;'}                                                                                                                                                                                                 | ${null}
+      ${'protocol-based JS injection: long UTF-8 encoding'}                    | ${'javascript&#0058;'}                                                                                                                                                                                               | ${null}
+      ${'protocol-based JS injection: long UTF-8 encoding without semicolons'} | ${'&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041'} | ${null}
+      ${'protocol-based JS injection: hex encoding'}                           | ${'javascript&#x3A;'}                                                                                                                                                                                                | ${null}
+      ${'protocol-based JS injection: long hex encoding'}                      | ${'javascript&#x003A;'}                                                                                                                                                                                              | ${null}
+      ${'protocol-based JS injection: hex encoding without semicolons'}        | ${'&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29'}                                                                                             | ${null}
+      ${'protocol-based JS injection: Unicode'}                                | ${"\u0001java\u0003script:alert('XSS')"}                                                                                                                                                                             | ${null}
+      ${'protocol-based JS injection: spaces and entities'}                    | ${"&#14;  javascript:alert('XSS');"}                                                                                                                                                                                 | ${null}
+      ${'vbscript'}                                                            | ${'vbscript:alert(document.domain)'}                                                                                                                                                                                 | ${null}
+      ${'protocol-based JS injection: preceding colon'}                        | ${":javascript:alert('XSS');"}                                                                                                                                                                                       | ${":javascript:alert('XSS');"}
+      ${'protocol-based JS injection: null char'}                              | ${"java\0script:alert('XSS')"}                                                                                                                                                                                       | ${"java�script:alert('XSS')"}
+      ${'protocol-based JS injection: invalid URL char'}                       | ${"java\\script:alert('XSS')"}                                                                                                                                                                                       | ${"java\\script:alert('XSS')"}
+    `('sanitize $desc:\n\tURL "$urlInput" becomes "$urlOutput"', ({ urlInput, urlOutput }) => {
+      const exampleFactories = [docWithImageFactory, docWithLinkFactory];
+
+      exampleFactories.forEach(async (exampleFactory) => {
+        const { input, expectedDoc } = exampleFactory(urlInput, urlOutput);
+        const document = await deserialize(input);
+
+        expect(document.toJSON()).toEqual(expectedDoc.toJSON());
+      });
+    });
+  });
 });

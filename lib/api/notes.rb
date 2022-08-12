@@ -30,7 +30,7 @@ module API
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
                           desc: 'Return notes sorted in `asc` or `desc` order.'
           optional :activity_filter, type: String, values: UserPreference::NOTES_FILTERS.stringify_keys.keys, default: 'all_notes',
-                           desc: 'The type of notables which are returned.'
+                                     desc: 'The type of notables which are returned.'
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord

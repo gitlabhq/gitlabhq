@@ -149,7 +149,7 @@ base address for Docker images. You can override this for most scanners by setti
 
 The [Container Scanning](container_scanning/index.md) analyzer is an exception, and it
 does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
-the instructions for 
+the instructions for
 [Running container scanning in an offline environment](container_scanning/index.md#running-container-scanning-in-an-offline-environment).
 
 ## Default behavior of GitLab security scanning tools
@@ -390,8 +390,10 @@ Validation depends on the schema version declared in the security report artifac
 
 - If your security report specifies a supported schema version, GitLab uses this version to validate.
 - If your security report uses a deprecated version, GitLab attempts validation against that version and adds a deprecation warning to the validation result.
-- If your security report uses a version that is not supported, GitLab attempts to validate it against the latest schema version available in GitLab.
-- If your security report does not specify a schema version, GitLab attempts to validate it against the lastest schema version available in GitLab. Since the `version` property is required, validation always fails in this case, but other validation errors may also be present.
+- If your security report uses a supported MAJOR-MINOR version of the report schema but the PATCH version doesn't match any vendored versions, GitLab attempts to validate it against latest vendored PATCH version of the schema.
+  - Example: security report uses version 14.1.1 but the latest vendored version is 14.1.0. GitLab would validate against schema version 14.1.0.
+- If your security report uses a version that is not supported, GitLab attempts to validate it against the latest schema version available in your installation but doesn't ingest the report.
+- If your security report does not specify a schema version, GitLab attempts to validate it against the latest schema version available in GitLab. Because the `version` property is required, validation always fails in this case, but other validation errors may also be present.
 
 You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb).
 

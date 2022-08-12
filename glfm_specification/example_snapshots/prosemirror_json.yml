@@ -3145,7 +3145,7 @@
                   {
                     "type": "link",
                     "attrs": {
-                      "href": "http://test.host/bar",
+                      "href": "bar",
                       "target": "_blank",
                       "class": null,
                       "title": null,
@@ -3230,7 +3230,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/foo",
+                  "href": "foo",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -3748,7 +3748,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/bar",
+                  "href": "bar",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -3906,7 +3906,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -3947,7 +3947,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "the title",
@@ -3988,7 +3988,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/my_(url)",
+                  "href": "my_(url)",
                   "target": "_blank",
                   "class": null,
                   "title": "title (with parens)",
@@ -4029,7 +4029,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/my%20url",
+                  "href": "my%20url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -4070,7 +4070,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "\ntitle\nline1\nline2\n",
@@ -4144,7 +4144,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -4274,7 +4274,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url%5Cbar*baz",
+                  "href": "/url%5Cbar*baz",
                   "target": "_blank",
                   "class": null,
                   "title": "foo\"bar\\baz",
@@ -4301,7 +4301,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -4342,7 +4342,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/first",
+                  "href": "first",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -4411,7 +4411,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -4452,7 +4452,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/%CF%86%CE%BF%CF%85",
+                  "href": "/%CF%86%CE%BF%CF%85",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -4655,7 +4655,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -4739,7 +4739,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -4784,7 +4784,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -4853,7 +4853,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/foo-url",
+                  "href": "/foo-url",
                   "target": "_blank",
                   "class": null,
                   "title": "foo",
@@ -4873,7 +4873,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/bar-url",
+                  "href": "/bar-url",
                   "target": "_blank",
                   "class": null,
                   "title": "bar",
@@ -4893,7 +4893,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/baz-url",
+                  "href": "/baz-url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -4920,7 +4920,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -10683,7 +10683,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://example.com/?find=%5C*",
+                  "href": "http://example.com?find=%5C*",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -10719,7 +10719,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/bar*",
+                  "href": "/bar*",
                   "target": "_blank",
                   "class": null,
                   "title": "ti*tle",
@@ -10746,7 +10746,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/bar*",
+                  "href": "/bar*",
                   "target": "_blank",
                   "class": null,
                   "title": "ti*tle",
@@ -10905,7 +10905,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/f%C3%B6%C3%B6",
+                  "href": "/f%C3%B6%C3%B6",
                   "target": "_blank",
                   "class": null,
                   "title": "föö",
@@ -10932,7 +10932,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/f%C3%B6%C3%B6",
+                  "href": "/f%C3%B6%C3%B6",
                   "target": "_blank",
                   "class": null,
                   "title": "föö",
@@ -11466,7 +11466,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/%60",
+                  "href": "`",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -11517,7 +11517,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://foo.bar.`baz/",
+                  "href": "http://foo.bar.%60baz",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -12673,7 +12673,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -13143,7 +13143,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -13212,7 +13212,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -13571,7 +13571,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -14477,7 +14477,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -14508,7 +14508,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -14536,7 +14536,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/foo",
+              "src": "foo",
               "alt": null,
               "title": "*",
               "uploading": false,
@@ -14764,7 +14764,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -14791,7 +14791,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -14887,7 +14887,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/my%20uri",
+                  "href": "/my%20uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -14944,7 +14944,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/b)c",
+                  "href": "b)c",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15010,7 +15010,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/(foo)",
+                  "href": "(foo)",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15037,7 +15037,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/foo(and(bar))",
+                  "href": "foo(and(bar))",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15064,7 +15064,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/foo(and(bar)",
+                  "href": "foo(and(bar)",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15091,7 +15091,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/foo(and(bar)",
+                  "href": "foo(and(bar)",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15118,7 +15118,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/foo):",
+                  "href": "foo):",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15145,7 +15145,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/#fragment",
+                  "href": "#fragment",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15166,7 +15166,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://example.com/#fragment",
+                  "href": "http://example.com#fragment",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15187,7 +15187,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://example.com/?foo=3#frag",
+                  "href": "http://example.com?foo=3#frag",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15214,7 +15214,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/foo%5Cbar",
+                  "href": "foo%5Cbar",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15241,7 +15241,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/foo%20b%C3%A4",
+                  "href": "foo%20b%C3%A4",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15268,7 +15268,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/%22title%22",
+                  "href": "%22title%22",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15295,7 +15295,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -15322,7 +15322,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title \"\"",
@@ -15349,7 +15349,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url%C2%A0%22title%22",
+                  "href": "/url%C2%A0%22title%22",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15391,7 +15391,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title \"and\" title",
@@ -15418,7 +15418,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -15460,7 +15460,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15506,7 +15506,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15533,7 +15533,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15560,7 +15560,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15576,7 +15576,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15595,7 +15595,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15617,7 +15617,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15650,7 +15650,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/moon.jpg",
+              "src": "moon.jpg",
               "alt": "moon",
               "title": null,
               "uploading": false,
@@ -15660,7 +15660,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15690,7 +15690,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15734,7 +15734,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15774,7 +15774,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/uri3",
+              "src": "uri3",
               "alt": "[foo](uri2)",
               "title": null,
               "uploading": false,
@@ -15802,7 +15802,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15829,7 +15829,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/baz*",
+                  "href": "baz*",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -15950,7 +15950,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -15991,7 +15991,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16032,7 +16032,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16073,7 +16073,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16089,7 +16089,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16108,7 +16108,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16130,7 +16130,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16177,7 +16177,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/moon.jpg",
+              "src": "moon.jpg",
               "alt": "moon",
               "title": null,
               "uploading": false,
@@ -16187,7 +16187,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16231,7 +16231,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16251,7 +16251,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16305,7 +16305,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16328,7 +16328,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16373,7 +16373,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16414,7 +16414,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16567,7 +16567,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -16608,7 +16608,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16667,7 +16667,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16698,7 +16698,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -16743,7 +16743,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -16812,7 +16812,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url1",
+                  "href": "/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16940,7 +16940,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -16995,7 +16995,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/uri",
+                  "href": "/uri",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17070,7 +17070,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17111,7 +17111,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17130,7 +17130,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17171,7 +17171,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17212,7 +17212,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17257,7 +17257,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17298,7 +17298,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17317,7 +17317,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17362,7 +17362,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17381,7 +17381,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17430,7 +17430,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17471,7 +17471,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -17512,7 +17512,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17604,7 +17604,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17631,7 +17631,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url2",
+                  "href": "/url2",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17686,7 +17686,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url1",
+                  "href": "/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17768,7 +17768,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url1",
+                  "href": "/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17817,7 +17817,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17858,7 +17858,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url2",
+                  "href": "/url2",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17874,7 +17874,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url1",
+                  "href": "/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17933,7 +17933,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url1",
+                  "href": "/url1",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -17985,7 +17985,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "foo",
               "title": "title",
               "uploading": false,
@@ -18006,7 +18006,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/train.jpg",
+              "src": "train.jpg",
               "alt": "foo bar",
               "title": "train & tracks",
               "uploading": false,
@@ -18041,7 +18041,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url2",
+              "src": "/url2",
               "alt": "foo bar",
               "title": null,
               "uploading": false,
@@ -18062,7 +18062,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url2",
+              "src": "/url2",
               "alt": "foo bar",
               "title": null,
               "uploading": false,
@@ -18083,7 +18083,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/train.jpg",
+              "src": "train.jpg",
               "alt": "foo bar",
               "title": "train & tracks",
               "uploading": false,
@@ -18118,7 +18118,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/train.jpg",
+              "src": "train.jpg",
               "alt": "foo bar",
               "title": "train & tracks",
               "uploading": false,
@@ -18153,7 +18153,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/train.jpg",
+              "src": "train.jpg",
               "alt": "foo",
               "title": null,
               "uploading": false,
@@ -18178,7 +18178,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/path/to/train.jpg",
+              "src": "/path/to/train.jpg",
               "alt": "foo bar",
               "title": "title",
               "uploading": false,
@@ -18199,7 +18199,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "url",
               "alt": "foo",
               "title": null,
               "uploading": false,
@@ -18220,7 +18220,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "",
               "title": null,
               "uploading": false,
@@ -18241,7 +18241,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "foo",
               "title": null,
               "uploading": false,
@@ -18276,7 +18276,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "foo",
               "title": null,
               "uploading": false,
@@ -18311,7 +18311,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "foo",
               "title": "title",
               "uploading": false,
@@ -18346,7 +18346,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "foo bar",
               "title": "title",
               "uploading": false,
@@ -18381,7 +18381,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "Foo",
               "title": "title",
               "uploading": false,
@@ -18416,7 +18416,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "foo",
               "title": "title",
               "uploading": false,
@@ -18455,7 +18455,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "foo",
               "title": "title",
               "uploading": false,
@@ -18490,7 +18490,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "foo bar",
               "title": "title",
               "uploading": false,
@@ -18549,7 +18549,7 @@
           {
             "type": "image",
             "attrs": {
-              "src": "http://test.host/url",
+              "src": "/url",
               "alt": "Foo",
               "title": "title",
               "uploading": false,
@@ -18620,7 +18620,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://test.host/url",
+                  "href": "/url",
                   "target": "_blank",
                   "class": null,
                   "title": "title",
@@ -18661,7 +18661,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://foo.bar.baz/",
+                  "href": "http://foo.bar.baz",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -18715,11 +18715,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "irc://foo.bar:2233/baz",
+                  "href": null,
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": "irc://foo.bar:2233/baz"
+                  "canonicalSrc": null
                 }
               }
             ],
@@ -18742,7 +18742,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "mailto:FOO@BAR.BAZ",
+                  "href": "MAILTO:FOO@BAR.BAZ",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -18769,11 +18769,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "a+b+c:d",
+                  "href": null,
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": "a+b+c:d"
+                  "canonicalSrc": null
                 }
               }
             ],
@@ -18796,11 +18796,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "made-up-scheme://foo,bar",
+                  "href": null,
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": "made-up-scheme://foo,bar"
+                  "canonicalSrc": null
                 }
               }
             ],
@@ -18850,11 +18850,11 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "localhost:5001/foo",
+                  "href": null,
                   "target": "_blank",
                   "class": null,
                   "title": null,
-                  "canonicalSrc": "localhost:5001/foo"
+                  "canonicalSrc": null
                 }
               }
             ],
@@ -19047,7 +19047,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://foo.bar/",
+                  "href": "http://foo.bar",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -19108,7 +19108,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://example.com/",
+                  "href": "http://example.com",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -19162,7 +19162,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://www.commonmark.org/",
+                  "href": "http://www.commonmark.org",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -19228,7 +19228,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://www.commonmark.org/",
+                  "href": "http://www.commonmark.org",
                   "target": "_blank",
                   "class": null,
                   "title": null,
@@ -19504,7 +19504,7 @@
               {
                 "type": "link",
                 "attrs": {
-                  "href": "http://commonmark.org/",
+                  "href": "http://commonmark.org",
                   "target": "_blank",
                   "class": null,
                   "title": null,

@@ -20380,6 +20380,7 @@ State of a Sentry error.
 | <a id="servicetypepipelines_email_service"></a>`PIPELINES_EMAIL_SERVICE` | PipelinesEmailService type. |
 | <a id="servicetypepivotaltracker_service"></a>`PIVOTALTRACKER_SERVICE` | PivotaltrackerService type. |
 | <a id="servicetypeprometheus_service"></a>`PROMETHEUS_SERVICE` | PrometheusService type. |
+| <a id="servicetypepumble_service"></a>`PUMBLE_SERVICE` | PumbleService type. |
 | <a id="servicetypepushover_service"></a>`PUSHOVER_SERVICE` | PushoverService type. |
 | <a id="servicetyperedmine_service"></a>`REDMINE_SERVICE` | RedmineService type. |
 | <a id="servicetypeshimo_service"></a>`SHIMO_SERVICE` | ShimoService type. |
@@ -20719,8 +20720,6 @@ Vulnerability sort values.
 | ----- | ----------- |
 | <a id="vulnerabilitysortdetected_asc"></a>`detected_asc` | Detection timestamp in ascending order. |
 | <a id="vulnerabilitysortdetected_desc"></a>`detected_desc` | Detection timestamp in descending order. |
-| <a id="vulnerabilitysortreport_type_asc"></a>`report_type_asc` | Report Type in ascending order. |
-| <a id="vulnerabilitysortreport_type_desc"></a>`report_type_desc` | Report Type in descending order. |
 | <a id="vulnerabilitysortseverity_asc"></a>`severity_asc` | Severity in ascending order. |
 | <a id="vulnerabilitysortseverity_desc"></a>`severity_desc` | Severity in descending order. |
 

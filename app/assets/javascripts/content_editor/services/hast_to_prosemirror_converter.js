@@ -104,15 +104,16 @@ const getAttrsFactory = ({ attributeTransformer, markdown }) =>
   function getAttrs(proseMirrorNodeSpec, hastNode, hastParents) {
     const { getAttrs: specGetAttrs } = proseMirrorNodeSpec;
     const attributes = {
-      ...createSourceMapAttributes(hastNode, markdown),
       ...(isFunction(specGetAttrs) ? specGetAttrs(hastNode, hastParents, markdown) : {}),
     };
+    const { transform } = attributeTransformer;
 
-    return mapValues(attributes, (value, key) =>
-      attributeTransformer.attributes.includes(key)
-        ? attributeTransformer.transform(value, key)
-        : value,
-    );
+    return {
+      ...createSourceMapAttributes(hastNode, markdown),
+      ...mapValues(attributes, (attributeValue, attributeName) =>
+        transform(attributeName, attributeValue, hastNode),
+      ),
+    };
   };
 
 /**

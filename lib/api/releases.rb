@@ -23,9 +23,9 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the group to get releases for'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                 desc: 'Return projects sorted in ascending and descending order by released_at'
+                        desc: 'Return projects sorted in ascending and descending order by released_at'
         optional :simple, type: Boolean, default: false,
-                 desc: 'Return only the ID, URL, name, and path of each project'
+                          desc: 'Return only the ID, URL, name, and path of each project'
 
         use :pagination
       end
@@ -61,7 +61,7 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return releases sorted in `asc` or `desc` order.'
         optional :include_html_description, type: Boolean,
-                               desc: 'If `true`, a response includes HTML rendered markdown of the release description.'
+                                            desc: 'If `true`, a response includes HTML rendered markdown of the release description.'
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/releases' do
@@ -89,7 +89,7 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
         optional :include_html_description, type: Boolean,
-                               desc: 'If `true`, a response includes HTML rendered markdown of the release description.'
+                                            desc: 'If `true`, a response includes HTML rendered markdown of the release description.'
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do

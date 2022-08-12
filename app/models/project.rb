@@ -216,6 +216,7 @@ class Project < ApplicationRecord
   has_one :pipelines_email_integration, class_name: 'Integrations::PipelinesEmail'
   has_one :pivotaltracker_integration, class_name: 'Integrations::Pivotaltracker'
   has_one :prometheus_integration, class_name: 'Integrations::Prometheus', inverse_of: :project
+  has_one :pumble_integration, class_name: 'Integrations::Pumble'
   has_one :pushover_integration, class_name: 'Integrations::Pushover'
   has_one :redmine_integration, class_name: 'Integrations::Redmine'
   has_one :shimo_integration, class_name: 'Integrations::Shimo'

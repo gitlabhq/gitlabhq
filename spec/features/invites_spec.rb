@@ -182,12 +182,14 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
       context 'email confirmation disabled' do
         let(:send_email_confirmation) { false }
 
-        it 'signs up and redirects to the most recent membership activity page with all the projects/groups invitations automatically accepted' do
-          fill_in_sign_up_form(new_user)
-          fill_in_welcome_form
+        context 'the user signs up for an account with the invitation email address' do
+          it 'redirects to the most recent membership activity page with all the projects/groups invitations automatically accepted' do
+            fill_in_sign_up_form(new_user)
+            fill_in_welcome_form
 
-          expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
-          expect(page).to have_content('You have been granted Owner access to group Owned.')
+            expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+            expect(page).to have_content('You have been granted Owner access to group Owned.')
+          end
         end
 
         context 'the user sign-up using a different email address' do
@@ -227,11 +229,13 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
           end
         end
 
-        it 'signs up and redirects to the group activity page with all the project/groups invitation automatically accepted' do
-          fill_in_sign_up_form(new_user)
-          fill_in_welcome_form
+        context 'the user signs up for an account with the invitation email address' do
+          it 'redirects to the most recent membership activity page with all the projects/groups invitations automatically accepted' do
+            fill_in_sign_up_form(new_user)
+            fill_in_welcome_form
 
-          expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+            expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+          end
         end
 
         context 'the user sign-up using a different email address' do

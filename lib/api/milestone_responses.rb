@@ -14,12 +14,12 @@ module API
 
         params :list_params do
           optional :state, type: String, values: %w[active closed all], default: 'all',
-                         desc: 'Return "active", "closed", or "all" milestones'
+                           desc: 'Return "active", "closed", or "all" milestones'
           optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IIDs of the milestones'
           optional :title, type: String, desc: 'The title of the milestones'
           optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
           optional :include_parent_milestones, type: Grape::API::Boolean, default: false,
-                    desc: 'Include group milestones from parent and its ancestors'
+                                               desc: 'Include group milestones from parent and its ancestors'
           use :pagination
         end
 
@@ -27,7 +27,7 @@ module API
           requires :milestone_id, type: Integer, desc: 'The milestone ID number'
           optional :title, type: String, desc: 'The title of the milestone'
           optional :state_event, type: String, values: %w[close activate],
-                               desc: 'The state event of the milestone '
+                                 desc: 'The state event of the milestone '
           use :optional_params
           at_least_one_of :title, :description, :start_date, :due_date, :state_event
         end

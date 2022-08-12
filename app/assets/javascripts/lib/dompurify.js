@@ -93,3 +93,5 @@ addHook('afterSanitizeAttributes', (node) => {
 });
 
 export const sanitize = (val, config) => dompurifySanitize(val, { ...defaultConfig, ...config });
+
+export { isValidAttribute } from 'dompurify';

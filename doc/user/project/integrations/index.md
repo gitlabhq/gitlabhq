@@ -73,6 +73,7 @@ You can configure the following integrations.
 | [Pipelines emails](pipeline_status_emails.md)                               | Send the pipeline status to a list of recipients by email.            | **{dotted-circle}** No |
 | [Pivotal Tracker](pivotal_tracker.md)                                       | Add commit messages as comments to Pivotal Tracker stories.           | **{dotted-circle}** No |
 | [Prometheus](prometheus.md)                                                 | Monitor application metrics.                                          | **{dotted-circle}** No |
+| [Pumble](pumble.md)                                                         | Send event notifications to a Pumble channel.                           | **{dotted-circle}** No |
 | Pushover                                                                    | Get real-time notifications on your device.                           | **{dotted-circle}** No |
 | [Redmine](redmine.md)                                                       | Use Redmine as the issue tracker.                                     | **{dotted-circle}** No |
 | [Slack application](gitlab_slack_application.md)                            | Use Slack's official GitLab application.                              | **{dotted-circle}** No |

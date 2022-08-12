@@ -1077,6 +1077,9 @@ License.current.trial?
 
 # License ID for lookup on CustomersDot
 License.current.license_id
+
+# License data in Base64-encoded ASCII format
+License.current.data
 ```
 
 ### Check if a project feature is available on the instance

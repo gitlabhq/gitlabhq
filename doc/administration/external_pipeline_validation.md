@@ -46,6 +46,7 @@ required number of seconds.
     "user",
     "pipeline",
     "builds",
+    "total_builds_count",
     "namespace"
   ],
   "properties" : {
@@ -61,7 +62,9 @@ required number of seconds.
       "properties": {
         "id": { "type": "integer" },
         "path": { "type": "string" },
-        "created_at": { "type": ["string", "null"], "format": "date-time" }
+        "created_at": { "type": ["string", "null"], "format": "date-time" },
+        "shared_runners_enabled": { "type": "boolean" },
+        "group_runners_enabled": { "type": "boolean" }
       }
     },
     "user": {
@@ -121,6 +124,7 @@ required number of seconds.
         }
       }
     },
+    "total_builds_count": { "type": "integer" },
     "namespace": {
       "type": "object",
       "required": [

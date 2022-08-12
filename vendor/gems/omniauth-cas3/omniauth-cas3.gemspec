@@ -8,9 +8,8 @@ Gem::Specification.new do |gem|
   gem.description   = gem.summary
   gem.homepage      = "https://github.com/tduehr/omniauth-cas3"
 
-  gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  gem.files         = `git ls-files`.split("\n")
-  gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  gem.files         = Dir.glob("lib/**/*.*")
+  gem.test_files    = Dir.glob("spec/**/**/*.*")
   gem.name          = "omniauth-cas3"
   gem.require_paths = ["lib"]
   gem.version       = Omniauth::Cas3::VERSION

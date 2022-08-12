@@ -85,7 +85,46 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection do
             expect(page).to have_content('Please complete your profile with email address')
           end
         end
+
+        context 'when registering via an invitation email' do
+          let_it_be(:owner) { create(:user) }
+          let_it_be(:group) { create(:group, name: 'Owned') }
+          let_it_be(:project) { create(:project, :repository, namespace: group) }
+
+          let(:invite_email) { generate(:email) }
+          let(:extra_params) { { invite_type: Emails::Members::INITIAL_INVITE } }
+          let(:group_invite) do
+            create(
+              :group_member, :invited,
+              group: group,
+              invite_email: invite_email,
+              created_by: owner
+            )
+          end
+
+          before do
+            project.add_maintainer(owner)
+            group.add_owner(owner)
+            group_invite.generate_invite_token!
+
+            mock_auth_hash(provider, uid, invite_email, additional_info: additional_info)
+          end
+
+          it 'redirects to the activity page with all the projects/groups invitations accepted' do
+            visit invite_path(group_invite.raw_invite_token, extra_params)
+            click_link_or_button "oauth-login-#{provider}"
+            fill_in_welcome_form
+
+            expect(page).to have_content('You have been granted Owner access to group Owned.')
+            expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+          end
+        end
       end
     end
+  end
+
+  def fill_in_welcome_form
+    select 'Software Developer', from: 'user_role'
+    click_button 'Get started!'
   end
 end

@@ -306,9 +306,19 @@ We also need to build a proof of concept for removing data on the PostgreSQL
 side (using foreign keys with `ON DELETE CASCADE`) and removing data through
 Rails associations, as this might be an important area of uncertainty.
 
-We need to [better understand](https://gitlab.com/gitlab-org/gitlab/-/issues/360148)
-how unique constraints we are currently using will perform when using the
-partitioned schema.
+We [learned](https://gitlab.com/gitlab-org/gitlab/-/issues/360148) that `PostgreSQL`
+does not allow to create a single index (unique or otherwise) across all partitions of a table.
+
+One solution to solve this problem is to embed the partitioning key inside the uniqueness constraint.
+
+This might mean prepending the partition ID in a hexadecimal format before the token itself and storing
+the concatenated string in a database. To do that we would need to reserve an appropriate number of
+leading bytes in a token to accommodate for the maximum number of partitions we may have in the future.
+It seems that reserving four characters, what would translate into 16-bits number in base-16,
+might be sufficient. The maximum number we can encode this way would be FFFF, what is 65535 in decimal.
+
+This would provide a unique constraint per-partition which
+is sufficient for global uniqueness.
 
 We have also designed a query analyzer that makes it possible to detect direct
 usage of zero partitions, legacy tables that have been attached as first
