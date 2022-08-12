@@ -34,6 +34,14 @@ RSpec.describe Ci::JobArtifacts::CreateService do
     subject { service.execute(artifacts_file, params, metadata_file: metadata_file) }
 
     context 'when artifacts file is uploaded' do
+      it 'logs the created artifact' do
+        expect(Gitlab::Ci::Artifacts::Logger)
+          .to receive(:log_created)
+          .with(an_instance_of(Ci::JobArtifact))
+
+        subject
+      end
+
       it 'returns artifact in the response' do
         response = subject
         new_artifact = job.job_artifacts.last

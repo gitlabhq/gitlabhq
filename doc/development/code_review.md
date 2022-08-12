@@ -576,7 +576,7 @@ If the MR source branch is more than 1,000 commits behind the target branch:
 
 When an MR needs further changes but the author is not responding for a long period of time,
 or is unable to finish the MR, GitLab can take it over in accordance with our
-[Closing policy for issues and merge requests](contributing/#closing-policy-for-issues-and-merge-requests).
+[Closing policy for issues and merge requests](contributing/index.md#closing-policy-for-issues-and-merge-requests).
 A GitLab engineer (generally the merge request coach) will:
 
 1. Add a comment to their MR saying you'll take it over to be able to get it merged.

@@ -1,8 +1,0 @@
-# frozen_string_literal: true
-
-# Make sure to run `make` (in this directory) when you update this file.
-source 'https://rubygems.org'
-
-gem 'overcommit'
-gem 'gitlab-styles', '~> 5.4.0', require: false
-gem 'haml_lint', '~> 0.34.0', require: false

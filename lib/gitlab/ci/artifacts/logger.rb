@@ -28,6 +28,36 @@ module Gitlab
             artifacts_dependencies_count: count
           )
         end
+
+        def self.log_created(artifact)
+          payload = Gitlab::ApplicationContext.current.merge(
+            message: 'Artifact created',
+            job_artifact_id: artifact.id,
+            size: artifact.size,
+            type: artifact.file_type,
+            build_id: artifact.job_id,
+            project_id: artifact.project_id
+          )
+
+          Gitlab::AppLogger.info(payload)
+        end
+
+        def self.log_deleted(job_artifacts, method)
+          Array(job_artifacts).each do |artifact|
+            payload = Gitlab::ApplicationContext.current.merge(
+              message: 'Artifact deleted',
+              job_artifact_id: artifact.id,
+              expire_at: artifact.expire_at,
+              size: artifact.size,
+              type: artifact.file_type,
+              build_id: artifact.job_id,
+              project_id: artifact.project_id,
+              method: method
+            )
+
+            Gitlab::AppLogger.info(payload)
+          end
+        end
       end
     end
   end

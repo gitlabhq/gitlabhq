@@ -1,19 +1,20 @@
 import Vue, { nextTick } from 'vue';
-import { GlBadge } from '@gitlab/ui';
-import { cloneDeep } from 'lodash';
+import { GlBadge, GlButton } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
+import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
 import {
   workItemHierarchyResponse,
   workItemHierarchyEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
   changeWorkItemParentMutationResponse,
+  workItemQueryResponse,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -22,7 +23,6 @@ describe('WorkItemLinks', () => {
   let wrapper;
   let mockApollo;
 
-  const PARENT_ID = 'gid://gitlab/WorkItem/1';
   const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
 
   const $toast = {
@@ -33,23 +33,24 @@ describe('WorkItemLinks', () => {
     .fn()
     .mockResolvedValue(changeWorkItemParentMutationResponse);
 
+  const childWorkItemQueryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+
+  const findChildren = () => wrapper.findAll('[data-testid="links-child"]');
+
   const createComponent = async ({
     data = {},
     response = workItemHierarchyResponse,
     mutationHandler = mutationChangeParentHandler,
   } = {}) => {
-    mockApollo = createMockApollo([
-      [getWorkItemLinksQuery, jest.fn().mockResolvedValue(response)],
-      [changeWorkItemParentMutation, mutationHandler],
-    ]);
-
-    mockApollo.clients.defaultClient.cache.writeQuery({
-      query: getWorkItemLinksQuery,
-      variables: {
-        id: PARENT_ID,
-      },
-      data: response.data,
-    });
+    mockApollo = createMockApollo(
+      [
+        [getWorkItemLinksQuery, jest.fn().mockResolvedValue(response)],
+        [changeWorkItemParentMutation, mutationHandler],
+        [workItemQuery, childWorkItemQueryHandler],
+      ],
+      {},
+      { addTypename: true },
+    );
 
     wrapper = shallowMountExtended(WorkItemLinks, {
       data() {
@@ -126,10 +127,8 @@ describe('WorkItemLinks', () => {
   it('renders all hierarchy widget children', () => {
     expect(findLinksBody().exists()).toBe(true);
 
-    const children = wrapper.findAll('[data-testid="links-child"]');
-
-    expect(children).toHaveLength(4);
-    expect(children.at(0).findComponent(GlBadge).text()).toBe('Open');
+    expect(findChildren()).toHaveLength(4);
+    expect(findChildren().at(0).findComponent(GlBadge).text()).toBe('Open');
     expect(findFirstLinksMenu().exists()).toBe(true);
   });
 
@@ -150,11 +149,6 @@ describe('WorkItemLinks', () => {
   describe('remove child', () => {
     beforeEach(async () => {
       await createComponent({ mutationHandler: mutationChangeParentHandler });
-      mockApollo.clients.defaultClient.cache.readQuery = jest.fn(
-        () => workItemHierarchyResponse.data,
-      );
-
-      mockApollo.clients.defaultClient.cache.writeQuery = jest.fn();
     });
 
     it('calls correct mutation with correct variables', async () => {
@@ -182,27 +176,44 @@ describe('WorkItemLinks', () => {
       });
     });
 
-    it('updates the cache when mutation succeeds', async () => {
-      findFirstLinksMenu().vm.$emit('removeChild');
+    it('renders correct number of children after removal', async () => {
+      expect(findChildren()).toHaveLength(4);
 
+      findFirstLinksMenu().vm.$emit('removeChild');
       await waitForPromises();
 
-      // Remove the work item from parent's children
-      const resp = cloneDeep(workItemHierarchyResponse);
-      const index = resp.data.workItem.widgets
-        .find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)
-        .children.nodes.findIndex((child) => child.id === WORK_ITEM_ID);
-      resp.data.workItem.widgets
-        .find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)
-        .children.nodes.splice(index, 1);
+      expect(findChildren()).toHaveLength(3);
+    });
+  });
 
-      expect(mockApollo.clients.defaultClient.cache.writeQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          query: expect.anything(),
-          variables: { id: PARENT_ID },
-          data: resp.data,
-        }),
-      );
+  describe('prefetching child items', () => {
+    beforeEach(async () => {
+      await createComponent();
+    });
+
+    const findChildLink = () => findChildren().at(0).findComponent(GlButton);
+
+    it('does not fetch the child work item before hovering work item links', () => {
+      expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('fetches the child work item if link is hovered for 250+ ms', async () => {
+      findChildLink().vm.$emit('mouseover');
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+      await waitForPromises();
+
+      expect(childWorkItemQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/WorkItem/2',
+      });
+    });
+
+    it('does not fetch the child work item if link is hovered for less than 250 ms', async () => {
+      findChildLink().vm.$emit('mouseover');
+      jest.advanceTimersByTime(200);
+      findChildLink().vm.$emit('mouseout');
+      await waitForPromises();
+
+      expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
     });
   });
 });

@@ -1862,6 +1862,21 @@ RSpec.describe Ci::Build do
     end
 
     context 'build is erasable' do
+      context 'logging erase' do
+        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
+
+        it 'logs erased artifacts' do
+          expect(Gitlab::Ci::Artifacts::Logger)
+            .to receive(:log_deleted)
+            .with(
+              match_array(build.job_artifacts.to_a),
+              'Ci::Build#erase'
+            )
+
+          build.erase
+        end
+      end
+
       context 'when project is undergoing stats refresh' do
         let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
 
@@ -1964,7 +1979,14 @@ RSpec.describe Ci::Build do
       end
     end
 
-    it "erases erasable artifacts" do
+    it "erases erasable artifacts and logs them" do
+      expect(Gitlab::Ci::Artifacts::Logger)
+        .to receive(:log_deleted)
+        .with(
+          match_array(build.job_artifacts.erasable.to_a),
+          'Ci::Build#erase_erasable_artifacts!'
+        )
+
       subject
 
       expect(build.job_artifacts.erasable).to be_empty

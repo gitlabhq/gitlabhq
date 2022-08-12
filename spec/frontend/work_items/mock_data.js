@@ -491,12 +491,23 @@ export const changeWorkItemParentMutationResponse = {
   data: {
     workItemUpdate: {
       workItem: {
+        __typename: 'WorkItem',
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'gid://gitlab/WorkItems::Type/1',
+          name: 'Issue',
+        },
+        userPermissions: {
+          deleteWorkItem: true,
+          updateWorkItem: true,
+        },
         description: null,
         id: 'gid://gitlab/WorkItem/2',
         state: 'OPEN',
         title: 'Foo',
         widgets: [
           {
+            __typename: 'WorkItemWidgetHierarchy',
             type: 'HIERARCHY',
             parent: null,
             children: {

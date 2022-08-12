@@ -22,16 +22,21 @@ const packageWithTags = {
   packageFiles: { nodes: packageFiles() },
 };
 
+const defaultProvide = {
+  isGroupPage: false,
+};
+
 describe('PackageTitle', () => {
   let wrapper;
 
-  async function createComponent(packageEntity = packageWithTags) {
+  async function createComponent(packageEntity = packageWithTags, provide = defaultProvide) {
     wrapper = shallowMountExtended(PackageTitle, {
       propsData: { packageEntity },
       stubs: {
         TitleArea,
         GlSprintf,
       },
+      provide,
       directives: {
         GlResizeObserver: createMockDirective(),
       },
@@ -199,11 +204,22 @@ describe('PackageTitle', () => {
       expect(findPipelineProject().exists()).toBe(false);
     });
 
-    it('correctly shows the pipeline project if there is one', async () => {
+    it('does not display the pipeline project on project page even if it exists', async () => {
       await createComponent({
         ...packageData(),
         pipelines: { nodes: packagePipelines() },
       });
+      expect(findPipelineProject().exists()).toBe(false);
+    });
+
+    it('correctly shows the pipeline project on group page if there is one', async () => {
+      await createComponent(
+        {
+          ...packageData(),
+          pipelines: { nodes: packagePipelines() },
+        },
+        { isGroupPage: true },
+      );
       expect(findPipelineProject().props()).toMatchObject({
         text: packagePipelines()[0].project.name,
         icon: 'review-list',

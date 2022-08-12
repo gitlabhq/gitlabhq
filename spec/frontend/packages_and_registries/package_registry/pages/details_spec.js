@@ -60,6 +60,7 @@ describe('PackagesApp', () => {
     emptyListIllustration: 'svgPath',
     projectListUrl: 'projectListUrl',
     groupListUrl: 'groupListUrl',
+    isGroupPage: false,
     breadCrumbState,
   };
 

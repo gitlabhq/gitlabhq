@@ -253,7 +253,7 @@ Use the toggles to enable or disable features in the project.
 | **Security & Compliance**        | ✓                         | Control access to [security features](../../application_security/index.md). |
 | **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/). |
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
-| **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/). |
+| **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md). |
 | **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
 | **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md). |
 

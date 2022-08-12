@@ -231,7 +231,7 @@ This error can occur when a firewall performs a `Deep SSH Inspection` on outgoin
 ### Could not read username: terminal prompts disabled
 
 If you receive this error after creating a new project using
-[GitLab CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/):
+[GitLab CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/index.md):
 
 - In Bitbucket Cloud:
 

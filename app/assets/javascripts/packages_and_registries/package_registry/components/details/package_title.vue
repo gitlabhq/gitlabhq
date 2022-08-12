@@ -23,6 +23,7 @@ export default {
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
+  inject: ['isGroupPage'],
   i18n: {
     packageInfo: __('v%{version} published %{timeAgo}'),
   },
@@ -122,7 +123,7 @@ export default {
       <metadata-item data-testid="package-size" icon="disk" :text="totalSize" />
     </template>
 
-    <template v-if="packagePipeline" #metadata-pipeline>
+    <template v-if="isGroupPage && packagePipeline" #metadata-pipeline>
       <metadata-item
         data-testid="pipeline-project"
         icon="review-list"

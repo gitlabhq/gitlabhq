@@ -3,6 +3,7 @@ import { GlButton, GlBadge, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { produce } from 'immer';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
@@ -13,7 +14,8 @@ import {
   WIDGET_TYPE_HIERARCHY,
 } from '../../constants';
 import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
-import updateWorkItem from '../../graphql/update_work_item.mutation.graphql';
+import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
+import workItemQuery from '../../graphql/work_item.query.graphql';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemLinksMenu from './work_item_links_menu.vue';
@@ -42,25 +44,15 @@ export default {
     },
   },
   apollo: {
-    children: {
+    workItem: {
       query: getWorkItemLinksQuery,
       variables() {
         return {
           id: this.issuableGid,
         };
       },
-      update(data) {
-        return (
-          data.workItem.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.children
-            .nodes ?? []
-        );
-      },
       skip() {
         return !this.issuableId;
-      },
-      result({ data }) {
-        this.canUpdate = data.workItem.userPermissions.updateWorkItem;
-        this.confidential = data.workItem.confidential;
       },
     },
   },
@@ -68,14 +60,24 @@ export default {
     return {
       isShownAddForm: false,
       isOpen: true,
-      children: [],
-      canUpdate: false,
-      confidential: false,
       activeChildId: null,
       activeToast: null,
+      prefetchedWorkItem: null,
     };
   },
   computed: {
+    children() {
+      return (
+        this.workItem?.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.children
+          .nodes ?? []
+      );
+    },
+    canUpdate() {
+      return this.workItem?.userPermissions.updateWorkItem || false;
+    },
+    confidential() {
+      return this.workItem?.confidential || false;
+    },
     // Only used for children for now but should be extended later to support parents and siblings
     isChildrenEmpty() {
       return this.children?.length === 0;
@@ -92,7 +94,7 @@ export default {
       return this.issuableId ? convertToGraphQLId(TYPE_WORK_ITEM, this.issuableId) : null;
     },
     isLoading() {
-      return this.$apollo.queries.children.loading;
+      return this.$apollo.queries.workItem.loading;
     },
     childrenIds() {
       return this.children.map((c) => c.id);
@@ -171,22 +173,22 @@ export default {
         data: newData,
       });
     },
-    async updateWorkItemMutation(workItem, childId, parentId) {
+    async updateWorkItem(workItem, childId, parentId) {
       return this.$apollo.mutate({
-        mutation: updateWorkItem,
+        mutation: updateWorkItemMutation,
         variables: { input: { id: childId, hierarchyWidget: { parentId } } },
-        update: this.toggleChildFromCache.bind(this, workItem, childId),
+        update: (store) => this.toggleChildFromCache(workItem, childId, store),
       });
     },
     async undoChildRemoval(workItem, childId) {
-      const { data } = await this.updateWorkItemMutation(workItem, childId, this.issuableGid);
+      const { data } = await this.updateWorkItem(workItem, childId, this.issuableGid);
 
       if (data.workItemUpdate.errors.length === 0) {
         this.activeToast?.hide();
       }
     },
     async removeChild(childId) {
-      const { data } = await this.updateWorkItemMutation(null, childId, null);
+      const { data } = await this.updateWorkItem(null, childId, null);
 
       if (data.workItemUpdate.errors.length === 0) {
         this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
@@ -196,6 +198,22 @@ export default {
           },
         });
       }
+    },
+    prefetchWorkItem(id) {
+      this.prefetch = setTimeout(
+        () =>
+          this.$apollo.addSmartQuery('prefetchedWorkItem', {
+            query: workItemQuery,
+            variables: {
+              id,
+            },
+            update: (data) => data.workItem,
+          }),
+        DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+      );
+    },
+    clearPrefetching() {
+      clearTimeout(this.prefetch);
     },
   },
   i18n: {
@@ -274,6 +292,8 @@ export default {
               variant="link"
               class="gl-text-truncate gl-max-w-80 gl-text-black-normal!"
               @click="openChild(child.id, $event)"
+              @mouseover="prefetchWorkItem(child.id)"
+              @mouseout="clearPrefetching"
             >
               {{ child.title }}
             </gl-button>

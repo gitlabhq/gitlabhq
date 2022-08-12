@@ -90,8 +90,6 @@ package-lock.json
 /coverage-frontend/
 jsdoc/
 **/tmp/rubocop_cache/**
-.overcommit.yml
-.overcommit.yml.backup
 .projections.json
 /qa/.rakeTasks
 webpack-dev-server.json

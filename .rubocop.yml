@@ -569,9 +569,6 @@ RSpec/ImplicitSubject:
 RSpec/HooksBeforeExamples:
   Enabled: false
 
-RSpec/EmptyLineAfterExample:
-  Enabled: false
-
 RSpec/Be:
   Enabled: false
 

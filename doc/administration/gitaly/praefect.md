@@ -1317,8 +1317,7 @@ praefect['background_verification_verification_interval'] = '0'
 WARNING:
 Deletions are disabled by default due to a race condition with repository renames that can cause incorrect
 deletions. This is especially prominent in Geo instances as Geo performs more renames than instances without Geo.
-See [Handle repository creations, deletions and renames atomically](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4101)
-for progress on a fix. We do not recommend enabling the deletions until this is fixed.
+You should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths-gitlab-150-and-later) is enabled.
 
 By default, the worker does not delete invalid metadata records but simply logs them and outputs Prometheus
 metrics for them.

@@ -821,7 +821,11 @@ module Ci
         )
       end
 
-      job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
+      destroyed_artifacts = job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
+
+      Gitlab::Ci::Artifacts::Logger.log_deleted(destroyed_artifacts, 'Ci::Build#erase_erasable_artifacts!')
+
+      destroyed_artifacts
     end
 
     def erase(opts = {})
@@ -834,7 +838,12 @@ module Ci
         )
       end
 
-      job_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
+      # TODO: We should use DestroyBatchService here
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/369132
+      destroyed_artifacts = job_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
+
+      Gitlab::Ci::Artifacts::Logger.log_deleted(destroyed_artifacts, 'Ci::Build#erase')
+
       erase_trace!
       update_erased!(opts[:erased_by])
     end

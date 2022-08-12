@@ -629,6 +629,40 @@ Example response:
 }
 ```
 
+### Policy Configuration
+
+Called from GitLab agent server (`kas`) to retrieve `policies_configuration`
+configured for the project belonging to the agent token. GitLab `kas` uses
+this to configure the agent to scan images in the Kubernetes cluster based on the configuration.
+
+```plaintext
+GET /internal/kubernetes/modules/starboard_vulnerability/policies_configuration
+```
+
+Example Request:
+
+```shell
+curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
+     --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/modules/starboard_vulnerability/policies_configuration"
+```
+
+Example response:
+
+```json
+{
+  "configurations": [
+    {
+      "cadence": "30 2 * * *",
+      "namespaces": [
+        "namespace-a",
+        "namespace-b"
+      ],
+      "updated_at": "2022-06-02T05:36:26+00:00"
+    }
+  ]
+}
+```
+
 ## Subscriptions
 
 The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)

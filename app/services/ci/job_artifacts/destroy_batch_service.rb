@@ -53,6 +53,8 @@ module Ci
         update_project_statistics! if update_stats
         increment_monitoring_statistics(artifacts_count, artifacts_bytes)
 
+        Gitlab::Ci::Artifacts::Logger.log_deleted(@job_artifacts, 'Ci::JobArtifacts::DestroyBatchService#execute')
+
         success(destroyed_artifacts_count: artifacts_count,
                 statistics_updates: affected_project_statistics)
       end
