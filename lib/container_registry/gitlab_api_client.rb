@@ -21,6 +21,8 @@ module ContainerRegistry
 
     REGISTRY_GITLAB_V1_API_FEATURE = 'gitlab_v1_api'
 
+    MAX_TAGS_PAGE_SIZE = 1000
+
     def self.supports_gitlab_api?
       with_dummy_client(return_value_if_disabled: false) do |client|
         client.supports_gitlab_api?
@@ -86,6 +88,7 @@ module ContainerRegistry
       end
     end
 
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#get-repository-details
     def repository_details(path, sizing: nil)
       with_token_faraday do |faraday_client|
         req = faraday_client.get("/gitlab/v1/repositories/#{path}/") do |req|
@@ -95,6 +98,26 @@ module ContainerRegistry
         break {} unless req.success?
 
         response_body(req)
+      end
+    end
+
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#list-repository-tags
+    def tags(path, page_size: 100, last: nil)
+      limited_page_size = [page_size, MAX_TAGS_PAGE_SIZE].min
+      with_token_faraday do |faraday_client|
+        response = faraday_client.get("/gitlab/v1/repositories/#{path}/tags/list/") do |req|
+          req.params['n'] = limited_page_size
+          req.params['last'] = last if last
+        end
+
+        break {} unless response.success?
+
+        link_parser = Gitlab::Utils::LinkHeaderParser.new(response.headers['link'])
+
+        {
+          pagination: link_parser.parse,
+          response_body: response_body(response)
+        }
       end
     end
 

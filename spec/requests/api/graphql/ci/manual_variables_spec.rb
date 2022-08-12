@@ -35,8 +35,8 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables' do
     project.add_maintainer(user)
   end
 
-  it 'returns the manual variables for the jobs' do
-    job = create(:ci_build, :manual, pipeline: pipeline)
+  it 'returns the manual variables for actionable jobs' do
+    job = create(:ci_build, :actionable, pipeline: pipeline)
     create(:ci_job_variable, key: 'MANUAL_TEST_VAR', job: job)
 
     post_graphql(query, current_user: user)
@@ -46,8 +46,8 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables' do
     expect(variables_data.map { |var| var['key'] }).to match_array(['MANUAL_TEST_VAR'])
   end
 
-  it 'does not fetch job variables for jobs that are not manual' do
-    job = create(:ci_build, pipeline: pipeline)
+  it 'does not fetch job variables for jobs that are not actionable' do
+    job = create(:ci_build, pipeline: pipeline, status: :manual)
     create(:ci_job_variable, key: 'THIS_VAR_WOULD_SHOULD_NEVER_EXIST', job: job)
 
     post_graphql(query, current_user: user)

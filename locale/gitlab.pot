@@ -22006,6 +22006,9 @@ msgstr ""
 msgid "Iteration"
 msgstr ""
 
+msgid "Iteration cannot be created for cadence"
+msgstr ""
+
 msgid "Iteration changed to"
 msgstr ""
 
@@ -22021,7 +22024,10 @@ msgstr ""
 msgid "Iterations"
 msgstr ""
 
-msgid "IterationsCadence|Manual iteration cadences are deprecated. Only automatic iteration cadences are allowed."
+msgid "Iterations cadence not found"
+msgstr ""
+
+msgid "Iterations cannot be manually added to cadences that use automatic scheduling"
 msgstr ""
 
 msgid "IterationsCadence|The automation start date must come after the active iteration %{iteration_dates}."
@@ -23997,9 +24003,6 @@ msgid "Manifest import"
 msgstr ""
 
 msgid "Manual"
-msgstr ""
-
-msgid "Manual iteration cadences are deprecated. Only automatic iteration cadences are allowed."
 msgstr ""
 
 msgid "ManualOrdering|Couldn't save the order of the issues"
@@ -44396,6 +44399,12 @@ msgid "WorkItem|Something went wrong while updating the work item. Please try ag
 msgstr ""
 
 msgid "WorkItem|Task deleted"
+msgstr ""
+
+msgid "WorkItem|Turn off confidentiality"
+msgstr ""
+
+msgid "WorkItem|Turn on confidentiality"
 msgstr ""
 
 msgid "WorkItem|Type"

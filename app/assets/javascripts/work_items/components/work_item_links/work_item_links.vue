@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlBadge, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlBadge, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -29,6 +29,9 @@ export default {
     WorkItemLinksForm,
     WorkItemLinksMenu,
     WorkItemDetailModal,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['projectPath'],
   props: {
@@ -284,7 +287,15 @@ export default {
           class="gl-relative gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-overflow-break-word gl-min-w-0 gl-bg-white gl-mb-3 gl-py-3 gl-px-4 gl-border gl-border-gray-100 gl-rounded-base gl-line-height-32"
           data-testid="links-child"
         >
-          <div class="gl-overflow-hidden">
+          <div class="gl-overflow-hidden gl-display-flex gl-align-items-center">
+            <gl-icon
+              v-if="child.confidential"
+              v-gl-tooltip.top
+              name="eye-slash"
+              class="gl-mr-3 gl-text-orange-500"
+              data-testid="confidential-icon"
+              :title="__('Confidential')"
+            />
             <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-3 gl-text-gray-700" />
             <gl-button
               :href="childPath(child.id)"

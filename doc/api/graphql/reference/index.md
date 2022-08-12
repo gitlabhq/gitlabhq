@@ -1549,7 +1549,7 @@ Input type: `CreateIssueInput`
 
 WARNING:
 **Deprecated** in 14.0.
-Manual iteration management is deprecated. Only automatic iteration cadences will be supported in the future.
+Use iterationCreate.
 
 Input type: `CreateIterationInput`
 
@@ -1561,7 +1561,7 @@ Input type: `CreateIterationInput`
 | <a id="mutationcreateiterationdescription"></a>`description` | [`String`](#string) | Description of the iteration. |
 | <a id="mutationcreateiterationduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
 | <a id="mutationcreateiterationgrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
-| <a id="mutationcreateiterationiterationscadenceid"></a>`iterationsCadenceId` **{warning-solid}** | [`IterationsCadenceID`](#iterationscadenceid) | **Deprecated:** `iterationCadenceId` is deprecated and will be removed in the future. This argument is ignored, because you can't create an iteration in a specific cadence. In the future only automatic iteration cadences will be allowed. Deprecated in 14.10. |
+| <a id="mutationcreateiterationiterationscadenceid"></a>`iterationsCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iteration cadence to be assigned to the new iteration. |
 | <a id="mutationcreateiterationprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
 | <a id="mutationcreateiterationstartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
 | <a id="mutationcreateiterationtitle"></a>`title` | [`String`](#string) | Title of the iteration. |
@@ -3370,10 +3370,6 @@ Input type: `IterationCadenceUpdateInput`
 
 ### `Mutation.iterationCreate`
 
-WARNING:
-**Deprecated** in 14.10.
-Manual iteration management is deprecated. Only automatic iteration cadences will be supported in the future.
-
 Input type: `iterationCreateInput`
 
 #### Arguments
@@ -3384,7 +3380,7 @@ Input type: `iterationCreateInput`
 | <a id="mutationiterationcreatedescription"></a>`description` | [`String`](#string) | Description of the iteration. |
 | <a id="mutationiterationcreateduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
 | <a id="mutationiterationcreategrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
-| <a id="mutationiterationcreateiterationscadenceid"></a>`iterationsCadenceId` **{warning-solid}** | [`IterationsCadenceID`](#iterationscadenceid) | **Deprecated:** `iterationCadenceId` is deprecated and will be removed in the future. This argument is ignored, because you can't create an iteration in a specific cadence. In the future only automatic iteration cadences will be allowed. Deprecated in 14.10. |
+| <a id="mutationiterationcreateiterationscadenceid"></a>`iterationsCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iteration cadence to be assigned to the new iteration. |
 | <a id="mutationiterationcreateprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
 | <a id="mutationiterationcreatestartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
 | <a id="mutationiterationcreatetitle"></a>`title` | [`String`](#string) | Title of the iteration. |
@@ -3398,10 +3394,6 @@ Input type: `iterationCreateInput`
 | <a id="mutationiterationcreateiteration"></a>`iteration` | [`Iteration`](#iteration) | Created iteration. |
 
 ### `Mutation.iterationDelete`
-
-WARNING:
-**Deprecated** in 14.10.
-Manual iteration management is deprecated. Only automatic iteration cadences will be supported in the future.
 
 Input type: `IterationDeleteInput`
 
@@ -3510,6 +3502,7 @@ Input type: `JobRetryInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjobretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjobretryid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
+| <a id="mutationjobretryvariables"></a>`variables` | [`[CiVariableInput!]`](#civariableinput) | Variables to use when retrying a manual job. |
 
 #### Fields
 
@@ -5218,11 +5211,11 @@ Input type: `UpdateIterationInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdateiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateiterationdescription"></a>`description` | [`String`](#string) | Description of the iteration. |
-| <a id="mutationupdateiterationduedate"></a>`dueDate` **{warning-solid}** | [`String`](#string) | **Deprecated:** Manual iteration updates are deprecated, only `description` updates will be allowed in the future. Deprecated in 14.10. |
+| <a id="mutationupdateiterationduedate"></a>`dueDate` | [`String`](#string) | End date of the iteration. |
 | <a id="mutationupdateiterationgrouppath"></a>`groupPath` | [`ID!`](#id) | Group of the iteration. |
 | <a id="mutationupdateiterationid"></a>`id` | [`ID!`](#id) | Global ID of the iteration. |
-| <a id="mutationupdateiterationstartdate"></a>`startDate` **{warning-solid}** | [`String`](#string) | **Deprecated:** Manual iteration updates are deprecated, only `description` updates will be allowed in the future. Deprecated in 14.10. |
-| <a id="mutationupdateiterationtitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated:** Manual iteration updates are deprecated, only `description` updates will be allowed in the future. Deprecated in 14.10. |
+| <a id="mutationupdateiterationstartdate"></a>`startDate` | [`String`](#string) | Start date of the iteration. |
+| <a id="mutationupdateiterationtitle"></a>`title` | [`String`](#string) | Title of the iteration. |
 
 #### Fields
 
@@ -22102,6 +22095,17 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |
 | <a id="boardissueinputweight"></a>`weight` | [`String`](#string) | Filter by weight. |
 | <a id="boardissueinputweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
+
+### `CiVariableInput`
+
+Attributes for defining a CI/CD variable.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="civariableinputkey"></a>`key` | [`String!`](#string) | Name of the variable. |
+| <a id="civariableinputvalue"></a>`value` | [`String!`](#string) | Value of the variable. |
 
 ### `CommitAction`
 

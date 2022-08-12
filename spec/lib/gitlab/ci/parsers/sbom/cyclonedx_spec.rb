@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx do
     }
   end
 
-  subject(:parse!) { described_class.new(raw_report_data, report).parse! }
+  subject(:parse!) { described_class.new.parse!(raw_report_data, report) }
 
   before do
     allow_next_instance_of(Gitlab::Ci::Parsers::Sbom::Validators::CyclonedxSchemaValidator) do |validator|

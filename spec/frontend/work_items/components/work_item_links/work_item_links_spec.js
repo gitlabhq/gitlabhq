@@ -132,6 +132,14 @@ describe('WorkItemLinks', () => {
     expect(findFirstLinksMenu().exists()).toBe(true);
   });
 
+  it('renders confidentiality icon when child item is confidential', () => {
+    const children = wrapper.findAll('[data-testid="links-child"]');
+    const confidentialIcon = children.at(0).find('[data-testid="confidential-icon"]');
+
+    expect(confidentialIcon.exists()).toBe(true);
+    expect(confidentialIcon.props('name')).toBe('eye-slash');
+  });
+
   describe('when no permission to update', () => {
     beforeEach(async () => {
       await createComponent({ response: workItemHierarchyNoUpdatePermissionResponse });

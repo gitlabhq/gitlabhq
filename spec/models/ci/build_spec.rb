@@ -5609,4 +5609,58 @@ RSpec.describe Ci::Build do
     let!(:model) { create(:ci_build, user: create(:user)) }
     let!(:parent) { model.user }
   end
+
+  describe '#clone' do
+    let_it_be(:user) { FactoryBot.build(:user) }
+
+    context 'when given new job variables' do
+      context 'when the cloned build has an action' do
+        it 'applies the new job variables' do
+          build = create(:ci_build, :actionable)
+          create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
+          create(:ci_job_variable, job: build, key: 'OLD_KEY', value: 'i will not live for long')
+
+          new_build = build.clone(current_user: user, new_job_variables_attributes: [
+            { key: 'TEST_KEY', value: 'new value' },
+            { key: 'NEW_KEY', value: 'exciting new value' }
+          ])
+          new_build.save!
+
+          expect(new_build.job_variables.count).to be(2)
+          expect(new_build.job_variables.pluck(:key)).to contain_exactly('TEST_KEY', 'NEW_KEY')
+          expect(new_build.job_variables.map(&:value)).to contain_exactly('new value', 'exciting new value')
+        end
+      end
+
+      context 'when the cloned build does not have an action' do
+        it 'applies the old job variables' do
+          build = create(:ci_build)
+          create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
+
+          new_build = build.clone(current_user: user, new_job_variables_attributes: [
+            { key: 'TEST_KEY', value: 'new value' }
+          ])
+          new_build.save!
+
+          expect(new_build.job_variables.count).to be(1)
+          expect(new_build.job_variables.pluck(:key)).to contain_exactly('TEST_KEY')
+          expect(new_build.job_variables.map(&:value)).to contain_exactly('old value')
+        end
+      end
+    end
+
+    context 'when not given new job variables' do
+      it 'applies the old job variables' do
+        build = create(:ci_build)
+        create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
+
+        new_build = build.clone(current_user: user)
+        new_build.save!
+
+        expect(new_build.job_variables.count).to be(1)
+        expect(new_build.job_variables.pluck(:key)).to contain_exactly('TEST_KEY')
+        expect(new_build.job_variables.map(&:value)).to contain_exactly('old value')
+      end
+    end
+  end
 end

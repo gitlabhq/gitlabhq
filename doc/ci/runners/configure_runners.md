@@ -889,3 +889,23 @@ Filter entries where stale runners were removed:
   }
 }
 ```
+
+## Determine which runners need to be upgraded **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
+
+The version of GitLab Runner used by your runners should be
+[kept up-to-date](https://docs.gitlab.com/runner/index.html#gitlab-runner-versions).
+
+To determine which runners need to be upgraded:
+
+1. View the list of runners:
+   - For a group, on the top bar, select **Menu > Groups** and on the left sidebar, select **CI/CD > Runners**.
+   - For the instance, select **Menu > Admin** and on the left sidebar, select **Runners**.
+
+1. Above the list of runners, view the status:
+   - **Outdated - recommended**: The runner does not have the latest `PATCH` version, which may make it vulnerable
+     to security or high severity bugs. Or, the runner is one or more `MAJOR` versions behind your GitLab instance, so some features may not be available or work properly.
+   - **Outdated - available**: Newer versions are available but upgrading is not critical.
+
+1. Filter the list by status to view which individual runners need to be upgraded.

@@ -84,8 +84,10 @@ RSpec.describe 'Issue Sidebar' do
               click_link user2.name
             end
 
-            find('.js-right-sidebar').click
-            find('.block.assignee .edit-link').click
+            within '.js-right-sidebar' do
+              find('.block.assignee').click(x: 0, y: 0)
+              find('.block.assignee .edit-link').click
+            end
 
             expect(page.all('.dropdown-menu-user li').length).to eq(1)
             expect(find('.dropdown-input-field').value).to eq(user2.name)

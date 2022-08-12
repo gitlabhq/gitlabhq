@@ -1,11 +1,12 @@
-import { GlAlert, GlSkeletonLoader, GlButton } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlLoadingIcon, GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
+import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
@@ -16,6 +17,8 @@ import WorkItemInformation from '~/work_items/components/work_item_information.v
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import { temporaryConfig } from '~/work_items/graphql/provider';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
@@ -30,12 +33,19 @@ describe('WorkItemDetail component', () => {
 
   Vue.use(VueApollo);
 
-  const workItemQueryResponse = workItemResponseFactory();
+  const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
+  const workItemQueryResponseWithoutParent = workItemResponseFactory({
+    parent: null,
+    canUpdate: true,
+    canDelete: true,
+  });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
   const initialSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findWorkItemState = () => wrapper.findComponent(WorkItemState);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
@@ -51,17 +61,21 @@ describe('WorkItemDetail component', () => {
 
   const createComponent = ({
     isModal = false,
+    updateInProgress = false,
     workItemId = workItemQueryResponse.data.workItem.id,
     handler = successHandler,
     subscriptionHandler = initialSubscriptionHandler,
+    confidentialityMock = [updateWorkItemMutation, jest.fn()],
     workItemsMvc2Enabled = false,
     includeWidgets = false,
+    error = undefined,
   } = {}) => {
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(
         [
           [workItemQuery, handler],
           [workItemTitleSubscription, subscriptionHandler],
+          confidentialityMock,
         ],
         {},
         {
@@ -69,6 +83,12 @@ describe('WorkItemDetail component', () => {
         },
       ),
       propsData: { isModal, workItemId },
+      data() {
+        return {
+          updateInProgress,
+          error,
+        };
+      },
       provide: {
         glFeatures: {
           workItemsMvc2: workItemsMvc2Enabled,
@@ -146,6 +166,145 @@ describe('WorkItemDetail component', () => {
     });
   });
 
+  describe('confidentiality', () => {
+    const errorMessage = 'Mutation failed';
+    const confidentialWorkItem = workItemResponseFactory({
+      confidential: true,
+    });
+
+    // Mocks for work item without parent
+    const withoutParentExpectedInputVars = {
+      id: workItemQueryResponse.data.workItem.id,
+      confidential: true,
+    };
+    const toggleConfidentialityWithoutParentHandler = jest.fn().mockResolvedValue({
+      data: {
+        workItemUpdate: {
+          workItem: confidentialWorkItem.data.workItem,
+          errors: [],
+        },
+      },
+    });
+    const withoutParentHandlerMock = jest
+      .fn()
+      .mockResolvedValue(workItemQueryResponseWithoutParent);
+    const confidentialityWithoutParentMock = [
+      updateWorkItemMutation,
+      toggleConfidentialityWithoutParentHandler,
+    ];
+    const confidentialityWithoutParentFailureMock = [
+      updateWorkItemMutation,
+      jest.fn().mockRejectedValue(new Error(errorMessage)),
+    ];
+
+    // Mocks for work item with parent
+    const withParentExpectedInputVars = {
+      id: mockParent.parent.id,
+      taskData: { id: workItemQueryResponse.data.workItem.id, confidential: true },
+    };
+    const toggleConfidentialityWithParentHandler = jest.fn().mockResolvedValue({
+      data: {
+        workItemUpdate: {
+          workItem: {
+            id: confidentialWorkItem.data.workItem.id,
+            descriptionHtml: confidentialWorkItem.data.workItem.description,
+          },
+          task: {
+            workItem: confidentialWorkItem.data.workItem,
+            confidential: true,
+          },
+          errors: [],
+        },
+      },
+    });
+    const confidentialityWithParentMock = [
+      updateWorkItemTaskMutation,
+      toggleConfidentialityWithParentHandler,
+    ];
+    const confidentialityWithParentFailureMock = [
+      updateWorkItemTaskMutation,
+      jest.fn().mockRejectedValue(new Error(errorMessage)),
+    ];
+
+    describe.each`
+      context        | handlerMock                 | confidentialityMock                 | confidentialityFailureMock                 | inputVariables
+      ${'no parent'} | ${withoutParentHandlerMock} | ${confidentialityWithoutParentMock} | ${confidentialityWithoutParentFailureMock} | ${withoutParentExpectedInputVars}
+      ${'parent'}    | ${successHandler}           | ${confidentialityWithParentMock}    | ${confidentialityWithParentFailureMock}    | ${withParentExpectedInputVars}
+    `(
+      'when work item has $context',
+      ({ handlerMock, confidentialityMock, confidentialityFailureMock, inputVariables }) => {
+        it('renders confidential badge when work item is confidential', async () => {
+          createComponent({
+            handler: jest.fn().mockResolvedValue(confidentialWorkItem),
+            confidentialityMock,
+          });
+
+          await waitForPromises();
+
+          const confidentialBadge = wrapper.findComponent(GlBadge);
+          expect(confidentialBadge.exists()).toBe(true);
+          expect(confidentialBadge.props()).toMatchObject({
+            variant: 'warning',
+            icon: 'eye-slash',
+          });
+          expect(confidentialBadge.text()).toBe('Confidential');
+        });
+
+        it('renders gl-loading-icon while update mutation is in progress', async () => {
+          createComponent({
+            handler: handlerMock,
+            confidentialityMock,
+          });
+
+          await waitForPromises();
+
+          findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+
+          await nextTick();
+
+          expect(findLoadingIcon().exists()).toBe(true);
+        });
+
+        it('emits workItemUpdated and shows confidentiality badge when mutation is successful', async () => {
+          createComponent({
+            handler: handlerMock,
+            confidentialityMock,
+          });
+
+          await waitForPromises();
+
+          findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+          await waitForPromises();
+
+          expect(wrapper.emitted('workItemUpdated')).toEqual([[{ confidential: true }]]);
+          expect(confidentialityMock[1]).toHaveBeenCalledWith({
+            input: inputVariables,
+          });
+          expect(findLoadingIcon().exists()).toBe(false);
+        });
+
+        it('shows alert message when mutation fails', async () => {
+          createComponent({
+            handler: handlerMock,
+            confidentialityMock: confidentialityFailureMock,
+          });
+
+          await waitForPromises();
+          findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+          await waitForPromises();
+
+          expect(wrapper.emitted('workItemUpdated')).toBeFalsy();
+
+          await nextTick();
+
+          expect(findAlert().exists()).toBe(true);
+          expect(findAlert().text()).toBe(errorMessage);
+          expect(findLoadingIcon().exists()).toBe(false);
+        });
+      },
+    );
+  });
+
   describe('description', () => {
     it('does not show description widget if loading description fails', () => {
       createComponent();
@@ -169,7 +328,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('does not show secondary breadcrumbs if there is not a parent', async () => {
-      createComponent();
+      createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
 
@@ -177,7 +336,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('shows work item type if there is not a parent', async () => {
-      createComponent();
+      createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
       expect(findWorkItemType().exists()).toBe(true);

@@ -155,7 +155,7 @@ RSpec.describe "Issues > User edits issue", :js do
 
           page.within '.block.labels' do
             # Remove `verisimilitude` label
-            within '.gl-label' do
+            within '.gl-label', text: 'verisimilitude' do
               click_button 'Remove label'
             end
 

@@ -47,6 +47,38 @@ RSpec.describe 'JobRetry' do
     expect(new_job).not_to be_retried
   end
 
+  context 'when given CI variables' do
+    let(:job) { create(:ci_build, :success, :actionable, pipeline: pipeline, name: 'build') }
+
+    let(:mutation) do
+      variables = {
+        id: job.to_global_id.to_s,
+        variables: { key: 'MANUAL_VAR', value: 'test manual var' }
+      }
+
+      graphql_mutation(:job_retry, variables,
+                      <<-QL
+                        errors
+                        job {
+                          id
+                        }
+                      QL
+      )
+    end
+
+    it 'applies them to a retried manual job' do
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(response).to have_gitlab_http_status(:success)
+
+      new_job_id = GitlabSchema.object_from_id(mutation_response['job']['id']).sync.id
+      new_job = ::Ci::Build.find(new_job_id)
+      expect(new_job.job_variables.count).to be(1)
+      expect(new_job.job_variables.first.key).to eq('MANUAL_VAR')
+      expect(new_job.job_variables.first.value).to eq('test manual var')
+    end
+  end
+
   context 'when the job is not retryable' do
     let(:job) { create(:ci_build, :retried, pipeline: pipeline) }
 

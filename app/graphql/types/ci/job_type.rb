@@ -194,7 +194,7 @@ module Types
       end
 
       def manual_variables
-        if object.manual? && object.respond_to?(:job_variables)
+        if object.action? && object.respond_to?(:job_variables)
           object.job_variables
         else
           []

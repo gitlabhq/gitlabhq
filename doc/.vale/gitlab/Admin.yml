@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.Admin
+# Suggestion: gitlab.Admin
 #
 # Checks for "admin" and recommends using the full word instead. "Admin Area" is OK.
 #

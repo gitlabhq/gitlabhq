@@ -8,13 +8,9 @@ module Gitlab
           SUPPORTED_SPEC_VERSIONS = %w[1.4].freeze
           COMPONENT_ATTRIBUTES = %w[type name version].freeze
 
-          def initialize(json_data, report)
-            @json_data = json_data
-            @report = report
-          end
-
-          def parse!
-            @data = Gitlab::Json.parse(json_data)
+          def parse!(blob, sbom_report)
+            @report = sbom_report
+            @data = Gitlab::Json.parse(blob)
 
             return unless valid?
 

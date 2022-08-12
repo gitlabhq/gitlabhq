@@ -62,16 +62,14 @@ After you configure the OIDC and role, the GitLab CI/CD job can retrieve a tempo
 assume role:
   script:
     - >
-      STS=($(aws sts assume-role-with-web-identity
+      export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s"
+      $(aws sts assume-role-with-web-identity
       --role-arn ${ROLE_ARN}
       --role-session-name "GitLabRunner-${CI_PROJECT_ID}-${CI_PIPELINE_ID}"
       --web-identity-token $CI_JOB_JWT_V2
       --duration-seconds 3600
       --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]'
       --output text))
-    - export AWS_ACCESS_KEY_ID="${STS[0]}"
-    - export AWS_SECRET_ACCESS_KEY="${STS[1]}"
-    - export AWS_SESSION_TOKEN="${STS[2]}"
     - aws sts get-caller-identity
 ```
 

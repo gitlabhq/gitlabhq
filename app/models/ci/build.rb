@@ -1161,6 +1161,17 @@ module Ci
       end
     end
 
+    def clone(current_user:, new_job_variables_attributes: [])
+      new_build = super
+
+      if action? && new_job_variables_attributes.any?
+        new_build.job_variables = []
+        new_build.job_variables_attributes = new_job_variables_attributes
+      end
+
+      new_build
+    end
+
     protected
 
     def run_status_commit_hooks!

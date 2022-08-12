@@ -525,6 +525,162 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     end
   end
 
+  describe '#each_tags_page' do
+    let(:page_size) { 100 }
+
+    shared_examples 'iterating through a page' do |expected_tags: true|
+      it 'iterates through one page' do
+        expect(repository.gitlab_api_client).to receive(:tags)
+                                                  .with(repository.path, page_size: page_size, last: nil)
+                                                  .and_return(client_response)
+        expect { |b| repository.each_tags_page(page_size: page_size, &b) }
+          .to yield_with_args(expected_tags ? expected_tags_from(client_response_tags) : [])
+      end
+    end
+
+    context 'with an empty page' do
+      let(:client_response) { { pagination: {}, response_body: [] } }
+
+      it_behaves_like 'iterating through a page', expected_tags: false
+    end
+
+    context 'with one page' do
+      let(:client_response) { { pagination: {}, response_body: client_response_tags } }
+      let(:client_response_tags) do
+        [
+          {
+            'name' => '0.1.0',
+            'created_at' => '2022-06-07T12:10:12.412+00:00'
+          },
+          {
+            'name' => 'latest',
+            'created_at' => '2022-06-07T12:11:13.633+00:00'
+          }
+        ]
+      end
+
+      context 'with a nil created_at' do
+        let(:client_response_tags) { ['name' => '0.1.0', 'created_at' => nil] }
+
+        it_behaves_like 'iterating through a page'
+      end
+
+      context 'with an invalid created_at' do
+        let(:client_response_tags) { ['name' => '0.1.0', 'created_at' => 'not_a_timestamp'] }
+
+        it_behaves_like 'iterating through a page'
+      end
+    end
+
+    context 'with two pages' do
+      let(:client_response1) { { pagination: { next: { uri: URI('http://localhost/next?last=latest') } }, response_body: client_response_tags1 } }
+      let(:client_response_tags1) do
+        [
+          {
+            'name' => '0.1.0',
+            'created_at' => '2022-06-07T12:10:12.412+00:00'
+          },
+          {
+            'name' => 'latest',
+            'created_at' => '2022-06-07T12:11:13.633+00:00'
+          }
+        ]
+      end
+
+      let(:client_response2) { { pagination: {}, response_body: client_response_tags2 } }
+      let(:client_response_tags2) do
+        [
+          {
+            'name' => '1.2.3',
+            'created_at' => '2022-06-10T12:10:15.412+00:00'
+          },
+          {
+            'name' => '2.3.4',
+            'created_at' => '2022-06-11T12:11:17.633+00:00'
+          }
+        ]
+      end
+
+      it 'iterates through two pages' do
+        expect(repository.gitlab_api_client).to receive(:tags)
+                                                  .with(repository.path, page_size: page_size, last: nil)
+                                                  .and_return(client_response1)
+        expect(repository.gitlab_api_client).to receive(:tags)
+                                                  .with(repository.path, page_size: page_size, last: 'latest')
+                                                  .and_return(client_response2)
+        expect { |b| repository.each_tags_page(page_size: page_size, &b) }
+          .to yield_successive_args(expected_tags_from(client_response_tags1), expected_tags_from(client_response_tags2))
+      end
+    end
+
+    context 'when max pages is reached' do
+      before do
+        stub_const('ContainerRepository::MAX_TAGS_PAGES', 0)
+      end
+
+      it 'raises an error' do
+        expect { repository.each_tags_page(page_size: page_size) {} }
+          .to raise_error(StandardError, 'too many pages requested')
+      end
+    end
+
+    context 'without a block set' do
+      it 'raises an Argument error' do
+        expect { repository.each_tags_page(page_size: page_size) }.to raise_error(ArgumentError, 'block not given')
+      end
+    end
+
+    context 'without a page size set' do
+      let(:client_response) { { pagination: {}, response_body: [] } }
+
+      it 'uses a default size' do
+        expect(repository.gitlab_api_client).to receive(:tags)
+                                                  .with(repository.path, page_size: 100, last: nil)
+                                                  .and_return(client_response)
+        expect { |b| repository.each_tags_page(&b) }.to yield_with_args([])
+      end
+    end
+
+    context 'with an empty client response' do
+      let(:client_response) { {} }
+
+      it 'breaks the loop' do
+        expect(repository.gitlab_api_client).to receive(:tags)
+                                                  .with(repository.path, page_size: page_size, last: nil)
+                                                  .and_return(client_response)
+        expect { |b| repository.each_tags_page(page_size: page_size, &b) }.not_to yield_control
+      end
+    end
+
+    context 'with a nil page' do
+      let(:client_response) { { pagination: {}, response_body: nil } }
+
+      it_behaves_like 'iterating through a page', expected_tags: false
+    end
+
+    context 'calling on a non migrated repository' do
+      before do
+        repository.update!(created_at: described_class::MIGRATION_PHASE_1_ENDED_AT - 3.days)
+      end
+
+      it 'raises an Argument error' do
+        expect { repository.each_tags_page }.to raise_error(ArgumentError, 'not a migrated repository')
+      end
+    end
+
+    def expected_tags_from(client_tags)
+      client_tags.map do |tag|
+        created_at =
+          begin
+            DateTime.iso8601(tag['created_at'])
+          rescue ArgumentError
+            nil
+          end
+        an_object_having_attributes(name: tag['name'], created_at: created_at)
+      end
+    end
+  end
+
   describe '#tags_count' do
     it 'returns the count of tags' do
       expect(repository.tags_count).to eq(1)
@@ -1345,6 +1501,28 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       end
 
       it { is_expected.to eq(true) }
+    end
+  end
+
+  describe '#migrated?' do
+    subject { repository.migrated? }
+
+    it { is_expected.to eq(true) }
+
+    context 'with a created_at older than phase 1 ends' do
+      before do
+        repository.update!(created_at: described_class::MIGRATION_PHASE_1_ENDED_AT - 3.days)
+      end
+
+      it { is_expected.to eq(false) }
+
+      context 'with migration state set to import_done' do
+        before do
+          repository.update!(migration_state: 'import_done')
+        end
+
+        it { is_expected.to eq(true) }
+      end
     end
   end
 

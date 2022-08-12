@@ -22,7 +22,8 @@ module Ci
       accessibility: %w[accessibility],
       coverage: %w[cobertura],
       codequality: %w[codequality],
-      terraform: %w[terraform]
+      terraform: %w[terraform],
+      sbom: %w[cyclonedx]
     }.freeze
 
     DEFAULT_FILE_NAMES = {

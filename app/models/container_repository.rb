@@ -19,6 +19,8 @@ class ContainerRepository < ApplicationRecord
   MIGRATION_PHASE_1_STARTED_AT = Date.new(2021, 11, 4).freeze
   MIGRATION_PHASE_1_ENDED_AT = Date.new(2022, 01, 23).freeze
 
+  MAX_TAGS_PAGES = 2000
+
   TooManyImportsError = Class.new(StandardError)
 
   belongs_to :project
@@ -377,6 +379,10 @@ class ContainerRepository < ApplicationRecord
     migration_retries_count >= ContainerRegistry::Migration.max_retries - 1
   end
 
+  def migrated?
+    MIGRATION_PHASE_1_ENDED_AT < self.created_at || import_done?
+  end
+
   def last_import_step_done_at
     [migration_pre_import_done_at, migration_import_done_at, migration_aborted_at, migration_skipped_at].compact.max
   end
@@ -425,6 +431,32 @@ class ContainerRepository < ApplicationRecord
         ContainerRegistry::Tag.new(self, tag)
       end
     end
+  end
+
+  def each_tags_page(page_size: 100, &block)
+    raise ArgumentError, 'not a migrated repository' unless migrated?
+    raise ArgumentError, 'block not given' unless block
+
+    # dummy uri to initialize the loop
+    next_page_uri = URI('')
+    page_count = 0
+
+    while next_page_uri && page_count < MAX_TAGS_PAGES
+      last = Rack::Utils.parse_nested_query(next_page_uri.query)['last']
+      current_page = gitlab_api_client.tags(self.path, page_size: page_size, last: last)
+
+      if current_page&.key?(:response_body)
+        yield transform_tags_page(current_page[:response_body])
+        next_page_uri = current_page.dig(:pagination, :next, :uri)
+      else
+        # no current page. Break the loop
+        next_page_uri = nil
+      end
+
+      page_count += 1
+    end
+
+    raise 'too many pages requested' if page_count >= MAX_TAGS_PAGES
   end
 
   def tags_count
@@ -558,6 +590,16 @@ class ContainerRepository < ApplicationRecord
   def finish_import_as(reason)
     self.migration_skipped_reason = reason
     finish_import
+  end
+
+  def transform_tags_page(tags_response_body)
+    return [] unless tags_response_body
+
+    tags_response_body.map do |raw_tag|
+      tag = ContainerRegistry::Tag.new(self, raw_tag['name'])
+      tag.force_created_at_from_iso8601(raw_tag['created_at'])
+      tag
+    end
   end
 end
 

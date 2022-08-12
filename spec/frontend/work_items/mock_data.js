@@ -25,6 +25,7 @@ export const workItemQueryResponse = {
       title: 'Test',
       state: 'OPEN',
       description: 'description',
+      confidential: false,
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
@@ -57,6 +58,7 @@ export const workItemQueryResponse = {
             id: 'gid://gitlab/Issue/1',
             iid: '5',
             title: 'Parent title',
+            confidential: false,
           },
           children: {
             nodes: [
@@ -82,6 +84,7 @@ export const updateWorkItemMutationResponse = {
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
+        confidential: false,
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -115,12 +118,23 @@ export const updateWorkItemMutationResponse = {
   },
 };
 
+export const mockParent = {
+  parent: {
+    id: 'gid://gitlab/Issue/1',
+    iid: '5',
+    title: 'Parent title',
+    confidential: false,
+  },
+};
+
 export const workItemResponseFactory = ({
   canUpdate = false,
+  canDelete = false,
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
   weightWidgetPresent = true,
-  parent = null,
+  confidential = false,
+  parent = mockParent.parent,
 } = {}) => ({
   data: {
     workItem: {
@@ -129,13 +143,14 @@ export const workItemResponseFactory = ({
       title: 'Updated title',
       state: 'OPEN',
       description: 'description',
+      confidential,
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
       },
       userPermissions: {
-        deleteWorkItem: false,
+        deleteWorkItem: canDelete,
         updateWorkItem: canUpdate,
       },
       widgets: [
@@ -216,6 +231,7 @@ export const createWorkItemMutationResponse = {
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
+        confidential: false,
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -243,6 +259,7 @@ export const createWorkItemFromTaskMutationResponse = {
         id: 'gid://gitlab/WorkItem/1',
         title: 'Updated title',
         state: 'OPEN',
+        confidential: false,
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -267,6 +284,7 @@ export const createWorkItemFromTaskMutationResponse = {
         title: 'Updated title',
         state: 'OPEN',
         description: '',
+        confidential: false,
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -399,6 +417,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                 },
                 title: 'xyz',
                 state: 'OPEN',
+                confidential: false,
                 __typename: 'WorkItem',
               },
             ],
@@ -444,6 +463,7 @@ export const workItemHierarchyResponse = {
                 },
                 title: 'xyz',
                 state: 'OPEN',
+                confidential: true,
                 __typename: 'WorkItem',
               },
               {
@@ -454,6 +474,7 @@ export const workItemHierarchyResponse = {
                 },
                 title: 'abc',
                 state: 'CLOSED',
+                confidential: false,
                 __typename: 'WorkItem',
               },
               {
@@ -464,6 +485,7 @@ export const workItemHierarchyResponse = {
                 },
                 title: 'bar',
                 state: 'OPEN',
+                confidential: false,
                 __typename: 'WorkItem',
               },
               {
@@ -474,6 +496,7 @@ export const workItemHierarchyResponse = {
                 },
                 title: 'foobar',
                 state: 'OPEN',
+                confidential: false,
                 __typename: 'WorkItem',
               },
             ],
@@ -505,6 +528,7 @@ export const changeWorkItemParentMutationResponse = {
         id: 'gid://gitlab/WorkItem/2',
         state: 'OPEN',
         title: 'Foo',
+        confidential: false,
         widgets: [
           {
             __typename: 'WorkItemWidgetHierarchy',
@@ -660,13 +684,5 @@ export const projectLabelsResponse = {
         nodes: mockLabels,
       },
     },
-  },
-};
-
-export const mockParent = {
-  parent: {
-    id: 'gid://gitlab/Issue/1',
-    iid: '5',
-    title: 'Parent title',
   },
 };

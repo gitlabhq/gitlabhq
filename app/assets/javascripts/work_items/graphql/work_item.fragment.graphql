@@ -5,6 +5,7 @@ fragment WorkItem on WorkItem {
   title
   state
   description
+  confidential
   workItemType {
     id
     name
@@ -34,6 +35,7 @@ fragment WorkItem on WorkItem {
         id
         iid
         title
+        confidential
       }
       children {
         nodes {

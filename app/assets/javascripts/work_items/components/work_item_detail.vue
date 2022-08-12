@@ -1,5 +1,13 @@
 <script>
-import { GlAlert, GlSkeletonLoader, GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlSkeletonLoader,
+  GlLoadingIcon,
+  GlIcon,
+  GlBadge,
+  GlButton,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
@@ -11,8 +19,12 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_VIEWED_STORAGE_KEY,
 } from '../constants';
+
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
+
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
@@ -29,7 +41,9 @@ export default {
   },
   components: {
     GlAlert,
+    GlBadge,
     GlButton,
+    GlLoadingIcon,
     GlSkeletonLoader,
     GlIcon,
     WorkItemAssignees,
@@ -65,6 +79,7 @@ export default {
       error: undefined,
       workItem: {},
       showInfoBanner: true,
+      updateInProgress: false,
     };
   },
   apollo: {
@@ -125,6 +140,9 @@ export default {
     parentWorkItem() {
       return this.workItemHierarchy?.parent;
     },
+    parentWorkItemConfidentiality() {
+      return this.parentWorkItem?.confidential;
+    },
     parentUrl() {
       return `../../issues/${this.parentWorkItem?.iid}`;
     },
@@ -137,6 +155,54 @@ export default {
   methods: {
     dismissBanner() {
       this.showInfoBanner = false;
+    },
+    toggleConfidentiality(confidentialStatus) {
+      this.updateInProgress = true;
+      let updateMutation = updateWorkItemMutation;
+      let inputVariables = {
+        id: this.workItemId,
+        confidential: confidentialStatus,
+      };
+
+      if (this.parentWorkItem) {
+        updateMutation = updateWorkItemTaskMutation;
+        inputVariables = {
+          id: this.parentWorkItem.id,
+          taskData: {
+            id: this.workItemId,
+            confidential: confidentialStatus,
+          },
+        };
+      }
+
+      this.$apollo
+        .mutate({
+          mutation: updateMutation,
+          variables: {
+            input: inputVariables,
+          },
+        })
+        .then(
+          ({
+            data: {
+              workItemUpdate: { errors, workItem, task },
+            },
+          }) => {
+            if (errors?.length) {
+              throw new Error(errors[0]);
+            }
+
+            this.$emit('workItemUpdated', {
+              confidential: workItem?.confidential || task?.confidential,
+            });
+          },
+        )
+        .catch((error) => {
+          this.error = error.message;
+        })
+        .finally(() => {
+          this.updateInProgress = false;
+        });
     },
   },
   WORK_ITEM_VIEWED_STORAGE_KEY,
@@ -156,7 +222,7 @@ export default {
       </gl-skeleton-loader>
     </div>
     <template v-else>
-      <div class="gl-display-flex gl-align-items-center">
+      <div class="gl-display-flex gl-align-items-center" data-testid="work-item-body">
         <ul
           v-if="parentWorkItem"
           class="list-unstyled gl-display-flex gl-mr-auto gl-max-w-26 gl-md-max-w-50p gl-min-w-0 gl-mb-0"
@@ -187,10 +253,19 @@ export default {
           data-testid="work-item-type"
           >{{ workItemType }}</span
         >
+        <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
+        <gl-badge v-if="workItem.confidential" variant="warning" icon="eye-slash" class="gl-mr-3">{{
+          __('Confidential')
+        }}</gl-badge>
         <work-item-actions
+          v-if="canUpdate || canDelete"
           :work-item-id="workItem.id"
           :can-delete="canDelete"
+          :can-update="canUpdate"
+          :is-confidential="workItem.confidential"
+          :is-parent-confidential="parentWorkItemConfidentiality"
           @deleteWorkItem="$emit('deleteWorkItem')"
+          @toggleWorkItemConfidentiality="toggleConfidentiality"
           @error="error = $event"
         />
         <gl-button
