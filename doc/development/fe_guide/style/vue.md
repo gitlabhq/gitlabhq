@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Linting
 
 We default to [eslint-vue-plugin](https://github.com/vuejs/eslint-plugin-vue), with the `plugin:vue/recommended`.
-Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for more documentation.
+Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for more documentation.
 
 ## Basic Rules
 

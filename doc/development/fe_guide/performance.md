@@ -220,7 +220,7 @@ Use the following rules when creating real-time solutions.
    A `Poll-Interval: -1` means you should disable polling, and this must be implemented.
 1. A response with HTTP status different from 2XX should disable polling as well.
 1. Use a common library for polling.
-1. Poll on active tabs only. Please use [Visibility](https://github.com/ai/visibilityjs).
+1. Poll on active tabs only. Use [Visibility](https://github.com/ai/visibilityjs).
 1. Use regular polling intervals, do not use backoff polling or jitter, as the interval is
    controlled by the server.
 1. The backend code is likely to be using ETags. You do not and should not check for status

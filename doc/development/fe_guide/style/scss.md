@@ -12,7 +12,7 @@ easy to maintain, and performant for the end-user.
 
 ## Rules
 
-Our CSS is a mixture of current and legacy approaches. That means sometimes it may be difficult to follow this guide to the letter; it means you are likely to run into exceptions, where following the guide is difficult to impossible without major effort. In those cases, you may work with your reviewers and maintainers to identify an approach that does not fit these rules. Please endeavor to limit these cases.
+Our CSS is a mixture of current and legacy approaches. That means sometimes it may be difficult to follow this guide to the letter; it means you are likely to run into exceptions, where following the guide is difficult to impossible without major effort. In those cases, you may work with your reviewers and maintainers to identify an approach that does not fit these rules. Try to limit these cases.
 
 ### Utility Classes
 

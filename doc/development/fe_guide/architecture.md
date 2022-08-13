@@ -11,7 +11,7 @@ When developing a feature that requires architectural design, or changing the fu
 A Frontend Architect is an expert who makes high-level Frontend design decisions
 and decides on technical standards, including coding standards and frameworks.
 
-Architectural decisions should be accessible to everyone, so please document
+Architectural decisions should be accessible to everyone, so document
 them in the relevant Merge Request discussion or by updating our documentation
 when appropriate.
 

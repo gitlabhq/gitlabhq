@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Anti-patterns may seem like good approaches at first, but it has been shown that they bring more ills than benefits. These should
 generally be avoided.
 
-Throughout the GitLab codebase, there may be historic uses of these anti-patterns. Please [use discretion](https://about.gitlab.com/handbook/engineering/development/principles/#balance-refactoring-and-velocity)
+Throughout the GitLab codebase, there may be historic uses of these anti-patterns. [Use discretion](https://about.gitlab.com/handbook/engineering/development/principles/#balance-refactoring-and-velocity)
 when figuring out whether or not to refactor, when touching code that uses one of these legacy patterns.
 
 NOTE:
@@ -62,7 +62,7 @@ could be appropriate:
 - When a responsibility is truly global and should be referenced across the application
   (for example, an application-wide Event Bus).
 
-Even in these scenarios, please consider avoiding the Shared Global Object pattern because the
+Even in these scenarios, consider avoiding the Shared Global Object pattern because the
 side-effects can be notoriously difficult to reason with.
 
 ### References
@@ -140,7 +140,7 @@ that a Singleton could be appropriate in the following rare cases:
 - We need to manage some resource that **MUST** have just 1 instance (that is, some hardware restriction).
 - There is a real [cross-cutting concern](https://en.wikipedia.org/wiki/Cross-cutting_concern) (for example, logging) and a Singleton provides the simplest API.
 
-Even in these scenarios, please consider avoiding the Singleton pattern.
+Even in these scenarios, consider avoiding the Singleton pattern.
 
 ### What alternatives are there to the Singleton pattern?
 

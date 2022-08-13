@@ -566,9 +566,6 @@ Graphql/Descriptions:
 RSpec/ImplicitSubject:
   Enabled: false
 
-RSpec/HooksBeforeExamples:
-  Enabled: false
-
 RSpec/Be:
   Enabled: false
 

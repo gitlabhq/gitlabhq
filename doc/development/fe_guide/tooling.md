@@ -175,7 +175,7 @@ preferred editor (all major editors are supported) accordingly. We suggest
 setting up Prettier to run when each file is saved. For instructions about using
 Prettier in your preferred editor, see the [Prettier documentation](https://prettier.io/docs/en/editors.html).
 
-Please take care that you only let Prettier format the same file types as the global Yarn script does (`.js`, `.vue`, `.graphql`, and `.scss`). For example, you can exclude file formats in your Visual Studio Code settings file:
+Take care that you only let Prettier format the same file types as the global Yarn script does (`.js`, `.vue`, `.graphql`, and `.scss`). For example, you can exclude file formats in your Visual Studio Code settings file:
 
 ```json
   "prettier.disableLanguages": [

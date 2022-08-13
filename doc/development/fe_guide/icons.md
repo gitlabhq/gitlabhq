@@ -81,7 +81,7 @@ export default {
 
 ### Usage in HTML/JS
 
-Please use the following function inside JS to render an icon:
+Use the following function inside JS to render an icon:
 `gl.utils.spriteIcon(iconName)`
 
 ## Loading icon

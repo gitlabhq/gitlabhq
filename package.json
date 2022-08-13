@@ -243,7 +243,7 @@
     "sass": "^1.49.9",
     "stylelint": "^14.9.1",
     "timezone-mock": "^1.0.8",
-    "webpack-dev-server": "4.9.3",
+    "webpack-dev-server": "4.10.0",
     "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",
     "yarn-deduplicate": "^5.0.0"

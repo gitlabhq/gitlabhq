@@ -109,7 +109,7 @@ Default client accepts two parameters: `resolvers` and `config`.
 
 If you are making multiple queries to the same Apollo client object you might encounter the following error: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. We are already checking `ID` presence for every GraphQL type that has an `ID`, so this shouldn't be the case. Most likely, the `SomeEntity` type doesn't have an `ID` property, and to fix this warning we need to define a custom merge function.
 
-We have some client-wide types with `merge: true` defined in the default client as [typePolicies](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/graphql.js) (this means that Apollo will merge existing and incoming responses in the case of subsequent queries). Please consider adding `SomeEntity` there or defining a custom merge function for it.
+We have some client-wide types with `merge: true` defined in the default client as [typePolicies](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/graphql.js) (this means that Apollo will merge existing and incoming responses in the case of subsequent queries). Consider adding `SomeEntity` there or defining a custom merge function for it.
 
 ## GraphQL Queries
 
@@ -212,7 +212,7 @@ with a **new and updated** object.
 
 To facilitate the process of updating the cache and returning the new object we
 use the library [Immer](https://immerjs.github.io/immer/).
-Please, follow these conventions:
+Follow these conventions:
 
 - The updated cache is named `data`.
 - The original cache data is named `sourceData`.
@@ -1490,7 +1490,7 @@ describe('Some component', () => {
 When mocking resolved values, ensure the structure of the response is the same
 as the actual API response. For example, root property should be `data`.
 
-When testing queries, please keep in mind they are promises, so they need to be _resolved_ to render a result. Without resolving, we can check the `loading` state of the query:
+When testing queries, keep in mind they are promises, so they need to be _resolved_ to render a result. Without resolving, we can check the `loading` state of the query:
 
 ```javascript
 it('renders a loading state', () => {
@@ -2055,7 +2055,7 @@ automatically adds the `__typename` for you upon generation.
 
 ### Warning about losing cache data
 
-Sometimes you can see a warning in the console: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. Please check section about [multiple queries](#multiple-client-queries-for-the-same-object) to resolve an issue.
+Sometimes you can see a warning in the console: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. Check section about [multiple queries](#multiple-client-queries-for-the-same-object) to resolve an issue.
 
   ```yaml
   - current_route_path = request.fullpath.match(/-\/tree\/[^\/]+\/(.+$)/).to_a[1]

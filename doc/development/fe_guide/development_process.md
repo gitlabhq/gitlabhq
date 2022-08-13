@@ -16,7 +16,7 @@ Copy the content over to your issue or merge request and if something doesn't ap
 
 This checklist is intended to help us during development of bigger features/refactorings. It is not a "use it always and every point always matches" list.
 
-Please use your best judgment when to use it and please contribute new points through merge requests if something comes to your mind.
+Use your best judgment when to use it and contribute new points through merge requests if something comes to your mind.
 
 ```markdown
 ### Frontend development
@@ -39,7 +39,7 @@ Please use your best judgment when to use it and please contribute new points th
   - [ ] **Cookie Mode** Think about hiding the feature behind a cookie flag if the implementation is on top of existing features
   - [ ] **New route** Are you refactoring something big then you might consider adding a new route where you implement the new feature and when finished delete the current route and rename the new one. (for example 'merge_request' and 'new_merge_request')
 - [ ] **Setup** Is there any specific setup needed for your implementation (for example a kubernetes cluster)? Then let everyone know if it is not already mentioned where they can find documentation (if it doesn't exist - create it)
-- [ ] **Security** Are there any new security relevant implementations? Then please contact the security team for an app security review. If you are not sure ask our [domain expert](https://about.gitlab.com/handbook/engineering/frontend/#frontend-domain-experts)
+- [ ] **Security** Are there any new security relevant implementations? Then contact the security team for an app security review. If you are not sure ask our [domain expert](https://about.gitlab.com/handbook/engineering/frontend/#frontend-domain-experts)
 
 #### During development
 
@@ -90,7 +90,7 @@ code that is unused:
 
 ### Merge Request Review
 
-With the purpose of being [respectful of others' time](https://about.gitlab.com/handbook/values/#be-respectful-of-others-time) please follow these guidelines when asking for a review:
+With the purpose of being [respectful of others' time](https://about.gitlab.com/handbook/values/#be-respectful-of-others-time), follow these guidelines when asking for a review:
 
 - Make sure your Merge Request:
   - milestone is set
@@ -101,7 +101,7 @@ With the purpose of being [respectful of others' time](https://about.gitlab.com/
   - includes tests
   - includes a changelog entry (when necessary)
 - Before assigning to a maintainer, assign to a reviewer.
-- If you assigned a merge request or pinged someone directly, be patient because we work in different timezones and asynchronously. Unless the merge request is urgent (like fixing a broken default branch), please don't DM or reassign the merge request before waiting for a 24-hour window.
+- If you assigned a merge request or pinged someone directly, be patient because we work in different timezones and asynchronously. Unless the merge request is urgent (like fixing a broken default branch), don't DM or reassign the merge request before waiting for a 24-hour window.
 - If you have a question regarding your merge request/issue, make it on the merge request/issue. When we DM each other, we no longer have a SSOT and [no one else is able to contribute](https://about.gitlab.com/handbook/values/#public-by-default).
 - When you have a big **Draft** merge request with many changes, you're advised to get the review started before adding/removing significant code. Make sure it is assigned well before the release cut-off, as the reviewers/maintainers would always prioritize reviewing finished MRs before the **Draft** ones.
 - Make sure to remove the `Draft:` title before the last round of review.
