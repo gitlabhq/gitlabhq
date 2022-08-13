@@ -3,7 +3,7 @@
 class ChatName < ApplicationRecord
   LAST_USED_AT_INTERVAL = 1.hour
 
-  belongs_to :integration, foreign_key: :service_id
+  belongs_to :integration
   belongs_to :user
 
   validates :user, presence: true
@@ -11,8 +11,8 @@ class ChatName < ApplicationRecord
   validates :team_id, presence: true
   validates :chat_id, presence: true
 
-  validates :user_id, uniqueness: { scope: [:service_id] }
-  validates :chat_id, uniqueness: { scope: [:service_id, :team_id] }
+  validates :user_id, uniqueness: { scope: [:integration_id] }
+  validates :chat_id, uniqueness: { scope: [:integration_id, :team_id] }
 
   # Updates the "last_used_timestamp" but only if it wasn't already updated
   # recently.

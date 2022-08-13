@@ -12423,14 +12423,15 @@ ALTER SEQUENCE bulk_imports_id_seq OWNED BY bulk_imports.id;
 CREATE TABLE chat_names (
     id integer NOT NULL,
     user_id integer NOT NULL,
-    service_id integer NOT NULL,
     team_id character varying NOT NULL,
     team_domain character varying,
     chat_id character varying NOT NULL,
     chat_name character varying,
     last_used_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    integration_id integer,
+    CONSTRAINT check_2b0a0d0f0f CHECK ((integration_id IS NOT NULL))
 );
 
 CREATE SEQUENCE chat_names_id_seq
@@ -27659,9 +27660,9 @@ CREATE INDEX index_bulk_import_failures_on_correlation_id_value ON bulk_import_f
 
 CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id);
 
-CREATE UNIQUE INDEX index_chat_names_on_service_id_and_team_id_and_chat_id ON chat_names USING btree (service_id, team_id, chat_id);
+CREATE UNIQUE INDEX index_chat_names_on_integration_id_and_team_id_and_chat_id ON chat_names USING btree (integration_id, team_id, chat_id);
 
-CREATE UNIQUE INDEX index_chat_names_on_user_id_and_service_id ON chat_names USING btree (user_id, service_id);
+CREATE UNIQUE INDEX index_chat_names_on_user_id_and_integration_id ON chat_names USING btree (user_id, integration_id);
 
 CREATE UNIQUE INDEX index_chat_teams_on_namespace_id ON chat_teams USING btree (namespace_id);
 
@@ -31891,9 +31892,6 @@ CREATE TRIGGER trigger_update_vulnerability_reads_on_vulnerability_update AFTER 
 
 CREATE TRIGGER users_loose_fk_trigger AFTER DELETE ON users REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-ALTER TABLE ONLY chat_names
-    ADD CONSTRAINT fk_00797a2bf9 FOREIGN KEY (service_id) REFERENCES integrations(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_009fd21147 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE NOT VALID;
 
@@ -32397,6 +32395,9 @@ ALTER TABLE ONLY vulnerability_occurrences
 
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_98f3d044fe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY chat_names
+    ADD CONSTRAINT fk_99a1348daf FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT fk_99e097b079 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

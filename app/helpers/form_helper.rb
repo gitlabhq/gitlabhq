@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FormHelper
-  def form_errors(model, type: 'form', truncate: [], pajamas_alert: false)
+  def form_errors(model, type: 'form', truncate: [], pajamas_alert: true)
     errors = model.errors
 
     return unless errors.any?
@@ -25,25 +25,16 @@ module FormHelper
       tag.li(message)
     end.join.html_safe
 
-    if pajamas_alert
-      render Pajamas::AlertComponent.new(
-        variant: :danger,
-        title: headline,
-        dismissible: false,
-        alert_options: { id: 'error_explanation', class: 'gl-mb-5' }
-      ) do |c|
-        c.body do
-          tag.ul(class: 'gl-pl-5 gl-mb-0') do
-            messages
-          end
+    render Pajamas::AlertComponent.new(
+      variant: :danger,
+      title: headline,
+      dismissible: false,
+      alert_options: { id: 'error_explanation', class: 'gl-mb-5' }
+    ) do |c|
+      c.body do
+        tag.ul(class: 'gl-pl-5 gl-mb-0') do
+          messages
         end
-      end
-    else
-      tag.div(class: 'alert alert-danger', id: 'error_explanation') do
-        tag.h4(headline) <<
-          tag.ul do
-            messages
-          end
       end
     end
   end
