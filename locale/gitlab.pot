@@ -34293,6 +34293,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{ifLabelStart}if%{ifLabelEnd} %{rules} for the %{branches} branch(es)"
 msgstr ""
 
+msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run"
+msgstr ""
+
 msgid "ScanExecutionPolicy|A pipeline is run"
 msgstr ""
 
@@ -34883,6 +34886,9 @@ msgid "SecurityOrchestration|.yaml preview"
 msgstr ""
 
 msgid "SecurityOrchestration|Actions"
+msgstr ""
+
+msgid "SecurityOrchestration|Add action"
 msgstr ""
 
 msgid "SecurityOrchestration|Add rule"
