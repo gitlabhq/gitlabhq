@@ -340,8 +340,7 @@ Support includes:
 - List formatting for unordered, numbered, and checklists.
 - Creating and editing the structure of tables.
 - Inserting and formatting code blocks with syntax highlighting.
-- Live preview of Mermaid, PlantUML, and Kroki diagrams ([Introduced]<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86701> in GitLab 15.2).
-- Real-time visualization of table of contents.
+- Live preview of Mermaid, PlantUML, and Kroki diagrams ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86701) in GitLab 15.2).
 
 ### Use the Content Editor
 
