@@ -74,12 +74,10 @@ RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events
   end
 end
 
-RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events' do
+RSpec.shared_examples 'daily tracked issuable snowplow and service ping events with project' do
   it_behaves_like 'a daily tracked issuable snowplow and service ping events for given event params' do
-    let_it_be(:track_params) { { project: project } }
-    let_it_be(:event_params) { track_params.merge(namespace: project.namespace) }
-    let_it_be(:category) { 'issues_edit' }
-    let_it_be(:event_action) { action }
+    let(:track_params) { { project: project } }
+    let(:event_params) { track_params.merge(label: event_label, property: event_property, namespace: project.namespace) }
   end
 end
 

@@ -32,7 +32,7 @@ diffs_dir.glob('**/*').each do |path|
   next unless path.to_s.end_with?('_spec.rb.diff')
 
   specs_count += 1
-  quarantine_specs_count += 1 if path.read.match?(/^\+.*, quarantine:/)
+  quarantine_specs_count += 1 if path.read.match?(/^\+.*,? quarantine:/)
 end
 
 # Run QA tests if there are no specs. E.g., when the MR changes QA framework files.

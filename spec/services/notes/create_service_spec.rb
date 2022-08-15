@@ -69,20 +69,31 @@ RSpec.describe Notes::CreateService do
         end
       end
 
-      it 'tracks issue comment usage data', :clean_gitlab_redis_shared_state do
-        event = Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED
-        counter = Gitlab::UsageDataCounters::HLLRedisCounter
+      describe 'event tracking', :snowplow do
+        let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED }
+        let(:execute_create_service) { described_class.new(project, user, opts).execute }
 
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_comment_added_action).with(author: user).and_call_original
-        expect do
-          described_class.new(project, user, opts).execute
-        end.to change { counter.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
-      end
+        it 'tracks issue comment usage data', :clean_gitlab_redis_shared_state do
+          counter = Gitlab::UsageDataCounters::HLLRedisCounter
 
-      it 'does not track merge request usage data' do
-        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).not_to receive(:track_create_comment_action)
+          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_comment_added_action)
+                                                                             .with(author: user, project: project)
+                                                                             .and_call_original
+          expect do
+            execute_create_service
+          end.to change { counter.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
+        end
 
-        described_class.new(project, user, opts).execute
+        it 'does not track merge request usage data' do
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).not_to receive(:track_create_comment_action)
+
+          execute_create_service
+        end
+
+        it_behaves_like 'issue_edit snowplow tracking' do
+          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED }
+          subject(:service_action) { execute_create_service }
+        end
       end
 
       context 'in a merge request' do

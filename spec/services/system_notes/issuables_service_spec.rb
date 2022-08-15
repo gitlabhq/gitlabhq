@@ -712,14 +712,19 @@ RSpec.describe ::SystemNotes::IssuablesService do
         end
       end
 
-      context 'cloned to' do
+      context 'cloned to', :snowplow do
         let(:direction) { :to }
 
         it 'tracks usage' do
           expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter)
-            .to receive(:track_issue_cloned_action).with(author: author)
+            .to receive(:track_issue_cloned_action).with(author: author, project: project )
 
           subject
+        end
+
+        it_behaves_like 'issue_edit snowplow tracking' do
+          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED }
+          let(:user) { author }
         end
       end
     end

@@ -1,0 +1,25 @@
+---
+description: Issue usage event
+category: issues_edit
+action: perform_issue_action
+label_description:
+property_description: the name of the performed action
+value_description:
+extra_properties:
+identifiers:
+  - namespace
+  - project
+  - user
+product_section: dev
+product_stage: plan
+product_group: project_management
+product_category: issue_tracking
+milestone: "15.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91659
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

@@ -47,21 +47,31 @@ RSpec.describe Notes::UpdateService do
       end
     end
 
-    it 'does not track usage data when params is blank' do
-      expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_edited_action)
-      expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).not_to receive(:track_edit_comment_action)
+    describe 'event tracking', :snowplow do
+      let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
 
-      update_note({})
-    end
+      it 'does not track usage data when params is blank' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_edited_action)
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).not_to receive(:track_edit_comment_action)
 
-    it 'tracks issue usage data', :clean_gitlab_redis_shared_state do
-      event = Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED
-      counter = Gitlab::UsageDataCounters::HLLRedisCounter
+        update_note({})
+      end
 
-      expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_comment_edited_action).with(author: user).and_call_original
-      expect do
-        update_note(note: 'new text')
-      end.to change { counter.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
+      it 'tracks issue usage data', :clean_gitlab_redis_shared_state do
+        counter = Gitlab::UsageDataCounters::HLLRedisCounter
+
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_comment_edited_action)
+                                                                           .with(author: user, project: project)
+                                                                           .and_call_original
+        expect do
+          update_note(note: 'new text')
+        end.to change { counter.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
+      end
+
+      it_behaves_like 'issue_edit snowplow tracking' do
+        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
+        subject(:service_action) { update_note(note: 'new text') }
+      end
     end
 
     context 'when note text was changed' do

@@ -327,7 +327,9 @@ module SystemNotes
       cross_reference = noteable_ref.to_reference(project)
       body = "cloned #{direction} #{cross_reference}"
 
-      issue_activity_counter.track_issue_cloned_action(author: author) if noteable.is_a?(Issue) && direction == :to
+      if noteable.is_a?(Issue) && direction == :to
+        issue_activity_counter.track_issue_cloned_action(author: author, project: project)
+      end
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'cloned', created_at: created_at))
     end

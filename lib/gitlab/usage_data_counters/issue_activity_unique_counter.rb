@@ -4,6 +4,8 @@ module Gitlab
   module UsageDataCounters
     module IssueActivityUniqueCounter
       ISSUE_CATEGORY = 'issues_edit'
+      ISSUE_ACTION = 'perform_issue_action'
+      ISSUE_LABEL = 'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly'
 
       ISSUE_ASSIGNEE_CHANGED = 'g_project_management_issue_assignee_changed'
       ISSUE_CREATED = 'g_project_management_issue_created'
@@ -126,41 +128,47 @@ module Gitlab
           track_unique_action(ISSUE_TIME_SPENT_CHANGED, author)
         end
 
-        def track_issue_comment_added_action(author:)
+        def track_issue_comment_added_action(author:, project:)
+          track_snowplow_action(ISSUE_COMMENT_ADDED, author, project)
           track_unique_action(ISSUE_COMMENT_ADDED, author)
         end
 
-        def track_issue_comment_edited_action(author:)
+        def track_issue_comment_edited_action(author:, project:)
+          track_snowplow_action(ISSUE_COMMENT_EDITED, author, project)
           track_unique_action(ISSUE_COMMENT_EDITED, author)
         end
 
-        def track_issue_comment_removed_action(author:)
+        def track_issue_comment_removed_action(author:, project:)
+          track_snowplow_action(ISSUE_COMMENT_REMOVED, author, project)
           track_unique_action(ISSUE_COMMENT_REMOVED, author)
         end
 
-        def track_issue_cloned_action(author:)
+        def track_issue_cloned_action(author:, project:)
+          track_snowplow_action(ISSUE_CLONED, author, project)
           track_unique_action(ISSUE_CLONED, author)
         end
 
         private
 
-        def track_unique_action(action, author)
-          return unless author
-
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(action, values: author.id)
-        end
-
         def track_snowplow_action(action, author, project)
-          return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project&.namespace)
+          return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
           return unless author
 
           Gitlab::Tracking.event(
             ISSUE_CATEGORY,
-            action.to_s,
+            ISSUE_ACTION,
+            label: ISSUE_LABEL,
+            property: action,
             project: project,
-            namespace: project&.namespace,
+            namespace: project.namespace,
             user: author
           )
+        end
+
+        def track_unique_action(action, author)
+          return unless author
+
+          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(action, values: author.id)
         end
       end
     end
