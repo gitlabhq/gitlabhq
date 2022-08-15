@@ -337,9 +337,15 @@ class Repository
 
   def expire_branches_cache
     expire_method_caches(%i(branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?))
+    expire_protected_branches_cache
+
     @local_branches = nil
     @branch_exists_memo = nil
     @branch_names_include = nil
+  end
+
+  def expire_protected_branches_cache
+    ProtectedBranches::CacheService.new(project).refresh if project # rubocop:disable CodeReuse/ServiceClass
   end
 
   def expire_statistics_caches

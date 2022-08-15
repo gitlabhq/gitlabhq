@@ -58,29 +58,29 @@ describe('IDE stages list', () => {
   it('renders loading icon when no stages & loading', () => {
     createComponent({ loading: true, stages: [] });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('renders stages components for each stage', () => {
     createComponent({ stages });
-    expect(wrapper.findAll(Stage).length).toBe(stages.length);
+    expect(wrapper.findAllComponents(Stage).length).toBe(stages.length);
   });
 
   it('triggers fetchJobs action when stage emits fetch event', () => {
     createComponent({ stages });
-    wrapper.find(Stage).vm.$emit('fetch');
+    wrapper.findComponent(Stage).vm.$emit('fetch');
     expect(storeActions.fetchJobs).toHaveBeenCalled();
   });
 
   it('triggers toggleStageCollapsed action when stage emits toggleCollapsed event', () => {
     createComponent({ stages });
-    wrapper.find(Stage).vm.$emit('toggleCollapsed');
+    wrapper.findComponent(Stage).vm.$emit('toggleCollapsed');
     expect(storeActions.toggleStageCollapsed).toHaveBeenCalled();
   });
 
   it('triggers setDetailJob action when stage emits clickViewLog event', () => {
     createComponent({ stages });
-    wrapper.find(Stage).vm.$emit('clickViewLog');
+    wrapper.findComponent(Stage).vm.$emit('clickViewLog');
     expect(storeActions.setDetailJob).toHaveBeenCalled();
   });
 

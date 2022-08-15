@@ -18,8 +18,8 @@ describe('IDE pipeline stage', () => {
     },
   };
 
-  const findHeader = () => wrapper.find({ ref: 'cardHeader' });
-  const findJobList = () => wrapper.find({ ref: 'jobList' });
+  const findHeader = () => wrapper.findComponent({ ref: 'cardHeader' });
+  const findJobList = () => wrapper.findComponent({ ref: 'jobList' });
 
   const createComponent = (props) => {
     wrapper = shallowMount(Stage, {
@@ -45,7 +45,7 @@ describe('IDE pipeline stage', () => {
       stage: { ...defaultProps.stage, isLoading: true, jobs: [] },
     });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('emits toggleCollaped event with stage id when clicking header', async () => {
@@ -60,7 +60,7 @@ describe('IDE pipeline stage', () => {
   it('emits clickViewLog entity with job', async () => {
     const [job] = defaultProps.stage.jobs;
     createComponent();
-    wrapper.findAll(Item).at(0).vm.$emit('clickViewLog', job);
+    wrapper.findAllComponents(Item).at(0).vm.$emit('clickViewLog', job);
     await nextTick();
     expect(wrapper.emitted().clickViewLog[0][0]).toBe(job);
   });

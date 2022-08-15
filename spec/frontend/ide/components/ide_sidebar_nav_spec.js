@@ -55,7 +55,7 @@ describe('ide/components/ide_sidebar_nav', () => {
         ariaLabel: button.attributes('aria-label'),
         classes: button.classes(),
         qaSelector: button.attributes('data-qa-selector'),
-        icon: button.find(GlIcon).props('name'),
+        icon: button.findComponent(GlIcon).props('name'),
         tooltip: getBinding(button.element, 'tooltip').value,
       };
     });

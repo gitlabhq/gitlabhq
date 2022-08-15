@@ -31,17 +31,17 @@ describe('New Environments Dropdown', () => {
   describe('before results', () => {
     it('should show a loading icon', () => {
       axiosMock.onGet(TEST_HOST).reply(() => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
-      wrapper.find(GlSearchBoxByType).vm.$emit('focus');
+      wrapper.findComponent(GlSearchBoxByType).vm.$emit('focus');
       return axios.waitForAll();
     });
 
     it('should not show any dropdown items', () => {
       axiosMock.onGet(TEST_HOST).reply(() => {
-        expect(wrapper.findAll(GlDropdownItem)).toHaveLength(0);
+        expect(wrapper.findAllComponents(GlDropdownItem)).toHaveLength(0);
       });
-      wrapper.find(GlSearchBoxByType).vm.$emit('focus');
+      wrapper.findComponent(GlSearchBoxByType).vm.$emit('focus');
       return axios.waitForAll();
     });
   });
@@ -50,11 +50,11 @@ describe('New Environments Dropdown', () => {
     let item;
     beforeEach(async () => {
       axiosMock.onGet(TEST_HOST).reply(200, []);
-      wrapper.find(GlSearchBoxByType).vm.$emit('focus');
-      wrapper.find(GlSearchBoxByType).vm.$emit('input', TEST_SEARCH);
+      wrapper.findComponent(GlSearchBoxByType).vm.$emit('focus');
+      wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', TEST_SEARCH);
       await axios.waitForAll();
       await nextTick();
-      item = wrapper.find(GlDropdownItem);
+      item = wrapper.findComponent(GlDropdownItem);
     });
 
     it('should display a Create item label', () => {
@@ -62,7 +62,7 @@ describe('New Environments Dropdown', () => {
     });
 
     it('should display that no matching items are found', () => {
-      expect(wrapper.find({ ref: 'noResults' }).exists()).toBe(true);
+      expect(wrapper.findComponent({ ref: 'noResults' }).exists()).toBe(true);
     });
 
     it('should emit a new scope when selected', () => {
@@ -75,10 +75,10 @@ describe('New Environments Dropdown', () => {
     let items;
     beforeEach(() => {
       axiosMock.onGet(TEST_HOST).reply(httpStatusCodes.OK, ['prod', 'production']);
-      wrapper.find(GlSearchBoxByType).vm.$emit('focus');
-      wrapper.find(GlSearchBoxByType).vm.$emit('input', 'prod');
+      wrapper.findComponent(GlSearchBoxByType).vm.$emit('focus');
+      wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', 'prod');
       return axios.waitForAll().then(() => {
-        items = wrapper.findAll(GlDropdownItem);
+        items = wrapper.findAllComponents(GlDropdownItem);
       });
     });
 
@@ -97,7 +97,7 @@ describe('New Environments Dropdown', () => {
     });
 
     it('should not display a message about no results', () => {
-      expect(wrapper.find({ ref: 'noResults' }).exists()).toBe(false);
+      expect(wrapper.findComponent({ ref: 'noResults' }).exists()).toBe(false);
     });
   });
 });

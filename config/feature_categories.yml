@@ -8,13 +8,16 @@
 #
 ---
 - advanced_deployments
+- advisory_database
 - api_security
+- application_performance
 - attack_emulation
 - audit_events
 - audit_reports
 - authentication_and_authorization
 - auto_devops
 - backup_restore
+- billing_and_subscription_management
 - build
 - build_artifacts
 - chatops
@@ -65,6 +68,7 @@
 - importers
 - incident_management
 - infrastructure_as_code
+- infrastructure_cost_data
 - insider_threat
 - instance_resiliency
 - integrations
@@ -75,7 +79,6 @@
 - kubernetes_management
 - license_compliance
 - logging
-- memory
 - merge_trains
 - metrics
 - mlops
@@ -96,6 +99,7 @@
 - product_analytics
 - projects
 - provision
+- pubsec_services
 - purchase
 - quality_management
 - redis
@@ -118,7 +122,6 @@
 - snippets
 - source_code_management
 - static_application_security_testing
-- static_site_editor
 - subgroups
 - system_access
 - team_planning
@@ -127,7 +130,6 @@
 - users
 - utilization
 - value_stream_management
-- vulnerability_database
 - vulnerability_management
 - web_ide
 - wiki

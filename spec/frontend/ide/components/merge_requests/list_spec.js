@@ -14,7 +14,7 @@ describe('IDE merge requests list', () => {
   let fetchMergeRequestsMock;
 
   const findSearchTypeButtons = () => wrapper.findAll('button');
-  const findTokenedInput = () => wrapper.find(TokenedInput);
+  const findTokenedInput = () => wrapper.findComponent(TokenedInput);
 
   const createComponent = (state = {}) => {
     const { mergeRequests = {}, ...restOfState } = state;
@@ -63,7 +63,7 @@ describe('IDE merge requests list', () => {
 
   it('renders loading icon when merge request is loading', () => {
     createComponent({ mergeRequests: { isLoading: true } });
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('renders no search results text when search is not empty', async () => {
@@ -107,8 +107,8 @@ describe('IDE merge requests list', () => {
     it('renders list', () => {
       createComponent(defaultStateWithMergeRequests);
 
-      expect(wrapper.findAll(Item).length).toBe(1);
-      expect(wrapper.find(Item).props('item')).toBe(
+      expect(wrapper.findAllComponents(Item).length).toBe(1);
+      expect(wrapper.findComponent(Item).props('item')).toBe(
         defaultStateWithMergeRequests.mergeRequests.mergeRequests[0],
       );
     });

@@ -26,8 +26,8 @@ describe('IDE commit editor header', () => {
     });
   };
 
-  const findDiscardModal = () => wrapper.find({ ref: 'discardModal' });
-  const findDiscardButton = () => wrapper.find({ ref: 'discardButton' });
+  const findDiscardModal = () => wrapper.findComponent({ ref: 'discardModal' });
+  const findDiscardButton = () => wrapper.findComponent({ ref: 'discardButton' });
 
   beforeEach(() => {
     store = createStore();

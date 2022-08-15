@@ -11,7 +11,7 @@ module MergeRequests
 
       old_assignees = merge_request.assignees.to_a
       old_ids = old_assignees.map(&:id)
-      new_ids = new_assignee_ids(merge_request)
+      new_ids = new_user_ids(merge_request, update_attrs[:assignee_ids], :assignees)
 
       return merge_request if merge_request.errors.any?
       return merge_request if new_ids.size != update_attrs[:assignee_ids].size
@@ -32,27 +32,8 @@ module MergeRequests
 
     private
 
-    def new_assignee_ids(merge_request)
-      # prime the cache - prevent N+1 lookup during authorization loop.
-      user_ids = update_attrs[:assignee_ids]
-      return [] if user_ids.empty?
-
-      merge_request.project.team.max_member_access_for_user_ids(user_ids)
-      User.id_in(user_ids).map do |user|
-        if user.can?(:read_merge_request, merge_request)
-          user.id
-        else
-          merge_request.errors.add(
-            :assignees,
-            "Cannot assign #{user.to_reference} to #{merge_request.to_reference}"
-          )
-          nil
-        end
-      end.compact
-    end
-
     def assignee_ids
-      params.fetch(:assignee_ids).reject { _1 == 0 }.first(1)
+      filter_sentinel_values(params.fetch(:assignee_ids)).first(1)
     end
 
     def params

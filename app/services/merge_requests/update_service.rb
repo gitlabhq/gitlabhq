@@ -155,11 +155,7 @@ module MergeRequests
     def resolve_todos(merge_request, old_labels, old_assignees, old_reviewers)
       return unless has_changes?(merge_request, old_labels: old_labels, old_assignees: old_assignees, old_reviewers: old_reviewers)
 
-      service_user = current_user
-
-      merge_request.run_after_commit_or_now do
-        ::MergeRequests::ResolveTodosService.new(merge_request, service_user).async_execute
-      end
+      resolve_todos_for(merge_request)
     end
 
     def handle_target_branch_change(merge_request)
@@ -295,6 +291,36 @@ module MergeRequests
 
     def add_time_spent_service
       @add_time_spent_service ||= ::MergeRequests::AddSpentTimeService.new(project: project, current_user: current_user, params: params)
+    end
+
+    def new_user_ids(merge_request, user_ids, attribute)
+      # prime the cache - prevent N+1 lookup during authorization loop.
+      return [] if user_ids.empty?
+
+      merge_request.project.team.max_member_access_for_user_ids(user_ids)
+      User.id_in(user_ids).map do |user|
+        if user.can?(:read_merge_request, merge_request)
+          user.id
+        else
+          merge_request.errors.add(
+            attribute,
+            "Cannot assign #{user.to_reference} to #{merge_request.to_reference}"
+          )
+          nil
+        end
+      end.compact
+    end
+
+    def resolve_todos_for(merge_request)
+      service_user = current_user
+
+      merge_request.run_after_commit_or_now do
+        ::MergeRequests::ResolveTodosService.new(merge_request, service_user).async_execute
+      end
+    end
+
+    def filter_sentinel_values(param)
+      param.reject { _1 == 0 }
     end
   end
 end

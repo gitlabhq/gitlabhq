@@ -105,7 +105,7 @@ describe('IDE error message component', () => {
       findActionButton().trigger('click');
 
       await nextTick();
-      expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).isVisible()).toBe(true);
       resolveAction();
     });
 
@@ -113,7 +113,7 @@ describe('IDE error message component', () => {
       findActionButton().trigger('click');
       await actionMock();
       await nextTick();
-      expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).isVisible()).toBe(false);
     });
   });
 });

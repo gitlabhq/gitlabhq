@@ -41,7 +41,7 @@ describe('IdeTree', () => {
     let inititializeSpy;
 
     beforeEach(async () => {
-      inititializeSpy = jest.spyOn(wrapper.find(IdeTree).vm, 'initialize');
+      inititializeSpy = jest.spyOn(wrapper.findComponent(IdeTree).vm, 'initialize');
       store.state.viewer = 'diff';
 
       await wrapper.vm.reactivate();

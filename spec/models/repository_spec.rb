@@ -2277,7 +2277,31 @@ RSpec.describe Repository do
         .with(%i(branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?))
         .and_call_original
 
+      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+        expect(cache_service).to receive(:refresh)
+      end
+
       repository.expire_branches_cache
+    end
+  end
+
+  describe '#expire_protected_branches_cache' do
+    it 'expires the cache' do
+      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+        expect(cache_service).to receive(:refresh)
+      end
+
+      repository.expire_protected_branches_cache
+    end
+
+    context 'when repository does not have a project' do
+      let!(:snippet) { create(:personal_snippet, :repository) }
+
+      it 'does not expire the cache' do
+        expect(ProtectedBranches::CacheService).not_to receive(:new)
+
+        snippet.repository.expire_protected_branches_cache
+      end
     end
   end
 

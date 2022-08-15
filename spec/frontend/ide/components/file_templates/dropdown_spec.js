@@ -94,7 +94,7 @@ describe('IDE file templates dropdown component', () => {
     it('shows loader when isLoading is true', () => {
       createComponent({ props: defaultAsyncProps, state: { isLoading: true } });
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('renders templates', () => {

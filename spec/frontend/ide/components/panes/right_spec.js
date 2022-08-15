@@ -37,7 +37,7 @@ describe('ide/components/panes/right.vue', () => {
     it('is always shown', () => {
       createComponent();
 
-      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+      expect(wrapper.findComponent(CollapsibleSidebar).props('extensionTabs')).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             show: true,
@@ -65,7 +65,7 @@ describe('ide/components/panes/right.vue', () => {
 
       createComponent();
 
-      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+      expect(wrapper.findComponent(CollapsibleSidebar).props('extensionTabs')).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             show: true,
@@ -90,7 +90,7 @@ describe('ide/components/panes/right.vue', () => {
       store.state.terminal.isVisible = true;
 
       await nextTick();
-      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+      expect(wrapper.findComponent(CollapsibleSidebar).props('extensionTabs')).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             show: true,
@@ -103,7 +103,7 @@ describe('ide/components/panes/right.vue', () => {
     it('hides terminal tab when not visible', () => {
       store.state.terminal.isVisible = false;
 
-      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
+      expect(wrapper.findComponent(CollapsibleSidebar).props('extensionTabs')).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             show: false,

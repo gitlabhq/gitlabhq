@@ -34,13 +34,13 @@ describe('ide/components/terminal_sync/terminal_sync_status_safe', () => {
     });
 
     it('renders terminal sync status', () => {
-      expect(wrapper.find(TerminalSyncStatus).exists()).toBe(true);
+      expect(wrapper.findComponent(TerminalSyncStatus).exists()).toBe(true);
     });
   });
 
   describe('without terminal sync module', () => {
     it('does not render terminal sync status', () => {
-      expect(wrapper.find(TerminalSyncStatus).exists()).toBe(false);
+      expect(wrapper.findComponent(TerminalSyncStatus).exists()).toBe(false);
     });
   });
 });

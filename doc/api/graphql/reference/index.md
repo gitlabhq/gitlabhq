@@ -3755,6 +3755,28 @@ Input type: `MergeRequestSetMilestoneInput`
 | <a id="mutationmergerequestsetmilestoneerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestsetmilestonemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
+### `Mutation.mergeRequestSetReviewers`
+
+Input type: `MergeRequestSetReviewersInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestsetreviewersclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestsetreviewersiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetreviewersoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Operation to perform. Defaults to REPLACE. |
+| <a id="mutationmergerequestsetreviewersprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetreviewersreviewerusernames"></a>`reviewerUsernames` | [`[String!]!`](#string) | Usernames of reviewers to assign. Replaces existing reviewers by default. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestsetreviewersclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestsetreviewerserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmergerequestsetreviewersmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
 ### `Mutation.mergeRequestSetSubscription`
 
 Input type: `MergeRequestSetSubscriptionInput`

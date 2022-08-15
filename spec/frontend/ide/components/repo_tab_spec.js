@@ -19,7 +19,7 @@ describe('RepoTab', () => {
   let store;
   let router;
 
-  const findTab = () => wrapper.find(GlTabStub);
+  const findTab = () => wrapper.findComponent(GlTabStub);
 
   function createComponent(propsData) {
     wrapper = mount(RepoTab, {

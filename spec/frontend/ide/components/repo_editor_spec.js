@@ -211,7 +211,7 @@ describe('RepoEditor', () => {
       it('renders markdown for tempFile', async () => {
         findPreviewTab().vm.$emit('click');
         await waitForPromises();
-        expect(wrapper.find(ContentViewer).html()).toContain(dummyFile.text.content);
+        expect(wrapper.findComponent(ContentViewer).html()).toContain(dummyFile.text.content);
       });
 
       describe('when file changes to non-markdown file', () => {

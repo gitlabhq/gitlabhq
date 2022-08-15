@@ -27,7 +27,7 @@ describe('IDE job log scroll button', () => {
     beforeEach(() => createComponent({ direction }));
 
     it('returns proper icon name', () => {
-      expect(wrapper.find(GlIcon).props('name')).toBe(icon);
+      expect(wrapper.findComponent(GlIcon).props('name')).toBe(icon);
     });
 
     it('returns proper title', () => {

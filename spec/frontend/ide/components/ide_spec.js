@@ -82,7 +82,7 @@ describe('WebIDE', () => {
 
           await waitForPromises();
 
-          expect(wrapper.find(ErrorMessage).exists()).toBe(exists);
+          expect(wrapper.findComponent(ErrorMessage).exists()).toBe(exists);
         },
       );
     });

@@ -61,7 +61,7 @@ describe('feature flag form', () => {
   it('does not render the related issues widget without the featureFlagIssuesEndpoint', () => {
     factory(requiredProps);
 
-    expect(wrapper.find(RelatedIssuesRoot).exists()).toBe(false);
+    expect(wrapper.findComponent(RelatedIssuesRoot).exists()).toBe(false);
   });
 
   it('renders the related issues widget when the featureFlagIssuesEndpoint is provided', () => {
@@ -73,7 +73,7 @@ describe('feature flag form', () => {
       },
     );
 
-    expect(wrapper.find(RelatedIssuesRoot).exists()).toBe(true);
+    expect(wrapper.findComponent(RelatedIssuesRoot).exists()).toBe(true);
   });
 
   describe('without provided data', () => {
@@ -114,7 +114,7 @@ describe('feature flag form', () => {
     });
 
     it('should show the strategy component', () => {
-      const strategy = wrapper.find(Strategy);
+      const strategy = wrapper.findComponent(Strategy);
       expect(strategy.exists()).toBe(true);
       expect(strategy.props('strategy')).toEqual({
         type: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
@@ -124,14 +124,14 @@ describe('feature flag form', () => {
     });
 
     it('should show one strategy component per strategy', () => {
-      expect(wrapper.findAll(Strategy)).toHaveLength(2);
+      expect(wrapper.findAllComponents(Strategy)).toHaveLength(2);
     });
 
     it('adds an all users strategy when clicking the Add button', async () => {
-      wrapper.find(GlButton).vm.$emit('click');
+      wrapper.findComponent(GlButton).vm.$emit('click');
 
       await nextTick();
-      const strategies = wrapper.findAll(Strategy);
+      const strategies = wrapper.findAllComponents(Strategy);
 
       expect(strategies).toHaveLength(3);
       expect(strategies.at(2).props('strategy')).toEqual(allUsersStrategy);
@@ -143,10 +143,10 @@ describe('feature flag form', () => {
         parameters: { percentage: '30' },
         scopes: [],
       };
-      wrapper.find(Strategy).vm.$emit('delete');
+      wrapper.findComponent(Strategy).vm.$emit('delete');
       await nextTick();
-      expect(wrapper.findAll(Strategy)).toHaveLength(1);
-      expect(wrapper.find(Strategy).props('strategy')).not.toEqual(strategy);
+      expect(wrapper.findAllComponents(Strategy)).toHaveLength(1);
+      expect(wrapper.findComponent(Strategy).props('strategy')).not.toEqual(strategy);
     });
   });
 });

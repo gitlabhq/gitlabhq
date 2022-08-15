@@ -47,7 +47,7 @@ describe('IDE branches search list', () => {
 
   it('renders loading icon when `isLoading` is true', () => {
     createComponent({ isLoading: true });
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('renders branches not found when search is not empty and branches list is empty', async () => {
@@ -61,7 +61,7 @@ describe('IDE branches search list', () => {
   describe('with branches', () => {
     it('renders list', () => {
       createComponent({ branches });
-      const items = wrapper.findAll(Item);
+      const items = wrapper.findAllComponents(Item);
 
       expect(items.length).toBe(branches.length);
     });
@@ -69,7 +69,7 @@ describe('IDE branches search list', () => {
     it('renders check next to active branch', () => {
       const activeBranch = 'regular';
       createComponent({ branches }, activeBranch);
-      const items = wrapper.findAll(Item).filter((w) => w.props('isActive'));
+      const items = wrapper.findAllComponents(Item).filter((w) => w.props('isActive'));
 
       expect(items.length).toBe(1);
       expect(items.at(0).props('item').name).toBe(activeBranch);

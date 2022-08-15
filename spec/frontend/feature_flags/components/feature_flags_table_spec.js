@@ -119,7 +119,7 @@ describe('Feature flag table', () => {
     it('should render an environments specs badge with active class', () => {
       const envColumn = wrapper.find('.js-feature-flag-environments');
 
-      expect(trimText(envColumn.find(GlBadge).text())).toBe('All Users: All Environments');
+      expect(trimText(envColumn.findComponent(GlBadge).text())).toBe('All Users: All Environments');
     });
 
     it('should render an actions column', () => {
@@ -137,7 +137,7 @@ describe('Feature flag table', () => {
     beforeEach(() => {
       props.featureFlags[0].update_path = props.featureFlags[0].destroy_path;
       createWrapper(props);
-      toggle = wrapper.find(GlToggle);
+      toggle = wrapper.findComponent(GlToggle);
       spy = mockTracking('_category_', toggle.element, jest.spyOn);
     });
 

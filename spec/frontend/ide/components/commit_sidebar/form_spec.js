@@ -58,7 +58,7 @@ describe('IDE commit form', () => {
   });
   const findForm = () => wrapper.find('form');
   const submitForm = () => findForm().trigger('submit');
-  const findCommitMessageInput = () => wrapper.find(CommitMessageField);
+  const findCommitMessageInput = () => wrapper.findComponent(CommitMessageField);
   const setCommitMessageInput = (val) => findCommitMessageInput().vm.$emit('input', val);
   const findDiscardDraftButton = () => wrapper.find('[data-testid="discard-draft"]');
 
@@ -302,7 +302,7 @@ describe('IDE commit form', () => {
         ${() => createCodeownersCommitError('test message')} | ${{ actionPrimary: { text: 'Create new branch' } }}
         ${createUnexpectedCommitError}                       | ${{ actionPrimary: null }}
       `('opens error modal if commitError with $error', async ({ createError, props }) => {
-        const modal = wrapper.find(GlModal);
+        const modal = wrapper.findComponent(GlModal);
         modal.vm.show = jest.fn();
 
         const error = createError();
@@ -343,7 +343,7 @@ describe('IDE commit form', () => {
 
           await nextTick();
 
-          wrapper.find(GlModal).vm.$emit('ok');
+          wrapper.findComponent(GlModal).vm.$emit('ok');
 
           await waitForPromises();
 

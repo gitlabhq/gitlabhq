@@ -68,7 +68,7 @@ describe('IDE Terminal', () => {
       it(`shows when starting (${status})`, () => {
         factory({ status });
 
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
         expect(wrapper.find('.top-bar').text()).toBe('Starting...');
       });
     });
@@ -76,7 +76,7 @@ describe('IDE Terminal', () => {
     it(`shows when stopping`, () => {
       factory({ status: STOPPING });
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.find('.top-bar').text()).toBe('Stopping...');
     });
 
@@ -84,7 +84,7 @@ describe('IDE Terminal', () => {
       it('hides when not loading', () => {
         factory({ status });
 
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
         expect(wrapper.find('.top-bar').text()).toBe('');
       });
     });
@@ -107,23 +107,23 @@ describe('IDE Terminal', () => {
     });
 
     it('is visible if terminal is created', () => {
-      expect(wrapper.find(TerminalControls).exists()).toBe(true);
+      expect(wrapper.findComponent(TerminalControls).exists()).toBe(true);
     });
 
     it('scrolls glterminal on scroll-up', () => {
-      wrapper.find(TerminalControls).vm.$emit('scroll-up');
+      wrapper.findComponent(TerminalControls).vm.$emit('scroll-up');
 
       expect(wrapper.vm.glterminal.scrollToTop).toHaveBeenCalled();
     });
 
     it('scrolls glterminal on scroll-down', () => {
-      wrapper.find(TerminalControls).vm.$emit('scroll-down');
+      wrapper.findComponent(TerminalControls).vm.$emit('scroll-down');
 
       expect(wrapper.vm.glterminal.scrollToBottom).toHaveBeenCalled();
     });
 
     it('has props set', () => {
-      expect(wrapper.find(TerminalControls).props()).toEqual({
+      expect(wrapper.findComponent(TerminalControls).props()).toEqual({
         canScrollUp: false,
         canScrollDown: false,
       });
@@ -133,7 +133,7 @@ describe('IDE Terminal', () => {
       wrapper.setData({ canScrollUp: true, canScrollDown: true });
 
       return nextTick().then(() => {
-        expect(wrapper.find(TerminalControls).props()).toEqual({
+        expect(wrapper.findComponent(TerminalControls).props()).toEqual({
           canScrollUp: true,
           canScrollDown: true,
         });

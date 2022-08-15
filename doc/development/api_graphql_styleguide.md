@@ -706,23 +706,21 @@ aware of the support.
 
 The documentation will mention that the old Global ID style is now deprecated.
 
-## Mark schema items as alpha
+## Mark schema items as Alpha
 
-You can mark fields, arguments, enum values, and mutations as
-[alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga).
+You can mark GraphQL schema items (fields, arguments, enum values, and mutations) as
+[Alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga).
 
-An item marked as alpha is exempt from the deprecation process and can be removed
-at any time without notice. This way, you can add an item that might be
-subject to change and is not ready for public use.
+An item marked as Alpha is [exempt from the deprecation process](#breaking-change-exemptions) and can be removed
+at any time without notice. Mark an item as Alpha when it is
+subject to change and not ready for public use.
 
-You can only mark a new item as alpha. This item then appears as deprecated
-in our generated docs and its GraphQL description. You cannot mark an existing item
-as alpha because it's already public.
+NOTE:
+Only mark new items as Alpha. Never mark existing items
+as Alpha because they're already public.
 
-Like all deprecated schema items, you can test an `alpha` field in [GraphiQL](../api/graphql/index.md#graphiql). However, be aware that the GraphiQL autocomplete editor doesn't suggest deprecated fields.
-
-To mark a schema item as alpha, use the `alpha:` keyword.
-You must provide the `milestone:` that introduced the alpha item.
+To mark a schema item as Alpha, use the `alpha:` keyword.
+You must provide the `milestone:` that introduced the Alpha item.
 
 For example:
 
@@ -731,6 +729,13 @@ field :token, GraphQL::Types::String, null: true,
       alpha: { milestone: '10.0' },
       description: 'Token for login.'
 ```
+
+Alpha GraphQL items is a custom GitLab feature that leverages GraphQL deprecations. An Alpha item
+appears as deprecated in the GraphQL schema. Like all deprecated schema items, you can test an
+Alpha field in [GraphiQL](../api/graphql/index.md#graphiql). However, be aware that the GraphiQL
+autocomplete editor doesn't suggest deprecated fields.
+
+The item shows as Alpha in our generated GraphQL documentation and its GraphQL schema description.
 
 ## Enums
 
