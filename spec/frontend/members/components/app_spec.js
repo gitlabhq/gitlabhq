@@ -41,8 +41,8 @@ describe('MembersApp', () => {
     });
   };
 
-  const findAlert = () => wrapper.find(GlAlert);
-  const findFilterSortContainer = () => wrapper.find(FilterSortContainer);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findFilterSortContainer = () => wrapper.findComponent(FilterSortContainer);
 
   beforeEach(() => {
     commonUtils.scrollToElement = jest.fn();

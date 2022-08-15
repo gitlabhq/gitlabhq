@@ -45,6 +45,8 @@ module Groups
           .execute(blocking: true)
       end
 
+      publish_event
+
       group
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -91,6 +93,17 @@ module Groups
       end
     end
     # rubocop:enable CodeReuse/ActiveRecord
+
+    def publish_event
+      event = Groups::GroupDeletedEvent.new(
+        data: {
+          group_id: group.id,
+          root_namespace_id: group.root_ancestor.id
+        }
+      )
+
+      Gitlab::EventStore.publish(event)
+    end
   end
 end
 

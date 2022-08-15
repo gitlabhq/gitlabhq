@@ -19,7 +19,7 @@ describe('UserActionButtons', () => {
     });
   };
 
-  const findRemoveMemberButton = () => wrapper.find(RemoveMemberButton);
+  const findRemoveMemberButton = () => wrapper.findComponent(RemoveMemberButton);
 
   afterEach(() => {
     wrapper.destroy();
@@ -80,7 +80,7 @@ describe('UserActionButtons', () => {
           },
         });
 
-        expect(wrapper.find(LeaveButton).exists()).toBe(true);
+        expect(wrapper.findComponent(LeaveButton).exists()).toBe(true);
       });
     });
   });

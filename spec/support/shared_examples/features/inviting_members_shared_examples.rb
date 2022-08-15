@@ -169,16 +169,47 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
         it 'shows the partial user error and success and then removes them from the form', :js do
           user4 = create(:user)
           user5 = create(:user)
+          user6 = create(:user)
+          user7 = create(:user)
+
+          group.add_maintainer(user6)
+          group.add_maintainer(user7)
 
           visit subentity_members_page_path
 
-          invite_member([user2.name, user3.name, user4.name], role: role, refresh: false)
+          invite_member([user2.name, user3.name, user4.name, user6.name, user7.name], role: role, refresh: false)
 
+          # we have more than 2 errors, so one will be hidden
           invite_modal = page.find(invite_modal_selector)
-          expect(invite_modal).to have_text("The following 2 members couldn't be invited")
-          expect_to_have_invalid_invite_indicator(invite_modal, user2)
-          expect_to_have_invalid_invite_indicator(invite_modal, user3)
+          expect(invite_modal).to have_text("The following 4 members couldn't be invited")
+          expect(invite_modal).to have_selector(limited_invite_error_selector, count: 2, visible: :visible)
+          expect(invite_modal).to have_selector(expanded_invite_error_selector, count: 2, visible: :hidden)
+          # unpredictability of return order means we can't rely on message showing in any order here
+          # so we will not expect on the message
+          expect_to_have_invalid_invite_indicator(invite_modal, user2, message: false)
+          expect_to_have_invalid_invite_indicator(invite_modal, user3, message: false)
+          expect_to_have_invalid_invite_indicator(invite_modal, user6, message: false)
+          expect_to_have_invalid_invite_indicator(invite_modal, user7, message: false)
           expect_to_have_successful_invite_indicator(invite_modal, user4)
+          expect(invite_modal).to have_button('Show more (2)')
+
+          # now we want to test the show more errors count logic
+          remove_token(user7.id)
+
+          # count decreases from 4 to 3 and 2 to 1
+          expect(invite_modal).to have_text("The following 3 members couldn't be invited")
+          expect(invite_modal).to have_button('Show more (1)')
+
+          # we want to show this error now for user6
+          invite_modal.find(more_invite_errors_button_selector).click
+
+          # now we should see the error for all users and our collapse button text
+          expect(invite_modal).to have_selector(limited_invite_error_selector, count: 2, visible: :visible)
+          expect(invite_modal).to have_selector(expanded_invite_error_selector, count: 1, visible: :visible)
+          expect_to_have_invalid_invite_indicator(invite_modal, user2, message: true)
+          expect_to_have_invalid_invite_indicator(invite_modal, user3, message: true)
+          expect_to_have_invalid_invite_indicator(invite_modal, user6, message: true)
+          expect(invite_modal).to have_button('Show less')
 
           # adds new token, but doesn't submit
           select_members(user5.name)
@@ -187,8 +218,18 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
 
           remove_token(user2.id)
 
-          expect(invite_modal).to have_text("The following member couldn't be invited")
+          expect(invite_modal).to have_text("The following 2 members couldn't be invited")
+          expect(invite_modal).not_to have_selector(more_invite_errors_button_selector)
           expect_to_have_invite_removed(invite_modal, user2)
+          expect_to_have_invalid_invite_indicator(invite_modal, user3)
+          expect_to_have_invalid_invite_indicator(invite_modal, user6)
+          expect_to_have_successful_invite_indicator(invite_modal, user4)
+          expect_to_have_normal_invite_indicator(invite_modal, user5)
+
+          remove_token(user6.id)
+
+          expect(invite_modal).to have_text("The following member couldn't be invited")
+          expect_to_have_invite_removed(invite_modal, user6)
           expect_to_have_invalid_invite_indicator(invite_modal, user3)
           expect_to_have_successful_invite_indicator(invite_modal, user4)
           expect_to_have_normal_invite_indicator(invite_modal, user5)

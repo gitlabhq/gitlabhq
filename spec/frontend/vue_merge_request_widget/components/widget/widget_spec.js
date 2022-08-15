@@ -1,15 +1,20 @@
+import { nextTick } from 'vue';
 import * as Sentry from '@sentry/browser';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 
 describe('MR Widget', () => {
   let wrapper;
 
+  const findStatusIcon = () => wrapper.findComponent(StatusIcon);
+
   const createComponent = ({ propsData, slots } = {}) => {
     wrapper = shallowMountExtended(Widget, {
       propsData: {
         loadingText: 'Loading widget',
+        widgetName: 'MyWidget',
         value: {
           collapsed: null,
           expanded: null,
@@ -42,6 +47,33 @@ describe('MR Widget', () => {
       await waitForPromises();
       expect(wrapper.vm.error).toBe('Failed to load');
     });
+
+    it('displays loading icon until request is made and then displays status icon when the request is complete', async () => {
+      const fetchCollapsedData = jest
+        .fn()
+        .mockReturnValue(Promise.resolve({ headers: {}, status: 200, data: {} }));
+
+      createComponent({ propsData: { fetchCollapsedData, statusIconName: 'warning' } });
+
+      // Let on mount be called
+      await nextTick();
+
+      expect(findStatusIcon().props('isLoading')).toBe(true);
+
+      // Wait until `fetchCollapsedData` is resolved
+      await waitForPromises();
+
+      expect(findStatusIcon().props('isLoading')).toBe(false);
+      expect(findStatusIcon().props('iconName')).toBe('warning');
+    });
+
+    it('displays the loading text', async () => {
+      const fetchCollapsedData = jest.fn().mockReturnValue(() => Promise.reject());
+      createComponent({ propsData: { fetchCollapsedData, statusIconName: 'warning' } });
+      expect(wrapper.text()).not.toContain('Loading');
+      await nextTick();
+      expect(wrapper.text()).toContain('Loading');
+    });
   });
 
   describe('fetch', () => {
@@ -65,8 +97,9 @@ describe('MR Widget', () => {
           ],
         },
       });
+
       await waitForPromises();
-      await waitForPromises();
+
       expect(wrapper.emitted('input')[0][0]).toEqual({
         collapsed: [mockData1.data, mockData2.data],
         expanded: null,

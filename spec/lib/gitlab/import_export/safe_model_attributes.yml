@@ -745,6 +745,12 @@ MergeRequestAssignee:
 - merge_request_id
 - created_at
 - state
+MergeRequestReviewer:
+- id
+- user_id
+- merge_request_id
+- created_at
+- state
 ProjectMetricsSetting:
 - project_id
 - external_dashboard_url

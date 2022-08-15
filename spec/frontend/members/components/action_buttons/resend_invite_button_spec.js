@@ -44,7 +44,7 @@ describe('ResendInviteButton', () => {
   };
 
   const findForm = () => wrapper.find('form');
-  const findButton = () => findForm().find(GlButton);
+  const findButton = () => findForm().findComponent(GlButton);
 
   beforeEach(() => {
     createComponent();

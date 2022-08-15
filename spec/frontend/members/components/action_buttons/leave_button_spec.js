@@ -22,7 +22,7 @@ describe('LeaveButton', () => {
     });
   };
 
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => {
     createComponent();
@@ -44,7 +44,7 @@ describe('LeaveButton', () => {
   });
 
   it('renders leave modal', () => {
-    const leaveModal = wrapper.find(LeaveModal);
+    const leaveModal = wrapper.findComponent(LeaveModal);
 
     expect(leaveModal.exists()).toBe(true);
     expect(leaveModal.props('member')).toEqual(member);

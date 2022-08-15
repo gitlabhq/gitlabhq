@@ -60,7 +60,7 @@ describe('FilterSortContainer', () => {
         },
       });
 
-      expect(wrapper.find(MembersFilteredSearchBar).exists()).toBe(true);
+      expect(wrapper.findComponent(MembersFilteredSearchBar).exists()).toBe(true);
     });
   });
 
@@ -70,7 +70,7 @@ describe('FilterSortContainer', () => {
         tableSortableFields: ['account'],
       });
 
-      expect(wrapper.find(SortDropdown).exists()).toBe(true);
+      expect(wrapper.findComponent(SortDropdown).exists()).toBe(true);
     });
   });
 });

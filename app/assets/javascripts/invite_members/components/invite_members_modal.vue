@@ -6,6 +6,9 @@ import {
   GlLink,
   GlSprintf,
   GlFormCheckboxGroup,
+  GlButton,
+  GlCollapse,
+  GlIcon,
 } from '@gitlab/ui';
 import { partition, isString, uniqueId, isEmpty } from 'lodash';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
@@ -13,7 +16,7 @@ import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { getParameterValues } from '~/lib/utils/url_utility';
-import { n__ } from '~/locale';
+import { n__, sprintf } from '~/locale';
 import {
   CLOSE_TO_LIMIT_COUNT,
   USERS_FILTER_ALL,
@@ -38,6 +41,9 @@ export default {
     GlDropdownItem,
     GlSprintf,
     GlFormCheckboxGroup,
+    GlButton,
+    GlCollapse,
+    GlIcon,
     InviteModalBase,
     MembersTokenSelect,
     ModalConfetti,
@@ -110,6 +116,8 @@ export default {
       mode: 'default',
       // Kept in sync with "base"
       selectedAccessLevel: undefined,
+      errorsLimit: 2,
+      isErrorsSectionExpanded: false,
     };
   },
   computed: {
@@ -135,7 +143,7 @@ export default {
       return n__(
         "InviteMembersModal|The following member couldn't be invited",
         "InviteMembersModal|The following %d members couldn't be invited",
-        Object.keys(this.invalidMembers).length,
+        this.errorList.length,
       );
     },
     tasksToBeDoneEnabled() {
@@ -186,6 +194,29 @@ export default {
       return this.reachedLimit
         ? this.$options.labels.placeHolderDisabled
         : this.$options.labels.placeHolder;
+    },
+    errorList() {
+      return Object.entries(this.invalidMembers).map(([member, error]) => {
+        return { member, displayedMemberName: this.tokenName(member), message: error };
+      });
+    },
+    errorsLimited() {
+      return this.errorList.slice(0, this.errorsLimit);
+    },
+    errorsExpanded() {
+      return this.errorList.slice(this.errorsLimit);
+    },
+    shouldErrorsSectionExpand() {
+      return Boolean(this.errorsExpanded.length);
+    },
+    errorCollapseText() {
+      if (this.isErrorsSectionExpanded) {
+        return this.$options.labels.expandedErrors;
+      }
+
+      return sprintf(this.$options.labels.collapsedErrors, {
+        count: this.errorsExpanded.length,
+      });
     },
   },
   mounted() {
@@ -311,6 +342,9 @@ export default {
       delete this.invalidMembers[memberName(token)];
       this.invalidMembers = { ...this.invalidMembers };
     },
+    toggleErrorExpansion() {
+      this.isErrorsSectionExpanded = !this.isErrorsSectionExpanded;
+    },
   },
   labels: MEMBER_MODAL_LABELS,
 };
@@ -357,10 +391,36 @@ export default {
       >
         {{ $options.labels.memberErrorListText }}
         <ul class="gl-pl-5 gl-mb-0">
-          <li v-for="(error, member) in invalidMembers" :key="member">
-            <strong>{{ tokenName(member) }}:</strong> {{ error }}
+          <li v-for="error in errorsLimited" :key="error.member" data-testid="errors-limited-item">
+            <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
           </li>
         </ul>
+        <template v-if="shouldErrorsSectionExpand">
+          <gl-collapse v-model="isErrorsSectionExpanded">
+            <ul class="gl-pl-5 gl-mb-0">
+              <li
+                v-for="error in errorsExpanded"
+                :key="error.member"
+                data-testid="errors-expanded-item"
+              >
+                <strong>{{ error.displayedMemberName }}:</strong> {{ error.message }}
+              </li>
+            </ul>
+          </gl-collapse>
+          <gl-button
+            class="gl-text-decoration-none! gl-shadow-none! gl-mt-3"
+            data-testid="accordion-button"
+            variant="link"
+            @click="toggleErrorExpansion"
+          >
+            {{ errorCollapseText }}
+            <gl-icon
+              name="chevron-down"
+              class="gl-transition-medium"
+              :class="{ 'gl-rotate-180': isErrorsSectionExpanded }"
+            />
+          </gl-button>
+        </template>
       </gl-alert>
       <user-limit-notification
         v-else

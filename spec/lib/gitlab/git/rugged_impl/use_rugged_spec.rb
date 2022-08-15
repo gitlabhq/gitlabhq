@@ -58,35 +58,55 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
       end
     end
 
-    context 'when not running puma with multiple threads' do
+    context 'when skip_rugged_auto_detect feature flag is enabled' do
+      context 'when not running puma with multiple threads' do
+        before do
+          allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(false)
+          stub_feature_flags(feature_flag_name => nil)
+          stub_feature_flags(skip_rugged_auto_detect: true)
+        end
+
+        it 'returns false' do
+          expect(subject.use_rugged?(repository, feature_flag_name)).to be false
+        end
+      end
+    end
+
+    context 'when skip_rugged_auto_detect feature flag is disabled' do
       before do
-        allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(false)
+        stub_feature_flags(skip_rugged_auto_detect: false)
       end
 
-      it 'returns true when gitaly matches disk' do
-        expect(subject.use_rugged?(repository, feature_flag_name)).to be true
-      end
+      context 'when not running puma with multiple threads' do
+        before do
+          allow(subject).to receive(:running_puma_with_multiple_threads?).and_return(false)
+        end
 
-      it 'returns false when disk access fails' do
-        allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return("/fake/path/doesnt/exist")
+        it 'returns true when gitaly matches disk' do
+          expect(subject.use_rugged?(repository, feature_flag_name)).to be true
+        end
 
-        expect(subject.use_rugged?(repository, feature_flag_name)).to be false
-      end
+        it 'returns false when disk access fails' do
+          allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return("/fake/path/doesnt/exist")
 
-      it "returns false when gitaly doesn't match disk" do
-        allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return(temp_gitaly_metadata_file)
+          expect(subject.use_rugged?(repository, feature_flag_name)).to be false
+        end
 
-        expect(subject.use_rugged?(repository, feature_flag_name)).to be_falsey
+        it "returns false when gitaly doesn't match disk" do
+          allow(Gitlab::GitalyClient).to receive(:storage_metadata_file_path).and_return(temp_gitaly_metadata_file)
 
-        File.delete(temp_gitaly_metadata_file)
-      end
+          expect(subject.use_rugged?(repository, feature_flag_name)).to be_falsey
 
-      it "doesn't lead to a second rpc call because gitaly client should use the cached value" do
-        expect(subject.use_rugged?(repository, feature_flag_name)).to be true
+          File.delete(temp_gitaly_metadata_file)
+        end
 
-        expect(Gitlab::GitalyClient).not_to receive(:filesystem_id)
+        it "doesn't lead to a second rpc call because gitaly client should use the cached value" do
+          expect(subject.use_rugged?(repository, feature_flag_name)).to be true
 
-        subject.use_rugged?(repository, feature_flag_name)
+          expect(Gitlab::GitalyClient).not_to receive(:filesystem_id)
+
+          subject.use_rugged?(repository, feature_flag_name)
+        end
       end
     end
   end

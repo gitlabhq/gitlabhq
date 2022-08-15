@@ -5,7 +5,7 @@ module QA
     # Helper utility to fetch parallel job names in a given pipelines stage
     #
     class ParallelPipelineJobs
-      include Support::API
+      include API
 
       PARALLEL_JOB_NAME_PATTERN = %r{^\S+ \d+/\d+$}.freeze
 
@@ -60,6 +60,8 @@ module QA
       # @return [Hash, Array]
       def api_get(path)
         response = get("#{api_url}/#{path}", { headers: { "PRIVATE-TOKEN" => access_token } })
+        raise "Failed to fetch pipeline jobs: '#{response.body}'" unless response.code == API::HTTP_STATUS_OK
+
         parse_body(response)
       end
 

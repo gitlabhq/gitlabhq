@@ -79,6 +79,8 @@ export const HEADER_CLOSE_LABEL = s__('InviteMembersModal|Close invite team memb
 export const MEMBER_ERROR_LIST_TEXT = s__(
   'InviteMembersModal|Review the invite errors and try again:',
 );
+export const COLLAPSED_ERRORS = s__('InviteMembersModal|Show more (%{count})');
+export const EXPANDED_ERRORS = s__('InviteMembersModal|Show less');
 
 export const MEMBER_MODAL_LABELS = {
   modal: {
@@ -115,6 +117,8 @@ export const MEMBER_MODAL_LABELS = {
   },
   toastMessageSuccessful: TOAST_MESSAGE_SUCCESSFUL,
   memberErrorListText: MEMBER_ERROR_LIST_TEXT,
+  collapsedErrors: COLLAPSED_ERRORS,
+  expandedErrors: EXPANDED_ERRORS,
 };
 
 export const GROUP_MODAL_LABELS = {

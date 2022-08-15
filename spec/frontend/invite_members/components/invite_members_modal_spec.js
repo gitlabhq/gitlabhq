@@ -1,4 +1,4 @@
-import { GlLink, GlModal, GlSprintf, GlFormGroup } from '@gitlab/ui';
+import { GlLink, GlModal, GlSprintf, GlFormGroup, GlCollapse, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -18,6 +18,7 @@ import {
   MEMBERS_PLACEHOLDER_DISABLED,
   MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
   LEARN_GITLAB,
+  EXPANDED_ERRORS,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
@@ -36,6 +37,7 @@ import {
   user3,
   user4,
   user5,
+  user6,
   GlEmoji,
 } from '../mock_data/member_modal';
 
@@ -95,9 +97,12 @@ describe('InviteMembersModal', () => {
   const findBase = () => wrapper.findComponent(InviteModalBase);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
   const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
+  const findMoreInviteErrorsButton = () => wrapper.findByTestId('accordion-button');
+  const findAccordion = () => wrapper.findComponent(GlCollapse);
+  const findErrorsIcon = () => wrapper.findComponent(GlIcon);
   const findMemberErrorMessage = (element) =>
-    `${Object.keys(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[element]}: ${
-      Object.values(invitationsApiResponse.MULTIPLE_RESTRICTED.message)[element]
+    `${Object.keys(invitationsApiResponse.EXPANDED_RESTRICTED.message)[element]}: ${
+      Object.values(invitationsApiResponse.EXPANDED_RESTRICTED.message)[element]
     }`;
   const emitEventFromModal = (eventName) => () =>
     findModal().vm.$emit(eventName, { preventDefault: jest.fn() });
@@ -666,8 +671,8 @@ describe('InviteMembersModal', () => {
         it('displays errors for multiple and allows clearing', async () => {
           createInviteMembersToGroupWrapper();
 
-          await triggerMembersTokenSelect([user3, user4, user5]);
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
+          await triggerMembersTokenSelect([user3, user4, user5, user6]);
+          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EXPANDED_RESTRICTED);
 
           clickInviteButton();
 
@@ -675,18 +680,43 @@ describe('InviteMembersModal', () => {
 
           expect(findMemberErrorAlert().exists()).toBe(true);
           expect(findMemberErrorAlert().props('title')).toContain(
-            "The following 3 members couldn't be invited",
+            "The following 4 members couldn't be invited",
           );
           expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(0));
           expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(1));
           expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(2));
+          expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(3));
+          expect(findAccordion().exists()).toBe(true);
+          expect(findMoreInviteErrorsButton().text()).toContain('Show more (2)');
+          expect(findErrorsIcon().attributes('class')).not.toContain('gl-rotate-180');
+          expect(findAccordion().attributes('visible')).toBeUndefined();
+
+          await findMoreInviteErrorsButton().vm.$emit('click');
+
+          expect(findMoreInviteErrorsButton().text()).toContain(EXPANDED_ERRORS);
+          expect(findErrorsIcon().attributes('class')).toContain('gl-rotate-180');
+          expect(findAccordion().attributes('visible')).toBeDefined();
+
+          await findMoreInviteErrorsButton().vm.$emit('click');
+
+          expect(findMoreInviteErrorsButton().text()).toContain('Show more (2)');
+          expect(findAccordion().attributes('visible')).toBeUndefined();
 
           await removeMembersToken(user3);
 
+          expect(findMoreInviteErrorsButton().text()).toContain('Show more (1)');
+          expect(findMemberErrorAlert().props('title')).toContain(
+            "The following 3 members couldn't be invited",
+          );
+          expect(findMemberErrorAlert().text()).not.toContain(findMemberErrorMessage(0));
+
+          await removeMembersToken(user6);
+
+          expect(findMoreInviteErrorsButton().exists()).toBe(false);
           expect(findMemberErrorAlert().props('title')).toContain(
             "The following 2 members couldn't be invited",
           );
-          expect(findMemberErrorAlert().text()).not.toContain(findMemberErrorMessage(0));
+          expect(findMemberErrorAlert().text()).not.toContain(findMemberErrorMessage(2));
 
           await removeMembersToken(user4);
 

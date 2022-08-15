@@ -1,11 +1,14 @@
-# unnecessary ref declaration
-rules:
-  - changes:
-      paths:
-        - README.md
-      compare_to: { ref: 'main' }
+# invalid rules:changes
+unnecessary ref declaration:
+  script: exit 0
+  rules:
+    - changes:
+        paths:
+          - README.md
+        compare_to: { ref: 'main' }
 
-# wrong path declaration
-rules:
-  - changes:
-    paths: { file: 'DOCKER' }
+wrong path declaration:
+  script: exit 0
+  rules:
+    - changes:
+      paths: { file: 'DOCKER' }

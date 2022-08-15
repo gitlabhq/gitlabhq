@@ -259,6 +259,11 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           expect(MergeRequest.find_by(title: 'MR2').assignees).to be_empty
         end
 
+        it 'has multiple merge request reviewers' do
+          expect(MergeRequest.find_by(title: 'MR1').reviewers).to contain_exactly(@user, *@existing_members)
+          expect(MergeRequest.find_by(title: 'MR2').reviewers).to be_empty
+        end
+
         it 'has labels associated to label links, associated to issues' do
           expect(Label.first.label_links.first.target).not_to be_nil
         end

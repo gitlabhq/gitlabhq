@@ -1,9 +1,5 @@
-# tests for:
-# workflow:rules:changes
-# workflow:rules:exists
-# rules:changes:path
-
-job_name1:
+# valid workflow:rules:changes
+rules:changes with paths and compare_to properties:
   script: exit 0
   rules:
     - changes:
@@ -11,12 +7,14 @@ job_name1:
           - README.md
         compare_to: main
 
-job_name2:
+rules:changes as array of strings:
   script: exit 0
   rules:
     - changes:
       - README.md
 
+# valid workflow:rules:exists
+# valid rules:changes:path
 workflow:
   rules:
     - changes:

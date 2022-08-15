@@ -56,7 +56,7 @@ describe('MembersFilteredSearchBar', () => {
     });
   };
 
-  const findFilteredSearchBar = () => wrapper.find(FilteredSearchBar);
+  const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
 
   it('passes correct props to `FilteredSearchBar` component', () => {
     createComponent();

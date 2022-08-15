@@ -92,18 +92,27 @@ Our criteria for the separation of duties is as follows:
 
 ## Chain of Custody report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in GitLab 13.3.
+> - Chain of Custody reports sent using email [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342594) in GitLab 15.3 with a flag named `async_chain_of_custody_report`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default sending Chain of Custody reports through email is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `async_chain_of_custody_report`. On GitLab.com, this feature is not available.
 
 The Chain of Custody report allows customers to export a list of merge commits within the group.
 The data provides a comprehensive view with respect to merge commits. It includes the merge commit SHA,
 merge request author, merge request ID, merge user, date merged, pipeline ID, group name, project name, and merge request approvers.
 Depending on the merge strategy, the merge commit SHA can be a merge commit, squash commit, or a diff head commit.
 
-To download the Chain of Custody report:
+To generate the Chain of Custody report:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Compliance report**.
 1. Select **List of all merge commits**.
+
+The Chain of Custody report is either:
+
+- Available for download.
+- Sent through email. Requires GitLab 15.3 and later with `async_chain_of_custody_report` feature flag enabled.
 
 ### Commit-specific Chain of Custody report
 
@@ -118,6 +127,11 @@ Authenticated group owners can generate a commit-specific Chain of Custody repor
   1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow (**{chevron-lg-down}**).
   1. Enter the merge commit SHA, and then select **Export commit custody report**.
      SHA and then select **Export commit custody report**.
+
+The Chain of Custody report is either:
+
+- Available for download.
+- Sent through email. Requires GitLab 15.3 and later with `async_chain_of_custody_report` feature flag enabled.
 
 - Using a direct link: `https://gitlab.com/groups/<group-name>/-/security/merge_commit_reports.csv?commit_sha={optional_commit_sha}`, passing in an optional value to the
   `commit_sha` query parameter.

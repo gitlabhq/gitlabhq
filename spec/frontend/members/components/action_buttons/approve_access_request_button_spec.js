@@ -43,8 +43,8 @@ describe('ApproveAccessRequestButton', () => {
     });
   };
 
-  const findForm = () => wrapper.find(GlForm);
-  const findButton = () => findForm().find(GlButton);
+  const findForm = () => wrapper.findComponent(GlForm);
+  const findButton = () => findForm().findComponent(GlButton);
 
   beforeEach(() => {
     createComponent();

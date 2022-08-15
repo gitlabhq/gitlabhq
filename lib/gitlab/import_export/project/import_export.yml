@@ -56,6 +56,7 @@ tree:
       - :metrics
       - :award_emoji
       - :merge_request_assignees
+      - :merge_request_reviewers
       - notes:
         - :author
         - :award_emoji
@@ -591,6 +592,10 @@ included_attributes:
   issue_assignees:
     - :user_id
   merge_request_assignees:
+    - :user_id
+    - :created_at
+    - :state
+  merge_request_reviewers:
     - :user_id
     - :created_at
     - :state

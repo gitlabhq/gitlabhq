@@ -30,7 +30,7 @@ describe('MemberList', () => {
   });
 
   it('renders link to group', () => {
-    const link = wrapper.find(GlAvatarLink);
+    const link = wrapper.findComponent(GlAvatarLink);
 
     expect(link.exists()).toBe(true);
     expect(link.attributes('href')).toBe(group.webUrl);

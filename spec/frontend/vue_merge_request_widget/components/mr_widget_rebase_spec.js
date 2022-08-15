@@ -8,7 +8,7 @@ jest.mock('~/vue_shared/plugins/global_toast');
 
 let wrapper;
 
-function createWrapper(propsData, mergeRequestWidgetGraphql, rebaseWithoutCiUi) {
+function createWrapper(propsData, mergeRequestWidgetGraphql) {
   wrapper = mount(WidgetRebase, {
     propsData,
     data() {
@@ -22,7 +22,7 @@ function createWrapper(propsData, mergeRequestWidgetGraphql, rebaseWithoutCiUi) 
         },
       };
     },
-    provide: { glFeatures: { mergeRequestWidgetGraphql, rebaseWithoutCiUi } },
+    provide: { glFeatures: { mergeRequestWidgetGraphql } },
     mocks: {
       $apollo: {
         queries: {
@@ -110,7 +110,7 @@ describe('Merge request widget rebase component', () => {
           expect(findRebaseMessageText()).toContain('Something went wrong!');
         });
 
-        describe('Rebase buttons with flag rebaseWithoutCiUi', () => {
+        describe('Rebase buttons with', () => {
           beforeEach(() => {
             createWrapper(
               {
@@ -124,7 +124,6 @@ describe('Merge request widget rebase component', () => {
                 },
               },
               mergeRequestWidgetGraphql,
-              { rebaseWithoutCiUi: true },
             );
           });
 
@@ -147,35 +146,6 @@ describe('Merge request widget rebase component', () => {
             await nextTick();
 
             expect(rebaseMock).toHaveBeenCalledWith({ skipCi: true });
-          });
-        });
-
-        describe('Rebase button with rebaseWithoutCiUI flag disabled', () => {
-          beforeEach(() => {
-            createWrapper(
-              {
-                mr: {
-                  rebaseInProgress: false,
-                  canPushToSourceBranch: true,
-                },
-                service: {
-                  rebase: rebaseMock,
-                  poll: pollMock,
-                },
-              },
-              mergeRequestWidgetGraphql,
-            );
-          });
-
-          it('standard rebase button is rendered', () => {
-            expect(findStandardRebaseButton().exists()).toBe(true);
-            expect(findRebaseWithoutCiButton().exists()).toBe(false);
-          });
-
-          it('calls rebase method with skip_ci false', () => {
-            findStandardRebaseButton().vm.$emit('click');
-
-            expect(rebaseMock).toHaveBeenCalledWith({ skipCi: false });
           });
         });
       });
@@ -216,7 +186,7 @@ describe('Merge request widget rebase component', () => {
           });
         });
 
-        it('does render the "Rebase without pipeline" button with rebaseWithoutCiUI flag enabled', () => {
+        it('does render the "Rebase without pipeline" button', () => {
           createWrapper(
             {
               mr: {
@@ -227,7 +197,6 @@ describe('Merge request widget rebase component', () => {
               service: {},
             },
             mergeRequestWidgetGraphql,
-            true,
           );
 
           expect(findRebaseWithoutCiButton().exists()).toBe(true);

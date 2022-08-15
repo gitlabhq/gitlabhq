@@ -37,7 +37,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:refactor_mr_widgets_extensions, project)
     push_frontend_feature_flag(:refactor_code_quality_extension, project)
     push_frontend_feature_flag(:refactor_mr_widget_test_summary, project)
-    push_frontend_feature_flag(:rebase_without_ci_ui, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:realtime_labels, project)
     push_frontend_feature_flag(:refactor_security_extension, @project)

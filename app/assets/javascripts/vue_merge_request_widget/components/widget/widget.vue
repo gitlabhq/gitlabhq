@@ -3,11 +3,15 @@ import * as Sentry from '@sentry/browser';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
+import StatusIcon from '../extensions/status_icon.vue';
+import { EXTENSION_ICON_NAMES } from '../../constants';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
-// const FETCH_TYPE_EXPANDED = 'expanded';
 
 export default {
+  components: {
+    StatusIcon,
+  },
   props: {
     /**
      * @param {value.collapsed} Object
@@ -19,7 +23,8 @@ export default {
     },
     loadingText: {
       type: String,
-      required: true,
+      required: false,
+      default: __('Loading'),
     },
     errorText: {
       type: String,
@@ -52,16 +57,30 @@ export default {
       required: false,
       default: false,
     },
+    statusIconName: {
+      type: String,
+      default: 'neutral',
+      required: false,
+      validator: (value) => Object.keys(EXTENSION_ICON_NAMES).indexOf(value) > -1,
+    },
+    widgetName: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
-      loading: false,
-      statusIcon: null,
+      isLoading: false,
       error: null,
     };
   },
+  watch: {
+    isLoading(newValue) {
+      this.$emit('is-loading', newValue);
+    },
+  },
   async mounted() {
-    this.loading = true;
+    this.isLoading = true;
 
     try {
       await this.fetch(this.fetchCollapsedData, FETCH_TYPE_COLLAPSED);
@@ -69,20 +88,14 @@ export default {
       this.error = this.errorText;
     }
 
-    this.loading = false;
+    this.isLoading = false;
   },
   methods: {
     fetch(handler, dataType) {
       const requests = this.multiPolling ? handler() : [handler];
-      const allData = [];
 
       const promises = requests.map((request) => {
         return new Promise((resolve, reject) => {
-          const setData = (data) => {
-            this.$emit('input', { ...this.value, [dataType]: data });
-            resolve(data);
-          };
-
           const poll = new Poll({
             resource: {
               fetchData: () => request(),
@@ -95,17 +108,7 @@ export default {
                 return;
               }
 
-              if (this.multiPolling) {
-                allData.push(response.data);
-
-                if (allData.length === requests.length) {
-                  setData(allData);
-                }
-
-                return;
-              }
-
-              setData(response.data);
+              resolve(response.data);
             },
             errorCallback: (e) => {
               Sentry.captureException(e);
@@ -117,7 +120,9 @@ export default {
         });
       });
 
-      return Promise.all(promises);
+      return Promise.all(promises).then((data) => {
+        this.$emit('input', { ...this.value, [dataType]: this.multiPolling ? data : data[0] });
+      });
     },
   },
 };
@@ -126,13 +131,18 @@ export default {
 <template>
   <section class="media-section" data-testid="widget-extension">
     <div class="media gl-p-5">
-      <!-- status icon will go here -->
+      <status-icon
+        :level="1"
+        :name="widgetName"
+        :is-loading="isLoading"
+        :icon-name="statusIconName"
+      />
       <div
         class="media-body gl-display-flex gl-flex-direction-row! gl-align-self-center"
         data-testid="widget-extension-top-level"
       >
         <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">
-          <slot name="summary">{{ summary }}</slot>
+          <slot name="summary">{{ isLoading ? loadingText : summary }}</slot>
         </div>
         <!-- actions will go here -->
         <!-- toggle button will go here -->

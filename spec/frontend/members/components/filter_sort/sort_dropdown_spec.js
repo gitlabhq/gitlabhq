@@ -43,13 +43,13 @@ describe('SortDropdown', () => {
     });
   };
 
-  const findSortingComponent = () => wrapper.find(GlSorting);
+  const findSortingComponent = () => wrapper.findComponent(GlSorting);
   const findSortDirectionToggle = () =>
     findSortingComponent().find('button[title="Sort direction"]');
   const findDropdownToggle = () => wrapper.find('button[aria-haspopup="true"]');
   const findDropdownItemByText = (text) =>
     wrapper
-      .findAll(GlSortingItem)
+      .findAllComponents(GlSortingItem)
       .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.text() === text);
 
   beforeEach(() => {

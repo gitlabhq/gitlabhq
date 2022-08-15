@@ -16,8 +16,8 @@ describe('InviteActionButtons', () => {
     });
   };
 
-  const findRemoveMemberButton = () => wrapper.find(RemoveMemberButton);
-  const findResendInviteButton = () => wrapper.find(ResendInviteButton);
+  const findRemoveMemberButton = () => wrapper.findComponent(RemoveMemberButton);
+  const findResendInviteButton = () => wrapper.findComponent(ResendInviteButton);
 
   afterEach(() => {
     wrapper.destroy();

@@ -51,9 +51,6 @@ export default {
     isLoading() {
       return this.glFeatures.mergeRequestWidgetGraphql && this.$apollo.queries.state.loading;
     },
-    showRebaseWithoutCi() {
-      return this.glFeatures?.rebaseWithoutCiUi;
-    },
     rebaseInProgress() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
         return this.state.rebaseInProgress;
@@ -195,7 +192,6 @@ export default {
     </template>
     <template v-if="!isLoading" #actions>
       <gl-button
-        v-if="showRebaseWithoutCi"
         :loading="isMakingRequest"
         variant="confirm"
         size="small"

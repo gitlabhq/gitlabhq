@@ -90,6 +90,18 @@ module Spec
             "[data-token-id='#{id}']"
           end
 
+          def more_invite_errors_button_selector
+            "[data-testid='accordion-button']"
+          end
+
+          def limited_invite_error_selector
+            "[data-testid='errors-limited-item']"
+          end
+
+          def expanded_invite_error_selector
+            "[data-testid='errors-expanded-item']"
+          end
+
           def remove_token(id)
             page.within member_token_selector(id) do
               find('[data-testid="close-icon"]').click
@@ -101,10 +113,10 @@ module Spec
             expect(page).not_to have_text("#{user.name}: ")
           end
 
-          def expect_to_have_invalid_invite_indicator(page, user)
+          def expect_to_have_invalid_invite_indicator(page, user, message: true)
             expect(page).to have_selector("#{member_token_selector(user.id)} .gl-bg-red-100")
             expect(page).to have_selector(member_token_error_selector(user.id))
-            expect(page).to have_text("#{user.name}: Access level should be greater than or equal to")
+            expect(page).to have_text("#{user.name}: Access level should be greater than or equal to") if message
           end
 
           def expect_to_have_normal_invite_indicator(page, user)

@@ -47,8 +47,8 @@ describe('RemoveGroupLinkModal', () => {
     });
   };
 
-  const findModal = () => wrapper.find(GlModal);
-  const findForm = () => findModal().find(GlForm);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findForm = () => findModal().findComponent(GlForm);
   const getByText = (text, options) =>
     createWrapper(within(findModal().element).getByText(text, options));
 

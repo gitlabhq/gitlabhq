@@ -81,13 +81,13 @@ describe('MembersTable', () => {
 
   const url = 'https://localhost/foo-bar/-/project_members?tab=invited';
 
-  const findTable = () => wrapper.find(GlTable);
+  const findTable = () => wrapper.findComponent(GlTable);
   const findTableCellByMemberId = (tableCellLabel, memberId) =>
     wrapper
       .findByTestId(`members-table-row-${memberId}`)
       .find(`[data-label="${tableCellLabel}"][role="cell"]`);
 
-  const findPagination = () => extendedWrapper(wrapper.find(GlPagination));
+  const findPagination = () => extendedWrapper(wrapper.findComponent(GlPagination));
 
   const expectCorrectLinkToPage2 = () => {
     expect(findPagination().findByText('2', { selector: 'a' }).attributes('href')).toBe(
@@ -126,7 +126,10 @@ describe('MembersTable', () => {
 
       if (expectedComponent) {
         expect(
-          wrapper.find(`[data-label="${label}"][role="cell"]`).find(expectedComponent).exists(),
+          wrapper
+            .find(`[data-label="${label}"][role="cell"]`)
+            .findComponent(expectedComponent)
+            .exists(),
         ).toBe(true);
       }
     });
@@ -179,7 +182,10 @@ describe('MembersTable', () => {
         expect(actionField.exists()).toBe(true);
         expect(actionField.classes('gl-sr-only')).toBe(true);
         expect(
-          wrapper.find(`[data-label="Actions"][role="cell"]`).find(MemberActionButtons).exists(),
+          wrapper
+            .find(`[data-label="Actions"][role="cell"]`)
+            .findComponent(MemberActionButtons)
+            .exists(),
         ).toBe(true);
       });
 
@@ -250,9 +256,9 @@ describe('MembersTable', () => {
     it('renders badge in "Max role" field', () => {
       createComponent({ members: [memberMock], tableFields: ['maxRole'] });
 
-      expect(wrapper.find(`[data-label="Max role"][role="cell"]`).find(GlBadge).text()).toBe(
-        memberMock.accessLevel.stringValue,
-      );
+      expect(
+        wrapper.find(`[data-label="Max role"][role="cell"]`).findComponent(GlBadge).text(),
+      ).toBe(memberMock.accessLevel.stringValue);
     });
   });
 

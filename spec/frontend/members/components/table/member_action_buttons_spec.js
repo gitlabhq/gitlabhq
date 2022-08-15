@@ -38,7 +38,7 @@ describe('MemberActionButtons', () => {
     ({ memberType, member, expectedComponent }) => {
       createComponent({ memberType, member });
 
-      expect(wrapper.find(expectedComponent).exists()).toBe(true);
+      expect(wrapper.findComponent(expectedComponent).exists()).toBe(true);
     },
   );
 });

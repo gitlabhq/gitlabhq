@@ -74,6 +74,17 @@ RSpec.describe Groups::DestroyService do
         end
       end
     end
+
+    context 'event store', :sidekiq_might_not_need_inline do
+      it 'publishes a GroupDeletedEvent' do
+        expect { destroy_group(group, user, async) }
+          .to publish_event(Groups::GroupDeletedEvent)
+          .with(
+            group_id: group.id,
+            root_namespace_id: group.root_ancestor.id
+          )
+      end
+    end
   end
 
   describe 'asynchronous delete' do

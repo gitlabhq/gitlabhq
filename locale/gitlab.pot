@@ -3977,6 +3977,9 @@ msgstr ""
 msgid "An email notification was recently sent from the admin panel. Please wait %{wait_time_in_words} before attempting to send another message."
 msgstr ""
 
+msgid "An email will be sent with the report attached after it is generated."
+msgstr ""
+
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr ""
 
@@ -7111,19 +7114,10 @@ msgstr ""
 msgid "CICDAnalytics|Releases"
 msgstr ""
 
-msgid "CICDAnalytics|Shared Runners Usage"
-msgstr ""
-
 msgid "CICDAnalytics|Shared runner duration is the total runtime of all jobs that ran on shared runners"
 msgstr ""
 
 msgid "CICDAnalytics|Shared runner pipeline minute duration by month"
-msgstr ""
-
-msgid "CICDAnalytics|Shared runner usage"
-msgstr ""
-
-msgid "CICDAnalytics|Shared runner usage is the total runtime of all jobs that ran on shared runners"
 msgstr ""
 
 msgid "CICDAnalytics|Something went wrong while fetching release statistics"
@@ -7133,9 +7127,6 @@ msgid "CICDAnalytics|Time to restore service"
 msgstr ""
 
 msgid "CICDAnalytics|What is shared runner duration?"
-msgstr ""
-
-msgid "CICDAnalytics|What is shared runner usage?"
 msgstr ""
 
 msgid "CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work."
@@ -21572,6 +21563,12 @@ msgid "InviteMembersModal|Select a role"
 msgstr ""
 
 msgid "InviteMembersModal|Select members or type email addresses"
+msgstr ""
+
+msgid "InviteMembersModal|Show less"
+msgstr ""
+
+msgid "InviteMembersModal|Show more (%{count})"
 msgstr ""
 
 msgid "InviteMembersModal|Something went wrong"
@@ -45240,6 +45237,12 @@ msgid "Your CSV export of %{written_count} from project %{project_name} (%{proje
 msgstr ""
 
 msgid "Your CSV import for project"
+msgstr ""
+
+msgid "Your Chain of Custody CSV export for the group %{group_link} has been added to this email as an attachment."
+msgstr ""
+
+msgid "Your Chain of Custody CSV export for the group %{group_name} has been added to this email as an attachment."
 msgstr ""
 
 msgid "Your DevOps Reports give an overview of how you are using GitLab from a feature perspective. Use them to view how you compare with other organizations, and how your teams compare against each other."
