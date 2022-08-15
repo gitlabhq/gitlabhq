@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::BuildFinishedWorker do
+  include AfterNextHelpers
+
   subject { described_class.new.perform(build.id) }
 
   describe '#perform' do
@@ -16,15 +18,26 @@ RSpec.describe Ci::BuildFinishedWorker do
       it 'calculates coverage and calls hooks', :aggregate_failures do
         expect(build).to receive(:update_coverage).ordered
 
-        expect_next_instance_of(Ci::BuildReportResultService) do |build_report_result_service|
-          expect(build_report_result_service).to receive(:execute).with(build)
-        end
+        expect_next(Ci::BuildReportResultService).to receive(:execute).with(build)
 
-        expect(BuildHooksWorker).to receive(:perform_async)
+        expect(build).to receive(:execute_hooks)
         expect(ChatNotificationWorker).not_to receive(:perform_async)
         expect(Ci::ArchiveTraceWorker).to receive(:perform_in)
 
         subject
+      end
+
+      context 'when the execute_build_hooks_inline feature flag is disabled' do
+        before do
+          stub_feature_flags(execute_build_hooks_inline: false)
+        end
+
+        it 'uses the BuildHooksWorker' do
+          expect(build).not_to receive(:execute_hooks)
+          expect(BuildHooksWorker).to receive(:perform_async).with(build)
+
+          subject
+        end
       end
 
       context 'when build is failed' do

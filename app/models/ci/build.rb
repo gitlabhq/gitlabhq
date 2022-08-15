@@ -194,7 +194,7 @@ module Ci
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
-      run_after_commit { BuildHooksWorker.perform_async(build) }
+      run_after_commit { build.feature_flagged_execute_hooks }
     end
 
     class << self
@@ -285,7 +285,7 @@ module Ci
 
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
-          BuildHooksWorker.perform_async(build)
+          build.feature_flagged_execute_hooks
         end
       end
 
@@ -313,7 +313,7 @@ module Ci
         build.run_after_commit do
           build.ensure_persistent_ref
 
-          BuildHooksWorker.perform_async(build)
+          build.feature_flagged_execute_hooks
         end
       end
 
@@ -780,9 +780,19 @@ module Ci
       pending? && !any_runners_online?
     end
 
+    def feature_flagged_execute_hooks
+      if Feature.enabled?(:execute_build_hooks_inline, project)
+        execute_hooks
+      else
+        BuildHooksWorker.perform_async(self)
+      end
+    end
+
     def execute_hooks
       return unless project
       return if user&.blocked?
+
+      ActiveRecord::Associations::Preloader.new.preload([self], { runner: :tags })
 
       project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
       project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)

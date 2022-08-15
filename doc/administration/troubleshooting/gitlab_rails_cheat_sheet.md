@@ -854,52 +854,6 @@ Gitlab::CurrentSettings.update!(password_authentication_enabled_for_web: true)
 
 ## SCIM
 
-### Fixing bad SCIM identities
-
-```ruby
-def delete_bad_scim(email, group_path)
-    output = ""
-    u = User.find_by_email(email)
-    uid = u.id
-    g = Group.find_by_full_path(group_path)
-    saml_prov_id = SamlProvider.find_by(group_id: g.id).id
-    saml = Identity.where(user_id: uid, saml_provider_id: saml_prov_id)
-    scim = ScimIdentity.where(user_id: uid , group_id: g.id)
-    if saml[0]
-      saml_eid = saml[0].extern_uid
-      output +=  "%s," % [email]
-      output +=  "SAML: %s," % [saml_eid]
-      if scim[0]
-        scim_eid = scim[0].extern_uid
-        output += "SCIM: %s" % [scim_eid]
-        if saml_eid == scim_eid
-          output += " Identities matched, not deleted \n"
-        else
-          scim[0].destroy
-          output += " Deleted \n"
-        end
-      else
-        output = "ERROR No SCIM identify found for: [%s]\n" % [email]
-        puts output
-        return 1
-      end
-    else
-      output = "ERROR No SAML identify found for: [%s]\n" % [email]
-      puts output
-      return 1
-    end
-      puts output
-    return 0
-end
-
-# In case of multiple emails
-emails = [email1, email2]
-
-emails.each do |e|
-  delete_bad_scim(e,'<group-path>')
-end
-```
-
 ### Find groups using an SQL query
 
 Find and store an array of groups based on an SQL query:

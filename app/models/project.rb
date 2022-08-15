@@ -1684,7 +1684,13 @@ class Project < ApplicationRecord
   end
 
   def has_active_hooks?(hooks_scope = :push_hooks)
-    hooks.hooks_for(hooks_scope).any? || SystemHook.hooks_for(hooks_scope).any? || Gitlab::FileHook.any?
+    @has_active_hooks ||= {} # rubocop: disable Gitlab/PredicateMemoization
+
+    return @has_active_hooks[hooks_scope] if @has_active_hooks.key?(hooks_scope)
+
+    @has_active_hooks[hooks_scope] = hooks.hooks_for(hooks_scope).any? ||
+      SystemHook.hooks_for(hooks_scope).any? ||
+      Gitlab::FileHook.any?
   end
 
   def has_active_integrations?(hooks_scope = :push_hooks)

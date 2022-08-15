@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Ci::Build do
   include Ci::TemplateHelpers
+  include AfterNextHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:group, reload: true) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
@@ -60,10 +62,35 @@ RSpec.describe Ci::Build do
 
   describe 'callbacks' do
     context 'when running after_create callback' do
-      it 'triggers asynchronous build hooks worker' do
-        expect(BuildHooksWorker).to receive(:perform_async)
+      it 'executes hooks' do
+        expect_next(described_class).to receive(:execute_hooks)
 
         create(:ci_build)
+      end
+
+      context 'when the execute_build_hooks_inline flag is disabled' do
+        before do
+          stub_feature_flags(execute_build_hooks_inline: false)
+        end
+
+        it 'uses the old job hooks worker' do
+          expect(::BuildHooksWorker).to receive(:perform_async).with(Ci::Build)
+
+          create(:ci_build)
+        end
+      end
+
+      context 'when the execute_build_hooks_inline flag is enabled for a project' do
+        before do
+          stub_feature_flags(execute_build_hooks_inline: project)
+        end
+
+        it 'executes hooks inline' do
+          expect(::BuildHooksWorker).not_to receive(:perform_async)
+          expect_next(described_class).to receive(:execute_hooks)
+
+          create(:ci_build, project: project)
+        end
       end
     end
   end
@@ -1665,20 +1692,18 @@ RSpec.describe Ci::Build do
         end
 
         it 'returns an expanded environment name with a list of variables' do
-          expect(build).to receive(:simple_variables).once.and_call_original
-
           is_expected.to eq('review/host')
         end
 
         context 'when build metadata has already persisted the expanded environment name' do
           before do
-            build.metadata.expanded_environment_name = 'review/host'
+            build.metadata.expanded_environment_name = 'review/foo'
           end
 
           it 'returns a persisted expanded environment name without a list of variables' do
             expect(build).not_to receive(:simple_variables)
 
-            is_expected.to eq('review/host')
+            is_expected.to eq('review/foo')
           end
         end
       end
@@ -3896,8 +3921,20 @@ RSpec.describe Ci::Build do
       build.enqueue
     end
 
-    it 'queues BuildHooksWorker' do
-      expect(BuildHooksWorker).to receive(:perform_async).with(build)
+    context 'when the execute_build_hooks_inline flag is disabled' do
+      before do
+        stub_feature_flags(execute_build_hooks_inline: false)
+      end
+
+      it 'queues BuildHooksWorker' do
+        expect(BuildHooksWorker).to receive(:perform_async).with(build)
+
+        build.enqueue
+      end
+    end
+
+    it 'executes hooks' do
+      expect(build).to receive(:execute_hooks)
 
       build.enqueue
     end
@@ -4648,6 +4685,7 @@ RSpec.describe Ci::Build do
     end
 
     before do
+      allow(build).to receive(:execute_hooks)
       stub_artifacts_object_storage
     end
 
@@ -5588,7 +5626,7 @@ RSpec.describe Ci::Build do
       build.cancel_gracefully?
     end
 
-    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
 
     it 'cannot cancel gracefully' do
       expect(subject).to be false

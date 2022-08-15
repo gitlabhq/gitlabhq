@@ -1,0 +1,8 @@
+---
+name: execute_build_hooks_inline
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93665
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/370387
+milestone: '15.3'
+type: development
+group: group::integrations
+default_enabled: false

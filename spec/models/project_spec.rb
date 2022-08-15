@@ -5891,7 +5891,7 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#has_active_hooks?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:project) { create(:project) }
 
     it { expect(project.has_active_hooks?).to be_falsey }
 

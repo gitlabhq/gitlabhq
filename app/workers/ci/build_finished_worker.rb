@@ -36,8 +36,7 @@ module Ci
       build.update_coverage
       Ci::BuildReportResultService.new.execute(build)
 
-      # We execute these async as these are independent operations.
-      BuildHooksWorker.perform_async(build)
+      build.feature_flagged_execute_hooks
       ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
       build.track_deployment_usage
       build.track_verify_usage

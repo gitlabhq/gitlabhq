@@ -4,6 +4,7 @@ module QA
   RSpec.describe 'Package', :orchestrated, :registry, only: { pipeline: :main } do
     describe 'Dependency Proxy' do
       using RSpec::Parameterized::TableSyntax
+      include Support::Helpers::MaskToken
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -20,6 +21,19 @@ module QA
           runner.project = project
         end
       end
+
+      let(:group_deploy_token) do
+        Resource::GroupDeployToken.fabricate_via_api! do |deploy_token|
+          deploy_token.name = 'dp-group-deploy-token'
+          deploy_token.group = project.group
+          deploy_token.scopes = %w[
+            read_registry
+            write_registry
+          ]
+        end
+      end
+
+      let(:personal_access_token) { Runtime::Env.personal_access_token }
 
       let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }
       let(:gitlab_host_with_port) { "#{uri.host}:#{uri.port}" }
@@ -43,12 +57,92 @@ module QA
         runner.remove_via_api!
       end
 
-      where(:case_name, :docker_client_version, :testcase) do
-        'using docker:19.03.12' | 'docker:19.03.12' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347605'
-        'using docker:20.10'    | 'docker:20.10'    | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347604'
+      where do
+        {
+          'using docker:18.09.9 and a personal access token' => {
+            docker_client_version: 'docker:18.09.9',
+            authentication_token_type: :personal_access_token,
+            token_name: 'Personal Access Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370195'
+          },
+          'using docker:18.09.9 and a group deploy token' => {
+            docker_client_version: 'docker:18.09.9',
+            authentication_token_type: :group_deploy_token,
+            token_name: 'Deploy Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370196'
+          },
+          'using docker:18.09.9 and a ci job token' => {
+            docker_client_version: 'docker:18.09.9',
+            authentication_token_type: :ci_job_token,
+            token_name: 'Job Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370198'
+          },
+          'using docker:19.03.12 and a personal access token' => {
+            docker_client_version: 'docker:19.03.12',
+            authentication_token_type: :personal_access_token,
+            token_name: 'Personal Access Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370189'
+          },
+          'using docker:19.03.12 and a group deploy token' => {
+            docker_client_version: 'docker:19.03.12',
+            authentication_token_type: :group_deploy_token,
+            token_name: 'Deploy Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370190'
+          },
+          'using docker:19.03.12 and a ci job token' => {
+            docker_client_version: 'docker:19.03.12',
+            authentication_token_type: :ci_job_token,
+            token_name: 'Job Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370191'
+          },
+          'using docker:20.10 and a personal access token' => {
+            docker_client_version: 'docker:20.10',
+            authentication_token_type: :personal_access_token,
+            token_name: 'Personal Access Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370192'
+          },
+          'using docker:20.10 and a group deploy token' => {
+            docker_client_version: 'docker:20.10',
+            authentication_token_type: :group_deploy_token,
+            token_name: 'Deploy Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370193'
+          },
+          'using docker:20.10 and a ci job token' => {
+            docker_client_version: 'docker:20.10',
+            authentication_token_type: :ci_job_token,
+            token_name: 'Job Token',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370194'
+          }
+        }
       end
 
       with_them do
+        let(:auth_token) do
+          case authentication_token_type
+          when :personal_access_token
+            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: project)
+          when :group_deploy_token
+            use_group_ci_variable(
+              name: "GROUP_DEPLOY_TOKEN_#{group_deploy_token.id}",
+              value: group_deploy_token.token,
+              group: project.group
+            )
+          when :ci_job_token
+            '$CI_JOB_TOKEN'
+          end
+        end
+
+        let(:auth_user) do
+          case authentication_token_type
+          when :personal_access_token
+            "$CI_REGISTRY_USER"
+          when :group_deploy_token
+            "\"#{group_deploy_token.username}\""
+          when :ci_job_token
+            'gitlab-ci-token'
+          end
+        end
+
         it "pulls an image using the dependency proxy", testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
@@ -65,8 +159,7 @@ module QA
                                             command: ["--insecure-registry=gitlab.test:80"]
                                           before_script:
                                             - apk add curl jq grep
-                                            - echo $CI_DEPENDENCY_PROXY_SERVER
-                                            - docker login -u "$CI_DEPENDENCY_PROXY_USER" -p "$CI_DEPENDENCY_PROXY_PASSWORD" gitlab.test:80
+                                            - docker login -u #{auth_user} -p #{auth_token} gitlab.test:80
                                           script:
                                             - docker pull #{dependency_proxy_url}/#{image_sha}
                                             - TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token)

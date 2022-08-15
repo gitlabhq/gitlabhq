@@ -23,8 +23,8 @@ RSpec.describe BuildHooksWorker do
     end
   end
 
-  describe '.perform_async' do
-    it 'sends a message to the application logger, before performing', :sidekiq_inline do
+  describe '.perform_async', :sidekiq_inline do
+    it 'sends a message to the application logger, before performing' do
       build = create(:ci_build)
 
       expect(Gitlab::AppLogger).to receive(:info).with(
