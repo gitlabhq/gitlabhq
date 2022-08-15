@@ -124,6 +124,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_SERVER_VERSION`                      | all    | all    | The full version of the GitLab instance. |
 | `CI_SERVER`                              | all    | all    | Available for all jobs executed in CI/CD. `yes` when available. |
 | `CI_SHARED_ENVIRONMENT`                  | all    | 10.1   | Only available if the job is executed in a shared environment (something that is persisted across CI/CD invocations, like the `shell` or `ssh` executor). `true` when available. |
+| `CI_TEMPLATE_REGISTRY_HOST`              | 15.3   | all    | The host of the registry used by CI/CD templates. Defaults to `registry.gitlab.com`. |
 | `GITLAB_CI`                              | all    | all    | Available for all jobs executed in CI/CD. `true` when available. |
 | `GITLAB_FEATURES`                        | 10.6   | all    | The comma-separated list of licensed features available for the GitLab instance and license. |
 | `GITLAB_USER_EMAIL`                      | 8.12   | all    | The email of the user who started the job. |

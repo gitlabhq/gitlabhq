@@ -30768,6 +30768,9 @@ msgstr ""
 msgid "ProjectSettings|Encourage"
 msgstr ""
 
+msgid "ProjectSettings|Environments"
+msgstr ""
+
 msgid "ProjectSettings|Every merge creates a merge commit."
 msgstr ""
 
@@ -30778,6 +30781,9 @@ msgid "ProjectSettings|Every project can have its own space to store its package
 msgstr ""
 
 msgid "ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public."
+msgstr ""
+
+msgid "ProjectSettings|Every project can make deployments to environments either via CI/CD or API calls. Non-project members have read-only access."
 msgstr ""
 
 msgid "ProjectSettings|Everyone"
@@ -44410,6 +44416,9 @@ msgid "WorkItem|Something went wrong when deleting the task. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when deleting the work item. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong when fetching the items list. Please refresh this page."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching the work item. Please try again."

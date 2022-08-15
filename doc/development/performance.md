@@ -24,8 +24,7 @@ consistent performance of GitLab. Refer to the [Index](#performance-documentatio
   - [Troubleshooting import/export performance issues](../development/import_export.md#troubleshooting-performance-issues)
   - [Pipelines performance in the `gitlab` project](../development/pipelines.md#performance)
 - Frontend:
-  - [Performance guidelines](../development/fe_guide/performance.md)
-  - [Performance dashboards and monitoring guidelines](../development/new_fe_guide/development/performance.md)
+  - [Performance guidelines and monitoring](../development/fe_guide/performance.md)
   - [Browser performance testing guidelines](../ci/testing/browser_performance_testing.md)
   - [`gdk measure` and `gdk measure-workflow`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_commands.md#measure-performance)
 - QA:

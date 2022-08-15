@@ -146,6 +146,7 @@ module.exports = (path, options = {}) => {
     'monaco-yaml',
     'fast-mersenne-twister',
     'prosemirror-markdown',
+    'marked',
     'fault',
     'dateformat',
     'lowlight',

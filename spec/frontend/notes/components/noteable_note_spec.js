@@ -285,7 +285,7 @@ describe('issue_note', () => {
       await waitForPromises();
       expect(alertSpy).not.toHaveBeenCalled();
       expect(wrapper.vm.note.note_html).toBe(
-        '<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></p>\n',
+        '<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">',
       );
     });
   });

@@ -217,6 +217,12 @@ module Types
           description: "Find contacts of this group.",
           resolver: Resolvers::Crm::ContactsResolver
 
+    field :contact_state_counts,
+          Types::CustomerRelations::ContactStateCountsType,
+          null: true,
+          description: 'Counts of contacts by status for the group.',
+          resolver: Resolvers::Crm::ContactStateCountsResolver
+
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
           resolver: Resolvers::WorkItems::TypesResolver,
           description: 'Work item types available to the group.' \

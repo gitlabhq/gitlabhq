@@ -10,6 +10,11 @@ module Resolvers
 
       type Types::CustomerRelations::ContactType, null: true
 
+      argument :sort, Types::CustomerRelations::ContactSortEnum,
+               description: 'Criteria to sort issues by.',
+               required: false,
+               default_value: { field: 'last_name', direction: :asc }
+
       argument :search, GraphQL::Types::String,
                required: false,
                description: 'Search term to find contacts with.'
@@ -24,12 +29,24 @@ module Resolvers
 
       def resolve(**args)
         args[:ids] = resolve_ids(args.delete(:ids))
+        args.delete(:state) if args[:state] == :all
 
-        ::Crm::ContactsFinder.new(current_user, { group: group }.merge(args)).execute
+        contacts = ::Crm::ContactsFinder.new(current_user, { group: group }.merge(args)).execute
+        if needs_offset?(args)
+          offset_pagination(contacts)
+        else
+          contacts
+        end
       end
 
       def group
         object.respond_to?(:sync) ? object.sync : object
+      end
+
+      private
+
+      def needs_offset?(args)
+        args.key?(:sort) && args[:sort][:field] == 'organization'
       end
     end
   end

@@ -141,6 +141,67 @@ RSpec.describe Crm::ContactsFinder do
           expect(finder.execute).to match_array([search_test_b])
         end
       end
+
+      context 'when sorting' do
+        let_it_be(:search_test_c) do
+          create(
+            :contact,
+            group: search_test_group,
+            email: "a@test.com",
+            organization: create(:organization, name: "Company Z")
+          )
+        end
+
+        let_it_be(:search_test_d) do
+          create(
+            :contact,
+            group: search_test_group,
+            email: "b@test.com",
+            organization: create(:organization, name: "Company A")
+          )
+        end
+
+        it 'returns the contacts sorted by email in ascending order' do
+          finder = described_class.new(user, group: search_test_group, sort: { field: 'email', direction: :asc })
+
+          expect(finder.execute).to eq([search_test_c, search_test_d, search_test_a, search_test_b])
+        end
+
+        it 'returns the contacts sorted by description in ascending order' do
+          finder = described_class.new(user, group: search_test_group, sort: { field: 'description', direction: :desc })
+
+          results = finder.execute
+
+          expect(results[0]).to eq(search_test_b)
+          expect(results[1]).to eq(search_test_a)
+        end
+
+        it 'returns the contacts sorted by organization in ascending order' do
+          finder = described_class.new(user, group: search_test_group, sort: { field: 'organization', direction: :asc })
+
+          results = finder.execute
+
+          expect(results[0]).to eq(search_test_d)
+          expect(results[1]).to eq(search_test_c)
+        end
+      end
+    end
+  end
+
+  describe '.counts_by_state' do
+    let_it_be(:group) { create(:group, :crm_enabled) }
+    let_it_be(:active_contacts) { create_list(:contact, 3, group: group, state: :active) }
+    let_it_be(:inactive_contacts) { create_list(:contact, 2, group: group, state: :inactive) }
+
+    before do
+      group.add_developer(user)
+    end
+
+    it 'returns correct counts' do
+      counts = described_class.counts_by_state(user, group: group)
+
+      expect(counts["active"]).to eq(3)
+      expect(counts["inactive"]).to eq(2)
     end
   end
 end

@@ -133,7 +133,7 @@
     "katex": "^0.13.2",
     "lodash": "^4.17.20",
     "lowlight": "^2.6.1",
-    "marked": "^0.3.12",
+    "marked": "^4.0.18",
     "mathjax": "3",
     "mdurl": "^1.0.1",
     "mermaid": "^9.1.3",

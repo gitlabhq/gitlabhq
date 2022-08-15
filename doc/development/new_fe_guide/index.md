@@ -1,22 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+redirect_to: '../fe_guide/index.md'
+remove_date: '2022-11-15'
 ---
 
-# Frontend Development Guidelines
+This document was moved to [another location](../fe_guide/index.md).
 
-This guide contains all the information to successfully contribute to the GitLab frontend.
-This is a living document, and we welcome contributions, feedback, and suggestions.
-
-## [Development](development/index.md)
-
-Guidance on topics related to development.
-
-## [Modules](modules/index.md)
-
-Learn about all the internal JavaScript modules that make up our frontend.
-
-## [Tips](tips.md)
-
-Tips from our frontend team to develop more efficiently and effectively.
+<!-- This redirect file can be deleted after <2022-11-15>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

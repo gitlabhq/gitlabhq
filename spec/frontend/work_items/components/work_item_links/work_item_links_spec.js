@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlBadge, GlButton } from '@gitlab/ui';
+import { GlBadge, GlButton, GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -39,12 +39,12 @@ describe('WorkItemLinks', () => {
 
   const createComponent = async ({
     data = {},
-    response = workItemHierarchyResponse,
+    fetchHandler = jest.fn().mockResolvedValue(workItemHierarchyResponse),
     mutationHandler = mutationChangeParentHandler,
   } = {}) => {
     mockApollo = createMockApollo(
       [
-        [getWorkItemLinksQuery, jest.fn().mockResolvedValue(response)],
+        [getWorkItemLinksQuery, fetchHandler],
         [changeWorkItemParentMutation, mutationHandler],
         [workItemQuery, childWorkItemQueryHandler],
       ],
@@ -71,6 +71,7 @@ describe('WorkItemLinks', () => {
     await waitForPromises();
   };
 
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findToggleButton = () => wrapper.findByTestId('toggle-links');
   const findLinksBody = () => wrapper.findByTestId('links-body');
   const findEmptyState = () => wrapper.findByTestId('links-empty');
@@ -117,7 +118,9 @@ describe('WorkItemLinks', () => {
 
   describe('when no child links', () => {
     beforeEach(async () => {
-      await createComponent({ response: workItemHierarchyEmptyResponse });
+      await createComponent({
+        fetchHandler: jest.fn().mockResolvedValue(workItemHierarchyEmptyResponse),
+      });
     });
 
     it('displays empty state if there are no children', () => {
@@ -131,6 +134,18 @@ describe('WorkItemLinks', () => {
     expect(findChildren()).toHaveLength(4);
     expect(findChildren().at(0).findComponent(GlBadge).text()).toBe('Open');
     expect(findFirstLinksMenu().exists()).toBe(true);
+  });
+
+  it('shows alert when list loading fails', async () => {
+    const errorMessage = 'Some error';
+    await createComponent({
+      fetchHandler: jest.fn().mockRejectedValue(new Error(errorMessage)),
+    });
+
+    await nextTick();
+
+    expect(findAlert().exists()).toBe(true);
+    expect(findAlert().text()).toBe(errorMessage);
   });
 
   it('renders confidentiality icon when child item is confidential', () => {
@@ -149,7 +164,9 @@ describe('WorkItemLinks', () => {
 
   describe('when no permission to update', () => {
     beforeEach(async () => {
-      await createComponent({ response: workItemHierarchyNoUpdatePermissionResponse });
+      await createComponent({
+        fetchHandler: jest.fn().mockResolvedValue(workItemHierarchyNoUpdatePermissionResponse),
+      });
     });
 
     it('does not display button to toggle Add form', () => {

@@ -30,6 +30,7 @@ class User < ApplicationRecord
   include Gitlab::Auth::Otp::Fortinet
   include RestrictedSignup
   include StripAttribute
+  include EachBatch
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 

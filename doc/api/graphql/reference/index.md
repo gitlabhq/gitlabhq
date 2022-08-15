@@ -10558,6 +10558,18 @@ Connection details for an Agent.
 | <a id="connectedagentconnectionid"></a>`connectionId` | [`BigInt`](#bigint) | ID of the connection. |
 | <a id="connectedagentmetadata"></a>`metadata` | [`AgentMetadata`](#agentmetadata) | Information about the Agent. |
 
+### `ContactStateCounts`
+
+Represents the total number of contacts for the represented statuses.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="contactstatecountsactive"></a>`active` | [`Int`](#int) | Number of contacts with state `ACTIVE`. |
+| <a id="contactstatecountsall"></a>`all` | [`Int`](#int) | Number of contacts with state `ALL`. |
+| <a id="contactstatecountsinactive"></a>`inactive` | [`Int`](#int) | Number of contacts with state `INACTIVE`. |
+
 ### `ContainerExpirationPolicy`
 
 A tag expiration policy designed to keep only the images that matter most.
@@ -12270,6 +12282,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupcomplianceframeworksid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Global ID of a specific compliance framework to return. |
 
+##### `Group.contactStateCounts`
+
+Counts of contacts by status for the group.
+
+Returns [`ContactStateCounts`](#contactstatecounts).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupcontactstatecountssearch"></a>`search` | [`String`](#string) | Search term to find contacts with. |
+| <a id="groupcontactstatecountsstate"></a>`state` | [`CustomerRelationsContactState`](#customerrelationscontactstate) | State of the contacts to search for. |
+
 ##### `Group.contacts`
 
 Find contacts of this group.
@@ -12286,6 +12311,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupcontactsids"></a>`ids` | [`[CustomerRelationsContactID!]`](#customerrelationscontactid) | Filter contacts by IDs. |
 | <a id="groupcontactssearch"></a>`search` | [`String`](#string) | Search term to find contacts with. |
+| <a id="groupcontactssort"></a>`sort` | [`ContactSort`](#contactsort) | Criteria to sort issues by. |
 | <a id="groupcontactsstate"></a>`state` | [`CustomerRelationsContactState`](#customerrelationscontactstate) | State of the contacts to search for. |
 
 ##### `Group.containerRepositories`
@@ -19284,6 +19310,33 @@ Conan file types.
 | <a id="conanmetadatumfiletypeenumpackage_file"></a>`PACKAGE_FILE` | A package file type. |
 | <a id="conanmetadatumfiletypeenumrecipe_file"></a>`RECIPE_FILE` | A recipe file type. |
 
+### `ContactSort`
+
+Values for sorting contacts.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="contactsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="contactsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="contactsortdescription_asc"></a>`DESCRIPTION_ASC` | Description by ascending order. |
+| <a id="contactsortdescription_desc"></a>`DESCRIPTION_DESC` | Description by descending order. |
+| <a id="contactsortemail_asc"></a>`EMAIL_ASC` | Email by ascending order. |
+| <a id="contactsortemail_desc"></a>`EMAIL_DESC` | Email by descending order. |
+| <a id="contactsortfirst_name_asc"></a>`FIRST_NAME_ASC` | First name by ascending order. |
+| <a id="contactsortfirst_name_desc"></a>`FIRST_NAME_DESC` | First name by descending order. |
+| <a id="contactsortlast_name_asc"></a>`LAST_NAME_ASC` | Last name by ascending order. |
+| <a id="contactsortlast_name_desc"></a>`LAST_NAME_DESC` | Last name by descending order. |
+| <a id="contactsortorganization_asc"></a>`ORGANIZATION_ASC` | Organization by ascending order. |
+| <a id="contactsortorganization_desc"></a>`ORGANIZATION_DESC` | Organization by descending order. |
+| <a id="contactsortphone_asc"></a>`PHONE_ASC` | Phone by ascending order. |
+| <a id="contactsortphone_desc"></a>`PHONE_DESC` | Phone by descending order. |
+| <a id="contactsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
+| <a id="contactsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
+| <a id="contactsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="contactsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="contactsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="contactsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+
 ### `ContainerExpirationPolicyCadenceEnum`
 
 | Value | Description |
@@ -19365,8 +19418,9 @@ Values for sorting tags.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="customerrelationscontactstateactive"></a>`active` | Active contact. |
-| <a id="customerrelationscontactstateinactive"></a>`inactive` | Inactive contact. |
+| <a id="customerrelationscontactstateactive"></a>`active` | Active contacts. |
+| <a id="customerrelationscontactstateall"></a>`all` | All available contacts. |
+| <a id="customerrelationscontactstateinactive"></a>`inactive` | Inactive contacts. |
 
 ### `CustomerRelationsOrganizationState`
 

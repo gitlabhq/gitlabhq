@@ -1,28 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+redirect_to: '../../fe_guide/index.md'
+remove_date: '2022-11-15'
 ---
 
-# Dirty Submit
+This document was moved to [another location](../../fe_guide/index.md).
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21115) in GitLab 11.3.
-
-## Summary
-
-Prevent submitting forms with no changes.
-
-Currently handles `input`, `textarea` and `select` elements.
-
-Also, see [the code](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/dirty_submit/)
-within the GitLab project.
-
-## Usage
-
-```javascript
-import dirtySubmitFactory from './dirty_submit/dirty_submit_form';
-
-new DirtySubmitForm(document.querySelector('form'));
-// or
-new DirtySubmitForm(document.querySelectorAll('form'));
-```
+<!-- This redirect file can be deleted after <2022-11-15>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

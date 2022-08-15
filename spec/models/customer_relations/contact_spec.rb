@@ -226,14 +226,57 @@ RSpec.describe CustomerRelations::Contact, type: :model do
     end
   end
 
-  describe '.sort_by_name' do
-    let_it_be(:contact_a) { create(:contact, group: group, first_name: "c", last_name: "d") }
-    let_it_be(:contact_b) { create(:contact, group: group, first_name: "a", last_name: "b") }
-    let_it_be(:contact_c) { create(:contact, group: group, first_name: "e", last_name: "d") }
+  describe '.counts_by_state' do
+    before do
+      create_list(:contact, 3, group: group)
+      create_list(:contact, 2, group: group, state: 'inactive')
+    end
 
-    context 'when sorting the contacts' do
-      it 'sorts them by last name then first name in ascendent order' do
+    it 'returns only active contacts' do
+      counts = group.contacts.counts_by_state
+
+      expect(counts['active']).to be(3)
+      expect(counts['inactive']).to be(2)
+    end
+  end
+
+  describe 'sorting' do
+    let_it_be(:organization_a) { create(:organization, name: 'a') }
+    let_it_be(:organization_b) { create(:organization, name: 'b') }
+    let_it_be(:contact_a) { create(:contact, group: group, first_name: "c", last_name: "d") }
+    let_it_be(:contact_b) do
+      create(:contact,
+        group: group,
+        first_name: "a",
+        last_name: "b",
+        phone: "123",
+        organization: organization_a)
+    end
+
+    let_it_be(:contact_c) do
+      create(:contact,
+        group: group,
+        first_name: "e",
+        last_name: "d",
+        phone: "456",
+        organization: organization_b)
+    end
+
+    describe '.sort_by_name' do
+      it 'sorts them by last name then first name in ascending order' do
         expect(group.contacts.sort_by_name).to eq([contact_b, contact_a, contact_c])
+      end
+    end
+
+    describe '.sort_by_organization' do
+      it 'sorts them by organization in descending order' do
+        expect(group.contacts.sort_by_organization(:desc)).to eq([contact_c, contact_b, contact_a])
+      end
+    end
+
+    describe '.sort_by_field' do
+      it 'sorts them by phone in ascending order' do
+        expect(group.contacts.sort_by_field('phone', :asc)).to eq([contact_b, contact_c, contact_a])
       end
     end
   end

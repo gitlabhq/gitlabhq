@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlBadge, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlBadge, GlIcon, GlAlert, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -25,6 +25,7 @@ export default {
     GlButton,
     GlBadge,
     GlIcon,
+    GlAlert,
     GlLoadingIcon,
     WorkItemLinksForm,
     WorkItemLinksMenu,
@@ -57,6 +58,9 @@ export default {
       skip() {
         return !this.issuableId;
       },
+      error(e) {
+        this.error = e.message || this.$options.i18n.fetchError;
+      },
     },
   },
   data() {
@@ -66,6 +70,7 @@ export default {
       activeChildId: null,
       activeToast: null,
       prefetchedWorkItem: null,
+      error: undefined,
     };
   },
   computed: {
@@ -227,6 +232,9 @@ export default {
   },
   i18n: {
     title: s__('WorkItem|Child items'),
+    fetchError: s__(
+      'WorkItem|Something went wrong when fetching the items list. Please refresh this page.',
+    ),
     emptyStateMessage: s__(
       'WorkItem|No child items are currently assigned. Use child items to prioritize tasks that your team should complete in order to accomplish your goals!',
     ),
@@ -273,15 +281,19 @@ export default {
         />
       </div>
     </div>
+    <gl-alert v-if="error && !isLoading" variant="danger" @dismiss="error = undefined">
+      {{ error }}
+    </gl-alert>
     <div
       v-if="isOpen"
-      class="gl-bg-gray-10 gl-p-5 gl-pb-3 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+      class="gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+      :class="{ 'gl-p-5 gl-pb-3': !error }"
       data-testid="links-body"
     >
       <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-3" />
 
       <template v-else>
-        <div v-if="isChildrenEmpty && !isShownAddForm" data-testid="links-empty">
+        <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">
           <p class="gl-mt-3 gl-mb-4">
             {{ $options.i18n.emptyStateMessage }}
           </p>

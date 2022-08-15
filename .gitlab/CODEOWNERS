@@ -559,8 +559,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/ee_features.md @fneill
 /doc/development/logging.md @msedlakjakubowski
 /doc/development/maintenance_mode.md @axil
-/doc/development/new_fe_guide/modules/widget_extensions.md @aqualls
-/doc/development/new_fe_guide/tips.md @sselhorn
 /doc/development/omnibus.md @axil
 /doc/development/packages/ @claytoncornell
 /doc/development/permissions.md @eread

@@ -29,6 +29,12 @@ class CustomerRelations::Contact < ApplicationRecord
   validate :validate_email_format
   validate :validate_root_group
 
+  scope :order_scope_asc, ->(field) { order(arel_table[field].asc.nulls_last) }
+  scope :order_scope_desc, ->(field) { order(arel_table[field].desc.nulls_last) }
+
+  scope :order_by_organization_asc, -> { includes(:organization).order("customer_relations_organizations.name ASC NULLS LAST") }
+  scope :order_by_organization_desc, -> { includes(:organization).order("customer_relations_organizations.name DESC NULLS LAST") }
+
   def self.reference_prefix
     '[contact:'
   end
@@ -54,6 +60,22 @@ class CustomerRelations::Contact < ApplicationRecord
 
   def self.search_by_state(state)
     where(state: state)
+  end
+
+  def self.sort_by_field(field, direction)
+    if direction == :asc
+      order_scope_asc(field)
+    else
+      order_scope_desc(field)
+    end
+  end
+
+  def self.sort_by_organization(direction)
+    if direction == :asc
+      order_by_organization_asc
+    else
+      order_by_organization_desc
+    end
   end
 
   def self.sort_by_name
@@ -113,6 +135,10 @@ class CustomerRelations::Contact < ApplicationRecord
       ]))
 
     where(group: group).update_all(group_id: group.root_ancestor.id)
+  end
+
+  def self.counts_by_state
+    group(:state).count
   end
 
   private
