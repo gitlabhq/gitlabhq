@@ -38,6 +38,8 @@ We have built a domain-specific language (DSL) to define the metrics instrumenta
 
 ## Database metrics
 
+You can use database metrics to track data kept in the database, for example, a count of issues that exist on a given instance.
+
 - `operation`: Operations for the given `relation`, one of `count`, `distinct_count`, `sum`, and `average`.
 - `relation`: `ActiveRecord::Relation` for the objects we want to perform the `operation`.
 - `start`: Specifies the start value of the batch counting, by default is `relation.minimum(:id)`.
@@ -150,6 +152,8 @@ end
 
 ## Redis metrics
 
+You can use Redis metrics to track events not kept in the database, for example, a count of how many times the search bar has been used.
+
 [Example of a merge request that adds a `Redis` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66582).
 
 Count unique values for `source_code_pushes` event.
@@ -200,6 +204,9 @@ options:
 ```
 
 ## Redis HyperLogLog metrics
+ 
+You can use Redis HyperLogLog metrics to track events not kept in the database and incremented for unique values such as unique users,
+for example, a count of how many different users used the search bar.
 
 [Example of a merge request that adds a `RedisHLL` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61685).
 
@@ -283,6 +290,8 @@ instrumentation_class: 'IssuesBoardsCountMetric'
 ```
 
 ## Generic metrics
+
+You can use generic metrics for other metrics, for example, an instance's database version. Observations type of data will always have a Generic metric counter type.
 
 - `value`: Specifies the value of the metric.
 - `available?`: Specifies whether the metric should be reported. The default is `true`.

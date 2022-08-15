@@ -98,10 +98,54 @@ RSpec.describe IssuablesHelper do
     end
   end
 
-  describe '#issuable_meta' do
+  describe '#issuable_meta', time_travel_to: '2022-08-05 00:00:00 +0000' do
     let(:user) { create(:user) }
 
     let_it_be(:project) { create(:project) }
+
+    describe 'Issuable created status text' do
+      subject { helper.issuable_meta(issuable, project) }
+
+      context 'when issuable is a work item and flag is off' do
+        using RSpec::Parameterized::TableSyntax
+
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        where(:issuable_type, :text) do
+          :issue            | 'Issue created Aug 05, 2022 by'
+          :incident         | 'Incident created Aug 05, 2022 by'
+        end
+
+        let(:issuable) { build_stubbed(:work_item, issuable_type, created_at: Date.current) }
+
+        with_them do
+          it { is_expected.to have_content(text) }
+        end
+      end
+
+      context 'when issuable is a work item and flag is on' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:issuable_type, :text) do
+          :issue            | 'Issue created Aug 05, 2022 by'
+          :incident         | 'Incident created Aug 05, 2022 by'
+        end
+
+        let(:issuable) { build_stubbed(:work_item, issuable_type, created_at: Date.current) }
+
+        with_them do
+          it { is_expected.to have_content(text) }
+        end
+      end
+
+      context 'when issuable is not a work item' do
+        let(:issuable) { build_stubbed(:merge_request, created_at: Date.current) }
+
+        it { is_expected.to have_content('Created Aug 05, 2022') }
+      end
+    end
 
     describe 'author status' do
       let(:issuable) { build(:merge_request, source_project: project, author: user, created_at: '2020-01-30') }

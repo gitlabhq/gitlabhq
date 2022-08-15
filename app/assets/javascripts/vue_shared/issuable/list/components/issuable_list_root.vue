@@ -182,6 +182,11 @@ export default {
       required: false,
       default: false,
     },
+    showWorkItemTypeIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -344,6 +349,7 @@ export default {
           :label-filter-param="labelFilterParam"
           :show-checkbox="showBulkEditSidebar"
           :checked="issuableChecked(issuable)"
+          :show-work-item-type-icon="showWorkItemTypeIcon"
           @checked-input="handleIssuableCheckedInput(issuable, $event)"
         >
           <template #reference>

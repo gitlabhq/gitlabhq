@@ -1,5 +1,5 @@
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import AutoMergeFailedComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_failed.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -10,7 +10,7 @@ describe('MRWidgetAutoMergeFailed', () => {
   const findButton = () => wrapper.find(GlButton);
 
   const createComponent = (props = {}, mergeRequestWidgetGraphql = false) => {
-    wrapper = shallowMount(AutoMergeFailedComponent, {
+    wrapper = mount(AutoMergeFailedComponent, {
       propsData: { ...props },
       data() {
         if (mergeRequestWidgetGraphql) {
@@ -60,7 +60,7 @@ describe('MRWidgetAutoMergeFailed', () => {
 
         await nextTick();
 
-        expect(findButton().attributes('disabled')).toBe('true');
+        expect(findButton().attributes('disabled')).toBe('disabled');
         expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       });
     });

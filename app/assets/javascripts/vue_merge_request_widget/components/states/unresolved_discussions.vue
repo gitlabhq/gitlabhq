@@ -1,13 +1,13 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import notesEventHub from '~/notes/event_hub';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'UnresolvedDiscussions',
   components: {
-    statusIcon,
     GlButton,
+    StateContainer,
   },
   props: {
     mr: {
@@ -24,30 +24,33 @@ export default {
 </script>
 
 <template>
-  <div class="mr-widget-body media gl-flex-wrap">
-    <status-icon show-disabled-button status="warning" />
-    <div class="media-body">
-      <span class="gl-ml-0! gl-text-body! gl-ml-3 gl-font-weight-bold gl-w-100">
-        {{ s__('mrWidget|Merge blocked: all threads must be resolved.') }}
-      </span>
+  <state-container status="warning">
+    <span
+      class="gl-ml-3 gl-font-weight-bold gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!"
+    >
+      {{ s__('mrWidget|Merge blocked: all threads must be resolved.') }}
+    </span>
+    <template #actions>
       <gl-button
-        data-testid="jump-to-first"
-        class="gl-ml-3"
+        v-if="mr.createIssueToResolveDiscussionsPath"
+        :href="mr.createIssueToResolveDiscussionsPath"
+        class="js-create-issue gl-align-self-start gl-vertical-align-top gl-mr-2"
         size="small"
         variant="confirm"
         category="secondary"
+      >
+        {{ s__('mrWidget|Create issue to resolve all threads') }}
+      </gl-button>
+      <gl-button
+        data-testid="jump-to-first"
+        class="gl-mb-2 gl-md-mb-0 gl-align-self-start gl-vertical-align-top"
+        size="small"
+        variant="confirm"
+        category="primary"
         @click="jumpToFirstUnresolvedDiscussion"
       >
         {{ s__('mrWidget|Jump to first unresolved thread') }}
       </gl-button>
-      <gl-button
-        v-if="mr.createIssueToResolveDiscussionsPath"
-        :href="mr.createIssueToResolveDiscussionsPath"
-        class="js-create-issue gl-ml-3"
-        size="small"
-      >
-        {{ s__('mrWidget|Create issue to resolve all threads') }}
-      </gl-button>
-    </div>
-  </div>
+    </template>
+  </state-container>
 </template>

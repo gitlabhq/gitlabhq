@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { removeBreakLine } from 'helpers/text_helper';
@@ -23,7 +23,7 @@ describe('MRWidgetConflicts', () => {
 
   async function createComponent(propsData = {}) {
     wrapper = extendedWrapper(
-      shallowMount(ConflictsComponent, {
+      mount(ConflictsComponent, {
         propsData,
         provide: {
           glFeatures: {

@@ -1,6 +1,6 @@
 import { GlButton, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Actions from '~/vue_merge_request_widget/components/extensions/actions.vue';
+import Actions from '~/vue_merge_request_widget/components/action_buttons.vue';
 
 let wrapper;
 

@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
 import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_helper';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 
 import { mockIssuable, mockRegularLabel } from '../mock_data';
@@ -13,6 +14,7 @@ const createComponent = ({
   issuable = mockIssuable,
   showCheckbox = true,
   slots = {},
+  showWorkItemTypeIcon = false,
 } = {}) =>
   shallowMount(IssuableItem, {
     propsData: {
@@ -21,6 +23,7 @@ const createComponent = ({
       issuable,
       showDiscussions: true,
       showCheckbox,
+      showWorkItemTypeIcon,
     },
     slots,
     stubs: {
@@ -40,6 +43,7 @@ describe('IssuableItem', () => {
   let wrapper;
 
   const findTimestampWrapper = () => wrapper.find('[data-testid="issuable-timestamp"]');
+  const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
   beforeEach(() => {
     gon.gitlab_url = MOCK_GITLAB_URL;
@@ -352,6 +356,18 @@ describe('IssuableItem', () => {
       const expected = `${mockIssuable.taskCompletionStatus.completedCount} of ${mockIssuable.taskCompletionStatus.count} checklist items completed`;
 
       expect(taskStatus.text()).toBe(expected);
+    });
+
+    it('does not renders work item type icon by default', () => {
+      wrapper = createComponent();
+
+      expect(findWorkItemTypeIcon().exists()).toBe(false);
+    });
+
+    it('renders work item type icon when props passed', () => {
+      wrapper = createComponent({ showWorkItemTypeIcon: true });
+
+      expect(findWorkItemTypeIcon().props('workItemType')).toBe(mockIssuable.type);
     });
 
     it('renders issuable reference', () => {

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import api from '~/api';
 import createFlash from '~/flash';
 import { s__, __ } from '~/locale';
@@ -7,6 +7,7 @@ import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/con
 import modalEventHub from '~/projects/commit/event_hub';
 import eventHub from '../../event_hub';
 import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'MRWidgetMerged',
@@ -16,7 +17,7 @@ export default {
   components: {
     MrWidgetAuthorTime,
     GlIcon,
-    GlButton,
+    StateContainer,
   },
   props: {
     mr: {
@@ -72,6 +73,53 @@ export default {
     cherryPickLabel() {
       return s__('mrWidget|Cherry-pick');
     },
+    actions() {
+      const actions = [];
+
+      if (this.mr.canRevertInCurrentMR) {
+        actions.push({
+          text: this.revertLabel,
+          tooltipText: this.revertTitle,
+          dataQaSelector: 'revert_button',
+          onClick: () => this.openRevertModal(),
+        });
+      } else if (this.mr.revertInForkPath) {
+        actions.push({
+          text: this.revertLabel,
+          tooltipText: this.revertTitle,
+          href: this.mr.revertInForkPath,
+          dataQaSelector: 'revert_button',
+          dataMethod: 'post',
+        });
+      }
+
+      if (this.mr.canCherryPickInCurrentMR) {
+        actions.push({
+          text: this.cherryPickLabel,
+          tooltipText: this.cherryPickTitle,
+          dataQaSelector: 'cherry_pick_button',
+          onClick: () => this.openCherryPickModal(),
+        });
+      } else if (this.mr.cherryPickInForkPath) {
+        actions.push({
+          text: this.cherryPickLabel,
+          tooltipText: this.cherryPickTitle,
+          href: this.mr.cherryPickInForkPath,
+          dataQaSelector: 'cherry_pick_button',
+          dataMethod: 'post',
+        });
+      }
+
+      if (this.shouldShowRemoveSourceBranch) {
+        actions.push({
+          text: s__('mrWidget|Delete source branch'),
+          class: 'js-remove-branch-button',
+          onClick: () => this.removeSourceBranch(),
+        });
+      }
+
+      return actions;
+    },
   },
   mounted() {
     document.dispatchEvent(new CustomEvent('merged:UpdateActions'));
@@ -115,68 +163,15 @@ export default {
 };
 </script>
 <template>
-  <div class="mr-widget-body media">
-    <gl-icon name="merge" :size="24" class="gl-text-blue-500 gl-mr-3 gl-mt-1" />
-    <div class="media-body">
-      <div class="space-children">
-        <mr-widget-author-time
-          :action-text="s__('mrWidget|Merged by')"
-          :author="mr.metrics.mergedBy"
-          :date-title="mr.metrics.mergedAt"
-          :date-readable="mr.metrics.readableMergedAt"
-        />
-        <gl-button
-          v-if="mr.canRevertInCurrentMR"
-          v-gl-tooltip.hover
-          :title="revertTitle"
-          size="small"
-          category="secondary"
-          data-qa-selector="revert_button"
-          @click="openRevertModal"
-        >
-          {{ revertLabel }}
-        </gl-button>
-        <gl-button
-          v-else-if="mr.revertInForkPath"
-          v-gl-tooltip.hover
-          :href="mr.revertInForkPath"
-          :title="revertTitle"
-          size="small"
-          category="secondary"
-          data-method="post"
-        >
-          {{ revertLabel }}
-        </gl-button>
-        <gl-button
-          v-if="mr.canCherryPickInCurrentMR"
-          v-gl-tooltip.hover
-          :title="cherryPickTitle"
-          size="small"
-          data-qa-selector="cherry_pick_button"
-          @click="openCherryPickModal"
-        >
-          {{ cherryPickLabel }}
-        </gl-button>
-        <gl-button
-          v-else-if="mr.cherryPickInForkPath"
-          v-gl-tooltip.hover
-          :href="mr.cherryPickInForkPath"
-          :title="cherryPickTitle"
-          size="small"
-          data-method="post"
-        >
-          {{ cherryPickLabel }}
-        </gl-button>
-        <gl-button
-          v-if="shouldShowRemoveSourceBranch"
-          :disabled="isMakingRequest"
-          size="small"
-          class="js-remove-branch-button"
-          @click="removeSourceBranch"
-        >
-          {{ s__('mrWidget|Delete source branch') }}
-        </gl-button>
-      </div>
-    </div>
-  </div>
+  <state-container :actions="actions">
+    <template #icon>
+      <gl-icon name="merge" :size="24" class="gl-text-blue-500 gl-mr-3 gl-mt-1" />
+    </template>
+    <mr-widget-author-time
+      :action-text="s__('mrWidget|Merged by')"
+      :author="mr.metrics.mergedBy"
+      :date-title="mr.metrics.mergedAt"
+      :date-readable="mr.metrics.readableMergedAt"
+    />
+  </state-container>
 </template>

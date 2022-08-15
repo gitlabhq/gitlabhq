@@ -247,6 +247,37 @@ describe('markdownSerializer', () => {
     ).toBe('[download file](file.zip "click here to download")');
   });
 
+  it('correctly serializes link references', () => {
+    expect(
+      serialize(
+        paragraph(
+          link(
+            {
+              href: 'gitlab-url',
+              isReference: true,
+            },
+            'GitLab',
+          ),
+        ),
+      ),
+    ).toBe('[GitLab][gitlab-url]');
+  });
+
+  it('correctly serializes image references', () => {
+    expect(
+      serialize(
+        paragraph(
+          image({
+            canonicalSrc: 'gitlab-url',
+            src: 'image.svg',
+            alt: 'GitLab',
+            isReference: true,
+          }),
+        ),
+      ),
+    ).toBe('![GitLab][gitlab-url]');
+  });
+
   it('correctly serializes strikethrough', () => {
     expect(serialize(paragraph(strike('deleted content')))).toBe('~~deleted content~~');
   });

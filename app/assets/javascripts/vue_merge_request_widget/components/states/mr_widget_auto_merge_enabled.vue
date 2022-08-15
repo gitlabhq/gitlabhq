@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlIcon, GlButton, GlSprintf } from '@gitlab/ui';
+import { GlSkeletonLoader, GlIcon, GlSprintf } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
 import createFlash from '~/flash';
@@ -9,6 +9,7 @@ import { AUTO_MERGE_STRATEGIES } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import MrWidgetAuthor from '../mr_widget_author.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'MRWidgetAutoMergeEnabled',
@@ -28,8 +29,8 @@ export default {
     MrWidgetAuthor,
     GlSkeletonLoader,
     GlIcon,
-    GlButton,
     GlSprintf,
+    StateContainer,
   },
   mixins: [autoMergeMixin, glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   props: {
@@ -76,6 +77,26 @@ export default {
     },
     autoMergeStrategy() {
       return (this.glFeatures.mergeRequestWidgetGraphql ? this.state : this.mr).autoMergeStrategy;
+    },
+    actions() {
+      const actions = [];
+
+      if (this.loading) {
+        return actions;
+      }
+
+      if (this.mr.canCancelAutomaticMerge) {
+        actions.push({
+          text: this.cancelButtonText,
+          loading: this.isCancellingAutoMerge,
+          dataQaSelector: 'cancel_auto_merge_button',
+          class: 'js-cancel-auto-merge',
+          testId: 'cancelAutomaticMergeButton',
+          onClick: () => this.cancelAutomaticMerge(),
+        });
+      }
+
+      return actions;
     },
   },
   methods: {
@@ -130,38 +151,25 @@ export default {
 };
 </script>
 <template>
-  <div class="mr-widget-body media">
-    <div v-if="loading" class="gl-w-full mr-conflict-loader">
+  <state-container status="scheduled" :is-loading="loading" :actions="actions">
+    <template #loading>
       <gl-skeleton-loader :width="334" :height="30">
         <rect x="0" y="3" width="24" height="24" rx="4" />
         <rect x="32" y="7" width="150" height="16" rx="4" />
         <rect x="190" y="7" width="144" height="16" rx="4" />
       </gl-skeleton-loader>
-    </div>
-    <template v-else>
-      <gl-icon name="status_scheduled" :size="24" class="gl-text-blue-500 gl-mr-3 gl-mt-1" />
-      <div class="media-body">
-        <h4 class="gl-display-flex">
-          <span class="gl-mr-3">
-            <gl-sprintf :message="statusText" data-testid="statusText">
-              <template #merge_author>
-                <mr-widget-author :author="mergeUser" />
-              </template>
-            </gl-sprintf>
-          </span>
-          <gl-button
-            v-if="mr.canCancelAutomaticMerge"
-            :loading="isCancellingAutoMerge"
-            size="small"
-            class="js-cancel-auto-merge"
-            data-qa-selector="cancel_auto_merge_button"
-            data-testid="cancelAutomaticMergeButton"
-            @click="cancelAutomaticMerge"
-          >
-            {{ cancelButtonText }}
-          </gl-button>
-        </h4>
-      </div>
     </template>
-  </div>
+    <template v-if="!loading">
+      <h4 class="gl-mr-3" data-testid="statusText">
+        <gl-sprintf :message="statusText" data-testid="statusText">
+          <template #merge_author>
+            <mr-widget-author :author="mergeUser" />
+          </template>
+        </gl-sprintf>
+      </h4>
+    </template>
+    <template v-if="!loading" #icon>
+      <gl-icon name="status_scheduled" :size="24" class="gl-text-blue-500 gl-mr-3 gl-mt-1" />
+    </template>
+  </state-container>
 </template>

@@ -1,5 +1,5 @@
 <script>
-import { GlTableLite, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
+import { GlFormCheckbox, GlTableLite, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
@@ -23,6 +23,7 @@ const defaultFields = [
 
 export default {
   components: {
+    GlFormCheckbox,
     GlTableLite,
     GlSkeletonLoader,
     TooltipOnTruncate,
@@ -123,19 +124,11 @@ export default {
       fixed
     >
       <template #head(checkbox)>
-        <!--
-          Checkbox to select all to be added here
-          See https://gitlab.com/gitlab-org/gitlab/-/issues/339525/
-        -->
-        <span></span>
+        <slot name="head-checkbox"></slot>
       </template>
 
       <template #cell(checkbox)="{ item }">
-        <input
-          type="checkbox"
-          :checked="isChecked(item)"
-          @change="onCheckboxChange(item, $event.target.checked)"
-        />
+        <gl-form-checkbox :checked="isChecked(item)" @change="onCheckboxChange(item, $event)" />
       </template>
 
       <template #head(status)="{ label }">

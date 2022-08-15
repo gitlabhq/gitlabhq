@@ -21,6 +21,7 @@ export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
 export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';
 export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
+export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
 
 export const i18n = {
   fetchError: s__('WorkItem|Something went wrong when fetching the work item. Please try again.'),
@@ -38,4 +39,27 @@ export const WORK_ITEM_STATUS_TEXT = {
 
 export const WORK_ITEM_TYPE_IDS = {
   TASK: 'gid://gitlab/WorkItems::Type/5',
+};
+
+export const WORK_ITEMS_TYPE_MAP = {
+  [WORK_ITEM_TYPE_ENUM_INCIDENT]: {
+    icon: `issue-type-incident`,
+    name: s__('WorkItem|Incident'),
+  },
+  [WORK_ITEM_TYPE_ENUM_ISSUE]: {
+    icon: `issue-type-issue`,
+    name: s__('WorkItem|Issue'),
+  },
+  [WORK_ITEM_TYPE_ENUM_TASK]: {
+    icon: `issue-type-task`,
+    name: s__('WorkItem|Task'),
+  },
+  [WORK_ITEM_TYPE_ENUM_TEST_CASE]: {
+    icon: `issue-type-test-case`,
+    name: s__('WorkItem|Test case'),
+  },
+  [WORK_ITEM_TYPE_ENUM_REQUIREMENTS]: {
+    icon: `issue-type-requirements`,
+    name: s__('WorkItem|Requirements'),
+  },
 };

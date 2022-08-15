@@ -20,6 +20,7 @@ import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerBulkDelete from '~/runner/components/runner_bulk_delete.vue';
+import RunnerBulkDeleteCheckbox from '~/runner/components/runner_bulk_delete_checkbox.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
@@ -84,6 +85,7 @@ describe('AdminRunnersApp', () => {
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerBulkDelete = () => wrapper.findComponent(RunnerBulkDelete);
+  const findRunnerBulkDeleteCheckbox = () => wrapper.findComponent(RunnerBulkDeleteCheckbox);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
@@ -351,6 +353,7 @@ describe('AdminRunnersApp', () => {
     describe('Before runners are deleted', () => {
       beforeEach(async () => {
         await createComponent({
+          mountFn: mountExtended,
           provide: {
             glFeatures: { adminRunnersBulkDelete: true },
           },
@@ -358,7 +361,11 @@ describe('AdminRunnersApp', () => {
       });
 
       it('runner bulk delete is available', () => {
-        expect(findRunnerBulkDelete().exists()).toBe(true);
+        expect(findRunnerBulkDelete().props('runners')).toEqual(mockRunners);
+      });
+
+      it('runner bulk delete checkbox is available', () => {
+        expect(findRunnerBulkDeleteCheckbox().props('runners')).toEqual(mockRunners);
       });
 
       it('runner list is checkable', () => {

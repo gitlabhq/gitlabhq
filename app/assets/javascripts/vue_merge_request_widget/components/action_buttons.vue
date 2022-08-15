@@ -14,7 +14,8 @@ export default {
   props: {
     widget: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     tertiaryButtons: {
       type: Array,
@@ -30,6 +31,8 @@ export default {
   },
   computed: {
     dropdownLabel() {
+      if (!this.widget) return undefined;
+
       return sprintf(__('%{widget} options'), { widget: this.widget });
     },
   },
@@ -85,6 +88,7 @@ export default {
         :href="btn.href"
         :target="btn.target"
         :data-clipboard-text="btn.dataClipboardText"
+        :data-method="btn.dataMethod"
         @click="onClickAction(btn)"
       >
         {{ btn.text }}
@@ -99,11 +103,15 @@ export default {
         :title="setTooltip(btn)"
         :href="btn.href"
         :target="btn.target"
-        :class="{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }"
+        :class="[{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }, btn.class]"
         :data-clipboard-text="btn.dataClipboardText"
+        :data-qa-selector="btn.dataQaSelector"
+        :data-method="btn.dataMethod"
         :icon="btn.icon"
         :data-testid="btn.testId || 'extension-actions-button'"
         :variant="btn.variant || 'confirm'"
+        :loading="btn.loading"
+        :disabled="btn.loading"
         category="tertiary"
         size="small"
         class="gl-display-none gl-md-display-block gl-float-left"

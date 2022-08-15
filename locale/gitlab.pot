@@ -22,6 +22,11 @@ msgstr ""
 msgid " (from %{timeoutSource})"
 msgstr ""
 
+msgid " (squashes %{strongStart}%{count}%{strongEnd} commit)"
+msgid_plural " (squashes %{strongStart}%{count}%{strongEnd} commits)"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid " Collected %{time}"
 msgstr ""
 
@@ -1020,6 +1025,11 @@ msgstr[1] ""
 msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
 msgstr ""
 
+msgid "%{strongStart}%{count}%{strongEnd} commit"
+msgid_plural "%{strongStart}%{count}%{strongEnd} commits"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{strongStart}Tip:%{strongEnd} You can also check out merge requests locally. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -1260,11 +1270,6 @@ msgstr ""
 
 msgid "(revoked)"
 msgstr ""
-
-msgid "(squashes %d commit)"
-msgid_plural "(squashes %d commits)"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "(this user)"
 msgstr ""
@@ -21733,10 +21738,16 @@ msgstr ""
 msgid "Is using seat"
 msgstr ""
 
+msgid "IssuableStatus|%{wi_type} created %{created_at} by "
+msgstr ""
+
 msgid "IssuableStatus|Closed"
 msgstr ""
 
 msgid "IssuableStatus|Closed (%{link})"
+msgstr ""
+
+msgid "IssuableStatus|Created %{created_at} by"
 msgstr ""
 
 msgid "IssuableStatus|duplicated"
@@ -44359,7 +44370,13 @@ msgstr ""
 msgid "WorkItem|Expand child items"
 msgstr ""
 
+msgid "WorkItem|Incident"
+msgstr ""
+
 msgid "WorkItem|Introducing tasks"
+msgstr ""
+
+msgid "WorkItem|Issue"
 msgstr ""
 
 msgid "WorkItem|Learn about tasks"
@@ -44375,6 +44392,9 @@ msgid "WorkItem|Open"
 msgstr ""
 
 msgid "WorkItem|Remove"
+msgstr ""
+
+msgid "WorkItem|Requirements"
 msgstr ""
 
 msgid "WorkItem|Select type"
@@ -44407,7 +44427,13 @@ msgstr ""
 msgid "WorkItem|Something went wrong while updating the work item. Please try again."
 msgstr ""
 
+msgid "WorkItem|Task"
+msgstr ""
+
 msgid "WorkItem|Task deleted"
+msgstr ""
+
+msgid "WorkItem|Test case"
 msgstr ""
 
 msgid "WorkItem|Turn off confidentiality"
@@ -46627,7 +46653,7 @@ msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "mergedCommitsAdded|(commits were squashed)"
+msgid "mergedCommitsAdded| (commits were squashed)"
 msgstr ""
 
 msgid "metric_id must be unique across a project"
@@ -46648,7 +46674,7 @@ msgstr ""
 msgid "mrWidgetCommitsAdded|%{commitCount} will be added to %{targetBranch}."
 msgstr ""
 
-msgid "mrWidgetCommitsAdded|1 merge commit"
+msgid "mrWidgetCommitsAdded|%{strongStart}1%{strongEnd} merge commit"
 msgstr ""
 
 msgid "mrWidgetCommitsAdded|Changes merged into %{targetBranch} with %{mergeCommitSha}%{squashedCommits}."

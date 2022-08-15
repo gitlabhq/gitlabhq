@@ -89,6 +89,30 @@ describe('~/runner/graphql/list/local_state', () => {
     });
   });
 
+  describe.each`
+    inputs                                       | expected
+    ${[[['a', 'b'], true]]}                      | ${['a', 'b']}
+    ${[[['a', 'b'], false]]}                     | ${[]}
+    ${[[['a', 'b'], true], [['c', 'd'], true]]}  | ${['a', 'b', 'c', 'd']}
+    ${[[['a', 'b'], true], [['a', 'b'], false]]} | ${[]}
+    ${[[['a', 'b'], true], [['b'], false]]}      | ${['a']}
+  `('setRunnersChecked', ({ inputs, expected }) => {
+    beforeEach(() => {
+      inputs.forEach(([ids, isChecked]) => {
+        ids.forEach(addMockRunnerToCache);
+
+        localState.localMutations.setRunnersChecked({
+          runners: ids.map((id) => ({ id })),
+          isChecked,
+        });
+      });
+    });
+
+    it(`for inputs="${inputs}" has a ids="[${expected}]"`, () => {
+      expect(queryCheckedRunnerIds()).toEqual(expected);
+    });
+  });
+
   describe('clearChecked', () => {
     it('clears all checked items', () => {
       ['a', 'b', 'c'].forEach((id) => {

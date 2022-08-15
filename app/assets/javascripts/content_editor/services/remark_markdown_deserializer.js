@@ -126,7 +126,8 @@ const factorySpecs = {
     selector: 'img',
     getAttrs: (hastNode) => ({
       src: hastNode.properties.src,
-      canonicalSrc: hastNode.properties.src,
+      canonicalSrc: hastNode.properties.identifier ?? hastNode.properties.src,
+      isReference: hastNode.properties.isReference === 'true',
       title: hastNode.properties.title,
       alt: hastNode.properties.alt,
     }),
@@ -156,8 +157,9 @@ const factorySpecs = {
     type: 'mark',
     selector: 'a',
     getAttrs: (hastNode) => ({
-      canonicalSrc: hastNode.properties.href,
+      canonicalSrc: hastNode.properties.identifier ?? hastNode.properties.href,
       href: hastNode.properties.href,
+      isReference: hastNode.properties.isReference === 'true',
       title: hastNode.properties.title,
     }),
   },
@@ -185,7 +187,7 @@ const factorySpecs = {
   },
 };
 
-const SANITIZE_ALLOWLIST = ['level', 'identifier', 'numeric', 'language', 'url'];
+const SANITIZE_ALLOWLIST = ['level', 'identifier', 'numeric', 'language', 'url', 'isReference'];
 
 const sanitizeAttribute = (attributeName, attributeValue, hastNode) => {
   if (!attributeValue || SANITIZE_ALLOWLIST.includes(attributeName)) {
@@ -230,7 +232,14 @@ export default () => {
             attributeTransformer,
             markdown,
           }),
-        skipRendering: ['footnoteReference', 'footnoteDefinition', 'code', 'definition'],
+        skipRendering: [
+          'footnoteReference',
+          'footnoteDefinition',
+          'code',
+          'definition',
+          'linkReference',
+          'imageReference',
+        ],
       });
 
       return { document };

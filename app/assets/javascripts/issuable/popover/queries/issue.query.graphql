@@ -14,6 +14,7 @@ query issue($projectPath: ID!, $iid: String!) {
         startDate
         dueDate
       }
+      type
     }
   }
 }

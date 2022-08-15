@@ -1,4 +1,5 @@
 import { pick } from 'lodash';
+import normalize from 'mdurl/encode';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
@@ -27,6 +28,37 @@ const skipRenderingHandlers = {
       'referenceDefinition',
       { identifier: node.identifier, url: node.url, title: node.title },
       [{ type: 'text', value: `[${node.identifier}]: ${node.url}${title}` }],
+    );
+  },
+  linkReference: (h, node) => {
+    const definition = h.definition(node.identifier);
+
+    return h(
+      node.position,
+      'a',
+      {
+        href: normalize(definition.url ?? ''),
+        identifier: node.identifier,
+        isReference: 'true',
+        title: definition.title,
+      },
+      all(h, node),
+    );
+  },
+  imageReference: (h, node) => {
+    const definition = h.definition(node.identifier);
+
+    return h(
+      node.position,
+      'img',
+      {
+        src: normalize(definition.url ?? ''),
+        alt: node.alt,
+        identifier: node.identifier,
+        isReference: 'true',
+        title: definition.title,
+      },
+      all(h, node),
     );
   },
 };

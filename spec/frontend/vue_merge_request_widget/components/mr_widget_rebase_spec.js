@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import WidgetRebase from '~/vue_merge_request_widget/components/states/mr_widget_rebase.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -9,7 +9,7 @@ jest.mock('~/vue_shared/plugins/global_toast');
 let wrapper;
 
 function createWrapper(propsData, mergeRequestWidgetGraphql, rebaseWithoutCiUi) {
-  wrapper = shallowMount(WidgetRebase, {
+  wrapper = mount(WidgetRebase, {
     propsData,
     data() {
       return {
@@ -216,7 +216,7 @@ describe('Merge request widget rebase component', () => {
           });
         });
 
-        it('does not render the "Rebase without pipeline" button with rebaseWithoutCiUI flag enabled', () => {
+        it('does render the "Rebase without pipeline" button with rebaseWithoutCiUI flag enabled', () => {
           createWrapper(
             {
               mr: {
@@ -227,26 +227,10 @@ describe('Merge request widget rebase component', () => {
               service: {},
             },
             mergeRequestWidgetGraphql,
-            { rebaseWithoutCiUi: true },
+            true,
           );
 
-          expect(findRebaseWithoutCiButton().exists()).toBe(false);
-        });
-
-        it('does not render the standard rebase button with rebaseWithoutCiUI flag disabled', () => {
-          createWrapper(
-            {
-              mr: {
-                rebaseInProgress: false,
-                canPushToSourceBranch: false,
-                targetBranch: exampleTargetBranch,
-              },
-              service: {},
-            },
-            mergeRequestWidgetGraphql,
-          );
-
-          expect(findStandardRebaseButton().exists()).toBe(false);
+          expect(findRebaseWithoutCiButton().exists()).toBe(true);
         });
       });
 

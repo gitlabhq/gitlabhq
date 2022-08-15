@@ -335,6 +335,9 @@ export default {
         ? __('Did not delete the source branch.')
         : __('Source branch will not be deleted.');
     },
+    showMergeDetailsHeader() {
+      return ['readyToMerge'].indexOf(this.mr.state) >= 0;
+    },
   },
   mounted() {
     if (this.glFeatures.mergeRequestWidgetGraphql) {
@@ -524,7 +527,7 @@ export default {
       </div>
     </div>
     <template v-else>
-      <div class="mr-widget-body media mr-widget-body-line-height-1">
+      <div class="mr-widget-body mr-widget-body-ready-merge media mr-widget-body-line-height-1">
         <div class="media-body">
           <div class="mr-widget-body-controls gl-display-flex gl-align-items-center gl-flex-wrap">
             <gl-button-group v-if="shouldShowMergeControls" class="gl-align-self-start">
@@ -651,13 +654,13 @@ export default {
             </div>
             <div
               v-if="!shouldShowMergeControls"
-              class="gl-w-full gl-order-n1 gl-text-gray-500"
+              class="gl-w-full gl-order-n1 mr-widget-merge-details"
               data-qa-selector="merged_status_content"
             >
-              <strong v-if="mr.state !== 'closed'">
+              <p v-if="showMergeDetailsHeader" class="gl-mb-3 gl-text-gray-900">
                 {{ __('Merge details') }}
-              </strong>
-              <ul class="gl-pl-4 gl-m-0">
+              </p>
+              <ul class="gl-pl-4 gl-mb-0 gl-ml-3 gl-text-gray-600">
                 <li v-if="mr.divergedCommitsCount > 0" class="gl-line-height-normal">
                   <gl-sprintf
                     :message="s__('mrWidget|The source branch is %{link} the target branch')"

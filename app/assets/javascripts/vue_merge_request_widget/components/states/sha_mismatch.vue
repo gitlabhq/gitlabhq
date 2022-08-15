@@ -1,13 +1,13 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { I18N_SHA_MISMATCH } from '../../i18n';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'ShaMismatch',
   components: {
-    statusIcon,
     GlButton,
+    StateContainer,
   },
   i18n: {
     I18N_SHA_MISMATCH,
@@ -22,24 +22,24 @@ export default {
 </script>
 
 <template>
-  <div class="mr-widget-body media">
-    <status-icon :show-disabled-button="false" status="warning" />
-    <div class="media-body">
-      <span
-        class="gl-ml-0! gl-text-body! gl-font-weight-bold"
-        data-qa-selector="head_mismatch_content"
-      >
-        {{ $options.i18n.I18N_SHA_MISMATCH.warningMessage }}
-      </span>
+  <state-container status="warning">
+    <span
+      class="gl-font-weight-bold gl-md-mr-3 gl-flex-grow-1 gl-ml-0! gl-text-body!"
+      data-qa-selector="head_mismatch_content"
+    >
+      {{ $options.i18n.I18N_SHA_MISMATCH.warningMessage }}
+    </span>
+    <template #actions>
       <gl-button
-        class="gl-ml-3"
         data-testid="action-button"
         size="small"
         category="primary"
         variant="confirm"
+        class="gl-align-self-start"
         :href="mr.mergeRequestDiffsPath"
-        >{{ $options.i18n.I18N_SHA_MISMATCH.actionButtonLabel }}</gl-button
       >
-    </div>
-  </div>
+        {{ $options.i18n.I18N_SHA_MISMATCH.actionButtonLabel }}
+      </gl-button>
+    </template>
+  </state-container>
 </template>

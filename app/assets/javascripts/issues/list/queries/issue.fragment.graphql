@@ -18,6 +18,7 @@ fragment IssueFragment on Issue {
   userDiscussionsCount @include(if: $isSignedIn)
   webPath
   webUrl
+  type
   assignees @skip(if: $hideUsers) {
     nodes {
       __typename

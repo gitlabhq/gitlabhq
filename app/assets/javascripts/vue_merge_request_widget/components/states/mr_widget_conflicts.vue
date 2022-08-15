@@ -4,14 +4,14 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import userPermissionsQuery from '../../queries/permissions.query.graphql';
 import conflictsStateQuery from '../../queries/states/conflicts.query.graphql';
-import StatusIcon from '../mr_widget_status_icon.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'MRWidgetConflicts',
   components: {
     GlSkeletonLoader,
-    StatusIcon,
     GlButton,
+    StateContainer,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   apollo: {
@@ -86,25 +86,23 @@ export default {
 };
 </script>
 <template>
-  <div class="mr-widget-body media">
-    <status-icon :show-disabled-button="true" status="warning" />
-
-    <div v-if="isLoading" class="gl-ml-4 gl-w-full mr-conflict-loader">
+  <state-container status="warning" :is-loading="isLoading">
+    <template #loading>
       <gl-skeleton-loader :width="334" :height="30">
         <rect x="0" y="7" width="150" height="16" rx="4" />
         <rect x="158" y="7" width="84" height="16" rx="4" />
         <rect x="250" y="7" width="84" height="16" rx="4" />
       </gl-skeleton-loader>
-    </div>
-    <div v-else class="media-body space-children gl-display-flex gl-align-items-center">
-      <span v-if="shouldBeRebased" class="gl-ml-0! gl-text-body! bold">
+    </template>
+    <template v-if="!isLoading">
+      <span v-if="shouldBeRebased" class="bold gl-ml-0! gl-text-body!">
         {{
           s__(`mrWidget|Merge blocked: fast-forward merge is not possible.
   To merge this request, first rebase locally.`)
         }}
       </span>
       <template v-else>
-        <span class="gl-ml-0! gl-text-body! bold">
+        <span class="bold gl-ml-0! gl-text-body! gl-flex-grow-1 gl-w-full gl-md-w-auto gl-mr-2">
           {{ s__('mrWidget|Merge blocked: merge conflicts must be resolved.') }}
           <span v-if="!canMerge">
             {{
@@ -114,23 +112,30 @@ export default {
             }}
           </span>
         </span>
-        <gl-button
-          v-if="showResolveButton"
-          :href="mr.conflictResolutionPath"
-          size="small"
-          data-testid="resolve-conflicts-button"
-        >
-          {{ s__('mrWidget|Resolve conflicts') }}
-        </gl-button>
-        <gl-button
-          v-if="canMerge"
-          size="small"
-          data-testid="merge-locally-button"
-          class="js-check-out-modal-trigger"
-        >
-          {{ s__('mrWidget|Resolve locally') }}
-        </gl-button>
       </template>
-    </div>
-  </div>
+    </template>
+    <template v-if="!isLoading && !shouldBeRebased" #actions>
+      <gl-button
+        v-if="canMerge"
+        size="small"
+        variant="confirm"
+        category="secondary"
+        data-testid="merge-locally-button"
+        class="js-check-out-modal-trigger gl-align-self-start"
+        :class="{ 'gl-mr-2': showResolveButton }"
+      >
+        {{ s__('mrWidget|Resolve locally') }}
+      </gl-button>
+      <gl-button
+        v-if="showResolveButton"
+        :href="mr.conflictResolutionPath"
+        size="small"
+        variant="confirm"
+        class="gl-mb-2 gl-md-mb-0 gl-align-self-start"
+        data-testid="resolve-conflicts-button"
+      >
+        {{ s__('mrWidget|Resolve conflicts') }}
+      </gl-button>
+    </template>
+  </state-container>
 </template>

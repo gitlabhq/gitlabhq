@@ -2,7 +2,7 @@
 
 module QA
   RSpec.shared_examples 'registration and login' do
-    it 'allows the user to registers and login' do
+    it 'allows the user to register and login' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
       Resource::User.fabricate_via_browser_ui!
@@ -39,7 +39,7 @@ module QA
       end
     end
 
-    describe 'standard', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
+    describe 'standard', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
       context 'when admin approval is not required' do
         before(:all) do
           set_require_admin_approval_after_user_signup_via_api(false)
@@ -69,7 +69,7 @@ module QA
             Support::Waiter.wait_until(retry_on_exception: true, sleep_interval: 3) { !user.exists? }
           end
 
-          it 'allows recreating with same credentials', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
+          it 'allows recreating with same credentials', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
             expect(Page::Main::Menu.perform(&:signed_in?)).to be_falsy
 
             Flow::Login.sign_in(as: user, skip_page_validation: true)

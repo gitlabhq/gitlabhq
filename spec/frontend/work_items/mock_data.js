@@ -30,6 +30,7 @@ export const workItemQueryResponse = {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
+        iconName: 'issue-type-task',
       },
       userPermissions: {
         deleteWorkItem: false,
@@ -89,6 +90,7 @@ export const updateWorkItemMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
+          iconName: 'issue-type-task',
         },
         userPermissions: {
           deleteWorkItem: false,
@@ -148,6 +150,7 @@ export const workItemResponseFactory = ({
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
+        iconName: 'issue-type-task',
       },
       userPermissions: {
         deleteWorkItem: canDelete,
@@ -236,6 +239,7 @@ export const createWorkItemMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
+          iconName: 'issue-type-task',
         },
         userPermissions: {
           deleteWorkItem: false,
@@ -264,6 +268,7 @@ export const createWorkItemFromTaskMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
+          iconName: 'issue-type-task',
         },
         userPermissions: {
           deleteWorkItem: false,
@@ -289,6 +294,7 @@ export const createWorkItemFromTaskMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
           name: 'Task',
+          iconName: 'issue-type-task',
         },
         userPermissions: {
           deleteWorkItem: false,
@@ -519,6 +525,7 @@ export const changeWorkItemParentMutationResponse = {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/1',
           name: 'Issue',
+          iconName: 'issue-type-issue',
         },
         userPermissions: {
           deleteWorkItem: true,

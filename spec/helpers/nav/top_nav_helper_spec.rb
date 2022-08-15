@@ -88,18 +88,6 @@ RSpec.describe Nav::TopNavHelper do
         expect(subject[:shortcuts]).to eq(expected_shortcuts)
       end
 
-      it 'has expected :secondary' do
-        expected_secondary = [
-          ::Gitlab::Nav::TopNavMenuItem.build(
-            href: '/help',
-            id: 'help',
-            title: 'Help',
-            icon: 'question-o'
-          )
-        ]
-        expect(subject[:secondary]).to eq(expected_secondary)
-      end
-
       context 'with current nav as project' do
         before do
           helper.nav('project')

@@ -28,6 +28,8 @@ module WorkItems
       task: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate]
     }.freeze
 
+    WI_TYPES_WITH_CREATED_HEADER = %w[issue incident].freeze
+
     cache_markdown_field :description, pipeline: :single_line
 
     enum base_type: BASE_TYPES.transform_values { |value| value[:enum_value] }

@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -37,7 +37,7 @@ function factory(propsData, stateOverride = {}) {
   }
 
   wrapper = extendedWrapper(
-    shallowMount(autoMergeEnabledComponent, {
+    mount(autoMergeEnabledComponent, {
       propsData: {
         mr: propsData,
         service: new MRWidgetService({}),
@@ -73,7 +73,7 @@ const defaultMrProps = () => ({
   autoMergeStrategy: MWPS_MERGE_STRATEGY,
 });
 
-const getStatusText = () => wrapper.findByTestId('statusText').attributes('message');
+const getStatusText = () => wrapper.findByTestId('statusText').text();
 
 describe('MRWidgetAutoMergeEnabled', () => {
   let oldWindowGl;
@@ -203,8 +203,8 @@ describe('MRWidgetAutoMergeEnabled', () => {
             autoMergeStrategy: MWPS_MERGE_STRATEGY,
           });
 
-          expect(getStatusText()).toBe(
-            'Set by %{merge_author} to be merged automatically when the pipeline succeeds',
+          expect(getStatusText()).toContain(
+            'to be merged automatically when the pipeline succeeds',
           );
         });
 

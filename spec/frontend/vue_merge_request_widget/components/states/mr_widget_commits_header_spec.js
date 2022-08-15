@@ -27,7 +27,6 @@ describe('Commits header component', () => {
 
   const findHeaderWrapper = () => wrapper.find('.js-mr-widget-commits-count');
   const findCommitToggle = () => wrapper.find('.commit-edit-toggle');
-  const findCommitsCountMessage = () => wrapper.find('.commits-count-message');
   const findTargetBranchMessage = () => wrapper.find('.label-branch');
   const findModifyButton = () => wrapper.find('.modify-message-button');
 
@@ -40,7 +39,7 @@ describe('Commits header component', () => {
     });
 
     it('has commits count message showing 1 commit', () => {
-      expect(findCommitsCountMessage().text()).toBe('1 commit');
+      expect(wrapper.text()).toContain('1 commit');
     });
 
     it('has button with modify commit message', () => {
@@ -75,7 +74,7 @@ describe('Commits header component', () => {
       });
 
       it('has commits count message showing correct amount of commits', () => {
-        expect(findCommitsCountMessage().text()).toBe('5 commits');
+        expect(wrapper.text()).toContain('5 commits');
       });
 
       it('has button with modify merge commit message', () => {
@@ -89,7 +88,7 @@ describe('Commits header component', () => {
       });
 
       it('has commits count message showing one commit when squash is enabled', () => {
-        expect(findCommitsCountMessage().text()).toBe('1 commit');
+        expect(wrapper.text()).toContain('1 commit');
       });
 
       it('has button with modify commit messages text', () => {

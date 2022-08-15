@@ -8,7 +8,7 @@ import simplePoll from '~/lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import rebaseQuery from '../../queries/states/rebase.query.graphql';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'MRWidgetRebase',
@@ -25,9 +25,9 @@ export default {
     },
   },
   components: {
-    statusIcon,
     GlSkeletonLoader,
     GlButton,
+    StateContainer,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   props: {
@@ -76,6 +76,10 @@ export default {
       return this.mr.targetBranch;
     },
     status() {
+      if (this.isLoading) {
+        return undefined;
+      }
+
       if (this.rebaseInProgress || this.isMakingRequest) {
         return 'loading';
       }
@@ -148,69 +152,71 @@ export default {
 };
 </script>
 <template>
-  <div class="mr-widget-body media">
-    <div v-if="isLoading" class="gl-w-full mr-conflict-loader">
+  <state-container :status="status" :is-loading="isLoading">
+    <template #loading>
       <gl-skeleton-loader :width="334" :height="30">
         <rect x="0" y="3" width="24" height="24" rx="4" />
         <rect x="32" y="5" width="302" height="20" rx="4" />
       </gl-skeleton-loader>
-    </div>
-    <template v-else>
-      <status-icon :status="status" :show-disabled-button="showDisabledButton" />
-
-      <div class="rebase-state-find-class-convention media media-body space-children">
+    </template>
+    <template v-if="!isLoading">
+      <span
+        v-if="rebaseInProgress || isMakingRequest"
+        class="gl-ml-0! gl-text-body! gl-font-weight-bold"
+        data-testid="rebase-message"
+        >{{ __('Rebase in progress') }}</span
+      >
+      <span
+        v-if="!rebaseInProgress && !canPushToSourceBranch"
+        class="gl-text-body! gl-font-weight-bold gl-ml-0!"
+        data-testid="rebase-message"
+        >{{ fastForwardMergeText }}</span
+      >
+      <div
+        v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"
+        class="accept-merge-holder clearfix js-toggle-container media gl-md-display-flex gl-flex-wrap gl-flex-grow-1"
+      >
         <span
-          v-if="rebaseInProgress || isMakingRequest"
-          class="gl-ml-0! gl-text-body! gl-font-weight-bold"
+          v-if="!rebasingError"
+          class="gl-font-weight-bold gl-w-100 gl-md-w-auto gl-flex-grow-1 gl-ml-0! gl-text-body! gl-md-mr-3"
           data-testid="rebase-message"
-          >{{ __('Rebase in progress') }}</span
+          data-qa-selector="no_fast_forward_message_content"
+          >{{
+            __('Merge blocked: the source branch must be rebased onto the target branch.')
+          }}</span
         >
         <span
-          v-if="!rebaseInProgress && !canPushToSourceBranch"
-          class="gl-text-body! gl-font-weight-bold gl-ml-0!"
+          v-else
+          class="gl-font-weight-bold danger gl-w-100 gl-md-w-auto gl-flex-grow-1 gl-md-mr-3"
           data-testid="rebase-message"
-          >{{ fastForwardMergeText }}</span
+          >{{ rebasingError }}</span
         >
-        <div
-          v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"
-          class="accept-merge-holder clearfix js-toggle-container accept-action media space-children gl-align-items-center"
-        >
-          <span
-            v-if="!rebasingError"
-            class="gl-ml-0! gl-text-body! gl-font-weight-bold"
-            data-testid="rebase-message"
-            data-qa-selector="no_fast_forward_message_content"
-            >{{
-              __('Merge blocked: the source branch must be rebased onto the target branch.')
-            }}</span
-          >
-          <span v-else class="gl-font-weight-bold danger" data-testid="rebase-message">{{
-            rebasingError
-          }}</span>
-          <gl-button
-            :loading="isMakingRequest"
-            variant="confirm"
-            size="small"
-            data-qa-selector="mr_rebase_button"
-            data-testid="standard-rebase-button"
-            class="gl-ml-3!"
-            @click="rebase"
-          >
-            {{ __('Rebase') }}
-          </gl-button>
-          <gl-button
-            v-if="showRebaseWithoutCi"
-            :loading="isMakingRequest"
-            variant="confirm"
-            size="small"
-            category="secondary"
-            data-testid="rebase-without-ci-button"
-            @click="rebaseWithoutCi"
-          >
-            {{ __('Rebase without pipeline') }}
-          </gl-button>
-        </div>
       </div>
     </template>
-  </div>
+    <template v-if="!isLoading" #actions>
+      <gl-button
+        v-if="showRebaseWithoutCi"
+        :loading="isMakingRequest"
+        variant="confirm"
+        size="small"
+        category="secondary"
+        data-testid="rebase-without-ci-button"
+        class="gl-align-self-start gl-mr-2"
+        @click="rebaseWithoutCi"
+      >
+        {{ __('Rebase without pipeline') }}
+      </gl-button>
+      <gl-button
+        :loading="isMakingRequest"
+        variant="confirm"
+        size="small"
+        data-qa-selector="mr_rebase_button"
+        data-testid="standard-rebase-button"
+        class="gl-mb-2 gl-md-mb-0 gl-align-self-start"
+        @click="rebase"
+      >
+        {{ __('Rebase') }}
+      </gl-button>
+    </template>
+  </state-container>
 </template>

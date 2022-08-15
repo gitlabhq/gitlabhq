@@ -10,6 +10,7 @@ import {
 } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -55,6 +56,7 @@ export default {
     WorkItemWeight,
     WorkItemInformation,
     LocalStorageSync,
+    WorkItemTypeIcon,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -145,6 +147,9 @@ export default {
     },
     parentUrl() {
       return `../../issues/${this.parentWorkItem?.iid}`;
+    },
+    workItemIconName() {
+      return this.workItem?.workItemType?.iconName;
     },
   },
   beforeDestroy() {
@@ -243,16 +248,21 @@ export default {
           <li
             class="gl-px-4 gl-py-3 gl-line-height-0 gl-display-flex gl-align-items-center gl-overflow-hidden gl-flex-shrink-0"
           >
-            <gl-icon name="task-done" class="gl-mr-2 gl-flex-shrink-0" />
+            <work-item-type-icon
+              :work-item-icon-name="workItemIconName"
+              :work-item-type="workItemType && workItemType.toUpperCase()"
+            />
             {{ workItemType }}
           </li>
         </ul>
-        <span
+        <work-item-type-icon
           v-else
+          :work-item-icon-name="workItemIconName"
+          :work-item-type="workItemType && workItemType.toUpperCase()"
+          show-text
           class="gl-font-weight-bold gl-text-secondary gl-mr-auto"
           data-testid="work-item-type"
-          >{{ workItemType }}</span
-        >
+        />
         <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
         <gl-badge v-if="workItem.confidential" variant="warning" icon="eye-slash" class="gl-mr-3">{{
           __('Confidential')
@@ -317,16 +327,16 @@ export default {
           :can-update="canUpdate"
           @error="error = $event"
         />
-        <work-item-weight
-          v-if="workItemWeight"
-          class="gl-mb-5"
-          :can-update="canUpdate"
-          :weight="workItemWeight.weight"
-          :work-item-id="workItem.id"
-          :work-item-type="workItemType"
-          @error="error = $event"
-        />
       </template>
+      <work-item-weight
+        v-if="workItemWeight"
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :weight="workItemWeight.weight"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="error = $event"
+      />
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"

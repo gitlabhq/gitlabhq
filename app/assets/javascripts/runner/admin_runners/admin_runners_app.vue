@@ -17,6 +17,7 @@ import allRunnersCountQuery from 'ee_else_ce/runner/graphql/list/all_runners_cou
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerBulkDelete from '../components/runner_bulk_delete.vue';
+import RunnerBulkDeleteCheckbox from '../components/runner_bulk_delete_checkbox.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerListEmptyState from '../components/runner_list_empty_state.vue';
 import RunnerName from '../components/runner_name.vue';
@@ -38,6 +39,7 @@ export default {
     RegistrationDropdown,
     RunnerFilteredSearchBar,
     RunnerBulkDelete,
+    RunnerBulkDeleteCheckbox,
     RunnerList,
     RunnerListEmptyState,
     RunnerName,
@@ -203,13 +205,20 @@ export default {
       :filtered-svg-path="emptyStateFilteredSvgPath"
     />
     <template v-else>
-      <runner-bulk-delete v-if="isBulkDeleteEnabled" @deleted="onDeleted" />
+      <runner-bulk-delete
+        v-if="isBulkDeleteEnabled"
+        :runners="runners.items"
+        @deleted="onDeleted"
+      />
       <runner-list
         :runners="runners.items"
         :loading="runnersLoading"
         :checkable="isBulkDeleteEnabled"
         @checked="onChecked"
       >
+        <template v-if="isBulkDeleteEnabled" #head-checkbox>
+          <runner-bulk-delete-checkbox :runners="runners.items" />
+        </template>
         <template #runner-name="{ runner }">
           <gl-link :href="runner.adminUrl">
             <runner-name :runner="runner" />

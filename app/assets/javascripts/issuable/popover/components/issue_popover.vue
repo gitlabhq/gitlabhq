@@ -6,6 +6,7 @@ import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import StatusBox from '~/issuable/components/status_box.vue';
 import { IssuableStatus } from '~/issues/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 
 export default {
   components: {
@@ -16,6 +17,7 @@ export default {
     IssueMilestone,
     IssueWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
     StatusBox,
+    WorkItemTypeIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -96,8 +98,9 @@ export default {
     </div>
     <h5 v-if="!$apollo.queries.issue.loading" class="gl-my-3">{{ title }}</h5>
     <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-    <div class="gl-text-secondary">
-      {{ `${projectPath}#${iid}` }}
+    <div>
+      <work-item-type-icon v-if="!$apollo.queries.issue.loading" :work-item-type="issue.type" />
+      <span class="gl-text-secondary">{{ `${projectPath}#${iid}` }}</span>
     </div>
     <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
 

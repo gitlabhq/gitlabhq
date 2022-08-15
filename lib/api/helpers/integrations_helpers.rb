@@ -328,14 +328,12 @@ module API
               type: String,
               desc: '(Advanced) The full URL for your Datadog site'
             },
-            # TODO: uncomment this field once :datadog_integration_logs_collection is rolled out
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/346339
-            # {
-            #   required: false,
-            #   name: :archive_trace_events,
-            #   type: Boolean,
-            #   desc: 'When enabled, job logs will be collected by Datadog and shown along pipeline execution traces'
-            # },
+            {
+              required: false,
+              name: :archive_trace_events,
+              type: Boolean,
+              desc: 'When enabled, job logs will be collected by Datadog and shown along pipeline execution traces'
+            },
             {
               required: false,
               name: :datadog_service,

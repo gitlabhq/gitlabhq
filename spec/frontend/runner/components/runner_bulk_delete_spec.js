@@ -10,6 +10,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import BulkRunnerDeleteMutation from '~/runner/graphql/list/bulk_runner_delete.mutation.graphql';
 import { createLocalState } from '~/runner/graphql/list/local_state';
 import waitForPromises from 'helpers/wait_for_promises';
+import { allRunnersData } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -25,6 +26,10 @@ describe('RunnerBulkDelete', () => {
   const findDeleteBtn = () => wrapper.findByText(s__('Runners|Delete selected'));
   const findModal = () => wrapper.findComponent(GlModal);
 
+  const mockRunners = allRunnersData.data.runners.nodes;
+  const mockId1 = allRunnersData.data.runners.nodes[0].id;
+  const mockId2 = allRunnersData.data.runners.nodes[1].id;
+
   const bulkRunnerDeleteHandler = jest.fn();
 
   const createComponent = () => {
@@ -39,6 +44,9 @@ describe('RunnerBulkDelete', () => {
       apolloProvider,
       provide: {
         localMutations,
+      },
+      propsData: {
+        runners: mockRunners,
       },
       directives: {
         GlTooltip: createMockDirective(),
@@ -82,9 +90,9 @@ describe('RunnerBulkDelete', () => {
   });
 
   describe.each`
-    count | ids                                 | text
-    ${1}  | ${['gid:Runner/1']}                 | ${'1 runner'}
-    ${2}  | ${['gid:Runner/1', 'gid:Runner/2']} | ${'2 runners'}
+    count | ids                   | text
+    ${1}  | ${[mockId1]}          | ${'1 runner'}
+    ${2}  | ${[mockId1, mockId2]} | ${'2 runners'}
   `('When $count runner(s) are checked', ({ ids, text }) => {
     beforeEach(() => {
       mockCheckedRunnerIds = ids;
@@ -119,7 +127,7 @@ describe('RunnerBulkDelete', () => {
     let mockHideModal;
 
     beforeEach(() => {
-      mockCheckedRunnerIds = ['gid:Runner/1', 'gid:Runner/2'];
+      mockCheckedRunnerIds = [mockId1, mockId2];
 
       createComponent();
 

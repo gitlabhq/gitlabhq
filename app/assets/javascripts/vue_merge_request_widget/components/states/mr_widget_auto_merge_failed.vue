@@ -1,17 +1,15 @@
 <script>
-import { GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import autoMergeFailedQuery from '../../queries/states/auto_merge_failed.query.graphql';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'MRWidgetAutoMergeFailed',
   components: {
-    statusIcon,
-    GlLoadingIcon,
-    GlButton,
+    StateContainer,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   apollo: {
@@ -38,6 +36,17 @@ export default {
       isRefreshing: false,
     };
   },
+  computed: {
+    actions() {
+      return [
+        {
+          text: s__('mrWidget|Refresh'),
+          loading: this.isRefreshing,
+          onClick: () => this.refreshWidget(),
+        },
+      ];
+    },
+  },
   methods: {
     refreshWidget() {
       this.isRefreshing = true;
@@ -49,23 +58,10 @@ export default {
 };
 </script>
 <template>
-  <div class="mr-widget-body media">
-    <status-icon status="warning" />
-    <div class="media-body space-children gl-display-flex gl-flex-wrap gl-align-items-center">
-      <span class="bold">
-        <template v-if="mergeError">{{ mergeError }}</template>
-        {{ s__('mrWidget|This merge request failed to be merged automatically') }}
-      </span>
-      <gl-button
-        :disabled="isRefreshing"
-        category="secondary"
-        variant="default"
-        size="small"
-        @click="refreshWidget"
-      >
-        <gl-loading-icon v-if="isRefreshing" size="sm" :inline="true" />
-        {{ s__('mrWidget|Refresh') }}
-      </gl-button>
-    </div>
-  </div>
+  <state-container status="warning" :actions="actions">
+    <span class="bold gl-ml-0!">
+      <template v-if="mergeError">{{ mergeError }}</template>
+      {{ s__('mrWidget|This merge request failed to be merged automatically') }}
+    </span>
+  </state-container>
 </template>

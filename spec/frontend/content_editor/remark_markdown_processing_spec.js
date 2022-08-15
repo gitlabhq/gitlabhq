@@ -1142,8 +1142,9 @@ _world_.
             {
               ...source('[GitLab][gitlab-url]'),
               href: 'https://gitlab.com',
-              canonicalSrc: 'https://gitlab.com',
+              canonicalSrc: 'gitlab-url',
               title: 'GitLab',
+              isReference: true,
             },
             'GitLab',
           ),
@@ -1156,6 +1157,36 @@ _world_.
             title: 'GitLab',
           },
           '[gitlab-url]: https://gitlab.com "GitLab"',
+        ),
+      ),
+    },
+    {
+      markdown: `
+![GitLab Logo][gitlab-logo]
+
+[gitlab-logo]: https://gitlab.com/gitlab-logo.png "GitLab Logo"
+
+      `,
+      expectedDoc: doc(
+        paragraph(
+          source('![GitLab Logo][gitlab-logo]'),
+          image({
+            ...source('![GitLab Logo][gitlab-logo]'),
+            src: 'https://gitlab.com/gitlab-logo.png',
+            canonicalSrc: 'gitlab-logo',
+            alt: 'GitLab Logo',
+            title: 'GitLab Logo',
+            isReference: true,
+          }),
+        ),
+        referenceDefinition(
+          {
+            ...source('[gitlab-logo]: https://gitlab.com/gitlab-logo.png "GitLab Logo"'),
+            identifier: 'gitlab-logo',
+            url: 'https://gitlab.com/gitlab-logo.png',
+            title: 'GitLab Logo',
+          },
+          '[gitlab-logo]: https://gitlab.com/gitlab-logo.png "GitLab Logo"',
         ),
       ),
     },

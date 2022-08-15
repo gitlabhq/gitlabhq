@@ -57,6 +57,13 @@ export const createLocalState = () => {
         [runner.id]: isChecked,
       });
     },
+    setRunnersChecked({ runners, isChecked }) {
+      const newVal = runners.reduce(
+        (acc, { id }) => ({ ...acc, [id]: isChecked }),
+        checkedRunnerIdsVar(),
+      );
+      checkedRunnerIdsVar(newVal);
+    },
     clearChecked() {
       checkedRunnerIdsVar({});
     },

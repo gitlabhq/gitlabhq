@@ -34,6 +34,7 @@ export default Image.extend({
       canonicalSrc: {
         default: null,
         parseHTML: (element) => element.dataset.canonicalSrc,
+        renderHTML: () => '',
       },
       alt: {
         default: null,
@@ -50,6 +51,10 @@ export default Image.extend({
 
           return img.getAttribute('title');
         },
+      },
+      isReference: {
+        default: false,
+        renderHTML: () => '',
       },
     };
   },
@@ -71,7 +76,6 @@ export default Image.extend({
         src: HTMLAttributes.src,
         alt: HTMLAttributes.alt,
         title: HTMLAttributes.title,
-        'data-canonical-src': HTMLAttributes.canonicalSrc,
       },
     ];
   },

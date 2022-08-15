@@ -307,12 +307,15 @@ export function renderHardBreak(state, node, parent, index) {
 }
 
 export function renderImage(state, node) {
-  const { alt, canonicalSrc, src, title } = node.attrs;
+  const { alt, canonicalSrc, src, title, isReference } = node.attrs;
 
   if (isString(src) || isString(canonicalSrc)) {
     const quotedTitle = title ? ` ${state.quote(title)}` : '';
+    const sourceExpression = isReference
+      ? `[${canonicalSrc}]`
+      : `(${state.esc(canonicalSrc || src)}${quotedTitle})`;
 
-    state.write(`![${state.esc(alt || '')}](${state.esc(canonicalSrc || src)}${quotedTitle})`);
+    state.write(`![${state.esc(alt || '')}]${sourceExpression}`);
   }
 }
 
@@ -587,7 +590,11 @@ export const link = {
       return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '>' : '';
     }
 
-    const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
+    const { canonicalSrc, href, title, sourceMarkdown, isReference } = mark.attrs;
+
+    if (isReference) {
+      return `][${state.esc(canonicalSrc || href)}]`;
+    }
 
     if (linkType(sourceMarkdown) === LINK_HTML) {
       return closeTag('a');

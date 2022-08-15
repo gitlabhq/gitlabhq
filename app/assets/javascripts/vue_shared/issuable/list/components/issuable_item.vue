@@ -7,6 +7,7 @@ import { differenceInSeconds, getTimeago, SECONDS_IN_DAY } from '~/lib/utils/dat
 import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
@@ -17,6 +18,7 @@ export default {
     GlFormCheckbox,
     GlSprintf,
     IssuableAssignees,
+    WorkItemTypeIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -46,6 +48,11 @@ export default {
       required: true,
     },
     checked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showWorkItemTypeIcon: {
       type: Boolean,
       required: false,
       default: false,
@@ -225,6 +232,7 @@ export default {
         </span>
       </div>
       <div class="issuable-info">
+        <work-item-type-icon v-if="showWorkItemTypeIcon" :work-item-type="issuable.type" />
         <slot v-if="hasSlotContents('reference')" name="reference"></slot>
         <span v-else data-testid="issuable-reference" class="issuable-reference">
           {{ reference }}

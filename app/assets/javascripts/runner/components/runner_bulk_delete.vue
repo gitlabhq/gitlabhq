@@ -16,6 +16,13 @@ export default {
     GlModal: GlModalDirective,
   },
   inject: ['localMutations'],
+  props: {
+    runners: {
+      type: Array,
+      default: () => [],
+      required: false,
+    },
+  },
   data() {
     return {
       isDeleting: false,
@@ -28,8 +35,13 @@ export default {
     },
   },
   computed: {
+    currentCheckedRunnerIds() {
+      return this.runners
+        .map(({ id }) => id)
+        .filter((id) => this.checkedRunnerIds.indexOf(id) >= 0);
+    },
     checkedCount() {
-      return this.checkedRunnerIds.length || 0;
+      return this.currentCheckedRunnerIds.length || 0;
     },
     bannerMessage() {
       return sprintf(
@@ -98,7 +110,7 @@ export default {
           mutation: BulkRunnerDelete,
           variables: {
             input: {
-              ids: this.checkedRunnerIds,
+              ids: this.currentCheckedRunnerIds,
             },
           },
           update: (cache, { data }) => {

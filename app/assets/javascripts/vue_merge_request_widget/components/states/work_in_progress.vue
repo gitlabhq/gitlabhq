@@ -12,13 +12,13 @@ import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_va
 import getStateQuery from '../../queries/get_state.query.graphql';
 import draftQuery from '../../queries/states/draft.query.graphql';
 import removeDraftMutation from '../../queries/toggle_draft.mutation.graphql';
-import StatusIcon from '../mr_widget_status_icon.vue';
+import StateContainer from '../state_container.vue';
 
 export default {
   name: 'WorkInProgress',
   components: {
-    StatusIcon,
     GlButton,
+    StateContainer,
   },
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   apollo: {
@@ -163,26 +163,22 @@ export default {
 </script>
 
 <template>
-  <div class="mr-widget-body media">
-    <status-icon :show-disabled-button="canUpdate" status="warning" />
-    <div class="media-body">
-      <div class="float-left">
-        <span class="gl-ml-0! gl-text-body! gl-font-weight-bold">
-          {{
-            __("Merge blocked: merge request must be marked as ready. It's still marked as draft.")
-          }}
-        </span>
-      </div>
+  <state-container status="warning">
+    <span class="gl-font-weight-bold gl-ml-0! gl-text-body! gl-flex-grow-1">
+      {{ __("Merge blocked: merge request must be marked as ready. It's still marked as draft.") }}
+    </span>
+    <template #actions>
       <gl-button
         v-if="canUpdate"
         size="small"
         :disabled="isMakingRequest"
         :loading="isMakingRequest"
-        class="js-remove-draft gl-ml-3"
+        variant="confirm"
+        class="js-remove-draft gl-md-ml-3 gl-align-self-start"
         @click="handleRemoveDraft"
       >
         {{ s__('mrWidget|Mark as ready') }}
       </gl-button>
-    </div>
-  </div>
+    </template>
+  </state-container>
 </template>
