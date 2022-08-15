@@ -131,6 +131,7 @@ describe('LabelsSelectRoot', () => {
         expect(findDropdownValue().exists()).toBe(true);
         expect(findDropdownValue().props('selectedLabels')).toEqual([
           {
+            __typename: 'Label',
             color: '#330066',
             description: null,
             id: 'gid://gitlab/ProjectLabel/1',

@@ -168,7 +168,7 @@ describe('GroupRunnersApp', () => {
     await createComponent();
 
     const runners = findRunnerList().props('runners');
-    expect(runners).toEqualGraphqlFixture(mockGroupRunnersEdges.map(({ node }) => node));
+    expect(runners).toEqual(mockGroupRunnersEdges.map(({ node }) => node));
   });
 
   it('requests the runners with group path and no other filters', async () => {
@@ -382,7 +382,7 @@ describe('GroupRunnersApp', () => {
     });
 
     it('passes the page info', () => {
-      expect(findRunnerPagination().props('pageInfo')).toEqualGraphqlFixture(pageInfo);
+      expect(findRunnerPagination().props('pageInfo')).toEqual(pageInfo);
     });
 
     it('navigates to the next page', async () => {

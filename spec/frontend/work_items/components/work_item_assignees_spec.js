@@ -344,7 +344,7 @@ describe('WorkItemAssignees component', () => {
 
     it('adds current user to the top of dropdown items', () => {
       expect(findTokenSelector().props('dropdownItems')[0]).toEqual({
-        ...stripTypenames(currentUserResponse.data.currentUser),
+        ...currentUserResponse.data.currentUser,
         class: expect.anything(),
       });
     });
@@ -354,7 +354,7 @@ describe('WorkItemAssignees component', () => {
       await waitForPromises();
 
       expect(findTokenSelector().props('dropdownItems')[0]).not.toEqual(
-        stripTypenames(currentUserResponse.data.currentUser),
+        currentUserResponse.data.currentUser,
       );
     });
   });

@@ -3,4 +3,3 @@ export * from './to_have_tracking_attributes';
 export * from './to_match_interpolated_text';
 export * from './to_validate_json_schema';
 export * from './to_match_expected_for_markdown';
-export * from './to_equal_graphql_fixture';

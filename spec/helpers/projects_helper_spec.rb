@@ -968,7 +968,8 @@ RSpec.describe ProjectsHelper do
         securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
         containerRegistryAccessLevel: project.project_feature.container_registry_access_level,
         environmentsAccessLevel: project.project_feature.environments_access_level,
-        featureFlagsAccessLevel: project.project_feature.feature_flags_access_level
+        featureFlagsAccessLevel: project.project_feature.feature_flags_access_level,
+        releasesAccessLevel: project.project_feature.releases_access_level
       )
     end
 

@@ -90,6 +90,22 @@ more information, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/2
 
 Please contact customer support for immediate help in restoration or recovery.
 
+## Directly accessing repositories
+
+GitLab doesn't advise directly accessing Gitaly repositories stored on disk with a Git client or any other tool,
+because Gitaly is being continuously improved and changed. These improvements may invalidate
+your assumptions, resulting in performance degradation, instability, and even data loss. For example:
+
+- Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
+  that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
+  interface.
+- [Gitaly Cluster](#gitaly-cluster) has optimizations, such as fault tolerance and
+  [distributed reads](#distributed-reads), that depend on the gRPC interface and database
+  to determine repository state.
+
+WARNING:
+Accessing Git repositories directly is done at your own risk and is not supported.
+
 ## Gitaly
 
 The following shows GitLab set up to use direct access to Gitaly:
@@ -140,6 +156,11 @@ Gitaly comes pre-configured with Omnibus GitLab, which is a configuration
 
 GitLab installations for more than 2000 active users performing daily Git write operation may be
 best suited by using Gitaly Cluster.
+
+### Backing up repositories
+
+When backing up or syncing repositories using tools other than GitLab, you must [prevent writes](../../raketasks/backup_restore.md#prevent-writes-and-copy-the-git-repository-data)
+while copying repository data.
 
 ## Gitaly Cluster
 
@@ -563,7 +584,7 @@ To downgrade a Gitaly Cluster (assuming multiple Praefect nodes):
    gitlab-ctl start praefect
    ```
 
-## Migrate to Gitaly Cluster
+### Migrate to Gitaly Cluster
 
 WARNING:
 Some [known issues](#known-issues) exist in Gitaly Cluster. Review the following information before you continue.
@@ -585,7 +606,7 @@ To migrate to Gitaly Cluster:
 Even if you don't use the `default` repository storage, you must ensure it is configured.
 [Read more about this limitation](configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
-## Migrate off Gitaly Cluster
+### Migrate off Gitaly Cluster
 
 If the limitations and tradeoffs of Gitaly Cluster are found to be not suitable for your environment, you can Migrate
 off Gitaly Cluster to a sharded Gitaly instance:
@@ -593,22 +614,6 @@ off Gitaly Cluster to a sharded Gitaly instance:
 1. Create and configure a new [Gitaly server](configure_gitaly.md#run-gitaly-on-its-own-server).
 1. [Move the repositories](../operations/moving_repositories.md#move-repositories) to the newly created storage. You can
    move them by shard or by group, which gives you the opportunity to spread them over multiple Gitaly servers.
-
-## Do not bypass Gitaly
-
-GitLab doesn't advise directly accessing Gitaly repositories stored on disk with a Git client,
-because Gitaly is being continuously improved and changed. These improvements may invalidate
-your assumptions, resulting in performance degradation, instability, and even data loss. For example:
-
-- Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
-  that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
-  interface.
-- [Gitaly Cluster](#gitaly-cluster) has optimizations, such as fault tolerance and
-  [distributed reads](#distributed-reads), that depend on the gRPC interface and database
-  to determine repository state.
-
-WARNING:
-Accessing Git repositories directly is done at your own risk and is not supported.
 
 ## Direct access to Git in GitLab
 

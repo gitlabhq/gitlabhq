@@ -919,6 +919,7 @@ RSpec.describe ProjectsController do
           container_registry_access_level
           environments_access_level
           feature_flags_access_level
+          releases_access_level
         ]
       end
 

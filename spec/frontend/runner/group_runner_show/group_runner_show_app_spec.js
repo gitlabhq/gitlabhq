@@ -107,7 +107,7 @@ describe('GroupRunnerShowApp', () => {
     });
 
     it('renders runner details component', () => {
-      expect(findRunnerDetails().props('runner')).toEqualGraphqlFixture(mockRunner);
+      expect(findRunnerDetails().props('runner')).toEqual(mockRunner);
     });
 
     describe('when runner cannot be updated', () => {

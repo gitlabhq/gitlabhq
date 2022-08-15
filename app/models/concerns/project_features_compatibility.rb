@@ -102,6 +102,10 @@ module ProjectFeaturesCompatibility
     write_feature_attribute_string(:feature_flags_access_level, value)
   end
 
+  def releases_access_level=(value)
+    write_feature_attribute_string(:releases_access_level, value)
+  end
+
   # TODO: Remove this method after we drop support for project create/edit APIs to set the
   # container_registry_enabled attribute. They can instead set the container_registry_access_level
   # attribute.

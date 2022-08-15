@@ -66,12 +66,14 @@ export const mockMilestones = [
 
 export const mockCrmContacts = [
   {
+    __typename: 'CustomerRelationsContact',
     id: 'gid://gitlab/CustomerRelations::Contact/1',
     firstName: 'John',
     lastName: 'Smith',
     email: 'john@smith.com',
   },
   {
+    __typename: 'CustomerRelationsContact',
     id: 'gid://gitlab/CustomerRelations::Contact/2',
     firstName: 'Andy',
     lastName: 'Green',
@@ -81,10 +83,12 @@ export const mockCrmContacts = [
 
 export const mockCrmOrganizations = [
   {
+    __typename: 'CustomerRelationsOrganization',
     id: 'gid://gitlab/CustomerRelations::Organization/1',
     name: 'First Org Ltd.',
   },
   {
+    __typename: 'CustomerRelationsOrganization',
     id: 'gid://gitlab/CustomerRelations::Organization/2',
     name: 'Organizer S.p.a.',
   },
@@ -102,11 +106,9 @@ export const mockProjectCrmContactsQueryResponse = {
           __typename: 'CustomerRelationsContactConnection',
           nodes: [
             {
-              __typename: 'CustomerRelationsContact',
               ...mockCrmContacts[0],
             },
             {
-              __typename: 'CustomerRelationsContact',
               ...mockCrmContacts[1],
             },
           ],
@@ -128,11 +130,9 @@ export const mockProjectCrmOrganizationsQueryResponse = {
           __typename: 'CustomerRelationsOrganizationConnection',
           nodes: [
             {
-              __typename: 'CustomerRelationsOrganization',
               ...mockCrmOrganizations[0],
             },
             {
-              __typename: 'CustomerRelationsOrganization',
               ...mockCrmOrganizations[1],
             },
           ],

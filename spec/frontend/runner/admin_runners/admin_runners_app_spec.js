@@ -176,7 +176,7 @@ describe('AdminRunnersApp', () => {
     await createComponent();
 
     expect(mockRunnersHandler).toHaveBeenCalledTimes(1);
-    expect(findRunnerList().props('runners')).toEqualGraphqlFixture(mockRunners);
+    expect(findRunnerList().props('runners')).toEqual(mockRunners);
   });
 
   it('runner item links to the runner admin page', async () => {
@@ -197,7 +197,7 @@ describe('AdminRunnersApp', () => {
     const runnerActions = wrapper.find('tr [data-testid="td-actions"]').find(RunnerActionsCell);
     const runner = mockRunners[0];
 
-    expect(runnerActions.props()).toEqualGraphqlFixture({
+    expect(runnerActions.props()).toEqual({
       runner,
       editUrl: runner.editAdminUrl,
     });
@@ -482,7 +482,7 @@ describe('AdminRunnersApp', () => {
     });
 
     it('passes the page info', () => {
-      expect(findRunnerPagination().props('pageInfo')).toEqualGraphqlFixture(pageInfo);
+      expect(findRunnerPagination().props('pageInfo')).toEqual(pageInfo);
     });
 
     it('navigates to the next page', async () => {

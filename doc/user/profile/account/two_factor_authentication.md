@@ -399,10 +399,9 @@ After signing in, immediately set up 2FA with a new device.
 
 ### Have two-factor authentication disabled on your account **(PREMIUM SAAS)**
 
-If other methods are unavailable, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new) to request
+If other methods are unavailable, have a GitLab support contact submit a [support ticket](https://support.gitlab.com) to request
 a GitLab global administrator disable 2FA for your account:
 
-- Only the owner of the account can make this request.
 - This service is only available for accounts that have a GitLab.com subscription. For more information, see our
   [blog post](https://about.gitlab.com/blog/2020/08/04/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
 - Disabling this setting temporarily leaves your account in a less secure state. You should sign in and re-enable two-factor

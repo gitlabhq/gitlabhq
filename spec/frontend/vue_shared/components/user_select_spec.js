@@ -4,7 +4,6 @@ import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { stripTypenames } from 'helpers/graphql_helpers';
 import waitForPromises from 'helpers/wait_for_promises';
 import searchUsersQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import searchUsersQueryOnMR from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
@@ -201,7 +200,7 @@ describe('User select dropdown', () => {
       });
       await waitForPromises();
 
-      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(stripTypenames(mockUser2));
+      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(mockUser2);
     });
 
     it('moves issuable author on top of unassigned list after current user, if author and current user are unassigned project members', async () => {
@@ -216,12 +215,8 @@ describe('User select dropdown', () => {
       });
       await waitForPromises();
 
-      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(
-        stripTypenames(currentUser),
-      );
-      expect(findUnselectedParticipantByIndex(1).props('user')).toMatchObject(
-        stripTypenames(issuableAuthor),
-      );
+      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(currentUser);
+      expect(findUnselectedParticipantByIndex(1).props('user')).toMatchObject(issuableAuthor);
     });
 
     it('displays author in a designated position if author is not assigned and not a project member', async () => {

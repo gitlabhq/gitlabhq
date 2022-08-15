@@ -141,6 +141,7 @@ export const packageData = (extend) => ({
 });
 
 export const conanMetadata = () => ({
+  __typename: 'ConanMetadata',
   id: 'conan-1',
   packageChannel: 'stable',
   packageUsername: 'gitlab-org+gitlab-test',
@@ -148,9 +149,8 @@ export const conanMetadata = () => ({
   recipePath: 'package-8/1.0.0/gitlab-org+gitlab-test/stable',
 });
 
-const conanMetadataQuery = () => ({ ...conanMetadata(), __typename: 'ConanMetadata' });
-
 export const composerMetadata = () => ({
+  __typename: 'ComposerMetadata',
   targetSha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
   composerJson: {
     license: 'MIT',
@@ -158,19 +158,14 @@ export const composerMetadata = () => ({
   },
 });
 
-const composerMetadataQuery = () => ({
-  ...composerMetadata(),
-  __typename: 'ComposerMetadata',
-});
-
 export const pypiMetadata = () => ({
+  __typename: 'PypiMetadata',
   id: 'pypi-1',
   requiredPython: '1.0.0',
 });
 
-const pypiMetadataQuery = () => ({ ...pypiMetadata(), __typename: 'PypiMetadata' });
-
 export const mavenMetadata = () => ({
+  __typename: 'MavenMetadata',
   id: 'maven-1',
   appName: 'appName',
   appGroup: 'appGroup',
@@ -178,23 +173,20 @@ export const mavenMetadata = () => ({
   path: 'path',
 });
 
-const mavenMetadataQuery = () => ({ ...mavenMetadata(), __typename: 'MavenMetadata' });
-
 export const nugetMetadata = () => ({
+  __typename: 'NugetMetadata',
   id: 'nuget-1',
   iconUrl: 'iconUrl',
   licenseUrl: 'licenseUrl',
   projectUrl: 'projectUrl',
 });
 
-const nugetMetadataQuery = () => ({ ...nugetMetadata(), __typename: 'NugetMetadata' });
-
 const packageTypeMetadataQueryMapping = {
-  CONAN: conanMetadataQuery,
-  COMPOSER: composerMetadataQuery,
-  PYPI: pypiMetadataQuery,
-  MAVEN: mavenMetadataQuery,
-  NUGET: nugetMetadataQuery,
+  CONAN: conanMetadata,
+  COMPOSER: composerMetadata,
+  PYPI: pypiMetadata,
+  MAVEN: mavenMetadata,
+  NUGET: nugetMetadata,
 };
 
 export const pagination = (extend) => ({

@@ -471,11 +471,11 @@ If you are using Prometheus monitoring:
 If the monitoring node is not receiving any data, check that the exporters are capturing data:
 
 ```shell
-curl "http[s]://localhost:<EXPORTER LISTENING PORT>/metric"
+curl "http[s]://localhost:<EXPORTER LISTENING PORT>/metrics"
 ```
 
 or
 
 ```shell
-curl "http[s]://localhost:<EXPORTER LISTENING PORT>/-/metric"
+curl "http[s]://localhost:<EXPORTER LISTENING PORT>/-/metrics"
 ```

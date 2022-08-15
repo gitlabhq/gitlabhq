@@ -641,7 +641,8 @@ module ProjectsHelper
       securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
       containerRegistryAccessLevel: feature.container_registry_access_level,
       environmentsAccessLevel: feature.environments_access_level,
-      featureFlagsAccessLevel: feature.feature_flags_access_level
+      featureFlagsAccessLevel: feature.feature_flags_access_level,
+      releasesAccessLevel: feature.releases_access_level
     }
   end
 

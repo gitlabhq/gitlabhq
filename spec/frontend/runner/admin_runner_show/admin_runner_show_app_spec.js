@@ -256,7 +256,7 @@ describe('AdminRunnerShowApp', () => {
       await createComponent({ stubs });
 
       expect(findJobCountBadge().text()).toBe('3');
-      expect(findRunnersJobs().props('runner')).toEqualGraphqlFixture({ ...mockRunner, ...runner });
+      expect(findRunnersJobs().props('runner')).toEqual({ ...mockRunner, ...runner });
     });
   });
 });
