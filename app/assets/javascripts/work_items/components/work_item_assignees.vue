@@ -144,6 +144,9 @@ export default {
       return this.searchKey.length === 0;
     },
     addAssigneesText() {
+      if (!this.canUpdate) {
+        return s__('WorkItem|None');
+      }
       return this.allowsMultipleAssignees
         ? s__('WorkItem|Add assignees')
         : s__('WorkItem|Add assignee');
@@ -270,7 +273,7 @@ export default {
       :loading="isLoadingUsers"
       :view-only="!canUpdate"
       :allow-clear-all="isEditing"
-      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0!"
+      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2"
       @input="handleAssigneesInput"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"
@@ -280,7 +283,7 @@ export default {
     >
       <template #empty-placeholder>
         <div
-          class="add-assignees gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-gray-300 gl-pr-4 gl-top-2"
+          class="add-assignees gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-gray-300 gl-pr-4 gl-pl-2 gl-top-2"
           data-testid="empty-state"
         >
           <gl-icon name="profile" />
@@ -301,7 +304,7 @@ export default {
           :title="token.name"
           :data-user-id="getUserId(token.id)"
           data-placement="top"
-          class="gl-text-decoration-none! gl-text-body! gl-display-flex gl-md-display-inline-flex! gl-align-items-center js-user-link"
+          class="gl-ml-n2 gl-text-decoration-none! gl-text-body! gl-display-flex gl-md-display-inline-flex! gl-align-items-center js-user-link"
         >
           <gl-avatar :size="24" :src="token.avatarUrl" />
           <span class="gl-pl-2">{{ token.name }}</span>

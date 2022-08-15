@@ -1440,7 +1440,8 @@ Input type: `CreateDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatediffnotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationcreatediffnoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in 15.3. |
+| <a id="mutationcreatediffnoteinternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreatediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 | <a id="mutationcreatediffnoteposition"></a>`position` | [`DiffPositionInput!`](#diffpositioninput) | Position of this note on a diff. |
 
@@ -1492,7 +1493,8 @@ Input type: `CreateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateimagediffnotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in 15.3. |
+| <a id="mutationcreateimagediffnoteinternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreateimagediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 | <a id="mutationcreateimagediffnoteposition"></a>`position` | [`DiffImagePositionInput!`](#diffimagepositioninput) | Position of this note on a diff. |
 
@@ -1589,8 +1591,9 @@ Input type: `CreateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatenotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationcreatenoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in 15.3. |
 | <a id="mutationcreatenotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the discussion this note is in reply to. |
+| <a id="mutationcreatenoteinternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreatenotemergerequestdiffheadsha"></a>`mergeRequestDiffHeadSha` | [`String`](#string) | SHA of the head commit which is used to ensure that the merge request has not been updated since the request was sent. |
 | <a id="mutationcreatenotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 
@@ -14845,10 +14848,11 @@ Represents the network policy.
 | <a id="noteauthor"></a>`author` | [`UserCore!`](#usercore) | User who wrote this note. |
 | <a id="notebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="notebodyhtml"></a>`bodyHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `note`. |
-| <a id="noteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if this note is confidential. |
+| <a id="noteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 15.3. This was renamed. Use: `internal`. |
 | <a id="notecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the note creation. |
 | <a id="notediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion this note is a part of. |
 | <a id="noteid"></a>`id` | [`NoteID!`](#noteid) | ID of the note. |
+| <a id="noteinternal"></a>`internal` | [`Boolean`](#boolean) | Indicates if this note is internal. |
 | <a id="noteposition"></a>`position` | [`DiffPosition`](#diffposition) | Position of this note on a diff. |
 | <a id="noteproject"></a>`project` | [`Project`](#project) | Project associated with the note. |
 | <a id="noteresolvable"></a>`resolvable` | [`Boolean!`](#boolean) | Indicates if the object can be resolved. |

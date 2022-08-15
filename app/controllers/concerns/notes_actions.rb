@@ -217,7 +217,8 @@ module NotesActions
       :note,
       :line_code, # LegacyDiffNote
       :position, # DiffNote
-      :confidential
+      :confidential,
+      :internal
     ).tap do |create_params|
       create_params.merge!(
         params.permit(:merge_request_diff_head_sha, :in_reply_to_discussion_id)

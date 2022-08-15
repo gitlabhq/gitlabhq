@@ -28,7 +28,7 @@ export const i18n = {
 };
 
 export const WIDGET_ICONS = {
-  TASK: 'task-done',
+  TASK: 'issue-type-task',
 };
 
 export const WORK_ITEM_STATUS_TEXT = {

@@ -7,37 +7,74 @@ RSpec.describe Notes::CreateService do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
 
-  let(:opts) do
-    { note: 'Awesome comment', noteable_type: 'Issue', noteable_id: issue.id, confidential: true }
-  end
+  let(:base_opts) { { note: 'Awesome comment', noteable_type: 'Issue', noteable_id: issue.id } }
+  let(:opts) { base_opts.merge(confidential: true) }
 
   describe '#execute' do
+    subject(:note) { described_class.new(project, user, opts).execute }
+
     before do
       project.add_maintainer(user)
     end
 
     context "valid params" do
       it 'returns a valid note' do
-        note = described_class.new(project, user, opts).execute
-
         expect(note).to be_valid
       end
 
       it 'returns a persisted note' do
-        note = described_class.new(project, user, opts).execute
-
         expect(note).to be_persisted
       end
 
-      it 'note has valid content' do
-        note = described_class.new(project, user, opts).execute
+      context 'with internal parameter' do
+        context 'when confidential' do
+          let(:opts) { base_opts.merge(internal: true) }
 
+          it 'returns a confidential note' do
+            expect(note).to be_confidential
+          end
+        end
+
+        context 'when not confidential' do
+          let(:opts) { base_opts.merge(internal: false) }
+
+          it 'returns a confidential note' do
+            expect(note).not_to be_confidential
+          end
+        end
+      end
+
+      context 'with confidential parameter' do
+        context 'when confidential' do
+          let(:opts) { base_opts.merge(confidential: true) }
+
+          it 'returns a confidential note' do
+            expect(note).to be_confidential
+          end
+        end
+
+        context 'when not confidential' do
+          let(:opts) { base_opts.merge(confidential: false) }
+
+          it 'returns a confidential note' do
+            expect(note).not_to be_confidential
+          end
+        end
+      end
+
+      context 'with confidential and internal parameter set' do
+        let(:opts) { base_opts.merge(internal: true, confidential: false) }
+
+        it 'prefers the internal parameter' do
+          expect(note).to be_confidential
+        end
+      end
+
+      it 'note has valid content' do
         expect(note.note).to eq(opts[:note])
       end
 
       it 'note belongs to the correct project' do
-        note = described_class.new(project, user, opts).execute
-
         expect(note.project).to eq(project)
       end
 
@@ -60,8 +97,6 @@ RSpec.describe Notes::CreateService do
       end
 
       context 'issue is an incident' do
-        subject { described_class.new(project, user, opts).execute }
-
         let(:issue) { create(:incident, project: project) }
 
         it_behaves_like 'an incident management tracked event', :incident_management_incident_comment do

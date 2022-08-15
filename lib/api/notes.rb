@@ -73,7 +73,8 @@ module API
         params do
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
           requires :body, type: String, desc: 'The content of a note'
-          optional :confidential, type: Boolean, desc: 'Confidentiality note flag, default is false'
+          optional :confidential, type: Boolean, desc: '[Deprecated in 15.3] Renamed to internal'
+          optional :internal, type: Boolean, desc: 'Internal note flag, default is false'
           optional :created_at, type: String, desc: 'The creation date of the note'
           optional :merge_request_diff_head_sha, type: String, desc: 'The SHA of the head commit'
         end
@@ -87,7 +88,7 @@ module API
             note: params[:body],
             noteable_type: noteables_str.classify,
             noteable_id: noteable.id,
-            confidential: params[:confidential],
+            internal: params[:internal] || params[:confidential],
             created_at: params[:created_at],
             merge_request_diff_head_sha: params[:merge_request_diff_head_sha]
           }

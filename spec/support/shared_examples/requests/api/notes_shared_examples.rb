@@ -376,13 +376,28 @@ RSpec.shared_examples 'noteable API with confidential notes' do |parent_type, no
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params
     end
 
-    it "creates a confidential note if confidential is set to true" do
-      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params.merge(confidential: true)
+    context 'with internal param' do
+      it "creates a confidential note if internal is set to true" do
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params.merge(internal: true)
 
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['body']).to eq('hi!')
-      expect(json_response['confidential']).to be_truthy
-      expect(json_response['author']['username']).to eq(user.username)
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['body']).to eq('hi!')
+        expect(json_response['confidential']).to be_truthy
+        expect(json_response['internal']).to be_truthy
+        expect(json_response['author']['username']).to eq(user.username)
+      end
+    end
+
+    context 'with deprecated confidential param' do
+      it "creates a confidential note if confidential is set to true" do
+        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params.merge(confidential: true)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['body']).to eq('hi!')
+        expect(json_response['confidential']).to be_truthy
+        expect(json_response['internal']).to be_truthy
+        expect(json_response['author']['username']).to eq(user.username)
+      end
     end
   end
 end

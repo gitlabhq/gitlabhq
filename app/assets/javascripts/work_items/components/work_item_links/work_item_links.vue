@@ -102,10 +102,16 @@ export default {
     childrenIds() {
       return this.children.map((c) => c.id);
     },
+    childrenCountLabel() {
+      return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
+    },
   },
   methods: {
     badgeVariant(state) {
       return state === STATE_OPEN ? 'success' : 'info';
+    },
+    iconClass(state) {
+      return state === STATE_OPEN ? 'gl-text-green-500' : 'gl-text-blue-500';
     },
     toggle() {
       this.isOpen = !this.isOpen;
@@ -237,7 +243,16 @@ export default {
       class="gl-px-5 gl-py-3 gl-display-flex gl-justify-content-space-between"
       :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': isOpen }"
     >
-      <h5 class="gl-m-0 gl-line-height-24 gl-flex-grow-1">{{ $options.i18n.title }}</h5>
+      <div class="gl-display-flex gl-flex-grow-1">
+        <h5 class="gl-m-0 gl-line-height-24">{{ $options.i18n.title }}</h5>
+        <span
+          class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3"
+          data-testid="children-count"
+        >
+          <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-gray-500" />
+          {{ childrenCountLabel }}
+        </span>
+      </div>
       <gl-button
         v-if="canUpdate"
         category="secondary"
@@ -296,7 +311,11 @@ export default {
               data-testid="confidential-icon"
               :title="__('Confidential')"
             />
-            <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-3 gl-text-gray-700" />
+            <gl-icon
+              :name="$options.WIDGET_TYPE_TASK_ICON"
+              class="gl-mr-3"
+              :class="iconClass(child.state)"
+            />
             <gl-button
               :href="childPath(child.id)"
               category="tertiary"

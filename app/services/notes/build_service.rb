@@ -16,6 +16,14 @@ module Notes
         params.merge!(discussion.reply_attributes)
       end
 
+      # The `confidential` param for notes is deprecated with 15.3
+      # and renamed to `internal`.
+      # We still accept `confidential` until the param gets removed from the API.
+      # Until we have not migrated the database column to `internal` we need to rename
+      # the parameter. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/367923.
+      params[:confidential] = params[:internal] || params[:confidential]
+      params.delete(:internal)
+
       new_note(params, discussion)
     end
 

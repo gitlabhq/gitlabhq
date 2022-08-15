@@ -37,7 +37,17 @@ module Types
 
       field :confidential, GraphQL::Types::Boolean, null: true,
                                                     description: 'Indicates if this note is confidential.',
-                                                    method: :confidential?
+                                                    method: :confidential?,
+                                                    deprecated: {
+                                                      reason: :renamed,
+                                                      replacement: 'internal',
+                                                      milestone: '15.3'
+                                                    }
+
+      field :internal, GraphQL::Types::Boolean, null: true,
+                                                description: 'Indicates if this note is internal.',
+                                                method: :confidential?
+
       field :created_at, Types::TimeType, null: false,
                                           description: 'Timestamp of the note creation.'
       field :discussion, Types::Notes::DiscussionType, null: true,

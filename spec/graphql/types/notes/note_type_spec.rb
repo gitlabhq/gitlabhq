@@ -9,6 +9,7 @@ RSpec.describe GitlabSchema.types['Note'] do
       body
       body_html
       confidential
+      internal
       created_at
       discussion
       id

@@ -80,7 +80,8 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "noteable_type": "Issue",
     "noteable_iid": 377,
     "resolvable": false,
-    "confidential": false
+    "confidential": false,
+    "internal": false
   },
   {
     "id": 305,
@@ -101,7 +102,8 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "noteable_type": "Issue",
     "noteable_iid": 121,
     "resolvable": false,
-    "confidential": true
+    "confidential": true,
+    "internal": true
   }
 ]
 ```
@@ -145,7 +147,8 @@ Parameters:
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                                           |
 | `issue_iid`    | integer        | yes      | The IID of an issue.                                                                                                         |
 | `body`         | string         | yes      | The content of a note. Limited to 1,000,000 characters.                                                                      |
-| `confidential` | boolean        | no       | The confidential flag of a note. Default is false.                                                                           |
+| `confidential` | boolean        | no       | **Deprecated:** will be removed in GitLab 16.0 and renamed to `internal`. The confidential flag of a note. Default is false.                                                                           |
+| `internal`     | boolean        | no       | The internal flag of a note. Overrides `confidential` when both parameters are submitted. Default is false.                                                                               |
 | `created_at`   | string         | no       | Date time string, ISO 8601 formatted. It must be after 1970-01-01. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
 ```shell
@@ -378,7 +381,8 @@ Parameters:
   "noteable_type": "MergeRequest",
   "noteable_iid": 2,
   "resolvable": false,
-  "confidential": false
+  "confidential": false,
+  "internal": false
 }
 ```
 
@@ -506,7 +510,8 @@ Parameters:
   "expires_at": null,
   "updated_at": "2013-10-02T07:34:20Z",
   "created_at": "2013-10-02T07:34:20Z",
-  "confidential": false
+  "confidential": false,
+  "internal": false
 }
 ```
 
@@ -530,7 +535,8 @@ Parameters:
 | `body`         | string  | yes  | The content of a note. Limited to 1,000,000 characters. |
 | `epic_id`      | integer | yes  | The ID of an epic |
 | `id`           | integer or string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `confidential` | boolean        | no       | The confidential flag of a note. Default is `false`. |
+| `confidential` | boolean        | no       | **Deprecated:** will be removed in GitLab 16.0 and is renamed to `internal`. The confidential flag of a note. Default is `false`. |
+| `internal`     | boolean        | no       | The internal flag of a note. Overrides `confidential` when both parameters are submitted. Default is `false`. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epics/11/notes?body=note"

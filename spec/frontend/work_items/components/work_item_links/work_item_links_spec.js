@@ -77,6 +77,7 @@ describe('WorkItemLinks', () => {
   const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
   const findFirstLinksMenu = () => wrapper.findByTestId('links-menu');
+  const findChildrenCount = () => wrapper.findByTestId('children-count');
 
   beforeEach(async () => {
     await createComponent();
@@ -92,7 +93,7 @@ describe('WorkItemLinks', () => {
     expect(findLinksBody().exists()).toBe(true);
   });
 
-  it('expands on click toggle button', async () => {
+  it('collapses on click toggle button', async () => {
     findToggleButton().vm.$emit('click');
     await nextTick();
 
@@ -138,6 +139,12 @@ describe('WorkItemLinks', () => {
 
     expect(confidentialIcon.exists()).toBe(true);
     expect(confidentialIcon.props('name')).toBe('eye-slash');
+  });
+
+  it('displays number if children', () => {
+    expect(findChildrenCount().exists()).toBe(true);
+
+    expect(findChildrenCount().text()).toContain('4');
   });
 
   describe('when no permission to update', () => {

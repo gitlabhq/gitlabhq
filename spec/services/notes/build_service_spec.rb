@@ -170,7 +170,7 @@ RSpec.describe Notes::BuildService do
       end
 
       context 'when creating a new confidential comment' do
-        let(:params) { { confidential: true, noteable: issue } }
+        let(:params) { { internal: true, noteable: issue } }
 
         shared_examples 'user allowed to set comment as confidential' do
           it { expect(new_note.confidential).to be_truthy }
@@ -218,6 +218,14 @@ RSpec.describe Notes::BuildService do
           let(:user) { guest }
 
           it_behaves_like 'user not allowed to set comment as confidential'
+        end
+
+        context 'when using the deprecated `confidential` parameter' do
+          let(:params) { { internal: true, noteable: issue } }
+
+          shared_examples 'user allowed to set comment as confidential' do
+            it { expect(new_note.confidential).to be_truthy }
+          end
         end
       end
 

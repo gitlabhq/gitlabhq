@@ -67,7 +67,8 @@
           "toggle_award_path": { "type": "string" },
           "path": { "type": "string" },
           "commands_changes": { "type": "object", "additionalProperties": true },
-          "confidential": { "type": ["boolean", "null"] }
+          "confidential": { "type": ["boolean", "null"] },
+          "internal": { "type": ["boolean", "null"] }
         },
         "required": [
           "id", "attachment", "author", "created_at", "updated_at",
