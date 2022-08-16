@@ -10,6 +10,7 @@ const DEFAULT_PROPS = {
   startingFrom: 140,
   totalLines: 50,
   language: 'javascript',
+  blamePath: 'blame/file.js',
 };
 
 describe('Chunk component', () => {
@@ -76,6 +77,7 @@ describe('Chunk component', () => {
         number: DEFAULT_PROPS.startingFrom + 1,
         content: splitContent[0],
         language: DEFAULT_PROPS.language,
+        blamePath: DEFAULT_PROPS.blamePath,
       });
     });
   });

@@ -2,9 +2,13 @@ import { pick } from 'lodash';
 import normalize from 'mdurl/encode';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
+import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkRehype, { all } from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
+
+const skipFrontmatterHandler = (language) => (h, node) =>
+  h(node.position, 'frontmatter', { language }, [{ type: 'text', value: node.value }]);
 
 const skipRenderingHandlers = {
   footnoteReference: (h, node) =>
@@ -61,12 +65,16 @@ const skipRenderingHandlers = {
       all(h, node),
     );
   },
+  toml: skipFrontmatterHandler('toml'),
+  yaml: skipFrontmatterHandler('yaml'),
+  json: skipFrontmatterHandler('json'),
 };
 
 const createParser = ({ skipRendering = [] }) => {
   return unified()
     .use(remarkParse)
     .use(remarkGfm)
+    .use(remarkFrontmatter, ['yaml', 'toml', { type: 'json', marker: ';' }])
     .use(remarkRehype, {
       allowDangerousHtml: true,
       handlers: {

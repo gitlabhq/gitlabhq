@@ -226,7 +226,6 @@ describe('Timezone Dropdown', () => {
     it('returns the correct object if the identifier exists', () => {
       const res = findTimezoneByIdentifier(tzList, identifier);
 
-      expect(res).toBeTruthy();
       expect(res).toBe(tzList[2]);
     });
 

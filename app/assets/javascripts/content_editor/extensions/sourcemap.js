@@ -6,6 +6,7 @@ import Code from './code';
 import CodeBlockHighlight from './code_block_highlight';
 import FootnoteReference from './footnote_reference';
 import FootnoteDefinition from './footnote_definition';
+import Frontmatter from './frontmatter';
 import Heading from './heading';
 import HardBreak from './hard_break';
 import HorizontalRule from './horizontal_rule';
@@ -37,6 +38,7 @@ export default Extension.create({
           CodeBlockHighlight.name,
           FootnoteReference.name,
           FootnoteDefinition.name,
+          Frontmatter.name,
           HardBreak.name,
           Heading.name,
           HorizontalRule.name,

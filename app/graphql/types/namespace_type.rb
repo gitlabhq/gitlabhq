@@ -61,9 +61,13 @@ module Types
           Types::TimeTracking::TimelogCategoryType.connection_type,
           null: true,
           description: "Timelog categories for the namespace.",
-          _deprecated_feature_flag: :timelog_categories
+          alpha: { milestone: '15.3' }
 
     markdown_field :description_html, null: true
+
+    def timelog_categories
+      object.timelog_categories if Feature.enabled?(:timelog_categories)
+    end
 
     def cross_project_pipeline_available?
       object.licensed_feature_available?(:cross_project_pipelines)

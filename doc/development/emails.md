@@ -60,7 +60,7 @@ See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#
      # The email address including the %{key} placeholder that will be replaced to reference the
      # item being replied to. This %{key} should be included in its entirety within the email
      # address and not replaced by another value.
-     # For example: emailadress+%{key}@gmail.com.
+     # For example: emailaddress+%{key}@gmail.com.
      # The placeholder must appear in the "user" part of the address (before the `@`). It can be omitted but some features,
      # including Service Desk, may not work properly.
      address: "gitlab-incoming+%{key}@gmail.com"

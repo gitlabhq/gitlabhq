@@ -157,7 +157,7 @@ describe('Configure Feature Flags Modal', () => {
     beforeEach(factory.bind(null, { isRotating: true }));
 
     it('should disable the project name input', async () => {
-      expect(findProjectNameInput().attributes('disabled')).toBeTruthy();
+      expect(findProjectNameInput().attributes('disabled')).toBe('true');
     });
   });
 });

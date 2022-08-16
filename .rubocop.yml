@@ -791,3 +791,6 @@ Style/ClassAndModuleChildren:
 
 Fips/OpenSSL:
   Enabled: false
+
+Gemspec/AvoidExecutingGit:
+  Enabled: false

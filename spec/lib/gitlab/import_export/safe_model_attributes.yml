@@ -913,3 +913,7 @@ MergeRequest::CleanupSchedule:
 - completed_at
 - created_at
 - updated_at
+Approval:
+  - user_id
+  - created_at
+  - updated_at

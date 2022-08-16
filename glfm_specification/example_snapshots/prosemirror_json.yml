@@ -1702,12 +1702,11 @@
     "type": "doc",
     "content": [
       {
-        "type": "horizontalRule"
-      },
-      {
-        "type": "heading",
+        "type": "frontmatter",
         "attrs": {
-          "level": 2
+          "language": "yaml",
+          "class": "code highlight",
+          "isFrontmatter": true
         },
         "content": [
           {
@@ -1759,10 +1758,12 @@
     "type": "doc",
     "content": [
       {
-        "type": "horizontalRule"
-      },
-      {
-        "type": "horizontalRule"
+        "type": "frontmatter",
+        "attrs": {
+          "language": "yaml",
+          "class": "code highlight",
+          "isFrontmatter": true
+        }
       }
     ]
   }
@@ -20670,3 +20671,114 @@
   Inapplicable task list items not yet implemented for WYSYWIG
 07_02__gitlab_specific_markdown__task_list_items__004: |-
   Inapplicable task list items not yet implemented for WYSYWIG
+07_03__gitlab_specific_markdown__front_matter__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "frontmatter",
+        "attrs": {
+          "language": "yaml",
+          "class": "code highlight",
+          "isFrontmatter": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title: YAML front matter"
+          }
+        ]
+      }
+    ]
+  }
+07_03__gitlab_specific_markdown__front_matter__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "frontmatter",
+        "attrs": {
+          "language": "toml",
+          "class": "code highlight",
+          "isFrontmatter": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title: TOML front matter"
+          }
+        ]
+      }
+    ]
+  }
+07_03__gitlab_specific_markdown__front_matter__003: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "frontmatter",
+        "attrs": {
+          "language": "json",
+          "class": "code highlight",
+          "isFrontmatter": true
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"title\": \"JSON front matter\"\n}"
+          }
+        ]
+      }
+    ]
+  }
+07_03__gitlab_specific_markdown__front_matter__004: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "text"
+          }
+        ]
+      },
+      {
+        "type": "horizontalRule"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title: YAML front matter"
+          }
+        ]
+      }
+    ]
+  }
+07_03__gitlab_specific_markdown__front_matter__005: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "horizontalRule"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "title: YAML front matter"
+          }
+        ]
+      }
+    ]
+  }

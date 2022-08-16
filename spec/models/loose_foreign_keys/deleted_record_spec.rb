@@ -94,14 +94,6 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
         end
 
         it { is_expected.to eq(true) }
-
-        context 'when the lfk_automatic_partition_creation FF is off' do
-          before do
-            stub_feature_flags(lfk_automatic_partition_creation: false)
-          end
-
-          it { is_expected.to eq(false) }
-        end
       end
     end
 
@@ -126,14 +118,6 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
         end
 
         it { is_expected.to eq(true) }
-
-        context 'when the lfk_automatic_partition_dropping FF is off' do
-          before do
-            stub_feature_flags(lfk_automatic_partition_dropping: false)
-          end
-
-          it { is_expected.to eq(false) }
-        end
       end
     end
 

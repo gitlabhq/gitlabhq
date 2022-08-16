@@ -272,6 +272,11 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           expect(ProjectLabel.count).to eq(3)
         end
 
+        it 'has merge request approvals' do
+          expect(MergeRequest.find_by(title: 'MR1').approvals.pluck(:user_id)).to contain_exactly(@user.id, *@existing_members.map(&:id))
+          expect(MergeRequest.find_by(title: 'MR2').approvals).to be_empty
+        end
+
         it 'has no group labels' do
           expect(GroupLabel.count).to eq(0)
         end

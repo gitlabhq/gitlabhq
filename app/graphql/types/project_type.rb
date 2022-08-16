@@ -442,14 +442,14 @@ module Types
           Types::TimeTracking::TimelogCategoryType.connection_type,
           null: true,
           description: "Timelog categories for the project.",
-          _deprecated_feature_flag: :timelog_categories
+          alpha: { milestone: '15.3' }
 
     field :fork_targets, Types::NamespaceType.connection_type,
           resolver: Resolvers::Projects::ForkTargetsResolver,
           description: 'Namespaces in which the current user can fork the project into.'
 
     def timelog_categories
-      object.project_namespace.timelog_categories
+      object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end
 
     def label(title:)

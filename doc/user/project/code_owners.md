@@ -8,21 +8,37 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Moved to GitLab Premium in 13.9.
 
-Code Owners define who owns specific files or directories in a repository.
+Code Owners define who develops and maintains a feature, and own the resulting
+files or directories in a repository.
 
 - The users you define as Code Owners are displayed in the UI when you browse directories.
 - You can set your merge requests so they must be approved by Code Owners before merge.
 - You can protect a branch and allow only Code Owners to approve changes to the branch.
 
-If you don't want to use Code Owners for approvals, you can
-[configure rules](merge_requests/approvals/rules.md) instead.
+Use Code Owners and approvers together with
+[approval rules](merge_requests/approvals/rules.md) to build a flexible approval
+workflow:
+
+- Use **Code Owners** to define the users who have domain expertise for specific paths in your repository.
+- Use **Approvers** and **Approval rules** to define domains of expertise (such as a security team)
+  that are not scoped to specific file paths in your repository.
+  - **Approvers** define the users.
+  - **Approval rules** define when these users can approve work, and whether or not their approval is required.
+
+For example:
+
+| Type | Name | Scope  | Comment    |
+|------|------|--------|------------|
+| Approval rule            | UX                   | All files     | A user experience (UX) team member reviews the user experience of all changes made in your project. |
+| Approval rule            | Security             | All files     | A security team member reviews all changes for vulnerabilities.                                     |
+| Code Owner approval rule | Frontend: Code Style | `*.css` files | A frontend engineer reviews CSS file changes for adherence to project style standards.              |
+| Code Owner approval rule | Backend: Code Review | `*.rb` files  | A backend engineer reviews the logic and code style of Ruby files.                                  |
 
 ## Set up Code Owners
 
-You can use Code Owners to specify users or [shared groups](members/share_project_with_groups.md)
-that are responsible for specific files and directories in a repository.
-
-To set up Code Owners:
+Create a `CODEOWNERS` file to specify users or [shared groups](members/share_project_with_groups.md)
+that are responsible for specific files and directories in a repository. Each repository
+can have a single `CODEOWNERS` file. To create it:
 
 1. Choose the location where you want to specify Code Owners:
    - In the root directory of the repository

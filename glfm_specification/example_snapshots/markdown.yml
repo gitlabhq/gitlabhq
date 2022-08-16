@@ -2203,3 +2203,27 @@
   - [~] inapplicable
 
     text in loose list
+07_03__gitlab_specific_markdown__front_matter__001: |
+  ---
+  title: YAML front matter
+  ---
+07_03__gitlab_specific_markdown__front_matter__002: |
+  +++
+  title: TOML front matter
+  +++
+07_03__gitlab_specific_markdown__front_matter__003: |
+  ;;;
+  {
+    "title": "JSON front matter"
+  }
+  ;;;
+07_03__gitlab_specific_markdown__front_matter__004: |
+  text
+
+  ---
+  title: YAML front matter
+  ---
+07_03__gitlab_specific_markdown__front_matter__005: |2
+   ---
+  title: YAML front matter
+  ---

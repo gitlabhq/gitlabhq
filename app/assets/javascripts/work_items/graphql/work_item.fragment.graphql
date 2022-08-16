@@ -24,6 +24,7 @@ fragment WorkItem on WorkItem {
     ... on WorkItemWidgetAssignees {
       type
       allowsMultipleAssignees
+      canInviteMembers
       assignees {
         nodes {
           ...User

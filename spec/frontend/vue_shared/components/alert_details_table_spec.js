@@ -130,7 +130,7 @@ describe('AlertDetails', () => {
           environmentData = { name: null, path: null };
           mountComponent();
 
-          expect(findTableFieldValueByKey('Environment').text()).toBeFalsy();
+          expect(findTableFieldValueByKey('Environment').text()).toBe('');
         });
       });
 

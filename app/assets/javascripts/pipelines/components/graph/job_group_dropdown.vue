@@ -46,6 +46,9 @@ export default {
       const { name, status } = this.group;
       return `${name} - ${status.label}`;
     },
+    jobGroupClasses() {
+      return [this.cssClassJobName, `job-${this.group.status.group}`];
+    },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry('job_group_dropdown', `error: ${err}, info: ${info}`);
@@ -68,7 +71,7 @@ export default {
       type="button"
       data-toggle="dropdown"
       data-display="static"
-      :class="cssClassJobName"
+      :class="jobGroupClasses"
       class="dropdown-menu-toggle gl-pipeline-job-width! gl-pr-4!"
     >
       <div class="gl-display-flex gl-align-items-stretch gl-justify-content-space-between">

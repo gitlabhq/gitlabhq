@@ -39,12 +39,21 @@ module API
           container.lfs_http_url_to_repo
         end
 
+        # rubocop: disable Metrics/AbcSize
         def check_allowed(params)
           # This is a separate method so that EE can alter its behaviour more
           # easily.
 
           if Feature.enabled?(:rate_limit_gitlab_shell)
             check_rate_limit!(:gitlab_shell_operation, scope: [params[:action], params[:project], actor.key_or_user])
+          end
+
+          if Feature.enabled?(:rate_limit_gitlab_shell_by_ip, actor.user)
+            rate_limiter = Gitlab::Auth::IpRateLimiter.new(request.ip)
+
+            unless rate_limiter.trusted_ip?
+              check_rate_limit!(:gitlab_shell_operation, scope: [params[:action], params[:project], rate_limiter.ip])
+            end
           end
 
           # Stores some Git-specific env thread-safely
@@ -101,6 +110,7 @@ module API
             response_with_status(code: 500, success: false, message: UNKNOWN_CHECK_RESULT_ERROR)
           end
         end
+        # rubocop: enable Metrics/AbcSize
 
         def send_git_audit_streaming_event(msg)
           # Defined in EE

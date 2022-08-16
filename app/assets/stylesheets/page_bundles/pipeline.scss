@@ -228,3 +228,17 @@
 .progress-bar.bg-primary {
   background-color: var(--blue-500, $blue-500) !important;
 }
+
+.ci-job-component {
+  .job-failed {
+    background-color: var(--red-50, $red-50);
+  }
+}
+
+.gl-dark {
+  .ci-job-component {
+    .job-failed {
+      background-color: var(--gray-200, $gray-200);
+    }
+  }
+}

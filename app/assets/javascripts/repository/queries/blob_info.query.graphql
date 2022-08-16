@@ -27,6 +27,7 @@ query getBlobInfo(
           fileType
           language
           path
+          blamePath
           editBlobPath
           gitpodBlobUrl
           ideEditPath

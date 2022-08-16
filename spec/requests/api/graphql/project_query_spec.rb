@@ -229,6 +229,18 @@ RSpec.describe 'getting project information' do
         expect(graphql_data_at(:project, :timelogCategories, :nodes))
           .to contain_exactly(a_graphql_entity_for(timelog_category))
       end
+
+      context 'when timelog_categories flag is disabled' do
+        before do
+          stub_feature_flags(timelog_categories: false)
+        end
+
+        it 'returns no timelog categories' do
+          post_graphql(query, current_user: current_user)
+
+          expect(graphql_data_at(:project, :timelogCategories)).to be_nil
+        end
+      end
     end
 
     context 'for N+1 queries' do

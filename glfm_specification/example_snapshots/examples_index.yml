@@ -2027,3 +2027,18 @@
 07_02__gitlab_specific_markdown__task_list_items__004:
   spec_txt_example_position: 678
   source_specification: gitlab
+07_03__gitlab_specific_markdown__front_matter__001:
+  spec_txt_example_position: 679
+  source_specification: gitlab
+07_03__gitlab_specific_markdown__front_matter__002:
+  spec_txt_example_position: 680
+  source_specification: gitlab
+07_03__gitlab_specific_markdown__front_matter__003:
+  spec_txt_example_position: 681
+  source_specification: gitlab
+07_03__gitlab_specific_markdown__front_matter__004:
+  spec_txt_example_position: 682
+  source_specification: gitlab
+07_03__gitlab_specific_markdown__front_matter__005:
+  spec_txt_example_position: 683
+  source_specification: gitlab

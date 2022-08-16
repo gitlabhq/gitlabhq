@@ -45,7 +45,7 @@ module Issues
       # current_user (defined in BaseService) is not available within run_after_commit block
       user = current_user
       issue.run_after_commit do
-        NewIssueWorker.perform_async(issue.id, user.id)
+        NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
         Issues::PlacementWorker.perform_async(nil, issue.project_id)
         Namespaces::OnboardingIssueCreatedWorker.perform_async(issue.project.namespace_id)
       end

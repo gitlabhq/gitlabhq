@@ -155,7 +155,7 @@ const defaultSerializerConfig = {
       },
       inline: true,
     }),
-    [Frontmatter.name]: (state, node) => {
+    [Frontmatter.name]: preserveUnchanged((state, node) => {
       const { language } = node.attrs;
       const syntax = {
         toml: '+++',
@@ -168,7 +168,7 @@ const defaultSerializerConfig = {
       state.ensureNewLine();
       state.write(syntax);
       state.closeBlock(node);
-    },
+    }),
     [Figure.name]: renderHTMLNode('figure'),
     [FigureCaption.name]: renderHTMLNode('figcaption'),
     [HardBreak.name]: preserveUnchanged(renderHardBreak),

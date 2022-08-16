@@ -13,8 +13,7 @@ module QA
                     :github_personal_access_token,
                     :github_repository_path,
                     :gitlab_repository_path,
-                    :personal_namespace,
-                    :description
+                    :personal_namespace
 
       attr_reader :repository_storage
 
@@ -27,7 +26,8 @@ module QA
                  :template_name,
                  :import,
                  :import_status,
-                 :import_error
+                 :import_error,
+                 :description
 
       attribute :group do
         Group.fabricate! do |group|
@@ -459,10 +459,12 @@ module QA
 
         response = post(request_url(api_housekeeping_path), nil)
 
-        unless response.code == HTTP_STATUS_CREATED
-          raise ResourceQueryError,
-            "Could not perform housekeeping. Request returned (#{response.code}): `#{response.body}`."
-        end
+        return if response.code == HTTP_STATUS_CREATED
+
+        raise(
+          ResourceQueryError,
+          "Could not perform housekeeping. Request returned (#{response.code}): `#{response.body}`."
+        )
       end
 
       # Gets project statistics.

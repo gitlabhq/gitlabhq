@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Octokit::Middleware do
       it_behaves_like 'Public URL'
     end
 
-    context 'when the URL is a localhost adresss' do
+    context 'when the URL is a localhost address' do
       let(:env) { { url: 'http://127.0.0.1' } }
 
       context 'when localhost requests are not allowed' do

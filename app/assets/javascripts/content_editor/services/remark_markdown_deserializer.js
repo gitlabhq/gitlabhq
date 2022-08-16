@@ -185,6 +185,14 @@ const factorySpecs = {
       identifier: hastNode.properties.identifier,
     }),
   },
+
+  frontmatter: {
+    type: 'block',
+    selector: 'frontmatter',
+    getAttrs: (hastNode) => ({
+      language: hastNode.properties.language,
+    }),
+  },
 };
 
 const SANITIZE_ALLOWLIST = ['level', 'identifier', 'numeric', 'language', 'url', 'isReference'];
@@ -239,6 +247,9 @@ export default () => {
           'definition',
           'linkReference',
           'imageReference',
+          'yaml',
+          'toml',
+          'json',
         ],
       });
 

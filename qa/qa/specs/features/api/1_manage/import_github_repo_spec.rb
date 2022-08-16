@@ -65,10 +65,8 @@ module QA
       end
 
       def verify_repository_import
-        expect(imported_project.api_response).to include(
-          description: 'Project for github import test',
-          import_error: nil
-        )
+        expect(imported_project.reload!.description).to eq('Project for github import test')
+        expect(imported_project.api_response[:import_error]).to be_nil
       end
 
       def verify_commits_import

@@ -9,6 +9,7 @@ import { stripTypenames } from 'helpers/graphql_helpers';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
+import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
@@ -35,6 +36,7 @@ describe('WorkItemAssignees component', () => {
   const findAssigneeLinks = () => wrapper.findAllComponents(GlLink);
   const findTokenSelector = () => wrapper.findComponent(GlTokenSelector);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
 
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
@@ -57,6 +59,7 @@ describe('WorkItemAssignees component', () => {
     currentUserQueryHandler = successCurrentUserQueryHandler,
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
     allowsMultipleAssignees = true,
+    canInviteMembers = false,
     canUpdate = true,
   } = {}) => {
     const apolloProvider = createMockApollo(
@@ -89,6 +92,7 @@ describe('WorkItemAssignees component', () => {
         allowsMultipleAssignees,
         workItemType: TASK_TYPE_NAME,
         canUpdate,
+        canInviteMembers,
       },
       attachTo: document.body,
       apolloProvider,
@@ -444,6 +448,20 @@ describe('WorkItemAssignees component', () => {
         label: 'item_assignees',
         property: 'type_Task',
       });
+    });
+  });
+
+  describe('invite members', () => {
+    it('does not render `Invite members` link if user has no permission to invite members', () => {
+      createComponent();
+
+      expect(findInviteMembersTrigger().exists()).toBe(false);
+    });
+
+    it('renders `Invite members` link if user has a permission to invite members', () => {
+      createComponent({ canInviteMembers: true });
+
+      expect(findInviteMembersTrigger().exists()).toBe(true);
     });
   });
 });

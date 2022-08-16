@@ -9723,6 +9723,85 @@ text in loose list
 </ul>
 ````````````````````````````````
 
+## Front matter
+
+See
+[Front matter](https://docs.gitlab.com/ee/user/markdown.html#front-matter) in the GitLab Flavored Markdown documentation.
+
+Front matter is metadata included at the beginning of a Markdown document, preceding the content.
+This data can be used by static site generators like Jekyll, Hugo, and many other applications.
+
+YAML front matter:
+
+```````````````````````````````` example gitlab frontmatter
+---
+title: YAML front matter
+---
+.
+<pre>
+<code>
+title: YAML front matter
+</code>
+</pre>
+````````````````````````````````
+
+TOML front matter:
+
+```````````````````````````````` example gitlab frontmatter
++++
+title: TOML front matter
++++
+.
+<pre>
+<code>
+title: TOML front matter
+</code>
+</pre>
+````````````````````````````````
+
+JSON front matter:
+
+```````````````````````````````` example gitlab frontmatter
+;;;
+{
+  "title": "JSON front matter"
+}
+;;;
+.
+<pre>
+<code>
+{
+  "title": "JSON front matter"
+}
+</code>
+</pre>
+````````````````````````````````
+
+Front matter blocks should be inserted at the top of the document:
+
+```````````````````````````````` example gitlab frontmatter
+text
+
+---
+title: YAML front matter
+---
+.
+<p>text</p>
+<hr>
+<h2>title: YAML front matter</h2>
+````````````````````````````````
+
+Front matter block delimiters shouldn’t be preceded by space characters:
+
+```````````````````````````````` example gitlab frontmatter
+ ---
+title: YAML front matter
+---
+.
+<hr>
+<h2>title: YAML front matter</h2>
+````````````````````````````````
+
 <!-- END TESTS -->
 
 # Appendix: A parsing strategy

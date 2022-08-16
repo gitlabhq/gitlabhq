@@ -818,3 +818,6 @@ bulk_import_export:
   - group
 service_desk_setting:
   - file_template_project
+approvals:
+  - user
+  - merge_request

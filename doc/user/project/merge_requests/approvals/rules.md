@@ -7,7 +7,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Merge request approval rules **(PREMIUM)**
 
 Approval rules define how many [approvals](index.md) a merge request must receive before it can
-be merged, and which users should do the approving. You can define approval rules:
+be merged, and which users should do the approving. They can be used in conjunction
+with [Code owners](#code-owners-as-eligible-approvers) to ensure that changes are
+reviewed both by the group maintaining the feature, and any groups responsible
+for specific areas of oversight.
+
+You can define approval rules:
 
 - [As project defaults](#add-an-approval-rule).
 - [Per merge request](#edit-or-override-merge-request-approval-rules).

@@ -1,8 +1,0 @@
----
-name: lfk_automatic_partition_dropping
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/346908
-milestone: '14.6'
-type: development
-group: group::sharding
-default_enabled: true

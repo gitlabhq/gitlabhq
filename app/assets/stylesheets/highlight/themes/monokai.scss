@@ -120,7 +120,15 @@ $monokai-gh: #75715e;
 
   // Line numbers
   .file-line-num {
-    @include line-number-link($monokai-line-num-color);
+    @include line-link($white, 'link');
+  }
+
+  .file-line-blame {
+    @include line-link($white, 'git');
+  }
+
+  .line-links {
+    @include line-hover-bg($monokai-bg);
   }
 
   .line-numbers,

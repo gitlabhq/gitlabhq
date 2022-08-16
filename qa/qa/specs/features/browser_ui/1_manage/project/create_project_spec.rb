@@ -44,10 +44,6 @@ module QA
 
         it_behaves_like 'successful project creation'
       end
-
-      after do
-        project.remove_via_api!
-      end
     end
   end
 end

@@ -12183,7 +12183,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Total storage limit of the root namespace in bytes. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
 | <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
-| <a id="grouptimelogcategories"></a>`timelogCategories` | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | Timelog categories for the namespace. Available only when feature flag `timelog_categories` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
+| <a id="grouptimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Timelog categories for the namespace. |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. |
 | <a id="grouptwofactorgraceperiod"></a>`twoFactorGracePeriod` | [`Int`](#int) | Time before two-factor authentication is enforced. |
@@ -14768,7 +14768,7 @@ Contains statistics about a milestone.
 | <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Total storage limit of the root namespace in bytes. |
 | <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
-| <a id="namespacetimelogcategories"></a>`timelogCategories` | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | Timelog categories for the namespace. Available only when feature flag `timelog_categories` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
+| <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. |
 | <a id="namespacevisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
@@ -15536,7 +15536,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectsuggestioncommitmessage"></a>`suggestionCommitMessage` | [`String`](#string) | Commit message used to apply merge request suggestions. |
 | <a id="projecttaglist"></a>`tagList` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.12. Use `topics`. |
 | <a id="projectterraformstates"></a>`terraformStates` | [`TerraformStateConnection`](#terraformstateconnection) | Terraform states associated with the project. (see [Connections](#connections)) |
-| <a id="projecttimelogcategories"></a>`timelogCategories` | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | Timelog categories for the project. Available only when feature flag `timelog_categories` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
+| <a id="projecttimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Timelog categories for the project. |
 | <a id="projecttopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |

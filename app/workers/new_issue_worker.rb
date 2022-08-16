@@ -13,7 +13,11 @@ class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
   worker_resource_boundary :cpu
   weight 2
 
-  def perform(issue_id, user_id)
+  attr_reader :issuable_class
+
+  def perform(issue_id, user_id, issuable_class = 'Issue')
+    @issuable_class = issuable_class.constantize
+
     return unless objects_found?(issue_id, user_id)
 
     ::EventCreateService.new.open_issue(issuable, user)
@@ -24,9 +28,5 @@ class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
     Issues::AfterCreateService
       .new(project: issuable.project, current_user: user)
       .execute(issuable)
-  end
-
-  def issuable_class
-    Issue
   end
 end

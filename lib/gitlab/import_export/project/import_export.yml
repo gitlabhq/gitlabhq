@@ -53,6 +53,7 @@ tree:
     - project_members:
       - :user
     - merge_requests:
+      - :approvals
       - :metrics
       - :award_emoji
       - :merge_request_assignees
@@ -122,6 +123,10 @@ included_attributes:
     - :username
   author:
     - :name
+  approvals:
+    - :user_id
+    - :created_at
+    - :updated_at
   ci_cd_settings:
     - :group_runners_enabled
     - :runner_token_expiration_interval
@@ -776,6 +781,9 @@ excluded_attributes:
     - :repository_size_limit
     - :external_webhook_token
     - :incident_management_issuable_escalation_statuses
+  approvals:
+    - :id
+    - :merge_request_id
   namespaces:
     - :runners_token
     - :runners_token_encrypted

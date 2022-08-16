@@ -20964,6 +20964,9 @@ msgstr ""
 msgid "Insights"
 msgstr ""
 
+msgid "Insights|Configure a custom report for insights into your group processes such as amount of issues, bugs, and merge requests per month. %{linkStart}How do I configure an insights report?%{linkEnd}"
+msgstr ""
+
 msgid "Insights|Some items are not visible beacuse the project was filtered out in the insights.yml file (see the projects.only config for more information)."
 msgstr ""
 
@@ -39946,7 +39949,7 @@ msgstr ""
 msgid "This commit was signed with a different user's verified signature."
 msgstr ""
 
-msgid "This commit was signed with a verified signature, but the committer email is %{strong_open}not verified%{strong_close} to belong to the same user."
+msgid "This commit was signed with a verified signature, but the committer email is not associated with the GPG Key."
 msgstr ""
 
 msgid "This commit was signed with an %{strong_open}unverified%{strong_close} signature."

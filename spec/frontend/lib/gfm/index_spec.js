@@ -230,4 +230,32 @@ console.log('Hola');
       });
     });
   });
+
+  describe('when skipping the rendering of frontmatter types', () => {
+    it.each`
+      type      | input
+      ${'yaml'} | ${'---\ntitle: page\n---'}
+      ${'toml'} | ${'+++\ntitle: page\n+++'}
+      ${'json'} | ${';;;\ntitle: page\n;;;'}
+    `('transforms $type nodes into frontmatter html tags', async ({ input, type }) => {
+      const result = await markdownToAST(input, [type]);
+
+      expectInRoot(
+        result,
+        expect.objectContaining({
+          type: 'element',
+          tagName: 'frontmatter',
+          properties: {
+            language: type,
+          },
+          children: [
+            {
+              type: 'text',
+              value: 'title: page',
+            },
+          ],
+        }),
+      );
+    });
+  });
 });

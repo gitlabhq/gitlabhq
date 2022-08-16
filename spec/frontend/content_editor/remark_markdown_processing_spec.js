@@ -5,6 +5,7 @@ import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
 import FootnoteReference from '~/content_editor/extensions/footnote_reference';
+import Frontmatter from '~/content_editor/extensions/frontmatter';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import HTMLNodes from '~/content_editor/extensions/html_nodes';
 import Heading from '~/content_editor/extensions/heading';
@@ -38,6 +39,7 @@ const tiptapEditor = createTestEditor({
     CodeBlockHighlight,
     FootnoteDefinition,
     FootnoteReference,
+    Frontmatter,
     HardBreak,
     Heading,
     HorizontalRule,
@@ -71,6 +73,7 @@ const {
     div,
     footnoteDefinition,
     footnoteReference,
+    frontmatter,
     hardBreak,
     heading,
     horizontalRule,
@@ -99,6 +102,7 @@ const {
     codeBlock: { nodeType: CodeBlockHighlight.name },
     footnoteDefinition: { nodeType: FootnoteDefinition.name },
     footnoteReference: { nodeType: FootnoteReference.name },
+    frontmatter: { nodeType: Frontmatter.name },
     hardBreak: { nodeType: HardBreak.name },
     heading: { nodeType: Heading.name },
     horizontalRule: { nodeType: HorizontalRule.name },
@@ -1187,6 +1191,45 @@ _world_.
             title: 'GitLab Logo',
           },
           '[gitlab-logo]: https://gitlab.com/gitlab-logo.png "GitLab Logo"',
+        ),
+      ),
+    },
+    {
+      markdown: `
+---
+title: 'layout'
+---
+      `,
+      expectedDoc: doc(
+        frontmatter(
+          { ...source("---\ntitle: 'layout'\n---"), language: 'yaml' },
+          "title: 'layout'",
+        ),
+      ),
+    },
+    {
+      markdown: `
++++
+title: 'layout'
++++
+      `,
+      expectedDoc: doc(
+        frontmatter(
+          { ...source("+++\ntitle: 'layout'\n+++"), language: 'toml' },
+          "title: 'layout'",
+        ),
+      ),
+    },
+    {
+      markdown: `
+;;;
+{ title: 'layout' }
+;;;
+      `,
+      expectedDoc: doc(
+        frontmatter(
+          { ...source(";;;\n{ title: 'layout' }\n;;;"), language: 'json' },
+          "{ title: 'layout' }",
         ),
       ),
     },

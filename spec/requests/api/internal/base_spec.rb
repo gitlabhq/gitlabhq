@@ -376,10 +376,17 @@ RSpec.describe API::Internal::Base do
     shared_examples 'rate limited request' do
       let(:action) { 'git-upload-pack' }
       let(:actor) { key }
+      let(:rate_limiter) { double(:rate_limiter, ip: "127.0.0.1", trusted_ip?: false) }
+
+      before do
+        allow(::Gitlab::Auth::IpRateLimiter).to receive(:new).with("127.0.0.1").and_return(rate_limiter)
+      end
 
       it 'is throttled by rate limiter' do
         allow(::Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(1)
+
         expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:gitlab_shell_operation, scope: [action, project.full_path, actor]).twice.and_call_original
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:gitlab_shell_operation, scope: [action, project.full_path, "127.0.0.1"]).and_call_original
 
         request
 
@@ -395,6 +402,28 @@ RSpec.describe API::Internal::Base do
         before do
           stub_feature_flags(rate_limit_gitlab_shell: false)
         end
+
+        it 'is not throttled by rate limiter' do
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+          subject
+        end
+      end
+
+      context 'when rate_limit_gitlab_shell_by_ip feature flag is disabled' do
+        before do
+          stub_feature_flags(rate_limit_gitlab_shell_by_ip: false)
+        end
+
+        it 'is not throttled by rate limiter' do
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+          subject
+        end
+      end
+
+      context 'when the IP is in a trusted range' do
+        let(:rate_limiter) { double(:rate_limiter, ip: "127.0.0.1", trusted_ip?: true) }
 
         it 'is not throttled by rate limiter' do
           expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)

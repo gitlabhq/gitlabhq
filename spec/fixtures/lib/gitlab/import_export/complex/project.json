@@ -3193,6 +3193,28 @@
           "created_at": "2020-01-10T11:21:21.235Z",
           "state": "unreviewed"
         }
+      ],
+      "approvals": [
+        {
+          "user_id": 1,
+          "created_at": "2020-01-07T11:21:21.235Z",
+          "updated_at": "2020-01-08T11:21:21.235Z"
+        },
+        {
+          "user_id": 15,
+          "created_at": "2020-01-07T11:21:21.235Z",
+          "updated_at": "2020-01-08T11:21:21.235Z"
+        },
+        {
+          "user_id": 16,
+          "created_at": "2020-01-07T11:21:21.235Z",
+          "updated_at": "2020-01-08T11:21:21.235Z"
+        },
+        {
+          "user_id": 6,
+          "created_at": "2020-01-07T11:21:21.235Z",
+          "updated_at": "2020-01-08T11:21:21.235Z"
+        }
       ]
     },
     {
@@ -3462,7 +3484,8 @@
         }
       ],
       "merge_request_assignees": [],
-      "merge_request_reviewers": []
+      "merge_request_reviewers": [],
+      "approvals": []
     },
     {
       "id": 15,

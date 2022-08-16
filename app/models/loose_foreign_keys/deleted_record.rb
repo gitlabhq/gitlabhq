@@ -10,8 +10,6 @@ class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
 
   partitioned_by :partition, strategy: :sliding_list,
                              next_partition_if: -> (active_partition) do
-                                                  return false if Feature.disabled?(:lfk_automatic_partition_creation)
-
                                                   oldest_record_in_partition = LooseForeignKeys::DeletedRecord
                                                     .select(:id, :created_at)
                                                     .for_partition(active_partition)
@@ -23,8 +21,6 @@ class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
                                                     oldest_record_in_partition.created_at < PARTITION_DURATION.ago
                                                 end,
                              detach_partition_if: -> (partition) do
-                                                    return false if Feature.disabled?(:lfk_automatic_partition_dropping)
-
                                                     !LooseForeignKeys::DeletedRecord
                                                       .for_partition(partition)
                                                       .status_pending

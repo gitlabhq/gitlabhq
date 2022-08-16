@@ -10,16 +10,26 @@ const DEFAULT_PROPS = {
   number: 2,
   content: '// Line content',
   language: 'javascript',
+  blamePath: 'blame/file.js',
 };
 
 describe('Chunk Line component', () => {
   let wrapper;
+  const fileLineBlame = true;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMountExtended(ChunkLine, { propsData: { ...DEFAULT_PROPS, ...props } });
+    wrapper = shallowMountExtended(ChunkLine, {
+      propsData: { ...DEFAULT_PROPS, ...props },
+      provide: {
+        glFeatures: {
+          fileLineBlame,
+        },
+      },
+    });
   };
 
-  const findLink = () => wrapper.findByTestId('line-number-anchor');
+  const findLineLink = () => wrapper.find('.file-line-num');
+  const findBlameLink = () => wrapper.find('.file-line-blame');
   const findContent = () => wrapper.findByTestId('content');
   const findWrappedBidiChars = () => wrapper.findAllByTestId('bidi-wrapper');
 
@@ -46,14 +56,22 @@ describe('Chunk Line component', () => {
       });
     });
 
+    it('renders a blame link', () => {
+      expect(findBlameLink().attributes()).toMatchObject({
+        href: `${DEFAULT_PROPS.blamePath}#L${DEFAULT_PROPS.number}`,
+      });
+
+      expect(findBlameLink().text()).toBe('');
+    });
+
     it('renders a line number', () => {
-      expect(findLink().attributes()).toMatchObject({
+      expect(findLineLink().attributes()).toMatchObject({
         'data-line-number': `${DEFAULT_PROPS.number}`,
         href: `#L${DEFAULT_PROPS.number}`,
         id: `L${DEFAULT_PROPS.number}`,
       });
 
-      expect(findLink().text()).toBe(DEFAULT_PROPS.number.toString());
+      expect(findLineLink().text()).toBe(DEFAULT_PROPS.number.toString());
     });
 
     it('renders content', () => {

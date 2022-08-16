@@ -65,6 +65,12 @@ RSpec.describe WorkItems::CreateService do
         expect(work_item.description).to eq('please fix')
         expect(work_item.work_item_type.base_type).to eq('issue')
       end
+
+      it 'calls NewIssueWorker with correct arguments' do
+        expect(NewIssueWorker).to receive(:perform_async).with(Integer, current_user.id, 'WorkItem')
+
+        service_result
+      end
     end
 
     context 'when params are invalid' do

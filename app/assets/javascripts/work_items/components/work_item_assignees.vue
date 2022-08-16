@@ -75,6 +75,11 @@ export default {
       required: false,
       default: false,
     },
+    canInviteMembers: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -321,7 +326,7 @@ export default {
           <rect width="280" height="20" x="10" y="130" rx="4" />
         </gl-skeleton-loader>
       </template>
-      <template #dropdown-footer>
+      <template v-if="canInviteMembers" #dropdown-footer>
         <gl-dropdown-divider />
         <gl-dropdown-item @click="closeDropdown">
           <invite-members-trigger
