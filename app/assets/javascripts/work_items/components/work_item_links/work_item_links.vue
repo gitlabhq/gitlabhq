@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlBadge, GlIcon, GlAlert, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlAlert, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -25,7 +25,6 @@ import WorkItemLinksMenu from './work_item_links_menu.vue';
 export default {
   components: {
     GlButton,
-    GlBadge,
     GlIcon,
     GlAlert,
     GlLoadingIcon,
@@ -123,11 +122,11 @@ export default {
     refetchWorkItems() {
       this.$apollo.queries.workItem.refetch();
     },
-    badgeVariant(state) {
-      return state === STATE_OPEN ? 'success' : 'info';
-    },
     iconClass(state) {
       return state === STATE_OPEN ? 'gl-text-green-500' : 'gl-text-blue-500';
+    },
+    iconName(state) {
+      return state === STATE_OPEN ? 'issue-open-m' : 'issue-close';
     },
     toggle() {
       this.isOpen = !this.isOpen;
@@ -323,22 +322,22 @@ export default {
         <div
           v-for="child in children"
           :key="child.id"
-          class="gl-relative gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-overflow-break-word gl-min-w-0 gl-bg-white gl-mb-3 gl-py-3 gl-px-4 gl-border gl-border-gray-100 gl-rounded-base gl-line-height-32"
+          class="gl-relative gl-display-flex gl-overflow-break-word gl-min-w-0 gl-bg-white gl-mb-3 gl-py-3 gl-px-4 gl-border gl-border-gray-100 gl-rounded-base gl-line-height-32"
           data-testid="links-child"
         >
-          <div class="gl-overflow-hidden gl-display-flex gl-align-items-center">
+          <div class="gl-overflow-hidden gl-display-flex gl-align-items-center gl-flex-grow-1">
+            <gl-icon
+              :name="iconName(child.state)"
+              class="gl-mr-3"
+              :class="iconClass(child.state)"
+            />
             <gl-icon
               v-if="child.confidential"
               v-gl-tooltip.top
               name="eye-slash"
-              class="gl-mr-3 gl-text-orange-500"
+              class="gl-mr-2 gl-text-orange-500"
               data-testid="confidential-icon"
               :title="__('Confidential')"
-            />
-            <gl-icon
-              :name="$options.WIDGET_TYPE_TASK_ICON"
-              class="gl-mr-3"
-              :class="iconClass(child.state)"
             />
             <gl-button
               :href="childPath(child.id)"
@@ -352,14 +351,7 @@ export default {
               {{ child.title }}
             </gl-button>
           </div>
-          <div
-            class="gl-ml-0 gl-sm-ml-auto! gl-mt-3 gl-sm-mt-0 gl-display-inline-flex gl-align-items-center"
-          >
-            <gl-badge :variant="badgeVariant(child.state)">
-              <span class="gl-sm-display-block">{{
-                $options.WORK_ITEM_STATUS_TEXT[child.state]
-              }}</span>
-            </gl-badge>
+          <div class="gl-ml-0 gl-sm-ml-auto! gl-display-inline-flex gl-align-items-center">
             <work-item-links-menu
               v-if="canUpdate"
               :work-item-id="child.id"

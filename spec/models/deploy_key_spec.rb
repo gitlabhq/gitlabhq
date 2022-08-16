@@ -5,17 +5,20 @@ require 'spec_helper'
 RSpec.describe DeployKey, :mailer do
   describe "Associations" do
     it { is_expected.to have_many(:deploy_keys_projects) }
+
     it do
       is_expected.to have_many(:deploy_keys_projects_with_write_access)
         .conditions(can_push: true)
         .class_name('DeployKeysProject')
     end
+
     it do
       is_expected.to have_many(:projects_with_write_access)
         .class_name('Project')
         .through(:deploy_keys_projects_with_write_access)
         .source(:project)
     end
+
     it { is_expected.to have_many(:projects) }
     it { is_expected.to have_many(:protected_branch_push_access_levels) }
   end

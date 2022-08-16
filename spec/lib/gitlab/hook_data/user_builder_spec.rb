@@ -44,6 +44,7 @@ RSpec.describe Gitlab::HookData::UserBuilder do
         let(:event) { :create }
 
         it { expect(event_name).to eq('user_create') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'does not include old username attributes'
         it_behaves_like 'does not include state attributes'
@@ -53,6 +54,7 @@ RSpec.describe Gitlab::HookData::UserBuilder do
         let(:event) { :destroy }
 
         it { expect(event_name).to eq('user_destroy') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'does not include old username attributes'
         it_behaves_like 'does not include state attributes'
@@ -62,6 +64,7 @@ RSpec.describe Gitlab::HookData::UserBuilder do
         let(:event) { :rename }
 
         it { expect(event_name).to eq('user_rename') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'does not include state attributes'
 
@@ -76,6 +79,7 @@ RSpec.describe Gitlab::HookData::UserBuilder do
         let(:event) { :failed_login }
 
         it { expect(event_name).to eq('user_failed_login') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'does not include old username attributes'
 

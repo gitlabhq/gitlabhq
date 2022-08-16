@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlBadge, GlButton, GlAlert } from '@gitlab/ui';
+import { GlButton, GlIcon, GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -133,7 +133,6 @@ describe('WorkItemLinks', () => {
     expect(findLinksBody().exists()).toBe(true);
 
     expect(findChildren()).toHaveLength(4);
-    expect(findChildren().at(0).findComponent(GlBadge).text()).toBe('Open');
     expect(findFirstLinksMenu().exists()).toBe(true);
   });
 
@@ -147,6 +146,11 @@ describe('WorkItemLinks', () => {
 
     expect(findAlert().exists()).toBe(true);
     expect(findAlert().text()).toBe(errorMessage);
+  });
+
+  it('renders widget child icon and tooltip', () => {
+    expect(findChildren().at(0).findComponent(GlIcon).props('name')).toBe('issue-open-m');
+    expect(findChildren().at(1).findComponent(GlIcon).props('name')).toBe('issue-close');
   });
 
   it('renders confidentiality icon when child item is confidential', () => {

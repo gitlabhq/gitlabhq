@@ -130,6 +130,7 @@ RSpec.describe BoardsHelper do
         it 'returns can_admin_list as false by default' do
           expect(helper.board_data[:can_admin_list]).to eq('false')
         end
+
         it 'returns can_admin_list as true when user can admin the board lists' do
           allow(helper).to receive(:can?).with(user, :admin_issue_board_list, project).and_return(true)
 
@@ -141,6 +142,7 @@ RSpec.describe BoardsHelper do
         it 'returns can_admin_board as false by default' do
           expect(helper.board_data[:can_admin_board]).to eq('false')
         end
+
         it 'returns can_admin_board as true when user can admin the board' do
           allow(helper).to receive(:can?).with(user, :admin_issue_board, project).and_return(true)
 
@@ -178,6 +180,7 @@ RSpec.describe BoardsHelper do
         it 'returns can_admin_list as false by default' do
           expect(helper.board_data[:can_admin_list]).to eq('false')
         end
+
         it 'returns can_admin_list as true when user can admin the board lists' do
           allow(helper).to receive(:can?).with(user, :admin_issue_board_list, base_group).and_return(true)
 

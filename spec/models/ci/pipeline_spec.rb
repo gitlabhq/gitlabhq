@@ -844,6 +844,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     it 'has 8 items' do
       expect(subject.size).to eq(8)
     end
+
     it { expect(pipeline.sha).to start_with(subject) }
   end
 

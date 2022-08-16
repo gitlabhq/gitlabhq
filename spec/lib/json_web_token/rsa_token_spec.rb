@@ -32,6 +32,7 @@ RSpec.describe JSONWebToken::RSAToken do
 
       it { expect { subject }.not_to raise_error }
       it { expect(subject.first).to include('key' => 'value') }
+
       it do
         expect(subject.second).to eq(
           "typ" => "JWT",

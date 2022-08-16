@@ -1641,6 +1641,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: pipeline_background:ci_track_failed_build
+  :worker_name: Ci::TrackFailedBuildWorker
+  :feature_category: :static_application_security_testing
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pipeline_creation:ci_external_pull_requests_create_pipeline
   :worker_name: Ci::ExternalPullRequests::CreatePipelineWorker
   :feature_category: :continuous_integration

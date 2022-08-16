@@ -91,7 +91,7 @@ export default {
               : $options.i18n.enableTaskConfidentiality
           }}</gl-dropdown-item
         >
-        <gl-dropdown-divider />
+        <gl-dropdown-divider v-if="canDelete" />
       </template>
       <gl-dropdown-item
         v-if="canDelete"

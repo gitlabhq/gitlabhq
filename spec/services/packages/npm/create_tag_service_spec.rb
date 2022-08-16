@@ -11,6 +11,7 @@ RSpec.describe Packages::Npm::CreateTagService do
     shared_examples 'it creates the tag' do
       it { expect { subject }.to change { Packages::Tag.count }.by(1) }
       it { expect(subject.name).to eq(tag_name) }
+
       it 'adds tag to the package' do
         tag = subject
         expect(package.reload.tags).to match_array([tag])

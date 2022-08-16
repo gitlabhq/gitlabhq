@@ -309,18 +309,23 @@ RSpec.describe IssuePolicy do
       it 'forbids visitors from viewing issues' do
         expect(permissions(visitor, issue)).to be_disallowed(:read_issue)
       end
+
       it 'forbids visitors from commenting' do
         expect(permissions(visitor, issue)).to be_disallowed(:create_note)
       end
+
       it 'forbids visitors from subscribing' do
         expect(permissions(visitor, issue)).to be_disallowed(:update_subscription)
       end
+
       it 'allows guests to view' do
         expect(permissions(guest, issue)).to be_allowed(:read_issue)
       end
+
       it 'allows guests to comment' do
         expect(permissions(guest, issue)).to be_allowed(:create_note)
       end
+
       it 'allows guests to subscribe' do
         expect(permissions(guest, issue)).to be_allowed(:update_subscription)
       end

@@ -17,6 +17,7 @@ RSpec.describe GitlabSchema.types['WorkItem'] do
       id
       iid
       lock_version
+      project
       state title
       title_html
       userPermissions

@@ -177,6 +177,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         end
 
         it { is_expected.to be_success }
+
         include_examples 'does not send alert notification emails'
         include_examples 'does not process incident issues'
       end
@@ -187,6 +188,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         end
 
         it { is_expected.to be_success }
+
         include_examples 'does not send alert notification emails'
       end
 
@@ -196,6 +198,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         end
 
         it { is_expected.to be_success }
+
         include_examples 'does not process incident issues'
       end
     end

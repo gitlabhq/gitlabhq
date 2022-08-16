@@ -68,6 +68,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
         it 'has merge request\'s milestones' do
           expect(subject.first['milestone']).not_to be_empty
         end
+
         it 'has merge request\'s source branch SHA' do
           expect(subject.first['source_branch_sha']).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0')
         end

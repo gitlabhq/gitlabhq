@@ -6,6 +6,7 @@ RSpec.describe QA::Support::Loglinking do
       it 'if correlation_id is empty' do
         expect(QA::Support::Loglinking.failure_metadata('')).to eq(nil)
       end
+
       it 'if correlation_id is nil' do
         expect(QA::Support::Loglinking.failure_metadata(nil)).to eq(nil)
       end
@@ -168,6 +169,7 @@ RSpec.describe QA::Support::Loglinking do
 
         expect(QA::Support::Loglinking.canary?).to eq(true)
       end
+
       it 'and not true returns false' do
         allow(QA::Support::Loglinking).to receive(:cookies).and_return({ 'gitlab_canary' => { name: 'gitlab_canary', value: 'false' } })
 

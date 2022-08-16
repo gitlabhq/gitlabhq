@@ -1101,7 +1101,10 @@ module Ci
     end
 
     def drop_with_exit_code!(failure_reason, exit_code)
-      drop!(::Gitlab::Ci::Build::Status::Reason.new(self, failure_reason, exit_code))
+      failure_reason ||= :unknown_failure
+      result = drop!(::Gitlab::Ci::Build::Status::Reason.new(self, failure_reason, exit_code))
+      ::Ci::TrackFailedBuildWorker.perform_async(id, exit_code, failure_reason)
+      result
     end
 
     def exit_codes_defined?
@@ -1180,6 +1183,10 @@ module Ci
       end
 
       new_build
+    end
+
+    def job_artifact_types
+      job_artifacts.map(&:file_type)
     end
 
     protected

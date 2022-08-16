@@ -19,6 +19,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
 
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:drone_url) }
+
       it_behaves_like 'issue tracker integration URL attribute', :drone_url
     end
 

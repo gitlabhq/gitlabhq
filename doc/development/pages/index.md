@@ -10,8 +10,8 @@ description: "GitLab's development guidelines for GitLab Pages"
 
 ## Configuring GitLab Pages hostname
 
-GitLab Pages needs a hostname or domain, as each different GitLab Pages site is accessed via a
-subdomain. GitLab Pages hostname can be set in different manners:
+GitLab Pages need a hostname or domain, as each different GitLab Pages site is accessed via a
+subdomain. You can set the GitLab Pages hostname:
 
 - [Without wildcard, editing your hosts file](#without-wildcard-editing-your-hosts-file).
 - [With DNS wildcard alternatives](#with-dns-wildcard-alternatives).
@@ -96,7 +96,7 @@ it with commands like:
 
 ### Running GitLab Pages manually
 
-You can also build and start the app independent of GDK processes management.
+You can also build and start the app independently of GDK processes management.
 
 For any changes in the code, you must run `make` to build the app. It's best to just always run
 it before you start the app. It's quick to build so don't worry!
@@ -114,9 +114,9 @@ FIPS_MODE=1 make && ./gitlab-pages -config=gitlab-pages.conf
 ### Creating GitLab Pages site
 
 To build a GitLab Pages site locally you must
-[configure `gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/runner.md)
+[configure `gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/runner.md).
 
-Check the [user manual](../../user/project/pages/index.md).
+For more information, refer to the [user manual](../../user/project/pages/index.md).
 
 ### Enabling access control
 
@@ -125,8 +125,9 @@ who have access to your GitLab project.
 
 GitLab Pages access control is disabled by default. To enable it:
 
-1. Enable the GitLab Pages access control in GitLab itself, which can be done by either:
-   - If you're not using GDK, editing `gitlab.yml`:
+1. Enable the GitLab Pages access control in GitLab itself. You can do this in two ways:
+
+   - If you're not using GDK, edit `gitlab.yml`:
 
      ```yaml
      # gitlab/config/gitlab.yml
@@ -134,7 +135,7 @@ GitLab Pages access control is disabled by default. To enable it:
        access_control: true
      ```
 
-   - Editing `gdk.yml` if you're using GDK:
+   - If you're using GDK, edit `gdk.yml`:
 
      ```yaml
      # $GDK_ROOT/gdk.yml
@@ -149,8 +150,9 @@ GitLab Pages access control is disabled by default. To enable it:
 1. Create an [Instance-wide OAuth application](../../integration/oauth_provider.md#instance-wide-applications)
    with the `api` scope.
 1. Set the value of your `redirect-uri` to the `pages-domain` authorization endpoint
-   - `http://pages.gdk.test:3010/auth`, for example
-   - The `redirect-uri` must not contain any GitLab Pages site domain.
+(for example, `http://pages.gdk.test:3010/auth`).
+The `redirect-uri` must not contain any GitLab Pages site domain.
+
 1. Add the auth client configuration:
 
    - With GDK, in `gdk.yml`:
@@ -254,9 +256,9 @@ incidents and downtime. To add a new feature flag to GitLab Pages:
 1. Create an issue to track the feature flag using the `Feature Flag` template.
 1. Add the `~"feature flag"` label to any merge requests that handle feature flags.
 
-For GitLab Pages, the feature flags are controlled by environment variables at a global level. It
+For GitLab Pages, the feature flags are controlled by environment variables at a global level.
 A deployment at the service level is required to change the state of a feature flag.
-Example of an merge request enabling a GitLab Pages feature flag:
+Example of a merge request enabling a GitLab Pages feature flag:
 [Enforce GitLab Pages rate limits](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/merge_requests/1500)
 
 ## Related topics

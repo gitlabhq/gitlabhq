@@ -222,6 +222,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
       it 'has 10 elements' do
         expect(subject.size).to eq(10)
       end
+
       it { is_expected.to include(SeedRepo::EmptyCommit::ID) }
     end
 
@@ -240,6 +241,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
       it 'has 10 elements' do
         expect(subject.size).to eq(10)
       end
+
       it { is_expected.to include(SeedRepo::EmptyCommit::ID) }
     end
 
@@ -259,6 +261,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
       it 'has 3 elements' do
         expect(subject.size).to eq(3)
       end
+
       it { is_expected.to include("d14d6c0abdd253381df51a723d58691b2ee1ab08") }
       it { is_expected.not_to include("eb49186cfa5c4338011f5f590fac11bd66c5c631") }
     end
@@ -279,6 +282,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
       it 'has 3 elements' do
         expect(subject.size).to eq(3)
       end
+
       it { is_expected.to include("2f63565e7aac07bcdadb654e253078b727143ec4") }
       it { is_expected.not_to include(SeedRepo::Commit::ID) }
     end
@@ -299,6 +303,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
       it 'has 3 elements' do
         expect(subject.size).to eq(3)
       end
+
       it { is_expected.to include("874797c3a73b60d2187ed6e2fcabd289ff75171e") }
       it { is_expected.not_to include(SeedRepo::Commit::ID) }
     end
@@ -648,6 +653,7 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
     it 'has 2 element' do
       expect(subject.size).to eq(2)
     end
+
     it { is_expected.to include("master") }
     it { is_expected.not_to include("feature") }
   end

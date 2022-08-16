@@ -18864,6 +18864,7 @@ Represents vulnerability letter grades with associated projects.
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`ID!`](#id) | Internal ID of the work item. |
 | <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
+| <a id="workitemproject"></a>`project` **{warning-solid}** | [`Project!`](#project) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Project the work item belongs to. |
 | <a id="workitemstate"></a>`state` | [`WorkItemState!`](#workitemstate) | State of the work item. |
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |

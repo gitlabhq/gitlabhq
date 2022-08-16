@@ -8,12 +8,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `work_items`. Disabled by default.
 > - [Creating, editing, and deleting tasks](https://gitlab.com/groups/gitlab-org/-/epics/7169) introduced in GitLab 15.0.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.3.
+
+WARNING:
+Tasks are in [**Alpha**](../policy/alpha-beta-support.md#alpha-features).
+
+The following list are the known limitations:
+
+- [Tasks currently cannot be accessed via REST API.](https://gitlab.com/gitlab-org/gitlab/-/issues/368055)
+- An issue's tasks can only currently be accessed via a reference within a description, comment, or direct URL (`.../-/work_items/[global_id]`).
+
+For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the feature flags](../administration/feature_flags.md) named `work_items` and `work_items_hierarchy`.
+On GitLab.com, this feature is available.
 
 Use tasks to track steps needed for the [issue](project/issues/index.md) to be closed.
 

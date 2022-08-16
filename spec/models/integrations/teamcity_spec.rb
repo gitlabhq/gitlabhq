@@ -76,6 +76,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
 
       it { is_expected.to validate_presence_of(:build_type) }
       it { is_expected.to validate_presence_of(:teamcity_url) }
+
       it_behaves_like 'issue tracker integration URL attribute', :teamcity_url
 
       describe '#username' do

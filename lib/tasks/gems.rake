@@ -4,7 +4,6 @@ namespace :gems do
   # :nocov:
   namespace :error_tracking_open_api do
     desc 'Generate OpenAPI client for Error Tracking'
-    # rubocop:disable Rails/RakeEnvironment
     task :generate do |task|
       # Configuration
       api_url = 'https://gitlab.com/gitlab-org/opstrace/opstrace/-/raw/main/go/pkg/errortracking/swagger.yaml'
@@ -28,7 +27,6 @@ namespace :gems do
 
       post_process(gem_dir: gem_dir, gem_name: gem_name, task: task)
     end
-    # rubocop:enable Rails/RakeEnvironment
 
     def root_directory
       File.expand_path('../../vendor/gems', __dir__)

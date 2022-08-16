@@ -295,6 +295,21 @@ module QA
         )
       end
 
+      def change_path(new_path)
+        response = put(request_url(api_put_path), path: new_path)
+
+        unless response.code == HTTP_STATUS_OK
+          raise(
+            ResourceUpdateFailedError,
+            "Failed to update the project path to '#{new_path}'. Request returned (#{response.code}): `#{response}`."
+          )
+        end
+
+        # We need to manually set the path_with_namespace as reload! relies on it being correct and avoid 404s
+        result = parse_body(response)
+        @path_with_namespace = result[:path_with_namespace]
+      end
+
       def default_branch
         reload!.api_response[:default_branch] || Runtime::Env.default_branch
       end

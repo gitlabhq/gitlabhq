@@ -727,6 +727,7 @@ RSpec.describe 'Pipelines', :js do
           end
 
           it { expect(page).to have_content('Missing CI config file') }
+
           it 'creates a pipeline after first request failed and a valid gitlab-ci.yml file' \
             'is available when trying again' do
             stub_ci_pipeline_to_return_yaml_file

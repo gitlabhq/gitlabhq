@@ -166,6 +166,7 @@ RSpec.describe MergeRequestsHelper do
       it 'returns reviewer label with no names' do
         expect(helper.reviewers_label(merge_request)).to eq("Reviewers: ")
       end
+
       it 'returns reviewer label only with include_value: false' do
         expect(helper.reviewers_label(merge_request, include_value: false)).to eq("Reviewers")
       end

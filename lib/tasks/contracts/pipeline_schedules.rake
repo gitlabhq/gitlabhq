@@ -7,7 +7,6 @@ require 'pact/tasks/verification_task'
 contracts = File.expand_path('../../../spec/contracts/contracts/project/pipeline_schedule', __dir__)
 provider = File.expand_path('../../../spec/contracts/provider', __dir__)
 
-# rubocop:disable Rails/RakeEnvironment
 namespace :contracts do
   namespace :pipeline_schedules do
     Pact::VerificationTask.new(:update_pipeline_schedule) do |pact|
@@ -31,4 +30,3 @@ namespace :contracts do
     end
   end
 end
-# rubocop:enable Rails/RakeEnvironment

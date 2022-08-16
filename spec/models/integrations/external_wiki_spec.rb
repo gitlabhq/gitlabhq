@@ -10,6 +10,7 @@ RSpec.describe Integrations::ExternalWiki do
       end
 
       it { is_expected.to validate_presence_of(:external_wiki_url) }
+
       it_behaves_like 'issue tracker integration URL attribute', :external_wiki_url
     end
 

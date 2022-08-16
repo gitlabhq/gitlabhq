@@ -54,6 +54,7 @@ RSpec.describe Gitlab::Git do
 
     with_them do
       it { expect(described_class.shas_eql?(sha1, sha2)).to eq(result) }
+
       it 'is commutative' do
         expect(described_class.shas_eql?(sha2, sha1)).to eq(result)
       end

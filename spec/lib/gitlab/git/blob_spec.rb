@@ -235,6 +235,7 @@ RSpec.describe Gitlab::Git::Blob, :seed_helper do
 
       it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
       it { expect(blob.data).to eq('') }
+
       it 'does not mark the blob as binary' do
         expect(blob).not_to be_binary_in_repo
       end

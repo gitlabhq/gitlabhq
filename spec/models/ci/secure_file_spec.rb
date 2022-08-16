@@ -26,6 +26,7 @@ RSpec.describe Ci::SecureFile do
     it { is_expected.to validate_presence_of(:file_store) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:project_id) }
+
     context 'unique filename' do
       let_it_be(:project1) { create(:project) }
 

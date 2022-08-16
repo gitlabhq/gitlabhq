@@ -36,6 +36,7 @@ RSpec.describe Gitlab::HookData::KeyBuilder do
 
           it { expect(event_name).to eq('key_create') }
           it { expect(data[:username]).to eq(key.user.username) }
+
           it_behaves_like 'includes the required attributes'
         end
 
@@ -44,6 +45,7 @@ RSpec.describe Gitlab::HookData::KeyBuilder do
 
           it { expect(event_name).to eq('key_destroy') }
           it { expect(data[:username]).to eq(key.user.username) }
+
           it_behaves_like 'includes the required attributes'
         end
       end
@@ -58,6 +60,7 @@ RSpec.describe Gitlab::HookData::KeyBuilder do
           let(:event) { :create }
 
           it { expect(event_name).to eq('key_create') }
+
           it_behaves_like 'includes the required attributes'
         end
 
@@ -65,6 +68,7 @@ RSpec.describe Gitlab::HookData::KeyBuilder do
           let(:event) { :destroy }
 
           it { expect(event_name).to eq('key_destroy') }
+
           it_behaves_like 'includes the required attributes'
         end
       end

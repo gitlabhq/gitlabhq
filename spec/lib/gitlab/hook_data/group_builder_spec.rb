@@ -38,6 +38,7 @@ RSpec.describe Gitlab::HookData::GroupBuilder do
         let(:event) { :create }
 
         it { expect(event_name).to eq('group_create') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'does not include old path attributes'
       end
@@ -46,6 +47,7 @@ RSpec.describe Gitlab::HookData::GroupBuilder do
         let(:event) { :destroy }
 
         it { expect(event_name).to eq('group_destroy') }
+
         it_behaves_like 'includes the required attributes'
         it_behaves_like 'does not include old path attributes'
       end
@@ -54,6 +56,7 @@ RSpec.describe Gitlab::HookData::GroupBuilder do
         let(:event) { :rename }
 
         it { expect(event_name).to eq('group_rename') }
+
         it_behaves_like 'includes the required attributes'
 
         it 'includes old path details' do

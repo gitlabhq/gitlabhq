@@ -32,6 +32,7 @@ RSpec.describe API::Internal::Workhorse, :allow_forgery_protection do
         end
 
         it { expect_status(:success) }
+
         it 'returns the temp upload path' do
           subject
           expect(json_response['TempPath']).to eq(Rails.root.join('tmp/tests/public/uploads/tmp').to_s)

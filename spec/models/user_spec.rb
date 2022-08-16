@@ -6166,6 +6166,7 @@ RSpec.describe User do
         let(:encrypted_password) { Devise::Encryptor.digest(User, User.random_password) }
 
         it { is_expected.to be_falsey }
+
         it_behaves_like 'not re-encrypting with PBKDF2'
 
         context 'when pbkdf2_password_encryption is disabled' do
@@ -6174,6 +6175,7 @@ RSpec.describe User do
           end
 
           it { is_expected.to be_falsey }
+
           it_behaves_like 'not re-encrypting with PBKDF2'
         end
       end
@@ -6197,6 +6199,7 @@ RSpec.describe User do
           end
 
           it { is_expected.to be_truthy }
+
           it_behaves_like 'not re-encrypting with PBKDF2'
         end
 
@@ -6206,6 +6209,7 @@ RSpec.describe User do
           end
 
           it { is_expected.to be_truthy }
+
           it_behaves_like 'not re-encrypting with PBKDF2'
         end
       end

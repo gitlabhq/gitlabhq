@@ -26,6 +26,8 @@ export const workItemQueryResponse = {
       state: 'OPEN',
       description: 'description',
       confidential: false,
+      createdAt: '2022-08-03T12:41:54Z',
+      closedAt: null,
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
@@ -66,6 +68,8 @@ export const workItemQueryResponse = {
             nodes: [
               {
                 id: 'gid://gitlab/WorkItem/444',
+                createdAt: '2022-08-03T12:41:54Z',
+                closedAt: null,
               },
             ],
           },
@@ -87,6 +91,8 @@ export const updateWorkItemMutationResponse = {
         state: 'OPEN',
         description: 'description',
         confidential: false,
+        createdAt: '2022-08-03T12:41:54Z',
+        closedAt: null,
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -149,6 +155,8 @@ export const workItemResponseFactory = ({
       state: 'OPEN',
       description: 'description',
       confidential,
+      createdAt: '2022-08-03T12:41:54Z',
+      closedAt: null,
       workItemType: {
         __typename: 'WorkItemType',
         id: 'gid://gitlab/WorkItems::Type/5',
@@ -192,6 +200,8 @@ export const workItemResponseFactory = ({
             nodes: [
               {
                 id: 'gid://gitlab/WorkItem/444',
+                createdAt: '2022-08-03T12:41:54Z',
+                closedAt: null,
               },
             ],
           },
@@ -239,6 +249,8 @@ export const createWorkItemMutationResponse = {
         state: 'OPEN',
         description: 'description',
         confidential: false,
+        createdAt: '2022-08-03T12:41:54Z',
+        closedAt: null,
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -268,6 +280,8 @@ export const createWorkItemFromTaskMutationResponse = {
         title: 'Updated title',
         state: 'OPEN',
         confidential: false,
+        createdAt: '2022-08-03T12:41:54Z',
+        closedAt: null,
         workItemType: {
           __typename: 'WorkItemType',
           id: 'gid://gitlab/WorkItems::Type/5',
@@ -292,6 +306,8 @@ export const createWorkItemFromTaskMutationResponse = {
         id: 'gid://gitlab/WorkItem/1000000',
         title: 'Updated title',
         state: 'OPEN',
+        createdAt: '2022-08-03T12:41:54Z',
+        closedAt: null,
         description: '',
         confidential: false,
         workItemType: {
@@ -370,6 +386,8 @@ export const workItemHierarchyEmptyResponse = {
         __typename: 'WorkItemType',
       },
       title: 'New title',
+      createdAt: '2022-08-03T12:41:54Z',
+      closedAt: null,
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
@@ -428,6 +446,8 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                 title: 'xyz',
                 state: 'OPEN',
                 confidential: false,
+                createdAt: '2022-08-03T12:41:54Z',
+                closedAt: null,
                 __typename: 'WorkItem',
               },
             ],
@@ -474,6 +494,8 @@ export const workItemHierarchyResponse = {
                 title: 'xyz',
                 state: 'OPEN',
                 confidential: true,
+                createdAt: '2022-08-03T12:41:54Z',
+                closedAt: null,
                 __typename: 'WorkItem',
               },
               {
@@ -485,6 +507,8 @@ export const workItemHierarchyResponse = {
                 title: 'abc',
                 state: 'CLOSED',
                 confidential: false,
+                createdAt: '2022-08-03T12:41:54Z',
+                closedAt: '2022-08-12T13:07:52Z',
                 __typename: 'WorkItem',
               },
               {
@@ -496,6 +520,8 @@ export const workItemHierarchyResponse = {
                 title: 'bar',
                 state: 'OPEN',
                 confidential: false,
+                createdAt: '2022-08-03T12:41:54Z',
+                closedAt: null,
                 __typename: 'WorkItem',
               },
               {
@@ -507,6 +533,8 @@ export const workItemHierarchyResponse = {
                 title: 'foobar',
                 state: 'OPEN',
                 confidential: false,
+                createdAt: '2022-08-03T12:41:54Z',
+                closedAt: null,
                 __typename: 'WorkItem',
               },
             ],
@@ -540,6 +568,8 @@ export const changeWorkItemParentMutationResponse = {
         state: 'OPEN',
         title: 'Foo',
         confidential: false,
+        createdAt: '2022-08-03T12:41:54Z',
+        closedAt: null,
         widgets: [
           {
             __typename: 'WorkItemWidgetHierarchy',
@@ -569,6 +599,7 @@ export const availableWorkItemsResponse = {
               id: 'gid://gitlab/WorkItem/458',
               title: 'Task 1',
               state: 'OPEN',
+              createdAt: '2022-08-03T12:41:54Z',
             },
           },
           {
@@ -576,6 +607,7 @@ export const availableWorkItemsResponse = {
               id: 'gid://gitlab/WorkItem/459',
               title: 'Task 2',
               state: 'OPEN',
+              createdAt: '2022-08-03T12:41:54Z',
             },
           },
         ],

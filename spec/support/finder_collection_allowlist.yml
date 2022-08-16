@@ -57,6 +57,8 @@
 - Security::ScanExecutionPoliciesFinder
 - Security::TrainingProviders::BaseUrlFinder
 - Security::TrainingUrlsFinder
+- Security::TrainingProviders::KontraUrlFinder
+- Security::TrainingProviders::SecureCodeWarriorUrlFinder
 - SentryIssueFinder
 - ServerlessDomainFinder
 - TagsFinder

@@ -25,7 +25,7 @@ RSpec.describe 'Query.work_item(id)' do
 
   let(:current_user) { developer }
   let(:work_item_data) { graphql_data['workItem'] }
-  let(:work_item_fields) { all_graphql_fields_for('WorkItem') }
+  let(:work_item_fields) { all_graphql_fields_for('WorkItem', max_depth: 2) }
   let(:global_id) { work_item.to_gid.to_s }
 
   let(:query) do
@@ -52,7 +52,8 @@ RSpec.describe 'Query.work_item(id)' do
         'title' => work_item.title,
         'confidential' => work_item.confidential,
         'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s),
-        'userPermissions' => { 'readWorkItem' => true, 'updateWorkItem' => true, 'deleteWorkItem' => false }
+        'userPermissions' => { 'readWorkItem' => true, 'updateWorkItem' => true, 'deleteWorkItem' => false },
+        'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
     end
 

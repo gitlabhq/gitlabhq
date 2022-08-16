@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:disable Rails/RakeEnvironment
 
 # How to run this rake task?
 # GITLAB_QA_ACCESS_TOKEN=<access_token> GITLAB_URL="<Gitlab address>" bundle exec rake
@@ -26,4 +25,3 @@ namespace :vulnerabilities do
     vuln.create_vuln_report(args[:project_id], args[:vulnerability_count].to_i)
   end
 end
-# rubocop:enable Rails/RakeEnvironment

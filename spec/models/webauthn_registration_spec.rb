@@ -13,6 +13,7 @@ RSpec.describe WebauthnRegistration do
     it { is_expected.to validate_presence_of(:counter) }
     it { is_expected.to validate_length_of(:name).is_at_least(0) }
     it { is_expected.not_to allow_value(nil).for(:name) }
+
     it do
       is_expected.to validate_numericality_of(:counter)
           .only_integer

@@ -11,6 +11,7 @@ RSpec.describe IncidentManagement::IssuableEscalationStatus do
 
   describe 'associations' do
     it { is_expected.to belong_to(:issue) }
+
     it do
       is_expected.to have_one(:project).through(:issue).inverse_of(:incident_management_issuable_escalation_statuses)
     end

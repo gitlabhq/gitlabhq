@@ -7,7 +7,6 @@ require 'pact/tasks/verification_task'
 contracts = File.expand_path('../../../spec/contracts/contracts/project/merge_request', __dir__)
 provider = File.expand_path('../../../spec/contracts/provider', __dir__)
 
-# rubocop:disable Rails/RakeEnvironment
 namespace :contracts do
   namespace :merge_requests do
     Pact::VerificationTask.new(:diffs_batch) do |pact|
@@ -43,4 +42,3 @@ namespace :contracts do
     end
   end
 end
-# rubocop:enable Rails/RakeEnvironment

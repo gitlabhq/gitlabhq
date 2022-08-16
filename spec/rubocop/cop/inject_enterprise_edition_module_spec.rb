@@ -23,6 +23,7 @@ RSpec.describe RuboCop::Cop::InjectEnterpriseEditionModule do
     end
     SOURCE
   end
+
   it 'flags the use of `extend_mod_with` in the middle of a file' do
     expect_offense(<<~SOURCE)
     class Foo
