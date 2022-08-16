@@ -93,6 +93,11 @@ module Types
     field :merge_status_enum, ::Types::MergeRequests::MergeStatusEnum,
           method: :public_merge_status, null: true,
           description: 'Merge status of the merge request.'
+
+    field :detailed_merge_status, ::Types::MergeRequests::DetailedMergeStatusEnum, method: :detailed_merge_status, null: true,
+                                                                                   calls_gitaly: true,
+                                                                                   description: 'Detailed merge status of the merge request.', alpha: { milestone: '15.3' }
+
     field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true,
                                                                  calls_gitaly: true,
                                                                  description: 'Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged.'

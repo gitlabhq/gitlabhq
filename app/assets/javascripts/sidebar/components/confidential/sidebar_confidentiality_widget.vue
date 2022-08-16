@@ -95,10 +95,10 @@ export default {
     confidentialWidget.setConfidentiality = null;
   },
   methods: {
-    closeForm() {
+    closeForm({ confidential } = {}) {
       this.$refs.editable.collapse();
       this.$el.dispatchEvent(hideDropdownEvent);
-      this.$emit('closeForm');
+      this.$emit('closeForm', { confidential });
     },
     // synchronizing the quick action with the sidebar widget
     // this is a temporary solution until we have confidentiality real-time updates

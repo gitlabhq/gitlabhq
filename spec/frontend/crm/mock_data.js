@@ -43,6 +43,28 @@ export const getGroupContactsQueryResponse = {
             organization: null,
           },
         ],
+        pageInfo: {
+          __typename: 'PageInfo',
+          hasNextPage: false,
+          endCursor: 'eyJsYXN0X25hbWUiOiJMZWRuZXIiLCJpZCI6IjE3OSJ9',
+          hasPreviousPage: false,
+          startCursor: 'eyJsYXN0X25hbWUiOiJCYXJ0b24iLCJpZCI6IjE5MyJ9',
+        },
+      },
+    },
+  },
+};
+
+export const getGroupContactsCountQueryResponse = {
+  data: {
+    group: {
+      __typename: 'Group',
+      id: 'gid://gitlab/Group/26',
+      contactStateCounts: {
+        all: 241,
+        active: 239,
+        inactive: 2,
+        __typename: 'ContactStateCountsType',
       },
     },
   },

@@ -13528,6 +13528,7 @@ Maven metadata.
 | <a id="mergerequestdefaultsquashcommitmessage"></a>`defaultSquashCommitMessage` | [`String`](#string) | Default squash commit message of the merge request. |
 | <a id="mergerequestdescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mergerequestdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
+| <a id="mergerequestdetailedmergestatus"></a>`detailedMergeStatus` **{warning-solid}** | [`DetailedMergeStatus`](#detailedmergestatus) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Detailed merge status of the merge request. |
 | <a id="mergerequestdiffheadsha"></a>`diffHeadSha` | [`String`](#string) | Diff head SHA of the merge request. |
 | <a id="mergerequestdiffrefs"></a>`diffRefs` | [`DiffRefs`](#diffrefs) | References of the base SHA, the head SHA, and the start SHA for this merge request. |
 | <a id="mergerequestdiffstatssummary"></a>`diffStatsSummary` | [`DiffStatsSummary`](#diffstatssummary) | Summary of which files were changed in this merge request. |
@@ -19579,6 +19580,24 @@ Mutation event of a design within a version.
 | <a id="designversioneventdeletion"></a>`DELETION` | A deletion event. |
 | <a id="designversioneventmodification"></a>`MODIFICATION` | A modification event. |
 | <a id="designversioneventnone"></a>`NONE` | No change. |
+
+### `DetailedMergeStatus`
+
+Detailed representation of whether a GitLab merge request can be merged.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="detailedmergestatusblocked_status"></a>`BLOCKED_STATUS` | Merge request is blocked by another merge request. |
+| <a id="detailedmergestatusbroken_status"></a>`BROKEN_STATUS` | Can not merge the source into the target branch, potential conflict. |
+| <a id="detailedmergestatuschecking"></a>`CHECKING` | Currently checking for mergeability. |
+| <a id="detailedmergestatusci_must_pass"></a>`CI_MUST_PASS` | Pipeline must succeed before merging. |
+| <a id="detailedmergestatusdiscussions_not_resolved"></a>`DISCUSSIONS_NOT_RESOLVED` | Discussions must be resolved before merging. |
+| <a id="detailedmergestatusdraft_status"></a>`DRAFT_STATUS` | Merge request must not be draft before merging. |
+| <a id="detailedmergestatusmergeable"></a>`MERGEABLE` | Branch can be merged. |
+| <a id="detailedmergestatusnot_approved"></a>`NOT_APPROVED` | Merge request must be approved before merging. |
+| <a id="detailedmergestatusnot_open"></a>`NOT_OPEN` | Merge request must be open before merging. |
+| <a id="detailedmergestatuspolicies_denied"></a>`POLICIES_DENIED` | There are denied policies for the merge request. |
+| <a id="detailedmergestatusunchecked"></a>`UNCHECKED` | Merge status has not been checked. |
 
 ### `DiffPositionType`
 

@@ -57,7 +57,7 @@ export default {
     getQuery() {
       return {
         query: getGroupContactsQuery,
-        variables: { groupFullPath: this.groupFullPath },
+        variables: { groupFullPath: this.groupFullPath, ids: [this.contactGraphQLId] },
       };
     },
     title() {

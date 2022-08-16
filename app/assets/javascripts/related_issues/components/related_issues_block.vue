@@ -156,6 +156,10 @@ export default {
     handleToggle() {
       this.isOpen = !this.isOpen;
     },
+    addButtonClick(event) {
+      this.isOpen = true;
+      this.$emit('toggleAddRelatedIssuesForm', event);
+    },
   },
   linkedIssueTypesTextMap,
 };
@@ -203,7 +207,7 @@ export default {
           :aria-label="addIssuableButtonText"
           :class="qaClass"
           class="gl-ml-3"
-          @click="$emit('toggleAddRelatedIssuesForm', $event)"
+          @click="addButtonClick"
         >
           <slot name="add-button-text">{{ __('Add') }}</slot>
         </gl-button>

@@ -47,6 +47,28 @@ graph TD
     end
 ```
 
+## View subgroups of a group
+
+Prerequisite:
+
+- To view private nested subgroups, you must be a direct or inherited member of
+the private subgroup.
+
+To view the subgroups of a group:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. Select the **Subgroups and projects** tab.
+1. To view a nested subgroup, expand a subgroup in the hierarchy list.
+
+### Private subgroups in public parent groups
+
+In the hierarchy list, public groups with a private subgroup have an expand option (**{chevron-down}**)
+for all users that indicate there is a subgroup. When users who are not direct or inherited members of
+the private subgroup select expand (**{chevron-down}**), the nested subgroup does not display.
+
+If you prefer to keep information about the presence of nested subgroups private, we advise that you only
+add private subgroups to private parent groups.
+
 ## Create a subgroup
 
 Prerequisites:

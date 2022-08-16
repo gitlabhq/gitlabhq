@@ -28,13 +28,13 @@ export default {
     GlSprintf,
   },
   mixins: [Tracking.mixin()],
-  inject: ['runnerHelpPagePath'],
   methods: {
     trackHelpPageClick() {
       const { label, actions } = pipelineEditorTrackingOptions;
       this.track(actions.helpDrawerLinks.runners, { label });
     },
   },
+  RUNNER_HELP_URL: 'https://docs.gitlab.com/runner/register/index.html',
 };
 </script>
 <template>
@@ -47,7 +47,7 @@ export default {
     <p class="gl-mb-0">
       <gl-sprintf :message="$options.i18n.note">
         <template #link="{ content }">
-          <gl-link :href="runnerHelpPagePath" target="_blank" @click="trackHelpPageClick()">
+          <gl-link :href="$options.RUNNER_HELP_URL" target="_blank" @click="trackHelpPageClick()">
             {{ content }}
           </gl-link>
         </template>

@@ -7,6 +7,8 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import SidebarEventHub from '~/sidebar/event_hub';
+
 import {
   STATE_OPEN,
   WIDGET_ICONS,
@@ -111,7 +113,16 @@ export default {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
   },
+  mounted() {
+    SidebarEventHub.$on('confidentialityUpdated', this.refetchWorkItems);
+  },
+  destroyed() {
+    SidebarEventHub.$off('confidentialityUpdated', this.refetchWorkItems);
+  },
   methods: {
+    refetchWorkItems() {
+      this.$apollo.queries.workItem.refetch();
+    },
     badgeVariant(state) {
       return state === STATE_OPEN ? 'success' : 'info';
     },
@@ -122,6 +133,7 @@ export default {
       this.isOpen = !this.isOpen;
     },
     showAddForm() {
+      this.isOpen = true;
       this.isShownAddForm = true;
       this.$nextTick(() => {
         this.$refs.wiLinksForm.$refs.wiTitleInput?.$el.focus();

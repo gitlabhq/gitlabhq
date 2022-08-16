@@ -24,6 +24,14 @@ module Gitlab
 
           quoted_column_name = model_class.connection.quote_column_name(column_name)
           relation = model_class.where("#{quoted_column_name} >= ?", batch_min_value)
+
+          if job_class
+            relation = filter_batch(relation,
+              table_name: table_name, column_name: column_name,
+              job_class: job_class, job_arguments: job_arguments
+            )
+          end
+
           relation = apply_additional_filters(relation, job_arguments: job_arguments, job_class: job_class)
           next_batch_bounds = nil
 
@@ -36,12 +44,26 @@ module Gitlab
           next_batch_bounds
         end
 
+        # Deprecated
+        #
+        # Use `scope_to` to define additional filters on the migration job class.
+        #
+        # see https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#adding-additional-filters.
         def apply_additional_filters(relation, job_arguments: [], job_class: nil)
-          if job_class.respond_to?(:batching_scope)
-            return job_class.batching_scope(relation, job_arguments: job_arguments)
-          end
-
           relation
+        end
+
+        private
+
+        def filter_batch(relation, table_name:, column_name:, job_class:, job_arguments: [])
+          return relation unless job_class.respond_to?(:generic_instance)
+
+          job = job_class.generic_instance(
+            batch_table: table_name, batch_column: column_name,
+            job_arguments: job_arguments, connection: connection
+          )
+
+          job.filter_batch(relation)
         end
       end
     end

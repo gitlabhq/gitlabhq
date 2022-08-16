@@ -1,7 +1,6 @@
 <script>
 import { mapState } from 'vuex';
 import { GlBadge } from '@gitlab/ui';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -47,11 +46,6 @@ export default {
           this.job.coverage,
       );
     },
-    runnerHelpUrl() {
-      return helpPagePath('ci/runners/configure_runners.html', {
-        anchor: 'set-maximum-job-timeout-for-a-runner',
-      });
-    },
     runnerId() {
       const { id, short_sha: token, description } = this.job.runner;
 
@@ -85,6 +79,7 @@ export default {
     TAGS: __('Tags:'),
     TIMEOUT: __('Timeout'),
   },
+  RUNNER_HELP_URL: 'https://docs.gitlab.com/runner/register/index.html',
 };
 </script>
 
@@ -101,7 +96,7 @@ export default {
     <detail-row v-if="job.queued_duration" :value="queuedDuration" :title="$options.i18n.QUEUED" />
     <detail-row
       v-if="hasTimeout"
-      :help-url="runnerHelpUrl"
+      :help-url="$options.RUNNER_HELP_URL"
       :value="timeout"
       data-testid="job-timeout"
       :title="$options.i18n.TIMEOUT"

@@ -39,6 +39,7 @@ import SidebarTimeTracking from './components/time_tracking/sidebar_time_trackin
 import { IssuableAttributeType } from './constants';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
 import CrmContacts from './components/crm_contacts/crm_contacts.vue';
+import SidebarEventHub from './event_hub';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -358,6 +359,13 @@ function mountConfidentialComponent() {
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? IssuableType.Issue
               : IssuableType.MergeRequest,
+        },
+        on: {
+          closeForm({ confidential }) {
+            if (confidential !== undefined) {
+              SidebarEventHub.$emit('confidentialityUpdated', confidential);
+            }
+          },
         },
       }),
   });

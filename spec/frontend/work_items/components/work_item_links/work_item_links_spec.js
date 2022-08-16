@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import SidebarEventHub from '~/sidebar/event_hub';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -160,6 +161,21 @@ describe('WorkItemLinks', () => {
     expect(findChildrenCount().exists()).toBe(true);
 
     expect(findChildrenCount().text()).toContain('4');
+  });
+
+  it('refetches child items when `confidentialityUpdated` event is emitted on SidebarEventhub', async () => {
+    const fetchHandler = jest.fn().mockResolvedValue(workItemHierarchyResponse);
+    await createComponent({
+      fetchHandler,
+    });
+    await waitForPromises();
+
+    SidebarEventHub.$emit('confidentialityUpdated');
+    await nextTick();
+
+    // First call is done on component mount.
+    // Second call is done on confidentialityUpdated event.
+    expect(fetchHandler).toHaveBeenCalledTimes(2);
   });
 
   describe('when no permission to update', () => {

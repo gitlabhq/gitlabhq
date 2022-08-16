@@ -37,7 +37,7 @@ Each time you push a change, Git records it as a unique *commit*. These commits 
 the history of when and how a file changed, and who changed it.
 
 ```mermaid
-graph LR
+graph TB
     subgraph Repository commit history
     A(Author: Alex<br>Date: 3 Jan at 1PM<br>Commit message: Added sales figures for January<br> Commit ID: 123abc12) --->  B
     B(Author: Sam<br>Date: 4 Jan at 10AM<br>Commit message: Removed outdated marketing information<br> Commit ID: aabb1122) ---> C
@@ -54,7 +54,7 @@ of a repository are in a default branch. To make changes, you:
 1. When you're ready, *merge* your branch into the default branch.
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Default branch
     A[Commit] --> B[Commit] --> C[Commit] --> D[Commit]
     end

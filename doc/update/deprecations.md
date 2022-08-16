@@ -92,6 +92,23 @@ The [**Maximum number of active pipelines per project** limit](https://docs.gitl
 - [**Total number of jobs in currently active pipelines**](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits).
 
 </div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### Redis 5 deprecated
+
+End of Support: GitLab <span class="removal-milestone">15.6</span> (2022-11-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+With GitLab 13.9, in the Omnibus GitLab package and GitLab Helm chart 4.9, the Redis version [was updated to Redis 6](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#omnibus-improvements).
+Redis 5 has reached the end of life in April 2022 and will no longer be supported as of GitLab 15.6.
+If you are using your own Redis 5.0 instance, you should upgrade it to Redis 6.0 or higher before upgrading to GitLab 16.0 or higher.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

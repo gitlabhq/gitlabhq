@@ -1844,7 +1844,7 @@ API Security uses the specified media types in the OpenAPI document to generate 
 To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and API Fuzzing.
-Please use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people. Please refer to our [review response SLO](../../../development/code_review.md#review-response-slo) to understand when you should receive a response.
+Please use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people. Please refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
 

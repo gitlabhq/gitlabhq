@@ -1187,17 +1187,30 @@ class MergeRequest < ApplicationRecord
     ]
   end
 
+  def detailed_merge_status
+    if cannot_be_merged_rechecking? || preparing? || checking?
+      return :checking
+    elsif unchecked?
+      return :unchecked
+    end
+
+    checks = execute_merge_checks
+
+    if checks.success?
+      :mergeable
+    else
+      checks.failure_reason
+    end
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
     if Feature.enabled?(:improved_mergeability_checks, self.project)
-      additional_checks = MergeRequests::Mergeability::RunChecksService.new(
-        merge_request: self,
-        params: {
-          skip_ci_check: skip_ci_check,
-          skip_discussions_check: skip_discussions_check
-        }
-      )
-      additional_checks.execute.all?(&:success?)
+      additional_checks = execute_merge_checks(params: {
+                                                 skip_ci_check: skip_ci_check,
+                                                 skip_discussions_check: skip_discussions_check
+                                               })
+      additional_checks.execute.success?
     else
       return false unless open?
       return false if draft?
@@ -2058,6 +2071,12 @@ class MergeRequest < ApplicationRecord
 
   def report_type_enabled?(report_type)
     !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
+  end
+
+  def execute_merge_checks(params: {})
+    # rubocop: disable CodeReuse/ServiceClass
+    MergeRequests::Mergeability::RunChecksService.new(merge_request: self, params: params).execute
+    # rubocop: enable CodeReuse/ServiceClass
   end
 end
 

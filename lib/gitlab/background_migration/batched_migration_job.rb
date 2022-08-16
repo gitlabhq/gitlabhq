@@ -24,6 +24,14 @@ module Gitlab
         @connection = connection
       end
 
+      def self.generic_instance(batch_table:, batch_column:, job_arguments: [], connection:)
+        new(
+          batch_table: batch_table, batch_column: batch_column,
+          job_arguments: job_arguments, connection: connection,
+          start_id: 0, end_id: 0, sub_batch_size: 0, pause_ms: 0
+        )
+      end
+
       def self.job_arguments_count
         0
       end
@@ -38,6 +46,16 @@ module Gitlab
         define_singleton_method(:job_arguments_count) do
           args.count
         end
+      end
+
+      def self.scope_to(scope)
+        define_method(:filter_batch) do |relation|
+          instance_exec(relation, &scope)
+        end
+      end
+
+      def filter_batch(relation)
+        relation
       end
 
       def perform
@@ -55,9 +73,10 @@ module Gitlab
       def each_sub_batch(operation_name: :default, batching_arguments: {}, batching_scope: nil)
         all_batching_arguments = { column: batch_column, of: sub_batch_size }.merge(batching_arguments)
 
-        parent_relation = parent_batch_relation(batching_scope)
+        relation = filter_batch(base_relation)
+        sub_batch_relation = filter_sub_batch(relation, batching_scope)
 
-        parent_relation.each_batch(**all_batching_arguments) do |relation|
+        sub_batch_relation.each_batch(**all_batching_arguments) do |relation|
           batch_metrics.instrument_operation(operation_name) do
             yield relation
           end
@@ -67,9 +86,13 @@ module Gitlab
       end
 
       def distinct_each_batch(operation_name: :default, batching_arguments: {})
+        if base_relation != filter_batch(base_relation)
+          raise 'distinct_each_batch can not be used when additional filters are defined with scope_to'
+        end
+
         all_batching_arguments = { column: batch_column, of: sub_batch_size }.merge(batching_arguments)
 
-        parent_batch_relation.distinct_each_batch(**all_batching_arguments) do |relation|
+        base_relation.distinct_each_batch(**all_batching_arguments) do |relation|
           batch_metrics.instrument_operation(operation_name) do
             yield relation
           end
@@ -78,13 +101,15 @@ module Gitlab
         end
       end
 
-      def parent_batch_relation(batching_scope = nil)
-        parent_relation = define_batchable_model(batch_table, connection: connection)
+      def base_relation
+        define_batchable_model(batch_table, connection: connection)
           .where(batch_column => start_id..end_id)
+      end
 
-        return parent_relation unless batching_scope
+      def filter_sub_batch(relation, batching_scope = nil)
+        return relation unless batching_scope
 
-        batching_scope.call(parent_relation)
+        batching_scope.call(relation)
       end
     end
   end

@@ -5,7 +5,7 @@ module MergeRequests
     class CheckDraftStatusService < CheckBaseService
       def execute
         if merge_request.draft?
-          failure
+          failure(reason: failure_reason)
         else
           success
         end
@@ -17,6 +17,12 @@ module MergeRequests
 
       def cacheable?
         false
+      end
+
+      private
+
+      def failure_reason
+        :draft_status
       end
     end
   end

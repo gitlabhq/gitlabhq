@@ -13,11 +13,11 @@ module Gitlab
         end
 
         def self.success(payload: {})
-          new(status: SUCCESS_STATUS, payload: default_payload.merge(payload))
+          new(status: SUCCESS_STATUS, payload: default_payload.merge(**payload))
         end
 
         def self.failed(payload: {})
-          new(status: FAILED_STATUS, payload: default_payload.merge(payload))
+          new(status: FAILED_STATUS, payload: default_payload.merge(**payload))
         end
 
         def self.from_hash(data)

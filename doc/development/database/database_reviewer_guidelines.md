@@ -95,7 +95,7 @@ are three times as likely to be picked by the [Danger bot](../dangerbot.md) as o
 ## What to do if you feel overwhelmed
 
 Similar to all types of reviews, [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization).
-Database reviewers are expected to [review assigned merge requests in a timely manner](../code_review.md#review-turnaround-time)
+Database reviewers are expected to [review assigned merge requests in a timely manner](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-turnaround-time)
 or let the author know as soon as possible and help them find another reviewer or maintainer.
 
 We are doing reviews to help the rest of the GitLab team and, at the same time, get exposed

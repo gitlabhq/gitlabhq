@@ -1,0 +1,11 @@
+query contactsCountByState($groupFullPath: ID!, $searchTerm: String) {
+  group(fullPath: $groupFullPath) {
+    __typename
+    id
+    contactStateCounts(search: $searchTerm) {
+      all
+      active
+      inactive
+    }
+  }
+}

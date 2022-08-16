@@ -7,7 +7,7 @@ describe('Sidebar detail row', () => {
 
   const title = 'this is the title';
   const value = 'this is the value';
-  const helpUrl = '/help/ci/runners/index.html';
+  const helpUrl = 'https://docs.gitlab.com/runner/register/index.html';
 
   const findHelpLink = () => wrapper.findComponent(GlLink);
 

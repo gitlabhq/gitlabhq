@@ -566,9 +566,6 @@ Graphql/Descriptions:
 RSpec/ImplicitSubject:
   Enabled: false
 
-RSpec/Be:
-  Enabled: false
-
 RSpec/DescribedClass:
   Enabled: false
 

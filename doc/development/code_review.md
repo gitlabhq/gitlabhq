@@ -447,7 +447,7 @@ You can also use `workflow::ready for review` label. That means that your merge 
 
 When your merge request receives an approval from the first reviewer it can be passed to a maintainer. You should default to choosing a maintainer with [domain expertise](#domain-experts), and otherwise follow the Reviewer Roulette recommendation or use the label `ready for merge`.
 
-Sometimes, a maintainer may not be available for review. They could be out of the office or [at capacity](#review-response-slo).
+Sometimes, a maintainer may not be available for review. They could be out of the office or [at capacity](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo).
 You can and should check the maintainer's availability in their profile. If the maintainer recommended by
 the roulette is not available, choose someone else from that list.
 
@@ -678,42 +678,6 @@ Enterprise Edition instance. This has some implications:
 1. **File system access** is not possible in a [cloud-native architecture](architecture.md#adapting-existing-and-introducing-new-components).
    Ensure that we support object storage for any file storage we need to perform. For more
    information, see the [uploads documentation](uploads/index.md).
-
-### Review turnaround time
-
-Because [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization),
-reviewers are expected to review merge requests in a timely manner,
-even when this may negatively impact their other tasks and priorities.
-
-Doing so allows everyone involved in the merge request to iterate faster as the
-context is fresh in memory, and improves contributors' experience significantly.
-
-#### Review-response SLO
-
-To ensure swift feedback to ready-to-review code, we maintain a `Review-response` Service-level Objective (SLO). The SLO is defined as:
-
-> Review-response SLO = (time when first review is provided) - (time MR is assigned to reviewer) < 2 business days
-
-If you don't think you can review a merge request in the `Review-response` SLO
-time frame, let the author know as soon as possible in the comments
-(no later than 36 hours after first receiving the review request)
-and try to help them find another reviewer or maintainer who is able to, so that they can be unblocked
-and get on with their work quickly. Remove yourself as a reviewer.
-
-If you think you are at capacity and are unable to accept any more reviews until
-some have been completed, communicate this through your GitLab status by setting
-the 🔴 `:red_circle:` emoji and mentioning that you are at capacity in the status
-text. This guides contributors to pick a different reviewer, helping us to
-meet the SLO.
-
-Of course, if you are out of office and have
-[communicated](https://about.gitlab.com/handbook/paid-time-off/#communicating-your-time-off)
-this through your GitLab.com Status, authors are expected to realize this and
-find a different reviewer themselves.
-
-When a merge request author has been blocked for longer than
-the `Review-response` SLO, they are free to remind the reviewer through Slack or add
-another reviewer.
 
 ### Customer critical merge requests
 

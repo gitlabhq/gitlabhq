@@ -157,6 +157,9 @@ Supported values are:
 | `line` | ![Insights example stacked bar chart](img/insights_example_line_chart.png) |
 | `stacked-bar` | ![Insights example stacked bar chart](img/insights_example_stacked_bar_chart.png) |
 
+NOTE:
+The `dora` data source only supports the `bar` chart type.
+
 ### `query`
 
 `query` allows to define the data source and various filtering conditions for the chart.
@@ -349,7 +352,7 @@ dora:
   title: "DORA charts"
   charts:
     - title: "DORA deployment frequency"
-      type: bar
+      type: bar # only bar chart is supported at the moment
       query:
         data_source: dora
         params:
@@ -372,7 +375,7 @@ dora:
           period_limit: 30
 ```
 
-#### `query.metric`
+##### `query.metric`
 
 Defines which DORA metric to query. The available values are:
 
@@ -398,7 +401,7 @@ Define how far the metrics are queried in the past (default: 15). Maximum lookba
 
 ##### `query.environment_tiers`
 
-An array of environments to include into the calculation (default: production).
+An array of environments to include into the calculation (default: production). Available options: `production`, `staging`, `testing`, `development`, `other`.
 
 ### `projects`
 

@@ -1,12 +1,37 @@
 #import "./crm_contact_fields.fragment.graphql"
 
-query contacts($groupFullPath: ID!) {
+query contacts(
+  $groupFullPath: ID!
+  $state: CustomerRelationsContactState
+  $searchTerm: String
+  $sort: ContactSort
+  $firstPageSize: Int
+  $lastPageSize: Int
+  $prevPageCursor: String = ""
+  $nextPageCursor: String = ""
+  $ids: [CustomerRelationsContactID!]
+) {
   group(fullPath: $groupFullPath) {
     __typename
     id
-    contacts {
+    contacts(
+      state: $state
+      search: $searchTerm
+      sort: $sort
+      first: $firstPageSize
+      last: $lastPageSize
+      after: $nextPageCursor
+      before: $prevPageCursor
+      ids: $ids
+    ) {
       nodes {
         ...ContactFragment
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+        hasPreviousPage
+        startCursor
       }
     }
   }
