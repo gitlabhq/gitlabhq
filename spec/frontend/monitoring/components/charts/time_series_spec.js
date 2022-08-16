@@ -64,7 +64,7 @@ describe('Time series component', () => {
 
   describe('With a single time series', () => {
     describe('general functions', () => {
-      const findChart = () => wrapper.find({ ref: 'chart' });
+      const findChart = () => wrapper.findComponent({ ref: 'chart' });
 
       beforeEach(async () => {
         createWrapper({}, mount);
@@ -210,7 +210,7 @@ describe('Time series component', () => {
               const name = 'Metric 1';
               const value = '5.556';
               const dataIndex = 0;
-              const seriesLabel = wrapper.find(GlChartSeriesLabel);
+              const seriesLabel = wrapper.findComponent(GlChartSeriesLabel);
 
               expect(seriesLabel.vm.color).toBe('');
 
@@ -220,7 +220,11 @@ describe('Time series component', () => {
               ]);
 
               expect(
-                shallowWrapperContainsSlotText(wrapper.find(GlLineChart), 'tooltip-content', value),
+                shallowWrapperContainsSlotText(
+                  wrapper.findComponent(GlLineChart),
+                  'tooltip-content',
+                  value,
+                ),
               ).toBe(true);
             });
 
@@ -593,7 +597,7 @@ describe('Time series component', () => {
 
       glChartComponents.forEach((dynamicComponent) => {
         describe(`GitLab UI: ${dynamicComponent.chartType}`, () => {
-          const findChartComponent = () => wrapper.find(dynamicComponent.component);
+          const findChartComponent = () => wrapper.findComponent(dynamicComponent.component);
 
           beforeEach(async () => {
             createWrapper(
@@ -651,7 +655,7 @@ describe('Time series component', () => {
               wrapper.vm.tooltip.commitUrl = commitUrl;
 
               await nextTick();
-              const commitLink = wrapper.find(GlLink);
+              const commitLink = wrapper.findComponent(GlLink);
 
               expect(shallowWrapperContainsSlotText(commitLink, 'default', mockSha)).toBe(true);
               expect(commitLink.attributes('href')).toEqual(commitUrl);
@@ -675,7 +679,9 @@ describe('Time series component', () => {
         let lineColors;
 
         beforeEach(() => {
-          lineColors = wrapper.find(GlAreaChart).vm.series.map((item) => item.lineStyle.color);
+          lineColors = wrapper
+            .findComponent(GlAreaChart)
+            .vm.series.map((item) => item.lineStyle.color);
         });
 
         it('should contain different colors for contiguous time series', () => {
@@ -685,7 +691,7 @@ describe('Time series component', () => {
         });
 
         it('should match series color with tooltip label color', () => {
-          const labels = wrapper.findAll(GlChartSeriesLabel);
+          const labels = wrapper.findAllComponents(GlChartSeriesLabel);
 
           lineColors.forEach((color, index) => {
             const labelColor = labels.at(index).props('color');
@@ -695,7 +701,7 @@ describe('Time series component', () => {
 
         it('should match series color with legend color', () => {
           const legendColors = wrapper
-            .find(GlChartLegend)
+            .findComponent(GlChartLegend)
             .props('seriesInfo')
             .map((item) => item.color);
 
@@ -708,7 +714,7 @@ describe('Time series component', () => {
   });
 
   describe('legend layout', () => {
-    const findLegend = () => wrapper.find(GlChartLegend);
+    const findLegend = () => wrapper.findComponent(GlChartLegend);
 
     beforeEach(async () => {
       createWrapper({}, mount);

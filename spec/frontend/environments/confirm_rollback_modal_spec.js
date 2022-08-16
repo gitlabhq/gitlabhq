@@ -73,7 +73,7 @@ describe('Confirm Rollback Modal Component', () => {
           hasMultipleCommits,
           retryUrl,
         });
-        const modal = component.find(GlModal);
+        const modal = component.findComponent(GlModal);
 
         expect(modal.attributes('title')).toContain('Rollback');
         expect(modal.attributes('title')).toContain('test');
@@ -92,7 +92,7 @@ describe('Confirm Rollback Modal Component', () => {
           hasMultipleCommits,
         });
 
-        const modal = component.find(GlModal);
+        const modal = component.findComponent(GlModal);
 
         expect(modal.attributes('title')).toContain('Re-deploy');
         expect(modal.attributes('title')).toContain('test');
@@ -110,7 +110,7 @@ describe('Confirm Rollback Modal Component', () => {
         });
 
         const eventHubSpy = jest.spyOn(eventHub, '$emit');
-        const modal = component.find(GlModal);
+        const modal = component.findComponent(GlModal);
         modal.vm.$emit('ok');
 
         expect(eventHubSpy).toHaveBeenCalledWith('rollbackEnvironment', env);
@@ -155,7 +155,7 @@ describe('Confirm Rollback Modal Component', () => {
             },
             { apolloProvider },
           );
-          const modal = component.find(GlModal);
+          const modal = component.findComponent(GlModal);
 
           expect(trimText(modal.text())).toContain('commit abc0123');
           expect(modal.text()).toContain('Are you sure you want to continue?');
@@ -177,7 +177,7 @@ describe('Confirm Rollback Modal Component', () => {
             },
             { apolloProvider },
           );
-          const modal = component.find(GlModal);
+          const modal = component.findComponent(GlModal);
 
           expect(modal.attributes('title')).toContain('Rollback');
           expect(modal.attributes('title')).toContain('test');
@@ -201,7 +201,7 @@ describe('Confirm Rollback Modal Component', () => {
             { apolloProvider },
           );
 
-          const modal = component.find(GlModal);
+          const modal = component.findComponent(GlModal);
 
           expect(modal.attributes('title')).toContain('Re-deploy');
           expect(modal.attributes('title')).toContain('test');
@@ -220,7 +220,7 @@ describe('Confirm Rollback Modal Component', () => {
             { apolloProvider },
           );
 
-          const modal = component.find(GlModal);
+          const modal = component.findComponent(GlModal);
           modal.vm.$emit('ok');
 
           await nextTick();

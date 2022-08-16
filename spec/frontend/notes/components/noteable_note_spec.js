@@ -290,6 +290,20 @@ describe('issue_note', () => {
     });
   });
 
+  describe('internal note', () => {
+    it('has internal note class for internal notes', () => {
+      createWrapper({ note: { ...note, confidential: true } });
+
+      expect(wrapper.classes()).toContain('internal-note');
+    });
+
+    it('does not have internal note class for external notes', () => {
+      createWrapper({ note });
+
+      expect(wrapper.classes()).not.toContain('internal-note');
+    });
+  });
+
   describe('cancel edit', () => {
     beforeEach(() => {
       createWrapper();

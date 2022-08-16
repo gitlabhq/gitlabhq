@@ -406,7 +406,7 @@ export default {
 <template>
   <timeline-entry-item
     :id="noteAnchorId"
-    :class="classNameBindings"
+    :class="{ ...classNameBindings, 'internal-note': note.confidential }"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
     class="note note-wrapper"
@@ -506,7 +506,6 @@ export default {
           ref="noteBody"
           :note="note"
           :can-edit="note.current_user.can_edit"
-          :is-internal-note="note.confidential"
           :line="line"
           :file="diffFile"
           :is-editing="isEditing"

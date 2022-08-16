@@ -1524,7 +1524,7 @@ For more information, see [Offline environments](../offline_deployments/index.md
 
 ## Troubleshooting
 
-### Error waiting for API Security 'http://127.0.0.1:5000' to become available
+### `Error waiting for API Security 'http://127.0.0.1:5000' to become available`
 
 A bug exists in versions of the DAST API analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the DAST API analyzer.
 
@@ -1537,7 +1537,7 @@ If the issue is occurring with versions v1.6.196 or greater, please contact Supp
 1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
 1. The `dast_api` job definition from your `.gitlab-ci.yml` file.
 
-### Failed to start scanner session (version header not found)
+### `Failed to start scanner session (version header not found)`
 
 The DAST API engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause of this issue is changing the `DAST_API_API` variable from its default.
 
@@ -1551,7 +1551,7 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 - Remove the `DAST_API_API` variable from the `.gitlab-ci.yml` file. The value will be inherited from the DAST API CI/CD template. We recommend this method instead of manually setting a value.
 - If removing the variable is not possible, check to see if this value has changed in the latest version of the [DAST API CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
-### Application cannot determine the base URL for the target API
+### `Application cannot determine the base URL for the target API`
 
 The DAST API engine outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml` file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
@@ -1636,7 +1636,7 @@ API Security can still try to consume an OpenAPI document that does not fully co
      DAST_API_OPENAPI_RELAXED_VALIDATION: On
 ```
 
-### No operation in the OpenAPI document is consuming any supported media type
+### `No operation in the OpenAPI document is consuming any supported media type`
 
 API Security uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error will be thrown.
 

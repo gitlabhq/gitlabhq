@@ -10,7 +10,7 @@ describe('/environments/components/canary_ingress.vue', () => {
 
   const setWeightTo = (weightWrapper, x) =>
     weightWrapper
-      .findAll(GlDropdownItem)
+      .findAllComponents(GlDropdownItem)
       .at(x / 5)
       .vm.$emit('click');
 
@@ -59,14 +59,14 @@ describe('/environments/components/canary_ingress.vue', () => {
     });
 
     it('lists options from 0 to 100 in increments of 5', () => {
-      const options = stableWeightDropdown.findAll(GlDropdownItem);
+      const options = stableWeightDropdown.findAllComponents(GlDropdownItem);
       expect(options).toHaveLength(21);
       options.wrappers.forEach((w, i) => expect(w.text()).toBe((i * 5).toString()));
     });
 
     it('is set to open the change modal', () => {
       stableWeightDropdown
-        .findAll(GlDropdownItem)
+        .findAllComponents(GlDropdownItem)
         .wrappers.forEach((w) =>
           expect(getBinding(w.element, 'gl-modal')).toMatchObject({ value: CANARY_UPDATE_MODAL }),
         );
@@ -92,13 +92,13 @@ describe('/environments/components/canary_ingress.vue', () => {
 
     it('lists options from 0 to 100 in increments of 5', () => {
       canaryWeightDropdown
-        .findAll(GlDropdownItem)
+        .findAllComponents(GlDropdownItem)
         .wrappers.forEach((w, i) => expect(w.text()).toBe((i * 5).toString()));
     });
 
     it('is set to open the change modal', () => {
       canaryWeightDropdown
-        .findAll(GlDropdownItem)
+        .findAllComponents(GlDropdownItem)
         .wrappers.forEach((w) =>
           expect(getBinding(w.element, 'gl-modal')).toMatchObject({ value: CANARY_UPDATE_MODAL }),
         );

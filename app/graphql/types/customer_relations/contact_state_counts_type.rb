@@ -4,7 +4,7 @@ module Types
   module CustomerRelations
     class ContactStateCountsType < Types::BaseObject
       graphql_name 'ContactStateCounts'
-      description 'Represents the total number of contacts for the represented statuses.'
+      description 'Represents the total number of contacts for the represented states.'
 
       authorize :read_crm_contact
 

@@ -24,8 +24,8 @@ describe('Metrics dashboard/variables section component', () => {
     });
   };
 
-  const findTextInputs = () => wrapper.findAll(TextField);
-  const findCustomInputs = () => wrapper.findAll(DropdownField);
+  const findTextInputs = () => wrapper.findAllComponents(TextField);
+  const findCustomInputs = () => wrapper.findAllComponents(DropdownField);
 
   beforeEach(() => {
     store = createStore();

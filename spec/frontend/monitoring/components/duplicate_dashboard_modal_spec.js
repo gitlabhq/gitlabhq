@@ -44,9 +44,9 @@ describe('duplicate dashboard modal', () => {
     });
   }
 
-  const findAlert = () => wrapper.find(GlAlert);
-  const findModal = () => wrapper.find(GlModal);
-  const findDuplicateDashboardForm = () => wrapper.find(DuplicateDashboardForm);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findDuplicateDashboardForm = () => wrapper.findComponent(DuplicateDashboardForm);
 
   beforeEach(() => {
     mockDashboards = dashboardGitResponse;
@@ -74,7 +74,7 @@ describe('duplicate dashboard modal', () => {
     expect(okEvent.preventDefault).toHaveBeenCalled();
     expect(wrapper.emitted().dashboardDuplicated).toBeTruthy();
     expect(wrapper.emitted().dashboardDuplicated[0]).toEqual([dashboardGitResponse[0]]);
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     expect(wrapper.vm.$refs.duplicateDashboardModal.hide).toHaveBeenCalled();
     expect(findAlert().exists()).toBe(false);
   });
@@ -92,7 +92,7 @@ describe('duplicate dashboard modal', () => {
     expect(findAlert().exists()).toBe(true);
     expect(findAlert().text()).toBe(errMsg);
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     expect(wrapper.vm.$refs.duplicateDashboardModal.hide).not.toHaveBeenCalled();
   });
 
@@ -102,7 +102,7 @@ describe('duplicate dashboard modal', () => {
       commitMessage: 'A commit message',
     };
 
-    findModal().find(DuplicateDashboardForm).vm.$emit('change', formVals);
+    findModal().findComponent(DuplicateDashboardForm).vm.$emit('change', formVals);
 
     // Binding's second argument contains the modal id
     expect(wrapper.vm.form).toEqual(formVals);

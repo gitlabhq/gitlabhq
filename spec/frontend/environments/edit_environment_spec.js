@@ -42,7 +42,7 @@ describe('~/environments/components/edit.vue', () => {
   const findExternalUrlInput = () => wrapper.findByLabelText('External URL');
   const findForm = () => wrapper.findByRole('form', { name: 'Edit environment' });
 
-  const showsLoading = () => wrapper.find(GlLoadingIcon).exists();
+  const showsLoading = () => wrapper.findComponent(GlLoadingIcon).exists();
 
   const submitForm = async (expected, response) => {
     mock

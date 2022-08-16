@@ -25,8 +25,8 @@ describe('EmptyState', () => {
       selectedState: dashboardEmptyStates.LOADING,
     });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-    expect(wrapper.find(GlEmptyState).exists()).toBe(false);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlEmptyState).exists()).toBe(false);
   });
 
   it('shows gettingStarted state', () => {

@@ -35,7 +35,8 @@ describe('dashboard invalid url parameters', () => {
     });
   };
 
-  const findDateTimePicker = () => wrapper.find(DashboardHeader).find({ ref: 'dateTimePicker' });
+  const findDateTimePicker = () =>
+    wrapper.findComponent(DashboardHeader).findComponent({ ref: 'dateTimePicker' });
 
   beforeEach(() => {
     store = createStore();

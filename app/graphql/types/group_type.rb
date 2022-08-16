@@ -220,7 +220,7 @@ module Types
     field :contact_state_counts,
           Types::CustomerRelations::ContactStateCountsType,
           null: true,
-          description: 'Counts of contacts by status for the group.',
+          description: 'Counts of contacts by state for the group.',
           resolver: Resolvers::Crm::ContactStateCountsResolver
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,

@@ -100,7 +100,7 @@ WARNING:
 Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
 channel 1 database for your environment.
 
-## Error: unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"
+## `Error: unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"`
 
 After upgrading your Kubernetes cluster to [v1.16+](stages.md#kubernetes-116),
 you may encounter this message when deploying with Auto DevOps:
@@ -148,7 +148,7 @@ that works for this problem. Follow these steps to use the tool in Auto DevOps:
 
 1. Continue the deployments as usual.
 
-## Error: error initializing: Looks like "https://kubernetes-charts.storage.googleapis.com" is not a valid chart repository or cannot be reached
+## `Error: error initializing: Looks like "https://kubernetes-charts.storage.googleapis.com" is not a valid chart repository or cannot be reached`
 
 As [announced in the official CNCF blog post](https://www.cncf.io/blog/2020/10/07/important-reminder-for-all-helm-users-stable-incubator-repos-are-deprecated-and-all-images-are-changing-location/),
 the stable Helm chart repository was deprecated and removed on November 13th, 2020.
@@ -197,7 +197,7 @@ To fix your custom chart:
 You can find more information in
 [issue #263778, "Migrate PostgreSQL from stable Helm repository"](https://gitlab.com/gitlab-org/gitlab/-/issues/263778).
 
-## Error: release .... failed: timed out waiting for the condition
+## `Error: release .... failed: timed out waiting for the condition`
 
 When getting started with Auto DevOps, you may encounter this error when first
 deploying your application:

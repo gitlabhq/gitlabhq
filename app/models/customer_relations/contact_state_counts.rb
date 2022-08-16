@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module CustomerRelations
-  # Represents counts of each status or category of statuses
   class ContactStateCounts
     include Gitlab::Utils::StrongMemoize
 

@@ -26,7 +26,9 @@ describe('Deploy Board', () => {
     });
 
     it('should render percentage with completion value provided', () => {
-      expect(wrapper.find({ ref: 'percentage' }).text()).toBe(`${deployBoardMockData.completion}%`);
+      expect(wrapper.findComponent({ ref: 'percentage' }).text()).toBe(
+        `${deployBoardMockData.completion}%`,
+      );
     });
 
     it('should render total instance count', () => {
@@ -79,7 +81,9 @@ describe('Deploy Board', () => {
     });
 
     it('should render percentage with completion value provided', () => {
-      expect(wrapper.find({ ref: 'percentage' }).text()).toBe(`${rolloutStatus.completion}%`);
+      expect(wrapper.findComponent({ ref: 'percentage' }).text()).toBe(
+        `${rolloutStatus.completion}%`,
+      );
     });
 
     it('should render total instance count', () => {

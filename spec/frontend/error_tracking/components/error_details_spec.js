@@ -35,7 +35,9 @@ describe('ErrorDetails', () => {
   const externalUrl = 'https://sentry.io/organizations/test-sentry-nk/issues/1/?project=1';
 
   const findInput = (name) => {
-    const inputs = wrapper.findAll(GlFormInput).filter((c) => c.attributes('name') === name);
+    const inputs = wrapper
+      .findAllComponents(GlFormInput)
+      .filter((c) => c.attributes('name') === name);
     return inputs.length ? inputs.at(0) : inputs;
   };
 
@@ -44,7 +46,7 @@ describe('ErrorDetails', () => {
   const findUpdateResolveStatusButton = () =>
     wrapper.find('[data-testid="update-resolve-status-btn"]');
   const findExternalUrl = () => wrapper.find('[data-testid="external-url-link"]');
-  const findAlert = () => wrapper.find(GlAlert);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
@@ -119,9 +121,9 @@ describe('ErrorDetails', () => {
     });
 
     it('should show spinner while loading', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      expect(wrapper.find(GlLink).exists()).toBe(false);
-      expect(wrapper.find(Stacktrace).exists()).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLink).exists()).toBe(false);
+      expect(wrapper.findComponent(Stacktrace).exists()).toBe(false);
     });
   });
 
@@ -141,7 +143,7 @@ describe('ErrorDetails', () => {
       wrapper.vm.onNoApolloResult();
 
       await nextTick();
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       expect(createFlash).not.toHaveBeenCalled();
       expect(mocks.$apollo.queries.error.stopPolling).not.toHaveBeenCalled();
     });
@@ -152,8 +154,8 @@ describe('ErrorDetails', () => {
       wrapper.vm.onNoApolloResult();
 
       await nextTick();
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(GlLink).exists()).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlLink).exists()).toBe(false);
       expect(createFlash).toHaveBeenCalledWith({
         message: 'Could not connect to Sentry. Refresh the page to try again.',
         type: 'warning',
@@ -186,11 +188,11 @@ describe('ErrorDetails', () => {
     });
 
     it('should show Sentry error details without stacktrace', () => {
-      expect(wrapper.find(GlLink).exists()).toBe(true);
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      expect(wrapper.find(Stacktrace).exists()).toBe(false);
-      expect(wrapper.find(GlBadge).exists()).toBe(false);
-      expect(wrapper.findAll(GlButton)).toHaveLength(3);
+      expect(wrapper.findComponent(GlLink).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(Stacktrace).exists()).toBe(false);
+      expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
+      expect(wrapper.findAllComponents(GlButton)).toHaveLength(3);
     });
 
     describe('unsafe chars for culprit field', () => {
@@ -227,7 +229,7 @@ describe('ErrorDetails', () => {
           },
         });
         await nextTick();
-        expect(wrapper.findAll(GlBadge).length).toBe(2);
+        expect(wrapper.findAllComponents(GlBadge).length).toBe(2);
       });
 
       it('should NOT show the badge if the tag is not present', async () => {
@@ -239,7 +241,7 @@ describe('ErrorDetails', () => {
           },
         });
         await nextTick();
-        expect(wrapper.findAll(GlBadge).length).toBe(1);
+        expect(wrapper.findAllComponents(GlBadge).length).toBe(1);
       });
 
       it.each(Object.keys(severityLevel))(
@@ -253,7 +255,7 @@ describe('ErrorDetails', () => {
             },
           });
           await nextTick();
-          expect(wrapper.find(GlBadge).props('variant')).toEqual(
+          expect(wrapper.findComponent(GlBadge).props('variant')).toEqual(
             severityLevelVariant[severityLevel[level]],
           );
         },
@@ -268,7 +270,7 @@ describe('ErrorDetails', () => {
           },
         });
         await nextTick();
-        expect(wrapper.find(GlBadge).props('variant')).toEqual(
+        expect(wrapper.findComponent(GlBadge).props('variant')).toEqual(
           severityLevelVariant[severityLevel.ERROR],
         );
       });
@@ -278,8 +280,8 @@ describe('ErrorDetails', () => {
       it('should show stacktrace', async () => {
         store.state.details.loadingStacktrace = false;
         await nextTick();
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-        expect(wrapper.find(Stacktrace).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+        expect(wrapper.findComponent(Stacktrace).exists()).toBe(true);
         expect(findAlert().exists()).toBe(false);
       });
 
@@ -287,8 +289,8 @@ describe('ErrorDetails', () => {
         store.state.details.loadingStacktrace = false;
         store.getters = { 'details/sentryUrl': () => 'sentry.io', 'details/stacktrace': () => [] };
         await nextTick();
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-        expect(wrapper.find(Stacktrace).exists()).toBe(false);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+        expect(wrapper.findComponent(Stacktrace).exists()).toBe(false);
         expect(findAlert().text()).toBe('No stack trace for this error');
       });
     });

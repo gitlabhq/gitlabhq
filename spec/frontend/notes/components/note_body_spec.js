@@ -7,7 +7,6 @@ import NoteAwardsList from '~/notes/components/note_awards_list.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import notes from '~/notes/stores/modules/index';
-import { INTERNAL_NOTE_CLASSES } from '~/notes/constants';
 
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 
@@ -59,21 +58,9 @@ describe('issue_note_body component', () => {
     expect(wrapper.findComponent(NoteAwardsList).exists()).toBe(true);
   });
 
-  it('should not have internal note classes', () => {
-    expect(wrapper.findByTestId('note-internal-container').classes()).not.toEqual(
-      INTERNAL_NOTE_CLASSES,
-    );
-  });
-
   describe('isInternalNote', () => {
     beforeEach(() => {
       wrapper = createComponent({ props: { isInternalNote: true } });
-    });
-
-    it('should have internal note classes', () => {
-      expect(wrapper.findByTestId('note-internal-container').classes()).toEqual(
-        INTERNAL_NOTE_CLASSES,
-      );
     });
   });
 
@@ -109,12 +96,6 @@ describe('issue_note_body component', () => {
     describe('isInternalNote', () => {
       beforeEach(() => {
         wrapper.setProps({ isInternalNote: true });
-      });
-
-      it('should not have internal note classes', () => {
-        expect(wrapper.findByTestId('note-internal-container').classes()).not.toEqual(
-          INTERNAL_NOTE_CLASSES,
-        );
       });
     });
   });

@@ -41,11 +41,11 @@ describe('Dashboard Panel', () => {
 
   const exampleText = 'example_text';
 
-  const findCopyLink = () => wrapper.find({ ref: 'copyChartLink' });
-  const findTimeChart = () => wrapper.find({ ref: 'timeSeriesChart' });
-  const findTitle = () => wrapper.find({ ref: 'graphTitle' });
-  const findCtxMenu = () => wrapper.find({ ref: 'contextualMenu' });
-  const findMenuItems = () => wrapper.findAll(GlDropdownItem);
+  const findCopyLink = () => wrapper.findComponent({ ref: 'copyChartLink' });
+  const findTimeChart = () => wrapper.findComponent({ ref: 'timeSeriesChart' });
+  const findTitle = () => wrapper.findComponent({ ref: 'graphTitle' });
+  const findCtxMenu = () => wrapper.findComponent({ ref: 'contextualMenu' });
+  const findMenuItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findMenuItemByText = (text) => findMenuItems().filter((i) => i.text() === text);
 
   const createWrapper = (props, { mountFn = shallowMount, ...options } = {}) => {
@@ -115,7 +115,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('renders no download csv link', () => {
-      expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(false);
+      expect(wrapper.findComponent({ ref: 'downloadCsvLink' }).exists()).toBe(false);
     });
 
     it('does not contain graph widgets', () => {
@@ -123,7 +123,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('The Empty Chart component is rendered and is a Vue instance', () => {
-      expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
+      expect(wrapper.findComponent(MonitorEmptyChart).exists()).toBe(true);
     });
   });
 
@@ -143,7 +143,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('renders no download csv link', () => {
-      expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(false);
+      expect(wrapper.findComponent({ ref: 'downloadCsvLink' }).exists()).toBe(false);
     });
 
     it('does not contain graph widgets', () => {
@@ -151,7 +151,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('The Empty Chart component is rendered and is a Vue instance', () => {
-      expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
+      expect(wrapper.findComponent(MonitorEmptyChart).exists()).toBe(true);
     });
   });
 
@@ -170,7 +170,7 @@ describe('Dashboard Panel', () => {
 
     it('contains graph widgets', () => {
       expect(findCtxMenu().exists()).toBe(true);
-      expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(true);
+      expect(wrapper.findComponent({ ref: 'downloadCsvLink' }).exists()).toBe(true);
     });
 
     it('sets no clipboard copy link on dropdown by default', () => {
@@ -205,12 +205,12 @@ describe('Dashboard Panel', () => {
 
       it('empty chart is rendered for empty results', () => {
         createWrapper({ graphData: graphDataEmpty });
-        expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
+        expect(wrapper.findComponent(MonitorEmptyChart).exists()).toBe(true);
       });
 
       it('area chart is rendered by default', () => {
         createWrapper();
-        expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
+        expect(wrapper.findComponent(MonitorTimeSeriesChart).exists()).toBe(true);
       });
 
       describe.each`
@@ -231,8 +231,8 @@ describe('Dashboard Panel', () => {
         });
 
         it(`renders the chart component and binds attributes`, () => {
-          expect(wrapper.find(component).exists()).toBe(true);
-          expect(wrapper.find(component).attributes()).toMatchObject(attrs);
+          expect(wrapper.findComponent(component).exists()).toBe(true);
+          expect(wrapper.findComponent(component).attributes()).toMatchObject(attrs);
         });
 
         it(`contextual menu is ${hasCtxMenu ? '' : 'not '}shown`, () => {
@@ -270,7 +270,7 @@ describe('Dashboard Panel', () => {
   });
 
   describe('Edit custom metric dropdown item', () => {
-    const findEditCustomMetricLink = () => wrapper.find({ ref: 'editMetricLink' });
+    const findEditCustomMetricLink = () => wrapper.findComponent({ ref: 'editMetricLink' });
     const mockEditPath = '/root/kubernetes-gke-project/prometheus/metrics/23/edit';
 
     beforeEach(async () => {
@@ -431,7 +431,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('it renders a time series chart with no errors', () => {
-      expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
+      expect(wrapper.findComponent(MonitorTimeSeriesChart).exists()).toBe(true);
     });
   });
 
@@ -443,7 +443,7 @@ describe('Dashboard Panel', () => {
 
     it('displays a heatmap in local timezone', () => {
       createWrapper({ graphData: heatmapGraphData() });
-      expect(wrapper.find(MonitorHeatmapChart).props('timezone')).toBe('LOCAL');
+      expect(wrapper.findComponent(MonitorHeatmapChart).props('timezone')).toBe('LOCAL');
     });
 
     describe('when timezone is set to UTC', () => {
@@ -458,13 +458,13 @@ describe('Dashboard Panel', () => {
 
       it('displays a heatmap with UTC', () => {
         createWrapper({ graphData: heatmapGraphData() });
-        expect(wrapper.find(MonitorHeatmapChart).props('timezone')).toBe('UTC');
+        expect(wrapper.findComponent(MonitorHeatmapChart).props('timezone')).toBe('UTC');
       });
     });
   });
 
   describe('Expand to full screen', () => {
-    const findExpandBtn = () => wrapper.find({ ref: 'expandBtn' });
+    const findExpandBtn = () => wrapper.findComponent({ ref: 'expandBtn' });
 
     describe('when there is no @expand listener', () => {
       it('does not show `View full screen` option', () => {
@@ -492,7 +492,7 @@ describe('Dashboard Panel', () => {
   });
 
   describe('When graphData contains links', () => {
-    const findManageLinksItem = () => wrapper.find({ ref: 'manageLinksItem' });
+    const findManageLinksItem = () => wrapper.findComponent({ ref: 'manageLinksItem' });
     const mockLinks = [
       {
         url: 'https://example.com',

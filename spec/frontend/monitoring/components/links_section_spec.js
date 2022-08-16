@@ -21,7 +21,7 @@ describe('Links Section component', () => {
       links,
     };
   };
-  const findLinks = () => wrapper.findAll(GlLink);
+  const findLinks = () => wrapper.findAllComponents(GlLink);
 
   beforeEach(() => {
     store = createStore();

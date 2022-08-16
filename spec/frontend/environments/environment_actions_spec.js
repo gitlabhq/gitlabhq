@@ -51,7 +51,7 @@ describe('EnvironmentActions Component', () => {
   }
 
   const findDropdownItem = (action) => {
-    const buttons = wrapper.findAll(GlDropdownItem);
+    const buttons = wrapper.findAllComponents(GlDropdownItem);
     return buttons.filter((button) => button.text().startsWith(action.name)).at(0);
   };
 
@@ -62,12 +62,12 @@ describe('EnvironmentActions Component', () => {
 
   it('should render a dropdown button with 2 icons', () => {
     createComponent({}, { mountFn: mount });
-    expect(wrapper.find(GlDropdown).findAll(GlIcon).length).toBe(2);
+    expect(wrapper.findComponent(GlDropdown).findAllComponents(GlIcon).length).toBe(2);
   });
 
   it('should render a dropdown button with aria-label description', () => {
     createComponent();
-    expect(wrapper.find(GlDropdown).attributes('aria-label')).toBe('Deploy to...');
+    expect(wrapper.findComponent(GlDropdown).attributes('aria-label')).toBe('Deploy to...');
   });
 
   it('should render a tooltip', () => {
@@ -98,11 +98,11 @@ describe('EnvironmentActions Component', () => {
     });
 
     it('should render a dropdown with the provided list of actions', () => {
-      expect(wrapper.findAll(GlDropdownItem)).toHaveLength(actions.length);
+      expect(wrapper.findAllComponents(GlDropdownItem)).toHaveLength(actions.length);
     });
 
     it("should render a disabled action when it's not playable", () => {
-      const dropdownItems = wrapper.findAll(GlDropdownItem);
+      const dropdownItems = wrapper.findAllComponents(GlDropdownItem);
       const lastDropdownItem = dropdownItems.at(dropdownItems.length - 1);
       expect(lastDropdownItem.attributes('disabled')).toBe('true');
     });
@@ -136,7 +136,7 @@ describe('EnvironmentActions Component', () => {
       });
 
       it('should render a dropdown button with a loading icon', () => {
-        expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).isVisible()).toBe(true);
       });
     });
 

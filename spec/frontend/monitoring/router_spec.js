@@ -61,8 +61,8 @@ describe('Monitoring router', () => {
         currentDashboard,
       });
 
-      expect(wrapper.find(DashboardPage).exists()).toBe(true);
-      expect(wrapper.find(DashboardPage).find(Dashboard).exists()).toBe(true);
+      expect(wrapper.findComponent(DashboardPage).exists()).toBe(true);
+      expect(wrapper.findComponent(DashboardPage).findComponent(Dashboard).exists()).toBe(true);
     });
   });
 
@@ -84,8 +84,8 @@ describe('Monitoring router', () => {
         currentDashboard,
       });
 
-      expect(wrapper.find(DashboardPage).exists()).toBe(true);
-      expect(wrapper.find(DashboardPage).find(Dashboard).exists()).toBe(true);
+      expect(wrapper.findComponent(DashboardPage).exists()).toBe(true);
+      expect(wrapper.findComponent(DashboardPage).findComponent(Dashboard).exists()).toBe(true);
     });
   });
 
@@ -100,7 +100,7 @@ describe('Monitoring router', () => {
       const wrapper = createWrapper(BASE_PATH, path);
 
       expect(wrapper.vm.$route.params.dashboard).toBe(currentDashboard);
-      expect(wrapper.find(PanelNewPage).exists()).toBe(true);
+      expect(wrapper.findComponent(PanelNewPage).exists()).toBe(true);
     });
   });
 });

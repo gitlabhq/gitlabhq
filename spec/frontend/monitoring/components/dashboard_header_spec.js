@@ -29,18 +29,19 @@ describe('Dashboard header', () => {
   let store;
   let wrapper;
 
-  const findDashboardDropdown = () => wrapper.find(DashboardsDropdown);
+  const findDashboardDropdown = () => wrapper.findComponent(DashboardsDropdown);
 
-  const findEnvsDropdown = () => wrapper.find({ ref: 'monitorEnvironmentsDropdown' });
-  const findEnvsDropdownItems = () => findEnvsDropdown().findAll(GlDropdownItem);
-  const findEnvsDropdownSearch = () => findEnvsDropdown().find(GlSearchBoxByType);
-  const findEnvsDropdownSearchMsg = () => wrapper.find({ ref: 'monitorEnvironmentsDropdownMsg' });
-  const findEnvsDropdownLoadingIcon = () => findEnvsDropdown().find(GlLoadingIcon);
+  const findEnvsDropdown = () => wrapper.findComponent({ ref: 'monitorEnvironmentsDropdown' });
+  const findEnvsDropdownItems = () => findEnvsDropdown().findAllComponents(GlDropdownItem);
+  const findEnvsDropdownSearch = () => findEnvsDropdown().findComponent(GlSearchBoxByType);
+  const findEnvsDropdownSearchMsg = () =>
+    wrapper.findComponent({ ref: 'monitorEnvironmentsDropdownMsg' });
+  const findEnvsDropdownLoadingIcon = () => findEnvsDropdown().findComponent(GlLoadingIcon);
 
-  const findDateTimePicker = () => wrapper.find(DateTimePicker);
-  const findRefreshButton = () => wrapper.find(RefreshButton);
+  const findDateTimePicker = () => wrapper.findComponent(DateTimePicker);
+  const findRefreshButton = () => wrapper.findComponent(RefreshButton);
 
-  const findActionsMenu = () => wrapper.find(ActionsMenu);
+  const findActionsMenu = () => wrapper.findComponent(ActionsMenu);
 
   const setSearchTerm = (searchTerm) => {
     store.commit(`monitoringDashboard/${types.SET_ENVIRONMENTS_FILTER}`, searchTerm);

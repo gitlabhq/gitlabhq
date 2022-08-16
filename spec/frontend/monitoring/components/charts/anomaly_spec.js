@@ -20,7 +20,7 @@ describe('Anomaly chart component', () => {
       propsData: { ...props },
     });
   };
-  const findTimeSeries = () => wrapper.find(MonitorTimeSeriesChart);
+  const findTimeSeries = () => wrapper.findComponent(MonitorTimeSeriesChart);
   const getTimeSeriesProps = () => findTimeSeries().props();
 
   describe('wrapped monitor-time-series-chart component', () => {

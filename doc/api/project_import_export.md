@@ -50,6 +50,11 @@ NOTE:
 The upload request is sent with `Content-Type: application/gzip` header. Ensure that your pre-signed URL includes this as part of the signature.
 
 NOTE:
+The project export process may take some time to complete. Make sure the
+upload URL doesn't have a short expiration time and is available thought
+the export process.
+
+NOTE:
 As an administrator, you can modify the maximum export file size. By default,
 it is set to `0`, for unlimited. To change this value, edit `max_export_size`
 in the [Application settings API](settings.md#change-application-settings)

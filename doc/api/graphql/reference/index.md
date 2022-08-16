@@ -10560,7 +10560,7 @@ Connection details for an Agent.
 
 ### `ContactStateCounts`
 
-Represents the total number of contacts for the represented statuses.
+Represents the total number of contacts for the represented states.
 
 #### Fields
 
@@ -12284,7 +12284,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Group.contactStateCounts`
 
-Counts of contacts by status for the group.
+Counts of contacts by state for the group.
 
 Returns [`ContactStateCounts`](#contactstatecounts).
 
@@ -12311,7 +12311,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupcontactsids"></a>`ids` | [`[CustomerRelationsContactID!]`](#customerrelationscontactid) | Filter contacts by IDs. |
 | <a id="groupcontactssearch"></a>`search` | [`String`](#string) | Search term to find contacts with. |
-| <a id="groupcontactssort"></a>`sort` | [`ContactSort`](#contactsort) | Criteria to sort issues by. |
+| <a id="groupcontactssort"></a>`sort` | [`ContactSort`](#contactsort) | Criteria to sort contacts by. |
 | <a id="groupcontactsstate"></a>`state` | [`CustomerRelationsContactState`](#customerrelationscontactstate) | State of the contacts to search for. |
 
 ##### `Group.containerRepositories`
@@ -15817,6 +15817,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectenvironmentsname"></a>`name` | [`String`](#string) | Name of the environment. |
 | <a id="projectenvironmentssearch"></a>`search` | [`String`](#string) | Search query for environment name. |
 | <a id="projectenvironmentsstates"></a>`states` | [`[String!]`](#string) | States of environments that should be included in result. |
+
+##### `Project.forkTargets`
+
+Namespaces in which the current user can fork the project into.
+
+Returns [`NamespaceConnection`](#namespaceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectforktargetssearch"></a>`search` | [`String`](#string) | Search query for path or name. |
 
 ##### `Project.incidentManagementEscalationPolicies`
 

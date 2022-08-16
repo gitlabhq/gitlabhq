@@ -1659,7 +1659,14 @@ class User < ApplicationRecord
   end
 
   def forkable_namespaces
-    @forkable_namespaces ||= [namespace] + manageable_groups(include_groups_with_developer_maintainer_access: true)
+    strong_memoize(:forkable_namespaces) do
+      personal_namespace = Namespace.where(id: namespace_id)
+
+      Namespace.from_union([
+        manageable_groups(include_groups_with_developer_maintainer_access: true),
+        personal_namespace
+      ])
+    end
   end
 
   def manageable_groups(include_groups_with_developer_maintainer_access: false)

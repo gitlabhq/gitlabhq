@@ -11,7 +11,7 @@ module Resolvers
       type Types::CustomerRelations::ContactType, null: true
 
       argument :sort, Types::CustomerRelations::ContactSortEnum,
-               description: 'Criteria to sort issues by.',
+               description: 'Criteria to sort contacts by.',
                required: false,
                default_value: { field: 'last_name', direction: :asc }
 

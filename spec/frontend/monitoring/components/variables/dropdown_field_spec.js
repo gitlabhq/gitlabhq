@@ -27,8 +27,8 @@ describe('Custom variable component', () => {
     });
   };
 
-  const findDropdown = () => wrapper.find(GlDropdown);
-  const findDropdownItems = () => wrapper.findAll(GlDropdownItem);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
 
   it('renders dropdown element when all necessary props are passed', () => {
     createShallowWrapper();

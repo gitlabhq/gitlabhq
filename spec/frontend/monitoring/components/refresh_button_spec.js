@@ -15,9 +15,9 @@ describe('RefreshButton', () => {
     wrapper = shallowMount(RefreshButton, { store, ...options });
   };
 
-  const findRefreshBtn = () => wrapper.find(GlButton);
-  const findDropdown = () => wrapper.find(GlDropdown);
-  const findOptions = () => findDropdown().findAll(GlDropdownItem);
+  const findRefreshBtn = () => wrapper.findComponent(GlButton);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findOptions = () => findDropdown().findAllComponents(GlDropdownItem);
   const findOptionAt = (index) => findOptions().at(index);
 
   const expectFetchDataToHaveBeenCalledTimes = (times) => {

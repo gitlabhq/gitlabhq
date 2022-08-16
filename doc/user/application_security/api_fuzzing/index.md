@@ -1677,7 +1677,7 @@ For more information, see [Offline environments](../offline_deployments/index.md
 
 ## Troubleshooting
 
-### Error waiting for API Security 'http://127.0.0.1:5000' to become available
+### `Error waiting for API Security 'http://127.0.0.1:5000' to become available`
 
 A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the DAST API analyzer.
 
@@ -1690,7 +1690,7 @@ If the issue is occurring with versions v1.6.196 or greater, please contact Supp
 1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
 1. The `apifuzzer_fuzz` job definition from your `.gitlab-ci.yml` file.
 
-### Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema
+### `Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema`
 
 At the start of an API Fuzzing job the OpenAPI Specification is validated against the [published schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas). This error is shown when the provided OpenAPI Specification has validation errors. Errors can be introduced when creating an OpenAPI Specification manually, and also when the schema is generated.
 
@@ -1719,7 +1719,7 @@ For OpenAPI Specifications that are generated automatically validation errors ar
    1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Correct each of the validation failures and then resubmit the OpenAPI doc. Note that JSON Schema validation message might not be easy to understand. This is why we recommend the use of editors to validate document.
 1. Once the validation issues are resolved, re-run your pipeline.
 
-### Failed to start scanner session (version header not found)
+### `Failed to start scanner session (version header not found)`
 
 The API Fuzzing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `apifuzzer_fuzz` job. A common cause of this issue is changing the `FUZZAPI_API` variable from its default.
 
@@ -1733,7 +1733,7 @@ The API Fuzzing engine outputs an error message when it cannot establish a conne
 - Remove the `FUZZAPI_API` variable from the `.gitlab-ci.yml` file. The value will be inherited from the API Fuzzing CI/CD template. We recommend this method instead of manually setting a value.
 - If removing the variable is not possible, check to see if this value has changed in the latest version of the [API Fuzzing CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
-### Application cannot determine the base URL for the target API
+### `Application cannot determine the base URL for the target API`
 
 The API Fuzzing analyzer outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml`file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
@@ -1826,7 +1826,7 @@ API Security can still try to consume an OpenAPI document that does not fully co
      FUZZAPI_OPENAPI_RELAXED_VALIDATION: On
 ```
 
-### No operation in the OpenAPI document is consuming any supported media type
+### `No operation in the OpenAPI document is consuming any supported media type`
 
 API Security uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error will be thrown.
 

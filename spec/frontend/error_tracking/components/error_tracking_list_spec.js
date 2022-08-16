@@ -19,13 +19,13 @@ describe('ErrorTrackingList', () => {
 
   const findErrorListTable = () => wrapper.find('table');
   const findErrorListRows = () => wrapper.findAll('tbody tr');
-  const dropdownsArray = () => wrapper.findAll(GlDropdown);
-  const findRecentSearchesDropdown = () => dropdownsArray().at(0).find(GlDropdown);
-  const findStatusFilterDropdown = () => dropdownsArray().at(1).find(GlDropdown);
-  const findSortDropdown = () => dropdownsArray().at(2).find(GlDropdown);
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
-  const findPagination = () => wrapper.find(GlPagination);
-  const findErrorActions = () => wrapper.find(ErrorTrackingActions);
+  const dropdownsArray = () => wrapper.findAllComponents(GlDropdown);
+  const findRecentSearchesDropdown = () => dropdownsArray().at(0).findComponent(GlDropdown);
+  const findStatusFilterDropdown = () => dropdownsArray().at(1).findComponent(GlDropdown);
+  const findSortDropdown = () => dropdownsArray().at(2).findComponent(GlDropdown);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findPagination = () => wrapper.findComponent(GlPagination);
+  const findErrorActions = () => wrapper.findComponent(ErrorTrackingActions);
   const findIntegratedDisabledAlert = () => wrapper.findByTestId('integrated-disabled-alert');
 
   function mountComponent({
@@ -152,12 +152,12 @@ describe('ErrorTrackingList', () => {
 
     it('each error in the list should have an action button set', () => {
       findErrorListRows().wrappers.forEach((row) => {
-        expect(row.find(ErrorTrackingActions).exists()).toBe(true);
+        expect(row.findComponent(ErrorTrackingActions).exists()).toBe(true);
       });
     });
 
     describe('filtering', () => {
-      const findSearchBox = () => wrapper.find(GlFormInput);
+      const findSearchBox = () => wrapper.findComponent(GlFormInput);
 
       it('shows search box & sort dropdown', () => {
         expect(findSearchBox().exists()).toBe(true);
@@ -222,7 +222,7 @@ describe('ErrorTrackingList', () => {
     });
 
     it('shows empty state', () => {
-      expect(wrapper.find(GlEmptyState).exists()).toBe(true);
+      expect(wrapper.findComponent(GlEmptyState).exists()).toBe(true);
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findErrorListTable().exists()).toBe(false);
       expect(dropdownsArray().length).toBe(0);
@@ -327,7 +327,7 @@ describe('ErrorTrackingList', () => {
     });
 
     it('shows empty state', () => {
-      expect(wrapper.find(GlEmptyState).isVisible()).toBe(true);
+      expect(wrapper.findComponent(GlEmptyState).isVisible()).toBe(true);
     });
   });
 
@@ -358,7 +358,7 @@ describe('ErrorTrackingList', () => {
     });
 
     describe('clear', () => {
-      const clearRecentButton = () => wrapper.find({ ref: 'clearRecentSearches' });
+      const clearRecentButton = () => wrapper.findComponent({ ref: 'clearRecentSearches' });
 
       it('is hidden when list empty', () => {
         store.state.list.recentSearches = [];

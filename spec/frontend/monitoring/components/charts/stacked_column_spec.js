@@ -15,8 +15,8 @@ describe('Stacked column chart component', () => {
 
   let wrapper;
 
-  const findChart = () => wrapper.find(GlStackedColumnChart);
-  const findLegend = () => wrapper.find(GlChartLegend);
+  const findChart = () => wrapper.findComponent(GlStackedColumnChart);
+  const findLegend = () => wrapper.findComponent(GlChartLegend);
 
   const createWrapper = (props = {}, mountingMethod = shallowMount) =>
     mountingMethod(StackedColumnChart, {

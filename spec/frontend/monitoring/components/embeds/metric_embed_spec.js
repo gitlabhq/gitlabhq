@@ -64,7 +64,7 @@ describe('MetricEmbed', () => {
 
     it('shows an empty state when no metrics are present', () => {
       expect(wrapper.find('.metrics-embed').exists()).toBe(true);
-      expect(wrapper.find(DashboardPanel).exists()).toBe(false);
+      expect(wrapper.findComponent(DashboardPanel).exists()).toBe(false);
     });
   });
 
@@ -92,12 +92,12 @@ describe('MetricEmbed', () => {
 
     it('shows a chart when metrics are present', () => {
       expect(wrapper.find('.metrics-embed').exists()).toBe(true);
-      expect(wrapper.find(DashboardPanel).exists()).toBe(true);
-      expect(wrapper.findAll(DashboardPanel).length).toBe(2);
+      expect(wrapper.findComponent(DashboardPanel).exists()).toBe(true);
+      expect(wrapper.findAllComponents(DashboardPanel).length).toBe(2);
     });
 
     it('includes groupId with dashboardUrl', () => {
-      expect(wrapper.find(DashboardPanel).props('groupId')).toBe(TEST_HOST);
+      expect(wrapper.findComponent(DashboardPanel).props('groupId')).toBe(TEST_HOST);
     });
   });
 });

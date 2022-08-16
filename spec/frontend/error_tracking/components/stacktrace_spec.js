@@ -33,13 +33,13 @@ describe('ErrorDetails', () => {
 
     it('should render single Stacktrace entry', () => {
       mountComponent([stackTraceEntry]);
-      expect(wrapper.findAll(StackTraceEntry).length).toBe(1);
+      expect(wrapper.findAllComponents(StackTraceEntry).length).toBe(1);
     });
 
     it('should render multiple Stacktrace entry', () => {
       const entriesNum = 3;
       mountComponent(new Array(entriesNum).fill(stackTraceEntry));
-      expect(wrapper.findAll(StackTraceEntry).length).toBe(entriesNum);
+      expect(wrapper.findAllComponents(StackTraceEntry).length).toBe(entriesNum);
     });
   });
 });

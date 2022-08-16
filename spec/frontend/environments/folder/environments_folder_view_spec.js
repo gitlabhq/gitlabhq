@@ -65,7 +65,7 @@ describe('Environments Folder View', () => {
     });
 
     it('should render a table with environments', () => {
-      const table = wrapper.find(EnvironmentTable);
+      const table = wrapper.findComponent(EnvironmentTable);
 
       expect(table.exists()).toBe(true);
       expect(table.find('.environment-name').text()).toEqual(environmentsList[0].name);
@@ -93,7 +93,7 @@ describe('Environments Folder View', () => {
 
     describe('pagination', () => {
       it('should render pagination', () => {
-        expect(wrapper.find(GlPagination).exists()).toBe(true);
+        expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
       });
 
       it('should make an API request when changing page', () => {
@@ -126,7 +126,7 @@ describe('Environments Folder View', () => {
     });
 
     it('should not render a table', () => {
-      expect(wrapper.find(EnvironmentTable).exists()).toBe(false);
+      expect(wrapper.findComponent(EnvironmentTable).exists()).toBe(false);
     });
 
     it('should render available tab with count 0', () => {

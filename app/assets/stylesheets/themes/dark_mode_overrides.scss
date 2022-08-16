@@ -160,3 +160,8 @@ body.gl-dark {
     background-color: $gray-200;
   }
 }
+
+.timeline-entry.internal-note:not(.note-form) {
+  // soften on darkmode
+  background-color: mix($gray-50, $orange-50, 75%);
+}

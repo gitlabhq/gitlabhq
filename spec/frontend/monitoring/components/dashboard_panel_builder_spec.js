@@ -32,14 +32,14 @@ describe('dashboard invalid url parameters', () => {
     });
   };
 
-  const findForm = () => wrapper.find(GlForm);
-  const findTxtArea = () => findForm().find(GlFormTextarea);
+  const findForm = () => wrapper.findComponent(GlForm);
+  const findTxtArea = () => findForm().findComponent(GlFormTextarea);
   const findSubmitBtn = () => findForm().find('[type="submit"]');
-  const findClipboardCopyBtn = () => wrapper.find({ ref: 'clipboardCopyBtn' });
-  const findViewDocumentationBtn = () => wrapper.find({ ref: 'viewDocumentationBtn' });
-  const findOpenRepositoryBtn = () => wrapper.find({ ref: 'openRepositoryBtn' });
-  const findPanel = () => wrapper.find(DashboardPanel);
-  const findTimeRangePicker = () => wrapper.find(DateTimePicker);
+  const findClipboardCopyBtn = () => wrapper.findComponent({ ref: 'clipboardCopyBtn' });
+  const findViewDocumentationBtn = () => wrapper.findComponent({ ref: 'viewDocumentationBtn' });
+  const findOpenRepositoryBtn = () => wrapper.findComponent({ ref: 'openRepositoryBtn' });
+  const findPanel = () => wrapper.findComponent(DashboardPanel);
+  const findTimeRangePicker = () => wrapper.findComponent(DateTimePicker);
   const findRefreshButton = () => wrapper.find('[data-testid="previewRefreshButton"]');
 
   beforeEach(() => {
@@ -192,8 +192,8 @@ describe('dashboard invalid url parameters', () => {
     });
 
     it('displays an alert', () => {
-      expect(wrapper.find(GlAlert).exists()).toBe(true);
-      expect(wrapper.find(GlAlert).text()).toBe(mockError);
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
+      expect(wrapper.findComponent(GlAlert).text()).toBe(mockError);
     });
 
     it('displays an empty dashboard panel', () => {
@@ -215,11 +215,11 @@ describe('dashboard invalid url parameters', () => {
     });
 
     it('displays no alert', () => {
-      expect(wrapper.find(GlAlert).exists()).toBe(false);
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
     });
 
     it('displays panel with data', () => {
-      const { title, type } = wrapper.find(DashboardPanel).props('graphData');
+      const { title, type } = wrapper.findComponent(DashboardPanel).props('graphData');
 
       expect(title).toBe(mockPanel.title);
       expect(type).toBe(mockPanel.type);

@@ -45,7 +45,7 @@ describe('GroupEmptyState', () => {
     });
 
     it('passes the expected props to GlEmptyState', () => {
-      expect(wrapper.find(GlEmptyState).props()).toMatchSnapshot();
+      expect(wrapper.findComponent(GlEmptyState).props()).toMatchSnapshot();
     });
   });
 });

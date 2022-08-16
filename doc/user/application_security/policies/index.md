@@ -140,7 +140,7 @@ for more information on the product direction of security policies within GitLab
 
 ## Troubleshooting
 
-### Branch name does not follow the pattern `'update-policy-<timestamp>'`
+### `Branch name does not follow the pattern 'update-policy-<timestamp>'`
 
 When you create a new security policy or change an existing policy, a new branch is automatically created with the branch name following the pattern `update-policy-<timestamp>`. For example: `update-policy-1659094451`.
 

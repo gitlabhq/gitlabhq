@@ -92,7 +92,7 @@ describe('Actions menu', () => {
       });
 
       it('renders custom metrics form fields', () => {
-        expect(wrapper.find(CustomMetricsFormFields).exists()).toBe(true);
+        expect(wrapper.findComponent(CustomMetricsFormFields).exists()).toBe(true);
       });
     });
 

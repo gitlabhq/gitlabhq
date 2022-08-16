@@ -232,7 +232,7 @@ RSpec.describe CustomerRelations::Contact, type: :model do
       create_list(:contact, 2, group: group, state: 'inactive')
     end
 
-    it 'returns only active contacts' do
+    it 'returns correct contact counts' do
       counts = group.contacts.counts_by_state
 
       expect(counts['active']).to be(3)

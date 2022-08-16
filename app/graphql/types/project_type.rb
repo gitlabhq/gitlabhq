@@ -444,6 +444,10 @@ module Types
           description: "Timelog categories for the project.",
           _deprecated_feature_flag: :timelog_categories
 
+    field :fork_targets, Types::NamespaceType.connection_type,
+          resolver: Resolvers::Projects::ForkTargetsResolver,
+          description: 'Namespaces in which the current user can fork the project into.'
+
     def timelog_categories
       object.project_namespace.timelog_categories
     end

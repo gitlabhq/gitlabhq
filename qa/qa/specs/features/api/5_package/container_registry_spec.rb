@@ -3,7 +3,7 @@
 require 'airborne'
 
 module QA
-  RSpec.describe 'Package', :reliable, only: { subdomain: %i[staging pre] } do
+  RSpec.describe 'Package', :reliable, only: { subdomain: %i[staging staging-canary pre] } do
     include Support::API
     include Support::Helpers::MaskToken
 
@@ -41,7 +41,7 @@ module QA
         stages:
         - build
         - test
-        
+
         build:
           image: docker:19.03.12
           stage: build
@@ -60,7 +60,7 @@ module QA
             - docker build -t $IMAGE_TAG .
             - docker push $IMAGE_TAG
             - docker pull $IMAGE_TAG
-        
+
         test:
           image: dwdraju/alpine-curl-jq:latest
           stage: test
@@ -72,7 +72,7 @@ module QA
             - 'status_code=$(curl --request DELETE --head --output /dev/null --write-out "%{http_code}\n" --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories/$id/tags/master")'
             - if [ $status_code -ne 200 ]; then exit 1; fi;
             - 'status_code=$(curl --head --output /dev/null --write-out "%{http_code}\n" --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories/$id/tags/master")'
-            - if [ $status_code -ne 404 ]; then exit 1; fi; 
+            - if [ $status_code -ne 404 ]; then exit 1; fi;
         YAML
       end
 
