@@ -11,8 +11,10 @@
       %th{ class: 'gl-border-t-0!' }= _('Group')
       %th{ class: 'gl-border-t-0!' }= _('Identifier')
       %th{ class: 'gl-border-t-0!' }= _('Actions')
-  = render @identities
-  - if @identities.blank?
+  - if identity_cells_to_render?(@identities, @user)
+    = render_if_exists partial: 'admin/identities/scim_identity', collection: scim_identities_collection(@user)
+    = render @identities
+  - else
     %tbody
       %tr
         %td{ colspan: '5' }

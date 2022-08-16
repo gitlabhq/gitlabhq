@@ -382,3 +382,26 @@ In GitLab 14.9 and later, page slugs are now encoded using the
 [`ERB::Util.url_encode`](https://www.rubydoc.info/stdlib/erb/ERB%2FUtil.url_encode) method.
 If you use an Apache reverse proxy, you can add a `nocanon` argument to the `ProxyPass`
 line of your Apache configuration to ensure your page slugs render correctly.
+
+### Recreate a project wiki with the Rails console **(FREE SELF)**
+
+WARNING:
+This operation deletes all data in the wiki.
+
+To clear all data from a project wiki and recreate it in a blank state:
+
+1. [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run these commands:
+
+   ```ruby
+   # Enter your project's path
+   p = Project.find_by_full_path('<username-or-group>/<project-name>')
+
+   # This command deletes the wiki project from the filesystem.
+   GitlabShellWorker.perform_in(0, :remove_repository, p.repository_storage, p.wiki.disk_path)
+
+   # Refresh the wiki repository state.
+   p.wiki.repository.expire_exists_cache
+   ```
+
+All data from the wiki has been cleared, and the wiki is ready for use.

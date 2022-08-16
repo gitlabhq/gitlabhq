@@ -423,23 +423,6 @@ projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
 => [#<Project id:12 root/my-first-project>>, #<Project id:13 root/my-second-project>>]
 ```
 
-## Wikis
-
-### Recreate
-
-WARNING:
-This is a destructive operation, the Wiki becomes empty.
-
-A Projects Wiki can be recreated by this command:
-
-```ruby
-p = Project.find_by_full_path('<username-or-group>/<project-name>')  ### enter your projects path
-
-GitlabShellWorker.perform_in(0, :remove_repository, p.repository_storage, p.wiki.disk_path)  ### deletes the wiki project from the filesystem
-
-p.create_wiki  ### creates the wiki project on the filesystem
-```
-
 ## Issue boards
 
 ### In case of issue boards not loading properly and it's getting time out. Call the Issue Rebalancing service to fix this

@@ -22,6 +22,14 @@ module Admin
     def saml_group_link(identity)
       '-'
     end
+
+    def identity_cells_to_render?(identities, _user)
+      identities.present?
+    end
+
+    def scim_identities_collection(_user)
+      []
+    end
   end
 end
 

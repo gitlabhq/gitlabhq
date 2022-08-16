@@ -166,10 +166,7 @@ module GoogleApi
       end
 
       def list_cloudsql_databases(gcp_project_id, instance_name)
-        service = Google::Apis::SqladminV1beta4::SQLAdminService.new
-        service.authorization = access_token
-
-        service.list_databases(gcp_project_id, instance_name, options: user_agent_header)
+        sql_admin_service.list_databases(gcp_project_id, instance_name, options: user_agent_header)
       end
 
       def create_cloudsql_database(gcp_project_id, instance_name, database_name)
@@ -178,10 +175,7 @@ module GoogleApi
       end
 
       def list_cloudsql_users(gcp_project_id, instance_name)
-        service = Google::Apis::SqladminV1beta4::SQLAdminService.new
-        service.authorization = access_token
-
-        service.list_users(gcp_project_id, instance_name, options: user_agent_header)
+        sql_admin_service.list_users(gcp_project_id, instance_name, options: user_agent_header)
       end
 
       def create_cloudsql_user(gcp_project_id, instance_name, username, password)
@@ -204,9 +198,7 @@ module GoogleApi
           settings: Google::Apis::SqladminV1beta4::Settings.new(tier: tier)
         )
 
-        service = Google::Apis::SqladminV1beta4::SQLAdminService.new
-        service.authorization = access_token
-        service.insert_instance(gcp_project_id, database_instance)
+        sql_admin_service.insert_instance(gcp_project_id, database_instance)
       end
 
       private

@@ -298,6 +298,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :terraform, only: [:index]
 
         namespace :google_cloud do
+          get '/', to: redirect('%{namespace_id}/%{project_id}/-/google_cloud/configuration')
+
           get '/configuration', to: 'configuration#index'
 
           resources :revoke_oauth, only: [:create]

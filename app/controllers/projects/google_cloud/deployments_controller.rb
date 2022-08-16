@@ -4,7 +4,6 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
   before_action :validate_gcp_token!
 
   def index
-    @google_cloud_path = project_google_cloud_configuration_path(project)
     js_data = {
       configurationUrl: project_google_cloud_configuration_path(project),
       deploymentsUrl: project_google_cloud_deployments_path(project),

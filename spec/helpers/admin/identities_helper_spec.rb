@@ -35,4 +35,24 @@ RSpec.describe Admin::IdentitiesHelper do
       expect(helper.saml_group_link(identity)).to eq '-'
     end
   end
+
+  describe '#identity_cells_to_render?' do
+    context 'without identities' do
+      it 'returns false' do
+        expect(helper.identity_cells_to_render?([], user)).to eq false
+      end
+    end
+
+    context 'with identities' do
+      it 'returns true' do
+        expect(helper.identity_cells_to_render?(identity, user)).to eq true
+      end
+    end
+  end
+
+  describe '#scim_identities_collection' do
+    it 'returns empty array' do
+      expect(helper.scim_identities_collection(user)).to eq []
+    end
+  end
 end
