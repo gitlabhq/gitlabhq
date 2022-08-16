@@ -772,6 +772,16 @@ RSpec.describe 'project routing' do
     end
   end
 
+  describe Projects::Settings::PackagesAndRegistriesController, 'routing' do
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/-/settings/packages_and_registries')).to route_to('projects/settings/packages_and_registries#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+
+    it 'to #cleanup_tags' do
+      expect(get('gitlab/gitlabhq/-/settings/packages_and_registries/cleanup_image_tags')).to route_to('projects/settings/packages_and_registries#cleanup_tags', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+  end
+
   describe Projects::Settings::IntegrationsController, 'routing' do
     it 'to #index' do
       expect(get('/gitlab/gitlabhq/-/settings/integrations')).to route_to('projects/settings/integrations#index', namespace_id: 'gitlab', project_id: 'gitlabhq')

@@ -38,10 +38,8 @@ export function formatIssue(issue) {
 
 export function formatListIssues(listIssues) {
   const boardItems = {};
-  let listItemsCount;
 
   const listData = listIssues.nodes.reduce((map, list) => {
-    listItemsCount = list.issuesCount;
     let sortedIssues = list.issues.edges.map((issueNode) => ({
       ...issueNode.node,
     }));
@@ -67,7 +65,7 @@ export function formatListIssues(listIssues) {
     };
   }, {});
 
-  return { listData, boardItems, listItemsCount };
+  return { listData, boardItems };
 }
 
 export function formatListsPageInfo(lists) {

@@ -80,11 +80,10 @@ Gitaly Cluster does not support snapshot backups. Snapshot backups can cause iss
 out of sync with the disk storage. Because of how Praefect rebuilds the replication metadata of Gitaly disk information
 during a restore, we recommend using the [official backup and restore Rake tasks](../../raketasks/backup_restore.md).
 
-If you are unable to use this method, please contact customer support for restoration help.
+The [incremental backup method](../../raketasks/backup_gitlab.md#incremental-repository-backups)
+can be used to speed up Gitaly Cluster backups.
 
-We are tracking in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351383) improvements to the
-[official backup and restore Rake tasks](../../raketasks/backup_restore.md) to add support for incremental backups. For
-more information, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/2094).
+If you are unable to use either method, please contact customer support for restoration help.
 
 ### What to do if you are on Gitaly Cluster experiencing an issue or limitation
 

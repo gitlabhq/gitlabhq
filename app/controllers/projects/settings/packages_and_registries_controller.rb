@@ -14,10 +14,21 @@ module Projects
       def show
       end
 
+      def cleanup_tags
+        registry_settings_enabled!
+
+        @hide_search_settings = true
+      end
+
       private
 
       def packages_and_registries_settings_enabled!
         render_404 unless can?(current_user, :view_package_registry_project_settings, project)
+      end
+
+      def registry_settings_enabled!
+        render_404 unless Gitlab.config.registry.enabled &&
+          can?(current_user, :admin_container_image, project)
       end
     end
   end

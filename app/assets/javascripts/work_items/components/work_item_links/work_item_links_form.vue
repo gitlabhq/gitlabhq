@@ -2,10 +2,10 @@
 import { GlAlert, GlFormGroup, GlForm, GlFormCombobox, GlButton, GlFormInput } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
-import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
+import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
-import { WORK_ITEM_TYPE_IDS } from '../../constants';
+import { TASK_TYPE_NAME } from '../../constants';
 
 export default {
   components: {
@@ -35,23 +35,15 @@ export default {
     },
   },
   apollo: {
-    availableWorkItems: {
-      query: projectWorkItemsQuery,
-      debounce: 200,
+    workItemTypes: {
+      query: projectWorkItemTypesQuery,
       variables() {
         return {
-          projectPath: this.projectPath,
-          searchTerm: this.search?.title || this.search,
-          types: ['TASK'],
+          fullPath: this.projectPath,
         };
       },
-      skip() {
-        return this.search.length === 0;
-      },
       update(data) {
-        return data.workspace.workItems.edges
-          .filter((wi) => !this.childrenIds.includes(wi.node.id))
-          .map((wi) => wi.node);
+        return data.workspace?.workItemTypes?.nodes;
       },
     },
   },
@@ -81,6 +73,9 @@ export default {
     },
     addOrCreateMethod() {
       return this.childToCreateTitle ? this.createChild : this.addChild;
+    },
+    taskWorkItemType() {
+      return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
     },
   },
   methods: {
@@ -124,7 +119,7 @@ export default {
             input: {
               title: this.search?.title || this.search,
               projectPath: this.projectPath,
-              workItemTypeId: WORK_ITEM_TYPE_IDS.TASK,
+              workItemTypeId: this.taskWorkItemType,
               hierarchyWidget: {
                 parentId: this.issuableGid,
               },

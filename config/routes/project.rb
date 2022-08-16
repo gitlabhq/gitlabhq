@@ -156,7 +156,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
 
-          resource :packages_and_registries, only: [:show]
+          resource :packages_and_registries, only: [:show] do
+            get '/cleanup_image_tags', to: 'packages_and_registries#cleanup_tags'
+          end
         end
 
         resources :usage_quotas, only: [:index]

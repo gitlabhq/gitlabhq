@@ -403,11 +403,6 @@ msgid_plural "%d tags per image name"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d unassigned issue"
-msgid_plural "%d unassigned issues"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d unresolved thread"
 msgid_plural "%d unresolved threads"
 msgstr[0] ""

@@ -813,26 +813,12 @@ information, see the [relevant documentation](monitoring.md#monitor-gitaly-concu
 ## Control groups
 
 FLAG:
-On self-managed GitLab, by default cgroups are not available. To make it available, ask an administrator to
+On self-managed GitLab, by default repository cgroups are not available. To make it available, ask an administrator to
 [enable the feature flag](../feature_flags.md) named `gitaly_run_cmds_in_cgroup`.
-
-Gitaly shells out to Git for many of its operations. Git can consume a lot of resources for certain operations,
-especially for large repositories.
 
 Control groups (cgroups) in Linux allow limits to be imposed on how much memory and CPU can be consumed.
 See the [`cgroups` Linux man page](https://man7.org/linux/man-pages/man7/cgroups.7.html) for more information.
-cgroups can be useful for protecting the system against resource exhaustion because of overcomsumption of memory and CPU.
-
-Gitaly has built-in cgroups control. When configured, Gitaly assigns Git
-processes to a cgroup based on the repository the Git command is operating in.
-Each cgroup has a memory and CPU limit. When a cgroup reaches its:
-
-- Memory limit, the kernel looks through the processes for a candidate to kill.
-- CPU limit, processes are not killed, but the processes are prevented from consuming more CPU than allowed.
-
-The main reason to configure cgroups for your GitLab installation is that it
-protects against system resource starvation due to a few large repositories or
-bad actors.
+cgroups can be useful for protecting the system against resource exhaustion because of over consumption of memory and CPU.
 
 Some Git operations are expensive by nature. `git clone`, for instance,
 spawns a `git-upload-pack` process on the server that can consume a lot of memory
@@ -840,33 +826,33 @@ for large repositories. For example, a client that keeps on cloning a
 large repository over and over again. This situation could potentially use up all of the
 memory on a server, causing other operations to fail for other users.
 
-There are many ways someone can create a repository that can consume large amounts of memory when cloned or downloaded.
+A repository can consume large amounts of memory for many reasons when cloned or downloaded.
 Using cgroups allows the kernel to kill these operations before they hog up all system resources.
 
-### Configure cgroups in Gitaly
+Gitaly shells out to Git for many of its operations. Git can consume a lot of resources for certain operations,
+especially for large repositories.
 
-Two ways of configuring cgroups are available.
+Gitaly has built-in cgroups control. When configured, Gitaly assigns Git processes to a cgroup based on the repository
+the Git command is operating in. These cgroups are called repository cgroups. Each repository cgroup:
 
-#### Configure cgroups (new method)
+- Has a memory and CPU limit.
+- Contains the Git processes for a single repository.
+- Uses a consistent hash to ensure a Git process for a given repository always ends up in the same cgroup.
 
-> This method of configuring cgroups introduced in GitLab 15.1.
+When a repository cgroup reaches its:
 
-Gitaly creates a pool of cgroups that are isolated based on the repository used in the Git command to be placed under one of these cgroups.
+- Memory limit, the kernel looks through the processes for a candidate to kill.
+- CPU limit, processes are not killed, but the processes are prevented from consuming more CPU than allowed.
 
-To configure cgroups in Gitaly, add `gitaly['cgroups']` to `/etc/gitlab/gitlab.rb`.
+You configure repository cgroups for your GitLab installation to protect against system resource starvation from a few
+large repositories or bad actors.
 
-For example:
+### Configure repository cgroups (new method)
 
-```ruby
-# in /etc/gitlab/gitlab.rb
-gitaly['cgroups_mountpoint'] = "/sys/fs/cgroup"
-gitaly['cgroups_hierarchy_root'] =>"gitaly"
-gitaly['cgroups_memory_bytes'] = 64424509440,  # 60gb
-gitaly['cgroups_cpu_shares'] = 1024
-gitaly['cgroups_repositories_count'] => 1000,
-gitaly['cgroups_repositories_memory_bytes'] => 32212254720 # 20gb
-gitaly['cgroups_repositories_cpu_shares'] => 512
-```
+> This method of configuring repository cgroups was introduced in GitLab 15.1.
+
+To configure repository cgroups in Gitaly using the new method, use the following settings for the new configuration method
+to `gitaly['cgroups']` in `/etc/gitlab/gitlab.rb`:
 
 - `cgroups_mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
 - `cgroups_hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
@@ -875,7 +861,7 @@ gitaly['cgroups_repositories_cpu_shares'] => 512
    when Gitaly starts.
 - `cgroups_memory_bytes` is the total memory limit that is imposed collectively on all
    Git processes that Gitaly spawns. 0 implies no limit.
-- `cgroups_cpu_shares` is the cpu limit that is imposed collectively on all Git
+- `cgroups_cpu_shares` is the CPU limit that is imposed collectively on all Git
    processes that Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
    which represents 100% of CPU.
 - `cgroups_repositories_count` is the number of cgroups in the cgroups pool. Each time a new Git
@@ -884,30 +870,28 @@ gitaly['cgroups_repositories_cpu_shares'] => 512
   Git commands to these cgroups, so a Git command for a repository is
   always assigned to the same cgroup.
 - `cgroups_repositories_memory_bytes` is the total memory limit imposed on all Git processes contained in a repository cgroup.
-  A repository cgroup is one that contains Git processes for one or more repositories.
-  A consistent hash is used to assign repositories to these cgroups such that a Git process for a given repository always ends up in the same cgroup.
   0 implies no limit. This value cannot exceed that of the top level `cgroups_memory_bytes`.
 - `cgroups_repositories_cpu_shares` is the CPU limit that is imposed on all Git processes contained in a repository cgroup.
-  A repository cgroup is one that contains Git processes for one or more repositories.
-  A consistent hash is used to assign repositories to these cgroups such that a Git process for a given repository always ends up in the same cgroup.
   0 implies no limit. The maximum is 1024 shares, which represents 100% of CPU.
   This value cannot exceed that of the top level`cgroups_cpu_shares`.
 
-#### Configure cgroups (legacy method)
-
-To configure cgroups in Gitaly for GitLab versions using the legacy method, add `gitaly['cgroups']` to `/etc/gitlab/gitlab.rb`. For
-example:
+For example:
 
 ```ruby
 # in /etc/gitlab/gitlab.rb
-gitaly['cgroups_count'] = 1000
 gitaly['cgroups_mountpoint'] = "/sys/fs/cgroup"
-gitaly['cgroups_hierarchy_root'] = "gitaly"
-gitaly['cgroups_memory_limit'] = 32212254720
-gitaly['cgroups_memory_enabled'] = true
+gitaly['cgroups_hierarchy_root'] => "gitaly"
+gitaly['cgroups_memory_bytes'] = 64424509440,  # 60gb
 gitaly['cgroups_cpu_shares'] = 1024
-gitaly['cgroups_cpu_enabled'] = true
+gitaly['cgroups_repositories_count'] => 1000,
+gitaly['cgroups_repositories_memory_bytes'] => 32212254720 # 20gb
+gitaly['cgroups_repositories_cpu_shares'] => 512
 ```
+
+### Configure repository cgroups (legacy method)
+
+To configure repository cgroups in Gitaly using the legacy method, use the following settings
+in `/etc/gitlab/gitlab.rb`:
 
 - `cgroups_count` is the number of cgroups created. Each time a new
    command is spawned, Gitaly assigns it to one of these cgroups based
@@ -921,7 +905,21 @@ gitaly['cgroups_cpu_enabled'] = true
 - `cgroups_memory_enabled` enables or disables the memory limit on cgroups.
 - `cgroups_memory_bytes` is the total memory limit each cgroup imposes on the processes added to it.
 - `cgroups_cpu_enabled` enables or disables the CPU limit on cgroups.
-- `cgroups_cpu_shares` is the CPU limit each cgroup imposes on the processes added to it. The maximum is 1024 shares, which represents 100% of CPU.
+- `cgroups_cpu_shares` is the CPU limit each cgroup imposes on the processes added to it. The maximum is 1024 shares,
+  which represents 100% of CPU.
+
+For example:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['cgroups_count'] = 1000
+gitaly['cgroups_mountpoint'] = "/sys/fs/cgroup"
+gitaly['cgroups_hierarchy_root'] = "gitaly"
+gitaly['cgroups_memory_limit'] = 32212254720
+gitaly['cgroups_memory_enabled'] = true
+gitaly['cgroups_cpu_shares'] = 1024
+gitaly['cgroups_cpu_enabled'] = true
+```
 
 ### Configuring oversubscription
 
@@ -930,16 +928,15 @@ In the previous example using the new configuration method:
 - The top level memory limit is capped at 60gb.
 - Each of the 1000 cgroups in the repositories pool is capped at 20gb.
 
-This is called "oversubscription". Each cgroup in the pool has a much larger capacity than 1/1000th
+This configuration leads to "oversubscription". Each cgroup in the pool has a much larger capacity than 1/1000th
 of the top-level memory limit.
 
 This strategy has two main benefits:
 
-- It gives the host protection from overall memory starvation (OOM), because the top-level
-  cgroup's memory limit can be set to a threshold smaller than the host's
-  capacity. Processes outside of that cgroup are not at risk of OOM.
+- It gives the host protection from overall memory starvation (OOM), because the memory limit of the top-level cgroup
+  can be set to a threshold smaller than the host's capacity. Processes outside of that cgroup are not at risk of OOM.
 - It allows each individual cgroup in the pool to burst up to a generous upper
-  bound (in this example 20 GB) that is smaller than the parent cgroup's limit,
+  bound (in this example 20 GB) that is smaller than the limit of the parent cgroup,
   but substantially larger than 1/N of the parent's limit. In this example, up
   to 3 child cgroups can concurrently burst up to their max. In general, all
   1000 cgroups would use much less than the 20 GB.

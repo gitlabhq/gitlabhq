@@ -37,10 +37,6 @@ export const WORK_ITEM_STATUS_TEXT = {
   OPEN: s__('WorkItem|Open'),
 };
 
-export const WORK_ITEM_TYPE_IDS = {
-  TASK: 'gid://gitlab/WorkItems::Type/5',
-};
-
 export const WORK_ITEMS_TYPE_MAP = {
   [WORK_ITEM_TYPE_ENUM_INCIDENT]: {
     icon: `issue-type-incident`,

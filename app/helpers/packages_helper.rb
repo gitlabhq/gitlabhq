@@ -63,4 +63,27 @@ module PackagesHelper
     Gitlab.config.packages.enabled &&
     Ability.allowed?(current_user, :admin_package, project)
   end
+
+  def cleanup_settings_data
+    {
+      project_id: @project.id,
+      project_path: @project.full_path,
+      cadence_options: cadence_options.to_json,
+      keep_n_options: keep_n_options.to_json,
+      older_than_options: older_than_options.to_json,
+      is_admin: current_user&.admin.to_s,
+      admin_settings_path: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'),
+      enable_historic_entries: container_expiration_policies_historic_entry_enabled?.to_s,
+      help_page_path: help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'cleanup-policy'),
+      show_cleanup_policy_link: show_cleanup_policy_link(@project).to_s,
+      tags_regex_help_page_path: help_page_path('user/packages/container_registry/reduce_container_registry_storage', anchor: 'regex-pattern-examples')
+    }
+  end
+
+  def settings_data
+    cleanup_settings_data.merge(
+      show_container_registry_settings: show_container_registry_settings(@project).to_s,
+      show_package_registry_settings: show_package_registry_settings(@project).to_s
+    )
+  end
 end

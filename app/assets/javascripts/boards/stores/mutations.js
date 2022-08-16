@@ -11,7 +11,7 @@ const updateListItemsCount = ({ state, listId, value }) => {
   if (state.issuableType === issuableTypes.epic) {
     Vue.set(state.boardLists, listId, { ...list, epicsCount: list.epicsCount + value });
   } else {
-    Vue.set(state.boardLists, listId, { ...list, issuesCount: list.issuesCount + value });
+    Vue.set(state.boardLists, listId, { ...list });
   }
 };
 

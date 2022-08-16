@@ -170,7 +170,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `default_enabled`   | yes      | The default state of the feature flag.                         |
 | `introduced_by_url` | no       | The URL to the merge request that introduced the feature flag. |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
-| `milestone`         | no       | Milestone in which the feature was added.                      |
+| `milestone`         | no       | Milestone in which the feature flag was created. |
 | `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 
 NOTE:
