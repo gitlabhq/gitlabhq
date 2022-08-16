@@ -189,7 +189,7 @@ and are protected at the same time.
 
 ### Configure group-level memberships
 
-> - Operators are required to have Owner+ role from the original Maintainer+ role and this role change is introduced from GitLab 15.3 [with a flag](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) named `group_level_protected_environment_settings_permission`. Disabled by default.
+> - Operators are required to have Owner+ role from the original Maintainer+ role and this role change is introduced from GitLab 15.3 [with a flag](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) named `group_level_protected_environment_settings_permission`. Enabled by default.
 > - Original behavior where Operators are required to have Maintainer+ role can be achieved by enabling [flag](https://gitlab.com/gitlab-org/gitlab/-/issues/369875) named `override_group_level_protected_environment_settings_permission`. Disabled by default.
 
 To maximize the effectiveness of group-level protected environments,

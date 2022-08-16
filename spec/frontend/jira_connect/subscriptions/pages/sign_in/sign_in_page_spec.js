@@ -68,7 +68,7 @@ describe('SignInPage', () => {
     describe('when error event is emitted', () => {
       it('emits another error event', () => {
         findSignInGitlabCom().vm.$emit('error');
-        expect(wrapper.emitted('error')[0]).toBeTruthy();
+        expect(wrapper.emitted('error')).toHaveLength(1);
       });
     });
 

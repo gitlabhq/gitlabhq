@@ -93,7 +93,7 @@ describe('BoardSettingsSidebar', () => {
 
         await nextTick();
 
-        expect(wrapper.findComponent(GlDrawer).exists()).toBe(false);
+        expect(wrapper.findComponent(GlDrawer).props('open')).toBe(false);
       });
 
       it('closes the sidebar when emitting the correct event', async () => {
@@ -103,7 +103,7 @@ describe('BoardSettingsSidebar', () => {
 
         await nextTick();
 
-        expect(wrapper.findComponent(GlDrawer).exists()).toBe(false);
+        expect(wrapper.findComponent(GlDrawer).props('open')).toBe(false);
       });
     });
 
@@ -150,7 +150,7 @@ describe('BoardSettingsSidebar', () => {
     it('does not render GlDrawer', () => {
       createComponent({ sidebarType: '' });
 
-      expect(findDrawer().exists()).toBe(false);
+      expect(findDrawer().props('open')).toBe(false);
     });
   });
 

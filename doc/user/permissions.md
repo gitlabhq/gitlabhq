@@ -39,7 +39,7 @@ usernames. A GitLab administrator can configure the GitLab instance to
 A user's role determines what permissions they have on a project. The Owner role provides all permissions but is
 available only:
 
-- For group owners. The role is inherited for a group's projects.
+- For group and project Owners. In GitLab 14.8 and earlier, the role is inherited for a group's projects.
 - For Administrators.
 
 Personal [namespace](namespace/index.md) owners:
@@ -215,7 +215,7 @@ The following table lists project permissions available for each role:
    [GitLab.com visibility settings](gitlab_com/index.md#visibility-settings).
 2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
 3. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
-4. If the [branch is protected](project/protected_branches.md), this depends on the access Developers and Maintainers are given.
+4. If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers.
 5. Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/index.md#view-a-release-and-download-assets).
 6. Actions are limited only to records owned (referenced) by user.
 7. When [Share Group Lock](group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
@@ -225,8 +225,8 @@ The following table lists project permissions available for each role:
 10. Users can only view events based on their individual actions.
 11. Project access tokens are supported for self-managed instances on Free and above. They are also
     supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
-12. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access Developers and Maintainers are given.
-13. A Maintainer can't change project features visibility level if
+12. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access given to Developers and Maintainers.
+13. A Maintainer or Owner can't change project features visibility level if
     [project visibility](public_access.md) is set to private.
 14. Attached design files are moved together with the issue even if the user doesn't have the
     Developer role.
@@ -334,10 +334,9 @@ which visibility level you select on project settings.
 ### Protected branches
 
 Additional restrictions can be applied on a per-branch basis with [protected branches](project/protected_branches.md).
-Additionally, you can customize permissions to allow or prevent project
-Maintainers and Developers from pushing to a protected branch. Read through the documentation on
-[protected branches](project/protected_branches.md)
-to learn more.
+Additionally, you can customize permissions to allow or prevent project Developers or Maintainers
+from pushing to a protected branch. Read through the documentation on
+[protected branches](project/protected_branches.md) to learn more.
 
 ### Value stream analytics permissions
 

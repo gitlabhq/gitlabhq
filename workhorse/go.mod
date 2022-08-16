@@ -119,10 +119,17 @@ require (
 )
 
 exclude (
+	// CVE-2019-0205
+	github.com/apache/thrift v0.12.0
+	github.com/apache/thrift v0.13.0
+
 	// CVE-2020-28483
 	github.com/gin-gonic/gin v1.4.0
 	github.com/gin-gonic/gin v1.6.3
 
 	// CVE-2021-42576
 	github.com/microcosm-cc/bluemonday v1.0.2
+
+	// CVE-2020-26892
+	github.com/nats-io/nats-server/v2 v2.1.2
 )

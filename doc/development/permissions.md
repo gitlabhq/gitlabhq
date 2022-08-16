@@ -87,7 +87,7 @@ module):
 - Owner (`50`)
 
 If a user is the member of both a project and the project parent groups, the
-higher permission is taken into account for the project.
+highest permission is the applied access level for the project.
 
 If a user is the member of a project, but not the parent groups, they
 can still view the groups and their entities (like epics).

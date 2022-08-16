@@ -49,11 +49,22 @@ flowchart RL
     [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Add users to a project so they become members and have permission
-to perform actions. The Owner [role](../../permissions.md#project-members-permissions) can only be added at the group level.
+to perform actions.
+
+The maximum role (access level) you set depends on if you have the Owner or Maintainer role for the group. For example, the maximum
+role that can be set is:
+
+- Owner (`50`), if you have the Owner role for the project.
+- Maintainer (`40`), if you have the Maintainer role on the project.
+
+In GitLab 14.8 and earlier, direct members of a project have a maximum role of Maintainer.
+The Owner [role](../../permissions.md#project-members-permissions) can only be added at the group level.
 
 Prerequisite:
 
-- You must have the Maintainer or Owner role.
+- You must have the Maintainer or Owner role:
+  - To remove direct members with the Maintainer role and below, you must have the Maintainer role.
+  - To remove members with the Owner role, you must have the Owner role.
 
 To add a user to a project:
 

@@ -138,9 +138,8 @@ export default {
 <template>
   <mounting-portal mount-to="#js-right-sidebar-portal" name="board-content-sidebar" append>
     <gl-drawer
-      v-if="showSidebar"
       v-bind="$attrs"
-      :open="isSidebarOpen"
+      :open="showSidebar"
       class="boards-sidebar gl-absolute"
       variant="sidebar"
       @close="handleClose"
