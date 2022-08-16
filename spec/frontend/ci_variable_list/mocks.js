@@ -1,42 +1,45 @@
-import { variableTypes } from '~/ci_variable_list/constants';
+import { variableTypes, instanceString } from '~/ci_variable_list/constants';
 
 export const devName = 'dev';
 export const prodName = 'prod';
 
-export const mockVariables = [
-  {
-    __typename: 'CiVariable',
-    id: 1,
-    key: 'my-var',
-    masked: false,
-    protected: true,
-    value: 'env_val',
-    variableType: variableTypes.variableType,
-  },
-  {
-    __typename: 'CiVariable',
-    id: 2,
-    key: 'secret',
-    masked: true,
-    protected: false,
-    value: 'the_secret_value',
-    variableType: variableTypes.fileType,
-  },
-];
+export const mockVariables = (kind) => {
+  return [
+    {
+      __typename: `Ci${kind}Variable`,
+      id: 1,
+      key: 'my-var',
+      masked: false,
+      protected: true,
+      value: 'env_val',
+      variableType: variableTypes.variableType,
+    },
+    {
+      __typename: `Ci${kind}Variable`,
+      id: 2,
+      key: 'secret',
+      masked: true,
+      protected: false,
+      value: 'the_secret_value',
+      variableType: variableTypes.fileType,
+    },
+  ];
+};
 
-export const mockVariablesWithScopes = mockVariables.map((variable) => {
-  return { ...variable, environmentScope: '*' };
-});
+export const mockVariablesWithScopes = (kind) =>
+  mockVariables(kind).map((variable) => {
+    return { ...variable, environmentScope: '*' };
+  });
 
-const createDefaultVars = ({ withScope = true } = {}) => {
-  let base = mockVariables;
+const createDefaultVars = ({ withScope = true, kind } = {}) => {
+  let base = mockVariables(kind);
 
   if (withScope) {
-    base = mockVariablesWithScopes;
+    base = mockVariablesWithScopes(kind);
   }
 
   return {
-    __typename: 'CiVariableConnection',
+    __typename: `Ci${kind}VariableConnection`,
     nodes: base,
   };
 };
@@ -101,7 +104,7 @@ export const mockGroupVariables = {
 
 export const mockAdminVariables = {
   data: {
-    ciVariables: createDefaultVars({ withScope: false }),
+    ciVariables: createDefaultVars({ withScope: false, kind: instanceString }),
   },
 };
 

@@ -1,5 +1,6 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
+import { projectString } from '~/ci_variable_list/constants';
 import { mockVariables } from '../mocks';
 
 describe('Ci variable table', () => {
@@ -7,7 +8,7 @@ describe('Ci variable table', () => {
 
   const defaultProps = {
     isLoading: false,
-    variables: mockVariables,
+    variables: mockVariables(projectString),
   };
 
   const createComponent = ({ props = {} } = {}) => {

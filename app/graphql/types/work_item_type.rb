@@ -6,8 +6,12 @@ module Types
 
     authorize :read_work_item
 
+    field :closed_at, Types::TimeType, null: true,
+                                       description: 'Timestamp of when the work item was closed.'
     field :confidential, GraphQL::Types::Boolean, null: false,
                                                   description: 'Indicates the work item is confidential.'
+    field :created_at, Types::TimeType, null: false,
+                                        description: 'Timestamp of when the work item was created.'
     field :description, GraphQL::Types::String, null: true,
                                                 description: 'Description of the work item.'
     field :id, Types::GlobalIDType[::WorkItem], null: false,
@@ -22,6 +26,8 @@ module Types
                                      description: 'State of the work item.'
     field :title, GraphQL::Types::String, null: false,
                                           description: 'Title of the work item.'
+    field :updated_at, Types::TimeType, null: false,
+                                        description: 'Timestamp of when the work item was last updated.'
     field :widgets,
           [Types::WorkItems::WidgetInterface],
           null: true,

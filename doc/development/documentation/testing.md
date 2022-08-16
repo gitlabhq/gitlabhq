@@ -280,7 +280,7 @@ You can use Vale:
 
 Vale returns three types of results:
 
-- **Error** - For branding and trademark issues, words or phrases with ambiguous meanings, and anything that causes content on
+- **Error** - For branding guidelines, trademark guidelines, and anything that causes content on
   the docs site to render incorrectly.
 - **Warning** - For Technical Writing team style preferences.
 - **Suggestion** - For basic technical writing tenets and best practices.
@@ -336,6 +336,29 @@ general complexity level of the page.
 
 The readability score is calculated based on the number of words per sentence, and the number
 of syllables per word. For more information, see [the Vale documentation](https://vale.sh/docs/topics/styles/#metric).
+
+#### When to add a new Vale rule
+
+It's tempting to add a Vale rule for every style guide rule. However, we should be
+mindful of the effort to create and enforce a Vale rule, and the noise it creates.
+
+In general, follow these guidelines:
+
+- If you add an [error-level Vale rule](#vale-result-types), you must fix
+  the existing occurrences of the issue in the documentation before you can add the rule.
+
+  If there are too many issues to fix in a single merge request, add the rule at a
+  `warning` level. Then, fix the existing issues in follow-up merge requests.
+  When the issues are fixed, promote the rule to an `error`.
+
+- If you add a warning-level or suggestion-level rule, consider:
+
+  - How many more warnings or suggestions it creates in the Vale output. If the
+    number of additional warnings is significant, the rule might be too broad.
+
+  - How often an author might ignore it because it's acceptable in the context.
+    If the rule is too subjective, it cannot be adequately enforced and creates
+    unnecessary additional warnings.
 
 ### Install linters
 

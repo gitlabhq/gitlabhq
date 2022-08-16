@@ -103,7 +103,7 @@ If the `down` method requires adding back any dropped indexes or constraints, th
 be done within a transactional migration, then the migration would look like this:
 
 ```ruby
-class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[1.0]
+class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
@@ -158,7 +158,7 @@ renaming. For example
 
 ```ruby
 # A regular migration in db/migrate
-class RenameUsersUpdatedAtToUpdatedAtTimestamp < Gitlab::Database::Migration[1.0]
+class RenameUsersUpdatedAtToUpdatedAtTimestamp < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
@@ -186,7 +186,7 @@ We can perform this cleanup using
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class CleanupUsersUpdatedAtRename < Gitlab::Database::Migration[1.0]
+class CleanupUsersUpdatedAtRename < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
@@ -233,7 +233,7 @@ as follows:
 
 ```ruby
 # A regular migration in db/migrate
-class ChangeUsersUsernameStringToText < Gitlab::Database::Migration[1.0]
+class ChangeUsersUsernameStringToText < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
@@ -252,7 +252,7 @@ Next we need to clean up our changes using a post-deployment migration:
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class ChangeUsersUsernameStringToTextCleanup < Gitlab::Database::Migration[1.0]
+class ChangeUsersUsernameStringToTextCleanup < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up

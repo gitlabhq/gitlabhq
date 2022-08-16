@@ -164,6 +164,13 @@ Also, do not use links as part of heading text.
 
 See also [heading guidelines for specific topic types](../structure.md).
 
+### Backticks in Markdown
+
+Use backticks for:
+
+- [Code blocks](#code-blocks).
+- Error messages.
+
 ### Markdown Rules
 
 GitLab ensures that the Markdown used across all documentation is consistent, as

@@ -10,6 +10,7 @@ import {
   EVENT_LABEL,
   EVENT_ACTION,
   ENVIRONMENT_SCOPE_LINK_TITLE,
+  instanceString,
 } from '~/ci_variable_list/constants';
 import { mockVariablesWithScopes } from '../mocks';
 import ModalStub from '../stubs';
@@ -19,6 +20,7 @@ describe('Ci variable modal', () => {
   let trackingSpy;
 
   const maskableRegex = '^[a-zA-Z0-9_+=/@:.~-]{8,}$';
+  const mockVariables = mockVariablesWithScopes(instanceString);
 
   const defaultProvide = {
     awsLogoSvgPath: '/logo',
@@ -38,6 +40,7 @@ describe('Ci variable modal', () => {
     environments: [],
     mode: ADD_VARIABLE_ACTION,
     selectedVariable: {},
+    variable: [],
   };
 
   const createComponent = ({ mountFn = shallowMountExtended, props = {}, provide = {} } = {}) => {
@@ -81,22 +84,22 @@ describe('Ci variable modal', () => {
       });
 
       it('shows the submit button as disabled ', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBeTruthy();
+        expect(findAddorUpdateButton().attributes('disabled')).toBe('true');
       });
     });
 
     describe('when a key/value pair is present', () => {
       beforeEach(() => {
-        createComponent({ props: { selectedVariable: mockVariablesWithScopes[0] } });
+        createComponent({ props: { selectedVariable: mockVariables[0] } });
       });
 
       it('shows the submit button as enabled ', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBeFalsy();
+        expect(findAddorUpdateButton().attributes('disabled')).toBeUndefined();
       });
     });
 
     describe('events', () => {
-      const [currentVariable] = mockVariablesWithScopes;
+      const [currentVariable] = mockVariables;
 
       beforeEach(() => {
         createComponent({ props: { selectedVariable: currentVariable } });
@@ -123,9 +126,9 @@ describe('Ci variable modal', () => {
       });
 
       it('updates the protected value to true', () => {
-        expect(
-          findProtectedVariableCheckbox().attributes('data-is-protected-checked'),
-        ).toBeTruthy();
+        expect(findProtectedVariableCheckbox().attributes('data-is-protected-checked')).toBe(
+          'true',
+        );
       });
     });
 
@@ -151,7 +154,7 @@ describe('Ci variable modal', () => {
 
   describe('Adding a new non-AWS variable', () => {
     beforeEach(() => {
-      const [variable] = mockVariablesWithScopes;
+      const [variable] = mockVariables;
       createComponent({ mountFn: mountExtended, props: { selectedVariable: variable } });
     });
 
@@ -164,7 +167,7 @@ describe('Ci variable modal', () => {
 
   describe('Adding a new AWS variable', () => {
     beforeEach(() => {
-      const [variable] = mockVariablesWithScopes;
+      const [variable] = mockVariables;
       const AWSKeyVariable = {
         ...variable,
         key: AWS_ACCESS_KEY_ID,
@@ -183,7 +186,7 @@ describe('Ci variable modal', () => {
   describe('Reference warning when adding a variable', () => {
     describe('with a $ character', () => {
       beforeEach(() => {
-        const [variable] = mockVariablesWithScopes;
+        const [variable] = mockVariables;
         const variableWithDollarSign = {
           ...variable,
           value: 'valueWith$',
@@ -201,7 +204,7 @@ describe('Ci variable modal', () => {
 
     describe('without a $ character', () => {
       beforeEach(() => {
-        const [variable] = mockVariablesWithScopes;
+        const [variable] = mockVariables;
         createComponent({
           mountFn: mountExtended,
           props: { selectedVariable: variable },
@@ -215,7 +218,7 @@ describe('Ci variable modal', () => {
   });
 
   describe('Editing a variable', () => {
-    const [variable] = mockVariablesWithScopes;
+    const [variable] = mockVariables;
 
     beforeEach(() => {
       createComponent({ props: { selectedVariable: variable, mode: EDIT_VARIABLE_ACTION } });
@@ -286,7 +289,7 @@ describe('Ci variable modal', () => {
 
     describe('when the mask state is invalid', () => {
       beforeEach(async () => {
-        const [variable] = mockVariablesWithScopes;
+        const [variable] = mockVariables;
         const invalidMaskVariable = {
           ...variable,
           value: 'd:;',
@@ -301,7 +304,7 @@ describe('Ci variable modal', () => {
       });
 
       it('disables the submit button', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBeTruthy();
+        expect(findAddorUpdateButton().attributes('disabled')).toBe('disabled');
       });
 
       it('shows the correct error text', () => {
@@ -326,7 +329,7 @@ describe('Ci variable modal', () => {
       ${'unsupported|char'} | ${false} | ${0}      | ${null}
     `('Adding a new variable', ({ value, masked, eventSent, trackingErrorProperty }) => {
       beforeEach(async () => {
-        const [variable] = mockVariablesWithScopes;
+        const [variable] = mockVariables;
         const invalidKeyVariable = {
           ...variable,
           value: '',
@@ -359,7 +362,7 @@ describe('Ci variable modal', () => {
 
     describe('when masked variable has acceptable value', () => {
       beforeEach(() => {
-        const [variable] = mockVariablesWithScopes;
+        const [variable] = mockVariables;
         const validMaskandKeyVariable = {
           ...variable,
           key: AWS_ACCESS_KEY_ID,
@@ -373,7 +376,7 @@ describe('Ci variable modal', () => {
       });
 
       it('does not disable the submit button', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBeFalsy();
+        expect(findAddorUpdateButton().attributes('disabled')).toBeUndefined();
       });
     });
   });

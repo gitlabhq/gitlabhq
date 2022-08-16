@@ -11,7 +11,7 @@
 - dropdown_title = local_assigns.fetch(:dropdown_title, _('Filter by label'))
 - dropdown_data = label_dropdown_data(edit_context, labels: labels_filter_path_with_defaults(only_group_labels: edit_context.is_a?(Group)), default_label: _('Labels'))
 
-- dropdown_data.merge!(data_options)
+- dropdown_data.merge!(data_options, qa_selector: "issuable_label_dropdown")
 - label_name = local_assigns.fetch(:label_name, _('Labels'))
 - no_default_styles = local_assigns.fetch(:no_default_styles, false)
 - classes << 'js-extra-options' if extra_options
@@ -22,7 +22,7 @@
     = hidden_field_tag data_options[:field_name], use_id ? label.try(:id) : label.try(:title), id: nil
 
 .dropdown
-  %button.dropdown-menu-toggle.js-label-select.js-multiselect.qa-issuable-label{ class: classes.join(' '), type: "button", data: dropdown_data }
+  %button.dropdown-menu-toggle.js-label-select.js-multiselect{ class: classes.join(' '), type: "button", data: dropdown_data }
     - apply_is_default_styles = (selected.nil? || selected.empty?) && !no_default_styles
     %span.dropdown-toggle-text{ class: ("is-default" if apply_is_default_styles) }
       = multi_label_name(selected, label_name)

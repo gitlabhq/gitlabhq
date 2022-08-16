@@ -685,8 +685,12 @@ To see if GitLab can access the repository file system directly, we use the foll
 - GitLab Rails tries to read the metadata file directly. If it exists, and if the UUID's match,
   assume we have direct access.
 
-Direct Git access is enable by default in Omnibus GitLab because it fills in the correct repository
-paths in the GitLab configuration file `config/gitlab.yml`. This satisfies the UUID check.
+Versions of GitLab 15.3 and later disable direct Git access by default.
+
+For versions of GitLab prior to 15.3, direct Git access is enabled by
+default in Omnibus GitLab because it fills in the correct repository
+paths in the GitLab configuration file `config/gitlab.yml`. This
+satisfies the UUID check.
 
 ### Transition to Gitaly Cluster
 

@@ -33,9 +33,9 @@ export default {
     },
     filteredEnvironments() {
       const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
-      return this.environments.filter((resultString) =>
-        resultString.toLowerCase().includes(lowerCasedSearchTerm),
-      );
+      return this.environments.filter((environment) => {
+        return environment.toLowerCase().includes(lowerCasedSearchTerm);
+      });
     },
     shouldRenderCreateButton() {
       return this.searchTerm && !this.environments.includes(this.searchTerm);

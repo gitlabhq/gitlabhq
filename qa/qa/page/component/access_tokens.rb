@@ -23,6 +23,10 @@ module QA
             element :create_token_button
           end
 
+          base.view 'app/views/shared/access_tokens/_table.html.haml' do
+            element :revoke_button
+          end
+
           base.view 'app/views/shared/tokens/_scopes_form.html.haml' do
             element :api_label, '#{scope}_label' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
           end

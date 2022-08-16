@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'variable list' do
+RSpec.shared_examples 'variable list' do |is_admin|
   it 'shows a list of variables' do
     page.within('[data-testid="ci-variable-table"]') do
       expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq(variable.key)
@@ -166,7 +166,7 @@ RSpec.shared_examples 'variable list' do
     wait_for_requests
 
     expect(find('.flash-container')).to be_present
-    expect(find('[data-testid="alert-danger"]').text).to have_content('Variables key (key) has already been taken')
+    expect(find('[data-testid="alert-danger"]').text).to have_content('(key) has already been taken')
   end
 
   it 'prevents a variable to be added if no values are provided when a variable is set to masked' do
@@ -257,7 +257,11 @@ RSpec.shared_examples 'variable list' do
       end
 
       it 'shows a message regarding the changed default' do
-        expect(page).to have_content 'Environment variables are configured by your administrator to be protected by default'
+        if is_admin
+          expect(page).to have_content 'Environment variables on this GitLab instance are configured to be protected by default'
+        else
+          expect(page).to have_content 'Environment variables are configured by your administrator to be protected by default'
+        end
       end
     end
 

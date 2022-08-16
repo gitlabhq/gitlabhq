@@ -423,16 +423,6 @@ projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
 => [#<Project id:12 root/my-first-project>>, #<Project id:13 root/my-second-project>>]
 ```
 
-## Issue boards
-
-### In case of issue boards not loading properly and it's getting time out. Call the Issue Rebalancing service to fix this
-
-```ruby
-p = Project.find_by_full_path('<username-or-group>/<project-name>')
-
-Issues::RelativePositionRebalancingService.new(p.root_namespace.all_projects).execute
-```
-
 ## Imports and exports
 
 ### Import a project

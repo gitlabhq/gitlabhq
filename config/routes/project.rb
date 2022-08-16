@@ -361,6 +361,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'
 
         get 'work_items/*work_items_path' => 'work_items#index', as: :work_items
+        get 'work_items/*work_items_path' => 'work_items#index', as: :work_item
 
         post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 

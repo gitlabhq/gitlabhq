@@ -76,7 +76,7 @@ downstream project (`my/deployment`) too. If the downstream project is not found
 or the user does not have [permission](../../user/permissions.md) to create a pipeline there,
 the `staging` job is marked as _failed_.
 
-#### Trigger job configuration keywords
+#### Trigger job configuration limitations
 
 Trigger jobs can use only a limited set of the GitLab CI/CD [configuration keywords](../yaml/index.md).
 The keywords available for use in trigger jobs are:
@@ -89,6 +89,8 @@ The keywords available for use in trigger jobs are:
 - [`when`](../yaml/index.md#when) (only with a value of `on_success`, `on_failure`, or `always`)
 - [`extends`](../yaml/index.md#extends)
 - [`needs`](../yaml/index.md#needs), but not [`needs:project`](../yaml/index.md#needsproject)
+
+Trigger jobs cannot use [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
 
 #### Specify a downstream pipeline branch
 
@@ -182,9 +184,12 @@ downstream-job:
   trigger: my/project
 ```
 
-In this scenario, the `UPSTREAM_BRANCH` variable with a value related to the
-upstream pipeline is passed to the `downstream-job` job. It is available
-in the context of all downstream builds.
+In this scenario, the `UPSTREAM_BRANCH` variable with the value of the upstream pipeline's
+`$CI_COMMIT_REF_NAME` is passed to `downstream-job`. It is available in the
+context of all downstream builds.
+
+You cannot use this method to forward [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
+to a downstream pipeline, as they are not available in trigger jobs.
 
 Upstream pipelines take precedence over downstream ones. If there are two
 variables with the same name defined in both upstream and downstream projects,

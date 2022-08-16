@@ -22,6 +22,9 @@ RSpec.describe GitlabSchema.types['WorkItem'] do
       userPermissions
       widgets
       work_item_type
+      created_at
+      updated_at
+      closed_at
     ]
 
     fields.each do |field_name|

@@ -216,6 +216,10 @@ class Event < ApplicationRecord
     target_type == 'DesignManagement::Design'
   end
 
+  def work_item?
+    target_type == 'WorkItem'
+  end
+
   def milestone
     target if milestone?
   end
@@ -399,7 +403,8 @@ class Event < ApplicationRecord
       read_milestone: %i[milestone?],
       read_wiki: %i[wiki_page?],
       read_design: %i[design_note? design?],
-      read_note: %i[note?]
+      read_note: %i[note?],
+      read_work_item: %i[work_item?]
     }
   end
 

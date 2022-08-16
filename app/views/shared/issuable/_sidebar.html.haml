@@ -26,14 +26,14 @@
             = _('To-Do')
             .js-issuable-todo{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
 
-      .block.assignee.qa-assignee-block{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}" }
+      .block.assignee{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}", data: { qa_selector: 'assignee_block_container' } }
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
       - if issuable_sidebar[:supports_severity]
         #js-severity
 
       - if reviewers
-        .block.reviewer.qa-reviewer-block
+        .block.reviewer
           = render "shared/issuable/sidebar_reviewers", issuable_sidebar: issuable_sidebar, reviewers: reviewers, signed_in: signed_in
 
       - if issuable_sidebar[:supports_escalation]

@@ -12,8 +12,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Namespace storage limit
 
-Namespaces on a GitLab SaaS Free tier have a 5 GB storage limit. For more information, see our [pricing page](https://about.gitlab.com/pricing/).
-This limit is not visible on the storage quota page, but we plan to make it visible and enforced starting October 19, 2022.
+Namespaces on GitLab SaaS have a storage limit. For more information, see our [pricing page](https://about.gitlab.com/pricing/).
+This limit is not visible on the Usage quotas page, but will be prior to [enforcement](#namespace-storage-limit-enforcement-schedule). Self-managed deployments are not affected.
 
 Storage types that add to the total namespace storage are:
 
@@ -22,7 +22,7 @@ Storage types that add to the total namespace storage are:
 - Artifacts
 - Container registry
 - Package registry
-- Dependecy proxy
+- Dependency proxy
 - Wiki
 - Snippets
 
@@ -30,30 +30,18 @@ If your total namespace storage exceeds the available namespace storage quota, a
 
 To prevent exceeding the namespace storage quota, you can:
 
-1. [Purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer).
-1. [Upgrade to a paid tier](../subscriptions/gitlab_com/#upgrade-your-gitlab-saas-subscription-tier).
-1. [Reduce storage usage](#manage-your-storage-usage).
+1. Reduce storage consumption by following the suggestions in the [Manage Your Storage Usage](#manage-your-storage-usage) section of this page.
+1. Apply for [GitLab for Education](https://about.gitlab.com/solutions/education/join/), [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/), or [GitLab for Startups](https://about.gitlab.com/solutions/startups/) if you meet the eligibility requirements.
+1. Consider using a [self-managed instance](../subscriptions/self_managed/) of GitLab which does not have these limits on the free tier.
+1. [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60/year for 10GB of storage.
+1. [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing) which include higher limits and features that enable growing teams to ship faster without sacrificing on quality.
+1. [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) to learn more about your options and ask questions.
 
 ### Namespace storage limit enforcement schedule
 
-Starting October 19, 2022, a storage limit will be enforced on all GitLab Free namespaces.
-We will start with a large limit enforcement and eventually reduce it to 5 GB.
+Storage limits for GitLab SaaS Free tier namespaces will not be enforced prior to 2022-10-19. Storage limits for GitLab SaaS Paid tier namespaces will not be enforced for prior to 2023-02-15. 
 
-Impacted users are notified via email and in-app notifications will begin 2022-08-22. 
-Only GitLab SaaS users are impacted - the limits are not applicable to self-managed users.
-
-The following table describes the enforcement schedule, which is subject to change.
-
-| Planned enforcement date | Limit | Status |
-| ----------------------- | ----- | ------ |
-| October 19, 2022 | 45,000 GB | Not enforced |
-| October 20, 2022 | 7,500 GB | Not enforced |
-| October 24, 2022 | 500 GB | Not enforced |
-| October 27, 2022 | 75 GB | Not enforced |
-| November 2, 2022 | 10 GB | Not enforced |
-| November 9, 2022 | 5 GB | Not enforced |
-
-Namespaces that reach the enforced limit will have their projects locked. To unlock your project, you will have to [manage its storage](#manage-your-storage-usage).
+Impacted users are notified via email and in-app notifications at least 60 days prior to enforcement. 
 
 ### Project storage limit
 

@@ -3,8 +3,12 @@ import { shallowMount } from '@vue/test-utils';
 import CiVariableSettings from '~/ci_variable_list/components/ci_variable_settings.vue';
 import ciVariableModal from '~/ci_variable_list/components/ci_variable_modal.vue';
 import ciVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
-import { ADD_VARIABLE_ACTION, EDIT_VARIABLE_ACTION } from '~/ci_variable_list/constants';
-import { createJoinedEnvironments, mapEnvironmentNames } from '~/ci_variable_list/utils';
+import {
+  ADD_VARIABLE_ACTION,
+  EDIT_VARIABLE_ACTION,
+  projectString,
+} from '~/ci_variable_list/constants';
+import { mapEnvironmentNames } from '~/ci_variable_list/utils';
 
 import { mockEnvs, mockVariablesWithScopes, newVariable } from '../mocks';
 
@@ -15,7 +19,7 @@ describe('Ci variable table', () => {
     areScopedVariablesAvailable: true,
     environments: mapEnvironmentNames(mockEnvs),
     isLoading: false,
-    variables: mockVariablesWithScopes,
+    variables: mockVariablesWithScopes(projectString),
   };
 
   const findCiVariableTable = () => wrapper.findComponent(ciVariableTable);
@@ -51,7 +55,8 @@ describe('Ci variable table', () => {
 
       expect(findCiVariableModal().props()).toEqual({
         areScopedVariablesAvailable: defaultProps.areScopedVariablesAvailable,
-        environments: createJoinedEnvironments(defaultProps.variables, defaultProps.environments),
+        environments: defaultProps.environments,
+        variables: defaultProps.variables,
         mode: ADD_VARIABLE_ACTION,
         selectedVariable: {},
       });

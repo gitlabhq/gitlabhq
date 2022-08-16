@@ -3,7 +3,7 @@
 
 - if can?(current_user, :create_wiki, @wiki.container)
   - create_path = wiki_page_path(@wiki, params[:id], view: 'create')
-  - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn gl-button btn-confirm qa-create-first-page-link', title: s_('WikiEmpty|Create your first page')
+  - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn gl-button btn-confirm', title: s_('WikiEmpty|Create your first page'), data: { qa_selector: 'create_first_page_link' }
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_login_empty.svg' } do
     %h4.text-left

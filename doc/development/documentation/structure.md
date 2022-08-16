@@ -177,6 +177,7 @@ Troubleshooting can be one of three categories:
   ```
 
   If multiple causes or workarounds exist, consider putting them into a table format.
+  If you use the exact error message, surround it in backticks so it's styled as code.
 
 If a page has more than five troubleshooting topics, put the content on a separate page that has troubleshooting information exclusively. Name the page `Troubleshooting <featurename>`.
 

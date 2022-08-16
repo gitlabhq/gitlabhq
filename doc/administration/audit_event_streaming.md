@@ -16,6 +16,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Custom HTTP headers API [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366524) in GitLab 15.3. [Feature flag `streaming_audit_event_headers`](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) removed.
 > - Custom HTTP headers UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361630) in GitLab 15.2 [with a flag](feature_flags.md) named `custom_headers_streaming_audit_events_ui`. Disabled by default.
 > - Custom HTTP headers UI [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) in GitLab 15.3. [Feature flag `custom_headers_streaming_audit_events_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) removed.
+> - [Improved user experience](https://gitlab.com/gitlab-org/gitlab/-/issues/367963) in GitLab 15.4.
 
 Users can set a streaming destination for a top-level group to receive all audit events about the group, its subgroups, and
 projects as structured JSON.
@@ -40,13 +41,12 @@ Users with the Owner role for a group can add streaming destinations for it:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Audit events**.
 1. On the main area, select **Streams** tab.
-    - When the destination list is empty, select **Add stream** to show the section for adding destinations.
-    - When the destination list is not empty, select **Add stream** (**{plus}**) to show the section for adding destinations.
+1. Select **Add streaming destination** to show the section for adding destinations.
 1. Enter the destination URL to add.
 1. Optional. Locate the **Custom HTTP headers** table.
 1. Ignore the **Active** checkbox because it isn't functional. To track progress on adding functionality to the **Active** checkbox, see the
    [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361925).
-1. Enter as many name and value pairs as required. When you enter a unique name and a value for a header, a new row in the table automatically appears. You can add up to
+1. Select **Add header** to create a new name and value pair. Enter as many name and value pairs as required. You can add up to
    20 headers per streaming destination.
 1. After all headers have been filled out, select **Add** to add the new streaming destination.
 
@@ -149,7 +149,7 @@ To update a streaming destinations custom HTTP headers:
 1. Locate the header that you wish to update.
 1. Ignore the **Active** checkbox because it isn't functional. To track progress on adding functionality to the **Active** checkbox, see the
    [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361925).
-1. Enter as many name and value pairs as required. When you enter a unique name and a value for a header, a new row in the table automatically appears. You can add up to
+1. Select **Add header** to create a new name and value pair. Enter as many name and value pairs as required. You can add up to
    20 headers per streaming destination.
 1. Select **Save** to update the streaming destination.
 

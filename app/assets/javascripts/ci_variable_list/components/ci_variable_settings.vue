@@ -1,6 +1,5 @@
 <script>
 import { ADD_VARIABLE_ACTION, EDIT_VARIABLE_ACTION, VARIABLE_ACTIONS } from '../constants';
-import { createJoinedEnvironments } from '../utils';
 import CiVariableTable from './ci_variable_table.vue';
 import CiVariableModal from './ci_variable_modal.vue';
 
@@ -17,7 +16,8 @@ export default {
     },
     environments: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
     isLoading: {
       type: Boolean,
@@ -36,9 +36,6 @@ export default {
     };
   },
   computed: {
-    joinedEnvironments() {
-      return createJoinedEnvironments(this.variables, this.environments);
-    },
     showModal() {
       return VARIABLE_ACTIONS.includes(this.mode);
     },
@@ -80,7 +77,8 @@ export default {
       <ci-variable-modal
         v-if="showModal"
         :are-scoped-variables-available="areScopedVariablesAvailable"
-        :environments="joinedEnvironments"
+        :environments="environments"
+        :variables="variables"
         :mode="mode"
         :selected-variable="selectedVariable"
         @add-variable="addVariable"

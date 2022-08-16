@@ -5329,6 +5329,11 @@ msgstr ""
 msgid "AuditLogs|User Events"
 msgstr ""
 
+msgid "AuditStreams|%d destination"
+msgid_plural "AuditStreams|%d destinations"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "AuditStreams|A header with this name already exists."
 msgstr ""
 
@@ -5344,10 +5349,16 @@ msgstr ""
 msgid "AuditStreams|Add an HTTP endpoint to manage audit logs in third-party systems."
 msgstr ""
 
+msgid "AuditStreams|Add another custom header"
+msgstr ""
+
 msgid "AuditStreams|Add external stream destination"
 msgstr ""
 
-msgid "AuditStreams|Add stream"
+msgid "AuditStreams|Add header"
+msgstr ""
+
+msgid "AuditStreams|Add streaming destination"
 msgstr ""
 
 msgid "AuditStreams|An error occurred when creating external audit event stream destination. Please try it again."
@@ -5365,7 +5376,7 @@ msgstr ""
 msgid "AuditStreams|Cancel editing"
 msgstr ""
 
-msgid "AuditStreams|Custom HTTP headers"
+msgid "AuditStreams|Custom HTTP headers (optional)"
 msgstr ""
 
 msgid "AuditStreams|Delete %{link}"
@@ -5386,6 +5397,9 @@ msgstr ""
 msgid "AuditStreams|Maximum of %{number} HTTP headers has been reached."
 msgstr ""
 
+msgid "AuditStreams|Remove custom header"
+msgstr ""
+
 msgid "AuditStreams|Save external stream destination"
 msgstr ""
 
@@ -5393,9 +5407,6 @@ msgid "AuditStreams|Setup streaming for audit events"
 msgstr ""
 
 msgid "AuditStreams|Stream added successfully"
-msgstr ""
-
-msgid "AuditStreams|Stream count icon"
 msgstr ""
 
 msgid "AuditStreams|Stream deleted successfully"
@@ -19441,9 +19452,6 @@ msgid "Housekeeping successfully started"
 msgstr ""
 
 msgid "How do I configure Akismet?"
-msgstr ""
-
-msgid "How do I configure runners?"
 msgstr ""
 
 msgid "How do I configure this integration?"
@@ -43985,6 +43993,9 @@ msgid "What does the setting affect?"
 msgstr ""
 
 msgid "What does this command do?"
+msgstr ""
+
+msgid "What is GitLab Runner?"
 msgstr ""
 
 msgid "What is Markdown?"

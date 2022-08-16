@@ -33,7 +33,7 @@ import {
   VARIABLE_ACTIONS,
   variableOptions,
 } from '../constants';
-
+import { createJoinedEnvironments } from '../utils';
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
 
@@ -98,9 +98,15 @@ export default {
       required: false,
       default: () => {},
     },
+    variables: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
+      newEnvironments: [],
       isTipDismissed: getCookie(AWS_TIP_DISMISSED_COOKIE_NAME) === 'true',
       typeOptions: variableOptions,
       validationErrorEventProperty: '',
@@ -127,6 +133,9 @@ export default {
     },
     isTipVisible() {
       return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
+    },
+    joinedEnvironments() {
+      return createJoinedEnvironments(this.variables, this.environments, this.newEnvironments);
     },
     maskedFeedback() {
       return this.displayMaskedError ? __('This variable can not be masked.') : '';
@@ -176,7 +185,7 @@ export default {
       this.$emit('add-variable', this.variable);
     },
     createEnvironmentScope(env) {
-      this.$emit('create-environment-scope', env);
+      this.newEnvironments.push(env);
     },
     deleteVariable() {
       this.$emit('delete-variable', this.variable);
@@ -314,7 +323,7 @@ export default {
             v-if="areScopedVariablesAvailable"
             class="gl-w-full"
             :selected-environment-scope="variable.environmentScope"
-            :environments="environments"
+            :environments="joinedEnvironments"
             @select-environment="setEnvironmentScope"
             @create-environment-scope="createEnvironmentScope"
           />

@@ -25,7 +25,7 @@ To ensure access to your cluster is safe:
 - Each agent has a separate context (`kubecontext`).
 - Only the project where the agent is configured, and any additional projects you authorize, can access the agent in your cluster.
 
-You do not need to have a runner in the cluster with the agent.
+The CI/CD workflow requires runners to be registered with GitLab, but these runners do not have to be in the cluster where the agent is.
 
 ## GitLab CI/CD workflow steps
 

@@ -5,7 +5,7 @@ module QA
     module Alert
       class AutoDevopsAlert < Page::Base
         view 'app/views/shared/_auto_devops_implicitly_enabled_banner.html.haml' do
-          element :auto_devops_banner
+          element :auto_devops_banner_content
         end
       end
     end

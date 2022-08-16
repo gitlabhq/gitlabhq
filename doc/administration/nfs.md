@@ -98,9 +98,20 @@ NFS performance with GitLab can in some cases be improved with
 [direct Git access](gitaly/index.md#direct-access-to-git-in-gitlab) using
 [Rugged](https://github.com/libgit2/rugged).
 
-From GitLab 12.1, GitLab automatically detects if Rugged can and should be used per storage.
-If you previously enabled Rugged using the feature flag and you want to use automatic detection instead,
-you must unset the feature flag:
+Versions of GitLab after 12.2 and prior to 15.3 automatically detect if
+Rugged can and should be used per storage.
+
+NOTE:
+GitLab 15.3 and later disables this automatic detection. Auto-detection can be enabled via the
+`skip_rugged_auto_detect` feature flag:
+
+```ruby
+Feature.disable(:skip_rugged_auto_detect)
+```
+
+In addition, if you previously enabled Rugged using the feature flag and
+you want to use automatic detection instead, you must unset the feature
+flag:
 
 ```shell
 sudo gitlab-rake gitlab:features:unset_rugged

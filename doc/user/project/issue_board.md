@@ -642,3 +642,20 @@ A few things to remember:
 - For performance and visibility reasons, each list shows the first 20 issues
   by default. If you have more than 20 issues, start scrolling down and the next
   20 appear.
+
+## Troubleshooting issue boards
+
+### Use Rails console to fix issue boards not loading and timing out
+
+If you see issue board not loading and timing out in UI, use Rails console to call the Issue Rebalancing service to fix it:
+
+1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run these commands:
+
+   ```ruby
+   p = Project.find_by_full_path('<username-or-group>/<project-name>')
+
+   Issues::RelativePositionRebalancingService.new(p.root_namespace.all_projects).execute
+   ```
+
+1. To exit the Rails console, type `quit`.

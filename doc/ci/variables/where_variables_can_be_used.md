@@ -132,10 +132,17 @@ These restrictions exist because `after_script` scripts are executed in a
 
 ## Persisted variables
 
-The following variables are known as "persisted":
+Some predefined variables are called "persisted".
+
+Pipeline-level persisted variables:
 
 - `CI_PIPELINE_ID`
+- `CI_PIPELINE_URL`
+
+Job-level persisted variables:
+
 - `CI_JOB_ID`
+- `CI_JOB_URL`
 - `CI_JOB_TOKEN`
 - `CI_JOB_STARTED_AT`
 - `CI_REGISTRY_USER`
@@ -144,7 +151,7 @@ The following variables are known as "persisted":
 - `CI_DEPLOY_USER`
 - `CI_DEPLOY_PASSWORD`
 
-They are:
+Persisted variables are:
 
 - Supported for definitions where the ["Expansion place"](#gitlab-ciyml-file) is:
   - Runner.
@@ -152,6 +159,9 @@ They are:
 - Not supported:
   - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
   - In the `only`, `except`, and `rules` [variables expressions](../jobs/job_control.md#cicd-variable-expressions).
+
+[Pipeline trigger jobs](../yaml/index.md#trigger) cannot use job-level persisted variables,
+but can use pipeline-level persisted variables.
 
 Some of the persisted variables contain tokens and cannot be used by some definitions
 due to security reasons.

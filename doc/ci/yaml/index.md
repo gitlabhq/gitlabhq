@@ -3933,6 +3933,8 @@ trigger_job:
   and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
   to forward these variables to downstream pipelines.
+- [Job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
+  are not available in trigger jobs.
 
 **Related topics**:
 

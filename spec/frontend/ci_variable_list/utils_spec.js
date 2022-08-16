@@ -7,12 +7,13 @@ import { allEnvironments } from '~/ci_variable_list/constants';
 
 describe('utils', () => {
   const environments = ['dev', 'prod'];
+  const newEnvironments = ['staging'];
 
   describe('createJoinedEnvironments', () => {
     it('returns only `environments` if `variables` argument is undefined', () => {
       const variables = undefined;
 
-      expect(createJoinedEnvironments(variables, environments)).toEqual(environments);
+      expect(createJoinedEnvironments(variables, environments, [])).toEqual(environments);
     });
 
     it('returns a list of environments and environment scopes taken from variables in alphabetical order', () => {
@@ -21,11 +22,20 @@ describe('utils', () => {
 
       const variables = [{ environmentScope: envScope1 }, { environmentScope: envScope2 }];
 
-      expect(createJoinedEnvironments(variables, environments)).toEqual([
+      expect(createJoinedEnvironments(variables, environments, [])).toEqual([
         environments[0],
         envScope1,
         envScope2,
         environments[1],
+      ]);
+    });
+
+    it('returns combined list with new environments included', () => {
+      const variables = undefined;
+
+      expect(createJoinedEnvironments(variables, environments, newEnvironments)).toEqual([
+        ...environments,
+        ...newEnvironments,
       ]);
     });
 
@@ -35,7 +45,7 @@ describe('utils', () => {
 
       const variables = [{ environmentScope: envScope1 }, { environmentScope: envScope2 }];
 
-      expect(createJoinedEnvironments(variables, environments)).toEqual([
+      expect(createJoinedEnvironments(variables, environments, [])).toEqual([
         environments[0],
         envScope2,
         environments[1],
