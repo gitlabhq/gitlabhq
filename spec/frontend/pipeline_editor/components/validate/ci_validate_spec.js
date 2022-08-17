@@ -2,6 +2,7 @@ import { GlAlert, GlDropdown, GlIcon, GlLoadingIcon, GlPopover } from '@gitlab/u
 import { nextTick } from 'vue';
 import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
@@ -9,6 +10,7 @@ import CiValidate, { i18n } from '~/pipeline_editor/components/validate/ci_valid
 import ValidatePipelinePopover from '~/pipeline_editor/components/popovers/validate_pipeline_popover.vue';
 import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.query.graphql';
 import lintCIMutation from '~/pipeline_editor/graphql/mutations/client/lint_ci.mutation.graphql';
+import { pipelineEditorTrackingOptions } from '~/pipeline_editor/constants';
 import {
   mockBlobContentQueryResponse,
   mockCiLintPath,
@@ -24,6 +26,7 @@ describe('Pipeline Editor Validate Tab', () => {
   let wrapper;
   let mockApollo;
   let mockBlobContentData;
+  let trackingSpy;
 
   const createComponent = ({
     props,
@@ -140,7 +143,22 @@ describe('Pipeline Editor Validate Tab', () => {
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
       await createComponentWithApollo();
 
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockLintDataValid);
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('tracks the simulation event', () => {
+      const {
+        label,
+        actions: { simulatePipeline },
+      } = pipelineEditorTrackingOptions;
+      findCta().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, simulatePipeline, { label });
     });
 
     it('renders loading state while simulation is ongoing', async () => {
@@ -224,8 +242,25 @@ describe('Pipeline Editor Validate Tab', () => {
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
       await createComponentWithApollo();
 
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockLintDataValid);
       await findCta().vm.$emit('click');
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('tracks the second simulation event', async () => {
+      const {
+        label,
+        actions: { resimulatePipeline },
+      } = pipelineEditorTrackingOptions;
+
+      await wrapper.setProps({ ciFileContent: 'new yaml content' });
+      findResultsCta().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, resimulatePipeline, { label });
     });
 
     it('renders content change status', async () => {

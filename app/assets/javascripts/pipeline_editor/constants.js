@@ -75,6 +75,8 @@ export const pipelineEditorTrackingOptions = {
       [CI_YAML_LINK]: 'visit_help_drawer_link_yaml',
     },
     openHelpDrawer: 'open_help_drawer',
+    resimulatePipeline: 'resimulate_pipeline',
+    simulatePipeline: 'simulate_pipeline',
   },
 };
 

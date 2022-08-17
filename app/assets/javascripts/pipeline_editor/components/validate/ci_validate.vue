@@ -11,6 +11,8 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import Tracking from '~/tracking';
+import { pipelineEditorTrackingOptions } from '../../constants';
 import ValidatePipelinePopover from '../popovers/validate_pipeline_popover.vue';
 import CiLintResults from '../lint/ci_lint_results.vue';
 import getBlobContent from '../../graphql/queries/blob_content.query.graphql';
@@ -70,6 +72,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [Tracking.mixin()],
   inject: ['ciConfigPath', 'ciLintPath', 'projectFullPath', 'validateTabIllustrationPath'],
   props: {
     ciFileContent: {
@@ -110,6 +113,9 @@ export default {
     };
   },
   computed: {
+    canResimulatePipeline() {
+      return this.hasSimulationResults && this.hasCiContentChanged;
+    },
     isInitialCiContentLoading() {
       return this.$apollo.queries.initialBlobContent.loading;
     },
@@ -128,6 +134,10 @@ export default {
         variant: this.isValid ? 'success' : 'danger',
       };
     },
+    trackingAction() {
+      const { actions } = pipelineEditorTrackingOptions;
+      return this.canResimulatePipeline ? actions.resimulatePipeline : actions.simulatePipeline;
+    },
   },
   watch: {
     ciFileContent(value) {
@@ -139,7 +149,12 @@ export default {
     cancelSimulation() {
       this.state = VALIDATE_TAB_INIT;
     },
+    trackSimulation() {
+      const { label } = pipelineEditorTrackingOptions;
+      this.track(this.trackingAction, { label });
+    },
     async validateYaml() {
+      this.trackSimulation();
       this.state = VALIDATE_TAB_LOADING;
 
       try {
@@ -198,7 +213,7 @@ export default {
           :aria-label="$options.i18n.help"
         />
       </div>
-      <div v-if="hasSimulationResults && hasCiContentChanged">
+      <div v-if="canResimulatePipeline">
         <span class="gl-text-gray-400" data-testid="content-status">
           {{ $options.i18n.contentChange }}
         </span>

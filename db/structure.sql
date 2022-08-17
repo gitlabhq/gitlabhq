@@ -27472,6 +27472,8 @@ CREATE UNIQUE INDEX idx_vuln_signatures_on_occurrences_id_and_signature_sha ON v
 
 CREATE UNIQUE INDEX idx_vuln_signatures_uniqueness_signature_sha ON vulnerability_finding_signatures USING btree (finding_id, algorithm_type, signature_sha);
 
+CREATE INDEX idx_vulnerabilities_on_project_id_and_id_active_cis_dft_branch ON vulnerabilities USING btree (project_id, id) WHERE ((report_type = 7) AND (state = ANY (ARRAY[1, 4])) AND (present_on_default_branch IS TRUE));
+
 CREATE INDEX idx_vulnerabilities_partial_devops_adoption_and_default_branch ON vulnerabilities USING btree (project_id, created_at, present_on_default_branch) WHERE (state <> 1);
 
 CREATE UNIQUE INDEX idx_vulnerability_ext_issue_links_on_vulne_id_and_ext_issue ON vulnerability_external_issue_links USING btree (vulnerability_id, external_type, external_project_key, external_issue_key);
@@ -30363,8 +30365,6 @@ CREATE INDEX index_vulnerabilities_on_epic_id ON vulnerabilities USING btree (ep
 CREATE INDEX index_vulnerabilities_on_last_edited_by_id ON vulnerabilities USING btree (last_edited_by_id);
 
 CREATE INDEX index_vulnerabilities_on_milestone_id ON vulnerabilities USING btree (milestone_id);
-
-CREATE INDEX index_vulnerabilities_on_project_id_and_id_active_cis ON vulnerabilities USING btree (project_id, id) WHERE ((report_type = 7) AND (state = ANY (ARRAY[1, 4])));
 
 CREATE INDEX index_vulnerabilities_on_project_id_and_state_and_severity ON vulnerabilities USING btree (project_id, state, severity);
 

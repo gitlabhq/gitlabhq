@@ -34,7 +34,7 @@ describe('Job log controllers', () => {
     jobLog: mockJobLog,
   };
 
-  const createWrapper = (props, { jobLogSearch = false, jobLogJumpToFailures = false } = {}) => {
+  const createWrapper = (props, { jobLogJumpToFailures = false } = {}) => {
     wrapper = mount(JobLogControllers, {
       propsData: {
         ...defaultProps,
@@ -42,7 +42,6 @@ describe('Job log controllers', () => {
       },
       provide: {
         glFeatures: {
-          jobLogSearch,
           jobLogJumpToFailures,
         },
       },
@@ -290,38 +289,27 @@ describe('Job log controllers', () => {
   });
 
   describe('Job log search', () => {
-    describe('with feature flag off', () => {
-      it('does not display job log search', () => {
-        createWrapper();
-
-        expect(findJobLogSearch().exists()).toBe(false);
-        expect(findSearchHelp().exists()).toBe(false);
-      });
+    beforeEach(() => {
+      createWrapper();
     });
 
-    describe('with feature flag on', () => {
-      beforeEach(() => {
-        createWrapper({}, { jobLogSearch: true });
-      });
+    it('displays job log search', () => {
+      expect(findJobLogSearch().exists()).toBe(true);
+      expect(findSearchHelp().exists()).toBe(true);
+    });
 
-      it('displays job log search', () => {
-        expect(findJobLogSearch().exists()).toBe(true);
-        expect(findSearchHelp().exists()).toBe(true);
-      });
+    it('emits search results', () => {
+      const expectedSearchResults = [[[mockJobLog[6].lines[1], mockJobLog[6].lines[2]]]];
 
-      it('emits search results', () => {
-        const expectedSearchResults = [[[mockJobLog[6].lines[1], mockJobLog[6].lines[2]]]];
+      findJobLogSearch().vm.$emit('submit');
 
-        findJobLogSearch().vm.$emit('submit');
+      expect(wrapper.emitted('searchResults')).toEqual(expectedSearchResults);
+    });
 
-        expect(wrapper.emitted('searchResults')).toEqual(expectedSearchResults);
-      });
+    it('clears search results', () => {
+      findJobLogSearch().vm.$emit('clear');
 
-      it('clears search results', () => {
-        findJobLogSearch().vm.$emit('clear');
-
-        expect(wrapper.emitted('searchResults')).toEqual([[[]]]);
-      });
+      expect(wrapper.emitted('searchResults')).toEqual([[[]]]);
     });
   });
 });

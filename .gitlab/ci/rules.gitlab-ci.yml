@@ -1467,6 +1467,12 @@
       changes: ["vendor/gems/ipynbdiff/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
+.vendor:rules:omniauth-azure-oauth2:
+  rules:
+    - <<: *if-merge-request
+      changes: ["vendor/gems/omniauth-azure-oauth2/**/*"]
+    - <<: *if-merge-request-labels-run-all-rspec
+
 .vendor:rules:omniauth-cas3:
   rules:
     - <<: *if-merge-request

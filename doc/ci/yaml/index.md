@@ -3966,6 +3966,17 @@ trigger_job:
 In this example, jobs from subsequent stages wait for the triggered pipeline to
 successfully complete before starting.
 
+**Additional details**:
+
+- [Optional manual jobs](../jobs/job_control.md#types-of-manual-jobs) in the downstream pipeline
+  do not affect the status of the downstream pipeline or the upstream trigger job.
+  The downstream pipeline can complete successfully without running any optional manual jobs.
+- [Blocking manual jobs](../jobs/job_control.md#types-of-manual-jobs) in the downstream pipeline
+  must run before the trigger job is marked as successful or failed. The trigger job
+  shows **pending** (**{status_pending}**) if the downstream pipeline status is
+  **waiting for manual action** (**{status_manual}**) due to manual jobs. By default,
+  jobs in later stages do not start until the trigger job completes.
+
 #### `trigger:forward`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213729) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `ci_trigger_forward_variables`. Disabled by default.

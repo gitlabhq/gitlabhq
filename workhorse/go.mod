@@ -129,6 +129,7 @@ exclude (
 
 	// CVE-2021-42576
 	github.com/microcosm-cc/bluemonday v1.0.2
+	github.com/nats-io/jwt v0.3.0
 
 	// CVE-2020-26892
 	github.com/nats-io/nats-server/v2 v2.1.2

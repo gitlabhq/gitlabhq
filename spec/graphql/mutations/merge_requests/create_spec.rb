@@ -7,8 +7,7 @@ RSpec.describe Mutations::MergeRequests::Create do
 
   subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user) { create(:user) }
+  let(:user) { create(:user) }
 
   let(:context) do
     GraphQL::Query::Context.new(
@@ -38,62 +37,106 @@ RSpec.describe Mutations::MergeRequests::Create do
 
     let(:mutated_merge_request) { subject[:merge_request] }
 
-    it 'raises an error if the resource is not accessible to the user' do
-      expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-    end
-
-    context 'when user does not have enough permissions to create a merge request' do
-      before do
-        project.add_guest(user)
-      end
-
-      it 'raises an error if the resource is not accessible to the user' do
+    shared_examples 'resource not available' do
+      it 'raises an error' do
         expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end
 
-    context 'when the user can create a merge request' do
-      before_all do
-        project.add_developer(user)
+    context 'when user is not a project member' do
+      let_it_be(:project) { create(:project, :public, :repository) }
+
+      it_behaves_like 'resource not available'
+    end
+
+    context 'when user is a direct project member' do
+      let_it_be(:project) { create(:project, :public, :repository) }
+
+      context 'and user is a guest' do
+        before do
+          project.add_guest(user)
+        end
+
+        it_behaves_like 'resource not available'
       end
 
-      it 'creates a new merge request' do
-        expect { mutated_merge_request }.to change(MergeRequest, :count).by(1)
-      end
+      context 'and user is a developer' do
+        before do
+          project.add_developer(user)
+        end
 
-      it 'returns a new merge request' do
-        expect(mutated_merge_request.title).to eq(title)
-        expect(subject[:errors]).to be_empty
-      end
+        it 'creates a new merge request' do
+          expect { mutated_merge_request }.to change(MergeRequest, :count).by(1)
+        end
 
-      context 'when optional description field is set' do
-        let(:description) { 'content' }
-
-        it 'returns a new merge request with a description' do
-          expect(mutated_merge_request.description).to eq(description)
+        it 'returns a new merge request' do
+          expect(mutated_merge_request.title).to eq(title)
           expect(subject[:errors]).to be_empty
         end
+
+        context 'when optional description field is set' do
+          let(:description) { 'content' }
+
+          it 'returns a new merge request with a description' do
+            expect(mutated_merge_request.description).to eq(description)
+            expect(subject[:errors]).to be_empty
+          end
+        end
+
+        context 'when optional labels field is set' do
+          let(:labels) { %w[label-1 label-2] }
+
+          it 'returns a new merge request with labels' do
+            expect(mutated_merge_request.labels.map(&:title)).to eq(labels)
+            expect(subject[:errors]).to be_empty
+          end
+        end
+
+        context 'when service cannot create a merge request' do
+          let(:title) { nil }
+
+          it 'does not create a new merge request' do
+            expect { mutated_merge_request }.not_to change(MergeRequest, :count)
+          end
+
+          it 'returns errors' do
+            expect(mutated_merge_request).to be_nil
+            expect(subject[:errors]).to match_array(['Title can\'t be blank'])
+          end
+        end
       end
+    end
 
-      context 'when optional labels field is set' do
-        let(:labels) { %w[label-1 label-2] }
+    context 'when user is an inherited member from the group' do
+      let_it_be(:group) { create(:group, :public) }
 
-        it 'returns a new merge request with labels' do
-          expect(mutated_merge_request.labels.map(&:title)).to eq(labels)
-          expect(subject[:errors]).to be_empty
+      context 'when project is public with private merge requests' do
+        let_it_be(:project) do
+          create(:project,
+                 :public,
+                 :repository,
+                 group: group,
+                 merge_requests_access_level: ProjectFeature::DISABLED)
+        end
+
+        context 'and user is a guest' do
+          before do
+            group.add_guest(user)
+          end
+
+          it_behaves_like 'resource not available'
         end
       end
 
-      context 'when service cannot create a merge request' do
-        let(:title) { nil }
+      context 'when project is private' do
+        let_it_be(:project) { create(:project, :private, :repository, group: group) }
 
-        it 'does not create a new merge request' do
-          expect { mutated_merge_request }.not_to change(MergeRequest, :count)
-        end
+        context 'and user is a guest' do
+          before do
+            group.add_guest(user)
+          end
 
-        it 'returns errors' do
-          expect(mutated_merge_request).to be_nil
-          expect(subject[:errors]).to eq(['Title can\'t be blank'])
+          it_behaves_like 'resource not available'
         end
       end
     end

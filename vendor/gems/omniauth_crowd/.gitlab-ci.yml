@@ -4,7 +4,7 @@ workflow:
 
 .rspec:
   cache:
-    key: omniauth-gitlab-ruby
+    key: omniauth_crowd
     paths:
       - vendor/gems/omniauth_crowd/vendor/ruby
   before_script:

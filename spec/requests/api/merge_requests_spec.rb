@@ -1120,6 +1120,44 @@ RSpec.describe API::MergeRequests do
         end.not_to exceed_query_limit(control)
       end
     end
+
+    context 'when user is an inherited member from the group' do
+      let_it_be(:group) { create(:group) }
+
+      shared_examples 'user cannot view merge requests' do
+        it 'returns 403 forbidden' do
+          get api("/projects/#{group_project.id}/merge_requests", inherited_user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'and user is a guest' do
+        let_it_be(:inherited_user) { create(:user) }
+
+        before_all do
+          group.add_guest(inherited_user)
+        end
+
+        context 'when project is public with private merge requests' do
+          let(:group_project) do
+            create(:project,
+                   :public,
+                   :repository,
+                   group: group,
+                   merge_requests_access_level: ProjectFeature::DISABLED)
+          end
+
+          it_behaves_like 'user cannot view merge requests'
+        end
+
+        context 'when project is private' do
+          let(:group_project) { create(:project, :private, :repository, group: group) }
+
+          it_behaves_like 'user cannot view merge requests'
+        end
+      end
+    end
   end
 
   describe "GET /groups/:id/merge_requests" do
@@ -2217,6 +2255,59 @@ RSpec.describe API::MergeRequests do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
         params: { title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: forked_project.id }
         expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    context 'when user is an inherited member from the group' do
+      let_it_be(:group) { create(:group) }
+
+      shared_examples 'user cannot create merge requests' do
+        it 'returns 403 forbidden' do
+          post api("/projects/#{group_project.id}/merge_requests", inherited_user), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'and user is a guest' do
+        let_it_be(:inherited_user) { create(:user) }
+        let_it_be(:params) do
+          {
+            title: 'Test merge request',
+            source_branch: 'feature_conflict',
+            target_branch: 'master',
+            author_id: inherited_user.id
+          }
+        end
+
+        before_all do
+          group.add_guest(inherited_user)
+        end
+
+        context 'when project is public with private merge requests' do
+          let(:group_project) do
+            create(:project,
+                   :public,
+                   :repository,
+                   group: group,
+                   merge_requests_access_level: ProjectFeature::DISABLED,
+                   only_allow_merge_if_pipeline_succeeds: false)
+          end
+
+          it_behaves_like 'user cannot create merge requests'
+        end
+
+        context 'when project is private' do
+          let(:group_project) do
+            create(:project,
+                   :private,
+                   :repository,
+                   group: group,
+                   only_allow_merge_if_pipeline_succeeds: false)
+          end
+
+          it_behaves_like 'user cannot create merge requests'
+        end
       end
     end
   end

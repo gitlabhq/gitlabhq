@@ -79,9 +79,6 @@ export default {
         size: numberToHumanSize(this.size),
       });
     },
-    showJobLogSearch() {
-      return this.glFeatures.jobLogSearch;
-    },
     showJumpToFailures() {
       return this.glFeatures.jobLogJumpToFailures;
     },
@@ -198,24 +195,22 @@ export default {
     <!-- eo truncate information -->
 
     <div class="controllers">
-      <template v-if="showJobLogSearch">
-        <gl-search-box-by-click
-          v-model="searchTerm"
-          class="gl-mr-3"
-          :placeholder="$options.i18n.searchPlaceholder"
-          data-testid="job-log-search-box"
-          @clear="$emit('searchResults', [])"
-          @submit="searchJobLog"
-        />
+      <gl-search-box-by-click
+        v-model="searchTerm"
+        class="gl-mr-3"
+        :placeholder="$options.i18n.searchPlaceholder"
+        data-testid="job-log-search-box"
+        @clear="$emit('searchResults', [])"
+        @submit="searchJobLog"
+      />
 
-        <help-popover class="gl-mr-3">
-          <template #title>{{ $options.i18n.searchPopoverTitle }}</template>
+      <help-popover class="gl-mr-3">
+        <template #title>{{ $options.i18n.searchPopoverTitle }}</template>
 
-          <p class="gl-mb-0">
-            {{ $options.i18n.searchPopoverDescription }}
-          </p>
-        </help-popover>
-      </template>
+        <p class="gl-mb-0">
+          {{ $options.i18n.searchPopoverDescription }}
+        </p>
+      </help-popover>
 
       <!-- links -->
       <gl-button

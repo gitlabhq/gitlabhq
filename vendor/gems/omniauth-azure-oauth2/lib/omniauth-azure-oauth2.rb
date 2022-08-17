@@ -1,0 +1,1 @@
+require File.join('omniauth', 'azure_oauth2')

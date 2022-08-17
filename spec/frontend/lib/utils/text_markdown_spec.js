@@ -586,6 +586,33 @@ describe('init markdown', () => {
           );
         });
 
+        it('only converts valid URLs', () => {
+          const notValidUrl = 'group::label';
+          const expectedUrlValue = 'url';
+          const expectedText = `other [${notValidUrl}](${expectedUrlValue}) text`;
+          const initialValue = `other ${notValidUrl} text`;
+
+          textArea.value = initialValue;
+          selectedIndex = initialValue.indexOf(notValidUrl);
+          textArea.setSelectionRange(selectedIndex, selectedIndex + notValidUrl.length);
+
+          insertMarkdownText({
+            textArea,
+            text: textArea.value,
+            tag,
+            blockTag: null,
+            selected: notValidUrl,
+            wrap: false,
+            select,
+          });
+
+          expect(textArea.value).toEqual(expectedText);
+          expect(textArea.selectionStart).toEqual(expectedText.indexOf(expectedUrlValue, 1));
+          expect(textArea.selectionEnd).toEqual(
+            expectedText.indexOf(expectedUrlValue, 1) + expectedUrlValue.length,
+          );
+        });
+
         it('adds block tags on line above and below selection', () => {
           selected = 'this text\nis multiple\nlines';
           text = `before \n${selected}\nafter `;

@@ -152,6 +152,7 @@ From there, you can see the following actions:
 - Added, removed, or updated protected branches
 - Release was added to a project
 - Release was updated
+- Release was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94793/) in GitLab 13.5)
 - Release milestone associations changed
 - Permission to approve merge requests by committers was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Permission to approve merge requests by committers was updated.

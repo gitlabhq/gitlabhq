@@ -341,8 +341,8 @@ If you use [`only/except`](../yaml/index.md#only--except) to control job behavio
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11238) in GitLab Premium 12.3.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
-You can mirror the pipeline status from the triggered pipeline to the source
-trigger job by using `strategy: depend`. For example:
+You can mirror the pipeline status from the triggered pipeline to the source trigger job
+by using [`strategy: depend`](../yaml/index.md#triggerstrategy). For example:
 
 ```yaml
 trigger_job:

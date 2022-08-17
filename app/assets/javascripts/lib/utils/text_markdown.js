@@ -263,10 +263,12 @@ export function insertMarkdownText({
   if (tag === LINK_TAG_PATTERN) {
     if (URL) {
       try {
-        new URL(selected); // eslint-disable-line no-new
-        // valid url
-        tag = '[text]({text})';
-        select = 'text';
+        const url = new URL(selected);
+
+        if (url.origin !== 'null' || url.origin === null) {
+          tag = '[text]({text})';
+          select = 'text';
+        }
       } catch (e) {
         // ignore - no valid url
       }

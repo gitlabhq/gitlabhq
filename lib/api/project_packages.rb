@@ -36,6 +36,7 @@ module API
         optional :status, type: String, values: Packages::Package.statuses.keys,
                           desc: 'Return packages with specified status'
       end
+      route_setting :authentication, job_token_allowed: true
       get ':id/packages' do
         packages = ::Packages::PackagesFinder.new(
           user_project,
@@ -52,6 +53,7 @@ module API
       params do
         requires :package_id, type: Integer, desc: 'The ID of a package'
       end
+      route_setting :authentication, job_token_allowed: true
       get ':id/packages/:package_id' do
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
@@ -65,6 +67,7 @@ module API
       params do
         requires :package_id, type: Integer, desc: 'The ID of a package'
       end
+      route_setting :authentication, job_token_allowed: true
       delete ':id/packages/:package_id' do
         authorize_destroy_package!(user_project)
 

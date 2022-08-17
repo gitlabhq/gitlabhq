@@ -120,7 +120,7 @@ module Gitlab
               stage: stage_value,
               extends: extends,
               rules: rules_value,
-              job_variables: variables_value.to_h,
+              job_variables: variables_entry.value_with_data,
               root_variables_inheritance: root_variables_inheritance,
               only: only_value,
               except: except_value,

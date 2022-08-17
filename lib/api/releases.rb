@@ -186,6 +186,8 @@ module API
           .execute
 
         if result[:status] == :success
+          log_release_deleted_audit_event
+
           present result[:release], with: Entities::Release, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
@@ -235,6 +237,10 @@ module API
       end
 
       def log_release_updated_audit_event
+        # extended in EE
+      end
+
+      def log_release_deleted_audit_event
         # extended in EE
       end
 
