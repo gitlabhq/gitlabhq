@@ -20,8 +20,7 @@ describe('RelatedIssuesBlock', () => {
 
   const findToggleButton = () => wrapper.findByTestId('toggle-links');
   const findRelatedIssuesBody = () => wrapper.findByTestId('related-issues-body');
-  const findIssueCountBadgeAddButton = () =>
-    wrapper.find('[data-testid="related-issues-plus-button"]');
+  const findIssueCountBadgeAddButton = () => wrapper.findByTestId('related-issues-plus-button');
 
   afterEach(() => {
     if (wrapper) {
@@ -240,6 +239,7 @@ describe('RelatedIssuesBlock', () => {
       wrapper = shallowMountExtended(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,
+          relatedIssues: [issuable1, issuable2, issuable3],
           issuableType: issuableTypesMap.ISSUE,
         },
       });
@@ -247,6 +247,7 @@ describe('RelatedIssuesBlock', () => {
 
     it('is expanded by default', () => {
       expect(findToggleButton().props('icon')).toBe('chevron-lg-up');
+      expect(findToggleButton().props('disabled')).toBe(false);
       expect(findRelatedIssuesBody().exists()).toBe(true);
     });
 
@@ -257,5 +258,17 @@ describe('RelatedIssuesBlock', () => {
       expect(findToggleButton().props('icon')).toBe('chevron-lg-down');
       expect(findRelatedIssuesBody().exists()).toBe(false);
     });
+  });
+
+  it('toggle button is disabled when issue has no related items', () => {
+    wrapper = shallowMountExtended(RelatedIssuesBlock, {
+      propsData: {
+        pathIdSeparator: PathIdSeparator.Issue,
+        relatedIssues: [],
+        issuableType: 'issue',
+      },
+    });
+
+    expect(findToggleButton().props('disabled')).toBe(true);
   });
 });

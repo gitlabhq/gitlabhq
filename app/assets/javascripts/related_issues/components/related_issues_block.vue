@@ -217,6 +217,7 @@ export default {
             size="small"
             :icon="toggleIcon"
             :aria-label="toggleLabel"
+            :disabled="!hasRelatedIssues"
             data-testid="toggle-links"
             @click="handleToggle"
           />

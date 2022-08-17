@@ -656,10 +656,12 @@ On each node perform the following:
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
-   sidekiq['listen_address'] = "0.0.0.0"
-   # Set number of Sidekiq threads per queue process to the recommend number of 10
-   sidekiq['max_concurrency'] = 10
    puma['listen'] = '0.0.0.0'
+   sidekiq['listen_address'] = "0.0.0.0"
+
+   # Configure Sidekiq with 2 workers and 10 max concurrency
+   sidekiq['max_concurrency'] = 10
+   sidekiq['queue_groups'] = ['*'] * 2
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to
    # scrape the NGINX metrics. Replace placeholder `monitoring.gitlab.example.com` with
@@ -1009,8 +1011,8 @@ future with further specific cloud provider details.
 | Service                                       | Nodes | Configuration          | GCP             | AWS          | Min Allocatable CPUs and Memory |
 |-----------------------------------------------|-------|------------------------|-----------------|--------------|---------------------------------|
 | Webservice                                    | 3     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | 23.7 vCPU, 16.9 GB memory       |
-| Sidekiq                                       | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | 3.9 vCPU, 11.8 GB memory        |
-| Supporting services such as NGINX, Prometheus | 2     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | 1.9 vCPU, 5.5 GB memory         |
+| Sidekiq                                       | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | 3.9 vCPU, 11.8 GB memory        |
+| Supporting services such as NGINX, Prometheus | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | 1.9 vCPU, 5.5 GB memory         |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
@@ -1046,8 +1048,8 @@ card "Kubernetes via Helm Charts" as kubernetes {
 
   together {
     collections "**Webservice** x3" as gitlab #32CD32
-    collections "**Sidekiq** x2" as sidekiq #ff8dd1
-    card "**Supporting Services**" as support
+    card "**Sidekiq**" as sidekiq #ff8dd1
+    collections "**Supporting Services** x2" as support
   }
 }
 
@@ -1080,13 +1082,13 @@ documents how to apply the calculated configuration to the Helm Chart.
 #### Webservice
 
 Webservice pods typically need about 1 vCPU and 1.25 GB of memory _per worker_.
-Each Webservice pod consumes roughly 2 vCPUs and 2.5 GB of memory using
+Each Webservice pod consumes roughly 4 vCPUs and 5 GB of memory using
 the [recommended topology](#cluster-topology) because two worker processes
 are created by default and each pod has other small processes running.
 
 For 2,000 users we recommend a total Puma worker count of around 12.
-With the [provided recommendations](#cluster-topology) this allows the deployment of up to 6
-Webservice pods with 2 workers per pod and 2 pods per node. Expand available resources using
+With the [provided recommendations](#cluster-topology) this allows the deployment of up to 3
+Webservice pods with 4 workers per pod and 1 pod per node. Expand available resources using
 the ratio of 1 vCPU to 1.25 GB of memory _per each worker process_ for each additional
 Webservice pod.
 
@@ -1097,7 +1099,7 @@ For further information on resource usage, see the [Webservice resources](https:
 Sidekiq pods should generally have 1 vCPU and 2 GB of memory.
 
 [The provided starting point](#cluster-topology) allows the deployment of up to
-2 Sidekiq pods. Expand available resources using the 1 vCPU to 2GB memory
+4 Sidekiq pods. Expand available resources using the 1 vCPU to 2 GB memory
 ratio for each additional pod.
 
 For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).

@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const timelineTabI18n = Object.freeze({
   title: s__('Incident|Timeline'),
@@ -12,6 +12,9 @@ export const timelineFormI18n = Object.freeze({
     'Incident|Something went wrong while creating the incident timeline event.',
   ),
   areaPlaceholder: s__('Incident|Timeline text...'),
+  save: __('Save'),
+  cancel: __('Cancel'),
+  description: __('Description'),
   saveAndAdd: s__('Incident|Save and add another event'),
   areaLabel: s__('Incident|Timeline text'),
 });

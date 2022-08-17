@@ -80,7 +80,7 @@ module Database
     end
 
     def max_id
-      @max_id ||= source_model.minimum(source_sort_column)
+      @max_id ||= source_model.maximum(source_sort_column)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

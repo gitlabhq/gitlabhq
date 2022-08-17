@@ -11795,7 +11795,7 @@ Represents epic board list metadata.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epiclistmetadataepicscount"></a>`epicsCount` | [`Int`](#int) | Count of epics in the list. |
-| <a id="epiclistmetadatatotalweight"></a>`totalWeight` | [`Int`](#int) | Total weight of all issues in the list. Available only when feature flag `epic_board_total_weight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
+| <a id="epiclistmetadatatotalweight"></a>`totalWeight` **{warning-solid}** | [`Int`](#int) | **Introduced** in 14.7. This feature is in Alpha. It can be changed or removed at any time. Total weight of all issues in the list. |
 
 ### `EpicPermissions`
 

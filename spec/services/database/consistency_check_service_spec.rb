@@ -24,9 +24,27 @@ RSpec.describe Database::ConsistencyCheckService do
     )
   end
 
-  describe '#random_start_id' do
-    let(:batch_size) { 5 }
+  describe '#min_id' do
+    before do
+      create_list(:namespace, 3)
+    end
 
+    it 'returns the id of the first record in the database' do
+      expect(subject.send(:min_id)).to eq(Namespace.first.id)
+    end
+  end
+
+  describe '#max_id' do
+    before do
+      create_list(:namespace, 3)
+    end
+
+    it 'returns the id of the first record in the database' do
+      expect(subject.send(:max_id)).to eq(Namespace.last.id)
+    end
+  end
+
+  describe '#random_start_id' do
     before do
       create_list(:namespace, 50) # This will also create Ci::NameSpaceMirror objects
     end
@@ -58,12 +76,11 @@ RSpec.describe Database::ConsistencyCheckService do
     end
 
     context 'no cursor has been saved before' do
-      let(:selected_start_id) { Namespace.order(:id).limit(5).pluck(:id).last }
-      let(:expected_next_start_id) { selected_start_id + batch_size * max_batches }
+      let(:min_id) { Namespace.first.id }
+      let(:max_id) { Namespace.last.id }
 
       before do
         create_list(:namespace, 50) # This will also create Ci::NameSpaceMirror objects
-        expect(consistency_check_service).to receive(:random_start_id).and_return(selected_start_id)
       end
 
       it 'picks a random start_id' do
@@ -72,17 +89,21 @@ RSpec.describe Database::ConsistencyCheckService do
           matches: 10,
           mismatches: 0,
           mismatches_details: [],
-          start_id: selected_start_id,
-          next_start_id: expected_next_start_id
+          start_id: be_between(min_id, max_id),
+          next_start_id: be_between(min_id, max_id)
         }
-        expect(consistency_check_service.execute).to eq(expected_result)
+        expect(consistency_check_service).to receive(:rand).with(min_id..max_id).and_call_original
+        result = consistency_check_service.execute
+        expect(result).to match(expected_result)
       end
 
       it 'calls the ConsistencyCheckService with the expected parameters' do
+        expect(consistency_check_service).to receive(:random_start_id).and_return(min_id)
+
         allow_next_instance_of(Gitlab::Database::ConsistencyChecker) do |instance|
-          expect(instance).to receive(:execute).with(start_id: selected_start_id).and_return({
+          expect(instance).to receive(:execute).with(start_id: min_id).and_return({
             batches: 2,
-            next_start_id: expected_next_start_id,
+            next_start_id: min_id + batch_size,
             matches: 10,
             mismatches: 0,
             mismatches_details: []
@@ -98,17 +119,19 @@ RSpec.describe Database::ConsistencyCheckService do
 
         expected_result = {
           batches: 2,
-          start_id: selected_start_id,
-          next_start_id: expected_next_start_id,
           matches: 10,
           mismatches: 0,
-          mismatches_details: []
+          mismatches_details: [],
+          start_id: be_between(min_id, max_id),
+          next_start_id: be_between(min_id, max_id)
         }
-        expect(consistency_check_service.execute).to eq(expected_result)
+        result = consistency_check_service.execute
+        expect(result).to match(expected_result)
       end
 
       it 'saves the next_start_id in Redis for he next iteration' do
-        expect(consistency_check_service).to receive(:save_next_start_id).with(expected_next_start_id).and_call_original
+        expect(consistency_check_service).to receive(:save_next_start_id)
+          .with(be_between(min_id, max_id)).and_call_original
         consistency_check_service.execute
       end
     end

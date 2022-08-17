@@ -7,7 +7,7 @@ import getTimelineEvents from './graphql/queries/get_timeline_events.query.graph
 import { displayAndLogError } from './utils';
 import { timelineTabI18n } from './constants';
 
-import IncidentTimelineEventForm from './timeline_events_form.vue';
+import CreateTimelineEvent from './create_timeline_event.vue';
 import IncidentTimelineEventsList from './timeline_events_list.vue';
 
 export default {
@@ -16,7 +16,7 @@ export default {
     GlEmptyState,
     GlLoadingIcon,
     GlTab,
-    IncidentTimelineEventForm,
+    CreateTimelineEvent,
     IncidentTimelineEventsList,
   },
   i18n: timelineTabI18n,
@@ -61,10 +61,10 @@ export default {
       this.isEventFormVisible = false;
     },
     async showEventForm() {
-      this.$refs.eventForm.clear();
+      this.$refs.createEventForm.clearForm();
       this.isEventFormVisible = true;
       await this.$nextTick();
-      this.$refs.eventForm.focusDate();
+      this.$refs.createEventForm.focusDate();
     },
   },
 };
@@ -82,14 +82,15 @@ export default {
       v-if="hasTimelineEvents"
       :timeline-event-loading="timelineEventLoading"
       :timeline-events="timelineEvents"
+      @hide-new-timeline-events-form="hideEventForm"
     />
-    <incident-timeline-event-form
+    <create-timeline-event
       v-show="isEventFormVisible"
-      ref="eventForm"
+      ref="createEventForm"
       :has-timeline-events="hasTimelineEvents"
       class="timeline-event-note timeline-event-note-form"
       :class="{ 'gl-pl-0': !hasTimelineEvents }"
-      @hide-incident-timeline-event-form="hideEventForm"
+      @hide-new-timeline-events-form="hideEventForm"
     />
     <gl-button v-if="canUpdate" variant="default" class="gl-mb-3 gl-mt-7" @click="showEventForm">
       {{ $options.i18n.addEventButton }}
