@@ -1,13 +1,13 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import { s__ } from '~/locale';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
-import RunnerStatusStat from '~/runner/components/stat/runner_status_stat.vue';
+import RunnerSingleStat from '~/runner/components/stat/runner_single_stat.vue';
 import { INSTANCE_TYPE, STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE } from '~/runner/constants';
 
 describe('RunnerStats', () => {
   let wrapper;
 
-  const findStatusStats = () => wrapper.findAllComponents(RunnerStatusStat).wrappers;
+  const findSingleStats = () => wrapper.findAllComponents(RunnerSingleStat).wrappers;
 
   const createComponent = ({ props = {}, mountFn = shallowMount, ...options } = {}) => {
     wrapper = mountFn(RunnerStats, {
@@ -55,8 +55,8 @@ describe('RunnerStats', () => {
     const mockVariables = { paused: true };
     createComponent({ props: { variables: mockVariables } });
 
-    findStatusStats().forEach((stat) => {
-      expect(stat.props('variables')).toEqual(mockVariables);
+    findSingleStats().forEach((stat) => {
+      expect(stat.props('variables')).toMatchObject(mockVariables);
     });
   });
 });

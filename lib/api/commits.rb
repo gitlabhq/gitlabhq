@@ -88,7 +88,7 @@ module API
         requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`.', allow_blank: false
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array, desc: 'Actions to perform in commit' do
-          requires :action, type: String, desc: 'The action to perform, `create`, `delete`, `move`, `update`, `chmod`', values: %w[create update move delete chmod].freeze
+          requires :action, type: String, desc: 'The action to perform, `create`, `delete`, `move`, `update`, `chmod`', values: %w[create update move delete chmod].freeze, allow_blank: false
           requires :file_path, type: String, desc: 'Full path to the file. Ex. `lib/class.rb`'
           given action: ->(action) { action == 'move' } do
             requires :previous_path, type: String, desc: 'Original full path to the file being moved. Ex. `lib/class1.rb`'

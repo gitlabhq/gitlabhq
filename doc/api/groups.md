@@ -1422,7 +1422,7 @@ To delete the LDAP group link, provide either a `cn` or a `filter`, but not both
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
 
-List, add, and delete SAML group links.
+List, get, add, and delete SAML group links.
 
 ### List SAML group links
 
@@ -1432,9 +1432,78 @@ Lists SAML group links.
 GET /groups/:id/saml_group_links
 ```
 
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+Supported attributes:
+
+| Attribute | Type           | Required | Description                                                              |
+|:----------|:---------------|:---------|:-------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+
+If successful, returns [`200`](index.md#status-codes) and the following
+response attributes:
+
+| Attribute          | Type   | Description                                                                          |
+|:-------------------|:-------|:-------------------------------------------------------------------------------------|
+| `[].name`          | string | Name of the SAML group                                                               |
+| `[].access_level`  | string | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
+```
+
+Example response:
+
+```json
+[
+  {
+    "name": "saml-group-1",
+    "access_level": "Guest"
+  },
+  {
+    "name": "saml-group-2",
+    "access_level": "Maintainer"
+  }
+]
+```
+
+### Get SAML group link
+
+Get a SAML group link for the group.
+
+```plaintext
+GET /groups/:id/saml_group_links/:saml_group_name
+```
+
+Supported attributes:
+
+| Attribute          | Type           | Required | Description                                                              |
+|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
+| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
+
+If successful, returns [`200`](index.md#status-codes) and the following
+response attributes:
+
+| Attribute      | Type   | Description                                                                          |
+|:---------------|:-------|:-------------------------------------------------------------------------------------|
+| `name`         | string | Name of the SAML group                                                               |
+| `access_level` | string | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
+```
+
+Example response:
+
+```json
+{
+"name": "saml-group-1",
+"access_level": "Guest"
+}
+```
 
 ### Add SAML group link
 
@@ -1444,11 +1513,36 @@ Adds a SAML group link for a group.
 POST /groups/:id/saml_group_links
 ```
 
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `saml_group_name`      | string         | yes       | The name of a SAML group |
-| `access_level`  | string         | yes       | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+Supported attributes:
+
+| Attribute          | Type           | Required | Description                                                                          |
+|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------------------|
+| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding)             |
+| `saml_group_name`  | string         | yes      | Name of a SAML group                                                                 |
+| `access_level`     | string         | yes      | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+
+If successful, returns [`201`](index.md#status-codes) and the following
+response attributes:
+
+| Attribute      | Type   | Description                                                                          |
+|:---------------|:-------|:-------------------------------------------------------------------------------------|
+| `name`         | string | Name of the SAML group                                                               |
+| `access_level` | string | Minimum [access level](members.md#valid-access-levels) for members of the SAML group |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
+```
+
+Example response:
+
+```json
+{
+"name": "saml-group-1",
+"access_level": "Guest"
+}
+```
 
 ### Delete SAML group link
 
@@ -1458,10 +1552,20 @@ Deletes a SAML group link for the group.
 DELETE /groups/:id/saml_group_links/:saml_group_name
 ```
 
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `saml_group_name`      | string         | yes      | The name of an SAML group |
+Supported attributes:
+
+| Attribute          | Type           | Required | Description                                                              |
+|:-------------------|:---------------|:---------|:-------------------------------------------------------------------------|
+| `id`               | integer/string | yes      | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
+| `saml_group_name`  | string         | yes      | Name of an SAML group                                                    |
+
+If successful, returns [`204`](index.md#status-codes) status code without any response body.
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links/saml-group-1"
+```
 
 ## Namespaces in groups
 

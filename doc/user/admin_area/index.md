@@ -169,6 +169,20 @@ By default, impersonation is enabled. GitLab can be configured to [disable imper
 
 ![user impersonation button](img/impersonate_user_button_v13_8.png)
 
+#### User identities
+
+> The ability to see a user's SCIM identity was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
+
+When using authentication providers, administrators can see the identities for a user:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. From the list of users, select a user.
+1. Select **Identities**.
+
+This list shows the user's identities, including SCIM identities. Administrators can use this information to troubleshoot SCIM-related issues and confirm
+the identities being used for an account.
+
 #### User Permission Export **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.

@@ -979,6 +979,40 @@ RSpec.describe API::Commits do
       end
     end
 
+    context 'when action is missing' do
+      let(:params) do
+        {
+          branch: 'master',
+          commit_message: 'Invalid',
+          actions: [{ action: nil, file_path: 'files/ruby/popen.rb' }]
+        }
+      end
+
+      it 'responds with 400 bad request' do
+        post api(url, user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('actions[0][action] is empty')
+      end
+    end
+
+    context 'when action is not supported' do
+      let(:params) do
+        {
+          branch: 'master',
+          commit_message: 'Invalid',
+          actions: [{ action: 'unknown', file_path: 'files/ruby/popen.rb' }]
+        }
+      end
+
+      it 'responds with 400 bad request' do
+        post api(url, user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('actions[0][action] does not have a valid value')
+      end
+    end
+
     context 'when committing into a fork as a maintainer' do
       include_context 'merge request allowing collaboration'
 

@@ -1,5 +1,12 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlIcon, GlSafeHtmlDirective, GlSprintf } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDropdown,
+  GlDropdownItem,
+  GlIcon,
+  GlSafeHtmlDirective,
+  GlSprintf,
+} from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { getEventIcon } from './utils';
@@ -12,6 +19,7 @@ export default {
     timeUTC: __('%{time} UTC'),
   },
   components: {
+    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlIcon,
@@ -83,7 +91,7 @@ export default {
           no-caret
         >
           <gl-dropdown-item @click="$emit('delete')">
-            {{ $options.i18n.delete }}
+            <gl-button>{{ $options.i18n.delete }}</gl-button>
           </gl-dropdown-item>
         </gl-dropdown>
       </div>

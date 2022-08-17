@@ -102,19 +102,19 @@ module Gitlab
         # AlertManagement::Alert directly for read operations.
         def alert_params
           {
-            description: description&.truncate(::AlertManagement::Alert::DESCRIPTION_MAX_LENGTH),
+            description: truncate(description, ::AlertManagement::Alert::DESCRIPTION_MAX_LENGTH),
             ended_at: ends_at,
             environment: environment,
             fingerprint: gitlab_fingerprint,
             hosts: truncate_hosts(Array(hosts).flatten),
-            monitoring_tool: monitoring_tool&.truncate(::AlertManagement::Alert::TOOL_MAX_LENGTH),
+            monitoring_tool: truncate(monitoring_tool, ::AlertManagement::Alert::TOOL_MAX_LENGTH),
             payload: payload,
             project_id: project.id,
             prometheus_alert: gitlab_alert,
-            service: service&.truncate(::AlertManagement::Alert::SERVICE_MAX_LENGTH),
+            service: truncate(service, ::AlertManagement::Alert::SERVICE_MAX_LENGTH),
             severity: severity,
             started_at: starts_at,
-            title: title&.truncate(::AlertManagement::Alert::TITLE_MAX_LENGTH)
+            title: truncate(title, ::AlertManagement::Alert::TITLE_MAX_LENGTH)
           }.transform_values(&:presence).compact
         end
 
@@ -159,6 +159,10 @@ module Gitlab
 
         def severity_mapping
           SEVERITY_MAPPING
+        end
+
+        def truncate(value, length)
+          value.to_s.truncate(length)
         end
 
         def truncate_hosts(hosts)

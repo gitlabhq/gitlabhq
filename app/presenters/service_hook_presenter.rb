@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ServiceHookPresenter < Gitlab::View::Presenter::Delegated
-  presents ::ServiceHook, as: :service_hook
+  presents ::ServiceHook
 
   def logs_details_path(log)
     project_settings_integration_hook_log_path(integration.project, integration, log)

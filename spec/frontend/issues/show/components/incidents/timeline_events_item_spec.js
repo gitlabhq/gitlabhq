@@ -2,7 +2,7 @@ import timezoneMock from 'timezone-mock';
 import { GlIcon, GlDropdown } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import IncidentTimelineEventListItem from '~/issues/show/components/incidents/timeline_events_list_item.vue';
+import IncidentTimelineEventItem from '~/issues/show/components/incidents/timeline_events_item.vue';
 import { mockEvents } from './mock_data';
 
 describe('IncidentTimelineEventList', () => {
@@ -10,7 +10,7 @@ describe('IncidentTimelineEventList', () => {
 
   const mountComponent = ({ propsData, provide } = {}) => {
     const { action, noteHtml, occurredAt } = mockEvents[0];
-    wrapper = mountExtended(IncidentTimelineEventListItem, {
+    wrapper = mountExtended(IncidentTimelineEventItem, {
       propsData: {
         action,
         noteHtml,

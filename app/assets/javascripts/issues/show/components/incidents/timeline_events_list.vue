@@ -4,7 +4,7 @@ import { createAlert } from '~/flash';
 import { sprintf } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
-import IncidentTimelineEventListItem from './timeline_events_list_item.vue';
+import IncidentTimelineEventItem from './timeline_events_item.vue';
 import deleteTimelineEvent from './graphql/queries/delete_timeline_event.mutation.graphql';
 import { timelineListI18n } from './constants';
 
@@ -12,7 +12,7 @@ export default {
   name: 'IncidentTimelineEventList',
   i18n: timelineListI18n,
   components: {
-    IncidentTimelineEventListItem,
+    IncidentTimelineEventItem,
   },
   props: {
     timelineEventLoading: {
@@ -99,16 +99,21 @@ export default {
       <div class="gl-pb-3 gl-border-gray-50 gl-border-1 gl-border-b-solid">
         <strong class="gl-font-size-h2" data-testid="event-date">{{ eventDate }}</strong>
       </div>
-      <ul class="notes main-notes-list gl-pl-n3">
-        <incident-timeline-event-list-item
+      <ul class="notes main-notes-list">
+        <li
           v-for="(event, eventIndex) in events"
-          :key="event.id"
-          :action="event.action"
-          :occurred-at="event.occurredAt"
-          :note-html="event.noteHtml"
-          :is-last-item="isLastItem(dateGroupedEvents, groupIndex, events, eventIndex)"
-          @delete="handleDelete(event)"
-        />
+          :key="eventIndex"
+          class="timeline-entry-vertical-line note system-note note-wrapper gl-my-2! gl-pr-0!"
+        >
+          <incident-timeline-event-item
+            :key="event.id"
+            :action="event.action"
+            :occurred-at="event.occurredAt"
+            :note-html="event.noteHtml"
+            :is-last-item="isLastItem(dateGroupedEvents, groupIndex, events, eventIndex)"
+            @delete="handleDelete(event)"
+          />
+        </li>
       </ul>
     </div>
   </div>

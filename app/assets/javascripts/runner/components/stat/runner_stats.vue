@@ -1,10 +1,11 @@
 <script>
+import { s__ } from '~/locale';
+import RunnerSingleStat from '~/runner/components/stat/runner_single_stat.vue';
 import { STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE } from '../../constants';
-import RunnerStatusStat from './runner_status_stat.vue';
 
 export default {
   components: {
-    RunnerStatusStat,
+    RunnerSingleStat,
     RunnerUpgradeStatusStats: () =>
       import('ee_component/runner/components/stat/runner_upgrade_status_stats.vue'),
   },
@@ -19,24 +20,58 @@ export default {
       default: () => ({}),
     },
   },
+  computed: {
+    stats() {
+      return [
+        {
+          key: STATUS_ONLINE,
+          props: {
+            skip: this.statusCountSkip(STATUS_ONLINE),
+            variables: { ...this.variables, status: STATUS_ONLINE },
+            variant: 'success',
+            title: s__('Runners|Online runners'),
+            metaText: s__('Runners|online'),
+          },
+        },
+        {
+          key: STATUS_OFFLINE,
+          props: {
+            skip: this.statusCountSkip(STATUS_OFFLINE),
+            variables: { ...this.variables, status: STATUS_OFFLINE },
+            variant: 'muted',
+            title: s__('Runners|Offline runners'),
+            metaText: s__('Runners|offline'),
+          },
+        },
+        {
+          key: STATUS_STALE,
+          props: {
+            skip: this.statusCountSkip(STATUS_STALE),
+            variables: { ...this.variables, status: STATUS_STALE },
+            variant: 'warning',
+            title: s__('Runners|Stale runners'),
+            metaText: s__('Runners|stale'),
+          },
+        },
+      ];
+    },
+  },
   methods: {
     statusCountSkip(status) {
       // Show an empty result when we already filter by another status
       return this.variables.status && this.variables.status !== status;
     },
   },
-  STATUS_LIST: [STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE],
 };
 </script>
 <template>
   <div class="gl-display-flex gl-flex-wrap gl-py-6">
-    <runner-status-stat
-      v-for="status in $options.STATUS_LIST"
-      :key="status"
-      class="gl-px-5"
-      :variables="variables"
+    <runner-single-stat
+      v-for="stat in stats"
+      :key="stat.key"
       :scope="scope"
-      :status="status"
+      v-bind="stat.props"
+      class="gl-px-5"
     />
 
     <runner-upgrade-status-stats
