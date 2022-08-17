@@ -17,8 +17,6 @@ require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 require 'rainbow/refinement'
 
-require_relative 'qa/support/fips'
-
 module QA
   root = "#{__dir__}/qa"
 
@@ -67,7 +65,8 @@ module QA
     "registry_tls" => "RegistryTLS",
     "jetbrains" => "JetBrains",
     "vscode" => "VSCode",
-    "registry_with_cdn" => "RegistryWithCDN"
+    "registry_with_cdn" => "RegistryWithCDN",
+    "fips" => "FIPS"
   )
 
   # Configure knapsack at the very begining of the setup
@@ -77,3 +76,10 @@ module QA
 
   loader.setup
 end
+
+# Custom warning processing
+Warning.process do |warning|
+  QA::Runtime::Logger.warn(warning.strip)
+end
+
+Warning.ignore(/already initialized constant Chemlab::Vendor|previous definition of Vendor was here/)

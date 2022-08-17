@@ -307,6 +307,7 @@ GEM
       procto (~> 0.0.2)
     uuid (2.3.9)
       macaddr (~> 1.0)
+    warning (1.3.0)
     watir (6.19.1)
       regexp_parser (>= 1.2, < 3)
       selenium-webdriver (>= 3.142.7)
@@ -355,6 +356,7 @@ DEPENDENCIES
   slack-notifier (~> 2.4)
   terminal-table (~> 3.0.0)
   timecop (~> 0.9.1)
+  warning (~> 1.3)
   webdrivers (~> 5.0)
   zeitwerk (~> 2.4)
 
