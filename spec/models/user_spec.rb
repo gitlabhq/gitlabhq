@@ -5126,25 +5126,10 @@ RSpec.describe User do
 
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count'])
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'attention_requested_open_merge_requests_count'])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
 
       user.invalidate_merge_request_cache_counts
-    end
-  end
-
-  describe '#invalidate_attention_requested_count' do
-    let(:user) { build_stubbed(:user) }
-
-    it 'invalidates cache for issue counter' do
-      cache_mock = double
-
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'attention_requested_open_merge_requests_count'])
-
-      allow(Rails).to receive(:cache).and_return(cache_mock)
-
-      user.invalidate_attention_requested_count
     end
   end
 
@@ -5231,26 +5216,6 @@ RSpec.describe User do
       create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
 
       expect(user.review_requested_open_merge_requests_count(force: true)).to eq 1
-    end
-  end
-
-  describe '#attention_requested_open_merge_requests_count' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
-    let(:archived_project) { create(:project, :public, :archived) }
-
-    before do
-      mr1 = create(:merge_request, source_project: project, author: user, reviewers: [user])
-      mr2 = create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
-      mr3 = create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
-
-      mr1.find_reviewer(user).update!(state: :attention_requested)
-      mr2.find_reviewer(user).update!(state: :attention_requested)
-      mr3.find_reviewer(user).update!(state: :attention_requested)
-    end
-
-    it 'returns number of open merge requests from non-archived projects' do
-      expect(user.attention_requested_open_merge_requests_count(force: true)).to eq 1
     end
   end
 

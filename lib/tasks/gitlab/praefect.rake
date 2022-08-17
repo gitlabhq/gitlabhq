@@ -45,7 +45,7 @@ namespace :gitlab do
         header.concat(sorted_replicas.map { |r| r.repository.storage_name })
 
         row = [project.name] << replicas_resp.primary.checksum
-        row.concat(sorted_replicas.map {|r| r.checksum})
+        row.concat(sorted_replicas.map { |r| r.checksum })
       rescue StandardError
         puts 'Something went wrong when getting replicas.'
         next

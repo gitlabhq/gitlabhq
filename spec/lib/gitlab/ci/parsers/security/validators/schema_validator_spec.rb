@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator do
   let_it_be(:project) { create(:project) }
 
   let(:supported_dast_versions) { described_class::SUPPORTED_VERSIONS[:dast].join(', ') }
-  let(:deprecated_schema_version_message) { }
+  let(:deprecated_schema_version_message) {}
   let(:missing_schema_version_message) do
     "Report version not provided, dast report type supports versions: #{supported_dast_versions}"
   end

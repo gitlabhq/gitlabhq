@@ -1,9 +1,7 @@
 query epicDueDate($fullPath: ID!, $iid: ID) {
   workspace: group(fullPath: $fullPath) {
-    __typename
     id
     issuable: epic(iid: $iid) {
-      __typename
       id
       dueDate
       dueDateIsFixed

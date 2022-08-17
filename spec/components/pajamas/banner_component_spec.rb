@@ -7,7 +7,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
   end
 
   let(:title) { "Banner title" }
-  let(:content) { "Banner content"}
+  let(:content) { "Banner content" }
   let(:options) { {} }
 
   describe 'basic usage' do

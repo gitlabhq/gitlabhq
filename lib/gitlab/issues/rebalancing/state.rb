@@ -38,10 +38,10 @@ module Gitlab
         def rebalance_in_progress?
           is_running = case rebalanced_container_type
                        when NAMESPACE
-                         namespace_ids = self.class.current_rebalancing_containers.map {|string| string.split("#{NAMESPACE}/").second.to_i }.compact
+                         namespace_ids = self.class.current_rebalancing_containers.map { |string| string.split("#{NAMESPACE}/").second.to_i }.compact
                          namespace_ids.include?(root_namespace.id)
                        when PROJECT
-                         project_ids = self.class.current_rebalancing_containers.map {|string| string.split("#{PROJECT}/").second.to_i }.compact
+                         project_ids = self.class.current_rebalancing_containers.map { |string| string.split("#{PROJECT}/").second.to_i }.compact
                          project_ids.include?(projects.take.id) # rubocop:disable CodeReuse/ActiveRecord
                        else
                          false
@@ -90,11 +90,11 @@ module Gitlab
         end
 
         def issue_count
-          @issue_count ||= with_redis { |redis| redis.zcard(issue_ids_key)}
+          @issue_count ||= with_redis { |redis| redis.zcard(issue_ids_key) }
         end
 
         def remove_current_project_id_cache
-          with_redis { |redis| redis.del(current_project_key)}
+          with_redis { |redis| redis.del(current_project_key) }
         end
 
         def refresh_keys_expiration

@@ -2,10 +2,8 @@ mutation projectIssueMilestoneMutation($fullPath: ID!, $iid: String!, $attribute
   issuableSetAttribute: updateIssue(
     input: { projectPath: $fullPath, iid: $iid, milestoneId: $attributeId }
   ) {
-    __typename
     errors
     issuable: issue {
-      __typename
       id
       attribute: milestone {
         title

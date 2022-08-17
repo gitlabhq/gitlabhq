@@ -7,7 +7,7 @@ RSpec.describe WorkItems::Widgets::StartAndDueDateService::UpdateService do
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
 
-  let(:widget) { work_item.widgets.find {|widget| widget.is_a?(WorkItems::Widgets::StartAndDueDate) } }
+  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::StartAndDueDate) } }
 
   describe '#before_update_callback' do
     let(:start_date) { Date.today }

@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe MergeRequest::ApprovalRemovalSettings do
   describe 'validations' do
-    let(:reset_approvals_on_push) { }
-    let(:selective_code_owner_removals) { }
+    let(:reset_approvals_on_push) {}
+    let(:selective_code_owner_removals) {}
 
     subject { described_class.new(project, reset_approvals_on_push, selective_code_owner_removals) }
 

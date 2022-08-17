@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe UpdateIndexOnAlertsToExcludeNullFingerprints do
-  let(:alerts) { 'alert_management_alerts'}
+  let(:alerts) { 'alert_management_alerts' }
   let(:old_index) { described_class::OLD_INDEX_NAME }
   let(:new_index) { described_class::NEW_INDEX_NAME }
 

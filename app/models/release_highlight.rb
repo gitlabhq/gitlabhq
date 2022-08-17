@@ -33,7 +33,7 @@ class ReleaseHighlight
       next unless include_item?(item)
 
       begin
-        item.tap {|i| i['description'] = Banzai.render(i['description'], { project: nil }) }
+        item.tap { |i| i['description'] = Banzai.render(i['description'], { project: nil }) }
       rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, file_path: file_path)
 

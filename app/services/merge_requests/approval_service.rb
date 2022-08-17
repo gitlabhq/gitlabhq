@@ -31,8 +31,6 @@ module MergeRequests
         execute_approval_hooks(merge_request, current_user)
       end
 
-      remove_attention_requested(merge_request)
-
       success
     end
 

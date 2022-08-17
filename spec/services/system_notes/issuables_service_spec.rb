@@ -247,42 +247,6 @@ RSpec.describe ::SystemNotes::IssuablesService do
     end
   end
 
-  describe '#request_attention' do
-    subject { service.request_attention(user) }
-
-    let(:user) { create(:user) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'attention_requested' }
-    end
-
-    context 'when attention requested' do
-      it_behaves_like 'a note with overridable created_at'
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "requested attention from @#{user.username}"
-      end
-    end
-  end
-
-  describe '#remove_attention_request' do
-    subject { service.remove_attention_request(user) }
-
-    let(:user) { create(:user) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'attention_request_removed' }
-    end
-
-    context 'when attention request is removed' do
-      it_behaves_like 'a note with overridable created_at'
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "removed attention request from @#{user.username}"
-      end
-    end
-  end
-
   describe '#change_title' do
     let(:noteable) { create(:issue, project: project, title: 'Lorem ipsum') }
 

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class SecurityReportsMrWidgetPromptExperiment < ApplicationExperiment
-  control { }
-  candidate { }
+  control {}
+  candidate {}
 
   def publish(_result = nil)
     super

@@ -38,7 +38,7 @@ module Gitlab
           per_background_migration_result_dir = File.join(@result_dir, migration_name)
 
           instrumentation = Instrumentation.new(result_dir: per_background_migration_result_dir)
-          batch_names = (1..).each.lazy.map { |i| "batch_#{i}"}
+          batch_names = (1..).each.lazy.map { |i| "batch_#{i}" }
 
           jobs.shuffle.each do |j|
             break if run_until <= Time.current

@@ -28,8 +28,8 @@ describe('diff_discussion_header component', () => {
 
   describe('Avatar', () => {
     const firstNoteAuthor = discussionMock.notes[0].author;
-    const findAvatarLink = () => wrapper.find(GlAvatarLink);
-    const findAvatar = () => wrapper.find(GlAvatar);
+    const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
+    const findAvatar = () => wrapper.findComponent(GlAvatar);
 
     it('should render user avatar and user avatar link', () => {
       expect(findAvatar().exists()).toBe(true);

@@ -143,7 +143,7 @@ describe('issue_note_body component', () => {
     });
 
     it('passes the correct default placeholder commit message for a suggestion to the suggestions component', () => {
-      const commitMessage = wrapper.find(Suggestions).attributes('defaultcommitmessage');
+      const commitMessage = wrapper.findComponent(Suggestions).attributes('defaultcommitmessage');
 
       expect(commitMessage).toBe('branch/pathnameuseruser usertonabc11');
     });

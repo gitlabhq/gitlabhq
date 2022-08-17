@@ -304,8 +304,8 @@ module API
         not_found!('Commit') unless commit
 
         refs = []
-        refs.concat(user_project.repository.branch_names_contains(commit.id).map {|name| { type: 'branch', name: name }}) unless params[:type] == 'tag'
-        refs.concat(user_project.repository.tag_names_contains(commit.id).map {|name| { type: 'tag', name: name }}) unless params[:type] == 'branch'
+        refs.concat(user_project.repository.branch_names_contains(commit.id).map { |name| { type: 'branch', name: name } }) unless params[:type] == 'tag'
+        refs.concat(user_project.repository.tag_names_contains(commit.id).map { |name| { type: 'tag', name: name } }) unless params[:type] == 'branch'
         refs = Kaminari.paginate_array(refs)
 
         present paginate(refs), with: Entities::BasicRef

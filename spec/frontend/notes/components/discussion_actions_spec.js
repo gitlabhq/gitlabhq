@@ -47,9 +47,9 @@ describe('DiscussionActions', () => {
 
     it('renders reply placeholder, resolve discussion button, resolve with issue button and jump to next discussion button', () => {
       createComponent();
-      expect(wrapper.find(ReplyPlaceholder).exists()).toBe(true);
-      expect(wrapper.find(ResolveDiscussionButton).exists()).toBe(true);
-      expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(true);
+      expect(wrapper.findComponent(ReplyPlaceholder).exists()).toBe(true);
+      expect(wrapper.findComponent(ResolveDiscussionButton).exists()).toBe(true);
+      expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(true);
     });
 
     it('only renders reply placholder if disccusion is not resolvable', () => {
@@ -57,15 +57,15 @@ describe('DiscussionActions', () => {
       discussion.resolvable = false;
       createComponent({ discussion });
 
-      expect(wrapper.find(ReplyPlaceholder).exists()).toBe(true);
-      expect(wrapper.find(ResolveDiscussionButton).exists()).toBe(false);
-      expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(false);
+      expect(wrapper.findComponent(ReplyPlaceholder).exists()).toBe(true);
+      expect(wrapper.findComponent(ResolveDiscussionButton).exists()).toBe(false);
+      expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(false);
     });
 
     it('does not render resolve with issue button if resolveWithIssuePath is falsy', () => {
       createComponent({ resolveWithIssuePath: '' });
 
-      expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(false);
+      expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(false);
     });
 
     describe.each`
@@ -82,8 +82,8 @@ describe('DiscussionActions', () => {
       });
 
       it(shouldRender ? 'renders resolve buttons' : 'does not render resolve buttons', () => {
-        expect(wrapper.find(ResolveDiscussionButton).exists()).toBe(shouldRender);
-        expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(shouldRender);
+        expect(wrapper.findComponent(ResolveDiscussionButton).exists()).toBe(shouldRender);
+        expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(shouldRender);
       });
     });
   });
@@ -95,7 +95,7 @@ describe('DiscussionActions', () => {
       createComponent({}, { attachTo: document.body });
 
       jest.spyOn(wrapper.vm, '$emit');
-      wrapper.find(ReplyPlaceholder).find('textarea').trigger('focus');
+      wrapper.findComponent(ReplyPlaceholder).find('textarea').trigger('focus');
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('showReplyForm');
     });
 
@@ -103,7 +103,7 @@ describe('DiscussionActions', () => {
       createComponent();
 
       jest.spyOn(wrapper.vm, '$emit');
-      wrapper.find(ResolveDiscussionButton).find('button').trigger('click');
+      wrapper.findComponent(ResolveDiscussionButton).find('button').trigger('click');
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('resolve');
     });
   });

@@ -27,7 +27,7 @@ describe('Timeline toggle', () => {
     });
   };
 
-  const findGlButton = () => wrapper.find(GlButton);
+  const findGlButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => {
     store = createStore();

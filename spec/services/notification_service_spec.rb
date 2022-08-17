@@ -2657,45 +2657,6 @@ RSpec.describe NotificationService, :mailer do
         let(:notification_trigger) { notification.review_requested_of_merge_request(merge_request, current_user, reviewer) }
       end
     end
-
-    describe '#attention_requested_of_merge_request' do
-      let_it_be(:current_user) { create(:user) }
-      let_it_be(:reviewer) { create(:user) }
-      let_it_be(:merge_request) { create(:merge_request, source_project: project, reviewers: [reviewer]) }
-
-      it 'sends email to reviewer', :aggregate_failures do
-        notification.attention_requested_of_merge_request(merge_request, current_user, reviewer)
-
-        merge_request.reviewers.each { |reviewer| should_email(reviewer) }
-        should_not_email(merge_request.author)
-        should_not_email(@u_watcher)
-        should_not_email(@u_participant_mentioned)
-        should_not_email(@subscriber)
-        should_not_email(@watcher_and_subscriber)
-        should_not_email(@u_guest_watcher)
-        should_not_email(@u_guest_custom)
-        should_not_email(@u_custom_global)
-        should_not_email(@unsubscriber)
-        should_not_email(@u_participating)
-        should_not_email(@u_disabled)
-        should_not_email(@u_lazy_participant)
-      end
-
-      it 'adds "attention requested" reason' do
-        notification.attention_requested_of_merge_request(merge_request, current_user, [reviewer])
-
-        merge_request.reviewers.each do |reviewer|
-          email = find_email_for(reviewer)
-
-          expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::ATTENTION_REQUESTED)
-        end
-      end
-
-      it_behaves_like 'project emails are disabled' do
-        let(:notification_target)  { merge_request }
-        let(:notification_trigger) { notification.attention_requested_of_merge_request(merge_request, current_user, reviewer) }
-      end
-    end
   end
 
   describe 'Projects', :deliver_mails_inline do

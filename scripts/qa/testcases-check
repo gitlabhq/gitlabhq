@@ -51,9 +51,9 @@ tests.each do |test|
   end
 end
 
-testcase_list = testcases.group_by {|testcase| testcase.shift}.transform_values(&:flatten)
+testcase_list = testcases.group_by { |testcase| testcase.shift }.transform_values(&:flatten)
 
-duplicates = testcase_list.select {|k, v| v.count > 1}
+duplicates = testcase_list.select { |k, v| v.count > 1 }
 
 unless duplicates.empty?
   duplicates.each do |duplicate|

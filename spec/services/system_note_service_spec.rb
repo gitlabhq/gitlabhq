@@ -159,30 +159,6 @@ RSpec.describe SystemNoteService do
     end
   end
 
-  describe '.request_attention' do
-    let(:user) { double }
-
-    it 'calls IssuableService' do
-      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:request_attention).with(user)
-      end
-
-      described_class.request_attention(noteable, project, author, user)
-    end
-  end
-
-  describe '.remove_attention_request' do
-    let(:user) { double }
-
-    it 'calls IssuableService' do
-      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:remove_attention_request).with(user)
-      end
-
-      described_class.remove_attention_request(noteable, project, author, user)
-    end
-  end
-
   describe '.merge_when_pipeline_succeeds' do
     it 'calls MergeRequestsService' do
       sha = double

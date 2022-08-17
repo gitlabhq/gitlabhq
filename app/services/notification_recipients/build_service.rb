@@ -36,9 +36,5 @@ module NotificationRecipients
     def self.build_requested_review_recipients(*args)
       ::NotificationRecipients::Builder::RequestReview.new(*args).notification_recipients
     end
-
-    def self.build_attention_requested_recipients(*args)
-      ::NotificationRecipients::Builder::AttentionRequested.new(*args).notification_recipients
-    end
   end
 end

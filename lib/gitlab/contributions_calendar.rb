@@ -43,7 +43,7 @@ module Gitlab
         .group(:date)
         .map(&:attributes)
 
-      @activity_dates = events.each_with_object(Hash.new {|h, k| h[k] = 0 }) do |event, activities|
+      @activity_dates = events.each_with_object(Hash.new { |h, k| h[k] = 0 }) do |event, activities|
         activities[event["date"]] += event["num_events"]
       end
     end

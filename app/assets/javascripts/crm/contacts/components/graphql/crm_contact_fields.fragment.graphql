@@ -1,5 +1,4 @@
 fragment ContactFragment on CustomerRelationsContact {
-  __typename
   id
   firstName
   lastName
@@ -8,7 +7,6 @@ fragment ContactFragment on CustomerRelationsContact {
   description
   active
   organization {
-    __typename
     id
     name
   }

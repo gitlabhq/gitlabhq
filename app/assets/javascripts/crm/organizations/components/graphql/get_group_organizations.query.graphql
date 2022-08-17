@@ -2,7 +2,6 @@
 
 query organizations($groupFullPath: ID!) {
   group(fullPath: $groupFullPath) {
-    __typename
     id
     organizations {
       nodes {

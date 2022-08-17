@@ -20,7 +20,7 @@ class AuthenticationEvent < ApplicationRecord
   }
 
   scope :for_provider, ->(provider) { where(provider: provider) }
-  scope :ldap, -> { where('provider LIKE ?', 'ldap%')}
+  scope :ldap, -> { where('provider LIKE ?', 'ldap%') }
 
   def self.providers
     STATIC_PROVIDERS | Devise.omniauth_providers.map(&:to_s)

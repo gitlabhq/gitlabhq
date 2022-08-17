@@ -6,7 +6,7 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute' do
   subject(:execute) { described_class.new(**service_args).execute }
 
   let(:service_args) { { runners: runners_arg } }
-  let(:runners_arg) { }
+  let(:runners_arg) {}
 
   context 'with runners specified' do
     let!(:instance_runner) { create(:ci_runner) }

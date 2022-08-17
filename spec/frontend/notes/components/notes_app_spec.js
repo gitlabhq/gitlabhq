@@ -356,7 +356,7 @@ describe('note_app', () => {
     });
 
     it('should listen hashchange event', () => {
-      const notesApp = wrapper.find(NotesApp);
+      const notesApp = wrapper.findComponent(NotesApp);
       const hash = 'some dummy hash';
       jest.spyOn(urlUtility, 'getLocationHash').mockReturnValueOnce(hash);
       const setTargetNoteHash = jest.spyOn(notesApp.vm, 'setTargetNoteHash');
@@ -436,7 +436,7 @@ describe('note_app', () => {
     });
 
     it('correctly finds only draft comments', () => {
-      const drafts = wrapper.findAll(DraftNote).wrappers;
+      const drafts = wrapper.findAllComponents(DraftNote).wrappers;
 
       expect(drafts.map((x) => x.props('draft'))).toEqual(
         mockData.draftComments.map(({ note }) => expect.objectContaining({ note })),

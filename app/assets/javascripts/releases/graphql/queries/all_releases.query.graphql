@@ -9,15 +9,12 @@ query allReleases(
   $sort: ReleaseSort
 ) {
   project(fullPath: $fullPath) {
-    __typename
     id
     releases(first: $first, last: $last, before: $before, after: $after, sort: $sort) {
-      __typename
       nodes {
         ...Release
       }
       pageInfo {
-        __typename
         startCursor
         hasPreviousPage
         hasNextPage

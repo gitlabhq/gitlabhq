@@ -61,10 +61,6 @@ module MergeRequests
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
       bulk_update_reviewers_state(merge_request, new_reviewers)
-
-      unless new_reviewers.include?(current_user)
-        remove_attention_requested(merge_request)
-      end
     end
 
     def cleanup_environments(merge_request)
@@ -250,20 +246,6 @@ module MergeRequests
       return unless milestone
 
       Milestones::MergeRequestsCountService.new(milestone).delete_cache
-    end
-
-    def remove_all_attention_requests(merge_request)
-      return unless current_user.mr_attention_requests_enabled?
-
-      users = merge_request.reviewers + merge_request.assignees
-
-      ::MergeRequests::BulkRemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request, users: users.uniq).execute
-    end
-
-    def remove_attention_requested(merge_request)
-      return unless current_user.mr_attention_requests_enabled?
-
-      ::MergeRequests::RemoveAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request, user: current_user).execute
     end
 
     def bulk_update_assignees_state(merge_request, new_assignees)

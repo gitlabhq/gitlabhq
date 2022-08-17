@@ -34,7 +34,7 @@ module Kramdown
       def convert_codeblock(el, _opts)
         # Although tildes are supported in CommonMark, backticks are more common
         "```#{el.options[:lang]}\n" +
-          el.value.split(/\n/).map {|l| l.empty? ? "" : "#{l}" }.join("\n") +
+          el.value.split(/\n/).map { |l| l.empty? ? "" : "#{l}" }.join("\n") +
           "\n```\n\n"
       end
 
@@ -43,7 +43,7 @@ module Kramdown
 
         if el.children.first && el.children.first.type == :p && !el.children.first.options[:transparent]
           if el.children.size == 1 && @stack.last.children.last == el &&
-            (@stack.last.children.any? {|c| c.children.first.type != :p } || @stack.last.children.size == 1)
+            (@stack.last.children.any? { |c| c.children.first.type != :p } || @stack.last.children.size == 1)
             # replace the end of block character
             res.sub!(/\^\n\z/m, "#{END_OF_BLOCK}\n")
           end
@@ -82,7 +82,7 @@ module Kramdown
       def convert_tr(el, opts)
         return super unless @options[:html_tables]
 
-        "<tr>\n#{el.children.map {|c| convert(c, opts) }.join}</tr>\n"
+        "<tr>\n#{el.children.map { |c| convert(c, opts) }.join}</tr>\n"
       end
 
       def convert_td(el, opts)

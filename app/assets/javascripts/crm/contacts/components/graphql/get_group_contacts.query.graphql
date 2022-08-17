@@ -12,7 +12,6 @@ query contacts(
   $ids: [CustomerRelationsContactID!]
 ) {
   group(fullPath: $groupFullPath) {
-    __typename
     id
     contacts(
       state: $state

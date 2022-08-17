@@ -3,7 +3,6 @@ fragment VersionListItem on DesignVersion {
   sha
   createdAt
   author {
-    __typename
     id
     name
     avatarUrl

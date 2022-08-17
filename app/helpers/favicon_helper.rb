@@ -3,7 +3,7 @@
 module FaviconHelper
   def favicon_extension_allowlist
     FaviconUploader::EXTENSION_ALLOWLIST
-      .map { |extension| "'.#{extension}'"}
+      .map { |extension| "'.#{extension}'" }
       .to_sentence
   end
 end

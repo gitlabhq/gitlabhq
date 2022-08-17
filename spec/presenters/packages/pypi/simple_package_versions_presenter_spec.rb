@@ -59,7 +59,7 @@ RSpec.describe ::Packages::Pypi::SimplePackageVersionsPresenter, :aggregate_fail
 
       let(:project_or_group) { project }
 
-      it { is_expected.not_to include(package_file_pending_destruction.file_name)}
+      it { is_expected.not_to include(package_file_pending_destruction.file_name) }
     end
   end
 end

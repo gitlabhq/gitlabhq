@@ -15,7 +15,7 @@ describe('ReplyPlaceholder', () => {
     });
   };
 
-  const findTextarea = () => wrapper.find({ ref: 'textarea' });
+  const findTextarea = () => wrapper.findComponent({ ref: 'textarea' });
 
   afterEach(() => {
     wrapper.destroy();

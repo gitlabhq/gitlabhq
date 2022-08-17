@@ -64,7 +64,7 @@ RSpec.describe AwarenessChannel, :clean_gitlab_redis_shared_state, type: :channe
         session = AwarenessSession.for("/test")
 
         expect { subscription.unsubscribe_from_channel }
-          .to change { session.size}.by(-1)
+          .to change { session.size }.by(-1)
       end
     end
   end

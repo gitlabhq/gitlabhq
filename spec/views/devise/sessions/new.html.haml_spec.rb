@@ -71,7 +71,7 @@ RSpec.describe 'devise/sessions/new' do
     end
 
     describe 'Google Tag Manager' do
-      let!(:gtm_id) { 'GTM-WWKMTWS'}
+      let!(:gtm_id) { 'GTM-WWKMTWS' }
 
       subject { rendered }
 

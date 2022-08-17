@@ -82,14 +82,6 @@ RSpec.describe MergeRequests::ApprovalService do
           .with(current_user_id: user.id, merge_request_id: merge_request.id)
       end
 
-      it 'removes attention requested state' do
-        expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
-          .with(project: project, current_user: user, merge_request: merge_request, user: user)
-          .and_call_original
-
-        service.execute(merge_request)
-      end
-
       context 'async_after_approval feature flag is disabled' do
         let(:notification_service) { NotificationService.new }
 

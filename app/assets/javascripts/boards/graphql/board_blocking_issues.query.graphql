@@ -1,9 +1,7 @@
 query BoardBlockingIssues($id: IssueID!) {
   issuable: issue(id: $id) {
-    __typename
     id
     blockingIssuables: blockedByIssues {
-      __typename
       nodes {
         id
         iid

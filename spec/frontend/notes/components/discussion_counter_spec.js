@@ -47,7 +47,7 @@ describe('DiscussionCounter component', () => {
     it('does not render', () => {
       wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
-      expect(wrapper.find({ ref: 'discussionCounter' }).exists()).toBe(false);
+      expect(wrapper.findComponent({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
   });
 
@@ -57,7 +57,7 @@ describe('DiscussionCounter component', () => {
       store.dispatch('updateResolvableDiscussionsCounts');
       wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
-      expect(wrapper.find({ ref: 'discussionCounter' }).exists()).toBe(false);
+      expect(wrapper.findComponent({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
   });
 
@@ -77,7 +77,7 @@ describe('DiscussionCounter component', () => {
       updateStore();
       wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
-      expect(wrapper.find({ ref: 'discussionCounter' }).exists()).toBe(true);
+      expect(wrapper.findComponent({ ref: 'discussionCounter' }).exists()).toBe(true);
     });
 
     it.each`
@@ -103,7 +103,7 @@ describe('DiscussionCounter component', () => {
       updateStore({ resolvable: true, resolved });
       wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
-      expect(wrapper.findAll(GlButton)).toHaveLength(groupLength);
+      expect(wrapper.findAllComponents(GlButton)).toHaveLength(groupLength);
     });
   });
 

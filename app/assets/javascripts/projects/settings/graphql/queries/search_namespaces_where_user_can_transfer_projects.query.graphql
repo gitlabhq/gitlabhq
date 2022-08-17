@@ -13,7 +13,6 @@ query searchNamespacesWhereUserCanTransferProjects(
         fullName
       }
       pageInfo {
-        __typename
         ...PageInfo
       }
     }

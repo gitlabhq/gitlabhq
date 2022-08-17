@@ -92,7 +92,7 @@ describe('issue_note_form component', () => {
 
       expect(conflictWarning.exists()).toBe(true);
       expect(conflictWarning.text().replace(/\s+/g, ' ').trim()).toBe(message);
-      expect(conflictWarning.find(GlLink).attributes('href')).toBe('#note_545');
+      expect(conflictWarning.findComponent(GlLink).attributes('href')).toBe('#note_545');
     });
   });
 
@@ -134,7 +134,7 @@ describe('issue_note_form component', () => {
 
     it('should link to markdown docs', () => {
       const { markdownDocsPath } = notesDataMock;
-      const markdownField = wrapper.find(MarkdownField);
+      const markdownField = wrapper.findComponent(MarkdownField);
       const markdownFieldProps = markdownField.props();
 
       expect(markdownFieldProps.markdownDocsPath).toBe(markdownDocsPath);

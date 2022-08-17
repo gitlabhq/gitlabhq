@@ -1,9 +1,7 @@
 query mergeRequestTodos($fullPath: ID!, $iid: String!) {
   workspace: project(fullPath: $fullPath) {
-    __typename
     id
     issuable: mergeRequest(iid: $iid) {
-      __typename
       id
       currentUserTodos(state: pending) {
         nodes {

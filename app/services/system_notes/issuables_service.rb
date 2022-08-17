@@ -388,36 +388,6 @@ module SystemNotes
       existing_mentions_for(mentioned_in, noteable, notes).exists?
     end
 
-    # Called when a user's attention has been requested for a Notable
-    #
-    # user - User's whos attention has been requested
-    #
-    # Example Note text:
-    #
-    #   "requested attention from @eli.wisoky"
-    #
-    # Returns the created Note object
-    def request_attention(user)
-      body = "requested attention from #{user.to_reference}"
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'attention_requested'))
-    end
-
-    # Called when a user's attention request has been removed for a Notable
-    #
-    # user - User's whos attention request has been removed
-    #
-    # Example Note text:
-    #
-    #   "removed attention request from @eli.wisoky"
-    #
-    # Returns the created Note object
-    def remove_attention_request(user)
-      body = "removed attention request from #{user.to_reference}"
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'attention_request_removed'))
-    end
-
     # Called when a Noteable has been marked as the canonical Issue of a duplicate
     #
     # duplicate_issue - Issue that was a duplicate of this

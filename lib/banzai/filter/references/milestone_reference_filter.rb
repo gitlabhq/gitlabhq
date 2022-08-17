@@ -11,12 +11,12 @@ module Banzai
         def parent_records(parent, ids)
           return Milestone.none unless valid_context?(parent)
 
-          milestone_iids = ids.map {|y| y[:milestone_iid]}.compact
+          milestone_iids = ids.map { |y| y[:milestone_iid] }.compact
           unless milestone_iids.empty?
             iid_relation = find_milestones(parent, true).where(iid: milestone_iids)
           end
 
-          milestone_names = ids.map {|y| y[:milestone_name]}.compact
+          milestone_names = ids.map { |y| y[:milestone_name] }.compact
           unless milestone_names.empty?
             milestone_relation = find_milestones(parent, false).where(name: milestone_names)
           end

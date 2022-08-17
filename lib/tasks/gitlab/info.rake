@@ -19,7 +19,7 @@ namespace :gitlab do
 
       # check for system defined proxies
       if Gitlab.ee?
-        proxies = Gitlab::Proxy.detect_proxy.map {|k, v| "#{k}: #{v}"}.join("\n\t\t")
+        proxies = Gitlab::Proxy.detect_proxy.map { |k, v| "#{k}: #{v}" }.join("\n\t\t")
       end
 
       # check Go version

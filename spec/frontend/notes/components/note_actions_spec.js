@@ -16,7 +16,7 @@ describe('noteActions', () => {
   let actions;
   let axiosMock;
 
-  const findUserAccessRoleBadge = (idx) => wrapper.findAll(UserAccessRoleBadge).at(idx);
+  const findUserAccessRoleBadge = (idx) => wrapper.findAllComponents(UserAccessRoleBadge).at(idx);
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
 
   const mountNoteActions = (propsData, computed) => {
@@ -266,7 +266,7 @@ describe('noteActions', () => {
     });
 
     it('shows a reply button', () => {
-      const replyButton = wrapper.find({ ref: 'replyButton' });
+      const replyButton = wrapper.findComponent({ ref: 'replyButton' });
 
       expect(replyButton.exists()).toBe(true);
     });
@@ -281,7 +281,7 @@ describe('noteActions', () => {
     });
 
     it('does not show a reply button', () => {
-      const replyButton = wrapper.find({ ref: 'replyButton' });
+      const replyButton = wrapper.findComponent({ ref: 'replyButton' });
 
       expect(replyButton.exists()).toBe(false);
     });
@@ -295,7 +295,7 @@ describe('noteActions', () => {
     });
 
     it('should render the right resolve button title', () => {
-      const resolveButton = wrapper.find({ ref: 'resolveButton' });
+      const resolveButton = wrapper.findComponent({ ref: 'resolveButton' });
 
       expect(resolveButton.exists()).toBe(true);
       expect(resolveButton.attributes('title')).toBe('Thread stays unresolved');

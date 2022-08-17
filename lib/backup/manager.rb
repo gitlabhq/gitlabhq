@@ -519,7 +519,7 @@ module Backup
     end
 
     def available_timestamps
-      @backup_file_list.map {|item| item.gsub("#{FILE_NAME_SUFFIX}", "")}
+      @backup_file_list.map { |item| item.gsub("#{FILE_NAME_SUFFIX}", "") }
     end
 
     def object_storage_config

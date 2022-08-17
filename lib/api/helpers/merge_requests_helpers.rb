@@ -131,7 +131,7 @@ module API
       end
 
       def self.sort_options_help
-        sort_options.map {|y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
+        sort_options.map { |y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
       end
     end
   end

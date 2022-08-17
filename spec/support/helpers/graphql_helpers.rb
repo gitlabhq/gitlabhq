@@ -170,7 +170,7 @@ module GraphqlHelpers
   #     or `prepare` in app/graphql/types/range_input_type.rb, used by Types::TimeframeInputType
   def args_internal(field, args:, query_ctx:, parent:, extras:, query:)
     arguments = GraphqlHelpers.deep_transform_args(args, field)
-    arguments.merge!(extras.reject {|k, v| v == :not_given})
+    arguments.merge!(extras.reject { |k, v| v == :not_given })
   end
 
   # Pros:
@@ -185,7 +185,7 @@ module GraphqlHelpers
   # take internal style args, and force them into client style args
   def args_internal_prepared(field, args:, query_ctx:, parent:, extras:, query:)
     arguments = GraphqlHelpers.as_graphql_argument_literals(args)
-    arguments.merge!(extras.reject {|k, v| v == :not_given})
+    arguments.merge!(extras.reject { |k, v| v == :not_given })
 
     # Use public API to properly prepare the args for use by the resolver.
     # It uses `coerce_arguments` under the covers

@@ -60,7 +60,7 @@ module Integrations
     end
 
     def commit_status(sha, ref)
-      with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
+      with_reactive_cache(sha, ref) { |cached| cached[:commit_status] }
     end
 
     def commit_status_path(sha)

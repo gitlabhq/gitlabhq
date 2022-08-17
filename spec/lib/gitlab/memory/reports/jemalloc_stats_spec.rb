@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Memory::Reports::JemallocStats do
-  let(:reports_dir) {'/empty-dir'}
+  let(:reports_dir) { '/empty-dir' }
   let(:jemalloc_stats) { described_class.new(reports_path: reports_dir) }
 
   describe '.run' do
     context 'when :report_jemalloc_stats ops FF is enabled' do
-      let(:worker_id) {'puma_1'}
-      let(:report_name) {'report.json'}
+      let(:worker_id) { 'puma_1' }
+      let(:report_name) { 'report.json' }
       let(:report_path) { File.join(reports_dir, report_name) }
 
       before do

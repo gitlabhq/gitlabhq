@@ -104,7 +104,7 @@ module RuboCop
             block_node = node.each_ancestor(:block).first
             create_table_node = block_node
                                   .children
-                                  .find { |n| TABLE_METHODS.include?(n.children[1])}
+                                  .find { |n| TABLE_METHODS.include?(n.children[1]) }
 
             if create_table_node
               table_name = create_table_node.children[2].value

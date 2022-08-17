@@ -146,7 +146,7 @@ module Gitlab
       if user
         API::Helpers::CommonHelpers.send(:define_method, :find_current_user!) { user } # rubocop:disable GitlabSecurity/PublicSend
         ApplicationController.send(:define_method, :current_user) { user } # rubocop:disable GitlabSecurity/PublicSend
-        ApplicationController.send(:define_method, :authenticate_user!) { } # rubocop:disable GitlabSecurity/PublicSend
+        ApplicationController.send(:define_method, :authenticate_user!) {} # rubocop:disable GitlabSecurity/PublicSend
       end
 
       yield.tap do

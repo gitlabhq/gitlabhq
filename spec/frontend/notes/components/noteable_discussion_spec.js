@@ -73,13 +73,13 @@ describe('noteable_discussion component', () => {
 
       expect(wrapper.vm.isReplying).toEqual(false);
 
-      const replyPlaceholder = wrapper.find(ReplyPlaceholder);
+      const replyPlaceholder = wrapper.findComponent(ReplyPlaceholder);
       replyPlaceholder.vm.$emit('focus');
       await nextTick();
 
       expect(wrapper.vm.isReplying).toEqual(true);
 
-      const noteForm = wrapper.find(NoteForm);
+      const noteForm = wrapper.findComponent(NoteForm);
 
       expect(noteForm.exists()).toBe(true);
 
@@ -100,11 +100,11 @@ describe('noteable_discussion component', () => {
         wrapper.setProps({ discussion: { ...discussionMock, confidential: isNoteInternal } });
         await nextTick();
 
-        const replyPlaceholder = wrapper.find(ReplyPlaceholder);
+        const replyPlaceholder = wrapper.findComponent(ReplyPlaceholder);
         replyPlaceholder.vm.$emit('focus');
         await nextTick();
 
-        expect(wrapper.find(NoteForm).props('saveButtonTitle')).toBe(saveButtonTitle);
+        expect(wrapper.findComponent(NoteForm).props('saveButtonTitle')).toBe(saveButtonTitle);
       },
     );
 
@@ -116,7 +116,7 @@ describe('noteable_discussion component', () => {
 
       await nextTick();
 
-      wrapper.find(DiscussionNotes).vm.$emit('startReplying');
+      wrapper.findComponent(DiscussionNotes).vm.$emit('startReplying');
 
       await nextTick();
 
@@ -139,7 +139,7 @@ describe('noteable_discussion component', () => {
     });
 
     it('does not display a button to resolve with issue', () => {
-      const button = wrapper.find(ResolveWithIssueButton);
+      const button = wrapper.findComponent(ResolveWithIssueButton);
 
       expect(button.exists()).toBe(false);
     });
@@ -159,7 +159,7 @@ describe('noteable_discussion component', () => {
     });
 
     it('displays a button to resolve with issue', () => {
-      const button = wrapper.find(ResolveWithIssueButton);
+      const button = wrapper.findComponent(ResolveWithIssueButton);
 
       expect(button.exists()).toBe(true);
     });

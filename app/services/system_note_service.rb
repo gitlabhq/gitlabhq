@@ -156,14 +156,6 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_status(status, source)
   end
 
-  def request_attention(noteable, project, author, user)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).request_attention(user)
-  end
-
-  def remove_attention_request(noteable, project, author, user)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).remove_attention_request(user)
-  end
-
   # Called when 'merge when pipeline succeeds' is executed
   def merge_when_pipeline_succeeds(noteable, project, author, sha)
     ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).merge_when_pipeline_succeeds(sha)

@@ -1250,17 +1250,6 @@ RSpec.describe TodoService do
     end
   end
 
-  describe '#create_attention_requested_todo' do
-    let(:target) { create(:merge_request, author: author, source_project: project) }
-    let(:user) { create(:user) }
-
-    it 'creates a todo for user' do
-      service.create_attention_requested_todo(target, author, user)
-
-      should_create_todo(user: user, target: target, action: Todo::ATTENTION_REQUESTED)
-    end
-  end
-
   def should_create_todo(attributes = {})
     attributes.reverse_merge!(
       project: project,

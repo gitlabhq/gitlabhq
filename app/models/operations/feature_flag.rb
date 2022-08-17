@@ -42,7 +42,7 @@ module Operations
     scope :enabled, -> { where(active: true) }
     scope :disabled, -> { where(active: false) }
 
-    scope :new_version_only, -> { where(version: :new_version_flag)}
+    scope :new_version_only, -> { where(version: :new_version_flag) }
 
     enum version: {
       new_version_flag: 2

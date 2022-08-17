@@ -54,10 +54,6 @@ RSpec.describe MergeRequests::CloseService do
         expect(todo.reload).to be_done
       end
 
-      it 'removes attention requested state' do
-        expect(merge_request.find_assignee(user2).attention_requested?).to eq(false)
-      end
-
       context 'when auto merge is enabled' do
         let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
 

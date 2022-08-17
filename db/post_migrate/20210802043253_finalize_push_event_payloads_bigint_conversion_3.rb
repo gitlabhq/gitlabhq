@@ -29,8 +29,8 @@ class FinalizePushEventPayloadsBigintConversion3 < ActiveRecord::Migration[6.1]
 
   def already_swapped?
     push_event_payloads_columns = columns(TABLE_NAME)
-    event_id = push_event_payloads_columns.find {|c| c.name == 'event_id'}
-    event_id_convert_to_bigint = push_event_payloads_columns.find {|c| c.name == 'event_id_convert_to_bigint'}
+    event_id = push_event_payloads_columns.find { |c| c.name == 'event_id' }
+    event_id_convert_to_bigint = push_event_payloads_columns.find { |c| c.name == 'event_id_convert_to_bigint' }
 
     event_id.sql_type == 'bigint' && event_id_convert_to_bigint.sql_type == 'integer'
   end

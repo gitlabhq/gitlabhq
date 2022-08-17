@@ -65,7 +65,7 @@ class Packages::Package < ApplicationRecord
   validates :name,
             uniqueness: {
               scope: %i[project_id version package_type],
-              conditions: -> { not_pending_destruction}
+              conditions: -> { not_pending_destruction }
             },
             unless: -> { pending_destruction? || conan? || debian_package? }
 

@@ -71,7 +71,7 @@ module ReleaseHighlights
     end
 
     def find_node(key)
-      entry.children.find {|node| node.try(:value) == key.to_s }
+      entry.children.find { |node| node.try(:value) == key.to_s }
     end
   end
 end

@@ -78,8 +78,7 @@ RSpec.describe MergeRequestsHelper do
     let(:user) do
       double(
         assigned_open_merge_requests_count: 1,
-        review_requested_open_merge_requests_count: 2,
-        attention_requested_open_merge_requests_count: 3
+        review_requested_open_merge_requests_count: 2
       )
     end
 
@@ -89,33 +88,12 @@ RSpec.describe MergeRequestsHelper do
       allow(helper).to receive(:current_user).and_return(user)
     end
 
-    describe 'mr_attention_requests disabled' do
-      before do
-        allow(user).to receive(:mr_attention_requests_enabled?).and_return(false)
-      end
-
-      it "returns assigned, review requested and total merge request counts" do
-        expect(subject).to eq(
-          assigned: user.assigned_open_merge_requests_count,
-          review_requested: user.review_requested_open_merge_requests_count,
-          total: user.assigned_open_merge_requests_count + user.review_requested_open_merge_requests_count
-        )
-      end
-    end
-
-    describe 'mr_attention_requests enabled' do
-      before do
-        allow(user).to receive(:mr_attention_requests_enabled?).and_return(true)
-      end
-
-      it "returns assigned, review requested, attention requests and total merge request counts" do
-        expect(subject).to eq(
-          assigned: user.assigned_open_merge_requests_count,
-          review_requested: user.review_requested_open_merge_requests_count,
-          attention_requested_count: user.attention_requested_open_merge_requests_count,
-          total: user.attention_requested_open_merge_requests_count
-        )
-      end
+    it "returns assigned, review requested and total merge request counts" do
+      expect(subject).to eq(
+        assigned: user.assigned_open_merge_requests_count,
+        review_requested: user.review_requested_open_merge_requests_count,
+        total: user.assigned_open_merge_requests_count + user.review_requested_open_merge_requests_count
+      )
     end
   end
 

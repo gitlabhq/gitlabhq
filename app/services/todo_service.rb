@@ -218,11 +218,6 @@ class TodoService
     create_todos(reviewers, attributes)
   end
 
-  def create_attention_requested_todo(target, author, users)
-    attributes = attributes_for_todo(target.project, target, author, Todo::ATTENTION_REQUESTED)
-    create_todos(users, attributes)
-  end
-
   private
 
   def create_todos(users, attributes)

@@ -11,7 +11,7 @@ RSpec.describe WorkItems::Widgets::AssigneesService::UpdateService, :freeze_time
     create(:work_item, project: project, updated_at: 1.day.ago)
   end
 
-  let(:widget) { work_item.widgets.find {|widget| widget.is_a?(WorkItems::Widgets::Assignees) } }
+  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Assignees) } }
   let(:current_user) { reporter }
   let(:params) { { assignee_ids: [new_assignee.id] } }
 

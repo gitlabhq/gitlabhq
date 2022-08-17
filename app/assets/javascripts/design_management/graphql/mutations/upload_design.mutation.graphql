@@ -6,9 +6,7 @@ mutation uploadDesign($files: [Upload!]!, $projectPath: ID!, $iid: ID!) {
     designs {
       ...DesignItem
       versions {
-        __typename
         nodes {
-          __typename
           ...VersionListItem
         }
       }

@@ -58,7 +58,7 @@ class FinalizeCiStagesBigintConversion < ActiveRecord::Migration[6.1]
 
       # Swap defaults
       execute "ALTER SEQUENCE ci_stages_id_seq OWNED BY #{TABLE_NAME}.id"
-      change_column_default TABLE_NAME, :id, -> { "nextval('ci_stages_id_seq'::regclass)"}
+      change_column_default TABLE_NAME, :id, -> { "nextval('ci_stages_id_seq'::regclass)" }
       change_column_default TABLE_NAME, :id_convert_to_bigint, 0
 
       # Swap pkey constraint

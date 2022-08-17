@@ -128,7 +128,7 @@ namespace :tw do
     if errors.present?
       puts "-----"
       puts "ERRORS - the following files are missing the correct metadata:"
-      errors.map { |file| puts file.gsub(Dir.pwd, ".")}
+      errors.map { |file| puts file.gsub(Dir.pwd, ".") }
     end
   end
 end
