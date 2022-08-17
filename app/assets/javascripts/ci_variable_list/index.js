@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import CiAdminVariables from './components/ci_admin_variables.vue';
+import CiGroupVariables from './components/ci_group_variables.vue';
 import LegacyCiVariableSettings from './components/legacy_ci_variable_settings.vue';
 import { resolvers } from './graphql/resolvers';
 import createStore from './store';
@@ -32,7 +33,11 @@ const mountCiVariableListApp = (containerEl) => {
   const parsedIsGroup = parseBoolean(isGroup);
   const isProtectedByDefault = parseBoolean(protectedByDefault);
 
-  const component = CiAdminVariables;
+  let component = CiAdminVariables;
+
+  if (parsedIsGroup) {
+    component = CiGroupVariables;
+  }
 
   Vue.use(VueApollo);
 

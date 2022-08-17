@@ -17596,6 +17596,85 @@ CREATE SEQUENCE milestones_id_seq
 
 ALTER SEQUENCE milestones_id_seq OWNED BY milestones.id;
 
+CREATE TABLE ml_candidate_metrics (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    candidate_id bigint,
+    value double precision,
+    step integer,
+    is_nan bytea,
+    name text NOT NULL,
+    CONSTRAINT check_3bb4a3fbd9 CHECK ((char_length(name) <= 250))
+);
+
+CREATE SEQUENCE ml_candidate_metrics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ml_candidate_metrics_id_seq OWNED BY ml_candidate_metrics.id;
+
+CREATE TABLE ml_candidate_params (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    candidate_id bigint,
+    name text NOT NULL,
+    value text NOT NULL,
+    CONSTRAINT check_093034d049 CHECK ((char_length(name) <= 250)),
+    CONSTRAINT check_28a3c29e43 CHECK ((char_length(value) <= 250))
+);
+
+CREATE SEQUENCE ml_candidate_params_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ml_candidate_params_id_seq OWNED BY ml_candidate_params.id;
+
+CREATE TABLE ml_candidates (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    iid uuid NOT NULL,
+    experiment_id bigint NOT NULL,
+    user_id bigint
+);
+
+CREATE SEQUENCE ml_candidates_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ml_candidates_id_seq OWNED BY ml_candidates.id;
+
+CREATE TABLE ml_experiments (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    iid bigint NOT NULL,
+    project_id bigint NOT NULL,
+    user_id bigint,
+    name text NOT NULL,
+    CONSTRAINT check_ee07a0be2c CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ml_experiments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ml_experiments_id_seq OWNED BY ml_experiments.id;
+
 CREATE TABLE namespace_admin_notes (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23468,6 +23547,14 @@ ALTER TABLE ONLY metrics_users_starred_dashboards ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY milestones ALTER COLUMN id SET DEFAULT nextval('milestones_id_seq'::regclass);
 
+ALTER TABLE ONLY ml_candidate_metrics ALTER COLUMN id SET DEFAULT nextval('ml_candidate_metrics_id_seq'::regclass);
+
+ALTER TABLE ONLY ml_candidate_params ALTER COLUMN id SET DEFAULT nextval('ml_candidate_params_id_seq'::regclass);
+
+ALTER TABLE ONLY ml_candidates ALTER COLUMN id SET DEFAULT nextval('ml_candidates_id_seq'::regclass);
+
+ALTER TABLE ONLY ml_experiments ALTER COLUMN id SET DEFAULT nextval('ml_experiments_id_seq'::regclass);
+
 ALTER TABLE ONLY namespace_admin_notes ALTER COLUMN id SET DEFAULT nextval('namespace_admin_notes_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_bans ALTER COLUMN id SET DEFAULT nextval('namespace_bans_id_seq'::regclass);
@@ -25478,6 +25565,18 @@ ALTER TABLE ONLY milestone_releases
 
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT milestones_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ml_candidate_metrics
+    ADD CONSTRAINT ml_candidate_metrics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ml_candidate_params
+    ADD CONSTRAINT ml_candidate_params_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ml_candidates
+    ADD CONSTRAINT ml_candidates_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ml_experiments
+    ADD CONSTRAINT ml_experiments_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY namespace_admin_notes
     ADD CONSTRAINT namespace_admin_notes_pkey PRIMARY KEY (id);
@@ -29037,6 +29136,20 @@ CREATE INDEX index_milestones_on_title_trigram ON milestones USING gin (title gi
 
 CREATE INDEX index_mirror_data_non_scheduled_or_started ON project_mirror_data USING btree (next_execution_timestamp, retry_count) WHERE ((status)::text <> ALL ('{scheduled,started}'::text[]));
 
+CREATE INDEX index_ml_candidate_metrics_on_candidate_id ON ml_candidate_metrics USING btree (candidate_id);
+
+CREATE INDEX index_ml_candidate_params_on_candidate_id ON ml_candidate_params USING btree (candidate_id);
+
+CREATE UNIQUE INDEX index_ml_candidates_on_experiment_id_and_iid ON ml_candidates USING btree (experiment_id, iid);
+
+CREATE INDEX index_ml_candidates_on_user_id ON ml_candidates USING btree (user_id);
+
+CREATE UNIQUE INDEX index_ml_experiments_on_project_id_and_iid ON ml_experiments USING btree (project_id, iid);
+
+CREATE UNIQUE INDEX index_ml_experiments_on_project_id_and_name ON ml_experiments USING btree (project_id, name);
+
+CREATE INDEX index_ml_experiments_on_user_id ON ml_experiments USING btree (user_id);
+
 CREATE UNIQUE INDEX index_mr_blocks_on_blocking_and_blocked_mr_ids ON merge_request_blocks USING btree (blocking_merge_request_id, blocked_merge_request_id);
 
 CREATE INDEX index_mr_cleanup_schedules_timestamps_status ON merge_request_cleanup_schedules USING btree (scheduled_at) WHERE ((completed_at IS NULL) AND (status = 0));
@@ -32180,6 +32293,9 @@ ALTER TABLE ONLY merge_request_metrics
 ALTER TABLE ONLY vulnerability_feedback
     ADD CONSTRAINT fk_563ff1912e FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ml_candidates
+    ADD CONSTRAINT fk_56d6ed4d3d FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deploy_keys_projects
     ADD CONSTRAINT fk_58a901ca7e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -32476,6 +32592,9 @@ ALTER TABLE ONLY member_tasks
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_ad525e1f87 FOREIGN KEY (merge_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ml_experiments
+    ADD CONSTRAINT fk_ad89c59858 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_ae440388cc FOREIGN KEY (latest_closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -32987,6 +33106,9 @@ ALTER TABLE ONLY vulnerability_user_mentions
 ALTER TABLE ONLY packages_debian_file_metadata
     ADD CONSTRAINT fk_rails_1ae85be112 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ml_candidates
+    ADD CONSTRAINT fk_rails_1b37441fe5 FOREIGN KEY (user_id) REFERENCES users(id);
+
 ALTER TABLE ONLY issuable_slas
     ADD CONSTRAINT fk_rails_1b8768cd63 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -33013,6 +33135,9 @@ ALTER TABLE ONLY geo_repository_created_events
 
 ALTER TABLE ONLY external_status_checks
     ADD CONSTRAINT fk_rails_1f5a8aa809 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_experiments
+    ADD CONSTRAINT fk_rails_1fbc5e001f FOREIGN KEY (user_id) REFERENCES users(id);
 
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT fk_rails_1fd07aff6f FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
@@ -34145,6 +34270,9 @@ ALTER TABLE ONLY alert_management_alert_assignees
 ALTER TABLE ONLY geo_hashed_storage_attachments_events
     ADD CONSTRAINT fk_rails_d496b088e9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ml_candidate_params
+    ADD CONSTRAINT fk_rails_d4a51d1185 FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id);
+
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT fk_rails_d9fec24b9d FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -34291,6 +34419,9 @@ ALTER TABLE ONLY project_relation_exports
 
 ALTER TABLE ONLY label_priorities
     ADD CONSTRAINT fk_rails_ef916d14fa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_candidate_metrics
+    ADD CONSTRAINT fk_rails_efb613a25a FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id);
 
 ALTER TABLE ONLY fork_network_members
     ADD CONSTRAINT fk_rails_efccadc4ec FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

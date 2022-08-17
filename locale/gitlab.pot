@@ -44391,6 +44391,9 @@ msgstr ""
 msgid "WorkItem|None"
 msgstr ""
 
+msgid "WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task."
+msgstr ""
+
 msgid "WorkItem|Open"
 msgstr ""
 

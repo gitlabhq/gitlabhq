@@ -324,6 +324,10 @@ metrics_dashboard_annotations: :gitlab_main
 metrics_users_starred_dashboards: :gitlab_main
 milestone_releases: :gitlab_main
 milestones: :gitlab_main
+ml_candidates: :gitlab_main
+ml_experiments: :gitlab_main
+ml_candidate_metrics: :gitlab_main
+ml_candidate_params: :gitlab_main
 namespace_admin_notes: :gitlab_main
 namespace_aggregation_schedules: :gitlab_main
 namespace_bans: :gitlab_main

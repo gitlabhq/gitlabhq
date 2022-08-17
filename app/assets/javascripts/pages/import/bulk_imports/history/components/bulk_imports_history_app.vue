@@ -68,7 +68,7 @@ export default {
     }),
     tableCell({
       key: 'created_at',
-      label: __('Date'),
+      label: __('Start date'),
     }),
     tableCell({
       key: 'status',

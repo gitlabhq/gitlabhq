@@ -164,7 +164,7 @@ describe('RepoTab', () => {
 
         await wrapper.find('.multi-file-tab-close').trigger('click');
 
-        expect(tab.opened).toBeFalsy();
+        expect(tab.opened).toBe(false);
         expect(wrapper.vm.$store.state.changedFiles).toHaveLength(1);
       });
 
@@ -180,7 +180,7 @@ describe('RepoTab', () => {
 
         await wrapper.find('.multi-file-tab-close').trigger('click');
 
-        expect(tab.opened).toBeFalsy();
+        expect(tab.opened).toBe(false);
       });
     });
   });

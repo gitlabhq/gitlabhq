@@ -210,12 +210,15 @@ exports[`releases/util.js convertOneReleaseForEditingGraphQLResponse matches sna
 Object {
   "data": Object {
     "_links": Object {
+      "__typename": "ReleaseLinks",
       "self": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
       "selfUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
     },
     "assets": Object {
+      "count": undefined,
       "links": Array [
         Object {
+          "__typename": "ReleaseAssetLink",
           "directAssetPath": "/binaries/awesome-app-3",
           "id": "gid://gitlab/Releases::Link/13",
           "linkType": "image",
@@ -223,6 +226,7 @@ Object {
           "url": "https://example.com/image",
         },
         Object {
+          "__typename": "ReleaseAssetLink",
           "directAssetPath": "/binaries/awesome-app-2",
           "id": "gid://gitlab/Releases::Link/12",
           "linkType": "package",
@@ -230,6 +234,7 @@ Object {
           "url": "https://example.com/package",
         },
         Object {
+          "__typename": "ReleaseAssetLink",
           "directAssetPath": "/binaries/awesome-app-1",
           "id": "gid://gitlab/Releases::Link/11",
           "linkType": "runbook",
@@ -237,6 +242,7 @@ Object {
           "url": "http://localhost/releases-namespace/releases-project/runbook",
         },
         Object {
+          "__typename": "ReleaseAssetLink",
           "directAssetPath": "/binaries/linux-amd64",
           "id": "gid://gitlab/Releases::Link/10",
           "linkType": "other",
@@ -246,22 +252,31 @@ Object {
       ],
       "sources": Array [],
     },
+    "author": undefined,
     "description": "Best. Release. **Ever.** :rocket:",
     "evidences": Array [],
     "milestones": Array [
       Object {
+        "__typename": "Milestone",
         "id": "gid://gitlab/Milestone/123",
         "issueStats": Object {},
+        "stats": undefined,
         "title": "12.3",
+        "webPath": undefined,
+        "webUrl": undefined,
       },
       Object {
+        "__typename": "Milestone",
         "id": "gid://gitlab/Milestone/124",
         "issueStats": Object {},
+        "stats": undefined,
         "title": "12.4",
+        "webPath": undefined,
+        "webUrl": undefined,
       },
     ],
     "name": "The first release",
-    "releasedAt": "2018-12-10T00:00:00.000Z",
+    "releasedAt": 2018-12-10T00:00:00.000Z,
     "tagName": "v1.1",
     "tagPath": "/releases-namespace/releases-project/-/tags/v1.1",
   },

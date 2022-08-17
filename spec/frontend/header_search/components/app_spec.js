@@ -15,6 +15,10 @@ import {
   ICON_GROUP,
   ICON_SUBGROUP,
   SCOPE_TOKEN_MAX_LENGTH,
+  IS_SEARCHING,
+  IS_NOT_FOCUSED,
+  IS_FOCUSED,
+  SEARCH_SHORTCUTS_MIN_CHARACTERS,
 } from '~/header_search/constants';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 import { ENTER_KEY } from '~/lib/utils/keys';
@@ -170,6 +174,14 @@ describe('HeaderSearchApp', () => {
         it(`should render the Dropdown Navigation Component`, () => {
           expect(findDropdownKeyboardNavigation().exists()).toBe(true);
         });
+
+        it(`should close the dropdown when press escape key`, async () => {
+          findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: 27 }));
+          await nextTick();
+          expect(findHeaderSearchDropdown().exists()).toBe(false);
+          // only one event emmited from findHeaderSearchInput().vm.$emit('click');
+          expect(wrapper.emitted().expandSearchBar.length).toBe(1);
+        });
       });
     });
 
@@ -245,6 +257,7 @@ describe('HeaderSearchApp', () => {
               searchOptions: () => searchOptions,
             },
           );
+          findHeaderSearchInput().vm.$emit('click');
         });
 
         it(`${hasToken ? 'is' : 'is NOT'} rendered when data set has type "${
@@ -263,47 +276,43 @@ describe('HeaderSearchApp', () => {
       });
     });
 
-    describe('form wrapper', () => {
+    describe('form', () => {
       describe.each`
-        searchContext               | search         | searchOptions
-        ${MOCK_SEARCH_CONTEXT_FULL} | ${null}        | ${[]}
-        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${[]}
-        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS}
-        ${null}                     | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS}
-        ${null}                     | ${null}        | ${MOCK_SCOPED_SEARCH_OPTIONS}
-        ${null}                     | ${null}        | ${[]}
-      `('', ({ searchContext, search, searchOptions }) => {
+        searchContext               | search         | searchOptions                 | isFocused
+        ${MOCK_SEARCH_CONTEXT_FULL} | ${null}        | ${[]}                         | ${true}
+        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${[]}                         | ${true}
+        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${true}
+        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${false}
+        ${null}                     | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${true}
+        ${null}                     | ${null}        | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${true}
+        ${null}                     | ${null}        | ${[]}                         | ${true}
+      `('wrapper', ({ searchContext, search, searchOptions, isFocused }) => {
         beforeEach(() => {
           window.gon.current_username = MOCK_USERNAME;
-
           createComponent({ search, searchContext }, { searchOptions: () => searchOptions });
-
-          findHeaderSearchInput().vm.$emit('click');
+          if (isFocused) {
+            findHeaderSearchInput().vm.$emit('click');
+          }
         });
 
-        const hasIcon = Boolean(searchContext?.group);
-        const isSearching = Boolean(search);
-        const isActive = Boolean(searchOptions.length > 0);
+        const isSearching = search?.length > SEARCH_SHORTCUTS_MIN_CHARACTERS;
 
-        it(`${hasIcon ? 'with' : 'without'} search context classes contain "${
-          hasIcon ? 'has-icon' : 'has-no-icon'
-        }"`, () => {
-          const iconClassRegex = hasIcon ? 'has-icon' : 'has-no-icon';
-          expect(findHeaderSearchForm().classes()).toContain(iconClassRegex);
+        it(`classes ${isSearching ? 'contain' : 'do not contain'} "${IS_SEARCHING}"`, () => {
+          if (isSearching) {
+            expect(findHeaderSearchForm().classes()).toContain(IS_SEARCHING);
+            return;
+          }
+          if (!isSearching) {
+            expect(findHeaderSearchForm().classes()).not.toContain(IS_SEARCHING);
+          }
         });
 
-        it(`${isSearching ? 'with' : 'without'} search string classes contain "${
-          isSearching ? 'is-searching' : 'is-not-searching'
+        it(`classes ${isSearching ? 'contain' : 'do not contain'} "${
+          isFocused ? IS_FOCUSED : IS_NOT_FOCUSED
         }"`, () => {
-          const iconClassRegex = isSearching ? 'is-searching' : 'is-not-searching';
-          expect(findHeaderSearchForm().classes()).toContain(iconClassRegex);
-        });
-
-        it(`${isActive ? 'with' : 'without'} search results classes contain "${
-          isActive ? 'is-active' : 'is-not-active'
-        }"`, () => {
-          const iconClassRegex = isActive ? 'is-active' : 'is-not-active';
-          expect(findHeaderSearchForm().classes()).toContain(iconClassRegex);
+          expect(findHeaderSearchForm().classes()).toContain(
+            isFocused ? IS_FOCUSED : IS_NOT_FOCUSED,
+          );
         });
       });
     });
@@ -323,6 +332,7 @@ describe('HeaderSearchApp', () => {
             searchOptions: () => searchOptions,
           },
         );
+        findHeaderSearchInput().vm.$emit('click');
       });
 
       it(`icon for data set type "${searchOptions[0]?.html_id}" ${

@@ -1,4 +1,4 @@
-import { variableTypes, instanceString } from '~/ci_variable_list/constants';
+import { variableTypes, groupString, instanceString } from '~/ci_variable_list/constants';
 
 export const devName = 'dev';
 export const prodName = 'prod';
@@ -82,22 +82,12 @@ export const mockProjectVariables = {
   },
 };
 
-export const mockGroupEnvironments = {
-  data: {
-    group: {
-      __typename: 'Group',
-      id: 1,
-      environments: defaultEnvs,
-    },
-  },
-};
-
 export const mockGroupVariables = {
   data: {
     group: {
       __typename: 'Group',
       id: 1,
-      ciVariables: createDefaultVars(),
+      ciVariables: createDefaultVars({ kind: groupString }),
     },
   },
 };

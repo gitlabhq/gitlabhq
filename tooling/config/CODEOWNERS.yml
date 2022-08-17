@@ -70,9 +70,12 @@
       keywords:
         - '*.png'
         - '*bundler-audit*'
+        - '**/merge_requests/**'
         - '/ee/app/services/audit_events/*'
+        - '/ee/config/feature_flags/development/auditor_group_runner_access.yml'
         - '/ee/spec/services/audit_events/*'
         - '/ee/spec/services/ci/*'
         - '/ee/spec/services/personal_access_tokens/*'
+        - '/qa/**/*'
       patterns:
         - '%{keyword}'

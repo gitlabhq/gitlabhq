@@ -1892,7 +1892,7 @@ body.gl-dark .header-search input::placeholder {
 body.gl-dark .header-search input:active::placeholder {
   color: #868686;
 }
-body.gl-dark .header-search.is-not-active .keyboard-shortcut-helper {
+body.gl-dark .header-search .keyboard-shortcut-helper {
   color: #fafafa;
   background-color: rgba(250, 250, 250, 0.2);
 }

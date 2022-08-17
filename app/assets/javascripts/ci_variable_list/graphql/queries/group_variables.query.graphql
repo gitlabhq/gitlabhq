@@ -1,0 +1,17 @@
+#import "~/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
+
+query getGroupVariables($fullPath: ID!) {
+  group(fullPath: $fullPath) {
+    id
+    ciVariables {
+      nodes {
+        ...BaseCiVariable
+        ... on CiGroupVariable {
+          environmentScope
+          masked
+          protected
+        }
+      }
+    }
+  }
+}

@@ -5,7 +5,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
-import { stripTypenames } from 'helpers/graphql_helpers';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
@@ -311,9 +310,7 @@ describe('WorkItemAssignees component', () => {
       findAssignSelfButton().vm.$emit('click', new MouseEvent('click'));
       await nextTick();
 
-      expect(findTokenSelector().props('selectedTokens')).toMatchObject([
-        stripTypenames(currentUser),
-      ]);
+      expect(findTokenSelector().props('selectedTokens')).toMatchObject([currentUser]);
       expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
         input: {
           id: workItemId,
@@ -330,9 +327,7 @@ describe('WorkItemAssignees component', () => {
     await waitForPromises();
 
     expect(findTokenSelector().props('dropdownItems')[0]).toEqual(
-      expect.objectContaining({
-        ...stripTypenames(currentUserResponse.data.currentUser),
-      }),
+      expect.objectContaining(currentUserResponse.data.currentUser),
     );
   });
 

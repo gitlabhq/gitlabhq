@@ -1118,7 +1118,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/lib/audit/group_push_rules_changes_auditor.rb @gitlab-org/manage/compliance
 /ee/lib/ee/api/entities/audit_event.rb @gitlab-org/manage/compliance
 /ee/lib/ee/audit/ @gitlab-org/manage/compliance
-/ee/lib/gitlab/audit/auditor.rb @gitlab-org/manage/compliance
+/ee/lib/ee/gitlab/audit/ @gitlab-org/manage/compliance
 /ee/spec/controllers/admin/audit_log_reports_controller_spec.rb @gitlab-org/manage/compliance
 /ee/spec/controllers/admin/audit_logs_controller_spec.rb @gitlab-org/manage/compliance
 /ee/spec/controllers/groups/audit_events_controller_spec.rb @gitlab-org/manage/compliance
@@ -1163,13 +1163,10 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/spec/support/shared_examples/features/audit_events_filter_shared_examples.rb @gitlab-org/manage/compliance
 /ee/spec/support/shared_examples/services/audit_event_logging_shared_examples.rb @gitlab-org/manage/compliance
 /ee/spec/workers/audit_events/audit_event_streaming_worker_spec.rb @gitlab-org/manage/compliance
+/lib/gitlab/audit/auditor.rb @gitlab-org/manage/compliance
 /lib/gitlab/audit_json_logger.rb @gitlab-org/manage/compliance
-/qa/qa/ee/page/admin/monitoring/ @gitlab-org/manage/compliance
-/qa/qa/specs/features/ee/browser_ui/1_manage/group/group_audit_logs_1_spec.rb @gitlab-org/manage/compliance
-/qa/qa/specs/features/ee/browser_ui/1_manage/group/group_audit_logs_2_spec.rb @gitlab-org/manage/compliance
-/qa/qa/specs/features/ee/browser_ui/1_manage/instance/ @gitlab-org/manage/compliance
-/qa/qa/specs/features/ee/browser_ui/1_manage/project/project_audit_logs_spec.rb @gitlab-org/manage/compliance
 /spec/factories/audit_events.rb @gitlab-org/manage/compliance
+/spec/lib/gitlab/audit/auditor_spec.rb @gitlab-org/manage/compliance
 /spec/migrations/populate_audit_event_streaming_verification_token_spec.rb @gitlab-org/manage/compliance
 /spec/models/audit_event_spec.rb @gitlab-org/manage/compliance
 /spec/services/audit_event_service_spec.rb @gitlab-org/manage/compliance

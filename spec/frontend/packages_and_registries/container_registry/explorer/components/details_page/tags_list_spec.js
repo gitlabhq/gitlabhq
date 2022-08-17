@@ -4,7 +4,6 @@ import { GlEmptyState } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { stripTypenames } from 'helpers/graphql_helpers';
 
 import component from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
 import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
@@ -96,8 +95,8 @@ describe('Tags List', () => {
     it('binds the correct props', () => {
       expect(findRegistryList().props()).toMatchObject({
         title: '2 tags',
-        pagination: stripTypenames(tagsPageInfo),
-        items: stripTypenames(tags),
+        pagination: tagsPageInfo,
+        items: tags,
         idProperty: 'name',
       });
     });

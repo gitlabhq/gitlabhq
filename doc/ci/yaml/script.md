@@ -258,3 +258,27 @@ pages-job:
   script:
     - 'curl --header "PRIVATE-TOKEN: ${PRIVATE_TOKEN}" "https://gitlab.example.com/api/v4/projects"'
 ```
+
+### Job does not fail when using `&&` in a script
+
+If you use `&&` to combine two commands together in a single script line, the job
+might return as successful, even if one of the commands failed. For example:
+
+```yaml
+job-does-not-fail:
+  script:
+    - invalid-command xyz && invalid-command abc
+    - echo $?
+    - echo "The job should have failed already, but this is executed unexpectedly."
+```
+
+The `&&` operator returns an exit code of `0` even though the two commands failed,
+and the job continues to run. To force the script to exit when either command fails,
+enclose the entire line in parentheses:
+
+```yaml
+job-fails:
+  script:
+    - (invalid-command xyz && invalid-command abc)
+    - echo "The job failed already, and this is not executed."
+```

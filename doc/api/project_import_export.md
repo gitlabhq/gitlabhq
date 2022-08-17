@@ -15,10 +15,18 @@ See also:
 
 Start a new export.
 
-The endpoint also accepts an `upload` parameter. This parameter is a hash. It contains
-all the necessary information to upload the exported project to a web server or
-to any S3-compatible platform. At the moment we only support binary
-data file uploads to the final server.
+The endpoint also accepts an `upload` hash parameter. It contains all the necessary information to upload the exported
+project to a web server or to any S3-compatible platform. For exports, GitLab:
+
+- Only supports binary data file uploads to the final server.
+- Sends the `Content-Type: application/gzip` header with upload requests. Ensure that your pre-signed URL includes this
+  as part of the signature.
+- Can take some time to complete the project export process. Make sure the upload URL doesn't have a short expiration
+  time and is available throughout the export process.
+- Administrators can modify the maximum export file size. By default, the maximum is unlimited (`0`). To change this,
+  edit `max_export_size` using either:
+  - [Application settings API](settings.md#change-application-settings)
+  - [GitLab UI](../user/admin_area/settings/account_and_limit_settings.md).
 
 The `upload[url]` parameter is required if the `upload` parameter is present.
 
@@ -45,20 +53,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
   "message": "202 Accepted"
 }
 ```
-
-NOTE:
-The upload request is sent with `Content-Type: application/gzip` header. Ensure that your pre-signed URL includes this as part of the signature.
-
-NOTE:
-The project export process may take some time to complete. Make sure the
-upload URL doesn't have a short expiration time and is available thought
-the export process.
-
-NOTE:
-As an administrator, you can modify the maximum export file size. By default,
-it is set to `0`, for unlimited. To change this value, edit `max_export_size`
-in the [Application settings API](settings.md#change-application-settings)
-or the [Admin UI](../user/admin_area/settings/account_and_limit_settings.md).
 
 ## Export status
 

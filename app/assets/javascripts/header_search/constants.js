@@ -51,3 +51,7 @@ export const SCOPE_TOKEN_MAX_LENGTH = 36;
 export const INPUT_FIELD_PADDING = 52;
 
 export const HEADER_INIT_EVENTS = ['input', 'focus'];
+
+export const IS_SEARCHING = 'is-searching';
+export const IS_FOCUSED = 'is-focused';
+export const IS_NOT_FOCUSED = 'is-not-focused';

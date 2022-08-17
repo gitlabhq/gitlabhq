@@ -7,7 +7,6 @@ import {
   convertAllReleasesGraphQLResponse,
   convertOneReleaseGraphQLResponse,
 } from '~/releases/util';
-import { stripTypenames } from 'helpers/graphql_helpers';
 
 describe('releases/util.js', () => {
   describe('convertGraphQLRelease', () => {
@@ -137,7 +136,7 @@ describe('releases/util.js', () => {
   describe('convertOneReleaseForEditingGraphQLResponse', () => {
     it('matches snapshot', () => {
       expect(
-        stripTypenames(convertOneReleaseGraphQLResponse(originalOneReleaseForEditingQueryResponse)),
+        convertOneReleaseGraphQLResponse(originalOneReleaseForEditingQueryResponse),
       ).toMatchSnapshot();
     });
   });

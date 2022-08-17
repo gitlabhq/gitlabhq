@@ -247,6 +247,9 @@ describe('WorkItemDetail component', () => {
             variant: 'warning',
             icon: 'eye-slash',
           });
+          expect(confidentialBadge.attributes('title')).toBe(
+            'Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task.',
+          );
           expect(confidentialBadge.text()).toBe('Confidential');
         });
 

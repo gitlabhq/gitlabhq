@@ -264,9 +264,15 @@ export default {
           data-testid="work-item-type"
         />
         <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
-        <gl-badge v-if="workItem.confidential" variant="warning" icon="eye-slash" class="gl-mr-3">{{
-          __('Confidential')
-        }}</gl-badge>
+        <gl-badge
+          v-if="workItem.confidential"
+          v-gl-tooltip.bottom
+          :title="$options.i18n.confidentialTooltip"
+          variant="warning"
+          icon="eye-slash"
+          class="gl-mr-3 gl-cursor-help"
+          >{{ __('Confidential') }}</gl-badge
+        >
         <work-item-actions
           v-if="canUpdate || canDelete"
           :work-item-id="workItem.id"

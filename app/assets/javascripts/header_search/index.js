@@ -26,12 +26,11 @@ export const initHeaderSearchApp = (search = '') => {
     render(createElement) {
       return createElement(HeaderSearchApp, {
         on: {
-          toggleDropdown: (isVisible = false) => {
-            if (isVisible) {
-              navBarEl?.classList.add('header-search-is-active');
-            } else {
-              navBarEl?.classList.remove('header-search-is-active');
-            }
+          expandSearchBar: () => {
+            navBarEl?.classList.add('header-search-is-active');
+          },
+          collapseSearchBar: () => {
+            navBarEl?.classList.remove('header-search-is-active');
           },
         },
       });
