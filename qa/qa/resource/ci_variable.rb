@@ -3,7 +3,7 @@
 module QA
   module Resource
     class CiVariable < Base
-      attr_accessor :key, :value, :masked, :protected
+      attr_accessor :key, :value, :masked, :protected, :variable_type
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -15,6 +15,7 @@ module QA
       def initialize
         @masked = false
         @protected = false
+        @variable_type = 'env_var'
       end
 
       def fabricate!
@@ -55,7 +56,8 @@ module QA
           key: key,
           value: value,
           masked: masked,
-          protected: protected
+          protected: protected,
+          variable_type: variable_type
         }
       end
     end

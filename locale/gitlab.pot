@@ -11746,6 +11746,9 @@ msgstr ""
 msgid "DastConfig|Not enabled"
 msgstr ""
 
+msgid "DastProfiles| Profile is currently in-use"
+msgstr ""
+
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
 msgstr ""
 
@@ -11924,6 +11927,9 @@ msgid "DastProfiles|Password form field"
 msgstr ""
 
 msgid "DastProfiles|Profile is being used by this on-demand scan"
+msgstr ""
+
+msgid "DastProfiles|Profile is currently in-use"
 msgstr ""
 
 msgid "DastProfiles|Profile name"

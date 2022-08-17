@@ -125,40 +125,25 @@ As described in the section on the responsibility of the maintainer below, you
 are recommended to get your merge request approved and merged by maintainers
 with [domain expertise](#domain-experts).
 
-1. If your merge request includes `~backend` changes (*1*), it must be
-   **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend)**.
-1. If your merge request includes database migrations or changes to expensive queries (*2*), it must be
-   **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_database)**.
-   Read the [database review guidelines](database_review.md) for more details.
-1. If your merge request includes `~frontend` changes (*1*), it must be
-   **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend)**.
-1. If your merge request includes (`~UX`) user-facing changes (*3*), it must be
-   **approved by a [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX)**.
-   See the [design and user interface guidelines](contributing/design.md) for details.
-1. If your merge request includes adding a new JavaScript library (*1*)...
-   - If the library significantly increases the
-     [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md), it must
-     be **approved by a [frontend foundations member](https://about.gitlab.com/direction/ecosystem/foundations/)**.
-   - If the license used by the new library hasn't been approved for use in
-     GitLab, the license must be **approved by a [legal department member](https://about.gitlab.com/handbook/legal/)**.
-     More information about license compatibility can be found in our
-     [GitLab Licensing and Compatibility documentation](licensing.md).
-1. If your merge request includes a new dependency or a file system change, it must be
-   **approved by a [Distribution team member](https://about.gitlab.com/company/team/)**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/#how-to-work-with-distribution) for more details.
-1. If your merge request includes documentation changes, it must be **approved
-   by a [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)**,
-   based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
-1. If your merge request includes changes to development guidelines, follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly.
-1. If your merge request includes end-to-end **and** non-end-to-end changes (*4*), it must be **approved
-   by a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors)**.
-1. If your merge request only includes end-to-end changes (*4*) **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors), it must be **approved by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa)**
-1. If your merge request includes a new or updated [application limit](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits), it must be **approved by a [product manager](https://about.gitlab.com/company/team/)**.
-1. If your merge request includes Product Intelligence (telemetry or analytics) changes, it should be reviewed and approved by a [Product Intelligence engineer](https://gitlab.com/gitlab-org/analytics-section/product-intelligence/engineers).
-1. If your merge request includes an addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests), it must be **approved by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa)**.
-1. If your merge request introduces a new service to GitLab (Puma, Sidekiq, Gitaly are examples), it must be **approved by a [product manager](https://about.gitlab.com/company/team/)**. See the [process for adding a service component to GitLab](adding_service_component.md) for details.
-1. If your merge request includes changes related to authentication or authorization, it must be **approved by a [Manage:Authentication and Authorization team member](https://about.gitlab.com/company/team/)**. Check the [code review section on the group page](https://about.gitlab.com/handbook/engineering/development/dev/manage/authentication-and-authorization/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication and Authorization` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files.
+| If your merge request includes  | It must be approved by a |
+| ------------------------------- | ------------------------ |
+| `~backend` changes (*1*)        | [Backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend). |
+| `~database` migrations or changes to expensive queries (*2*) | [Database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_database). Refer to the [database review guidelines](database_review.md) for more details. |
+| `~frontend` changes (*1*)       | [Frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend). |
+| `~UX` user-facing changes (*3*) | [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX). Refer to the [design and user interface guidelines](contributing/design.md) for details. |
+| Adding a new JavaScript library (*1*) | <ul><li>[Frontend foundations member](https://about.gitlab.com/direction/ecosystem/foundations/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md)</li><li>A [legal department member](https://about.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab</li></ul> More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
+| A new dependency or a file system change | [Distribution team member](https://about.gitlab.com/company/team/). See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/#how-to-work-with-distribution) for more details. |
+| `~documentation` changes | [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages). |
+| Changes to development guidelines | Follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly. |
+| End-to-end **and** non-end-to-end changes (*4*) | [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors). |
+| Only End-to-end changes (*4*) **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa). |
+| A new or updated [application limit](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits) | [Product manager](https://about.gitlab.com/company/team/). |
+| Product Intelligence (telemetry or analytics) changes | [Product Intelligence engineer](https://gitlab.com/gitlab-org/analytics-section/product-intelligence/engineers). |
+| An addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa). |
+| A new service to GitLab (Puma, Sidekiq, Gitaly are examples) | [Product manager](https://about.gitlab.com/company/team/). See the [process for adding a service component to GitLab](adding_service_component.md) for details. |
+| Changes related to authentication or authorization | [Manage:Authentication and Authorization team member](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://about.gitlab.com/handbook/engineering/development/dev/manage/authentication-and-authorization/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication and Authorization` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
 
-- (*1*): Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code within Haml templates is considered `~backend` code.
+- (*1*): Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code within Haml templates is considered `~backend` code. When in doubt, request both a frontend and backend review.
 - (*2*): We encourage you to seek guidance from a database maintainer if your merge
   request is potentially introducing expensive queries. It is most efficient to comment
   on the line of code in question with the SQL queries so they can give their advice.

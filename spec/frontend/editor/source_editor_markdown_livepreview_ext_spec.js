@@ -76,9 +76,9 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       actions: expect.any(Object),
       shown: false,
       modelChangeListener: undefined,
-      layoutChangeListener: {
+      layoutChangeListener: expect.objectContaining({
         dispose: expect.anything(),
-      },
+      }),
       path: previewMarkdownPath,
       actionShowPreviewCondition: expect.any(Object),
     });

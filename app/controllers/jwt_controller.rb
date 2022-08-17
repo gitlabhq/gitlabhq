@@ -36,6 +36,7 @@ class JwtController < ApplicationController
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, ip: request.ip)
 
       if @authentication_result.failed?
+        log_authentication_failed(login, @authentication_result)
         render_unauthorized
       end
     end
@@ -52,6 +53,19 @@ class JwtController < ApplicationController
                    'You can generate one at %{profile_personal_access_tokens_url}') % { profile_personal_access_tokens_url: profile_personal_access_tokens_url } }
       ]
     }, status: :unauthorized
+  end
+
+  def log_authentication_failed(login, result)
+    log_info = {
+      message: 'JWT authentication failed',
+      http_user: login,
+      remote_ip: request.ip,
+      auth_service: params[:service],
+      'auth_result.type': result.type,
+      'auth_result.actor_type': result.actor&.class
+    }.merge(::Gitlab::ApplicationContext.current)
+
+    Gitlab::AuthLogger.warn(log_info)
   end
 
   def render_unauthorized

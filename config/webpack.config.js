@@ -19,13 +19,13 @@ const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const WEBPACK_VERSION = require('webpack/package.json').version;
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const IS_EE = require('./helpers/is_ee_env');
 const IS_JH = require('./helpers/is_jh_env');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
-const MonacoWebpackPlugin = require('./plugins/monaco_webpack');
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
@@ -77,6 +77,20 @@ const incrementalCompiler = createIncrementalWebpackCompiler(
   path.join(CACHE_PATH, 'incremental-webpack-compiler-history.json'),
   INCREMENTAL_COMPILER_TTL,
 );
+
+const defaultJsTransformationOptions = {
+  cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
+  cacheIdentifier: [
+    process.env.BABEL_ENV || process.env.NODE_ENV || 'development',
+    webpack.version,
+    BABEL_VERSION,
+    BABEL_LOADER_VERSION,
+    // Ensure that changing supported browsers will refresh the cache
+    // in order to not pull in outdated files that import core-js
+    SUPPORTED_BROWSERS_HASH,
+  ].join('|'),
+  cacheCompression: false,
+};
 
 function generateEntries() {
   // generate automatic entry points
@@ -269,17 +283,23 @@ module.exports = {
           /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
         loader: 'babel-loader',
         options: {
-          cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
-          cacheIdentifier: [
-            process.env.BABEL_ENV || process.env.NODE_ENV || 'development',
-            webpack.version,
-            BABEL_VERSION,
-            BABEL_LOADER_VERSION,
-            // Ensure that changing supported browsers will refresh the cache
-            // in order to not pull in outdated files that import core-js
-            SUPPORTED_BROWSERS_HASH,
-          ].join('|'),
-          cacheCompression: false,
+          ...defaultJsTransformationOptions,
+        },
+      },
+      {
+        test: /\.js$/,
+        include: (modulePath) => /node_modules\/(monaco-|yaml)/.test(modulePath),
+        exclude: (modulePath) =>
+          /node_modules\/(monaco-yaml|monaco-editor\/esm\/vs\/editor\/contrib)/.test(modulePath),
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env'],
+          plugins: [
+            '@babel/plugin-proposal-numeric-separator',
+            '@babel/plugin-syntax-dynamic-import',
+            '@babel/plugin-proposal-optional-chaining',
+          ],
+          ...defaultJsTransformationOptions,
         },
       },
       {
@@ -473,7 +493,18 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // automatically configure monaco editor web workers
-    new MonacoWebpackPlugin(),
+    new MonacoWebpackPlugin({
+      customLanguages: [
+        {
+          label: 'yaml',
+          entry: 'monaco-yaml',
+          worker: {
+            id: 'monaco-yaml/yamlWorker',
+            entry: 'monaco-yaml/yaml.worker',
+          },
+        },
+      ],
+    }),
 
     new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
 

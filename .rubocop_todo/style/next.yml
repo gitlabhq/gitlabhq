@@ -3,17 +3,7 @@
 Style/Next:
   Exclude:
     - 'app/models/concerns/integrations/slack_mattermost_notifier.rb'
-    - 'app/models/preloaders/environments/deployment_preloader.rb'
-    - 'app/models/route.rb'
-    - 'app/services/authorized_project_update/find_records_due_for_refresh_service.rb'
     - 'app/validators/nested_attributes_duplicates_validator.rb'
-    - 'config/initializers/01_secret_token.rb'
-    - 'config/initializers/sidekiq_cluster.rb'
-    - 'ee/app/controllers/groups/analytics/cycle_analytics/value_streams_controller.rb'
-    - 'ee/app/services/app_sec/dast/profiles/create_associations_service.rb'
-    - 'ee/app/services/elastic/cluster_reindexing_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/fetch_purchase_eligible_namespaces_service.rb'
-    - 'ee/app/services/security/auto_fix_service.rb'
     - 'ee/app/services/security/ingestion/tasks/update_vulnerability_uuids.rb'
     - 'ee/db/fixtures/development/20_vulnerabilities.rb'
     - 'ee/lib/ee/audit/protected_branches_changes_auditor.rb'

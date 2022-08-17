@@ -21,13 +21,13 @@ module Integrations
       )
 
       responses.each do |response|
-        unless response.success?
-          log_error('SlackMattermostNotifier HTTP error response',
-            request_host: response.request.uri.host,
-            response_code: response.code,
-            response_body: response.body
-          )
-        end
+        next if response.success?
+
+        log_error('SlackMattermostNotifier HTTP error response',
+          request_host: response.request.uri.host,
+          response_code: response.code,
+          response_body: response.body
+        )
       end
     end
 

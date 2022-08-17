@@ -184,7 +184,7 @@ export default class Editor {
     if (!this.isDiffEditorType) return;
 
     this.instance.updateOptions({
-      renderSideBySide: Editor.renderSideBySide(this.instance.getDomNode()),
+      renderSideBySide: Editor.renderSideBySide(this.instance.getContainerDomNode()),
     });
   }
 

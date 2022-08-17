@@ -112,6 +112,8 @@ incidents or in-progress change issues, for example:
   2021-06-29 Canary deployment failing QA tests
 ```
 
+Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#production-change-lock-pcl) and are in compliance with the [Feature Flags and the Change Management Process](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
+
 The following `/chatops` commands should be performed in the Slack
 `#production` channel.
 

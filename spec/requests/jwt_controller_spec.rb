@@ -27,6 +27,10 @@ RSpec.describe JwtController do
     let(:headers) { { authorization: credentials('personal_access_token', pat.token) } }
 
     it 'fails authentication' do
+      expect(::Gitlab::AuthLogger).to receive(:warn).with(
+        hash_including(message: 'JWT authentication failed',
+                       http_user: 'personal_access_token')).and_call_original
+
       get '/jwt/auth', params: parameters, headers: headers
 
       expect(response).to have_gitlab_http_status(:unauthorized)

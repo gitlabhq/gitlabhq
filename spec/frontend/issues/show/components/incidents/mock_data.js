@@ -125,3 +125,8 @@ export const mockGetTimelineData = {
     },
   },
 };
+
+export const fakeDate = '2020-07-08T00:00:00.000Z';
+
+const { id, note, occurredAt } = mockEvents[0];
+export const fakeEventData = { id, note, occurredAt };

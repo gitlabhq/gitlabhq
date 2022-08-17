@@ -2693,7 +2693,12 @@ class Project < ApplicationRecord
   end
 
   def leave_pool_repository
-    pool_repository&.unlink_repository(repository) && update_column(:pool_repository_id, nil)
+    return if pool_repository.blank?
+
+    # Disconnecting the repository can be expensive, so let's skip it if
+    # this repository is being deleted anyway.
+    pool_repository.unlink_repository(repository, disconnect: !pending_delete?)
+    update_column(:pool_repository_id, nil)
   end
 
   def link_pool_repository

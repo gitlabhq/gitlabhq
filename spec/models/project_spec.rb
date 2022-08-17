@@ -6624,10 +6624,26 @@ RSpec.describe Project, factory_default: :keep do
     let(:pool) { create(:pool_repository) }
     let(:project) { create(:project, :repository, pool_repository: pool) }
 
-    it 'removes the membership' do
-      project.leave_pool_repository
+    subject { project.leave_pool_repository }
+
+    it 'removes the membership and disconnects alternates' do
+      expect(pool).to receive(:unlink_repository).with(project.repository, disconnect: true).and_call_original
+
+      subject
 
       expect(pool.member_projects.reload).not_to include(project)
+    end
+
+    context 'when the project is pending delete' do
+      it 'removes the membership and does not disconnect alternates' do
+        project.pending_delete = true
+
+        expect(pool).to receive(:unlink_repository).with(project.repository, disconnect: false).and_call_original
+
+        subject
+
+        expect(pool.member_projects.reload).not_to include(project)
+      end
     end
   end
 

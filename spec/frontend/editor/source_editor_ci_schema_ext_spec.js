@@ -1,4 +1,4 @@
-import { languages } from 'monaco-editor';
+import { setDiagnosticsOptions } from 'monaco-yaml';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import { CiSchemaExtension } from '~/editor/extensions/source_editor_ci_schema_ext';
@@ -52,16 +52,12 @@ describe('~/editor/editor_ci_config_ext', () => {
   });
 
   describe('registerCiSchema', () => {
-    beforeEach(() => {
-      jest.spyOn(languages.yaml.yamlDefaults, 'setDiagnosticsOptions');
-    });
-
     describe('register validations options with monaco for yaml language', () => {
       const mockProjectNamespace = 'namespace1';
       const mockProjectPath = 'project1';
 
       const getConfiguredYmlSchema = () => {
-        return languages.yaml.yamlDefaults.setDiagnosticsOptions.mock.calls[0][0].schemas[0];
+        return setDiagnosticsOptions.mock.calls[0][0].schemas[0];
       };
 
       it('with expected basic validation configuration', () => {
@@ -77,8 +73,8 @@ describe('~/editor/editor_ci_config_ext', () => {
           completion: true,
         };
 
-        expect(languages.yaml.yamlDefaults.setDiagnosticsOptions).toHaveBeenCalledTimes(1);
-        expect(languages.yaml.yamlDefaults.setDiagnosticsOptions).toHaveBeenCalledWith(
+        expect(setDiagnosticsOptions).toHaveBeenCalledTimes(1);
+        expect(setDiagnosticsOptions).toHaveBeenCalledWith(
           expect.objectContaining(expectedOptions),
         );
       });
