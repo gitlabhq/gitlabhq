@@ -45,6 +45,30 @@ sole discretion of GitLab Inc.
 
 <div class="announcement-milestone">
 
+## Announced in 15.8
+
+<div class="deprecation removal-160 breaking-change">
+
+### Security report schemas version 14.x.x
+
+End of Support: GitLab <span class="removal-milestone">15.8</span> (2023-01-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+All [security report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas) versions before 15.0.0 are considered deprecated in GitLab %15.8. Specifically, all [schemas](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/ee/gitlab/ci/parsers/security/validators/schemas) that match 14.*.* will be deprecated.
+
+Please note that any [security report scanner integration](https://docs.gitlab.com/ee/development/integrations/secure.html) with GitLab using a deprecated schema version will result in a deprecation warning as a result of [report validation](https://docs.gitlab.com/ee/development/integrations/secure.html#report-validation).
+
+See [Security report validation](https://docs.gitlab.com/ee/user/application_security/#security-report-validation) for more information.
+
+</div>
+</div>
+
+<div class="announcement-milestone">
+
 ## Announced in 15.3
 
 <div class="deprecation removal-160 breaking-change">

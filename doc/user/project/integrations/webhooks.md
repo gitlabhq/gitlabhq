@@ -137,7 +137,7 @@ For example, to test `push events`, your project should have at least one commit
 
 To test a webhook:
 
-1. In your project, on the left sidebar, select **Settings > Webhooks**.
+1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
 1. Scroll down to the list of configured webhooks.
 1. From the **Test** dropdown list, select the type of event to test.
 
@@ -236,12 +236,14 @@ For more information about supported events for Webhooks, go to [Webhook events]
 
 ## Troubleshoot webhooks
 
+> **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.
+
 GitLab records the history of each webhook request.
 You can view requests made in the last 2 days in the **Recent events** table.
 
 To view the table:
 
-1. In your project, on the left sidebar, select **Settings > Webhooks**.
+1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
 1. Scroll down to the webhooks.
 1. Each [failing webhook](#failing-webhooks) has a badge listing it as:
 
@@ -260,10 +262,6 @@ The table includes the following details about each request:
 - Relative time for when the request was made
 
 ![Recent deliveries](img/webhook_logs.png)
-
-NOTE:
-The **Recent events** table is unavailable for group-level webhooks. For more information, read
-[issue #325642](https://gitlab.com/gitlab-org/gitlab/-/issues/325642).
 
 Each webhook event has a corresponding **Details** page. This page details the data that GitLab sent (request headers and body) and received (response headers and body).
 To view the **Details** page, select **View details** for the webhook event.

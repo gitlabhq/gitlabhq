@@ -287,9 +287,19 @@ This saves reviewers time and helps authors catch mistakes earlier.
 
 ### The responsibility of the reviewer
 
+Reviewers are responsible for reviewing the specifics of the chosen solution.
+
 [Review the merge request](#reviewing-a-merge-request) thoroughly.
 
 Verify that the merge request meets all [contribution acceptance criteria](contributing/merge_request_workflow.md#contribution-acceptance-criteria).
+
+Some merge requests may require domain experts to help with the specifics.
+Reviewers, if they are not a domain expert in the area, can do any of the following:
+
+- Review the merge request and loop in a domain expert for another review. This expert
+  can either be another reviewer or a maintainer.
+- Pass the review to another reviewer they deem more suitable.
+- If no domain experts are available, review on a best-effort basis.
 
 You should guide the author towards splitting the merge request into smaller merge requests if it is:
 
@@ -468,6 +478,8 @@ experience, refactors the existing code). Then:
 - Offer alternative implementations, but assume the author already considered
   them. ("What do you think about using a custom validator here?")
 - Seek to understand the author's perspective.
+- Check out the branch, and test the changes locally. You can decide how much manual testing you want to perform.
+  Your testing might result in opportunities to add automated tests.
 - If you don't understand a piece of code, _say so_. There's a good chance
   someone else would be confused by it as well.
 - Ensure the author is clear on what is required from them to address/resolve the suggestion.

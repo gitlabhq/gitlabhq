@@ -18234,9 +18234,6 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-msgid "Group \"%{group_name}\" was successfully updated."
-msgstr ""
-
 msgid "Group %{group_name} couldn't be exported."
 msgstr ""
 
