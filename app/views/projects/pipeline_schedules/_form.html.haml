@@ -1,5 +1,5 @@
 = gitlab_ui_form_for [@project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "js-pipeline-schedule-form pipeline-schedule-form" } do |f|
-  = form_errors(@schedule, pajamas_alert: true)
+  = form_errors(@schedule)
   .form-group.row
     .col-md-9
       = f.label :description, _('Description'), class: 'label-bold'

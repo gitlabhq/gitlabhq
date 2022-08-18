@@ -18,30 +18,30 @@ full list of reference architectures, see
 >   - **Test requests per second (RPS) rates:** API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k)**
 
-| Service                                           | Nodes          | Configuration           | GCP              | AWS            | Azure          |
-|---------------------------------------------------|----------------|-------------------------|------------------|----------------|----------------|
-| External load balancing node<sup>3</sup>          | 1              | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`    | `F4s v2`       |
-| Consul<sup>1</sup>                                | 3              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`       |
-| PostgreSQL<sup>1</sup>                            | 3              | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge`   | `D16s v3`      |
-| PgBouncer<sup>1</sup>                             | 3              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`       |
-| Internal load balancing node<sup>3</sup>          | 1              | 4 vCPU, 3.6GB memory    | `n1-highcpu-4`   | `c5.xlarge`    | `F4s v2`       |
-| Redis/Sentinel - Cache<sup>2</sup>                | 3              | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`       |
-| Redis/Sentinel - Persistent<sup>2</sup>           | 3              | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`       |
-| Gitaly<sup>5</sup>                                | 3              | 32 vCPU, 120 GB memory  | `n1-standard-32` | `m5.8xlarge`   | `D32s v3`      |
-| Praefect<sup>5</sup>                              | 3              | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`    | `F4s v2`       |
-| Praefect PostgreSQL<sup>1</sup>                   | 1+             | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     | `F2s v2`       |
-| Sidekiq                                           | 4              | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    | `D4s v3`       |
-| GitLab Rails                                      | 5              | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`   | `F32s v2`      |
-| Monitoring node                                   | 1              | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`    | `F4s v2`       |
-| Object storage<sup>4</sup>                        | Not applicable | Not applicable          | Not applicable   | Not applicable | Not applicable |
-| NFS server (non-Gitaly)                          | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+| Service                                  | Nodes | Configuration           | GCP              | AWS          | Azure     |
+|------------------------------------------|-------|-------------------------|------------------|--------------|-----------|
+| External load balancing node<sup>3</sup> | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+| Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| PostgreSQL<sup>1</sup>                   | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge` | `D16s v3` |
+| PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Internal load balancing node<sup>3</sup> | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+| Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| Gitaly<sup>5</sup>                       | 3     | 32 vCPU, 120 GB memory  | `n1-standard-32` | `m5.8xlarge` | `D32s v3` |
+| Praefect<sup>5</sup>                     | 3     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+| Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`   | `F2s v2`  |
+| Sidekiq                                  | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`  | `D4s v3`  |
+| GitLab Rails                             | 5     | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge` | `F32s v2` |
+| Monitoring node                          | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
+| Object storage<sup>4</sup>               | -     | -                       | -                | -            | -         |
+| NFS server (non-Gitaly)                  | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  | `F4s v2`  |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
-4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->
 
@@ -2314,25 +2314,25 @@ future with further specific cloud provider details.
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
 
-| Service                                  | Nodes          | Configuration          | GCP              | AWS            |
-|------------------------------------------|----------------|------------------------|------------------|----------------|
-| Consul<sup>1</sup>                       | 3              | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`     |
-| PostgreSQL<sup>1</sup>                   | 3              | 16 vCPU, 60 GB memory  | `n1-standard-16` | `m5.4xlarge`   |
-| PgBouncer<sup>1</sup>                    | 3              | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`     |
-| Internal load balancing node<sup>3</sup> | 1              | 4 vCPU, 3.6GB memory   | `n1-highcpu-4`   | `c5.xlarge`    |
-| Redis/Sentinel - Cache<sup>2</sup>       | 3              | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`    |
-| Redis/Sentinel - Persistent<sup>2</sup>  | 3              | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`    |
-| Gitaly<sup>5</sup>                       | 3              | 32 vCPU, 120 GB memory | `n1-standard-32` | `m5.8xlarge`   |
-| Praefect<sup>5</sup>                     | 3              | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`   | `c5.xlarge`    |
-| Praefect PostgreSQL<sup>1</sup>          | 1+             | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`     |
-| Object storage<sup>4</sup>               | Not applicable | Not applicable         | Not applicable   | Not applicable |
+| Service                                  | Nodes | Configuration          | GCP              | AWS          |
+|------------------------------------------|-------|------------------------|------------------|--------------|
+| Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`   |
+| PostgreSQL<sup>1</sup>                   | 3     | 16 vCPU, 60 GB memory  | `n1-standard-16` | `m5.4xlarge` |
+| PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`   |
+| Internal load balancing node<sup>3</sup> | 1     | 4 vCPU, 3.6GB memory   | `n1-highcpu-4`   | `c5.xlarge`  |
+| Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`  |
+| Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`  |
+| Gitaly<sup>5</sup>                       | 3     | 32 vCPU, 120 GB memory | `n1-standard-32` | `m5.8xlarge` |
+| Praefect<sup>5</sup>                     | 3     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`   | `c5.xlarge`  |
+| Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`   |
+| Object storage<sup>4</sup>               | -     | -                      | -                | -            |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
-4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->
 

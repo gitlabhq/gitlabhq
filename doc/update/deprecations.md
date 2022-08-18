@@ -88,6 +88,20 @@ next major release, GitLab 16.0. This gem sees very little use and its
 
 </div>
 
+<div class="deprecation removal-154">
+
+### Bundled Grafana deprecated
+
+Planned removal: GitLab <span class="removal-milestone">15.4</span> (2022-09-22)
+
+In GitLab 15.4, we will be swapping the bundled Grafana to a fork of Grafana maintained by GitLab.
+
+There was an [identified CVE for Grafana](https://nvd.nist.gov/vuln/detail/CVE-2022-31107), and to mitigate this security vulnerability, we must swap to our own fork because the older version of Grafana we were bundling is no longer receiving long-term support.
+
+This is not expected to cause any incompatibilities with the previous version of Grafana. Neither when using our bundled version, nor when using an external instance of Grafana.
+
+</div>
+
 <div class="deprecation removal-160 breaking-change">
 
 ### CAS OmniAuth provider

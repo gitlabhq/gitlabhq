@@ -153,15 +153,10 @@ describe('GroupRunnersApp', () => {
       groupFullPath: mockGroupFullPath,
     });
 
-    expect(findRunnerStats().text()).toContain(
-      `${s__('Runners|Online runners')} ${mockGroupRunnersCount}`,
-    );
-    expect(findRunnerStats().text()).toContain(
-      `${s__('Runners|Offline runners')} ${mockGroupRunnersCount}`,
-    );
-    expect(findRunnerStats().text()).toContain(
-      `${s__('Runners|Stale runners')} ${mockGroupRunnersCount}`,
-    );
+    const text = findRunnerStats().text();
+    expect(text).toContain(`${s__('Runners|Online')} ${mockGroupRunnersCount}`);
+    expect(text).toContain(`${s__('Runners|Offline')} ${mockGroupRunnersCount}`);
+    expect(text).toContain(`${s__('Runners|Stale')} ${mockGroupRunnersCount}`);
   });
 
   it('shows the runners list', async () => {

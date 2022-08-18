@@ -1,5 +1,5 @@
 = gitlab_ui_form_for [@group, @milestone], html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' } do |f|
-  = form_errors(@milestone, pajamas_alert: true)
+  = form_errors(@milestone)
   .form-group.row
     .col-form-label.col-sm-2
       = f.label :title, _("Title")

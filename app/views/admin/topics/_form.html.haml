@@ -1,5 +1,5 @@
 = gitlab_ui_form_for @topic, url: url, html: { multipart: true, class: 'js-project-topic-form gl-show-field-errors common-note-form js-quick-submit js-requires-input' }, authenticity_token: true do |f|
-  = form_errors(@topic, pajamas_alert: true)
+  = form_errors(@topic)
 
   .form-group
     = f.label :name do

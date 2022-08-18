@@ -3,8 +3,8 @@
 require 'parallel'
 
 module QA
-  RSpec.describe 'Create' do
-    context 'Gitaly Cluster replication queue', :orchestrated, :gitaly_cluster, :skip_live_env do
+  RSpec.describe 'Systems' do
+    describe 'Gitaly Cluster replication queue', :orchestrated, :gitaly_cluster, :skip_live_env do
       let(:praefect_manager) { Service::PraefectManager.new }
       let(:project) do
         Resource::Project.fabricate! do |project|
@@ -22,7 +22,8 @@ module QA
         praefect_manager.clear_replication_queue
       end
 
-      it 'allows replication of different repository after interruption', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347829' do
+      it 'allows replication of different repository after interruption',
+         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347829' do
         # We want to fill the replication queue with 10 `in_progress` jobs,
         # while a lock has been acquired, which is when the problem occurred
         # as reported in https://gitlab.com/gitlab-org/gitaly/-/issues/2801

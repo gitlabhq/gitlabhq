@@ -33883,22 +33883,13 @@ msgstr ""
 msgid "Runners|Offline"
 msgstr ""
 
-msgid "Runners|Offline runners"
-msgstr ""
-
 msgid "Runners|Offline:"
 msgstr ""
 
 msgid "Runners|Online"
 msgstr ""
 
-msgid "Runners|Online runners"
-msgstr ""
-
 msgid "Runners|Online:"
-msgstr ""
-
-msgid "Runners|Outdated"
 msgstr ""
 
 msgid "Runners|Pause from accepting jobs"
@@ -34047,9 +34038,6 @@ msgstr ""
 msgid "Runners|Stale"
 msgstr ""
 
-msgid "Runners|Stale runners"
-msgstr ""
-
 msgid "Runners|Stale:"
 msgstr ""
 
@@ -34154,9 +34142,6 @@ msgstr ""
 msgid "Runners|active"
 msgstr ""
 
-msgid "Runners|available"
-msgstr ""
-
 msgid "Runners|group"
 msgstr ""
 
@@ -34170,9 +34155,6 @@ msgid "Runners|online"
 msgstr ""
 
 msgid "Runners|paused"
-msgstr ""
-
-msgid "Runners|recommended"
 msgstr ""
 
 msgid "Runners|shared"

@@ -15,7 +15,7 @@
       - else
         = _('Change your password or recover your current one')
     = form_for @user, url: profile_password_path, method: :put, html: {class: "update-password"} do |f|
-      = form_errors(@user, pajamas_alert: true)
+      = form_errors(@user)
 
       - unless @user.password_automatically_set?
         .form-group

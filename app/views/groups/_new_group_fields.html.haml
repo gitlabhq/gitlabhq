@@ -1,6 +1,6 @@
 - parent = @group.parent
 - submit_label = parent ? s_('GroupsNew|Create subgroup') : s_('GroupsNew|Create group')
-= form_errors(@group, pajamas_alert: true)
+= form_errors(@group)
 = render 'shared/groups/group_name_and_path_fields', f: f, autofocus: true, new_subgroup: !!parent
 
 - unless parent

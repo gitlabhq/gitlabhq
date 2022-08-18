@@ -7,7 +7,7 @@ import { INSTANCE_TYPE, STATUS_ONLINE, STATUS_OFFLINE, STATUS_STALE } from '~/ru
 describe('RunnerStats', () => {
   let wrapper;
 
-  const findSingleStats = () => wrapper.findAllComponents(RunnerSingleStat).wrappers;
+  const findSingleStats = () => wrapper.findAllComponents(RunnerSingleStat);
 
   const createComponent = ({ props = {}, mountFn = shallowMount, ...options } = {}) => {
     wrapper = mountFn(RunnerStats, {
@@ -46,16 +46,28 @@ describe('RunnerStats', () => {
     });
 
     const text = wrapper.text();
-    expect(text).toMatch(`${s__('Runners|Online runners')} 3`);
-    expect(text).toMatch(`${s__('Runners|Offline runners')} 2`);
-    expect(text).toMatch(`${s__('Runners|Stale runners')} 1`);
+    expect(text).toContain(`${s__('Runners|Online')} 3`);
+    expect(text).toContain(`${s__('Runners|Offline')} 2`);
+    expect(text).toContain(`${s__('Runners|Stale')} 1`);
+  });
+
+  it('Skips query for other stats', () => {
+    createComponent({
+      props: {
+        variables: { status: STATUS_ONLINE },
+      },
+    });
+
+    expect(findSingleStats().at(0).props('skip')).toBe(false);
+    expect(findSingleStats().at(1).props('skip')).toBe(true);
+    expect(findSingleStats().at(2).props('skip')).toBe(true);
   });
 
   it('Displays all counts for filtered searches', () => {
     const mockVariables = { paused: true };
     createComponent({ props: { variables: mockVariables } });
 
-    findSingleStats().forEach((stat) => {
+    findSingleStats().wrappers.forEach((stat) => {
       expect(stat.props('variables')).toMatchObject(mockVariables);
     });
   });

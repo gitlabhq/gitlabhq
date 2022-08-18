@@ -162,15 +162,9 @@ describe('AdminRunnersApp', () => {
     });
 
     it('shows the total', () => {
-      expect(findRunnerStats().text()).toContain(
-        `${s__('Runners|Online runners')} ${mockRunnersCount}`,
-      );
-      expect(findRunnerStats().text()).toContain(
-        `${s__('Runners|Offline runners')} ${mockRunnersCount}`,
-      );
-      expect(findRunnerStats().text()).toContain(
-        `${s__('Runners|Stale runners')} ${mockRunnersCount}`,
-      );
+      expect(findRunnerStats().text()).toContain(`${s__('Runners|Online')} ${mockRunnersCount}`);
+      expect(findRunnerStats().text()).toContain(`${s__('Runners|Offline')} ${mockRunnersCount}`);
+      expect(findRunnerStats().text()).toContain(`${s__('Runners|Stale')} ${mockRunnersCount}`);
     });
   });
 

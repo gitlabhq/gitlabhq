@@ -158,7 +158,7 @@ Supported values are:
 | `stacked-bar` | ![Insights example stacked bar chart](img/insights_example_stacked_bar_chart.png) |
 
 NOTE:
-The `dora` data source only supports the `bar` chart type.
+The `dora` data source supports the `bar` and `line` chart types.
 
 ### `query`
 
@@ -352,7 +352,7 @@ dora:
   title: "DORA charts"
   charts:
     - title: "DORA deployment frequency"
-      type: bar # only bar chart is supported at the moment
+      type: bar # or line
       query:
         data_source: dora
         params:

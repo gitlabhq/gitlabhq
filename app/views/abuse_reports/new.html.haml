@@ -7,7 +7,7 @@
   = _("A member of the abuse team will review your report as soon as possible.")
 %hr
 = form_for @abuse_report, html: { class: 'js-quick-submit js-requires-input'} do |f|
-  = form_errors(@abuse_report, pajamas_alert: true)
+  = form_errors(@abuse_report)
 
   = f.hidden_field :user_id
   .form-group.row

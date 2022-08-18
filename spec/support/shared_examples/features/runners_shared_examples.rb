@@ -64,9 +64,9 @@ end
 
 RSpec.shared_examples 'shows no runners registered' do
   it 'shows counts with 0' do
-    expect(page).to have_text "Online runners 0"
-    expect(page).to have_text "Offline runners 0"
-    expect(page).to have_text "Stale runners 0"
+    expect(page).to have_text "Online 0"
+    expect(page).to have_text "Offline 0"
+    expect(page).to have_text "Stale 0"
   end
 
   it 'shows "no runners" message' do

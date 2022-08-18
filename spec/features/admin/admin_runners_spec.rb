@@ -66,9 +66,9 @@ RSpec.describe "Admin Runners" do
 
         it 'has all necessary texts' do
           expect(page).to have_text "Register an instance runner"
-          expect(page).to have_text "Online runners 1"
-          expect(page).to have_text "Offline runners 2"
-          expect(page).to have_text "Stale runners 1"
+          expect(page).to have_text "Online 1"
+          expect(page).to have_text "Offline 2"
+          expect(page).to have_text "Stale 1"
         end
       end
 

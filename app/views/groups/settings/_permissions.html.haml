@@ -1,6 +1,6 @@
 = gitlab_ui_form_for @group, html: { multipart: true, class: 'gl-show-field-errors js-general-permissions-form' }, authenticity_token: true do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-permissions-settings' }
-  = form_errors(@group, pajamas_alert: true)
+  = form_errors(@group)
 
   %fieldset
     %h5= _('Permissions')

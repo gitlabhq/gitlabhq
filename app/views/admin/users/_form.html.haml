@@ -1,6 +1,6 @@
 .user_new
   = gitlab_ui_form_for [:admin, @user], html: { class: 'fieldset-form' } do |f|
-    = form_errors(@user, pajamas_alert: true)
+    = form_errors(@user)
 
     .gl-border-b.gl-pb-3.gl-mb-6
       .row

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FormHelper
-  def form_errors(model, type: 'form', truncate: [], pajamas_alert: true)
+  def form_errors(model, type: 'form', truncate: [])
     errors = model.errors
 
     return unless errors.any?

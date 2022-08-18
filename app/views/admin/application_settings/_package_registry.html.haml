@@ -26,7 +26,7 @@
           - @plans.each_with_index do |plan, index|
             .tab-pane{ :id => "plan#{index}", class: index == 0 ? 'active': '' }
               = form_for plan.actual_limits, url: admin_plan_limits_path(anchor: 'js-package-settings'), html: { class: 'fieldset-form' }, method: :post do |f|
-                = form_errors(plan, pajamas_alert: true)
+                = form_errors(plan)
                 %fieldset
                   = f.hidden_field(:plan_id, value: plan.id)
                   .form-group

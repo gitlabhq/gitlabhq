@@ -29,8 +29,8 @@ export default {
             skip: this.statusCountSkip(STATUS_ONLINE),
             variables: { ...this.variables, status: STATUS_ONLINE },
             variant: 'success',
-            title: s__('Runners|Online runners'),
-            metaText: s__('Runners|online'),
+            title: s__('Runners|Online'),
+            metaIcon: 'status-active',
           },
         },
         {
@@ -39,8 +39,8 @@ export default {
             skip: this.statusCountSkip(STATUS_OFFLINE),
             variables: { ...this.variables, status: STATUS_OFFLINE },
             variant: 'muted',
-            title: s__('Runners|Offline runners'),
-            metaText: s__('Runners|offline'),
+            title: s__('Runners|Offline'),
+            metaIcon: 'status-waiting',
           },
         },
         {
@@ -49,8 +49,8 @@ export default {
             skip: this.statusCountSkip(STATUS_STALE),
             variables: { ...this.variables, status: STATUS_STALE },
             variant: 'warning',
-            title: s__('Runners|Stale runners'),
-            metaText: s__('Runners|stale'),
+            title: s__('Runners|Stale'),
+            metaIcon: 'time-out',
           },
         },
       ];

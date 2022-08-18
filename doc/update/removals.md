@@ -31,6 +31,12 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 15.3
+
+### Support for Debian 9
+
+Long term service and support (LTSS) for [Debian 9 Stretch ended in July 2022](https://wiki.debian.org/LTS). Therefore, we will no longer support the Debian 9 distribution for the GitLab package. Users can upgrade to Debian 10 or Debian 11.
+
 ## Removed in 15.2
 
 ### Support for older browsers

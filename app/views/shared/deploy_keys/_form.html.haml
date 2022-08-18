@@ -2,7 +2,7 @@
 - deploy_key = local_assigns.fetch(:deploy_key)
 - deploy_keys_project = deploy_key.deploy_keys_project_for(@project)
 
-= form_errors(deploy_key, pajamas_alert: true)
+= form_errors(deploy_key)
 
 .form-group
   = form.label :title, class: 'col-form-label col-sm-2'

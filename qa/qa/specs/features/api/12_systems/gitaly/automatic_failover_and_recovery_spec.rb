@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    context 'Gitaly automatic failover and recovery', :orchestrated, :gitaly_cluster do
+  RSpec.describe 'Systems' do
+    context 'with Gitaly automatic failover and recovery', :orchestrated, :gitaly_cluster do
       # Variables shared between contexts. They're used and shared between
       # contexts so they can't be `let` variables.
       praefect_manager = Service::PraefectManager.new
@@ -47,11 +47,11 @@ module QA
           commit.project = project
           commit.commit_message = second_added_commit_message
           commit.add_files([
-            {
-              file_path: "file-#{SecureRandom.hex(8)}",
-              content: 'This is created on gitaly2/gitaly3 while gitaly1 is unavailable'
-            }
-          ])
+                             {
+                               file_path: "file-#{SecureRandom.hex(8)}",
+                               content: 'This is created on gitaly2/gitaly3 while gitaly1 is unavailable'
+                             }
+                           ])
         end
 
         # Confirm that we have access to the repo after failover,
