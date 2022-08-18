@@ -212,6 +212,12 @@ module Types
           description: "Find organizations of this group.",
           resolver: Resolvers::Crm::OrganizationsResolver
 
+    field :organization_state_counts,
+          Types::CustomerRelations::OrganizationStateCountsType,
+          null: true,
+          description: 'Counts of organizations by status for the group.',
+          resolver: Resolvers::Crm::OrganizationStateCountsResolver
+
     field :contacts, Types::CustomerRelations::ContactType.connection_type,
           null: true,
           description: "Find contacts of this group.",

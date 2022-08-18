@@ -5,12 +5,16 @@ module Types
     class OrganizationStateEnum < BaseEnum
       graphql_name 'CustomerRelationsOrganizationState'
 
+      value 'all',
+            description: "All available organizations.",
+            value: :all
+
       value 'active',
-            description: "Active organization.",
+            description: "Active organizations.",
             value: :active
 
       value 'inactive',
-            description: "Inactive organization.",
+            description: "Inactive organizations.",
             value: :inactive
     end
   end

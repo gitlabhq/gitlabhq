@@ -1361,6 +1361,39 @@ It renders on the GitLab documentation site as:
 > - This is a list item
 > - Second item in the list
 
+## Tabs
+
+Use tabs to show different options.
+
+To create a set of tabs, follow this example:
+
+```markdown
+{::options parse_block_html="true" /}
+
+<div class="js-tabs">
+
+## This is the first tab
+{: .no_toc}
+
+Here's some content in tab panel one.
+
+## Tab two
+{: .no_toc}
+
+Here's some content in tab panel two.
+
+</div>
+```
+
+The headings determine the tab titles. Each tab is populated with the content between the titles.
+
+Use brief words for the titles, ensure they are parallel, and start each with a capital letter. For example:
+
+- `Omnibus`, `Chart`, `Source`
+- `15.1 and earlier`, `15.2 and later`
+
+See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for details.
+
 ## Terms
 
 To maintain consistency through GitLab documentation, use these styles and terms.

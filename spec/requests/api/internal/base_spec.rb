@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Internal::Base do
+  include GitlabShellHelpers
   include APIInternalBaseHelpers
 
   let_it_be(:user, reload: true) { create(:user) }
@@ -17,10 +18,14 @@ RSpec.describe API::Internal::Base do
   let(:snippet_changes) { "#{TestEnv::BRANCH_SHA['snippet/single-file']} #{TestEnv::BRANCH_SHA['snippet/edit-file']} refs/heads/snippet/edit-file" }
 
   describe "GET /internal/check" do
+    def perform_request(headers: gitlab_shell_internal_api_request_header)
+      get api("/internal/check"), headers: headers
+    end
+
     it do
       expect_any_instance_of(Redis).to receive(:ping).and_return('PONG')
 
-      get api("/internal/check"), params: { secret_token: secret_token }
+      perform_request
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['api_version']).to eq(API::API.version)
@@ -30,23 +35,56 @@ RSpec.describe API::Internal::Base do
     it 'returns false for field `redis` when redis is unavailable' do
       expect_any_instance_of(Redis).to receive(:ping).and_raise(Errno::ENOENT)
 
-      get api("/internal/check"), params: { secret_token: secret_token }
+      perform_request
 
       expect(json_response['redis']).to be(false)
     end
 
     context 'authenticating' do
-      it 'authenticates using a header' do
-        get api("/internal/check"),
-            headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) }
+      it 'authenticates using a jwt token in a header' do
+        perform_request
 
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it 'returns 401 when no credentials provided' do
-        get(api("/internal/check"))
+      it 'returns 401 when jwt token is expired' do
+        headers = gitlab_shell_internal_api_request_header
+
+        travel_to(2.minutes.since) do
+          perform_request(headers: headers)
+        end
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
+      it 'returns 401 when jwt issuer is not Gitlab-Shell' do
+        perform_request(headers: gitlab_shell_internal_api_request_header(issuer: "gitlab-workhorse"))
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
+      it 'returns 401 when jwt token is not provided, even if plain secret is provided' do
+        perform_request(headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) })
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
+      context 'when gitlab_shell_jwt_token is disabled' do
+        before do
+          stub_feature_flags(gitlab_shell_jwt_token: false)
+        end
+
+        it 'authenticates using a header' do
+          perform_request(headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) })
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'returns 401 when no credentials provided' do
+          get(api("/internal/check"))
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
       end
     end
   end
@@ -56,10 +94,8 @@ RSpec.describe API::Internal::Base do
 
     subject do
       post api('/internal/two_factor_recovery_codes'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id
-           }
+           params: { key_id: key_id },
+           headers: gitlab_shell_internal_api_request_header
     end
 
     it_behaves_like 'actor key validations'
@@ -105,10 +141,8 @@ RSpec.describe API::Internal::Base do
 
     subject do
       post api('/internal/personal_access_token'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id
-           }
+           params: { key_id: key_id },
+           headers: gitlab_shell_internal_api_request_header
     end
 
     it_behaves_like 'actor key validations'
@@ -126,10 +160,8 @@ RSpec.describe API::Internal::Base do
 
     it 'returns an error message when given an non existent user' do
       post api('/internal/personal_access_token'),
-           params: {
-             secret_token: secret_token,
-             user_id: 0
-           }
+           params: { user_id: 0 },
+           headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("Could not find the given user")
@@ -137,10 +169,8 @@ RSpec.describe API::Internal::Base do
 
     it 'returns an error message when no name parameter is received' do
       post api('/internal/personal_access_token'),
-           params: {
-             secret_token: secret_token,
-             key_id:  key.id
-           }
+           params: { key_id: key.id },
+           headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("No token name specified")
@@ -148,11 +178,8 @@ RSpec.describe API::Internal::Base do
 
     it 'returns an error message when no scopes parameter is received' do
       post api('/internal/personal_access_token'),
-           params: {
-             secret_token: secret_token,
-             key_id:  key.id,
-             name: 'newtoken'
-           }
+           params: { key_id: key.id, name: 'newtoken' },
+           headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("No token scopes specified")
@@ -161,12 +188,12 @@ RSpec.describe API::Internal::Base do
     it 'returns an error message when expires_at contains an invalid date' do
       post api('/internal/personal_access_token'),
            params: {
-             secret_token: secret_token,
              key_id:  key.id,
              name: 'newtoken',
              scopes: ['api'],
              expires_at: 'invalid-date'
-           }
+           },
+           headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("Invalid token expiry date: 'invalid-date'")
@@ -175,11 +202,11 @@ RSpec.describe API::Internal::Base do
     it 'returns an error message when it receives an invalid scope' do
       post api('/internal/personal_access_token'),
            params: {
-             secret_token: secret_token,
              key_id:  key.id,
              name: 'newtoken',
              scopes: %w(read_api badscope read_repository)
-           }
+           },
+           headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to match(/\AInvalid scope: 'badscope'. Valid scopes are: /)
@@ -190,11 +217,11 @@ RSpec.describe API::Internal::Base do
 
       post api('/internal/personal_access_token'),
            params: {
-             secret_token: secret_token,
              key_id:  key.id,
              name: 'newtoken',
              scopes: %w(read_api read_repository)
-           }
+           },
+           headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_truthy
       expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
@@ -207,12 +234,12 @@ RSpec.describe API::Internal::Base do
 
       post api('/internal/personal_access_token'),
            params: {
-             secret_token: secret_token,
              key_id:  key.id,
              name: 'newtoken',
              scopes: %w(read_api read_repository),
              expires_at: '9001-11-17'
-           }
+           },
+           headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_truthy
       expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
@@ -309,7 +336,7 @@ RSpec.describe API::Internal::Base do
 
   describe "GET /internal/discover" do
     it "finds a user by key id" do
-      get(api("/internal/discover"), params: { key_id: key.id, secret_token: secret_token })
+      get(api("/internal/discover"), params: { key_id: key.id }, headers: gitlab_shell_internal_api_request_header)
 
       expect(response).to have_gitlab_http_status(:ok)
 
@@ -317,7 +344,7 @@ RSpec.describe API::Internal::Base do
     end
 
     it "finds a user by username" do
-      get(api("/internal/discover"), params: { username: user.username, secret_token: secret_token })
+      get(api("/internal/discover"), params: { username: user.username }, headers: gitlab_shell_internal_api_request_header)
 
       expect(response).to have_gitlab_http_status(:ok)
 
@@ -325,7 +352,7 @@ RSpec.describe API::Internal::Base do
     end
 
     it 'responds successfully when a user is not found' do
-      get(api('/internal/discover'), params: { username: 'noone', secret_token: secret_token })
+      get(api('/internal/discover'), params: { username: 'noone' }, headers: gitlab_shell_internal_api_request_header)
 
       expect(response).to have_gitlab_http_status(:ok)
 
@@ -333,7 +360,7 @@ RSpec.describe API::Internal::Base do
     end
 
     it 'response successfully when passing invalid params' do
-      get(api('/internal/discover'), params: { nothing: 'to find a user', secret_token: secret_token })
+      get(api('/internal/discover'), params: { nothing: 'to find a user' }, headers: gitlab_shell_internal_api_request_header)
 
       expect(response).to have_gitlab_http_status(:ok)
 
@@ -344,7 +371,7 @@ RSpec.describe API::Internal::Base do
   describe "GET /internal/authorized_keys" do
     context "using an existing key" do
       it "finds the key" do
-        get(api('/internal/authorized_keys'), params: { key: key.key.split[1], secret_token: secret_token })
+        get(api('/internal/authorized_keys'), params: { key: key.key.split[1] }, headers: gitlab_shell_internal_api_request_header)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq(key.id)
@@ -352,7 +379,7 @@ RSpec.describe API::Internal::Base do
       end
 
       it 'exposes the comment of the key as a simple identifier of username + hostname' do
-        get(api('/internal/authorized_keys'), params: { key: key.key.split[1], secret_token: secret_token })
+        get(api('/internal/authorized_keys'), params: { key: key.key.split[1] }, headers: gitlab_shell_internal_api_request_header)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['key']).to include("#{key.user_name} (#{Gitlab.config.gitlab.host})")
@@ -360,13 +387,13 @@ RSpec.describe API::Internal::Base do
     end
 
     it "returns 404 with a partial key" do
-      get(api('/internal/authorized_keys'), params: { key: key.key.split[1][0...-3], secret_token: secret_token })
+      get(api('/internal/authorized_keys'), params: { key: key.key.split[1][0...-3] }, headers: gitlab_shell_internal_api_request_header)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it "returns 404 with an not valid base64 string" do
-      get(api('/internal/authorized_keys'), params: { key: "whatever!", secret_token: secret_token })
+      get(api('/internal/authorized_keys'), params: { key: "whatever!" }, headers: gitlab_shell_internal_api_request_header)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -609,9 +636,9 @@ RSpec.describe API::Internal::Base do
                     project: full_path_for(project),
                     gl_repository: gl_repository_for(project),
                     action: 'git-upload-pack',
-                    secret_token: secret_token,
                     protocol: 'ssh'
-                  }
+                  },
+                  headers: gitlab_shell_internal_api_request_header
                 )
               end
             end
@@ -994,9 +1021,9 @@ RSpec.describe API::Internal::Base do
               key_id: key.id,
               project: 'project/does-not-exist.git',
               action: 'git-upload-pack',
-              secret_token: secret_token,
               protocol: 'ssh'
-            }
+            },
+            headers: gitlab_shell_internal_api_request_header
           )
 
           expect(response).to have_gitlab_http_status(:not_found)
@@ -1170,9 +1197,9 @@ RSpec.describe API::Internal::Base do
                key_id: key.id,
                project: project.full_path,
                gl_repository: gl_repository,
-               secret_token: secret_token,
                protocol: 'ssh'
-             })
+             }, headers: gitlab_shell_internal_api_request_header
+            )
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1285,7 +1312,6 @@ RSpec.describe API::Internal::Base do
     let(:valid_params) do
       {
         gl_repository: gl_repository,
-        secret_token: secret_token,
         identifier: identifier,
         changes: changes,
         push_options: push_options
@@ -1296,7 +1322,7 @@ RSpec.describe API::Internal::Base do
       "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{branch_name}"
     end
 
-    subject { post api('/internal/post_receive'), params: valid_params }
+    subject { post api('/internal/post_receive'), params: valid_params, headers: gitlab_shell_internal_api_request_header }
 
     before do
       project.add_developer(user)
@@ -1397,7 +1423,7 @@ RSpec.describe API::Internal::Base do
 
   describe 'POST /internal/pre_receive' do
     let(:valid_params) do
-      { gl_repository: gl_repository, secret_token: secret_token }
+      { gl_repository: gl_repository }
     end
 
     it 'decreases the reference counter and returns the result' do
@@ -1405,7 +1431,7 @@ RSpec.describe API::Internal::Base do
         .and_return(reference_counter)
       expect(reference_counter).to receive(:increase).and_return(true)
 
-      post api("/internal/pre_receive"), params: valid_params
+      post api("/internal/pre_receive"), params: valid_params, headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['reference_counter_increased']).to be(true)
     end
@@ -1420,10 +1446,8 @@ RSpec.describe API::Internal::Base do
 
     subject do
       post api('/internal/two_factor_config'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id
-           }
+           params: { key_id: key_id },
+           headers: gitlab_shell_internal_api_request_header
     end
 
     it_behaves_like 'actor key validations'
@@ -1484,11 +1508,8 @@ RSpec.describe API::Internal::Base do
 
     subject do
       post api('/internal/two_factor_otp_check'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id,
-             otp_attempt: otp
-           }
+           params: { key_id: key_id, otp_attempt: otp },
+           headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1509,7 +1530,8 @@ RSpec.describe API::Internal::Base do
              secret_token: secret_token,
              key_id: key_id,
              otp_attempt: otp
-           }
+           },
+           headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1530,7 +1552,8 @@ RSpec.describe API::Internal::Base do
              secret_token: secret_token,
              key_id: key_id,
              otp_attempt: otp
-           }
+           },
+           headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1551,7 +1574,8 @@ RSpec.describe API::Internal::Base do
              secret_token: secret_token,
              key_id: key_id,
              otp_attempt: otp
-           }
+           },
+           headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1571,7 +1595,8 @@ RSpec.describe API::Internal::Base do
              secret_token: secret_token,
              key_id: key_id,
              otp_attempt: otp
-           }
+           },
+           headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1584,32 +1609,24 @@ RSpec.describe API::Internal::Base do
   def lfs_auth_project(project)
     post(
       api("/internal/lfs_authenticate"),
-      params: {
-        secret_token: secret_token,
-        project: project.full_path
-      }
+      params: { project: project.full_path },
+      headers: gitlab_shell_internal_api_request_header
     )
   end
 
   def lfs_auth_key(key_id, project)
     post(
       api("/internal/lfs_authenticate"),
-      params: {
-        key_id: key_id,
-        secret_token: secret_token,
-        project: project.full_path
-      }
+      params: { key_id: key_id, project: project.full_path },
+      headers: gitlab_shell_internal_api_request_header
     )
   end
 
   def lfs_auth_user(user_id, project)
     post(
       api("/internal/lfs_authenticate"),
-      params: {
-        user_id: user_id,
-        secret_token: secret_token,
-        project: project.full_path
-      }
+      params: { user_id: user_id, project: project.full_path },
+      headers: gitlab_shell_internal_api_request_header
     )
   end
 end

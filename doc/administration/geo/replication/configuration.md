@@ -222,18 +222,22 @@ keys must be manually replicated to the **secondary** site.
    gitlab-ctl restart
    ```
 
-   Check if there are any common issue with your Geo setup by running:
+   Check if there are any common issues with your Geo setup by running:
 
    ```shell
    gitlab-rake gitlab:geo:check
    ```
+
+   If any of the checks fail, check the [troubleshooting documentation](troubleshooting.md).
 
 1. SSH into a **Rails or Sidekiq server on your primary** site and login as root to verify the
-   **secondary** site is reachable or there are any common issue with your Geo setup:
+   **secondary** site is reachable or there are any common issues with your Geo setup:
 
    ```shell
    gitlab-rake gitlab:geo:check
    ```
+
+   If any of the checks fail, check the [troubleshooting documentation](troubleshooting.md).
 
 Once added to the Geo administration page and restarted, the **secondary** site automatically starts
 replicating missing data from the **primary** site in a process known as **backfill**.

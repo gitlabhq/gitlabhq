@@ -9,14 +9,12 @@ import { formatJobCount, tableField } from '../utils';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
-import RunnerTags from './runner_tags.vue';
 
 const defaultFields = [
   tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-15p'] }),
-  tableField({ key: 'summary', label: s__('Runners|Runner'), thClasses: ['gl-lg-w-25p'] }),
+  tableField({ key: 'summary', label: s__('Runners|Runner'), thClasses: ['gl-lg-w-40p'] }),
   tableField({ key: 'version', label: __('Version') }),
   tableField({ key: 'jobCount', label: __('Jobs') }),
-  tableField({ key: 'tagList', label: __('Tags'), thClasses: ['gl-lg-w-25p'] }),
   tableField({ key: 'contactedAt', label: __('Last contact') }),
   tableField({ key: 'actions', label: '' }),
 ];
@@ -30,7 +28,6 @@ export default {
     TimeAgo,
     RunnerStatusPopover,
     RunnerSummaryCell,
-    RunnerTags,
     RunnerStatusCell,
   },
   directives: {
@@ -156,10 +153,6 @@ export default {
 
       <template #cell(jobCount)="{ item: { jobCount } }">
         {{ formatJobCount(jobCount) }}
-      </template>
-
-      <template #cell(tagList)="{ item: { tagList } }">
-        <runner-tags :tag-list="tagList" size="sm" />
       </template>
 
       <template #cell(contactedAt)="{ item: { contactedAt } }">

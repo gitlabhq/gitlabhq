@@ -1,5 +1,5 @@
 ---
-02_01__preliminaries__tabs__001:
+02_01_00__preliminaries__tabs__001:
   # NOTE: False values are optional, they are only included here for reference. See
   # https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#glfm_example_statusyml
   # for more details.
@@ -12,13 +12,13 @@
   skip_running_snapshot_static_html_tests: false # NOT YET SUPPORTED
   skip_running_snapshot_wysiwyg_html_tests: false
   skip_running_snapshot_prosemirror_json_tests: false
-07_02__gitlab_specific_markdown__task_list_items__003:
+07_02_00__gitlab_specific_markdown__task_list_items__003:
   skip_update_example_snapshot_html_wysiwyg: Inapplicable task list items not yet implemented for WYSYWIG
   skip_update_example_snapshot_prosemirror_json: Inapplicable task list items not yet implemented for WYSYWIG
   skip_running_conformance_wysiwyg_tests: Inapplicable task list items not yet implemented for WYSYWIG
   skip_running_snapshot_wysiwyg_html_tests: Inapplicable task list items not yet implemented for WYSYWIG
   skip_running_snapshot_prosemirror_json_tests: Inapplicable task list items not yet implemented for WYSYWIG
-07_02__gitlab_specific_markdown__task_list_items__004:
+07_02_00__gitlab_specific_markdown__task_list_items__004:
   skip_update_example_snapshot_html_wysiwyg: Inapplicable task list items not yet implemented for WYSYWIG
   skip_update_example_snapshot_prosemirror_json: Inapplicable task list items not yet implemented for WYSYWIG
   skip_running_conformance_wysiwyg_tests: Inapplicable task list items not yet implemented for WYSYWIG

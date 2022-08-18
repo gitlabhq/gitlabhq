@@ -1,17 +1,20 @@
 import { __ } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerSummaryCell from '~/runner/components/cells/runner_summary_cell.vue';
+import RunnerTags from '~/runner/components/runner_tags.vue';
 import { INSTANCE_TYPE, PROJECT_TYPE } from '~/runner/constants';
 
 const mockId = '1';
 const mockShortSha = '2P6oDVDm';
 const mockDescription = 'runner-1';
 const mockIpAddress = '0.0.0.0';
+const mockTagList = ['shell', 'linux'];
 
 describe('RunnerTypeCell', () => {
   let wrapper;
 
   const findLockIcon = () => wrapper.findByTestId('lock-icon');
+  const findRunnerTags = () => wrapper.findComponent(RunnerTags);
 
   const createComponent = (runner, options) => {
     wrapper = mountExtended(RunnerSummaryCell, {
@@ -22,6 +25,7 @@ describe('RunnerTypeCell', () => {
           description: mockDescription,
           ipAddress: mockIpAddress,
           runnerType: INSTANCE_TYPE,
+          tagList: mockTagList,
           ...runner,
         },
       },
@@ -72,6 +76,10 @@ describe('RunnerTypeCell', () => {
     });
 
     expect(wrapper.text()).not.toContain(__('IP Address'));
+  });
+
+  it('Displays tag list', () => {
+    expect(findRunnerTags().props('tagList')).toEqual(mockTagList);
   });
 
   it('Displays a custom slot', () => {

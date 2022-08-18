@@ -10,6 +10,11 @@ module Resolvers
 
       type Types::CustomerRelations::OrganizationType, null: true
 
+      argument :sort, Types::CustomerRelations::OrganizationSortEnum,
+               description: 'Criteria to sort organizations by.',
+               required: false,
+               default_value: { field: 'name', direction: :asc }
+
       argument :search, GraphQL::Types::String,
                required: false,
                description: 'Search term used to find organizations with.'
@@ -24,6 +29,7 @@ module Resolvers
 
       def resolve(**args)
         args[:ids] = resolve_ids(args.delete(:ids))
+        args.delete(:state) if args[:state] == :all
 
         ::Crm::OrganizationsFinder.new(current_user, { group: group }.merge(args)).execute
       end

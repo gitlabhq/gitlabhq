@@ -52,13 +52,21 @@ When self-identifying as a domain expert, it is recommended to assign the MR cha
 
 We make the following assumption with regards to automatically being considered a domain expert:
 
-- Team members working in a specific stage/group (for example, create: source code) are considered domain experts for that area of the app they work on
-- Team members working on a specific feature (for example, search) are considered domain experts for that feature
+- Team members working in a specific stage/group (for example, create: source code) are considered domain experts for that area of the app they work on.
+- Team members working on a specific feature (for example, search) are considered domain experts for that feature.
 
 We default to assigning reviews to team members with domain expertise.
 When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or simply follow the [Reviewer roulette](#reviewer-roulette) recommendation.
 
-Team members' domain expertise can be viewed on the [engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page or on the [GitLab team page](https://about.gitlab.com/company/team/).
+To find a domain expert:
+
+- View the list of team members who work in the [stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages) related to the merge request.
+- View team members' domain expertise on the [engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page or on the [GitLab team page](https://about.gitlab.com/company/team/). Domains are self-identified, so use your judgment to map the changes on your merge request to a domain.
+- Look for team members who have contributed to the files in the merge request. View the logs by running `git log <file>`.
+- Look for team members who have reviewed the files. You can find the relevant merge request by:
+  1. Getting the commit SHA by using `git log <file>`.
+  1. Navigating to `https://gitlab.com/gitlab-org/gitlab/-/commit/<SHA>`.
+  1. Selecting the related merge request shown for the commit.
 
 ### Reviewer roulette
 

@@ -24,8 +24,9 @@ RSpec.describe GitlabSchema.types['Group'] do
       dependency_proxy_blobs dependency_proxy_image_count
       dependency_proxy_blob_count dependency_proxy_total_size
       dependency_proxy_image_prefix dependency_proxy_image_ttl_policy
-      shared_runners_setting timelogs organizations contacts contact_state_counts
-      work_item_types recent_issue_boards ci_variables
+      shared_runners_setting timelogs organization_state_counts organizations
+      contact_state_counts contacts work_item_types
+      recent_issue_boards ci_variables
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -60,6 +61,13 @@ RSpec.describe GitlabSchema.types['Group'] do
 
     it { is_expected.to have_graphql_type(Types::CustomerRelations::ContactStateCountsType) }
     it { is_expected.to have_graphql_resolver(Resolvers::Crm::ContactStateCountsResolver) }
+  end
+
+  describe 'organization_state_counts field' do
+    subject { described_class.fields['organizationStateCounts'] }
+
+    it { is_expected.to have_graphql_type(Types::CustomerRelations::OrganizationStateCountsType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Crm::OrganizationStateCountsResolver) }
   end
 
   it_behaves_like 'a GraphQL type with labels' do

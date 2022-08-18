@@ -23,6 +23,9 @@ class CustomerRelations::Organization < ApplicationRecord
   validates :description, length: { maximum: 1024 }
   validate :validate_root_group
 
+  scope :order_scope_asc, ->(field) { order(arel_table[field].asc.nulls_last) }
+  scope :order_scope_desc, ->(field) { order(arel_table[field].desc.nulls_last) }
+
   # Searches for organizations with a matching name or description.
   #
   # This method uses ILIKE on PostgreSQL
@@ -36,6 +39,14 @@ class CustomerRelations::Organization < ApplicationRecord
 
   def self.search_by_state(state)
     where(state: state)
+  end
+
+  def self.sort_by_field(field, direction)
+    if direction == :asc
+      order_scope_asc(field)
+    else
+      order_scope_desc(field)
+    end
   end
 
   def self.sort_by_name
@@ -75,7 +86,17 @@ class CustomerRelations::Organization < ApplicationRecord
     where(group: group).update_all(group_id: group.root_ancestor.id)
   end
 
+  def self.counts_by_state
+    default_state_counts.merge(group(:state).count)
+  end
+
   private
+
+  def self.default_state_counts
+    states.keys.each_with_object({}) do |key, memo|
+      memo[key] = 0
+    end
+  end
 
   def validate_root_group
     return if group&.root?

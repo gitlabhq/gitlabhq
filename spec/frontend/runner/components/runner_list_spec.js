@@ -62,7 +62,6 @@ describe('RunnerList', () => {
       'Runner',
       'Version',
       'Jobs',
-      'Tags',
       'Last contact',
       '', // actions has no label
     ]);
@@ -99,7 +98,6 @@ describe('RunnerList', () => {
     // Other fields
     expect(findCell({ fieldKey: 'version' }).text()).toBe(version);
     expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('0');
-    expect(findCell({ fieldKey: 'tagList' }).text()).toBe('');
     expect(findCell({ fieldKey: 'contactedAt' }).text()).toEqual(expect.any(String));
 
     // Actions

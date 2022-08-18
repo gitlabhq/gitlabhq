@@ -60,8 +60,8 @@ module Glfm
     def add_example_names(all_examples)
       # NOTE: This method and the parse_examples method assume:
       # 1. Section 2 is the first section which contains examples
-      # 2. Examples are always nested exactly 2 levels deep in an H2
-      # 3. There may exist H3 headings with no examples (e.g. "Motivation" in the GLFM spec.txt)
+      # 2. Examples are always nested in an H2 or an H3, never directly in an H1
+      # 3. There may exist headings with no examples (e.g. "Motivation" in the GLFM spec.txt)
       # 4. The Appendix doesn't ever contain any examples, so it doesn't show up
       #    in the H1 header count. So, even though due to the concatenation it appears before the
       #    GitLab examples sections, it doesn't result in their header counts being off by +1.
@@ -70,35 +70,49 @@ module Glfm
       #    GFM `spec_test.py` script (but it's NOT in the original CommonMark `spec_test.py`).
       # 6. If a section contains ONLY disabled examples, the section numbering will still be
       #    incremented to match the rendered HTML specification section numbering.
-      # 7. Every H2 must contain at least one example, but it is allowed that they are all disabled.
+      # 7. Every H2 or H3 must contain at least one example, but it is allowed that they are
+      #    all disabled.
 
       h1_count = 1 # examples start in H1 section 2; section 1 is the overview with no examples.
       h2_count = 0
+      h3_count = 0
       previous_h1 = ''
       previous_h2 = ''
-      index_within_h2 = 0
+      previous_h3 = ''
+      index_within_current_heading = 0
       all_examples.each do |example|
         headers = example[:headers]
 
         if headers[0] != previous_h1
           h1_count += 1
           h2_count = 0
+          h3_count = 0
           previous_h1 = headers[0]
         end
 
         if headers[1] != previous_h2
           h2_count += 1
+          h3_count = 0
           previous_h2 = headers[1]
-          index_within_h2 = 0
+          index_within_current_heading = 0
         end
 
-        index_within_h2 += 1
+        if headers[2] && headers[2] != previous_h3
+          h3_count += 1
+          previous_h3 = headers[2]
+          index_within_current_heading = 0
+        end
+
+        index_within_current_heading += 1
 
         # convert headers array to lowercase string with underscores, and double underscores between headers
         formatted_headers_text = headers.join('__').tr('-', '_').tr(' ', '_').downcase
 
-        hierarchy_level = "#{h1_count.to_s.rjust(2, '0')}_#{h2_count.to_s.rjust(2, '0')}"
-        position_within_section = index_within_h2.to_s.rjust(3, '0')
+        hierarchy_level =
+          "#{h1_count.to_s.rjust(2, '0')}_" \
+          "#{h2_count.to_s.rjust(2, '0')}_" \
+          "#{h3_count.to_s.rjust(2, '0')}"
+        position_within_section = index_within_current_heading.to_s.rjust(3, '0')
         name = "#{hierarchy_level}__#{formatted_headers_text}__#{position_within_section}"
         converted_name = name.tr('(', '').tr(')', '') # remove any parens from the name
         example[:name] = converted_name

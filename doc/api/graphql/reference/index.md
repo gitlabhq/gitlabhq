@@ -12653,6 +12653,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="groupmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |
 
+##### `Group.organizationStateCounts`
+
+Counts of organizations by status for the group.
+
+Returns [`OrganizationStateCounts`](#organizationstatecounts).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="grouporganizationstatecountssearch"></a>`search` | [`String`](#string) | Search term to find organizations with. |
+| <a id="grouporganizationstatecountsstate"></a>`state` | [`CustomerRelationsOrganizationState`](#customerrelationsorganizationstate) | State of the organizations to search for. |
+
 ##### `Group.organizations`
 
 Find organizations of this group.
@@ -12669,6 +12682,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="grouporganizationsids"></a>`ids` | [`[CustomerRelationsOrganizationID!]`](#customerrelationsorganizationid) | Filter organizations by IDs. |
 | <a id="grouporganizationssearch"></a>`search` | [`String`](#string) | Search term used to find organizations with. |
+| <a id="grouporganizationssort"></a>`sort` | [`OrganizationSort`](#organizationsort) | Criteria to sort organizations by. |
 | <a id="grouporganizationsstate"></a>`state` | [`CustomerRelationsOrganizationState`](#customerrelationsorganizationstate) | State of the organization to search for. |
 
 ##### `Group.packages`
@@ -14952,6 +14966,18 @@ Active period time range for on-call rotation.
 | ---- | ---- | ----------- |
 | <a id="oncallrotationactiveperiodtypeendtime"></a>`endTime` | [`String`](#string) | End of the rotation active period. |
 | <a id="oncallrotationactiveperiodtypestarttime"></a>`startTime` | [`String`](#string) | Start of the rotation active period. |
+
+### `OrganizationStateCounts`
+
+Represents the total number of organizations for the represented states.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationstatecountsactive"></a>`active` | [`Int`](#int) | Number of organizations with state `ACTIVE`. |
+| <a id="organizationstatecountsall"></a>`all` | [`Int`](#int) | Number of organizations with state `ALL`. |
+| <a id="organizationstatecountsinactive"></a>`inactive` | [`Int`](#int) | Number of organizations with state `INACTIVE`. |
 
 ### `Package`
 
@@ -19339,18 +19365,18 @@ Values for sorting contacts.
 | ----- | ----------- |
 | <a id="contactsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
 | <a id="contactsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
-| <a id="contactsortdescription_asc"></a>`DESCRIPTION_ASC` | Description by ascending order. |
-| <a id="contactsortdescription_desc"></a>`DESCRIPTION_DESC` | Description by descending order. |
-| <a id="contactsortemail_asc"></a>`EMAIL_ASC` | Email by ascending order. |
-| <a id="contactsortemail_desc"></a>`EMAIL_DESC` | Email by descending order. |
-| <a id="contactsortfirst_name_asc"></a>`FIRST_NAME_ASC` | First name by ascending order. |
-| <a id="contactsortfirst_name_desc"></a>`FIRST_NAME_DESC` | First name by descending order. |
-| <a id="contactsortlast_name_asc"></a>`LAST_NAME_ASC` | Last name by ascending order. |
-| <a id="contactsortlast_name_desc"></a>`LAST_NAME_DESC` | Last name by descending order. |
-| <a id="contactsortorganization_asc"></a>`ORGANIZATION_ASC` | Organization by ascending order. |
-| <a id="contactsortorganization_desc"></a>`ORGANIZATION_DESC` | Organization by descending order. |
-| <a id="contactsortphone_asc"></a>`PHONE_ASC` | Phone by ascending order. |
-| <a id="contactsortphone_desc"></a>`PHONE_DESC` | Phone by descending order. |
+| <a id="contactsortdescription_asc"></a>`DESCRIPTION_ASC` | Description in ascending order. |
+| <a id="contactsortdescription_desc"></a>`DESCRIPTION_DESC` | Description in descending order. |
+| <a id="contactsortemail_asc"></a>`EMAIL_ASC` | Email in ascending order. |
+| <a id="contactsortemail_desc"></a>`EMAIL_DESC` | Email in descending order. |
+| <a id="contactsortfirst_name_asc"></a>`FIRST_NAME_ASC` | First name in ascending order. |
+| <a id="contactsortfirst_name_desc"></a>`FIRST_NAME_DESC` | First name in descending order. |
+| <a id="contactsortlast_name_asc"></a>`LAST_NAME_ASC` | Last name in ascending order. |
+| <a id="contactsortlast_name_desc"></a>`LAST_NAME_DESC` | Last name in descending order. |
+| <a id="contactsortorganization_asc"></a>`ORGANIZATION_ASC` | Organization in ascending order. |
+| <a id="contactsortorganization_desc"></a>`ORGANIZATION_DESC` | Organization in descending order. |
+| <a id="contactsortphone_asc"></a>`PHONE_ASC` | Phone in ascending order. |
+| <a id="contactsortphone_desc"></a>`PHONE_DESC` | Phone in descending order. |
 | <a id="contactsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="contactsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
 | <a id="contactsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
@@ -19447,8 +19473,9 @@ Values for sorting tags.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="customerrelationsorganizationstateactive"></a>`active` | Active organization. |
-| <a id="customerrelationsorganizationstateinactive"></a>`inactive` | Inactive organization. |
+| <a id="customerrelationsorganizationstateactive"></a>`active` | Active organizations. |
+| <a id="customerrelationsorganizationstateall"></a>`all` | All available organizations. |
+| <a id="customerrelationsorganizationstateinactive"></a>`inactive` | Inactive organizations. |
 
 ### `DastProfileCadenceUnit`
 
@@ -20165,6 +20192,27 @@ Rotation length unit of an on-call rotation.
 | <a id="oncallrotationunitenumdays"></a>`DAYS` | Days. |
 | <a id="oncallrotationunitenumhours"></a>`HOURS` | Hours. |
 | <a id="oncallrotationunitenumweeks"></a>`WEEKS` | Weeks. |
+
+### `OrganizationSort`
+
+Values for sorting organizations.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="organizationsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="organizationsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="organizationsortdefault_rate_asc"></a>`DEFAULT_RATE_ASC` | Default Rate in ascending order. |
+| <a id="organizationsortdefault_rate_desc"></a>`DEFAULT_RATE_DESC` | Default Rate in descending order. |
+| <a id="organizationsortdescription_asc"></a>`DESCRIPTION_ASC` | Description in ascending order. |
+| <a id="organizationsortdescription_desc"></a>`DESCRIPTION_DESC` | Description in descending order. |
+| <a id="organizationsortname_asc"></a>`NAME_ASC` | Name in ascending order. |
+| <a id="organizationsortname_desc"></a>`NAME_DESC` | Name in descending order. |
+| <a id="organizationsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
+| <a id="organizationsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
+| <a id="organizationsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="organizationsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="organizationsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="organizationsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `PackageDependencyType`
 

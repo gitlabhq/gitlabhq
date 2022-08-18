@@ -4,9 +4,7 @@ require 'spec_helper'
 
 # See https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#markdown-snapshot-testing
 # for documentation on this spec.
-# rubocop:disable Layout/LineLength
 RSpec.shared_context 'with API::Markdown Snapshot shared context' do |glfm_specification_dir|
-  # rubocop:enable Layout/LineLength
   include ApiHelpers
 
   let_it_be(:user) { create(:user) }

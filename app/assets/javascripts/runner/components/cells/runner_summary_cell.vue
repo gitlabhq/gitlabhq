@@ -3,6 +3,7 @@ import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import RunnerName from '../runner_name.vue';
+import RunnerTags from '../runner_tags.vue';
 import RunnerTypeBadge from '../runner_type_badge.vue';
 
 import { I18N_LOCKED_RUNNER_DESCRIPTION } from '../../constants';
@@ -12,6 +13,7 @@ export default {
     GlIcon,
     TooltipOnTruncate,
     RunnerName,
+    RunnerTags,
     RunnerTypeBadge,
   },
   directives: {
@@ -67,5 +69,6 @@ export default {
       <span class="gl-md-display-none gl-lg-display-inline">{{ __('IP Address') }}</span>
       <strong>{{ ipAddress }}</strong>
     </tooltip-on-truncate>
+    <runner-tags class="gl-display-block gl-mt-2" :tag-list="runner.tagList" size="sm" />
   </div>
 </template>

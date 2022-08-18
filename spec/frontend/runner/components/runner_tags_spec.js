@@ -50,7 +50,6 @@ describe('RunnerTags', () => {
       props: { tagList: null },
     });
 
-    expect(wrapper.text()).toBe('');
-    expect(findBadge().exists()).toBe(false);
+    expect(wrapper.html()).toEqual('');
   });
 });

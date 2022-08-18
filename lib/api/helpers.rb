@@ -7,9 +7,12 @@ module API
     include Helpers::Pagination
     include Helpers::PaginationStrategies
     include Gitlab::Ci::Artifacts::Logger
+    include Gitlab::Utils::StrongMemoize
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
+    GITLAB_SHELL_API_HEADER = "Gitlab-Shell-Api-Request"
+    GITLAB_SHELL_JWT_ISSUER = "gitlab-shell"
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'
     API_TOKEN_ENV = 'gitlab.api.token'
@@ -283,12 +286,22 @@ module API
     end
 
     def authenticate_by_gitlab_shell_token!
-      input = params['secret_token']
-      input ||= Base64.decode64(headers[GITLAB_SHARED_SECRET_HEADER]) if headers.key?(GITLAB_SHARED_SECRET_HEADER)
+      if Feature.enabled?(:gitlab_shell_jwt_token)
+        begin
+          payload, _ = JSONWebToken::HMACToken.decode(headers[GITLAB_SHELL_API_HEADER], secret_token)
+          unauthorized! unless payload['iss'] == GITLAB_SHELL_JWT_ISSUER
+        rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature => ex
+          Gitlab::ErrorTracking.track_exception(ex)
+          unauthorized!
+        end
+      else
+        input = params['secret_token']
+        input ||= Base64.decode64(headers[GITLAB_SHARED_SECRET_HEADER]) if headers.key?(GITLAB_SHARED_SECRET_HEADER)
 
-      input&.chomp!
+        input&.chomp!
 
-      unauthorized! unless Devise.secure_compare(secret_token, input)
+        unauthorized! unless Devise.secure_compare(secret_token, input)
+      end
     end
 
     def authenticated_with_can_read_all_resources!
@@ -719,7 +732,13 @@ module API
     end
 
     def secret_token
-      Gitlab::Shell.secret_token
+      if Feature.enabled?(:gitlab_shell_jwt_token)
+        strong_memoize(:secret_token) do
+          File.read(Gitlab.config.gitlab_shell.secret_file)
+        end
+      else
+        Gitlab::Shell.secret_token
+      end
     end
 
     def authenticate_non_public?

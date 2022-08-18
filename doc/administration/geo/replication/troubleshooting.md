@@ -1230,3 +1230,7 @@ If the above steps are **not successful**, proceed through the next steps:
 
 1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
+
+## Additional tools
+
+There are useful snippets for manipulating Geo internals in the [GitLab Rails Cheat Sheet](../../troubleshooting/gitlab_rails_cheat_sheet.md#geo). For example, you can find how to manually sync or verify a replicable in Rails console.

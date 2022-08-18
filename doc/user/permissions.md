@@ -200,6 +200,10 @@ The following table lists project permissions available for each role:
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Use security dashboard                                                                                    |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability                                                                                        |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md)           |          |          | ✓         | ✓          | ✓        |
+| [Tasks](tasks.md):<br>Create (*18*)     | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Tasks](tasks.md):<br>Edit              |          | ✓         | ✓         | ✓          | ✓        |
+| [Tasks](tasks.md):<br>Remove from issue |          | ✓         | ✓         | ✓          | ✓        |
+| [Tasks](tasks.md):<br>Delete (*22*)     |          |           |            |            | ✓        |
 | [Terraform](infrastructure/index.md):<br>Read Terraform state                                                                                                                        |          |          | ✓         | ✓          | ✓        |
 | [Terraform](infrastructure/index.md):<br>Manage Terraform state                                                                                                                      |          |          |           | ✓          | ✓        |
 | [Test cases](../ci/test_cases/index.md):<br>Archive                                                                                                                                  |          | ✓        | ✓         | ✓          | ✓        |
@@ -235,10 +239,11 @@ The following table lists project permissions available for each role:
 16. In GitLab 14.5 or later, Guests are not allowed to [create incidents](../operations/incident_management/incidents.md#incident-creation).
     In GitLab 15.1 and later, a Guest who created an issue that was promoted to an incident cannot edit, close, or reopen their incident.
 17. In projects that accept contributions from external members, users can create, edit, and close their own merge requests.
-18. Authors and assignees of issues can modify the title and description even if they don't have the Reporter role.
+18. Authors and assignees can modify the title and description even if they don't have the Reporter role.
 19. Authors and assignees can close and reopen issues even if they don't have the Reporter role.
 20. The ability to view the Container Registry and pull images is controlled by the [Container Registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
 21. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.
+22. Authors of tasks can delete them even if they don't have the Owner role, but they have to have at least the Guest role for the project.
 
 <!-- markdownlint-enable MD029 -->
 

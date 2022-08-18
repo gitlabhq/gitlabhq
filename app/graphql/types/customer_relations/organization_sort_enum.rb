@@ -2,11 +2,11 @@
 
 module Types
   module CustomerRelations
-    class ContactSortEnum < SortEnum
-      graphql_name 'ContactSort'
-      description 'Values for sorting contacts'
+    class OrganizationSortEnum < SortEnum
+      graphql_name 'OrganizationSort'
+      description 'Values for sorting organizations'
 
-      sortable_fields = ['First name', 'Last name', 'Email', 'Phone', 'Description', 'Organization']
+      sortable_fields = ['Name', 'Description', 'Default Rate']
 
       sortable_fields.each do |field|
         value "#{field.upcase.tr(' ', '_')}_ASC",

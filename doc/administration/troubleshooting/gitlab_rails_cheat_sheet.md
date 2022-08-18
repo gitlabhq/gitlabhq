@@ -1173,6 +1173,38 @@ This content has been converted to a Rake task, see [verify database values can 
 
 ## Geo
 
+### Reverify all uploads (or any SSF data type which is verified)
+
+1. SSH into a GitLab Rails node in the primary Geo site.
+1. Open [Rails console](../operations/rails_console.md).
+1. Mark all uploads as "pending verification":
+
+   ```ruby
+   Upload.verification_state_table_class.each_batch do |relation|
+     relation.update_all(verification_state: 0)
+   end
+   ```
+
+1. This will cause the primary to start checksumming all Uploads.
+1. When a primary successfully checksums a record, then all secondaries rechecksum as well, and they compare the values.
+
+A similar thing can be done for all Models handled by the [Geo Self-Service Framework](../../development/geo/framework.md) which have implemented verification:
+
+- `LfsObject`
+- `MergeRequestDiff`
+- `Packages::PackageFile`
+- `Terraform::StateVersion`
+- `SnippetRepository`
+- `Ci::PipelineArtifact`
+- `PagesDeployment`
+- `Upload`
+- `Ci::JobArtifact`
+- `Ci::SecureFile`
+
+NOTE:
+`GroupWikiRepository` is not in the previous list since verification is not implemented.
+There is an [issue to implement this functionality in the Admin UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+
 ### Artifacts
 
 #### Find failed artifacts

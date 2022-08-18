@@ -134,6 +134,19 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       <p><strong>bold</strong></p>
       ````````````````````````````````
 
+      ## H2 which contains an H3
+
+      ### Example in an H3
+
+      The CommonMark and GHFM specifications don't have any examples inside an H3, but it is
+      supported for the GLFM specification.
+
+      ```````````````````````````````` example gitlab
+      Example in an H3
+      .
+      <p>Example in an H3</p>
+      ````````````````````````````````
+
       # Second GitLab-Specific Section with Examples
 
       ## Strong but with HTML
@@ -182,15 +195,15 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     # language=YAML
     <<~GLFM_EXAMPLE_STATUS_YML_CONTENTS
       ---
-      02_01__inlines__strong__001:
+      02_01_00__inlines__strong__001:
         # The skip_update_example_snapshots key is present, but false, so this example is not skipped
         skip_update_example_snapshots: false
-      02_01__inlines__strong__002:
+      02_01_00__inlines__strong__002:
         # It is OK to have an empty (nil) value for an example statuses entry, it means they will all be false.
-      05_01__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
+      05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
         # Always skip this example
         skip_update_example_snapshots: 'skipping this example because it is very bad'
-      05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+      05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
         # Always skip this example, but preserve the existing manual modifications
         skip_update_example_snapshots: 'skipping this example because we have manually modified it'
     GLFM_EXAMPLE_STATUS_YML_CONTENTS
@@ -200,21 +213,21 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     # language=YAML
     <<~ES_HTML_YML_IO_EXISTING_CONTENTS
       ---
-      00_00__obsolete_entry_to_be_deleted__001:
+      00_00_00__obsolete_entry_to_be_deleted__001:
         canonical: |
           This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted.
         static: |-
           This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted.
         wysiwyg: |-
           This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted.
-      02_01__inlines__strong__001:
+      02_01_00__inlines__strong__001:
         canonical: |
           This entry is existing, but not skipped, so it will be overwritten.
         static: |-
           This entry is existing, but not skipped, so it will be overwritten.
         wysiwyg: |-
           This entry is existing, but not skipped, so it will be overwritten.
-      05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+      05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
         canonical: |
           <p><strong>This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved</strong></p>
         static: |-
@@ -228,16 +241,16 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     # language=YAML
     <<~ES_PROSEMIRROR_JSON_YML_IO_EXISTING_CONTENTS
       ---
-      00_00__obsolete_entry_to_be_deleted__001:
+      00_00_00__obsolete_entry_to_be_deleted__001:
         {
           "obsolete": "This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted."
         }
-      02_01__inlines__strong__001: |-
+      02_01_00__inlines__strong__001: |-
         {
           "existing": "This entry is existing, but not skipped, so it will be overwritten."
         }
       # 02_01__inlines__strong__002: is omitted from the existing file and skipped, to test that scenario.
-      02_03__inlines__strikethrough_extension__001: |-
+      02_03_00__inlines__strikethrough_extension__001: |-
         {
           "type": "doc",
           "content": [
@@ -252,11 +265,11 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
             }
           ]
         }
-      04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |-
+      04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |-
         {
           "existing": "This entry is manually modified and preserved because skip_update_example_snapshot_prosemirror_json will be truthy"
         }
-      05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001: |-
+      05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001: |-
         {
           "existing": "This entry is manually modified and preserved because skip_update_example_snapshots will be truthy"
         }
@@ -303,7 +316,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     let(:es_examples_index_yml_contents) { reread_io(es_examples_index_yml_io) }
     let(:es_markdown_yml_contents) { reread_io(es_markdown_yml_io) }
     let(:expected_unskipped_example) do
-      /05_01__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001/
+      /05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001/
     end
 
     it 'still writes the example to examples_index.yml' do
@@ -323,14 +336,14 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
         # language=YAML
         <<~GLFM_EXAMPLE_STATUS_YML_CONTENTS
           ---
-          02_01__inlines__strong__001:
+          02_01_00__inlines__strong__001:
             skip_update_example_snapshots: 'if the skip_update_example_snapshots key is truthy...'
             skip_update_example_snapshot_html_static: '...then no other skip_update_example_* keys can be truthy'
         GLFM_EXAMPLE_STATUS_YML_CONTENTS
       end
 
       it 'raises an error' do
-        expected_msg = "Error: '02_01__inlines__strong__001' must not have any 'skip_update_example_snapshot_*' " \
+        expected_msg = "Error: '02_01_00__inlines__strong__001' must not have any 'skip_update_example_snapshot_*' " \
           "values specified if 'skip_update_example_snapshots' is truthy"
         expect { subject.process }.to raise_error(/#{Regexp.escape(expected_msg)}/)
       end
@@ -343,26 +356,29 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       # language=YAML
       <<~ES_EXAMPLES_INDEX_YML_CONTENTS
         ---
-        02_01__inlines__strong__001:
+        02_01_00__inlines__strong__001:
           spec_txt_example_position: 1
           source_specification: commonmark
-        02_01__inlines__strong__002:
+        02_01_00__inlines__strong__002:
           spec_txt_example_position: 2
           source_specification: github
-        02_03__inlines__strikethrough_extension__001:
+        02_03_00__inlines__strikethrough_extension__001:
           spec_txt_example_position: 4
           source_specification: github
-        03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
+        03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
           spec_txt_example_position: 5
           source_specification: gitlab
-        04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
+        03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001:
           spec_txt_example_position: 6
           source_specification: gitlab
-        05_01__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
+        04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
           spec_txt_example_position: 7
           source_specification: gitlab
-        05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+        05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
           spec_txt_example_position: 8
+          source_specification: gitlab
+        05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+          spec_txt_example_position: 9
           source_specification: gitlab
       ES_EXAMPLES_INDEX_YML_CONTENTS
     end
@@ -380,21 +396,23 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       # language=YAML
       <<~ES_MARKDOWN_YML_CONTENTS
         ---
-        02_01__inlines__strong__001: |
+        02_01_00__inlines__strong__001: |
           __bold__
-        02_01__inlines__strong__002: |
+        02_01_00__inlines__strong__002: |
           __bold with more text__
-        02_03__inlines__strikethrough_extension__001: |
+        02_03_00__inlines__strikethrough_extension__001: |
           ~~Hi~~ Hello, world!
-        03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001: |
+        03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001: |
           **bold**
-        04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |
+        03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001: |
+          Example in an H3
+        04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |
           <strong>
           bold
           </strong>
-        05_01__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001: |
+        05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001: |
           **this example will be skipped**
-        05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001: |
+        05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001: |
           **This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved**
       ES_MARKDOWN_YML_CONTENTS
     end
@@ -416,16 +434,16 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       # language=YAML
       <<~GLFM_EXAMPLE_STATUS_YML_CONTENTS
         ---
-        02_01__inlines__strong__002:
+        02_01_00__inlines__strong__002:
           skip_update_example_snapshot_prosemirror_json: "skipping because JSON isn't cool enough"
-        03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
+        03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
           skip_update_example_snapshot_html_static: "skipping because there's too much static"
-        04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
+        04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
           skip_update_example_snapshot_html_wysiwyg: 'skipping because what you see is NOT what you get'
           skip_update_example_snapshot_prosemirror_json: "skipping because JSON still isn't cool enough"
-        05_01__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
+        05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
           skip_update_example_snapshots: 'skipping this example because it is very bad'
-        05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+        05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
           skip_update_example_snapshots: 'skipping this example because we have manually modified it'
       GLFM_EXAMPLE_STATUS_YML_CONTENTS
     end
@@ -434,33 +452,40 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       # language=YAML
       <<~ES_HTML_YML_CONTENTS
         ---
-        02_01__inlines__strong__001:
+        02_01_00__inlines__strong__001:
           canonical: |
             <p><strong>bold</strong></p>
           static: |-
             <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
           wysiwyg: |-
             <p><strong>bold</strong></p>
-        02_01__inlines__strong__002:
+        02_01_00__inlines__strong__002:
           canonical: |
             <p><strong>bold with more text</strong></p>
           static: |-
             <p data-sourcepos="1:1-1:23" dir="auto"><strong>bold with more text</strong></p>
           wysiwyg: |-
             <p><strong>bold with more text</strong></p>
-        02_03__inlines__strikethrough_extension__001:
+        02_03_00__inlines__strikethrough_extension__001:
           canonical: |
             <p><del>Hi</del> Hello, world!</p>
           static: |-
             <p data-sourcepos="1:1-1:20" dir="auto"><del>Hi</del> Hello, world!</p>
           wysiwyg: |-
             <p><s>Hi</s> Hello, world!</p>
-        03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
+        03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
           canonical: |
             <p><strong>bold</strong></p>
           wysiwyg: |-
             <p><strong>bold</strong></p>
-        04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
+        03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001:
+          canonical: |
+            <p>Example in an H3</p>
+          static: |-
+            <p data-sourcepos="1:1-1:16" dir="auto">Example in an H3</p>
+          wysiwyg: |-
+            <p>Example in an H3</p>
+        04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
           canonical: |
             <p><strong>
             bold
@@ -469,7 +494,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
             <strong>
             bold
             </strong>
-        05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+        05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
           canonical: |
             <p><strong>This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved</strong></p>
           static: |-
@@ -483,7 +508,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       # language=YAML
       <<~ES_PROSEMIRROR_JSON_YML_CONTENTS
         ---
-        02_01__inlines__strong__001: |-
+        02_01_00__inlines__strong__001: |-
           {
             "type": "doc",
             "content": [
@@ -503,7 +528,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
               }
             ]
           }
-        02_03__inlines__strikethrough_extension__001: |-
+        02_03_00__inlines__strikethrough_extension__001: |-
           {
             "type": "doc",
             "content": [
@@ -527,7 +552,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
               }
             ]
           }
-        03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001: |-
+        03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001: |-
           {
             "type": "doc",
             "content": [
@@ -547,11 +572,26 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
               }
             ]
           }
-        04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |-
+        03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001: |-
+          {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Example in an H3"
+                  }
+                ]
+              }
+            ]
+          }
+        04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |-
           {
             "existing": "This entry is manually modified and preserved because skip_update_example_snapshot_prosemirror_json will be truthy"
           }
-        05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001: |-
+        05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001: |-
           {
             "existing": "This entry is manually modified and preserved because skip_update_example_snapshots will be truthy"
           }

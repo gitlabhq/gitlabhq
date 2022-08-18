@@ -655,8 +655,10 @@ is the manually updated canonical Markdown+HTML examples for GLFM extensions.
   each of which contain a Markdown example and the corresponding canonical HTML.
 - The `update-specification.rb` script inserts it as new sections before the appendix
   of generated `spec.txt`.
-- It should consist of `H1` header sections, with all examples nested exactly 2 levels deep within `H2`
-  header sections.
+- It should consist of `H1` header sections, with all examples nested either 2 or 3 levels deep
+  within `H2` or `H3` header sections.
+- `H3` header sections must be nested within `H2` header sections. They cannot be
+   nested directly within `H1` header sections.
 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt` sample entries:
 
@@ -738,7 +740,7 @@ The following optional entries are supported for each example. They all default 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` sample entry:
 
 ```yaml
-07_99_an_example_with_incomplete_wysiwyg_implementation_1:
+07_99_00_an_example_with_incomplete_wysiwyg_implementation_1:
   skip_update_example_snapshots: 'An explanation of the reason for skipping.'
   skip_update_example_snapshot_html_static: 'An explanation of the reason for skipping.'
   skip_update_example_snapshot_html_wysiwyg: 'An explanation of the reason for skipping.'
@@ -771,40 +773,40 @@ to be specified for a Markdown example.
   00_uri: &00_uri
     - regex: '(href|data-src)(=")(.*?)(test-file\.(png|zip)")'
       replacement: '\1\2URI_PREFIX\4'
-01_01__section_one__example_containing_a_uri__001:
+01_01_00__section_one__example_containing_a_uri__001:
   html:
     static:
       canonical:
-        01_01_uri: *00_uri
+        01_01_00_uri: *00_uri
       snapshot:
-        01_01_uri: *00_uri
+        01_01_00_uri: *00_uri
       wysiwyg:
-        01_01_uri: *00_uri
+        01_01_00_uri: *00_uri
   prosemirror_json:
-    01_01_uri: *00_uri
-07_01__gitlab_specific_markdown__footnotes__001:
+    01_01_00_uri: *00_uri
+07_01_00__gitlab_specific_markdown__footnotes__001:
   # YAML anchors which are only shared within a single example should be defined within the example
   shared:
-    07_01_href: &07_01_href
+    07_01_00_href: &07_01_00_href
       - regex: '(href)(=")(.+?)(")'
         replacement: '\1\2REF\4'
-    07_01_id: &07_01_id
+    07_01_00_id: &07_01_00_id
       - regex: '(id)(=")(.+?)(")'
         replacement: '\1\2ID\4'
   html:
     static:
       canonical:
-        07_01_href: *07_01_href
-        07_01_id: *07_01_id
+        07_01_00_href: *07_01_00_href
+        07_01_00_id: *07_01_00_id
       snapshot:
-        07_01_href: *07_01_href
-        07_01_id: *07_01_id
+        07_01_00_href: *07_01_00_href
+        07_01_00_id: *07_01_00_id
     wysiwyg:
-      07_01_href: *07_01_href
-      07_01_id: *07_01_id
+      07_01_00_href: *07_01_00_href
+      07_01_00_id: *07_01_00_id
   prosemirror_json:
-    07_01_href: *07_01_href
-    07_01_id: *07_01_id
+    07_01_00_href: *07_01_00_href
+    07_01_00_id: *07_01_00_id
 ```
 
 #### Output specification files
@@ -891,19 +893,19 @@ CommonMark, GFM, and GLFM example names, each with a unique canonical name.
 `glfm_specification/example_snapshots/examples_index.yml` sample entries:
 
 ```yaml
-02_01_preliminaries_characters_and_lines_1:
+02_01_00_preliminaries_characters_and_lines_1:
   spec_txt_example_position: 1
   source_specification: commonmark
-03_01_blocks_and_inlines_precedence_1:
+03_01_00_blocks_and_inlines_precedence_1:
   spec_txt_example_position: 12
   source_specification: commonmark
-05_03_container_blocks_task_list_items_1:
+05_03_00_container_blocks_task_list_items_1:
   spec_txt_example_position: 279
   source_specification: github
-06_04_inlines_emphasis_and_strong_emphasis_1:
+06_04_00_inlines_emphasis_and_strong_emphasis_1:
   spec_txt_example_position: 360
   source_specification: github
-07_01_audio_link_1:
+07_01_00_audio_link_1:
   spec_txt_example_position: 301
   source_specification: gitlab
 ```
@@ -923,7 +925,7 @@ for each entry in `glfm_specification/example_snapshots/examples_index.yml`
 `glfm_specification/example_snapshots/markdown.yml` sample entry:
 
 ```yaml
-06_04_inlines_emphasis_and_strong_emphasis_1: |
+06_04_00_inlines_emphasis_and_strong_emphasis_1: |
   *foo bar*
 ```
 
@@ -958,7 +960,7 @@ Any exceptions or failures which occur when generating HTML are replaced with an
 `glfm_specification/example_snapshots/html.yml` sample entry:
 
 ```yaml
-06_04_inlines_emphasis_and_strong_emphasis_1:
+06_04_00_inlines_emphasis_and_strong_emphasis_1:
   canonical: |
     <p><em>foo bar</em></p>
   static: |
@@ -983,7 +985,7 @@ contains the ProseMirror JSON for each entry in `glfm_specification/example_snap
 `glfm_specification/example_snapshots/prosemirror_json.yml` sample entry:
 
 ```yaml
-06_04_inlines_emphasis_and_strong_emphasis_1: |-
+06_04_00_inlines_emphasis_and_strong_emphasis_1: |-
   {
     "type": "doc",
     "content": [

@@ -9,19 +9,19 @@
   00_uri: &00_uri
     - regex: '(href|data-src)(=")(.*?)(test-file\.(png|zip)")'
       replacement: '\1\2URI_PREFIX\4'
-07_01__gitlab_specific_markdown__footnotes__001:
+07_01_00__gitlab_specific_markdown__footnotes__001:
   html:
     static:
       shared:
-        07_01_href: &07_01_href
+        07_01_00_href: &07_01_00_href
           - regex: '(href)(=")(.+?)(")'
             replacement: '\1\2REF\4'
-        07_01_id: &07_01_id
+        07_01_00_id: &07_01_00_id
           - regex: '(id)(=")(.+?)(")'
             replacement: '\1\2ID\4'
       canonical:
-        07_01_href: *07_01_href
-        07_01_id: *07_01_id
+        07_01_00_href: *07_01_00_href
+        07_01_00_id: *07_01_00_id
       snapshot:
-        07_01_href: *07_01_href
-        07_01_id: *07_01_id
+        07_01_00_href: *07_01_00_href
+        07_01_00_id: *07_01_00_id
