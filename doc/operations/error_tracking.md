@@ -136,10 +136,7 @@ FLAG:
 By default this feature is not available. To make it available on self-managed GitLab, ask an
 administrator to [enable the feature flag](../administration/feature_flags.md)
 named `integrated_error_tracking`. The feature is not ready for production use.
-On GitLab.com, this feature is not available.
-
-WARNING:
-Turning on integrated error tracking may impact performance, depending on your error rates.
+On GitLab.com, please follow [our user guide](https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/docs/guides/user/error_tracking.md) to get started.
 
 Integrated error tracking is a lightweight alternative to Sentry backend.
 You still use Sentry SDK with your application. But you don't need to deploy Sentry

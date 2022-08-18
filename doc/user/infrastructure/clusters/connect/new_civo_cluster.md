@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Create a Civo Kubernetes cluster
 
-Every new Civo account receives [$250 in credit](https://civo.com/signup) to get started with the GitLab integration with Civo Kubernetes. You can also use a marketplace app to install GitLab on your Civo Kubernetes cluster.
+Every new Civo account receives [$250 in credit](https://dashboard.civo.com/signup) to get started with the GitLab integration with Civo Kubernetes. You can also use a marketplace app to install GitLab on your Civo Kubernetes cluster.
 
 Learn how to create a new cluster on Civo Kubernetes through
 [Infrastructure as Code (IaC)](../../index.md). This process uses the Civo
@@ -15,7 +15,7 @@ by using the GitLab agent for Kubernetes.
 
 **Prerequisites:**
 
-- A [Civo account](https://civo.com/signup).
+- A [Civo account](https://dashboard.civo.com/signup).
 - [A runner](https://docs.gitlab.com/runner/install/) you can use to run the GitLab CI/CD pipeline.
 
 **Steps:**
@@ -64,7 +64,7 @@ Use CI/CD environment variables to configure your project.
 
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
-1. Set the variable `BASE64_CIVO_TOKEN` to the [token](https://www.civo.com/account/security) from your Civo account.
+1. Set the variable `BASE64_CIVO_TOKEN` to the token from your Civo account.
 1. Set the variable `TF_VAR_agent_token` to the agent token you received in the previous task.
 1. Set the variable `TF_VAR_kas_address` to the agent server address in the previous task.
 
@@ -95,7 +95,7 @@ After configuring your project, manually trigger the provisioning of your cluste
 
 When the pipeline finishes successfully, you can see your new cluster:
 
-- In Civo dashboard: on your [Kubernetes tab](https://www.civo.com/account/kubernetes).
+- In Civo dashboard: on your Kubernetes tab.
 - In GitLab: from your project's sidebar, select **Infrastructure > Kubernetes clusters**.
 
 ## Use your cluster

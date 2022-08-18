@@ -431,7 +431,7 @@ must be unique. It's advised to use `kebab-case` namespaces.
 
 Useful links:
 
-1. [`key`](https://vuejs.org/v2/guide/list.html#key)
+1. [Maintaining State](https://v2.vuejs.org/v2/guide/list.html#Maintaining-State)
 1. [Vue Style Guide: Keyed v-for](https://vuejs.org/v2/style-guide/#Keyed-v-for-essential)
 
 ## Vue testing
@@ -448,10 +448,8 @@ Typically, when testing a Vue component, the component should be "re-mounted" in
 To achieve this:
 
 1. Create a mutable `wrapper` variable inside the top-level `describe` block.
-1. Mount the component using [`mount`](https://v1.test-utils.vuejs.org/api/#mount)/
-[`shallowMount`](https://v1.test-utils.vuejs.org/api/#shallowMount).
-1. Reassign the resulting [`Wrapper`](https://v1.test-utils.vuejs.org/api/wrapper/#wrapper)
-instance to our `wrapper` variable.
+1. Mount the component using [`mount`](https://v1.test-utils.vuejs.org/api/#mount) or [`shallowMount`](https://v1.test-utils.vuejs.org/api/#shallowMount).
+1. Reassign the resulting [`Wrapper`](https://v1.test-utils.vuejs.org/api/wrapper/#wrapper) instance to our `wrapper` variable.
 
 Creating a global, mutable wrapper provides a number of advantages, including the ability to:
 
@@ -671,6 +669,6 @@ In the coming months you should fix that tech debt, with its priority to be dete
 not be rewritten. For example, jQuery tests rewritten to Vue tests.
 1. You may choose to use VueX as a centralized state management. If you choose not to use VueX, you
 must use the *store pattern* which can be found in the
-[Vue.js documentation](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch).
+[Vue.js documentation](https://v2.vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch).
 1. Once you have chosen a centralized state-management solution you must use it for your entire
 application. Don't mix and match your state-management solutions.

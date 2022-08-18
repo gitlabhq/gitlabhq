@@ -13,7 +13,7 @@
 # - label
 # - **extra
 
-shared_examples 'Snowplow event tracking' do |overrides: {}|
+RSpec.shared_examples 'Snowplow event tracking' do |overrides: {}|
   let(:extra) { {} }
 
   it 'is not emitted if FF is disabled' do

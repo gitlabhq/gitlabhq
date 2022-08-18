@@ -5,9 +5,9 @@ import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.graphql';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
-import SidebarEventHub from '~/sidebar/event_hub';
 
 import {
   STATE_OPEN,
@@ -35,7 +35,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'iid'],
   props: {
     workItemId: {
       type: String,
@@ -63,6 +63,18 @@ export default {
         this.error = e.message || this.$options.i18n.fetchError;
       },
     },
+    parentIssue: {
+      query: issueConfidentialQuery,
+      variables() {
+        return {
+          fullPath: this.projectPath,
+          iid: String(this.iid),
+        };
+      },
+      update(data) {
+        return data.workspace?.issuable;
+      },
+    },
   },
   data() {
     return {
@@ -72,9 +84,13 @@ export default {
       activeToast: null,
       prefetchedWorkItem: null,
       error: undefined,
+      parentIssue: null,
     };
   },
   computed: {
+    confidential() {
+      return this.parentIssue?.confidential || this.workItem?.confidential || false;
+    },
     children() {
       return (
         this.workItem?.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.children
@@ -83,9 +99,6 @@ export default {
     },
     canUpdate() {
       return this.workItem?.userPermissions.updateWorkItem || false;
-    },
-    confidential() {
-      return this.workItem?.confidential || false;
     },
     // Only used for children for now but should be extended later to support parents and siblings
     isChildrenEmpty() {
@@ -112,16 +125,7 @@ export default {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
   },
-  mounted() {
-    SidebarEventHub.$on('confidentialityUpdated', this.refetchWorkItems);
-  },
-  destroyed() {
-    SidebarEventHub.$off('confidentialityUpdated', this.refetchWorkItems);
-  },
   methods: {
-    refetchWorkItems() {
-      this.$apollo.queries.workItem.refetch();
-    },
     iconClass(state) {
       return state === STATE_OPEN ? 'gl-text-green-500' : 'gl-text-blue-500';
     },

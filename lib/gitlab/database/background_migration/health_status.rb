@@ -18,7 +18,7 @@ module Gitlab
               indicator.new(migration.health_context).evaluate
             rescue StandardError => e
               Gitlab::ErrorTracking.track_exception(e, migration_id: migration.id,
-                                                    job_class_name: migration.job_class_name)
+                                                       job_class_name: migration.job_class_name)
 
               Signals::Unknown.new(indicator, reason: "unexpected error: #{e.message} (#{e.class})")
             end

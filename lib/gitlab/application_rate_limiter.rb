@@ -16,39 +16,39 @@ module Gitlab
       # and only do that when it's needed.
       def rate_limits # rubocop:disable Metrics/AbcSize
         {
-          issues_create:                { threshold: -> { application_settings.issues_create_limit }, interval: 1.minute },
-          notes_create:                 { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },
-          project_export:               { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
-          project_download_export:      { threshold: -> { application_settings.project_download_export_limit }, interval: 1.minute },
+          issues_create: { threshold: -> { application_settings.issues_create_limit }, interval: 1.minute },
+          notes_create: { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },
+          project_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
+          project_download_export: { threshold: -> { application_settings.project_download_export_limit }, interval: 1.minute },
           project_repositories_archive: { threshold: 5, interval: 1.minute },
-          project_generate_new_export:  { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
-          project_import:               { threshold: -> { application_settings.project_import_limit }, interval: 1.minute },
-          project_testing_hook:         { threshold: 5, interval: 1.minute },
-          play_pipeline_schedule:       { threshold: 1, interval: 1.minute },
-          raw_blob:                     { threshold: -> { application_settings.raw_blob_request_limit }, interval: 1.minute },
-          group_export:                 { threshold: -> { application_settings.group_export_limit }, interval: 1.minute },
-          group_download_export:        { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
-          group_import:                 { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },
-          group_testing_hook:           { threshold: 5, interval: 1.minute },
-          profile_add_new_email:        { threshold: 5, interval: 1.minute },
-          web_hook_calls:               { interval: 1.minute },
-          web_hook_calls_mid:           { interval: 1.minute },
-          web_hook_calls_low:           { interval: 1.minute },
-          users_get_by_id:              { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
-          username_exists:              { threshold: 20, interval: 1.minute },
-          user_sign_up:                 { threshold: 20, interval: 1.minute },
-          user_sign_in:                 { threshold: 5, interval: 10.minutes },
-          profile_resend_email_confirmation:  { threshold: 5, interval: 1.minute },
-          profile_update_username:            { threshold: 10, interval: 1.minute },
-          update_environment_canary_ingress:  { threshold: 1, interval: 1.minute },
-          auto_rollback_deployment:           { threshold: 1, interval: 3.minutes },
-          search_rate_limit:                  { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
-          search_rate_limit_unauthenticated:  { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
-          gitlab_shell_operation:       { threshold: 600, interval: 1.minute },
-          pipelines_create:             { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute },
-          temporary_email_failure:      { threshold: 50, interval: 1.day },
-          project_testing_integration:  { threshold: 5, interval: 1.minute },
-          email_verification:           { threshold: 10, interval: 10.minutes },
+          project_generate_new_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
+          project_import: { threshold: -> { application_settings.project_import_limit }, interval: 1.minute },
+          project_testing_hook: { threshold: 5, interval: 1.minute },
+          play_pipeline_schedule: { threshold: 1, interval: 1.minute },
+          raw_blob: { threshold: -> { application_settings.raw_blob_request_limit }, interval: 1.minute },
+          group_export: { threshold: -> { application_settings.group_export_limit }, interval: 1.minute },
+          group_download_export: { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
+          group_import: { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },
+          group_testing_hook: { threshold: 5, interval: 1.minute },
+          profile_add_new_email: { threshold: 5, interval: 1.minute },
+          web_hook_calls: { interval: 1.minute },
+          web_hook_calls_mid: { interval: 1.minute },
+          web_hook_calls_low: { interval: 1.minute },
+          users_get_by_id: { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
+          username_exists: { threshold: 20, interval: 1.minute },
+          user_sign_up: { threshold: 20, interval: 1.minute },
+          user_sign_in: { threshold: 5, interval: 10.minutes },
+          profile_resend_email_confirmation: { threshold: 5, interval: 1.minute },
+          profile_update_username: { threshold: 10, interval: 1.minute },
+          update_environment_canary_ingress: { threshold: 1, interval: 1.minute },
+          auto_rollback_deployment: { threshold: 1, interval: 3.minutes },
+          search_rate_limit: { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
+          search_rate_limit_unauthenticated: { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
+          gitlab_shell_operation: { threshold: 600, interval: 1.minute },
+          pipelines_create: { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute },
+          temporary_email_failure: { threshold: 50, interval: 1.day },
+          project_testing_integration: { threshold: 5, interval: 1.minute },
+          email_verification: { threshold: 10, interval: 10.minutes },
           email_verification_code_send: { threshold: 10, interval: 1.hour }
         }.freeze
       end
@@ -130,16 +130,16 @@ module Gitlab
       # @param logger [Logger] Logger to log request to a specific log file. Defaults to Gitlab::AuthLogger
       def log_request(request, type, current_user, logger = Gitlab::AuthLogger)
         request_information = {
-          message:        'Application_Rate_Limiter_Request',
-          env:            type,
-          remote_ip:      request.ip,
+          message: 'Application_Rate_Limiter_Request',
+          env: type,
+          remote_ip: request.ip,
           request_method: request.request_method,
-          path:           request.fullpath
+          path: request.fullpath
         }
 
         if current_user
           request_information.merge!({
-                                       user_id:  current_user.id,
+                                       user_id: current_user.id,
                                        username: current_user.username
                                      })
         end

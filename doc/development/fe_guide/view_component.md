@@ -33,7 +33,7 @@ Consider this list a best effort. The full list can be found in [`app/components
 
 #### Alert
 
-The `Pajamas::AlertComponent` follows the [Pajamas Alert](https://design.gitlab.com/components/alert) specification.
+The `Pajamas::AlertComponent` follows the [Pajamas Alert](https://design.gitlab.com/components/alert/) specification.
 
 **Examples:**
 
@@ -57,7 +57,7 @@ For the full list of options, see its
 
 #### Banner
 
-The `Pajamas::BannerComponent` follows the [Pajamas Banner](https://design.gitlab.com/components/banner) specification.
+The `Pajamas::BannerComponent` follows the [Pajamas Banner](https://design.gitlab.com/components/banner/) specification.
 
 **Examples:**
 
@@ -88,7 +88,7 @@ For the full list of options, see its
 
 #### Button
 
-The `Pajamas::ButtonComponent` follows the [Pajamas Button](https://design.gitlab.com/components/button) specification.
+The `Pajamas::ButtonComponent` follows the [Pajamas Button](https://design.gitlab.com/components/button/) specification.
 
 **Examples:**
 
@@ -125,7 +125,7 @@ For the full list of options, see its
 
 #### Card
 
-The `Pajamas::CardComponent` follows the [Pajamas Card](https://design.gitlab.com/components/card) specification.
+The `Pajamas::CardComponent` follows the [Pajamas Card](https://design.gitlab.com/components/card/) specification.
 
 **Examples:**
 
@@ -188,7 +188,7 @@ For the full list of options, see its
 
 #### Toggle
 
-The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitlab.com/components/toggle) specification.
+The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitlab.com/components/toggle/) specification.
 
 ```haml
 = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',

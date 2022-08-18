@@ -34,7 +34,7 @@ module Gitlab
             end
 
             def body
-              { username:   user.username,
+              { username: user.username,
                 token_code: @otp_code }
             end
 

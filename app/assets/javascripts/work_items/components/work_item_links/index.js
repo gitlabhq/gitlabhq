@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import { createApolloProvider } from '../../graphql/provider';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import WorkItemLinks from './work_item_links.vue';
 
 Vue.use(GlToast);
@@ -16,18 +16,19 @@ export default function initWorkItemLinks() {
     return;
   }
 
-  const { projectPath, wiHasIssueWeightsFeature } = workItemLinksRoot.dataset;
+  const { projectPath, wiHasIssueWeightsFeature, iid } = workItemLinksRoot.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
     el: workItemLinksRoot,
     name: 'WorkItemLinksRoot',
-    apolloProvider: createApolloProvider(),
+    apolloProvider,
     components: {
       workItemLinks: WorkItemLinks,
     },
     provide: {
       projectPath,
+      iid,
       fullPath: projectPath,
       hasIssueWeightsFeature: wiHasIssueWeightsFeature,
     },

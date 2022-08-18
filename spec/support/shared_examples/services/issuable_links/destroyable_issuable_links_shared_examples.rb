@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'a destroyable issuable link' do
+RSpec.shared_examples 'a destroyable issuable link' do
   context 'when successfully removes an issuable link' do
     before do
       issuable_link.source.resource_parent.add_reporter(user)

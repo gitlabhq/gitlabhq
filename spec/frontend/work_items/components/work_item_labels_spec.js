@@ -9,7 +9,7 @@ import labelSearchQuery from '~/vue_shared/components/sidebar/labels_select_widg
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import { i18n } from '~/work_items/constants';
-import { temporaryConfig, resolvers } from '~/work_items/graphql/provider';
+import { temporaryConfig, resolvers } from '~/graphql_shared/issuable_client';
 import { projectLabelsResponse, mockLabels, workItemQueryResponse } from '../mock_data';
 
 Vue.use(VueApollo);

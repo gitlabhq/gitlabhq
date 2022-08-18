@@ -6,9 +6,9 @@ module Gitlab
       class Compare < Base
         def initialize(compare, project:, diff_options:, diff_refs: nil)
           super(compare,
-            project:      project,
+            project: project,
             diff_options: diff_options,
-            diff_refs:    diff_refs)
+            diff_refs: diff_refs)
         end
 
         def unfold_diff_lines(positions)

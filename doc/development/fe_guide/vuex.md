@@ -245,7 +245,7 @@ A mutation written like this is easier to maintain. In addition, we avoid errors
 ### `getters.js`
 
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.
-Using a getter also caches the result based on dependencies due to [how computed props work](https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
+Using a getter also caches the result based on dependencies due to [how computed props work](https://v2.vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
 This can be done through the `getters`:
 
 ```javascript

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issue_edit snowplow tracking' do
+RSpec.shared_examples 'issue_edit snowplow tracking' do
   let(:category) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CATEGORY }
   let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_ACTION }
   let(:label) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_LABEL }

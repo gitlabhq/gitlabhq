@@ -3,7 +3,7 @@ import { mapActions } from 'vuex';
 import { IssuableType } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import { confidentialityQueries } from '~/sidebar/constants';
-import { defaultClient as gqlClient } from '~/sidebar/graphql';
+import { defaultClient as gqlClient } from '~/graphql_shared/issuable_client';
 
 export default {
   props: {

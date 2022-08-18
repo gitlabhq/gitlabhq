@@ -29,7 +29,7 @@ module Gitlab
                   in: %i[only except start_in],
                   message: 'key may not be used with `rules`'
                 },
-                if: :has_rules?
+                                 if: :has_rules?
 
               with_options allow_nil: true do
                 validates :extends, array_of_strings_or_string: true

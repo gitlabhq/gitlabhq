@@ -18,11 +18,11 @@ When building a widget, we should follow a few principles described below.
 All widgets should use the same stack (Vue + Apollo Client).
 To make it happen, we must add Vue Apollo to the application root (if we use a widget
 as a component) or provide it directly to a widget. For sidebar widgets, use the
-[sidebar Apollo Client and Apollo Provider](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/sidebar/graphql.js):
+[issuable Apollo Client and Apollo Provider](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/graphql_shared/issuable_client.js):
 
 ```javascript
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
-import { apolloProvider } from '~/sidebar/graphql';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 
 function mountConfidentialComponent() {
   new Vue({
@@ -118,7 +118,7 @@ In this case, we can use a renderless component that imports a client and listen
 ```javascript
 import { fetchPolicies } from '~/lib/graphql';
 import { confidentialityQueries } from '~/sidebar/constants';
-import { defaultClient as gqlClient } from '~/sidebar/graphql';
+import { defaultClient as gqlClient } from '~/graphql_shared/issuable_client';
 
 created() {
   if (this.issuableType !== IssuableType.Issue) {

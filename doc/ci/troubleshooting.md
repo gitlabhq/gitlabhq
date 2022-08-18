@@ -321,6 +321,11 @@ To reduce the configuration size, you can:
 
 On a self-managed instance, you can [increase the size limits](../administration/instance_limits.md#maximum-size-and-depth-of-cicd-configuration-yaml-files).
 
+### Error 500 when editing the `.gitlab-ci.yml` file
+
+A [loop of included configuration files](pipeline_editor/index.md#configuration-validation-currently-not-available-message)
+can cause a `500` error when editing the `.gitlab-ci.yml` file with the [web editor](../user/project/repository/web_editor.md).
+
 ## Pipeline warnings
 
 Pipeline configuration warnings are shown when you:

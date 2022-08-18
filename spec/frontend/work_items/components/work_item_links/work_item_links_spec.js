@@ -4,8 +4,8 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import SidebarEventHub from '~/sidebar/event_hub';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.graphql';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -19,6 +19,20 @@ import {
 } from '../../mock_data';
 
 Vue.use(VueApollo);
+
+const issueConfidentialityResponse = (confidential = false) => ({
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      issuable: {
+        __typename: 'Issue',
+        id: 'gid://gitlab/Issue/4',
+        confidential,
+      },
+    },
+  },
+});
 
 describe('WorkItemLinks', () => {
   let wrapper;
@@ -36,18 +50,18 @@ describe('WorkItemLinks', () => {
 
   const childWorkItemQueryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
 
-  const findChildren = () => wrapper.findAll('[data-testid="links-child"]');
-
   const createComponent = async ({
     data = {},
     fetchHandler = jest.fn().mockResolvedValue(workItemHierarchyResponse),
     mutationHandler = mutationChangeParentHandler,
+    confidentialQueryHandler = jest.fn().mockResolvedValue(issueConfidentialityResponse()),
   } = {}) => {
     mockApollo = createMockApollo(
       [
         [getWorkItemLinksQuery, fetchHandler],
         [changeWorkItemParentMutation, mutationHandler],
         [workItemQuery, childWorkItemQueryHandler],
+        [issueConfidentialQuery, confidentialQueryHandler],
       ],
       {},
       { addTypename: true },
@@ -61,6 +75,7 @@ describe('WorkItemLinks', () => {
       },
       provide: {
         projectPath: 'project/path',
+        iid: '1',
       },
       propsData: { issuableId: 1 },
       apolloProvider: mockApollo,
@@ -80,6 +95,7 @@ describe('WorkItemLinks', () => {
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
   const findFirstLinksMenu = () => wrapper.findByTestId('links-menu');
   const findChildrenCount = () => wrapper.findByTestId('children-count');
+  const findChildren = () => wrapper.findAllByTestId('links-child');
 
   beforeEach(async () => {
     await createComponent();
@@ -167,21 +183,6 @@ describe('WorkItemLinks', () => {
     expect(findChildrenCount().text()).toContain('4');
   });
 
-  it('refetches child items when `confidentialityUpdated` event is emitted on SidebarEventhub', async () => {
-    const fetchHandler = jest.fn().mockResolvedValue(workItemHierarchyResponse);
-    await createComponent({
-      fetchHandler,
-    });
-    await waitForPromises();
-
-    SidebarEventHub.$emit('confidentialityUpdated');
-    await nextTick();
-
-    // First call is done on component mount.
-    // Second call is done on confidentialityUpdated event.
-    expect(fetchHandler).toHaveBeenCalledTimes(2);
-  });
-
   describe('when no permission to update', () => {
     beforeEach(async () => {
       await createComponent({
@@ -266,6 +267,18 @@ describe('WorkItemLinks', () => {
       await waitForPromises();
 
       expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when parent item is confidential', () => {
+    it('passes correct confidentiality status to form', async () => {
+      await createComponent({
+        confidentialQueryHandler: jest.fn().mockResolvedValue(issueConfidentialityResponse(true)),
+      });
+      findToggleAddFormButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findAddLinksForm().props('parentConfidential')).toBe(true);
     });
   });
 });

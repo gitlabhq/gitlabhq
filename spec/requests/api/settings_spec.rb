@@ -56,6 +56,10 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
       expect(json_response['max_export_size']).to eq(0)
       expect(json_response['pipeline_limit_per_project_user_sha']).to eq(0)
+      expect(json_response['delete_inactive_projects']).to be(false)
+      expect(json_response['inactive_projects_delete_after_months']).to eq(2)
+      expect(json_response['inactive_projects_min_size_mb']).to eq(0)
+      expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(1)
     end
   end
 
@@ -148,7 +152,11 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             user_deactivation_emails_enabled: false,
             admin_mode: true,
             suggest_pipeline_enabled: false,
-            users_get_by_id_limit: 456
+            users_get_by_id_limit: 456,
+            delete_inactive_projects: true,
+            inactive_projects_delete_after_months: 24,
+            inactive_projects_min_size_mb: 10,
+            inactive_projects_send_warning_email_after_months: 12
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -205,6 +213,10 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['user_deactivation_emails_enabled']).to be(false)
         expect(json_response['suggest_pipeline_enabled']).to be(false)
         expect(json_response['users_get_by_id_limit']).to eq(456)
+        expect(json_response['delete_inactive_projects']).to be(true)
+        expect(json_response['inactive_projects_delete_after_months']).to eq(24)
+        expect(json_response['inactive_projects_min_size_mb']).to eq(10)
+        expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(12)
       end
     end
 

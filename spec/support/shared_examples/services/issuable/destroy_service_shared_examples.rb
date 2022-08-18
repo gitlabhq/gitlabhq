@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'service scheduling async deletes' do
+RSpec.shared_examples_for 'service scheduling async deletes' do
   it 'destroys associated todos asynchronously' do
     expect(worker_class)
       .to receive(:perform_async)
@@ -20,13 +20,13 @@ shared_examples_for 'service scheduling async deletes' do
   end
 end
 
-shared_examples_for 'service deleting todos' do
+RSpec.shared_examples_for 'service deleting todos' do
   it_behaves_like 'service scheduling async deletes' do
     let(:worker_class) { TodosDestroyer::DestroyedIssuableWorker }
   end
 end
 
-shared_examples_for 'service deleting label links' do
+RSpec.shared_examples_for 'service deleting label links' do
   it_behaves_like 'service scheduling async deletes' do
     let(:worker_class) { Issuable::LabelLinksDestroyWorker }
   end

@@ -24,7 +24,7 @@ RSpec.shared_examples 'checking spam' do
   end
 end
 
-shared_examples 'invalid params error response' do
+RSpec.shared_examples 'invalid params error response' do
   before do
     allow_next_instance_of(described_class) do |service|
       allow(service).to receive(:valid_params?).and_return false

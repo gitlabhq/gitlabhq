@@ -22,7 +22,7 @@ import SidebarParticipantsWidget from '~/sidebar/components/participants/sidebar
 import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
 import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
-import { apolloProvider } from '~/sidebar/graphql';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import trackShowInviteMemberLink from '~/sidebar/track_invite_members';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import LabelsSelectWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
@@ -39,7 +39,6 @@ import SidebarTimeTracking from './components/time_tracking/sidebar_time_trackin
 import { IssuableAttributeType } from './constants';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
 import CrmContacts from './components/crm_contacts/crm_contacts.vue';
-import SidebarEventHub from './event_hub';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -359,13 +358,6 @@ function mountConfidentialComponent() {
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? IssuableType.Issue
               : IssuableType.MergeRequest,
-        },
-        on: {
-          closeForm({ confidential }) {
-            if (confidential !== undefined) {
-              SidebarEventHub.$emit('confidentialityUpdated', confidential);
-            }
-          },
         },
       }),
   });

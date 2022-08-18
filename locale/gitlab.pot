@@ -2457,9 +2457,6 @@ msgstr ""
 msgid "Adjust how frequently the GitLab UI polls for updates."
 msgstr ""
 
-msgid "Adjust your filters/search criteria above. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
-msgstr ""
-
 msgid "Admin"
 msgstr ""
 
@@ -14217,6 +14214,9 @@ msgstr ""
 msgid "Edit your most recent comment in a thread (from an empty textarea)"
 msgstr ""
 
+msgid "Edit your search filter and try again."
+msgstr ""
+
 msgid "Edit, lint, and visualize your pipeline."
 msgstr ""
 
@@ -16983,9 +16983,6 @@ msgstr ""
 msgid "Geo|Add site"
 msgstr ""
 
-msgid "Geo|Adjust your filters/search criteria above. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
-msgstr ""
-
 msgid "Geo|All"
 msgstr ""
 
@@ -17179,6 +17176,12 @@ msgid "Geo|Never"
 msgstr ""
 
 msgid "Geo|Next sync scheduled at"
+msgstr ""
+
+msgid "Geo|No %{replicable_type} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
+msgstr ""
+
+msgid "Geo|No %{replicable} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr ""
 
 msgid "Geo|No Geo site found"
@@ -17386,6 +17389,9 @@ msgid "Geo|The site is currently %{minutes_behind} behind the primary site."
 msgstr ""
 
 msgid "Geo|There are no %{replicable_type} to show"
+msgstr ""
+
+msgid "Geo|There are no %{replicable} to show"
 msgstr ""
 
 msgid "Geo|There was an error deleting the Geo Site"
@@ -26408,6 +26414,9 @@ msgid "No repository"
 msgstr ""
 
 msgid "No results"
+msgstr ""
+
+msgid "No results found"
 msgstr ""
 
 msgid "No runner executable"
@@ -39483,9 +39492,6 @@ msgstr ""
 msgid "There are merge conflicts"
 msgstr ""
 
-msgid "There are no %{replicableTypeName} to show"
-msgstr ""
-
 msgid "There are no GPG keys associated with this account."
 msgstr ""
 
@@ -45839,6 +45845,9 @@ msgid "change"
 msgid_plural "changes"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "ciReport|%{criticalStart}critical%{criticalEnd}, %{highStart}high%{highEnd} and %{otherStart}others%{otherEnd}"
+msgstr ""
 
 msgid "ciReport|%{danger_start}%{degradedNum} degraded%{danger_end}, %{same_start}%{sameNum} same%{same_end}, and %{success_start}%{improvedNum} improved%{success_end}"
 msgstr ""

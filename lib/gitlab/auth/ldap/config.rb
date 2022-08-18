@@ -7,8 +7,8 @@ module Gitlab
       class Config
         NET_LDAP_ENCRYPTION_METHOD = {
           simple_tls: :simple_tls,
-          start_tls:  :start_tls,
-          plain:      nil
+          start_tls: :start_tls,
+          plain: nil
         }.freeze
 
         attr_accessor :provider, :options
@@ -193,11 +193,11 @@ module Gitlab
 
         def default_attributes
           {
-            'username'    => %W(#{uid} uid sAMAccountName userid).uniq,
-            'email'       => %w(mail email userPrincipalName),
-            'name'        => 'cn',
-            'first_name'  => 'givenName',
-            'last_name'   => 'sn'
+            'username' => %W(#{uid} uid sAMAccountName userid).uniq,
+            'email' => %w(mail email userPrincipalName),
+            'name' => 'cn',
+            'first_name' => 'givenName',
+            'last_name' => 'sn'
           }
         end
 

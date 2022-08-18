@@ -103,7 +103,7 @@ module Gitlab
 
             {
               username: username,
-              email:    email
+              email: email
             }
           end
         end

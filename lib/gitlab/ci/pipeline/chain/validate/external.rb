@@ -57,7 +57,8 @@ module Gitlab
               }.compact
 
               Gitlab::HTTP.post(
-                validation_service_url, timeout: validation_service_timeout,
+                validation_service_url,
+                timeout: validation_service_timeout,
                 headers: headers,
                 body: validation_service_payload.to_json
               )

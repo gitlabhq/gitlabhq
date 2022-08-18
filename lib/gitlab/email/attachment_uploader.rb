@@ -20,8 +20,8 @@ module Gitlab
             sanitize_exif_if_needed(content, tmp.path)
 
             file = {
-              tempfile:     tmp,
-              filename:     attachment.filename,
+              tempfile: tmp,
+              filename: attachment.filename,
               content_type: attachment.content_type
             }
 

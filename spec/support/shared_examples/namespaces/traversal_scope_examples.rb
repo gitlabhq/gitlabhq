@@ -265,14 +265,6 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
   describe '.self_and_descendants' do
     include_examples '.self_and_descendants'
-
-    context 'with traversal_ids_btree feature flag disabled' do
-      before do
-        stub_feature_flags(traversal_ids_btree: false)
-      end
-
-      include_examples '.self_and_descendants'
-    end
   end
 
   shared_examples '.self_and_descendant_ids' do
@@ -308,14 +300,6 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
   describe '.self_and_descendant_ids' do
     include_examples '.self_and_descendant_ids'
-
-    context 'with traversal_ids_btree feature flag disabled' do
-      before do
-        stub_feature_flags(traversal_ids_btree: false)
-      end
-
-      include_examples '.self_and_descendant_ids'
-    end
   end
 
   shared_examples '.self_and_hierarchy' do

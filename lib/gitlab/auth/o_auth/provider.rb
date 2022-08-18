@@ -5,14 +5,14 @@ module Gitlab
     module OAuth
       class Provider
         LABELS = {
-          "alicloud"                 => "AliCloud",
-          "dingtalk"                 => "DingTalk",
-          "github"                   => "GitHub",
-          "gitlab"                   => "GitLab.com",
-          "google_oauth2"            => "Google",
-          "azure_oauth2"             => "Azure AD",
+          "alicloud" => "AliCloud",
+          "dingtalk" => "DingTalk",
+          "github" => "GitHub",
+          "gitlab" => "GitLab.com",
+          "google_oauth2" => "Google",
+          "azure_oauth2" => "Azure AD",
           "azure_activedirectory_v2" => "Azure AD v2",
-          'atlassian_oauth2'         => 'Atlassian'
+          'atlassian_oauth2' => 'Atlassian'
         }.freeze
 
         def self.authentication(user, provider)

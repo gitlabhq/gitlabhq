@@ -53,6 +53,9 @@ end
 require 'rainbow/ext/string'
 Rainbow.enabled = false
 
+# Enable zero monkey patching mode before loading any other RSpec code.
+RSpec.configure(&:disable_monkey_patching!)
+
 require_relative('../ee/spec/spec_helper') if Gitlab.ee?
 require_relative('../jh/spec/spec_helper') if Gitlab.jh?
 
@@ -478,8 +481,6 @@ RSpec.configure do |config|
   config.before(:each, :js) do
     allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
   end
-
-  config.disable_monkey_patching!
 end
 
 ActiveRecord::Migration.maintain_test_schema!

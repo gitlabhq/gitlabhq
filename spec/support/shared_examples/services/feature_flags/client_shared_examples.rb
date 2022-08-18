@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'update feature flag client' do
+RSpec.shared_examples_for 'update feature flag client' do
   let!(:client) { create(:operations_feature_flags_client, project: project) }
 
   it 'updates last feature flag updated at' do
@@ -10,7 +10,7 @@ shared_examples_for 'update feature flag client' do
   end
 end
 
-shared_examples_for 'does not update feature flag client' do
+RSpec.shared_examples_for 'does not update feature flag client' do
   let!(:client) { create(:operations_feature_flags_client, project: project) }
 
   it 'does not update last feature flag updated at' do

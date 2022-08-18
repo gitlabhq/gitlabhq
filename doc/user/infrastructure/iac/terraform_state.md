@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
 
 Terraform uses state files to store details about your infrastructure configuration.
-With Terraform remote [backends](https://www.terraform.io/language/settings/backends),
+With Terraform remote [backends](https://www.terraform.io/language/settings/backends/configuration),
 you can store the state file in a remote and shared store.
 
 GitLab provides a [Terraform HTTP backend](https://www.terraform.io/language/settings/backends/http)
